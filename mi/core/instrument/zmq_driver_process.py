@@ -114,8 +114,8 @@ class ZmqDriverProcess(driver_process.DriverProcess):
         driver_process.DriverProcess.__init__(self, driver_module, driver_class, ppid)
         self.cmd_port = command_port
         self.evt_port = event_port
-        self.cmd_host_string = 'tcp://*'
-        self.event_host_string ='tcp://*'
+        self.cmd_host_string = 'tcp://*:%d' % self.cmd_port
+        self.event_host_string ='tcp://*:%d' % self.evt_port
         self.evt_thread = None
         self.stop_evt_thread = True
         self.cmd_thread = None
@@ -136,7 +136,7 @@ class ZmqDriverProcess(driver_process.DriverProcess):
             """
             context = zmq.Context()
             sock = context.socket(zmq.REP)
-            sock.bind(self.cmd_port)
+            sock.bind(self.cmd_host_string)
             # zmq_driver_process.cmd_port = sock.bind_to_random_port(zmq_driver_process.cmd_host_string)
             # log.info('Driver process cmd socket bound to %i' %
             #                zmq_driver_process.cmd_port)
@@ -174,7 +174,7 @@ class ZmqDriverProcess(driver_process.DriverProcess):
             """
             context = zmq.Context()
             sock = context.socket(zmq.PUB)
-            sock.bind(self.evt_port)
+            sock.bind(self.event_host_string)
             # zmq_driver_process.evt_port = sock.bind_to_random_port(zmq_driver_process.event_host_string)
             # log.info('Driver process event socket bound to %i', zmq_driver_process.evt_port)
             # file(zmq_driver_process.evt_port_fname,'w+').write(str(zmq_driver_process.evt_port)+'\n')
