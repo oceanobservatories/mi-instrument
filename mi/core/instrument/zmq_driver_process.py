@@ -24,6 +24,7 @@ import time
 import logging
 import sys
 import uuid
+import json
 
 import zmq
 
@@ -42,6 +43,16 @@ def _encode_exception(reply):
         # all others are wrapped to capture stack and appropriate code
         ex = UnexpectedError("%s('%s')" % (reply.__class__.__name__, reply.message))
         return ex.get_triple()
+
+def deunicode(msg):
+    if isinstance(msg, list):
+        return [deunicode(x) for x in msg]
+    if isinstance(msg, dict):
+        return {k:deunicode(v) for k,v in msg.iteritems()}
+    if isinstance(msg, unicode):
+        return str(msg)
+    else:
+        return msg
 
 class ZmqDriverProcess(driver_process.DriverProcess):
     """
@@ -120,6 +131,7 @@ class ZmqDriverProcess(driver_process.DriverProcess):
         self.stop_evt_thread = True
         self.cmd_thread = None
         self.stop_cmd_thread = True
+        log.error('cmd_host_string: %s event_host_string: %s', self.cmd_host_string, self.event_host_string)
         
     def start_messaging(self):
         """
@@ -137,30 +149,29 @@ class ZmqDriverProcess(driver_process.DriverProcess):
             context = zmq.Context()
             sock = context.socket(zmq.REP)
             sock.bind(self.cmd_host_string)
-            # zmq_driver_process.cmd_port = sock.bind_to_random_port(zmq_driver_process.cmd_host_string)
-            # log.info('Driver process cmd socket bound to %i' %
-            #                zmq_driver_process.cmd_port)
-            # file(zmq_driver_process.cmd_port_fname,'w+').write(str(zmq_driver_process.cmd_port)+'\n')
 
             zmq_driver_process.stop_cmd_thread = False
             while not zmq_driver_process.stop_cmd_thread:
                 try:
-                    msg = sock.recv_pyobj(flags=zmq.NOBLOCK)
-                    #log.trace('Processing message %s', msg)
+                    msg = sock.recv_json()
+                    msg = deunicode(msg)
+                    log.debug('ZMQ driver process processing message %s', msg)
                     reply = zmq_driver_process.cmd_driver(msg)
-                    # if operation raised exception, encode as triple
+
+                    if type(reply) == str:
+                        try:
+                            reply = json.loads(reply)
+                        except Exception as e:
+                            log.debug('Exception %s', e)
+
+                    log.debug("Reply from driver: %r %s", reply, type(reply))
+
                     if isinstance(reply, Exception):
                         reply = _encode_exception(reply)
-                    # send, send, and resend
-                    while True:
-                        try:
-                            sock.send_pyobj(reply, flags=zmq.NOBLOCK)
-                            break
-                        except zmq.ZMQError:
-                            time.sleep(.1)
-                            if zmq_driver_process.stop_cmd_thread:
-                                break
-                except zmq.ZMQError:
+
+                    sock.send_json(reply, zmq.NOBLOCK)
+                except zmq.ZMQError as e:
+                    log.info("ZMQ error: %s", e)
                     time.sleep(.1)
                 
             sock.close()
@@ -175,9 +186,6 @@ class ZmqDriverProcess(driver_process.DriverProcess):
             context = zmq.Context()
             sock = context.socket(zmq.PUB)
             sock.bind(self.event_host_string)
-            # zmq_driver_process.evt_port = sock.bind_to_random_port(zmq_driver_process.event_host_string)
-            # log.info('Driver process event socket bound to %i', zmq_driver_process.evt_port)
-            # file(zmq_driver_process.evt_port_fname,'w+').write(str(zmq_driver_process.evt_port)+'\n')
 
             zmq_driver_process.stop_evt_thread = False
             while not zmq_driver_process.stop_evt_thread:
@@ -188,7 +196,7 @@ class ZmqDriverProcess(driver_process.DriverProcess):
                         try:
                             if isinstance(evt, Exception):
                                 evt = _encode_exception(evt)
-                            sock.send_pyobj(evt, flags=zmq.NOBLOCK)
+                            sock.send_json(evt, flags=zmq.NOBLOCK)
                             evt = None
                             log.trace('Event sent!')
                         except zmq.ZMQError:

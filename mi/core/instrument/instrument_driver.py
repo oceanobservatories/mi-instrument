@@ -609,8 +609,7 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
             self._build_protocol()
 
         log.debug("Getting metadata from protocol...")
-        return json.dumps(self._protocol.get_config_metadata_dict(),
-                          sort_keys=True)
+        return self._protocol.get_config_metadata_dict()
             
     def restore_direct_access_params(self, config):
         """
