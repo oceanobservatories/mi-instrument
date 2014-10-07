@@ -8,12 +8,12 @@ Release notes:
 """
 from collections import namedtuple
 import functools
-import json
 import random
 import sqlite3
 import string
-import ntplib
 import time
+
+import ntplib
 
 from mi.core.common import BaseEnum
 from mi.core.driver_scheduler import DriverSchedulerConfigKey, TriggerType
@@ -22,14 +22,12 @@ from mi.core.instrument.instrument_fsm import ThreadSafeFSM
 from mi.core.instrument.instrument_protocol import CommandResponseInstrumentProtocol
 from mi.core.instrument.instrument_driver import DriverEvent, DriverConfigKey
 from mi.core.instrument.instrument_driver import SingleConnectionInstrumentDriver
-from mi.core.instrument.instrument_driver import DriverParameter
 from mi.core.instrument.instrument_driver import DriverAsyncEvent
 from mi.core.instrument.instrument_driver import ResourceAgentState
 from mi.core.instrument.instrument_driver import DriverProtocolState
 from mi.core.instrument.instrument_driver import DriverConnectionState
 from mi.core.exceptions import InstrumentParameterException, SampleException
 from mi.core.instrument.driver_dict import DriverDictKey
-from mock import Mock
 from mi.core.instrument.protocol_param_dict import ProtocolParameterDict
 import mi.core.log
 
@@ -38,7 +36,7 @@ __author__ = 'Pete Cable'
 __license__ = 'Apache 2.0'
 
 log = mi.core.log.get_logger()
-META_LOGGER = mi.core.log.get_logging_metaclass('info')
+META_LOGGER = mi.core.log.get_logging_metaclass('trace')
 NEWLINE = '\n'
 
 # Preload helper items
@@ -67,7 +65,7 @@ def load_paramdefs(conn):
     c = conn.cursor()
     c.execute(PARAMDEF_SELECT)
     params = map(ParameterDef._make, c.fetchall())
-    return {x.id:x for x in params}
+    return {x.id: x for x in params}
 
 
 def load_paramdicts(conn):
@@ -75,7 +73,7 @@ def load_paramdicts(conn):
     c = conn.cursor()
     c.execute(PARAMDICT_SELECT)
     params = map(ParameterDictionary._make, c.fetchall())
-    return {p.name:p for p in params}
+    return {p.name: p for p in params}
 
 
 class Parameter(BaseEnum):
@@ -102,6 +100,7 @@ class ProtocolEvent(BaseEnum):
     START_AUTOSAMPLE = DriverEvent.START_AUTOSAMPLE
     STOP_AUTOSAMPLE = DriverEvent.STOP_AUTOSAMPLE
     DISCOVER = DriverEvent.DISCOVER
+    VERY_LONG_COMMAND = 'VERY_LONG_COMMAND'
 
 
 class Capability(BaseEnum):
@@ -112,6 +111,7 @@ class Capability(BaseEnum):
     SET = ProtocolEvent.SET
     START_AUTOSAMPLE = ProtocolEvent.START_AUTOSAMPLE
     STOP_AUTOSAMPLE = ProtocolEvent.STOP_AUTOSAMPLE
+    VERY_LONG_COMMAND = ProtocolEvent.VERY_LONG_COMMAND
 
 
 class Prompt(BaseEnum):
@@ -148,7 +148,7 @@ class VirtualParticle(DataParticle):
 
     @staticmethod
     def random_string(size):
-        return ''.join([random.choice(string.ascii_letters) for x in range(size)])
+        return ''.join(random.sample(string.ascii_letters, size))
 
     def _build_parsed_values(self):
         """
@@ -166,10 +166,14 @@ class VirtualParticle(DataParticle):
 
         values = []
         for param in parameters:
-            if param in self._ignore: continue
+            if param in self._ignore:
+                continue
             p = self._parameters.get(param)
 
-            log.info('Generating random data for param: %s name: %s', param, p.name)
+            if p.parameter_type == 'function':
+                continue
+
+            log.debug('Generating random data for param: %s name: %s', param, p.name)
 
             val = None
             if p.value_encoding in ['str', 'string']:
@@ -200,6 +204,10 @@ class VirtualParticle(DataParticle):
                 values.append({'value_id': p.name, 'value': val})
 
         return values
+
+
+class PortAgentClientStub(object):
+    pass
 
 
 ###############################################################################
@@ -246,7 +254,7 @@ class InstrumentDriver(SingleConnectionInstrumentDriver):
         @raises InstrumentParameterException if missing or invalid param dict.
         """
         result = None
-        self._connection = Mock()
+        self._connection = PortAgentClientStub()
         next_state = DriverConnectionState.DISCONNECTED
 
         return next_state, result
@@ -263,7 +271,7 @@ class InstrumentDriver(SingleConnectionInstrumentDriver):
         @raises InstrumentParameterException if missing or invalid param dict.
         """
         result = None
-        self._connection = Mock()
+        self._connection = PortAgentClientStub()
         next_state = DriverConnectionState.DISCONNECTED
 
         return next_state, result
@@ -276,13 +284,11 @@ class InstrumentDriver(SingleConnectionInstrumentDriver):
         None) if successful.
         @raises InstrumentConnectionException if the attempt to connect failed.
         """
-        next_state = None
-        result = None
         self._build_protocol()
         self._protocol._connection = self._connection
         next_state = DriverConnectionState.CONNECTED
 
-        return next_state, result
+        return next_state, None
 
 
 ###########################################################################
@@ -322,6 +328,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                 (ProtocolEvent.EXIT, self._handler_generic_exit),
                 (ProtocolEvent.GET, self._handler_command_get),
                 (ProtocolEvent.STOP_AUTOSAMPLE, self._handler_autosample_stop_autosample),
+                (ProtocolEvent.VERY_LONG_COMMAND, self._very_long_command),
             ],
             ProtocolState.COMMAND: [
                 (ProtocolEvent.ENTER, self._handler_command_enter),
@@ -329,6 +336,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                 (ProtocolEvent.GET, self._handler_command_get),
                 (ProtocolEvent.SET, self._handler_command_set),
                 (ProtocolEvent.START_AUTOSAMPLE, self._handler_command_start_autosample),
+                (ProtocolEvent.VERY_LONG_COMMAND, self._very_long_command),
             ],
         }
 
@@ -348,14 +356,11 @@ class Protocol(CommandResponseInstrumentProtocol):
         self._schedulers = []
 
     def _generate_particle(self, stream_name, count=1):
-        # let's give ourselves some breathing room, I would like this callback to finish
-        # before the next one is called...
-        sleep_time = 0.5 / count
+        # we're faking it anyway, send these as fast as we can...
+        # the overall rate will be close enough
         for x in range(count):
             particle = VirtualParticle(stream_name, port_timestamp=ntplib.system_to_ntp_time(time.time()))
             self._driver_event(DriverAsyncEvent.SAMPLE, particle.generate())
-            if count > 1:
-                time.sleep(sleep_time)
 
     def _create_scheduler(self, stream_name, rate):
         job_name = stream_name
@@ -450,11 +455,14 @@ class Protocol(CommandResponseInstrumentProtocol):
         self._startup_config = config
 
         param_config = config.get(DriverConfigKey.PARAMETERS)
-        if(param_config):
+        if param_config:
             for name in param_config.keys():
                 self._param_dict.add(name, '', None, None)
                 log.debug("Setting init value for %s to %s", name, param_config[name])
                 self._param_dict.set_init_value(name, param_config[name])
+
+    def _very_long_command(self, *args, **kwargs):
+        return None, time.sleep(30)
 
     ########################################################################
     # Unknown handlers.
@@ -481,7 +489,6 @@ class Protocol(CommandResponseInstrumentProtocol):
             self._create_scheduler(stream_name, self._param_dict.get(stream_name))
 
         self._driver_event(DriverAsyncEvent.STATE_CHANGE)
-
 
     def _handler_autosample_stop_autosample(self, *args, **kwargs):
         """
@@ -541,4 +548,3 @@ class Protocol(CommandResponseInstrumentProtocol):
         """
         Generic exit state handler
         """
-

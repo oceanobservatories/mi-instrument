@@ -4,25 +4,25 @@
 @package ion.services.mi.driver_process
 @file ion/services/mi/driver_process.py
 @author Edward Hunter
-@brief Messaing enabled driver processes.
+@brief Messaging enabled driver processes.
 """
+import Queue
+import importlib
+import subprocess
+import signal
+import os
+import time
+import sys
+
+from ooi.logging import log
+
 
 __author__ = 'Edward Hunter'
 __license__ = 'Apache 2.0'
 
-import logging
-from threading import Thread
-from subprocess import Popen
-from subprocess import PIPE
-import signal
-import os
-import sys
-import time
-import traceback
-from mi.core.exceptions import InstrumentException, InstrumentCommandException
-from mi.core.instrument.instrument_driver import DriverAsyncEvent
+# max seconds between interrupts before killing driver
+INTERRUPT_REPEAT_INTERVAL = 3
 
-from ooi.logging import log
 
 class DriverProcess(object):
     """
@@ -30,23 +30,23 @@ class DriverProcess(object):
     run loop, dynamic driver import and construction and interface
     for messaging implementation subclasses.
     """
-    
+
     @staticmethod
     def launch_process(cmd_str):
         """
         Base class static constructor. Launch the calling class as a
         separate OS level process. This method combines the derived class
         command string with the common python interpreter command.
-        @param cmd_string The python command sequence to import, create and
+        @param cmd_str The python command sequence to import, create and
         run a derived class object.
-        @retval a Popen object representing the dirver process.
+        @retval a Popen object representing the driver process.
         """
 
         # Launch a separate python interpreter, executing the calling
         # class command string.
         spawnargs = ['python', '-c', cmd_str]
-        return Popen(spawnargs, close_fds=True)
-        
+        return subprocess.Popen(spawnargs, close_fds=True)
+
     def __init__(self, driver_module, driver_class, ppid):
         """
         @param driver_module The python module containing the driver code.
@@ -56,33 +56,29 @@ class DriverProcess(object):
         self.driver_class = driver_class
         self.ppid = ppid
         self.driver = None
-        self.events = []
+        self.events = Queue.Queue()
         self.messaging_started = False
-        
+        self.int_time = 0
+
     def construct_driver(self):
         """
         Attempt to import and construct the driver object based on
         configuration.
         @retval True if successful, False otherwise.
         """
-        import_str = 'import %s as dvr_mod' % self.driver_module
-        ctor_str = 'driver = dvr_mod.%s(self.send_event)' % self.driver_class
         try:
-            exec import_str
-            log.info('Imported driver module %s' % self.driver_module)
-            exec ctor_str
-            log.info('Constructed driver %s' % self.driver_class)
-            
-        except (ImportError, NameError, AttributeError) as e:
-            log.error('Could not import/construct driver module %s, class %s.' %
-                      (self.driver_module, self.driver_class))
+            module = importlib.import_module(self.driver_module)
+            driver_class = getattr(module, self.driver_class)
+            self.driver = driver_class(self.send_event)
+            log.info('Imported and created driver from module: %r class: %r driver: %r',
+                     module, driver_class, self.driver)
+            return True
+        except Exception as e:
+            log.error('Could not import/construct driver module %s, class %s.',
+                      self.driver_module, self.driver_class)
             log.error('%s' % str(e))
             return False
 
-        else:
-            self.driver = driver
-            return True
-            
     def start_messaging(self):
         """
         Initialize and start messaging resources for the driver, blocking
@@ -114,83 +110,19 @@ class DriverProcess(object):
         if self.ppid:
             try:
                 os.kill(self.ppid, 0)
-                
+
             except OSError:
                 log.info('Driver process COULD NOT DETECT PARENT.')
                 return False
-        
+
         return True
 
-    def cmd_driver(self, msg):
-        """
-        Process a command message against the driver. If the command
-        exists as a driver attribute, call it passing supplied args and
-        kwargs and returning the driver result. Special messages that are
-        not forwarded to the driver are:
-        'stop_driver_process' - signal to close messaging and terminate.
-        'test_events' - populate event queue with test data.
-        'process_echo' - echos the message back.
-        If the command is not found in the driver, an echo message is
-        replied to the client.
-        @param msg A driver command message.
-        @retval The driver command result.
-        """
-        cmd = msg.get('cmd', None)
-        args = msg.get('args', None)
-        kwargs = msg.get('kwargs', None)
-        cmd_func = getattr(self.driver, cmd, None)
-        log.debug("DriverProcess.cmd_driver(): cmd=%s, cmd_func=%s" %(cmd, cmd_func))
-        if cmd == 'stop_driver_process':
-            self.stop_messaging()
-            return'stop_driver_process'
-        elif cmd == 'test_events':
-            events = kwargs['events']
-            self.events += events
-            reply = 'test_events'
-        elif cmd == 'process_echo':
-            reply = 'ping from resource ppid:%s, resource:%s' % (str(self.ppid), str(self.driver))
-            #try:
-            #    msg = args[0]
-            #except IndexError:
-            #    msg = 'no message to echo'
-            # reply = 'process_echo: %s' % msg
-        elif cmd_func:
-            try:
-                reply = cmd_func(*args, **kwargs)
-            except Exception as e:
-                reply = e
-                # Command error events are better handled in the agent directly.
-                #event = {
-                #    'type' : DriverAsyncEvent.ERROR,
-                #    'value' : str(e),
-                #    'exception' : e,
-                #    'time' : time.time()
-                #}
-                #self.send_event(event)
-                if not isinstance(e, InstrumentException):
-                    trace = traceback.format_exc()
-                    log.critical("Python error, Trace follows: \n%s" %trace)
-                
-                
-        else:
-            reply = InstrumentCommandException('Unknown driver command.')
-            # Command error events are better handled in the agent directly.
-            #event = {
-            #    'type' : DriverAsyncEvent.ERROR,
-            #    'value' : str(reply),
-            #    'exception' : reply,
-            #    'time' : time.time()
-            #}
-            #self.send_event(event)
-        
-        return reply        
-            
     def send_event(self, evt):
         """
         Append an event to the list to be sent by the event threaed.
         """
-        self.events.append(evt)
-            
+        self.events.put(evt)
+
     def run(self):
         """
         Process entry point. Construct driver and start messaging loops.
@@ -199,12 +131,20 @@ class DriverProcess(object):
         """
 
         from mi.core.log import LoggerManager
+
         LoggerManager()
 
         log.info('Driver process started.')
-        
+
+        # noinspection PyUnusedLocal
         def shand(signum, frame):
-            log.info('mi/core/instrument/driver_process.py DRIVER GOT SIGINT and is ignoring it...')
+            now = time.time()
+            if now - self.int_time < INTERRUPT_REPEAT_INTERVAL:
+                self.stop_messaging()
+            else:
+                self.int_time = now
+                log.info('mi/core/instrument/driver_process.py DRIVER GOT SIGINT and is ignoring it...')
+
         signal.signal(signal.SIGINT, shand)
 
         if self.construct_driver():
@@ -215,8 +155,7 @@ class DriverProcess(object):
                 else:
                     self.stop_messaging()
                     break
-            
+
         self.shutdown()
         time.sleep(1)
         os._exit(0)
-        
