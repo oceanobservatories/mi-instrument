@@ -170,6 +170,9 @@ class VirtualParticle(DataParticle):
                 continue
             p = self._parameters.get(param)
 
+            if p.parameter_type == 'function':
+                continue
+
             log.debug('Generating random data for param: %s name: %s', param, p.name)
 
             val = None
