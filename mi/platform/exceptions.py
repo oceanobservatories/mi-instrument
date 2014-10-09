@@ -11,10 +11,10 @@ __author__ = 'Carlos Rueda'
 __license__ = 'Apache 2.0'
 
 
-from pyon.core.exception import IonException
+from ooi.exception import ApplicationException
 
 
-class PlatformException(IonException):
+class PlatformException(ApplicationException):
     """
     Base class for platform related exceptions.
     """
@@ -37,6 +37,20 @@ class PlatformConnectionException(PlatformException):
 class PlatformConfigurationException(PlatformException):
     """
     Exception related with the configuration of a platform agent.
+    """
+    pass
+
+class NodeConfigurationFileException(PlatformException):
+    """
+    Exception related with the node configuration file
+    """
+    pass
+
+
+class PlatformDefinitionException(PlatformException):
+    """
+    Exception related with the definition of a platform network or any
+    particular platform node or other sub-component.
     """
     pass
 

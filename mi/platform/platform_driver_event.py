@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
 """
-@package mi.platform.platform_driver_event
-@file    mi/platform/platform_driver_event.py
+@package ion.agents.platform.platform_driver_event
+@file    ion/agents/platform/platform_driver_event.py
 @author  Carlos Rueda
 @brief   Classes for platform driver events. These classes are for internal
          coordination within the platform agent framework (they are not
@@ -60,6 +60,22 @@ class AttributeValueDriverEvent(DriverEvent):
 
 
 class ExternalEventDriverEvent(DriverEvent):
+    """
+    Event to notify an external event.
+    """
+    def __init__(self, event_instance):
+        DriverEvent.__init__(self)
+        self._event_instance = event_instance
+
+    @property
+    def event_instance(self):
+        return self._event_instance
+
+    def __str__(self):
+        return "%s(event_instance=%s)" % (
+            self.__class__.__name__, self.event_instance)
+
+class OMSEventDriverEvent(DriverEvent):
     """
     Event to notify an external event.
     """
