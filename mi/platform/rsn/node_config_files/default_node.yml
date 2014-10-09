@@ -1,0 +1,114 @@
+node_attributes:
+    AmbientTemp:
+      attr_id : Ambient Temperature
+      monitor_cycle_seconds : 3
+      scale_factor  : 0.001
+      ion_parameter_name: sec_node_ambient_temperature
+      ion_units : degC
+      ion_type : float32
+    CIB_5V_Current:
+      attr_id : CIB 5V Current
+      monitor_cycle_seconds : 3
+      scale_factor  : 0.001
+      ion_parameter_name: sec_node_cib_5v_current
+      ion_units : A
+      ion_type : float32
+    CIB_Board_state:
+      attr_id : CIB_Board_State
+      monitor_cycle_seconds : 600
+      scale_factor  : 1
+      ion_parameter_name: sec_node_cib_board_state
+      ion_units : ENUM
+      ion_type : uint8
+    CIB_Error_state:
+      attr_id : CIB_Error_State
+      monitor_cycle_seconds : 600
+      scale_factor  : 1
+      ion_parameter_name: sec_node_cib_error_state
+      ion_units : ENUM
+      ion_type : uint8
+    CIB_Hotel_Current:
+      attr_id : CIB Hotel Current
+      monitor_cycle_seconds : 3
+      scale_factor  : 0.001
+      ion_parameter_name: sec_node_cib_hotel_current
+      ion_units : A
+      ion_type : float32
+    CIB_Hotel_Voltage:
+      attr_id : CIB Hotel Voltage
+      monitor_cycle_seconds : 3
+      scale_factor  : 0.001
+      ion_parameter_name: sec_node_cib_hotel_voltage
+      ion_units : V
+      ion_type : float32
+port_attributes:
+     outputCurrent :
+       attr_id : Output Current
+       monitor_cycle_seconds : 3
+       scale_factor : 0.001
+       ion_parameter_name: output_current
+       ion_units : A
+       ion_type  : float32
+     outputVoltage :
+       attr_id : Output Voltage
+       monitor_cycle_seconds : 3
+       scale_factor : 0.001
+       ion_parameter_name: output_voltage
+       ion_units : V
+       ion_type  : float32
+     outputTemperature :
+       attr_id : Unit Temperature
+       monitor_cycle_seconds : 3
+       scale_factor : 0.001
+       ion_parameter_name: output_temperature
+       ion_units : degC
+       ion_type  : float32
+     GFD_High :
+       attr_id : GFD High
+       monitor_cycle_seconds : 600
+       scale_factor : 1
+       ion_parameter_name: gfd_high
+       ion_units : microA
+       ion_type  : float32
+     GFD_Low :
+       attr_id : GFD Low
+       monitor_cycle_seconds : 600
+       scale_factor : 1
+       ion_parameter_name: gfd_low
+       ion_units : microA
+       ion_type  : float32
+     Board_state:
+       attr_id : Board State
+       monitor_cycle_seconds : 600
+       scale_factor  : 1
+       ion_parameter_name: board_state
+       ion_units : ENUM
+       ion_type : uint8
+     Error_state:
+       attr_id : Error State
+       monitor_cycle_seconds : 600
+       scale_factor  : 1
+       ion_parameter_name: error_state
+       ion_units : ENUM
+       ion_type : uint8  
+     GPIO_state:
+       attr_id : GP I/O State
+       monitor_cycle_seconds : 600
+       scale_factor  : 1
+       ion_parameter_name: gpio_state
+       ion_units : ENUM
+       ion_type : uint8          
+     OCD_Current:
+       attr_id : OCD Current
+       monitor_cycle_seconds : 600
+       scale_factor  : 0.001
+       ion_parameter_name: ocd_current
+       ion_units :  A
+       ion_type : float32    
+     OCD_Time_Const:
+       attr_id : OCD Time Const
+       monitor_cycle_seconds : 600
+       scale_factor  : 0.001
+       ion_parameter_name: ocd_time_const
+       ion_units :  millaSec
+       ion_type : float32          
