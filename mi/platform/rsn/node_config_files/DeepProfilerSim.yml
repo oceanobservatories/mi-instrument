@@ -1,0 +1,15 @@
+node_meta_data :
+    node_id_name: DeepProfilerSim 
+    description: Deep Profiler Simulator for Testing Ben Hall
+    location: Ben Hall
+    node_type: DP
+    reference_designator: DPSIM
+    num_instrument_ports: 1
+    num_expansion_port: 0
+port_configs:
+    Mobile_Profiler :
+       port_name : MobileProfiler
+       port_ion_control : False
+       port_type : MobileProfiler
+       port_oms_prefix : Mobile Profiler
+       port_ion_prefix : dp_mobile_profiler

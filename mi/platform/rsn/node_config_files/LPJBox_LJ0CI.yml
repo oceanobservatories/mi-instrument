@@ -1,0 +1,41 @@
+node_meta_data:
+    node_id_name: LPJBox_CI_Ben_Hall 
+    description: Low Power Junction Box for CI Testing Ben Hall
+    location: Ben Hall
+    node_type: LJBox
+    reference_designator: LJ0CI
+    num_instrument_ports: 4
+    num_expansion_port: 0
+port_configs:
+    J05-IP1:
+       port_name : J05-IP1
+       port_ion_control : True
+       port_type : InstrumetPort
+       port_oms_prefix : Instrument Port 0
+       port_ion_prefix : sec_node_port_J5_IP1
+       port_ui_name : J05-IP1
+       port_oms_port_cntl_id : '0'
+    J06-IP2:
+       port_name : J06-IP2
+       port_ion_control : True
+       port_type : InstrumetPort
+       port_oms_prefix : Instrument Port 1
+       port_ion_prefix : sec_node_port_J6_IP2
+       port_ui_name : J06-IP2
+       port_oms_port_cntl_id : '1'       
+    J07-IP3:
+       port_name : J07-IP3
+       port_ion_control : True
+       port_type : InstrumetPort
+       port_oms_prefix : Instrument Port 2
+       port_ion_prefix : sec_node_port_J7_IP3
+       port_ui_name : J07-IP3
+       port_oms_port_cntl_id : '2'       
+    J08-IP4:
+       port_name : J08-IP4
+       port_ion_control : True
+       port_type : InstrumetPort
+       port_oms_prefix : Instrument Port 3
+       port_ion_prefix : sec_node_port_J8_IP4
+       port_ui_name : J08-IP4
+       port_oms_port_cntl_id : '3'       
