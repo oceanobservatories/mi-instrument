@@ -18,7 +18,6 @@ import logging
 
 from nose.plugins.attrib import attr
 
-from pyon.util.unit_test import PyonTestCase
 
 from mi.core.instrument.zmq_driver_client import ZmqDriverClient
 from mi.core.instrument.zmq_driver_process import ZmqDriverProcess
@@ -27,7 +26,6 @@ from mi.core.unit_test import MiTestCase
 
 mi_logger = logging.getLogger('mi_logger')
 
-#from pyon.public import log
 
 # Make tests verbose and provide stdout
 # bin/nosetests -s -v ion/services/mi/test/test_zmq_driver_process.py

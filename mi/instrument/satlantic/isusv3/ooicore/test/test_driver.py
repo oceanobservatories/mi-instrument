@@ -38,7 +38,6 @@ import unittest
 from nose.plugins.attrib import attr
 from mock import Mock
 from mock import patch
-from pyon.core.bootstrap import CFG
 
 from mi.idk.unit_test import InstrumentDriverTestCase
 from mi.idk.unit_test import InstrumentDriverUnitTestCase
@@ -46,8 +45,6 @@ from mi.idk.unit_test import InstrumentDriverIntegrationTestCase
 from mi.idk.unit_test import InstrumentDriverQualificationTestCase
 
 from interface.objects import AgentCommand
-
-from prototype.sci_data.stream_defs import ctd_stream_definition
 
 from mi.core.common import BaseEnum
 
@@ -77,13 +74,9 @@ from mi.instrument.satlantic.isusv3.ooicore.driver import Parameter
 from mi.instrument.satlantic.isusv3.ooicore.driver import ISUSDataParticle
 from mi.instrument.satlantic.isusv3.ooicore.driver import DataParticleType
 
-from ion.agents.port.logger_process import EthernetDeviceLogger
-
-from ion.agents.instrument.direct_access.direct_access_server import DirectAccessTypes
-
-from pyon.agent.agent import ResourceAgentState
-from pyon.agent.agent import ResourceAgentEvent
-from pyon.core.exception import Conflict
+from mi.core.instrument.instrument_driver import ResourceAgentState
+from mi.core.instrument.instrument_driver import ResourceAgentEvent
+from mi.core.exceptions import Conflict
 
 # MI logger
 from mi.core.log import get_logger ; log = get_logger()

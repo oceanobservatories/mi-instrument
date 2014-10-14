@@ -53,7 +53,7 @@ from mi.instrument.mclane.ras.d1000.driver import \
 
 from mi.core.exceptions import SampleException
 
-from pyon.agent.agent import ResourceAgentState
+from mi.core.instrument.instrument_driver import ResourceAgentState
 
 # Globals
 raw_stream_received = False

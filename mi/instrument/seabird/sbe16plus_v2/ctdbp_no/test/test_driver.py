@@ -64,8 +64,8 @@ from mi.instrument.seabird.sbe16plus_v2.ctdbp_no.driver import SBE16NOCalibratio
 from mi.instrument.seabird.sbe16plus_v2.ctdbp_no.driver import SBE16NOProtocol
 from mi.instrument.seabird.sbe16plus_v2.ctdbp_no.driver import InstrumentDriver
 
-from pyon.agent.agent import ResourceAgentEvent
-from pyon.agent.agent import ResourceAgentState
+from mi.core.instrument.instrument_driver import ResourceAgentEvent
+from mi.core.instrument.instrument_driver import ResourceAgentState
 
 ###
 #   Driver parameters for the tests

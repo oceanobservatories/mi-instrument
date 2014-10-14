@@ -42,7 +42,8 @@ from mi.instrument.noaa.botpt.ooicore.driver import Capability
 from mi.instrument.noaa.botpt.ooicore.driver import InstrumentCommand
 from mi.instrument.noaa.botpt.ooicore.driver import NEWLINE
 import mi.instrument.noaa.botpt.ooicore.test.test_samples as samples
-from pyon.core.exception import BadRequest, ResourceError
+
+from mi.core.exceptions import BadRequest, ResourceError
 
 
 __author__ = 'Pete Cable'

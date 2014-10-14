@@ -4,6 +4,5 @@ comm:
   device_addr: 10.180.80.178
   device_port: 2101
   host: localhost
-  instrument_command_port: 2102
-  method: rsn
+  method: ethernet
   sniffer_port: 6003

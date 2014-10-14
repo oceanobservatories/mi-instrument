@@ -61,7 +61,7 @@ from mi.core.instrument.instrument_driver import DriverProtocolState
 from mi.core.instrument.port_agent_client import PortAgentClient
 
 from mi.idk.comm_config import ConfigTypes
-from ion.agents.port.port_agent_process import PortAgentProcess
+from mi.core.port_agent_process import PortAgentProcess
 from mi.idk.unit_test import InstrumentDriverTestCase, LOCALHOST, ParameterTestConfigKey
 
 from mi.idk.unit_test import InstrumentDriverIntegrationTestCase
@@ -75,7 +75,7 @@ from mi.instrument.teledyne.workhorse.vadcp.driver import TeledyneParameter2
 from mi.core.exceptions import InstrumentCommandException
 from mi.core.common import BaseEnum
 
-from pyon.core.exception import ResourceError
+from mi.core.exceptions import ResourceError
 
 # ##
 # Driver parameters for tests
@@ -816,7 +816,7 @@ class ADCPTMixin(DriverTestMixin):
         @param data_particle: ADCPT_PS0DataParticle data particle
         @param verify_values: bool, should we verify parameter values
         """
-        self.assert_data_particle_header(data_particle, VADCPDataParticleType.ADCP_PD0_PARSED_BEAM)
+        self.assert_data_particle_header(data_particle, VADCPDataParticleType.VADCP_PD0_BEAM_PARSED)
         self.assert_data_particle_parameters(data_particle, self._pd0_parameters)  # , verify_values
 
     def assert_particle_pd0_data_earth(self, data_particle, verify_values=True):
@@ -1229,7 +1229,7 @@ class IntFromIDK(WorkhorseDriverIntegrationTest, ADCPTMixin):
         self.assert_set_bulk(params)
 
         self.assert_driver_command(ProtocolEvent.START_AUTOSAMPLE, state=ProtocolState.AUTOSAMPLE, delay=1)
-        self.assert_async_particle_generation(VADCPDataParticleType.ADCP_PD0_PARSED_BEAM, self.assert_particle_pd0_data,
+        self.assert_async_particle_generation(VADCPDataParticleType.VADCP_PD0_BEAM_PARSED, self.assert_particle_pd0_data,
                                               timeout=40)
 
         self.assert_driver_command(ProtocolEvent.STOP_AUTOSAMPLE, state=ProtocolState.COMMAND, delay=10)

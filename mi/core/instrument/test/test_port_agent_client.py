@@ -25,8 +25,9 @@ import ctypes
 from nose.plugins.attrib import attr
 from mock import Mock
 
-from ion.agents.port.port_agent_process import PortAgentProcess
-from ion.agents.port.port_agent_process import PortAgentProcessType
+from mi.core.port_agent_process import PortAgentProcess
+from mi.core.port_agent_process import PortAgentProcessType
+
 
 from mi.core.tcp_client import TcpClient
 from mi.core.port_agent_simulator import TCPSimulatorServer

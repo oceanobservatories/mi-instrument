@@ -64,8 +64,10 @@ from mi.instrument.seabird.test.test_driver import SeaBirdPublicationTest
 # SAMPLE DATA FOR TESTING
 from mi.instrument.seabird.sbe54tps.test.sample_data import *
 
-from pyon.agent.agent import ResourceAgentEvent
-from pyon.agent.agent import ResourceAgentState
+
+from mi.core.instrument.instrument_driver import ResourceAgentEvent
+from mi.core.instrument.instrument_driver import ResourceAgentState
+
 
 from mi.core.exceptions import InstrumentCommandException
 from mi.core.instrument.chunker import StringChunker

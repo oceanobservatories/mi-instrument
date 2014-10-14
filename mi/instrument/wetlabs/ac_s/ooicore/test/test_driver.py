@@ -50,7 +50,7 @@ from mi.instrument.wetlabs.ac_s.ooicore.driver import OptaaStatusDataParticleKey
 
 from mi.core.exceptions import SampleException
 
-from pyon.agent.agent import ResourceAgentState
+from mi.core.instrument.instrument_driver import ResourceAgentState
 
 
 InstrumentDriverTestCase.initialize(

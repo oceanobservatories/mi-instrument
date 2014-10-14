@@ -52,7 +52,7 @@ class TCPSimulatorServer(object):
         self.__bind(port_range)
         self.socket.listen(0)
 
-        thread.start_new_thread(self.__accept)
+        thread.start_new_thread(self.__accept,())
 
     def __bind(self, port_range):
         """
@@ -133,7 +133,7 @@ class TCPSimulatorClient(object):
         self.clear_buffer()
         self._done = False
 
-        thread.start_new_thread(self.__listen)
+        thread.start_new_thread(self.__listen, ())
 
     def __listen(self):
         """

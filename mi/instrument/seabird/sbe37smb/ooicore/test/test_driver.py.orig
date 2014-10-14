@@ -14,7 +14,6 @@ __license__ = 'Apache 2.0'
 
 
 from mock import patch
-from pyon.core.bootstrap import CFG
 
 from gevent import monkey; monkey.patch_all()
 import gevent
@@ -80,7 +79,6 @@ from mi.core.tcp_client import TcpClient
 from mi.core.log import get_logger ; log = get_logger()
 from interface.objects import AgentCommand
 
-from ion.agents.instrument.instrument_agent import InstrumentAgentState
 
 from ion.agents.instrument.direct_access.direct_access_server import DirectAccessTypes
 from mi.core.instrument.instrument_driver import DriverEvent
@@ -96,18 +94,12 @@ from prototype.sci_data.stream_defs import SBE37_CDM_stream_definition
 import numpy
 from prototype.sci_data.stream_parser import PointSupplementStreamParser
 
-from pyon.core import exception
-from pyon.core.exception import InstParameterError
-from pyon.core import exception as iex
 
 from gevent.timeout import Timeout
 
-from pyon.agent.agent import ResourceAgentClient
-from pyon.agent.agent import ResourceAgentState
-from pyon.agent.agent import ResourceAgentEvent
 
-from pyon.core.exception import BadRequest
-from pyon.core.exception import Conflict
+from mi.core.instrument.instrument_agent import ResourceAgentState
+from mi.core.instrument.instrument_agent ResourceAgentEvent
 
 
 from interface.objects import CapabilityType

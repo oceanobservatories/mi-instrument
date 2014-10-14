@@ -570,8 +570,7 @@ class TestUnitCommandInstrumentProtocol(MiUnitTestCase):
 
     def test_cmd_response(self):
         """
-        Test getting a response from a command supplied with prompts ad
-        regexes.
+        Test getting a response from a command supplied with prompts and regexes.
         """
         regex1 = re.compile(r'.*(do it).*')
         regex2 = re.compile(r'foobar')

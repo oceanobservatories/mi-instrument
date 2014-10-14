@@ -44,10 +44,10 @@ from mi.core.instrument.instrument_driver import DriverEvent
 
 from interface.objects import ResourceAgentConnectionLostErrorEvent
 
-from pyon.core.exception import Conflict
-from pyon.core.exception import ResourceError, BadRequest, ServerError
-from pyon.agent.agent import ResourceAgentState
-from pyon.agent.agent import ResourceAgentEvent
+from mi.core.exceptions import Conflict
+from mi.core.exceptions import ResourceError, BadRequest, ServerError
+from mi.core.instrument.instrument_driver import ResourceAgentState
+from mi.core.instrument.instrument_driver import ResourceAgentEvent
 
 from interface.objects import AgentCommandResult
 from interface.objects import AgentCommand
@@ -1093,7 +1093,7 @@ class DataSetAgentTestCase(DataSetTestCase):
                     gevent.sleep(1)
         except gevent.Timeout:
             log.error("Failed to find event in queue: %s", event_object_type)
-            log.error("Current event queue: %s", self.event_subscribers._events_received)
+            log.error("Current event queue: %s", self.event_subscribers.events_received)
             self.fail("%s event not detected")
         finally:
             to.cancel()

@@ -42,8 +42,7 @@ from mi.core.instrument.instrument_driver import DriverProtocolState
 from mi.core.instrument.data_particle import RawDataParticle
 from mi.core.instrument.data_particle import DataParticleKey
 
-from ion.agents.instrument.instrument_agent import InstrumentAgentState
-from ion.agents.instrument.direct_access.direct_access_server import DirectAccessTypes
+from mi.core.instrument.instrument_agent import InstrumentAgentState
 
 from mi.instrument.ooici.mi.test_driver.driver import InstrumentDriver
 from mi.instrument.ooici.mi.test_driver.driver import DataParticleType
