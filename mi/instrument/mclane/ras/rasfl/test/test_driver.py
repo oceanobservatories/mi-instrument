@@ -59,7 +59,7 @@ from mi.instrument.mclane.ras.rasfl.driver import \
 from mi.core.exceptions import SampleException, \
     InstrumentParameterException
 
-from interface.objects import AgentCommand
+# from interface.objects import AgentCommand
 
 
 from mi.core.direct_access_server import DirectAccessTypes

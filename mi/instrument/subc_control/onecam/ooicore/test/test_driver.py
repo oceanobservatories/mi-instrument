@@ -16,12 +16,12 @@ USAGE:
 __author__ = 'Richard Han'
 __license__ = 'Apache 2.0'
 
-import unittest
-
 from nose.plugins.attrib import attr
 from mock import Mock
 
-from mi.core.log import get_logger ; log = get_logger()
+from mi.core.log import get_logger
+
+log = get_logger()
 
 # MI imports.
 from mi.idk.unit_test import InstrumentDriverTestCase, ParameterTestConfigKey
@@ -30,14 +30,8 @@ from mi.idk.unit_test import InstrumentDriverIntegrationTestCase
 from mi.idk.unit_test import InstrumentDriverQualificationTestCase
 from mi.idk.unit_test import DriverTestMixin
 
-from interface.objects import AgentCommand
-
-from mi.core.instrument.logger_client import LoggerClient
-
 from mi.core.instrument.chunker import StringChunker
-from mi.core.instrument.instrument_driver import DriverAsyncEvent, DriverConfigKey
-from mi.core.instrument.instrument_driver import DriverConnectionState
-from mi.core.instrument.instrument_driver import DriverProtocolState
+from mi.core.instrument.instrument_driver import DriverConfigKey
 
 from mi.instrument.subc_control.onecam.ooicore.driver import InstrumentDriver, Command
 from mi.instrument.subc_control.onecam.ooicore.driver import DataParticleType

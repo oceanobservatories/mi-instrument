@@ -44,7 +44,7 @@ from mi.idk.unit_test import InstrumentDriverUnitTestCase
 from mi.idk.unit_test import InstrumentDriverIntegrationTestCase
 from mi.idk.unit_test import InstrumentDriverQualificationTestCase
 
-from interface.objects import AgentCommand
+# from interface.objects import AgentCommand
 
 from mi.core.common import BaseEnum
 

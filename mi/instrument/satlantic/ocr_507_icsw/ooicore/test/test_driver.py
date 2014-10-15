@@ -19,7 +19,7 @@ import unittest
 from nose.plugins.attrib import attr
 from mock import Mock
 
-from mi.core.instrument.instrument_agent import ResourceAgentState
+from mi.core.instrument.instrument_driver import ResourceAgentState
 
 from mi.core.instrument.data_particle import DataParticleKey
 from mi.core.instrument.data_particle import DataParticleValue

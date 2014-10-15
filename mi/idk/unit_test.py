@@ -567,9 +567,8 @@ class DriverTestMixin(MiUnitTest, ParticleTestMixin):
         # This has to come from the protocol so None is returned until we
         # initialize
         self.assert_initialize_driver(driver)
-        config_json = driver.get_config_metadata()
-        self.assertIsNotNone(config_json)
-        config = json.loads(config_json)
+        config = driver.get_config_metadata()
+        self.assertIsNotNone(config)
 
         pp = PrettyPrinter()
         log.debug("Config: %s", pp.pformat(config))

@@ -12,7 +12,6 @@ USAGE:
        $ bin/test_driver -i [-t testname]
        $ bin/test_driver -q [-t testname]
 """
-from mi.core.instrument.instrument_driver import DriverConfigKey, DriverProtocolState
 
 __author__ = 'Dan Mergens'
 __license__ = 'Apache 2.0'
@@ -24,7 +23,7 @@ import gevent
 from mock import Mock
 from nose.plugins.attrib import attr
 from mi.core.log import get_logger
-
+from mi.core.instrument.instrument_driver import DriverConfigKey, DriverProtocolState
 
 log = get_logger()
 
@@ -58,7 +57,7 @@ from mi.instrument.mclane.ras.ppsdn.driver import \
 
 from mi.core.exceptions import SampleException
 
-from interface.objects import AgentCommand
+# from interface.objects import AgentCommand
 
 from mi.core.direct_access_server import DirectAccessTypes
 from mi.core.instrument.instrument_driver import ResourceAgentState, ResourceAgentEvent

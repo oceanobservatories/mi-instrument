@@ -537,6 +537,7 @@ class DriverUnitTest(SamiUnitTest, DriverTestMixinSub):
         driver = InstrumentDriver(self._got_data_event_callback)
         self.assert_capabilities(driver, self.capabilities_test_dict)
 
+    @unittest.skip('long running test, avoid for regular unit testing')
     def test_pump_commands(self):
 
         driver = InstrumentDriver(self._got_data_event_callback)
@@ -592,6 +593,7 @@ class DriverUnitTest(SamiUnitTest, DriverTestMixinSub):
         self.assertEqual(1, command_count, 'REAGENT_FLUSH command count %s != 1' % command_count)
         driver._protocol._connection.send.reset_mock()
 
+    @unittest.skip('long running test, avoid for regular unit testing')
     def test_pump_timing(self):
         driver = InstrumentDriver(self._got_data_event_callback)
         self.assert_initialize_driver(driver)
@@ -614,6 +616,7 @@ class DriverUnitTest(SamiUnitTest, DriverTestMixinSub):
         driver._protocol._handler_reagent_flush_execute_50ml()
         stats.assert_timing(1)
 
+    @unittest.skip('long running test, avoid for regular unit testing')
     def test_waiting_discover(self):
 
         driver = InstrumentDriver(self._got_data_event_callback)

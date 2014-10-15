@@ -59,7 +59,7 @@ if 'mi.instrument.nortek.aquadopp' in sys.modules.keys():
 elif 'mi.instrument.nortek.vector' in sys.modules.keys():
     from mi.instrument.nortek.vector.ooicore.driver import NortekDataParticleType
 
-from interface.objects import AgentCommand
+# from interface.objects import AgentCommand
 
 from mi.instrument.nortek.driver import InstrumentPrompts, Parameter, ProtocolState, ProtocolEvent, InstrumentCmds, \
     Capability, NEWLINE

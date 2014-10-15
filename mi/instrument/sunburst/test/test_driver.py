@@ -39,7 +39,7 @@ from mi.idk.unit_test import GO_ACTIVE_TIMEOUT
 from mi.idk.unit_test import DriverProtocolState
 from mi.idk.unit_test import DriverEvent
 from mi.idk.unit_test import ResourceAgentState
-from interface.objects import AgentCommand
+# from interface.objects import AgentCommand
 
 from mi.core.instrument.port_agent_client import PortAgentPacket
 from mi.core.instrument.data_particle import DataParticleKey
@@ -363,7 +363,7 @@ class SamiUnitTest(InstrumentDriverUnitTestCase, SamiMixin):
             log.debug('startup param = %s', param)
             driver._protocol._param_dict.set_default(param)
 
-        driver._protocol._param_dict.set_value(SamiParameter.AUTO_SAMPLE_INTERVAL, 10)
+        driver._protocol._param_dict.set_value(SamiParameter.AUTO_SAMPLE_INTERVAL, 1)
 
         driver._protocol._setup_scheduler_config()
 
@@ -373,18 +373,18 @@ class SamiUnitTest(InstrumentDriverUnitTestCase, SamiMixin):
         ## Don't take sample upon entering autosample state
         driver._protocol._queued_commands.reset()
 
-        self.sleep_for_realsies(62)
+        self.sleep_for_realsies(3)
 
         (driver._protocol._protocol_fsm.current_state, (agent_state, result)) = \
             driver._protocol._handler_autosample_stop()
 
-        stats.assert_call_count(6)
-        stats.assert_timing(10)
+        stats.assert_call_count(3)
+        stats.assert_timing(1)
 
         stats.call_count = 0
         stats.call_times = []
 
-        self.sleep_for_realsies(62)
+        self.sleep_for_realsies(2)
 
         stats.assert_call_count(0)
 

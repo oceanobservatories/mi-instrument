@@ -29,7 +29,7 @@ from mi.core.log import get_logger
 log = get_logger()
 
 from mi.idk.unit_test import InstrumentDriverTestCase, ParameterTestConfigKey
-from mi.instrument.ooici.mi.test_driver.test.test_driver import DriverTestMixinSub
+from mi.instrument.nortek.test.test_driver import DriverTestMixinSub
 
 from mi.core.instrument.instrument_driver import DriverConfigKey, ResourceAgentState
 

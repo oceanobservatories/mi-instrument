@@ -35,7 +35,7 @@ from mi.core.log import get_logger ; log = get_logger()
 
 from mi.core.instrument.instrument_driver import DriverAsyncEvent
 from mi.core.instrument.chunker import StringChunker
-from interface.objects import AgentCommand
+# from interface.objects import AgentCommand
 
 from mi.idk.unit_test import DriverTestMixin
 from mi.idk.unit_test import ParameterTestConfigKey

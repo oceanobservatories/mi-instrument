@@ -16,9 +16,7 @@ USAGE:
 __author__ = 'Bill French'
 __license__ = 'Apache 2.0'
 
-import unittest
 import gevent
-
 from nose.plugins.attrib import attr
 from mock import Mock
 
@@ -31,18 +29,8 @@ from mi.idk.unit_test import InstrumentDriverIntegrationTestCase
 from mi.idk.unit_test import InstrumentDriverQualificationTestCase
 from mi.idk.unit_test import DriverTestMixin
 
-from interface.objects import AgentCommand
-
-from mi.core.instrument.logger_client import LoggerClient
-
 from mi.core.instrument.chunker import StringChunker
-from mi.core.instrument.instrument_driver import DriverAsyncEvent
-from mi.core.instrument.instrument_driver import DriverConnectionState
-from mi.core.instrument.instrument_driver import DriverProtocolState
-from mi.core.instrument.data_particle import RawDataParticle
 from mi.core.instrument.data_particle import DataParticleKey
-
-from mi.core.instrument.instrument_agent import InstrumentAgentState
 
 from mi.instrument.ooici.mi.test_driver.driver import InstrumentDriver
 from mi.instrument.ooici.mi.test_driver.driver import DataParticleType

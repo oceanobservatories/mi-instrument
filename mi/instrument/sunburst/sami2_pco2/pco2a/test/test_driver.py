@@ -577,14 +577,17 @@ class DriverUnitTest(Pco2DriverUnitTest, DriverTestMixinSub):
         driver = InstrumentDriver(self._got_data_event_callback)
         self.assert_capabilities(driver, self.capabilities_test_dict)
 
+    @unittest.skip('long running test, avoid for regular unit testing')
     def test_pump_commands(self):
         driver = InstrumentDriver(self._got_data_event_callback)
         self.assert_pump_commands(driver)
 
+    @unittest.skip('long running test, avoid for regular unit testing')
     def test_pump_timing(self):
         driver = InstrumentDriver(self._got_data_event_callback)
         self.assert_pump_timing(driver)
 
+    @unittest.skip('long running test, avoid for regular unit testing')
     def test_waiting_discover(self):
         driver = InstrumentDriver(self._got_data_event_callback)
         self.assert_waiting_discover(driver)

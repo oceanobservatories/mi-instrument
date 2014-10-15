@@ -17,18 +17,14 @@ __author__ = 'Bill Bollenbacher'
 __license__ = 'Apache 2.0'
 
 import unittest
-import gevent
-import time
-import re
 
-from interface.objects import AgentCapability
-from interface.objects import CapabilityType
-
-from nose.plugins.attrib import attr
 from mock import Mock
 from nose.plugins.attrib import attr
 
-from mi.core.log import get_logger ; log = get_logger()
+import time
+from mi.core.log import get_logger ;
+
+log = get_logger()
 
 # MI imports.
 from mi.idk.unit_test import InstrumentDriverTestCase
@@ -41,18 +37,11 @@ from mi.idk.unit_test import ParameterTestConfigKey
 from mi.idk.unit_test import AgentCapabilityType
 from mi.idk.unit_test import DriverStartupConfigKey
 
-from interface.objects import AgentCommand
-
-from mi.core.instrument.logger_client import LoggerClient
+# from interface.objects import AgentCommand
 
 from mi.core.instrument.chunker import StringChunker
-from mi.core.instrument.instrument_driver import DriverAsyncEvent
-from mi.core.instrument.instrument_driver import DriverConnectionState
 from mi.core.instrument.instrument_driver import DriverProtocolState
-from mi.core.instrument.instrument_driver import DriverParameter
 from mi.core.instrument.instrument_driver import DriverEvent
-from mi.core.instrument.data_particle import DataParticleKey
-from mi.core.instrument.data_particle import DataParticleValue
 
 from mi.instrument.star_asimet.bulkmet.metbk_a.driver import InstrumentDriver
 from mi.instrument.star_asimet.bulkmet.metbk_a.driver import DataParticleType
@@ -67,16 +56,12 @@ from mi.instrument.star_asimet.bulkmet.metbk_a.driver import NEWLINE
 from mi.instrument.star_asimet.bulkmet.metbk_a.driver import METBK_SampleDataParticleKey
 from mi.instrument.star_asimet.bulkmet.metbk_a.driver import METBK_SampleDataParticle
 from mi.instrument.star_asimet.bulkmet.metbk_a.driver import METBK_StatusDataParticleKey
-from mi.instrument.star_asimet.bulkmet.metbk_a.driver import METBK_StatusDataParticle
 
-from mi.core.exceptions import SampleException, InstrumentParameterException, InstrumentStateException
-from mi.core.exceptions import InstrumentProtocolException, InstrumentCommandException, Conflict
-from interface.objects import AgentCommand
+from mi.core.exceptions import SampleException
+from mi.core.exceptions import InstrumentCommandException
 
 from mi.core.instrument.instrument_driver import ResourceAgentState
 from mi.idk.exceptions import IDKException
-
-from struct import pack
 
 # Globals
 raw_stream_received = False

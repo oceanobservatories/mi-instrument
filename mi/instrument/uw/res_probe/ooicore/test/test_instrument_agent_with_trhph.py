@@ -23,14 +23,13 @@ import gevent
 from nose.plugins.attrib import attr
 from mock import patch
 
-from mi.core.agent import ResourceAgentClient
-from interface.objects import AgentCommand
+# from interface.objects import AgentCommand
 from mi.core.unit_test import MiIntTestCase
 
 
 from mi.core.exceptions import InstParameterError
 
-from mi.core.instrument.instrument_agent import InstrumentAgentState
+# from mi.core.instrument.instrument_agent import InstrumentAgentState
 
 
 # MI imports.
