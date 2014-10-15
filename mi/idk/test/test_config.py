@@ -76,7 +76,7 @@ class TestConfig(MiUnitTest):
         config = Config(ROOTDIR)
         self.assertTrue(config)
 
-        expected_string = "idk:\n  start_couch: false\n  working_repo: %s\n  start_rabbit: false\n" % config.get("working_repo")
+        expected_string = "idk:\n  start_couch: false\n  start_rabbit: false\n  working_repo: %s\n" % config.get("working_repo")
 
 
         self.assertEqual(expected_string, self.read_config())
@@ -99,7 +99,7 @@ class TestConfig(MiUnitTest):
 
 
 
-        expected_string = "idk:\n  start_couch: false\n  working_repo: %s\n  start_rabbit: false\n  couchdb: %s\n  start_couch: True\n  start_rabbit: True\n" % (config.get("working_repo"), config.get("couchdb"))
+        expected_string = "idk:\n  start_couch: false\n  start_rabbit: false\n  working_repo: %s\n  couchdb: %s\n  start_couch: True\n  start_rabbit: True\n" % (config.get("working_repo"), config.get("couchdb"))
 
         self.assertEqual(expected_string, self.read_config())
         self.assertEqual(config.get("couchdb"), "couchdb")

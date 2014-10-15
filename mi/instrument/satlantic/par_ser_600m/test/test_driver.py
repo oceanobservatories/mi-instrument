@@ -12,13 +12,12 @@ monkey.patch_all()
 
 import unittest
 
-from mi.core.unit_test import MiTestCase
 import time
 import json
 import random
 from nose.plugins.attrib import attr
 from mock import Mock
-from pyon.agent.agent import ResourceAgentState
+from mi.core.instrument.instrument_driver import ResourceAgentState
 
 from interface.objects import AgentCommand
 

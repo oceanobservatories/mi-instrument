@@ -1,0 +1,12 @@
+driver_metadata:
+  author: Richard Han
+  driver_make: subc_control
+  driver_model: onecam
+  driver_name: ooicore
+  email: rhan1498@gmail.com
+  release_notes: 'CAMHD Driver
+
+    ''done''
+
+    '
+  version: '1.0'

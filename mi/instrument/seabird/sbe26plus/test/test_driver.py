@@ -20,15 +20,6 @@ USAGE:
 __author__ = 'Roger Unwin'
 __license__ = 'Apache 2.0'
 
-#test_startup_params
-#test_scheduled_clock_sync_autosample
-#test_commands
-#test_set_sampling
-#test_set
-#test_scheduled_device_status_autosample
-#test_scheduled_device_configuration_autosample
-#test_autosample_particle_generation
-
 
 import unittest
 from gevent import monkey; monkey.patch_all()
@@ -74,8 +65,9 @@ from mi.instrument.seabird.sbe26plus.driver import SBE26plusDeviceCalibrationDat
 from mi.instrument.seabird.sbe26plus.driver import SBE26plusDeviceStatusDataParticleKey
 from mi.core.instrument.chunker import StringChunker
 from mi.core.exceptions import InstrumentCommandException
-from pyon.agent.agent import ResourceAgentEvent
-from pyon.agent.agent import ResourceAgentState
+
+from mi.core.instrument.instrument_driver import ResourceAgentEvent
+from mi.core.instrument.instrument_driver import ResourceAgentState
 
 ###
 #   Driver parameters for the tests

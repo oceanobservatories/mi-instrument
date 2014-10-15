@@ -64,8 +64,8 @@ from mi.instrument.seabird.sbe16plus_v2.ctdpf_sbe43.driver import InstrumentDriv
 from mi.instrument.seabird.sbe16plus_v2.ctdpf_sbe43.driver import SBE43Protocol
 
 
-from pyon.agent.agent import ResourceAgentEvent
-from pyon.agent.agent import ResourceAgentState
+from mi.core.instrument.instrument_driver import ResourceAgentEvent
+from mi.core.instrument.instrument_driver import ResourceAgentState
 
 ###
 #   Driver parameters for the tests

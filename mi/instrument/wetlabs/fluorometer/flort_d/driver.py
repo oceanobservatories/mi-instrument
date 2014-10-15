@@ -62,7 +62,7 @@ from mi.core.log import get_logging_metaclass
 NEWLINE = '\r\n'
 
 # default timeout.
-TIMEOUT = 15
+TIMEOUT = 30
 
 
 ###
@@ -629,18 +629,18 @@ class Protocol(CommandResponseInstrumentProtocol):
         try:
             sig_1_data = match.group(1)
             data = sig_1_data.split(',')
-            FlortDSample_Particle.sig_1_offset = float(data[4])
-            FlortDSample_Particle.sig_1_scale = int(data[5])
+            FlortDSample_Particle.sig_1_offset = int(data[5])
+            FlortDSample_Particle.sig_1_scale = float(data[4])
 
             sig_2_data = match.group(2)
             data = sig_2_data.split(',')
-            FlortDSample_Particle.sig_2_offset = float(data[4])
-            FlortDSample_Particle.sig_2_scale = int(data[5])
+            FlortDSample_Particle.sig_2_offset = int(data[5])
+            FlortDSample_Particle.sig_2_scale = float(data[4])
 
             sig_3_data = match.group(3)
             data = sig_3_data.split(',')
-            FlortDSample_Particle.sig_3_offset = float(data[4])
-            FlortDSample_Particle.sig_3_scale = int(data[5])
+            FlortDSample_Particle.sig_3_offset = int(data[5])
+            FlortDSample_Particle.sig_3_scale = float(data[4])
         except Exception:
             raise SampleException('Error parsing particle FlortDMET_Particle')
 
@@ -1191,7 +1191,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name="Measurements per Reported Value",
                              description='Number of measurements for each reported value.',
-                             default_value=18,
+                             default_value=1,
                              startup_param=True,
                              direct_access=True)
 

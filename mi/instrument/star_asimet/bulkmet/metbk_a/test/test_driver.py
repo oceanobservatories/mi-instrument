@@ -73,9 +73,7 @@ from mi.core.exceptions import SampleException, InstrumentParameterException, In
 from mi.core.exceptions import InstrumentProtocolException, InstrumentCommandException, Conflict
 from interface.objects import AgentCommand
 
-from ion.agents.instrument.direct_access.direct_access_server import DirectAccessTypes
-from pyon.agent.agent import ResourceAgentEvent
-from pyon.agent.agent import ResourceAgentState
+from mi.core.instrument.instrument_driver import ResourceAgentState
 from mi.idk.exceptions import IDKException
 
 from struct import pack

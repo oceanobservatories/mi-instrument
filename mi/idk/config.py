@@ -40,7 +40,7 @@ from mi.idk.common import Singleton
 PATH = os.path.join(os.path.expanduser("~"), ".idk")
 CONFIG_FILENAME = "idk.yml"
 
-DEFAULT_CONFIG = "extern/ion-definitions/res/config/idk.yml"
+DEFAULT_CONFIG = "mi/res/config/idk.yml"
 IDK_YAML_GROUP = "idk"
 YAML_CONFIG_WORKING_REPO = "working_repo"
 YAML_CONFIG_TEMPLATE_DIR = "template_dir"

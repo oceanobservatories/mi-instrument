@@ -15,7 +15,7 @@ import re
 from functools import partial
 from mi.core.unit_test import MiUnitTest, MiUnitTestCase
 from nose.plugins.attrib import attr
-from pyon.util.unit_test import IonUnitTestCase
+from mi.core.unit_test import IonUnitTestCase
 from ooi.logging import log
 
 from mi.core.exceptions import SampleException

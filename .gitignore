@@ -2,3 +2,9 @@
 *.pyc
 *.pyo
 mi-drivers*log*
+.installed.cfg
+bin
+develop-eggs
+eggs
+parts
+marine_integrations.egg-info

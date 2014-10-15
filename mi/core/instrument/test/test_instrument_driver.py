@@ -15,9 +15,9 @@ import datetime
 import json
 from nose.plugins.attrib import attr
 from mi.core.log import get_logger ; log = get_logger()
-from pyon.util.containers import DotDict
-from pyon.util.unit_test import IonUnitTestCase
+from mi.core.containers import DotDict
 from mi.core.unit_test import MiUnitTestCase
+from mi.core.unit_test import IonUnitTestCase
 
 from mock import Mock
 
@@ -88,7 +88,11 @@ class TestUnitInstrumentDriver(MiUnitTestCase):
 
         self.driver._protocol._driver_dict.add(DriverDictKey.VENDOR_SW_COMPATIBLE,
                                                True)
-                
+
+    def tearDown(self):
+        if self.driver._protocol._scheduler:
+            self.driver._protocol._scheduler._scheduler.shutdown()
+
     def test_test_mode(self):
         """
         Test driver test mode.
@@ -175,10 +179,8 @@ class TestUnitInstrumentDriver(MiUnitTestCase):
         """
         Test the metadata structure fetch
         """
-        json_result = self.driver.get_config_metadata()
-        self.assert_(isinstance(json_result, str))
-        self.assert_(len(json_result) > 100)
-        result = json.loads(json_result)
+        result = self.driver.get_config_metadata()
+        self.assert_(isinstance(result, dict))
         
         self.assert_(isinstance(result[ConfigMetadataKey.DRIVER], dict))
         self.assert_(isinstance(result[ConfigMetadataKey.COMMANDS], dict))

@@ -64,8 +64,8 @@ from mi.instrument.seabird.sbe16plus_v2.ctdpf_jb.driver import NEWLINE
 
 from mi.instrument.seabird.sbe16plus_v2.ctdpf_jb.driver import SBE19Protocol
 
-from pyon.agent.agent import ResourceAgentEvent
-from pyon.agent.agent import ResourceAgentState
+from mi.core.instrument.instrument_driver import ResourceAgentEvent
+from mi.core.instrument.instrument_driver import ResourceAgentState
 
 ###
 #   Driver parameters for the tests

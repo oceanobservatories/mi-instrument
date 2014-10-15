@@ -29,7 +29,7 @@ from mi.core.log import get_logger
 
 log = get_logger()
 
-from pyon.agent.agent import ResourceAgentState
+from mi.core.instrument.instrument_driver import ResourceAgentState
 
 from mi.idk.unit_test import InstrumentDriverTestCase, ParameterTestConfigKey
 from mi.idk.unit_test import InstrumentDriverUnitTestCase
