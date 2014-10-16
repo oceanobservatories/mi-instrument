@@ -28,7 +28,6 @@ from mi.core.log import get_logger
 log = get_logger()
 
 import gevent
-import json
 
 from pprint import PrettyPrinter
 
@@ -743,21 +742,18 @@ class DriverTestMixin(MiUnitTest, ParticleTestMixin):
         @param commands The list of commands to compare with the command
         metadata being generated. Could be from an enum class's list() method
         """
-        json_result = self.driver_client.cmd_dvr("get_config_metadata")
-        self.assert_(json_result is not None)
-        self.assert_(len(json_result) > 100)  # just make sure we have something...
-        result = json.loads(json_result)
-        log.debug("Metadata JSON response: %s", json_result)
-        self.assert_(result is not None)
-        self.assert_(isinstance(result, dict))
+        metadata = self.driver_client.cmd_dvr("get_config_metadata")
+        self.assert_(metadata is not None)
+        log.debug("Metadata response: %s", metadata)
+        self.assert_(isinstance(metadata, dict))
 
         # simple driver metadata check
-        self.assertTrue(result[ConfigMetadataKey.DRIVER])
-        self.assertTrue(result[ConfigMetadataKey.DRIVER][DriverDictKey.VENDOR_SW_COMPATIBLE])
+        self.assertTrue(metadata[ConfigMetadataKey.DRIVER])
+        self.assertTrue(metadata[ConfigMetadataKey.DRIVER][DriverDictKey.VENDOR_SW_COMPATIBLE])
 
         # param metadata check
-        self.assertTrue(result[ConfigMetadataKey.PARAMETERS])
-        keys = result[ConfigMetadataKey.PARAMETERS].keys()
+        self.assertTrue(metadata[ConfigMetadataKey.PARAMETERS])
+        keys = metadata[ConfigMetadataKey.PARAMETERS].keys()
         keys.append(DriverParameter.ALL)  # toss that in there to match up
         keys.sort()
         enum_list = instrument_params
@@ -765,8 +761,8 @@ class DriverTestMixin(MiUnitTest, ParticleTestMixin):
         self.assertEqual(keys, enum_list)
 
         # command metadata check 
-        self.assertTrue(result[ConfigMetadataKey.COMMANDS])
-        keys = result[ConfigMetadataKey.COMMANDS].keys()
+        self.assertTrue(metadata[ConfigMetadataKey.COMMANDS])
+        keys = metadata[ConfigMetadataKey.COMMANDS].keys()
         keys.sort()
         enum_list = commands
         enum_list.sort()
@@ -854,8 +850,7 @@ class InstrumentDriverTestCase(MiIntTestCase):
         else:
             result = []
             for evt in samples:
-                value = evt.get('value')
-                particle = json.loads(value)
+                particle = evt.get('value')
                 if particle and particle.get('stream_name') == event_type:
                     result.append(evt)
 
@@ -1273,7 +1268,6 @@ class InstrumentDriverUnitTestCase(InstrumentDriverTestCase):
         event_type = event['type']
         if event_type == DriverAsyncEvent.SAMPLE:
             sample_value = event['value']
-            particle_dict = json.loads(sample_value)
             self._data_particle_received.append(sample_value)
 
     def compare_parsed_data_particle(self, particle_type, raw_input, happy_structure):
@@ -1295,18 +1289,11 @@ class InstrumentDriverUnitTestCase(InstrumentDriverTestCase):
             test_particle = particle_type(raw_input, port_timestamp=port_timestamp)
 
         parsed_result = test_particle.generate(sorted=True)
-        decoded_parsed = json.loads(parsed_result)
 
-        driver_time = decoded_parsed[DataParticleKey.DRIVER_TIMESTAMP]
+        driver_time = parsed_result[DataParticleKey.DRIVER_TIMESTAMP]
         happy_structure[DataParticleKey.DRIVER_TIMESTAMP] = driver_time
 
-        # run it through json so unicode and everything lines up
-        standard = json.dumps(happy_structure, sort_keys=True)
-
-        log.debug("Parsed Result:\n%s", json.dumps(json.loads(parsed_result), sort_keys=True, indent=2))
-        log.debug("Standard:\n%s", json.dumps(json.loads(standard), sort_keys=True, indent=2))
-
-        self.assertEqual(parsed_result, standard)
+        self.assertEqual(parsed_result, happy_structure)
 
     def assert_force_state(self, driver, protocol_state):
         """
@@ -1389,11 +1376,10 @@ class InstrumentDriverUnitTestCase(InstrumentDriverTestCase):
         driver._protocol.got_raw(port_agent_packet)
         self.assertEqual(len(self._data_particle_received), 1)
         particle = self._data_particle_received.pop()
-        particle_dict = json.loads(particle)
-        log.debug("Raw Particle: %s", particle_dict)
+        log.debug("Raw Particle: %s", particle)
 
         # Verify the data particle
-        self.assert_particle_raw(particle_dict, verify_values)
+        self.assert_particle_raw(particle, verify_values)
 
     def assert_particle_published(self, driver, sample_data, particle_assert_method, verify_values=False):
         """
@@ -1424,8 +1410,7 @@ class InstrumentDriverUnitTestCase(InstrumentDriverTestCase):
         # Find all particles of the correct data particle types (not raw)
         particles = []
         for p in self._data_particle_received:
-            particle_dict = json.loads(p)
-            stream_type = particle_dict.get('stream_name')
+            stream_type = p.get('stream_name')
             self.assertIsNotNone(stream_type)
             if stream_type != CommonDataParticleType.RAW:
                 particles.append(p)
@@ -1932,10 +1917,7 @@ class InstrumentDriverIntegrationTestCase(InstrumentDriverTestCase):  # Must inh
         value = sample.get('value')
         self.assertIsNotNone(value)
 
-        particle = json.loads(value)
-        self.assertIsNotNone(particle)
-
-        particle_callback(particle)
+        particle_callback(value)
 
     def assert_async_particle_generation(self, particle_type, particle_callback, particle_count=1, timeout=10):
         """
@@ -1955,11 +1937,10 @@ class InstrumentDriverIntegrationTestCase(InstrumentDriverTestCase):  # Must inh
                     value = sample.get('value')
                     self.assertIsNotNone(value)
 
-                    particle = json.loads(value)
-                    self.assertIsNotNone(particle)
+                    self.assertIsNotNone(value)
 
                     # So we have found one particle and verified it.  We are done here!
-                    particle_callback(particle)
+                    particle_callback(value)
                 log.debug('Found %d particles and all particles verified', len(samples))
                 return
 

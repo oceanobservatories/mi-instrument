@@ -257,9 +257,7 @@ class InstrumentProtocol(object):
             if publish and self._driver_event:
                 self._driver_event(DriverAsyncEvent.SAMPLE, parsed_sample)
     
-            sample = json.loads(parsed_sample)
-
-        return sample
+            return parsed_sample
 
     def get_current_state(self):
         """

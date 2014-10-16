@@ -394,7 +394,6 @@ class Protocol(CommandResponseInstrumentProtocol):
         @param publish: boolean to indicate if sample should be published
         @return: extracted sample
         """
-        sample = None
         if regex.match(line):
             if particle_class == particles.LilySampleParticle and self._param_dict.get(Parameter.LEVELING_FAILED):
                 particle = particle_class(line, port_timestamp=timestamp, quality_flag=DataParticleValue.OUT_OF_RANGE)
@@ -405,9 +404,7 @@ class Protocol(CommandResponseInstrumentProtocol):
             if publish and self._driver_event:
                 self._driver_event(DriverAsyncEvent.SAMPLE, parsed_sample)
 
-            sample = json.loads(parsed_sample)
-
-        return sample
+            return parsed_sample
 
     def _filter_capabilities(self, events):
         """

@@ -126,20 +126,66 @@ class VirtualParticle(DataParticle):
     _streams = None
     _ignore = 'PD7,PD10,PD11,PD12,PD16,PD863'.split(',')
     INT8_MIN = -2**7
-    INT8_MAX = 2**7
+    INT8_MAX = 2**7 - 1
+    INT8_RANDOM = [ INT8_MIN,
+                    random.randint(INT8_MIN, INT8_MAX),
+                    random.randint(INT8_MIN, INT8_MAX),
+                    random.randint(INT8_MIN, INT8_MAX),
+                    INT8_MAX ]
+
     UINT8_MAX = 2**8
+    UINT8_RANDOM = [ 0,
+                     random.randint(0, UINT8_MAX),
+                     random.randint(0, UINT8_MAX),
+                     random.randint(0, UINT8_MAX),
+                     UINT8_MAX ]
 
     INT16_MIN = -2**15
-    INT16_MAX = 2**15
+    INT16_MAX = 2**15 - 1
+    INT16_RANDOM = [ INT16_MIN,
+                     random.randint(INT16_MIN, INT16_MAX),
+                     random.randint(INT16_MIN, INT16_MAX),
+                     random.randint(INT16_MIN, INT16_MAX),
+                     INT16_MAX ]
+
     UINT16_MAX = 2**16
+    UINT16_RANDOM = [ 0,
+                      random.randint(0, UINT16_MAX),
+                      random.randint(0, UINT16_MAX),
+                      random.randint(0, UINT16_MAX),
+                      UINT16_MAX ]
 
     INT32_MIN = -2**31
-    INT32_MAX = 2**31
+    INT32_MAX = 2**31 - 1
+    INT32_RANDOM = [ INT32_MIN,
+                     random.randint(INT32_MIN, INT32_MAX),
+                     random.randint(INT32_MIN, INT32_MAX),
+                     random.randint(INT32_MIN, INT32_MAX),
+                     INT32_MAX ]
+
     UINT32_MAX = 2**32
+    UINT32_RANDOM = [ 0,
+                      random.randint(0, UINT32_MAX),
+                      random.randint(0, UINT32_MAX),
+                      random.randint(0, UINT32_MAX),
+                      UINT32_MAX ]
 
     INT64_MIN = -2**63
-    INT64_MAX = 2**63
+    INT64_MAX = 2**63 - 1
+    INT64_RANDOM = [ INT64_MIN,
+                     random.randint(INT64_MIN, INT64_MAX),
+                     random.randint(INT64_MIN, INT64_MAX),
+                     random.randint(INT64_MIN, INT64_MAX),
+                     INT64_MAX ]
+
     UINT64_MAX = 2**64
+    UINT64_RANDOM = [ 0,
+                      random.randint(0, UINT64_MAX),
+                      random.randint(0, UINT64_MAX),
+                      random.randint(0, UINT64_MAX),
+                      UINT64_MAX ]
+
+    FLOAT_RANDOM = [random.random() for _ in xrange(5)]
 
     def _load_streams(self):
         conn = sqlite3.connect('preload.db')
@@ -179,23 +225,23 @@ class VirtualParticle(DataParticle):
             if p.value_encoding in ['str', 'string']:
                 val = self.random_string(20)
             elif p.value_encoding == 'int8':
-                val = random.randint(self.INT8_MIN, self.INT8_MAX)
+                val = random.choice(self.INT8_RANDOM)
             elif p.value_encoding == 'int16':
-                val = random.randint(self.INT16_MIN, self.INT16_MAX)
+                val = random.choice(self.INT16_RANDOM)
             elif p.value_encoding == 'int32':
-                val = random.randint(self.INT32_MIN, self.INT32_MAX)
+                val = random.choice(self.INT32_RANDOM)
             elif p.value_encoding == 'int64':
-                val = random.randint(self.INT64_MIN, self.INT64_MAX)
+                val = random.choice(self.INT64_RANDOM)
             elif p.value_encoding == 'uint8':
-                val = random.randint(0, self.UINT8_MAX)
+                val = random.choice(self.UINT8_RANDOM)
             elif p.value_encoding == 'uint16':
-                val = random.randint(0, self.UINT16_MAX)
+                val = random.choice(self.UINT16_RANDOM)
             elif p.value_encoding == 'uint32':
-                val = random.randint(0, self.UINT32_MAX)
+                val = random.choice(self.UINT32_RANDOM)
             elif p.value_encoding == 'uint64':
-                val = random.randint(0, self.UINT64_MAX)
+                val = random.choice(self.UINT64_RANDOM)
             elif p.value_encoding in ['float32', 'float64']:
-                val = random.random()
+                val = random.choice(self.FLOAT_RANDOM)
             else:
                 log.debug('Unhandled parameter value encoding: %s', p)
             if val is not None:
@@ -358,9 +404,11 @@ class Protocol(CommandResponseInstrumentProtocol):
     def _generate_particle(self, stream_name, count=1):
         # we're faking it anyway, send these as fast as we can...
         # the overall rate will be close enough
+        particle = VirtualParticle(stream_name, port_timestamp=0)
         for x in range(count):
-            particle = VirtualParticle(stream_name, port_timestamp=ntplib.system_to_ntp_time(time.time()))
+            particle.contents['port_timestamp'] = ntplib.system_to_ntp_time(time.time())
             self._driver_event(DriverAsyncEvent.SAMPLE, particle.generate())
+            time.sleep(.001)
 
     def _create_scheduler(self, stream_name, rate):
         job_name = stream_name
@@ -487,7 +535,6 @@ class Protocol(CommandResponseInstrumentProtocol):
 
         for stream_name in self._param_dict.get_keys():
             self._create_scheduler(stream_name, self._param_dict.get(stream_name))
-
         self._driver_event(DriverAsyncEvent.STATE_CHANGE)
 
     def _handler_autosample_stop_autosample(self, *args, **kwargs):

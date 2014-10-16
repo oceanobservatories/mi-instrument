@@ -125,28 +125,6 @@ class TestUnitDataParticle(MiUnitTestCase):
                                   ]
                                 }
 
-    def test_parsed_generate(self):
-        """
-        Test generation of a data particle
-        """
-        # Create some sample data as a param dict
-        # Submit it to a data particle generator with a timestamp
-        # compare to JSON-ified output
-        #   Be sure to check timestamp format as BASE64 and de-encode it.
-        #   Sanity check it as well.
-        dict_result = self.parsed_test_particle.generate_dict()
-        parsed_result = self.parsed_test_particle.generate(sorted=True)
-        decoded_parsed = json.loads(parsed_result)
-
-        self.assertEqual(dict_result, decoded_parsed)
-
-        driver_time = decoded_parsed["driver_timestamp"]
-        self.sample_parsed_particle["driver_timestamp"] = driver_time
-
-        # run it through json so unicode and everything lines up
-        standard = json.dumps(self.sample_parsed_particle, sort_keys=True)
-        self.assertEqual(parsed_result, standard)
-
     def test_new_sequence_flag(self):
         """
         Verify that we can set the new sequence flag
@@ -182,35 +160,6 @@ class TestUnitDataParticle(MiUnitTestCase):
                                              quality_flag=DataParticleValue.INVALID,
                                              preferred_timestamp=DataParticleKey.DRIVER_TIMESTAMP,
                                              new_sequence='a')
-
-
-    def test_raw_generate(self):
-        """
-        Test generation of a raw data particle
-        """
-        # Create some sample data as a param dict
-        # Submit it to a data particle generator with a timestamp
-        # compare to JSON-ified output
-        #   Be sure to check timestamp format as BASE64 and de-encode it.
-        #   Sanity check it as well.
-        dict_result = self.raw_test_particle.generate_dict()
-        raw_result = self.raw_test_particle.generate(sorted=True)
-        decoded_raw = json.loads(raw_result)
-        
-        self.assertEqual(dict_result, decoded_raw)
-
-        # get values that change from instance to instance to maintain them the same across instances
-        checksum = decoded_raw[DataParticleKey.VALUES][3][DataParticleKey.VALUE]
-        driver_time = decoded_raw["driver_timestamp"]
-
-        # and set....
-        self.sample_raw_particle["driver_timestamp"] = driver_time
-        self.sample_raw_particle[DataParticleKey.VALUES][3][DataParticleKey.VALUE] = checksum
-
-        # run it through json so unicode and everything lines up
-        standard = json.dumps(self.sample_raw_particle, sort_keys=True)
-
-        self.assertEqual(raw_result, standard)
         
     def test_timestamps(self):
         """

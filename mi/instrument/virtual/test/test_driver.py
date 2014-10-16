@@ -4,11 +4,13 @@ from mi.core.log import get_logger
 
 from mi.instrument.virtual.driver import ProtocolState
 from mi.instrument.virtual.driver import ProtocolEvent
-from mi.instrument.virtual.driver import InstrumentDriver
+from mi.instrument.virtual.driver import InstrumentDriver, VirtualParticle
 from mi.core.instrument.instrument_driver import DriverConnectionState
 from mi.core.instrument.instrument_driver import DriverProtocolState
 
 import unittest
+import functools
+import timeit
 
 
 __author__ = 'Pete Cable'
@@ -45,12 +47,18 @@ class DriverUnitTest(unittest.TestCase):
         self.assert_initialize_driver(driver, initial_protocol_state)
         return driver
 
-
     def test_autosample(self):
         driver = self.test_connect(ProtocolState.COMMAND)
         driver._protocol._protocol_fsm.on_event(ProtocolEvent.START_AUTOSAMPLE)
         self.assertEqual(driver.get_resource_state(), ProtocolState.AUTOSAMPLE)
+        driver._protocol._protocol_fsm.on_event(ProtocolEvent.STOP_AUTOSAMPLE)
 
+    def test_sample_rate(self):
+        driver = self.test_connect(ProtocolState.COMMAND)
+        particle = VirtualParticle('botpt_nano_sample')
+        log.info('count(100) : %.2f', timeit.timeit(
+            functools.partial(driver._protocol._generate_particle, 'botpt_nano_sample', count=500), number=1))
+        log.info('particles : %.2f', timeit.timeit(particle.generate, number=500))
 
     def assert_initialize_driver(self, driver, initial_protocol_state=ProtocolState.AUTOSAMPLE):
         """

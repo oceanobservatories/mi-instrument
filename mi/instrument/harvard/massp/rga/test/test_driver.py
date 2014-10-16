@@ -16,7 +16,6 @@ USAGE:
 __author__ = 'Peter Cable'
 __license__ = 'Apache 2.0'
 
-import json
 import struct
 import time
 import unittest
@@ -157,10 +156,10 @@ class DriverTestMixinSub(DriverTestMixin):
         'HV0': 0,
     }
 
-    sample_data = list(struct.unpack('<252i', responses['SC1']))
+    sample_data = struct.unpack('<252i', responses['SC1'])
 
     _sample_parameters = {
-        RGASampleParticleKey.SCAN_DATA: {TYPE: list, VALUE: sample_data, REQUIRED: True},
+        RGASampleParticleKey.SCAN_DATA: {TYPE: tuple, VALUE: sample_data, REQUIRED: True},
     }
 
     _status_parameters = {
@@ -343,12 +342,11 @@ class DriverUnitTest(InstrumentDriverUnitTestCase, DriverTestMixinSub):
         while time.time() < (now+5):
             time.sleep(1)
 
-        for p in self._data_particle_received:
-            particle_dict = json.loads(p)
+        for particle_dict in self._data_particle_received:
             stream_type = particle_dict.get('stream_name')
             self.assertIsNotNone(stream_type)
             if stream_type != CommonDataParticleType.RAW:
-                particles.append((p, stream_type))
+                particles.append((particle_dict, stream_type))
 
         log.debug("Non raw particles: %s ", particles)
         self.assertGreaterEqual(len(particles), 1)

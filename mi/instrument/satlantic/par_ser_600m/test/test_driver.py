@@ -271,8 +271,7 @@ class SatlanticParProtocolUnitTest(InstrumentDriverUnitTestCase, PARMixin):
         log.debug('test_corrupt_data_structures: %s', VALID_SAMPLE.replace('A', 'B'))
         particle = SatlanticPARDataParticle(VALID_SAMPLE.replace('A', 'B'), port_timestamp=port_timestamp)
         with self.assertRaises(SampleException):
-            json_str = particle.generate()
-            obj = json.loads(json_str)
+            obj = particle.generate()
             self.assertNotEqual(obj[DataParticleKey.QUALITY_FLAG], DataParticleValue.OK)
 
     def test_sample_format(self):
@@ -330,19 +329,12 @@ class SatlanticParProtocolUnitTest(InstrumentDriverUnitTestCase, PARMixin):
         else:
             test_particle = particle_type("4278190306", "1.0.0", "SATPAR", raw_input, port_timestamp=port_timestamp)
 
-        parsed_result = test_particle.generate(sorted=True)
-        decoded_parsed = json.loads(parsed_result)
+        parsed_result = test_particle.generate()
 
-        driver_time = decoded_parsed[DataParticleKey.DRIVER_TIMESTAMP]
+        driver_time = parsed_result[DataParticleKey.DRIVER_TIMESTAMP]
         happy_structure[DataParticleKey.DRIVER_TIMESTAMP] = driver_time
 
-        # run it through json so unicode and everything lines up
-        standard = json.dumps(happy_structure, sort_keys=True)
-
-        log.debug("Parsed Result:\n%s", json.dumps(json.loads(parsed_result), sort_keys=True, indent=2))
-        log.debug("Standard:\n%s", json.dumps(json.loads(standard), sort_keys=True, indent=2))
-
-        self.assertEqual(parsed_result, standard)
+        self.assertEqual(parsed_result, happy_structure)
 
     def test_config_format(self):
         """

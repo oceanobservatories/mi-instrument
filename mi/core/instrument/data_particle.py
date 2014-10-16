@@ -12,20 +12,13 @@ __author__ = 'Steve Foley'
 __license__ = 'Apache 2.0'
 
 import time
-import copy
 import ntplib
 import base64
-import logging
-from warnings import warn
-try:
-    import simplejson as json
-except ImportError:
-    warn("Failed to import simplejson; particle generation will be slower.")
-    import json
 
 from mi.core.common import BaseEnum
 from mi.core.exceptions import SampleException, ReadOnlyException, NotImplementedException, InstrumentParameterException
-from mi.core.log import get_logger ; log = get_logger()
+from mi.core.log import get_logger
+log = get_logger()
 
 class CommonDataParticleType(BaseEnum):
     """
@@ -221,17 +214,11 @@ class DataParticle(object):
         Generates a JSON_parsed packet from a sample dictionary of sensor data and
         associates a timestamp with it
         
-        @param portagent_time The timestamp from the instrument in NTP binary format 
-        @param data The actual data being sent in raw byte[] format
-        @param sorted Returned sorted json dict, useful for testing, but slow,
-           so dont do it unless it is important
-        @return A JSON_raw string, properly structured with port agent time stamp
-           and driver timestamp
+        @param sorted ignored, maintained only to avoid breaking drivers
+        @return A dictionary representing this particle
         @throws InstrumentDriverException If there is a problem with the inputs
         """
-        result = self.generate_dict()
-        json_result = json.dumps(result, sort_keys=sorted)
-        return json_result
+        return self.generate_dict()
         
     def _build_parsed_values(self):
         """

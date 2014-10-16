@@ -691,18 +691,15 @@ class NortekUnitTest(InstrumentDriverUnitTestCase, DriverTestMixinSub):
         Verify when generating the particle, if the particle is corrupt, it will not generate
         """
         particle = NortekHardwareConfigDataParticle(hw_config_sample().replace(chr(0), chr(1), 1), port_timestamp=PORT_TIMESTAMP)
-        json_str = particle.generate()
-        obj = json.loads(json_str)
+        obj = particle.generate()
         self.assertNotEqual(obj[DataParticleKey.QUALITY_FLAG], DataParticleValue.OK)
 
         particle = NortekHeadConfigDataParticle(head_config_sample().replace(chr(0), chr(1), 1), port_timestamp=PORT_TIMESTAMP)
-        json_str = particle.generate()
-        obj = json.loads(json_str)
+        obj = particle.generate()
         self.assertNotEqual(obj[DataParticleKey.QUALITY_FLAG], DataParticleValue.OK)
 
         particle = NortekUserConfigDataParticle(user_config_sample().replace(chr(0), chr(1), 1), port_timestamp=PORT_TIMESTAMP)
-        json_str = particle.generate()
-        obj = json.loads(json_str)
+        obj = particle.generate()
         self.assertNotEqual(obj[DataParticleKey.QUALITY_FLAG], DataParticleValue.OK)
 
     def test_hw_config_sample_format(self):

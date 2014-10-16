@@ -1191,7 +1191,6 @@ class SatlanticPARInstrumentProtocol(CommandResponseInstrumentProtocol):
         @retval dict of dicts {'parsed': parsed_sample, 'raw': raw_sample} if
                 the line can be parsed for a sample. Otherwise, None.
         """
-        sample = None
         if regex.match(line):
 
             particle = particle_class(serial_num, firmware, instrument, line, port_timestamp=timestamp)
@@ -1200,6 +1199,4 @@ class SatlanticPARInstrumentProtocol(CommandResponseInstrumentProtocol):
             if publish and self._driver_event:
                 self._driver_event(DriverAsyncEvent.SAMPLE, parsed_sample)
 
-            sample = json.loads(parsed_sample)
-
-        return sample
+            return parsed_sample
