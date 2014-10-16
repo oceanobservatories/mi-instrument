@@ -223,12 +223,12 @@ class SBEMixin(DriverTestMixin):
     }
     
     _device_calibration_parameters = {
-        SBE37DeviceCalibrationParticleKey.TCALDATE:  {TYPE: list, VALUE: [8, 11, 2005], REQUIRED: False }, 
+        SBE37DeviceCalibrationParticleKey.TCALDATE:  {TYPE: tuple, VALUE: (8, 11, 2005), REQUIRED: False },
         SBE37DeviceCalibrationParticleKey.TA0: {TYPE: float, VALUE: -2.572242e-04, REQUIRED: False },
         SBE37DeviceCalibrationParticleKey.TA1: {TYPE: float, VALUE: 3.138936e-04, REQUIRED: False },
         SBE37DeviceCalibrationParticleKey.TA2: {TYPE: float, VALUE: -9.717158e-06, REQUIRED: False },
         SBE37DeviceCalibrationParticleKey.TA3:  {TYPE: float, VALUE: 2.138735e-07, REQUIRED: False },
-        SBE37DeviceCalibrationParticleKey.CCALDATE: {TYPE: list, VALUE: [8, 11, 2005], REQUIRED: False },
+        SBE37DeviceCalibrationParticleKey.CCALDATE: {TYPE: tuple, VALUE: (8, 11, 2005), REQUIRED: False },
         SBE37DeviceCalibrationParticleKey.G: {TYPE: float, VALUE: -9.870930e-01, REQUIRED: False },
         SBE37DeviceCalibrationParticleKey.H: {TYPE: float, VALUE: 1.417895e-01, REQUIRED: False },
         SBE37DeviceCalibrationParticleKey.I: {TYPE: float, VALUE: 1.334915e-04, REQUIRED: False },
@@ -236,7 +236,7 @@ class SBEMixin(DriverTestMixin):
         SBE37DeviceCalibrationParticleKey.CPCOR: {TYPE: float, VALUE: 9.570000e-08, REQUIRED: False },
         SBE37DeviceCalibrationParticleKey.CTCOR: {TYPE: float, VALUE: 3.250000e-06, REQUIRED: False },
         SBE37DeviceCalibrationParticleKey.WBOTC: {TYPE: float, VALUE: 1.202400e-05, REQUIRED: False },
-        SBE37DeviceCalibrationParticleKey.PCALDATE: {TYPE: list, VALUE: [12, 8, 2005], REQUIRED: False },
+        SBE37DeviceCalibrationParticleKey.PCALDATE: {TYPE: tuple, VALUE: (12, 8, 2005), REQUIRED: False },
         SBE37DeviceCalibrationParticleKey.PRANGE: {TYPE: float, VALUE: 10847.1964958, REQUIRED: False },
         SBE37DeviceCalibrationParticleKey.PSN: {TYPE: int, VALUE: 4955, REQUIRED: False },
         SBE37DeviceCalibrationParticleKey.PA0: {TYPE: float, VALUE: 5.916199e+00, REQUIRED: False },
@@ -249,7 +249,7 @@ class SBEMixin(DriverTestMixin):
         SBE37DeviceCalibrationParticleKey.PTCSB1: {TYPE: float, VALUE: -9.000000e-04, REQUIRED: False },
         SBE37DeviceCalibrationParticleKey.PTCSB2: {TYPE: float, VALUE: 0.000000e+00, REQUIRED: False },
         SBE37DeviceCalibrationParticleKey.POFFSET: {TYPE: float, VALUE: 0.000000e+00, REQUIRED: False },
-        SBE37DeviceCalibrationParticleKey.RTC: {TYPE: list, VALUE: [8, 11, 2005], REQUIRED: False },
+        SBE37DeviceCalibrationParticleKey.RTC: {TYPE: tuple, VALUE: (8, 11, 2005), REQUIRED: False },
         SBE37DeviceCalibrationParticleKey.RTCA0: {TYPE: float, VALUE: 9.999862e-01, REQUIRED: False },
         SBE37DeviceCalibrationParticleKey.RTCA1: {TYPE: float, VALUE: 1.686132e-06, REQUIRED: False },
         SBE37DeviceCalibrationParticleKey.RTCA2: {TYPE: float, VALUE: -3.022745e-08, REQUIRED: False },

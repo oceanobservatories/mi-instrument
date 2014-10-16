@@ -14,7 +14,6 @@ USAGE:
 """
 
 import re
-import json
 import time
 from pprint import pformat
 from collections import Counter
@@ -408,8 +407,7 @@ class DriverUnitTest(InstrumentDriverUnitTestCase, DriverTestMixinSub):
             self.assertEqual(driver._protocol.get_current_state(), ProtocolState.COMMAND)
 
         particles = Counter()
-        for p in self._data_particle_received:
-            particle_dict = json.loads(p)
+        for particle_dict in self._data_particle_received:
             stream_type = particle_dict.get('stream_name')
             self.assertIsNotNone(stream_type)
             particles[stream_type] += 1

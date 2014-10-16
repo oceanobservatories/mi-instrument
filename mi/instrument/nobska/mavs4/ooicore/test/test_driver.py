@@ -405,12 +405,11 @@ class Testmavs4_UNIT(InstrumentDriverUnitTestCase, Mavs4Mixin):
         """
         # Find all particles of the correct data particle types (not raw)
         particles = []
-        for p in self._data_particle_received:
-            particle_dict = json.loads(p)
+        for particle_dict in self._data_particle_received:
             stream_type = particle_dict.get('stream_name')
             self.assertIsNotNone(stream_type)
             if stream_type == DataParticleType.STATUS:
-                particles.append(p)
+                particles.append(particle_dict)
 
         log.debug("status particles: %s ", particles)
         self.assertEqual(len(particles), 1)

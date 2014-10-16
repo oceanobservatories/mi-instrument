@@ -506,7 +506,6 @@ class Protocol(CommandResponseInstrumentProtocol):
         @todo Figure out how the agent wants the results for a single poll
             and return them that way from here
         """
-        sample = None
         match = regex.match(line)
         if match:
             if particle_class == METBK_SampleDataParticle:
@@ -523,9 +522,7 @@ class Protocol(CommandResponseInstrumentProtocol):
             if publish and self._driver_event:
                 self._driver_event(DriverAsyncEvent.SAMPLE, parsed_sample)
     
-            sample = json.loads(parsed_sample)
-            return sample
-        return sample
+            return parsed_sample
 
     ########################################################################
     # implement virtual methods from base class.
