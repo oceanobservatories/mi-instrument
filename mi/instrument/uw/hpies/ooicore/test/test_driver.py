@@ -292,7 +292,7 @@ class UtilMixin(DriverTestMixin):
     }
 
     _hef_sample = {
-        HEFDataParticleKey.DATA_VALID: {TYPE: bool, VALUE: True, REQUIRED: True},
+        HEFDataParticleKey.DATA_VALID: {TYPE: int, VALUE: True, REQUIRED: True},
         HEFDataParticleKey.INDEX: {TYPE: int, VALUE: 0, REQUIRED: True},
         HEFDataParticleKey.CHANNEL_1: {TYPE: int, VALUE: 0, REQUIRED: True},
         HEFDataParticleKey.CHANNEL_2: {TYPE: int, VALUE: 0, REQUIRED: True},
@@ -308,7 +308,7 @@ class UtilMixin(DriverTestMixin):
         self.assert_data_particle_parameters(particle, self._hef_sample, verify_values)
 
     _header_sample = {
-        DataHeaderParticleKey.DATA_VALID: {TYPE: bool, VALUE: True, REQUIRED: True},
+        DataHeaderParticleKey.DATA_VALID: {TYPE: int, VALUE: True, REQUIRED: True},
         DataHeaderParticleKey.VERSION: {TYPE: int, VALUE: 0, REQUIRED: True},
         DataHeaderParticleKey.TYPE: {TYPE: unicode, VALUE: 'f', REQUIRED: True},
         DataHeaderParticleKey.DESTINATION: {TYPE: unicode, VALUE: 'a', REQUIRED: True},
@@ -329,7 +329,7 @@ class UtilMixin(DriverTestMixin):
         self.assert_data_particle_parameters(particle, self._header_sample, verify_values)
 
     _motor_current_sample = {
-        HEFMotorCurrentParticleKey.DATA_VALID: {TYPE: bool, VALUE: True, REQUIRED: True},
+        HEFMotorCurrentParticleKey.DATA_VALID: {TYPE: int, VALUE: True, REQUIRED: True},
         HEFMotorCurrentParticleKey.INDEX: {TYPE: int, VALUE: 0, REQUIRED: True},
         HEFMotorCurrentParticleKey.CURRENT: {TYPE: int, VALUE: 0, REQUIRED: True},
     }
@@ -340,7 +340,7 @@ class UtilMixin(DriverTestMixin):
         self.assert_data_particle_parameters(particle, self._motor_current_sample, verify_values)
 
     _calibration_sample = {
-        CalStatusParticleKey.DATA_VALID: {TYPE: bool, VALUE: False, REQUIRED: True},
+        CalStatusParticleKey.DATA_VALID: {TYPE: int, VALUE: False, REQUIRED: True},
         CalStatusParticleKey.INDEX: {TYPE: int, VALUE: 0, REQUIRED: True},
         CalStatusParticleKey.E1C: {TYPE: float, VALUE: 0.0, REQUIRED: True},
         CalStatusParticleKey.E1A: {TYPE: float, VALUE: 0.0, REQUIRED: True},
@@ -356,7 +356,7 @@ class UtilMixin(DriverTestMixin):
         self.assert_data_particle_parameters(particle, self._calibration_sample, verify_values)
 
     _status_sample = {
-        HEFStatusParticleKey.DATA_VALID: {TYPE: bool, VALUE: False, REQUIRED: True},
+        HEFStatusParticleKey.DATA_VALID: {TYPE: int, VALUE: False, REQUIRED: True},
         HEFStatusParticleKey.UNIX_TIME: {TYPE: int, VALUE: 0, REQUIRED: True},
         HEFStatusParticleKey.HCNO: {TYPE: int, VALUE: 1, REQUIRED: True},
         HEFStatusParticleKey.HCNO_LAST_CAL: {TYPE: int, VALUE: 1, REQUIRED: True},
@@ -385,7 +385,7 @@ class UtilMixin(DriverTestMixin):
         self.assert_data_particle_parameters(particle, self._status_sample, verify_values)
 
     _echo_sample = {
-        IESDataParticleKey.DATA_VALID: {TYPE: bool, VALUE: True, REQUIRED: True},
+        IESDataParticleKey.DATA_VALID: {TYPE: int, VALUE: True, REQUIRED: True},
         IESDataParticleKey.IES_TIMESTAMP: {TYPE: int, VALUE: 0, REQUIRED: True},
         IESDataParticleKey.TRAVEL_TIMES: {TYPE: int, VALUE: 4, REQUIRED: True},
         IESDataParticleKey.TRAVEL_TIME_1: {TYPE: int, VALUE: 0, REQUIRED: True},

@@ -445,6 +445,7 @@ class HPIESDataParticle(DataParticle):
         if not data_valid:
             self.contents[DataParticleKey.QUALITY_FLAG] = DataParticleValue.CHECKSUM_FAILED
             log.warning("Corrupt data detected: [%r] - CRC %s != %s" % (self.raw_data, hex(crc_compute), hex(crc)))
+        return data_valid
 
     @staticmethod
     def regex():
@@ -506,7 +507,7 @@ class DataHeaderParticle(HPIESDataParticle):
 
     def _encode_all(self):
         return [
-            self._encode_value(DataHeaderParticleKey.DATA_VALID, self.check_crc(), bool),
+            self._encode_value(DataHeaderParticleKey.DATA_VALID, self.check_crc(), int),
             self._encode_value(DataHeaderParticleKey.VERSION, self.match.group('version'), int),
             self._encode_value(DataHeaderParticleKey.TYPE, self.match.group('type'), str),
             self._encode_value(DataHeaderParticleKey.DESTINATION, self.match.group('dest'), str),
@@ -565,7 +566,7 @@ class HEFDataParticle(HPIESDataParticle):
 
     def _encode_all(self):
         return [
-            self._encode_value(HEFDataParticleKey.DATA_VALID, self.check_crc(), bool),
+            self._encode_value(HEFDataParticleKey.DATA_VALID, self.check_crc(), int),
             self._encode_value(HEFDataParticleKey.INDEX, self.match.group('index'), int),
             self._encode_value(HEFDataParticleKey.CHANNEL_1, self.match.group('channel_1'), int),
             self._encode_value(HEFDataParticleKey.CHANNEL_2, self.match.group('channel_2'), int),
@@ -610,7 +611,7 @@ class HEFMotorCurrentParticle(HPIESDataParticle):
 
     def _encode_all(self):
         return [
-            self._encode_value(HEFMotorCurrentParticleKey.DATA_VALID, self.check_crc(), bool),
+            self._encode_value(HEFMotorCurrentParticleKey.DATA_VALID, self.check_crc(), int),
             self._encode_value(HEFMotorCurrentParticleKey.INDEX, self.match.group('index'), int),
             self._encode_value(HEFMotorCurrentParticleKey.CURRENT, self.match.group('motor_current'), int),
         ]
@@ -661,7 +662,7 @@ class CalStatusParticle(HPIESDataParticle):
 
     def _encode_all(self):
         return [
-            self._encode_value(CalStatusParticleKey.DATA_VALID, self.check_crc(), bool),
+            self._encode_value(CalStatusParticleKey.DATA_VALID, self.check_crc(), int),
             self._encode_value(CalStatusParticleKey.INDEX, self.match.group('index'), int),
             self._encode_value(CalStatusParticleKey.E1C, self.match.group('e1c'), int),
             self._encode_value(CalStatusParticleKey.E1A, self.match.group('e1a'), int),
@@ -773,7 +774,7 @@ class HEFStatusParticle(HPIESDataParticle):
 
     def _encode_all(self):
         return [
-            self._encode_value(HEFStatusParticleKey.DATA_VALID, self.check_crc(), bool),
+            self._encode_value(HEFStatusParticleKey.DATA_VALID, self.check_crc(), int),
             self._encode_value(HEFStatusParticleKey.UNIX_TIME, self.match.group('secs'), int),
             self._encode_value(HEFStatusParticleKey.HCNO, self.match.group('hcno'), int),
             self._encode_value(HEFStatusParticleKey.HCNO_LAST_CAL, self.match.group('hcno_last_cal'), int),
@@ -856,7 +857,7 @@ class IESDataParticle(HPIESDataParticle):
         """
 
         return [
-            self._encode_value(IESDataParticleKey.DATA_VALID, self.check_crc(), bool),
+            self._encode_value(IESDataParticleKey.DATA_VALID, self.check_crc(), int),
             self._encode_value(IESDataParticleKey.IES_TIMESTAMP, self.match.group('ies_timestamp'), int),
             self._encode_value(IESDataParticleKey.TRAVEL_TIMES, self.match.group('n_travel_times'), int),
             self._encode_value(IESDataParticleKey.TRAVEL_TIME_1, self.match.group('travel_1'), int),
@@ -950,12 +951,15 @@ class IESStatusParticle(HPIESDataParticle):
         return pattern
 
     def check_crc(self):
+        valid = True
         for line in self.raw_data.split(NEWLINE):
             crc_compute, crc_parse = calc_crc(line)
             data_valid = crc_compute == crc_parse
             if not data_valid:
                 self.contents[DataParticleKey.QUALITY_FLAG] = DataParticleValue.CHECKSUM_FAILED
                 log.warning("Corrupt data detected: [%r] - CRC %s != %s" % (line, hex(crc_compute), hex(crc_parse)))
+                valid = False
+        return valid
 
     def _encode_all(self):
         travel_times = [int(x) for x in self.match.group('travel_times').split()]
@@ -969,7 +973,7 @@ class IESStatusParticle(HPIESDataParticle):
         tfrequencies = temp[1::2]
 
         return [
-            self._encode_value(IESStatusParticleKey.DATA_VALID, self.check_crc(), bool),
+            self._encode_value(IESStatusParticleKey.DATA_VALID, self.check_crc(), int),
             self._encode_value(IESStatusParticleKey.IES_TIME, self.match.group('ies_time'), int),
             self._encode_value(IESStatusParticleKey.TRAVEL_TIMES, travel_times, int),
             self._encode_value(IESStatusParticleKey.PRESSURES, pressures, int),
@@ -1029,7 +1033,7 @@ class TimestampParticle(HPIESDataParticle):
         @throws SampleException If there is a problem with sample creation
         """
         return [
-            self._encode_value(TimestampParticleKey.DATA_VALID, self.check_crc(), bool),
+            self._encode_value(TimestampParticleKey.DATA_VALID, self.check_crc(), int),
             self._encode_value(TimestampParticleKey.RSN_TIME, self.match.group('rsn_time'), int),
             self._encode_value(TimestampParticleKey.STM_TIME, self.match.group('stm_time'), int),
         ]
