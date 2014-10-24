@@ -13,7 +13,6 @@ Done
 __author__ = 'Roger Unwin'
 __license__ = 'Apache 2.0'
 
-import string
 import re
 import time
 import ntplib
@@ -35,7 +34,6 @@ from mi.core.instrument.driver_dict import DriverDictKey
 from mi.core.exceptions import InstrumentParameterException
 from mi.core.exceptions import SampleException
 from mi.core.exceptions import InstrumentProtocolException
-from mi.core.exceptions import InstrumentParameterExpirationException
 
 from mi.core.instrument.data_particle import DataParticle, DataParticleKey, CommonDataParticleType
 from mi.core.instrument.chunker import StringChunker
@@ -534,7 +532,7 @@ class SBE54tpsConfigurationDataParticle(DataParticle):
                         elif key in [
                             SBE54tpsConfigurationDataParticleKey.ENABLE_ALERTS
                         ]:
-                            single_var_matches[key] = bool(int(val))
+                            single_var_matches[key] = int(val)
 
                         #float
                         elif key in [

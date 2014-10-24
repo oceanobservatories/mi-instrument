@@ -649,16 +649,16 @@ class NortekUserConfigDataParticle(DataParticle):
         working_value[NortekUserConfigDataParticleKey.POWER_PCR1] = working_value[NortekUserConfigDataParticleKey.PCR][-6]
         working_value[NortekUserConfigDataParticleKey.POWER_PCR2] = working_value[NortekUserConfigDataParticleKey.PCR][-7]
 
-        working_value[NortekUserConfigDataParticleKey.USE_SPEC_SOUND_SPEED] = bool(working_value[NortekUserConfigDataParticleKey.MODE][-1])
-        working_value[NortekUserConfigDataParticleKey.DIAG_MODE_ON] = bool(working_value[NortekUserConfigDataParticleKey.MODE][-2])
-        working_value[NortekUserConfigDataParticleKey.ANALOG_OUTPUT_ON] = bool(working_value[NortekUserConfigDataParticleKey.MODE][-3])
+        working_value[NortekUserConfigDataParticleKey.USE_SPEC_SOUND_SPEED] = working_value[NortekUserConfigDataParticleKey.MODE][-1]
+        working_value[NortekUserConfigDataParticleKey.DIAG_MODE_ON] = working_value[NortekUserConfigDataParticleKey.MODE][-2]
+        working_value[NortekUserConfigDataParticleKey.ANALOG_OUTPUT_ON] = working_value[NortekUserConfigDataParticleKey.MODE][-3]
         working_value[NortekUserConfigDataParticleKey.OUTPUT_FORMAT] = working_value[NortekUserConfigDataParticleKey.MODE][-4]
         working_value[NortekUserConfigDataParticleKey.SCALING] = working_value[NortekUserConfigDataParticleKey.MODE][-5]
-        working_value[NortekUserConfigDataParticleKey.SERIAL_OUT_ON] = bool(working_value[NortekUserConfigDataParticleKey.MODE][-6])
-        working_value[NortekUserConfigDataParticleKey.STAGE_ON] = bool(working_value[NortekUserConfigDataParticleKey.MODE][-8])
-        working_value[NortekUserConfigDataParticleKey.ANALOG_POWER_OUTPUT] = bool(working_value[NortekUserConfigDataParticleKey.MODE][-9])
+        working_value[NortekUserConfigDataParticleKey.SERIAL_OUT_ON] = working_value[NortekUserConfigDataParticleKey.MODE][-6]
+        working_value[NortekUserConfigDataParticleKey.STAGE_ON] = working_value[NortekUserConfigDataParticleKey.MODE][-8]
+        working_value[NortekUserConfigDataParticleKey.ANALOG_POWER_OUTPUT] = working_value[NortekUserConfigDataParticleKey.MODE][-9]
 
-        working_value[NortekUserConfigDataParticleKey.USE_DSP_FILTER] = bool(working_value[NortekUserConfigDataParticleKey.MODE_TEST][-1])
+        working_value[NortekUserConfigDataParticleKey.USE_DSP_FILTER] = working_value[NortekUserConfigDataParticleKey.MODE_TEST][-1]
         working_value[NortekUserConfigDataParticleKey.FILTER_DATA_OUTPUT] = working_value[NortekUserConfigDataParticleKey.MODE_TEST][-2]
 
         working_value[NortekUserConfigDataParticleKey.WAVE_DATA_RATE] = working_value[NortekUserConfigDataParticleKey.WAVE_MODE][-1]
@@ -1215,7 +1215,6 @@ class NortekInstrumentProtocol(CommandResponseInstrumentProtocol):
     def sieve_function(cls, raw_data):
         """
         The method that detects data sample structures from instrument
-        @param add_structs Additional structures to include in the structure search.
         Should be in the format [[structure_sync_bytes, structure_len]*]
         """
         return_list = []

@@ -15,7 +15,6 @@ USAGE:
 """
 
 import time
-import unittest
 from nose.plugins.attrib import attr
 from mock import Mock
 
@@ -32,7 +31,7 @@ from mi.idk.unit_test import InstrumentDriverIntegrationTestCase
 from mi.idk.unit_test import InstrumentDriverQualificationTestCase
 from mi.idk.unit_test import AgentCapabilityType
 from mi.instrument.satlantic.ocr_507_icsw.ooicore.driver import DataParticleType, \
-    SatlanticOCR507ConfigurationParticleKey, EOLN
+    SatlanticOCR507ConfigurationParticleKey
 from mi.instrument.satlantic.ocr_507_icsw.ooicore.driver import SatlanticOCR507InstrumentProtocol
 from mi.instrument.satlantic.ocr_507_icsw.ooicore.driver import SatlanticProtocolState
 from mi.instrument.satlantic.ocr_507_icsw.ooicore.driver import SatlanticProtocolEvent
@@ -150,10 +149,10 @@ class SatlanticMixin(DriverTestMixin):
         SatlanticOCR507ConfigurationParticleKey.SERIAL_NUMBER: {TYPE: unicode, VALUE: '0233', REQUIRED: True},
         SatlanticOCR507ConfigurationParticleKey.TELEMETRY_BAUD_RATE: {TYPE: int, VALUE: 57600, REQUIRED: True},
         SatlanticOCR507ConfigurationParticleKey.MAX_FRAME_RATE: {TYPE: unicode, VALUE: '1', REQUIRED: True},
-        SatlanticOCR507ConfigurationParticleKey.INIT_SILENT_MODE: {TYPE: bool, VALUE: False, REQUIRED: True},
-        SatlanticOCR507ConfigurationParticleKey.INIT_POWER_DOWN: {TYPE: bool, VALUE: False, REQUIRED: True},
-        SatlanticOCR507ConfigurationParticleKey.INIT_AUTO_TELEMETRY: {TYPE: bool, VALUE: True, REQUIRED: True},
-        SatlanticOCR507ConfigurationParticleKey.NETWORK_MODE: {TYPE: bool, VALUE: False, REQUIRED: True},
+        SatlanticOCR507ConfigurationParticleKey.INIT_SILENT_MODE: {TYPE: int, VALUE: 0, REQUIRED: True},
+        SatlanticOCR507ConfigurationParticleKey.INIT_POWER_DOWN: {TYPE: int, VALUE: 0, REQUIRED: True},
+        SatlanticOCR507ConfigurationParticleKey.INIT_AUTO_TELEMETRY: {TYPE: int, VALUE: 1, REQUIRED: True},
+        SatlanticOCR507ConfigurationParticleKey.NETWORK_MODE: {TYPE: int, VALUE: 0, REQUIRED: True},
         SatlanticOCR507ConfigurationParticleKey.NETWORK_ADDRESS: {TYPE: int, VALUE: 100, REQUIRED: True},
         SatlanticOCR507ConfigurationParticleKey.NETWORK_BAUD_RATE: {TYPE: int, VALUE: 38400, REQUIRED: True}
     }
