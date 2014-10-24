@@ -133,7 +133,7 @@ class VirtualParticle(DataParticle):
                     random.randint(INT8_MIN, INT8_MAX),
                     INT8_MAX ]
 
-    UINT8_MAX = 2**8
+    UINT8_MAX = 2**8 - 1
     UINT8_RANDOM = [ 0,
                      random.randint(0, UINT8_MAX),
                      random.randint(0, UINT8_MAX),
@@ -148,7 +148,7 @@ class VirtualParticle(DataParticle):
                      random.randint(INT16_MIN, INT16_MAX),
                      INT16_MAX ]
 
-    UINT16_MAX = 2**16
+    UINT16_MAX = 2**16 - 1
     UINT16_RANDOM = [ 0,
                       random.randint(0, UINT16_MAX),
                       random.randint(0, UINT16_MAX),
@@ -163,7 +163,7 @@ class VirtualParticle(DataParticle):
                      random.randint(INT32_MIN, INT32_MAX),
                      INT32_MAX ]
 
-    UINT32_MAX = 2**32
+    UINT32_MAX = 2**32 - 1
     UINT32_RANDOM = [ 0,
                       random.randint(0, UINT32_MAX),
                       random.randint(0, UINT32_MAX),
@@ -178,7 +178,7 @@ class VirtualParticle(DataParticle):
                      random.randint(INT64_MIN, INT64_MAX),
                      INT64_MAX ]
 
-    UINT64_MAX = 2**64
+    UINT64_MAX = 2**64 - 1
     UINT64_RANDOM = [ 0,
                       random.randint(0, UINT64_MAX),
                       random.randint(0, UINT64_MAX),
