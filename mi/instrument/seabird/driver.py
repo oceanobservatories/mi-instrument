@@ -13,11 +13,9 @@ __license__ = 'Apache 2.0'
 
 import re
 
-from mi.core.log import get_logger ; log = get_logger()
+from mi.core.log import get_logger
+log = get_logger()
 
-from mi.core.exceptions import NotImplementedException
-
-from mi.core.instrument.instrument_protocol import DriverProtocolState
 from mi.core.instrument.instrument_protocol import CommandResponseInstrumentProtocol
 from mi.core.instrument.instrument_driver import SingleConnectionInstrumentDriver
 from mi.core.instrument.data_particle import DataParticle
@@ -27,7 +25,6 @@ from mi.core.instrument.instrument_driver import DriverProtocolState
 from mi.core.instrument.instrument_driver import ResourceAgentState
 from mi.core.instrument.instrument_driver import DriverAsyncEvent
 
-from mi.core.instrument.instrument_driver import DriverConnectionState
 from mi.core.instrument.instrument_driver import DriverEvent
 
 from mi.core.exceptions import InstrumentProtocolException
@@ -235,9 +232,9 @@ class SeaBirdParticle(DataParticle):
             raise InstrumentParameterException("value not a string")
 
         if(value.lower() == 'no'):
-            return False
+            return 0
         elif(value.lower() == 'yes'):
-            return True
+            return 1
         else:
             raise InstrumentParameterException("Could not convert '%s' to bool" % value)
 

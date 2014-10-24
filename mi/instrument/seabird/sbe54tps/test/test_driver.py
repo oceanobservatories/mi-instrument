@@ -27,9 +27,7 @@ import gevent
 
 from nose.plugins.attrib import attr
 from mock import Mock
-import re
 import time
-import ntplib
 
 from mi.core.log import get_logger ; log = get_logger()
 
@@ -64,10 +62,8 @@ from mi.instrument.seabird.test.test_driver import SeaBirdPublicationTest
 # SAMPLE DATA FOR TESTING
 from mi.instrument.seabird.sbe54tps.test.sample_data import *
 
-
 from mi.core.instrument.instrument_driver import ResourceAgentEvent
 from mi.core.instrument.instrument_driver import ResourceAgentState
-
 
 from mi.core.exceptions import InstrumentCommandException
 from mi.core.instrument.chunker import StringChunker
@@ -158,7 +154,7 @@ class SeaBird54tpsMixin(DriverTestMixin):
         SBE54tpsConfigurationDataParticleKey.PRESSURE_RANGE: {TYPE: float, VALUE: 6.000000E+03, REQUIRED: True },
         SBE54tpsConfigurationDataParticleKey.BATTERY_TYPE: {TYPE: int, VALUE: 0, REQUIRED: True },
         SBE54tpsConfigurationDataParticleKey.BAUD_RATE: {TYPE: int, VALUE: 9600, REQUIRED: True },
-        SBE54tpsConfigurationDataParticleKey.ENABLE_ALERTS: {TYPE: bool, VALUE: False, REQUIRED: True },
+        SBE54tpsConfigurationDataParticleKey.ENABLE_ALERTS: {TYPE: int, VALUE: 0, REQUIRED: True },
         SBE54tpsConfigurationDataParticleKey.UPLOAD_TYPE: {TYPE: int, VALUE: 0, REQUIRED: True },
         SBE54tpsConfigurationDataParticleKey.SAMPLE_PERIOD: {TYPE: int, VALUE: 15, REQUIRED: True }
     }

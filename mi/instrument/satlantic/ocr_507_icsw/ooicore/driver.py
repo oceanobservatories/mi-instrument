@@ -21,7 +21,7 @@ from mi.core.instrument.instrument_driver import SingleConnectionInstrumentDrive
 from mi.core.instrument.instrument_driver import DriverParameter
 from mi.core.instrument.data_particle import CommonDataParticleType, DataParticleValue
 from mi.core.common import InstErrorCode
-from mi.core.instrument.instrument_fsm import InstrumentFSM, ThreadSafeFSM
+from mi.core.instrument.instrument_fsm import ThreadSafeFSM
 from mi.core.exceptions import SampleException, InstrumentParameterException, InstrumentProtocolException, \
     InstrumentException, InstrumentTimeoutException, InstrumentCommandException
 from mi.core.instrument.data_particle import DataParticle, DataParticleKey
@@ -243,7 +243,7 @@ class SatlanticOCR507DataParticle(DataParticle):
             raise SampleException("No timer value parsed")
 
         # Parse the relevant binary data
-        """
+        '''
         Field Name          Field Size (bytes)      Description         Format Char
         ----------          ------------------      -----------         -----------
         sample_delay                2               BS formatted value      h
@@ -253,7 +253,7 @@ class SatlanticOCR507DataParticle(DataParticle):
         internal_temp               2               BU formatted value      H
         frame_counter               1               BU formatted value      B
         checksum                    1               BU formatted value      B
-        """
+        '''
         try:
             sample_delay, ch1_sample, ch2_sample, ch3_sample, ch4_sample, ch5_sample, ch6_sample, ch7_sample, \
             regulated_input_voltage, analog_rail_voltage, internal_temp, frame_counter, checksum \
@@ -353,10 +353,10 @@ class SatlanticOCR507ConfigurationParticle(DataParticle):
         serial_number = match.group('serial_number')
         telemetry_baud_rate = int(match.group('telemetry_baud_rate'))
         max_frame_rate = match.group('max_frame_rate')
-        init_silent_mode = True if match.group('initialize_silent_mode') == 'on' else False
-        init_power_down = True if match.group('initialize_power_down') == 'on' else False
-        init_auto_telemetry = True if match.group('initialize_auto_telemetry') == 'on' else False
-        network_mode = True if match.group('network_mode') == 'on' else False
+        init_silent_mode = 1 if match.group('initialize_silent_mode') == 'on' else 0
+        init_power_down = 1 if match.group('initialize_power_down') == 'on' else 0
+        init_auto_telemetry = 1 if match.group('initialize_auto_telemetry') == 'on' else 0
+        network_mode = 1 if match.group('network_mode') == 'on' else 0
         network_address = int(match.group('network_address'))
         network_baud_rate = int(match.group('network_baud_rate'))
 
