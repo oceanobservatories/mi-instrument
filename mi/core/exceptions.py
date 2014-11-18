@@ -253,7 +253,7 @@ class InstrumentException(ApplicationException):
 
     def get_triple(self):
         """ get exception info without depending on MI exception classes """
-        return ( self.error_code, "%s: %s" % (self.__class__.__name__, self.msg), self._stacks )
+        return ( self.error_code.status_code, "%s: %s" % (self.__class__.__name__, self.msg), self._stacks )
     
 class InstrumentConnectionException(InstrumentException):
     """Exception related to connection with a physical instrument"""
