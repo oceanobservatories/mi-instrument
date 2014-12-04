@@ -42,14 +42,14 @@ NEWLINE = '\n'
 # Preload helper items
 
 PARAMDICT_SELECT = """
-SELECT id, scenario, name, parameter_ids, temporal_parameter
+SELECT id, scenario, name, parameterids, temporalparameter
 FROM parameterdictionary
 WHERE id like 'DICT%'
 """
 
 PARAMDEF_SELECT = """
-SELECT id, scenario, name, hid, parameter_type, value_encoding, unit_of_measure, fill_value, display_name,
-        precision, parameter_function_id, parameter_function_map, data_product_identifier
+SELECT id, scenario, name, hid, parametertype, valueencoding, unitofmeasure, fillvalue, displayname,
+        precision, parameterfunctionid, parameterfunctionmap, dataproductidentifier
 FROM parameterdefs
 WHERE id like 'PD%'
 """
