@@ -16,7 +16,8 @@ __license__ = 'Apache 2.0'
 import re
 import time
 import ntplib
-from mi.core.log import get_logger ; log = get_logger()
+from mi.core.log import get_logger
+log = get_logger()
 
 from mi.core.util import dict_equal
 from mi.core.common import BaseEnum
@@ -327,7 +328,7 @@ class SBE54tpsConfigurationDataParticleKey(BaseEnum):
     PT2 = "press_coeff_pt2"
     PT3 = "press_coeff_pt3"
     PT4 = "press_coeff_pt4"
-    PRESSURE_OFFSET = "press_coeff_poffsett" # pisa
+    PRESSURE_OFFSET = "press_coeff_poffset" # pisa
     PRESSURE_RANGE = "pressure_sensor_range" # pisa
     BATTERY_TYPE = "battery_type"
     BAUD_RATE = "baud_rate"
@@ -798,12 +799,17 @@ class SBE54tpsHardwareDataParticle(DataParticle):
                             SBE54tpsHardwareDataParticleKey.FIRMWARE_VERSION,
                             SBE54tpsHardwareDataParticleKey.FIRMWARE_VERSION,
                             SBE54tpsHardwareDataParticleKey.HARDWARE_VERSION,
-                            SBE54tpsHardwareDataParticleKey.PCB_SERIAL_NUMBER,
                             SBE54tpsHardwareDataParticleKey.PCB_TYPE,
                             SBE54tpsHardwareDataParticleKey.MANUFACTUR_DATE,
                             SBE54tpsHardwareDataParticleKey.FIRMWARE_DATE,
                         ]:
                             single_var_matches[key] = val
+
+                        #array
+                        if key in [
+                           SBE54tpsHardwareDataParticleKey.PCB_SERIAL_NUMBER,
+                        ]:
+                            single_var_matches[key] = [val]
 
                         # int
                         elif key in [
