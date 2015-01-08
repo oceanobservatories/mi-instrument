@@ -516,7 +516,7 @@ class NortekUserConfigDataParticleKey(BaseEnum):
     CELL_SIZE = 'cell_size'
     MEASUREMENT_INTERVAL = 'measurement_interval'
     DEPLOYMENT_NAME = 'deployment_name'
-    WRAP_MODE = 'wrap_moder'
+    WRAP_MODE = 'wrap_mode'
     DEPLOY_START_TIME = 'deployment_start_time'
     DIAG_INTERVAL = 'diagnostics_interval'
     MODE = 'mode'
