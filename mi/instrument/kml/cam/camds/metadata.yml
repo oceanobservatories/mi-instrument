@@ -1,0 +1,8 @@
+driver_metadata:
+  author: Sung Ahn
+  driver_make: kml
+  driver_model: cam
+  driver_name: camds
+  email: locateSung@gmail.com
+  release_notes: Driver for Kongsberg CAMDS
+  version: 0.0.1
