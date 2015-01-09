@@ -1,0 +1,21 @@
+comm:
+  method: multi
+  configs:
+    Driver:
+      comm:
+        command_port: 2006
+        data_port: 2003
+        host: localhost
+        device_port: 8888
+        device_addr: 10.180.80.160
+        method: ethernet
+        sniffer_port: 6003
+    Stream:
+      comm:
+        command_port: 2004
+        data_port: 2005
+        device_addr: 10.180.80.160
+        device_port: 8080
+        host: localhost
+        method: ethernet
+        sniffer_port: 6003
