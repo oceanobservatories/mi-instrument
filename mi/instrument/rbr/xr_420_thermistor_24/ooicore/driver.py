@@ -702,7 +702,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
         self._promptbuf = ''
 
         # Send command.
-        log.debug('_do_cmd_resp: cmd=%s, timeout=%s, write_delay=%s, expected_prompt=%s,' 
+        log.debug('_do_cmd_resp: cmd=%r, timeout=%s, write_delay=%s, expected_prompt=%s,'
                   %(repr(cmd_line), timeout, write_delay, expected_prompt))
 
         if (write_delay == 0):
@@ -744,7 +744,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
         
         while True:
             # Send 'get status' command.
-            log.debug('_wakeup: sending <%s>' % InstrumentCmds.GET_STATUS)
+            log.debug('_wakeup: sending <%r>' % InstrumentCmds.GET_STATUS)
             self._connection.send(InstrumentCmds.GET_STATUS)
             # Grab send time for response timeout.
             send_time = time.time()
@@ -754,7 +754,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
 
                 # look for response
                 if InstrumentResponses.GET_STATUS in self._promptbuf:
-                    log.debug('_wakeup got prompt: %s' % repr(InstrumentResponses.GET_STATUS))
+                    log.debug('_wakeup got prompt: %r' % repr(InstrumentResponses.GET_STATUS))
                     return InstrumentResponses.GET_STATUS
 
                 time_now = time.time()
@@ -1146,12 +1146,14 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
             # Wakeup the device, pass up exception if timeout    
             self._wakeup()
             # Send 'reset sampling' command.
-            log.debug('_reset_instrument: sending <%s>' % ENABLING_SEQUENCE)
+            log.debug('_reset_instrument: sending <%r>' % ENABLING_SEQUENCE)
             self._connection.send(ENABLING_SEQUENCE)
-            time.sleep(.1)
-            log.debug('_reset_instrument: sending <%s>' % InstrumentCmds.RESET_SAMPLING_ERASE_FLASH)
+            time.sleep(1)
+            log.debug('_reset_instrument: sending <%r>' % InstrumentCmds.RESET_SAMPLING_ERASE_FLASH)
             self._connection.send(InstrumentCmds.RESET_SAMPLING_ERASE_FLASH)
             starttime = time.time()
+            #Erasing flash memory and resetting sampling mode, this will take 20 seconds
+            time.sleep(20)
             while True:
                 self._do_cmd_resp(InstrumentCmds.GET_STATUS)
                 status_as_int = int(self._param_dict.get(InstrumentParameters.STATUS), 16)
