@@ -35,6 +35,8 @@ from mi.instrument.mclane.driver import \
     McLaneProtocol, \
     ProtocolState
 
+from mi.instrument.mclane.ras.ppsdn.ppsdn_persistent_store import PpsdnPersistentStoreDict # TODO: Use this to add data persistence
+
 NUM_PORTS = 24  # number of collection filters
 
 ####
