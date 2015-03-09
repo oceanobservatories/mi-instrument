@@ -35,6 +35,8 @@ from mi.instrument.mclane.driver import \
     McLaneProtocol, \
     ProtocolState
 
+from mi.instrument.mclane.ras.rasfl.rasfl_persistent_store import RasflPersistentStoreDict # TODO: Use this to add data persistence
+
 NUM_PORTS = 48  # number of collection bags
 
 ####
