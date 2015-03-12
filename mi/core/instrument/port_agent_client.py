@@ -106,8 +106,7 @@ class PortAgentPacket():
         self.__recv_checksum  = int(variable_tuple[CHECKSUM_INDEX])
         upper = variable_tuple[TIMESTAMP_UPPER_INDEX]
         lower = variable_tuple[TIMESTAMP_LOWER_INDEX]
-        self.__port_agent_timestamp = float("%s.%s" % (upper, lower))
-        #log.trace("port_timestamp: %f", self.__port_agent_timestamp)
+        self.__port_agent_timestamp = upper + float(lower)/2**32
 
     def pack_header(self):
         """
