@@ -150,7 +150,7 @@ class UtilMixin(DriverTestMixin):
         OptaaSampleDataParticleKey.RECORD_LENGTH: {'type': int, 'value': 0x2a8},
         OptaaSampleDataParticleKey.PACKET_TYPE: {'type': int, 'value': 0x05},
         OptaaSampleDataParticleKey.METER_TYPE: {'type': int, 'value': 0x53},
-        OptaaSampleDataParticleKey.SERIAL_NUMBER: {'type': int, 'value': 0x82},
+        OptaaSampleDataParticleKey.SERIAL_NUMBER: {'type': str, 'value': '130'},
         OptaaSampleDataParticleKey.A_REFERENCE_DARK_COUNTS: {'type': int, 'value': 0x1ce},
         OptaaSampleDataParticleKey.PRESSURE_COUNTS: {'type': int, 'value': 0xffff},
         OptaaSampleDataParticleKey.A_SIGNAL_DARK_COUNTS: {'type': int, 'value': 0x2b0},
@@ -232,7 +232,7 @@ class UtilMixin(DriverTestMixin):
     _status_parameters = {
         OptaaStatusDataParticleKey.FIRMWARE_VERSION: {'type': unicode, 'value': '1.10'},
         OptaaStatusDataParticleKey.FIRMWARE_DATE: {'type': unicode, 'value': 'May 16 2005 09:40:13'},
-        OptaaStatusDataParticleKey.PERSISTOR_CF_SERIAL_NUMBER: {'type': int, 'value': 12154},
+        OptaaStatusDataParticleKey.PERSISTOR_CF_SERIAL_NUMBER: {'type': unicode, 'value': '12154'},
         OptaaStatusDataParticleKey.PERSISTOR_CF_BIOS_VERSION: {'type': unicode, 'value': '2.28'},
         OptaaStatusDataParticleKey.PERSISTOR_CF_PICODOS_VERSION: {'type': unicode, 'value': '2.28'}}
 
