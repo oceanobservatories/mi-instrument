@@ -440,13 +440,13 @@ class ADCP_PD0_PARSED_DataParticle(DataParticle):
         self.final_result.append({DataParticleKey.VALUE_ID: ADCP_PD0_PARSED_KEY.TRANSMIT_LAG_DISTANCE,
                                   DataParticleKey.VALUE: transmit_lag_distance})
         self.final_result.append({DataParticleKey.VALUE_ID: ADCP_PD0_PARSED_KEY.CPU_BOARD_SERIAL_NUMBER,
-                                  DataParticleKey.VALUE: cpu_board_serial_number})
+                                  DataParticleKey.VALUE: str(cpu_board_serial_number)})
         self.final_result.append({DataParticleKey.VALUE_ID: ADCP_PD0_PARSED_KEY.SYSTEM_BANDWIDTH,
                                   DataParticleKey.VALUE: system_bandwidth})
         self.final_result.append({DataParticleKey.VALUE_ID: ADCP_PD0_PARSED_KEY.SYSTEM_POWER,
                                   DataParticleKey.VALUE: system_power})
         self.final_result.append({DataParticleKey.VALUE_ID: ADCP_PD0_PARSED_KEY.SERIAL_NUMBER,
-                                  DataParticleKey.VALUE: serial_number})
+                                  DataParticleKey.VALUE: str(serial_number)})
         self.final_result.append({DataParticleKey.VALUE_ID: ADCP_PD0_PARSED_KEY.BEAM_ANGLE,
                                   DataParticleKey.VALUE: beam_angle})
 

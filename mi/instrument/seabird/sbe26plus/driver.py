@@ -158,7 +158,7 @@ class Parameter(DriverParameter):
     SERIAL_NUMBER = 'SERIAL_NUMBER' # str,
     DS_DEVICE_DATE_TIME = 'DateTime' # str for now, later ***
     USER_INFO = 'USERINFO' # str,
-    QUARTZ_PRESSURE_SENSOR_SERIAL_NUMBER = 'QUARTZ_PRESSURE_SENSOR_SERIAL_NUMBER' # float,
+    QUARTZ_PRESSURE_SENSOR_SERIAL_NUMBER = 'QUARTZ_PRESSURE_SENSOR_SERIAL_NUMBER' #str,
     QUARTZ_PRESSURE_SENSOR_RANGE = 'QUARTZ_PRESSURE_SENSOR_RANGE' # float,
     EXTERNAL_TEMPERATURE_SENSOR = 'ExternalTemperature' # bool,
     CONDUCTIVITY = 'CONDUCTIVITY' # bool,
@@ -736,7 +736,7 @@ class SBE26plusDeviceStatusDataParticleKey(BaseEnum):
     SERIAL_NUMBER = 'serial_number' # str,
     DS_DEVICE_DATE_TIME = 'date_time_string' # str for now, later ***
     USER_INFO = 'user_info' # str,
-    QUARTZ_PRESSURE_SENSOR_SERIAL_NUMBER = 'quartz_pressure_sensor_serial_number' # float,
+    QUARTZ_PRESSURE_SENSOR_SERIAL_NUMBER = 'quartz_pressure_sensor_serial_number' #str,
     QUARTZ_PRESSURE_SENSOR_RANGE = 'pressure_sensor_range' # float,
     EXTERNAL_TEMPERATURE_SENSOR = 'external_temperature_sensor' # bool,
     CONDUCTIVITY = 'external_conductivity_sensor' # bool,
@@ -804,7 +804,7 @@ class SBE26plusDeviceStatusDataParticle(DataParticle):
             ),
             SBE26plusDeviceStatusDataParticleKey.SERIAL_NUMBER:  (
                 re.compile(r'SBE 26plus V ([\w.]+) +SN (\d+) +(\d{2} [a-zA-Z]{3,4} \d{4} +[\d:]+)'),
-                lambda match : match.group(2)
+                lambda match : str(match.group(2))
             ),
             SBE26plusDeviceStatusDataParticleKey.DS_DEVICE_DATE_TIME:  (
                 re.compile(r'SBE 26plus V ([\w.]+) +SN (\d+) +(\d{2} [a-zA-Z]{3,4} \d{4} +[\d:]+)'),
@@ -816,7 +816,7 @@ class SBE26plusDeviceStatusDataParticle(DataParticle):
             ),
             SBE26plusDeviceStatusDataParticleKey.QUARTZ_PRESSURE_SENSOR_SERIAL_NUMBER:  (
                 re.compile(r'quartz pressure sensor: serial number = ([\d\.\-]+), range = ([\d\.\-]+) psia'),
-                lambda match : float(match.group(1))
+                lambda match : str(match.group(1))
             ),
             SBE26plusDeviceStatusDataParticleKey.QUARTZ_PRESSURE_SENSOR_RANGE:  (
                 re.compile(r'quartz pressure sensor: serial number = ([\d\.\-]+), range = ([\d\.\-]+) psia'),
@@ -2132,9 +2132,9 @@ class Protocol(SeaBirdProtocol):
         #
         self._param_dict.add(Parameter.QUARTZ_PRESSURE_SENSOR_SERIAL_NUMBER,
             ds_line_03,
-            lambda match : float(match.group(1)),
-            self._float_to_string,
-            type=ParameterDictType.FLOAT,
+            lambda match : str(match.group(1)),
+            self._string_to_string,
+            type=ParameterDictType.STRING,
             display_name="Quartz Pressure Sensor Serial Number",
             multi_match=True,
             visibility=ParameterDictVisibility.READ_ONLY)
