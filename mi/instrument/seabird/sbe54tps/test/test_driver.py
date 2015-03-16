@@ -129,13 +129,13 @@ class SeaBird54tpsMixin(DriverTestMixin):
 
     _prest_configuration_data_parameters = {
         SBE54tpsConfigurationDataParticleKey.DEVICE_TYPE: {TYPE: unicode, VALUE: 'SBE54' , REQUIRED: True },
-        SBE54tpsConfigurationDataParticleKey.SERIAL_NUMBER: {TYPE: int, VALUE: 5400012, REQUIRED: True },
+        SBE54tpsConfigurationDataParticleKey.SERIAL_NUMBER: {TYPE: str, VALUE: '05400012', REQUIRED: True },
         SBE54tpsConfigurationDataParticleKey.ACQ_OSC_CAL_DATE: {TYPE: unicode, VALUE: '2012-02-20', REQUIRED: True },
         SBE54tpsConfigurationDataParticleKey.FRA0: {TYPE: float, VALUE: 5.999926E+06, REQUIRED: True },
         SBE54tpsConfigurationDataParticleKey.FRA1: {TYPE: float, VALUE: 5.792290E-03, REQUIRED: True },
         SBE54tpsConfigurationDataParticleKey.FRA2: {TYPE: float, VALUE: -1.195664E-07, REQUIRED: True },
         SBE54tpsConfigurationDataParticleKey.FRA3: {TYPE: float, VALUE: 7.018589E-13, REQUIRED: True },
-        SBE54tpsConfigurationDataParticleKey.PRESSURE_SERIAL_NUM: {TYPE: int, VALUE: 121451, REQUIRED: True },
+        SBE54tpsConfigurationDataParticleKey.PRESSURE_SERIAL_NUM: {TYPE: unicode, VALUE: '121451', REQUIRED: True },
         SBE54tpsConfigurationDataParticleKey.PRESSURE_CAL_DATE: {TYPE: unicode, VALUE: '2011-06-01', REQUIRED: True },
         SBE54tpsConfigurationDataParticleKey.PU0: {TYPE: float, VALUE: 5.820407E+00, REQUIRED: True },
         SBE54tpsConfigurationDataParticleKey.PY1: {TYPE: float, VALUE: -3.845374E+03, REQUIRED: True },
@@ -161,7 +161,7 @@ class SeaBird54tpsMixin(DriverTestMixin):
 
     _prest_device_status_parameters = {
         SBE54tpsStatusDataParticleKey.DEVICE_TYPE: {TYPE: unicode, VALUE: 'SBE54', REQUIRED: True },
-        SBE54tpsStatusDataParticleKey.SERIAL_NUMBER: {TYPE: int, VALUE: 5400012, REQUIRED: True },
+        SBE54tpsStatusDataParticleKey.SERIAL_NUMBER: {TYPE: str, VALUE: '05400012', REQUIRED: True },
         SBE54tpsStatusDataParticleKey.TIME: {TYPE: unicode, VALUE: '2012-11-06T10:55:44', REQUIRED: True },
         SBE54tpsStatusDataParticleKey.EVENT_COUNT: {TYPE: int, VALUE: 573 },
         SBE54tpsStatusDataParticleKey.MAIN_SUPPLY_VOLTAGE: {TYPE: float, VALUE:  23.3, REQUIRED: True },
@@ -174,7 +174,7 @@ class SeaBird54tpsMixin(DriverTestMixin):
         SBE54tpsEventCounterDataParticleKey.NUMBER_EVENTS: {TYPE: int, VALUE: 573 },
         SBE54tpsEventCounterDataParticleKey.MAX_STACK: {TYPE: int, VALUE: 354 },
         SBE54tpsEventCounterDataParticleKey.DEVICE_TYPE: {TYPE: unicode, VALUE: 'SBE54' },
-        SBE54tpsEventCounterDataParticleKey.SERIAL_NUMBER: {TYPE: int, VALUE: 5400012 },
+        SBE54tpsEventCounterDataParticleKey.SERIAL_NUMBER: {TYPE: str, VALUE: '05400012' },
         SBE54tpsEventCounterDataParticleKey.POWER_ON_RESET: {TYPE: int, VALUE: 25 },
         SBE54tpsEventCounterDataParticleKey.POWER_FAIL_RESET: {TYPE: int, VALUE: 25 },
         SBE54tpsEventCounterDataParticleKey.SERIAL_BYTE_ERROR: {TYPE: int, VALUE: 9 },
@@ -188,12 +188,12 @@ class SeaBird54tpsMixin(DriverTestMixin):
 
     _prest_hardware_data_parameters = {
         SBE54tpsHardwareDataParticleKey.DEVICE_TYPE: {TYPE: unicode, VALUE: 'SBE54', REQUIRED: True },
-        SBE54tpsHardwareDataParticleKey.SERIAL_NUMBER: {TYPE: int, VALUE: 5400012, REQUIRED: True },
+        SBE54tpsHardwareDataParticleKey.SERIAL_NUMBER: {TYPE: str, VALUE: '05400012', REQUIRED: True },
         SBE54tpsHardwareDataParticleKey.MANUFACTURER: {TYPE: unicode, VALUE: 'Sea-Bird Electronics, Inc', REQUIRED: True },
         SBE54tpsHardwareDataParticleKey.FIRMWARE_VERSION: {TYPE: unicode, VALUE: 'SBE54 V1.3-6MHZ', REQUIRED: True },
         SBE54tpsHardwareDataParticleKey.FIRMWARE_DATE: {TYPE: unicode, VALUE: 'Mar 22 2007', REQUIRED: True },
         SBE54tpsHardwareDataParticleKey.HARDWARE_VERSION: {TYPE: unicode, VALUE: '41478A.1T', REQUIRED: True },
-        SBE54tpsHardwareDataParticleKey.PCB_SERIAL_NUMBER: {TYPE: unicode, VALUE: 'NOT SET', REQUIRED: True },
+        SBE54tpsHardwareDataParticleKey.PCB_SERIAL_NUMBER: {TYPE: list, VALUE: ['NOT SET'], REQUIRED: True },
         SBE54tpsHardwareDataParticleKey.PCB_TYPE: {TYPE: unicode, VALUE: '1', REQUIRED: True },
         SBE54tpsHardwareDataParticleKey.MANUFACTUR_DATE: {TYPE: unicode, VALUE: 'Jun 27 2007', REQUIRED: True },
     }

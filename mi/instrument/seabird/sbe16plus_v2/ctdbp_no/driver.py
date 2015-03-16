@@ -187,7 +187,7 @@ class SBE16NOHardwareParticle(SeaBirdParticle):
         dom = parseString(self.raw_data)
         root = dom.documentElement
         log.debug("root.tagName = %s", root.tagName)
-        serial_number = int(root.getAttribute(SERIAL_NUMBER))
+        serial_number = root.getAttribute(SERIAL_NUMBER)
 
         firmware_version = self._extract_xml_element_value(root, FIRMWARE_VERSION)
         firmware_date = self._extract_xml_element_value(root, FIRMWARE_DATE)
@@ -201,9 +201,9 @@ class SBE16NOHardwareParticle(SeaBirdParticle):
             pcb_serial_number.append(assembly.getAttribute(PCB_SERIAL_NUMBER))
             pcb_assembly.append(assembly.getAttribute(ASSEMBLY_NUMBER))
 
-        temperature_sensor_serial_number = 0
-        conductivity_sensor_serial_number = 0
-        pressure_sensor_serial_number = 0
+        temperature_sensor_serial_number = ""
+        conductivity_sensor_serial_number = ""
+        pressure_sensor_serial_number = ""
         pressure_sensor_type = ""
         volt0_serial_number = 0
         volt0_type = ""
@@ -216,9 +216,9 @@ class SBE16NOHardwareParticle(SeaBirdParticle):
         for sensor in sensors:
             sensor_id = sensor.getAttribute(ID)
             if sensor_id == TEMPERATURE_SENSOR_ID:
-                temperature_sensor_serial_number = int(self._extract_xml_element_value(sensor, SERIAL_NUMBER))
+                temperature_sensor_serial_number = self._extract_xml_element_value(sensor, SERIAL_NUMBER)
             elif sensor_id == CONDUCTIVITY_SENSOR_ID:
-                conductivity_sensor_serial_number = int(self._extract_xml_element_value(sensor, SERIAL_NUMBER))
+                conductivity_sensor_serial_number = self._extract_xml_element_value(sensor, SERIAL_NUMBER)
             elif sensor_id == PRESSURE_SENSOR_ID:
                 pressure_sensor_serial_number = self._extract_xml_element_value(sensor, SERIAL_NUMBER)
                 pressure_sensor_type = self._extract_xml_element_value(sensor, TYPE)
@@ -291,7 +291,7 @@ class SBE16NOCalibrationParticleKey(BaseEnum):
     CTCOR = "cond_coeff_ctcor"
     CSLOPE = "cond_coeff_cslope"
 
-    PRES_SERIAL_NUMBER = "press_serial_number"
+    PRES_SERIAL_NUMBER = "pressure_sensor_serial_number"
     PRES_CAL_DATE = "calibration_date_pressure"
     PC1 = "press_coeff_pc1"
     PC2 = "press_coeff_pc2"
@@ -432,7 +432,7 @@ class SBE16NOCalibrationParticle(SeaBirdParticle):
         dom = parseString(self.raw_data)
         root = dom.documentElement
         log.debug("root.tagName = %s", root.tagName)
-        serial_number = int(root.getAttribute(SERIAL_NUMBER))
+        serial_number = root.getAttribute(SERIAL_NUMBER)
         result = [{DataParticleKey.VALUE_ID: SBE16NOCalibrationParticleKey.SERIAL_NUMBER,
                    DataParticleKey.VALUE: serial_number},
         ]
@@ -442,7 +442,7 @@ class SBE16NOCalibrationParticle(SeaBirdParticle):
             id_attr = calibration.getAttribute(ID)
             if id_attr == TEMPERATURE_SENSOR_ID:
                 result.append(
-                    self._get_xml_parameter(calibration, SBE16NOCalibrationParticleKey.TEMP_SENSOR_SERIAL_NUMBER, int))
+                    self._get_xml_parameter(calibration, SBE16NOCalibrationParticleKey.TEMP_SENSOR_SERIAL_NUMBER, str))
                 result.append(self._get_xml_parameter(calibration, SBE16NOCalibrationParticleKey.TEMP_CAL_DATE, str))
                 result.append(self._get_xml_parameter(calibration, SBE16NOCalibrationParticleKey.TA0))
                 result.append(self._get_xml_parameter(calibration, SBE16NOCalibrationParticleKey.TA1))
@@ -451,7 +451,7 @@ class SBE16NOCalibrationParticle(SeaBirdParticle):
                 result.append(self._get_xml_parameter(calibration, SBE16NOCalibrationParticleKey.TOFFSET))
             elif id_attr == CONDUCTIVITY_SENSOR_ID:
                 result.append(
-                    self._get_xml_parameter(calibration, SBE16NOCalibrationParticleKey.COND_SENSOR_SERIAL_NUMBER, int))
+                    self._get_xml_parameter(calibration, SBE16NOCalibrationParticleKey.COND_SENSOR_SERIAL_NUMBER, str))
                 result.append(self._get_xml_parameter(calibration, SBE16NOCalibrationParticleKey.COND_CAL_DATE, str))
                 result.append(self._get_xml_parameter(calibration, SBE16NOCalibrationParticleKey.CONDG))
                 result.append(self._get_xml_parameter(calibration, SBE16NOCalibrationParticleKey.CONDH))
@@ -462,7 +462,7 @@ class SBE16NOCalibrationParticle(SeaBirdParticle):
                 result.append(self._get_xml_parameter(calibration, SBE16NOCalibrationParticleKey.CSLOPE))
             elif id_attr == PRESSURE_SENSOR_ID:
                 result.append(
-                    self._get_xml_parameter(calibration, SBE16NOCalibrationParticleKey.PRES_SERIAL_NUMBER, int))
+                    self._get_xml_parameter(calibration, SBE16NOCalibrationParticleKey.PRES_SERIAL_NUMBER, str))
                 result.append(self._get_xml_parameter(calibration, SBE16NOCalibrationParticleKey.PRES_CAL_DATE, str))
                 result.append(self._get_xml_parameter(calibration, SBE16NOCalibrationParticleKey.PC1))
                 result.append(self._get_xml_parameter(calibration, SBE16NOCalibrationParticleKey.PC2))

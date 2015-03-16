@@ -34,7 +34,6 @@ from mi.core.instrument.chunker import StringChunker
 from mi.core.exceptions import InstrumentParameterException
 from mi.core.exceptions import SampleException
 from mi.core.exceptions import InstrumentProtocolException
-from mi.core.exceptions import InstrumentTimeoutException
 from mi.core.instrument.driver_dict import DriverDictKey
 
 from mi.instrument.seabird.driver import SeaBirdInstrumentDriver
@@ -349,7 +348,7 @@ class SBE16StatusParticle(SeaBirdParticle):
         return {
             DEFAULT_ENCODER_KEY: str,
 
-            SBE16StatusParticleKey.SERIAL_NUMBER : int,
+            SBE16StatusParticleKey.SERIAL_NUMBER: str,
             SBE16StatusParticleKey.VBATT : float,
             SBE16StatusParticleKey.VLITH : float,
             SBE16StatusParticleKey.IOPER : float,
@@ -477,7 +476,7 @@ class SBE16CalibrationParticleKey(BaseEnum):
     CPCOR = "cond_coeff_cpcor"
     CTCOR = "cond_coeff_ctcor"
     CSLOPE = "cond_coeff_cslope"
-    PRES_SERIAL_NUMBER = "press_serial_number"
+    PRES_SERIAL_NUMBER = "pressure_sensor_serial_number"
     PRES_RANGE = "pressure_sensor_range"
     PRES_CAL_DATE = "calibration_date_pressure"
 
@@ -645,11 +644,11 @@ class SBE16CalibrationParticle(SeaBirdParticle):
             DEFAULT_ENCODER_KEY: float,
 
             SBE16CalibrationParticleKey.FIRMWARE_VERSION : str,
-            SBE16CalibrationParticleKey.SERIAL_NUMBER : int,
+            SBE16CalibrationParticleKey.SERIAL_NUMBER : str,
             SBE16CalibrationParticleKey.DATE_TIME : str,
             SBE16CalibrationParticleKey.TEMP_CAL_DATE : str,
             SBE16CalibrationParticleKey.COND_CAL_DATE : str,
-            SBE16CalibrationParticleKey.PRES_SERIAL_NUMBER : int,
+            SBE16CalibrationParticleKey.PRES_SERIAL_NUMBER : str,
             SBE16CalibrationParticleKey.PRES_RANGE : int,
             SBE16CalibrationParticleKey.PRES_CAL_DATE : str,
         }
