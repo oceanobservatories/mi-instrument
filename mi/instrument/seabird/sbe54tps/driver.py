@@ -269,13 +269,14 @@ class SBE54tpsStatusDataParticle(DataParticle):
 
                         # str
                         if key in [
-                            SBE54tpsStatusDataParticleKey.DEVICE_TYPE
+                            SBE54tpsStatusDataParticleKey.DEVICE_TYPE,
+                            SBE54tpsStatusDataParticleKey.SERIAL_NUMBER
                         ]:
                             single_var_matches[key] = val
 
                         # int
                         elif key in [
-                            SBE54tpsStatusDataParticleKey.SERIAL_NUMBER,
+
                             SBE54tpsStatusDataParticleKey.EVENT_COUNT,
                             SBE54tpsStatusDataParticleKey.NUMBER_OF_SAMPLES,
                             SBE54tpsStatusDataParticleKey.BYTES_USED,
@@ -305,6 +306,8 @@ class SBE54tpsStatusDataParticle(DataParticle):
         for (key, value) in single_var_matches.iteritems():
             result.append({DataParticleKey.VALUE_ID: key,
                            DataParticleKey.VALUE: value})
+
+        log.debug('RESULTS: = %r', result)
 
         return result
 
@@ -519,14 +522,14 @@ class SBE54tpsConfigurationDataParticle(DataParticle):
                         if key in [
                             SBE54tpsConfigurationDataParticleKey.DEVICE_TYPE,
                             SBE54tpsConfigurationDataParticleKey.PRESSURE_CAL_DATE,
-                            SBE54tpsConfigurationDataParticleKey.ACQ_OSC_CAL_DATE
+                            SBE54tpsConfigurationDataParticleKey.ACQ_OSC_CAL_DATE,
+                            SBE54tpsConfigurationDataParticleKey.PRESSURE_SERIAL_NUM,
+                            SBE54tpsConfigurationDataParticleKey.SERIAL_NUMBER,
                         ]:
-                            single_var_matches[key] = val
+                            single_var_matches[key] = str(val)
 
                         # int
                         elif key in [
-                            SBE54tpsConfigurationDataParticleKey.SERIAL_NUMBER,
-                            SBE54tpsConfigurationDataParticleKey.PRESSURE_SERIAL_NUM,
                             SBE54tpsConfigurationDataParticleKey.BATTERY_TYPE,
                             SBE54tpsConfigurationDataParticleKey.UPLOAD_TYPE,
                             SBE54tpsConfigurationDataParticleKey.SAMPLE_PERIOD,
@@ -683,13 +686,17 @@ class SBE54tpsEventCounterDataParticle(DataParticle):
                         val = match.group(index)
                         log.debug("KEY [%s] VAL[%s]", key, val)
                         # str
-                        if key in [SBE54tpsEventCounterDataParticleKey.DEVICE_TYPE]:
+
+                        if key in [
+                            SBE54tpsEventCounterDataParticleKey.DEVICE_TYPE,
+                            SBE54tpsEventCounterDataParticleKey.SERIAL_NUMBER,
+                            ]:
                             single_var_matches[key] = match.group(index)
+
                         # int
                         elif key in [
                             SBE54tpsEventCounterDataParticleKey.NUMBER_EVENTS,
                             SBE54tpsEventCounterDataParticleKey.MAX_STACK,
-                            SBE54tpsEventCounterDataParticleKey.SERIAL_NUMBER,
                             SBE54tpsEventCounterDataParticleKey.POWER_ON_RESET,
                             SBE54tpsEventCounterDataParticleKey.POWER_FAIL_RESET,
                             SBE54tpsEventCounterDataParticleKey.SERIAL_BYTE_ERROR,
@@ -777,18 +784,30 @@ class SBE54tpsHardwareDataParticle(DataParticle):
                 match = matcher.match(line)
 
                 if match:
-                    if key is 'DeviceTypeAndSerialNumber':
-                        single_var_matches[SBE54tpsHardwareDataParticleKey.DEVICE_TYPE] = match.group(1)
-                        single_var_matches[SBE54tpsHardwareDataParticleKey.SERIAL_NUMBER] = int(match.group(2))
-                    elif key in [SBE54tpsHardwareDataParticleKey.MANUFACTURER,
-                                 SBE54tpsHardwareDataParticleKey.FIRMWARE_VERSION,
-                                 SBE54tpsHardwareDataParticleKey.PCB_TYPE,
-                                 SBE54tpsHardwareDataParticleKey.MANUFACTUR_DATE,
-                                 SBE54tpsHardwareDataParticleKey.FIRMWARE_DATE]:
-                        single_var_matches[key] = match.group(1)
-                    elif key in [SBE54tpsHardwareDataParticleKey.HARDWARE_VERSION,
-                                 SBE54tpsHardwareDataParticleKey.PCB_SERIAL_NUMBER]:
-                        single_var_matches[key].append(match.group(1))
+                    index = 0
+                    for key in keys:
+                        index = index + 1
+                        val = match.group(index)
+
+                        # str
+                        if key in [
+                            SBE54tpsHardwareDataParticleKey.DEVICE_TYPE,
+                            SBE54tpsHardwareDataParticleKey.MANUFACTURER,
+                            SBE54tpsHardwareDataParticleKey.FIRMWARE_VERSION,
+                            SBE54tpsHardwareDataParticleKey.FIRMWARE_VERSION,
+                            SBE54tpsHardwareDataParticleKey.HARDWARE_VERSION,
+                            SBE54tpsHardwareDataParticleKey.PCB_TYPE,
+                            SBE54tpsHardwareDataParticleKey.MANUFACTUR_DATE,
+                            SBE54tpsHardwareDataParticleKey.FIRMWARE_DATE,
+                            SBE54tpsHardwareDataParticleKey.SERIAL_NUMBER
+                        ]:
+                            single_var_matches[key] = val
+
+                        #array
+                        if key in [
+                           SBE54tpsHardwareDataParticleKey.PCB_SERIAL_NUMBER,
+                        ]:
+                            single_var_matches[key] = [val]
 
         result = []
         for (key, value) in single_var_matches.iteritems():
