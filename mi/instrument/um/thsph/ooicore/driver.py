@@ -13,13 +13,11 @@ Vent Chemistry Instrument  Driver
 __author__ = 'Richard Han'
 __license__ = 'Apache 2.0'
 
-import time
 import re
 
 from mi.core.exceptions import InstrumentException
 from mi.core.driver_scheduler import DriverSchedulerConfigKey, TriggerType
-from mi.core.exceptions import SampleException, InstrumentProtocolException, InstrumentParameterException, \
-    InstrumentTimeoutException
+from mi.core.exceptions import SampleException, InstrumentProtocolException, InstrumentParameterException
 from mi.core.instrument.driver_dict import DriverDictKey
 from mi.core.instrument.protocol_param_dict import ParameterDictType
 
@@ -52,16 +50,16 @@ NEWLINE = '\r\n'
 TIMEOUT = 10
 
 # Maximum number of communication test to wake up the instrument
-MAX_COMM_TEST = 2
+#MAX_COMM_TEST = 2
 
 # Time wait for the instrument response
-CMD_RESP_TIME = .1
+#CMD_RESP_TIME = .1
 
 #The timeout to wake the device
-WAKEUP_TIMEOUT = 3
+#WAKEUP_TIMEOUT = 3
 
 # The time to look for response to a wake up attempt
-RESPONSE_TIMEOUT = 1
+#RESPONSE_TIMEOUT = 1
 
 
 class ScheduledJob(BaseEnum):
@@ -81,7 +79,7 @@ class Command(BaseEnum):
     Instrument command strings
     """
     GET_SAMPLE = 'get_sample_cmd'  # Gets data sample from ADC
-    COMM_TEST  = 'comm_test_cmd'   # Communication test, returns aP#
+    COMM_TEST = 'comm_test_cmd'   # Communication test, returns aP#
 
 
 class ProtocolState(BaseEnum):
@@ -129,7 +127,6 @@ class Parameter(DriverParameter):
     """
     INTERVAL = 'SampleInterval'
     INSTRUMENT_SERIES = 'InstrumentSeries'
-
 
 
 class Prompt(BaseEnum):
@@ -318,9 +315,9 @@ class THSPHProtocol(CommandResponseInstrumentProtocol):
 
     # THSPH commands for instrument series A, B and C
     THSPH_COMMANDS = {
-        SERIES_A : { Command.COMM_TEST : COMM_TEST_SERIES_A, Command.GET_SAMPLE : GET_SAMPLE_SERIES_A},
-        SERIES_B : { Command.COMM_TEST : COMM_TEST_SERIES_B, Command.GET_SAMPLE : GET_SAMPLE_SERIES_B},
-        SERIES_C : { Command.COMM_TEST : COMM_TEST_SERIES_C, Command.GET_SAMPLE : GET_SAMPLE_SERIES_C},
+        SERIES_A: {Command.COMM_TEST: COMM_TEST_SERIES_A, Command.GET_SAMPLE: GET_SAMPLE_SERIES_A},
+        SERIES_B: {Command.COMM_TEST: COMM_TEST_SERIES_B, Command.GET_SAMPLE: GET_SAMPLE_SERIES_B},
+        SERIES_C: {Command.COMM_TEST: COMM_TEST_SERIES_C, Command.GET_SAMPLE: GET_SAMPLE_SERIES_C},
     }
 
     __metaclass__ = get_logging_metaclass(log_level='debug')
@@ -747,7 +744,6 @@ class THSPHProtocol(CommandResponseInstrumentProtocol):
 
         return next_state, (next_agent_state, result)
 
-
     def _build_simple_command(self, cmd, *args):
         """
         Build handler for basic THSPH commands.
@@ -763,7 +759,6 @@ class THSPHProtocol(CommandResponseInstrumentProtocol):
             raise  InstrumentException('Unknown THSPH driver command  %s' % cmd)
 
         return "%s%s" % (instrument_cmd, NEWLINE)
-
 
     def _build_set_command(self, cmd, param, val):
         """
@@ -793,7 +788,7 @@ class THSPHProtocol(CommandResponseInstrumentProtocol):
 
         return set_cmd
 
-    def _wakeup(self, wakeup_timeout=WAKEUP_TIMEOUT, response_timeout=RESPONSE_TIMEOUT):
+    def _wakeup(self, wakeup_timeout=5, response_timeout=5):
         """
         waking this instrument up by sending MAX_COM_TEST communication test commands
         (aP*)
@@ -801,37 +796,43 @@ class THSPHProtocol(CommandResponseInstrumentProtocol):
         @param response_timeout The time to look for response to a wakeup attempt.
         @throw InstrumentTimeoutException if the device could not be woken.
         """
-        log.debug("_wakeup ")
+        pass
 
-        sleep_time = CMD_RESP_TIME
+        # if self.get_current_state() == DriverProtocolState.AUTOSAMPLE:
+        #     #do not need to send a wakeup call before every poll during autosample
+        #     return Prompt.COMM_RESPONSE
+        #
+        # sleep_time = CMD_RESP_TIME
+        #
+        # cmd_line = self._build_simple_command(Command.COMM_TEST)
+        #
+        # # Grab start time for overall wakeup timeout.
+        # start_time = time.time()
+        # test_count = 0
+        # while test_count < MAX_COMM_TEST:
+        #     # Clear the prompt buffer.
+        #     self._promptbuf = ''
+        #
+        #     # Send a communication test command and wait delay amount for response.
+        #     self._connection.send(cmd_line)
+        #     time.sleep(sleep_time)
+        #     if self._promptbuf.find(Prompt.COMM_RESPONSE) != -1:
+        #         # instrument is awake
+        #         log.debug('_wakeup: got communication test response %s', Prompt.COMM_RESPONSE)
+        #         test_count += 1
+        #     else:
+        #         #clear test_count since we want MAX_COMM_TEST consecutive successful communication test
+        #         test_count = 0
+        #     # Stop wake up the instrument if the wake up time out has elapsed
+        #     if time.time() > start_time + wakeup_timeout:
+        #         break
+        #
+        # if test_count != MAX_COMM_TEST:
+        #     log.debug('instrument failed to wakeup in %d seconds time' % wakeup_timeout)
+        #     raise InstrumentTimeoutException(
+        #         "_wakeup(): instrument failed to wakeup in %d seconds time" % wakeup_timeout)
+        #
+        # else:
+        #     return Prompt.COMM_RESPONSE
 
-        cmd_line = self._build_simple_command(Command.COMM_TEST)
 
-        # Grab start time for overall wakeup timeout.
-        start_time = time.time()
-        test_count = 0
-        while test_count < MAX_COMM_TEST:
-            # Clear the prompt buffer.
-            self._promptbuf = ''
-
-            # Send a communication test command and wait delay amount for response.
-            self._connection.send(cmd_line)
-            time.sleep(sleep_time)
-            if self._promptbuf.find(Prompt.COMM_RESPONSE) != -1:
-                # instrument is awake
-                log.debug('_wakeup: got communication test response %s', Prompt.COMM_RESPONSE)
-                test_count += 1
-            else:
-                #clear test_count since we want MAX_COMM_TEST consecutive successful communication test
-                test_count = 0
-            # Stop wake up the instrument if the wake up time out has elapsed
-            if time.time() > start_time + wakeup_timeout:
-                break
-
-        if test_count != MAX_COMM_TEST:
-            log.debug('instrument failed to wakeup in %d seconds time' % wakeup_timeout)
-            raise InstrumentTimeoutException(
-                "_wakeup(): instrument failed to wakeup in %d seconds time" % wakeup_timeout)
-
-        else:
-            return Prompt.COMM_RESPONSE
