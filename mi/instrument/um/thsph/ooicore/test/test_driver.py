@@ -86,11 +86,6 @@ TEST_INVALID_POLLED_INTERVAL = 601
 #                                                                             #
 ###############################################################################
 
-###
-#   Driver constant definitions
-###
-COMM_TEST_RESPONSE = "AP*" + NEWLINE
-
 
 ###############################################################################
 #                           DRIVER TEST MIXIN        		                  #
@@ -385,8 +380,6 @@ class DriverQualificationTest(InstrumentDriverQualificationTestCase, THSPHMixinS
         self.assert_direct_access_start_telnet()
         self.assertTrue(self.tcp_client)
 
-        self.tcp_client.send_data(THSPHProtocol.COMM_TEST_SERIES_A + NEWLINE)
-        self.tcp_client.expect(COMM_TEST_RESPONSE)
         self.assert_direct_access_stop_telnet()
         self.assert_state_change(ResourceAgentState.COMMAND, ProtocolState.COMMAND, 10)
 
