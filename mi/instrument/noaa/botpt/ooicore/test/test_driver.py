@@ -592,8 +592,7 @@ class DriverUnitTest(InstrumentDriverUnitTestCase, BotptTestMixinSub):
         expected = [call(ProtocolEvent.GET, Parameter.ALL),  # startup get ALL
                     call(ProtocolEvent.START_LEVELING),      # start leveling
                     call(ProtocolEvent.GET, Parameter.ALL),  # config change get ALL
-                    call(ProtocolEvent.STOP_LEVELING),       # leveling timed out
-                    call(ProtocolEvent.GET, Parameter.ALL)]  # config change get ALL
+                    call(ProtocolEvent.STOP_LEVELING)]  # config change get ALL
 
         # assert that we raised the expected events
         self.assertEqual(driver._protocol._protocol_fsm.on_event.call_args_list, expected)

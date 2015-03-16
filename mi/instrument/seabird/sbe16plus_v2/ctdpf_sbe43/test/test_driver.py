@@ -366,7 +366,7 @@ class SBE43Mixin(DriverTestMixin):
     }
 
     _configuration_parameters = {
-        SBE19ConfigurationParticleKey.SERIAL_NUMBER: {TYPE: int, VALUE: 1906914, REQUIRED: True},
+        SBE19ConfigurationParticleKey.SERIAL_NUMBER: {TYPE: unicode, VALUE: '01906914', REQUIRED: True},
         SBE19ConfigurationParticleKey.SCANS_TO_AVERAGE: {TYPE: int, VALUE: 4, REQUIRED: True},
         SBE19ConfigurationParticleKey.MIN_COND_FREQ: {TYPE: int, VALUE: 2500, REQUIRED: True},
         SBE19ConfigurationParticleKey.PUMP_DELAY: {TYPE: int, VALUE: 15, REQUIRED: True},
@@ -391,7 +391,7 @@ class SBE43Mixin(DriverTestMixin):
     }
 
     _status_parameters = {
-        SBE43StatusParticleKey.SERIAL_NUMBER: {TYPE: int, VALUE: 1906914, REQUIRED: True},
+        SBE43StatusParticleKey.SERIAL_NUMBER: {TYPE: unicode, VALUE: '01906914', REQUIRED: True},
         SBE43StatusParticleKey.DATE_TIME: {TYPE: unicode, VALUE: "2014-03-20T09:09:06", REQUIRED: True},
         SBE43StatusParticleKey.LOGGING_STATE: {TYPE: unicode, VALUE: "not logging", REQUIRED: True},
         SBE43StatusParticleKey.NUMBER_OF_EVENTS: {TYPE: int, VALUE: 260, REQUIRED: True},
@@ -408,15 +408,15 @@ class SBE43Mixin(DriverTestMixin):
     }
 
     _hardware_parameters = {
-        SBE43HardwareParticleKey.SERIAL_NUMBER: {TYPE: int, VALUE: 1906914, REQUIRED: True},
+        SBE43HardwareParticleKey.SERIAL_NUMBER: {TYPE: unicode, VALUE: '01906914', REQUIRED: True},
         SBE43HardwareParticleKey.FIRMWARE_VERSION: {TYPE: unicode, VALUE: '2.5.2', REQUIRED: True},
         SBE43HardwareParticleKey.FIRMWARE_DATE: {TYPE: unicode, VALUE: '16 March 2011 08:50', REQUIRED: True},
         SBE43HardwareParticleKey.COMMAND_SET_VERSION: {TYPE: unicode, VALUE: '1.2', REQUIRED: True},
         SBE43HardwareParticleKey.PCB_SERIAL_NUMBER: {TYPE: list, VALUE: ['49577', '46750', '49374', '38071'], REQUIRED: True},
         SBE43HardwareParticleKey.ASSEMBLY_NUMBER: {TYPE: list, VALUE: ['41054H', '41580B', '41606', '41057A'], REQUIRED: True},
         SBE43HardwareParticleKey.MANUFACTURE_DATE: {TYPE: unicode, VALUE: '29 SEP 2011', REQUIRED: True},
-        SBE43HardwareParticleKey.TEMPERATURE_SENSOR_SERIAL_NUMBER: {TYPE: int, VALUE: 1906914, REQUIRED: True},
-        SBE43HardwareParticleKey.CONDUCTIVITY_SENSOR_SERIAL_NUMBER: {TYPE: int, VALUE: 1906914, REQUIRED: True},
+        SBE43HardwareParticleKey.TEMPERATURE_SENSOR_SERIAL_NUMBER: {TYPE: unicode, VALUE: '01906914', REQUIRED: True},
+        SBE43HardwareParticleKey.CONDUCTIVITY_SENSOR_SERIAL_NUMBER: {TYPE: unicode, VALUE: '01906914', REQUIRED: True},
         SBE43HardwareParticleKey.PRESSURE_SENSOR_SERIAL_NUMBER: {TYPE: unicode, VALUE: '3313899', REQUIRED: True},
         SBE43HardwareParticleKey.PRESSURE_SENSOR_TYPE: {TYPE: unicode, VALUE: 'strain-0', REQUIRED: True},
         SBE43HardwareParticleKey.VOLT0_TYPE: {TYPE: unicode, VALUE: 'SBE 43 OXY', REQUIRED: True},
@@ -424,15 +424,15 @@ class SBE43Mixin(DriverTestMixin):
     }
 
     _calibration_parameters = {
-        SBE19CalibrationParticleKey.SERIAL_NUMBER: {TYPE: int, VALUE: 1906914, REQUIRED: True},
-        SBE19CalibrationParticleKey.TEMP_SENSOR_SERIAL_NUMBER: {TYPE: int, VALUE: 1906914, REQUIRED: True },
+        SBE19CalibrationParticleKey.SERIAL_NUMBER: {TYPE: unicode, VALUE: '01906914', REQUIRED: True},
+        SBE19CalibrationParticleKey.TEMP_SENSOR_SERIAL_NUMBER: {TYPE: unicode, VALUE: '01906914', REQUIRED: True },
         SBE19CalibrationParticleKey.TEMP_CAL_DATE: {TYPE: unicode, VALUE: "09-Oct-11", REQUIRED: True},
         SBE19CalibrationParticleKey.TA0: {TYPE: float, VALUE: 1.254755e-03, REQUIRED: True},
         SBE19CalibrationParticleKey.TA1: {TYPE: float, VALUE: 2.758871e-04, REQUIRED: True},
         SBE19CalibrationParticleKey.TA2: {TYPE: float, VALUE: -1.368268e-06, REQUIRED: True},
         SBE19CalibrationParticleKey.TA3: {TYPE: float, VALUE: 1.910795e-07, REQUIRED: True},
         SBE19CalibrationParticleKey.TOFFSET: {TYPE: float, VALUE: 0.0, REQUIRED: True},
-        SBE19CalibrationParticleKey.COND_SENSOR_SERIAL_NUMBER: {TYPE: int, VALUE: 1906914, REQUIRED: True },
+        SBE19CalibrationParticleKey.COND_SENSOR_SERIAL_NUMBER: {TYPE: unicode, VALUE: '01906914', REQUIRED: True },
         SBE19CalibrationParticleKey.COND_CAL_DATE: {TYPE: unicode, VALUE: '09-Oct-11', REQUIRED: True},
         SBE19CalibrationParticleKey.CONDG: {TYPE: float, VALUE: -9.761799e-01, REQUIRED: True},
         SBE19CalibrationParticleKey.CONDH: {TYPE: float, VALUE: 1.369994e-01, REQUIRED: True},
@@ -441,7 +441,7 @@ class SBE43Mixin(DriverTestMixin):
         SBE19CalibrationParticleKey.CPCOR: {TYPE: float, VALUE: -9.570000e-08, REQUIRED: True},
         SBE19CalibrationParticleKey.CTCOR: {TYPE: float, VALUE: 3.250000e-06, REQUIRED: True},
         SBE19CalibrationParticleKey.CSLOPE: {TYPE: float, VALUE: 1.0, REQUIRED: True},
-        SBE19CalibrationParticleKey.PRES_SERIAL_NUMBER: {TYPE: int, VALUE: 3313899, REQUIRED: True },
+        SBE19CalibrationParticleKey.PRES_SERIAL_NUMBER: {TYPE: unicode, VALUE: '3313899', REQUIRED: True },
         SBE19CalibrationParticleKey.PRES_CAL_DATE: {TYPE: unicode, VALUE: '06-Oct-11', REQUIRED: True },
         SBE19CalibrationParticleKey.PA0: {TYPE: float, VALUE: -3.689246e-02, REQUIRED: True },
         SBE19CalibrationParticleKey.PA1: {TYPE: float, VALUE: 1.545570e-03, REQUIRED: True },
