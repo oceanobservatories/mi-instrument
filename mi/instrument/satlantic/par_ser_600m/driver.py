@@ -9,12 +9,11 @@
 with the Satlantic PAR sensor (PARAD in RSN nomenclature).
 """
 
-__author__ = 'Steve Foley & Bill Bollenbacher, Ronald Ronquilllo'
+__author__ = 'Ronald Ronquilllo'
 __license__ = 'Apache 2.0'
 
 import time
 import re
-import json
 
 from mi.core.log import get_logger, get_logging_metaclass
 log = get_logger()
@@ -228,7 +227,7 @@ class SatlanticPARDataParticle(DataParticle):
             raise SampleException("No regex match of parsed sample data: [%s]" % self.raw_data)
 
         try:
-            sernum = str(match.group('sernum'))
+            sernum = match.group('sernum')
             timer = float(match.group('timer'))
             counts = int(match.group('counts'))
             checksum = int(match.group('checksum'))
@@ -260,12 +259,12 @@ class SatlanticPARDataParticle(DataParticle):
                 return False
             try:
                 received_checksum = int(match.group('checksum'))
-                line_end = match.start('checksum')-1
+                line_end = match.start('checksum') - 1
             except IndexError:
                 # Didn't have a checksum!
                 return False
 
-            line = data[:line_end+1]
+            line = data[:line_end + 1]
             # Calculate checksum on line
             checksum = 0
             for char in line:
@@ -347,8 +346,7 @@ class SatlanticPARInstrumentProtocol(CommandResponseInstrumentProtocol):
     Note protocol state machine must be called "self._protocol_fsm"
     """
 
-    #logging level
-    __metaclass__ = get_logging_metaclass(log_level='trace')
+    __metaclass__ = get_logging_metaclass(log_level='debug')
 
     def __init__(self, callback=None):
         CommandResponseInstrumentProtocol.__init__(self, Prompt, EOLN, callback)
@@ -516,14 +514,12 @@ class SatlanticPARInstrumentProtocol(CommandResponseInstrumentProtocol):
             # Keep for reference: This is a reliable alternative, but not fully explained & may not work in the future.
             # It somehow corrects bit rate timing issues across the driver-digi-instrument network interface,
             # & allows the entire line of a commands to be sent successfully.
-            # self._connection.send("    ".join(map(None, cmd_line)))
-
             if EOLN not in cmd_line:    # Note: Direct access commands may already include an EOLN
                 time.sleep(0.115)
                 starttime = time.time()
                 self._connection.send(EOLN)
-                while EOLN not in self._promptbuf[len(cmd_line):len(cmd_line)+2] and Prompt.ENTER_EXIT_CMD_MODE \
-                           not in self._promptbuf[len(cmd_line):len(cmd_line)+2]:
+                while EOLN not in self._promptbuf[len(cmd_line):len(cmd_line) + 2] and Prompt.ENTER_EXIT_CMD_MODE \
+                           not in self._promptbuf[len(cmd_line):len(cmd_line) + 2]:
                     time.sleep(0.0015)
                     if time.time() > starttime + 3:
                         break
@@ -639,13 +635,10 @@ class SatlanticPARInstrumentProtocol(CommandResponseInstrumentProtocol):
     ########################################################################
     # Unknown handlers.
     ########################################################################
-
     def _handler_unknown_enter(self):
         """
         Enter unknown state.
         """
-        # Tell driver superclass to send a state change event.
-        # Superclass will query the state.
         self._driver_event(DriverAsyncEvent.STATE_CHANGE)
 
     def _handler_unknown_discover(self):
@@ -671,16 +664,12 @@ class SatlanticPARInstrumentProtocol(CommandResponseInstrumentProtocol):
     ########################################################################
     # Command handlers.
     ########################################################################
-
     def _handler_command_enter(self):
         """
         Enter command state.
         """
         # Command device to update parameters and send a config change event.
         self._init_params()
-
-        # Tell driver superclass to send a state change event.
-        # Superclass will query the state.
         self._driver_event(DriverAsyncEvent.STATE_CHANGE)
 
     def _get_header_params(self):
@@ -688,9 +677,8 @@ class SatlanticPARInstrumentProtocol(CommandResponseInstrumentProtocol):
         Cycle through sample collection & reset to get the start-up banner
         which contains instrument, serial, & firmware values
         """
-        self._do_cmd_resp(Command.EXIT, expected_prompt=Prompt.SAMPLES, timeout=15)
-        time.sleep(0.115)
-        instr, sernum, firm = self._do_cmd_resp(Command.RESET, expected_prompt=INIT_PATTERN, timeout=5)
+
+        instr, sernum, firm = self._do_cmd_resp(Command.EXIT_AND_RESET, expected_prompt=INIT_PATTERN, timeout=20)
         time.sleep(1)
         self._do_cmd_resp(Command.BREAK, response_regex=COMMAND_REGEX, timeout=5)
         self._param_dict.set_value(Parameter.INSTRUMENT, instr)
@@ -701,13 +689,11 @@ class SatlanticPARInstrumentProtocol(CommandResponseInstrumentProtocol):
         """
         Fetch the parameters from the device, and update the param dict.
         """
-        log.debug("Updating parameter dict")
-
         max_rate_response = self._do_cmd_resp(Command.GET, Parameter.MAXRATE, expected_prompt=Prompt.COMMAND)
         self._param_dict.update(max_rate_response)
 
         if startup:
-            self._temp_max_rate_wrapper(self._get_header_params)
+            self._get_header_params()
 
     def _set_params(self, params, startup=False, *args, **kwargs):
         """
@@ -784,7 +770,6 @@ class SatlanticPARInstrumentProtocol(CommandResponseInstrumentProtocol):
         """
         Set up auto scheduler configuration.
         """
-
         interval = self._param_dict.format(EngineeringParameter.ACQUIRE_STATUS_INTERVAL).split(':')
         hours = int(interval[0])
         minutes = int(interval[1])
@@ -911,20 +896,6 @@ class SatlanticPARInstrumentProtocol(CommandResponseInstrumentProtocol):
     # Poll handlers.
     ########################################################################
 
-    def _temp_max_rate_wrapper(self, run_func):
-        """
-        Wrapper for functions that rely on getting in and out of sampling mode easily
-        Note: The exit sampling mode command works most reliably at a maxrate set to 1
-        """
-        # save current maxrate, temporarily set maxrate to 1 to make this more reliable!
-        current_maxrate = self._param_dict.format(Parameter.MAXRATE)
-        self._do_cmd_resp(Command.SET, Parameter.MAXRATE, 1, expected_prompt=Prompt.COMMAND)
-        self._do_cmd_resp(Command.SAVE, expected_prompt=Prompt.COMMAND)
-        run_func()
-        # restore previous maxrate value
-        self._do_cmd_resp(Command.SET, Parameter.MAXRATE, current_maxrate, expected_prompt=Prompt.COMMAND)
-        self._do_cmd_resp(Command.SAVE, expected_prompt=Prompt.COMMAND)
-
     def _get_poll(self):
         self._do_cmd_resp(Command.EXIT, expected_prompt=Prompt.SAMPLES, timeout=15)
         # switch to poll
@@ -939,13 +910,13 @@ class SatlanticPARInstrumentProtocol(CommandResponseInstrumentProtocol):
         Handle PARProtocolEvent.ACQUIRE_SAMPLE
         @retval return (next state, result)
         """
-        self._temp_max_rate_wrapper(self._get_poll)
+        self._get_poll()
         return None, (None, None)
 
     def _handler_acquire_status(self):
         """
         Return parad_sa_config particle containing telbaud, maxrate, serial number, firmware, & type
-        Retreive both telbaud & maxrate from instrument with a "show all" command,
+        Retrieve both telbaud & maxrate from instrument with a "show all" command,
         the last three values are retrieved from the values stored in the param dictionary
         and combined through the got_chunk function.
         @retval return (next state, result)
@@ -957,13 +928,10 @@ class SatlanticPARInstrumentProtocol(CommandResponseInstrumentProtocol):
     ########################################################################
     # Direct access handlers.
     ########################################################################
-
     def _handler_direct_access_enter(self):
         """
         Enter direct access state.
         """
-        # Tell driver superclass to send a state change event.
-        # Superclass will query the state.
         self._driver_event(DriverAsyncEvent.STATE_CHANGE)
         self._sent_cmds = []
 
@@ -980,7 +948,6 @@ class SatlanticPARInstrumentProtocol(CommandResponseInstrumentProtocol):
 
         @param cmd The high level command to issue
         """
-        # Send command.
         self._do_cmd(cmd)
 
     def _handler_direct_access_execute_direct(self, data):
@@ -1005,7 +972,6 @@ class SatlanticPARInstrumentProtocol(CommandResponseInstrumentProtocol):
     ###################################################################
     # Builders
     ###################################################################
-
     def _build_default_command(self, *args):
         """
         Join each command component into a string with spaces in between
@@ -1101,7 +1067,7 @@ class SatlanticPARInstrumentProtocol(CommandResponseInstrumentProtocol):
             current_maxrate = 0.125     # During startup, assume the slowest sample rate
         elif current_maxrate <= 0 or current_maxrate > 8:
             current_maxrate = 8
-        time_between_samples = (1.0/current_maxrate)+1
+        time_between_samples = (1.0 / current_maxrate) + 1
 
         log.trace("_send_break_poll: maxrate = %s", current_maxrate)
 
