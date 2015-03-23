@@ -432,13 +432,13 @@ class Protocol(CommandResponseInstrumentProtocol):
             if self._extract_sample(OptaaSampleDataParticle, PACKET_REGISTRATION_REGEX, chunk, timestamp):
                 return
         except SampleException:
-            log.debug("==== ERROR WITH SAMPLE %s", SampleException.msg)
+            log.debug("==== ERROR WITH SAMPLE %r", SampleException.message)
 
         try:
             if self._extract_sample(OptaaStatusDataParticle, STATUS_REGEX, chunk, timestamp):
                 return
         except SampleException:
-            log.debug("===== ERROR WITH STATUS: %s", SampleException.msg)
+            log.debug("===== ERROR WITH STATUS: %r", SampleException.message)
 
     def _filter_capabilities(self, events):
         """
