@@ -139,7 +139,7 @@ class Parameter(DriverParameter):
     Parameters for the dictionary
     """
 
-    #Device specific parameters.
+    # Device specific parameters.
     MEASUREMENTS_PER_REPORTED = "ave"     # Measurements per reported value    int
     MEASUREMENT_1_DARK_COUNT = "m1d"      # Measurement 1 dark count           int
     MEASUREMENT_1_SLOPE = "m1s"           # Measurement 1 slope value          float
@@ -158,12 +158,12 @@ class Parameter(DriverParameter):
     TIME = "clk"                          # Time                               str
     MANUAL_START_TIME = "mst"             # Manual start time                  str
 
-    #Hardware Data
+    # Hardware Data
     SERIAL_NUM = "ser"                    # Serial number                      str
     FIRMWARE_VERSION = "ver"              # Firmware version                   str
     INTERNAL_MEMORY = "mem"               # Internal memory                    int
 
-    #Engineering param
+    # Engineering param
     RUN_WIPER_INTERVAL = "wiper_interval"            # Interval to schedule running wiper    str
     RUN_CLOCK_SYNC_INTERVAL = 'clk_interval'         # Interval to schedule syncing clock    str
     RUN_ACQUIRE_STATUS_INTERVAL = 'status_interval'  # Interval to schedule status           str
@@ -196,7 +196,7 @@ class InstrumentCommand(BaseEnum):
     PRINT_MENU = "$mnu"
     RUN_SETTINGS = "$run"
     RUN_WIPER = "$mvs"
-    #placeholder for all parameters
+    # placeholder for all parameters
     SET = 'set'
 
 
@@ -275,7 +275,6 @@ class FlortDMNU_Particle(DataParticle):
         values with appropriate tags
         @throws SampleException If there is a problem with sample creation
         """
-        log.debug("%% IN FlortDMNU_Particle:_build_parsed_values")
         log.debug("raw data = %r", self.raw_data)
 
         try:
@@ -341,8 +340,8 @@ class FlortDSample_ParticleKey(BaseEnum):
     raw_sig_cdom = 'raw_signal_cdom'
     raw_temp = 'raw_internal_temp'
 
-    #the following comes from $met command
-    #since these values will never change, on initialization they are stored and then used for the remainder
+    # the following comes from $met command
+    # since these values will never change, on initialization they are stored and then used for the remainder
     SIG_1_SCALE_FACTOR = 'signal_1_scale_factor'
     SIG_1_OFFSET = 'signal_1_offset'
     SIG_2_SCALE_FACTOR = 'signal_2_scale_factor'
@@ -391,7 +390,6 @@ class FlortDSample_Particle(DataParticle):
 
         @throws SampleException If there is a problem with sample creation
         """
-        log.debug("%% IN FLORTDSample_Particle:_build_parsed_values")
         log.debug("raw data = %r", self.raw_data)
 
         match = FlortDSample_Particle.regex_compiled().search(self.raw_data)
@@ -450,13 +448,12 @@ class InstrumentDriver(SingleConnectionInstrumentDriver):
         Driver constructor.
         @param evt_callback Driver process event callback.
         """
-        #Construct superclass.
+        # Construct superclass.
         SingleConnectionInstrumentDriver.__init__(self, evt_callback)
 
     ########################################################################
     # Superclass overrides for resource query.
     ########################################################################
-
     @staticmethod
     def get_resource_params():
         """
@@ -467,15 +464,12 @@ class InstrumentDriver(SingleConnectionInstrumentDriver):
     ########################################################################
     # Protocol builder.
     ########################################################################
-
     def _build_protocol(self):
         """
         Construct the driver protocol state machine.
         """
         self._protocol = Protocol(Prompt, NEWLINE, self._driver_event)
 
-
-################################ /Driver ##################################
 
 ###########################################################################
 # Protocol
@@ -523,8 +517,8 @@ class Protocol(CommandResponseInstrumentProtocol):
         self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.RUN_WIPER_SCHEDULED, self._handler_autosample_run_wiper)
         self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.SCHEDULED_CLOCK_SYNC, self._handler_autosample_clock_sync)
         self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.SCHEDULED_ACQUIRE_STATUS, self._handler_autosample_acquire_status)
-        #GET is only used for configuring the driver when it discovers that it is in AUTOSAMPLE
-        #will not be shown on the State Diagram
+        # GET is only used for configuring the driver when it discovers that it is in AUTOSAMPLE
+        # will not be shown on the State Diagram
         self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.GET, self._handler_command_get)
 
         self._protocol_fsm.add_handler(ProtocolState.DIRECT_ACCESS, ProtocolEvent.ENTER, self._handler_direct_access_enter)
@@ -546,7 +540,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         self._add_build_handler(InstrumentCommand.PRINT_MENU, self._build_simple_command)
         self._add_build_handler(InstrumentCommand.RUN_WIPER, self._build_simple_command)
 
-        #all commands return a 'unrecognized command' if not recognized by the instrument
+        # all commands return a 'unrecognized command' if not recognized by the instrument
         self._add_response_handler(InstrumentCommand.INTERRUPT_INSTRUMENT, self._parse_command_response)
 
         self._add_response_handler(InstrumentCommand.SET, self._parse_command_response)
@@ -593,10 +587,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         an error occurred while sending a command.
         Raise an exception if this occurs.
         """
-        log.debug("%% IN _parse_command_response RESPONSE = %r", response)
-
         if 'unrecognized command' in response:
-            log.debug('command was not recognized')
             raise InstrumentCommandException('unrecognized command')
 
         return response
@@ -607,14 +598,10 @@ class Protocol(CommandResponseInstrumentProtocol):
         was not received correctly.  Instrument will send a 'mvs 0' if the wiper does not complete
         its action.  Raise an exception if either occurs.
         """
-        log.debug("%% IN _parse_run_wiper_response RESPONSE = %r", response)
-
         if 'unrecognized command' in response:
-            log.debug('command was not recognized')
             raise InstrumentCommandException('unrecognized command')
 
         if '0' in response:
-            log.debug('wiper was not successful')
             raise InstrumentCommandException('run wiper was not successful')
 
         return response
@@ -646,7 +633,6 @@ class Protocol(CommandResponseInstrumentProtocol):
 
         return response
 
-
     ########################################################################
     # Unknown handlers.
     ########################################################################
@@ -673,9 +659,8 @@ class Protocol(CommandResponseInstrumentProtocol):
         next_agent_state = None
 
         try:
-            #Listen to data stream to determine the current state
+            # Listen to data stream to determine the current state
             response = self._get_response(timeout=TIMEOUT, response_regex=SAMPLE_REGEX_MATCHER)[0]
-            log.debug('_handler_unknown_discover: response: [%r]', response)
 
             if FlortDSample_Particle.regex_compiled().search(response):
                 next_state = DriverProtocolState.AUTOSAMPLE
@@ -685,8 +670,8 @@ class Protocol(CommandResponseInstrumentProtocol):
                 next_agent_state = ResourceAgentState.IDLE
 
         except InstrumentTimeoutException:
-            #if an exception is caught, the response timed out looking for a SAMPLE in the buffer
-            #if there are no samples in the buffer, than we are likely in command mode
+            # if an exception is caught, the response timed out looking for a SAMPLE in the buffer
+            # if there are no samples in the buffer, than we are likely in command mode
             next_state = DriverProtocolState.COMMAND
             next_agent_state = ResourceAgentState.IDLE
 
@@ -704,13 +689,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         """
         self._init_params()
 
-        # Issue command to driver to get menu with parameter values
-        log.debug("Run configure command: %s" % InstrumentCommand.PRINT_MENU)
-        response = self._do_cmd_resp(InstrumentCommand.PRINT_MENU, timeout=TIMEOUT, response_regex=MNU_REGEX_MATCHER)
-        self._param_dict.update(response)
-        log.debug("configure command response: %s" % response)
-
-        #get the metadata once from the instrument
+        # get the metadata once from the instrument
         self._do_cmd_resp(InstrumentCommand.PRINT_METADATA, timeout=TIMEOUT, response_regex=MET_REGEX_MATCHER)
 
         self._driver_event(DriverAsyncEvent.STATE_CHANGE)
@@ -806,11 +785,9 @@ class Protocol(CommandResponseInstrumentProtocol):
         """
         Remove the scheduled job
         """
-        log.debug("Attempting to remove the scheduler")
         if self._scheduler is not None:
             try:
                 self._remove_scheduler(schedule_job)
-                log.debug("successfully removed scheduler")
             except KeyError:
                 log.debug("_remove_scheduler could not find %s", schedule_job)
 
@@ -857,7 +834,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         self._do_cmd_resp(InstrumentCommand.RUN_SETTINGS, *args, timeout=TIMEOUT,
                                    response_regex=SAMPLE_REGEX_MATCHER)
 
-        #Start scheduling for running the wiper and syncing the clock
+        # Start scheduling for running the wiper and syncing the clock
         log.debug("Configuring the scheduler to run wiper %s", self._param_dict.get(Parameter.RUN_WIPER_INTERVAL))
         if self._param_dict.get(Parameter.RUN_WIPER_INTERVAL) != '00:00:00':
             self.start_scheduled_job(Parameter.RUN_WIPER_INTERVAL, ScheduledJob.RUN_WIPER, ProtocolEvent.RUN_WIPER_SCHEDULED)
@@ -878,7 +855,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         @throws InstrumentProtocolException if command misunderstood or incorrect prompt received.
         """
 
-        #Stop scheduled run of wiper, clock sync, & acquire status
+        # Stop scheduled run of wiper, clock sync, & acquire status
         self.stop_scheduled_job(ScheduledJob.RUN_WIPER)
         self.stop_scheduled_job(ScheduledJob.CLOCK_SYNC)
         self.stop_scheduled_job(ScheduledJob.ACQUIRE_STATUS)
@@ -892,7 +869,7 @@ class Protocol(CommandResponseInstrumentProtocol):
     def _handler_autosample_run_wiper(self, *args, **kwargs):
         """
         Runs the wiper.  Puts the instrument into command mode, sends the command.  Will try up to 5 times to
-        send the command.  If it fails, propogate the error to the operator, and keep instrument in command mode,
+        send the command.  If it fails, propagate the error to the operator, and keep instrument in command mode,
         no sense in trying collect samples.  If wiper is run successfully, put instrument back into
         autosample mode.
         """
@@ -900,7 +877,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         attempt = 0
         wiper_ran = False
 
-        #put instrument into command mode to send run wiper command ($mvs)
+        # put instrument into command mode to send run wiper command ($mvs)
         self._do_cmd_resp(InstrumentCommand.INTERRUPT_INSTRUMENT, *args, timeout=TIMEOUT, response_regex=MNU_REGEX_MATCHER)
 
         while (attempt < max_attempts) or wiper_ran == False:
@@ -923,7 +900,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         Get one sample from the instrument
         """
 
-        #put instrument into command mode to send command ($mvs)
+        # put instrument into command mode to send command ($mvs)
         self._do_cmd_resp(InstrumentCommand.INTERRUPT_INSTRUMENT, timeout=TIMEOUT, response_regex=MNU_REGEX_MATCHER)
 
         self._do_cmd_no_resp(InstrumentCommand.RUN_SETTINGS, timeout=TIMEOUT, response_regex=MNU_REGEX_MATCHER)
@@ -985,7 +962,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         @throw InstrumentProtocolException on invalid command
         """
 
-        #discover the state to go to next
+        # discover the state to go to next
         next_state, next_agent_state = self._handler_unknown_discover()
         if next_state == DriverProtocolState.COMMAND:
             next_agent_state = ResourceAgentState.COMMAND
@@ -1006,36 +983,40 @@ class Protocol(CommandResponseInstrumentProtocol):
         Issue commands to the instrument to set various parameters
         Also called when setting parameters during startup and direct access
         """
-
         params = args[0]
 
-        # try:
         self._verify_not_readonly(*args, **kwargs)
         old_config = self._param_dict.get_config()
 
-        response = None
+        # Issue command to driver to get menu with parameter values
+        response = self._do_cmd_resp(InstrumentCommand.PRINT_MENU, timeout=TIMEOUT, response_regex=MNU_REGEX_MATCHER)
+        self._param_dict.update(response)
+
         for (key, val) in params.iteritems():
             log.debug("KEY = " + str(key) + " VALUE = " + str(val))
-            #if setting the mvs interval/clock sync interval/acquire status interval, do not send a command
-            if key == Parameter.RUN_WIPER_INTERVAL or key == Parameter.RUN_CLOCK_SYNC_INTERVAL or key == Parameter.RUN_ACQUIRE_STATUS_INTERVAL:
-                self._param_dict.set_value(key, val)
-                log.debug('set value %s vs %s', val, self._param_dict.get(key))
-            #else if setting the clock or date, run clock sync command
-            elif key == Parameter.TIME or key == Parameter.DATE:
+            # if setting the clock or date, run clock sync command
+            if key in[Parameter.TIME, Parameter.DATE]:
                 self._sync_clock()
-            #else perform regular command
             else:
-                response = self._do_cmd_resp(InstrumentCommand.SET, key, val, response_regex=MNU_REGEX_MATCHER)
+                #verify value being set is different than that stored
+                old_val = self._param_dict.format(key)
+                new_val = self._param_dict.format(key, params[key])
 
-        self._param_dict.update(response)
-        log.debug("configure command response: %r", response)
+                if old_val != new_val:
+                    # if setting the mvs interval/clock sync interval/acquire status interval, do not send a command
+                    if key in[Parameter.RUN_WIPER_INTERVAL,
+                              Parameter.RUN_CLOCK_SYNC_INTERVAL,
+                              Parameter.RUN_ACQUIRE_STATUS_INTERVAL]:
+                        self._param_dict.set_value(key, val)
+                    # else perform regular command
+                    else:
+                        response = self._do_cmd_resp(InstrumentCommand.SET, key, val, response_regex=MNU_REGEX_MATCHER)
+                        self._param_dict.update(response)
 
         # Get new param dict config. If it differs from the old config,
         # tell driver superclass to publish a config change event.
         new_config = self._param_dict.get_config()
-        log.debug("new_config: %s == old_config: %s", new_config, old_config)
         if not dict_equal(old_config, new_config, ignore_keys=Parameter.TIME):
-            log.debug("configuration has changed.  Send driver event")
             self._driver_event(DriverAsyncEvent.CONFIG_CHANGE)
 
     def _build_single_parameter_command(self, cmd, param, val):
@@ -1053,7 +1034,7 @@ class Protocol(CommandResponseInstrumentProtocol):
             if str_val is None:
                 raise InstrumentParameterException("Driver PARAM was None!!!!")
 
-            #do extra formatting if one of these commands
+            # do extra formatting if one of these commands
             if param == 'clk':
                 str_val = str_val.replace(":", "")
             if param == 'dat':
@@ -1062,7 +1043,6 @@ class Protocol(CommandResponseInstrumentProtocol):
             set_cmd = '%s %s' % (param, str_val)
             set_cmd += NEWLINE
             set_cmd = '$' + set_cmd
-            log.debug("set_cmd = " + repr(set_cmd))
         except KeyError:
             raise InstrumentParameterException('Unknown driver parameter %s' % param)
 
@@ -1104,7 +1084,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         @param time_format: time format string for set command
         @raise: InstrumentProtocolException if command fails
         """
-        #clear out any past data so it doesnt confuse the command
+        # clear out any past data so it doesnt confuse the command
         self._linebuf = ''
         self._promptbuf = ''
 
@@ -1468,4 +1448,3 @@ class Protocol(CommandResponseInstrumentProtocol):
                              units=ParameterUnit.TIME_INTERVAL,
                              startup_param=True,
                              direct_access=False)
-################################ /Protocol #############################
