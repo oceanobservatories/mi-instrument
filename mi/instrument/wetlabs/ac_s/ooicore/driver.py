@@ -426,19 +426,15 @@ class Protocol(CommandResponseInstrumentProtocol):
         with the appropriate particle objects and REGEXes.
         """
 
-        #On a rare occurrence the particle sample coming in will be missing a byte
-        #trap the exception thrown and log an error
+        # On a rare occurrence the particle sample coming in will be missing a byte
+        # trap the exception thrown and log an error
         try:
-            if self._extract_sample(OptaaSampleDataParticle, PACKET_REGISTRATION_REGEX, chunk, timestamp):
-                return
-        except SampleException:
-            log.debug("==== ERROR WITH SAMPLE %s", SampleException.msg)
+            self._extract_sample(OptaaSampleDataParticle, PACKET_REGISTRATION_REGEX, chunk, timestamp)
+            self._extract_sample(OptaaStatusDataParticle, STATUS_REGEX, chunk, timestamp)
 
-        try:
-            if self._extract_sample(OptaaStatusDataParticle, STATUS_REGEX, chunk, timestamp):
-                return
         except SampleException:
-            log.debug("===== ERROR WITH STATUS: %s", SampleException.msg)
+            log.error("Unable to process sample (%r)", SampleException.message)
+
 
     def _filter_capabilities(self, events):
         """
