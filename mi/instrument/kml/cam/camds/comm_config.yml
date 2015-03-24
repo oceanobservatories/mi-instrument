@@ -1,0 +1,8 @@
+comm:
+    command_port: 2006
+    data_port: 2003
+    host: localhost
+    device_port: 8888
+    device_addr: 10.180.80.160
+    method: ethernet
+    sniffer_port: 6003
