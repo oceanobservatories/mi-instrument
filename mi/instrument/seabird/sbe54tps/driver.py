@@ -5,9 +5,6 @@
 @brief Driver for the ooicore
 Release notes:
 
-10.180.80.170:2101 Instrument
-10.180.80.170:2102 Digi
-Done
 """
 
 __author__ = 'Roger Unwin'
@@ -15,8 +12,8 @@ __license__ = 'Apache 2.0'
 
 import re
 import time
-import ntplib
-from mi.core.log import get_logger
+from mi.core.log import get_logger, get_logging_metaclass
+
 log = get_logger()
 
 from mi.core.util import dict_equal
@@ -44,6 +41,7 @@ from mi.instrument.seabird.driver import SeaBirdProtocol
 from mi.instrument.seabird.driver import NEWLINE
 from mi.instrument.seabird.driver import TIMEOUT
 
+
 class ScheduledJob(BaseEnum):
     ACQUIRE_STATUS = 'acquire_status'
     CONFIGURATION_DATA = "configuration_data"
@@ -51,6 +49,7 @@ class ScheduledJob(BaseEnum):
     EVENT_COUNTER_DATA = "event_counter"
     HARDWARE_DATA = "hardware_data"
     CLOCK_SYNC = 'clock_sync'
+
 
 class DataParticleType(BaseEnum):
     RAW = CommonDataParticleType.RAW
@@ -60,7 +59,8 @@ class DataParticleType(BaseEnum):
     PREST_DEVICE_STATUS = 'prest_device_status'
     PREST_EVENT_COUNTER = 'prest_event_counter'
     PREST_HARDWARE_DATA = 'prest_hardware_data'
-    
+
+
 # Device specific parameters.
 class InstrumentCmds(BaseEnum):
     """
@@ -68,7 +68,7 @@ class InstrumentCmds(BaseEnum):
     These are the commands that according to the science profile must be supported.
     """
     # Artificial Constructed Commands for Driver
-    SET = "set"  # need to bring over _build_set_command/_parse_set_response
+    SET = "set"
 
     # Status
     GET_CONFIGURATION_DATA = "GetCD"
@@ -94,15 +94,16 @@ class InstrumentCmds(BaseEnum):
     RESET_EC = "ResetEC"
     TEST_EEPROM = "TestEeprom"
 
+
 class ProtocolState(BaseEnum):
     """
-    Protocol states
-    enum.
+    Protocol state enum.
     """
     UNKNOWN = DriverProtocolState.UNKNOWN
     COMMAND = DriverProtocolState.COMMAND
     AUTOSAMPLE = DriverProtocolState.AUTOSAMPLE
     DIRECT_ACCESS = DriverProtocolState.DIRECT_ACCESS
+
 
 class ProtocolEvent(BaseEnum):
     """
@@ -131,6 +132,7 @@ class ProtocolEvent(BaseEnum):
     GET_EVENT_COUNTER = 'PROTOCOL_EVENT_GET_EVENT_COUNTER'
     GET_HARDWARE_DATA = 'PROTOCOL_EVENT_GET_HARDWARE'
 
+
 class Capability(BaseEnum):
     """
     Protocol events that should be exposed to users (subset of above).
@@ -138,7 +140,7 @@ class Capability(BaseEnum):
     START_AUTOSAMPLE = ProtocolEvent.START_AUTOSAMPLE
     STOP_AUTOSAMPLE = ProtocolEvent.STOP_AUTOSAMPLE
     CLOCK_SYNC = ProtocolEvent.CLOCK_SYNC
-    ACQUIRE_STATUS  = ProtocolEvent.ACQUIRE_STATUS
+    ACQUIRE_STATUS = ProtocolEvent.ACQUIRE_STATUS
     SAMPLE_REFERENCE_OSCILLATOR = ProtocolEvent.SAMPLE_REFERENCE_OSCILLATOR
     TEST_EEPROM = ProtocolEvent.TEST_EEPROM
     GET_CONFIGURATION_DATA = ProtocolEvent.GET_CONFIGURATION_DATA
@@ -146,23 +148,24 @@ class Capability(BaseEnum):
     GET_EVENT_COUNTER = ProtocolEvent.GET_EVENT_COUNTER
     GET_HARDWARE_DATA = ProtocolEvent.GET_HARDWARE_DATA
 
+
 # Device specific parameters.
 class Parameter(DriverParameter):
-    TIME = "time" # str
-    SAMPLE_PERIOD = "sampleperiod" # int
-    ENABLE_ALERTS = "enablealerts" # bool
-    BATTERY_TYPE = "batterytype" # int
+    TIME = "time"                   # str
+    SAMPLE_PERIOD = "sampleperiod"  # int
+    ENABLE_ALERTS = "enablealerts"  # bool
+    BATTERY_TYPE = "batterytype"    # int
+
 
 # Device prompts.
 class Prompt(BaseEnum):
     COMMAND = "<Executed/>\r\nS>"
     AUTOSAMPLE = "<Executed/>\r\n"
-    BAD_COMMAND_AUTOSAMPLE = "<Error.*?\r\n<Executed/>\r\n" # REGEX ALERT
-    BAD_COMMAND = "<Error.*?\r\n<Executed/>\r\nS>" # REGEX ALERT
+    BAD_COMMAND_AUTOSAMPLE = "<Error.*?\r\n<Executed/>\r\n"    # REGEX ALERT
+    BAD_COMMAND = "<Error.*?\r\n<Executed/>\r\nS>"             # REGEX ALERT
 
 
 ######################### PARTICLES #############################
-
 STATUS_DATA_REGEX = r"(<StatusData DeviceType='.*?</StatusData>)"
 STATUS_DATA_REGEX_MATCHER = re.compile(STATUS_DATA_REGEX, re.DOTALL)
 
@@ -183,6 +186,7 @@ SAMPLE_REF_OSC_MATCHER = re.compile(SAMPLE_REF_OSC_REGEX, re.DOTALL)
 
 ENGINEERING_DATA_REGEX = "<MainSupplyVoltage>([.\d]+)</MainSupplyVoltage>"
 ENGINEERING_DATA_MATCHER = re.compile(SAMPLE_REF_OSC_REGEX, re.DOTALL)
+
 
 class SBE54tpsStatusDataParticleKey(BaseEnum):
     DEVICE_TYPE = "device_type"
@@ -218,7 +222,7 @@ class SBE54tpsStatusDataParticle(DataParticle):
         @throws SampleException If there is a problem with sample creation
         """
         # Initialize
-        single_var_matches  = {
+        single_var_matches = {
             SBE54tpsStatusDataParticleKey.DEVICE_TYPE: None,
             SBE54tpsStatusDataParticleKey.SERIAL_NUMBER: None,
             SBE54tpsStatusDataParticleKey.TIME: None,
@@ -229,7 +233,7 @@ class SBE54tpsStatusDataParticle(DataParticle):
             SBE54tpsStatusDataParticleKey.BYTES_FREE: None
         }
 
-        multi_var_matchers  = {
+        multi_var_matchers = {
             re.compile(self.LINE1): [
                 SBE54tpsStatusDataParticleKey.DEVICE_TYPE,
                 SBE54tpsStatusDataParticleKey.SERIAL_NUMBER
@@ -260,18 +264,19 @@ class SBE54tpsStatusDataParticle(DataParticle):
                 if match:
                     index = 0
                     for key in keys:
-                        index = index + 1
+                        index += 1
                         val = match.group(index)
 
                         # str
                         if key in [
-                            SBE54tpsStatusDataParticleKey.DEVICE_TYPE
+                            SBE54tpsStatusDataParticleKey.DEVICE_TYPE,
+                            SBE54tpsStatusDataParticleKey.SERIAL_NUMBER
                         ]:
                             single_var_matches[key] = val
 
                         # int
                         elif key in [
-                            SBE54tpsStatusDataParticleKey.SERIAL_NUMBER,
+
                             SBE54tpsStatusDataParticleKey.EVENT_COUNT,
                             SBE54tpsStatusDataParticleKey.NUMBER_OF_SAMPLES,
                             SBE54tpsStatusDataParticleKey.BYTES_USED,
@@ -292,7 +297,6 @@ class SBE54tpsStatusDataParticle(DataParticle):
                             # yyyy-mm-ddThh:mm:ss
                             single_var_matches[key] = val
                             py_timestamp = time.strptime(val, "%Y-%m-%dT%H:%M:%S")
-                            #log.error("unix_timestamp = " + str(time.mktime(py_timestamp)))
                             self.set_internal_timestamp(unix_time=time.mktime(py_timestamp))
 
                         else:
@@ -303,7 +307,10 @@ class SBE54tpsStatusDataParticle(DataParticle):
             result.append({DataParticleKey.VALUE_ID: key,
                            DataParticleKey.VALUE: value})
 
+        log.debug('RESULTS: = %r', result)
+
         return result
+
 
 class SBE54tpsConfigurationDataParticleKey(BaseEnum):
     DEVICE_TYPE = "device_type"
@@ -328,13 +335,14 @@ class SBE54tpsConfigurationDataParticleKey(BaseEnum):
     PT2 = "press_coeff_pt2"
     PT3 = "press_coeff_pt3"
     PT4 = "press_coeff_pt4"
-    PRESSURE_OFFSET = "press_coeff_poffset" # pisa
-    PRESSURE_RANGE = "pressure_sensor_range" # pisa
+    PRESSURE_OFFSET = "press_coeff_poffset"    # pisa
+    PRESSURE_RANGE = "pressure_sensor_range"   # pisa
     BATTERY_TYPE = "battery_type"
     BAUD_RATE = "baud_rate"
     UPLOAD_TYPE = "upload_type"
     ENABLE_ALERTS = "enable_alerts"
     SAMPLE_PERIOD = "sample_period"
+
 
 class SBE54tpsConfigurationDataParticle(DataParticle):
     """
@@ -381,7 +389,7 @@ class SBE54tpsConfigurationDataParticle(DataParticle):
         """
 
         # Initialize
-        single_var_matches  = {
+        single_var_matches = {
             SBE54tpsConfigurationDataParticleKey.DEVICE_TYPE: None,
             SBE54tpsConfigurationDataParticleKey.SERIAL_NUMBER: None,
             SBE54tpsConfigurationDataParticleKey.ACQ_OSC_CAL_DATE: None,
@@ -413,7 +421,7 @@ class SBE54tpsConfigurationDataParticle(DataParticle):
             SBE54tpsConfigurationDataParticleKey.SAMPLE_PERIOD: None
         }
 
-        multi_var_matchers  = {
+        multi_var_matchers = {
             re.compile(self.LINE1): [
                 SBE54tpsConfigurationDataParticleKey.DEVICE_TYPE,
                 SBE54tpsConfigurationDataParticleKey.SERIAL_NUMBER
@@ -507,21 +515,21 @@ class SBE54tpsConfigurationDataParticle(DataParticle):
                 if match:
                     index = 0
                     for key in keys:
-                        index = index + 1
+                        index += 1
                         val = match.group(index)
 
                         # str
                         if key in [
                             SBE54tpsConfigurationDataParticleKey.DEVICE_TYPE,
                             SBE54tpsConfigurationDataParticleKey.PRESSURE_CAL_DATE,
-                            SBE54tpsConfigurationDataParticleKey.ACQ_OSC_CAL_DATE
+                            SBE54tpsConfigurationDataParticleKey.ACQ_OSC_CAL_DATE,
+                            SBE54tpsConfigurationDataParticleKey.PRESSURE_SERIAL_NUM,
+                            SBE54tpsConfigurationDataParticleKey.SERIAL_NUMBER,
                         ]:
-                            single_var_matches[key] = val
+                            single_var_matches[key] = str(val)
 
                         # int
                         elif key in [
-                            SBE54tpsConfigurationDataParticleKey.SERIAL_NUMBER,
-                            SBE54tpsConfigurationDataParticleKey.PRESSURE_SERIAL_NUM,
                             SBE54tpsConfigurationDataParticleKey.BATTERY_TYPE,
                             SBE54tpsConfigurationDataParticleKey.UPLOAD_TYPE,
                             SBE54tpsConfigurationDataParticleKey.SAMPLE_PERIOD,
@@ -569,6 +577,7 @@ class SBE54tpsConfigurationDataParticle(DataParticle):
 
         return result
 
+
 class SBE54tpsEventCounterDataParticleKey(BaseEnum):
     NUMBER_EVENTS = "number_events"
     MAX_STACK = "max_stack"
@@ -583,6 +592,7 @@ class SBE54tpsEventCounterDataParticleKey(BaseEnum):
     SIGNAL_ERROR = "signal_error"
     ERROR_10 = "error_10"
     ERROR_12 = "error_12"
+
 
 class SBE54tpsEventCounterDataParticle(DataParticle):
     """
@@ -612,7 +622,7 @@ class SBE54tpsEventCounterDataParticle(DataParticle):
         """
 
         # Initialize
-        single_var_matches  = {
+        single_var_matches = {
             SBE54tpsEventCounterDataParticleKey.NUMBER_EVENTS: 0,
             SBE54tpsEventCounterDataParticleKey.MAX_STACK: 0,
             SBE54tpsEventCounterDataParticleKey.DEVICE_TYPE: None,
@@ -628,7 +638,7 @@ class SBE54tpsEventCounterDataParticle(DataParticle):
             SBE54tpsEventCounterDataParticleKey.ERROR_12: 0
         }
 
-        multi_var_matchers  = {
+        multi_var_matchers = {
             re.compile(self.LINE1): [
                 SBE54tpsEventCounterDataParticleKey.NUMBER_EVENTS,
                 SBE54tpsEventCounterDataParticleKey.MAX_STACK
@@ -672,12 +682,14 @@ class SBE54tpsEventCounterDataParticle(DataParticle):
                 if match:
                     index = 0
                     for key in keys:
-                        index = index + 1
+                        index += 1
                         val = match.group(index)
                         log.debug("KEY [%s] VAL[%s]", key, val)
                         # str
+
                         if key in [
-                            SBE54tpsEventCounterDataParticleKey.DEVICE_TYPE
+                            SBE54tpsEventCounterDataParticleKey.DEVICE_TYPE,
+                            SBE54tpsEventCounterDataParticleKey.SERIAL_NUMBER,
                             ]:
                             single_var_matches[key] = match.group(index)
 
@@ -685,7 +697,6 @@ class SBE54tpsEventCounterDataParticle(DataParticle):
                         elif key in [
                             SBE54tpsEventCounterDataParticleKey.NUMBER_EVENTS,
                             SBE54tpsEventCounterDataParticleKey.MAX_STACK,
-                            SBE54tpsEventCounterDataParticleKey.SERIAL_NUMBER,
                             SBE54tpsEventCounterDataParticleKey.POWER_ON_RESET,
                             SBE54tpsEventCounterDataParticleKey.POWER_FAIL_RESET,
                             SBE54tpsEventCounterDataParticleKey.SERIAL_BYTE_ERROR,
@@ -708,6 +719,7 @@ class SBE54tpsEventCounterDataParticle(DataParticle):
 
         return result
 
+
 class SBE54tpsHardwareDataParticleKey(BaseEnum):
     DEVICE_TYPE = "device_type"
     SERIAL_NUMBER = "serial_number"
@@ -718,6 +730,7 @@ class SBE54tpsHardwareDataParticleKey(BaseEnum):
     PCB_SERIAL_NUMBER = "pcb_serial_number"
     PCB_TYPE = "pcb_type"
     MANUFACTUR_DATE = "manufacture_date"
+
 
 class SBE54tpsHardwareDataParticle(DataParticle):
     """
@@ -743,7 +756,7 @@ class SBE54tpsHardwareDataParticle(DataParticle):
         @throws SampleException If there is a problem with sample creation
         """
         # Initialize
-        single_var_matches  = {
+        single_var_matches = {
             SBE54tpsHardwareDataParticleKey.DEVICE_TYPE: None,
             SBE54tpsHardwareDataParticleKey.SERIAL_NUMBER: None,
             SBE54tpsHardwareDataParticleKey.MANUFACTURER: None,
@@ -755,37 +768,21 @@ class SBE54tpsHardwareDataParticle(DataParticle):
             SBE54tpsHardwareDataParticleKey.MANUFACTUR_DATE: None
         }
 
-        multi_var_matchers  = {
-            re.compile(self.LINE1): [
-                SBE54tpsHardwareDataParticleKey.DEVICE_TYPE,
-                SBE54tpsHardwareDataParticleKey.SERIAL_NUMBER
-            ],
-            re.compile(self.LINE2): [
-                SBE54tpsHardwareDataParticleKey.MANUFACTURER
-            ],
-            re.compile(self.LINE3): [
-                SBE54tpsHardwareDataParticleKey.FIRMWARE_VERSION
-            ],
-            re.compile(self.LINE4): [
-                SBE54tpsHardwareDataParticleKey.FIRMWARE_DATE
-            ],
-            re.compile(self.LINE5): [
-                SBE54tpsHardwareDataParticleKey.HARDWARE_VERSION
-            ],
-            re.compile(self.LINE6): [
-                SBE54tpsHardwareDataParticleKey.PCB_SERIAL_NUMBER
-            ],
-            re.compile(self.LINE7): [
-                SBE54tpsHardwareDataParticleKey.PCB_TYPE
-            ],
-            re.compile(self.LINE8): [
-                SBE54tpsHardwareDataParticleKey.MANUFACTUR_DATE
-            ]
+        multi_var_matchers = {
+            re.compile(self.LINE1): 'DeviceTypeAndSerialNumber',
+            re.compile(self.LINE2): SBE54tpsHardwareDataParticleKey.MANUFACTURER,
+            re.compile(self.LINE3): SBE54tpsHardwareDataParticleKey.FIRMWARE_VERSION,
+            re.compile(self.LINE4): SBE54tpsHardwareDataParticleKey.FIRMWARE_DATE,
+            re.compile(self.LINE5): SBE54tpsHardwareDataParticleKey.HARDWARE_VERSION,
+            re.compile(self.LINE6): SBE54tpsHardwareDataParticleKey.PCB_SERIAL_NUMBER,
+            re.compile(self.LINE7): SBE54tpsHardwareDataParticleKey.PCB_TYPE,
+            re.compile(self.LINE8): SBE54tpsHardwareDataParticleKey.MANUFACTUR_DATE
         }
 
         for line in self.raw_data.split(NEWLINE):
-            for (matcher, keys) in multi_var_matchers.iteritems():
+            for (matcher, key) in multi_var_matchers.iteritems():
                 match = matcher.match(line)
+
                 if match:
                     index = 0
                     for key in keys:
@@ -802,6 +799,7 @@ class SBE54tpsHardwareDataParticle(DataParticle):
                             SBE54tpsHardwareDataParticleKey.PCB_TYPE,
                             SBE54tpsHardwareDataParticleKey.MANUFACTUR_DATE,
                             SBE54tpsHardwareDataParticleKey.FIRMWARE_DATE,
+                            SBE54tpsHardwareDataParticleKey.SERIAL_NUMBER
                         ]:
                             single_var_matches[key] = val
 
@@ -811,12 +809,6 @@ class SBE54tpsHardwareDataParticle(DataParticle):
                         ]:
                             single_var_matches[key] = [val]
 
-                        # int
-                        elif key in [
-                            SBE54tpsHardwareDataParticleKey.SERIAL_NUMBER
-                        ]:
-                            single_var_matches[key] = int(val)
-
         result = []
         for (key, value) in single_var_matches.iteritems():
             result.append({DataParticleKey.VALUE_ID: key,
@@ -824,11 +816,12 @@ class SBE54tpsHardwareDataParticle(DataParticle):
 
         return result
 
+
 class SBE54tpsSampleDataParticleKey(BaseEnum):
     SAMPLE_NUMBER = "sample_number"
     SAMPLE_TYPE = "sample_type"
     INST_TIME = "date_time_string"
-    PRESSURE = "absolute_pressure" # psi
+    PRESSURE = "absolute_pressure"    # psi
     PRESSURE_TEMP = "pressure_temp"
 
 
@@ -847,7 +840,7 @@ class SBE54tpsSampleDataParticle(DataParticle):
         @throws SampleException If there is a problem with sample creation
         """
         # Initialize
-        single_var_matches  = {
+        single_var_matches = {
             SBE54tpsSampleDataParticleKey.SAMPLE_NUMBER: None,
             SBE54tpsSampleDataParticleKey.SAMPLE_TYPE: None,
             SBE54tpsSampleDataParticleKey.INST_TIME: None,
@@ -855,7 +848,7 @@ class SBE54tpsSampleDataParticle(DataParticle):
             SBE54tpsSampleDataParticleKey.PRESSURE_TEMP: None
         }
 
-        multi_var_matchers  = {
+        multi_var_matchers = {
             re.compile(r"<Sample Num='(\d+)' Type='([^']+)'>"): [
                 SBE54tpsSampleDataParticleKey.SAMPLE_NUMBER,
                 SBE54tpsSampleDataParticleKey.SAMPLE_TYPE
@@ -877,7 +870,7 @@ class SBE54tpsSampleDataParticle(DataParticle):
                 if match:
                     index = 0
                     for key in keys:
-                        index = index + 1
+                        index += 1
                         val = match.group(index)
 
                         # str
@@ -906,10 +899,7 @@ class SBE54tpsSampleDataParticle(DataParticle):
                         ]:
                             # <Time>2012-11-07T12:21:25</Time>
                             # yyyy-mm-ddThh:mm:ss
-                            text_timestamp = val
-                            py_timestamp = time.strptime(text_timestamp, "%Y-%m-%dT%H:%M:%S")
-                            timestamp = ntplib.system_to_ntp_time(time.mktime(py_timestamp))
-                            #log.error("unix_timestamp = " + str(time.mktime(py_timestamp)))
+                            py_timestamp = time.strptime(val, "%Y-%m-%dT%H:%M:%S")
                             self.set_internal_timestamp(unix_time=time.mktime(py_timestamp))
 
                             single_var_matches[key] = val
@@ -924,6 +914,7 @@ class SBE54tpsSampleDataParticle(DataParticle):
 
         return result
 
+
 class SBE54tpsSampleRefOscDataParticleKey(BaseEnum):
     SET_TIMEOUT = "set_timeout"
     SET_TIMEOUT_MAX = "set_timeout_max"
@@ -934,6 +925,7 @@ class SBE54tpsSampleRefOscDataParticleKey(BaseEnum):
     REF_OSC_FREQ = "reference_oscillator_freq"
     PCB_TEMP_RAW = "pcb_thermistor_value"
     REF_ERROR_PPM = "reference_error"
+
 
 class SBE54tpsSampleRefOscDataParticle(DataParticle):
     """
@@ -950,7 +942,7 @@ class SBE54tpsSampleRefOscDataParticle(DataParticle):
         @throws SampleException If there is a problem with sample creation
         """
         # Initialize
-        single_var_matches  = {
+        single_var_matches = {
             SBE54tpsSampleRefOscDataParticleKey.SET_TIMEOUT: None,
             SBE54tpsSampleRefOscDataParticleKey.SET_TIMEOUT_MAX: None,
             SBE54tpsSampleRefOscDataParticleKey.SET_TIMEOUT_ICD: None,
@@ -962,7 +954,7 @@ class SBE54tpsSampleRefOscDataParticle(DataParticle):
             SBE54tpsSampleRefOscDataParticleKey.REF_ERROR_PPM: None
         }
 
-        multi_var_matchers  = {
+        multi_var_matchers = {
             re.compile(r"<SetTimeout>([^<]+)</SetTimeout>"): [
                 SBE54tpsSampleRefOscDataParticleKey.SET_TIMEOUT
             ],
@@ -996,7 +988,7 @@ class SBE54tpsSampleRefOscDataParticle(DataParticle):
                 if match:
                     index = 0
                     for key in keys:
-                        index = index + 1
+                        index += 1
                         val = match.group(index)
                         log.debug("SAMPLE_TYPE = " + val)
 
@@ -1014,7 +1006,7 @@ class SBE54tpsSampleRefOscDataParticle(DataParticle):
                             SBE54tpsSampleRefOscDataParticleKey.SET_TIMEOUT_ICD,
                             SBE54tpsSampleRefOscDataParticleKey.PCB_TEMP_RAW,
                         ]:
-                            if(key == SBE54tpsSampleRefOscDataParticleKey.SET_TIMEOUT_MAX and val.lower() == 'off'):
+                            if key == SBE54tpsSampleRefOscDataParticleKey.SET_TIMEOUT_MAX and val.lower() == 'off':
                                 val = 0
                             single_var_matches[key] = int(val)
 
@@ -1040,21 +1032,18 @@ class SBE54tpsSampleRefOscDataParticle(DataParticle):
                         else:
                             raise SampleException("Unknown variable type in SBE54tpsConfigurationDataParticle._build_parsed_values")
 
-
         result = []
         for (key, value) in single_var_matches.iteritems():
             result.append({DataParticleKey.VALUE_ID: key,
                            DataParticleKey.VALUE: value})
 
         return result
-
 ######################################### /PARTICLES #############################
 
 
 ###############################################################################
 # Driver
 ###############################################################################
-
 class SBE54PlusInstrumentDriver(SeaBirdInstrumentDriver):
     """
     SBEInstrumentDriver subclass
@@ -1071,7 +1060,6 @@ class SBE54PlusInstrumentDriver(SeaBirdInstrumentDriver):
     ########################################################################
     # Superclass overrides for resource query.
     ########################################################################
-
     def get_resource_params(self):
         """
         Return list of device parameters available.
@@ -1081,22 +1069,23 @@ class SBE54PlusInstrumentDriver(SeaBirdInstrumentDriver):
     ########################################################################
     # Protocol builder.
     ########################################################################
-
     def _build_protocol(self):
         """
         Construct the driver protocol state machine.
         """
         self._protocol = Protocol(Prompt, NEWLINE, self._driver_event)
 
+
 ###############################################################################
 # Protocol
 ################################################################################
-
 class Protocol(SeaBirdProtocol):
     """
     Instrument protocol class
     Subclasses CommandResponseInstrumentProtocol
     """
+    __metaclass__ = get_logging_metaclass(log_level='debug')
+
     def __init__(self, prompts, newline, driver_event):
         """
         Protocol constructor.
@@ -1112,45 +1101,45 @@ class Protocol(SeaBirdProtocol):
             ProtocolEvent.ENTER, ProtocolEvent.EXIT)
 
         # Add event handlers for protocol state machine.
-        self._protocol_fsm.add_handler(ProtocolState.UNKNOWN, ProtocolEvent.ENTER,                  self._handler_unknown_enter)
-        self._protocol_fsm.add_handler(ProtocolState.UNKNOWN, ProtocolEvent.EXIT,                   self._handler_unknown_exit)
-        self._protocol_fsm.add_handler(ProtocolState.UNKNOWN, ProtocolEvent.DISCOVER,               self._handler_unknown_discover)
-        self._protocol_fsm.add_handler(ProtocolState.UNKNOWN, ProtocolEvent.START_DIRECT,           self._handler_command_start_direct)
+        self._protocol_fsm.add_handler(ProtocolState.UNKNOWN, ProtocolEvent.ENTER, self._handler_unknown_enter)
+        self._protocol_fsm.add_handler(ProtocolState.UNKNOWN, ProtocolEvent.EXIT, self._handler_unknown_exit)
+        self._protocol_fsm.add_handler(ProtocolState.UNKNOWN, ProtocolEvent.DISCOVER, self._handler_unknown_discover)
+        self._protocol_fsm.add_handler(ProtocolState.UNKNOWN, ProtocolEvent.START_DIRECT, self._handler_command_start_direct)
 
-        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.ENTER,                  self._handler_command_enter)
-        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.EXIT,                   self._handler_command_exit)
-        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.START_AUTOSAMPLE,       self._handler_command_start_autosample)
-        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.RECOVER_AUTOSAMPLE,     self._handler_command_recover_autosample)
-        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.GET,                    self._handler_command_get)
-        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.SET,                    self._handler_command_set)
-        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.CLOCK_SYNC,             self._handler_command_clock_sync)
-        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.SCHEDULED_CLOCK_SYNC,   self._handler_command_clock_sync)
-        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.ACQUIRE_STATUS,         self._handler_command_acquire_status)
+        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.ENTER, self._handler_command_enter)
+        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.EXIT, self._handler_command_exit)
+        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.START_AUTOSAMPLE, self._handler_command_start_autosample)
+        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.RECOVER_AUTOSAMPLE, self._handler_command_recover_autosample)
+        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.GET, self._handler_command_get)
+        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.SET, self._handler_command_set)
+        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.CLOCK_SYNC, self._handler_command_clock_sync)
+        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.SCHEDULED_CLOCK_SYNC, self._handler_command_clock_sync)
+        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.ACQUIRE_STATUS, self._handler_command_acquire_status)
         self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.GET_CONFIGURATION_DATA, self._handler_command_get_configuration)
-        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.GET_STATUS_DATA,        self._handler_command_get_status)
-        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.GET_EVENT_COUNTER,      self._handler_command_get_event_counter)
-        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.GET_HARDWARE_DATA,      self._handler_command_get_hardware)
-        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.START_DIRECT,           self._handler_command_start_direct)
+        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.GET_STATUS_DATA, self._handler_command_get_status)
+        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.GET_EVENT_COUNTER, self._handler_command_get_event_counter)
+        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.GET_HARDWARE_DATA, self._handler_command_get_hardware)
+        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.START_DIRECT, self._handler_command_start_direct)
         self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.SAMPLE_REFERENCE_OSCILLATOR, self._handler_sample_ref_osc)
-        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.TEST_EEPROM,            self._handler_command_test_eeprom)
-        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.INIT_PARAMS,            self._handler_command_init_params)
+        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.TEST_EEPROM, self._handler_command_test_eeprom)
+        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.INIT_PARAMS, self._handler_command_init_params)
 
-        self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.ACQUIRE_STATUS,         self._handler_command_acquire_status)
-        self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.SCHEDULED_CLOCK_SYNC,   self._handler_autosample_clock_sync)
+        self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.ACQUIRE_STATUS, self._handler_command_acquire_status)
+        self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.SCHEDULED_CLOCK_SYNC, self._handler_autosample_clock_sync)
         self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.GET_CONFIGURATION_DATA, self._handler_command_get_configuration)
-        self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.GET_STATUS_DATA,        self._handler_command_get_status)
-        self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.GET_EVENT_COUNTER,      self._handler_command_get_event_counter)
-        self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.GET_HARDWARE_DATA,      self._handler_command_get_hardware)
-        self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.ENTER,                  self._handler_autosample_enter)
-        self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.EXIT,                   self._handler_autosample_exit)
-        self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.GET,                    self._handler_command_get)
-        self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.STOP_AUTOSAMPLE,        self._handler_autosample_stop_autosample)
-        self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.INIT_PARAMS,            self._handler_autosample_init_params)
+        self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.GET_STATUS_DATA, self._handler_command_get_status)
+        self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.GET_EVENT_COUNTER, self._handler_command_get_event_counter)
+        self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.GET_HARDWARE_DATA, self._handler_command_get_hardware)
+        self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.ENTER, self._handler_autosample_enter)
+        self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.EXIT, self._handler_autosample_exit)
+        self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.GET, self._handler_command_get)
+        self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.STOP_AUTOSAMPLE, self._handler_autosample_stop_autosample)
+        self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.INIT_PARAMS, self._handler_autosample_init_params)
 
-        self._protocol_fsm.add_handler(ProtocolState.DIRECT_ACCESS, ProtocolEvent.ENTER,            self._handler_direct_access_enter)
-        self._protocol_fsm.add_handler(ProtocolState.DIRECT_ACCESS, ProtocolEvent.EXIT,             self._handler_direct_access_exit)
-        self._protocol_fsm.add_handler(ProtocolState.DIRECT_ACCESS, ProtocolEvent.EXECUTE_DIRECT,   self._handler_direct_access_execute_direct)
-        self._protocol_fsm.add_handler(ProtocolState.DIRECT_ACCESS, ProtocolEvent.STOP_DIRECT,      self._handler_direct_access_stop_direct)
+        self._protocol_fsm.add_handler(ProtocolState.DIRECT_ACCESS, ProtocolEvent.ENTER, self._handler_direct_access_enter)
+        self._protocol_fsm.add_handler(ProtocolState.DIRECT_ACCESS, ProtocolEvent.EXIT, self._handler_direct_access_exit)
+        self._protocol_fsm.add_handler(ProtocolState.DIRECT_ACCESS, ProtocolEvent.EXECUTE_DIRECT, self._handler_direct_access_execute_direct)
+        self._protocol_fsm.add_handler(ProtocolState.DIRECT_ACCESS, ProtocolEvent.STOP_DIRECT, self._handler_direct_access_stop_direct)
 
         # Build dictionaries for driver schema
         self._build_param_dict()
@@ -1158,30 +1147,30 @@ class Protocol(SeaBirdProtocol):
         self._build_driver_dict()
 
         # Add build handlers for device commands.
-        self._add_build_handler(InstrumentCmds.SET,                    self._build_set_command)
-        self._add_build_handler(InstrumentCmds.SET_TIME,               self._build_set_command)
+        self._add_build_handler(InstrumentCmds.SET, self._build_set_command)
+        self._add_build_handler(InstrumentCmds.SET_TIME, self._build_set_command)
         self._add_build_handler(InstrumentCmds.GET_CONFIGURATION_DATA, self._build_simple_command)
-        self._add_build_handler(InstrumentCmds.GET_STATUS_DATA,        self._build_simple_command)
+        self._add_build_handler(InstrumentCmds.GET_STATUS_DATA, self._build_simple_command)
         self._add_build_handler(InstrumentCmds.GET_EVENT_COUNTER_DATA, self._build_simple_command)
-        self._add_build_handler(InstrumentCmds.GET_HARDWARE_DATA,      self._build_simple_command)
-        self._add_build_handler(InstrumentCmds.START_LOGGING,          self._build_simple_command)
-        self._add_build_handler(InstrumentCmds.STOP_LOGGING,           self._build_simple_command)
-        self._add_build_handler(InstrumentCmds.INIT_LOGGING,           self._build_simple_command)
+        self._add_build_handler(InstrumentCmds.GET_HARDWARE_DATA, self._build_simple_command)
+        self._add_build_handler(InstrumentCmds.START_LOGGING, self._build_simple_command)
+        self._add_build_handler(InstrumentCmds.STOP_LOGGING, self._build_simple_command)
+        self._add_build_handler(InstrumentCmds.INIT_LOGGING, self._build_simple_command)
         self._add_build_handler(InstrumentCmds.SAMPLE_REFERENCE_OSCILLATOR,  self._build_simple_command)
-        self._add_build_handler(InstrumentCmds.TEST_EEPROM,            self._build_simple_command)
-        self._add_build_handler(InstrumentCmds.RESET_EC,               self._build_simple_command)
+        self._add_build_handler(InstrumentCmds.TEST_EEPROM, self._build_simple_command)
+        self._add_build_handler(InstrumentCmds.RESET_EC, self._build_simple_command)
 
         # Add response handlers for device commands.
-        self._add_response_handler(InstrumentCmds.SET,                    self._parse_set_response)
-        self._add_response_handler(InstrumentCmds.SET_TIME,               self._parse_set_response)
+        self._add_response_handler(InstrumentCmds.SET, self._parse_set_response)
+        self._add_response_handler(InstrumentCmds.SET_TIME, self._parse_set_response)
         self._add_response_handler(InstrumentCmds.GET_CONFIGURATION_DATA, self._parse_gc_response)
-        self._add_response_handler(InstrumentCmds.GET_STATUS_DATA,        self._parse_gs_response)
+        self._add_response_handler(InstrumentCmds.GET_STATUS_DATA,self._parse_gs_response)
         self._add_response_handler(InstrumentCmds.GET_EVENT_COUNTER_DATA, self._parse_ec_response)
-        self._add_response_handler(InstrumentCmds.GET_HARDWARE_DATA,      self._parse_hd_response)
-        self._add_response_handler(InstrumentCmds.INIT_LOGGING,           self._parse_init_logging_response)
-        self._add_response_handler(InstrumentCmds.SAMPLE_REFERENCE_OSCILLATOR,  self._parse_sample_ref_osc)
-        self._add_response_handler(InstrumentCmds.TEST_EEPROM,            self._parse_test_eeprom)
-        self._add_response_handler(InstrumentCmds.RESET_EC,               self._parse_reset_ec)
+        self._add_response_handler(InstrumentCmds.GET_HARDWARE_DATA, self._parse_hd_response)
+        self._add_response_handler(InstrumentCmds.INIT_LOGGING, self._parse_init_logging_response)
+        self._add_response_handler(InstrumentCmds.SAMPLE_REFERENCE_OSCILLATOR, self._parse_sample_ref_osc)
+        self._add_response_handler(InstrumentCmds.TEST_EEPROM, self._parse_test_eeprom)
+        self._add_response_handler(InstrumentCmds.RESET_EC, self._parse_reset_ec)
         # Add sample handlers.
 
         # State state machine in UNKNOWN state.
@@ -1206,12 +1195,12 @@ class Protocol(SeaBirdProtocol):
         """
         return_list = []
 
-        sieve_matchers = [ STATUS_DATA_REGEX_MATCHER,
-                           CONFIGURATION_DATA_REGEX_MATCHER,
-                           EVENT_COUNTER_DATA_REGEX_MATCHER,
-                           HARDWARE_DATA_REGEX_MATCHER,
-                           SAMPLE_DATA_REGEX_MATCHER,
-                           ENGINEERING_DATA_MATCHER ]
+        sieve_matchers = [STATUS_DATA_REGEX_MATCHER,
+                          CONFIGURATION_DATA_REGEX_MATCHER,
+                          EVENT_COUNTER_DATA_REGEX_MATCHER,
+                          HARDWARE_DATA_REGEX_MATCHER,
+                          SAMPLE_DATA_REGEX_MATCHER,
+                          ENGINEERING_DATA_MATCHER]
 
         for matcher in sieve_matchers:
             for match in matcher.finditer(raw_data):
@@ -1238,8 +1227,7 @@ class Protocol(SeaBirdProtocol):
         @param prompt prompt following command response.
         @throws InstrumentProtocolException if set command misunderstood.
         """
-        log.debug("_parse_set_response RESPONSE = " + str(response) + "/PROMPT = " + str(prompt))
-        if ('Error' in response):
+        if 'Error' in response:
             raise InstrumentParameterException('Protocol._parse_set_response : Set command not recognized: %s' % response)
 
     def _parse_gc_response(self, response, prompt):
@@ -1249,7 +1237,6 @@ class Protocol(SeaBirdProtocol):
         response = response.replace(InstrumentCmds.GET_CONFIGURATION_DATA + NEWLINE, "")
         response = response.replace("S>", "")
 
-        log.debug("IN _parse_gc_response RESPONSE = " + repr(response))
         return response
 
     def _parse_gs_response(self, response, prompt):
@@ -1258,7 +1245,6 @@ class Protocol(SeaBirdProtocol):
         response = response.replace(InstrumentCmds.GET_STATUS_DATA + NEWLINE, "")
         response = response.replace("S>", "")
 
-        log.debug("IN _parse_gs_response RESPONSE = " + repr(response))
         return response
 
     def _parse_ec_response(self, response, prompt):
@@ -1267,7 +1253,6 @@ class Protocol(SeaBirdProtocol):
         response = response.replace(InstrumentCmds.GET_EVENT_COUNTER_DATA + NEWLINE, "")
         response = response.replace("S>", "")
 
-        log.debug("IN _parse_ec_response RESPONSE = " + repr(response))
         return response
 
     def _parse_hd_response(self, response, prompt):
@@ -1276,7 +1261,6 @@ class Protocol(SeaBirdProtocol):
         response = response.replace(InstrumentCmds.GET_HARDWARE_DATA + NEWLINE, "")
         response = response.replace("S>", "")
 
-        log.debug("IN _parse_hd_response RESPONSE = " + repr(response))
         return response
 
     ########################################################################
@@ -1287,9 +1271,6 @@ class Protocol(SeaBirdProtocol):
         """
         Enter unknown state.
         """
-        # Tell driver superclass to send a state change event.
-        # Superclass will query the state.
-        log.debug("%%% IN _handler_unknown_enter")
         self._driver_event(DriverAsyncEvent.STATE_CHANGE)
 
     def _handler_unknown_discover(self, *args, **kwargs):
@@ -1301,54 +1282,22 @@ class Protocol(SeaBirdProtocol):
         @throws InstrumentStateException if the device response does not correspond to
         an expected state.
         """
-        (protocol_state, agent_state) =  self._discover()
+        protocol_state, agent_state = self._discover()
 
-        if(protocol_state == ProtocolState.COMMAND):
+        if protocol_state == ProtocolState.COMMAND:
             agent_state = ResourceAgentState.IDLE
 
-        return (protocol_state, agent_state)
+        return protocol_state, agent_state
 
     def _handler_unknown_exit(self, *args, **kwargs):
         """
         Exit unknown state.
         """
-        log.debug("%%% IN _handler_unknown_exit")
         pass
 
     ########################################################################
     # Command handlers.
     ########################################################################
-
-    def _handler_command_acquire_sample(self, *args, **kwargs):
-        """
-        Acquire sample from SBE54TPS.
-        @retval (next_state, result) tuple, (None, sample dict).
-        @throws InstrumentTimeoutException if device cannot be woken for command.
-        @throws InstrumentProtocolException if command could not be built or misunderstood.
-        @throws SampleException if a sample could not be extracted from result.
-        """
-
-        next_state = None
-        next_agent_state = None
-        result = None
-
-        kwargs['timeout'] = 45 # samples can take a long time
-
-
-        """
-        to do aquire sample, will need to:
-        stop
-        getcd to learn current sampling period
-        SetSamplePeriod=1
-        collect a sample
-        stop
-        restore sample period.
-        """
-
-        #result = self._do_cmd_resp(InstrumentCmds.TAKE_SAMPLE, *args, **kwargs)
-
-        return (next_state, (next_agent_state, result))
-
     def _handler_command_acquire_status(self, *args, **kwargs):
         """
         Run all Get?? commands.  Concat command results and return
@@ -1356,8 +1305,6 @@ class Protocol(SeaBirdProtocol):
         @param kwargs:
         @return:
         """
-        log.debug("%%% IN _handler_command_aquire_status")
-
         timeout = kwargs.get('timeout', TIMEOUT)
 
         next_state = None
@@ -1369,8 +1316,7 @@ class Protocol(SeaBirdProtocol):
 
         result = result1 + result2 + result3 + result4
 
-        log.debug("RESULT(RETURNED) = " + str(result))
-        return (next_state, (next_agent_state, result))
+        return next_state, (next_agent_state, result)
 
     def _handler_command_get_configuration(self, *args, **kwargs):
         """
@@ -1382,7 +1328,7 @@ class Protocol(SeaBirdProtocol):
         next_agent_state = None
         result = self._do_cmd_resp(InstrumentCmds.GET_CONFIGURATION_DATA, timeout=timeout)
 
-        return (next_state, (next_agent_state, result))
+        return next_state, (next_agent_state, result)
 
     def _handler_command_get_status(self, *args, **kwargs):
         """
@@ -1394,7 +1340,7 @@ class Protocol(SeaBirdProtocol):
         next_agent_state = None
         result = self._do_cmd_resp(InstrumentCmds.GET_STATUS_DATA, timeout=timeout)
 
-        return (next_state, (next_agent_state, result))
+        return next_state, (next_agent_state, result)
 
     def _handler_command_get_event_counter(self, *args, **kwargs):
         """
@@ -1406,7 +1352,7 @@ class Protocol(SeaBirdProtocol):
         next_agent_state = None
         result = self._do_cmd_resp(InstrumentCmds.GET_EVENT_COUNTER_DATA, timeout=timeout)
 
-        return (next_state, (next_agent_state, result))
+        return next_state, (next_agent_state, result)
 
     def _handler_command_get_hardware(self, *args, **kwargs):
         """
@@ -1418,18 +1364,16 @@ class Protocol(SeaBirdProtocol):
         next_agent_state = None
         result = self._do_cmd_resp(InstrumentCmds.GET_HARDWARE_DATA, timeout=timeout)
 
-        return (next_state, (next_agent_state, result))
+        return next_state, (next_agent_state, result)
 
     def _handler_command_start_direct(self, *args, **kwargs):
         """
         """
-        next_state = None
         result = None
-
         next_state = ProtocolState.DIRECT_ACCESS
         next_agent_state = ResourceAgentState.DIRECT_ACCESS
-        log.debug("_handler_command_start_direct: entering DA mode")
-        return (next_state, (next_agent_state, result))
+
+        return next_state, (next_agent_state, result)
 
     def _handler_command_recover_autosample(self, *args, **kwargs):
         """
@@ -1439,54 +1383,27 @@ class Protocol(SeaBirdProtocol):
         """
         next_state = ProtocolState.AUTOSAMPLE
         next_agent_state = ResourceAgentState.STREAMING
-        result = None
 
-        log.debug("_handler_command_recover_autosample: recovery state change")
         self._async_agent_state_change(ResourceAgentState.STREAMING)
 
-        return (next_state, next_agent_state)
-
-    def _handler_command_start_autosample(self, *args, **kwargs):
-        """
-        Enter autosample mode.
-        @retval (next_state, result) tuple, (None, sample dict).
-        @throws InstrumentTimeoutException if device cannot be woken for command.
-        @throws InstrumentProtocolException if command could not be built or misunderstood.
-        @throws SampleException if a sample could not be extracted from result.
-
-        <Executed/>
-        S>start
-        start
-        <Executed/>
-        """
-        log.debug("%%% IN _handler_command_start_autosample")
-
-        next_state = ProtocolState.AUTOSAMPLE
-        next_agent_state = ResourceAgentState.STREAMING
-
-        result = self._do_cmd_resp(InstrumentCmds.START_LOGGING, *args, **kwargs)
-
-        return (next_state, (next_agent_state, result))
+        return next_state, next_agent_state
 
     def _handler_command_exit(self, *args, **kwargs):
         """
         Exit command state.
         """
-        log.debug("%%% IN _handler_command_exit")
         pass
 
     def _handler_command_test_eeprom(self, *args, **kwargs):
-        log.debug("%%% in _handler_command_test_eeprom")
 
         next_state = None
         next_agent_state = None
-        result = None
 
         kwargs['expected_prompt'] = "S>"
         kwargs['timeout'] = 200
         result = self._do_cmd_resp(InstrumentCmds.TEST_EEPROM, *args, **kwargs)
 
-        return (next_state, (next_agent_state, result))
+        return next_state, (next_agent_state, result)
 
     def _parse_test_eeprom(self, response, prompt):
         """
@@ -1518,13 +1435,12 @@ class Protocol(SeaBirdProtocol):
 
         next_state = None
         next_agent_state = None
-        result = None
 
         kwargs['expected_prompt'] = "S>"
         kwargs['timeout'] = 10
         result = self._do_cmd_resp(InstrumentCmds.RESET_EC, *args, **kwargs)
 
-        return (next_state, (next_agent_state, result))
+        return next_state, (next_agent_state, result)
 
     def _handler_sample_ref_osc(self, *args, **kwargs):
 
@@ -1532,14 +1448,12 @@ class Protocol(SeaBirdProtocol):
 
         next_state = None
         next_agent_state = None
-        result = None
 
         kwargs['expected_prompt'] = "S>"
         kwargs['timeout'] = 200
         result = self._do_cmd_resp(InstrumentCmds.SAMPLE_REFERENCE_OSCILLATOR, *args, **kwargs)
 
-
-        return (next_state, (next_agent_state, result))
+        return next_state, (next_agent_state, result)
 
     def _parse_sample_ref_osc(self, response, prompt):
 
@@ -1555,18 +1469,14 @@ class Protocol(SeaBirdProtocol):
 
     def _handler_command_init_logging(self, *args, **kwargs):
 
-        log.debug("%%% in _handler_command_init_logging")
-
         next_state = None
         next_agent_state = None
-        result = None
 
         kwargs['expected_prompt'] = "S>"
         log.debug("WANT " + repr(kwargs['expected_prompt']))
         result = self._do_cmd_resp(InstrumentCmds.INIT_LOGGING, *args, **kwargs)
 
-        return (next_state, (next_agent_state, result))
-        #return (next_state, result)
+        return next_state, (next_agent_state, result)
 
     def _parse_init_logging_response(self, response, prompt):
         """
@@ -1575,10 +1485,6 @@ class Protocol(SeaBirdProtocol):
         @param prompt prompt following command response.
         @throws InstrumentProtocolException if set command misunderstood.
         """
-        log.debug("_parse_init_logging_response response = " + repr(response))
-        log.debug("_parse_init_logging_response prompt = " + repr(prompt))
-
-        #'InitLogging\r\n<WARNING>\r\nSample number will reset\r\nAll recorded data will be lost\r\n</WARNING>\r\n<ConfirmationRequired/>\r\n<Executed/>\r\nS>'
 
         if prompt != 'S>':
             raise InstrumentProtocolException('Initlogging command not recognized: %s' % response)
@@ -1594,8 +1500,7 @@ class Protocol(SeaBirdProtocol):
             (prompt, response) = self._get_response(timeout=30)
             log.debug("_parse_init_logging_response RESULT = " + repr(response))
             log.debug("_parse_init_logging_response prompt = " + repr(prompt))
-            if (Prompt.COMMAND == prompt and
-                'InitLogging\r\n<Executed/>\r\nS>' == response):
+            if Prompt.COMMAND == prompt and 'InitLogging\r\n<Executed/>\r\nS>' == response:
                 return True
 
         return False
@@ -1607,7 +1512,6 @@ class Protocol(SeaBirdProtocol):
         @throws InstrumentTimeoutException if device cannot be woken for command.
         @throws InstrumentProtocolException if command could not be built or misunderstood.
         """
-
         next_state = None
         next_agent_state = None
         result = None
@@ -1615,7 +1519,7 @@ class Protocol(SeaBirdProtocol):
         timeout = kwargs.get('timeout', TIMEOUT)
         self._sync_clock(InstrumentCmds.SET_TIME, Parameter.TIME, timeout, time_format="%Y-%m-%dT%H:%M:%S")
 
-        return (next_state, (next_agent_state, result))
+        return next_state, (next_agent_state, result)
 
     ########################################################################
     # Autosample handlers.
@@ -1646,7 +1550,7 @@ class Protocol(SeaBirdProtocol):
             timeout = kwargs.get('timeout', TIMEOUT)
             self._sync_clock(InstrumentCmds.SET_TIME, Parameter.TIME, timeout, time_format="%Y-%m-%dT%H:%M:%S")
 
-        # Catch all error so we can put ourself back into
+        # Catch all error so we can put instrument agent back into
         # streaming.  Then rethrow the error
         except Exception as e:
             error = e
@@ -1655,10 +1559,10 @@ class Protocol(SeaBirdProtocol):
             # Switch back to streaming
             self._start_logging()
 
-        if(error):
+        if error:
             raise error
 
-        return (next_state, (next_agent_state, result))
+        return next_state, (next_agent_state, result)
 
     def _handler_command_start_autosample(self, *args, **kwargs):
         """
@@ -1671,11 +1575,7 @@ class Protocol(SeaBirdProtocol):
         kwargs['expected_prompt'] = Prompt.COMMAND
         kwargs['timeout'] = 30
         log.info("SYNCING TIME WITH SENSOR")
-        #self._do_cmd_resp(InstrumentCmds.SET, Parameter.DS_DEVICE_DATE_TIME, time.strftime("%d %b %Y %H:%M:%S", time.gmtime(time.mktime(time.localtime()))), **kwargs)
         self._do_cmd_resp(InstrumentCmds.SET, Parameter.TIME, get_timestamp_delayed("%Y-%m-%dT%H:%M:%S"), **kwargs)
-
-        next_state = None
-        result = None
 
         # Issue start command and switch to autosample if successful.
         self._do_cmd_no_resp(InstrumentCmds.START_LOGGING, *args, **kwargs)
@@ -1683,7 +1583,7 @@ class Protocol(SeaBirdProtocol):
         next_state = ProtocolState.AUTOSAMPLE
         next_agent_state = ResourceAgentState.STREAMING
 
-        return (next_state, (next_agent_state, result))
+        return next_state, (next_agent_state, None)
 
     def _handler_autosample_stop_autosample(self, *args, **kwargs):
         """
@@ -1694,12 +1594,6 @@ class Protocol(SeaBirdProtocol):
         @throws InstrumentProtocolException if command misunderstood or
         incorrect prompt received.
         """
-
-        log.debug("%%% IN _handler_autosample_stop_autosample")
-
-        next_state = None
-        result = None
-
         # Wake up the device, continuing until autosample prompt seen.
         timeout = kwargs.get('timeout', TIMEOUT)
         self._wakeup_until(timeout, Prompt.AUTOSAMPLE)
@@ -1713,37 +1607,25 @@ class Protocol(SeaBirdProtocol):
         next_state = ProtocolState.COMMAND
         next_agent_state = ResourceAgentState.COMMAND
 
-        return (next_state, (next_agent_state, result))
+        return next_state, (next_agent_state, None)
 
     def _handler_autosample_exit(self, *args, **kwargs):
         """
         Exit autosample state.
         """
-
-        log.debug("%%% IN _handler_autosample_exit")
-
         pass
 
     ########################################################################
     # Direct access handlers.
     ########################################################################
-
     def _handler_direct_access_enter(self, *args, **kwargs):
         """
         Enter direct access state.
         """
-        log.debug("IN _handler_direct_access_enter")
-        # Tell driver superclass to send a state change event.
-        # Superclass will query the state.
-
         self._driver_event(DriverAsyncEvent.STATE_CHANGE)
         self._sent_cmds = []
 
-
     def _handler_direct_access_execute_direct(self, data):
-        """
-        """
-        log.debug("IN _handler_direct_access_execute_direct")
         next_state = None
         result = None
         next_agent_state = None
@@ -1753,33 +1635,25 @@ class Protocol(SeaBirdProtocol):
         # add sent command to list for 'echo' filtering in callback
         self._sent_cmds.append(data)
 
-        return (next_state, (next_agent_state, result))
+        return next_state, (next_agent_state, result)
 
     def _handler_direct_access_stop_direct(self):
         """
         @throw InstrumentProtocolException on invalid command
         """
-
-        log.debug("IN _handler_direct_access_stop_direct")
-
-        next_state = None
         result = None
-
         (next_state, next_agent_state) = self._discover()
-
-        return (next_state, (next_agent_state, result))
+        return next_state, (next_agent_state, result)
 
     def _handler_direct_access_exit(self, *args, **kwargs):
         """
         Exit direct access state.
         """
-        log.debug("%%% IN _handler_direct_access_exit")
         pass
 
     ########################################################################
     # Private helpers.
     ########################################################################
-
     def _is_logging(self, timeout=TIMEOUT):
         """
         Wake up the instrument and inspect the prompt to determine if we
@@ -1791,7 +1665,7 @@ class Protocol(SeaBirdProtocol):
         """
         prompt = self._wakeup(timeout=timeout, delay=0.1)
         log.debug("Prompt return: %s" % prompt)
-        if  Prompt.AUTOSAMPLE == prompt:
+        if Prompt.AUTOSAMPLE == prompt:
             log.debug("Instrument state: logging")
             return True
         elif Prompt.COMMAND == prompt:
@@ -1807,8 +1681,7 @@ class Protocol(SeaBirdProtocol):
         @return: True if successful
         @raise: InstrumentProtocolException if failed to start logging
         """
-        log.debug("Start Logging!")
-        if(self._is_logging()):
+        if self._is_logging():
             return True
 
         self._do_cmd_no_resp(InstrumentCmds.START_LOGGING, timeout=timeout)
@@ -1826,8 +1699,6 @@ class Protocol(SeaBirdProtocol):
         @raise: InstrumentTimeoutException if prompt isn't seen
         @raise: InstrumentProtocolException failed to stop logging
         """
-        log.debug("Stop Logging!")
-
         if not self._is_logging():
             return True
 
@@ -1839,29 +1710,20 @@ class Protocol(SeaBirdProtocol):
 
         return True
 
-
     def _set_params(self, *args, **kwargs):
         """
         Issue commands to the instrument to set various parameters
         """
-        log.debug("sbe54 _set_params start")
-
-        startup = False
         try:
             params = args[0]
         except IndexError:
             raise InstrumentParameterException('Set command requires a parameter dict.')
 
-        try:
-            startup = args[1]
-        except IndexError:
-            pass
-
         self._verify_not_readonly(*args, **kwargs)
 
         for (key, val) in params.iteritems():
             log.debug("KEY = " + str(key) + " VALUE = " + str(val))
-            result = self._do_cmd_resp(InstrumentCmds.SET, key, val, **kwargs)
+            self._do_cmd_resp(InstrumentCmds.SET, key, val, **kwargs)
 
         log.debug("sbe54 _set_params update_params")
         self._update_params()
@@ -1914,30 +1776,21 @@ class Protocol(SeaBirdProtocol):
     def _build_param_dict(self):
         """
         Populate the parameter dictionary with parameters.
-        For each parameter key, add match stirng, match lambda function,
+        For each parameter key, add match string, match lambda function,
         and value formatting function for set commands.
         """
-        log.debug("%%% IN _build_param_dict")
-        # THIS wants to take advantage of the particle code,
-        # as the particles handle parsing the fields out
-        # no sense doing it again here
-
-        #
-        # StatusData
-        #
         self._param_dict.add(Parameter.TIME,
-            SBE54tpsStatusDataParticle.LINE2,
-            lambda match : match.group(1),
-            str,
-            type=ParameterDictType.STRING,
-            expiration=0,
-            visibility=ParameterDictVisibility.READ_ONLY,
-            display_name="instrument time"
-        )
+                             SBE54tpsStatusDataParticle.LINE2,
+                             lambda match: match.group(1),
+                             str,
+                             type=ParameterDictType.STRING,
+                             expiration=0,
+                             visibility=ParameterDictVisibility.READ_ONLY,
+                             display_name="instrument time")
 
         self._param_dict.add(Parameter.SAMPLE_PERIOD,
                              SBE54tpsConfigurationDataParticle.LINE28,
-                             lambda match : int(match.group(1)),
+                             lambda match: int(match.group(1)),
                              self._int_to_string,
                              type=ParameterDictType.INT,
                              display_name="sample period",
@@ -1947,7 +1800,7 @@ class Protocol(SeaBirdProtocol):
 
         self._param_dict.add(Parameter.BATTERY_TYPE,
                              SBE54tpsConfigurationDataParticle.LINE24,
-                             lambda match : int(match.group(1)),
+                             lambda match: int(match.group(1)),
                              self._int_to_string,
                              type=ParameterDictType.INT,
                              display_name="battery type",
@@ -1958,7 +1811,7 @@ class Protocol(SeaBirdProtocol):
 
         self._param_dict.add(Parameter.ENABLE_ALERTS,
                              SBE54tpsConfigurationDataParticle.LINE26,
-                             lambda match : bool(int(match.group(1))),
+                             lambda match: bool(int(match.group(1))),
                              self._bool_to_int_string,
                              type=ParameterDictType.BOOL,
                              display_name="enable alerts",
@@ -1973,27 +1826,25 @@ class Protocol(SeaBirdProtocol):
         with the appropriate particle objects and REGEXes.
         """
         # This instrument will automatically put itself back into autosample mode after a couple minutes idle
-        # in command mode.  So if we see a sample we need to figure out if we need to raise an event to adjust
+        # in command mode.  If a sample is seen, figure out if an event to needs to be raised to adjust
         # the state machine.
-        if(self._extract_sample(SBE54tpsSampleDataParticle, SAMPLE_DATA_REGEX_MATCHER, chunk, timestamp)):
+        if self._extract_sample(SBE54tpsSampleDataParticle, SAMPLE_DATA_REGEX_MATCHER, chunk, timestamp):
             log.debug("Sample record detected, publish a sample")
-            if(self._protocol_fsm.get_current_state() == ProtocolState.COMMAND):
+            if self._protocol_fsm.get_current_state() == ProtocolState.COMMAND:
                 log.debug("FSM appears out of date.  Fixing it!")
-                #self._protocol_fsm.on_event(ProtocolEvent.RECOVER_AUTOSAMPLE)
                 self._async_raise_fsm_event(ProtocolEvent.RECOVER_AUTOSAMPLE)
             return
 
-        if(self._extract_sample(SBE54tpsStatusDataParticle, STATUS_DATA_REGEX_MATCHER, chunk, timestamp)) : return
-        if(self._extract_sample(SBE54tpsConfigurationDataParticle, CONFIGURATION_DATA_REGEX_MATCHER, chunk, timestamp)) : return
-        if(self._extract_sample(SBE54tpsEventCounterDataParticle, EVENT_COUNTER_DATA_REGEX_MATCHER, chunk, timestamp)) : return
-        if(self._extract_sample(SBE54tpsHardwareDataParticle, HARDWARE_DATA_REGEX_MATCHER, chunk, timestamp)) : return
-        if(self._extract_sample(SBE54tpsSampleRefOscDataParticle, SAMPLE_REF_OSC_MATCHER, chunk, timestamp)) : return
+        if self._extract_sample(SBE54tpsStatusDataParticle, STATUS_DATA_REGEX_MATCHER, chunk, timestamp): return
+        if self._extract_sample(SBE54tpsConfigurationDataParticle, CONFIGURATION_DATA_REGEX_MATCHER, chunk, timestamp): return
+        if self._extract_sample(SBE54tpsEventCounterDataParticle, EVENT_COUNTER_DATA_REGEX_MATCHER, chunk, timestamp): return
+        if self._extract_sample(SBE54tpsHardwareDataParticle, HARDWARE_DATA_REGEX_MATCHER, chunk, timestamp): return
+        if self._extract_sample(SBE54tpsSampleRefOscDataParticle, SAMPLE_REF_OSC_MATCHER, chunk, timestamp): return
 
     def _send_wakeup(self):
         """
         Send a newline to attempt to wake the sbe26plus device.
         """
-        log.debug("%%% IN _send_wakeup")
         self._connection.send(NEWLINE)
 
     def _build_simple_command(self, cmd):
@@ -2002,18 +1853,17 @@ class Protocol(SeaBirdProtocol):
         @param cmd the simple sbe37 command to format.
         @retval The command to be sent to the device.
         """
-        log.debug("%%% IN _build_simple_command")
         return cmd + NEWLINE
 
     def _update_params(self, *args, **kwargs):
         """
         Update the parameter dictionary. Wake the device then issue
         display status and display calibration commands. The parameter
-        dict will match line output and udpate itself.
+        dict will match line output and update itself.
         @throws InstrumentTimeoutException if device cannot be timely woken.
         @throws InstrumentProtocolException if ds/dc misunderstood.
         """
-        log.debug("start _update_params")
+
         # Get old param dict config.
         old_config = self._param_dict.get_config()
 
@@ -2040,9 +1890,6 @@ class Protocol(SeaBirdProtocol):
             log.debug("configuration has changed.  Send driver event")
             self._driver_event(DriverAsyncEvent.CONFIG_CHANGE)
 
-    #
-    # Many of these will want to rise up to base class if not there already
-    #
     @staticmethod
     def _int_to_string(v):
         """
@@ -2051,9 +1898,7 @@ class Protocol(SeaBirdProtocol):
         @retval an int string formatted for sbe37 set operations.
         @throws InstrumentParameterException if value not an int.
         """
-        log.debug("IN _int_to_string")
-
-        if not isinstance(v,int):
+        if not isinstance(v, int):
             raise InstrumentParameterException('Value %s is not an int.' % str(v))
         else:
             return '%i' % v
@@ -2066,23 +1911,17 @@ class Protocol(SeaBirdProtocol):
         @retval a float string formatted for sbe37 set operations.
         @throws InstrumentParameterException if value is not a float.
         """
-        log.debug("IN _float_to_string")
-
         if not isinstance(v, float):
             raise InstrumentParameterException('Value %s is not a float.' % v)
         else:
-            #return '%e' % v #This returns a exponential formatted float
-            # every time. not what is needed
-            return str(v) #return a simple float
+            return str(v)
 
     @staticmethod
     def _bool_to_int_string(v):
-        # return a string of an into of 1 or 0 to indicate true/false
-
-        if True == v:
+        # return a string of 1 or 0 to indicate true/false
+        if v:
             return "1"
-        elif False == v:
+        elif not v:
             return "0"
         else:
             return None
-

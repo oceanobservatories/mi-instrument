@@ -29,10 +29,11 @@ from nose.plugins.attrib import attr
 from mock import Mock
 import time
 
-from mi.core.log import get_logger ; log = get_logger()
+from mi.core.log import get_logger
+log = get_logger()
 
 # MI imports.
-from mi.idk.unit_test import DriverTestMixin
+from mi.idk.unit_test import DriverTestMixin, DriverStartupConfigKey, InstrumentDriverTestCase
 from mi.idk.unit_test import ParameterTestConfigKey
 from mi.idk.unit_test import AgentCapabilityType
 
@@ -45,7 +46,6 @@ from mi.instrument.seabird.sbe54tps.driver import Capability
 from mi.instrument.seabird.sbe54tps.driver import Prompt
 from mi.instrument.seabird.sbe54tps.driver import Protocol
 from mi.instrument.seabird.sbe54tps.driver import InstrumentCmds
-from mi.instrument.seabird.sbe54tps.driver import NEWLINE
 from mi.instrument.seabird.sbe54tps.driver import SBE54tpsStatusDataParticleKey
 from mi.instrument.seabird.sbe54tps.driver import SBE54tpsEventCounterDataParticleKey
 from mi.instrument.seabird.sbe54tps.driver import SBE54tpsSampleDataParticleKey
@@ -68,10 +68,37 @@ from mi.core.instrument.instrument_driver import ResourceAgentState
 from mi.core.exceptions import InstrumentCommandException
 from mi.core.instrument.chunker import StringChunker
 
+
+InstrumentDriverTestCase.initialize(
+    driver_module='mi.instrument.seabird.sbe54tps.ooicore.driver',
+    driver_class="InstrumentDriver",
+    instrument_agent_resource_id = '123xyz',
+    instrument_agent_preload_id = 'IA7',
+    instrument_agent_name = 'Agent007',
+    instrument_agent_packet_config = DataParticleType(),
+
+    driver_startup_config = {
+        DriverStartupConfigKey.PARAMETERS: {
+            Parameter.SAMPLE_PERIOD: 15,
+            Parameter.BATTERY_TYPE: 1,
+            Parameter.ENABLE_ALERTS: 1,
+        },
+        DriverStartupConfigKey.SCHEDULER: {
+            ScheduledJob.ACQUIRE_STATUS: {},
+            ScheduledJob.STATUS_DATA: {},
+            ScheduledJob.HARDWARE_DATA: {},
+            ScheduledJob.EVENT_COUNTER_DATA: {},
+            ScheduledJob.CONFIGURATION_DATA: {},
+            ScheduledJob.CLOCK_SYNC: {}
+        }
+    }
+)
+
+
 class SeaBird54tpsMixin(DriverTestMixin):
-    '''
+    """
     Mixin class used for storing data particle constance and common data assertion methods.
-    '''
+    """
     # Create some short names for the parameter test config
     TYPE      = ParameterTestConfigKey.TYPE
     READONLY  = ParameterTestConfigKey.READONLY
@@ -87,55 +114,55 @@ class SeaBird54tpsMixin(DriverTestMixin):
     ###
     _driver_parameters = {
         # Parameters defined in the IOS
-        Parameter.SAMPLE_PERIOD : {TYPE: int, READONLY: False, DA: True, STARTUP: True, DEFAULT: 15, VALUE: 15},
-        Parameter.TIME : {TYPE: str, READONLY: True, DA: False, STARTUP: False},
-        Parameter.BATTERY_TYPE : {TYPE: int, READONLY: True, DA: True, STARTUP: True, DEFAULT: 1, VALUE: 1},
-        Parameter.ENABLE_ALERTS : {TYPE: bool, READONLY: True, DA: True, STARTUP: True, DEFAULT: True, VALUE: 1},
+        Parameter.SAMPLE_PERIOD: {TYPE: int, READONLY: False, DA: True, STARTUP: True, DEFAULT: 15, VALUE: 15},
+        Parameter.TIME: {TYPE: str, READONLY: True, DA: False, STARTUP: False},
+        Parameter.BATTERY_TYPE: {TYPE: int, READONLY: True, DA: True, STARTUP: True, DEFAULT: 1, VALUE: 1},
+        Parameter.ENABLE_ALERTS: {TYPE: bool, READONLY: True, DA: True, STARTUP: True, DEFAULT: True, VALUE: 1},
         }
 
     _driver_capabilities = {
         # capabilities defined in the IOS
-        Capability.START_AUTOSAMPLE : {STATES: [ProtocolState.COMMAND, ProtocolState.AUTOSAMPLE]},
-        Capability.STOP_AUTOSAMPLE : {STATES: [ProtocolState.COMMAND, ProtocolState.AUTOSAMPLE]},
-        Capability.CLOCK_SYNC : {STATES: [ProtocolState.COMMAND]},
-        Capability.ACQUIRE_STATUS : {STATES: [ProtocolState.COMMAND, ProtocolState.AUTOSAMPLE]},
-        Capability.SAMPLE_REFERENCE_OSCILLATOR : {STATES: [ProtocolState.COMMAND]},
-        Capability.TEST_EEPROM : {STATES: [ProtocolState.COMMAND]},
-        Capability.GET_CONFIGURATION_DATA : {STATES: [ProtocolState.COMMAND, ProtocolState.AUTOSAMPLE]},
-        Capability.GET_STATUS_DATA : {STATES: [ProtocolState.COMMAND, ProtocolState.AUTOSAMPLE]},
-        Capability.GET_EVENT_COUNTER : {STATES: [ProtocolState.COMMAND, ProtocolState.AUTOSAMPLE]},
-        Capability.GET_HARDWARE_DATA : {STATES: [ProtocolState.COMMAND, ProtocolState.AUTOSAMPLE]},
+        Capability.START_AUTOSAMPLE: {STATES: [ProtocolState.COMMAND, ProtocolState.AUTOSAMPLE]},
+        Capability.STOP_AUTOSAMPLE: {STATES: [ProtocolState.COMMAND, ProtocolState.AUTOSAMPLE]},
+        Capability.CLOCK_SYNC: {STATES: [ProtocolState.COMMAND]},
+        Capability.ACQUIRE_STATUS: {STATES: [ProtocolState.COMMAND, ProtocolState.AUTOSAMPLE]},
+        Capability.SAMPLE_REFERENCE_OSCILLATOR: {STATES: [ProtocolState.COMMAND]},
+        Capability.TEST_EEPROM: {STATES: [ProtocolState.COMMAND]},
+        Capability.GET_CONFIGURATION_DATA: {STATES: [ProtocolState.COMMAND, ProtocolState.AUTOSAMPLE]},
+        Capability.GET_STATUS_DATA: {STATES: [ProtocolState.COMMAND, ProtocolState.AUTOSAMPLE]},
+        Capability.GET_EVENT_COUNTER: {STATES: [ProtocolState.COMMAND, ProtocolState.AUTOSAMPLE]},
+        Capability.GET_HARDWARE_DATA: {STATES: [ProtocolState.COMMAND, ProtocolState.AUTOSAMPLE]},
     }
 
     _prest_real_time_parameters = {
-        SBE54tpsSampleDataParticleKey.SAMPLE_NUMBER: {TYPE: int, VALUE: 5947, REQUIRED: True },
-        SBE54tpsSampleDataParticleKey.SAMPLE_TYPE: {TYPE: unicode, VALUE: 'Pressure', REQUIRED: True },
-        SBE54tpsSampleDataParticleKey.INST_TIME: {TYPE: unicode, VALUE: '2012-11-07T12:21:25', REQUIRED: True },
-        SBE54tpsSampleDataParticleKey.PRESSURE: {TYPE: float, VALUE: 13.9669, REQUIRED: True },
-        SBE54tpsSampleDataParticleKey.PRESSURE_TEMP: {TYPE: float, VALUE: 18.9047, REQUIRED: True },
+        SBE54tpsSampleDataParticleKey.SAMPLE_NUMBER: {TYPE: int, VALUE: 5947, REQUIRED: True},
+        SBE54tpsSampleDataParticleKey.SAMPLE_TYPE: {TYPE: unicode, VALUE: 'Pressure', REQUIRED: True},
+        SBE54tpsSampleDataParticleKey.INST_TIME: {TYPE: unicode, VALUE: '2012-11-07T12:21:25', REQUIRED: True},
+        SBE54tpsSampleDataParticleKey.PRESSURE: {TYPE: float, VALUE: 13.9669, REQUIRED: True},
+        SBE54tpsSampleDataParticleKey.PRESSURE_TEMP: {TYPE: float, VALUE: 18.9047, REQUIRED: True},
     }
 
     _prest_reference_oscillator_parameters = {
-        SBE54tpsSampleRefOscDataParticleKey.SET_TIMEOUT: {TYPE: int, VALUE: 125000, REQUIRED: True },
-        SBE54tpsSampleRefOscDataParticleKey.SET_TIMEOUT_MAX: {TYPE: int, VALUE: 150000, REQUIRED: True },
-        SBE54tpsSampleRefOscDataParticleKey.SET_TIMEOUT_ICD: {TYPE: int, VALUE: 150000, REQUIRED: True },
-        SBE54tpsSampleRefOscDataParticleKey.SAMPLE_NUMBER: {TYPE: int, VALUE: 1244, REQUIRED: True },
-        SBE54tpsSampleRefOscDataParticleKey.SAMPLE_TYPE: {TYPE: unicode, VALUE: 'RefOsc', REQUIRED: True },
-        SBE54tpsSampleRefOscDataParticleKey.SAMPLE_TIMESTAMP: {TYPE: unicode, VALUE: u'2013-01-30T15:36:53', REQUIRED: True },
-        SBE54tpsSampleRefOscDataParticleKey.REF_OSC_FREQ: {TYPE: float, VALUE: 5999995.955, REQUIRED: True },
-        SBE54tpsSampleRefOscDataParticleKey.REF_ERROR_PPM: {TYPE: float, VALUE: 0.090, REQUIRED: True },
-        SBE54tpsSampleRefOscDataParticleKey.PCB_TEMP_RAW: {TYPE: int, VALUE: 18413, REQUIRED: True },
+        SBE54tpsSampleRefOscDataParticleKey.SET_TIMEOUT: {TYPE: int, VALUE: 125000, REQUIRED: True},
+        SBE54tpsSampleRefOscDataParticleKey.SET_TIMEOUT_MAX: {TYPE: int, VALUE: 150000, REQUIRED: True},
+        SBE54tpsSampleRefOscDataParticleKey.SET_TIMEOUT_ICD: {TYPE: int, VALUE: 150000, REQUIRED: True},
+        SBE54tpsSampleRefOscDataParticleKey.SAMPLE_NUMBER: {TYPE: int, VALUE: 1244, REQUIRED: True},
+        SBE54tpsSampleRefOscDataParticleKey.SAMPLE_TYPE: {TYPE: unicode, VALUE: 'RefOsc', REQUIRED: True},
+        SBE54tpsSampleRefOscDataParticleKey.SAMPLE_TIMESTAMP: {TYPE: unicode, VALUE: u'2013-01-30T15:36:53', REQUIRED: True},
+        SBE54tpsSampleRefOscDataParticleKey.REF_OSC_FREQ: {TYPE: float, VALUE: 5999995.955, REQUIRED: True},
+        SBE54tpsSampleRefOscDataParticleKey.REF_ERROR_PPM: {TYPE: float, VALUE: 0.090, REQUIRED: True},
+        SBE54tpsSampleRefOscDataParticleKey.PCB_TEMP_RAW: {TYPE: int, VALUE: 18413, REQUIRED: True},
     }
 
     _prest_configuration_data_parameters = {
         SBE54tpsConfigurationDataParticleKey.DEVICE_TYPE: {TYPE: unicode, VALUE: 'SBE54' , REQUIRED: True },
-        SBE54tpsConfigurationDataParticleKey.SERIAL_NUMBER: {TYPE: int, VALUE: 5400012, REQUIRED: True },
+        SBE54tpsConfigurationDataParticleKey.SERIAL_NUMBER: {TYPE: str, VALUE: '05400012', REQUIRED: True },
         SBE54tpsConfigurationDataParticleKey.ACQ_OSC_CAL_DATE: {TYPE: unicode, VALUE: '2012-02-20', REQUIRED: True },
         SBE54tpsConfigurationDataParticleKey.FRA0: {TYPE: float, VALUE: 5.999926E+06, REQUIRED: True },
         SBE54tpsConfigurationDataParticleKey.FRA1: {TYPE: float, VALUE: 5.792290E-03, REQUIRED: True },
         SBE54tpsConfigurationDataParticleKey.FRA2: {TYPE: float, VALUE: -1.195664E-07, REQUIRED: True },
         SBE54tpsConfigurationDataParticleKey.FRA3: {TYPE: float, VALUE: 7.018589E-13, REQUIRED: True },
-        SBE54tpsConfigurationDataParticleKey.PRESSURE_SERIAL_NUM: {TYPE: int, VALUE: 121451, REQUIRED: True },
+        SBE54tpsConfigurationDataParticleKey.PRESSURE_SERIAL_NUM: {TYPE: unicode, VALUE: '121451', REQUIRED: True },
         SBE54tpsConfigurationDataParticleKey.PRESSURE_CAL_DATE: {TYPE: unicode, VALUE: '2011-06-01', REQUIRED: True },
         SBE54tpsConfigurationDataParticleKey.PU0: {TYPE: float, VALUE: 5.820407E+00, REQUIRED: True },
         SBE54tpsConfigurationDataParticleKey.PY1: {TYPE: float, VALUE: -3.845374E+03, REQUIRED: True },
@@ -161,7 +188,7 @@ class SeaBird54tpsMixin(DriverTestMixin):
 
     _prest_device_status_parameters = {
         SBE54tpsStatusDataParticleKey.DEVICE_TYPE: {TYPE: unicode, VALUE: 'SBE54', REQUIRED: True },
-        SBE54tpsStatusDataParticleKey.SERIAL_NUMBER: {TYPE: int, VALUE: 5400012, REQUIRED: True },
+        SBE54tpsStatusDataParticleKey.SERIAL_NUMBER: {TYPE: str, VALUE: '05400012', REQUIRED: True },
         SBE54tpsStatusDataParticleKey.TIME: {TYPE: unicode, VALUE: '2012-11-06T10:55:44', REQUIRED: True },
         SBE54tpsStatusDataParticleKey.EVENT_COUNT: {TYPE: int, VALUE: 573 },
         SBE54tpsStatusDataParticleKey.MAIN_SUPPLY_VOLTAGE: {TYPE: float, VALUE:  23.3, REQUIRED: True },
@@ -174,7 +201,7 @@ class SeaBird54tpsMixin(DriverTestMixin):
         SBE54tpsEventCounterDataParticleKey.NUMBER_EVENTS: {TYPE: int, VALUE: 573 },
         SBE54tpsEventCounterDataParticleKey.MAX_STACK: {TYPE: int, VALUE: 354 },
         SBE54tpsEventCounterDataParticleKey.DEVICE_TYPE: {TYPE: unicode, VALUE: 'SBE54' },
-        SBE54tpsEventCounterDataParticleKey.SERIAL_NUMBER: {TYPE: int, VALUE: 5400012 },
+        SBE54tpsEventCounterDataParticleKey.SERIAL_NUMBER: {TYPE: str, VALUE: '05400012' },
         SBE54tpsEventCounterDataParticleKey.POWER_ON_RESET: {TYPE: int, VALUE: 25 },
         SBE54tpsEventCounterDataParticleKey.POWER_FAIL_RESET: {TYPE: int, VALUE: 25 },
         SBE54tpsEventCounterDataParticleKey.SERIAL_BYTE_ERROR: {TYPE: int, VALUE: 9 },
@@ -188,12 +215,12 @@ class SeaBird54tpsMixin(DriverTestMixin):
 
     _prest_hardware_data_parameters = {
         SBE54tpsHardwareDataParticleKey.DEVICE_TYPE: {TYPE: unicode, VALUE: 'SBE54', REQUIRED: True },
-        SBE54tpsHardwareDataParticleKey.SERIAL_NUMBER: {TYPE: int, VALUE: 5400012, REQUIRED: True },
+        SBE54tpsHardwareDataParticleKey.SERIAL_NUMBER: {TYPE: str, VALUE: '05400012', REQUIRED: True },
         SBE54tpsHardwareDataParticleKey.MANUFACTURER: {TYPE: unicode, VALUE: 'Sea-Bird Electronics, Inc', REQUIRED: True },
         SBE54tpsHardwareDataParticleKey.FIRMWARE_VERSION: {TYPE: unicode, VALUE: 'SBE54 V1.3-6MHZ', REQUIRED: True },
         SBE54tpsHardwareDataParticleKey.FIRMWARE_DATE: {TYPE: unicode, VALUE: 'Mar 22 2007', REQUIRED: True },
         SBE54tpsHardwareDataParticleKey.HARDWARE_VERSION: {TYPE: unicode, VALUE: '41478A.1T', REQUIRED: True },
-        SBE54tpsHardwareDataParticleKey.PCB_SERIAL_NUMBER: {TYPE: unicode, VALUE: 'NOT SET', REQUIRED: True },
+        SBE54tpsHardwareDataParticleKey.PCB_SERIAL_NUMBER: {TYPE: list, VALUE: ['NOT SET'], REQUIRED: True },
         SBE54tpsHardwareDataParticleKey.PCB_TYPE: {TYPE: unicode, VALUE: '1', REQUIRED: True },
         SBE54tpsHardwareDataParticleKey.MANUFACTUR_DATE: {TYPE: unicode, VALUE: 'Jun 27 2007', REQUIRED: True },
     }
@@ -201,7 +228,7 @@ class SeaBird54tpsMixin(DriverTestMixin):
     ###
     #   Driver Parameter Methods
     ###
-    def assert_driver_parameters(self, current_parameters, verify_values = False):
+    def assert_driver_parameters(self, current_parameters, verify_values=False):
         """
         Verify that all driver parameters are correct and potentially verify values.
         @param current_parameters: driver parameters read from the driver instance
@@ -209,65 +236,66 @@ class SeaBird54tpsMixin(DriverTestMixin):
         """
         self.assert_parameters(current_parameters, self._driver_parameters, verify_values)
 
-    def assert_particle_real_time(self, data_particle, verify_values = False):
-        '''
+    def assert_particle_real_time(self, data_particle, verify_values=False):
+        """
         Verify prest_real_tim particle
         @param data_particle:  SBE54tpsSampleDataParticle data particle
         @param verify_values:  bool, should we verify parameter values
-        '''
+        """
         self.assert_data_particle_keys(SBE54tpsSampleDataParticleKey, self._prest_real_time_parameters)
         self.assert_data_particle_header(data_particle, DataParticleType.PREST_REAL_TIME)
         self.assert_data_particle_parameters(data_particle, self._prest_real_time_parameters, verify_values)
 
-    def assert_particle_reference_oscillator(self, data_particle, verify_values = False):
-        '''
+    def assert_particle_reference_oscillator(self, data_particle, verify_values=False):
+        """
         Verify prest_reference_oscillator particle
         @param data_particle:  SBE54tpsSampleRefOscDataParticle data particle
         @param verify_values:  bool, should we verify parameter values
-        '''
+        """
         self.assert_data_particle_keys(SBE54tpsSampleRefOscDataParticleKey, self._prest_reference_oscillator_parameters)
         self.assert_data_particle_header(data_particle, DataParticleType.PREST_REFERENCE_OSCILLATOR)
         self.assert_data_particle_parameters(data_particle, self._prest_reference_oscillator_parameters, verify_values)
 
-    def assert_particle_configuration_data(self, data_particle, verify_values = False):
-        '''
+    def assert_particle_configuration_data(self, data_particle, verify_values=False):
+        """
         Verify prest_configuration_data particle
         @param data_particle:  SBE54tpsSampleDataParticle data particle
         @param verify_values:  bool, should we verify parameter values
-        '''
+        """
         self.assert_data_particle_keys(SBE54tpsConfigurationDataParticleKey, self._prest_configuration_data_parameters)
         self.assert_data_particle_header(data_particle, DataParticleType.PREST_CONFIGURATION_DATA)
         self.assert_data_particle_parameters(data_particle, self._prest_configuration_data_parameters, verify_values)
 
-    def assert_particle_device_status(self, data_particle, verify_values = False):
-        '''
+    def assert_particle_device_status(self, data_particle, verify_values=False):
+        """
         Verify prest_device_status particle
         @param data_particle:  SBE54tpsStatusDataParticle data particle
         @param verify_values:  bool, should we verify parameter values
-        '''
+        """
         self.assert_data_particle_keys(SBE54tpsStatusDataParticleKey, self._prest_device_status_parameters)
         self.assert_data_particle_header(data_particle, DataParticleType.PREST_DEVICE_STATUS)
         self.assert_data_particle_parameters(data_particle, self._prest_device_status_parameters, verify_values)
 
-    def assert_particle_event_counter(self, data_particle, verify_values = False):
-        '''
+    def assert_particle_event_counter(self, data_particle, verify_values=False):
+        """
         Verify prest_event_coutner particle
         @param data_particle:  SBE54tpsEventCounterDataParticle data particle
         @param verify_values:  bool, should we verify parameter values
-        '''
+        """
         self.assert_data_particle_keys(SBE54tpsEventCounterDataParticleKey, self._prest_event_counter_parameters)
         self.assert_data_particle_header(data_particle, DataParticleType.PREST_EVENT_COUNTER)
         self.assert_data_particle_parameters(data_particle, self._prest_event_counter_parameters, verify_values)
 
-    def assert_particle_hardware_data(self, data_particle, verify_values = False):
-        '''
+    def assert_particle_hardware_data(self, data_particle, verify_values=False):
+        """
         Verify prest_hardware_data particle
         @param data_particle:  SBE54tpsHardwareDataParticle data particle
         @param verify_values:  bool, should we verify parameter values
-        '''
+        """
         self.assert_data_particle_keys(SBE54tpsHardwareDataParticleKey, self._prest_hardware_data_parameters)
         self.assert_data_particle_header(data_particle, DataParticleType.PREST_REAL_TIME)
         self.assert_data_particle_parameters(data_particle, self._prest_hardware_data_parameters, verify_values)
+
 
 ###############################################################################
 #                                UNIT TESTS                                   #
@@ -409,6 +437,7 @@ class SeaBird54PlusUnitTest(SeaBirdUnitTest, SeaBird54tpsMixin):
         driver = SBE54PlusInstrumentDriver(self._got_data_event_callback)
         self.assert_capabilities(driver, capabilities)
 
+
 ###############################################################################
 #                            INTEGRATION TESTS                                #
 #     Integration test test the direct driver / instrument interaction        #
@@ -545,13 +574,13 @@ class SeaBird54PlusIntegrationTest(SeaBirdIntegrationTest, SeaBird54tpsMixin):
         # Explicitly verify these values after discover.  They should match
         # what the startup values should be
         get_values = {
-            Parameter.SAMPLE_PERIOD: 15,
+            Parameter.SAMPLE_PERIOD: 15
         }
 
         # Change the values of these parameters to something before the
         # driver is reinitalized.  They should be blown away on reinit.
         new_values = {
-            Parameter.SAMPLE_PERIOD: 5,
+            Parameter.SAMPLE_PERIOD: 5
         }
 
         self.assert_initialize_driver()
@@ -576,9 +605,9 @@ class SeaBird54PlusIntegrationTest(SeaBirdIntegrationTest, SeaBird54tpsMixin):
         # wil watch for 200.
         timeout = time.time() + 200
 
-        while(time.time() < timeout):
+        while time.time() < timeout:
             state = self.driver_client.cmd_dvr('get_resource_state')
-            if(state == ProtocolState.AUTOSAMPLE):
+            if state == ProtocolState.AUTOSAMPLE:
                 return
 
             log.debug("current state %s. recheck in 5" % state)
@@ -589,7 +618,6 @@ class SeaBird54PlusIntegrationTest(SeaBirdIntegrationTest, SeaBird54tpsMixin):
     ###
     #   Test scheduled events
     ###
-    # getCD
     def assert_configuration_data(self):
         """
         Verify a calibration particle was generated
@@ -759,6 +787,7 @@ class SeaBird54PlusIntegrationTest(SeaBirdIntegrationTest, SeaBird54tpsMixin):
         self.assert_cycle()
         self.assert_cycle()
 
+
 ###############################################################################
 #                            QUALIFICATION TESTS                              #
 # Device specific qualification tests are for                                 #
@@ -779,10 +808,10 @@ class SeaBird54PlusQualificationTest(SeaBirdQualificationTest, SeaBird54tpsMixin
         self.assert_sample_autosample(self.assert_particle_real_time, DataParticleType.PREST_REAL_TIME)
 
     def test_poll(self):
-        '''
+        """
         Verify that we can poll for a sample.  Take sample for this instrument
         Also poll for other engineering data streams.
-        '''
+        """
         self.assert_enter_command_mode()
 
         self.assert_particle_polled(ProtocolEvent.GET_HARDWARE_DATA, self.assert_particle_hardware_data, DataParticleType.PREST_HARDWARE_DATA, sample_count=1)
@@ -945,7 +974,7 @@ class SeaBird54PlusQualificationTest(SeaBirdQualificationTest, SeaBird54tpsMixin
         # go into direct access, and muck up a setting.
         self.assert_direct_access_start_telnet(timeout=600)
 
-        self.tcp_client.send_data("%s%s" % (InstrumentCmds.START_LOGGING,NEWLINE))
+        self.tcp_client.send_data("%s%s" % (InstrumentCmds.START_LOGGING, NEWLINE))
         self.tcp_client.expect("S>")
 
         self.assert_sample_async(self.assert_particle_real_time, DataParticleType.PREST_REAL_TIME, 15)
@@ -1095,7 +1124,7 @@ class SeaBird54PlusQualificationTest(SeaBirdQualificationTest, SeaBird54tpsMixin
 
         st_capabilities = copy.deepcopy(capabilities)
         st_capabilities[AgentCapabilityType.AGENT_COMMAND] = self._common_agent_commands(ResourceAgentState.STREAMING)
-        st_capabilities[AgentCapabilityType.RESOURCE_COMMAND] =  [
+        st_capabilities[AgentCapabilityType.RESOURCE_COMMAND] = [
             ProtocolEvent.STOP_AUTOSAMPLE,
             ProtocolEvent.ACQUIRE_STATUS,
             ProtocolEvent.GET_CONFIGURATION_DATA,
@@ -1145,6 +1174,7 @@ class SeaBird54PlusQualificationTest(SeaBirdQualificationTest, SeaBird54tpsMixin
 
         self.assert_reset()
         self.assert_capabilities(capabilities)
+
 
 ###############################################################################
 #                             PUBLICATION TESTS                               #
