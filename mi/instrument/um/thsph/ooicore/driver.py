@@ -49,18 +49,6 @@ NEWLINE = '\r\n'
 # default timeout.
 TIMEOUT = 10
 
-# Maximum number of communication test to wake up the instrument
-#MAX_COMM_TEST = 2
-
-# Time wait for the instrument response
-#CMD_RESP_TIME = .1
-
-#The timeout to wake the device
-#WAKEUP_TIMEOUT = 3
-
-# The time to look for response to a wake up attempt
-#RESPONSE_TIMEOUT = 1
-
 
 class ScheduledJob(BaseEnum):
     AUTO_SAMPLE = 'auto_sample'
@@ -79,7 +67,6 @@ class Command(BaseEnum):
     Instrument command strings
     """
     GET_SAMPLE = 'get_sample_cmd'  # Gets data sample from ADC
-    COMM_TEST = 'comm_test_cmd'   # Communication test, returns aP#
 
 
 class ProtocolState(BaseEnum):
@@ -305,19 +292,14 @@ class THSPHProtocol(CommandResponseInstrumentProtocol):
     SERIES_B = 'B'
     SERIES_C = 'C'
     GET_SAMPLE_SERIES_A = 'aH*'  # Gets data sample from ADC for series A
-    COMM_TEST_SERIES_A = 'aP*'   # Communication test for series A. Returns aP#
-
     GET_SAMPLE_SERIES_B = 'bH*'  # Gets data sample from ADC for series B
-    COMM_TEST_SERIES_B = 'bP*'   # Communication test for series B. Returns aP#
-
     GET_SAMPLE_SERIES_C = 'cH*'  # Gets data sample from ADC for series C
-    COMM_TEST_SERIES_C = 'cP*'   # Communication test for series C. Returns aP#
 
     # THSPH commands for instrument series A, B and C
     THSPH_COMMANDS = {
-        SERIES_A: {Command.COMM_TEST: COMM_TEST_SERIES_A, Command.GET_SAMPLE: GET_SAMPLE_SERIES_A},
-        SERIES_B: {Command.COMM_TEST: COMM_TEST_SERIES_B, Command.GET_SAMPLE: GET_SAMPLE_SERIES_B},
-        SERIES_C: {Command.COMM_TEST: COMM_TEST_SERIES_C, Command.GET_SAMPLE: GET_SAMPLE_SERIES_C},
+        SERIES_A: {Command.GET_SAMPLE: GET_SAMPLE_SERIES_A},
+        SERIES_B: {Command.GET_SAMPLE: GET_SAMPLE_SERIES_B},
+        SERIES_C: {Command.GET_SAMPLE: GET_SAMPLE_SERIES_C},
     }
 
     __metaclass__ = get_logging_metaclass(log_level='debug')
@@ -376,9 +358,6 @@ class THSPHProtocol(CommandResponseInstrumentProtocol):
 
         # Add build handlers for device commands.
         self._add_build_handler(Command.GET_SAMPLE, self._build_simple_command)
-        self._add_build_handler(Command.COMM_TEST, self._build_simple_command)
-
-        # Add response handlers for device commands.
 
         # State state machine in COMMAND state.
         self._protocol_fsm.start(ProtocolState.UNKNOWN)
@@ -390,7 +369,6 @@ class THSPHProtocol(CommandResponseInstrumentProtocol):
 
         # Set Get Sample Command and Communication Test Command for Series A as default
         self._get_sample_cmd = self.GET_SAMPLE_SERIES_A
-        self._comm_test_cmd = self.COMM_TEST_SERIES_A
 
     @staticmethod
     def sieve_function(raw_data):
@@ -488,8 +466,6 @@ class THSPHProtocol(CommandResponseInstrumentProtocol):
         Discover current state; Change next state to be COMMAND state.
         @retval (next_state, result).
         """
-        log.debug('_handler_unknown_discover ')
-
         next_state = ProtocolState.COMMAND
         next_agent_state = ResourceAgentState.IDLE
 
@@ -502,7 +478,6 @@ class THSPHProtocol(CommandResponseInstrumentProtocol):
         """
         Get device status
         """
-
         next_state = None
         next_agent_state = None
         result = None
@@ -599,7 +574,6 @@ class THSPHProtocol(CommandResponseInstrumentProtocol):
                     raise InstrumentParameterException("Instrument Series is not invalid ")
                 else:
                     self._get_sample_cmd = self.THSPH_COMMANDS[val][Command.GET_SAMPLE]
-                    self._comm_test_cmd = self.THSPH_COMMANDS[val][Command.COMM_TEST]
 
             log.debug('key = (%s), value = (%s)' % (key, val))
 
@@ -691,7 +665,6 @@ class THSPHProtocol(CommandResponseInstrumentProtocol):
         """
         Remove the auto sample task. Exit Auto sample state
         """
-
         result = None
 
         # Stop the Auto Poll scheduling
@@ -751,88 +724,20 @@ class THSPHProtocol(CommandResponseInstrumentProtocol):
         @retval The command to be sent to the device.
         """
         instrument_series = self._param_dict.get(Parameter.INSTRUMENT_SERIES)
-        if cmd == Command.COMM_TEST:
-            instrument_cmd = self.THSPH_COMMANDS[instrument_series][Command.COMM_TEST]
-        elif cmd == Command.GET_SAMPLE:
+
+        if cmd == Command.GET_SAMPLE:
             instrument_cmd = self.THSPH_COMMANDS[instrument_series][Command.GET_SAMPLE]
         else:
-            raise  InstrumentException('Unknown THSPH driver command  %s' % cmd)
+            raise InstrumentException('Unknown THSPH driver command  %s' % cmd)
 
         return "%s%s" % (instrument_cmd, NEWLINE)
 
-    def _build_set_command(self, cmd, param, val):
+    def _wakeup(self, wakeup_timeout=0, response_timeout=0):
         """
-        Build handler for set commands. param=val followed by newline.
-        String val constructed by param dict formatting function.
-        @param param the parameter key to set.
-        @param val the parameter value to set.
-        @ retval The set command to be sent to the device.
-        @throws InstrumentParameterException if the parameter is not valid or
-        if the formatting function could not accept the value passed.
-        @throws InstrumentProtocolException if there is no build handler for the
-        communication test command.
-        """
-        try:
-            str_val = self._param_dict.format(param, val)
-
-            if param == 'INTERVAL':
-                param = 'sampleinterval'
-            elif param == 'INSTRUMENT_SERIES':
-                param = 'instrument_series'
-
-            set_cmd = '%s=%s' % (param, str_val)
-            set_cmd += NEWLINE
-
-        except KeyError:
-            raise InstrumentParameterException('Unknown driver parameter %s' % param)
-
-        return set_cmd
-
-    def _wakeup(self, wakeup_timeout=5, response_timeout=5):
-        """
-        waking this instrument up by sending MAX_COM_TEST communication test commands
-        (aP*)
+        There is no wakeup for this instrument.  Do nothing.
         @param wakeup_timeout The timeout to wake the device.
         @param response_timeout The time to look for response to a wakeup attempt.
-        @throw InstrumentTimeoutException if the device could not be woken.
         """
         pass
-
-        # if self.get_current_state() == DriverProtocolState.AUTOSAMPLE:
-        #     #do not need to send a wakeup call before every poll during autosample
-        #     return Prompt.COMM_RESPONSE
-        #
-        # sleep_time = CMD_RESP_TIME
-        #
-        # cmd_line = self._build_simple_command(Command.COMM_TEST)
-        #
-        # # Grab start time for overall wakeup timeout.
-        # start_time = time.time()
-        # test_count = 0
-        # while test_count < MAX_COMM_TEST:
-        #     # Clear the prompt buffer.
-        #     self._promptbuf = ''
-        #
-        #     # Send a communication test command and wait delay amount for response.
-        #     self._connection.send(cmd_line)
-        #     time.sleep(sleep_time)
-        #     if self._promptbuf.find(Prompt.COMM_RESPONSE) != -1:
-        #         # instrument is awake
-        #         log.debug('_wakeup: got communication test response %s', Prompt.COMM_RESPONSE)
-        #         test_count += 1
-        #     else:
-        #         #clear test_count since we want MAX_COMM_TEST consecutive successful communication test
-        #         test_count = 0
-        #     # Stop wake up the instrument if the wake up time out has elapsed
-        #     if time.time() > start_time + wakeup_timeout:
-        #         break
-        #
-        # if test_count != MAX_COMM_TEST:
-        #     log.debug('instrument failed to wakeup in %d seconds time' % wakeup_timeout)
-        #     raise InstrumentTimeoutException(
-        #         "_wakeup(): instrument failed to wakeup in %d seconds time" % wakeup_timeout)
-        #
-        # else:
-        #     return Prompt.COMM_RESPONSE
 
 
