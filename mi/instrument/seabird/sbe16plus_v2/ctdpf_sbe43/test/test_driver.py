@@ -16,13 +16,13 @@ USAGE:
 __author__ = 'Tapana Gupta'
 __license__ = 'Apache 2.0'
 
-import unittest
 import time
 
 from nose.plugins.attrib import attr
 from mock import Mock
 
-from mi.core.log import get_logger ; log = get_logger()
+from mi.core.log import get_logger
+log = get_logger()
 
 # MI imports.
 from mi.idk.unit_test import InstrumentDriverTestCase
@@ -41,7 +41,6 @@ from mi.core.instrument.instrument_driver import DriverConfigKey
 from mi.instrument.seabird.test.test_driver import SeaBirdUnitTest
 from mi.instrument.seabird.test.test_driver import SeaBirdIntegrationTest
 from mi.instrument.seabird.test.test_driver import SeaBirdQualificationTest
-from mi.instrument.seabird.test.test_driver import SeaBirdPublicationTest
 
 from mi.instrument.seabird.sbe16plus_v2.ctdpf_jb.driver import ProtocolState
 
@@ -63,8 +62,6 @@ from mi.instrument.seabird.sbe16plus_v2.ctdpf_sbe43.driver import SBE43StatusPar
 from mi.instrument.seabird.sbe16plus_v2.ctdpf_sbe43.driver import InstrumentDriver
 from mi.instrument.seabird.sbe16plus_v2.ctdpf_sbe43.driver import SBE43Protocol
 
-
-from mi.core.instrument.instrument_driver import ResourceAgentEvent
 from mi.core.instrument.instrument_driver import ResourceAgentState
 
 ###
@@ -100,22 +97,6 @@ InstrumentDriverTestCase.initialize(
              Parameter.IGNORE_SWITCH: True}}
 )
 
-#################################### RULES ####################################
-#                                                                             #
-# Common capabilities in the base class                                       #
-#                                                                             #
-# Instrument specific stuff in the derived class                              #
-#                                                                             #
-# Generator spits out either stubs or comments describing test this here,     #
-# test that there.                                                            #
-#                                                                             #
-# Qualification tests are driven through the instrument_agent                 #
-#                                                                             #
-###############################################################################
-
-###
-#   Driver constant definitions
-###
 
 ###############################################################################
 #                           DRIVER TEST MIXIN        		                  #
@@ -147,13 +128,12 @@ class SBE43Mixin(DriverTestMixin):
     DEFAULT   = ParameterTestConfigKey.DEFAULT
     STATES    = ParameterTestConfigKey.STATES
 
-
     ###
     #  Instrument output (driver input) Definitions
     ###
     VALID_SAMPLE = "04570F0A1E910828FC47BC59F1" + NEWLINE
 
-    VALID_GETHD_RESPONSE =  "" + \
+    VALID_GETHD_RESPONSE = "" + \
 "<HardwareData DeviceType = 'SBE19plus' SerialNumber = '01906914'>" + NEWLINE + \
 "   <Manufacturer>Sea-Bird Electronics, Inc.</Manufacturer>" + NEWLINE + \
 "   <FirmwareVersion>2.5.2</FirmwareVersion>" + NEWLINE + \
@@ -210,8 +190,7 @@ class SBE43Mixin(DriverTestMixin):
 "   </ExternalSensors>" + NEWLINE + \
 "</HardwareData>" + NEWLINE
 
-
-    VALID_GETCC_RESPONSE =  "" + \
+    VALID_GETCC_RESPONSE = "" + \
 "<CalibrationCoefficients DeviceType = 'SBE19plus' SerialNumber = '01906914'>" + NEWLINE + \
 "   <Calibration format = 'TEMP1' id = 'Main Temperature'>" + NEWLINE + \
 "      <SerialNum>01906914</SerialNum>" + NEWLINE + \
@@ -280,8 +259,7 @@ class SBE43Mixin(DriverTestMixin):
 "   </Calibration>" + NEWLINE + \
 "</CalibrationCoefficients>" + NEWLINE
 
-
-    VALID_GETCD_RESPONSE =  "" + \
+    VALID_GETCD_RESPONSE = "" + \
 "<ConfigurationData DeviceType = 'SBE19plus' SerialNumber = '01906914'>" + NEWLINE + \
 "   <ProfileMode>" + NEWLINE + \
 "      <ScansToAverage>4</ScansToAverage>" + NEWLINE + \
@@ -312,8 +290,7 @@ class SBE43Mixin(DriverTestMixin):
 "   <OutputFormat>raw HEX</OutputFormat>" + NEWLINE + \
 "</ConfigurationData>" + NEWLINE
 
-
-    VALID_GETSD_RESPONSE =  "" + \
+    VALID_GETSD_RESPONSE = "" + \
 "<StatusData DeviceType = 'SBE19plus' SerialNumber = '01906914'>" + NEWLINE + \
 "   <DateTime>2014-03-20T09:09:06</DateTime>" + NEWLINE + \
 "   <LoggingState>not logging</LoggingState>" + NEWLINE + \
@@ -334,35 +311,16 @@ class SBE43Mixin(DriverTestMixin):
 "   </MemorySummary>" + NEWLINE + \
 "</StatusData>" + NEWLINE
 
-
-    VALID_DS_RESPONSE = 'SBE 19plus V 2.3  SERIAL NO. 6914    18 Apr 2014 19:14:13' + NEWLINE + \
-        'vbatt = 23.3, vlith =  8.5, ioper =  62.1 ma, ipump =  71.7 ma, ' + NEWLINE + \
-        'iext01 =   0.2 ma, iserial =  26.0 ma' + NEWLINE + \
-        'status = not logging' + NEWLINE + \
-        'number of scans to average = 4' + NEWLINE + \
-        'samples = 1861, free = 3653591, casts = 7' + NEWLINE + \
-        'mode = profile, minimum cond freq = 500, pump delay = 60 sec' + NEWLINE + \
-        'autorun = no, ignore magnetic switch = yes' + NEWLINE + \
-        'battery type = alkaline, battery cutoff =  7.5 volts' + NEWLINE + \
-        'pressure sensor = strain gauge, range = 508.0' + NEWLINE + \
-        'SBE 38 = no, WETLABS = no, OPTODE = no, SBE63 = no, Gas Tension Device = no' + NEWLINE + \
-        'Ext Volt 0 = yes, Ext Volt 1 = no' + NEWLINE + \
-        'Ext Volt 2 = no, Ext Volt 3 = no' + NEWLINE + \
-        'Ext Volt 4 = no, Ext Volt 5 = no' + NEWLINE + \
-        'echo characters = no' + NEWLINE + \
-        'output format = raw HEX' + NEWLINE
-
     ###
     #  Parameter and Type Definitions
     ###
 
     _sample_parameters = {
-        SBE43DataParticleKey.TEMP: {TYPE: int, VALUE: 284431, REQUIRED: True },
-        SBE43DataParticleKey.CONDUCTIVITY: {TYPE: int, VALUE: 663185, REQUIRED: True },
-        SBE43DataParticleKey.PRESSURE: {TYPE: int, VALUE: 534780, REQUIRED: True },
-        SBE43DataParticleKey.PRESSURE_TEMP: {TYPE: int, VALUE: 18364, REQUIRED: True },
-        SBE43DataParticleKey.VOLT0: {TYPE: int, VALUE: 23025, REQUIRED: True },
-
+        SBE43DataParticleKey.TEMP: {TYPE: int, VALUE: 284431, REQUIRED: True},
+        SBE43DataParticleKey.CONDUCTIVITY: {TYPE: int, VALUE: 663185, REQUIRED: True},
+        SBE43DataParticleKey.PRESSURE: {TYPE: int, VALUE: 534780, REQUIRED: True},
+        SBE43DataParticleKey.PRESSURE_TEMP: {TYPE: int, VALUE: 18364, REQUIRED: True},
+        SBE43DataParticleKey.VOLT0: {TYPE: int, VALUE: 23025, REQUIRED: True}
     }
 
     _configuration_parameters = {
@@ -387,7 +345,7 @@ class SBE43Mixin(DriverTestMixin):
         SBE19ConfigurationParticleKey.GAS_TENSION_DEVICE: {TYPE: int, VALUE: 0, REQUIRED: True},
         SBE19ConfigurationParticleKey.ECHO_CHARACTERS: {TYPE: int, VALUE: 1, REQUIRED: True},
         SBE19ConfigurationParticleKey.OUTPUT_EXECUTED_TAG: {TYPE: int, VALUE: 0, REQUIRED: True},
-        SBE19ConfigurationParticleKey.OUTPUT_FORMAT: {TYPE: unicode, VALUE: "raw HEX", REQUIRED: True},
+        SBE19ConfigurationParticleKey.OUTPUT_FORMAT: {TYPE: unicode, VALUE: "raw HEX", REQUIRED: True}
     }
 
     _status_parameters = {
@@ -404,7 +362,7 @@ class SBE43Mixin(DriverTestMixin):
         SBE43StatusParticleKey.NUMBER_OF_SAMPLES: {TYPE: int, VALUE: 15, REQUIRED: True},
         SBE43StatusParticleKey.SAMPLES_FREE: {TYPE: int, VALUE: 2990809, REQUIRED: True},
         SBE43StatusParticleKey.SAMPLE_LENGTH: {TYPE: int, VALUE: 13, REQUIRED: True},
-        SBE43StatusParticleKey.PROFILES: {TYPE: int, VALUE: 0, REQUIRED: True},
+        SBE43StatusParticleKey.PROFILES: {TYPE: int, VALUE: 0, REQUIRED: True}
     }
 
     _hardware_parameters = {
@@ -420,19 +378,18 @@ class SBE43Mixin(DriverTestMixin):
         SBE43HardwareParticleKey.PRESSURE_SENSOR_SERIAL_NUMBER: {TYPE: unicode, VALUE: '3313899', REQUIRED: True},
         SBE43HardwareParticleKey.PRESSURE_SENSOR_TYPE: {TYPE: unicode, VALUE: 'strain-0', REQUIRED: True},
         SBE43HardwareParticleKey.VOLT0_TYPE: {TYPE: unicode, VALUE: 'SBE 43 OXY', REQUIRED: True},
-        SBE43HardwareParticleKey.VOLT0_SERIAL_NUMBER: {TYPE: unicode, VALUE: '432484', REQUIRED: True},
-    }
+        SBE43HardwareParticleKey.VOLT0_SERIAL_NUMBER: {TYPE: unicode, VALUE: '432484', REQUIRED: True}}
 
     _calibration_parameters = {
         SBE19CalibrationParticleKey.SERIAL_NUMBER: {TYPE: unicode, VALUE: '01906914', REQUIRED: True},
-        SBE19CalibrationParticleKey.TEMP_SENSOR_SERIAL_NUMBER: {TYPE: unicode, VALUE: '01906914', REQUIRED: True },
+        SBE19CalibrationParticleKey.TEMP_SENSOR_SERIAL_NUMBER: {TYPE: unicode, VALUE: '01906914', REQUIRED: True},
         SBE19CalibrationParticleKey.TEMP_CAL_DATE: {TYPE: unicode, VALUE: "09-Oct-11", REQUIRED: True},
         SBE19CalibrationParticleKey.TA0: {TYPE: float, VALUE: 1.254755e-03, REQUIRED: True},
         SBE19CalibrationParticleKey.TA1: {TYPE: float, VALUE: 2.758871e-04, REQUIRED: True},
         SBE19CalibrationParticleKey.TA2: {TYPE: float, VALUE: -1.368268e-06, REQUIRED: True},
         SBE19CalibrationParticleKey.TA3: {TYPE: float, VALUE: 1.910795e-07, REQUIRED: True},
         SBE19CalibrationParticleKey.TOFFSET: {TYPE: float, VALUE: 0.0, REQUIRED: True},
-        SBE19CalibrationParticleKey.COND_SENSOR_SERIAL_NUMBER: {TYPE: unicode, VALUE: '01906914', REQUIRED: True },
+        SBE19CalibrationParticleKey.COND_SENSOR_SERIAL_NUMBER: {TYPE: unicode, VALUE: '01906914', REQUIRED: True},
         SBE19CalibrationParticleKey.COND_CAL_DATE: {TYPE: unicode, VALUE: '09-Oct-11', REQUIRED: True},
         SBE19CalibrationParticleKey.CONDG: {TYPE: float, VALUE: -9.761799e-01, REQUIRED: True},
         SBE19CalibrationParticleKey.CONDH: {TYPE: float, VALUE: 1.369994e-01, REQUIRED: True},
@@ -441,22 +398,22 @@ class SBE43Mixin(DriverTestMixin):
         SBE19CalibrationParticleKey.CPCOR: {TYPE: float, VALUE: -9.570000e-08, REQUIRED: True},
         SBE19CalibrationParticleKey.CTCOR: {TYPE: float, VALUE: 3.250000e-06, REQUIRED: True},
         SBE19CalibrationParticleKey.CSLOPE: {TYPE: float, VALUE: 1.0, REQUIRED: True},
-        SBE19CalibrationParticleKey.PRES_SERIAL_NUMBER: {TYPE: unicode, VALUE: '3313899', REQUIRED: True },
-        SBE19CalibrationParticleKey.PRES_CAL_DATE: {TYPE: unicode, VALUE: '06-Oct-11', REQUIRED: True },
-        SBE19CalibrationParticleKey.PA0: {TYPE: float, VALUE: -3.689246e-02, REQUIRED: True },
-        SBE19CalibrationParticleKey.PA1: {TYPE: float, VALUE: 1.545570e-03, REQUIRED: True },
-        SBE19CalibrationParticleKey.PA2: {TYPE: float, VALUE: 6.733197e-12, REQUIRED: True },
-        SBE19CalibrationParticleKey.PTCA0: {TYPE: float, VALUE: 5.249034e+05, REQUIRED: True },
-        SBE19CalibrationParticleKey.PTCA1: {TYPE: float, VALUE: 1.423189e+00, REQUIRED: True },
-        SBE19CalibrationParticleKey.PTCA2: {TYPE: float, VALUE: -1.206562e-01, REQUIRED: True },
-        SBE19CalibrationParticleKey.PTCB0: {TYPE: float, VALUE: 2.501288e+01, REQUIRED: True },
-        SBE19CalibrationParticleKey.PTCB1: {TYPE: float, VALUE: -2.250000e-04, REQUIRED: True },
-        SBE19CalibrationParticleKey.PTCB2: {TYPE: float, VALUE: 0.000000e+00, REQUIRED: True },
-        SBE19CalibrationParticleKey.PTEMPA0: {TYPE: float, VALUE: -5.677620e+01, REQUIRED: True },
-        SBE19CalibrationParticleKey.PTEMPA1: {TYPE: float, VALUE: 5.424624e+01, REQUIRED: True },
-        SBE19CalibrationParticleKey.PTEMPA2: {TYPE: float, VALUE: -2.278113e-01, REQUIRED: True },
-        SBE19CalibrationParticleKey.POFFSET: {TYPE: float, VALUE: 0.000000e+00, REQUIRED: True },
-        SBE19CalibrationParticleKey.PRES_RANGE: {TYPE: int, VALUE: 5.080000e+02, REQUIRED: True },
+        SBE19CalibrationParticleKey.PRES_SERIAL_NUMBER: {TYPE: unicode, VALUE: '3313899', REQUIRED: True},
+        SBE19CalibrationParticleKey.PRES_CAL_DATE: {TYPE: unicode, VALUE: '06-Oct-11', REQUIRED: True},
+        SBE19CalibrationParticleKey.PA0: {TYPE: float, VALUE: -3.689246e-02, REQUIRED: True},
+        SBE19CalibrationParticleKey.PA1: {TYPE: float, VALUE: 1.545570e-03, REQUIRED: True},
+        SBE19CalibrationParticleKey.PA2: {TYPE: float, VALUE: 6.733197e-12, REQUIRED: True},
+        SBE19CalibrationParticleKey.PTCA0: {TYPE: float, VALUE: 5.249034e+05, REQUIRED: True},
+        SBE19CalibrationParticleKey.PTCA1: {TYPE: float, VALUE: 1.423189e+00, REQUIRED: True},
+        SBE19CalibrationParticleKey.PTCA2: {TYPE: float, VALUE: -1.206562e-01, REQUIRED: True},
+        SBE19CalibrationParticleKey.PTCB0: {TYPE: float, VALUE: 2.501288e+01, REQUIRED: True},
+        SBE19CalibrationParticleKey.PTCB1: {TYPE: float, VALUE: -2.250000e-04, REQUIRED: True},
+        SBE19CalibrationParticleKey.PTCB2: {TYPE: float, VALUE: 0.000000e+00, REQUIRED: True},
+        SBE19CalibrationParticleKey.PTEMPA0: {TYPE: float, VALUE: -5.677620e+01, REQUIRED: True},
+        SBE19CalibrationParticleKey.PTEMPA1: {TYPE: float, VALUE: 5.424624e+01, REQUIRED: True},
+        SBE19CalibrationParticleKey.PTEMPA2: {TYPE: float, VALUE: -2.278113e-01, REQUIRED: True},
+        SBE19CalibrationParticleKey.POFFSET: {TYPE: float, VALUE: 0.000000e+00, REQUIRED: True},
+        SBE19CalibrationParticleKey.PRES_RANGE: {TYPE: int, VALUE: 5.080000e+02, REQUIRED: True},
         SBE19CalibrationParticleKey.EXT_VOLT0_OFFSET: {TYPE: float, VALUE: -4.650526e-02, REQUIRED: True},
         SBE19CalibrationParticleKey.EXT_VOLT0_SLOPE: {TYPE: float, VALUE: 1.246381e+00, REQUIRED: True},
         SBE19CalibrationParticleKey.EXT_VOLT1_OFFSET: {TYPE: float, VALUE: -4.618105e-02, REQUIRED: True},
@@ -471,7 +428,6 @@ class SBE43Mixin(DriverTestMixin):
         SBE19CalibrationParticleKey.EXT_VOLT5_SLOPE: {TYPE: float, VALUE: 1.247868e+00, REQUIRED: True},
         SBE19CalibrationParticleKey.EXT_FREQ: {TYPE: float, VALUE: 1.000008e+00, REQUIRED: True},
     }
-
 
     ###
     #  Parameter and Type Definitions
@@ -508,10 +464,9 @@ class SBE43Mixin(DriverTestMixin):
         Capability.STOP_AUTOSAMPLE : {STATES: [ProtocolState.AUTOSAMPLE]},
         Capability.CLOCK_SYNC : {STATES: [ProtocolState.COMMAND]},
         Capability.ACQUIRE_STATUS : {STATES: [ProtocolState.COMMAND, ProtocolState.AUTOSAMPLE]},
-
     }
 
-    def assert_driver_parameters(self, current_parameters, verify_values = False):
+    def assert_driver_parameters(self, current_parameters, verify_values=False):
         """
         Verify that all driver parameters are correct and potentially verify values.
         @param current_parameters: driver parameters read from the driver instance
@@ -519,52 +474,52 @@ class SBE43Mixin(DriverTestMixin):
         """
         self.assert_parameters(current_parameters, self._driver_parameters, verify_values)
 
-    def assert_particle_sample(self, data_particle, verify_values = False):
-        '''
+    def assert_particle_sample(self, data_particle, verify_values=False):
+        """
         Verify sample particle
         @param data_particle:  SBE43DataParticle data particle
         @param verify_values:  bool, should we verify parameter values
-        '''
+        """
         self.assert_data_particle_keys(SBE43DataParticleKey, self._sample_parameters)
         self.assert_data_particle_header(data_particle, DataParticleType.CTD_PARSED, require_instrument_timestamp=False)
         self.assert_data_particle_parameters(data_particle, self._sample_parameters, verify_values)
 
-    def assert_particle_hardware(self, data_particle, verify_values = False):
-        '''
+    def assert_particle_hardware(self, data_particle, verify_values=False):
+        """
         Verify hardware particle
         @param data_particle:  SBE43HardwareParticle data particle
         @param verify_values:  bool, should we verify parameter values
-        '''
+        """
         self.assert_data_particle_keys(SBE43HardwareParticleKey, self._hardware_parameters)
         self.assert_data_particle_header(data_particle, DataParticleType.DEVICE_HARDWARE)
         self.assert_data_particle_parameters(data_particle, self._hardware_parameters, verify_values)
 
-    def assert_particle_calibration(self, data_particle, verify_values = False):
-        '''
+    def assert_particle_calibration(self, data_particle, verify_values=False):
+        """
         Verify sample particle
         @param data_particle:  SBE19CalibrationParticle calibration particle
         @param verify_values:  bool, should we verify parameter values
-        '''
+        """
         self.assert_data_particle_keys(SBE19CalibrationParticleKey, self._calibration_parameters)
         self.assert_data_particle_header(data_particle, DataParticleType.DEVICE_CALIBRATION)
         self.assert_data_particle_parameters(data_particle, self._calibration_parameters, verify_values)
 
-    def assert_particle_status(self, data_particle, verify_values = False):
-        '''
+    def assert_particle_status(self, data_particle, verify_values=False):
+        """
         Verify status particle
         @param data_particle:  SBE43StatusParticle status particle
         @param verify_values:  bool, should we verify parameter values
-        '''
+        """
         self.assert_data_particle_keys(SBE43StatusParticleKey, self._status_parameters)
         self.assert_data_particle_header(data_particle, DataParticleType.DEVICE_STATUS)
         self.assert_data_particle_parameters(data_particle, self._status_parameters, verify_values)
 
-    def assert_particle_configuration(self, data_particle, verify_values = False):
-        '''
+    def assert_particle_configuration(self, data_particle, verify_values=False):
+        """
         Verify configuration particle
         @param data_particle:  SBE43ConfigurationParticle configuration particle
         @param verify_values:  bool, should we verify parameter values
-        '''
+        """
         self.assert_data_particle_keys(SBE19ConfigurationParticleKey, self._configuration_parameters)
         self.assert_data_particle_header(data_particle, DataParticleType.DEVICE_CONFIGURATION)
         self.assert_data_particle_parameters(data_particle, self._configuration_parameters, verify_values)
@@ -589,7 +544,7 @@ class SBE43UnitTestCase(SeaBirdUnitTest, SBE43Mixin):
     def test_driver_enums(self):
         """
         Verify that all driver enumeration has no duplicate values that might cause confusion.  Also
-        do a little extra validation for the Capabilites
+        do a little extra validation for the Capabilies
         """
         self.assert_enum_has_no_duplicates(Command())
         self.assert_enum_has_no_duplicates(DataParticleType())
@@ -599,7 +554,7 @@ class SBE43UnitTestCase(SeaBirdUnitTest, SBE43Mixin):
         self.assert_enum_has_no_duplicates(Parameter())
         self.assert_enum_complete(ConfirmedParameter(), Parameter())
 
-        # Test capabilites for duplicates, then verify that capabilities is a subset of proto events
+        # Test capabilities for duplicates, then verify that capabilities is a subset of proto events
         self.assert_enum_has_no_duplicates(Capability())
         self.assert_enum_complete(Capability(), ProtocolEvent())
 
@@ -640,7 +595,6 @@ class SBE43UnitTestCase(SeaBirdUnitTest, SBE43Mixin):
         self.assert_chunker_sample_with_noise(chunker, self.VALID_GETCD_RESPONSE)
         self.assert_chunker_fragmented_sample(chunker, self.VALID_GETCD_RESPONSE)
         self.assert_chunker_combined_sample(chunker, self.VALID_GETCD_RESPONSE)
-
 
     def test_got_data(self):
         """
@@ -700,47 +654,6 @@ class SBE43UnitTestCase(SeaBirdUnitTest, SBE43Mixin):
 
         driver = InstrumentDriver(self._got_data_event_callback)
         self.assert_capabilities(driver, capabilities)
-
-    def test_parse_ds(self):
-        """
-        Verify that the DS command gets parsed correctly and check that the param dict gets updated
-        """
-        driver = self.InstrumentDriver(self._got_data_event_callback)
-        self.assert_initialize_driver(driver, ProtocolState.COMMAND)
-        source = self.VALID_DS_RESPONSE
-
-        baseline = driver._protocol._param_dict.get_current_timestamp()
-
-        # First verify that parse ds sets all known parameters.
-        driver._protocol._parse_dsdc_response(source, Prompt.COMMAND)
-        pd = driver._protocol._param_dict.get_all(baseline)
-        log.debug("Param Dict Values: %s" % pd)
-        log.debug("Param Sample: %s" % source)
-        self.assert_driver_parameters(pd, True)
-
-        # Now change some things and make sure they are parsed properly
-        # Note:  Only checking parameters that can change.
-
-        # Logging
-        source = source.replace("= not logging", "= logging")
-        log.debug("Param Sample: %s" % source)
-        driver._protocol._parse_dsdc_response(source, Prompt.COMMAND)
-        pd = driver._protocol._param_dict.get_all(baseline)
-        self.assertTrue(pd.get(Parameter.LOGGING))
-
-        # NAvg
-        source = source.replace("scans to average = 4", "scans to average = 2")
-        log.debug("Param Sample: %s" % source)
-        driver._protocol._parse_dsdc_response(source, Prompt.COMMAND)
-        pd = driver._protocol._param_dict.get_all(baseline)
-        self.assertEqual(pd.get(Parameter.NUM_AVG_SAMPLES), 2)
-
-        # Optode
-        source = source.replace("OPTODE = no", "OPTODE = yes")
-        log.debug("Param Sample: %s" % source)
-        driver._protocol._parse_dsdc_response(source, Prompt.COMMAND)
-        pd = driver._protocol._param_dict.get_all(baseline)
-        self.assertTrue(pd.get(Parameter.OPTODE))
 
     def test_parse_set_response(self):
         """
@@ -889,24 +802,24 @@ class SBE43IntegrationTest(SeaBirdIntegrationTest, SBE43Mixin):
         # what the startup values should be
         get_values = {
             Parameter.PTYPE: 1,
-             Parameter.VOLT0: True,
-             Parameter.VOLT1: False,
-             Parameter.VOLT2: False,
-             Parameter.VOLT3: False,
-             Parameter.VOLT4: False,
-             Parameter.VOLT5: False,
-             Parameter.SBE38: False,
-             Parameter.WETLABS: False,
-             Parameter.GTD: False,
-             Parameter.DUAL_GTD: False,
-             Parameter.SBE63: False,
-             Parameter.OPTODE: False,
-             Parameter.OUTPUT_FORMAT: 0,
-             Parameter.NUM_AVG_SAMPLES: 4,
-             Parameter.MIN_COND_FREQ: 500,
-             Parameter.PUMP_DELAY: 60,
-             Parameter.AUTO_RUN: False,
-             Parameter.IGNORE_SWITCH: True
+            Parameter.VOLT0: True,
+            Parameter.VOLT1: False,
+            Parameter.VOLT2: False,
+            Parameter.VOLT3: False,
+            Parameter.VOLT4: False,
+            Parameter.VOLT5: False,
+            Parameter.SBE38: False,
+            Parameter.WETLABS: False,
+            Parameter.GTD: False,
+            Parameter.DUAL_GTD: False,
+            Parameter.SBE63: False,
+            Parameter.OPTODE: False,
+            Parameter.OUTPUT_FORMAT: 0,
+            Parameter.NUM_AVG_SAMPLES: 4,
+            Parameter.MIN_COND_FREQ: 500,
+            Parameter.PUMP_DELAY: 60,
+            Parameter.AUTO_RUN: False,
+            Parameter.IGNORE_SWITCH: True
         }
 
         # Change the values of these parameters to something before the
@@ -921,12 +834,12 @@ class SBE43IntegrationTest(SeaBirdIntegrationTest, SBE43Mixin):
 
         self.assert_set_bulk(new_values)
 
-         # Start autosample and try again
+        # Start autosample and try again
         self.assert_driver_command(ProtocolEvent.START_AUTOSAMPLE, state=ProtocolState.AUTOSAMPLE, delay=1)
         self.assert_startup_parameters(self.assert_driver_parameters)
         self.assert_current_state(ProtocolState.AUTOSAMPLE)
 
-        #stop autosampling
+        # stop autosampling
         self.assert_driver_command(ProtocolEvent.STOP_AUTOSAMPLE, state=ProtocolState.COMMAND, delay=1)
 
     def test_status(self):
@@ -975,6 +888,7 @@ class SBE43IntegrationTest(SeaBirdIntegrationTest, SBE43Mixin):
 
         self.assert_driver_command(ProtocolEvent.STOP_AUTOSAMPLE, state=ProtocolState.COMMAND, delay=1)
 
+
 ###############################################################################
 #                            QUALIFICATION TESTS                              #
 # Device specific qualification tests are for doing final testing of ion      #
@@ -1005,10 +919,10 @@ class SBE43QualificationTest(SeaBirdQualificationTest, SBE43Mixin):
         self.assert_direct_access_start_telnet()
         self.tcp_client.send_data("%soutputformat=1%s" % (NEWLINE, NEWLINE))
 
-        #need to sleep as the instrument needs time to apply the new param value
+        # need to sleep as the instrument needs time to apply the new param value
         time.sleep(5)
 
-        # Verfy the param value got changed on the instrument
+        # Verify the param value got changed on the instrument
         self.tcp_client.send_data("%sGetCD%s" % (NEWLINE, NEWLINE))
         self.tcp_client.expect("<OutputFormat>converted HEX</OutputFormat>")
         self.assert_direct_access_stop_telnet()
@@ -1030,19 +944,19 @@ class SBE43QualificationTest(SeaBirdQualificationTest, SBE43Mixin):
         self.assert_direct_access_start_telnet()
         self.assertTrue(self.tcp_client)
 
-        #start logging
+        # start logging
         self.tcp_client.send_data("%sstartnow%s" % (NEWLINE, NEWLINE))
         time.sleep(2)
 
-        #verify we're logging
+        # verify we're logging
         self.tcp_client.send_data("%sGetSD%s" % (NEWLINE, NEWLINE))
         self.tcp_client.expect("<LoggingState>logging</LoggingState>")
 
-        #Assert if stopping DA while autosampling, discover will put driver into Autosample state
+        # Assert if stopping DA while autosampling, discover will put driver into Autosample state
         self.assert_direct_access_stop_telnet(timeout=2000)
         self.assert_state_change(ResourceAgentState.STREAMING, ProtocolState.AUTOSAMPLE, timeout=15)
 
-        #now stop autosampling
+        # now stop autosampling
         self.assert_stop_autosample()
 
     def test_direct_access_telnet_timeout(self):
@@ -1056,7 +970,6 @@ class SBE43QualificationTest(SeaBirdQualificationTest, SBE43Mixin):
         self.assertTrue(self.tcp_client)
 
         self.assert_state_change(ResourceAgentState.IDLE, ProtocolState.COMMAND, 180)
-
 
     # Override this test because the base class contains too short a duration for the instrument to
     # transition back to command mode.
@@ -1075,10 +988,10 @@ class SBE43QualificationTest(SeaBirdQualificationTest, SBE43Mixin):
         self.assert_state_change(ResourceAgentState.IDLE, ProtocolState.COMMAND, 120)
 
     def test_poll(self):
-        '''
+        """
         Verify that we can poll for a sample.  Take sample for this instrument
         Also poll for other engineering data streams.
-        '''
+        """
         self.assert_enter_command_mode()
 
         self.assert_particle_polled(ProtocolEvent.ACQUIRE_SAMPLE, self.assert_particle_sample, DataParticleType.CTD_PARSED, sample_count=1, timeout=30)
@@ -1147,16 +1060,16 @@ class SBE43QualificationTest(SeaBirdQualificationTest, SBE43Mixin):
         self.assertLessEqual(abs(instrument_time - local_time), 10)
 
     def test_get_set_parameters(self):
-        '''
+        """
         verify that parameters can be set properly
-        '''
+        """
         self.assert_enter_command_mode()
 
-        #attempt to change some parameters
+        # attempt to change some parameters
         self.assert_set_parameter(Parameter.NUM_AVG_SAMPLES, 2)
         self.assert_set_parameter(Parameter.PUMP_DELAY, 55)
 
-        #set parameters back to their default values
+        # set parameters back to their default values
         self.assert_set_parameter(Parameter.NUM_AVG_SAMPLES, 4)
         self.assert_set_parameter(Parameter.PUMP_DELAY, 60)
 
@@ -1177,8 +1090,7 @@ class SBE43QualificationTest(SeaBirdQualificationTest, SBE43Mixin):
                 ProtocolEvent.ACQUIRE_SAMPLE,
                 ProtocolEvent.CLOCK_SYNC,
                 ProtocolEvent.ACQUIRE_STATUS,
-                ProtocolEvent.START_AUTOSAMPLE,
-                ],
+                ProtocolEvent.START_AUTOSAMPLE],
             AgentCapabilityType.RESOURCE_INTERFACE: None,
             AgentCapabilityType.RESOURCE_PARAMETER: self._driver_parameters.keys()
         }
@@ -1190,10 +1102,9 @@ class SBE43QualificationTest(SeaBirdQualificationTest, SBE43Mixin):
         ##################
 
         capabilities[AgentCapabilityType.AGENT_COMMAND] = self._common_agent_commands(ResourceAgentState.STREAMING)
-        capabilities[AgentCapabilityType.RESOURCE_COMMAND] =  [
+        capabilities[AgentCapabilityType.RESOURCE_COMMAND] = [
             ProtocolEvent.STOP_AUTOSAMPLE,
-            ProtocolEvent.ACQUIRE_STATUS,
-            ]
+            ProtocolEvent.ACQUIRE_STATUS]
 
         self.assert_start_autosample()
         self.assert_capabilities(capabilities)
