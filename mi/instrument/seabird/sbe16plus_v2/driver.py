@@ -1909,11 +1909,11 @@ class SBE16Protocol(SeaBirdProtocol):
         v = match.group(1)
 
         log.debug("get pressure type from: %s", v)
-        if(v == "strain gauge"):
+        if v == "strain gauge" or v == "strain-0":
             return 1
-        elif(v == "quartz without temp comp"):
+        elif v == "quartz without temp comp":
             return 2
-        elif(v == "quartz with temp comp"):
+        elif v == "quartz with temp comp":
             return 3
         else:
             return None
