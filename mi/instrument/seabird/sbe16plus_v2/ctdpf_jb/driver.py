@@ -1650,7 +1650,7 @@ class SBE19Protocol(SBE16Protocol):
         @raise: InstrumentTimeoutException if prompt isn't seen
         @raise: InstrumentProtocolException failed to stop logging
         """
-        log.debug("Stop Logging!")
+        log.error("!!!Stop Logging!")
 
         self._wakeup(timeout=WAKEUP_TIMEOUT, delay=0.3)
         self._wakeup(timeout=WAKEUP_TIMEOUT, delay=0.3)
@@ -1659,13 +1659,14 @@ class SBE19Protocol(SBE16Protocol):
         # We can get here from handle_unknown_discover, hence it's possible that the current state is unknown
         # handle_unknown_discover checks if we are currently streaming before we get here.
         if self.get_current_state() in [ProtocolState.AUTOSAMPLE, ProtocolState.UNKNOWN]:
-            log.debug("sending stop logging command")
+            log.error("!!!sending stop logging command")
             kwargs['timeout'] = TIMEOUT
             self._do_cmd_resp(Command.STOP, *args, **kwargs)
         else:
             log.debug("Instrument not logging, current state %s", self.get_current_state())
 
         if self._is_logging(*args, **kwargs):
+            log.error('FAILED TO STOP LOGGING!!!!!!')
             raise InstrumentProtocolException("failed to stop logging")
 
         return True
@@ -1691,7 +1692,7 @@ class SBE19Protocol(SBE16Protocol):
         """
         Update the parameter dictionary. Wake the device then issue
         display status and display calibration commands. The parameter
-        dict will match line output and udpate itself.
+        dict will match line output and update itself.
         @throws InstrumentTimeoutException if device cannot be timely woken.
         @throws InstrumentProtocolException if ds/dc misunderstood.
         """
@@ -1705,7 +1706,9 @@ class SBE19Protocol(SBE16Protocol):
 
         # Issue display commands and parse results.
         log.debug("device status from _update_params")
+        log.error('!!!CTDPF_JB: UPDATE PARAMS ILLEGAL DS COMMAND')
         self._do_cmd_resp(Command.DS, timeout=TIMEOUT)
+
 
         # Get new param dict config. If it differs from the old config,
         # tell driver superclass to publish a config change event.
