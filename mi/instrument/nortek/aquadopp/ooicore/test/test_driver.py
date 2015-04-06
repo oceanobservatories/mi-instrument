@@ -100,8 +100,8 @@ velocity_particle = [{'value_id': 'date_time_string', 'value': '26/11/2012 22:10
                      {'value_id': 'pressure_mbar', 'value': 0},
                      {'value_id': 'temperature_centidegree', 'value': 2531},
                      {'value_id': 'velocity_beam1', 'value': 332}, 
-                     {'value_id': 'velocity_beam2', 'value': 65314}, 
-                     {'value_id': 'velocity_beam3', 'value': 65178}, 
+                     {'value_id': 'velocity_beam2', 'value': -222},
+                     {'value_id': 'velocity_beam3', 'value': -358},
                      {'value_id': 'amplitude_beam1', 'value': 30}, 
                      {'value_id': 'amplitude_beam2', 'value': 20}, 
                      {'value_id': 'amplitude_beam3', 'value': 22}]

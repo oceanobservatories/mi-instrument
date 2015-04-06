@@ -6,6 +6,8 @@ Release notes:
 
 Driver for Aquadopp DW
 """
+import struct
+
 __author__ = 'Rachel Manoni, Ronald Ronquillo'
 __license__ = 'Apache 2.0'
 
@@ -93,37 +95,20 @@ class AquadoppDwVelocityDataParticle(DataParticle):
         @throws SampleException If there is a problem with sample creation
         """
         log.debug('AquadoppDwVelocityDataParticle: raw data =%r', self.raw_data)
-        match = VELOCITY_DATA_REGEX.match(self.raw_data)
 
-        if not match:
-            raise SampleException("AquadoppDwVelocityDataParticle: No regex match of parsed sample data: [%s]" % self.raw_data)
+        try:
+            unpack_string = '<4s6s2h2H3hBbH4h3B1sh'
 
-        result = self._build_particle(match)
-        log.debug('AquadoppDwVelocityDataParticle: particle=%s', result)
-        return result
+            sync, timestamp, error, analog1, battery_voltage, sound_speed, heading, pitch, roll, pressure_msb, status, \
+               pressure_lsw, temperature, velocity_beam1, velocity_beam2, velocity_beam3, amplitude_beam1, \
+               amplitude_beam2, amplitude_beam3, _, cksum = struct.unpack(unpack_string, self.raw_data)
 
-    def _build_particle(self, match):
-        """
-        Build a particle.  Used for parsing Velocity
-        """
-        timestamp = NortekProtocolParameterDict.convert_time(match.group(1))
-        error = NortekProtocolParameterDict.convert_word_to_int(match.group(2))
-        analog1 = NortekProtocolParameterDict.convert_word_to_int(match.group(3))
-        battery_voltage = NortekProtocolParameterDict.convert_word_to_int(match.group(4))
-        sound_speed = NortekProtocolParameterDict.convert_word_to_int(match.group(5))
-        heading = NortekProtocolParameterDict.convert_word_to_int(match.group(6))
-        pitch = NortekProtocolParameterDict.convert_word_to_int(match.group(7))
-        roll = NortekProtocolParameterDict.convert_word_to_int(match.group(8))
-        pressure = ord(match.group(9)) * 0x10000
-        status = ord(match.group(10))
-        pressure += NortekProtocolParameterDict.convert_word_to_int(match.group(11))
-        temperature = NortekProtocolParameterDict.convert_word_to_int(match.group(12))
-        velocity_beam1 = NortekProtocolParameterDict.convert_word_to_int(match.group(13))
-        velocity_beam2 = NortekProtocolParameterDict.convert_word_to_int(match.group(14))
-        velocity_beam3 = NortekProtocolParameterDict.convert_word_to_int(match.group(15))
-        amplitude_beam1 = ord(match.group(16))
-        amplitude_beam2 = ord(match.group(17))
-        amplitude_beam3 = ord(match.group(18))
+            timestamp = NortekProtocolParameterDict.convert_time(timestamp)
+            pressure = pressure_msb * 0x10000 + pressure_lsw
+
+        except Exception:
+            log.error('Error creating particle velpt_velocity_data, raw data: %r', self.raw_data)
+            raise SampleException
 
         result = [{DataParticleKey.VALUE_ID: AquadoppDwVelocityDataParticleKey.TIMESTAMP, DataParticleKey.VALUE: timestamp},
                   {DataParticleKey.VALUE_ID: AquadoppDwVelocityDataParticleKey.ERROR, DataParticleKey.VALUE: error},
@@ -143,6 +128,7 @@ class AquadoppDwVelocityDataParticle(DataParticle):
                   {DataParticleKey.VALUE_ID: AquadoppDwVelocityDataParticleKey.AMPLITUDE_BEAM2, DataParticleKey.VALUE: amplitude_beam2},
                   {DataParticleKey.VALUE_ID: AquadoppDwVelocityDataParticleKey.AMPLITUDE_BEAM3, DataParticleKey.VALUE: amplitude_beam3}]
 
+        log.debug('AquadoppDwVelocityDataParticle: particle=%s', result)
         return result
 
 
@@ -155,7 +141,6 @@ class InstrumentDriver(NortekInstrumentDriver):
     Subclasses SingleConnectionInstrumentDriver with connection state
     machine.
     """
-    
     def __init__(self, evt_callback):
         """
         Driver constructor.
@@ -166,7 +151,6 @@ class InstrumentDriver(NortekInstrumentDriver):
     ########################################################################
     # Protocol builder.
     ########################################################################
-    
     def _build_protocol(self):
         """
         Construct the driver protocol state machine.
@@ -203,8 +187,6 @@ class Protocol(NortekInstrumentProtocol):
         The base class got_data has gotten a structure from the chunker.  Pass it to extract_sample
         with the appropriate particle objects and REGEXes.
         """
-        log.debug("_got_chunk: structure: %r", structure)
-
         self._extract_sample(AquadoppDwVelocityDataParticle, VELOCITY_DATA_REGEX, structure, timestamp)
         self._got_chunk_base(structure, timestamp)
 
