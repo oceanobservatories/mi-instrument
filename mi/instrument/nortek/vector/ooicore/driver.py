@@ -7,15 +7,16 @@ Release notes:
 
 Driver for vector
 """
+import struct
+from mi.core.exceptions import SampleException
+
 __author__ = 'Rachel Manoni, Ronald Ronquillo'
 __license__ = 'Apache 2.0'
 
-import time
 import re
 import base64
 
 from mi.core.common import BaseEnum
-from mi.core.exceptions import SampleException
 from mi.core.instrument.protocol_param_dict import ParameterDictVisibility
 from mi.core.instrument.protocol_param_dict import ParameterDictType
 from mi.core.instrument.data_particle import DataParticle, DataParticleKey
@@ -37,11 +38,11 @@ SYSTEM_DATA_SYNC_BYTES = '\xa5\x11\x0e\x00'
 VELOCITY_HEADER_DATA_LEN = 42
 VELOCITY_HEADER_DATA_SYNC_BYTES = '\xa5\x12\x15\x00'
 
-VELOCITY_DATA_PATTERN = r'%s(.{1})(.{1})(.{1})(.{1})(.{2})(.{2})(.{2})(.{2})(.{2})(.{1})(.{1})(.{1})(.{1})(.{1})(.{1}).{2}' % VELOCITY_DATA_SYNC_BYTES
+VELOCITY_DATA_PATTERN = r'%s.{22}' % VELOCITY_DATA_SYNC_BYTES
 VELOCITY_DATA_REGEX = re.compile(VELOCITY_DATA_PATTERN, re.DOTALL)
-SYSTEM_DATA_PATTERN = r'%s(.{6})(.{2})(.{2})(.{2})(.{2})(.{2})(.{2})(.{1})(.{1})(.{2}).{2}' % SYSTEM_DATA_SYNC_BYTES
+SYSTEM_DATA_PATTERN = r'%s.{24}' % SYSTEM_DATA_SYNC_BYTES
 SYSTEM_DATA_REGEX = re.compile(SYSTEM_DATA_PATTERN, re.DOTALL)
-VELOCITY_HEADER_DATA_PATTERN = r'%s(.{6})(.{2})(.{1})(.{1})(.{1}).{1}(.{1})(.{1})(.{1}).{23}' % VELOCITY_HEADER_DATA_SYNC_BYTES
+VELOCITY_HEADER_DATA_PATTERN = r'%s.{38}' % VELOCITY_HEADER_DATA_SYNC_BYTES
 VELOCITY_HEADER_DATA_REGEX = re.compile(VELOCITY_HEADER_DATA_PATTERN, re.DOTALL)
 
 VECTOR_SAMPLE_REGEX = [VELOCITY_DATA_REGEX, SYSTEM_DATA_REGEX, VELOCITY_HEADER_DATA_REGEX]
@@ -58,7 +59,7 @@ class DataParticleType(NortekDataParticleType):
 
 class VectorVelocityDataParticleKey(BaseEnum):
     """
-    Velocity Data Paticles
+    Velocity Data Particles
     """
     ANALOG_INPUT2 = "analog_input_2"
     COUNT = "ensemble_counter"
@@ -88,27 +89,22 @@ class VectorVelocityDataParticle(DataParticle):
         @throws SampleException If there is a problem with sample creation
         """
         log.debug('VectorVelocityDataParticle: raw data =%r', self.raw_data)
-        match = VELOCITY_DATA_REGEX.match(self.raw_data)
+
+        try:
         
-        if not match:
-            raise SampleException("VectorVelocityDataParticle: No regex match of parsed sample data: [%s]" % self.raw_data)
+            unpack_string = '<4s4B2H3h6B'
         
-        analog_input2 = ord(match.group(1))
-        count = ord(match.group(2))
-        pressure = ord(match.group(3)) * 0x10000
-        analog_input2 += ord(match.group(4)) * 0x100
-        pressure += NortekProtocolParameterDict.convert_word_to_int(match.group(5))
-        analog_input1 = NortekProtocolParameterDict.convert_word_to_int(match.group(6))
-        velocity_beam1 = NortekProtocolParameterDict.convert_word_to_int(match.group(7))
-        velocity_beam2 = NortekProtocolParameterDict.convert_word_to_int(match.group(8))
-        velocity_beam3 = NortekProtocolParameterDict.convert_word_to_int(match.group(9))
-        amplitude_beam1 = ord(match.group(10))
-        amplitude_beam2 = ord(match.group(11))
-        amplitude_beam3 = ord(match.group(12))
-        correlation_beam1 = ord(match.group(13))
-        correlation_beam2 = ord(match.group(14))
-        correlation_beam3 = ord(match.group(15))
-        
+            sync, analog_input2_lsb, count, pressure_msb, analog_input2_msb, pressure_lsw, analog_input1,\
+                velocity_beam1, velocity_beam2, velocity_beam3, amplitude_beam1, amplitude_beam2, amplitude_beam3, \
+                correlation_beam1, correlation_beam2, correlation_beam3 = struct.unpack(unpack_string, self.raw_data)
+
+            analog_input2 = analog_input2_msb * 0x100 + analog_input2_lsb
+            pressure = pressure_msb * 0x10000 + pressure_lsw
+
+        except Exception:
+            log.error('Error creating particle vel3d_cd_velocity_data, raw data: %r', self.raw_data)
+            raise SampleException
+
         result = [{DataParticleKey.VALUE_ID: VectorVelocityDataParticleKey.ANALOG_INPUT2, DataParticleKey.VALUE: analog_input2},
                   {DataParticleKey.VALUE_ID: VectorVelocityDataParticleKey.COUNT, DataParticleKey.VALUE: count},
                   {DataParticleKey.VALUE_ID: VectorVelocityDataParticleKey.PRESSURE, DataParticleKey.VALUE: pressure},
@@ -154,26 +150,17 @@ class VectorVelocityHeaderDataParticle(DataParticle):
         @throws SampleException If there is a problem with sample creation
         """
         log.debug('VectorVelocityHeaderDataParticle: raw data =%r', self.raw_data)
-        match = VELOCITY_HEADER_DATA_REGEX.match(self.raw_data)
+
+        try:
+            unpack_string = '<4s6sH8B20sh'
+            sync, timestamp, number_of_records, noise1, noise2, noise3, _, correlation1, correlation2, correlation3, _,\
+                _, cksum = struct.unpack(unpack_string, self.raw_data)
         
-        if not match:
-            raise SampleException("VectorVelocityHeaderDataParticle: No regex match of parsed sample data: [%s]", self.raw_data)
-        
-        result = self._build_particle(match)
-        log.debug('VectorVelocityHeaderDataParticle: particle=%s', result)
-        return result
+            timestamp = NortekProtocolParameterDict.convert_time(timestamp)
             
-    def _build_particle(self, match):
-        timestamp = NortekProtocolParameterDict.convert_time(match.group(1))
-        py_timestamp = time.strptime(timestamp, "%d/%m/%Y %H:%M:%S")
-        self.set_internal_timestamp(unix_time=time.mktime(py_timestamp))
-        number_of_records = NortekProtocolParameterDict.convert_word_to_int(match.group(2))
-        noise1 = ord(match.group(3))
-        noise2 = ord(match.group(4))
-        noise3 = ord(match.group(5))
-        correlation1 = ord(match.group(6))
-        correlation2 = ord(match.group(7))
-        correlation3 = ord(match.group(8))
+        except Exception:
+            log.error('Error creating particle vel3d_cd_data_header, raw data: %r', self.raw_data)
+            raise SampleException
         
         result = [{DataParticleKey.VALUE_ID: VectorVelocityHeaderDataParticleKey.TIMESTAMP, DataParticleKey.VALUE: timestamp},
                   {DataParticleKey.VALUE_ID: VectorVelocityHeaderDataParticleKey.NUMBER_OF_RECORDS, DataParticleKey.VALUE: number_of_records},
@@ -184,6 +171,7 @@ class VectorVelocityHeaderDataParticle(DataParticle):
                   {DataParticleKey.VALUE_ID: VectorVelocityHeaderDataParticleKey.CORRELATION2, DataParticleKey.VALUE: correlation2},
                   {DataParticleKey.VALUE_ID: VectorVelocityHeaderDataParticleKey.CORRELATION3, DataParticleKey.VALUE: correlation3}]
  
+        log.debug('VectorVelocityHeaderDataParticle: particle=%s', result)
         return result
 
 
@@ -216,29 +204,22 @@ class VectorSystemDataParticle(DataParticle):
         @throws SampleException If there is a problem with sample creation
         """
         log.debug('VectorSystemDataParticle: raw data =%r', self.raw_data)
-        match = SYSTEM_DATA_REGEX.match(self.raw_data)
+
+        try:
         
-        if not match:
-            raise SampleException("VectorSystemDataParticle: No regex match of parsed sample data: [%s]", self.raw_data)
-        
-        result = self._build_particle(match)
-        log.debug('VectorSystemDataParticle: particle=%s', result)
-        return result
+            unpack_string = '<4s6s2H4h2bHh'
             
-    def _build_particle(self, match):
-        timestamp = NortekProtocolParameterDict.convert_time(match.group(1))
-        py_timestamp = time.strptime(timestamp, "%d/%m/%Y %H:%M:%S")
-        self.set_internal_timestamp(unix_time=time.mktime(py_timestamp))
-        battery = NortekProtocolParameterDict.convert_word_to_int(match.group(2))
-        sound_speed = NortekProtocolParameterDict.convert_word_to_int(match.group(3))
-        heading = NortekProtocolParameterDict.convert_word_to_int(match.group(4))
-        pitch = NortekProtocolParameterDict.convert_word_to_int(match.group(5))
-        roll = NortekProtocolParameterDict.convert_word_to_int(match.group(6))
-        temperature = NortekProtocolParameterDict.convert_word_to_int(match.group(7))
-        error = ord(match.group(8))
-        status = ord(match.group(9))
-        analog_input = NortekProtocolParameterDict.convert_word_to_int(match.group(10))
+            sync, timestamp, battery, sound_speed, heading, pitch, roll, temperature, error, status, analog_input, cksum =\
+                struct.unpack_from(unpack_string, self.raw_data)
         
+            timestamp = NortekProtocolParameterDict.convert_time(timestamp)
+            # error = NortekProtocolParameterDict.convert_bytes_to_bit_field(error)
+            # status = NortekProtocolParameterDict.convert_bytes_to_bit_field(status)
+
+        except Exception:
+            log.error('Error creating particle vel3d_cd_system_data, raw data: %r', self.raw_data)
+            raise SampleException
+
         result = [{DataParticleKey.VALUE_ID: VectorSystemDataParticleKey.TIMESTAMP, DataParticleKey.VALUE: timestamp},
                   {DataParticleKey.VALUE_ID: VectorSystemDataParticleKey.BATTERY, DataParticleKey.VALUE: battery},
                   {DataParticleKey.VALUE_ID: VectorSystemDataParticleKey.SOUND_SPEED, DataParticleKey.VALUE: sound_speed},
@@ -250,6 +231,8 @@ class VectorSystemDataParticle(DataParticle):
                   {DataParticleKey.VALUE_ID: VectorSystemDataParticleKey.STATUS, DataParticleKey.VALUE: status},
                   {DataParticleKey.VALUE_ID: VectorSystemDataParticleKey.ANALOG_INPUT, DataParticleKey.VALUE: analog_input}]
  
+        log.debug('VectorSystemDataParticle: particle=%s', result)
+
         return result
 
 
@@ -267,7 +250,6 @@ class InstrumentDriver(NortekInstrumentDriver):
         Driver constructor.
         @param evt_callback Driver process event callback.
         """
-        #Construct superclass.
         NortekInstrumentDriver.__init__(self, evt_callback)
 
     ########################################################################
@@ -308,7 +290,6 @@ class Protocol(NortekInstrumentProtocol):
         The base class got_data has gotten a structure from the chunker.  Pass it to extract_sample
         with the appropriate particle objects and REGEXes. 
         """
-        log.debug("_got_chunk: detected structure = %s", structure.encode('hex'))
         self._extract_sample(VectorVelocityDataParticle, VELOCITY_DATA_REGEX, structure, timestamp)
         self._extract_sample(VectorSystemDataParticle, SYSTEM_DATA_REGEX, structure, timestamp)
         self._extract_sample(VectorVelocityHeaderDataParticle, VELOCITY_HEADER_DATA_REGEX, structure, timestamp)
@@ -523,6 +504,7 @@ class Protocol(NortekInstrumentProtocol):
                                    type=ParameterDictType.STRING,
                                    visibility=ParameterDictVisibility.IMMUTABLE,
                                    display_name="Deployment Name",
+                                   default_value='',
                                    startup_param=True,
                                    direct_access=True)
         self._param_dict.add(Parameter.WRAP_MODE,
@@ -534,6 +516,7 @@ class Protocol(NortekInstrumentProtocol):
                                    visibility=ParameterDictVisibility.IMMUTABLE,
                                    display_name="Wrap Mode",
                                    description='Recorder wrap mode (0=NO WRAP, 1=WRAP WHEN FULL)',
+                                   default_value=0,
                                    startup_param=True,
                                    direct_access=True)
         self._param_dict.add(Parameter.CLOCK_DEPLOY,
@@ -641,6 +624,7 @@ class Protocol(NortekInstrumentProtocol):
                                    visibility=ParameterDictVisibility.IMMUTABLE,
                                    display_name="Analog Input Address",
                                    startup_param=True,
+                                   default_value=0,
                                    direct_access=True)
         self._param_dict.add(Parameter.SW_VERSION,
                                    r'^.{%s}(.{2}).*' % str(72),
@@ -648,8 +632,7 @@ class Protocol(NortekInstrumentProtocol):
                                    NortekProtocolParameterDict.word_to_string,
                                    regex_flags=re.DOTALL,
                                    type=ParameterDictType.STRING,
-                                   visibility=ParameterDictVisibility.IMMUTABLE,
-                                   startup_param=True,
+                                   visibility=ParameterDictVisibility.READ_ONLY,
                                    direct_access=True,
                                    display_name="Software Version")
         self._param_dict.add(Parameter.USER_1_SPARE,
@@ -667,10 +650,9 @@ class Protocol(NortekInstrumentProtocol):
                                    lambda string: string,
                                    regex_flags=re.DOTALL,
                                    type=ParameterDictType.STRING,
-                                   visibility=ParameterDictVisibility.READ_WRITE,
+                                   visibility=ParameterDictVisibility.READ_ONLY,
                                    display_name="Velocity Adj Table",
                                    units=ParameterUnits.PARTS_PER_TRILLION,
-                                   startup_param=True,
                                    direct_access=True)
         self._param_dict.add(Parameter.COMMENTS,
                                    r'^.{%s}(.{180}).*' % str(256),
@@ -680,6 +662,7 @@ class Protocol(NortekInstrumentProtocol):
                                    type=ParameterDictType.STRING,
                                    visibility=ParameterDictVisibility.IMMUTABLE,
                                    display_name="Comments",
+                                   default_value='',
                                    startup_param=True,
                                    direct_access=True)
         self._param_dict.add(Parameter.WAVE_MEASUREMENT_MODE,
@@ -853,8 +836,7 @@ class Protocol(NortekInstrumentProtocol):
                                    lambda string: string,
                                    regex_flags=re.DOTALL,
                                    type=ParameterDictType.STRING,
-                                   visibility=ParameterDictVisibility.IMMUTABLE,
+                                   visibility=ParameterDictVisibility.READ_ONLY,
                                    display_name="Qual Constants",
                                    description='Stage match filter constants.',
-                                   startup_param=True,
                                    direct_access=True)
