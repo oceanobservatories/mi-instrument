@@ -51,7 +51,7 @@ from mi.instrument.nortek.driver import NortekEngIdDataParticle
 from mi.instrument.nortek.driver import NortekInstrumentProtocol
 from mi.instrument.nortek.driver import ScheduledJob
 from mi.instrument.nortek.driver import NortekInstrumentDriver
-from mi.core.exceptions import InstrumentCommandException, InstrumentParameterException
+from mi.core.exceptions import InstrumentCommandException, InstrumentParameterException, SampleException
 
 if 'mi.instrument.nortek.aquadopp' in sys.modules.keys():
     from mi.instrument.nortek.aquadopp.ooicore.driver import NortekDataParticleType
@@ -205,7 +205,7 @@ user_config_particle = [{DataParticleKey.VALUE_ID: NortekUserConfigDataParticleK
                         {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.WAVE_TX_PULSE, DataParticleKey.VALUE: 16384},
                         {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.FIX_WAVE_BLANK_DIST, DataParticleKey.VALUE: 0},
                         {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.WAVE_CELL_SIZE, DataParticleKey.VALUE: 0},
-                        {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.NUM_DIAG_PER_WAVE, DataParticleKey.VALUE: 0},
+                        {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.NUM_DIAG_PER_WAVE, DataParticleKey.VALUE: 20},
                         {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.NUM_SAMPLE_PER_BURST, DataParticleKey.VALUE: 10},
                         {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.ANALOG_SCALE_FACTOR, DataParticleKey.VALUE: 11185},
                         {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.CORRELATION_THRS, DataParticleKey.VALUE: 0},
@@ -322,6 +322,10 @@ def user_config2():
 PORT_TIMESTAMP = 3558720820.531179
 DRIVER_TIMESTAMP = 3555423722.711772
 
+def bad_sample():
+    sample = 'thisshouldnotworkd'
+    return sample
+
 
 ###############################################################################
 #                           DRIVER TEST MIXIN        		                  #
@@ -356,7 +360,6 @@ class DriverTestMixinSub(DriverTestMixin):
 
     _clock_data_parameter = {
         NortekEngClockDataParticleKey.DATE_TIME_ARRAY: {TYPE: list, VALUE: [1, 2, 3, 4, 5, 6], REQUIRED: True},
-        NortekEngClockDataParticleKey.DATE_TIME_STAMP: {TYPE: int, VALUE: 0, REQUIRED: False}
     }
 
     _id_parameter = {
@@ -689,17 +692,17 @@ class NortekUnitTest(InstrumentDriverUnitTestCase, DriverTestMixinSub):
         """
         Verify when generating the particle, if the particle is corrupt, it will not generate
         """
-        particle = NortekHardwareConfigDataParticle(hw_config_sample().replace(chr(0), chr(1), 1), port_timestamp=PORT_TIMESTAMP)
-        obj = particle.generate()
-        self.assertNotEqual(obj[DataParticleKey.QUALITY_FLAG], DataParticleValue.OK)
+        particle = NortekHardwareConfigDataParticle(bad_sample(), port_timestamp=PORT_TIMESTAMP)
+        with self.assertRaises(SampleException):
+            particle.generate()
 
-        particle = NortekHeadConfigDataParticle(head_config_sample().replace(chr(0), chr(1), 1), port_timestamp=PORT_TIMESTAMP)
-        obj = particle.generate()
-        self.assertNotEqual(obj[DataParticleKey.QUALITY_FLAG], DataParticleValue.OK)
+        particle = NortekHeadConfigDataParticle(bad_sample(), port_timestamp=PORT_TIMESTAMP)
+        with self.assertRaises(SampleException):
+            particle.generate()
 
-        particle = NortekUserConfigDataParticle(user_config_sample().replace(chr(0), chr(1), 1), port_timestamp=PORT_TIMESTAMP)
-        obj = particle.generate()
-        self.assertNotEqual(obj[DataParticleKey.QUALITY_FLAG], DataParticleValue.OK)
+        particle = NortekUserConfigDataParticle(bad_sample(), port_timestamp=PORT_TIMESTAMP)
+        with self.assertRaises(SampleException):
+            particle.generate()
 
     def test_hw_config_sample_format(self):
         """
@@ -768,7 +771,7 @@ class NortekUnitTest(InstrumentDriverUnitTestCase, DriverTestMixinSub):
         self.compare_parsed_data_particle(NortekUserConfigDataParticle,
                                           user_config_sample(),
                                           expected_particle)
-        
+
     def test_eng_clock_sample_format(self):
         """
         Verify driver can get clock sample engineering data out in a
