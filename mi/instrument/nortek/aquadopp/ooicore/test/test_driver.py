@@ -28,6 +28,8 @@ from nose.plugins.attrib import attr
 from mi.core.log import get_logger
 log = get_logger()
 
+from mi.instrument.nortek.vector.ooicore.test.test_driver import bad_sample
+
 from mi.idk.unit_test import InstrumentDriverTestCase, ParameterTestConfigKey
 from mi.instrument.nortek.test.test_driver import DriverTestMixinSub
 
@@ -59,13 +61,7 @@ InstrumentDriverTestCase.initialize(
     driver_startup_config={
         DriverConfigKey.PARAMETERS: {
             Parameter.DEPLOYMENT_NAME: 'test',
-            Parameter.VELOCITY_ADJ_TABLE: 'Aj0ePTk9Uz1uPYg9oj27PdQ97T0GPh4+Nj5OPmU+fT6TPqo+wD7WPuw+Aj8'
-                                          'XPyw/QT9VP2k/fT+RP6Q/uD/KP90/8D8CQBRAJkA3QElAWkBrQHxAjECcQK'
-                                          'xAvEDMQNtA6kD5QAhBF0ElQTNBQkFPQV1BakF4QYVBkkGeQatBt0HDQc9B20'
-                                          'HnQfJB/UEIQhNCHkIoQjNCPUJHQlFCW0JkQm5Cd0KAQolCkUKaQqJCqkKyQrpC',
             Parameter.COMMENTS: 'this is a test',
-            Parameter.ANALOG_OUTPUT_SCALE: 6711,
-            Parameter.QUAL_CONSTANTS: 'Cv/N/4sA5QDuAAsAhP89/w==',
             #update the following two parameters to allow for faster collecting of samples during testing
             Parameter.AVG_INTERVAL: 1,
             Parameter.MEASUREMENT_INTERVAL: 1}}
@@ -77,11 +73,6 @@ def eng_id_sample():
     return sample_as_hex.decode('hex')
 
 eng_id_particle = [{DataParticleKey.VALUE_ID: NortekEngIdDataParticleKey.ID, DataParticleKey.VALUE: "AQD 8493      "}]
-
-
-def bad_sample():
-    sample = 'thisshouldnotworkd'
-    return sample
 
 
 def velocity_sample():
