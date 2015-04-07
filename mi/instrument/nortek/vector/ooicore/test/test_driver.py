@@ -33,7 +33,7 @@ from mi.idk.unit_test import InstrumentDriverTestCase
 from mi.idk.unit_test import ParameterTestConfigKey
 
 from mi.instrument.nortek.test.test_driver import NortekUnitTest, NortekIntTest, NortekQualTest, DriverTestMixinSub, \
-    user_config2
+    user_config2, bad_sample
 
 from mi.core.instrument.instrument_driver import DriverConfigKey, DriverEvent, ResourceAgentState
 
@@ -65,17 +65,7 @@ InstrumentDriverTestCase.initialize(
     instrument_agent_name='nortek_vector_dw_ooicore_agent',
     instrument_agent_packet_config=DataParticleType(),
     driver_startup_config={
-        DriverConfigKey.PARAMETERS: {
-            Parameter.DEPLOYMENT_NAME: 'test',
-            Parameter.WRAP_MODE: 0,
-            Parameter.ANALOG_INPUT_ADDR: 0,
-            Parameter.SW_VERSION: 13702,
-            Parameter.VELOCITY_ADJ_TABLE: 'Aj0ePTk9Uz1uPYg9oj27PdQ97T0GPh4+Nj5OPmU+fT6TPqo+wD7WPuw+Aj8'
-                                          'XPyw/QT9VP2k/fT+RP6Q/uD/KP90/8D8CQBRAJkA3QElAWkBrQHxAjECcQK'
-                                          'xAvEDMQNtA6kD5QAhBF0ElQTNBQkFPQV1BakF4QYVBkkGeQatBt0HDQc9B20'
-                                          'HnQfJB/UEIQhNCHkIoQjNCPUJHQlFCW0JkQm5Cd0KAQolCkUKaQqJCqkKyQrpC',
-            Parameter.COMMENTS: 'this is a test',
-            Parameter.QUAL_CONSTANTS: 'Cv/N/4sA5QDuAAsAhP89/w=='}}
+        DriverConfigKey.PARAMETERS: {}}
 )
 
 
@@ -85,19 +75,19 @@ def velocity_sample():
     return sample_as_hex.decode('hex')
 
 # these values checkout against the sample above
-velocity_particle = [{DataParticleKey.VALUE_ID: VectorVelocityDataParticleKey.ANALOG_INPUT2, DataParticleKey.VALUE: 0},
-                     {DataParticleKey.VALUE_ID: VectorVelocityDataParticleKey.COUNT, DataParticleKey.VALUE: 219},
-                     {DataParticleKey.VALUE_ID: VectorVelocityDataParticleKey.PRESSURE, DataParticleKey.VALUE: 4239},
-                     {DataParticleKey.VALUE_ID: VectorVelocityDataParticleKey.ANALOG_INPUT1, DataParticleKey.VALUE: 0},
-                     {DataParticleKey.VALUE_ID: VectorVelocityDataParticleKey.VELOCITY_BEAM1, DataParticleKey.VALUE: 61513},
-                     {DataParticleKey.VALUE_ID: VectorVelocityDataParticleKey.VELOCITY_BEAM2, DataParticleKey.VALUE: 63297},
-                     {DataParticleKey.VALUE_ID: VectorVelocityDataParticleKey.VELOCITY_BEAM3, DataParticleKey.VALUE: 803},
-                     {DataParticleKey.VALUE_ID: VectorVelocityDataParticleKey.AMPLITUDE_BEAM1, DataParticleKey.VALUE: 48},
-                     {DataParticleKey.VALUE_ID: VectorVelocityDataParticleKey.AMPLITUDE_BEAM2, DataParticleKey.VALUE: 49},
-                     {DataParticleKey.VALUE_ID: VectorVelocityDataParticleKey.AMPLITUDE_BEAM3, DataParticleKey.VALUE: 50},
-                     {DataParticleKey.VALUE_ID: VectorVelocityDataParticleKey.CORRELATION_BEAM1, DataParticleKey.VALUE: 18},
-                     {DataParticleKey.VALUE_ID: VectorVelocityDataParticleKey.CORRELATION_BEAM2, DataParticleKey.VALUE: 9},
-                     {DataParticleKey.VALUE_ID: VectorVelocityDataParticleKey.CORRELATION_BEAM3, DataParticleKey.VALUE: 24}]
+velocity_particle = [{DataParticleKey.VALUE_ID: VectorVelocityDataParticleKey.ANALOG_INPUT2, DataParticleKey.VALUE: 4096},
+                     {DataParticleKey.VALUE_ID: VectorVelocityDataParticleKey.COUNT, DataParticleKey.VALUE: 0},
+                     {DataParticleKey.VALUE_ID: VectorVelocityDataParticleKey.PRESSURE, DataParticleKey.VALUE: 9371648},
+                     {DataParticleKey.VALUE_ID: VectorVelocityDataParticleKey.ANALOG_INPUT1, DataParticleKey.VALUE: 61513},
+                     {DataParticleKey.VALUE_ID: VectorVelocityDataParticleKey.VELOCITY_BEAM1, DataParticleKey.VALUE: -2239},
+                     {DataParticleKey.VALUE_ID: VectorVelocityDataParticleKey.VELOCITY_BEAM2, DataParticleKey.VALUE: 803},
+                     {DataParticleKey.VALUE_ID: VectorVelocityDataParticleKey.VELOCITY_BEAM3, DataParticleKey.VALUE: 12592},
+                     {DataParticleKey.VALUE_ID: VectorVelocityDataParticleKey.AMPLITUDE_BEAM1, DataParticleKey.VALUE: 50},
+                     {DataParticleKey.VALUE_ID: VectorVelocityDataParticleKey.AMPLITUDE_BEAM2, DataParticleKey.VALUE: 18},
+                     {DataParticleKey.VALUE_ID: VectorVelocityDataParticleKey.AMPLITUDE_BEAM3, DataParticleKey.VALUE: 9},
+                     {DataParticleKey.VALUE_ID: VectorVelocityDataParticleKey.CORRELATION_BEAM1, DataParticleKey.VALUE: 24},
+                     {DataParticleKey.VALUE_ID: VectorVelocityDataParticleKey.CORRELATION_BEAM2, DataParticleKey.VALUE: 216},
+                     {DataParticleKey.VALUE_ID: VectorVelocityDataParticleKey.CORRELATION_BEAM3, DataParticleKey.VALUE: 247}]
 
 
 # velocity header data particle & sample 
@@ -127,7 +117,7 @@ system_particle = [{DataParticleKey.VALUE_ID: VectorSystemDataParticleKey.TIMEST
                    {DataParticleKey.VALUE_ID: VectorSystemDataParticleKey.SOUND_SPEED, DataParticleKey.VALUE: 15228},
                    {DataParticleKey.VALUE_ID: VectorSystemDataParticleKey.HEADING, DataParticleKey.VALUE: 1155},
                    {DataParticleKey.VALUE_ID: VectorSystemDataParticleKey.PITCH, DataParticleKey.VALUE: 275},
-                   {DataParticleKey.VALUE_ID: VectorSystemDataParticleKey.ROLL, DataParticleKey.VALUE: 65229},
+                   {DataParticleKey.VALUE_ID: VectorSystemDataParticleKey.ROLL, DataParticleKey.VALUE: -307},
                    {DataParticleKey.VALUE_ID: VectorSystemDataParticleKey.TEMPERATURE, DataParticleKey.VALUE: 2058},
                    {DataParticleKey.VALUE_ID: VectorSystemDataParticleKey.ERROR, DataParticleKey.VALUE: 0},
                    {DataParticleKey.VALUE_ID: VectorSystemDataParticleKey.STATUS, DataParticleKey.VALUE: 123},
@@ -384,18 +374,15 @@ class UnitFromIDK(NortekUnitTest):
         """
         Verify when generating the particle, if the particle is corrupt, an exception is raised
         """
-        particle = VectorVelocityHeaderDataParticle(velocity_header_sample().replace(chr(0), chr(1), 1),
-                                                    port_timestamp=3558720820.531179)
+        particle = VectorVelocityHeaderDataParticle(bad_sample(), port_timestamp=3558720820.531179)
         with self.assertRaises(SampleException):
             particle.generate()
 
-        particle = VectorSystemDataParticle(system_sample().replace(chr(0), chr(1), 1),
-                                            port_timestamp=3558720820.531179)
+        particle = VectorSystemDataParticle(bad_sample(), port_timestamp=3558720820.531179)
         with self.assertRaises(SampleException):
             particle.generate()
 
-        particle = VectorVelocityDataParticle(velocity_sample().replace(chr(16), chr(17), 1),
-                                              port_timestamp=3558720820.531179)
+        particle = VectorVelocityDataParticle(bad_sample(), port_timestamp=3558720820.531179)
         with self.assertRaises(SampleException):
             particle.generate()
 

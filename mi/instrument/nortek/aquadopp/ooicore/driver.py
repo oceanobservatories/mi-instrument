@@ -34,8 +34,7 @@ from mi.core.instrument.protocol_param_dict import ParameterDictType
 VELOCITY_DATA_LEN = 42
 VELOCITY_DATA_SYNC_BYTES = '\xa5\x01\x15\x00'
 
-VELOCITY_DATA_PATTERN = r'%s(.{6})(.{2})(.{2})(.{2})(.{2})(.{2})(.{2})(.{2})(.{1})(.{1})(.{2})(.{2})' \
-                        r'(.{2})(.{2})(.{2})(.{1})(.{1})(.{1})(.{3})' % VELOCITY_DATA_SYNC_BYTES
+VELOCITY_DATA_PATTERN = r'%s.{38}' % VELOCITY_DATA_SYNC_BYTES
 VELOCITY_DATA_REGEX = re.compile(VELOCITY_DATA_PATTERN, re.DOTALL)
 
 
@@ -407,6 +406,7 @@ class Protocol(NortekInstrumentProtocol):
                                    type=ParameterDictType.STRING,
                                    visibility=ParameterDictVisibility.IMMUTABLE,
                                    display_name="Deployment Name",
+                                   default_value='',
                                    startup_param=True,
                                    direct_access=True)
         self._param_dict.add(Parameter.WRAP_MODE,
@@ -554,10 +554,9 @@ class Protocol(NortekInstrumentProtocol):
                                    lambda string: string,
                                    regex_flags=re.DOTALL,
                                    type=ParameterDictType.STRING,
-                                   visibility=ParameterDictVisibility.READ_WRITE,
+                                   visibility=ParameterDictVisibility.READ_ONLY,
                                    display_name="Velocity Adj Table",
                                    units=ParameterUnits.PARTS_PER_TRILLION,
-                                   startup_param=True,
                                    direct_access=True)
         self._param_dict.add(Parameter.COMMENTS,
                                    r'^.{%s}(.{180}).*' % str(256),
@@ -567,6 +566,7 @@ class Protocol(NortekInstrumentProtocol):
                                    type=ParameterDictType.STRING,
                                    visibility=ParameterDictVisibility.IMMUTABLE,
                                    display_name="Comments",
+                                   default_value="",
                                    startup_param=True,
                                    direct_access=True)
         self._param_dict.add(Parameter.WAVE_MEASUREMENT_MODE,
@@ -735,8 +735,7 @@ class Protocol(NortekInstrumentProtocol):
                                    lambda string: string,
                                    regex_flags=re.DOTALL,
                                    type=ParameterDictType.STRING,
-                                   visibility=ParameterDictVisibility.IMMUTABLE,
+                                   visibility=ParameterDictVisibility.READ_ONLY,
                                    display_name="Qual Constants",
                                    description='Stage match filter constants.',
-                                   startup_param=True,
                                    direct_access=True)
