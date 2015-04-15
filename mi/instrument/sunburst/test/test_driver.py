@@ -190,22 +190,22 @@ class SamiMixin(DriverTestMixin):
     _regular_status_parameters = {
         # SAMI Regular Status Messages (S0)
         SamiRegularStatusDataParticleKey.ELAPSED_TIME_CONFIG: {TYPE: int, VALUE: 0xCDDD74E1, REQUIRED: True},
-        SamiRegularStatusDataParticleKey.CLOCK_ACTIVE: {TYPE: bool, VALUE: True, REQUIRED: True},
-        SamiRegularStatusDataParticleKey.RECORDING_ACTIVE: {TYPE: bool, VALUE: False, REQUIRED: True},
-        SamiRegularStatusDataParticleKey.RECORD_END_ON_TIME: {TYPE: bool, VALUE: False, REQUIRED: True},
-        SamiRegularStatusDataParticleKey.RECORD_MEMORY_FULL: {TYPE: bool, VALUE: False, REQUIRED: True},
-        SamiRegularStatusDataParticleKey.RECORD_END_ON_ERROR: {TYPE: bool, VALUE: False, REQUIRED: True},
-        SamiRegularStatusDataParticleKey.DATA_DOWNLOAD_OK: {TYPE: bool, VALUE: False, REQUIRED: True},
-        SamiRegularStatusDataParticleKey.FLASH_MEMORY_OPEN: {TYPE: bool, VALUE: True, REQUIRED: True},
-        SamiRegularStatusDataParticleKey.BATTERY_LOW_PRESTART: {TYPE: bool, VALUE: False, REQUIRED: True},
-        SamiRegularStatusDataParticleKey.BATTERY_LOW_MEASUREMENT: {TYPE: bool, VALUE: False, REQUIRED: True},
-        SamiRegularStatusDataParticleKey.BATTERY_LOW_BANK: {TYPE: bool, VALUE: False, REQUIRED: True},
-        SamiRegularStatusDataParticleKey.BATTERY_LOW_EXTERNAL: {TYPE: bool, VALUE: False, REQUIRED: True},
-        SamiRegularStatusDataParticleKey.EXTERNAL_DEVICE1_FAULT: {TYPE: bool, VALUE: False, REQUIRED: True},
-        SamiRegularStatusDataParticleKey.EXTERNAL_DEVICE2_FAULT: {TYPE: bool, VALUE: False, REQUIRED: True},
-        SamiRegularStatusDataParticleKey.EXTERNAL_DEVICE3_FAULT: {TYPE: bool, VALUE: False, REQUIRED: True},
-        SamiRegularStatusDataParticleKey.FLASH_ERASED: {TYPE: bool, VALUE: False, REQUIRED: True},
-        SamiRegularStatusDataParticleKey.POWER_ON_INVALID: {TYPE: bool, VALUE: False, REQUIRED: True},
+        SamiRegularStatusDataParticleKey.CLOCK_ACTIVE: {TYPE: int, VALUE: 1, REQUIRED: True},
+        SamiRegularStatusDataParticleKey.RECORDING_ACTIVE: {TYPE: int, VALUE: 0, REQUIRED: True},
+        SamiRegularStatusDataParticleKey.RECORD_END_ON_TIME: {TYPE: int, VALUE: 0, REQUIRED: True},
+        SamiRegularStatusDataParticleKey.RECORD_MEMORY_FULL: {TYPE: int, VALUE: 0, REQUIRED: True},
+        SamiRegularStatusDataParticleKey.RECORD_END_ON_ERROR: {TYPE: int, VALUE: 0, REQUIRED: True},
+        SamiRegularStatusDataParticleKey.DATA_DOWNLOAD_OK: {TYPE: int, VALUE: 0, REQUIRED: True},
+        SamiRegularStatusDataParticleKey.FLASH_MEMORY_OPEN: {TYPE: int, VALUE: 1, REQUIRED: True},
+        SamiRegularStatusDataParticleKey.BATTERY_LOW_PRESTART: {TYPE: int, VALUE: 0, REQUIRED: True},
+        SamiRegularStatusDataParticleKey.BATTERY_LOW_MEASUREMENT: {TYPE: int, VALUE: 0, REQUIRED: True},
+        SamiRegularStatusDataParticleKey.BATTERY_LOW_BANK: {TYPE: int, VALUE: 0, REQUIRED: True},
+        SamiRegularStatusDataParticleKey.BATTERY_LOW_EXTERNAL: {TYPE: int, VALUE: 0, REQUIRED: True},
+        SamiRegularStatusDataParticleKey.EXTERNAL_DEVICE1_FAULT: {TYPE: int, VALUE: 0, REQUIRED: True},
+        SamiRegularStatusDataParticleKey.EXTERNAL_DEVICE2_FAULT: {TYPE: int, VALUE: 0, REQUIRED: True},
+        SamiRegularStatusDataParticleKey.EXTERNAL_DEVICE3_FAULT: {TYPE: int, VALUE: 0, REQUIRED: True},
+        SamiRegularStatusDataParticleKey.FLASH_ERASED: {TYPE: int, VALUE: 0, REQUIRED: True},
+        SamiRegularStatusDataParticleKey.POWER_ON_INVALID: {TYPE: int, VALUE: 0, REQUIRED: True},
         SamiRegularStatusDataParticleKey.NUM_DATA_RECORDS: {TYPE: int, VALUE: 0x000003, REQUIRED: True},
         SamiRegularStatusDataParticleKey.NUM_ERROR_RECORDS: {TYPE: int, VALUE: 0x000000, REQUIRED: True},
         SamiRegularStatusDataParticleKey.NUM_BYTES_STORED: {TYPE: int, VALUE: 0x000236, REQUIRED: True},
@@ -311,7 +311,7 @@ class SamiUnitTest(InstrumentDriverUnitTestCase, SamiMixin):
 
     def sleep_for_realsies(self, seconds):
         now = time.time()
-        while time.time() < (now+seconds):
+        while time.time() < (now + seconds):
             time.sleep(.4)
 
     def assert_waiting_discover(self, driver):
@@ -370,7 +370,7 @@ class SamiUnitTest(InstrumentDriverUnitTestCase, SamiMixin):
         (driver._protocol._protocol_fsm.current_state, (agent_state, result)) = \
             driver._protocol._handler_command_start_autosample()
 
-        ## Don't take sample upon entering autosample state
+        # Don't take sample upon entering autosample state
         driver._protocol._queued_commands.reset()
 
         self.sleep_for_realsies(3)
@@ -415,7 +415,7 @@ class SamiIntegrationTest(InstrumentDriverIntegrationTestCase):
             self.assertGreater(end_time, time.time(), msg="Timeout waiting for sample")
             time.sleep(1)
 
-    ## Have to override because battery and thermistor do not have port time stamps
+    # Have to override because battery and thermistor do not have port time stamps
     def assert_data_particle_header(self, data_particle, stream_name, require_instrument_timestamp=False):
         """
         Verify a data particle header is formatted properly
@@ -438,8 +438,8 @@ class SamiIntegrationTest(InstrumentDriverIntegrationTestCase):
 
         # It is highly unlikely that we should have a particle without a port agent timestamp,
         # at least that's the current assumption.
-        ## self.assertIsNotNone(sample_dict.get(DataParticleKey.PORT_TIMESTAMP))
-        ## self.assertIsInstance(sample_dict.get(DataParticleKey.PORT_TIMESTAMP), float)
+        # self.assertIsNotNone(sample_dict.get(DataParticleKey.PORT_TIMESTAMP))
+        # self.assertIsInstance(sample_dict.get(DataParticleKey.PORT_TIMESTAMP), float)
 
         if require_instrument_timestamp:
             self.assertIsNotNone(sample_dict.get(DataParticleKey.INTERNAL_TIMESTAMP))
@@ -473,7 +473,7 @@ class SamiIntegrationTest(InstrumentDriverIntegrationTestCase):
         self.clear_events()
         request_status_time = time.time()
         self.assert_driver_command(SamiProtocolEvent.ACQUIRE_STATUS)
-        self.assert_async_particle_generation(SamiRegularStatusDataParticle._data_particle_type, self.assert_time_sync, timeout=10)#SamiDataParticleType.REGULAR_STATUS, self.assert_time_sync, timeout=10)
+        self.assert_async_particle_generation(SamiRegularStatusDataParticle._data_particle_type, self.assert_time_sync, timeout=10)
         receive_status_time = time.time()
         status_time = receive_status_time - request_status_time
         log.debug("status_time = %s", status_time)
@@ -487,7 +487,7 @@ class SamiIntegrationTest(InstrumentDriverIntegrationTestCase):
 ###############################################################################
 @attr('QUAL', group='mi')
 class SamiQualificationTest(InstrumentDriverQualificationTestCase):
-    ## Have to override because battery and thermistor do not have port time stamps
+    # Have to override because battery and thermistor do not have port time stamps
     def assert_data_particle_header(self, data_particle, stream_name, require_instrument_timestamp=False):
         """
         Verify a data particle header is formatted properly
@@ -510,14 +510,14 @@ class SamiQualificationTest(InstrumentDriverQualificationTestCase):
 
         # It is highly unlikely that we should have a particle without a port agent timestamp,
         # at least that's the current assumption.
-        ## self.assertIsNotNone(sample_dict.get(DataParticleKey.PORT_TIMESTAMP))
-        ## self.assertIsInstance(sample_dict.get(DataParticleKey.PORT_TIMESTAMP), float)
+        # self.assertIsNotNone(sample_dict.get(DataParticleKey.PORT_TIMESTAMP))
+        # self.assertIsInstance(sample_dict.get(DataParticleKey.PORT_TIMESTAMP), float)
 
         if require_instrument_timestamp:
             self.assertIsNotNone(sample_dict.get(DataParticleKey.INTERNAL_TIMESTAMP))
             self.assertIsInstance(sample_dict.get(DataParticleKey.INTERNAL_TIMESTAMP), float)
 
-    ## Have to override because the driver enters a sample state as soon as autosample mode is entered by design.
+    # Have to override because the driver enters a sample state as soon as autosample mode is entered by design.
     def assert_start_autosample(self, timeout=GO_ACTIVE_TIMEOUT):
         """
         Enter autosample mode from command
@@ -565,7 +565,7 @@ class SamiQualificationTest(InstrumentDriverQualificationTestCase):
     def setUp(self):
         InstrumentDriverQualificationTestCase.setUp(self)
 
-    ## Not applicable to this driver
+    # Not applicable to this driver
     def test_discover(self):
         pass
 

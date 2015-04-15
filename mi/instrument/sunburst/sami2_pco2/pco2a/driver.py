@@ -56,7 +56,7 @@ from mi.core.instrument.instrument_fsm import ThreadSafeFSM
 #    Driver RegEx Definitions
 ###
 
-# Mostly defined in base class with these additional, instrument specfic
+# Mostly defined in base class with these additional, instrument specific
 # additions
 
 # PCO2W Configuration Record
@@ -130,7 +130,6 @@ class DataParticleType(Pco2wSamiDataParticleType):
     PCO2W_A_SAMI_SAMPLE_CAL = 'pco2w_a_sami_data_record_cal'
 
 
-
 class Parameter(Pco2wParameter):
     """
     Device specific parameters.
@@ -147,7 +146,7 @@ class InstrumentCommand(Pco2wInstrumentCommand):
 ###############################################################################
 # Data Particles
 ###############################################################################
-#Redefine the data particle type so each particle has a unique name
+# Redefine the data particle type so each particle has a unique name
 SamiBatteryVoltageDataParticle._data_particle_type = DataParticleType.PCO2W_A_BATTERY_VOLTAGE
 SamiThermistorVoltageDataParticle._data_particle_type = DataParticleType.PCO2W_A_THERMISTOR_VOLTAGE
 SamiRegularStatusDataParticle._data_particle_type = DataParticleType.PCO2W_A_REGULAR_STATUS
@@ -260,7 +259,7 @@ class Pco2waConfigurationDataParticle(DataParticle):
                 # byte mode bits value, parse bit-by-bit using the bit-shift
                 # operator to determine the boolean value.
                 result.append({DataParticleKey.VALUE_ID: key,
-                               DataParticleKey.VALUE: bool(int(matched.group(4), 16) & (1 << mode_index))})
+                               DataParticleKey.VALUE: int(bool(int(matched.group(4), 16) & (1 << mode_index)))})
                 mode_index += 1  # bump the bit index
                 grp_index = 5  # set the right group index for when we leave this part of the loop.
 
@@ -269,7 +268,7 @@ class Pco2waConfigurationDataParticle(DataParticle):
                          Pco2waConfigurationDataParticleKey.SEND_LIVE_RECORDS,
                          Pco2waConfigurationDataParticleKey.EXTEND_GLOBAL_CONFIG]:
                 result.append({DataParticleKey.VALUE_ID: key,
-                               DataParticleKey.VALUE: bool(int(matched.group(20), 16) & (1 << glbl_index))})
+                               DataParticleKey.VALUE: int(bool(int(matched.group(20), 16) & (1 << glbl_index)))})
 
                 glbl_index += 1  # bump the bit index
                 # skip bit indices 3 through 6
@@ -280,7 +279,7 @@ class Pco2waConfigurationDataParticle(DataParticle):
             elif key in [Pco2waConfigurationDataParticleKey.DISABLE_START_BLANK_FLUSH,
                          Pco2waConfigurationDataParticleKey.MEASURE_AFTER_PUMP_PULSE]:
                 result.append({DataParticleKey.VALUE_ID: key,
-                               DataParticleKey.VALUE: bool(int(matched.group(28), 16) & (1 << sami_index))})
+                               DataParticleKey.VALUE: int(bool(int(matched.group(28), 16) & (1 << sami_index)))})
                 sami_index += 1  # bump the bit index
                 grp_index = 29  # set the right group index for when we leave this part of the loop.
 
@@ -449,7 +448,7 @@ class Protocol(Pco2wProtocol):
                              visibility=ParameterDictVisibility.READ_ONLY,
                              display_name='Mode Bits')
 
-        ## Changed from 0x000E10 to 0x000000 to indicate there is not external device
+        # Changed from 0x000E10 to 0x000000 to indicate there is not external device
         self._param_dict.add(Parameter.DEVICE1_SAMPLE_INTERVAL, configuration_string_regex,
                              lambda match: int(match.group(8), 16),
                              lambda x: self._int_to_hexstring(x, 6),
@@ -460,7 +459,7 @@ class Protocol(Pco2wProtocol):
                              visibility=ParameterDictVisibility.READ_ONLY,
                              display_name='Device 1 Sample Interval')
 
-        ## Changed from 0x01 to 0x00 to indicate there is not external device
+        # Changed from 0x01 to 0x00 to indicate there is not external device
         self._param_dict.add(Parameter.DEVICE1_DRIVER_VERSION, configuration_string_regex,
                              lambda match: int(match.group(9), 16),
                              lambda x: self._int_to_hexstring(x, 2),
@@ -471,7 +470,7 @@ class Protocol(Pco2wProtocol):
                              visibility=ParameterDictVisibility.READ_ONLY,
                              display_name='Device 1 Driver Version')
 
-        ## Changed from 0x0B to 0x00 to indicate there is not external device
+        # Changed from 0x0B to 0x00 to indicate there is not external device
         self._param_dict.add(Parameter.DEVICE1_PARAMS_POINTER, configuration_string_regex,
                              lambda match: int(match.group(10), 16),
                              lambda x: self._int_to_hexstring(x, 2),

@@ -165,7 +165,7 @@ class Parameter(Pco2wParameter):
 
 class InstrumentCommand(Pco2wInstrumentCommand):
     """
-    Device specfic Instrument command strings. Extends superclass
+    Device specific Instrument command strings. Extends superclass
     SamiInstrumentCommand
     """
     # PCO2W driver extends the base class (SamiInstrumentCommand) with:
@@ -176,7 +176,7 @@ class InstrumentCommand(Pco2wInstrumentCommand):
 # Data Particles
 ###############################################################################
 
-#Redefine the data particle type so each particle has a unique name
+# Redefine the data particle type so each particle has a unique name
 SamiBatteryVoltageDataParticle._data_particle_type = DataParticleType.PCO2W_B_BATTERY_VOLTAGE
 SamiThermistorVoltageDataParticle._data_particle_type = DataParticleType.PCO2W_B_THERMISTOR_VOLTAGE
 SamiRegularStatusDataParticle._data_particle_type = DataParticleType.PCO2W_B_REGULAR_STATUS
@@ -351,7 +351,7 @@ class Pco2wConfigurationDataParticle(DataParticle):
                 # byte mode bits value, parse bit-by-bit using the bit-shift
                 # operator to determine the boolean value.
                 result.append({DataParticleKey.VALUE_ID: key,
-                               DataParticleKey.VALUE: bool(int(matched.group(4), 16) & (1 << mode_index))})
+                               DataParticleKey.VALUE: int(bool(int(matched.group(4), 16) & (1 << mode_index)))})
                 mode_index += 1  # bump the bit index
                 grp_index = 5  # set the right group index for when we leave this part of the loop.
 
@@ -360,7 +360,7 @@ class Pco2wConfigurationDataParticle(DataParticle):
                          Pco2wConfigurationDataParticleKey.SEND_LIVE_RECORDS,
                          Pco2wConfigurationDataParticleKey.EXTEND_GLOBAL_CONFIG]:
                 result.append({DataParticleKey.VALUE_ID: key,
-                               DataParticleKey.VALUE: bool(int(matched.group(20), 16) & (1 << glbl_index))})
+                               DataParticleKey.VALUE: int(bool(int(matched.group(20), 16) & (1 << glbl_index)))})
 
                 glbl_index += 1  # bump the bit index
                 # skip bit indices 3 through 6
@@ -371,7 +371,7 @@ class Pco2wConfigurationDataParticle(DataParticle):
             elif key in [Pco2wConfigurationDataParticleKey.DISABLE_START_BLANK_FLUSH,
                          Pco2wConfigurationDataParticleKey.MEASURE_AFTER_PUMP_PULSE]:
                 result.append({DataParticleKey.VALUE_ID: key,
-                               DataParticleKey.VALUE: bool(int(matched.group(28), 16) & (1 << sami_index))})
+                               DataParticleKey.VALUE: int(bool(int(matched.group(28), 16) & (1 << sami_index)))})
                 sami_index += 1  # bump the bit index
                 grp_index = 29  # set the right group index for when we leave this part of the loop.
 
