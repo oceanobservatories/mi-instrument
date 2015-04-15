@@ -298,14 +298,14 @@ class DriverTestMixinSub(SamiMixin):
         PhsenConfigDataParticleKey.LAUNCH_TIME: {TYPE: int, VALUE: 0xCDDD731D, REQUIRED: True},
         PhsenConfigDataParticleKey.START_TIME_OFFSET: {TYPE: int, VALUE: 0x01E13380, REQUIRED: True},
         PhsenConfigDataParticleKey.RECORDING_TIME: {TYPE: int, VALUE: 0x01E13380, REQUIRED: True},
-        PhsenConfigDataParticleKey.PMI_SAMPLE_SCHEDULE: {TYPE: bool, VALUE: False, REQUIRED: True},
-        PhsenConfigDataParticleKey.SAMI_SAMPLE_SCHEDULE: {TYPE: bool, VALUE: True, REQUIRED: True},
-        PhsenConfigDataParticleKey.SLOT1_FOLLOWS_SAMI_SCHEDULE: {TYPE: bool, VALUE: False, REQUIRED: True},
-        PhsenConfigDataParticleKey.SLOT1_INDEPENDENT_SCHEDULE: {TYPE: bool, VALUE: False, REQUIRED: True},
-        PhsenConfigDataParticleKey.SLOT2_FOLLOWS_SAMI_SCHEDULE: {TYPE: bool, VALUE: False, REQUIRED: True},
-        PhsenConfigDataParticleKey.SLOT2_INDEPENDENT_SCHEDULE: {TYPE: bool, VALUE: False, REQUIRED: True},
-        PhsenConfigDataParticleKey.SLOT3_FOLLOWS_SAMI_SCHEDULE: {TYPE: bool, VALUE: False, REQUIRED: True},
-        PhsenConfigDataParticleKey.SLOT3_INDEPENDENT_SCHEDULE: {TYPE: bool, VALUE: False, REQUIRED: True},
+        PhsenConfigDataParticleKey.PMI_SAMPLE_SCHEDULE: {TYPE: int, VALUE: 0, REQUIRED: True},
+        PhsenConfigDataParticleKey.SAMI_SAMPLE_SCHEDULE: {TYPE: int, VALUE: 1, REQUIRED: True},
+        PhsenConfigDataParticleKey.SLOT1_FOLLOWS_SAMI_SCHEDULE: {TYPE: int, VALUE: 0, REQUIRED: True},
+        PhsenConfigDataParticleKey.SLOT1_INDEPENDENT_SCHEDULE: {TYPE: int, VALUE: 0, REQUIRED: True},
+        PhsenConfigDataParticleKey.SLOT2_FOLLOWS_SAMI_SCHEDULE: {TYPE: int, VALUE: 0, REQUIRED: True},
+        PhsenConfigDataParticleKey.SLOT2_INDEPENDENT_SCHEDULE: {TYPE: int, VALUE: 0, REQUIRED: True},
+        PhsenConfigDataParticleKey.SLOT3_FOLLOWS_SAMI_SCHEDULE: {TYPE: int, VALUE: 0, REQUIRED: True},
+        PhsenConfigDataParticleKey.SLOT3_INDEPENDENT_SCHEDULE: {TYPE: int, VALUE: 0, REQUIRED: True},
         PhsenConfigDataParticleKey.TIMER_INTERVAL_SAMI: {TYPE: int, VALUE: 0x000E10, REQUIRED: True},
         PhsenConfigDataParticleKey.DRIVER_ID_SAMI: {TYPE: int, VALUE: 0x0A, REQUIRED: True},
         PhsenConfigDataParticleKey.PARAMETER_POINTER_SAMI: {TYPE: int, VALUE: 0x02, REQUIRED: True},
@@ -321,10 +321,10 @@ class DriverTestMixinSub(SamiMixin):
         PhsenConfigDataParticleKey.TIMER_INTERVAL_PRESTART: {TYPE: int, VALUE: 0x000000, REQUIRED: True},
         PhsenConfigDataParticleKey.DRIVER_ID_PRESTART: {TYPE: int, VALUE: 0x00, REQUIRED: True},
         PhsenConfigDataParticleKey.PARAMETER_POINTER_PRESTART: {TYPE: int, VALUE: 0x11, REQUIRED: True},
-        PhsenConfigDataParticleKey.USE_BAUD_RATE_57600: {TYPE: bool, VALUE: True, REQUIRED: True},
-        PhsenConfigDataParticleKey.SEND_RECORD_TYPE: {TYPE: bool, VALUE: True, REQUIRED: True},
-        PhsenConfigDataParticleKey.SEND_LIVE_RECORDS: {TYPE: bool, VALUE: True, REQUIRED: True},
-        PhsenConfigDataParticleKey.EXTEND_GLOBAL_CONFIG: {TYPE: bool, VALUE: False, REQUIRED: True},
+        PhsenConfigDataParticleKey.USE_BAUD_RATE_57600: {TYPE: int, VALUE: 1, REQUIRED: True},
+        PhsenConfigDataParticleKey.SEND_RECORD_TYPE: {TYPE: int, VALUE: 1, REQUIRED: True},
+        PhsenConfigDataParticleKey.SEND_LIVE_RECORDS: {TYPE: int, VALUE: 1, REQUIRED: True},
+        PhsenConfigDataParticleKey.EXTEND_GLOBAL_CONFIG: {TYPE: int, VALUE: 0, REQUIRED: True},
         PhsenConfigDataParticleKey.NUMBER_SAMPLES_AVERAGED: {TYPE: int, VALUE: 0x01, REQUIRED: True},
         PhsenConfigDataParticleKey.NUMBER_FLUSHES: {TYPE: int, VALUE: 0x37, REQUIRED: True},
         PhsenConfigDataParticleKey.PUMP_ON_FLUSH: {TYPE: int, VALUE: 0x04, REQUIRED: True},
@@ -433,7 +433,7 @@ class DriverUnitTest(SamiUnitTest, DriverTestMixinSub):
         """
         Verify that all the SAMI Instrument driver enumerations have no
         duplicate values that might cause confusion. Also do a little
-        extra validation for the Capabilites
+        extra validation for the Capabilities
 
         Extra enumeration tests are done in a specific subclass
         """
@@ -442,7 +442,7 @@ class DriverUnitTest(SamiUnitTest, DriverTestMixinSub):
         self.assert_enum_has_no_duplicates(ProtocolState())
         self.assert_enum_has_no_duplicates(ProtocolEvent())
 
-        # Test capabilites for duplicates, then verify that capabilities
+        # Test capabilities for duplicates, then verify that capabilities
         # is a subset of proto events
 
         self.assert_enum_has_no_duplicates(Capability())
@@ -779,7 +779,7 @@ class DriverIntegrationTest(SamiIntegrationTest, DriverTestMixinSub):
         self.assert_driver_command(ProtocolEvent.STOP_AUTOSAMPLE, state=ProtocolState.COMMAND, delay=5)
         self.clear_events()
 
-        #Now verify that no more particles get generated
+        # Now verify that no more particles get generated
         failed = False
         try:
             self.assert_async_particle_generation(DataParticleType.PHSEN_DATA_RECORD,
@@ -790,7 +790,7 @@ class DriverIntegrationTest(SamiIntegrationTest, DriverTestMixinSub):
             pass
         self.assertFalse(failed)
 
-        #Restart autosample
+        # Restart autosample
         self.clear_events()
         self.assert_driver_command(ProtocolEvent.START_AUTOSAMPLE, state=ProtocolState.SCHEDULED_SAMPLE, delay=5)
         self.assert_async_particle_generation(DataParticleType.PHSEN_DATA_RECORD, self.assert_particle_sami_data_sample,
@@ -831,7 +831,7 @@ class DriverIntegrationTest(SamiIntegrationTest, DriverTestMixinSub):
         """
         self.assert_initialize_driver()
 
-        ## Queue sample and status
+        # Queue sample and status
         self.clear_events()
         self.assert_driver_command(ProtocolEvent.ACQUIRE_SAMPLE)
         self.assert_driver_command(ProtocolEvent.ACQUIRE_STATUS)
@@ -851,7 +851,7 @@ class DriverIntegrationTest(SamiIntegrationTest, DriverTestMixinSub):
         self.clear_events()
         self.assert_driver_command(ProtocolEvent.START_AUTOSAMPLE, state=ProtocolState.SCHEDULED_SAMPLE, delay=5)
 
-        ## Queue sample and status
+        # Queue sample and status
         self.assert_driver_command(ProtocolEvent.ACQUIRE_STATUS)
         self.assert_async_particle_generation(DataParticleType.PHSEN_DATA_RECORD, self.assert_particle_sami_data_sample,
                                               timeout=240)
