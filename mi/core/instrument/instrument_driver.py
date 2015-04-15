@@ -12,7 +12,6 @@ __author__ = 'Steve Foley'
 __license__ = 'Apache 2.0'
 
 import time
-import json
 
 from threading import Thread
 
@@ -22,11 +21,13 @@ from mi.core.exceptions import NotImplementedException
 from mi.core.exceptions import InstrumentException
 from mi.core.exceptions import InstrumentParameterException
 from mi.core.exceptions import InstrumentConnectionException
-from mi.core.instrument.instrument_fsm import InstrumentFSM, ThreadSafeFSM
+from mi.core.instrument.instrument_fsm import ThreadSafeFSM
 from mi.core.instrument.port_agent_client import PortAgentClient, FileReadingPortAgentClient
 
-from mi.core.log import get_logger,LoggerManager
+from mi.core.log import get_logger, LoggerManager
+
 log = get_logger()
+
 
 class ConfigMetadataKey(BaseEnum):
     """
@@ -36,13 +37,15 @@ class ConfigMetadataKey(BaseEnum):
     DRIVER = 'driver'
     COMMANDS = 'commands'
     PARAMETERS = 'parameters'
-    
+
+
 class DriverConfigKey(BaseEnum):
     """
     Dictionary keys for driver config objects
     """
     PARAMETERS = 'parameters'
     SCHEDULER = 'scheduler'
+
 
 # This is a copy since we can't import from pyon.
 class ResourceAgentState(BaseEnum):
@@ -62,7 +65,8 @@ class ResourceAgentState(BaseEnum):
     BUSY = 'RESOURCE_AGENT_STATE_BUSY'
     LOST_CONNECTION = 'RESOURCE_AGENT_STATE_LOST_CONNECTION'
     ACTIVE_UNKNOWN = 'RESOURCE_AGENT_STATE_ACTIVE_UNKNOWN'
-    
+
+
 class ResourceAgentEvent(BaseEnum):
     """
     Resource agent common events.
@@ -93,6 +97,7 @@ class ResourceAgentEvent(BaseEnum):
     GET_RESOURCE_SCHEMA = 'RESOURCE_AGENT_EVENT_GET_RESOURCE_SCHEMA'
     CHANGE_STATE_ASYNC = 'RESOURCE_AGENT_EVENT_CHANGE_STATE_ASYNC'
 
+
 class DriverState(BaseEnum):
     """Common driver state enum"""
 
@@ -105,6 +110,7 @@ class DriverState(BaseEnum):
     UPDATE_PARAMS = 'DRIVER_STATE_UPDATE_PARAMS'
     SET = 'DRIVER_STATE_SET'
     SLEEP = 'DRIVER_STATE_SLEEP'
+
 
 class DriverProtocolState(BaseEnum):
     """
@@ -119,6 +125,7 @@ class DriverProtocolState(BaseEnum):
     UNKNOWN = 'DRIVER_STATE_UNKNOWN'
     POLL = 'DRIVER_STATE_POLL'
 
+
 class DriverConnectionState(BaseEnum):
     """
     Base states for driver connections.
@@ -126,7 +133,8 @@ class DriverConnectionState(BaseEnum):
     UNCONFIGURED = 'DRIVER_STATE_UNCONFIGURED'
     DISCONNECTED = 'DRIVER_STATE_DISCONNECTED'
     CONNECTED = 'DRIVER_STATE_CONNECTED'
-    
+
+
 class DriverEvent(BaseEnum):
     """
     Base events for driver state machines. Commands and other events
@@ -151,11 +159,9 @@ class DriverEvent(BaseEnum):
     STOP_TEST = 'DRIVER_EVENT_STOP_TEST'
     CALIBRATE = 'DRIVER_EVENT_CALIBRATE'
     RESET = 'DRIVER_EVENT_RESET'
-    ENTER = 'DRIVER_EVENT_ENTER'
-    EXIT = 'DRIVER_EVENT_EXIT'
     UPDATE_PARAMS = 'DRIVER_EVENT_UPDATE_PARAMS'
     BREAK = 'DRIVER_EVENT_BREAK'
-    EXECUTE_DIRECT = 'EXECUTE_DIRECT'    
+    EXECUTE_DIRECT = 'EXECUTE_DIRECT'
     START_DIRECT = 'DRIVER_EVENT_START_DIRECT'
     STOP_DIRECT = 'DRIVER_EVENT_STOP_DIRECT'
     PING_DRIVER = 'DRIVER_EVENT_PING_DRIVER'
@@ -166,6 +172,7 @@ class DriverEvent(BaseEnum):
     INIT_PARAMS = 'DRIVER_EVENT_INIT_PARAMS'
     GAP_RECOVERY = 'DRIVER_EVENT_GAP_RECOVERY'
     GAP_RECOVERY_COMPLETE = 'DRIVER_EVENT_GAP_RECOVERY_COMPLETE'
+
 
 class DriverAsyncEvent(BaseEnum):
     """
@@ -178,6 +185,8 @@ class DriverAsyncEvent(BaseEnum):
     RESULT = 'DRIVER_ASYNC_RESULT'
     DIRECT_ACCESS = 'DRIVER_ASYNC_EVENT_DIRECT_ACCESS'
     AGENT_EVENT = 'DRIVER_ASYNC_EVENT_AGENT_EVENT'
+    DRIVER_CONFIG = 'DRIVER_ASYNC_EVENT_DRIVER_CONFIG'
+
 
 class DriverParameter(BaseEnum):
     """
@@ -186,11 +195,12 @@ class DriverParameter(BaseEnum):
     """
     ALL = 'DRIVER_PARAMETER_ALL'
 
+
 class InstrumentDriver(object):
     """
     Base class for instrument drivers.
     """
-        
+
     def __init__(self, event_callback):
         """
         Constructor.
@@ -201,14 +211,13 @@ class InstrumentDriver(object):
         self._send_event = event_callback
         self._test_mode = False
 
-
     #############################################################
     # Device connection interface.
     #############################################################
 
     def set_test_mode(self, mode):
         """
-        Enable test mode for the driver.  If this mode is envoked
+        Enable test mode for the driver.  If this mode is invoked
         then the user has access to test_ commands.
         @param mode: test mode state
         """
@@ -218,22 +227,22 @@ class InstrumentDriver(object):
         """
         Initialize driver connection, bringing communications parameters
         into unconfigured state (no connection object).
-        @raises InstrumentStateException if command not allowed in current state        
+        @raises InstrumentStateException if command not allowed in current state
         @raises NotImplementedException if not implemented by subclass.
         """
         raise NotImplementedException('initialize() not implemented.')
-        
+
     def configure(self, *args, **kwargs):
         """
         Configure the driver for communications with the device via
         port agent / logger (valid but unconnected connection object).
         @param arg[0] comms config dict.
-        @raises InstrumentStateException if command not allowed in current state        
+        @raises InstrumentStateException if command not allowed in current state
         @throws InstrumentParameterException if missing comms or invalid config dict.
         @raises NotImplementedException if not implemented by subclass.
         """
         raise NotImplementedException('configure() not implemented.')
-        
+
     def connect(self, *args, **kwargs):
         """
         Establish communications with the device via port agent / logger
@@ -243,7 +252,7 @@ class InstrumentDriver(object):
         @raises NotImplementedException if not implemented by subclass.
         """
         raise NotImplementedException('connect() not implemented.')
-    
+
     def disconnect(self, *args, **kwargs):
         """
         Disconnect from device via port agent / logger.
@@ -252,7 +261,6 @@ class InstrumentDriver(object):
         """
         raise NotImplementedException('disconnect() not implemented.')
 
-
     #############################################################
     # Command and control interface.
     #############################################################
@@ -260,7 +268,7 @@ class InstrumentDriver(object):
     def discover_state(self, *args, **kwargs):
         """
         Determine initial state upon establishing communications.
-        @param timeout=timeout Optional command timeout.        
+        @param timeout=timeout Optional command timeout.
         @retval Current device state.
         @raises InstrumentTimeoutException if could not wake device.
         @raises InstrumentStateException if command not allowed in current state or if
@@ -276,17 +284,17 @@ class InstrumentDriver(object):
         state, otherwise reutrn all commands.
         @retval list of AgentCapability objects representing the drivers
         capabilities.
-        @raises NotImplementedException if not implemented by subclass.        
+        @raises NotImplementedException if not implemented by subclass.
         """
         raise NotImplementedException('get_resource_capabilities() is not implemented.')
-        
+
     def get_resource_state(self, *args, **kwargs):
         """
         Return the current state of the driver.
         @retval str current driver state.
-        @raises NotImplementedException if not implemented by subclass.        
+        @raises NotImplementedException if not implemented by subclass.
         """
-        raise NotImplementedException('get_resource_state() is not implemented.')        
+        raise NotImplementedException('get_resource_state() is not implemented.')
 
     def get_resource(self, *args, **kwargs):
         """
@@ -336,7 +344,7 @@ class InstrumentDriver(object):
     def stop_direct(self, *args, **kwargs):
         """
         Stop direct access mode
-        @param timeout=timeout Optional command timeout.        
+        @param timeout=timeout Optional command timeout.
         @ retval Command specific.
         @raises NotImplementedException if not implemented by subclass.
         """
@@ -346,47 +354,50 @@ class InstrumentDriver(object):
     # Event interface.
     ########################################################################
 
-    def _driver_event(self, type, val=None):
+    def _driver_event(self, event_type, val=None):
         """
         Construct and send an asynchronous driver event.
-        @param type a DriverAsyncEvent type specifier.
+        @param event_type a DriverAsyncEvent type specifier.
         @param val event value for sample and test result events.
         """
         event = {
-            'type' : type,
-            'value' : None,
-            'time' : time.time()
+            'type': event_type,
+            'value': None,
+            'time': time.time()
         }
-        if type == DriverAsyncEvent.STATE_CHANGE:
+        if event_type == DriverAsyncEvent.STATE_CHANGE:
             state = self.get_resource_state()
             event['value'] = state
             self._send_event(event)
-            
-        elif type == DriverAsyncEvent.CONFIG_CHANGE:
+
+        elif event_type == DriverAsyncEvent.CONFIG_CHANGE:
             config = self.get_resource(DriverParameter.ALL)
             event['value'] = config
             self._send_event(event)
-        
-        elif type == DriverAsyncEvent.SAMPLE:
-            event['value'] = val
-            self._send_event(event)
-            
-        elif type == DriverAsyncEvent.ERROR:
+
+        elif event_type == DriverAsyncEvent.SAMPLE:
             event['value'] = val
             self._send_event(event)
 
-        elif type == DriverAsyncEvent.RESULT:
+        elif event_type == DriverAsyncEvent.ERROR:
             event['value'] = val
             self._send_event(event)
 
-        elif type == DriverAsyncEvent.DIRECT_ACCESS:
+        elif event_type == DriverAsyncEvent.RESULT:
             event['value'] = val
             self._send_event(event)
 
-        elif type == DriverAsyncEvent.AGENT_EVENT:
+        elif event_type == DriverAsyncEvent.DIRECT_ACCESS:
             event['value'] = val
             self._send_event(event)
 
+        elif event_type == DriverAsyncEvent.AGENT_EVENT:
+            event['value'] = val
+            self._send_event(event)
+
+        elif event_type == DriverAsyncEvent.DRIVER_CONFIG:
+            event['value'] = val
+            self._send_event(event)
 
     ########################################################################
     # Test interface.
@@ -397,9 +408,9 @@ class InstrumentDriver(object):
         Echo a message.
         @param msg the message to prepend and echo back to the caller.
         """
-        reply = 'driver_ping: '+msg
+        reply = 'driver_ping: %r %s' % (self, msg)
         return reply
-    
+
     def test_exceptions(self, msg):
         """
         Test exception handling in the driver process.
@@ -408,14 +419,16 @@ class InstrumentDriver(object):
         @raises InstrumentExeption always.
         """
         raise InstrumentException(msg)
-        
+
+
+# noinspection PyMethodMayBeStatic,PyProtectedMember
 class SingleConnectionInstrumentDriver(InstrumentDriver):
     """
     Base class for instrument drivers with a single device connection.
     Provides connenction state logic for single connection drivers. This is
     the base class for the majority of driver implementation classes.
     """
-    
+
     def __init__(self, event_callback):
         """
         Constructor for singly connected instrument drivers.
@@ -423,20 +436,20 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
         driver events back to the agent.
         """
         InstrumentDriver.__init__(self, event_callback)
-        
+
         # The only and only instrument connection.
         # Exists in the connected state.
         self._connection = None
 
         # The one and only instrument protocol.
         self._protocol = None
-        
+
         # Build connection state machine.
         self._connection_fsm = ThreadSafeFSM(DriverConnectionState,
-                                                DriverEvent,
-                                                DriverEvent.ENTER,
-                                                DriverEvent.EXIT)
-        
+                                             DriverEvent,
+                                             DriverEvent.ENTER,
+                                             DriverEvent.EXIT)
+
         # Add handlers for all events.
         self._connection_fsm.add_handler(DriverConnectionState.UNCONFIGURED, DriverEvent.ENTER, self._handler_unconfigured_enter)
         self._connection_fsm.add_handler(DriverConnectionState.UNCONFIGURED, DriverEvent.EXIT, self._handler_unconfigured_exit)
@@ -458,19 +471,18 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
         self._connection_fsm.add_handler(DriverConnectionState.CONNECTED, DriverEvent.FORCE_STATE, self._handler_connected_protocol_event)
         self._connection_fsm.add_handler(DriverConnectionState.CONNECTED, DriverEvent.START_DIRECT, self._handler_connected_start_direct_event)
         self._connection_fsm.add_handler(DriverConnectionState.CONNECTED, DriverEvent.STOP_DIRECT, self._handler_connected_stop_direct_event)
-        
-            
+
         # Start state machine.
         self._connection_fsm.start(DriverConnectionState.UNCONFIGURED)
-        
+
         self._pre_da_config = {}
         self._startup_config = {}
-        
+
         # Idempotency flag for lost connections.
         # This set to false when a connection is established to
         # allow for lost callback to become activated.
         self._connection_lost = True
-        
+
     #############################################################
     # Device connection interface.
     #############################################################
@@ -479,22 +491,22 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
         """
         Initialize driver connection, bringing communications parameters
         into unconfigured state (no connection object).
-        @raises InstrumentStateException if command not allowed in current state        
+        @raises InstrumentStateException if command not allowed in current state
         """
         # Forward event and argument to the connection FSM.
         return self._connection_fsm.on_event(DriverEvent.INITIALIZE, *args, **kwargs)
-        
+
     def configure(self, *args, **kwargs):
         """
         Configure the driver for communications with the device via
         port agent / logger (valid but unconnected connection object).
         @param arg[0] comms config dict.
-        @raises InstrumentStateException if command not allowed in current state        
+        @raises InstrumentStateException if command not allowed in current state
         @throws InstrumentParameterException if missing comms or invalid config dict.
         """
         # Forward event and argument to the connection FSM.
         return self._connection_fsm.on_event(DriverEvent.CONFIGURE, *args, **kwargs)
-        
+
     def connect(self, *args, **kwargs):
         """
         Establish communications with the device via port agent / logger
@@ -510,7 +522,7 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
 
         self.set_init_params(init_config)
         return result
-    
+
     def disconnect(self, *args, **kwargs):
         """
         Disconnect from device via port agent / logger.
@@ -559,7 +571,7 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
 
         if config:
             self._startup_config = config
-    
+
     def apply_startup_params(self):
         """
         Apply the startup values previously stored in the protocol to
@@ -570,7 +582,7 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
 
         This default implementation simply pushes the logic down into the protocol
         for processing should the action be better accomplished down there.
-        
+
         The driver writer can decide to overload this method in the derived
         driver class and apply startup parameters in the driver (likely calling
         some get and set methods for the resource). If the driver does not
@@ -581,7 +593,7 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
         """
         log.debug("Base driver applying startup params...")
         self._protocol.apply_startup_params()
-        
+
     def get_cached_config(self):
         """
         Return the configuration object that shows the instrument's
@@ -591,7 +603,7 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
         """
         if self._protocol:
             return self._protocol.get_cached_config()
-                
+
     def get_config_metadata(self):
         """
         Return the configuration metadata object in JSON format
@@ -610,34 +622,34 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
 
         log.debug("Getting metadata from protocol...")
         return self._protocol.get_config_metadata_dict()
-            
+
     def restore_direct_access_params(self, config):
         """
         Restore the correct values out of the full config that is given when
         returning from direct access. By default, this takes a simple dict of
         param name and value. Override this class as needed as it makes some
         simple assumptions about how your instrument sets things.
-        
+
         @param config The configuration that was previously saved (presumably
         to disk somewhere by the driver that is working with this protocol)
         """
         vals = {}
         # for each parameter that is read only, restore
-        da_params = self._protocol.get_direct_access_params()        
+        da_params = self._protocol.get_direct_access_params()
         for param in da_params:
             vals[param] = config[param]
 
-        log.debug("Restore DA Parameters: %s" % vals)
+        log.debug("Restore DA Parameters: %r" % vals)
         self.set_resource(vals, True)
-        
+
     #############################################################
-    # Commande and control interface.
+    # Command and control interface.
     #############################################################
 
     def discover_state(self, *args, **kwargs):
         """
         Determine initial state upon establishing communications.
-        @param timeout=timeout Optional command timeout.        
+        @param timeout=timeout Optional command timeout.
         @retval Current device state.
         @raises InstrumentTimeoutException if could not wake device.
         @raises InstrumentStateException if command not allowed in current state or if
@@ -654,21 +666,20 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
         state, otherwise reutrn all commands.
         @retval list of AgentCapability objects representing the drivers
         capabilities.
-        @raises NotImplementedException if not implemented by subclass.        
+        @raises NotImplementedException if not implemented by subclass.
         """
 
         if self._protocol:
             return self._protocol.get_resource_capabilities(current_state)
-        
-        else:
-            return [['foobb'], ['fooaa']]
 
-                
+        else:
+            return [[], []]
+
     def get_resource_state(self, *args, **kwargs):
         """
         Return the current state of the driver.
         @retval str current driver state.
-        @raises NotImplementedException if not implemented by subclass.        
+        @raises NotImplementedException if not implemented by subclass.
         """
         connection_state = self._connection_fsm.get_current_state()
         if connection_state == DriverConnectionState.CONNECTED:
@@ -755,16 +766,16 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
 
     def test_force_state(self, *args, **kwargs):
         """
-        Force driver into a given state for the purposes of unit testing 
+        Force driver into a given state for the purposes of unit testing
         @param state=desired_state Required desired state to change to.
         @raises InstrumentParameterException if no state parameter.
         @raises TestModeException if not in test mode
         """
 
-        if(not self._test_mode):
-            raise TestModeException();
+        if not self._test_mode:
+            raise TestModeException()
 
-       # Get the required param 
+        # Get the required param
         state = kwargs.get('state', None)  # via kwargs
         if state is None:
             raise InstrumentParameterException('Missing state parameter.')
@@ -784,7 +795,7 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
         """
         # Send state change event to agent.
         self._driver_event(DriverAsyncEvent.STATE_CHANGE)
-    
+
     def _handler_unconfigured_exit(self, *args, **kwargs):
         """
         Exit unconfigured state.
@@ -798,18 +809,17 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
         """
         next_state = None
         result = None
-        
-        return (next_state, result)
+
+        return next_state, result
 
     def _handler_unconfigured_configure(self, *args, **kwargs):
         """
         Configure driver for device comms.
-        @param args[0] Communiations config dictionary.
+        @param args[0] Communications config dictionary.
         @retval (next_state, result) tuple, (DriverConnectionState.DISCONNECTED,
         None) if successful, (None, None) otherwise.
         @raises InstrumentParameterException if missing or invalid param dict.
         """
-        next_state = None
         result = None
 
         # Get the required param dict.
@@ -828,7 +838,7 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
         self._connection = self._build_connection(config)
         next_state = DriverConnectionState.DISCONNECTED
 
-        return (next_state, result)
+        return next_state, result
 
     ########################################################################
     # Disconnected handlers.
@@ -855,13 +865,12 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
         @retval (next_state, result) tuple, (DriverConnectionState.UNCONFIGURED,
         None).
         """
-        next_state = None
         result = None
-        
+
         self._connection = None
         next_state = DriverConnectionState.UNCONFIGURED
-        
-        return (next_state, result)
+
+        return next_state, result
 
     def _handler_disconnected_configure(self, *args, **kwargs):
         """
@@ -888,7 +897,7 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
         # Verify configuration dict, and update connection if possible.
         self._connection = self._build_connection(config)
 
-        return (next_state, result)
+        return next_state, result
 
     def _handler_disconnected_connect(self, *args, **kwargs):
         """
@@ -898,12 +907,12 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
         None) if successful.
         @raises InstrumentConnectionException if the attempt to connect failed.
         """
-        next_state = None
         result = None
         self._build_protocol()
         try:
-            self._connection.init_comms(self._protocol.got_data, 
+            self._connection.init_comms(self._protocol.got_data,
                                         self._protocol.got_raw,
+                                        self._got_config,
                                         self._got_exception,
                                         self._lost_connection_callback)
             self._protocol._connection = self._connection
@@ -913,8 +922,8 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
             log.error("Instrument Driver remaining in disconnected state.")
             # Re-raise the exception
             raise
-        
-        return (next_state, result)
+
+        return next_state, result
 
     ########################################################################
     # Connected handlers.
@@ -941,15 +950,14 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
         @retval (next_state, result) tuple, (DriverConnectionState.DISCONNECTED,
         None) if successful.
         """
-        next_state = None
         result = None
-        
+
         log.info("_handler_connected_disconnect: invoking stop_comms().")
         self._connection.stop_comms()
         self._protocol = None
         next_state = DriverConnectionState.DISCONNECTED
-        
-        return (next_state, result)
+
+        return next_state, result
 
     def _handler_connected_connection_lost(self, *args, **kwargs):
         """
@@ -958,22 +966,21 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
         @retval (next_state, result) tuple, (DriverConnectionState.DISCONNECTED,
         None).
         """
-        next_state = None
         result = None
-        
+
         log.info("_handler_connected_connection_lost: invoking stop_comms().")
         self._connection.stop_comms()
         self._protocol = None
-        
+
         # Send async agent state change event.
-        log.info("_handler_connected_connection_lost: sending LOST_CONNECTION " \
+        log.info("_handler_connected_connection_lost: sending LOST_CONNECTION "
                  "event, moving to DISCONNECTED state.")
         self._driver_event(DriverAsyncEvent.AGENT_EVENT,
                            ResourceAgentEvent.LOST_CONNECTION)
-         
+
         next_state = DriverConnectionState.DISCONNECTED
-        
-        return (next_state, result)
+
+        return next_state, result
 
     def _handler_connected_protocol_event(self, event, *args, **kwargs):
         """
@@ -984,7 +991,7 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
         """
         next_state = None
         result = self._protocol._protocol_fsm.on_event(event, *args, **kwargs)
-        return (next_state, result)
+        return next_state, result
 
     def _handler_connected_start_direct_event(self, event, *args, **kwargs):
         """
@@ -1003,8 +1010,8 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
         log.debug("starting DA.  Storing DA parameters for restore: %s", self._pre_da_config)
 
         result = self._protocol._protocol_fsm.on_event(event, *args, **kwargs)
-        return (next_state, result)
-    
+        return next_state, result
+
     def _handler_connected_stop_direct_event(self, event, *args, **kwargs):
         """
         Restore previous config first, then forward a driver command event
@@ -1018,14 +1025,14 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
 
         # Moving the responsibility for applying DA parameters to the
         # protocol.
-        #self.restore_direct_access_params(self._pre_da_config)
+        # self.restore_direct_access_params(self._pre_da_config)
 
-        return (next_state, result)
+        return next_state, result
 
     ########################################################################
     # Helpers.
     ########################################################################
-    
+
     def _build_connection(self, config):
         """
         Constructs and returns a Connection object according to the given
@@ -1045,7 +1052,7 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
         if 'mock_port_agent' in config:
             mock_port_agent = config['mock_port_agent']
             # check for validity here...
-            if (mock_port_agent is not None):
+            if mock_port_agent is not None:
                 return mock_port_agent
 
         if 'directory' in config:
@@ -1058,7 +1065,7 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
             port = config['port']
             cmd_port = config.get('cmd_port')
 
-            if isinstance(addr, str) and isinstance(port, int) and len(addr)>0:
+            if isinstance(addr, str) and isinstance(port, int) and len(addr) > 0:
                 return PortAgentClient(addr, port, cmd_port)
             else:
                 raise InstrumentParameterException('Invalid comms config dict.')
@@ -1076,14 +1083,32 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
         finally:
             self._driver_event(DriverAsyncEvent.ERROR, exception)
 
+    def _got_config(self, port_agent_packet):
+        data = port_agent_packet.get_data()
+
+        configuration = {}
+
+        for each in data.split('\n'):
+            if each == '':
+                continue
+
+            key, value = each.split(None, 1)
+            try:
+                value = int(value)
+            except ValueError:
+                pass
+            configuration[key] = value
+
+        self._driver_event(DriverAsyncEvent.DRIVER_CONFIG, configuration)
+
     def _lost_connection_callback(self, error_string):
         """
         A callback invoked by the port agent client when it looses
         connectivity to the port agent.
         """
-        
+
         if not self._connection_lost:
-            log.info("_lost_connection_callback: starting thread to send " \
+            log.info("_lost_connection_callback: starting thread to send "
                      "CONNECTION_LOST event to instrument driver.")
             self._connection_lost = True
             lost_comms_thread = Thread(
@@ -1092,13 +1117,10 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
             lost_comms_thread.start()
         else:
             log.info("_lost_connection_callback: connection_lost flag true.")
-            
-            
+
     def _build_protocol(self):
         """
         Construct device specific single connection protocol FSM.
         Overridden in device specific subclasses.
         """
         pass
-                
-            
