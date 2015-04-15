@@ -79,8 +79,9 @@ class PortAgentPacket():
     PORT_AGENT_FAULT = 5
     INSTRUMENT_COMMAND = 6
     HEARTBEAT = 7
-    PICKLED_DATA_FROM_INSTRUMENT = 8
-    PICKLED_DATA_FROM_DRIVER = 9
+    PORT_AGENT_CONFIG = 8
+    PICKLED_DATA_FROM_INSTRUMENT = 9
+    PICKLED_DATA_FROM_DRIVER = 10
 
     def __init__(self, packetType = None):
         self.__header = None
