@@ -780,7 +780,7 @@ class NortekEngIdDataParticle(DataParticle):
         if not match:
             raise SampleException("NortekEngIdDataParticle: No regex match of parsed sample data: [%r]" % self.raw_data)
 
-        id_str, _ = match.group(1).split('\x00', 1)
+        id_str, = match.group(1).split('\x00', 1)
 
         # report values
         result = [{DataParticleKey.VALUE_ID: NortekEngIdDataParticleKey.ID, DataParticleKey.VALUE: id_str}]
