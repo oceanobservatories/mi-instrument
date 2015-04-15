@@ -24,7 +24,6 @@ from nose.plugins.attrib import attr
 from mock import Mock
 from mi.core.log import get_logger
 
-
 log = get_logger()
 
 # MI imports.
@@ -68,8 +67,6 @@ InstrumentDriverTestCase.initialize(
     instrument_agent_resource_id='V7HE4T',
     instrument_agent_name='sunburst_sami2_pco2_pco2a',
     instrument_agent_packet_config=DataParticleType(),
-
-    ##driver_startup_config={}
     driver_startup_config={
         DriverStartupConfigKey.PARAMETERS: {
             Parameter.BIT_SWITCHES: 0x01,
@@ -278,14 +275,14 @@ class DriverTestMixinSub(Pco2DriverTestMixinSub):
         Pco2waConfigurationDataParticleKey.LAUNCH_TIME: {TYPE: int, VALUE: 0xCEE90B00, REQUIRED: True},
         Pco2waConfigurationDataParticleKey.START_TIME_OFFSET: {TYPE: int, VALUE: 0x02C7EA00, REQUIRED: True},
         Pco2waConfigurationDataParticleKey.RECORDING_TIME: {TYPE: int, VALUE: 0x01E13380, REQUIRED: True},
-        Pco2waConfigurationDataParticleKey.PMI_SAMPLE_SCHEDULE: {TYPE: bool, VALUE: False, REQUIRED: True},
-        Pco2waConfigurationDataParticleKey.SAMI_SAMPLE_SCHEDULE: {TYPE: bool, VALUE: True, REQUIRED: True},
-        Pco2waConfigurationDataParticleKey.SLOT1_FOLLOWS_SAMI_SCHEDULE: {TYPE: bool, VALUE: False, REQUIRED: True},
-        Pco2waConfigurationDataParticleKey.SLOT1_INDEPENDENT_SCHEDULE: {TYPE: bool, VALUE: True, REQUIRED: True},
-        Pco2waConfigurationDataParticleKey.SLOT2_FOLLOWS_SAMI_SCHEDULE: {TYPE: bool, VALUE: False, REQUIRED: True},
-        Pco2waConfigurationDataParticleKey.SLOT2_INDEPENDENT_SCHEDULE: {TYPE: bool, VALUE: False, REQUIRED: True},
-        Pco2waConfigurationDataParticleKey.SLOT3_FOLLOWS_SAMI_SCHEDULE: {TYPE: bool, VALUE: False, REQUIRED: True},
-        Pco2waConfigurationDataParticleKey.SLOT3_INDEPENDENT_SCHEDULE: {TYPE: bool, VALUE: False, REQUIRED: True},
+        Pco2waConfigurationDataParticleKey.PMI_SAMPLE_SCHEDULE: {TYPE: int, VALUE: 0, REQUIRED: True},
+        Pco2waConfigurationDataParticleKey.SAMI_SAMPLE_SCHEDULE: {TYPE: int, VALUE: 1, REQUIRED: True},
+        Pco2waConfigurationDataParticleKey.SLOT1_FOLLOWS_SAMI_SCHEDULE: {TYPE: int, VALUE: 0, REQUIRED: True},
+        Pco2waConfigurationDataParticleKey.SLOT1_INDEPENDENT_SCHEDULE: {TYPE: int, VALUE: 1, REQUIRED: True},
+        Pco2waConfigurationDataParticleKey.SLOT2_FOLLOWS_SAMI_SCHEDULE: {TYPE: int, VALUE: 0, REQUIRED: True},
+        Pco2waConfigurationDataParticleKey.SLOT2_INDEPENDENT_SCHEDULE: {TYPE: int, VALUE: 0, REQUIRED: True},
+        Pco2waConfigurationDataParticleKey.SLOT3_FOLLOWS_SAMI_SCHEDULE: {TYPE: int, VALUE: 0, REQUIRED: True},
+        Pco2waConfigurationDataParticleKey.SLOT3_INDEPENDENT_SCHEDULE: {TYPE: int, VALUE: 0, REQUIRED: True},
         Pco2waConfigurationDataParticleKey.TIMER_INTERVAL_SAMI: {TYPE: int, VALUE: 0x000E10, REQUIRED: True},
         Pco2waConfigurationDataParticleKey.DRIVER_ID_SAMI: {TYPE: int, VALUE: 0x04, REQUIRED: True},
         Pco2waConfigurationDataParticleKey.PARAMETER_POINTER_SAMI: {TYPE: int, VALUE: 0x02, REQUIRED: True},
@@ -301,10 +298,10 @@ class DriverTestMixinSub(Pco2DriverTestMixinSub):
         Pco2waConfigurationDataParticleKey.TIMER_INTERVAL_PRESTART: {TYPE: int, VALUE: 0x000000, REQUIRED: True},
         Pco2waConfigurationDataParticleKey.DRIVER_ID_PRESTART: {TYPE: int, VALUE: 0x00, REQUIRED: True},
         Pco2waConfigurationDataParticleKey.PARAMETER_POINTER_PRESTART: {TYPE: int, VALUE: 0x0D, REQUIRED: True},
-        Pco2waConfigurationDataParticleKey.USE_BAUD_RATE_57600: {TYPE: bool, VALUE: True, REQUIRED: True},
-        Pco2waConfigurationDataParticleKey.SEND_RECORD_TYPE: {TYPE: bool, VALUE: True, REQUIRED: True},
-        Pco2waConfigurationDataParticleKey.SEND_LIVE_RECORDS: {TYPE: bool, VALUE: True, REQUIRED: True},
-        Pco2waConfigurationDataParticleKey.EXTEND_GLOBAL_CONFIG: {TYPE: bool, VALUE: False, REQUIRED: True},
+        Pco2waConfigurationDataParticleKey.USE_BAUD_RATE_57600: {TYPE: int, VALUE: 1, REQUIRED: True},
+        Pco2waConfigurationDataParticleKey.SEND_RECORD_TYPE: {TYPE: int, VALUE: 1, REQUIRED: True},
+        Pco2waConfigurationDataParticleKey.SEND_LIVE_RECORDS: {TYPE: int, VALUE: 1, REQUIRED: True},
+        Pco2waConfigurationDataParticleKey.EXTEND_GLOBAL_CONFIG: {TYPE: int, VALUE: 0, REQUIRED: True},
         Pco2waConfigurationDataParticleKey.PUMP_PULSE: {TYPE: int, VALUE: 0x10, REQUIRED: True},
         Pco2waConfigurationDataParticleKey.PUMP_DURATION: {TYPE: int, VALUE: 0x20, REQUIRED: True},
         Pco2waConfigurationDataParticleKey.SAMPLES_PER_MEASUREMENT: {TYPE: int, VALUE: 0xFF, REQUIRED: True},
@@ -312,8 +309,8 @@ class DriverTestMixinSub(Pco2DriverTestMixinSub):
         Pco2waConfigurationDataParticleKey.NUMBER_REAGENT_CYCLES: {TYPE: int, VALUE: 0x18, REQUIRED: True},
         Pco2waConfigurationDataParticleKey.NUMBER_BLANK_CYCLES: {TYPE: int, VALUE: 0x1C, REQUIRED: True},
         Pco2waConfigurationDataParticleKey.FLUSH_PUMP_INTERVAL: {TYPE: int, VALUE: 0x01, REQUIRED: True},
-        Pco2waConfigurationDataParticleKey.DISABLE_START_BLANK_FLUSH: {TYPE: bool, VALUE: False, REQUIRED: True},
-        Pco2waConfigurationDataParticleKey.MEASURE_AFTER_PUMP_PULSE: {TYPE: bool, VALUE: False, REQUIRED: True},
+        Pco2waConfigurationDataParticleKey.DISABLE_START_BLANK_FLUSH: {TYPE: int, VALUE: 0, REQUIRED: True},
+        Pco2waConfigurationDataParticleKey.MEASURE_AFTER_PUMP_PULSE: {TYPE: int, VALUE: 0, REQUIRED: True},
         Pco2waConfigurationDataParticleKey.NUMBER_EXTRA_PUMP_CYCLES: {TYPE: int, VALUE: 0x38, REQUIRED: True},
     }
 
@@ -482,7 +479,7 @@ class DriverUnitTest(Pco2DriverUnitTest, DriverTestMixinSub):
         """
         Verify that all the SAMI Instrument driver enumerations have no
         duplicate values that might cause confusion. Also do a little
-        extra validation for the Capabilites
+        extra validation for the Capabilities
 
         Extra enumeration tests are done in a specific subclass
         """
@@ -491,7 +488,7 @@ class DriverUnitTest(Pco2DriverUnitTest, DriverTestMixinSub):
         self.assert_enum_has_no_duplicates(ProtocolState())
         self.assert_enum_has_no_duplicates(ProtocolEvent())
 
-        # Test capabilites for duplicates, then verify that capabilities
+        # Test capabilities for duplicates, then verify that capabilities
         # is a subset of proto events
 
         self.assert_enum_has_no_duplicates(Capability())
@@ -764,7 +761,7 @@ class DriverIntegrationTest(Pco2DriverIntegrationTest, DriverTestMixinSub):
         self.assert_driver_command(ProtocolEvent.STOP_AUTOSAMPLE, state=ProtocolState.COMMAND, delay=5)
         self.clear_events()
 
-        #Now verify that no more particles get generated
+        # Now verify that no more particles get generated
         failed = False
         try:
             self.assert_async_particle_generation(DataParticleType.PCO2W_A_SAMI_SAMPLE, self.assert_particle_sami_data_sample,
@@ -774,7 +771,7 @@ class DriverIntegrationTest(Pco2DriverIntegrationTest, DriverTestMixinSub):
             pass
         self.assertFalse(failed)
 
-        #Restart autosample
+        # Restart autosample
         self.clear_events()
         self.assert_driver_command(ProtocolEvent.START_AUTOSAMPLE, state=ProtocolState.SCHEDULED_SAMPLE, delay=5)
         self.assert_async_particle_generation(DataParticleType.PCO2W_A_SAMI_SAMPLE, self.assert_particle_sami_data_sample,

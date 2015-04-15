@@ -73,8 +73,8 @@ SAMI_UNIX_OFFSET = UNIX_EPOCH - SAMI_EPOCH
 FIVE_YEARS_IN_SECONDS = 0x0968A480
 ONE_YEAR_IN_SECONDS = 0x01E13380
 
-## Time delay between retrieving system time and setting SAMI time.  Multiple commands are sent before the time.
-##   Each command has a wakeup which takes 1 second.
+# Time delay between retrieving system time and setting SAMI time.  Multiple commands are sent before the time.
+# Each command has a wakeup which takes 1 second.
 SAMI_TIME_WAKEUP_DELAY = 8
 
 # Time between sending newlines to wakeup SAMI
@@ -391,7 +391,7 @@ class SamiRegularStatusDataParticle(DataParticle):
 
         ### Regular Status Messages
         # Produced in response to S0 command, or automatically at 1 Hz. All
-        # regular status messages are preceeded by the ':' character and
+        # regular status messages are preceded by the ':' character and
         # terminate with a '/r'. Sample string:
         #
         #   :CEE90B1B004100000100000000021254
@@ -455,7 +455,7 @@ class SamiRegularStatusDataParticle(DataParticle):
                 # byte status flags value, parse bit-by-bit using the bit-shift
                 # operator to determine the boolean value.
                 result.append({DataParticleKey.VALUE_ID: key,
-                               DataParticleKey.VALUE: bool(int(matched.group(2), 16) & (1 << bit_index))})
+                               DataParticleKey.VALUE: int(bool(int(matched.group(2), 16) & (1 << bit_index)))})
                 bit_index += 1  # bump the bit index
                 grp_index = 3  # set the right group index for when we leave this part of the loop.
             else:
@@ -547,7 +547,7 @@ class SamiInstrumentDriver(SingleConnectionInstrumentDriver):
         @param evt_callback Driver process event callback.
         """
 
-        #Construct superclass.
+        # Construct superclass.
         SingleConnectionInstrumentDriver.__init__(self, evt_callback)
 
 
@@ -674,7 +674,7 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
         self._protocol_fsm.add_handler(
             SamiProtocolState.POLLED_SAMPLE, SamiProtocolEvent.TIMEOUT,
             self._execution_timeout_to_command_state)
-        ## Events to queue - intended for schedulable events occurring when a sample is being taken
+        # Events to queue - intended for schedulable events occurring when a sample is being taken
         self._protocol_fsm.add_handler(
             SamiProtocolState.POLLED_SAMPLE, SamiProtocolEvent.ACQUIRE_STATUS,
             self._handler_queue_acquire_status)
@@ -698,7 +698,7 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
         self._protocol_fsm.add_handler(
             SamiProtocolState.SCHEDULED_SAMPLE, SamiProtocolEvent.TIMEOUT,
             self._execution_timeout_to_autosample_state)
-        ## Events to queue - intended for schedulable events occurring when a sample is being taken
+        # Events to queue - intended for schedulable events occurring when a sample is being taken
         self._protocol_fsm.add_handler(
             SamiProtocolState.SCHEDULED_SAMPLE, SamiProtocolEvent.ACQUIRE_STATUS,
             self._handler_queue_acquire_status)
@@ -720,7 +720,7 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
         self._protocol_fsm.add_handler(
             SamiProtocolState.REAGENT_FLUSH, SamiProtocolEvent.TIMEOUT,
             self._execution_timeout_to_command_state)
-        ## Events to queue - intended for schedulable events occurring when a sample is being taken
+        # Events to queue - intended for schedulable events occurring when a sample is being taken
         self._protocol_fsm.add_handler(
             SamiProtocolState.REAGENT_FLUSH, SamiProtocolEvent.ACQUIRE_STATUS,
             self._handler_queue_acquire_status)
@@ -1158,7 +1158,7 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
         # Superclass will query the state.
         self._driver_event(DriverAsyncEvent.STATE_CHANGE)
 
-        ## Execute acquire status if queued
+        # Execute acquire status if queued
         if self._queued_commands.status is not None:
             command = self._queued_commands.status
             self._queued_commands.status = None
@@ -1194,7 +1194,7 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
         @param args[1] parameter : startup parameters?
         @retval (next_state, result) tuple, (None, None).
         @throws InstrumentParameterException if missing set parameters, if set parameters not ALL and
-        not a dict, or if paramter can't be properly formatted.
+        not a dict, or if parameter can't be properly formatted.
         """
 
         next_state = None
@@ -1251,9 +1251,9 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
         Start autosample mode (spoofed via use of scheduler)
         """
 
-        ## Note: start ordering seems important for the scheduler, could be a bug in the base code, scheduler blocks
-        ##       until last job added to scheduler hits.  Means an autosample could be missed while waiting for
-        ##       a sample timeout.  This should be OK.
+        # Note: start ordering seems important for the scheduler, could be a bug in the base code, scheduler blocks
+        #       until last job added to scheduler hits.  Means an autosample could be missed while waiting for
+        #       a sample timeout.  This should be OK.
 
         # add scheduled tasks
         self._setup_scheduler_config()
@@ -1262,10 +1262,10 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
         if not self._scheduler:
             self.initialize_scheduler()
 
-        ## Cannot do in exit because we could be transitioning to the scheduled sample state
+        # Cannot do in exit because we could be transitioning to the scheduled sample state
         self._add_scheduler_event(SamiScheduledJob.AUTO_SAMPLE, SamiProtocolEvent.ACQUIRE_SAMPLE)
 
-        ## Make sure a sample is taken as soon as autosample mode is entered.
+        # Make sure a sample is taken as soon as autosample mode is entered.
         self._queued_commands.sample = SamiProtocolEvent.ACQUIRE_SAMPLE
 
         next_state = SamiProtocolState.AUTOSAMPLE
@@ -1342,10 +1342,10 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
         # Superclass will query the state.
         self._driver_event(DriverAsyncEvent.STATE_CHANGE)
 
-        ## Capture a sample upon entering autosample mode.  An ACQUIRE_SAMPLE event should have been queued in the start
-        ## autosample command handler.
+        # Capture a sample upon entering autosample mode.  An ACQUIRE_SAMPLE event should have been queued in the start
+        # autosample command handler.
 
-        ## Execute acquire status first if queued
+        # Execute acquire status first if queued
         if self._queued_commands.status is not None:
             command = self._queued_commands.status
             self._queued_commands.status = None
@@ -1369,7 +1369,7 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
         Stop autosample
         """
 
-        ## Cannot do in exit because we could be transitioning to the scheduled sample state
+        # Cannot do in exit because we could be transitioning to the scheduled sample state
         self._remove_scheduler(SamiScheduledJob.AUTO_SAMPLE)
 
         next_state = SamiProtocolState.COMMAND
@@ -1597,10 +1597,10 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
         @retval (next_state, result)
         """
 
-        ## Clear command queue
+        # Clear command queue
         self._queued_commands.reset()
 
-        ## Set default and startup config values in param_dict to establish a baseline
+        # Set default and startup config values in param_dict to establish a baseline
         if self._startup:
 
             old_config_params = self._param_dict.get_all()
@@ -1673,8 +1673,8 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
         if not override_params_dict:
             override_params_dict = {}
 
-        ## Build configuration string sequence.
-        ## configuration_string = self._build_configuration_string_specific()
+        # Build configuration string sequence.
+        # configuration_string = self._build_configuration_string_specific()
         configuration_string = self._build_configuration_string_base(
             self._get_specific_configuration_string_parameters(),
             override_params_dict)
@@ -1699,7 +1699,7 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
         log.debug('SamiProtocol._set_configuration: status = %s', status)
 
         log.debug('SamiProtocol._set_configuration: ERASE_ALL')
-        #Erase memory before setting configuration
+        # Erase memory before setting configuration
         self._do_cmd_direct(SamiInstrumentCommand.SAMI_ERASE_ALL + SAMI_NEWLINE)
 
         log.debug('SamiProtocol._set_configuration: SET_CONFIG')
@@ -1708,11 +1708,11 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
         # Important: Need to do right after to prevent bricking
         self._do_cmd_direct(configuration_string + SAMI_CONFIG_TERMINATOR + SAMI_NEWLINE)
 
-        ## Stop auto status again, it is restarted after setting the configuration data
+        # Stop auto status again, it is restarted after setting the configuration data
         log.debug('SamiProtocol._set_configuration: STOP_STATUS_PERIODIC again')
         self._do_cmd_no_resp(SamiInstrumentCommand.SAMI_STOP_STATUS)
 
-        ## Verify configuration and update parameter dictionary if it is set correctly
+        # Verify configuration and update parameter dictionary if it is set correctly
         self._verify_and_update_configuration(configuration_string)
 
         # Send status, don't need to send configuration, it's sent in _verify_and_update_configuration()
@@ -1847,7 +1847,7 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
 
         return configuration_string
 
-    ## Verify configuration and update parameter dictionary if the configuration string is set correctly
+    # Verify configuration and update parameter dictionary if the configuration string is set correctly
     def _verify_and_update_configuration(self, configuration_string):
         """
         Verify config string set correctly on instrument and update param dict
@@ -1881,7 +1881,7 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
 
         log.debug('SamiProtocol._verify_and_update_configuration: new_config = %s', new_config)
 
-        ## Compare values here to send config change event
+        # Compare values here to send config change event
         if not dict_equal(old_config, new_config, ignore_keys=SamiParameter.LAUNCH_TIME):
             log.debug("Configuration has changed.")
             self._driver_event(DriverAsyncEvent.CONFIG_CHANGE)
@@ -1898,7 +1898,7 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
 
         start_time = time.time()
 
-        ## An exception is raised if timeout is hit.
+        # An exception is raised if timeout is hit.
         self._do_cmd_resp(SamiInstrumentCommand.SAMI_ACQUIRE_SAMPLE,
                           timeout=self._get_sample_timeout(),
                           response_regex=self._get_sample_regex())
@@ -1950,7 +1950,7 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
         log.debug('Protocol.verify_checksum(): sample record_type = %s', record_type)
         log.debug('Protocol.verify_checksum(): sample chunk = %s', chunk)
 
-        ## Remove any whitespace
+        # Remove any whitespace
         sample_string = chunk.rstrip()
         checksum = sample_string[-2:]
         checksum_int = int(checksum, 16)
@@ -1985,7 +1985,7 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
 
         cs = 0
         for index in xrange(0, len(s), 2):
-            cs += int(s[index:index+2], 16)
+            cs += int(s[index:index + 2], 16)
         cs &= 0xFF
         return cs
 
@@ -2128,7 +2128,7 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
                              visibility=ParameterDictVisibility.READ_ONLY,
                              display_name='Prestart Driver Version')
 
-        ## Changed from 0x0D to 0x00 since there is not external device
+        # Changed from 0x0D to 0x00 since there is not external device
         self._param_dict.add(SamiParameter.PRESTART_PARAMS_POINTER, configuration_string_regex,
                              lambda match: int(match.group(19), 16),
                              lambda x: self._int_to_hexstring(x, 2),
@@ -2151,8 +2151,8 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
                              visibility=ParameterDictVisibility.READ_ONLY,
                              display_name='Global Bits')
 
-        ## Engineering parameter to set pseudo auto sample rate, set as startup parameter because it is configurable
-        ##   by the user and should be reapplied on application of startup parameters.
+        # Engineering parameter to set pseudo auto sample rate, set as startup parameter because it is configurable
+        #   by the user and should be reapplied on application of startup parameters.
         self._param_dict.add(SamiParameter.AUTO_SAMPLE_INTERVAL, r'Auto sample rate = ([0-9]+)',
                              lambda match: match.group(1),
                              lambda x: int(x),

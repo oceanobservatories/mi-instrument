@@ -295,14 +295,14 @@ class DriverTestMixinSub(Pco2DriverTestMixinSub):
         Pco2wConfigurationDataParticleKey.LAUNCH_TIME: {TYPE: int, VALUE: 0xCEE90B00, REQUIRED: True},
         Pco2wConfigurationDataParticleKey.START_TIME_OFFSET: {TYPE: int, VALUE: 0x02C7EA00, REQUIRED: True},
         Pco2wConfigurationDataParticleKey.RECORDING_TIME: {TYPE: int, VALUE: 0x01E13380, REQUIRED: True},
-        Pco2wConfigurationDataParticleKey.PMI_SAMPLE_SCHEDULE: {TYPE: bool, VALUE: False, REQUIRED: True},
-        Pco2wConfigurationDataParticleKey.SAMI_SAMPLE_SCHEDULE: {TYPE: bool, VALUE: True, REQUIRED: True},
-        Pco2wConfigurationDataParticleKey.SLOT1_FOLLOWS_SAMI_SCHEDULE: {TYPE: bool, VALUE: False, REQUIRED: True},
-        Pco2wConfigurationDataParticleKey.SLOT1_INDEPENDENT_SCHEDULE: {TYPE: bool, VALUE: True, REQUIRED: True},
-        Pco2wConfigurationDataParticleKey.SLOT2_FOLLOWS_SAMI_SCHEDULE: {TYPE: bool, VALUE: False, REQUIRED: True},
-        Pco2wConfigurationDataParticleKey.SLOT2_INDEPENDENT_SCHEDULE: {TYPE: bool, VALUE: False, REQUIRED: True},
-        Pco2wConfigurationDataParticleKey.SLOT3_FOLLOWS_SAMI_SCHEDULE: {TYPE: bool, VALUE: False, REQUIRED: True},
-        Pco2wConfigurationDataParticleKey.SLOT3_INDEPENDENT_SCHEDULE: {TYPE: bool, VALUE: False, REQUIRED: True},
+        Pco2wConfigurationDataParticleKey.PMI_SAMPLE_SCHEDULE: {TYPE: int, VALUE: 0, REQUIRED: True},
+        Pco2wConfigurationDataParticleKey.SAMI_SAMPLE_SCHEDULE: {TYPE: int, VALUE: 1, REQUIRED: True},
+        Pco2wConfigurationDataParticleKey.SLOT1_FOLLOWS_SAMI_SCHEDULE: {TYPE: int, VALUE: 0, REQUIRED: True},
+        Pco2wConfigurationDataParticleKey.SLOT1_INDEPENDENT_SCHEDULE: {TYPE: int, VALUE: 1, REQUIRED: True},
+        Pco2wConfigurationDataParticleKey.SLOT2_FOLLOWS_SAMI_SCHEDULE: {TYPE: int, VALUE: 0, REQUIRED: True},
+        Pco2wConfigurationDataParticleKey.SLOT2_INDEPENDENT_SCHEDULE: {TYPE: int, VALUE: 0, REQUIRED: True},
+        Pco2wConfigurationDataParticleKey.SLOT3_FOLLOWS_SAMI_SCHEDULE: {TYPE: int, VALUE: 0, REQUIRED: True},
+        Pco2wConfigurationDataParticleKey.SLOT3_INDEPENDENT_SCHEDULE: {TYPE: int, VALUE: 0, REQUIRED: True},
         Pco2wConfigurationDataParticleKey.TIMER_INTERVAL_SAMI: {TYPE: int, VALUE: 0x000E10, REQUIRED: True},
         Pco2wConfigurationDataParticleKey.DRIVER_ID_SAMI: {TYPE: int, VALUE: 0x04, REQUIRED: True},
         Pco2wConfigurationDataParticleKey.PARAMETER_POINTER_SAMI: {TYPE: int, VALUE: 0x02, REQUIRED: True},
@@ -318,10 +318,10 @@ class DriverTestMixinSub(Pco2DriverTestMixinSub):
         Pco2wConfigurationDataParticleKey.TIMER_INTERVAL_PRESTART: {TYPE: int, VALUE: 0x000000, REQUIRED: True},
         Pco2wConfigurationDataParticleKey.DRIVER_ID_PRESTART: {TYPE: int, VALUE: 0x00, REQUIRED: True},
         Pco2wConfigurationDataParticleKey.PARAMETER_POINTER_PRESTART: {TYPE: int, VALUE: 0x0D, REQUIRED: True},
-        Pco2wConfigurationDataParticleKey.USE_BAUD_RATE_57600: {TYPE: bool, VALUE: True, REQUIRED: True},
-        Pco2wConfigurationDataParticleKey.SEND_RECORD_TYPE: {TYPE: bool, VALUE: True, REQUIRED: True},
-        Pco2wConfigurationDataParticleKey.SEND_LIVE_RECORDS: {TYPE: bool, VALUE: True, REQUIRED: True},
-        Pco2wConfigurationDataParticleKey.EXTEND_GLOBAL_CONFIG: {TYPE: bool, VALUE: False, REQUIRED: True},
+        Pco2wConfigurationDataParticleKey.USE_BAUD_RATE_57600: {TYPE: int, VALUE: 1, REQUIRED: True},
+        Pco2wConfigurationDataParticleKey.SEND_RECORD_TYPE: {TYPE: int, VALUE: 1, REQUIRED: True},
+        Pco2wConfigurationDataParticleKey.SEND_LIVE_RECORDS: {TYPE: int, VALUE: 1, REQUIRED: True},
+        Pco2wConfigurationDataParticleKey.EXTEND_GLOBAL_CONFIG: {TYPE: int, VALUE: 0, REQUIRED: True},
         Pco2wConfigurationDataParticleKey.PUMP_PULSE: {TYPE: int, VALUE: 0x10, REQUIRED: True},
         Pco2wConfigurationDataParticleKey.PUMP_DURATION: {TYPE: int, VALUE: 0x20, REQUIRED: True},
         Pco2wConfigurationDataParticleKey.SAMPLES_PER_MEASUREMENT: {TYPE: int, VALUE: 0xFF, REQUIRED: True},
@@ -329,8 +329,8 @@ class DriverTestMixinSub(Pco2DriverTestMixinSub):
         Pco2wConfigurationDataParticleKey.NUMBER_REAGENT_CYCLES: {TYPE: int, VALUE: 0x18, REQUIRED: True},
         Pco2wConfigurationDataParticleKey.NUMBER_BLANK_CYCLES: {TYPE: int, VALUE: 0x1C, REQUIRED: True},
         Pco2wConfigurationDataParticleKey.FLUSH_PUMP_INTERVAL: {TYPE: int, VALUE: 0x01, REQUIRED: True},
-        Pco2wConfigurationDataParticleKey.DISABLE_START_BLANK_FLUSH: {TYPE: bool, VALUE: False, REQUIRED: True},
-        Pco2wConfigurationDataParticleKey.MEASURE_AFTER_PUMP_PULSE: {TYPE: bool, VALUE: False, REQUIRED: True},
+        Pco2wConfigurationDataParticleKey.DISABLE_START_BLANK_FLUSH: {TYPE: int, VALUE: 0, REQUIRED: True},
+        Pco2wConfigurationDataParticleKey.MEASURE_AFTER_PUMP_PULSE: {TYPE: int, VALUE: 0, REQUIRED: True},
         Pco2wConfigurationDataParticleKey.NUMBER_EXTRA_PUMP_CYCLES: {TYPE: int, VALUE: 0x38, REQUIRED: True},
         Pco2wConfigurationDataParticleKey.EXTERNAL_PUMP_SETTINGS: {TYPE: int, VALUE: 0x1E, REQUIRED: True}
     }
@@ -499,7 +499,7 @@ class DriverUnitTest(Pco2DriverUnitTest, DriverTestMixinSub):
         """
         Verify that all the SAMI Instrument driver enumerations have no
         duplicate values that might cause confusion. Also do a little
-        extra validation for the Capabilites
+        extra validation for the Capabilities
 
         Extra enumeration tests are done in a specific subclass
         """
@@ -508,7 +508,7 @@ class DriverUnitTest(Pco2DriverUnitTest, DriverTestMixinSub):
         self.assert_enum_has_no_duplicates(ProtocolState())
         self.assert_enum_has_no_duplicates(ProtocolEvent())
 
-        # Test capabilites for duplicates, then verify that capabilities
+        # Test capabilities for duplicates, then verify that capabilities
         # is a subset of proto events
 
         self.assert_enum_has_no_duplicates(Capability())
@@ -850,7 +850,7 @@ class DriverIntegrationTest(Pco2DriverIntegrationTest, DriverTestMixinSub):
         self.assert_driver_command(ProtocolEvent.STOP_AUTOSAMPLE, state=ProtocolState.COMMAND, delay=5)
         self.clear_events()
 
-        #Now verify that no more particles get generated
+        # Now verify that no more particles get generated
         failed = False
         try:
             self.assert_async_particle_generation(DataParticleType.PCO2W_B_SAMI_SAMPLE, self.assert_particle_sami_data_sample,
@@ -862,7 +862,7 @@ class DriverIntegrationTest(Pco2DriverIntegrationTest, DriverTestMixinSub):
             pass
         self.assertFalse(failed)
 
-        #Restart autosample
+        # Restart autosample
         self.clear_events()
         self.assert_driver_command(ProtocolEvent.START_AUTOSAMPLE, state=ProtocolState.SCHEDULED_SAMPLE, delay=5)
         self.assert_async_particle_generation(DataParticleType.PCO2W_B_SAMI_SAMPLE, self.assert_particle_sami_data_sample,
@@ -935,7 +935,7 @@ class DriverIntegrationTest(Pco2DriverIntegrationTest, DriverTestMixinSub):
         """
         self.assert_initialize_driver()
 
-        ## Queue status
+        # Queue status
         self.clear_events()
         self.assert_driver_command(ProtocolEvent.ACQUIRE_SAMPLE)
         self.assert_driver_command(ProtocolEvent.ACQUIRE_STATUS)
@@ -958,7 +958,7 @@ class DriverIntegrationTest(Pco2DriverIntegrationTest, DriverTestMixinSub):
         self.clear_events()
         self.assert_driver_command(ProtocolEvent.START_AUTOSAMPLE, state=ProtocolState.SCHEDULED_SAMPLE, delay=5)
 
-        ## Queue status
+        # Queue status
         self.assert_driver_command(ProtocolEvent.ACQUIRE_STATUS)
         self.assert_async_particle_generation(DataParticleType.PCO2W_B_SAMI_SAMPLE, self.assert_particle_sami_data_sample,
                                               particle_count=1, timeout=220)

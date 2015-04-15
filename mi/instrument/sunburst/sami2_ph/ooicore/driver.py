@@ -227,7 +227,7 @@ class InstrumentCommand(SamiInstrumentCommand):
 # Data Particles
 ###############################################################################
 
-#Redefine the data particle type so each particle has a unique name
+# Redefine the data particle type so each particle has a unique name
 SamiBatteryVoltageDataParticle._data_particle_type = DataParticleType.PHSEN_BATTERY_VOLTAGE
 SamiThermistorVoltageDataParticle._data_particle_type = DataParticleType.PHSEN_THERMISTOR_VOLTAGE
 SamiRegularStatusDataParticle._data_particle_type = DataParticleType.PHSEN_REGULAR_STATUS
@@ -413,7 +413,6 @@ class PhsenConfigDataParticle(DataParticle):
         grp_index = 1
         mode_index = 0
         glbl_index = 0
-        #sami_index = 0
 
         for key in particle_keys:
             if key in [PhsenConfigDataParticleKey.PMI_SAMPLE_SCHEDULE,
@@ -425,7 +424,7 @@ class PhsenConfigDataParticle(DataParticle):
                        PhsenConfigDataParticleKey.SLOT3_FOLLOWS_SAMI_SCHEDULE,
                        PhsenConfigDataParticleKey.SLOT3_INDEPENDENT_SCHEDULE]:
                 result.append({DataParticleKey.VALUE_ID: key,
-                               DataParticleKey.VALUE: bool(int(matched.group(4), 16) & (1 << mode_index))})
+                               DataParticleKey.VALUE: int(bool(int(matched.group(4), 16) & (1 << mode_index)))})
                 mode_index += 1
                 grp_index = 5
 
@@ -434,7 +433,7 @@ class PhsenConfigDataParticle(DataParticle):
                          PhsenConfigDataParticleKey.SEND_LIVE_RECORDS,
                          PhsenConfigDataParticleKey.EXTEND_GLOBAL_CONFIG]:
                 result.append({DataParticleKey.VALUE_ID: key,
-                               DataParticleKey.VALUE: bool(int(matched.group(20), 16) & (1 << glbl_index))})
+                               DataParticleKey.VALUE: int(bool(int(matched.group(20), 16) & (1 << glbl_index)))})
                 glbl_index += 1
                 if glbl_index == 3:
                     glbl_index = 7
@@ -534,7 +533,7 @@ class Protocol(SamiProtocol):
         self._protocol_fsm.add_handler(
             ProtocolState.SEAWATER_FLUSH_2750ML, ProtocolEvent.TIMEOUT,
             self._execution_timeout_to_command_state)
-        ## Events to queue - intended for schedulable events occurring when a sample is being taken
+        # Events to queue - intended for schedulable events occurring when a sample is being taken
         self._protocol_fsm.add_handler(
             ProtocolState.SEAWATER_FLUSH_2750ML, ProtocolEvent.ACQUIRE_STATUS,
             self._handler_queue_acquire_status)
@@ -556,7 +555,7 @@ class Protocol(SamiProtocol):
         self._protocol_fsm.add_handler(
             ProtocolState.REAGENT_FLUSH_50ML, ProtocolEvent.TIMEOUT,
             self._execution_timeout_to_command_state)
-        ## Events to queue - intended for schedulable events occurring when a sample is being taken
+        # Events to queue - intended for schedulable events occurring when a sample is being taken
         self._protocol_fsm.add_handler(
             ProtocolState.REAGENT_FLUSH_50ML, ProtocolEvent.ACQUIRE_STATUS,
             self._handler_queue_acquire_status)
@@ -578,7 +577,7 @@ class Protocol(SamiProtocol):
         self._protocol_fsm.add_handler(
             ProtocolState.SEAWATER_FLUSH, ProtocolEvent.TIMEOUT,
             self._execution_timeout_to_command_state)
-        ## Events to queue - intended for schedulable events occurring when a sample is being taken
+        # Events to queue - intended for schedulable events occurring when a sample is being taken
         self._protocol_fsm.add_handler(
             ProtocolState.SEAWATER_FLUSH, ProtocolEvent.ACQUIRE_STATUS,
             self._handler_queue_acquire_status)
