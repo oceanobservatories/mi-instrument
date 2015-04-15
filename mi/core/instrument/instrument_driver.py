@@ -23,7 +23,7 @@ from mi.core.exceptions import InstrumentException
 from mi.core.exceptions import InstrumentParameterException
 from mi.core.exceptions import InstrumentConnectionException
 from mi.core.instrument.instrument_fsm import InstrumentFSM, ThreadSafeFSM
-from mi.core.instrument.port_agent_client import PortAgentClient
+from mi.core.instrument.port_agent_client import PortAgentClient, FileReadingPortAgentClient
 
 from mi.core.log import get_logger,LoggerManager
 log = get_logger()
@@ -1047,6 +1047,12 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
             # check for validity here...
             if (mock_port_agent is not None):
                 return mock_port_agent
+
+        if 'directory' in config:
+            directory = config.get('directory')
+            regex = config.get('regex', '.*')
+            return FileReadingPortAgentClient(directory, regex)
+
         try:
             addr = config['addr']
             port = config['port']

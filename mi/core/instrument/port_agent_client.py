@@ -7,6 +7,9 @@
 @brief Client to connect to the port agent
 and logging.
 """
+import os
+import re
+from mi.core.time import string_to_ntp_date_time
 
 __author__ = 'David Everett'
 __license__ = 'Apache 2.0'
@@ -890,3 +893,43 @@ class Listener(threading.Thread):
         else:
             log.debug('port_agent_client listen thread calling user_callback_error.')
             self.user_callback_error(error_string)
+
+
+class FileReadingPortAgentClient(object):
+    ooi_ts_regex = re.compile(r'<OOI-TS (.+?) TS>(.*?)<\\OOI-TS>', re.DOTALL)
+
+    def __init__(self, directory, file_regex, use_ooi_timestamp=True):
+        self.directory = directory
+        self.file_regex = file_regex
+        self.use_ooi_timestamp = use_ooi_timestamp
+
+    def init_comms(self, got_data, got_raw, got_exception, lost_connection):
+        file_regex = re.compile(self.file_regex)
+        for d, _, files in os.walk(self.directory):
+            for f in files:
+                if file_regex.search(f):
+                    for record in self.read_file(os.path.join(d, f)):
+                        got_data(record)
+
+    def read_file(self, filename):
+        data = open(filename).read()
+        for match in self.ooi_ts_regex.finditer(data):
+            packet = PortAgentPacket()
+            packet.attach_data(match.group(2))
+            packet.attach_timestamp(string_to_ntp_date_time(match.group(1)))
+            yield packet
+
+    def stop_comms(self):
+        pass
+
+    def done(self):
+        pass
+
+    def send_config_parameter(self, parameter, value):
+        pass
+
+    def send_break(self, duration):
+        pass
+
+    def send(self, data, sock = None, host = None, port = None):
+        pass
