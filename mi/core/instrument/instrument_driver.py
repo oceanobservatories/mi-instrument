@@ -31,6 +31,10 @@ from mi.core.log import get_logger, LoggerManager
 log = get_logger()
 
 
+STARTING_RECONNECT_INTERVAL = 1
+MAXIMUM_RECONNECT_INTERVAL = 256
+
+
 class ConfigMetadataKey(BaseEnum):
     """
     Keys used in the metadata structure that describes the driver, commands,
@@ -508,8 +512,8 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
         # Autoconnect flag
         # Set this to false to disable autoconnect
         self._autoconnect = True
-        self._reconnect_interval = 1
-        self._max_reconnect_interval = 256
+        self._reconnect_interval = STARTING_RECONNECT_INTERVAL
+        self._max_reconnect_interval = MAXIMUM_RECONNECT_INTERVAL
 
     #############################################################
     # Device connection interface.
@@ -998,6 +1002,8 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
         """
         # Send state change event to agent.
         self._connection_lost = False
+        # reset the reconnection interval to 1
+        self._reconnect_interval = STARTING_RECONNECT_INTERVAL
         self._driver_event(DriverAsyncEvent.STATE_CHANGE)
 
     def _handler_connected_exit(self, *args, **kwargs):
