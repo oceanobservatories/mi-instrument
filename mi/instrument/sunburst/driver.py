@@ -314,6 +314,7 @@ class SamiBatteryVoltageDataParticle(DataParticle):
             raise SampleException("No regex match of parsed sample data: [%s]" %
                                   self.decoded_raw)
 
+        self.contents[DataParticleKey.PREFERRED_TIMESTAMP] = DataParticleKey.DRIVER_TIMESTAMP
         result = [{DataParticleKey.VALUE_ID: SamiBatteryVoltageDataParticleKey.BATTERY_VOLTAGE,
                    DataParticleKey.VALUE: int(matched.group(1), 16)}]
 
@@ -341,6 +342,7 @@ class SamiThermistorVoltageDataParticle(DataParticle):
             raise SampleException("No regex match of parsed sample data: [%s]" %
                                   self.decoded_raw)
 
+        self.contents[DataParticleKey.PREFERRED_TIMESTAMP] = DataParticleKey.DRIVER_TIMESTAMP
         result = [{DataParticleKey.VALUE_ID: SamiThermistorVoltageDataParticleKey.THERMISTOR_VOLTAGE,
                    DataParticleKey.VALUE: int(matched.group(1), 16)}]
 
