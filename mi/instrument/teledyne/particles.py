@@ -79,7 +79,7 @@ class VADCPDataParticleType(DataParticleType):
 
 class ADCP_PD0_PARSED_KEY(BaseEnum):
     """
-    ADCP PD0 pased keys
+    ADCP PD0 parsed keys
     """
     HEADER_ID = "header_id"
     DATA_SOURCE_ID = "data_source_id"
@@ -145,7 +145,6 @@ class ADCP_PD0_PARSED_KEY(BaseEnum):
     ENSEMBLE_NUMBER = "ensemble_number"
     REAL_TIME_CLOCK = "real_time_clock"
     ENSEMBLE_START_TIME = "ensemble_start_time"
-    INTERNAL_TIMESTAMP = "internal_timestamp"
     ENSEMBLE_NUMBER_INCREMENT = "ensemble_number_increment"
     BIT_RESULT_DEMOD_0 = "bit_result_demod_0"
     BIT_RESULT_DEMOD_1 = "bit_result_demod_1"
@@ -176,11 +175,11 @@ class ADCP_PD0_PARSED_KEY(BaseEnum):
     ZERO_DIVIDE_INSTRUCTION = "zero_divide_instruction"
     EMULATOR_EXCEPTION = "emulator_exception"
     UNASSIGNED_EXCEPTION = "unassigned_exception"
-    WATCHDOG_RESTART_OCCURED = "watchdog_restart_occurred"
+    WATCHDOG_RESTART_OCCURRED = "watchdog_restart_occurred"
     BATTERY_SAVER_POWER = "battery_saver_power"
     PINGING = "pinging"
-    COLD_WAKEUP_OCCURED = "cold_wakeup_occurred"
-    UNKNOWN_WAKEUP_OCCURED = "unknown_wakeup_occurred"
+    COLD_WAKEUP_OCCURRED = "cold_wakeup_occurred"
+    UNKNOWN_WAKEUP_OCCURRED = "unknown_wakeup_occurred"
     CLOCK_READ_ERROR = "clock_read_error"
     UNEXPECTED_ALARM = "unexpected_alarm"
     CLOCK_JUMP_FORWARD = "clock_jump_forward"
@@ -298,7 +297,7 @@ class ADCP_PD0_PARSED_DataParticle(DataParticle):
                 elif 1 == variable_leader_id:
                     self.parse_velocity_chunk(chunks[offset])
                 elif 2 == variable_leader_id:
-                    self.parse_corelation_magnitude_chunk(chunks[offset])
+                    self.parse_correlation_magnitude_chunk(chunks[offset])
                 elif 3 == variable_leader_id:
                     self.parse_echo_intensity_chunk(chunks[offset])
                 elif 4 == variable_leader_id:
@@ -542,15 +541,15 @@ class ADCP_PD0_PARSED_DataParticle(DataParticle):
                                   DataParticleKey.VALUE: 1 if error_status_word_1 & 0b00010000 else 0})
         self.final_result.append({DataParticleKey.VALUE_ID: ADCP_PD0_PARSED_KEY.UNASSIGNED_EXCEPTION,
                                   DataParticleKey.VALUE: 1 if error_status_word_1 & 0b00100000 else 0})
-        self.final_result.append({DataParticleKey.VALUE_ID: ADCP_PD0_PARSED_KEY.WATCHDOG_RESTART_OCCURED,
+        self.final_result.append({DataParticleKey.VALUE_ID: ADCP_PD0_PARSED_KEY.WATCHDOG_RESTART_OCCURRED,
                                   DataParticleKey.VALUE: 1 if error_status_word_1 & 0b01000000 else 0})
         self.final_result.append({DataParticleKey.VALUE_ID: ADCP_PD0_PARSED_KEY.BATTERY_SAVER_POWER,
                                   DataParticleKey.VALUE: 1 if error_status_word_1 & 0b10000000 else 0})
         self.final_result.append({DataParticleKey.VALUE_ID: ADCP_PD0_PARSED_KEY.PINGING,
                                   DataParticleKey.VALUE: 1 if error_status_word_1 & 0b00000001 else 0})
-        self.final_result.append({DataParticleKey.VALUE_ID: ADCP_PD0_PARSED_KEY.COLD_WAKEUP_OCCURED,
+        self.final_result.append({DataParticleKey.VALUE_ID: ADCP_PD0_PARSED_KEY.COLD_WAKEUP_OCCURRED,
                                   DataParticleKey.VALUE: 1 if error_status_word_1 & 0b01000000 else 0})
-        self.final_result.append({DataParticleKey.VALUE_ID: ADCP_PD0_PARSED_KEY.UNKNOWN_WAKEUP_OCCURED,
+        self.final_result.append({DataParticleKey.VALUE_ID: ADCP_PD0_PARSED_KEY.UNKNOWN_WAKEUP_OCCURRED,
                                   DataParticleKey.VALUE: 1 if error_status_word_1 & 0b10000000 else 0})
         self.final_result.append({DataParticleKey.VALUE_ID: ADCP_PD0_PARSED_KEY.CLOCK_READ_ERROR,
                                   DataParticleKey.VALUE: 1 if error_status_word_3 & 0b00000001 else 0})
@@ -582,20 +581,19 @@ class ADCP_PD0_PARSED_DataParticle(DataParticle):
                           rtc2k['minute'],
                           rtc2k['second'])
 
-        self.final_result.append({DataParticleKey.VALUE_ID: ADCP_PD0_PARSED_KEY.INTERNAL_TIMESTAMP,
-                                  DataParticleKey.VALUE: time.mktime(dts.timetuple()) + (rtc2k['second'] / 100.0)})
+        self.set_internal_timestamp(unix_time=time.mktime(dts.timetuple()) + (rtc2k['second'] / 100.0))
 
         rtc_date = dt.datetime(rtc['year'] + BASE_YEAR,
-                          rtc['month'],
-                          rtc['day'],
-                          rtc['hour'],
-                          rtc['minute'],
-                          rtc['second'])
+                               rtc['month'],
+                               rtc['day'],
+                               rtc['hour'],
+                               rtc['minute'],
+                               rtc['second'])
 
-        #ensemble_start_time is expressed as seconds since Jan 01, 1900
+        # ensemble_start_time is expressed as seconds since Jan 01, 1900
         rtc_epoch = dt.datetime(1900, 1, 1, 0, 0, 0)
 
-        #Construct the real time clock array
+        # Construct the real time clock array
         rtc_list = [rtc['year'], rtc['month'], rtc['day'], rtc['hour'], rtc['minute'], rtc['second'], rtc['hundredths']]
 
         self.final_result.append({DataParticleKey.VALUE_ID: ADCP_PD0_PARSED_KEY.REAL_TIME_CLOCK,
@@ -673,9 +671,9 @@ class ADCP_PD0_PARSED_DataParticle(DataParticle):
         else:
             raise SampleException("coord_transform_type not coded for. " + str(self.coord_transform_type))
 
-    def parse_corelation_magnitude_chunk(self, chunk):
+    def parse_correlation_magnitude_chunk(self, chunk):
         """
-        Parse the corelation magnitude portion of the particle
+        Parse the correlation magnitude portion of the particle
 
         @throws SampleException If there is a problem with sample creation
         """
@@ -910,7 +908,7 @@ class ADCP_SYSTEM_CONFIGURATION_DataParticle(DataParticle):
         match = self.RE07.match(lines[7])
         matches[ADCP_SYSTEM_CONFIGURATION_KEY.SENSORS] = match.group(1)
 
-        # Only availble for ADCP and VADCP master
+        # Only available for ADCP and VADCP master
         if not self._slave:
             match = self.RE09.match(lines[9 - self._offset])
             matches[ADCP_SYSTEM_CONFIGURATION_KEY.PRESSURE_COEFF_c3] = float(match.group(1))
