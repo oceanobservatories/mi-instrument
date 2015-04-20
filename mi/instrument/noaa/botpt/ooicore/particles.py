@@ -72,7 +72,6 @@ class LilySampleParticleKey(BaseEnum):
     TEMP = "lily_temp"
     SUPPLY_VOLTS = "supply_voltage"
     SN = "serial_number"
-    OUT_OF_RANGE = 'lily_out_of_range'
 
 
 class LilyLevelingParticleKey(BaseEnum):
@@ -246,7 +245,6 @@ class LilySampleParticle(BotptDataParticle):
     _data_particle_type = DataParticleType.LILY_SAMPLE
 
     def __init__(self, *args, **kwargs):
-        self.out_of_range = kwargs.get('out_of_range')
         super(LilySampleParticle, self).__init__(*args, **kwargs)
 
     @staticmethod
@@ -279,7 +277,6 @@ class LilySampleParticle(BotptDataParticle):
             self._encode_value(LilySampleParticleKey.TEMP, self.match.group('temp'), float),
             self._encode_value(LilySampleParticleKey.SUPPLY_VOLTS, self.match.group('volts'), float),
             self._encode_value(LilySampleParticleKey.SN, self.match.group('serial').strip(), str),
-            self._encode_value(LilySampleParticleKey.OUT_OF_RANGE, self.out_of_range, bool)
         ]
 
 
