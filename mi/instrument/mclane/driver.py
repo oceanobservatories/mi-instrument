@@ -257,7 +257,7 @@ class McLaneSampleDataParticleKey(BaseEnum):
     TIME_LIMIT = 'commanded_timelimit'
     VOLUME_ACTUAL = 'cumulative_volume'
     FLOW_RATE_ACTUAL = 'flowrate'
-    MIN_FLOW_ACTUAL = 'min_flowrate'
+    MIN_FLOW_ACTUAL = 'minimum_flowrate'
     TIMER = 'elapsed_time'
     TIME = 'date_time_string'
     BATTERY = 'battery_voltage'

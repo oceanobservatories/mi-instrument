@@ -87,7 +87,7 @@ class DataParticleType(McLaneDataParticleType):
     Data particle types produced by this driver
     """
     # TODO - define which commands will be published to user
-    PPSDN_PARSED = 'ppsdn_parsed'
+    PPSDN_PARSED = 'ppsdn_sample_result'
 
 
 ###############################################################################

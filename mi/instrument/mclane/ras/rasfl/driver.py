@@ -90,7 +90,7 @@ class DataParticleType(McLaneDataParticleType):
     Data particle types produced by this driver
     """
     # TODO - define which commands will be published to user
-    RASFL_PARSED = 'rasfl_parsed'
+    RASFL_PARSED = 'rasfl_sample_result'
 
 
 ###############################################################################
