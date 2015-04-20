@@ -311,7 +311,7 @@ class DataParticleType(BaseEnum):
     Data particle types produced by this driver
     """
     RAW = CommonDataParticleType.RAW
-    D1000_PARSED = 'D1000_sample'
+    D1000_PARSED = 'd1000_sample'
 
 
 ###############################################################################
