@@ -41,23 +41,18 @@ NEWLINE = '\n'
 
 # Preload helper items
 
-PARAMDICT_SELECT = """
-SELECT id, scenario, name, parameterids, temporalparameter
-FROM parameterdictionary
-WHERE id like 'DICT%'
-"""
+STREAM_SELECT = '''
+SELECT stream.name as name, parameter_id FROM stream JOIN stream_parameter ON stream.id=stream_id
+'''
 
 PARAMDEF_SELECT = """
-SELECT id, scenario, name, hid, parametertype, valueencoding, unitofmeasure, fillvalue, displayname,
-        precision, parameterfunctionid, parameterfunctionmap, dataproductidentifier
-FROM parameterdefs
-WHERE id like 'PD%'
+ select parameter.id, name, parameter_type.value, value_encoding.value
+ from parameter, value_encoding, parameter_type
+ where parameter_type_id=parameter_type.id and value_encoding_id=value_encoding.id
 """
 
-ParameterDef = namedtuple('ParameterDef',
-                          'id, scenario, name, hid, parameter_type, value_encoding, units, fill_value, '
-                          'display_name, precision, parameter_function_id, parameter_function_map, dpi')
-ParameterDictionary = namedtuple('ParameterDictionary', 'id, scenario, name, parameter_ids, temporal_parameter')
+ParameterDef = namedtuple('ParameterDef', 'id, name, parameter_type, value_encoding')
+StreamParam = namedtuple('Stream', 'name, parameter_id')
 
 
 def load_paramdefs(conn):
@@ -69,11 +64,14 @@ def load_paramdefs(conn):
 
 
 def load_paramdicts(conn):
-    log.debug('Loading Parameter Dictionary')
+    log.debug('Loading Streams')
     c = conn.cursor()
-    c.execute(PARAMDICT_SELECT)
-    params = map(ParameterDictionary._make, c.fetchall())
-    return {p.name: p for p in params}
+    c.execute(STREAM_SELECT)
+    stream_params = map(StreamParam._make, c.fetchall())
+    paramdict = {}
+    for each in stream_params:
+        paramdict.setdefault(each.name, []).append(each.parameter_id)
+    return paramdict
 
 
 class Parameter(BaseEnum):
@@ -189,8 +187,8 @@ class VirtualParticle(DataParticle):
 
     def _load_streams(self):
         conn = sqlite3.connect('preload.db')
-        self._parameters = load_paramdefs(conn)
-        self._streams = load_paramdicts(conn)
+        VirtualParticle._parameters = load_paramdefs(conn)
+        VirtualParticle._streams = load_paramdicts(conn)
 
     @staticmethod
     def random_string(size):
@@ -204,11 +202,11 @@ class VirtualParticle(DataParticle):
             self._load_streams()
 
         if not self.raw_data in self._streams:
-            raise SampleException('Unknown stream')
+            raise SampleException('Unknown stream %r' % self.raw_data)
 
         self._data_particle_type = self.raw_data
 
-        parameters = self._streams.get(self.raw_data).parameter_ids.split(',')
+        parameters = self._streams.get(self.raw_data, [])
 
         values = []
         for param in parameters:
@@ -219,7 +217,7 @@ class VirtualParticle(DataParticle):
             if p.parameter_type == 'function':
                 continue
 
-            log.debug('Generating random data for param: %s name: %s', param, p.name)
+            log.trace('Generating random data for param: %s name: %s', param, p.name)
 
             val = None
             if p.value_encoding in ['str', 'string']:
