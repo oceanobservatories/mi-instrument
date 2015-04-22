@@ -1,0 +1,3 @@
+instrument_class,module,klass,startup_config
+virtual,mi.instrument.virtual.driver,InstrumentDriver,{}
+sbe37,mi.instrument.seabird.sbe37smb.ooicore.driver,SBE37Driver,{}
