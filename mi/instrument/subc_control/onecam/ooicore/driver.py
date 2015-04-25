@@ -1,55 +1,108 @@
 """
 @package mi.instrument.subc_control.onecam.ooicore.driver
 @file marine-integrations/mi/instrument/subc_control/onecam/ooicore/driver.py
-@author Richard Han
-@brief Driver for the ooicore
+@author Tapana Gupta
+@brief Driver for the CAMHD instrument
 Release notes:
 
 CAMHD Driver
 
 """
+
+import re
+import json
+import time
+
 from mi.core.instrument.driver_dict import DriverDictKey
 from mi.core.instrument.protocol_param_dict import ParameterDictType
 
-__author__ = 'Richard Han'
+__author__ = 'Tapana Gupta'
 __license__ = 'Apache 2.0'
 
-import string
+from mi.core.log import get_logger
 
-from mi.core.log import get_logger ; log = get_logger()
+log = get_logger()
 
 from mi.core.common import BaseEnum, Units
-from mi.core.exceptions import InstrumentProtocolException, InstrumentTimeoutException
+from mi.core.exceptions import InstrumentProtocolException
 from mi.core.exceptions import InstrumentParameterException
+from mi.core.exceptions import InstrumentDataException
 from mi.core.instrument.instrument_protocol import CommandResponseInstrumentProtocol
 from mi.core.instrument.instrument_fsm import ThreadSafeFSM
 from mi.core.instrument.instrument_driver import SingleConnectionInstrumentDriver
+from mi.core.instrument.instrument_driver import DriverConfigKey
 from mi.core.instrument.instrument_driver import DriverEvent
 from mi.core.instrument.instrument_driver import DriverAsyncEvent
 from mi.core.instrument.instrument_driver import DriverProtocolState
 from mi.core.instrument.instrument_driver import DriverParameter
 from mi.core.instrument.instrument_driver import ResourceAgentState
+from mi.core.instrument.protocol_param_dict import ParameterDictVisibility
 from mi.core.instrument.data_particle import DataParticle
 from mi.core.instrument.data_particle import DataParticleKey
 from mi.core.instrument.data_particle import CommonDataParticleType
 from mi.core.instrument.chunker import StringChunker
 
+from mi.core.driver_scheduler import DriverSchedulerConfigKey
+from mi.core.driver_scheduler import TriggerType
 
 # newline.
-NEWLINE = '\r\n'
+NEWLINE = '\n'
 
 # default timeout.
 TIMEOUT = 10
 
-###
-#    Driver Constant Definitions
-###
+ZERO_TIME_INTERVAL = '00:00:00'
+
+# The IP Address of the Decode Computer
+DEFAULT_ENDPOINT = '128.95.97.233'
+
+# Regexes for command responses
+CAMHD_RESPONSE_REGEX = r'([A-Z]+)(.*)' + NEWLINE
+CAMHD_RESPONSE_PATTERN = re.compile(CAMHD_RESPONSE_REGEX, re.DOTALL)
+
+START_RESPONSE_REGEX = r'(STARTED|ERROR)(.*)' + NEWLINE
+START_RESPONSE_PATTERN = re.compile(START_RESPONSE_REGEX, re.DOTALL)
+
+STOP_RESPONSE_REGEX = r'(STOPPED|ERROR)(.*)' + NEWLINE
+STOP_RESPONSE_PATTERN = re.compile(STOP_RESPONSE_REGEX, re.DOTALL)
+
+LOOKAT_GET_RESPONSE_REGEX = r'(LOOKINGAT|ERROR)(.*)' + NEWLINE
+LOOKAT_GET_RESPONSE_PATTERN = re.compile(LOOKAT_GET_RESPONSE_REGEX, re.DOTALL)
+
+LOOKAT_SET_RESPONSE_REGEX = r'(STOPPED.*heading|ERROR)(.*)' + NEWLINE
+LOOKAT_SET_RESPONSE_PATTERN = re.compile(LOOKAT_SET_RESPONSE_REGEX, re.DOTALL)
+
+LIGHTS_RESPONSE_REGEX = r'(LIGHTS|ERROR)(.*)' + NEWLINE
+LIGHTS_RESPONSE_PATTERN = re.compile(LIGHTS_RESPONSE_REGEX, re.DOTALL)
+
+CAMERA_RESPONSE_REGEX = r'(CAMERA|ERROR)(.*)' + NEWLINE
+CAMERA_RESPONSE_PATTERN = re.compile(CAMERA_RESPONSE_REGEX, re.DOTALL)
+
+ADREAD_RESPONSE_REGEX = r'(ADVAL|ERROR)(.*)' + NEWLINE
+ADREAD_RESPONSE_PATTERN = re.compile(ADREAD_RESPONSE_REGEX, re.DOTALL)
+
+# data particle matchers
+
+# lookat, lights, camera always get executed sequentially.
+# This Regex will save us from generating too many paricles. Since 'CAMERA' is the last command to get
+# executed, all other params will have been updated before. Hence it's the perfect time to capture
+# param values and generate the metadata particle.
+CAMHD_METADATA_REGEX = r'(CAMERA)(.*)' + NEWLINE
+CAMHD_METADATA_MATCHER = re.compile(CAMHD_METADATA_REGEX, re.DOTALL)
+
+CAMHD_STATUS_REGEX = r'(ADVAL)(.*)' + NEWLINE
+CAMHD_STATUS_MATCHER = re.compile(CAMHD_STATUS_REGEX, re.DOTALL)
+
+ADREAD_DATA_POSITION = 2
 
 class DataParticleType(BaseEnum):
     """
     Data particle types produced by this driver
     """
     RAW = CommonDataParticleType.RAW
+    STREAMING_STATUS = 'camhd_streaming_status'
+    ADREAD_STATUS = 'camhd_adread_status'
+
 
 class ProtocolState(BaseEnum):
     """
@@ -59,7 +112,7 @@ class ProtocolState(BaseEnum):
     COMMAND = DriverProtocolState.COMMAND
     AUTOSAMPLE = DriverProtocolState.AUTOSAMPLE
     DIRECT_ACCESS = DriverProtocolState.DIRECT_ACCESS
-    TEST = DriverProtocolState.TEST
+
 
 class ProtocolEvent(BaseEnum):
     """
@@ -72,87 +125,42 @@ class ProtocolEvent(BaseEnum):
     DISCOVER = DriverEvent.DISCOVER
     START_DIRECT = DriverEvent.START_DIRECT
     STOP_DIRECT = DriverEvent.STOP_DIRECT
-    ACQUIRE_SAMPLE = DriverEvent.ACQUIRE_SAMPLE
     START_AUTOSAMPLE = DriverEvent.START_AUTOSAMPLE
     STOP_AUTOSAMPLE = DriverEvent.STOP_AUTOSAMPLE
     EXECUTE_DIRECT = DriverEvent.EXECUTE_DIRECT
+    ACQUIRE_STATUS = DriverEvent.ACQUIRE_STATUS
+    ACQUIRE_SAMPLE = DriverEvent.ACQUIRE_SAMPLE
 
-    TAKE_PICTURE = 'DRIVER_EVENT_TAKE_PICTURE'
-    START_STOP_RECORDING = 'DRIVER_EVENT_START_STOP_RECORDING'
-    ZOOM_IN = 'DRIVER_EVENT_ZOOM_IN'
-    ZOOM_OUT = 'DRIVER_EVENT_ZOOM_OUT'
-    UP = 'DRIVER_EVENT_UP'
-    LEFT = 'DRIVER_EVENT_LEFT'
-    SELECT = 'DRIVER_EVENT_SELECT'
-    RIGHT = 'DRIVER_EVENT_RIGHT'
-    DOWN = 'DRIVER_EVENT_DOWN'
-    POWER_ON_OFF = 'DRIVER_EVENT_POWER_ON_OFF'
-    HD_SD_SWITCH = 'DRIVER_EVENT_HD_SD_SWITCH'
-    USB_MODE = 'DRIVER_USB_MODE'
-    IR_ON_OFF = 'DRIVER_IR_ON_OFF'
-    LASER_ON_OFF = 'DRIVER_LASER_ON_OFF'
-    EXTERNAL_FLASH_ENABLE = 'DRIVER_EVENT_EXTERNAL_FLASH_ENABLE'
-    EXTERNAL_FLASH_DISABLE = 'DRIVER_EVENT_EXTERNAL_FLASH_DISABLE'
-    ENTER_SLEEP_INTERVAL = 'DRIVER_EVENT_ENTER_SLEEP_INTERVAL'
-    ENTER_RECORD_INTERVAL = 'DRIVER_EVENT_ENTER_RECORD_INTERVAL'
-    ENTER_PICTURE_INTERVAL = 'DRIVER_EVENT_ENTER_PICTURE_INTERVAL'
-    EXECUTE_INTERVAL_MODE = 'DRIVER_EVENT_EXECUTE_INTERVAL_MODE'
-    ENABLE_EXTERNAL_TRIGGER = 'DRIVER_EVENT_ENABLE_EXTERNAL_TRIGGER'
-    EXIT_INTERVAL_TRIGGER_MODE = 'DRIVER_EVENT_EXIT_INTERVAL_TRIGGER_MODE'
-    RESET_EEPROM = 'DRIVER_EVENT_RESET_EEPROM'
+    GET_STATUS_STREAMING = 'DRIVER_EVENT_GET_STATUS_STREAMING'
+    START_STREAMING = 'DRIVER_EVENT_START_STREAMING'
+    STOP_STREAMING = 'DRIVER_EVENT_STOP_STREAMING'
 
 
 class Capability(BaseEnum):
     """
     Protocol events that should be exposed to users (subset of above).
     """
-    ACQUIRE_SAMPLE = ProtocolEvent.ACQUIRE_SAMPLE
-    START_AUTOSAMPLE = ProtocolEvent.START_AUTOSAMPLE
-    STOP_AUTOSAMPLE = ProtocolEvent.STOP_AUTOSAMPLE
-    GET = ProtocolEvent.GET
-    SET = ProtocolEvent.SET
-    ZOOM_IN = ProtocolEvent.ZOOM_IN
-    ZOOM_OUT = ProtocolEvent.ZOOM_OUT
-    UP = ProtocolEvent.UP
-    DOWN = ProtocolEvent.DOWN
-    LEFT = ProtocolEvent.LEFT
-    RIGHT = ProtocolEvent.RIGHT
-    SELECT = ProtocolEvent.SELECT
-    POWER_ON_OFF = ProtocolEvent.POWER_ON_OFF
-    ENTER_SLEEP_INTERVAL = ProtocolEvent.ENTER_SLEEP_INTERVAL
-    ENTER_PICTURE_INTERVAL = ProtocolEvent.ENTER_PICTURE_INTERVAL
-    ENTER_RECORD_INTERVAL = ProtocolEvent.ENTER_RECORD_INTERVAL
-    EXTERNAL_FLASH_ENABLE = ProtocolEvent.EXTERNAL_FLASH_ENABLE
-    EXTERNAL_FLASH_DISABLE = ProtocolEvent.EXTERNAL_FLASH_DISABLE
+    START_AUTOSAMPLE = DriverEvent.START_AUTOSAMPLE
+    STOP_AUTOSAMPLE = DriverEvent.STOP_AUTOSAMPLE
+    ACQUIRE_STATUS = DriverEvent.ACQUIRE_STATUS
+
+    GET_STATUS_STREAMING = ProtocolEvent.GET_STATUS_STREAMING
+    START_STREAMING = ProtocolEvent.START_STREAMING
+    STOP_STREAMING = ProtocolEvent.STOP_STREAMING
 
 
 class Command(BaseEnum):
     """
     CAMHD Instrument command strings
     """
-    TAKE_PICTURE = '$1'
-    START_STOP_RECORDING = '$2'
-    ZOOM_IN = '$3'
-    ZOOM_OUT = '$4'
-    UP = '$5'
-    LEFT = '$6'
-    SELECT = '$7'
-    RIGHT = '$8'
-    DOWN = '$9'
-    POWER_ON_OFF = '$0'
-    HD_SD_SWITCH = '$v'
-    USB_MODE = '$u'
-    IR_ON_OFF = '$n'
-    LASER_ON_OFF = '$I'
-    EXTERNAL_FLASH_ENABLE = '$f'
-    EXTERNAL_FLASH_DISABLE = '$F'
-    ENTER_SLEEP_INTERVAL = '$i'
-    ENTER_RECORD_INTERVAL = '$r'
-    ENTER_PICTURE_INTERVAL = '$p'
-    EXECUTE_INTERVAL_MODE = '$#'
-    ENABLE_EXTERNAL_TRIGGER = '$x'
-    EXIT_INTERVAL_TRIGGER_MODE = '$G'   # $I in the manual which is duplicate with Laser On Off Cmd
-    RESET_EEPROM = '$^'
+    GET = 'get'
+    SET = 'set'
+    START = 'START'
+    STOP = 'STOP'
+    LOOKAT= 'LOOKAT'
+    LIGHTS = 'LIGHTS'
+    CAMERA = 'CAMERA'
+    ADREAD = 'ADREAD'
 
 
 class Parameter(DriverParameter):
@@ -160,51 +168,162 @@ class Parameter(DriverParameter):
     Device specific parameters for CAMHD.
 
     """
-    SERIAL_BAUD_RATE = 'SerialBaudRate'
-    BYTE_SIZE = 'ByteSize'
-    PARITY = 'Parity'
-    STOP_BIT = 'StopBit'
-    DATA_FLOW_CONTROL = 'DataFlowControl'
-    INPUT_BUFFER_SIZE = 'InputBufferSize'
-    OUTPUT_BUFFER_SIZE = 'OutputBufferSize'
-    SLEEP_INTERVAL = 'SleepInterval'
-    RECORD_INTERVAL = 'RecordInterval'
-    PICTURE_INTERVAL = 'PictureInterval'
+    ENDPOINT = 'Endpoint'
+    PAN_POSITION = 'Pan_Position'
+    TILT_POSITION = 'Tilt_Position'
+    PAN_TILT_SPEED = 'Pan_Tilt_Speed'
+    HEADING = 'Heading'
+    PITCH = 'Pitch'
+    LIGHT_1_LEVEL = 'Light_1_Level'
+    LIGHT_2_LEVEL = 'Light_2_Level'
+    ZOOM_LEVEL = 'Zoom_Level'
+    LASERS_STATE = 'Lasers_State'
+    SAMPLE_INTERVAL = 'Sample_Interval'
+    STATUS_INTERVAL = 'Acquire_Status_Interval'
+    AUTO_CAPTURE_DURATION = 'Auto_Capture_Duration'
+
+
+class ScheduledJob(BaseEnum):
+    """
+    Scheduled Jobs for CAMHD
+    """
+    SAMPLE = 'sample'
+    STOP_CAPTURE = "stop capturing"
+    ACQUIRE_STATUS = "acquire_status"
 
 
 class Prompt(BaseEnum):
     """
-    Device i/o response..
+    Device i/o prompts..
     """
-    BAUD_RATE_RESP = "%buad_rate"
-    TAKE_PICTURE_RESP = '%1'
-    START_STOP_RECORDING_RESP = '%2'
-    ZOOM_IN_RESP = '%3'
-    ZOOM_OUT_RESP = '%4'
-    UP_RESP = '%5'
-    LEFT_RESP = '%6'
-    SELECT_RESP= '%7'
-    RIGHT_RESP = '%8'
-    DOWN_RESP = '%9'
-    POWER_ON_OFF_RESP = '%0'
-    HD_SD_SWITCH_RESP = '%v'
-    USB_MODE_RESP = '%u'
-    IR_ON_OFF_RESP = '%n'
-    LASER_ON_OFF_RESP = '%I'
-    EXTERNAL_FLASH_ENABLE_RESP = '%f'
-    EXTERNAL_FLASH_DISABLE_RESP = '%F'
-    ENTER_SLEEP_INTERVAL_RESP = '%i'
-    ENTER_RECORD_INTERVAL_RESP = '%r'
-    ENTER_PICTURE_INTERVAL_RESP = '%p'
-    EXECUTE_INTERVAL_MODE_RESP = '%#'
-    ENABLE_EXTERNAL_TRIGGER_RESP = '%x'
-    EXIT_INTERVAL_TRIGGER_MODE_RESP = '%i'
-    RESET_EEPROM_RESP = '%^'
-
+    # No prompts here. Stays empty.
 
 ###############################################################################
 # Data Particles
 ###############################################################################
+
+class CAMHDStreamingStatusParticleKey(BaseEnum):
+    PAN_POSITION = 'camhd_pan_position'
+    TILT_POSITION = 'camhd_tilt_position'
+    HEADING = 'camhd_heading'
+    PITCH = 'camhd_pitch'
+    LIGHT1_INTENSITY = 'camhd_light1_intensity'
+    LIGHT2_INTENSITY = 'camhd_light2_intensity'
+    ZOOM = 'camhd_zoom'
+    LASER = 'camhd_laser'
+
+
+class CAMHDStreamingStatusParticle(DataParticle):
+    """
+    CAMHD Streaming Status particle
+    """
+    _data_particle_type = DataParticleType.STREAMING_STATUS
+
+    def _build_parsed_values(self):
+        # Initialize
+
+        result = []
+
+        log.debug("STREAMING_STATUS: Building data particle...")
+
+        param_dict = self.raw_data.get_all()
+
+        log.debug("Param Dict: %s" % param_dict)
+
+        result.append({DataParticleKey.VALUE_ID: CAMHDStreamingStatusParticleKey.PAN_POSITION,
+                       DataParticleKey.VALUE: param_dict.get(Parameter.PAN_POSITION)})
+        result.append({DataParticleKey.VALUE_ID: CAMHDStreamingStatusParticleKey.TILT_POSITION,
+                       DataParticleKey.VALUE: param_dict.get(Parameter.TILT_POSITION)})
+        result.append({DataParticleKey.VALUE_ID: CAMHDStreamingStatusParticleKey.HEADING,
+                       DataParticleKey.VALUE: param_dict.get(Parameter.HEADING)})
+        result.append({DataParticleKey.VALUE_ID: CAMHDStreamingStatusParticleKey.PITCH,
+                       DataParticleKey.VALUE: param_dict.get(Parameter.PITCH)})
+        result.append({DataParticleKey.VALUE_ID: CAMHDStreamingStatusParticleKey.LIGHT1_INTENSITY,
+                       DataParticleKey.VALUE: param_dict.get(Parameter.LIGHT_1_LEVEL)})
+        result.append({DataParticleKey.VALUE_ID: CAMHDStreamingStatusParticleKey.LIGHT2_INTENSITY,
+                       DataParticleKey.VALUE: param_dict.get(Parameter.LIGHT_2_LEVEL)})
+        result.append({DataParticleKey.VALUE_ID: CAMHDStreamingStatusParticleKey.ZOOM,
+                       DataParticleKey.VALUE: param_dict.get(Parameter.ZOOM_LEVEL)})
+        result.append({DataParticleKey.VALUE_ID: CAMHDStreamingStatusParticleKey.LASER,
+                       DataParticleKey.VALUE: param_dict.get(Parameter.LASERS_STATE)})
+
+        log.debug("STREAMING_STATUS: Finished building particle: %s" % result)
+
+        return result
+
+
+class CAMHDAdreadStatusParticleKey(BaseEnum):
+    CHANNEL_NAME = 'camhd_channel_name'
+    CHANNEL_VALUE = 'camhd_channel_value'
+    VALUE_UNITS = 'camhd_value_units'
+
+
+class CAMHDSAdreadStatusParticle(DataParticle):
+    """
+    CAMHD ADREAD Status particle
+    """
+    _data_particle_type = DataParticleType.ADREAD_STATUS
+
+    def _build_parsed_values(self):
+
+        result = []
+
+        log.debug("ADREAD STATUS: Building data particle...")
+
+        log.debug("Raw Data: %s" % self.raw_data)
+
+        match = CAMHD_STATUS_MATCHER.match(self.raw_data)
+
+        if not match:
+            raise InstrumentDataException("Incorrectly formatted data received in response to "
+                                          "ADREAD. Reply from instrument: %s" % self.raw_data)
+
+        try:
+            values_dict = json.loads(match.group(ADREAD_DATA_POSITION))
+        except ValueError:
+            raise InstrumentDataException("Data received in response to ADREAD is not a"
+                                          " dictionary. Reply from instrument: %s" % self.raw_data)
+
+        timestamp = values_dict.get('time')
+
+        if timestamp:
+            self.set_internal_timestamp(timestamp)
+
+        # Get the list of channels
+        channel_list = values_dict.get('data')
+
+        if not channel_list:
+            raise InstrumentDataException("Missing data in response to ADREAD - channel information "
+                                          " missing. Reply from instrument: %s" % self.raw_data)
+
+        log.debug("No. of ADREAD channels: %s" % len(channel_list))
+
+        (channel_names, channel_values, value_units) = ([], [], [])
+
+        # Each channel in the channel list is a data dictionary
+        for channel in channel_list:
+
+            # the channel dictionary must have exactly 3 keys
+            if len(channel) != 3:
+                log.error("Incomplete data received in ADREAD reply from instrument.")
+                raise InstrumentDataException("Incomplete data received in ADREAD "
+                                              "reply from instrument: %s" % self.raw_data)
+
+            # Populate the data particle arrays
+            channel_names.append(channel.get('name'))
+            channel_values.append(channel.get('val'))
+            value_units.append(channel.get('units'))
+
+        result.append({DataParticleKey.VALUE_ID: CAMHDAdreadStatusParticleKey.CHANNEL_NAME,
+                       DataParticleKey.VALUE: channel_names})
+        result.append({DataParticleKey.VALUE_ID: CAMHDAdreadStatusParticleKey.CHANNEL_VALUE,
+                       DataParticleKey.VALUE: channel_values})
+        result.append({DataParticleKey.VALUE_ID: CAMHDAdreadStatusParticleKey.VALUE_UNITS,
+                       DataParticleKey.VALUE: value_units})
+
+        log.debug("ADREAD STATUS: Finished building particle: %s" % result)
+
+        return result
 
 
 ###############################################################################
@@ -233,14 +352,14 @@ class InstrumentDriver(SingleConnectionInstrumentDriver):
         """
         Construct the driver protocol state machine.
         """
-        self._protocol = Protocol(Prompt, NEWLINE, self._driver_event)
+        self._protocol = CAMHDProtocol(Prompt, NEWLINE, self._driver_event)
 
 
 ###########################################################################
 # Protocol
 ###########################################################################
 
-class Protocol(CommandResponseInstrumentProtocol):
+class CAMHDProtocol(CommandResponseInstrumentProtocol):
     """
     Instrument protocol class
     Subclasses CommandResponseInstrumentProtocol
@@ -259,51 +378,56 @@ class Protocol(CommandResponseInstrumentProtocol):
         self._protocol_fsm = ThreadSafeFSM(ProtocolState, ProtocolEvent,
                             ProtocolEvent.ENTER, ProtocolEvent.EXIT)
 
+        # keep track of whether the camera is streaming video
+        self._streaming = False
+
         # Add event handlers for protocol state machine.
         self._protocol_fsm.add_handler(ProtocolState.UNKNOWN, ProtocolEvent.ENTER, self._handler_unknown_enter)
         self._protocol_fsm.add_handler(ProtocolState.UNKNOWN, ProtocolEvent.EXIT, self._handler_unknown_exit)
         self._protocol_fsm.add_handler(ProtocolState.UNKNOWN, ProtocolEvent.DISCOVER, self._handler_unknown_discover)
-        self._protocol_fsm.add_handler(ProtocolState.UNKNOWN, ProtocolEvent.START_DIRECT, self._handler_command_start_direct)
 
         self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.ENTER, self._handler_command_enter)
         self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.EXIT, self._handler_command_exit)
-        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.START_DIRECT, self._handler_command_start_direct)
+        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.START_DIRECT,
+                                       self._handler_command_start_direct)
         self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.GET, self._handler_command_get)
         self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.SET, self._handler_command_set)
+        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.ACQUIRE_STATUS,
+                                       self._handler_command_acquire_status)
+        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.START_STREAMING,
+                                       self._handler_command_start_streaming)
+        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.STOP_STREAMING,
+                                       self._handler_command_stop_streaming)
+        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.GET_STATUS_STREAMING,
+                                       self._handler_command_get_status_streaming)
+        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.START_AUTOSAMPLE,
+                                       self._handler_command_start_autosample)
 
-        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.ACQUIRE_SAMPLE, self._handler_command_acquire_sample)
+        self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.ENTER,
+                                       self._handler_autosample_enter)
+        self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.EXIT,
+                                       self._handler_autosample_exit)
+        self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.STOP_AUTOSAMPLE,
+                                       self._handler_autosample_stop_autosample)
+        self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.GET,
+                                       self._handler_get)
+        self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.ACQUIRE_STATUS,
+                                       self._handler_command_acquire_status)
+        self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.ACQUIRE_SAMPLE,
+                                       self._handler_autosample_acquire_sample)
+        self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.STOP_STREAMING,
+                                       self._handler_autosample_stop_streaming)
+        self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.GET_STATUS_STREAMING,
+                                       self._handler_command_get_status_streaming)
 
-        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.START_AUTOSAMPLE, self._handler_command_start_autosample)
-        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.STOP_AUTOSAMPLE, self._handler_command_stop_autosample)
-
-        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.TAKE_PICTURE, self._handler_command_take_picture)
-        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.START_STOP_RECORDING, self._handler_command_start_stop_recording)
-        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.ZOOM_IN, self._handler_command_zoom_in)
-        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.ZOOM_OUT, self._handler_command_zoom_out)
-        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.UP, self._handler_command_up)
-        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.DOWN, self._handler_command_down)
-        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.SELECT, self._handler_command_select)
-        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.LEFT, self._handler_command_left)
-        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.RIGHT, self._handler_command_right)
-        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.POWER_ON_OFF, self._handler_command_power_on_off)
-        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.HD_SD_SWITCH, self._handler_command_hd_sd_switch)
-        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.USB_MODE, self._handler_command_usb_mode)
-        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.IR_ON_OFF, self._handler_command_ir_on_off)
-        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.LASER_ON_OFF, self._handler_command_laser_on_off)
-        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.EXTERNAL_FLASH_ENABLE, self._handler_command_external_flash_enable)
-        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.EXTERNAL_FLASH_DISABLE, self._handler_command_external_flash_disable)
-        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.ENTER_SLEEP_INTERVAL, self._handler_command_enter_sleep_interval)
-        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.ENTER_PICTURE_INTERVAL, self._handler_command_enter_picture_interval)
-        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.ENTER_RECORD_INTERVAL, self._handler_command_enter_record_interval)
-        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.EXECUTE_INTERVAL_MODE, self._handler_command_execute_interval_mode)
-        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.ENABLE_EXTERNAL_TRIGGER, self._handler_command_enable_external_trigger)
-        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.EXIT_INTERVAL_TRIGGER_MODE, self._handler_command_exit_interval_trigger_mode)
-        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.RESET_EEPROM, self._handler_command_reset_eeprom)
-
-        self._protocol_fsm.add_handler(ProtocolState.DIRECT_ACCESS, ProtocolEvent.ENTER, self._handler_direct_access_enter)
-        self._protocol_fsm.add_handler(ProtocolState.DIRECT_ACCESS, ProtocolEvent.EXIT, self._handler_direct_access_exit)
-        self._protocol_fsm.add_handler(ProtocolState.DIRECT_ACCESS, ProtocolEvent.STOP_DIRECT, self._handler_direct_access_stop_direct)
-        self._protocol_fsm.add_handler(ProtocolState.DIRECT_ACCESS, ProtocolEvent.EXECUTE_DIRECT, self._handler_direct_access_execute_direct)
+        self._protocol_fsm.add_handler(ProtocolState.DIRECT_ACCESS, ProtocolEvent.ENTER,
+                                       self._handler_direct_access_enter)
+        self._protocol_fsm.add_handler(ProtocolState.DIRECT_ACCESS, ProtocolEvent.EXIT,
+                                       self._handler_direct_access_exit)
+        self._protocol_fsm.add_handler(ProtocolState.DIRECT_ACCESS,
+                                       ProtocolEvent.STOP_DIRECT, self._handler_direct_access_stop_direct)
+        self._protocol_fsm.add_handler(ProtocolState.DIRECT_ACCESS,
+                                       ProtocolEvent.EXECUTE_DIRECT, self._handler_direct_access_execute_direct)
 
         # Construct the parameter dictionary containing device parameters,
         # current parameter values, and set formatting functions.
@@ -311,81 +435,113 @@ class Protocol(CommandResponseInstrumentProtocol):
         self._build_command_dict()
         self._build_param_dict()
 
-        # Add build handlers for device commands.
-        self._add_build_handler(Command.TAKE_PICTURE, self._build_simple_command)
-        self._add_build_handler(Command.START_STOP_RECORDING, self._build_simple_command)
-        self._add_build_handler(Command.ZOOM_IN, self._build_simple_command)
-        self._add_build_handler(Command.ZOOM_OUT, self._build_simple_command)
-        self._add_build_handler(Command.UP, self._build_simple_command)
-        self._add_build_handler(Command.ENTER_RECORD_INTERVAL, self._build_camhd_command)
-        self._add_build_handler(Command.ENTER_PICTURE_INTERVAL, self._build_camhd_command)
-        self._add_build_handler(Command.ENTER_SLEEP_INTERVAL, self._build_camhd_command)
-        self._add_build_handler(Command.EXTERNAL_FLASH_ENABLE, self._build_simple_command)
-        self._add_build_handler(Command.EXECUTE_INTERVAL_MODE, self._build_simple_command)
-        self._add_build_handler(Command.DOWN, self._build_simple_command)
-        self._add_build_handler(Command.ENABLE_EXTERNAL_TRIGGER, self._build_simple_command)
-        self._add_build_handler(Command.EXTERNAL_FLASH_DISABLE, self._build_simple_command)
-        self._add_build_handler(Command.EXIT_INTERVAL_TRIGGER_MODE, self._build_simple_command)
-        self._add_build_handler(Command.HD_SD_SWITCH, self._build_simple_command)
-        self._add_build_handler(Command.IR_ON_OFF, self._build_simple_command)
-        self._add_build_handler(Command.LASER_ON_OFF, self._build_simple_command)
-        self._add_build_handler(Command.LEFT, self._build_simple_command)
-        self._add_build_handler(Command.POWER_ON_OFF, self._build_simple_command)
-        self._add_build_handler(Command.LEFT, self._build_simple_command)
-        self._add_build_handler(Command.IR_ON_OFF, self._build_simple_command)
-        self._add_build_handler(Command.SELECT, self._build_simple_command)
-        self._add_build_handler(Command.USB_MODE, self._build_simple_command)
+        self.initialize_scheduler()
 
-        self._add_build_handler(Command.DOWN, self._build_simple_command)
-        self._add_build_handler(Command.RESET_EEPROM, self._build_simple_command)
+        # Add build handlers for device commands.
+        self._add_build_handler(Command.SET, self._build_set_command)
+        self._add_build_handler(Command.START, self._build_start_command)
+        self._add_build_handler(Command.STOP, self._build_simple_command)
+        self._add_build_handler(Command.LOOKAT, self._build_simple_command)
+        self._add_build_handler(Command.LIGHTS, self._build_simple_command)
+        self._add_build_handler(Command.CAMERA, self._build_simple_command)
+        self._add_build_handler(Command.ADREAD, self._build_simple_command)
 
         # Add response handlers for device commands.
-        self._add_response_handler(Command.TAKE_PICTURE, self._parse_take_picture)
-        self._add_response_handler(Command.START_STOP_RECORDING, self._parse_start_stop_recording)
-        self._add_response_handler(Command.ZOOM_IN, self._parse_zoom_in)
-        self._add_response_handler(Command.ZOOM_OUT, self._parse_zoom_out)
-        self._add_response_handler(Command.UP, self._parse_up)
-        self._add_response_handler(Command.DOWN, self._parse_down)
-        self._add_response_handler(Command.SELECT, self._parse_select)
-        self._add_response_handler(Command.LEFT, self._parse_left)
-        self._add_response_handler(Command.RIGHT, self._parse_right)
-        self._add_response_handler(Command.POWER_ON_OFF, self._parse_power_on_off)
-        self._add_response_handler(Command.HD_SD_SWITCH, self._parse_hd_sd_switch)
-        self._add_response_handler(Command.USB_MODE, self._parse_usb_mode)
-        self._add_response_handler(Command.IR_ON_OFF, self._parse_ir_on_off)
-        self._add_response_handler(Command.LASER_ON_OFF, self._parse_laser_on_off)
-        self._add_response_handler(Command.LASER_ON_OFF, self._parse_laser_on_off)
-        self._add_response_handler(Command.EXTERNAL_FLASH_ENABLE, self._parse_external_flash_enable)
-        self._add_response_handler(Command.EXTERNAL_FLASH_DISABLE, self._parse_external_flash_disable)
-        self._add_response_handler(Command.ENTER_PICTURE_INTERVAL, self._parse_enter_picture_interval)
-        self._add_response_handler(Command.ENTER_SLEEP_INTERVAL, self._parse_enter_sleep_interval)
-        self._add_response_handler(Command.ENTER_RECORD_INTERVAL, self._parse_enter_record_interval)
-        self._add_response_handler(Command.EXECUTE_INTERVAL_MODE, self._parse_execute_interval_mode)
-        self._add_response_handler(Command.ENABLE_EXTERNAL_TRIGGER, self._parse_enable_external_trigger)
-        self._add_response_handler(Command.EXIT_INTERVAL_TRIGGER_MODE, self._parse_exit_interval_trigger_mode)
-        self._add_response_handler(Command.RESET_EEPROM, self._parse_reset_eeprom)
+        self._add_response_handler(Command.SET, self._parse_set_response)
+        self._add_response_handler(Command.START, self._parse_start_response)
+        self._add_response_handler(Command.STOP, self._parse_stop_response)
+        self._add_response_handler(Command.LOOKAT, self._parse_get_response)
+        self._add_response_handler(Command.LIGHTS, self._parse_get_response)
+        self._add_response_handler(Command.CAMERA, self._parse_get_response)
+        self._add_response_handler(Command.ADREAD, self._parse_adread_response)
 
-        # Add sample handlers.
-
-        # State state machine in UNKNOWN state.
+        # Set state machine in UNKNOWN state.
         self._protocol_fsm.start(ProtocolState.UNKNOWN)
 
         # commands sent sent to device to be filtered in responses for telnet DA
         self._sent_cmds = []
 
-        #
-        self._chunker = StringChunker(Protocol.sieve_function)
+        self._chunker = StringChunker(self.sieve_function)
 
+    # We override this as the instrument has no prompts
+    def _wakeup(self, timeout, delay=1):
+        pass
 
     @staticmethod
     def sieve_function(raw_data):
         """
-        The method that splits samples
+        Chunker sieve method to help the chunker identify chunks.
+        @returns a list of chunks identified, if any.
+        The chunks are all the same type.
         """
 
+        sieve_matchers = [CAMHD_METADATA_MATCHER,
+                          CAMHD_STATUS_MATCHER]
+
         return_list = []
+        log.debug('Sieve function raw data %r' % raw_data)
+        for matcher in sieve_matchers:
+
+            for match in matcher.finditer(raw_data):
+                log.debug('Sieve function match')
+
+                return_list.append((match.start(), match.end()))
 
         return return_list
+
+    def _got_chunk(self, chunk, timestamp):
+        """
+        The base class got_data has gotten a chunk from the chunker.
+        Pass it to extract_sample with the appropriate particle
+        objects and REGEXes.
+        """
+
+        if (self._extract_sample(CAMHDSAdreadStatusParticle,
+                                 CAMHD_STATUS_MATCHER,
+                                 chunk,
+                                 timestamp)):
+            log.debug("_got_chunk - successful match for CAMHD ADREAD Status")
+
+        elif self._extract_metadata_sample(CAMHDStreamingStatusParticle,
+                                           CAMHD_METADATA_MATCHER,
+                                           chunk,
+                                           timestamp):
+            log.debug("_got_chunk - successful match for CAMHD Streaming Status")
+
+    def _extract_metadata_sample(self, particle_class, regex, line, timestamp, publish=True):
+        """
+        Special case for extract_sample - camhd_streaming_status particle
+        Extract sample from a response line if present and publish
+        parsed particle
+
+        @param particle_class The class to instantiate for this specific
+            data particle. Parameterizing this allows for simple, standard
+            behavior from this routine
+        @param regex The regular expression that matches a data sample
+        @param line string to match for sample.
+        @param timestamp port agent timestamp to include with the particle
+        @param publish boolean to publish samples (default True). If True,
+               two different events are published: one to notify raw data and
+               the other to notify parsed data.
+
+        @retval dict of dicts {'parsed': parsed_sample, 'raw': raw_sample} if
+                the line can be parsed for a sample. Otherwise, None.
+        """
+
+        if regex.match(line):
+
+            # Update the param dict with values obtained from the instrument
+            self._param_dict.update(line)
+
+            # special case for the CAMHD streaming status particle - need to pass in param_dict
+            particle = particle_class(self._param_dict, port_timestamp=timestamp)
+
+            parsed_sample = particle.generate()
+
+            if publish and self._driver_event:
+                self._driver_event(DriverAsyncEvent.SAMPLE, parsed_sample)
+
+            return parsed_sample
 
     def _build_driver_dict(self):
         """
@@ -397,11 +553,13 @@ class Protocol(CommandResponseInstrumentProtocol):
         """
         Populate the command dictionary with command.
         """
-        self._cmd_dict.add(Capability.START_AUTOSAMPLE, display_name="start autosample")
-        self._cmd_dict.add(Capability.STOP_AUTOSAMPLE, display_name="stop autosample")
-        self._cmd_dict.add(Capability.ACQUIRE_SAMPLE, display_name="acquire sample")
-        self._cmd_dict.add(Capability.SET, display_name="set")
-        self._cmd_dict.add(Capability.GET, display_name="get")
+        self._cmd_dict.add(Capability.START_AUTOSAMPLE, display_name="Start Autosample")
+        self._cmd_dict.add(Capability.STOP_AUTOSAMPLE, display_name="Stop Autosample")
+        self._cmd_dict.add(Capability.ACQUIRE_STATUS, display_name="Acquire Status")
+
+        self._cmd_dict.add(Capability.GET_STATUS_STREAMING, display_name="Get Status_Streaming")
+        self._cmd_dict.add(Capability.START_STREAMING, display_name="Start Streaming")
+        self._cmd_dict.add(Capability.STOP_STREAMING, display_name="Stop Streaming")
 
     def _build_param_dict(self):
         """
@@ -410,114 +568,161 @@ class Protocol(CommandResponseInstrumentProtocol):
         and value formatting function for set commands.
         """
 
+        FLOAT_REGEX = r'((?:[+-]?[0-9]|[1-9][0-9])+\.[0-9]+)'
+
+        INT_REGEX = r'([+-]?[0-9]+)'
+
         # Add parameter handlers to parameter dict.
-        self._param_dict.add(Parameter.SERIAL_BAUD_RATE,
-                             r'Serial Baud Rate = (\d\d\d\d)',
-                             lambda match: int(match.group(1)),
-                             int,
-                             type=ParameterDictType.INT,
-                             units=Units.BAUD,
-                             display_name="Baud Rate",
-                             startup_param=True,
-                             direct_access=False,
-                             default_value=9600)
-
-        self._param_dict.add(Parameter.BYTE_SIZE,
-                             r'Byte Size = (\d)',
-                             lambda match: int(match.group(1)),
-                             int,
-                             type=ParameterDictType.INT,
-                             units=Units.BIT,
-                             display_name="Byte Size",
-                             startup_param=True,
-                             direct_access=False,
-                             default_value=8)
-
-        self._param_dict.add(Parameter.PARITY,
-                             r'Parity = (\d)',
-                             lambda match: int(match.group(1)),
-                             int,
-                             type=ParameterDictType.INT,
-                             display_name="Instrument Series",
-                             startup_param=True,
-                             direct_access=False,
-                             default_value=0)
-
-        self._param_dict.add(Parameter.STOP_BIT,
-                             r'Stop Bit = (\d)',
-                             lambda match: int(match.group(1)),
-                             int,
-                             type=ParameterDictType.INT,
-                             display_name="Stop Bit",
-                             startup_param=True,
-                             direct_access=False,
-                             default_value=1)
-
-        self._param_dict.add(Parameter.DATA_FLOW_CONTROL,
-                             r'Data Flow Control = (w+)',
-                             lambda match: int(match.group(1)),
+        self._param_dict.add(Parameter.ENDPOINT,
+                             r'NOT USED',
+                             None,
                              str,
                              type=ParameterDictType.STRING,
-                             display_name="Data Flow Control",
-                             startup_param=True,
+                             display_name="Endpoint",
+                             startup_param=False,
                              direct_access=False,
-                             default_value='None')
+                             default_value=DEFAULT_ENDPOINT,
+                             visibility=ParameterDictVisibility.READ_ONLY)
 
-        self._param_dict.add(Parameter.INPUT_BUFFER_SIZE,
-                             r'Input Buffer Size = (\d\d\d\d)',
+        self._param_dict.add(Parameter.PAN_POSITION,
+                             r'"pan": ' + INT_REGEX,
+                             lambda match: float(match.group(1)),
+                             str,
+                             type=ParameterDictType.FLOAT,
+                             display_name="Pan",
+                             startup_param=False,
+                             direct_access=False,
+                             default_value=180.0,
+                             visibility=ParameterDictVisibility.READ_WRITE)
+
+        self._param_dict.add(Parameter.TILT_POSITION,
+                             r'"tilt": ' + INT_REGEX,
+                             lambda match: float(match.group(1)),
+                             str,
+                             type=ParameterDictType.FLOAT,
+                             display_name="Tilt",
+                             startup_param=False,
+                             direct_access=False,
+                             default_value=90.0,
+                             visibility=ParameterDictVisibility.READ_WRITE)
+
+        self._param_dict.add(Parameter.PAN_TILT_SPEED,
+                             r'NOT USED',
+                             None,
+                             str,
+                             type=ParameterDictType.FLOAT,
+                             display_name="Speed",
+                             startup_param=False,
+                             direct_access=False,
+                             default_value=10.0,
+                             visibility=ParameterDictVisibility.READ_WRITE)
+
+        self._param_dict.add(Parameter.HEADING,
+                             r'"heading": ' + INT_REGEX,
+                             lambda match: float(match.group(1)),
+                             str,
+                             type=ParameterDictType.FLOAT,
+                             display_name="Heading",
+                             startup_param=False,
+                             direct_access=False,
+                             default_value=0.0,
+                             visibility=ParameterDictVisibility.READ_ONLY)
+
+        self._param_dict.add(Parameter.PITCH,
+                             r'"pitch": ' + INT_REGEX,
+                             lambda match: float(match.group(1)),
+                             str,
+                             type=ParameterDictType.FLOAT,
+                             display_name="Pitch",
+                             startup_param=False,
+                             direct_access=False,
+                             default_value=0.0,
+                             visibility=ParameterDictVisibility.READ_ONLY)
+
+        self._param_dict.add(Parameter.LIGHT_1_LEVEL,
+                             r'"intensity": \[([\d]+), ([\d]+)\]',
                              lambda match: int(match.group(1)),
-                             int,
+                             str,
                              type=ParameterDictType.INT,
-                             display_name="Input Buffer Size",
-                             startup_param=True,
+                             display_name="Light 1 level",
+                             startup_param=False,
                              direct_access=False,
-                             default_value=1024)
+                             default_value=50,
+                             visibility=ParameterDictVisibility.READ_WRITE)
 
-        self._param_dict.add(Parameter.OUTPUT_BUFFER_SIZE,
-                             r'Output Buffer Size = (\d+)',
+        self._param_dict.add(Parameter.LIGHT_2_LEVEL,
+                             r'"intensity": \[([\d]+), ([\d]+)\]',
+                             lambda match: int(match.group(2)),
+                             str,
+                             type=ParameterDictType.INT,
+                             display_name="Light 2 level",
+                             startup_param=False,
+                             direct_access=False,
+                             default_value=50,
+                             visibility=ParameterDictVisibility.READ_WRITE)
+
+        self._param_dict.add(Parameter.ZOOM_LEVEL,
+                             r'"zoom": ' + INT_REGEX,
                              lambda match: int(match.group(1)),
-                             int,
+                             str,
                              type=ParameterDictType.INT,
-                             display_name="Output Buffer Size",
-                             startup_param=True,
+                             display_name="Zoom Level",
+                             startup_param=False,
                              direct_access=False,
-                             default_value=800)
+                             default_value=0,
+                             visibility=ParameterDictVisibility.READ_WRITE)
 
-        self._param_dict.add(Parameter.SLEEP_INTERVAL,
-                             r'Sleep Interval = (\d+)',
-                             lambda match: int(match.group(1)),
-                             int,
-                             type=ParameterDictType.INT,
-                             display_name="Sleep Interval",
-                             startup_param=True,
+        self._param_dict.add(Parameter.LASERS_STATE,
+                             r'"laser": "(on|off)"',
+                             lambda match: match.group(1),
+                             str,
+                             type=ParameterDictType.STRING,
+                             display_name="Lasers State",
+                             startup_param=False,
                              direct_access=False,
-                             default_value=800)
+                             default_value='off',
+                             visibility=ParameterDictVisibility.READ_WRITE)
 
-        self._param_dict.add(Parameter.PICTURE_INTERVAL,
-                             r'Picture Interval = (\d+)',
-                             lambda match: int(match.group(1)),
-                             int,
-                             type=ParameterDictType.INT,
-                             display_name="Picture Interval",
-                             startup_param=True,
+        #TODO: change default value back to original (as per the IOS). These values are for testing only.
+        self._param_dict.add(Parameter.SAMPLE_INTERVAL,
+                             r'NOT USED',
+                             None,
+                             str,
+                             type=ParameterDictType.STRING,
+                             display_name="Sample Interval",
+                             startup_param=False,
                              direct_access=False,
-                             default_value=800)
+                             default_value='00:01:00',
+                             visibility=ParameterDictVisibility.READ_WRITE)
 
-        self._param_dict.add(Parameter.RECORD_INTERVAL,
-                             r'Picture Interval = (\d+)',
-                             lambda match: int(match.group(1)),
-                             int,
-                             type=ParameterDictType.INT,
-                             display_name="Record Interval",
-                             startup_param=True,
+        self._param_dict.add(Parameter.STATUS_INTERVAL,
+                             r'NOT USED',
+                             None,
+                             str,
+                             type=ParameterDictType.STRING,
+                             display_name="Acquire Status Interval",
+                             startup_param=False,
                              direct_access=False,
-                             default_value=800)
+                             default_value='00:00:00',
+                             visibility=ParameterDictVisibility.READ_WRITE)
 
-    def _got_chunk(self, chunk):
-        """
-        The base class got_data has gotten a chunk from the chunker.  Pass it to extract_sample
-        with the appropriate particle objects and REGEXes.
-        """
+        #TODO: change default value back to original (as per the IOS). These values are for testing only.
+        self._param_dict.add(Parameter.AUTO_CAPTURE_DURATION,
+                             r'NOT USED',
+                             None,
+                             str,
+                             type=ParameterDictType.STRING,
+                             display_name="Auto Capture Duration",
+                             startup_param=False,
+                             direct_access=False,
+                             default_value='00:00:30',
+                             visibility=ParameterDictVisibility.READ_WRITE)
+
+        self._param_dict.set_default(Parameter.SAMPLE_INTERVAL)
+        self._param_dict.set_default(Parameter.STATUS_INTERVAL)
+        self._param_dict.set_default(Parameter.ENDPOINT)
+        self._param_dict.set_default(Parameter.PAN_TILT_SPEED)
+        self._param_dict.set_default(Parameter.AUTO_CAPTURE_DURATION)
 
     def _filter_capabilities(self, events):
         """
@@ -525,32 +730,247 @@ class Protocol(CommandResponseInstrumentProtocol):
         """
         return [x for x in events if Capability.has(x)]
 
+    def _update_params(self, *args, **kwargs):
+        """
+        Update the parameter dictionary.
+        """
+
+        log.debug("Inside _update_params")
+
+        was_streaming = True
+
+        # Start streaming if not already started, otherwise instrument won't
+        # respond to 'Get' commands
+        if not self._streaming:
+            was_streaming = False
+            self._handler_start_streaming()
+
+        # Get old param dict config.
+        old_config = self._param_dict.get_config()
+
+        # Send LOOKAT, LIGHTS and CAMERA with no arguments, in order to get parameter values
+
+        log.debug("Sending LOOKAT...")
+
+        # Get Pan, Tilt, Heading and Pitch
+        self._do_cmd_resp(Command.LOOKAT, response_regex=LOOKAT_GET_RESPONSE_PATTERN)
+
+        log.debug("Sending LIGHTS...")
+
+        # Get Intensity for both Lights
+        self._do_cmd_resp(Command.LIGHTS, response_regex=LIGHTS_RESPONSE_PATTERN)
+
+        log.debug("Sending CAMERA...")
+
+        # Get Zoom value and Lasers state
+        self._do_cmd_resp(Command.CAMERA, response_regex=CAMERA_RESPONSE_PATTERN)
+
+        log.debug("Waiting for particles...")
+
+        # Return streaming back to original state
+        if not was_streaming:
+            self._handler_command_stop_streaming()
+
+        new_config = self._param_dict.get_config()
+
+        if new_config != old_config:
+            self._driver_event(DriverAsyncEvent.CONFIG_CHANGE)
+
+    ########################################################################
+    # Build handlers.
+    ########################################################################
+
+    def _build_camhd_command(self, cmd, args_dict):
+        """
+        Helper function that actually puts together the command together with
+        arguments, in a format that the port agent will recognize.
+        @param cmd the command to format.
+        @param args_dict the argument dictionary
+        @retval The command to be sent to the device.
+        """
+
+        log.debug("Inside _build_camhd_command, for %s" % cmd)
+
+        # JSON encode argument dictionary
+        args_encoded = json.dumps(args_dict)
+
+        log.debug("Inside _build_camhd_command 2")
+
+        # Return a JSON encoded list containing the command and argument dictionary,
+        # followed by a newline.
+        command = json.dumps([cmd, args_encoded]) + NEWLINE
+
+        log.debug("Built CAMHD command: %s" % command)
+
+        return command
+
     def _build_simple_command(self, cmd, *args):
         """
-        Build handler for basic THSPH commands.
-        @param cmd the simple ooicore command to format.
+        Build handler for basic commands.
+        @param cmd the simple command to format.
         @retval The command to be sent to the device.
         """
-        return "%s%s" % (cmd, NEWLINE)
 
-    def _build_camhd_command(self, cmd, *args):
+        log.debug("Inside _build_simple_command, for %s" % cmd)
+
+        return self._build_camhd_command(cmd, {})
+
+    def _build_start_command(self, cmd):
         """
-        Build handler for CAMHD commands.
-        @param cmd the CAMHD command to format.
+        Build handler for CAMHD start command.
+        @param cmd the get command to format.
         @retval The command to be sent to the device.
         """
-        if cmd == Command.ENTER_RECORD_INTERVAL:
-            interval = int(self._param_dict.get(Parameter.RECORD_INTERVAL))
-            instrument_cmd =  cmd + interval + self._newline
-        elif cmd == Command.ENTER_PICTURE_INTERVAL:
-            interval = int(self._param_dict.get(Parameter.PICTURE_INTERVAL))
-            instrument_cmd =  cmd + interval + self._newline
-        elif cmd == Command.ENTER_SLEEP_INTERVAL:
-            interval = int(self._param_dict.get(Parameter.SLEEP_INTERVAL))
-            instrument_cmd =  cmd + interval + self._newline
-        else:
-            raise InstrumentProtocolException("Unknown command %s" % cmd)
-        return "%s%s" % (instrument_cmd, NEWLINE)
+
+        log.debug("Inside _build_start_command, for %s" % cmd)
+
+        return self._build_camhd_command(cmd, {'endpoint': DEFAULT_ENDPOINT})
+
+    def _build_set_command(self, cmd, param):
+        """
+        Build handler for CAMHD set commands: LOOKAT, LIGHTS and CAMERA
+        @param cmd the set command.
+        @param param the parameter to be set.
+        @param val the value of the parameter.
+        @retval The command to be sent to the device.
+        """
+        cmd_args = {}
+
+        # Setting the Pan/Tilt/Speed values involves sending a 'LOOKAT' msg to the instrument.
+        # Here we construct a 'LOOKAT' message.
+        if param == Parameter.PAN_POSITION or param == Parameter.TILT_POSITION or param == Parameter.PAN_TILT_SPEED:
+            cmd = Command.LOOKAT
+
+            # first get values from the dictionary
+            pan_val = self._param_dict.get(Parameter.PAN_POSITION)
+            tilt_val = self._param_dict.get(Parameter.TILT_POSITION)
+
+            # speed is optional
+            if param == Parameter.PAN_TILT_SPEED:
+                speed_val = self._param_dict.get(Parameter.PAN_TILT_SPEED)
+            else:
+                speed_val = None
+
+            cmd_args['pan'] = pan_val
+            cmd_args['tilt'] = tilt_val
+            if speed_val:
+                cmd_args['speed'] = speed_val
+
+        # Setting the light levels involves sending a 'LIGHTS' to the instrument.
+        # Here we construct a 'LIGHTS' message.
+        elif param == Parameter.LIGHT_1_LEVEL or param == Parameter.LIGHT_2_LEVEL:
+            cmd = Command.LIGHTS
+
+            # first get values from the dictionary
+            light1_val = self._param_dict.get(Parameter.LIGHT_1_LEVEL)
+            light2_val = self._param_dict.get(Parameter.LIGHT_2_LEVEL)
+
+            cmd_args['intensity'] = [light1_val, light2_val]
+
+        # Setting the Zoom level/Laser state involves sending a 'CAMERA' msg to the instrument.
+        # Here we construct a 'CAMERA' message.
+        elif param == Parameter.ZOOM_LEVEL or param == Parameter.LASERS_STATE:
+            cmd = Command.CAMERA
+
+            # first get values from the dictionary
+            zoom_val = self._param_dict.get(Parameter.ZOOM_LEVEL)
+            lasers_val = self._param_dict.get(Parameter.LASERS_STATE)
+
+            cmd_args['zoom'] = zoom_val
+            cmd_args['laser'] = lasers_val
+
+        return self._build_camhd_command(cmd, cmd_args)
+
+    ########################################################################
+    # Response handlers.
+    ########################################################################
+
+    def _parse_start_response(self, response, prompt):
+        """
+        Response handler for start command.
+        @param response command response string.
+        @param prompt prompt following command response.
+        """
+
+        log.debug("START RESPONSE = %s" % response)
+
+        if response.startswith("ERROR"):
+            log.error("Instrument returned error in response to START Command: %s" % response)
+            raise InstrumentProtocolException(
+                'Protocol._parse_start_response: Instrument returned: ' + response)
+
+        self._streaming = True
+
+        return response
+
+    def _parse_stop_response(self, response, prompt):
+        """
+        Response handler for stop command.
+        @param response command response string.
+        @param prompt prompt following command response.
+        """
+
+        log.debug("STOP RESPONSE = %s" % response)
+
+        if response.startswith("ERROR"):
+            log.error("Instrument returned error in response to STOP Command: %s" % response)
+
+        self._streaming = False
+
+        return response
+
+    def _parse_adread_response(self, response, prompt):
+        """
+        Response handler for adread command.
+        @param response command response string.
+        @param prompt prompt following command response.
+        """
+
+        log.debug("ADREAD RESPONSE = %s" % response)
+
+        if response.startswith("ERROR"):
+            log.error("Instrument returned error in response to ADREAD Command: %s" % response)
+            raise InstrumentProtocolException(
+                'Protocol._parse_adread_response: Instrument returned: ' + response)
+
+        return response
+
+    def _parse_get_response(self, response, prompt):
+        """
+        Response handler for get commands.
+        @param response command response string.
+        @param prompt prompt following command response.
+        """
+
+        log.debug("GET RESPONSE = %s" % response)
+
+        # Use the built-in update method to allow extraction of parameter values
+        # using the pre-defined regex for that parameter.
+        if response.startswith("ERROR"):
+            log.error("Instrument returned error in response to GET Command: %s" % response)
+            raise InstrumentProtocolException(
+                'Protocol._parse_get_response: Instrument returned: ' + response)
+
+        # Update the param dict with values obtained from the instrument
+        self._param_dict.update(response)
+
+        return response
+
+    def _parse_set_response(self, response, prompt):
+        """
+        Parse handler for set commands.
+        @param response command response string.
+        @param prompt prompt following command response.
+        """
+
+        log.debug("SET RESPONSE = %s" % response)
+
+        if response.startswith("ERROR"):
+            log.error("Instrument returned error in response to SET Command: %s" % response)
+            raise InstrumentProtocolException(
+                'Protocol._parse_set_response: Instrument returned: ' + response)
+
+        return response
 
     ########################################################################
     # Unknown handlers.
@@ -568,35 +988,95 @@ class Protocol(CommandResponseInstrumentProtocol):
         """
         Exit unknown state.
         """
-        pass
 
     def _handler_unknown_discover(self, *args, **kwargs):
         """
-        Discover current state
-        @retval (next_state, result)
+        Discover current state; can be COMMAND or AUTOSAMPLE.
+        @return protocol_state, agent_state if successful
         """
-        return (ProtocolState.COMMAND, ResourceAgentState.IDLE)
+        protocol_state, agent_state = self._discover()
 
-    # def _parse_set_response(self, response, prompt):
-    #     """
-    #     Parse handler for set command.
-    #     @param response command response string.
-    #     @param prompt prompt following command response.
-    #     @throws InstrumentProtocolException if set command misunderstood.
-    #     """
-    #     error = self._find_error(response)
-    #
-    #     if error:
-    #         log.error("Set command encountered error; type='%s' msg='%s'", error[0], error[1])
-    #         raise InstrumentParameterException('Set command failure: type="%s" msg="%s"' % (error[0], error[1]))
-    #
-    #     if prompt not in [Prompt.EXECUTED, Prompt.COMMAND]:
-    #         log.error("Set command encountered error; instrument returned: %s", response)
-    #         raise InstrumentProtocolException('Set command not recognized: %s' % response)
+        log.debug("_handler_unknown_discover: Protocol state is %s" % protocol_state)
+
+        if protocol_state == ProtocolState.COMMAND:
+            agent_state = ResourceAgentState.IDLE
+
+        return protocol_state, agent_state
+
+    def _discover(self):
+        """
+        Discover current state; can be COMMAND or AUTOSAMPLE or UNKNOWN.
+        @return (next_protocol_state, next_agent_state)
+        """
+
+        log.debug("trying to discover state...")
+
+        if self._scheduler_callback is not None:
+            if self._scheduler_callback.get(ScheduledJob.SAMPLE):
+                return ProtocolState.AUTOSAMPLE, ResourceAgentState.STREAMING
+
+        return ProtocolState.COMMAND, ResourceAgentState.COMMAND
 
     ########################################################################
     # Command handlers.
     ########################################################################
+
+    def start_scheduled_job(self, param, schedule_job, protocol_event):
+        """
+        Add a scheduled job
+        """
+        self.stop_scheduled_job(schedule_job)
+
+        (hours, minutes, seconds) = (int(val) for val in self._param_dict.get(param).split(':'))
+
+        # Video Capture Duration must be less than Autosample Interval
+        if param == Parameter.AUTO_CAPTURE_DURATION:
+            capture_interval = self.get_interval_seconds(param)
+            sample_interval = self.get_interval_seconds(Parameter.SAMPLE_INTERVAL)
+
+            if capture_interval >= sample_interval:
+                log.error("Video Capture Duration must be less than Autosample Interval. Not performing capture.")
+                raise InstrumentParameterException('Video Capture Duration must be less than Autosample Interval.')
+
+        log.debug("Setting scheduled interval for %s to %02d:%02d:%02d" % (param, hours, minutes, seconds))
+
+        if hours == 0 and minutes == 0 and seconds == 0:
+            # if interval is all zeroed, then stop scheduling jobs
+            self.stop_scheduled_job(schedule_job)
+        else:
+            config = {DriverConfigKey.SCHEDULER: {
+                schedule_job: {
+                    DriverSchedulerConfigKey.TRIGGER: {
+                        DriverSchedulerConfigKey.TRIGGER_TYPE: TriggerType.INTERVAL,
+                        DriverSchedulerConfigKey.HOURS: hours,
+                        DriverSchedulerConfigKey.MINUTES: minutes,
+                        DriverSchedulerConfigKey.SECONDS: seconds
+                    }
+                }
+            }
+            }
+            self.set_init_params(config)
+            self._add_scheduler_event(schedule_job, protocol_event)
+
+    def get_interval_seconds(self, param):
+        """
+        Helper to get Interval in seconds from a string time value
+        """
+        (hours, minutes, seconds) = (int(val) for val in self._param_dict.get(param).split(':'))
+        return hours * 3600 + minutes * 60 + seconds
+
+    def stop_scheduled_job(self, schedule_job):
+        """
+        Remove the scheduled job
+        @param schedule_job scheduling job.
+        """
+        log.debug("Attempting to remove the scheduler")
+        if self._scheduler is not None:
+            try:
+                self._remove_scheduler(schedule_job)
+                log.debug("successfully removed scheduler")
+            except KeyError:
+                log.debug("_remove_scheduler could not find %s", schedule_job)
 
     def _handler_command_enter(self, *args, **kwargs):
         """
@@ -604,775 +1084,394 @@ class Protocol(CommandResponseInstrumentProtocol):
         @throws InstrumentTimeoutException if the device cannot be woken.
         @throws InstrumentProtocolException if the update commands and not recognized.
         """
-        # Command device to update parameters and send a config change event.
-        #self._update_params()
+
+        # Update parameters - get values from Instrument
+        # No startup parameters to apply here, simply get Instrument values
+        log.debug("_handler_command_enter: Entering command state")
+
+        #stop streaming, just to make sure we get a fresh start
+        self._handler_command_stop_streaming()
+
+        self._update_params()
 
         # Tell driver superclass to send a state change event.
         # Superclass will query the state.
-        self._init_params()
         self._driver_event(DriverAsyncEvent.STATE_CHANGE)
 
-    def _handler_command_get(self, params=None, *args, **kwargs):
-        """
-        Get parameters while in the command state.
-        @param params List of the parameters to pass to the state
-        @retval returns (next_state, result) where result is a dict {}. No
-        agent state changes happening with Get, so no next_agent_state
-        @throw InstrumentParameterException for invalid parameter
-        """
-        next_state = None
-        result_vals = {}
+        self.stop_scheduled_job(ScheduledJob.SAMPLE)
 
-        if params is None:
-            raise InstrumentParameterException("GET parameter list empty!")
+        # start scheduled event for get_status only if the interval is not "00:00:00
+        status_interval = self._param_dict.get(Parameter.STATUS_INTERVAL)
 
-        if Parameter.ALL in params:
-            params = Parameter.list()
-            params.remove(Parameter.ALL)
+        if status_interval != ZERO_TIME_INTERVAL:
+            self.start_scheduled_job(Parameter.STATUS_INTERVAL,
+                                     ScheduledJob.ACQUIRE_STATUS,
+                                     ProtocolEvent.ACQUIRE_STATUS)
 
-        if not isinstance(params, list):
-            raise InstrumentParameterException("GET parameter list not a list!")
-
-        # Do a bulk update from the instrument since they are all on one page
-        #self._update_params()
-
-        # fill the return values from the update
-        for param in params:
-            if not Parameter.has(param):
-                raise InstrumentParameterException("Invalid parameter!")
-            result_vals[param] = self._param_dict.get(param)
-        result = result_vals
-
-        log.debug("Get finished, next: %s, result: %s", next_state, result)
-        return next_state, result
-
-    def _handler_command_set(self, *args, **kwargs):
-        try:
-            params = args[0]
-        except IndexError:
-            raise InstrumentParameterException('Set command requires a parameter dict.')
-
-        # set parameters are only allowed in COMMAND state
-        if self.get_current_state() != ProtocolState.COMMAND:
-            raise InstrumentProtocolException("Not in command state. Unable to set params")
-
-        self._verify_not_readonly(*args, **kwargs)
-
-        old_config = self._param_dict.get_config()
-
-        self._set_camhd_params(params)
-
-        new_config = self._param_dict.get_config()
-        if new_config != old_config:
-            self._driver_event(DriverAsyncEvent.CONFIG_CHANGE)
-
-    def _set_camhd_params(self, params):
-        """
-        Issue commands to the instrument to set various parameters
-        """
-        for (key, val) in params.iteritems():
-            if not Parameter.has(key):
-                raise InstrumentParameterException()
-
-            self._param_dict.set_value(key, val)
-
-            try:
-
-                if key == Parameter.RECORD_INTERVAL:
-                    result = self._do_cmd_resp(Command.ENTER_RECORD_INTERVAL, int(self._param_dict.get(key)),
-                                               expected_prompt=Prompt.ENTER_RECORD_INTERVAL_RESP)
-                    if not result:
-                        raise InstrumentParameterException("Could not set param %s" % key)
-
-                elif key == Parameter.PICTURE_INTERVAL:
-                    result = self._do_cmd_resp(Command.ENTER_PICTURE_INTERVAL, int(self._param_dict.get(key)),
-                                               expected_prompt=Prompt.ENTER_PICTURE_INTERVAL_RESP)
-                    if not result:
-                        raise InstrumentParameterException("Could not set param %s" % key)
-
-                elif key == Parameter.SLEEP_INTERVAL:
-
-                    result = self._do_cmd_resp(Command.ENTER_SLEEP_INTERVAL, int(self._param_dict.get(key)),
-                                               expected_prompt=Prompt.ENTER_SLEEP_INTERVAL_RESP)
-                    if not result:
-                        raise InstrumentParameterException("Could not set param %s" % key)
-
-            except InstrumentParameterException:
-                raise InstrumentProtocolException("Could not set %s" % key)
+        log.debug("_handler_command_enter: Entered command state")
 
     def _handler_command_exit(self, *args, **kwargs):
         """
         Exit command state.
         """
-        pass
+        self.stop_scheduled_job(ScheduledJob.ACQUIRE_STATUS)
 
-    def _handler_command_start_direct(self):
+    def _handler_command_get(self, *args, **kwargs):
         """
-        Start direct access
+        Get parameters while in the command state.
+        Call _handler_get in the base class, which calls _update_params.
+        @param args[0] list of parameters to retrieve, or DriverParameter.ALL.
+        @retval returns (next_state, result) where result is a dict {}.
         """
+        return self._handler_get(*args, **kwargs)
+
+    def _handler_command_set(self, *args, **kwargs):
+
+        next_state = None
+        changed = False
+
+        # Retrieve required parameter.
+        # Raise if no parameter provided, or not a dict.
+        try:
+            params = args[0]
+        except IndexError:
+            raise InstrumentParameterException('Set command requires a parameter dict.')
+
+        if not isinstance(params, dict):
+            raise InstrumentParameterException('Set parameters not a dict.')
+
+        # Handle engineering parameters
+        if Parameter.SAMPLE_INTERVAL in params:
+            if params[Parameter.SAMPLE_INTERVAL] != self._param_dict.get(Parameter.SAMPLE_INTERVAL):
+                self._param_dict.set_value(Parameter.SAMPLE_INTERVAL, params[Parameter.SAMPLE_INTERVAL])
+                if params[Parameter.SAMPLE_INTERVAL] == ZERO_TIME_INTERVAL:
+                    self.stop_scheduled_job(ScheduledJob.SAMPLE)
+                changed = True
+
+        if Parameter.STATUS_INTERVAL in params:
+            if params[Parameter.STATUS_INTERVAL] != self._param_dict.get(Parameter.STATUS_INTERVAL):
+                self._param_dict.set_value(Parameter.STATUS_INTERVAL, params[Parameter.STATUS_INTERVAL])
+                if params[Parameter.STATUS_INTERVAL] == ZERO_TIME_INTERVAL:
+                    self.stop_scheduled_job(ScheduledJob.ACQUIRE_STATUS)
+                changed = True
+
+        if Parameter.AUTO_CAPTURE_DURATION in params:
+            if params[Parameter.AUTO_CAPTURE_DURATION] != self._param_dict.get(Parameter.AUTO_CAPTURE_DURATION):
+                self._param_dict.set_value(Parameter.AUTO_CAPTURE_DURATION, params[Parameter.AUTO_CAPTURE_DURATION])
+                changed = True
+
+        if changed:
+            self._driver_event(DriverAsyncEvent.CONFIG_CHANGE)
+
+        result = self._set_params(params)
+
+        return next_state, result
+
+    def _set_params(self, *args, **kwargs):
+        """
+        Issue commands to the instrument to set various parameters
+        """
+
+        # Retrieve required parameter.
+        # Raise if no parameter provided, or not a dict.
+        result = None
+        try:
+            params = args[0]
+        except IndexError:
+            raise InstrumentParameterException('Set command requires a parameter dict.')
+
+        self._verify_not_readonly(*args, **kwargs)
+
+        (lookat, lights, camera) = (False, False, False)
+
+        filtered_params = dict(params)
+
+        # first pass - update the param dict - this is needed, for example:
+        # If the user is updating both pan and tilt, the 'lookat' message will have a stale
+        # value for either pan or tilt if we don't update the param_dict right now.
+        # We use param dict values to construct the lookat message (and others).
+        # Also, we need to make sure we don't send the lookat command twice in the above example.
+        # Here we remove either pan/tilt from the list of params to be updated. This makes sure
+        # we send the lookat only once, but with the user provided values for both pan and tilt.
+        for key, val in params.iteritems():
+
+            #These are driver specific parameters. They are not set on the instrument.
+            if key in [Parameter.SAMPLE_INTERVAL, Parameter.STATUS_INTERVAL, Parameter.AUTO_CAPTURE_DURATION]:
+                filtered_params.pop(key)
+            else:
+
+                #First, start streaming, if we aren't already. We need to be streaming
+                # to set Instrument Parameters
+                if not self._streaming:
+                    self._handler_start_streaming(**kwargs)
+
+                # First perform range check for parameters
+                if key == Parameter.PAN_POSITION:
+                    if not isinstance(val, int) or val < 45 or val > 315:
+                        raise InstrumentParameterException('The desired value for %s must be an integer'
+                                                           ' between 45 and 315: %s' % (key, val))
+                elif key == Parameter.TILT_POSITION:
+                    if not isinstance(val, int) or val < 50 or val > 140:
+                        raise InstrumentParameterException('The desired value for %s must be an integer'
+                                                           ' between 50 and 140: %s' % (key, val))
+                elif key == Parameter.PAN_TILT_SPEED:
+                    speed_val = self._param_dict.get(Parameter.PAN_TILT_SPEED)
+                    if not isinstance(speed_val, float) or speed_val < 0.5 or speed_val > 40.0:
+                        raise InstrumentParameterException('The desired value for %s must be a value'
+                                                           ' between 0.5 and 40.0: %s' % (key, val))
+
+                elif key == Parameter.LIGHT_1_LEVEL or key == Parameter.LIGHT_2_LEVEL:
+                    if not isinstance(val, int) or val < 0 or val > 100:
+                        raise InstrumentParameterException('The desired value for %s must be an integer'
+                                                           ' between 0 and 100: %s' % (key, val))
+
+                elif key == Parameter.ZOOM_LEVEL:
+                    if not isinstance(val, int) or val < -6 or val > 6:
+                        raise InstrumentParameterException('The desired value for %s must be an integer'
+                                                           ' between -6 and 6: %s' % (key, val))
+                elif key == Parameter.LASERS_STATE:
+                    if not isinstance(val, str) or val not in['on', 'off']:
+                        raise InstrumentParameterException('The desired value for %s must be on/off'
+                                                           ': %s' % (key, val))
+
+                log.debug("In _set_params, update param dict: %s, %s", key, val)
+
+                # update the param dict
+                self._param_dict.set_value(key, val)
+
+            # Remove "same-command" parameters from the filtered list
+            if key in [Parameter.PAN_POSITION, Parameter.TILT_POSITION, Parameter.PAN_TILT_SPEED]:
+                if lookat:
+                    filtered_params.pop(key)
+                lookat = True
+            elif key in [Parameter.LIGHT_1_LEVEL, Parameter.LIGHT_2_LEVEL]:
+                if lights:
+                    filtered_params.pop(key)
+                lights = True
+            elif key in [Parameter.ZOOM_LEVEL, Parameter.LASERS_STATE]:
+                if camera:
+                    filtered_params.pop(key)
+                camera = True
+
+        resp_regex = CAMHD_RESPONSE_PATTERN
+
+        # second pass: now build individual 'set' commands for each param
+        for key, val in filtered_params.iteritems():
+            log.debug("In _set_params, setting %s to %s", key, val)
+
+            if key in [Parameter.PAN_POSITION, Parameter.TILT_POSITION, Parameter.PAN_TILT_SPEED]:
+                resp_regex = LOOKAT_SET_RESPONSE_PATTERN
+            elif key in [Parameter.LIGHT_1_LEVEL, Parameter.LIGHT_2_LEVEL]:
+                resp_regex = LIGHTS_RESPONSE_PATTERN
+            elif key in [Parameter.ZOOM_LEVEL, Parameter.LASERS_STATE]:
+                resp_regex = CAMERA_RESPONSE_PATTERN
+
+            result = self._do_cmd_resp(Command.SET, key, response_regex=resp_regex)
+
+        # Set complete, now update params
+        self._update_params()
+
+        return result
+
+    def _handler_command_acquire_status(self):
+        """
+        Acquire status
+        """
+        next_state = None
+
+        log.debug("Inside _handler_command_acquire_status...sending ADREAD")
+
+        resp = self._do_cmd_resp(Command.ADREAD, response_regex=ADREAD_RESPONSE_PATTERN)
+
+        if resp.startswith('ERROR'):
+            log.error("Unable to Acquire Status. In response to ADREAD command, Instrument returned: %s" % resp)
+
+        return next_state, (None, None)
+
+    def _handler_command_start_streaming(self, **kwargs):
+        """
+        Start streaming video in command mode.
+        """
+        log.debug("Inside _handler_command_start_streaming")
+
+        next_state = None
+
+        self._handler_start_streaming(**kwargs)
+
+        return next_state, (None, None)
+
+    def _handler_start_streaming(self, **kwargs):
+        """
+        Start streaming video.
+        """
+        kwargs['timeout'] = 30
+        kwargs['response_regex'] = START_RESPONSE_PATTERN
+
+        log.debug("Inside _handler_start_streaming")
+
+        resp = self._do_cmd_resp(Command.START, **kwargs)
+
+        if resp.startswith('ERROR'):
+            log.error("Unable to Start Streaming. In response to START command, Instrument returned: %s" % resp)
+
+    def _handler_command_stop_streaming(self):
+        """
+        Stop streaming video.
+        """
+
+        log.debug("Inside _handler_command_stop_streaming")
+
+        next_state = None
+
+        # Send command to instrument to stop streaming
+        resp = self._do_cmd_resp(Command.STOP, response_regex=STOP_RESPONSE_PATTERN)
+
+        if resp.startswith('ERROR'):
+            log.warn("Unable to Stop Streaming. In response to STOP command, Instrument returned: %s" % resp)
+
+        return next_state, (None, None)
+
+    def _handler_command_get_status_streaming(self):
+        """
+        Get video streaming status.
+        """
+
+        log.debug("Inside _handler_command_get_status_streaming")
+
+        if not self._streaming:
+            log.error("Unable to get Streaming Status: Video streaming must be turned on first.")
+            raise InstrumentProtocolException("Unable to get Streaming Status:"
+                                              " Video streaming must be turned on first.")
+
+        # Call update params to send LOOKAT, LIGHTS, CAMERA to instrument.
+        # Responses to the above commands trigger publication of the camhd_streaming_status
+        # particle, which is the desired output of this event.
+        self._update_params()
+
+    def _handler_command_start_direct(self, *args, **kwargs):
+        """
+        Enter direct access mode.
+        """
+        result = None
+
         next_state = ProtocolState.DIRECT_ACCESS
         next_agent_state = ResourceAgentState.DIRECT_ACCESS
-        result = None
-        log.debug("_handler_command_start_direct: entering DA mode")
-        return (next_state, (next_agent_state, result))
-
-    def _handler_command_take_picture(self, *args, **kwargs):
-        """
-        @retval return (next state, (next_agent_state, result))
-        """
-
-        try:
-            response = self._do_cmd_resp(Command.TAKE_PICTURE, expected_prompt=Prompt.TAKE_PICTURE_RESP)
-            if response != Prompt.TAKE_PICTURE_RESP:
-                raise InstrumentProtocolException("Not able to get valid command response. ")
-
-        except InstrumentTimeoutException:
-            raise InstrumentProtocolException("Instrument time out exception. Instrument not responding to take picture cmd.")
-
-        return None, (None, None)
-
-    def _handler_command_acquire_sample(self, *args, **kwargs):
-        """
-        @retval return (next state, (next_agent_state, result))
-        """
-
-        try:
-            response = self._do_cmd_resp(Command.TAKE_PICTURE, expected_prompt=Prompt.TAKE_PICTURE_RESP)
-            if response != Prompt.START_STOP_RECORDING_RESP:
-                raise InstrumentProtocolException("Not able to get valid Take Picture command response. ")
-
-        except InstrumentTimeoutException:
-            raise InstrumentProtocolException("Instrument time out exception. Instrument not responding to Take Picture cmd.")
-
-        return None, (None, None)
+        return next_state, (next_agent_state, result)
 
     def _handler_command_start_autosample(self, *args, **kwargs):
         """
-        @retval return (next state, (next_agent_state, result))
+        Switch into autosample mode.
+        @return next_state, (next_agent_state, result) if successful.
         """
+        result = None
 
-        try:
-            response = self._do_cmd_resp(Command.START_STOP_RECORDING, expected_prompt=Prompt.START_STOP_RECORDING_RESP)
-            if response != Prompt.START_STOP_RECORDING_RESP:
-                raise InstrumentProtocolException("Not able to get valid Start Stop Recording command response. ")
+        # first stop scheduled sampling
+        self.stop_scheduled_job(ScheduledJob.SAMPLE)
 
-        except InstrumentTimeoutException:
-            raise InstrumentProtocolException("Instrument time out exception. Instrument not responding to Start Stop recording cmd.")
+        # if we are streaming, stop streaming
+        if self._streaming:
+            self._handler_command_stop_streaming()
 
-        return None, (None, None)
+        # Schedule an event to capture streaming video for the capture duration, at the sample interval
+        self.start_scheduled_job(Parameter.SAMPLE_INTERVAL, ScheduledJob.SAMPLE, ProtocolEvent.ACQUIRE_SAMPLE)
 
-    def _handler_command_stop_autosample(self, *args, **kwargs):
-        """
-        @retval return (next state, (next_agent_state, result))
-        """
-
-        try:
-            response = self._do_cmd_resp(Command.START_STOP_RECORDING, expected_prompt=Prompt.START_STOP_RECORDING_RESP)
-            if response != Prompt.START_STOP_RECORDING_RESP:
-                raise InstrumentProtocolException("Not able to get valid Start Stop Recording command response. ")
-
-        except InstrumentTimeoutException:
-            raise InstrumentProtocolException("Instrument time out exception. Instrument not responding to Start Stop recording cmd.")
-
-        return None, (None, None)
-
-    def _handler_command_start_stop_recording(self, *args, **kwargs):
-        """
-        @retval return (next state, (next_agent_state, result))
-        """
-
-        try:
-            response = self._do_cmd_resp(Command.START_STOP_RECORDING, expected_prompt=Prompt.START_STOP_RECORDING_RESP)
-            if response != Prompt.START_STOP_RECORDING_RESP:
-                raise InstrumentProtocolException("Not able to get valid Start Stop Recording command response.")
-
-        except InstrumentTimeoutException:
-            raise InstrumentProtocolException("Instrument not responding to Start Stop Recording cmd.")
-
-        return None, (None, None)
-
-    def _handler_command_zoom_in(self, *args, **kwargs):
-        """
-        @retval return (next state, (next_agent_state, result))
-        """
-
-        try:
-            response = self._do_cmd_resp(Command.ZOOM_IN, expected_prompt=Prompt.ZOOM_IN_RESP)
-            if response != Prompt.ZOOM_IN_RESP:
-                raise InstrumentProtocolException("Not able to get zoom in command response. ")
-
-        except InstrumentTimeoutException:
-            raise InstrumentProtocolException("Instrument time out exception. Instrument not responding to zoom in cmd.")
-        return None, (None, None)
-
-    def _handler_command_zoom_out(self, *args, **kwargs):
-        """
-        @retval return (next state, (next_agent_state, result))
-        """
-
-        try:
-            response = self._do_cmd_resp(Command.ZOOM_OUT, expected_prompt=Prompt.ZOOM_OUT_RESP)
-            if response != Prompt.ZOOM_OUT_RESP:
-                raise InstrumentProtocolException("Not able to get zoom out command response. ")
-
-        except InstrumentTimeoutException:
-            raise InstrumentProtocolException("Instrument not responding to zoom out cmd.")
-        return None, (None, None)
-
-    def _handler_command_up(self, *args, **kwargs):
-        """
-        @retval return (next state, (next_agent_state, result))
-        """
-
-        try:
-            response = self._do_cmd_resp(Command.UP, expected_prompt=Prompt.UP_RESP)
-            if response != Prompt.UP_RESP:
-                raise InstrumentProtocolException("Not able to get Up command response.")
-
-        except InstrumentTimeoutException:
-            raise InstrumentProtocolException("Instrument not responding to Up cmd.")
-        return None, (None, None)
-
-    def _handler_command_down(self, *args, **kwargs):
-        """
-        @retval return (next state, (next_agent_state, result))
-        """
-
-        try:
-            response = self._do_cmd_resp(Command.DOWN, expected_prompt=Prompt.DOWN_RESP)
-            if response != Prompt.DOWN_RESP:
-                raise InstrumentProtocolException("Not able to get Down command response.")
-
-        except InstrumentTimeoutException:
-            raise InstrumentProtocolException("Instrument time out exception. Instrument not responding to Down cmd.")
-        return None, (None, None)
-
-    def _handler_command_left(self, *args, **kwargs):
-        """
-        @retval return (next state, (next_agent_state, result))
-        """
-
-        try:
-            response = self._do_cmd_resp(Command.LEFT, expected_prompt=Prompt.LEFT_RESP)
-            if response != Prompt.LEFT_RESP:
-                raise InstrumentProtocolException("Not able to get Left command response. ")
-
-        except InstrumentTimeoutException:
-            raise InstrumentProtocolException("Instrument not responding to Left cmd.")
-        return None, (None, None)
-
-    def _handler_command_right(self, *args, **kwargs):
-        """
-        @retval return (next state, (next_agent_state, result))
-        """
-
-        try:
-            response = self._do_cmd_resp(Command.RIGHT, expected_prompt=Prompt.RIGHT_RESP)
-            if response != Prompt.RIGHT:
-                raise InstrumentProtocolException("Not able to get Right command response. ")
-
-        except InstrumentTimeoutException:
-            raise InstrumentProtocolException("Instrument not responding to Right cmd.")
-        return None, (None, None)
-
-    def _handler_command_select(self, *args, **kwargs):
-        """
-        @retval return (next state, (next_agent_state, result))
-        """
-
-        try:
-            response = self._do_cmd_resp(Command.SELECT, expected_prompt=Prompt.SELECT_RESP)
-            if response != Prompt.SELECT_RESP:
-                raise InstrumentProtocolException("Not able to get Select command response. ")
-
-        except InstrumentTimeoutException:
-            raise InstrumentProtocolException("Instrument not responding to Select cmd.")
-        return None, (None, None)
-
-    def _handler_command_power_on_off(self, *args, **kwargs):
-        """
-        @retval return (next state, (next_agent_state, result))
-        """
-
-        try:
-            response = self._do_cmd_resp(Command.POWER_ON_OFF, expected_prompt=Prompt.SELECT_RESP)
-            if response != Prompt.POWER_ON_OFF_RESP:
-                raise InstrumentProtocolException("Not able to get Power On Off command response.")
-
-        except InstrumentTimeoutException:
-            raise InstrumentProtocolException("Instrument not responding to Power On Off cmd.")
-        return None, (None, None)
-
-    def _handler_command_hd_sd_switch(self, *args, **kwargs):
-        """
-        @retval return (next state, (next_agent_state, result))
-        """
-
-        try:
-            response = self._do_cmd_resp(Command.HD_SD_SWITCH, expected_prompt=Prompt.HD_SD_SWITCH_RESP)
-            if response != Prompt.HD_SD_SWITCH_RESP:
-                raise InstrumentProtocolException("Not able to get HD SD Switch command response.")
-
-        except InstrumentTimeoutException:
-            raise InstrumentProtocolException("Instrument not responding to HD SD Switch cmd.")
-        return None, (None, None)
-
-    def _handler_command_usb_mode(self, *args, **kwargs):
-        """
-        @retval return (next state, (next_agent_state, result))
-        """
-
-        try:
-            response = self._do_cmd_resp(Command.USB_MODE, expected_prompt=Prompt.USB_MODE_RESP)
-            if response != Prompt.HD_SD_SWITCH_RESP:
-                raise InstrumentProtocolException("Not able to get USB Mode command response.")
-
-        except InstrumentTimeoutException:
-            raise InstrumentProtocolException("Instrument not responding to USB Mode cmd.")
-        return None, (None, None)
-
-    def _handler_command_ir_on_off(self, *args, **kwargs):
-        """
-        @retval return (next state, (next_agent_state, result))
-        """
-
-        try:
-            response = self._do_cmd_resp(Command.IR_ON_OFF, expected_prompt=Prompt.IR_ON_OFF_RESP)
-            if response != Prompt.IR_ON_OFF_RESP:
-                raise InstrumentProtocolException("Not able to get IR On Off command response. ")
-
-        except InstrumentTimeoutException:
-            raise InstrumentProtocolException("Instrument not responding to IR On Off cmd.")
-        return None, (None, None)
-
-    def _handler_command_laser_on_off(self, *args, **kwargs):
-        """
-        @retval return (next state, (next_agent_state, result))
-        """
-
-        try:
-            response = self._do_cmd_resp(Command.LASER_ON_OFF, expected_prompt=Prompt.IR_ON_OFF_RESP)
-            if response != Prompt.IR_ON_OFF_RESP:
-                raise InstrumentProtocolException("Not able to get Laser On Off command response. ")
-
-        except InstrumentTimeoutException:
-            raise InstrumentProtocolException("Instrument not responding to Laser On Off cmd.")
-        return None, (None, None)
-
-    def _handler_command_external_flash_enable(self, *args, **kwargs):
-        """
-        @retval return (next state, (next_agent_state, result))
-        """
-
-        try:
-            response = self._do_cmd_resp(Command.EXTERNAL_FLASH_ENABLE, expected_prompt=Prompt.EXTERNAL_FLASH_ENABLE_RESP)
-            if response != Prompt.EXTERNAL_FLASH_ENABLE_RESP:
-                raise InstrumentProtocolException("Not able to get External Flash Enable command response. ")
-
-        except InstrumentTimeoutException:
-            raise InstrumentProtocolException("Instrument not responding to External Flash Enable cmd.")
-        return None, (None, None)
-
-    def _handler_command_external_flash_disable(self, *args, **kwargs):
-        """
-        @retval return (next state, (next_agent_state, result))
-        """
-
-        try:
-            response = self._do_cmd_resp(Command.EXTERNAL_FLASH_DISABLE, expected_prompt=Prompt.EXTERNAL_FLASH_DISABLE_RESP)
-            if response != Prompt.EXTERNAL_FLASH_DISABLE_RESP:
-                raise InstrumentProtocolException("Not able to get External Flash Disable command response. ")
-
-        except InstrumentTimeoutException:
-            raise InstrumentProtocolException("Instrument not responding to External Flash Disable cmd.")
-        return None, (None, None)
-
-    def _handler_command_enter_sleep_interval(self, *args, **kwargs):
-        """
-        @retval return (next state, (next_agent_state, result))
-        """
-
-        try:
-            response = self._do_cmd_resp(Command.ENTER_SLEEP_INTERVAL, expected_prompt=Prompt.EXTERNAL_FLASH_DISABLE_RESP)
-            if response != Prompt.ENTER_SLEEP_INTERVAL_RESP:
-                raise InstrumentProtocolException("Not able to get Enter Sleep Interval command response. ")
-
-        except InstrumentTimeoutException:
-            raise InstrumentProtocolException("Instrument not responding to Enter Sleep Interval cmd.")
-        return None, (None, None)
-
-    def _handler_command_enter_picture_interval(self, *args, **kwargs):
-        """
-        @retval return (next state, (next_agent_state, result))
-        """
-
-        try:
-            response = self._do_cmd_resp(Command.ENTER_PICTURE_INTERVAL, expected_prompt=Prompt.EXTERNAL_FLASH_DISABLE_RESP)
-            if response != Prompt.ENTER_PICTURE_INTERVAL_RESP:
-                raise InstrumentProtocolException("Not able to get Enter Picture Interval command response. ")
-
-        except InstrumentTimeoutException:
-            raise InstrumentProtocolException("Instrument not responding to Enter Picture Interval cmd.")
-        return None, (None, None)
-
-    def _handler_command_enter_record_interval(self, *args, **kwargs):
-        """
-        @retval return (next state, (next_agent_state, result))
-        """
-
-        try:
-            response = self._do_cmd_resp(Command.ENTER_PICTURE_INTERVAL, expected_prompt=Prompt.EXTERNAL_FLASH_DISABLE_RESP)
-            if response != Prompt.ENTER_PICTURE_INTERVAL_RESP:
-                raise InstrumentProtocolException("Not able to get Enter Record Interval command response. ")
-
-        except InstrumentTimeoutException:
-            raise InstrumentProtocolException("Instrument not responding to Enter Record Interval cmd.")
-        return None, (None, None)
-
-    def _handler_command_execute_interval_mode(self, *args, **kwargs):
-        """
-        @retval return (next state, (next_agent_state, result))
-        """
-
-        try:
-            response = self._do_cmd_resp(Command.EXECUTE_INTERVAL_MODE, expected_prompt=Prompt.EXECUTE_INTERVAL_MODE_RESP)
-            if response != Prompt.EXECUTE_INTERVAL_MODE_RESP:
-                raise InstrumentProtocolException("Not able to get Execute Interval Mode command response. ")
-
-        except InstrumentTimeoutException:
-            raise InstrumentProtocolException("Instrument not responding to Execute Interval cmd.")
-        return None, (None, None)
-
-    def _handler_command_exit_interval_trigger_mode(self, *args, **kwargs):
-        """
-        @retval return (next state, (next_agent_state, result))
-        """
-
-        try:
-            response = self._do_cmd_resp(Command.EXIT_INTERVAL_TRIGGER_MODE, expected_prompt=Prompt.EXIT_INTERVAL_TRIGGER_MODE_RESP)
-            if response != Prompt.EXIT_INTERVAL_TRIGGER_MODE_RESP:
-                raise InstrumentProtocolException("Not able to get Exit Interval Trigger Mode command response. ")
-
-        except InstrumentTimeoutException:
-            raise InstrumentProtocolException("Instrument not responding to Exit Interval Trigger Mode cmd.")
-        return None, (None, None)
-
-    def _handler_command_enable_external_trigger(self, *args, **kwargs):
-        """
-        @retval return (next state, (next_agent_state, result))
-        """
-
-        try:
-            response = self._do_cmd_resp(Command.ENABLE_EXTERNAL_TRIGGER, expected_prompt=Prompt.ENABLE_EXTERNAL_TRIGGER_RESP)
-            if response != Prompt.ENABLE_EXTERNAL_TRIGGER_RESP:
-                raise InstrumentProtocolException("Not able to get Exit Interval Trigger command response. ")
-
-        except InstrumentTimeoutException:
-            raise InstrumentProtocolException("Instrument not responding to Exit Interval Trigger cmd.")
-        return None, (None, None)
-
-    def _handler_command_reset_eeprom(self, *args, **kwargs):
-        """
-        @retval return (next state, (next_agent_state, result))
-        """
-
-        try:
-            response = self._do_cmd_resp(Command.RESET_EEPROM, expected_prompt=Prompt.RESET_EEPROM_RESP)
-            if response != Prompt.RESET_EEPROM_RESP:
-                raise InstrumentProtocolException("Not able to get Reset EEPROM coomand response. ")
-
-        except InstrumentTimeoutException:
-            raise InstrumentProtocolException("Instrument not responding to Reset EEPROM cmd.")
-        return None, (None, None)
-
-    def _parse_take_picture(self, response, prompt):
-        """
-        Parse handler for CAMHD commands.
-        @param response command response string.
-        @param prompt prompt following command response.
-        @throws InstrumentProtocolException if CAMHD command misunderstood.
-        """
-        if prompt != Prompt.TAKE_PICTURE_RESP:
-            raise InstrumentProtocolException('CAMHD command not recognized: %s.' % response)
-
-        return response
-
-    def _parse_enter_picture_interval(self, response, prompt):
-        """
-        Parse handler for CAMHD commands.
-        @param response command response string.
-        @param prompt prompt following command response.
-        @throws InstrumentProtocolException if CAMHD command misunderstood.
-        """
-        if prompt != Prompt.ENTER_PICTURE_INTERVAL_RESP:
-            raise InstrumentProtocolException('CAMHD Enter Picture Interval command not recognized: %s.' % response)
-
-        return response
-
-    def _parse_enter_sleep_interval(self, response, prompt):
-        """
-        Parse handler for CAMHD commands.
-        @param response command response string.
-        @param prompt prompt following command response.
-        @throws InstrumentProtocolException if CAMHD command misunderstood.
-        """
-        if prompt != Prompt.ENTER_SLEEP_INTERVAL_RESP:
-            raise InstrumentProtocolException('CAMHD Enter Sleep Interval command not recognized: %s.' % response)
-
-        return response
-
-    def _parse_enter_record_interval(self, response, prompt):
-        """
-        Parse handler for CAMHD commands.
-        @param response command response string.
-        @param prompt prompt following command response.
-        @throws InstrumentProtocolException if CAMHD command misunderstood.
-        """
-        if prompt != Prompt.ENTER_RECORD_INTERVAL_RESP:
-            raise InstrumentProtocolException('CAMHD Enter Record Interval command not recognized: %s.' % response)
-
-        return response
+        next_state = ProtocolState.AUTOSAMPLE
+        next_agent_state = ResourceAgentState.STREAMING
 
-    def _parse_enter_record_interval(self, response, prompt):
-        """
-        Parse handler for CAMHD commands.
-        @param response command response string.
-        @param prompt prompt following command response.
-        @throws InstrumentProtocolException if CAMHD command misunderstood.
-        """
-        if prompt != Prompt.ENTER_RECORD_INTERVAL_RESP:
-            raise InstrumentProtocolException('CAMHD Enter Record Interval command not recognized: %s.' % response)
-
-        return response
-
-    def _parse_start_stop_recording(self, response, prompt):
-        """
-        Parse handler for CAMHD commands.
-        @param response command response string.
-        @param prompt prompt following command response.
-        @throws InstrumentProtocolException if CAMHD command misunderstood.
-        """
-        if prompt != Prompt.START_STOP_RECORDING_RESP:
-            raise InstrumentProtocolException('CAMHD Start Stop Recording command not recognized: %s.' % response)
-
-        return response
-
-    def _parse_zoom_in(self, response, prompt):
-        """
-        Parse handler for CAMHD commands.
-        @param response command response string.
-        @param prompt prompt following command response.
-        @throws InstrumentProtocolException if CAMHD command misunderstood.
-        """
-        if prompt != Prompt.ZOOM_IN_RESP:
-            raise InstrumentProtocolException('CAMHD Zoom In command not recognized: %s.' % response)
-
-        return response
-
-    def _parse_zoom_out(self, response, prompt):
-        """
-        Parse handler for CAMHD commands.
-        @param response command response string.
-        @param prompt prompt following command response.
-        @throws InstrumentProtocolException if CAMHD command misunderstood.
-        """
-        if prompt != Prompt.ZOOM_OUT_RESP:
-            raise InstrumentProtocolException('CAMHD Zoom Out command not recognized: %s.' % response)
-
-        return response
-
-    def _parse_up(self, response, prompt):
-        """
-        Parse handler for CAMHD commands.
-        @param response command response string.
-        @param prompt prompt following command response.
-        @throws InstrumentProtocolException if CAMHD command misunderstood.
-        """
-        if prompt != Prompt.UP_RESP:
-            raise InstrumentProtocolException('CAMHD UP command not recognized: %s.' % response)
-
-        return response
-
-    def _parse_down(self, response, prompt):
-        """
-        Parse handler for CAMHD commands.
-        @param response command response string.
-        @param prompt prompt following command response.
-        @throws InstrumentProtocolException if CAMHD command misunderstood.
-        """
-        if prompt != Prompt.DOWN_RESP:
-            raise InstrumentProtocolException('CAMHD Down command not recognized: %s.' % response)
+        return next_state, (next_agent_state, result)
 
-        return response
+    ########################################################################
+    # Autosample handlers.
+    ########################################################################
 
-    def _parse_select(self, response, prompt):
+    def _handler_autosample_enter(self):
         """
-        Parse handler for CAMHD commands.
-        @param response command response string.
-        @param prompt prompt following command response.
-        @throws InstrumentProtocolException if CAMHD command misunderstood.
+        Enter autosample state.
         """
-        if prompt != Prompt.SELECT_RESP:
-            raise InstrumentProtocolException('CAMHD Select command not recognized: %s.' % response)
 
-        return response
+        # Tell driver superclass to send a state change event.
+        # Superclass will query the state.
 
-    def _parse_left(self, response, prompt):
-        """
-        Parse handler for CAMHD commands.
-        @param response command response string.
-        @param prompt prompt following command response.
-        @throws InstrumentProtocolException if CAMHD command misunderstood.
-        """
-        if prompt != Prompt.LEFT_RESP:
-            raise InstrumentProtocolException('CAMHD Left command not recognized: %s.' % response)
+        self._driver_event(DriverAsyncEvent.STATE_CHANGE)
 
-        return response
-
-    def _parse_right(self, response, prompt):
+    def _handler_autosample_exit(self):
         """
-        Parse handler for CAMHD commands.
-        @param response command response string.
-        @param prompt prompt following command response.
-        @throws InstrumentProtocolException if CAMHD command misunderstood.
+        Exit autosample state.
         """
-        if prompt != Prompt.RIGHT_RESP:
-            raise InstrumentProtocolException('CAMHD Right command not recognized: %s.' % response)
 
-        return response
-
-    def _parse_power_on_off(self, response, prompt):
+    def _handler_autosample_acquire_sample(self, *args, **kwargs):
         """
-        Parse handler for CAMHD commands.
-        @param response command response string.
-        @param prompt prompt following command response.
-        @throws InstrumentProtocolException if CAMHD command misunderstood.
+        Acquire Sample
         """
-        if prompt != Prompt.POWER_ON_OFF_RESP:
-            raise InstrumentProtocolException('CAMHD Power On Off command not recognized: %s.' % response)
-
-        return response
+        next_state = None
 
-    def _parse_hd_sd_switch(self, response, prompt):
-        """
-        Parse handler for CAMHD commands.
-        @param response command response string.
-        @param prompt prompt following command response.
-        @throws InstrumentProtocolException if CAMHD command misunderstood.
-        """
-        if prompt != Prompt.HD_SD_SWITCH_RESP:
-            raise InstrumentProtocolException('CAMHD HD SD Switch command not recognized: %s.' % response)
+        # Schedule event to execute STOP when the capture time expires
+        capturing_duration = self._param_dict.get(Parameter.AUTO_CAPTURE_DURATION)
 
-        return response
+        if capturing_duration != ZERO_TIME_INTERVAL:
+            self.start_scheduled_job(Parameter.AUTO_CAPTURE_DURATION,
+                                     ScheduledJob.STOP_CAPTURE,
+                                     ProtocolEvent.STOP_STREAMING)
+        else:
+            log.error("Capturing Duration set to 0: Not Performing Capture.")
 
-    def _parse_usb_mode(self, response, prompt):
-        """
-        Parse handler for CAMHD commands.
-        @param response command response string.
-        @param prompt prompt following command response.
-        @throws InstrumentProtocolException if CAMHD command misunderstood.
-        """
-        if prompt != Prompt.USB_MODE_RESP:
-            raise InstrumentProtocolException('CAMHD USB Mode command not recognized: %s.' % response)
+        #First, start streaming
+        self._handler_start_streaming(**kwargs)
 
-        return response
+        # Set pan/tilt, lights, camera to user defined position
 
-    def _parse_ir_on_off(self, response, prompt):
-        """
-        Parse handler for CAMHD commands.
-        @param response command response string.
-        @param prompt prompt following command response.
-        @throws InstrumentProtocolException if CAMHD command misunderstood.
-        """
-        if prompt != Prompt.IR_ON_OFF_RESP:
-            raise InstrumentProtocolException('CAMHD IR On Off command not recognized: %s.' % response)
+        # This sends the 'LOOKAT' command to the instrument with user set values for Pan/Tilt
+        # populated from the param dict
+        self._do_cmd_resp(Command.SET, Parameter.PAN_POSITION, response_regex=LOOKAT_SET_RESPONSE_PATTERN)
 
-        return response
+        # This sends the 'LIGHTS' command to the instrument with user set values for Light Intensity
+        # populated from the param dict
+        self._do_cmd_resp(Command.SET, Parameter.LIGHT_1_LEVEL, response_regex=LIGHTS_RESPONSE_PATTERN)
 
-    def _parse_laser_on_off(self, response, prompt):
-        """
-        Parse handler for CAMHD commands.
-        @param response command response string.
-        @param prompt prompt following command response.
-        @throws InstrumentProtocolException if CAMHD command misunderstood.
-        """
-        if prompt != Prompt.LASER_ON_OFF_RESP:
-            raise InstrumentProtocolException('CAMHD Laser On Off command not recognized: %s.' % response)
+        # This sends the 'CAMERA' command to the instrument with user set values for Zoom/Lasers state
+        # populated from the param dict
+        self._do_cmd_resp(Command.SET, Parameter.ZOOM_LEVEL, response_regex=CAMERA_RESPONSE_PATTERN)
 
-        return response
+        return next_state, (None, None)
 
-    def _parse_external_flash_enable(self, response, prompt):
+    def _handler_autosample_stop_streaming(self):
         """
-        Parse handler for CAMHD commands.
-        @param response command response string.
-        @param prompt prompt following command response.
-        @throws InstrumentProtocolException if CAMHD command misunderstood.
+        Stop streaming video.
         """
-        if prompt != Prompt.EXTERNAL_FLASH_ENABLE_RESP:
-            raise InstrumentProtocolException('CAMHD External Flash Enable command not recognized: %s.' % response)
 
-        return response
-
-    def _parse_external_flash_disable(self, response, prompt):
-        """
-        Parse handler for CAMHD commands.
-        @param response command response string.
-        @param prompt prompt following command response.
-        @throws InstrumentProtocolException if CAMHD command misunderstood.
-        """
-        if prompt != Prompt.EXTERNAL_FLASH_DISABLE_RESP:
-            raise InstrumentProtocolException('CAMHD External Flash Disable command not recognized: %s.' % response)
+        log.debug("Inside _handler_autosample_stop_streaming")
 
-        return response
+        # Remove the job that was scheduled to stop streaming
+        self._remove_scheduler(ScheduledJob.STOP_CAPTURE)
 
-    def _parse_execute_interval_mode(self, response, prompt):
-        """
-        Parse handler for CAMHD commands.
-        @param response command response string.
-        @param prompt prompt following command response.
-        @throws InstrumentProtocolException if CAMHD command misunderstood.
-        """
-        if prompt != Prompt.EXECUTE_INTERVAL_MODE_RESP:
-            raise InstrumentProtocolException('CAMHD Execute Interval Mode command not recognized: %s.' % response)
+        next_state = None
 
-        return response
+        # Send command to instrument to stop streaming
+        resp = self._do_cmd_resp(Command.STOP, response_regex=STOP_RESPONSE_PATTERN)
 
-    def _parse_enable_external_trigger(self, response, prompt):
-        """
-        Parse handler for CAMHD commands.
-        @param response command response string.
-        @param prompt prompt following command response.
-        @throws InstrumentProtocolException if CAMHD command misunderstood.
-        """
-        if prompt != Prompt.ENABLE_EXTERNAL_TRIGGER_RESP:
-            raise InstrumentProtocolException('CAMHD Enable External Trigger command not recognized: %s.' % response)
+        if resp.startswith('ERROR'):
+            log.warn("Unable to Stop Streaming. In response to STOP command, Instrument returned: %s" % resp)
 
-        return response
+        return next_state, (None, None)
 
-    def _parse_exit_interval_trigger_mode(self, response, prompt):
+    def _handler_autosample_stop_autosample(self, *args, **kwargs):
         """
-        Parse handler for CAMHD commands.
-        @param response command response string.
-        @param prompt prompt following command response.
-        @throws InstrumentProtocolException if CAMHD command misunderstood.
+        Stop autosample and switch back to command mode.
+        @return  next_state, (next_agent_state, result) if successful.
+        incorrect prompt received.
         """
-        if prompt != Prompt.EXIT_INTERVAL_TRIGGER_MODE_RESP:
-            raise InstrumentProtocolException('CAMHD Exit Interval Trigger Mode command not recognized: %s.' % response)
+        result = None
 
-        return response
+        next_state = ProtocolState.COMMAND
+        next_agent_state = ResourceAgentState.COMMAND
 
-    def _parse_reset_eeprom(self, response, prompt):
-        """
-        Parse handler for CAMHD commands.
-        @param response command response string.
-        @param prompt prompt following command response.
-        @throws InstrumentProtocolException if CAMHD command misunderstood.
-        """
-        if prompt != Prompt.RESET_EEPROM_RESP:
-            raise InstrumentProtocolException('CAMHD Reset EEPROM Response command not recognized: %s.' % response)
+        # If currently streaming, send STOP to instrument
+        if self._streaming:
+            self._handler_command_stop_streaming()
 
-        return response
+        self.stop_scheduled_job(ScheduledJob.SAMPLE)
 
+        return next_state, (next_agent_state, result)
 
     ########################################################################
     # Direct access handlers.
@@ -1384,18 +1483,18 @@ class Protocol(CommandResponseInstrumentProtocol):
         """
         # Tell driver superclass to send a state change event.
         # Superclass will query the state.
-        self._driver_event(DriverAsyncEvent.STATE_CHANGE)
 
+        self._driver_event(DriverAsyncEvent.STATE_CHANGE)
         self._sent_cmds = []
 
     def _handler_direct_access_exit(self, *args, **kwargs):
         """
         Exit direct access state.
         """
-        pass
 
     def _handler_direct_access_execute_direct(self, data):
         """
+        Execute Direct Access
         """
         next_state = None
         result = None
@@ -1410,11 +1509,9 @@ class Protocol(CommandResponseInstrumentProtocol):
 
     def _handler_direct_access_stop_direct(self):
         """
-        @throw InstrumentProtocolException on invalid command
+        Stop Direct Access
         """
         result = None
+        (next_state, next_agent_state) = self._discover()
 
-        next_state = ProtocolState.COMMAND
-        next_agent_state = ResourceAgentState.COMMAND
-
-        return (next_state, (next_agent_state, result))
+        return next_state, (next_agent_state, result)

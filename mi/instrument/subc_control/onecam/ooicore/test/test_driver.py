@@ -1,7 +1,7 @@
 """
 @package mi.instrument.subc_control.onecam.ooicore.test.test_driver
-@file marine-integrations/mi/instrument/subc_control/onecam/ooicore/driver.py
-@author Richard Han
+@file m-instrument/mi/instrument/subc_control/onecam/ooicore/driver.py
+@author Tapana Gupta
 @brief Test cases for ooicore driver
 
 USAGE:
@@ -13,7 +13,7 @@ USAGE:
        $ bin/test_driver -q [-t testname]
 """
 
-__author__ = 'Richard Han'
+__author__ = 'Tapana Gupta'
 __license__ = 'Apache 2.0'
 
 from nose.plugins.attrib import attr
@@ -35,11 +35,12 @@ from mi.core.instrument.instrument_driver import DriverConfigKey
 
 from mi.instrument.subc_control.onecam.ooicore.driver import InstrumentDriver, Command
 from mi.instrument.subc_control.onecam.ooicore.driver import DataParticleType
+from mi.instrument.subc_control.onecam.ooicore.driver import CAMHDAdreadStatusParticleKey
 from mi.instrument.subc_control.onecam.ooicore.driver import ProtocolState
 from mi.instrument.subc_control.onecam.ooicore.driver import ProtocolEvent
 from mi.instrument.subc_control.onecam.ooicore.driver import Capability
 from mi.instrument.subc_control.onecam.ooicore.driver import Parameter
-from mi.instrument.subc_control.onecam.ooicore.driver import Protocol
+from mi.instrument.subc_control.onecam.ooicore.driver import CAMHDProtocol
 from mi.instrument.subc_control.onecam.ooicore.driver import Prompt
 from mi.instrument.subc_control.onecam.ooicore.driver import NEWLINE
 
@@ -54,16 +55,7 @@ InstrumentDriverTestCase.initialize(
     instrument_agent_packet_config = DataParticleType(),
 
     driver_startup_config = {
-        DriverConfigKey.PARAMETERS: {Parameter.PICTURE_INTERVAL: 0,
-                                     Parameter.RECORD_INTERVAL: 0,
-                                     Parameter.SLEEP_INTERVAL: 0,
-                                     Parameter.STOP_BIT: 1,
-                                     Parameter.BYTE_SIZE: 8,
-                                     Parameter.DATA_FLOW_CONTROL:'None',
-                                     Parameter.SERIAL_BAUD_RATE: 9600,
-                                     Parameter.INPUT_BUFFER_SIZE:1200,
-                                     Parameter.OUTPUT_BUFFER_SIZE:1200,
-                                     Parameter.PARITY: 0,}
+        DriverConfigKey.PARAMETERS: {}
     }
 )
 
@@ -110,13 +102,17 @@ class DriverTestMixinSub(DriverTestMixin):
     DEFAULT = ParameterTestConfigKey.DEFAULT
     STATES = ParameterTestConfigKey.STATES
 
+    VALID_ADREAD_RESPONSE = 'ADVAL{"time": 1373996308, "data": [{"name": "abc", "val": 12.3, "units": "degrees"}, {"name": "def", "val": 45.6, "units": "minutes"}]}' + NEWLINE
+
     _driver_capabilities = {
         # capabilities defined in the IOS
         Capability.START_AUTOSAMPLE: {STATES: [ProtocolState.COMMAND]},
         Capability.STOP_AUTOSAMPLE: {STATES: [ProtocolState.AUTOSAMPLE]},
-        Capability.GET: {STATES: [ProtocolState.COMMAND]},
-        Capability.SET: {STATES: [ProtocolState.COMMAND]},
-        Capability.ACQUIRE_SAMPLE: {STATES: [ProtocolState.COMMAND]}
+        Capability.ACQUIRE_STATUS: {STATES: [ProtocolState.COMMAND, ProtocolState.AUTOSAMPLE]},
+        Capability.GET_STATUS_STREAMING: {STATES: [ProtocolState.COMMAND, ProtocolState.AUTOSAMPLE]},
+        Capability.START_STREAMING: {STATES: [ProtocolState.COMMAND]},
+        Capability.STOP_STREAMING: {STATES: [ProtocolState.COMMAND, ProtocolState.AUTOSAMPLE]},
+
     }
 
     ###
@@ -125,31 +121,39 @@ class DriverTestMixinSub(DriverTestMixin):
     _driver_parameters = {
         # Parameters defined in the IOS
 
-        Parameter.BYTE_SIZE: {TYPE: int, READONLY: False, DA: True, STARTUP: True, DEFAULT: 8, VALUE: 8},
-        Parameter.DATA_FLOW_CONTROL: {TYPE: str, READONLY: False, DA: True, STARTUP: True, DEFAULT: 'None', VALUE: 'None'},
-        Parameter.STOP_BIT: {TYPE: int, READONLY: False, DA: True, STARTUP: True, DEFAULT: 1, VALUE: 1},
-        Parameter.INPUT_BUFFER_SIZE: {TYPE: int, READONLY: False, DA: True, STARTUP: True, DEFAULT: 1024, VALUE: 1024},
-        Parameter.OUTPUT_BUFFER_SIZE: {TYPE: int, READONLY: False, DA: True, STARTUP: True, DEFAULT: 1024, VALUE: 1024},
-        Parameter.PARITY: {TYPE: int, READONLY: False, DA: False, STARTUP: True, DEFAULT: 0, VALUE: 0},
-        Parameter.SERIAL_BAUD_RATE: {TYPE: int, READONLY: False, DA: False, STARTUP: True, DEFAULT: 9600, VALUE: 9600},
-        Parameter.PICTURE_INTERVAL: {TYPE: int, READONLY: False, DA: False, STARTUP: True, DEFAULT: 0, VALUE: 0},
-        Parameter.SLEEP_INTERVAL: {TYPE: int, READONLY: False, DA: False, STARTUP: True, DEFAULT: 0, VALUE: 0},
-        Parameter.RECORD_INTERVAL: {TYPE: int, READONLY: False, DA: False, STARTUP: True, DEFAULT: 0, VALUE: 0},
+        Parameter.ENDPOINT: {TYPE: str, READONLY: True, DA: False, STARTUP: False, DEFAULT: '128.95.97.233', VALUE: '128.95.97.233'},
+        Parameter.PAN_POSITION: {TYPE: float, READONLY: False, DA: False, STARTUP: False, DEFAULT: 180.0, VALUE: 180.0},
+        Parameter.TILT_POSITION: {TYPE: float, READONLY: False, DA: False, STARTUP: False, DEFAULT: 90.0, VALUE: 90.0},
+        Parameter.PAN_TILT_SPEED: {TYPE: float, READONLY: False, DA: False, STARTUP: False, DEFAULT: 10.0, VALUE: 10.0},
+        Parameter.HEADING: {TYPE: float, READONLY: True, DA: False, STARTUP: False, DEFAULT: 0.0, VALUE: 0.0},
+        Parameter.PITCH: {TYPE: float, READONLY: True, DA: False, STARTUP: False, DEFAULT: 0.0, VALUE: 0.0},
+        Parameter.LIGHT_1_LEVEL: {TYPE: int, READONLY: False, DA: False, STARTUP: False, DEFAULT: 50, VALUE: 50},
+        Parameter.LIGHT_2_LEVEL: {TYPE: int, READONLY: False, DA: False, STARTUP: False, DEFAULT: 50, VALUE: 50},
+        Parameter.ZOOM_LEVEL: {TYPE: int, READONLY: False, DA: False, STARTUP: False, DEFAULT: 0, VALUE: 0},
+        Parameter.LASERS_STATE: {TYPE: str, READONLY: False, DA: False, STARTUP: False, DEFAULT: 'off', VALUE: 'off'},
+        Parameter.SAMPLE_INTERVAL: {TYPE: str, READONLY: False, DA: False, STARTUP: False, DEFAULT: '00:30:00', VALUE: '00:30:00'},
+        Parameter.STATUS_INTERVAL: {TYPE: str, READONLY: False, DA: False, STARTUP: False, DEFAULT: '00:00:00', VALUE: '00:00:00'},
+        Parameter.AUTO_CAPTURE_DURATION: {TYPE: str, READONLY: False, DA: False, STARTUP: False, DEFAULT: '00:05:00', VALUE: '00:05:00'},
+
     }
 
-    def assertSampleDataParticle(self, data_particle):
-        '''
-        Verify a particle is a know particle to this driver and verify the particle is
-        correct
-        @param data_particle: Data particle of unkown type produced by the driver
-        '''
-        # if (isinstance(data_particle, RawDataParticle)):
-        #     self.assert_particle_raw(data_particle)
-        # else:
-        #     log.error("Unknown Particle Detected: %s" % data_particle)
-        #     self.assertFalse(True)
-        pass
+    _adread_parameters = {
 
+        CAMHDAdreadStatusParticleKey.CHANNEL_NAME: {TYPE: list, VALUE: ['abc', 'def'], REQUIRED: True},
+        CAMHDAdreadStatusParticleKey.CHANNEL_VALUE: {TYPE: list, VALUE: [12.3, 45.6], REQUIRED: True},
+        CAMHDAdreadStatusParticleKey.VALUE_UNITS: {TYPE: list, VALUE: ['degrees', 'minutes'], REQUIRED: True},
+
+    }
+
+    def assert_adread_status_particle(self, data_particle, verify_values=False):
+        """
+        Verify CAMDS health status data particle
+        @param data_particle: CAMDS health status DataParticle
+        @param verify_values: bool, should we verify parameter values
+        """
+        self.assert_data_particle_keys(CAMHDAdreadStatusParticleKey, self._adread_parameters)
+        self.assert_data_particle_header(data_particle, DataParticleType.ADREAD_STATUS)
+        self.assert_data_particle_parameters(data_particle, self._adread_parameters)
 
 ###############################################################################
 #                                UNIT TESTS                                   #
@@ -168,7 +172,6 @@ class DriverTestMixinSub(DriverTestMixin):
 class DriverUnitTest(InstrumentDriverUnitTestCase, DriverTestMixinSub):
     def setUp(self):
         InstrumentDriverUnitTestCase.setUp(self)
-
 
     def test_driver_enums(self):
         """
@@ -192,13 +195,13 @@ class DriverUnitTest(InstrumentDriverUnitTestCase, DriverTestMixinSub):
         driver = self.InstrumentDriver(self._got_data_event_callback)
         self.assert_driver_schema(driver, self._driver_parameters, self._driver_capabilities)
 
-
     def test_chunker(self):
         """
         Test the chunker and verify the particles created.
         """
-        chunker = StringChunker(Protocol.sieve_function)
+        chunker = StringChunker(CAMHDProtocol.sieve_function)
 
+        self.assert_chunker_sample(chunker, self.VALID_ADREAD_RESPONSE)
 
     def test_got_data(self):
         """
@@ -208,6 +211,10 @@ class DriverUnitTest(InstrumentDriverUnitTestCase, DriverTestMixinSub):
         driver = InstrumentDriver(self._got_data_event_callback)
         self.assert_initialize_driver(driver)
 
+        self.assert_raw_particle_published(driver, True)
+
+        # Start validating data particles
+        self.assert_particle_published(driver, self.VALID_ADREAD_RESPONSE, self.assert_adread_status_particle, True)
 
     def test_protocol_filter_capabilities(self):
         """
@@ -215,17 +222,43 @@ class DriverUnitTest(InstrumentDriverUnitTestCase, DriverTestMixinSub):
         Iterate through available capabilities, and verify that they can pass successfully through the filter.
         Test silly made up capabilities to verify they are blocked by filter.
         """
-        mock_callback = Mock()
-        protocol = Protocol(Prompt, NEWLINE, mock_callback)
-        driver_capabilities = Capability().list()
-        test_capabilities = Capability().list()
+        my_event_callback = Mock()
+        protocol = CAMHDProtocol(Prompt, NEWLINE, my_event_callback)
+        driver_capabilities = Capability.list()
+        test_capabilities = Capability.list()
 
         # Add a bogus capability that will be filtered out.
         test_capabilities.append("BOGUS_CAPABILITY")
 
         # Verify "BOGUS_CAPABILITY was filtered out
-        self.assertEquals(sorted(driver_capabilities),
-                          sorted(protocol._filter_capabilities(test_capabilities)))
+        self.assertEquals(driver_capabilities, protocol._filter_capabilities(test_capabilities))
+
+    def test_capabilities(self):
+        """
+        Verify the FSM reports capabilities as expected.  All states defined in this dict must
+        also be defined in the protocol FSM.
+        """
+        capabilities = {
+            ProtocolState.UNKNOWN: ['DRIVER_EVENT_DISCOVER'],
+            ProtocolState.COMMAND: ['DRIVER_EVENT_ACQUIRE_STATUS',
+                                    'DRIVER_EVENT_GET',
+                                    'DRIVER_EVENT_SET',
+                                    'DRIVER_EVENT_START_AUTOSAMPLE',
+                                    'DRIVER_EVENT_START_STREAMING',
+                                    'DRIVER_EVENT_STOP_STREAMING',
+                                    'DRIVER_EVENT_GET_STATUS_STREAMING',
+                                    'DRIVER_EVENT_START_DIRECT'],
+            ProtocolState.AUTOSAMPLE: ['DRIVER_EVENT_GET',
+                                       'DRIVER_EVENT_STOP_AUTOSAMPLE',
+                                       'DRIVER_EVENT_ACQUIRE_SAMPLE',
+                                       'DRIVER_EVENT_ACQUIRE_STATUS',
+                                       'DRIVER_EVENT_STOP_STREAMING',
+                                       'DRIVER_EVENT_GET_STATUS_STREAMING'],
+            ProtocolState.DIRECT_ACCESS: ['DRIVER_EVENT_STOP_DIRECT', 'EXECUTE_DIRECT']
+        }
+
+        driver = InstrumentDriver(self._got_data_event_callback)
+        self.assert_capabilities(driver, capabilities)
 
 
 ###############################################################################
@@ -241,7 +274,6 @@ class DriverIntegrationTest(InstrumentDriverIntegrationTestCase):
         InstrumentDriverIntegrationTestCase.setUp(self)
 
 
-
 ###############################################################################
 #                            QUALIFICATION TESTS                              #
 # Device specific qualification tests are for doing final testing of ion      #
@@ -252,44 +284,3 @@ class DriverIntegrationTest(InstrumentDriverIntegrationTestCase):
 class DriverQualificationTest(InstrumentDriverQualificationTestCase):
     def setUp(self):
         InstrumentDriverQualificationTestCase.setUp(self)
-
-    def test_direct_access_telnet_mode(self):
-        """
-        @brief This test manually tests that the Instrument Driver properly supports direct access to the physical instrument. (telnet mode)
-        """
-        self.assert_direct_access_start_telnet()
-        self.assertTrue(self.tcp_client)
-
-        ###
-        #   Add instrument specific code here.
-        ###
-
-        self.assert_direct_access_stop_telnet()
-
-
-    def test_poll(self):
-        '''
-        No polling for a single sample
-        '''
-
-
-    def test_autosample(self):
-        '''
-        start and stop autosample and verify data particle
-        '''
-
-
-    def test_get_set_parameters(self):
-        '''
-        verify that all parameters can be get set properly, this includes
-        ensuring that read only parameters fail on set.
-        '''
-        self.assert_enter_command_mode()
-
-
-    def test_get_capabilities(self):
-        """
-        @brief Walk through all driver protocol states and verify capabilities
-        returned by get_current_capabilities
-        """
-        self.assert_enter_command_mode()
