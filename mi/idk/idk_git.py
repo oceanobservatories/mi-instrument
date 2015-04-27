@@ -9,8 +9,10 @@ independantly.
 
 from os.path import dirname
 from os import environ
-from git import LocalRepository
-from git.exceptions import GitCommandFailedException
+# TODO - if we need this it will need to be ported to gitpython
+# TODO - gitpy is no longer available
+# from git import LocalRepository
+# from git.exceptions import GitCommandFailedException
 
 from mi.core.log import get_logger ; log = get_logger()
 from mi.idk.config import Config

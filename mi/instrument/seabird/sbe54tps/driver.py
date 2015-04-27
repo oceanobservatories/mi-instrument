@@ -755,64 +755,41 @@ class SBE54tpsHardwareDataParticle(DataParticle):
 
         @throws SampleException If there is a problem with sample creation
         """
-        # Initialize
-        single_var_matches = {
-            SBE54tpsHardwareDataParticleKey.DEVICE_TYPE: None,
-            SBE54tpsHardwareDataParticleKey.SERIAL_NUMBER: None,
-            SBE54tpsHardwareDataParticleKey.MANUFACTURER: None,
-            SBE54tpsHardwareDataParticleKey.FIRMWARE_VERSION: None,
-            SBE54tpsHardwareDataParticleKey.FIRMWARE_DATE: None,
-            SBE54tpsHardwareDataParticleKey.HARDWARE_VERSION: [],
-            SBE54tpsHardwareDataParticleKey.PCB_SERIAL_NUMBER: [],
-            SBE54tpsHardwareDataParticleKey.PCB_TYPE: None,
-            SBE54tpsHardwareDataParticleKey.MANUFACTUR_DATE: None
+        arrays = [SBE54tpsHardwareDataParticleKey.HARDWARE_VERSION,
+                  SBE54tpsHardwareDataParticleKey.PCB_SERIAL_NUMBER]
+
+        matchers = {
+            re.compile(self.LINE1): [SBE54tpsHardwareDataParticleKey.DEVICE_TYPE,
+                                     SBE54tpsHardwareDataParticleKey.SERIAL_NUMBER],
+            re.compile(self.LINE2): [SBE54tpsHardwareDataParticleKey.MANUFACTURER],
+            re.compile(self.LINE3): [SBE54tpsHardwareDataParticleKey.FIRMWARE_VERSION],
+            re.compile(self.LINE4): [SBE54tpsHardwareDataParticleKey.FIRMWARE_DATE],
+            re.compile(self.LINE5): [SBE54tpsHardwareDataParticleKey.HARDWARE_VERSION],
+            re.compile(self.LINE6): [SBE54tpsHardwareDataParticleKey.PCB_SERIAL_NUMBER],
+            re.compile(self.LINE7): [SBE54tpsHardwareDataParticleKey.PCB_TYPE],
+            re.compile(self.LINE8): [SBE54tpsHardwareDataParticleKey.MANUFACTUR_DATE]
         }
 
-        multi_var_matchers = {
-            re.compile(self.LINE1): 'DeviceTypeAndSerialNumber',
-            re.compile(self.LINE2): SBE54tpsHardwareDataParticleKey.MANUFACTURER,
-            re.compile(self.LINE3): SBE54tpsHardwareDataParticleKey.FIRMWARE_VERSION,
-            re.compile(self.LINE4): SBE54tpsHardwareDataParticleKey.FIRMWARE_DATE,
-            re.compile(self.LINE5): SBE54tpsHardwareDataParticleKey.HARDWARE_VERSION,
-            re.compile(self.LINE6): SBE54tpsHardwareDataParticleKey.PCB_SERIAL_NUMBER,
-            re.compile(self.LINE7): SBE54tpsHardwareDataParticleKey.PCB_TYPE,
-            re.compile(self.LINE8): SBE54tpsHardwareDataParticleKey.MANUFACTUR_DATE
-        }
+        values = {}
+
+        result = []
 
         for line in self.raw_data.split(NEWLINE):
-            for (matcher, key) in multi_var_matchers.iteritems():
+            for matcher, keys in matchers.iteritems():
                 match = matcher.match(line)
 
                 if match:
-                    index = 0
-                    for key in keys:
-                        index = index + 1
-                        val = match.group(index)
+                    for index, key in enumerate(keys):
+                        val = match.group(index + 1)
 
-                        # str
-                        if key in [
-                            SBE54tpsHardwareDataParticleKey.DEVICE_TYPE,
-                            SBE54tpsHardwareDataParticleKey.MANUFACTURER,
-                            SBE54tpsHardwareDataParticleKey.FIRMWARE_VERSION,
-                            SBE54tpsHardwareDataParticleKey.FIRMWARE_VERSION,
-                            SBE54tpsHardwareDataParticleKey.HARDWARE_VERSION,
-                            SBE54tpsHardwareDataParticleKey.PCB_TYPE,
-                            SBE54tpsHardwareDataParticleKey.MANUFACTUR_DATE,
-                            SBE54tpsHardwareDataParticleKey.FIRMWARE_DATE,
-                            SBE54tpsHardwareDataParticleKey.SERIAL_NUMBER
-                        ]:
-                            single_var_matches[key] = val
+                        if key in arrays:
+                            values.setdefault(key, []).append(val)
+                        else:
+                            values[key] = val
 
-                        #array
-                        if key in [
-                           SBE54tpsHardwareDataParticleKey.PCB_SERIAL_NUMBER,
-                        ]:
-                            single_var_matches[key] = [val]
-
-        result = []
-        for (key, value) in single_var_matches.iteritems():
+        for key, val in values.iteritems():
             result.append({DataParticleKey.VALUE_ID: key,
-                           DataParticleKey.VALUE: value})
+                           DataParticleKey.VALUE: val})
 
         return result
 

@@ -80,7 +80,6 @@ InstrumentDriverTestCase.initialize(
     driver_startup_config = {
         DriverStartupConfigKey.PARAMETERS: {
             Parameter.SAMPLE_PERIOD: 15,
-            Parameter.BATTERY_TYPE: 1,
             Parameter.ENABLE_ALERTS: 1,
         },
         DriverStartupConfigKey.SCHEDULER: {
@@ -219,8 +218,8 @@ class SeaBird54tpsMixin(DriverTestMixin):
         SBE54tpsHardwareDataParticleKey.MANUFACTURER: {TYPE: unicode, VALUE: 'Sea-Bird Electronics, Inc', REQUIRED: True },
         SBE54tpsHardwareDataParticleKey.FIRMWARE_VERSION: {TYPE: unicode, VALUE: 'SBE54 V1.3-6MHZ', REQUIRED: True },
         SBE54tpsHardwareDataParticleKey.FIRMWARE_DATE: {TYPE: unicode, VALUE: 'Mar 22 2007', REQUIRED: True },
-        SBE54tpsHardwareDataParticleKey.HARDWARE_VERSION: {TYPE: unicode, VALUE: '41478A.1T', REQUIRED: True },
-        SBE54tpsHardwareDataParticleKey.PCB_SERIAL_NUMBER: {TYPE: list, VALUE: ['NOT SET'], REQUIRED: True },
+        SBE54tpsHardwareDataParticleKey.HARDWARE_VERSION: {TYPE: list, VALUE: ['41477A.1', '41478A.1T'], REQUIRED: True },
+        SBE54tpsHardwareDataParticleKey.PCB_SERIAL_NUMBER: {TYPE: list, VALUE: ['NOT SET', 'NOT SET'], REQUIRED: True },
         SBE54tpsHardwareDataParticleKey.PCB_TYPE: {TYPE: unicode, VALUE: '1', REQUIRED: True },
         SBE54tpsHardwareDataParticleKey.MANUFACTUR_DATE: {TYPE: unicode, VALUE: 'Jun 27 2007', REQUIRED: True },
     }

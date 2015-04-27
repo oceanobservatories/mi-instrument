@@ -24,15 +24,15 @@ from os.path import exists
 
 from mi.idk.config import Config
 
-from mi.idk.dataset.metadata import Metadata
-from mi.idk.dataset.package_driver import PackageDriver
+# from mi.idk.dataset.metadata import Metadata
+# from mi.idk.dataset.package_driver import PackageDriver
 
 MI_BASE_DIR = "mi/dataset/driver"
 DRIVER_DIR = "fake_platform/fake_driver"
 CONSTRUCTOR = "FakeDriver"
 METADATA_FILE = "metadata.yml"
 
-@attr('UNIT', group='mi')
+@attr('UNIT_broke', group='mi')
 class TestPackageDriver(MiUnitTest):
 
     def setUp(self):

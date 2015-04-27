@@ -30,7 +30,7 @@ from mi.idk.exceptions import SampleTimeout
 from mi.core.exceptions import ConfigurationException
 from mi.core.exceptions import InstrumentParameterException
 
-from mi.dataset.dataset_driver import DriverParameter
+# from mi.dataset.dataset_driver import DriverParameter
 
 from mi.idk.unit_test import AgentCapabilityType
 from mi.idk.result_set import ResultSet
@@ -38,21 +38,21 @@ from mi.idk.dataset.metadata import Metadata
 from mi.idk.instrument_agent_client import InstrumentAgentClient
 from mi.idk.instrument_agent_client import InstrumentAgentDataSubscribers
 from mi.idk.instrument_agent_client import InstrumentAgentEventSubscribers
-from mi.dataset.dataset_driver import DataSourceConfigKey, DriverParameter
-from mi.dataset.dataset_driver import DataSetDriverConfigKeys
+# from mi.dataset.dataset_driver import DataSourceConfigKey, DriverParameter
+# from mi.dataset.dataset_driver import DataSetDriverConfigKeys
 from mi.core.instrument.instrument_driver import DriverEvent
 
-from interface.objects import ResourceAgentConnectionLostErrorEvent
+# from interface.objects import ResourceAgentConnectionLostErrorEvent
 
 from mi.core.exceptions import Conflict
 from mi.core.exceptions import ResourceError, BadRequest, Timeout, ServerError
 from mi.core.instrument.instrument_driver import ResourceAgentState
 from mi.core.instrument.instrument_driver import ResourceAgentEvent
 
-from interface.objects import AgentCommandResult
-from interface.objects import AgentCommand
-from interface.objects import AgentCapability
-from interface.objects import CapabilityType
+# from interface.objects import AgentCommandResult
+# from interface.objects import AgentCommand
+# from interface.objects import AgentCapability
+# from interface.objects import CapabilityType
 
 class DataSetTestConfig(InstrumentDriverTestConfig):
     """

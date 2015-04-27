@@ -164,6 +164,9 @@ class ISUS3UnitTestCase(InstrumentDriverUnitTestCase):
         """
         test_driver.set_test_mode(True)
 
+        # disable autoconnect
+        test_driver._autoconnect = False
+
         current_state = test_driver.get_resource_state()
         print "DHE: DriverConnectionState: " + str(current_state)
         self.assertEqual(current_state, DriverConnectionState.UNCONFIGURED)
@@ -348,6 +351,9 @@ class ISUS3UnitTestCase(InstrumentDriverUnitTestCase):
         Put the driver into test mode
         """
         test_driver.set_test_mode(True)
+
+        # disable autoconnect
+        test_driver._autoconnect = False
 
         current_state = test_driver.get_resource_state()
         print "DHE: DriverConnectionState: " + str(current_state)

@@ -6,6 +6,7 @@
 @author Steve Foley
 @brief Test cases for the base instrument protocol module
 """
+import functools
 
 __author__ = 'Steve Foley'
 __license__ = 'Apache 2.0'
@@ -343,7 +344,7 @@ class TestUnitInstrumentProtocol(MiUnitTestCase):
                 job_name: {
                     DriverSchedulerConfigKey.TRIGGER: {
                         DriverSchedulerConfigKey.TRIGGER_TYPE: TriggerType.INTERVAL,
-                        DriverSchedulerConfigKey.SECONDS: 2
+                        DriverSchedulerConfigKey.SECONDS: 1
                     },
                 }
             }
@@ -373,7 +374,7 @@ class TestUnitInstrumentProtocol(MiUnitTestCase):
         # now remove the job and see that no events are triggered
         self.protocol._remove_scheduler(job_name)
         self._trigger_count = 0
-        time.sleep(4)
+        time.sleep(2)
         self.assertEqual(self._trigger_count, 0)
         
         # now check that it raises exception if the removal is re-attempted
@@ -556,6 +557,7 @@ class TestUnitCommandInstrumentProtocol(MiUnitTestCase):
         self.protocol._connection.send = lambda x : self.protocol.add_to_buffer("%s >->" % x)
         self.protocol.get_current_state = Mock(return_value=self.TestState.TEST)
         self.protocol._send_wakeup = lambda: self.protocol.add_to_buffer("wakeup response >->")
+        self.protocol._wakeup = functools.partial(self.protocol._wakeup, delay=0)
         
     def _build_simple_command(self, cmd):
         return "cmd...do it!"
@@ -576,7 +578,7 @@ class TestUnitCommandInstrumentProtocol(MiUnitTestCase):
         regex2 = re.compile(r'foobar')
         regex3 = re.compile(r'.*(do) (it).*')
         regex4 = re.compile(r'.*do it.*')
-                        
+
         # Normal case
         result = self.protocol._do_cmd_resp(self.TestEvent.TEST)
         self.assertEqual(result, self._parse_test_response(self._build_simple_command(None)+" >", ">"))
@@ -584,14 +586,14 @@ class TestUnitCommandInstrumentProtocol(MiUnitTestCase):
         # expected prompt cases
         result = self.protocol._do_cmd_resp(self.TestEvent.TEST, expected_prompt=">")
         self.assertEqual(result, self._parse_test_response(self._build_simple_command(None)+" >", ">"))
-        
+
         result = self.protocol._do_cmd_resp(self.TestEvent.TEST, expected_prompt=">-")
         self.assertEqual(result, self._parse_test_response(self._build_simple_command(None)+" >-", ">-"))
 
         # Should time out looking for a bad prompt
         self.assertRaises(InstrumentTimeoutException,
                           self.protocol._do_cmd_resp,
-                          self.TestEvent.TEST, expected_prompt="-->", timeout=5)
+                          self.TestEvent.TEST, expected_prompt="-->", timeout=.1)
 
         # regex cases
         result = self.protocol._do_cmd_resp(self.TestEvent.TEST, response_regex=regex1)
@@ -604,8 +606,8 @@ class TestUnitCommandInstrumentProtocol(MiUnitTestCase):
         # Should time out looking for a bad regex
         self.assertRaises(InstrumentTimeoutException,
                           self.protocol._do_cmd_resp,
-                          self.TestEvent.TEST, response_regex=regex2)
-                          
+                          self.TestEvent.TEST, response_regex=regex2, timeout=.1)
+
         # combo case
         self.assertRaises(InstrumentProtocolException,
                           self.protocol._do_cmd_resp,

@@ -35,7 +35,7 @@ if exists("/private/tmp"):
     ROOTDIR = "/private%s" % ROOTDIR
     
 
-@attr('UNIT', group='mi')
+@attr('UNIT_broke', group='mi')
 class TestGit(MiUnitTest):
     """
     Test the git for the IDK

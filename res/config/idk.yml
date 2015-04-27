@@ -1,0 +1,9 @@
+idk:
+  tmp_dir: /tmp
+  template_dir: mi/idk/templates
+
+  rabbitmq: /usr/local/sbin/rabbitmq-server
+  couchdb: /usr/local/bin/couchdb
+  git: /usr/local/bin/git
+  xterm: /usr/X11/bin/xterm
+  tail: /usr/bin/tail

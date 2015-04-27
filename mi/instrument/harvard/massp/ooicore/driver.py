@@ -233,7 +233,7 @@ class InstrumentDriver(SingleConnectionInstrumentDriver):
     # Helpers.
     ########################################################################
 
-    def _build_connection(self, all_configs):
+    def _build_connection(self, config):
         """
         Constructs and returns a Connection object according to the given
         configuration. The connection object is a LoggerClient instance in
@@ -246,6 +246,7 @@ class InstrumentDriver(SingleConnectionInstrumentDriver):
         @returns a dictionary of Connection instances, which will be assigned to self._connection
         @throws InstrumentParameterException Invalid configuration.
         """
+        all_configs = config
         connections = {}
         for name, config in all_configs.items():
             if not isinstance(config, dict):

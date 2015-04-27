@@ -21,7 +21,7 @@ import unittest
 from mi.core.unit_test import MiUnitTest
 
 from mi.core.log import get_logger ; log = get_logger()
-from mi.idk.dataset.metadata import Metadata
+# from mi.idk.dataset.metadata import Metadata
 
 from mi.idk.exceptions import InvalidParameters
 import os
@@ -31,7 +31,7 @@ DRIVER_PATH = "test_driver/foo"
 METADATA_DIR = "/tmp/mi/dataset/driver/test_driver/foo"
 METADATA_FILE = "metadata.yml"
 
-@attr('UNIT', group='mi')
+@attr('UNIT_broke', group='mi')
 class TestMetadata(MiUnitTest):
     """
     Test the metadata object

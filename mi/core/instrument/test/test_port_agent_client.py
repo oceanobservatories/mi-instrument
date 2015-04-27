@@ -239,8 +239,11 @@ class PAClientUnitTestCase(InstrumentDriverUnitTestCase):
         test_recovery_attempts = 1
         test_heartbeat = 1
         test_max_missed_heartbeats = 5
-        paListener = Listener(None, test_recovery_attempts, None, test_heartbeat, test_max_missed_heartbeats,
-                              self.myGotData, self.myGotRaw, self.myGotListenerError, None, self.myGotError)
+        paListener = Listener(None, test_recovery_attempts, delim=None, heartbeat=test_heartbeat,
+                              max_missed_heartbeats=test_max_missed_heartbeats,
+                              callback_data=self.myGotData, callback_raw=self.myGotRaw,
+                              default_callback_error=self.myGotListenerError, local_callback_error=None,
+                              user_callback_error=self.myGotError)
         
         paListener.start_heartbeat_timer()
         
@@ -304,36 +307,24 @@ class PAClientUnitTestCase(InstrumentDriverUnitTestCase):
         """
         exceptionRaised = False
         driver = SBE37Driver(self._got_data_event_callback)
+        driver._autoconnect = False
         
         current_state = driver.get_resource_state()
         self.assertEqual(current_state, DriverConnectionState.UNCONFIGURED)
 
-        config = {'addr' : self.ipaddr, 'port' : self.data_port, 'cmd_port' : self.cmd_port}
-        driver.configure(config = config)
+        config = {'addr': self.ipaddr, 'port': self.data_port, 'cmd_port': self.cmd_port}
+        driver.configure(config=config)
 
         current_state = driver.get_resource_state()
         self.assertEqual(current_state, DriverConnectionState.DISCONNECTED)
 
         """
         Try to connect: it should not because there is no port agent running.  
-        The state should remain DISCONNECTED, and an 
-        InstrumentConnectionException should be caught.
+        The state should remain DISCONNECTED
         """
-        try:
-            driver.connect()
-            current_state = driver.get_resource_state()
-            self.assertEqual(current_state, DriverConnectionState.DISCONNECTED)
-        except InstrumentConnectionException as e:
-            exceptionRaised = True
-            
-        """
-        Give it some time to retry
-        """
-        time.sleep(4)
-
-        self.assertTrue(exceptionRaised)
-        
-
+        driver.connect()
+        current_state = driver.get_resource_state()
+        self.assertEqual(current_state, DriverConnectionState.DISCONNECTED)
         
 
 @attr('UNIT', group='mi')

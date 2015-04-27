@@ -919,7 +919,10 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
         except InstrumentConnectionException as e:
             log.error("Connection Exception: %s", e)
             log.error("Instrument Driver remaining in disconnected state.")
-            next_state = DriverConnectionState.CONNECT_FAILED
+            if self._autoconnect:
+                next_state = DriverConnectionState.CONNECT_FAILED
+            else:
+                next_state = DriverConnectionState.DISCONNECTED
 
         return next_state, result
 

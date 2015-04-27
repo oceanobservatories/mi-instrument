@@ -871,6 +871,9 @@ class UnitFromIDK(WorkhorseDriverUnitTest, ADCPTMixin):
         # Put the driver into test mode
         driver.set_test_mode(True)
 
+        # disable autoconnect
+        driver._autoconnect = False
+
         current_state = driver.get_resource_state()
         self.assertEqual(current_state, DriverConnectionState.UNCONFIGURED)
 

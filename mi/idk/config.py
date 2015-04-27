@@ -40,14 +40,14 @@ from mi.idk.common import Singleton
 PATH = os.path.join(os.path.expanduser("~"), ".idk")
 CONFIG_FILENAME = "idk.yml"
 
-DEFAULT_CONFIG = "mi/res/config/idk.yml"
+DEFAULT_CONFIG = "res/config/idk.yml"
 IDK_YAML_GROUP = "idk"
 YAML_CONFIG_WORKING_REPO = "working_repo"
 YAML_CONFIG_TEMPLATE_DIR = "template_dir"
 YAML_CONFIG_START_RABBIT = "start_rabbit"
 YAML_CONFIG_START_COUCH = "start_couch"
 
-MI_REPO_NAME = "marine-integrations"
+MI_REPO_NAME = "mi-instrument"
 
 DISABLE_START_RABBIT_AND_COUCH = True
 
@@ -77,7 +77,7 @@ class ConfigManager(Singleton):
         if not os.path.exists(cfgpath):
             log.debug("User IDK config doesn't exist: %s", cfgpath)
             self.rebase()
-            
+
         ## Read the user config file once to get the working repo dir, then again with the default and user config
         self.read_config([cfgpath])
 
