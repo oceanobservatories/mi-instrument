@@ -20,11 +20,12 @@ from mi.core.exceptions import InstrumentParameterException, NotImplementedExcep
 from mi.core.exceptions import InstrumentProtocolException
 from mi.core.exceptions import InstrumentTimeoutException
 
-from mi.core.log import get_logger
+from mi.core.log import get_logger, get_logging_metaclass
+
 log = get_logger()
 from mi.core.instrument.instrument_fsm import ThreadSafeFSM
-from mi.core.instrument.instrument_protocol import CommandResponseInstrumentProtocol
-from mi.core.instrument.instrument_driver import SingleConnectionInstrumentDriver, DriverConnectionState
+from mi.core.instrument.instrument_protocol import CommandResponseInstrumentProtocol, InitializationType
+from mi.core.instrument.instrument_driver import SingleConnectionInstrumentDriver
 from mi.core.instrument.instrument_driver import DriverEvent
 from mi.core.instrument.instrument_driver import DriverAsyncEvent
 from mi.core.instrument.instrument_driver import DriverProtocolState
@@ -228,16 +229,16 @@ class TeledyneInstrumentDriver(SingleConnectionInstrumentDriver):
         """
         # Construct superclass.
         SingleConnectionInstrumentDriver.__init__(self, evt_callback)
-        self._connection_fsm.add_handler(DriverConnectionState.CONNECTED,
-                                         DriverEvent.DISCOVER,
-                                         self._handler_connected_discover)
-
-    def _handler_connected_discover(self, event, *args, **kwargs):
-        # Redefine discover handler so that we can apply startup params
-        # when we discover. Gotta get into command mode first though.
-        result = SingleConnectionInstrumentDriver._handler_connected_protocol_event(self, event, *args, **kwargs)
-        self.apply_startup_params()
-        return result
+    #     self._connection_fsm.add_handler(DriverConnectionState.CONNECTED,
+    #                                      DriverEvent.DISCOVER,
+    #                                      self._handler_connected_discover)
+    #
+    # def _handler_connected_discover(self, event, *args, **kwargs):
+    #     # Redefine discover handler so that we can apply startup params
+    #     # when we discover. Gotta get into command mode first though.
+    #     result = SingleConnectionInstrumentDriver._handler_connected_protocol_event(self, event, *args, **kwargs)
+    #     self.apply_startup_params()
+    #     return result
 
 
 # noinspection PyMethodMayBeStatic
@@ -245,6 +246,7 @@ class TeledyneProtocol(CommandResponseInstrumentProtocol):
     """
     Instrument protocol Family SubClass
     """
+    __metaclass__ =  get_logging_metaclass(log_level='debug')
 
     def __init__(self, prompts, newline, driver_event):
         """
