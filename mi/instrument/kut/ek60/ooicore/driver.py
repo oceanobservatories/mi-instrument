@@ -43,6 +43,7 @@ NEWLINE = '\r\n'
 # Default Instrument's IP Address
 DEFAULT_HOST = "128.193.64.201"
 YAML_FILE_NAME = "driver_schedule.yaml"
+DEFAULT_PORT = "80"
 
 USER_NAME = "ooi"
 PASSWORD = "994ef22"
@@ -178,6 +179,7 @@ class Parameter(DriverParameter):
     FTP_IP_ADDRESS = "ftp_ip_address"
     FTP_USERNAME = "ftp_username"
     FTP_PASSWORD = "ftp_password"
+    FTP_PORT = "ftp_port"
 
 
 class Prompt(BaseEnum):
@@ -556,6 +558,15 @@ class Protocol(CommandResponseInstrumentProtocol):
                              startup_param=True,
                              default_value=PASSWORD)
 
+        self._param_dict.add(Parameter.FTP_PORT,
+                             r'port:(.*)',
+                             lambda match: match.group(1),
+                             str,
+                             type=ParameterDictType.STRING,
+                             display_name="FTP Port",
+                             startup_param=True,
+                             default_value=DEFAULT_PORT)
+
     def _build_driver_dict(self):
         """
         Populate the driver dictionary with options
@@ -603,7 +614,8 @@ class Protocol(CommandResponseInstrumentProtocol):
         """
         # Try to get the status to check if the instrument is alive
         host = self._param_dict.get_config_value(Parameter.FTP_IP_ADDRESS)
-        response = self._url_request(host, '/status.json')
+        port = self._param_dict.get_config_value(Parameter.FTP_PORT)
+        response = self._url_request(host, port, '/status.json')
 
         if response is None:
             error_msg = "_handler_unknown_discover: Unable to connect to host: %s" % host
@@ -722,10 +734,11 @@ class Protocol(CommandResponseInstrumentProtocol):
 
                 # Load the schedule file
                 host = self._param_dict.get(Parameter.FTP_IP_ADDRESS)
+                port = self._param_dict.get_config_value(Parameter.FTP_PORT)
                 log.debug("_set_params: stop the current schedule file")
-                self._url_request(host, '/stop_schedule', data={})
+                self._url_request(host, port, '/stop_schedule', data={})
                 log.debug("_set_params: upload driver YAML file to host %s", host)
-                res = self._url_request(host, '/load_schedule', data=json.dumps({'filename': YAML_FILE_NAME}))
+                res = self._url_request(host, port, '/load_schedule', data=json.dumps({'filename': YAML_FILE_NAME}))
                 log.debug("_set_params: result from load = %s", res)
 
         log.debug("set complete, update params")
@@ -781,13 +794,13 @@ class Protocol(CommandResponseInstrumentProtocol):
 
         log.debug("*** FTP %s to ftp host %s successfully", YAML_FILE_NAME, host)
 
-    def _url_request(self, host, page, data=None):
+    def _url_request(self, host, port, page, data=None):
         """
         Loads a schedule file previously uploaded to the instrument and sets it as
         the active instrument configuration
         """
         result = None
-        url = "https://" + host + page
+        url = "https://%s:%d/%s" % (host, port, page)
 
         try:
             if data is not None:
@@ -827,17 +840,18 @@ class Protocol(CommandResponseInstrumentProtocol):
         # Stop the current running schedule file just in case one is running and
         # load the driver schedule file
         host = self._param_dict.get(Parameter.FTP_IP_ADDRESS)
+        port = self._param_dict.get_config_value(Parameter.FTP_PORT)
         log.debug("_handler_command_autosample: stop the current schedule file")
-        self._url_request(host, '/stop_schedule', data={})
+        self._url_request(host, port, '/stop_schedule', data={})
 
         log.debug("_handler_command_autosample: upload driver YAML file to host %s", host)
-        res = self._url_request(host, '/load_schedule', data=json.dumps({'filename': YAML_FILE_NAME}))
+        res = self._url_request(host, port, '/load_schedule', data=json.dumps({'filename': YAML_FILE_NAME}))
 
         log.debug(" result from load = %s", res)
         if res.get('result') != 'OK':
             raise InstrumentException('_handler_command_autosample: Load Instrument Schedule File Error.')
 
-        res = self._url_request(host, '/start_schedule', data={})
+        res = self._url_request(host, port, '/start_schedule', data={})
         if res.get('result') != 'OK':
             raise InstrumentException('_handler_command_autosample: Start Schedule File Error.')
 
@@ -849,7 +863,8 @@ class Protocol(CommandResponseInstrumentProtocol):
         @retval next_state, (next_resource_state, result) tuple
         """
         host = self._param_dict.get_config_value(Parameter.FTP_IP_ADDRESS)
-        response = self._url_request(host, '/status.json')
+        port = self._param_dict.get_config_value(Parameter.FTP_PORT)
+        response = self._url_request(host, port, '/status.json')
 
         if response:
             log.debug("_handler_command_acquire_status: response from status = %r", response)
@@ -875,8 +890,9 @@ class Protocol(CommandResponseInstrumentProtocol):
         @retval next_state, (next_resource_state, result) tuple
         """
         host = self._param_dict.get_config_value(Parameter.FTP_IP_ADDRESS)
+        port = self._param_dict.get_config_value(Parameter.FTP_PORT)
         log.debug("_handler_autosample_stop: stop the current schedule file")
-        res = self._url_request(host, '/stop_schedule', data={})
+        res = self._url_request(host, port, '/stop_schedule', data={})
         log.debug("handler_autosample_stop: stop schedule returns %r", res)
 
         return ProtocolState.COMMAND, (ResourceAgentState.COMMAND, None)

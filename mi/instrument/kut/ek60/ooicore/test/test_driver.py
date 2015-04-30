@@ -64,6 +64,7 @@ InstrumentDriverTestCase.initialize(
     driver_startup_config={
         DriverConfigKey.PARAMETERS: {
             Parameter.FTP_IP_ADDRESS: '128.193.64.201',
+            Parameter.FTP_PORT: '80',
             Parameter.SCHEDULE: "# Default schedule file" + NEWLINE +
                                 "---" + NEWLINE +
                                 "file_prefix:    \"DEFAULT\"" + NEWLINE +
