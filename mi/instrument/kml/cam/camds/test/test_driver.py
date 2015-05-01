@@ -151,7 +151,7 @@ class CAMDSMixin(DriverTestMixin):
     _driver_parameters = {
 
         Parameter.CAMERA_GAIN[ParameterIndex.KEY]:
-            {TYPE: str, READONLY: False, DA: True, STARTUP: True,
+            {TYPE: str, READONLY: False, DA: False, STARTUP: False,
              DEFAULT: Parameter.CAMERA_GAIN[ParameterIndex.D_DEFAULT],
                                     VALUE: Parameter.CAMERA_GAIN[ParameterIndex.D_DEFAULT]},
         Parameter.CAMERA_MODE[ParameterIndex.KEY]:
@@ -163,11 +163,11 @@ class CAMDSMixin(DriverTestMixin):
              DEFAULT: Parameter.COMPRESSION_RATIO[ParameterIndex.D_DEFAULT],
                                     VALUE: Parameter.COMPRESSION_RATIO[ParameterIndex.D_DEFAULT]},
         Parameter.FOCUS_POSITION[ParameterIndex.KEY]:
-            {TYPE: str, READONLY: False, DA: True, STARTUP: True,
+            {TYPE: str, READONLY: False, DA: False, STARTUP: False,
              DEFAULT: Parameter.FOCUS_POSITION[ParameterIndex.D_DEFAULT],
                                     VALUE: Parameter.FOCUS_POSITION[ParameterIndex.D_DEFAULT]},
         Parameter.FOCUS_SPEED[ParameterIndex.KEY]:
-            {TYPE: str, READONLY: False, DA: True, STARTUP: True,
+            {TYPE: str, READONLY: False, DA: False, STARTUP: False,
              DEFAULT: Parameter.FOCUS_SPEED[ParameterIndex.D_DEFAULT],
                                     VALUE: Parameter.FOCUS_SPEED[ParameterIndex.D_DEFAULT]},
         Parameter.FRAME_RATE[ParameterIndex.KEY]:
@@ -179,11 +179,11 @@ class CAMDSMixin(DriverTestMixin):
              DEFAULT: Parameter.IMAGE_RESOLUTION[ParameterIndex.D_DEFAULT],
                                     VALUE: Parameter.IMAGE_RESOLUTION[ParameterIndex.D_DEFAULT]},
         Parameter.IRIS_POSITION[ParameterIndex.KEY]:
-            {TYPE: str, READONLY: False, DA: True, STARTUP: True,
+            {TYPE: str, READONLY: False, DA: False, STARTUP: False,
              DEFAULT: Parameter.IRIS_POSITION[ParameterIndex.D_DEFAULT],
                                     VALUE: Parameter.IRIS_POSITION[ParameterIndex.D_DEFAULT]},
         Parameter.LAMP_BRIGHTNESS[ParameterIndex.KEY]:
-            {TYPE: str, READONLY: False, DA: True, STARTUP: True,
+            {TYPE: str, READONLY: False, DA: False, STARTUP: False,
              DEFAULT: Parameter.LAMP_BRIGHTNESS[ParameterIndex.D_DEFAULT],
                                     VALUE: Parameter.LAMP_BRIGHTNESS[ParameterIndex.D_DEFAULT]},
         Parameter.NETWORK_DRIVE_LOCATION[ParameterIndex.KEY]:
@@ -194,38 +194,38 @@ class CAMDSMixin(DriverTestMixin):
             {TYPE: str, READONLY: True, DA: True, STARTUP: False,
              DEFAULT: None, VALUE: None},
         Parameter.PAN_POSITION[ParameterIndex.KEY]:
-            {TYPE: str, READONLY: False, DA: True, STARTUP: True,
+            {TYPE: str, READONLY: False, DA: False, STARTUP: False,
              DEFAULT: Parameter.PAN_POSITION[ParameterIndex.D_DEFAULT],
                                     VALUE: Parameter.PAN_POSITION[ParameterIndex.D_DEFAULT]},
         Parameter.PAN_SPEED[ParameterIndex.KEY]:
-            {TYPE: str, READONLY: False, DA: True, STARTUP: True,
+            {TYPE: str, READONLY: False, DA: False, STARTUP: False,
              DEFAULT: Parameter.PAN_SPEED[ParameterIndex.D_DEFAULT],
                                     VALUE: Parameter.PAN_SPEED[ParameterIndex.D_DEFAULT]},
         Parameter.SHUTTER_SPEED[ParameterIndex.KEY]:
-            {TYPE: str, READONLY: False, DA: True, STARTUP: True,
+            {TYPE: str, READONLY: False, DA: False, STARTUP: False,
              DEFAULT: Parameter.SHUTTER_SPEED[ParameterIndex.D_DEFAULT],
                                     VALUE: Parameter.SHUTTER_SPEED[ParameterIndex.D_DEFAULT]},
         Parameter.SOFT_END_STOPS[ParameterIndex.KEY]:
-            {TYPE: str, READONLY: False, DA: True, STARTUP: True,
+            {TYPE: str, READONLY: False, DA: False, STARTUP: False,
              DEFAULT: Parameter.SOFT_END_STOPS[ParameterIndex.D_DEFAULT],
                                     VALUE: Parameter.SOFT_END_STOPS[ParameterIndex.D_DEFAULT]},
         Parameter.TILT_POSITION[ParameterIndex.KEY]:
-            {TYPE: str, READONLY: False, DA: True, STARTUP: True,
+            {TYPE: str, READONLY: False, DA: False, STARTUP: False,
              DEFAULT: Parameter.TILT_POSITION[ParameterIndex.D_DEFAULT],
                                     VALUE: Parameter.TILT_POSITION[ParameterIndex.D_DEFAULT]},
         Parameter.TILT_SPEED[ParameterIndex.KEY]:
-            {TYPE: str, READONLY: False, DA: True, STARTUP: True,
+            {TYPE: str, READONLY: False, DA: False, STARTUP: False,
              DEFAULT: Parameter.TILT_SPEED[ParameterIndex.D_DEFAULT],
                                     VALUE: Parameter.TILT_SPEED[ParameterIndex.D_DEFAULT]},
         Parameter.WHEN_DISK_IS_FULL[ParameterIndex.KEY]:
             {TYPE: str, READONLY: True, DA: True, STARTUP: False,
              DEFAULT: None, VALUE: None},
         Parameter.ZOOM_POSITION[ParameterIndex.KEY]:
-            {TYPE: str, READONLY: False, DA: True, STARTUP: True,
+            {TYPE: str, READONLY: False, DA: False, STARTUP: False,
              DEFAULT: Parameter.ZOOM_POSITION[ParameterIndex.D_DEFAULT],
                                     VALUE: Parameter.ZOOM_POSITION[ParameterIndex.D_DEFAULT]},
         Parameter.ZOOM_SPEED[ParameterIndex.KEY]:
-            {TYPE: str, READONLY: False, DA: True, STARTUP: True,
+            {TYPE: str, READONLY: False, DA: False, STARTUP: False,
              DEFAULT: Parameter.ZOOM_SPEED[ParameterIndex.D_DEFAULT],
                                     VALUE: Parameter.ZOOM_SPEED[ParameterIndex.D_DEFAULT]},
 
