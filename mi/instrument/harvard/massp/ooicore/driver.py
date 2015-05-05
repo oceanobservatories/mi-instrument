@@ -169,6 +169,24 @@ class InstrumentDriver(SingleConnectionInstrumentDriver):
         SingleConnectionInstrumentDriver.__init__(self, evt_callback)
         self._slave_protocols = {}
 
+    def _massp_got_config(self, name, port_agent_packet):
+        data = port_agent_packet.get_data()
+
+        configuration = {'name': name}
+
+        for each in data.split('\n'):
+            if each == '':
+                continue
+
+            key, value = each.split(None, 1)
+            try:
+                value = int(value)
+            except ValueError:
+                pass
+            configuration[key] = value
+
+        self._driver_event(DriverAsyncEvent.DRIVER_CONFIG, configuration)
+
     ########################################################################
     # Disconnected handlers.
     ########################################################################
@@ -185,16 +203,56 @@ class InstrumentDriver(SingleConnectionInstrumentDriver):
             for name, connection in self._connection.items():
                 connection.init_comms(self._slave_protocols[name].got_data,
                                       self._slave_protocols[name].got_raw,
+                                      functools.partial(self._massp_got_config, name),
                                       self._got_exception,
                                       self._lost_connection_callback)
                 self._slave_protocols[name]._connection = connection
+            next_state = DriverConnectionState.CONNECTED
         except InstrumentConnectionException as e:
             log.error("Connection Exception: %s", e)
             log.error("Instrument Driver remaining in disconnected state.")
-            # Re-raise the exception
-            raise
+            if self._autoconnect:
+                next_state = DriverConnectionState.CONNECT_FAILED
+            else:
+                next_state = DriverConnectionState.DISCONNECTED
+
         log.debug('_handler_disconnected_connect exit')
-        return DriverConnectionState.CONNECTED, None
+
+        return next_state, None
+
+    ########################################################################
+    # Connect Failed handlers.
+    ########################################################################
+
+    def _handler_connect_failed_connect(self, *args, **kwargs):
+        """
+        Establish communications with the device via port agent / logger and
+        construct and initialize a protocol FSM for device interaction.
+        @retval (next_state, result) tuple, (DriverConnectionState.CONNECTED,
+        None) if successful.
+        If unsuccessful, try again after self._reconnect_interval
+        """
+        result = None
+        self._build_protocol()
+        try:
+            for name, connection in self._connection.items():
+                connection.init_comms(self._slave_protocols[name].got_data,
+                                      self._slave_protocols[name].got_raw,
+                                      functools.partial(self._massp_got_config, name),
+                                      self._got_exception,
+                                      self._lost_connection_callback)
+                self._slave_protocols[name]._connection = connection
+            next_state = DriverConnectionState.CONNECTED
+        except InstrumentConnectionException as e:
+            log.error("Connection Exception: %s", e)
+            log.error("Instrument Driver remaining in connect failed state.")
+            # exponential backoff until max_reconnect_interval has been reached
+            if self._reconnect_interval <= self._max_reconnect_interval:
+                self._reconnect_interval *= 2
+            self._create_delayed_reconnect_event()
+            next_state = None
+
+        return next_state, result
 
     ########################################################################
     # Connected handlers.
