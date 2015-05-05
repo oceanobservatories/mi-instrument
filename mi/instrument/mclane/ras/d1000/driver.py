@@ -329,16 +329,32 @@ class D1000TemperatureDataParticle(DataParticle):
 
     @staticmethod
     def regex():
+        # Data looks like this if we are sampling via the driver:
+        # #1RD
+        # *1RD+00019.16AB
+        # #2RD
+        # ...
+
+        # Data looks like this if we are capturing the output from the RSN collection script
+        # $1RD
+        # *+00003.50
+        # $2RD
+        # *+00003.26
+        # $3RD
+        # *+00013.30
+
+        # This regular expression needs to capture either format
+
         # exp = r'\*([123])RD([+-]\d*\.?\d+)(\w{2})' + NEWLINE
         exp = \
-            r'\*1RD([+-]\d*\.?\d+)(\w{2})' + NEWLINE + r'.*?' + \
-            r'\*2RD([+-]\d*\.?\d+)(\w{2})' + NEWLINE + r'.*?' + \
-            r'\*3RD([+-]\d*\.?\d+)(\w{2})' + NEWLINE
+            r'[*$]1RD.*?([+-]\d*\.?\d+).*?' + \
+            r'[*$]2RD.*?([+-]\d*\.?\d+).*?' + \
+            r'[*$]3RD.*?([+-]\d*\.?\d+).*?' + NEWLINE
         return exp
 
     @staticmethod
     def regex_compiled():
-        return re.compile(D1000TemperatureDataParticle.regex(), re.DOTALL)
+        return re.compile(D1000TemperatureDataParticle.regex())
 
     def _build_parsed_values(self):
         match = self.regex_compiled().match(self.raw_data)
@@ -347,15 +363,17 @@ class D1000TemperatureDataParticle(DataParticle):
             raise SampleException("D1000TemperatureDataParticle: No regex match of parsed sample data: [%s]",
                                   self.raw_data)
 
-        for line in self.raw_data.split(NEWLINE):
-            if line.startswith('*'):
-                if not valid_response(line):
-                    raise SampleException('Checksum failed - temperature sample is corrupt: %s', self.raw_data)
+        if '#2RD' in self.raw_data:
+            # data should contain a checksum, verify it
+            for line in self.raw_data.split(NEWLINE):
+                if line.startswith('*'):
+                    if not valid_response(line):
+                        raise SampleException('Checksum failed - temperature sample is corrupt: %s', self.raw_data)
 
         result = [
             self._encode_value(D1000TemperatureDataParticleKey.TEMP1, match.group(1), float),
-            self._encode_value(D1000TemperatureDataParticleKey.TEMP2, match.group(3), float),
-            self._encode_value(D1000TemperatureDataParticleKey.TEMP3, match.group(5), float),
+            self._encode_value(D1000TemperatureDataParticleKey.TEMP2, match.group(2), float),
+            self._encode_value(D1000TemperatureDataParticleKey.TEMP3, match.group(3), float),
         ]
 
         return result
@@ -501,11 +519,12 @@ class Protocol(CommandResponseInstrumentProtocol):
         matchers.append(D1000TemperatureDataParticle.regex_compiled())
 
         for matcher in matchers:
+            print repr(raw_data), matcher.pattern
             for match in matcher.finditer(raw_data):
                 return_list.append((match.start(), match.end()))
 
         if not return_list:
-            log.debug("sieve_function: raw_data=%s, return_list=%s", raw_data, return_list)
+            log.debug("sieve_function: raw_data=%r, return_list=%s", raw_data, return_list)
         return return_list
 
     def _got_chunk(self, chunk, timestamp):
