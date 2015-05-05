@@ -1398,7 +1398,7 @@ class InstrumentDriverUnitTestCase(InstrumentDriverTestCase):
         """
         ts = ntplib.system_to_ntp_time(time.time())
 
-        log.debug("Sample to publish: %s", sample_data)
+        log.debug("Sample to publish: %r", sample_data)
         # Create and populate the port agent packet.
         port_agent_packet = PortAgentPacket()
         port_agent_packet.attach_data(sample_data)
@@ -1418,7 +1418,7 @@ class InstrumentDriverUnitTestCase(InstrumentDriverTestCase):
             if stream_type != CommonDataParticleType.RAW:
                 particles.append(p)
 
-        log.debug("Non raw particles: %s ", particles)
+        log.debug("Non raw particles: %r ", particles)
         self.assertEqual(len(particles), 1)
 
         # Verify the data particle
