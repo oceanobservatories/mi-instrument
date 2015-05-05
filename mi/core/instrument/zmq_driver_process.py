@@ -7,6 +7,7 @@
 @brief Driver processes using ZMQ messaging.
 """
 import Queue
+import traceback
 import os
 import threading
 import time
@@ -307,6 +308,8 @@ class ZmqDriverProcess(driver_process.DriverProcess):
                             break
             except Queue.Empty:
                 time.sleep(.1)
+            except Exception:
+                traceback.print_exc()
 
         sock.close()
         context.term()
