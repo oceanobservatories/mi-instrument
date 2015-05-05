@@ -138,6 +138,13 @@ class UtilMixin(DriverTestMixin):
         "*2RD+00019.17AD" + NEWLINE + \
         "#3RD" + NEWLINE + \
         "*3RD+00019.18AF" + NEWLINE
+    RSN_SAMPLE_DATA = \
+        "$1RD" + NEWLINE + \
+        "*+00003.49" + NEWLINE + \
+        "$2RD" + NEWLINE + \
+        "*+00003.26" + NEWLINE + \
+        "$3RD" + NEWLINE + \
+        "*+00013.26" + NEWLINE
 
     _driver_capabilities = {
         # capabilities defined in the IOS
@@ -193,6 +200,12 @@ class UtilMixin(DriverTestMixin):
         D1000TemperatureDataParticleKey.TEMP3: {'type': float, 'value': 19.18},
     }
 
+    _rsn_sample_parameters = {
+        D1000TemperatureDataParticleKey.TEMP1: {'type': float, 'value': 3.49},
+        D1000TemperatureDataParticleKey.TEMP2: {'type': float, 'value': 3.26},
+        D1000TemperatureDataParticleKey.TEMP3: {'type': float, 'value': 13.26},
+    }
+
     # Driver Parameter Methods
     ###
     def assert_driver_parameters(self, current_parameters, verify_values=False, verify_sample_interval=False):
@@ -233,6 +246,18 @@ class UtilMixin(DriverTestMixin):
         """
         self.assert_data_particle_header(data_particle, DataParticleType.D1000_PARSED)
         self.assert_data_particle_parameters(data_particle, self._sample_parameters, verify_values)
+
+    ###
+    # Data Particle Parameters Methods
+    ###
+    def assert_rsn_data_particle_sample(self, data_particle, verify_values=False):
+        """
+        Verify a sample data particle
+        @param data_particle: D1000 Temperature data particle
+        @param verify_values: bool, should we verify parameter values
+        """
+        self.assert_data_particle_header(data_particle, DataParticleType.D1000_PARSED)
+        self.assert_data_particle_parameters(data_particle, self._rsn_sample_parameters, verify_values)
 
 
 ###############################################################################
@@ -317,6 +342,19 @@ class TestUNIT(InstrumentDriverUnitTestCase, UtilMixin):
 
         # validate that a new sample is published
         self.assert_particle_published(driver, self.SAMPLE_DATA2, self.assert_data_particle_sample, False)
+
+    def test_got_rsn_data(self):
+        """
+        Verify sample data passed through the got data method produces the correct data particles
+        """
+        # Create and initialize the instrument driver with a mock port agent
+        driver = InstrumentDriver(self._got_data_event_callback)
+        self.assert_initialize_driver(driver)
+
+        self.assert_raw_particle_published(driver, True)
+
+        # validating data particles are published
+        self.assert_particle_published(driver, self.RSN_SAMPLE_DATA, self.assert_rsn_data_particle_sample, True)
 
     def test_protocol_filter_capabilities(self):
         """
