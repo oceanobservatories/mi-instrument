@@ -181,7 +181,6 @@ class BotptTestMixinSub(DriverTestMixin):
         particles.LilySampleParticleKey.TEMP: {TYPE: float, VALUE: 26.04, REQUIRED: True},
         particles.LilySampleParticleKey.SUPPLY_VOLTS: {TYPE: float, VALUE: 11.96, REQUIRED: True},
         particles.LilySampleParticleKey.SN: {TYPE: unicode, VALUE: 'N9655', REQUIRED: True},
-        particles.LilySampleParticleKey.OUT_OF_RANGE: {TYPE: bool, VALUE: False, REQUIRED: True}
     }
 
     lily_sample_parameters_02 = {
@@ -193,7 +192,6 @@ class BotptTestMixinSub(DriverTestMixin):
         particles.LilySampleParticleKey.TEMP: {TYPE: float, VALUE: 26.04, REQUIRED: True},
         particles.LilySampleParticleKey.SUPPLY_VOLTS: {TYPE: float, VALUE: 11.96, REQUIRED: True},
         particles.LilySampleParticleKey.SN: {TYPE: unicode, VALUE: 'N9655', REQUIRED: True},
-        particles.LilySampleParticleKey.OUT_OF_RANGE: {TYPE: bool, VALUE: False, REQUIRED: True}
     }
 
     nano_sample_parameters_01 = {
