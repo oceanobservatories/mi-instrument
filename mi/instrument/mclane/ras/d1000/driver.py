@@ -354,7 +354,7 @@ class D1000TemperatureDataParticle(DataParticle):
 
     @staticmethod
     def regex_compiled():
-        return re.compile(D1000TemperatureDataParticle.regex())
+        return re.compile(D1000TemperatureDataParticle.regex(), re.DOTALL)
 
     def _build_parsed_values(self):
         match = self.regex_compiled().match(self.raw_data)
