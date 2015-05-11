@@ -236,7 +236,7 @@ class DriverTestMixinSub(DriverTestMixin):
         SUNASampleDataParticleKey.FIT_BASE_1: {'type': float, 'value': 0.0000},
         SUNASampleDataParticleKey.FIT_BASE_2: {'type': float, 'value': 0.000000},
         SUNASampleDataParticleKey.FIT_RMSE: {'type': float, 'value': 0.0000000},
-        SUNASampleDataParticleKey.CHECKSUM: {'type': int, 'value': 203}
+        SUNASampleDataParticleKey.CHECKSUM: {'type': int, 'value': 203},
     }
 
     _reference_status_parameters = {
@@ -362,6 +362,8 @@ class DriverTestMixinSub(DriverTestMixin):
         @param data_particle: driver parameters read from the driver instance
         @param verify_values:bool,  False = do not verify values against definition
         """
+        self.assert_data_particle_keys(SUNASampleDataParticleKey, self._reference_sample_parameters)
+        self.assert_data_particle_header(data_particle, DataParticleType.SUNA_SAMPLE, require_instrument_timestamp=True)
         self.assert_data_particle_parameters(data_particle, self._reference_sample_parameters, verify_values)
 
     def assert_data_particle_status(self, data_particle, verify_values=False):

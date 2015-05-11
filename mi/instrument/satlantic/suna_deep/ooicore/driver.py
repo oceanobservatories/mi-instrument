@@ -7,19 +7,18 @@ Release notes:
 
 initial_rev
 """
-
-
 __author__ = 'Rachel Manoni'
 __license__ = 'Apache 2.0'
 
 import re
 import functools
+import datetime
 
 from mi.core.common import BaseEnum, Units
 from mi.core.log import get_logger, get_logging_metaclass
 log = get_logger()
 
-from mi.core.instrument.instrument_protocol import CommandResponseInstrumentProtocol
+from mi.core.instrument.instrument_protocol import CommandResponseInstrumentProtocol, InitializationType
 from mi.core.instrument.instrument_fsm import InstrumentFSM
 from mi.core.instrument.instrument_driver import SingleConnectionInstrumentDriver
 from mi.core.instrument.instrument_driver import DriverEvent
@@ -430,7 +429,7 @@ class SUNASampleDataParticleKey(BaseEnum):
 class SUNASampleDataParticle(DataParticle):
     _data_particle_type = DataParticleType.SUNA_SAMPLE
 
-    def _build_parsed_values(self):
+    def _build_parsed_values(self, time=None):
         matched = SUNA_SAMPLE_REGEX.match(self.raw_data)
 
         if not matched:
@@ -466,6 +465,12 @@ class SUNASampleDataParticle(DataParticle):
                 {DataParticleKey.VALUE_ID: SUNASampleDataParticleKey.FIT_BASE_2, DataParticleKey.VALUE: float(matched.group(26))},
                 {DataParticleKey.VALUE_ID: SUNASampleDataParticleKey.FIT_RMSE, DataParticleKey.VALUE: float(matched.group(27))},
                 {DataParticleKey.VALUE_ID: SUNASampleDataParticleKey.CHECKSUM, DataParticleKey.VALUE: int(matched.group(28))}]
+
+            date = datetime.datetime.strptime(matched.group(3), '%Y%j')
+
+            secs = (date - datetime.datetime(1970, 1, 1)).total_seconds()
+            secs += float(matched.group(4)) * 3600
+            self.set_internal_timestamp(secs)
 
         except ValueError:
             raise SampleException("ValueError while parsing data [%s]" % self.raw_data)
@@ -1456,6 +1461,9 @@ class Protocol(CommandResponseInstrumentProtocol):
         old_config = self._param_dict.get_config()
         log.debug("OLD CONFIG: %s", self._param_dict.get_config())
 
+        if self._init_type != InitializationType.NONE:
+            self._update_params()
+
         for (key, val) in params.iteritems():
             log.debug("KEY = %s VALUE = %s", key, val)
             # check for driver parameters
@@ -1476,8 +1484,8 @@ class Protocol(CommandResponseInstrumentProtocol):
                     str_val = self._param_dict.format(key, params[key])
                 except KeyError:
                     raise InstrumentParameterException('Could not format param %s' % key)
-
-                self._do_cmd_resp(InstrumentCommand.SET, key, str_val, timeout=TIMEOUT, expected_prompt=[Prompt.OK,
+                if str_val != self._param_dict.get(key):
+                    self._do_cmd_resp(InstrumentCommand.SET, key, str_val, timeout=TIMEOUT, expected_prompt=[Prompt.OK,
                                                                                                          Prompt.ERROR])
 
         status_output = self._do_cmd_resp(InstrumentCommand.STATUS, expected_prompt=[Prompt.OK])
@@ -1541,7 +1549,7 @@ class Protocol(CommandResponseInstrumentProtocol):
 
     def _handler_direct_access_stop_direct(self):
         """
-        Stoping DA, restore the DA parameters to their previous value
+        Stopping DA, restore the DA parameters to their previous value
         """
         self._init_params()
         return ProtocolState.COMMAND, (ResourceAgentState.COMMAND, None)
@@ -1722,7 +1730,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                 #do nothing, cannot update this parameter via the instrument
                 pass
             else:
-                val = _get_from_instrument(param)
+                val = self._get_from_instrument(param)
                 self._param_dict.set_value(param, val)
 
     def _get_from_instrument(self, param):
@@ -1743,7 +1751,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                 pass   # GET failed, so retry again
         else:
             # retries exhausted, so raise exception
-            raise InstrumentProtocolException('Unable to GET parameter %s from instrument') % param
+            raise InstrumentProtocolException('Unable to GET parameter %s from instrument' % param)
 
     def _send_wakeup(self):
         """
