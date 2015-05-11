@@ -29,8 +29,8 @@ from mi.instrument.teledyne.particles import DataParticleType
 from mi.idk.unit_test import InstrumentDriverTestCase
 
 from mi.instrument.teledyne.particles import ADCP_ANCILLARY_SYSTEM_DATA_KEY, ADCP_TRANSMIT_PATH_KEY
-from mi.instrument.teledyne.workhorse.test.test_data import RSN_SAMPLE_RAW_DATA, PT2_RAW_DATA, PT4_RAW_DATA, \
-    rsn_cali_raw_data_string
+from mi.instrument.teledyne.workhorse.test.test_data import RSN_SAMPLE_RAW_DATA, PT2_RAW_DATA
+from mi.instrument.teledyne.workhorse.test.test_data import PT4_RAW_DATA, RSN_CALIBRATION_RAW_DATA
 from mi.instrument.teledyne.workhorse.test.test_data import RSN_PS0_RAW_DATA
 
 from mi.idk.unit_test import DriverTestMixin
@@ -51,7 +51,6 @@ from mi.instrument.teledyne.particles import ADCP_COMPASS_CALIBRATION_KEY
 
 from mi.instrument.teledyne.workhorse.adcp.driver import InstrumentDriver
 from mi.instrument.teledyne.workhorse.adcp.driver import Protocol
-
 from mi.instrument.teledyne.workhorse.adcp.driver import ProtocolState
 # ##
 # Driver parameters for tests
@@ -281,15 +280,15 @@ class ADCPTMixin(DriverTestMixin):
         ADCP_PD0_PARSED_KEY.DATA_SOURCE_ID: {'type': int, 'value': 127},
         ADCP_PD0_PARSED_KEY.NUM_BYTES: {'type': int, 'value': 2152},
         ADCP_PD0_PARSED_KEY.NUM_DATA_TYPES: {'type': int, 'value': 6},
-        ADCP_PD0_PARSED_KEY.OFFSET_DATA_TYPES: {'type': list, 'value': [18, 77, 142, 944, 1346, 1748, 2150]},
+        # ADCP_PD0_PARSED_KEY.OFFSET_DATA_TYPES: {'type': list, 'value': [18, 77, 142, 944, 1346, 1748, 2150]},
         ADCP_PD0_PARSED_KEY.FIXED_LEADER_ID: {'type': int, 'value': 0},
         ADCP_PD0_PARSED_KEY.FIRMWARE_VERSION: {'type': int, 'value': 50},
         ADCP_PD0_PARSED_KEY.FIRMWARE_REVISION: {'type': int, 'value': 40},
         ADCP_PD0_PARSED_KEY.SYSCONFIG_FREQUENCY: {'type': int, 'value': 75},
-        ADCP_PD0_PARSED_KEY.SYSCONFIG_BEAM_PATTERN: {'type': int, 'value': 0},
-        ADCP_PD0_PARSED_KEY.SYSCONFIG_SENSOR_CONFIG: {'type': int, 'value': 1},
+        ADCP_PD0_PARSED_KEY.SYSCONFIG_BEAM_PATTERN: {'type': int, 'value': 1},
+        ADCP_PD0_PARSED_KEY.SYSCONFIG_SENSOR_CONFIG: {'type': int, 'value': 0},
         ADCP_PD0_PARSED_KEY.SYSCONFIG_HEAD_ATTACHED: {'type': int, 'value': 1},
-        ADCP_PD0_PARSED_KEY.SYSCONFIG_VERTICAL_ORIENTATION: {'type': int, 'value': 0},
+        ADCP_PD0_PARSED_KEY.SYSCONFIG_VERTICAL_ORIENTATION: {'type': int, 'value': 1},
         ADCP_PD0_PARSED_KEY.DATA_FLAG: {'type': int, 'value': 0},
         ADCP_PD0_PARSED_KEY.LAG_LENGTH: {'type': int, 'value': 53},
         ADCP_PD0_PARSED_KEY.NUM_BEAMS: {'type': int, 'value': 4},
@@ -337,8 +336,8 @@ class ADCPTMixin(DriverTestMixin):
         ADCP_PD0_PARSED_KEY.BEAM_ANGLE: {'type': int, 'value': 20},
         ADCP_PD0_PARSED_KEY.VARIABLE_LEADER_ID: {'type': int, 'value': 128},
         ADCP_PD0_PARSED_KEY.ENSEMBLE_NUMBER: {'type': int, 'value': 5},
-        ADCP_PD0_PARSED_KEY.ENSEMBLE_START_TIME: {'type': float, 'value': 3595104000},
-        ADCP_PD0_PARSED_KEY.REAL_TIME_CLOCK: {'type': list, 'value': [13, 3, 15, 21, 33, 2, 46]},
+        # ADCP_PD0_PARSED_KEY.ENSEMBLE_START_TIME: {'type': float, 'value': 3595104000},
+        # ADCP_PD0_PARSED_KEY.REAL_TIME_CLOCK: {'type': list, 'value': [13, 3, 15, 21, 33, 2, 46]},
         ADCP_PD0_PARSED_KEY.ENSEMBLE_NUMBER_INCREMENT: {'type': int, 'value': 0},
         ADCP_PD0_PARSED_KEY.BIT_RESULT_DEMOD_0: {'type': int, 'value': 0},
         ADCP_PD0_PARSED_KEY.BIT_RESULT_DEMOD_1: {'type': int, 'value': 0},
@@ -385,8 +384,8 @@ class ADCPTMixin(DriverTestMixin):
         ADCP_PD0_PARSED_KEY.LEVEL_7_INTERRUPT: {'type': int, 'value': 0},
         ADCP_PD0_PARSED_KEY.ABSOLUTE_PRESSURE: {'type': int, 'value': 4294963793},
         ADCP_PD0_PARSED_KEY.PRESSURE_VARIANCE: {'type': int, 'value': 0},
-        ADCP_PD0_PARSED_KEY.VELOCITY_DATA_ID: {'type': int, 'value': 256},
-        ADCP_PD0_PARSED_KEY.CORRELATION_MAGNITUDE_ID: {'type': int, 'value': 512},
+        # ADCP_PD0_PARSED_KEY.VELOCITY_DATA_ID: {'type': int, 'value': 256},
+        # ADCP_PD0_PARSED_KEY.CORRELATION_MAGNITUDE_ID: {'type': int, 'value': 512},
         ADCP_PD0_PARSED_KEY.CORRELATION_MAGNITUDE_BEAM1: {'type': list,
                                                           'value': [77, 15, 7, 7, 7, 5, 7, 7, 5, 9, 6, 10, 5, 4, 6, 5,
                                                                     4, 7, 7, 11, 6, 10, 3, 4, 4, 4, 5, 2, 4, 5, 7, 5,
@@ -418,7 +417,7 @@ class ADCPTMixin(DriverTestMixin):
                                                                     7, 8, 6, 11, 14, 12, 11, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                                                                     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                                                                     0, 0, 0, 0, 0]},
-        ADCP_PD0_PARSED_KEY.ECHO_INTENSITY_ID: {'type': int, 'value': 768},
+        # ADCP_PD0_PARSED_KEY.ECHO_INTENSITY_ID: {'type': int, 'value': 768},
         ADCP_PD0_PARSED_KEY.ECHO_INTENSITY_BEAM1: {'type': list,
                                                    'value': [97, 47, 41, 40, 40, 40, 41, 40, 40, 40, 40, 40, 40, 40, 40,
                                                              40, 40, 40, 40, 39, 40, 40, 40, 40, 41, 40, 40, 40, 40, 39,
@@ -451,8 +450,8 @@ class ADCPTMixin(DriverTestMixin):
                                                              46, 46, 46, 45, 46, 45, 46, 46, 46, 0, 0, 0, 0, 0, 0, 0, 0,
                                                              0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                                                              0, 0, 0]},
-        ADCP_PD0_PARSED_KEY.PERCENT_GOOD_ID: {'type': int, 'value': 1024},
-        ADCP_PD0_PARSED_KEY.CHECKSUM: {'type': int, 'value': 8239}
+        # ADCP_PD0_PARSED_KEY.PERCENT_GOOD_ID: {'type': int, 'value': 1024},
+        # ADCP_PD0_PARSED_KEY.CHECKSUM: {'type': int, 'value': 8239}
     }
 
     # # red
@@ -615,15 +614,15 @@ class ADCPTMixin(DriverTestMixin):
     #                              _coordinate_transformation_earth_parameters.items())
 
     _pt2_dict = {
-        ADCP_ANCILLARY_SYSTEM_DATA_KEY.ADCP_AMBIENT_CURRENT: {'type': float, 'value': "20.32"},
-        ADCP_ANCILLARY_SYSTEM_DATA_KEY.ADCP_ATTITUDE_TEMP: {'type': float, 'value': "24.65"},
+        ADCP_ANCILLARY_SYSTEM_DATA_KEY.ADCP_AMBIENT_CURRENT: {'type': float, 'value': 20.32},
+        ADCP_ANCILLARY_SYSTEM_DATA_KEY.ADCP_ATTITUDE_TEMP: {'type': float, 'value': 24.65},
         ADCP_ANCILLARY_SYSTEM_DATA_KEY.ADCP_INTERNAL_MOISTURE: {'type': unicode, 'value': "8F0Ah"}
     }
 
     _pt4_dict = {
-        ADCP_TRANSMIT_PATH_KEY.ADCP_TRANSIT_CURRENT: {'type': float, 'value': "2.0"},
-        ADCP_TRANSMIT_PATH_KEY.ADCP_TRANSIT_VOLTAGE: {'type': float, 'value': "60.1"},
-        ADCP_TRANSMIT_PATH_KEY.ADCP_TRANSIT_IMPEDANCE: {'type': float, 'value': "29.8"},
+        ADCP_TRANSMIT_PATH_KEY.ADCP_TRANSIT_CURRENT: {'type': float, 'value': 2.0},
+        ADCP_TRANSMIT_PATH_KEY.ADCP_TRANSIT_VOLTAGE: {'type': float, 'value': 60.1},
+        ADCP_TRANSMIT_PATH_KEY.ADCP_TRANSIT_IMPEDANCE: {'type': float, 'value': 29.8},
         ADCP_TRANSMIT_PATH_KEY.ADCP_TRANSIT_TEST_RESULT: {'type': unicode, 'value': "$0 ... PASS"},
 
     }
@@ -741,7 +740,7 @@ class UnitFromIDK(WorkhorseDriverUnitTest, ADCPTMixin):
 
         # Start validating data particles
 
-        self.assert_particle_published(driver, rsn_cali_raw_data_string(), self.assert_particle_compass_calibration, True)
+        self.assert_particle_published(driver, RSN_CALIBRATION_RAW_DATA, self.assert_particle_compass_calibration, True)
         self.assert_particle_published(driver, RSN_PS0_RAW_DATA, self.assert_particle_system_configuration, True)
         self.assert_particle_published(driver, RSN_SAMPLE_RAW_DATA, self.assert_particle_pd0_data, True)
 
@@ -840,10 +839,10 @@ class UnitFromIDK(WorkhorseDriverUnitTest, ADCPTMixin):
         self.assert_chunker_fragmented_sample(chunker, RSN_PS0_RAW_DATA, 32)
         self.assert_chunker_combined_sample(chunker, RSN_PS0_RAW_DATA)
 
-        self.assert_chunker_sample(chunker, rsn_cali_raw_data_string())
-        self.assert_chunker_sample_with_noise(chunker, rsn_cali_raw_data_string())
-        self.assert_chunker_fragmented_sample(chunker, rsn_cali_raw_data_string(), 32)
-        self.assert_chunker_combined_sample(chunker, rsn_cali_raw_data_string())
+        self.assert_chunker_sample(chunker, RSN_CALIBRATION_RAW_DATA)
+        self.assert_chunker_sample_with_noise(chunker, RSN_CALIBRATION_RAW_DATA)
+        self.assert_chunker_fragmented_sample(chunker, RSN_CALIBRATION_RAW_DATA, 32)
+        self.assert_chunker_combined_sample(chunker, RSN_CALIBRATION_RAW_DATA)
 
         self.assert_chunker_sample(chunker, PT2_RAW_DATA)
         self.assert_chunker_sample_with_noise(chunker, PT2_RAW_DATA)
