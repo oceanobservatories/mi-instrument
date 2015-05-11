@@ -10,16 +10,12 @@ Unit test suite to test Satlantic PAR sensor
 from gevent import monkey
 monkey.patch_all()
 
-import unittest
-
 import time
 import json
 import random
 from nose.plugins.attrib import attr
 from mock import Mock
 from mi.core.instrument.instrument_driver import ResourceAgentState
-
-# from interface.objects import AgentCommand
 
 from mi.core.log import get_logger
 log = get_logger()
@@ -131,8 +127,7 @@ class PARMixin(DriverTestMixin):
         PARProtocolEvent.ACQUIRE_SAMPLE: {STATES: [PARProtocolState.COMMAND]},
         PARProtocolEvent.START_AUTOSAMPLE: {STATES: [PARProtocolState.COMMAND]},
         PARProtocolEvent.STOP_AUTOSAMPLE: {STATES: [PARProtocolState.AUTOSAMPLE]},
-        PARProtocolEvent.ACQUIRE_STATUS: {STATES: [PARProtocolState.COMMAND, PARProtocolState.AUTOSAMPLE]},
-        PARProtocolEvent.RESET: {STATES: [PARProtocolState.COMMAND]},
+        PARProtocolEvent.ACQUIRE_STATUS: {STATES: [PARProtocolState.COMMAND, PARProtocolState.AUTOSAMPLE]}
     }
 
     _config_parameters = {
@@ -164,8 +159,7 @@ class PARMixin(DriverTestMixin):
 
         PARProtocolState.AUTOSAMPLE:   [PARProtocolEvent.STOP_AUTOSAMPLE,
                                         PARProtocolEvent.ACQUIRE_STATUS,
-                                        PARProtocolEvent.SCHEDULED_ACQUIRE_STATUS,
-                                        PARProtocolEvent.RESET],
+                                        PARProtocolEvent.SCHEDULED_ACQUIRE_STATUS],
 
         PARProtocolState.DIRECT_ACCESS: [PARProtocolEvent.STOP_DIRECT,
                                          PARProtocolEvent.EXECUTE_DIRECT]
@@ -208,7 +202,7 @@ class SatlanticParProtocolUnitTest(InstrumentDriverUnitTestCase, PARMixin):
     def test_driver_enums(self):
         """
         Verify that all driver enumeration has no duplicate values that might cause confusion.  Also
-        do a little extra validation for the Capabilites
+        do a little extra validation for the Capabilities
         """
         self.assert_enum_has_no_duplicates(Command())
         self.assert_enum_has_no_duplicates(ScheduledJob())
@@ -218,7 +212,7 @@ class SatlanticParProtocolUnitTest(InstrumentDriverUnitTestCase, PARMixin):
         self.assert_enum_has_no_duplicates(Parameter())
         self.assert_enum_has_no_duplicates(Prompt())
 
-        # Test capabilites for duplicates, them verify that capabilities is a subset of protocol events
+        # Test capabilities for duplicates, them verify that capabilities is a subset of protocol events
         self.assert_enum_has_no_duplicates(PARCapability())
         self.assert_enum_complete(PARCapability(), PARProtocolEvent())
 
@@ -814,8 +808,7 @@ class SatlanticParProtocolQualificationTest(InstrumentDriverQualificationTestCas
         capabilities = {}
         capabilities[AgentCapabilityType.AGENT_COMMAND] = self._common_agent_commands(ResourceAgentState.STREAMING)
         capabilities[AgentCapabilityType.RESOURCE_COMMAND] = [PARProtocolEvent.STOP_AUTOSAMPLE,
-                                                              PARProtocolEvent.ACQUIRE_STATUS,
-                                                              PARProtocolEvent.RESET]
+                                                              PARProtocolEvent.ACQUIRE_STATUS,]
         capabilities[AgentCapabilityType.RESOURCE_PARAMETER] = self._driver_parameters.keys()
 
         self.assert_start_autosample()

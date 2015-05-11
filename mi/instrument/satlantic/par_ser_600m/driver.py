@@ -95,6 +95,9 @@ class EngineeringParameter(DriverParameter):
     Driver Parameters (aka, engineering parameters)
     """
     ACQUIRE_STATUS_INTERVAL = 'AcquireStatusInterval'
+    FIRMWARE = 'firmware'
+    SERIAL = 'serial'
+    INSTRUMENT = 'instrument'
 
 
 class ScheduledJob(BaseEnum):
@@ -110,10 +113,8 @@ class ScheduledJob(BaseEnum):
 class Command(BaseEnum):
     SAVE = 'save'
     EXIT = 'exit'
-    EXIT_AND_RESET = 'exit!'
     GET = 'show'
     SET = 'set'
-    RESET = '\x12'                 # CTRL-R
     BREAK = '\x03'                 # CTRL-C
     SWITCH_TO_POLL = '\x13'        # CTRL-S
     SWITCH_TO_AUTOSAMPLE = '\x01'  # CTRL-A
@@ -140,7 +141,6 @@ class PARProtocolEvent(BaseEnum):
     EXECUTE_DIRECT = DriverEvent.EXECUTE_DIRECT
     START_DIRECT = DriverEvent.START_DIRECT
     STOP_DIRECT = DriverEvent.STOP_DIRECT
-    RESET = DriverEvent.RESET
     SCHEDULED_ACQUIRE_STATUS = "DRIVER_EVENT_SCHEDULED_ACQUIRE_STATUS"
 
 
@@ -152,14 +152,13 @@ class PARCapability(BaseEnum):
     ACQUIRE_STATUS = PARProtocolEvent.ACQUIRE_STATUS
     START_AUTOSAMPLE = PARProtocolEvent.START_AUTOSAMPLE
     STOP_AUTOSAMPLE = PARProtocolEvent.STOP_AUTOSAMPLE
-    RESET = PARProtocolEvent.RESET
 
 
 class Parameter(DriverParameter):
     MAXRATE = 'maxrate'
-    FIRMWARE = 'firmware'
-    SERIAL = 'serial'
-    INSTRUMENT = 'instrument'
+    FIRMWARE = EngineeringParameter.FIRMWARE
+    SERIAL = EngineeringParameter.SERIAL
+    INSTRUMENT = EngineeringParameter.INSTRUMENT
     ACQUIRE_STATUS_INTERVAL = EngineeringParameter.ACQUIRE_STATUS_INTERVAL
 
 
@@ -367,7 +366,6 @@ class SatlanticPARInstrumentProtocol(CommandResponseInstrumentProtocol):
 
         self._protocol_fsm.add_handler(PARProtocolState.AUTOSAMPLE, PARProtocolEvent.ENTER, self._handler_autosample_enter)
         self._protocol_fsm.add_handler(PARProtocolState.AUTOSAMPLE, PARProtocolEvent.STOP_AUTOSAMPLE, self._handler_autosample_stop_autosample)
-        self._protocol_fsm.add_handler(PARProtocolState.AUTOSAMPLE, PARProtocolEvent.RESET, self._handler_autosample_reset)
         self._protocol_fsm.add_handler(PARProtocolState.AUTOSAMPLE, PARProtocolEvent.SCHEDULED_ACQUIRE_STATUS, self._handler_autosample_acquire_status)
         self._protocol_fsm.add_handler(PARProtocolState.AUTOSAMPLE, PARProtocolEvent.ACQUIRE_STATUS, self._handler_autosample_acquire_status)
 
@@ -380,8 +378,6 @@ class SatlanticPARInstrumentProtocol(CommandResponseInstrumentProtocol):
         self._add_response_handler(Command.GET, self._parse_get_response)
         self._add_response_handler(Command.SET, self._parse_set_response)
         self._add_response_handler(Command.SAMPLE, self._parse_response)
-        self._add_response_handler(Command.EXIT_AND_RESET, self._parse_header_response)
-        self._add_response_handler(Command.RESET, self._parse_header_response)
 
         # Construct the parameter dictionary containing device parameters,
         # current parameter values, and set formatting functions.
@@ -409,32 +405,35 @@ class SatlanticPARInstrumentProtocol(CommandResponseInstrumentProtocol):
 
         self._param_dict.add(Parameter.INSTRUMENT,
                              HEADER_PATTERN,
-                             lambda match: match.group('instr'),
+                             lambda match: match.group(1),
                              str,
-                             visibility=ParameterDictVisibility.READ_ONLY,
+                             visibility=ParameterDictVisibility.IMMUTABLE,
                              display_name='Instrument',
                              description='Instrument type',
-                             type=ParameterDictType.STRING)
+                             type=ParameterDictType.STRING,
+                             startup_param=True)
 
         self._param_dict.add(Parameter.SERIAL,
                              HEADER_PATTERN,
-                             lambda match: match.group('sernum'),
+                             lambda match: match.group(1),
                              str,
-                             visibility=ParameterDictVisibility.READ_ONLY,
-                             display_name='Serial',
+                             visibility=ParameterDictVisibility.IMMUTABLE,
+                             display_name='Serial Number',
                              description='Serial number',
-                             type=ParameterDictType.STRING)
+                             type=ParameterDictType.STRING,
+                             startup_param=True)
 
         self._param_dict.add(Parameter.FIRMWARE,
                              HEADER_PATTERN,
-                             lambda match: match.group('firm'),
+                             lambda match: match.group(1),
                              str,
-                             visibility=ParameterDictVisibility.READ_ONLY,
+                             visibility=ParameterDictVisibility.IMMUTABLE,
                              display_name='Firmware',
                              description='Instrument firmware',
-                             type=ParameterDictType.STRING)
+                             type=ParameterDictType.STRING,
+                             startup_param=True)
 
-        self._param_dict.add(EngineeringParameter.ACQUIRE_STATUS_INTERVAL,
+        self._param_dict.add(Parameter.ACQUIRE_STATUS_INTERVAL,
                              INTERVAL_TIME_REGEX,
                              lambda match: match.group(1),
                              str,
@@ -456,7 +455,6 @@ class SatlanticPARInstrumentProtocol(CommandResponseInstrumentProtocol):
         self._cmd_dict.add(PARCapability.ACQUIRE_STATUS, display_name='Acquire Status')
         self._cmd_dict.add(PARCapability.START_AUTOSAMPLE, display_name='Start Autosample')
         self._cmd_dict.add(PARCapability.STOP_AUTOSAMPLE, display_name='Stop Autosample')
-        self._cmd_dict.add(PARCapability.RESET, display_name='Reset')
 
     def _build_driver_dict(self):
         """
@@ -672,28 +670,12 @@ class SatlanticPARInstrumentProtocol(CommandResponseInstrumentProtocol):
         self._init_params()
         self._driver_event(DriverAsyncEvent.STATE_CHANGE)
 
-    def _get_header_params(self):
-        """
-        Cycle through sample collection & reset to get the start-up banner
-        which contains instrument, serial, & firmware values
-        """
-
-        instr, sernum, firm = self._do_cmd_resp(Command.EXIT_AND_RESET, expected_prompt=INIT_PATTERN, timeout=20)
-        time.sleep(1)
-        self._do_cmd_resp(Command.BREAK, response_regex=COMMAND_REGEX, timeout=5)
-        self._param_dict.set_value(Parameter.INSTRUMENT, instr)
-        self._param_dict.set_value(Parameter.SERIAL, sernum)
-        self._param_dict.set_value(Parameter.FIRMWARE, firm)
-
-    def _update_params(self, startup=False):
+    def _update_params(self):
         """
         Fetch the parameters from the device, and update the param dict.
         """
         max_rate_response = self._do_cmd_resp(Command.GET, Parameter.MAXRATE, expected_prompt=Prompt.COMMAND)
         self._param_dict.update(max_rate_response)
-
-        if startup:
-            self._get_header_params()
 
     def _set_params(self, params, startup=False, *args, **kwargs):
         """
@@ -746,7 +728,7 @@ class SatlanticPARInstrumentProtocol(CommandResponseInstrumentProtocol):
 
         if instrument_params_changed:
             self._do_cmd_resp(Command.SAVE, expected_prompt=Prompt.COMMAND)
-            self._update_params(startup)
+            self._update_params()
 
         if scheduling_interval_changed and not startup:
             self._setup_scheduler_config()
@@ -770,7 +752,7 @@ class SatlanticPARInstrumentProtocol(CommandResponseInstrumentProtocol):
         """
         Set up auto scheduler configuration.
         """
-        interval = self._param_dict.format(EngineeringParameter.ACQUIRE_STATUS_INTERVAL).split(':')
+        interval = self._param_dict.format(Parameter.ACQUIRE_STATUS_INTERVAL).split(':')
         hours = int(interval[0])
         minutes = int(interval[1])
         seconds = int(interval[2])
@@ -836,7 +818,6 @@ class SatlanticPARInstrumentProtocol(CommandResponseInstrumentProtocol):
     ########################################################################
     # Autosample handlers.
     ########################################################################
-
     def _handler_autosample_enter(self):
         """
         Handle PARProtocolState.AUTOSAMPLE PARProtocolEvent.ENTER
@@ -877,25 +858,9 @@ class SatlanticPARInstrumentProtocol(CommandResponseInstrumentProtocol):
 
         return None, (None, None)
 
-    def _handler_autosample_reset(self):
-        """
-        Handle PARProtocolState.AUTOSAMPLE reset
-        @retval return (next state, result)
-        @throw InstrumentProtocolException For invalid parameter
-        """
-        # Switch to polled state so reset command can be received reliably
-        self._send_break_poll()
-        try:
-            self._do_cmd_resp(Command.RESET, expected_prompt=INIT_PATTERN, timeout=5)
-        except InstrumentException:
-            raise InstrumentProtocolException(error_code=InstErrorCode.HARDWARE_ERROR, msg="Couldn't reset autosample!")
-
-        return PARProtocolState.AUTOSAMPLE, (ResourceAgentState.COMMAND, None)
-
     ########################################################################
     # Poll handlers.
     ########################################################################
-
     def _get_poll(self):
         self._do_cmd_resp(Command.EXIT, expected_prompt=Prompt.SAMPLES, timeout=15)
         # switch to poll
@@ -1017,19 +982,6 @@ class SatlanticPARInstrumentProtocol(CommandResponseInstrumentProtocol):
         else:
             log.debug("_parse_get_response: response=%r", match.group(1, 2))
             return match.group('resp')
-
-    def _parse_header_response(self, response, prompt):
-        """
-        Parse what the header looks like to make sure if came up.
-        @param response What was sent back from the command that was sent
-        @param prompt The prompt that was returned from the device
-        @retval return The parsed parameters or an InstErrorCode value
-        """
-        match = HEADER_REGEX.search(response)
-        if match:
-            return match.group('instr', 'sernum', 'firm')
-        else:
-            return InstErrorCode.HARDWARE_ERROR
 
     ###################################################################
     # Helpers
