@@ -132,11 +132,7 @@ NEWLINE,
 NEWLINE,
 ">"]
 
-def rsn_cali_raw_data_string():
-    str_list = []
-    for string in RSN_CALIBRATION_RAW_DATA:
-        str_list.append(string)
-    return ''.join(str_list)
+RSN_CALIBRATION_RAW_DATA = ''.join(RSN_CALIBRATION_RAW_DATA)
 
 RSN_PS0_RAW_DATA = (
 "Instrument S/N:  18444" + NEWLINE +
