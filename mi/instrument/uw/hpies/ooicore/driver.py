@@ -1524,6 +1524,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                              display_name='M2A LED',
                              description='',
                              visibility=ParameterDictVisibility.IMMUTABLE,
+                             default_value=3,
                              startup_param=True,
                              direct_access=True)
         # IES Parameters - read only - no defaults
