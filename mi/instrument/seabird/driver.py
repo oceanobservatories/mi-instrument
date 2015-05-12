@@ -13,10 +13,11 @@ __license__ = 'Apache 2.0'
 
 import re
 
-from mi.core.log import get_logger
+from mi.core.log import get_logger, get_logging_metaclass
+
 log = get_logger()
 
-from mi.core.instrument.instrument_protocol import CommandResponseInstrumentProtocol
+from mi.core.instrument.instrument_protocol import CommandResponseInstrumentProtocol, InitializationType
 from mi.core.instrument.instrument_driver import SingleConnectionInstrumentDriver
 from mi.core.instrument.data_particle import DataParticle
 from mi.core.instrument.data_particle import DataParticleKey
@@ -293,6 +294,7 @@ class SeaBirdProtocol(CommandResponseInstrumentProtocol):
     Instrument protocol class for seabird driver.
     Subclasses CommandResponseInstrumentProtocol
     """
+    __metaclass__ = get_logging_metaclass(log_level='debug')
 
     def __init__(self, prompts, newline, driver_event):
         """
@@ -351,25 +353,27 @@ class SeaBirdProtocol(CommandResponseInstrumentProtocol):
         result = None
         error = None
 
-        try:
-            self._stop_logging()
+        if self._init_type != InitializationType.NONE:
 
-            self._init_params()
+            try:
+                self._stop_logging()
 
-        # Catch all error so we can put ourself back into
-        # streaming.  Then rethrow the error
-        except Exception as e:
-            error = e
+                self._init_params()
 
-        finally:
-            # Switch back to streaming
-            if(not self._is_logging()):
-                log.debug("sbe start logging again")
-                self._start_logging()
+            # Catch all error so we can put ourself back into
+            # streaming.  Then rethrow the error
+            except Exception as e:
+                error = e
 
-        if(error):
-            log.error("Error in apply_startup_params: %s", error)
-            raise error
+            finally:
+                # Switch back to streaming
+                if(not self._is_logging()):
+                    log.debug("sbe start logging again")
+                    self._start_logging()
+
+            if(error):
+                log.error("Error in apply_startup_params: %s", error)
+                raise error
 
         return (next_state, result)
 

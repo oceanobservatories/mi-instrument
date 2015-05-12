@@ -62,7 +62,7 @@ from mi.instrument.seabird.test.test_driver import SeaBirdPublicationTest
 # SAMPLE DATA FOR TESTING
 from mi.instrument.seabird.sbe54tps.test.sample_data import *
 
-from mi.core.instrument.instrument_driver import ResourceAgentEvent
+from mi.core.instrument.instrument_driver import ResourceAgentEvent, DriverEvent
 from mi.core.instrument.instrument_driver import ResourceAgentState
 
 from mi.core.exceptions import InstrumentCommandException
@@ -127,10 +127,6 @@ class SeaBird54tpsMixin(DriverTestMixin):
         Capability.ACQUIRE_STATUS: {STATES: [ProtocolState.COMMAND, ProtocolState.AUTOSAMPLE]},
         Capability.SAMPLE_REFERENCE_OSCILLATOR: {STATES: [ProtocolState.COMMAND]},
         Capability.TEST_EEPROM: {STATES: [ProtocolState.COMMAND]},
-        Capability.GET_CONFIGURATION_DATA: {STATES: [ProtocolState.COMMAND, ProtocolState.AUTOSAMPLE]},
-        Capability.GET_STATUS_DATA: {STATES: [ProtocolState.COMMAND, ProtocolState.AUTOSAMPLE]},
-        Capability.GET_EVENT_COUNTER: {STATES: [ProtocolState.COMMAND, ProtocolState.AUTOSAMPLE]},
-        Capability.GET_HARDWARE_DATA: {STATES: [ProtocolState.COMMAND, ProtocolState.AUTOSAMPLE]},
     }
 
     _prest_real_time_parameters = {
@@ -221,7 +217,7 @@ class SeaBird54tpsMixin(DriverTestMixin):
         SBE54tpsHardwareDataParticleKey.HARDWARE_VERSION: {TYPE: list, VALUE: ['41477A.1', '41478A.1T'], REQUIRED: True },
         SBE54tpsHardwareDataParticleKey.PCB_SERIAL_NUMBER: {TYPE: list, VALUE: ['NOT SET', 'NOT SET'], REQUIRED: True },
         SBE54tpsHardwareDataParticleKey.PCB_TYPE: {TYPE: unicode, VALUE: '1', REQUIRED: True },
-        SBE54tpsHardwareDataParticleKey.MANUFACTUR_DATE: {TYPE: unicode, VALUE: 'Jun 27 2007', REQUIRED: True },
+        SBE54tpsHardwareDataParticleKey.MANUFACTURER_DATE: {TYPE: unicode, VALUE: 'Jun 27 2007', REQUIRED: True },
     }
 
     ###
@@ -308,7 +304,7 @@ class SeaBird54PlusUnitTest(SeaBirdUnitTest, SeaBird54tpsMixin):
     def test_driver_enums(self):
         """
         Verify that all driver enumeration has no duplicate values that might cause confusion.  Also
-        do a little extra validation for the Capabilites
+        do a little extra validation for the Capabilities
         """
         self.assert_enum_has_no_duplicates(ScheduledJob())
         self.assert_enum_has_no_duplicates(DataParticleType())
@@ -317,7 +313,7 @@ class SeaBird54PlusUnitTest(SeaBirdUnitTest, SeaBird54tpsMixin):
         self.assert_enum_has_no_duplicates(ProtocolEvent())
         self.assert_enum_has_no_duplicates(Parameter())
 
-        # Test capabilites for duplicates, them verify that capabilities is a subset of proto events
+        # Test capabilities for duplicates, them verify that capabilities is a subset of proto events
         self.assert_enum_has_no_duplicates(Capability())
         self.assert_enum_complete(Capability(), ProtocolEvent())
 
@@ -405,32 +401,27 @@ class SeaBird54PlusUnitTest(SeaBirdUnitTest, SeaBird54tpsMixin):
         also be defined in the protocol FSM.
         """
         capabilities = {
-            ProtocolState.UNKNOWN: ['DRIVER_EVENT_DISCOVER', 'DRIVER_EVENT_START_DIRECT'],
-            ProtocolState.COMMAND: ['DRIVER_EVENT_ACQUIRE_STATUS',
-                                    'DRIVER_EVENT_CLOCK_SYNC',
-                                    'DRIVER_EVENT_GET',
-                                    'DRIVER_EVENT_INIT_PARAMS',
-                                    'DRIVER_EVENT_SET',
-                                    'DRIVER_EVENT_START_AUTOSAMPLE',
-                                    'DRIVER_EVENT_START_DIRECT',
-                                    'PROTOCOL_EVENT_SAMPLE_REFERENCE_OSCILLATOR',
-                                    'PROTOCOL_EVENT_GET_CONFIGURATION',
-                                    'PROTOCOL_EVENT_GET_STATUS',
-                                    'PROTOCOL_EVENT_RECOVER_AUTOSAMPLE',
-                                    'PROTOCOL_EVENT_GET_EVENT_COUNTER',
-                                    'PROTOCOL_EVENT_SCHEDULED_CLOCK_SYNC',
-                                    'PROTOCOL_EVENT_GET_HARDWARE',
-                                    'PROTOCOL_EVENT_TEST_EEPROM'],
-            ProtocolState.AUTOSAMPLE: ['DRIVER_EVENT_GET',
-                                       'DRIVER_EVENT_INIT_PARAMS',
-                                       'DRIVER_EVENT_STOP_AUTOSAMPLE',
-                                       'PROTOCOL_EVENT_GET_CONFIGURATION',
-                                       'PROTOCOL_EVENT_GET_STATUS',
-                                       'PROTOCOL_EVENT_GET_EVENT_COUNTER',
-                                       'PROTOCOL_EVENT_GET_HARDWARE',
-                                       'PROTOCOL_EVENT_SCHEDULED_CLOCK_SYNC',
-                                       'DRIVER_EVENT_ACQUIRE_STATUS'],
-            ProtocolState.DIRECT_ACCESS: ['DRIVER_EVENT_STOP_DIRECT', 'EXECUTE_DIRECT']
+            ProtocolState.UNKNOWN: [ProtocolEvent.DISCOVER,
+                                    ProtocolEvent.START_DIRECT],
+            ProtocolState.COMMAND: [ProtocolEvent.ACQUIRE_STATUS,
+                                    ProtocolEvent.CLOCK_SYNC,
+                                    ProtocolEvent.SCHEDULED_ACQUIRE_STATUS,
+                                    ProtocolEvent.SCHEDULED_CLOCK_SYNC,
+                                    ProtocolEvent.GET,
+                                    ProtocolEvent.SET,
+                                    ProtocolEvent.INIT_PARAMS,
+                                    ProtocolEvent.START_AUTOSAMPLE,
+                                    ProtocolEvent.START_DIRECT,
+                                    ProtocolEvent.SAMPLE_REFERENCE_OSCILLATOR,
+                                    ProtocolEvent.RECOVER_AUTOSAMPLE,
+                                    ProtocolEvent.TEST_EEPROM],
+            ProtocolState.AUTOSAMPLE: [ProtocolEvent.GET,
+                                       ProtocolEvent.INIT_PARAMS,
+                                       ProtocolEvent.STOP_AUTOSAMPLE,
+                                       ProtocolEvent.SCHEDULED_CLOCK_SYNC,
+                                       ProtocolEvent.SCHEDULED_ACQUIRE_STATUS],
+            ProtocolState.DIRECT_ACCESS: [ProtocolEvent.STOP_DIRECT,
+                                          ProtocolEvent.EXECUTE_DIRECT]
         }
 
         driver = SBE54PlusInstrumentDriver(self._got_data_event_callback)
@@ -455,8 +446,6 @@ class SeaBird54PlusIntegrationTest(SeaBirdIntegrationTest, SeaBird54tpsMixin):
         """
         self.assert_initialize_driver()
 
-        #   Instrument Parameteres
-
         # Sample Period.  integer 1 - 240
         self.assert_set(Parameter.SAMPLE_PERIOD, 1)
         self.assert_set(Parameter.SAMPLE_PERIOD, 240)
@@ -480,14 +469,7 @@ class SeaBird54PlusIntegrationTest(SeaBirdIntegrationTest, SeaBird54tpsMixin):
         # First test in command mode
         ####
         self.assert_driver_command(ProtocolEvent.CLOCK_SYNC)
-        self.assert_driver_command(ProtocolEvent.START_AUTOSAMPLE, state=ProtocolState.AUTOSAMPLE, delay=1)
-        self.assert_driver_command(ProtocolEvent.STOP_AUTOSAMPLE, state=ProtocolState.COMMAND, delay=1)
         self.assert_driver_command(ProtocolEvent.ACQUIRE_STATUS, regex=r'StatusData DeviceType')
-        self.assert_driver_command(ProtocolEvent.SCHEDULED_CLOCK_SYNC)
-        self.assert_driver_command(ProtocolEvent.GET_CONFIGURATION_DATA, regex=r'ConfigurationData DeviceType')
-        self.assert_driver_command(ProtocolEvent.GET_HARDWARE_DATA, regex=r'HardwareData DeviceType')
-        self.assert_driver_command(ProtocolEvent.GET_STATUS_DATA, regex=r'StatusData DeviceType')
-        self.assert_driver_command(ProtocolEvent.GET_EVENT_COUNTER, regex=r'EventList DeviceType')
         self.assert_driver_command(ProtocolEvent.SAMPLE_REFERENCE_OSCILLATOR, regex=r'Ref osc warmup')
 
         ####
@@ -495,14 +477,7 @@ class SeaBird54PlusIntegrationTest(SeaBirdIntegrationTest, SeaBird54tpsMixin):
         ####
         # Put us in streaming
         self.assert_driver_command(ProtocolEvent.START_AUTOSAMPLE, state=ProtocolState.AUTOSAMPLE, delay=1)
-
-        self.assert_driver_command(ProtocolEvent.ACQUIRE_STATUS, regex=r'StatusData DeviceType')
         self.assert_driver_command(ProtocolEvent.SCHEDULED_CLOCK_SYNC)
-        self.assert_driver_command(ProtocolEvent.GET_CONFIGURATION_DATA, regex=r'ConfigurationData DeviceType')
-        self.assert_driver_command(ProtocolEvent.GET_HARDWARE_DATA, regex=r'HardwareData DeviceType')
-        self.assert_driver_command(ProtocolEvent.GET_STATUS_DATA, regex=r'StatusData DeviceType')
-        self.assert_driver_command(ProtocolEvent.GET_EVENT_COUNTER, regex=r'EventList DeviceType')
-
         self.assert_driver_command(ProtocolEvent.STOP_AUTOSAMPLE, state=ProtocolState.COMMAND, delay=1)
 
         ####
@@ -524,11 +499,6 @@ class SeaBird54PlusIntegrationTest(SeaBirdIntegrationTest, SeaBird54tpsMixin):
         self.assert_driver_command(ProtocolEvent.START_AUTOSAMPLE, state=ProtocolState.AUTOSAMPLE, delay=1)
         self.assert_async_particle_generation(DataParticleType.PREST_REAL_TIME, self.assert_particle_real_time, timeout=120)
 
-        self.assert_particle_generation(ProtocolEvent.GET_CONFIGURATION_DATA, DataParticleType.PREST_CONFIGURATION_DATA, self.assert_particle_configuration_data)
-        self.assert_particle_generation(ProtocolEvent.GET_STATUS_DATA, DataParticleType.PREST_DEVICE_STATUS, self.assert_particle_device_status)
-        self.assert_particle_generation(ProtocolEvent.GET_EVENT_COUNTER, DataParticleType.PREST_EVENT_COUNTER, self.assert_particle_event_counter)
-        self.assert_particle_generation(ProtocolEvent.GET_HARDWARE_DATA, DataParticleType.PREST_HARDWARE_DATA, self.assert_particle_hardware_data)
-
         self.assert_driver_command(ProtocolEvent.STOP_AUTOSAMPLE, state=ProtocolState.COMMAND, delay=1)
 
     def test_polled(self):
@@ -536,12 +506,6 @@ class SeaBird54PlusIntegrationTest(SeaBirdIntegrationTest, SeaBird54tpsMixin):
         Test that we can generate particles with commands
         """
         self.assert_initialize_driver()
-
-        self.assert_particle_generation(ProtocolEvent.GET_CONFIGURATION_DATA, DataParticleType.PREST_CONFIGURATION_DATA, self.assert_particle_configuration_data)
-        self.assert_particle_generation(ProtocolEvent.GET_STATUS_DATA, DataParticleType.PREST_DEVICE_STATUS, self.assert_particle_device_status)
-        self.assert_particle_generation(ProtocolEvent.GET_EVENT_COUNTER, DataParticleType.PREST_EVENT_COUNTER, self.assert_particle_event_counter)
-        self.assert_particle_generation(ProtocolEvent.GET_HARDWARE_DATA, DataParticleType.PREST_HARDWARE_DATA, self.assert_particle_hardware_data)
-
         self.assert_particle_generation(ProtocolEvent.SAMPLE_REFERENCE_OSCILLATOR, DataParticleType.PREST_REFERENCE_OSCILLATOR, self.assert_particle_reference_oscillator)
 
     def test_apply_startup_params(self):
@@ -577,7 +541,7 @@ class SeaBird54PlusIntegrationTest(SeaBirdIntegrationTest, SeaBird54tpsMixin):
         }
 
         # Change the values of these parameters to something before the
-        # driver is reinitalized.  They should be blown away on reinit.
+        # driver is re-initalized.  They should be blown away on reinit.
         new_values = {
             Parameter.SAMPLE_PERIOD: 5
         }
@@ -614,104 +578,6 @@ class SeaBird54PlusIntegrationTest(SeaBirdIntegrationTest, SeaBird54tpsMixin):
 
         self.assertFalse(True, msg="Failed to transition to streaming after 200 seconds")
 
-    ###
-    #   Test scheduled events
-    ###
-    def assert_configuration_data(self):
-        """
-        Verify a calibration particle was generated
-        """
-        self.clear_events()
-        self.assert_async_particle_generation(DataParticleType.PREST_CONFIGURATION_DATA, self.assert_particle_configuration_data, timeout=90)
-
-    def test_scheduled_device_configuration_command(self):
-        """
-        Verify the device configuration command can be triggered and run in command
-        """
-        self.assert_scheduled_event(ScheduledJob.CONFIGURATION_DATA, self.assert_configuration_data, delay=90)
-        self.assert_current_state(ProtocolState.COMMAND)
-
-    def test_scheduled_device_configuration_autosample(self):
-        """
-        Verify the device configuration command can be triggered and run in autosample
-        """
-        self.assert_scheduled_event(ScheduledJob.CONFIGURATION_DATA, self.assert_configuration_data,
-                                    autosample_command=ProtocolEvent.START_AUTOSAMPLE, delay=90)
-        self.assert_current_state(ProtocolState.AUTOSAMPLE)
-        self.assert_driver_command(ProtocolEvent.STOP_AUTOSAMPLE)
-
-    # getHD
-    def assert_hardware_data(self):
-        """
-        Verify a hardware particle was generated
-        """
-        self.clear_events()
-        self.assert_async_particle_generation(DataParticleType.PREST_HARDWARE_DATA, self.assert_particle_hardware_data, timeout=90)
-
-    def test_scheduled_device_hardware_command(self):
-        """
-        Verify the device hardware command can be triggered and run in command
-        """
-        self.assert_scheduled_event(ScheduledJob.HARDWARE_DATA, self.assert_hardware_data, delay=90)
-        self.assert_current_state(ProtocolState.COMMAND)
-
-    def test_scheduled_device_hardware_autosample(self):
-        """
-        Verify the device configuration command can be triggered and run in autosample
-        """
-        self.assert_scheduled_event(ScheduledJob.HARDWARE_DATA, self.assert_hardware_data,
-                                    autosample_command=ProtocolEvent.START_AUTOSAMPLE, delay=90)
-        self.assert_current_state(ProtocolState.AUTOSAMPLE)
-        self.assert_driver_command(ProtocolEvent.STOP_AUTOSAMPLE)
-
-    # GetEC
-    def assert_event_counter_data(self):
-        """
-        Verify a event counter particle was generated
-        """
-        self.clear_events()
-        self.assert_async_particle_generation(DataParticleType.PREST_EVENT_COUNTER, self.assert_particle_event_counter, timeout=90)
-
-    def test_scheduled_device_event_counter_command(self):
-        """
-        Verify the device event_counter command can be triggered and run in command
-        """
-        self.assert_scheduled_event(ScheduledJob.EVENT_COUNTER_DATA, self.assert_event_counter_data, delay=90)
-        self.assert_current_state(ProtocolState.COMMAND)
-
-    def test_scheduled_device_event_counter_autosample(self):
-        """
-        Verify the device event_counter command can be triggered and run in autosample
-        """
-        self.assert_scheduled_event(ScheduledJob.EVENT_COUNTER_DATA, self.assert_event_counter_data,
-                                    autosample_command=ProtocolEvent.START_AUTOSAMPLE, delay=90)
-        self.assert_current_state(ProtocolState.AUTOSAMPLE)
-        self.assert_driver_command(ProtocolEvent.STOP_AUTOSAMPLE)
-
-    # GetSD
-    def assert_device_status_data(self):
-        """
-        Verify a device status particle was generated
-        """
-        self.clear_events()
-        self.assert_async_particle_generation(DataParticleType.PREST_DEVICE_STATUS, self.assert_particle_device_status, timeout=90)
-
-    def test_scheduled_device_device_status_command(self):
-        """
-        Verify the device device status command can be triggered and run in command
-        """
-        self.assert_scheduled_event(ScheduledJob.STATUS_DATA, self.assert_device_status_data, delay=90)
-        self.assert_current_state(ProtocolState.COMMAND)
-
-    def test_scheduled_device_status_autosample(self):
-        """
-        Verify the device event_counter command can be triggered and run in autosample
-        """
-        self.assert_scheduled_event(ScheduledJob.STATUS_DATA, self.assert_device_status_data,
-                                    autosample_command=ProtocolEvent.START_AUTOSAMPLE, delay=90)
-        self.assert_current_state(ProtocolState.AUTOSAMPLE)
-        self.assert_driver_command(ProtocolEvent.STOP_AUTOSAMPLE)
-
     def assert_acquire_status(self):
         """
         Verify a status particle was generated
@@ -729,7 +595,7 @@ class SeaBird54PlusIntegrationTest(SeaBirdIntegrationTest, SeaBird54tpsMixin):
         self.assert_scheduled_event(ScheduledJob.ACQUIRE_STATUS, self.assert_acquire_status, delay=120)
         self.assert_current_state(ProtocolState.COMMAND)
 
-    def test_scheduled_aquire_status_autosample(self):
+    def test_scheduled_acquire_status_autosample(self):
         """
         Verify the device status command can be triggered and run in autosample
         """
@@ -770,11 +636,6 @@ class SeaBird54PlusIntegrationTest(SeaBirdIntegrationTest, SeaBird54tpsMixin):
 
         self.assert_async_particle_generation(DataParticleType.PREST_REAL_TIME, self.assert_particle_real_time, timeout=120)
 
-        self.assert_particle_generation(ProtocolEvent.GET_CONFIGURATION_DATA, DataParticleType.PREST_CONFIGURATION_DATA, self.assert_particle_configuration_data)
-        self.assert_particle_generation(ProtocolEvent.GET_STATUS_DATA, DataParticleType.PREST_DEVICE_STATUS, self.assert_particle_device_status)
-        self.assert_particle_generation(ProtocolEvent.GET_EVENT_COUNTER, DataParticleType.PREST_EVENT_COUNTER, self.assert_particle_event_counter)
-        self.assert_particle_generation(ProtocolEvent.GET_HARDWARE_DATA, DataParticleType.PREST_HARDWARE_DATA, self.assert_particle_hardware_data)
-
         self.assert_driver_command(ProtocolEvent.STOP_AUTOSAMPLE)
         self.assert_current_state(ProtocolState.COMMAND)
 
@@ -782,7 +643,7 @@ class SeaBird54PlusIntegrationTest(SeaBirdIntegrationTest, SeaBird54tpsMixin):
         """
         Verify we can discover from both command and auto sample modes
         """
-        self.assert_initialize_driver()
+        self.assert_initialize_driver(final_state=ProtocolState.AUTOSAMPLE)
         self.assert_cycle()
         self.assert_cycle()
 
@@ -813,10 +674,6 @@ class SeaBird54PlusQualificationTest(SeaBirdQualificationTest, SeaBird54tpsMixin
         """
         self.assert_enter_command_mode()
 
-        self.assert_particle_polled(ProtocolEvent.GET_HARDWARE_DATA, self.assert_particle_hardware_data, DataParticleType.PREST_HARDWARE_DATA, sample_count=1)
-        self.assert_particle_polled(ProtocolEvent.GET_STATUS_DATA, self.assert_particle_device_status, DataParticleType.PREST_DEVICE_STATUS, sample_count=1)
-        self.assert_particle_polled(ProtocolEvent.GET_EVENT_COUNTER, self.assert_particle_event_counter, DataParticleType.PREST_EVENT_COUNTER, sample_count=1)
-        self.assert_particle_polled(ProtocolEvent.GET_CONFIGURATION_DATA, self.assert_particle_configuration_data, DataParticleType.PREST_CONFIGURATION_DATA, sample_count=1)
         self.assert_particle_polled(ProtocolEvent.SAMPLE_REFERENCE_OSCILLATOR, self.assert_particle_reference_oscillator, DataParticleType.PREST_REFERENCE_OSCILLATOR, sample_count=1, timeout=200)
 
     def test_direct_access_telnet_mode_command(self):
@@ -940,7 +797,7 @@ class SeaBird54PlusQualificationTest(SeaBirdQualificationTest, SeaBird54tpsMixin
 
     def test_direct_access_telnet_timeout(self):
         """
-        Verify that DA timesout as expected and transistions back to command mode.
+        Verify that DA times out as expected and transitions back to command mode.
         """
         self.assert_enter_command_mode()
 
@@ -986,7 +843,7 @@ class SeaBird54PlusQualificationTest(SeaBirdQualificationTest, SeaBird54tpsMixin
         """
         https://jira.oceanobservatories.org/tasks/browse/CISWMI-147
         There was an issue raised that the sample interval set wasn't behaving
-        consistantly.  This test is intended to replicate the error and veriy
+        consistently.  This test is intended to replicate the error and verify
         the fix.
         """
         self.assert_enter_command_mode()
@@ -1075,10 +932,6 @@ class SeaBird54PlusQualificationTest(SeaBirdQualificationTest, SeaBird54tpsMixin
                 ProtocolEvent.START_AUTOSAMPLE,
                 ProtocolEvent.ACQUIRE_STATUS,
                 ProtocolEvent.CLOCK_SYNC,
-                ProtocolEvent.GET_CONFIGURATION_DATA,
-                ProtocolEvent.GET_HARDWARE_DATA,
-                ProtocolEvent.GET_EVENT_COUNTER,
-                ProtocolEvent.GET_STATUS_DATA,
                 ProtocolEvent.SAMPLE_REFERENCE_OSCILLATOR,
                 ProtocolEvent.TEST_EEPROM,
             ],
@@ -1126,10 +979,6 @@ class SeaBird54PlusQualificationTest(SeaBirdQualificationTest, SeaBird54tpsMixin
         st_capabilities[AgentCapabilityType.RESOURCE_COMMAND] = [
             ProtocolEvent.STOP_AUTOSAMPLE,
             ProtocolEvent.ACQUIRE_STATUS,
-            ProtocolEvent.GET_CONFIGURATION_DATA,
-            ProtocolEvent.GET_HARDWARE_DATA,
-            ProtocolEvent.GET_EVENT_COUNTER,
-            ProtocolEvent.GET_STATUS_DATA,
         ]
 
         self.assert_start_autosample()
@@ -1173,29 +1022,3 @@ class SeaBird54PlusQualificationTest(SeaBirdQualificationTest, SeaBird54tpsMixin
 
         self.assert_reset()
         self.assert_capabilities(capabilities)
-
-
-###############################################################################
-#                             PUBLICATION TESTS                               #
-# Device specific pulication tests are for                                    #
-# testing device specific capabilities                                        #
-###############################################################################
-@attr('PUB', group='mi')
-class SeaBird54PlusPublicationTest(SeaBirdPublicationTest):
-    def setUp(self):
-        SeaBirdPublicationTest.setUp(self)
-
-    def test_granule_generation(self):
-        self.assert_initialize_driver()
-
-        # Currently these tests only verify that the data granule is generated, but the values
-        # are not tested.  We will eventually need to replace log.debug with a better callback
-        # function that actually tests the granule.
-        self.assert_sample_async("raw data", log.debug, DataParticleType.RAW, timeout=10)
-
-        self.assert_sample_async(SAMPLE_SAMPLE, log.debug, DataParticleType.PREST_REAL_TIME, timeout=10)
-        self.assert_sample_async(SAMPLE_GETCD, log.debug, DataParticleType.PREST_CONFIGURATION_DATA, timeout=10)
-        self.assert_sample_async(SAMPLE_GETEC, log.debug, DataParticleType.PREST_EVENT_COUNTER, timeout=10)
-        self.assert_sample_async(SAMPLE_GETHD, log.debug, DataParticleType.PREST_HARDWARE_DATA, timeout=10)
-        self.assert_sample_async(SAMPLE_GETSD, log.debug, DataParticleType.PREST_DEVICE_STATUS, timeout=10)
-        self.assert_sample_async(SAMPLE_REF_OSC, log.debug, DataParticleType.PREST_REFERENCE_OSCILLATOR, timeout=10)
