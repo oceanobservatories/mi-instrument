@@ -13,10 +13,11 @@ __license__ = 'Apache 2.0'
 
 import re
 
-from mi.core.log import get_logger
+from mi.core.log import get_logger, get_logging_metaclass
+
 log = get_logger()
 
-from mi.core.instrument.instrument_protocol import CommandResponseInstrumentProtocol
+from mi.core.instrument.instrument_protocol import CommandResponseInstrumentProtocol, InitializationType
 from mi.core.instrument.instrument_driver import SingleConnectionInstrumentDriver
 from mi.core.instrument.data_particle import DataParticle
 from mi.core.instrument.data_particle import DataParticleKey
@@ -55,37 +56,37 @@ class SeaBirdParticle(DataParticle):
     """
     @staticmethod
     def regex():
-        '''
+        """
         Return a regex string to use in matching functions.  This can be used
         for parsing too if more complex parsing isn't needed.
         Static methods  because it is called outside this class.
         @return: uncompiled regex string
-        '''
+        """
         NotImplementedException()
 
     @staticmethod
     def regex_compiled():
-        '''
+        """
         Return a regex compiled regex of the regex
         Static methods  because it is called outside this class.
         @return: compiled regex
-        '''
+        """
         NotImplementedException()
 
     def regex_multiline(self):
-        '''
+        """
         return a dictionary containing uncompiled regex used to match patterns
         in SBE multiline results. includes an encoder method.
         @return: dictionary of uncompiled regexs
-        '''
+        """
         NotImplementedException()
 
     def regex_multiline_compiled(self):
-        '''
+        """
         return a dictionary containing compiled regex used to match patterns
         in SBE multiline results.
         @return: dictionary of compiled regexs
-        '''
+        """
         result = {}
         for (key, regex) in self.regex_multiline().iteritems():
             result[key] = re.compile(regex, re.DOTALL)
@@ -93,26 +94,25 @@ class SeaBirdParticle(DataParticle):
         return result
 
     def encoders(self):
-        '''
+        """
         return a dictionary containing encoder methods for parameters
         a special key 'default' can be used to name the default mechanism
         @return: dictionary containing encoder callbacks
-        '''
+        """
         NotImplementedException()
 
     def _get_multiline_values(self, split_fun=None):
-        '''
+        """
         return a dictionary containing keys and found values from a
         multiline sample using the multiline regex
         @param: split_fun - function to which splits sample into lines
         @return: dictionary of compiled regexs
-        '''
+        """
         result = []
 
-        if(split_fun == None):
+        if split_fun is None:
             split_fun = self._split_on_newline
 
-        log.debug("Let the parsing begin!")
         matchers = self.regex_multiline_compiled()
         regexs = self.regex_multiline()
 
@@ -121,9 +121,9 @@ class SeaBirdParticle(DataParticle):
             for key in matchers.keys():
                 log.trace("match: %s" % regexs.get(key))
                 match = matchers[key].search(line)
-                if(match):
+                if match:
                     encoder = self._get_encoder(key)
-                    if(encoder):
+                    if encoder:
                         log.debug("encoding value %s (%s)" % (key, match.group(1)))
                         value = encoder(match.group(1))
                     else:
@@ -138,30 +138,30 @@ class SeaBirdParticle(DataParticle):
         return result
 
     def _split_on_newline(self, value):
-        '''
+        """
         default split method for multiline regex matches
         @param: value string to split
         @return: list of line split on NEWLINE
-        '''
+        """
         return value.split(NEWLINE)
 
     def _get_encoder(self, key):
-        '''
+        """
         Get an encoder for a key, if one isn't specified look for a default.
         Can return None for no encoder
         @param: key encoder we are looking for
         @return: dictionary of encoders.
-        '''
+        """
         encoder = self.encoders().get(key)
-        if(not encoder):
+        if not encoder:
             encoder = self.encoders().get(DEFAULT_ENCODER_KEY)
 
         return encoder
 
     def _map_param_to_xml_tag(self, parameter_name):
-        '''
+        """
         @return: a string containing the xml tag name for a parameter
-        '''
+        """
         NotImplementedException()
 
     def _extract_xml_elements(self, node, tag, raise_exception_if_none_found=True):
@@ -191,9 +191,9 @@ class SeaBirdParticle(DataParticle):
             raise SampleException("_extract_xml_element_value: No value for %s in input data: [%s]" % (tag, self.raw_data))
         return children[0].nodeValue
     
-    def _get_xml_parameter(self, xml_element, parameter_name, type=float):
+    def _get_xml_parameter(self, xml_element, parameter_name, data_type=float):
         return {DataParticleKey.VALUE_ID: parameter_name,
-                DataParticleKey.VALUE: type(self._extract_xml_element_value(xml_element, 
+                DataParticleKey.VALUE: data_type(self._extract_xml_element_value(xml_element,
                                                                             self._map_param_to_xml_tag(parameter_name)))}
         
     ########################################################################
@@ -212,11 +212,11 @@ class SeaBirdParticle(DataParticle):
         if not isinstance(hex_value, str):
             raise InstrumentParameterException("hex value not a string")
 
-        if divisor != None and divisor == 0:
+        if divisor is not None and divisor == 0:
             raise InstrumentParameterException("divisor can not be 0")
 
         value = int(hex_value, 16)
-        if(divisor != None):
+        if divisor is not None:
             return float(value) / divisor
         else:
             return value
@@ -229,14 +229,14 @@ class SeaBirdParticle(DataParticle):
         @return: bool
         """
         if not (isinstance(value, str) or isinstance(value, unicode)):
-            raise InstrumentParameterException("value not a string")
+            raise InstrumentParameterException("value (%r) not a string" % value)
 
-        if(value.lower() == 'no'):
+        if value.lower() == 'no':
             return 0
-        elif(value.lower() == 'yes'):
+        elif value.lower() == 'yes':
             return 1
-        else:
-            raise InstrumentParameterException("Could not convert '%s' to bool" % value)
+
+        raise InstrumentParameterException("Could not convert '%s' to bool" % value)
 
     @staticmethod
     def disabled2bool(value):
@@ -248,12 +248,12 @@ class SeaBirdParticle(DataParticle):
         if not isinstance(value, str):
             raise InstrumentParameterException("value not a string")
 
-        if(value.lower() == 'disabled'):
+        if value.lower() == 'disabled':
             return False
-        elif(value.lower() == 'enabled'):
+        elif value.lower() == 'enabled':
             return True
-        else:
-            raise InstrumentParameterException("Could not convert '%s' to bool" % value)
+
+        raise InstrumentParameterException("Could not convert '%s' to bool" % value)
 
     @staticmethod
     def sbetime2unixtime(value):
@@ -263,7 +263,7 @@ class SeaBirdParticle(DataParticle):
         @return: unix time
         """
         if not isinstance(value, int):
-            raise InstrumentParameterException("value not a int")
+            raise InstrumentParameterException("value (%r) not a int" % value)
 
         return SBE_EPOCH + value
 
@@ -293,6 +293,7 @@ class SeaBirdProtocol(CommandResponseInstrumentProtocol):
     Instrument protocol class for seabird driver.
     Subclasses CommandResponseInstrumentProtocol
     """
+    __metaclass__ = get_logging_metaclass(log_level='trace')
 
     def __init__(self, prompts, newline, driver_event):
         """
@@ -335,11 +336,8 @@ class SeaBirdProtocol(CommandResponseInstrumentProtocol):
         """
         initialize parameters
         """
-        next_state = None
-        result = None
-
         self._init_params()
-        return (next_state, result)
+        return None, None
 
     def _handler_autosample_init_params(self, *args, **kwargs):
         """
@@ -347,36 +345,24 @@ class SeaBirdProtocol(CommandResponseInstrumentProtocol):
         put the instrument into command mode, apply the changes
         then put it back.
         """
-        next_state = None
-        result = None
-        error = None
+        if self._init_type != InitializationType.NONE:
 
-        try:
-            self._stop_logging()
+            try:
+                self._stop_logging()
+                self._init_params()
 
-            self._init_params()
+            finally:
+                # Switch back to streaming
+                if not self._is_logging():
+                    log.debug("SBE is logging again")
+                    self._start_logging()
 
-        # Catch all error so we can put ourself back into
-        # streaming.  Then rethrow the error
-        except Exception as e:
-            error = e
-
-        finally:
-            # Switch back to streaming
-            if(not self._is_logging()):
-                log.debug("sbe start logging again")
-                self._start_logging()
-
-        if(error):
-            log.error("Error in apply_startup_params: %s", error)
-            raise error
-
-        return (next_state, result)
+        return None, None
 
     def _handler_command_get(self, *args, **kwargs):
         """
         Get device parameters from the parameter dict.  First we set a baseline timestamp
-        that all data expirations will be calculated against.  Then we try to get parameter
+        that all data expiration will be calculated against.  Then we try to get parameter
         value.  If we catch an expired parameter then we will update all parameters and get
         values using the original baseline time that we set at the beginning of this method.
         Assuming our _update_params is updating all parameter values properly then we can
@@ -395,12 +381,10 @@ class SeaBirdProtocol(CommandResponseInstrumentProtocol):
         @param args[1] parameter : startup parameters?
         @retval (next_state, result) tuple, (None, None).
         @throws InstrumentParameterException if missing set parameters, if set parameters not ALL and
-        not a dict, or if paramter can't be properly formatted.
+        not a dict, or if parameter can't be properly formatted.
         @throws InstrumentTimeoutException if device cannot be woken for set command.
         @throws InstrumentProtocolException if set command could not be built or misunderstood.
         """
-        next_state = None
-        result = None
         startup = False
 
         try:
@@ -421,7 +405,7 @@ class SeaBirdProtocol(CommandResponseInstrumentProtocol):
         else:
             self._set_params(params, startup)
 
-        return (next_state, result)
+        return None, None
 
     ########################################################################
     # Private helpers.
@@ -437,20 +421,14 @@ class SeaBirdProtocol(CommandResponseInstrumentProtocol):
         @throws InstrumentStateException if the device response does not correspond to
         an expected state.
         """
-        timeout = kwargs.get('timeout', TIMEOUT)
-
-        log.debug("_handler_unknown_discover")
-        next_state = None
-        next_agent_state = None
-
         logging = self._is_logging()
         log.debug("are we logging? %s" % logging)
 
-        if(logging == None):
+        if logging is None:
             next_state = DriverProtocolState.UNKNOWN
             next_agent_state = ResourceAgentState.ACTIVE_UNKNOWN
 
-        elif(logging):
+        elif logging:
             next_state = DriverProtocolState.AUTOSAMPLE
             next_agent_state = ResourceAgentState.STREAMING
 
@@ -459,11 +437,11 @@ class SeaBirdProtocol(CommandResponseInstrumentProtocol):
             next_agent_state = ResourceAgentState.COMMAND
 
         log.debug("_handler_unknown_discover. result start: %s" % next_state)
-        return (next_state, next_agent_state)
+        return next_state, next_agent_state
 
     def _sync_clock(self, command, date_time_param, timeout=TIMEOUT, delay=1, time_format="%d %b %Y %H:%M:%S"):
         """
-        Send the command to the instrument to syncronize the clock
+        Send the command to the instrument to synchronize the clock
         @param command: command to set6 date time
         @param date_time_param: date time parameter that we want to set
         @param timeout: command timeout
@@ -511,14 +489,12 @@ class SeaBirdProtocol(CommandResponseInstrumentProtocol):
         # If we are in streaming mode and our configuration on the
         # instrument matches what we think it should be then we
         # don't need to do anything.
-        if(not self._instrument_config_dirty()):
+        if not self._instrument_config_dirty():
             log.debug("configuration not dirty.  Nothing to do here")
             return True
 
-        error = None
-
         try:
-            if(logging):
+            if logging:
                 # Switch to command mode,
                 log.debug("stop logging")
                 self._stop_logging()
@@ -526,20 +502,11 @@ class SeaBirdProtocol(CommandResponseInstrumentProtocol):
             log.debug("sbe apply_startup_params now")
             self._apply_params()
 
-        # Catch all error so we can put ourself back into
-        # streaming.  Then rethrow the error
-        except Exception as e:
-            error = e
-
         finally:
             # Switch back to streaming
-            if(logging):
+            if logging:
                 log.debug("sbe apply_startup_params start logging again")
                 self._start_logging()
-
-        if(error):
-            log.error("Error in apply_startup_params: %s", error)
-            raise error
 
     def _start_logging(self):
         """
@@ -586,9 +553,6 @@ class SeaBirdProtocol(CommandResponseInstrumentProtocol):
                 if key in readonly:
                     raise InstrumentParameterException("Attempt to set read only parameter (%s)" % key)
 
-        # Make sure this method is overloaded because this just verifies, but doesn't
-        # set a damn thing.
-
     def _update_params(self):
         """
         Send instrument commands to get data to refresh the param_dict cache
@@ -600,12 +564,10 @@ class SeaBirdProtocol(CommandResponseInstrumentProtocol):
         apply startup parameters to the instrument.
         @raise: InstrumentProtocolException if in wrong mode.
         """
-        log.debug("_apply_params start")
         config = self.get_startup_config()
         log.debug("_apply_params startup config: %s", config)
         # Pass true to _set_params so we know these are startup values
         self._set_params(config, True)
-        log.debug("_apply_params done")
 
     def _instrument_config_dirty(self):
         """
@@ -622,11 +584,10 @@ class SeaBirdProtocol(CommandResponseInstrumentProtocol):
         log.debug("Startup Parameters: %s", startup_params)
 
         for param in startup_params:
-            if (self._param_dict.get(param) != self._param_dict.get_config_value(param)):
+            if self._param_dict.get(param) != self._param_dict.get_config_value(param):
                 log.debug("DIRTY: %s %s != %s", param, self._param_dict.get(param), self._param_dict.get_config_value(param))
                 return True
 
-        log.debug("Clean instrument config")
         return False
 
     def _send_wakeup(self):
