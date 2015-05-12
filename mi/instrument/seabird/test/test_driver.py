@@ -28,7 +28,6 @@ from mi.idk.unit_test import InstrumentDriverIntegrationTestCase
 from mi.idk.unit_test import InstrumentDriverQualificationTestCase
 from mi.idk.unit_test import InstrumentDriverPublicationTestCase
 
-from mi.instrument.seabird.driver import SeaBirdProtocol
 from mi.instrument.seabird.driver import SeaBirdParticle
 from mi.core.exceptions import InstrumentParameterException
 from mi.core.instrument.instrument_driver import DriverEvent
@@ -116,7 +115,7 @@ class SeaBirdIntegrationTest(InstrumentDriverIntegrationTestCase):
         # Some seabirds tick the clock the instant you set it.  So you set
         # time 1, the get would be time 2.  Others do it correctly and wait
         # for a second before ticking. Hence the default tolerance of 1.
-        if(time_override == None):
+        if time_override is None:
             set_time = get_timestamp_delayed(time_format)
         else:
             set_time = time.strftime(time_format, time.localtime(time_override))
@@ -138,7 +137,7 @@ class SeaBirdIntegrationTest(InstrumentDriverIntegrationTestCase):
         result_time_struct = time.strptime(result_time, time_format)
         converted_time = time.mktime(result_time_struct)
 
-        if(isinstance(expected_time, float)):
+        if isinstance(expected_time, float):
             expected_time_struct = time.localtime(expected_time)
         else:
             expected_time_struct = time.strptime(expected_time, time_format)
@@ -160,7 +159,7 @@ class SeaBirdIntegrationTest(InstrumentDriverIntegrationTestCase):
 
         timeout_time = time.time() + timeout
 
-        while(not self._is_time_set(time_param, time.mktime(time.gmtime()), tolerance=tolerance)):
+        while not self._is_time_set(time_param, time.mktime(time.gmtime()), tolerance=tolerance):
             log.debug("time isn't current. sleep for a bit")
 
             # Run acquire status command to set clock parameter
