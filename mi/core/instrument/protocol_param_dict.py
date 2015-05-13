@@ -33,7 +33,6 @@ class ParameterDictType(BaseEnum):
     STRING = "string"
     FLOAT = "float"
     LIST = "list"
-    BOOL = "bool"
     ENUM = "enum"
 
 class ParameterDictVisibility(BaseEnum):
@@ -41,7 +40,7 @@ class ParameterDictVisibility(BaseEnum):
     READ_WRITE = "READ_WRITE" # Can be set by the driver or the operator
     IMMUTABLE = "IMMUTABLE" # Can only be set by the driver during startup
     DIRECT_ACCESS = "DIRECT_ACCESS"
-    
+
 class ParameterDictKey(BaseEnum):
     """
     These are the output strings when generating a metadata block. They also
@@ -60,7 +59,7 @@ class ParameterDictKey(BaseEnum):
     UNITS = "units"
     PARAMETERS = "parameters"
     VALUE_DESCRIPTION = "value_description"
-    
+
 class ParameterDescription(object):
     """
     An object handling the descriptive (and largely staticly defined in code)
@@ -117,7 +116,7 @@ class ParameterValue(object):
         self.f_format = f_format
         self.expiration = expiration
         self.timestamp = ntplib.system_to_ntp_time(time.time())
-                
+
     def set_value(self, new_val):
         """
         Set the stored value to the new value
@@ -125,7 +124,7 @@ class ParameterValue(object):
         """
         self.value = new_val
         self.timestamp = ntplib.system_to_ntp_time(time.time())
-    
+
     def get_value(self, baseline_timestamp=None):
         """
         Get the value from this structure, do whatever checks are necessary
@@ -140,8 +139,8 @@ class ParameterValue(object):
             raise InstrumentParameterExpirationException("Value for %s expired!" % self.name, self.value)
         else:
             return self.value
-        
-        
+
+
 class Parameter(object):
     """
     A parameter dictionary item.
@@ -193,7 +192,7 @@ class Parameter(object):
                                                 type=type,
                                                 units=units,
                                                 value_description=value_description)
-        
+
         self.value = ParameterValue(name, f_format, value=value,
                                     expiration=expiration)
         self.name = name
@@ -208,7 +207,7 @@ class Parameter(object):
         """
         self.value.set_value(input)
         return True
-    
+
     def get_value(self, timestamp=None):
         """
         Get the value of the parameter that has been stored in the ParameterValue
@@ -218,7 +217,7 @@ class Parameter(object):
         @raises InstrumentParameterExpirationException If the value has expired
         """
         return self.value.get_value(timestamp)
-    
+
 class RegexParameter(Parameter):
     def __init__(self, name, pattern, f_getval, f_format, value=None,
                  visibility=ParameterDictVisibility.READ_WRITE,
@@ -231,7 +230,7 @@ class RegexParameter(Parameter):
                  startup_param=False,
                  default_value=None,
                  init_value=None,
-                 regex_flags=None,
+                 regex_flags=0,
                  expiration=None,
                  get_timeout=10,
                  set_timeout=10,
@@ -279,12 +278,7 @@ class RegexParameter(Parameter):
                            units=units,
                            value_description=value_description)
 
-        self.pattern = pattern
-        if regex_flags == None:
-            self.regex = re.compile(pattern)
-        else:
-            self.regex = re.compile(pattern, regex_flags)
-            
+        self.regex = re.compile(pattern, regex_flags)
         self.f_getval = f_getval
 
     def update(self, input):
@@ -303,8 +297,8 @@ class RegexParameter(Parameter):
             self.value.set_value(self.f_getval(match))
             return True
         else:
-            return False    
-    
+            return False
+
 class FunctionParameter(Parameter):
     def __init__(self, name, f_getval, f_format, value=None,
                  visibility=ParameterDictVisibility.READ_WRITE,
@@ -391,10 +385,10 @@ class ProtocolParameterDict(InstrumentDict):
     """
     def __init__(self):
         """
-        Constructor.        
+        Constructor.
         """
         self._param_dict = {}
-        
+
     def add(self,
             name,
             pattern,
@@ -417,7 +411,7 @@ class ProtocolParameterDict(InstrumentDict):
             description=None,
             type=None,
             units=None,
-            regex_flags=None,
+            regex_flags=0,
             value_description=None,
             expiration=None):
         """
@@ -494,7 +488,7 @@ class ProtocolParameterDict(InstrumentDict):
             raise InstrumentParameterException(
                 "Invalid Parameter added! Attempting to add: %s" % parameter)
         self._param_dict[parameter.name] = parameter
-        
+
     def get(self, name, timestamp=None):
         """
         Get a parameter value from the dictionary.
@@ -555,21 +549,21 @@ class ProtocolParameterDict(InstrumentDict):
         """
         if not self._param_dict[name].description:
             raise InstrumentParameterException("No description present!")
-            
-        return self._param_dict[name].description.init_value            
+
+        return self._param_dict[name].description.init_value
 
     def get_default_value(self, name):
         """
         Get a parameter's default value from the dictionary.
         @param name Name of the value to be retrieved.
         @raises KeyError if the name is invalid.
-        @raises InstrumentParameterException if the description is missing        
+        @raises InstrumentParameterException if the description is missing
         """
         if not self._param_dict[name].description:
             raise InstrumentParameterException("No description present!")
 
         return self._param_dict[name].description.default_value
-    
+
     def set_value(self, name, value):
         """
         Set a parameter's value in the dictionary. While this is a simple,
@@ -577,22 +571,22 @@ class ProtocolParameterDict(InstrumentDict):
         a more graceful (and possibly more robust) way to automatically
         handling strings directly from an instrument. Consider using update()
         wherever it makes sense.
-        
+
         @param name The parameter name.
         @param value The parameter object to insert (and possibly overwrite)
         into the parameter dictionary.
         @raises KeyError if the name is invalid.
         @see ProtocolParameterDict.update()
-        """        
+        """
         log.debug("Setting parameter dict name: %s to value: %s", name, value)
         self._param_dict[name].value.set_value(value)
-    
+
     def set_default(self, name):
         """
         Set the value to the default value stored in the param dict
         @raise KeyError if the name is invalid
         @raise ValueError if the default_value is missing
-        @raises InstrumentParameterException if the description is missing        
+        @raises InstrumentParameterException if the description is missing
         """
         if not self._param_dict[name].description:
             raise InstrumentParameterException("No description present!")
@@ -601,62 +595,62 @@ class ProtocolParameterDict(InstrumentDict):
             self._param_dict[name].value.set_value(self._param_dict[name].description.default_value)
         else:
             raise ValueError("Missing default value")
-            
+
     def set_init_value(self, name, value):
         """
         Set the value to the default value stored in the param dict
         @param The parameter name to add to
         @param The value to set for the initialization variable
         @raise KeyError if the name is invalid
-        @raises InstrumentParameterException if the description is missing        
+        @raises InstrumentParameterException if the description is missing
         """
         if not self._param_dict[name].description:
             raise InstrumentParameterException("No description present!")
 
         self._param_dict[name].description.init_value = value
-        
+
     def get_menu_path_read(self, name):
         """
         Get the read menu path parameter value from the dictionary.
         @param name Name of the value to be retrieved.
         @raises KeyError if the name is invalid.
-        @raises InstrumentParameterException if the description is missing        
+        @raises InstrumentParameterException if the description is missing
         """
         if not self._param_dict[name].description:
             raise InstrumentParameterException("No description present!")
 
         return self._param_dict[name].description.menu_path_read
-        
+
     def get_submenu_read(self, name):
         """
         Get the read final destination submenu parameter value from the dictionary.
         @param name Name of the value to be retrieved.
         @raises KeyError if the name is invalid.
-        @raises InstrumentParameterException if the description is missing                
+        @raises InstrumentParameterException if the description is missing
         """
         if not self._param_dict[name].description:
             raise InstrumentParameterException("No description present!")
 
         return self._param_dict[name].description.submenu_read
-        
+
     def get_menu_path_write(self, name):
         """
         Get the write menu path parameter value from the dictionary.
         @param name Name of the value to be retrieved.
         @raises KeyError if the name is invalid.
-        @raises InstrumentParameterException if the description is missing                
+        @raises InstrumentParameterException if the description is missing
         """
         if not self._param_dict[name].description:
             raise InstrumentParameterException("No description present!")
 
         return self._param_dict[name].description.menu_path_write
-        
+
     def get_submenu_write(self, name):
         """
         Get the write final destination parameter value from the dictionary.
         @param name Name of the value to be retrieved.
         @raises KeyError if the name is invalid.
-        @raises InstrumentParameterException if the description is missing                
+        @raises InstrumentParameterException if the description is missing
         """
         if not self._param_dict[name].description:
             raise InstrumentParameterException("No description present!")
@@ -697,7 +691,7 @@ class ProtocolParameterDict(InstrumentDict):
         for (name, val) in self._param_dict.iteritems():
             update_result = val.update(input)
             if update_result:
-                result[name] = update_result 
+                result[name] = update_result
         return result
 
     def update(self, input, target_params=None):
@@ -772,9 +766,9 @@ class ProtocolParameterDict(InstrumentDict):
             current_value = self._param_dict[name].value.get_value()
         else:
             current_value = val
-        
+
         return self._param_dict[name].value.f_format(current_value)
-        
+
     def get_keys(self):
         """
         Return list of all parameter names in the dictionary.
@@ -785,9 +779,9 @@ class ProtocolParameterDict(InstrumentDict):
         """
         Return a list of parameter names that are tagged as direct access
         parameters
-        
+
         @retval A list of parameter names, possibly empty
-        @raises InstrumentParameterException if the description is missing                
+        @raises InstrumentParameterException if the description is missing
         """
 
         return_val = []
@@ -798,7 +792,7 @@ class ProtocolParameterDict(InstrumentDict):
 
             if self._param_dict[key].description.direct_access == True:
                 return_val.append(key)
-        
+
         return return_val
 
     def is_settable_param(self, name):
@@ -820,7 +814,7 @@ class ProtocolParameterDict(InstrumentDict):
         @param name name of a parameter
         @retval True if the parameter is flagged as a startup param
         @raises KeyError if parameter doesn't exist
-        @raises InstrumentParameterException if the description is missing                
+        @raises InstrumentParameterException if the description is missing
         """
         if not self._param_dict[name].description:
             raise InstrumentParameterException("No description present!")
@@ -830,32 +824,32 @@ class ProtocolParameterDict(InstrumentDict):
     def get_startup_list(self):
         """
         Return a list of parameter names that are tagged as startup parameters
-        
+
         @retval A list of parameter names, possibly empty
         """
         return_val = []
         for key in self._param_dict.keys():
             if self.is_startup_param(key):
                 return_val.append(key)
-        
+
         return return_val
-    
+
     def get_visibility_list(self, visibility):
         """
         Return a list of parameter names that are tagged with the given
         visibility
-        
+
         @param visability A value from the ParameterDictVisibility enum
         @retval A list of parameter names, possibly empty
         """
         return_val = []
-        
+
         for key in self._param_dict.keys():
             if self._param_dict[key].description.visibility == visibility:
                 return_val.append(key)
-        
+
         return return_val
-    
+
     def generate_dict(self):
         """
         Generate a JSONifyable metadata schema that describes the parameters.
@@ -863,7 +857,7 @@ class ProtocolParameterDict(InstrumentDict):
         This method only handles the parameter block of the schema.
         """
         return_struct = {}
-        
+
         for param_key in self._param_dict.keys():
             param_struct = {}
             value_struct = {}
@@ -884,7 +878,7 @@ class ProtocolParameterDict(InstrumentDict):
                 param_struct[ParameterDictKey.DISPLAY_NAME] = param_obj.display_name
             if param_obj.description != None:
                 param_struct[ParameterDictKey.DESCRIPTION] = param_obj.description
-            
+
             # Value objects
             if param_obj.type != None:
                 value_struct[ParameterDictKey.TYPE] = param_obj.type
@@ -894,21 +888,21 @@ class ProtocolParameterDict(InstrumentDict):
                 value_struct[ParameterDictKey.UNITS] = param_obj.units
             if param_obj.description != None:
                 value_struct[ParameterDictKey.DESCRIPTION] = param_obj.value_description
-            
-            param_struct[ParameterDictKey.VALUE] = value_struct            
+
+            param_struct[ParameterDictKey.VALUE] = value_struct
             return_struct[param_key] = param_struct
-        
+
         return return_struct
-    
+
     def load_strings(self, devel_path=None, filename=None):
         """
         Load the metadata for a parameter set. starting by looking at the default
         path in the egg and filesystem first, overriding what might have been
         hard coded. If a system filename is given look there. If parameter
         strings cannot be found, return False and carry on with hard coded values.
-        
+
         @param devel_path The path where the file can be found during development.
-        This is likely in the mi/instrument/make/model/flavor/resource directory.    
+        This is likely in the mi/instrument/make/model/flavor/resource directory.
         @param filename The filename of the custom file to load, including as full a path
         as desired (complete path recommended)
         @retval True if something could be loaded, False otherwise
@@ -920,7 +914,7 @@ class ProtocolParameterDict(InstrumentDict):
             metadata = self.get_metadata_from_source(devel_path, filename)
         except IOError as e:
             log.warning("Encountered IOError: %s", e)
-            return False        # Fill the fields           
+            return False        # Fill the fields
 
         if metadata:
             log.debug("Found parameter metadata, loading dictionary")
@@ -940,6 +934,6 @@ class ProtocolParameterDict(InstrumentDict):
                     if name == ParameterDictKey.VALUE_DESCRIPTION:
                         self._param_dict[param_name].description.value_description = value
             return True
-    
+
         return False # no metadata!
-        
+

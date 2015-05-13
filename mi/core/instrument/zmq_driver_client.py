@@ -29,13 +29,13 @@ import zmq
 from mi.core.instrument.driver_client import DriverClient
 from mi.core.log import get_logger ; log = get_logger()
 
- 
+
 class ZmqDriverClient(DriverClient):
     """
     A class for communicating with a ZMQ-based driver process using python
     thread for catching asynchronous driver events.
     """
-    
+
     def __init__(self, host, cmd_port, event_port):
         """
         Initialize members.
@@ -53,7 +53,7 @@ class ZmqDriverClient(DriverClient):
         self.zmq_cmd_socket = None
         self.event_thread = None
         self.stop_event_thread = True
-        
+
     def start_messaging(self, evt_callback=None):
         """
         Initialize and start messaging resources for the driver process client.
@@ -65,9 +65,9 @@ class ZmqDriverClient(DriverClient):
         self.zmq_cmd_socket = self.zmq_context.socket(zmq.REQ)
         self.zmq_cmd_socket.connect(self.cmd_host_string)
         log.info('Driver client cmd socket connected to %s.' %
-                       self.cmd_host_string)        
+                       self.cmd_host_string)
         self.evt_callback = evt_callback
-        
+
         def recv_evt_messages(driver_client):
             """
             A looping function that monitors a ZMQ SUB socket for asynchronous
@@ -100,7 +100,7 @@ class ZmqDriverClient(DriverClient):
             log.info('Client event socket closed.')
         self.event_thread = thread.start_new_thread(recv_evt_messages, (self,))
         log.info('Driver client messaging started.')
-        
+
     def stop_messaging(self):
         """
         Close messaging resources for the driver process client. Close
@@ -108,17 +108,17 @@ class ZmqDriverClient(DriverClient):
         cause event thread to close event socket and context and terminate.
         Await event thread completion and return.
         """
-        
+
         self.zmq_cmd_socket.close()
         self.zmq_cmd_socket = None
         self.zmq_context.term()
         self.zmq_context = None
-        self.stop_event_thread = True                    
+        self.stop_event_thread = True
         #self.event_thread.join()
         self.event_thread = None
         self.evt_callback = None
-        log.info('Driver client messaging closed.')        
-    
+        log.info('Driver client messaging closed.')
+
     def cmd_dvr(self, cmd, *args, **kwargs):
         """
         Command a driver by request-reply messaging. Package command
@@ -131,7 +131,7 @@ class ZmqDriverClient(DriverClient):
         """
         # Package command dictionary.
         msg = {'cmd':cmd,'args':args,'kwargs':kwargs}
-        
+
         log.debug('Sending command %s.' % str(msg))
         while True:
             try:
@@ -141,12 +141,12 @@ class ZmqDriverClient(DriverClient):
                     return 'driver stopping'
 
                 # Command sent, break out and wait for reply.
-                break    
+                break
 
             except zmq.ZMQError:
                 # Socket not ready to accept send. Sleep and retry later.
                 time.sleep(.5)
-            
+
         log.debug('Awaiting reply.')
         while True:
             try:
@@ -158,11 +158,11 @@ class ZmqDriverClient(DriverClient):
             except zmq.ZMQError:
                 # Socket not ready with the reply. Sleep and retry later.
                 time.sleep(.5)
-                
-        log.debug('Reply: %s.' % str(reply))
-        
+
+        log.debug('Reply: %s %s.', type(reply), reply)
+
         if isinstance(reply, Exception):
             raise reply
         else:
             return reply
-    
+
