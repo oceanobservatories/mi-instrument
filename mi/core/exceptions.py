@@ -17,14 +17,7 @@ import sys
 from mi.core.log import get_logger
 log = get_logger()
 
-from mi.core.common import BaseEnum
 from ooi.exception import ApplicationException
-
-BadRequest = 400
-Timeout = 408
-Conflict = 409
-ResourceError = 700
-ServerError = 500
 
 class IonException(ApplicationException):
     status_code = -1
@@ -46,177 +39,34 @@ class StreamException(IonException):
     def __init__(self, *a, **b):
         super(StreamException, self).__init__(*a, **b)
 
-class BadRequest(IonException):
-    '''
-    Incorrectly formatted client request
-    '''
-    status_code = 400
-
-
-class Unauthorized(IonException):
-    '''
-    Client failed policy enforcement
-    '''
-    status_code = 401
-
-
-class NotFound(IonException):
-    ''''
-    Requested resource not found
-    '''
-    status_code = 404
-
-
-class Timeout(IonException):
-    '''
-    Client request timed out
-    '''
-    status_code = 408
-
-
-class Conflict(IonException):
-    '''
-    Client request failed due to conflict with the current state of the resource
-    '''
-    status_code = 409
-
-
-class Inconsistent(IonException):
-    '''
-    Client request failed due to internal error of the datastore
-    '''
-    status_code = 410
-
-class FilesystemError(StreamException):
-    """
-    """
-    status_code = 411
-
-class StreamingError(StreamException):
-    """
-    """
-    status_code = 412
-
-class CorruptionError(StreamException):
-    """
-    """
-    status_code = 413
-
-class ServerError(IonException):
-    '''
-    For reporting generic service failure
-    '''
-    status_code = 500
-
-
-class ServiceUnavailable(IonException):
-    '''
-    Requested service not started or otherwise unavailable
-    '''
-    status_code = 503
-
-
-class ConfigNotFound(IonException):
-    '''
-    '''
-    status_code = 540
-
-
-class ContainerError(IonException):
-    '''
-    '''
-    status_code = 550
-
-
-class ContainerConfigError(ContainerError):
-    '''
-    '''
-    status_code = 551
-
-
-class ContainerStartupError(ContainerError):
-    '''
-    '''
-    status_code = 553
-
-
-class ContainerAppError(ContainerError):
-    '''
-    '''
-    status_code = 554
-
-
-class IonInstrumentError(IonException):
-    """
-    """
-    status_code = 600
-
-
-class InstConnectionError(IonInstrumentError):
-    """
-    """
-    status_code = 610
-
-
-class InstNotImplementedError(IonInstrumentError):
-    """
-    """
-    status_code = 620
-
-
-class InstParameterError(IonInstrumentError):
-    """
-    """
-    status_code = 630
-
-
-class InstProtocolError(IonInstrumentError):
-    """
-    """
-    status_code = 640
-
-
-class InstSampleError(IonInstrumentError):
-    """
-    """
-    status_code = 650
-
-
-class InstStateError(IonInstrumentError):
-    """
-    """
-    status_code = 660
-
-
-class InstUnknownCommandError(IonInstrumentError):
-    """
-    """
-    status_code = 670
-
-
-class InstDriverError(IonInstrumentError):
-    """
-    """
-    status_code = 680
-
-
-class InstTimeoutError(IonInstrumentError):
-    """
-    """
-    status_code = 690
-
-
-class InstDriverClientTimeoutError(IonInstrumentError):
-    """
-    A special kind of timeout that only applies at the driver client level (not an instrument timeout).
-    """
-    status_code = 691
-
-class ResourceError(IonException):
-    """
-    A taskable resource error occurred.
-    """
-    status_code = 700
+BadRequest = 400
+Unauthorized = 401
+NotFound = 404
+Timeout = 408
+Conflict = 409
+Inconsistent = 410
+FilesystemError = 411
+StreamingError = 412
+CorruptionError = 413
+ServerError = 500
+ServiceUnavailable = 503
+ConfigNotFound = 540
+ContainerError = 550
+ContainerConfigError = 551
+ContainerStartupError = 553
+ContainerAppError = 554
+IonInstrumentError = 600
+InstConnectionError = 610
+InstNotImplementedError = 620
+InstParameterError = 630
+InstProtocolError = 640
+InstSampleError = 650
+InstStateError = 660
+InstUnknownCommandError = 670
+InstDriverError = 680
+InstTimeoutError = 690
+InstDriverClientTimeoutError = 691
+ResourceError = 700
 
 
 # must appear after ServerError in python module
@@ -246,21 +96,20 @@ class InstrumentException(ApplicationException):
     representation in ION.
     """
     def __init__ (self, msg=None, error_code=ResourceError):
-        super(InstrumentException,self).__init__()
-        self.args = (error_code, msg)
+        super(InstrumentException, self).__init__()
         self.error_code = error_code
         self.msg = msg
 
     def get_triple(self):
         """ get exception info without depending on MI exception classes """
-        return ( self.error_code.status_code, "%s: %s" % (self.__class__.__name__, self.msg), self._stacks )
-    
+        return self.error_code, "%s: %s" % (self.__class__.__name__, self.msg), self._stacks
+
 class InstrumentConnectionException(InstrumentException):
     """Exception related to connection with a physical instrument"""
 
 class InstrumentProtocolException(InstrumentException):
     """Exception related to an instrument protocol problem
-    
+
     These are generally related to parsing or scripting of what is supposed
     to happen when talking at the lowest layer protocol to a device.
     @todo Add partial result property?
