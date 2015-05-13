@@ -10,41 +10,24 @@ import sys
 
 class ApplicationException(Exception):
     def __init__(self, *a, **b):
-        super(ApplicationException,self).__init__(*a,**b)
+        super(ApplicationException, self).__init__(*a,**b)
         self._stacks = []
-
         # save current stack
         self._stack_init = traceback.extract_stack()
-        self.add_stack(self.__class__.__name__ + ': ' + str(self), self._stack_init)
+        self._stacks.append((self.__class__.__name__ + ': ' + str(self), traceback.extract_stack()))
 
-        # WARNING this is unreliable!  only use if cause passed as argument
-        cause_info = sys.exc_info() #if retain_cause else (None,None,None)
-
-        # add stacks and labels for cause
-        if 'cause' in b:
-            if isinstance(b['cause'],Application):
-                self._cause = b['cause']
-                cause_label = 'caused by: ' + self._cause.__class__.__name__ + ': ' + str(self._cause)
-                # if ApplicationException, get stacks from its list
-                if isinstance(self._cause,ApplicationException) and len(self._cause._stacks):
-                    first = True
-                    for label,stack in self._cause._stacks:
-                        if first:
-                            self.add_stack(cause_label, stack)
-                            first = False
-                        else:
-                            self.add_stack(label, stack)
-                # otherwise if this is current exception in exc_info, use its stack
-                elif self._cause==cause_info[1] and cause_info[2]:
-                    self._stack_cause = traceback.extract_tb(cause_info[2])
-                    self.add_stack(cause_label, self._stack_cause)
-            # cause is not an exception? treat as boolean, use exc_info
-            elif b['cause']:
-                self._cause=cause_info[1]
-                if cause_info[2]:
-                    self._stack_cause = traceback.extract_tb(cause_info[2])
-                    self.add_stack(cause_label, self._stack_cause)
-
+        # save cause and its stack
+        cause_info = sys.exc_info()  # if retain_cause else (None,None,None)
+        self._cause = cause_info[1]
+        cause_label = 'caused by: ' + self._cause.__class__.__name__ + ': ' + str(self._cause)
+        if isinstance(self._cause, ApplicationException) and len(self._cause._stacks):
+            self.add_stack(cause_label, self._cause._stacks[0])
+            if len(self._cause._stacks)>1:
+                self._stacks += self._cause._stacks[1:]
+        else:
+            self._stack_cause = traceback.extract_tb(cause_info[2]) if cause_info[2] else None
+            if self._cause:
+                self.add_stack(cause_label, self._stack_cause)
 
     def drop_chained_init_frame(self):
         """ ideally, get_stack() should return the stack from thread start down to where the exception is created.
