@@ -1762,7 +1762,7 @@ class InstrumentDriverIntegrationTestCase(InstrumentDriverTestCase):  # Must inh
         @param regex: regular express to match the error message
         @return: True if a match otherwise False
         """
-        pattern = r'(\d{3}), \'(\w+): (.*)'
+        pattern = r'(\d{3}), [\'"](\w+): (.*)'
         matcher = re.compile(pattern)
         match = re.search(matcher, str(ion_exception))
 

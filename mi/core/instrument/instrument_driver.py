@@ -414,7 +414,7 @@ class InstrumentDriver(object):
         Echo a message.
         @param msg the message to prepend and echo back to the caller.
         """
-        reply = 'driver_ping: %r %s' % (self, msg)
+        reply = 'driver_ping: %s %r' % (msg, self)
         return reply
 
     def test_exceptions(self, msg):
@@ -492,7 +492,7 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
                 (DriverEvent.STOP_DIRECT, self._handler_connected_stop_direct_event),
             ],
         }
-        
+
         for state in handlers:
             for event, handler in handlers[state]:
                 self._connection_fsm.add_handler(state, event, handler)
@@ -728,7 +728,7 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
         @retval parameter : value dict.
         @raises InstrumentParameterException if missing or invalid get parameters.
         @raises InstrumentStateException if command not allowed in current state
-        @raises NotImplementedException if not implemented by subclass.                        
+        @raises NotImplementedException if not implemented by subclass.
         """
         # Forward event and argument to the protocol FSM.
         return self._connection_fsm.on_event(DriverEvent.GET, DriverEvent.GET, *args, **kwargs)
@@ -742,7 +742,7 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
         @raises InstrumentTimeoutException if could not wake device or no response.
         @raises InstrumentProtocolException if set command not recognized.
         @raises InstrumentStateException if command not allowed in current state.
-        @raises NotImplementedException if not implemented by subclass.                        
+        @raises NotImplementedException if not implemented by subclass.
         """
         # Forward event and argument to the protocol FSM.
         return self._connection_fsm.on_event(DriverEvent.SET, DriverEvent.SET, *args, **kwargs)

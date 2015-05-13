@@ -243,7 +243,10 @@ class ZmqDriverProcess(driver_process.DriverProcess):
             return'stop_driver_process'
         elif cmd == 'test_events':
             events = kwargs['events']
-            self.events += events
+            if type(events) != list:
+                events = [events]
+            for event in events:
+                self.events.put(event)
             reply = 'test_events'
         elif cmd == 'process_echo':
             reply = 'ping from resource ppid:%s, resource:%s' % (str(self.ppid), str(self.driver))
