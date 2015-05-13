@@ -18,7 +18,8 @@ import time
 import json
 from functools import partial
 
-from mi.core.log import get_logger ; log = get_logger()
+from mi.core.log import get_logger
+log = get_logger()
 
 from threading import Thread
 
@@ -61,7 +62,6 @@ class InitializationType(BaseEnum):
 
 class InstrumentProtocol(object):
     """
-        
     Base instrument protocol class.
     """    
     def __init__(self, driver_event):
@@ -788,7 +788,6 @@ class CommandResponseInstrumentProtocol(InstrumentProtocol):
     """
     Base class for text-based command-response instruments.
     """
-    
     def __init__(self, prompts, newline, driver_event):
         """
         Constructor.
@@ -885,7 +884,7 @@ class CommandResponseInstrumentProtocol(InstrumentProtocol):
         else:
             pattern = response_regex.pattern
 
-        log.debug('_get_response: timeout=%s, prompt_list=%s, expected_prompt=%s, response_regex=%r, promptbuf=%s',
+        log.debug('_get_response: timeout=%s, prompt_list=%s, expected_prompt=%r, response_regex=%r, promptbuf=%r',
                   timeout, prompt_list, expected_prompt, pattern, self._promptbuf)
         while True:
             if response_regex:
@@ -987,8 +986,8 @@ class CommandResponseInstrumentProtocol(InstrumentProtocol):
         self._promptbuf = ''
 
         # Send command.
-        log.debug('_do_cmd_resp: %s, timeout=%s, write_delay=%s, expected_prompt=%s, response_regex=%s',
-                        repr(cmd_line), timeout, write_delay, expected_prompt, response_regex)
+        log.debug('_do_cmd_resp: %r, timeout=%s, write_delay=%s, expected_prompt=%r, response_regex=%r',
+                        cmd_line, timeout, write_delay, expected_prompt, response_regex)
 
         if (write_delay == 0):
             self._connection.send(cmd_line)
@@ -1063,7 +1062,7 @@ class CommandResponseInstrumentProtocol(InstrumentProtocol):
         """
 
         # Send command.
-        log.debug('_do_cmd_direct: <%s>' % cmd)
+        log.debug('_do_cmd_direct: %r' % cmd)
         self._connection.send(cmd)
  
     ########################################################################
@@ -1077,7 +1076,6 @@ class CommandResponseInstrumentProtocol(InstrumentProtocol):
         Also add data to the chunker and when received call got_chunk
         to publish results.
         """
-
         data_length = port_agent_packet.get_data_length()
         data = port_agent_packet.get_data()
         timestamp = port_agent_packet.get_timestamp()
@@ -1139,8 +1137,8 @@ class CommandResponseInstrumentProtocol(InstrumentProtocol):
         if(len(self._promptbuf) > self._max_buffer_size()):
             self._promptbuf = self._linebuf[self._max_buffer_size()*-1:]
 
-        log.debug("LINE BUF: %s", self._linebuf)
-        log.debug("PROMPT BUF: %s", self._promptbuf)
+        log.debug("LINE BUF: %r", self._linebuf[-50:])
+        log.debug("PROMPT BUF: %r", self._promptbuf[-50:])
 
     def _max_buffer_size(self):
         return MAX_BUFFER_SIZE
@@ -1164,7 +1162,7 @@ class CommandResponseInstrumentProtocol(InstrumentProtocol):
         @throw InstrumentTimeoutException if the device could not be woken.
         """
         # Clear the prompt buffer.
-        log.debug("clearing promptbuf: %s", self._promptbuf)
+        log.trace("clearing promptbuf: %r", self._promptbuf)
         self._promptbuf = ''
         
         # Grab time for timeout.
@@ -1176,17 +1174,17 @@ class CommandResponseInstrumentProtocol(InstrumentProtocol):
             self._send_wakeup()
             time.sleep(delay)
 
-            log.debug("Prompts: %s", self._get_prompts())
+            log.trace("Prompts: %s", self._get_prompts())
 
             for item in self._get_prompts():
-                log.debug("buffer: %s", self._promptbuf)
-                log.debug("find prompt: %s", item)
+                log.trace("buffer: %r", self._promptbuf)
+                log.trace("find prompt: %r", item)
                 index = self._promptbuf.find(item)
-                log.debug("Got prompt (index: %s): %s ", index, repr(self._promptbuf))
+                log.trace("Got prompt (index: %s): %r ", index, self._promptbuf)
                 if index >= 0:
-                    log.trace('wakeup got prompt: %s', repr(item))
+                    log.trace('wakeup got prompt: %r', item)
                     return item
-            log.debug("Searched for all prompts")
+            log.trace("Searched for all prompts")
 
             if time.time() > starttime + timeout:
                 raise InstrumentTimeoutException("in _wakeup()")
