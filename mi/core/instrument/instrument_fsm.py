@@ -58,13 +58,13 @@ class InstrumentFSM(object):
 
         if not self.states.has(state):
             return False
-        
+
         if not self.events.has(event):
             return False
 
         self.state_handlers[(state,event)] = handler
         return True
-        
+
     def start(self, state, *args, **kwargs):
         """
         Start the state machine. Initializes current state and fires the
@@ -78,7 +78,7 @@ class InstrumentFSM(object):
 
         if not self.states.has(state):
             return False
-                
+
         self.current_state = state
         handler = self.state_handlers.get((state, self.enter_event), None)
         if handler:
@@ -112,10 +112,10 @@ class InstrumentFSM(object):
         if self.states.has(next_state):
             self._on_transition(next_state, *args, **kwargs)
         else:
-            log.debug("No next state'" + repr(next_state) + "', remaining in current_state.")
-                
+            log.debug("No next state: %r, remaining in current_state: %r.", next_state, self.current_state)
+
         return result
-            
+
     def _on_transition(self, next_state, *args, **kwargs):
         """
         Call the sequence of events to cause a state transition. Called from
@@ -161,32 +161,32 @@ class ThreadSafeFSM(InstrumentFSM):
     A FSM class that provides thread locking in on_event to
     prevent simultaneous thread reentry.
     """
-    
+
     def __init__(self, states, events, enter_event, exit_event):
         """
         """
         super(ThreadSafeFSM, self).__init__(states, events, enter_event,
                                             exit_event)
         self._lock = RLock()
-    
+
     def on_event(self, event, *args, **kwargs):
         """
         """
-        
+
         self._lock.acquire(True)
         ex = None
-        
+
         try:
             result = super(ThreadSafeFSM, self).on_event(event, *args, **kwargs)
-        
+
         except Exception as ex:
             pass
-        
+
         finally:
             self._lock.release()
-        
+
         if ex:
             raise ex
-        
+
         return result
-    
+
