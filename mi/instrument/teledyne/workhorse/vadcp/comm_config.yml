@@ -19,5 +19,5 @@
         device_port: 2101
         host: localhost
         method: rsn
-        sniffer_port: 6003
+        sniffer_port: 6004
         instrument_command_port: 2102

@@ -49,7 +49,7 @@ from mi.idk.common import Singleton
 from mi.idk.exceptions import TestNotInitialized
 from mi.idk.exceptions import TestNoCommConfig
 
-from mi.core.exceptions import InstrumentException
+from mi.core.exceptions import InstrumentException, IonException
 from mi.core.exceptions import InstrumentParameterException
 from mi.core.exceptions import InstrumentStateException
 from mi.core.instrument.port_agent_client import PortAgentClient
@@ -176,7 +176,7 @@ class InstrumentDriverTestConfig(Singleton):
         self.driver_startup_config = get_dict_value(kwargs, ['startup_config', 'driver_startup_config'])
 
         log.info("Startup Config: %s", self.driver_startup_config)
-        log.info("Preload Startup Config: %s", self.config_for_preload(self.driver_startup_config))
+        #log.info("Preload Startup Config: %s", self.config_for_preload(self.driver_startup_config))
 
         self.initialized = True
 
@@ -899,6 +899,8 @@ class InstrumentDriverTestCase(MiIntTestCase):
                 result[name] = self.create_ethernet_comm_config(config)
             elif config.method() == ConfigTypes.SERIAL:
                 result[name] = self.create_serial_comm_config(config)
+            elif config.method() == ConfigTypes.RSN:
+                result[name] = self.create_rsn_comm_config(config)
         return result
 
     @classmethod
@@ -1706,7 +1708,7 @@ class InstrumentDriverIntegrationTestCase(InstrumentDriverTestCase):  # Must inh
         try:
             reply = self.driver_client.cmd_dvr('set_resource', {param: value})
             self.assert_set(param, value)
-        except Exception as e:
+        except InstrumentException as e:
             if self._driver_exception_match(e, exception_class, error_regex):
                 log.debug("Expected exception raised: %s", e)
                 return
@@ -1762,9 +1764,9 @@ class InstrumentDriverIntegrationTestCase(InstrumentDriverTestCase):  # Must inh
         @param regex: regular express to match the error message
         @return: True if a match otherwise False
         """
-        pattern = r'(\d{3}), \'(\w+): (.*)'
+        pattern = r'(\d{3}), [\'"](\w+): (.*)'
         matcher = re.compile(pattern)
-        match = re.search(matcher, str(ion_exception))
+        match = re.search(matcher, str(ion_exception.get_triple()))
 
         if match:
             log.debug("Exception code: %s, type: %s, value: %s", match.group(1), match.group(2), match.group(3))
