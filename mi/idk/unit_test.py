@@ -176,7 +176,7 @@ class InstrumentDriverTestConfig(Singleton):
         self.driver_startup_config = get_dict_value(kwargs, ['startup_config', 'driver_startup_config'])
 
         log.info("Startup Config: %s", self.driver_startup_config)
-        log.info("Preload Startup Config: %s", self.config_for_preload(self.driver_startup_config))
+        #log.info("Preload Startup Config: %s", self.config_for_preload(self.driver_startup_config))
 
         self.initialized = True
 
@@ -582,6 +582,8 @@ class DriverTestMixin(MiUnitTest, ParticleTestMixin):
 
         self.assertIsInstance(config, dict)
         self.assertIsInstance(parameters, dict)
+        log.error('XXX: %r', sorted(config))
+        log.error('XXX: %r', sorted(parameters))
         self.assertEqual(sorted(config.keys()), sorted(parameters.keys()))
 
     def assert_schema_parameter_type(self, name, config_parameter, expected_parameter):
@@ -899,6 +901,8 @@ class InstrumentDriverTestCase(MiIntTestCase):
                 result[name] = self.create_ethernet_comm_config(config)
             elif config.method() == ConfigTypes.SERIAL:
                 result[name] = self.create_serial_comm_config(config)
+            elif config.method() == ConfigTypes.RSN:
+                result[name] = self.create_rsn_comm_config(config)
         return result
 
     @classmethod
@@ -1762,9 +1766,9 @@ class InstrumentDriverIntegrationTestCase(InstrumentDriverTestCase):  # Must inh
         @param regex: regular express to match the error message
         @return: True if a match otherwise False
         """
-        pattern = r'(\d{3}), \'(\w+): (.*)'
+        pattern = r'(\d{3}), [\'"](\w+): (.*)'
         matcher = re.compile(pattern)
-        match = re.search(matcher, str(ion_exception))
+        match = re.search(matcher, str(ion_exception.get_triple()))
 
         if match:
             log.debug("Exception code: %s, type: %s, value: %s", match.group(1), match.group(2), match.group(3))

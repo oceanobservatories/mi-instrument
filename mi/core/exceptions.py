@@ -17,14 +17,7 @@ import sys
 from mi.core.log import get_logger
 log = get_logger()
 
-from mi.core.common import BaseEnum
 from ooi.exception import ApplicationException
-
-BadRequest = 400
-Timeout = 408
-Conflict = 409
-ResourceError = 700
-ServerError = 500
 
 class IonException(ApplicationException):
     status_code = -1
@@ -246,21 +239,22 @@ class InstrumentException(ApplicationException):
     representation in ION.
     """
     def __init__ (self, msg=None, error_code=ResourceError):
-        super(InstrumentException,self).__init__()
+        super(InstrumentException, self).__init__()
         self.args = (error_code, msg)
         self.error_code = error_code
         self.msg = msg
 
     def get_triple(self):
         """ get exception info without depending on MI exception classes """
-        return ( self.error_code.status_code, "%s: %s" % (self.__class__.__name__, self.msg), self._stacks )
-    
+        log.error('XXXX: %s', dir(self))
+        return self.error_code.status_code, "%s: %s" % (self.__class__.__name__, self.msg), self._stacks
+
 class InstrumentConnectionException(InstrumentException):
     """Exception related to connection with a physical instrument"""
 
 class InstrumentProtocolException(InstrumentException):
     """Exception related to an instrument protocol problem
-    
+
     These are generally related to parsing or scripting of what is supposed
     to happen when talking at the lowest layer protocol to a device.
     @todo Add partial result property?
