@@ -9,6 +9,7 @@ Release notes:
 from collections import namedtuple
 import pprint
 import struct
+
 from mi.core.common import BaseEnum
 from mi.core.exceptions import SampleException
 
@@ -443,7 +444,7 @@ class AdcpPd0Record(object):
 if __name__ == '__main__':
     # Simple test for checking out a particle
     # more extensive testing in driver unit tests
-    from mi.instrument.teledyne.workhorse.test.test_data import RSN_SAMPLE_RAW_DATA
+    from mi.instrument.teledyne.workhorse.adcp.test.test_data import RSN_SAMPLE_RAW_DATA
     record = AdcpPd0Record(RSN_SAMPLE_RAW_DATA)
     record.validate()
     record.process()

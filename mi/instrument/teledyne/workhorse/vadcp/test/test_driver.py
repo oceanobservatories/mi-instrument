@@ -12,15 +12,16 @@ __license__ = 'Apache 2.0'
 
 import copy
 import datetime as dt
-from nose.plugins.attrib import attr
-from mock import Mock
-from mi.core.instrument.chunker import StringChunker
-
 import unittest
 import time
-from mi.instrument.teledyne.particles import ADCP_TRANSMIT_PATH_KEY, ADCP_ANCILLARY_SYSTEM_DATA_KEY
 
+from nose.plugins.attrib import attr
+from mock import Mock
+
+from mi.core.instrument.chunker import StringChunker
+from mi.instrument.teledyne.particles import ADCP_TRANSMIT_PATH_KEY, ADCP_ANCILLARY_SYSTEM_DATA_KEY
 from mi.core.log import get_logger
+
 
 log = get_logger()
 
@@ -30,10 +31,10 @@ from mi.instrument.teledyne.workhorse.test.test_driver import WorkhorseDriverQua
 from mi.instrument.teledyne.workhorse.test.test_driver import WorkhorseDriverPublicationTest
 from mi.instrument.teledyne.particles import VADCPDataParticleType
 
-from mi.instrument.teledyne.workhorse.test.test_data import RSN_SAMPLE_RAW_DATA, rsn_cali_raw_data_string
-from mi.instrument.teledyne.workhorse.test.test_data import RSN_PS0_RAW_DATA
-from mi.instrument.teledyne.workhorse.test.test_data import PT2_RAW_DATA
-from mi.instrument.teledyne.workhorse.test.test_data import PT4_RAW_DATA
+from mi.instrument.teledyne.workhorse.adcp.test.test_data import RSN_SAMPLE_RAW_DATA, rsn_cali_raw_data_string
+from mi.instrument.teledyne.workhorse.adcp.test.test_data import RSN_PS0_RAW_DATA
+from mi.instrument.teledyne.workhorse.adcp.test.test_data import PT2_RAW_DATA
+from mi.instrument.teledyne.workhorse.adcp.test.test_data import PT4_RAW_DATA
 
 from mi.idk.unit_test import DriverTestMixin
 
