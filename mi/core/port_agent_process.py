@@ -365,6 +365,7 @@ class UnixPortAgentProcess(PortAgentProcess):
         self._heartbeat_interval = config.get("heartbeat_interval")
         self._sniffer_port = config.get('telnet_sniffer_port')
 
+
         self._data_port = config.get("data_port")
         self._log_level = config.get("log_level")
         self._type = config.get("instrument_type", PortAgentType.ETHERNET)
@@ -393,6 +394,7 @@ class UnixPortAgentProcess(PortAgentProcess):
                 raise PortAgentMissingConfig("missing config: device_addr")
             if not self._device_port:
                 raise PortAgentMissingConfig("missing config: device_port (ETHERNET)")
+
         elif PortAgentType.RSN == self._type:
             if not self._device_addr:
                 raise PortAgentMissingConfig("missing config: device_addr")
@@ -400,6 +402,7 @@ class UnixPortAgentProcess(PortAgentProcess):
                 raise PortAgentMissingConfig("missing config: device_port (RSN)")
             if not self._device_cmd_port:
                 raise PortAgentMissingConfig("missing config: device_cmd_port (RSN)")
+
         else:
             raise PortAgentLaunchException("unknown port agent type: %s" % self._type)
 

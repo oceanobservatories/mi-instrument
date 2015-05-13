@@ -12,15 +12,16 @@ __license__ = 'Apache 2.0'
 
 import copy
 import datetime as dt
-from nose.plugins.attrib import attr
-from mock import Mock
-from mi.core.instrument.chunker import StringChunker
-
 import unittest
 import time
-from mi.instrument.teledyne.particles import ADCP_TRANSMIT_PATH_KEY, ADCP_ANCILLARY_SYSTEM_DATA_KEY
 
+from nose.plugins.attrib import attr
+from mock import Mock
+
+from mi.core.instrument.chunker import StringChunker
+from mi.instrument.teledyne.particles import ADCP_TRANSMIT_PATH_KEY, ADCP_ANCILLARY_SYSTEM_DATA_KEY
 from mi.core.log import get_logger
+
 
 log = get_logger()
 
@@ -979,10 +980,10 @@ class UnitFromIDK(WorkhorseDriverUnitTest, ADCPTMixin):
         self.assert_chunker_fragmented_sample(chunker, RSN_PS0_RAW_DATA, 32)
         self.assert_chunker_combined_sample(chunker, RSN_PS0_RAW_DATA)
 
-        self.assert_chunker_sample(chunker, rsn_cali_raw_data_string())
-        self.assert_chunker_sample_with_noise(chunker, rsn_cali_raw_data_string())
-        self.assert_chunker_fragmented_sample(chunker, rsn_cali_raw_data_string(), 32)
-        self.assert_chunker_combined_sample(chunker, rsn_cali_raw_data_string())
+        self.assert_chunker_sample(chunker, RSN_CALIBRATION_RAW_DATA)
+        self.assert_chunker_sample_with_noise(chunker, RSN_CALIBRATION_RAW_DATA)
+        self.assert_chunker_fragmented_sample(chunker, RSN_CALIBRATION_RAW_DATA, 32)
+        self.assert_chunker_combined_sample(chunker, RSN_CALIBRATION_RAW_DATA)
 
         self.assert_chunker_sample(chunker, PT2_RAW_DATA)
         self.assert_chunker_sample_with_noise(chunker, PT2_RAW_DATA)
