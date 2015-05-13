@@ -198,6 +198,7 @@ class DriverTestMixinSub(DriverTestMixin):
     """
 
     FTP_IP_ADDRESS = "128.193.64.201"
+    FTP_PORT = 80
     USER_NAME = "ooi"
     PASSWORD = "994ef22"
 
@@ -380,6 +381,7 @@ class DriverTestMixinSub(DriverTestMixin):
 
         Parameter.SCHEDULE: {TYPE: str, READONLY: False, STARTUP: True, DEFAULT: DEFAULT_SCHEDULE, VALUE: DEFAULT_SCHEDULE},
         Parameter.FTP_IP_ADDRESS: {TYPE: str, READONLY: False, STARTUP: True, DEFAULT: FTP_IP_ADDRESS, VALUE: FTP_IP_ADDRESS},
+        Parameter.FTP_PORT: {TYPE: str, READONLY: False, STARTUP: True, DEFAULT: FTP_PORT, VALUE: FTP_PORT},
         Parameter.FTP_USERNAME: {TYPE: str, READONLY: False, STARTUP: True, DEFAULT: USER_NAME, VALUE: USER_NAME},
         Parameter.FTP_PASSWORD: {TYPE: str, READONLY: False, STARTUP: True, DEFAULT: PASSWORD, VALUE: PASSWORD},
     }
