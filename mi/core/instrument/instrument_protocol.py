@@ -3,7 +3,7 @@
 """
 @package ion.services.mi.instrument_protocol Base instrument protocol structure
 @file ion/services/mi/instrument_protocol.py
-@author Steve Foley, 
+@author Steve Foley,
         Bill Bollenbacher
 @brief Instrument protocol classes that provide structure towards the
 nitty-gritty interaction with individual instruments in the system.
@@ -18,7 +18,8 @@ import time
 import json
 from functools import partial
 
-from mi.core.log import get_logger
+from mi.core.log import get_logger, get_logging_metaclass
+
 log = get_logger()
 
 from threading import Thread
@@ -56,14 +57,15 @@ class InterfaceType(BaseEnum):
     SERIAL = 'serial'
 
 class InitializationType(BaseEnum):
-    NONE = 0,
-    STARTUP = 1,
+    NONE = 0
+    STARTUP = 1
     DIRECTACCESS = 2
 
 class InstrumentProtocol(object):
     """
     Base instrument protocol class.
-    """    
+    """
+    __metaclass__ = get_logging_metaclass()
     def __init__(self, driver_event):
         """
         Base constructor.
@@ -74,15 +76,15 @@ class InstrumentProtocol(object):
 
         # The connection used to talk to the device.
         self._connection = None
-        
+
         # The protocol state machine.
         self._protocol_fsm = None
-        
+
         # The parameter, comamnd, and driver dictionaries.
         self._param_dict = ProtocolParameterDict()
         self._cmd_dict = ProtocolCommandDict()
         self._driver_dict = DriverDict()
-        
+
         # The spot to stash a configuration before going into direct access
         # mode
         self._pre_direct_access_config = None
@@ -157,19 +159,19 @@ class InstrumentProtocol(object):
         @raises InstrumentProtocolException if the init_type isn't set or it
                                             is unknown
         """
-        if(self._init_type == InitializationType.STARTUP):
+        if self._init_type == InitializationType.STARTUP:
             log.debug("_init_params: Apply Startup Config")
             self.apply_startup_params()
             self._init_type = InitializationType.NONE
-        elif(self._init_type == InitializationType.DIRECTACCESS):
+        elif self._init_type == InitializationType.DIRECTACCESS:
             log.debug("_init_params: Apply DA Config")
             self.apply_direct_access_params()
             self._init_type = InitializationType.NONE
             pass
-        elif(self._init_type == InitializationType.NONE):
+        elif self._init_type == InitializationType.NONE:
             log.debug("_init_params: No initialization required")
             pass
-        elif(self._init_type == None):
+        elif self._init_type is None:
             raise InstrumentProtocolException("initialization type not set")
         else:
             raise InstrumentProtocolException("Unknown initialization type: %s" % self._init_type)
@@ -217,7 +219,7 @@ class InstrumentProtocol(object):
         if not startup:
             readonly_params += self._param_dict.get_visibility_list(ParameterDictVisibility.IMMUTABLE)
 
-        log.debug("Read only params: %s", readonly_params)
+        log.debug("Read only and immutable params: %s", readonly_params)
 
         not_settable = []
         for (key, val) in params_to_set.iteritems():
@@ -250,13 +252,13 @@ class InstrumentProtocol(object):
         """
         sample = None
         if regex.match(line):
-        
+
             particle = particle_class(line, port_timestamp=timestamp)
             parsed_sample = particle.generate()
 
             if publish and self._driver_event:
                 self._driver_event(DriverAsyncEvent.SAMPLE, parsed_sample)
-    
+
             return parsed_sample
 
     def get_current_state(self):
@@ -269,9 +271,9 @@ class InstrumentProtocol(object):
         """
         """
         res_cmds = self._protocol_fsm.get_events(current_state)
-        res_cmds = self._filter_capabilities(res_cmds)        
+        res_cmds = self._filter_capabilities(res_cmds)
         res_params = self._param_dict.get_keys()
-        
+
         return [res_cmds, res_params]
 
     def _filter_capabilities(self, events):
@@ -327,7 +329,7 @@ class InstrumentProtocol(object):
         """
         remove a scheduler in a driver.
         @param name the name of the job
-        @raise KeyError if we try to remove a non-existent job 
+        @raise KeyError if we try to remove a non-existent job
         """
         if(not self._scheduler_callback.get(name)):
             raise KeyError("scheduler does not exist for '%s'" % name)
@@ -340,7 +342,7 @@ class InstrumentProtocol(object):
             log.warning('Unable to remove job from scheduler.')
         self._scheduler_callback.pop(name)
         self._scheduler_config.pop(name, None)
-    
+
     def _add_scheduler(self, name, callback):
         """
         Stage a scheduler in a driver.  The job will actually be configured
@@ -470,7 +472,7 @@ class InstrumentProtocol(object):
         values that are (1) marked as startup parameters and are (2) the "best"
         value to use at startup. Preference is given to the previously-set init
         value, then the default value, then the currently used value.
-        
+
         This default method assumes a dict of parameter name and value for
         the configuration.
 
@@ -520,11 +522,11 @@ class InstrumentProtocol(object):
         """
         raise NotImplementedException("_set_params must be overloaded")
 
-        
+
     def set_init_params(self, config):
         """
         Set the initialization parameters to the given values in the protocol
-        parameter dictionary. 
+        parameter dictionary.
         @param config The parameter_name/value to set in the initialization
             fields of the parameter dictionary
         @raise InstrumentParameterException If the config cannot be set
@@ -533,7 +535,7 @@ class InstrumentProtocol(object):
             raise InstrumentParameterException("Invalid init config format")
 
         self._startup_config = config
-        
+
         param_config = config.get(DriverConfigKey.PARAMETERS)
         if(param_config):
             for name in param_config.keys():
@@ -569,7 +571,7 @@ class InstrumentProtocol(object):
         Gets the startup configuration for the instrument. The parameters
         returned are marked as startup, and the values are the best as chosen
         from the initialization, default, and current parameters.
-        
+
         @retval The dict of parameter_name/values (override this method if it
             is more involved for a specific instrument) that should be set at
             a higher level.
@@ -581,7 +583,7 @@ class InstrumentProtocol(object):
         start_list = self._param_dict.get_keys()
         log.trace("Startup list: %s", start_list)
         assert isinstance(start_list, list)
-        
+
         for param in start_list:
             result = self._param_dict.get_config_value(param)
             if(result != None):
@@ -591,19 +593,19 @@ class InstrumentProtocol(object):
 
         log.debug("Applying startup config: %s", return_dict)
         return return_dict
-        
+
     def get_direct_access_params(self):
         """
         Get the list of direct access parameters, useful for restoring direct
         access configurations up in the driver.
-        
+
         @retval a list of direct access parameter names
         """
         return self._param_dict.get_direct_access_list()
-        
+
     def get_cached_config(self):
         """
-        Return the configuration object that shows the instrument's 
+        Return the configuration object that shows the instrument's
         configuration as cached in the parameter dictionary...usually in
         sync with the instrument, but accessible when offline...
         @retval The cached configuration in the instruments config format. By
@@ -611,7 +613,7 @@ class InstrumentProtocol(object):
         """
         assert self._param_dict != None
         return self._param_dict.get_config()
-        
+
     def get_config_metadata_dict(self):
         """
         Return a list of metadata about the protocol's driver support,
@@ -625,18 +627,18 @@ class InstrumentProtocol(object):
         return_dict[ConfigMetadataKey.DRIVER] = self._driver_dict.generate_dict()
         return_dict[ConfigMetadataKey.COMMANDS] = self._cmd_dict.generate_dict()
         return_dict[ConfigMetadataKey.PARAMETERS] = self._param_dict.generate_dict()
-        
+
         return return_dict
-        
+
     ########################################################################
     # Command build and response parse handlers.
-    ########################################################################            
+    ########################################################################
     def _add_response_handler(self, cmd, func, state=None):
         """
         Insert a handler class responsible for handling the response to a
         command sent to the instrument, optionally available only in a
         specific state.
-        
+
         @param cmd The high level key of the command to respond to.
         @param func The function that handles the response
         @param state The state to pair with the command for which the function
@@ -645,7 +647,7 @@ class InstrumentProtocol(object):
 
         if state == None:
             self._response_handlers[cmd] = func
-        else:            
+        else:
             self._response_handlers[(state, cmd)] = func
 
     def _add_build_handler(self, cmd, func):
@@ -656,7 +658,7 @@ class InstrumentProtocol(object):
         """
 
         self._build_handlers[cmd] = func
-        
+
     ########################################################################
     # Helpers to build commands.
     ########################################################################
@@ -666,30 +668,30 @@ class InstrumentProtocol(object):
 
         @param cmd The command to build
         @param args Unused arguments
-        @retval Returns string ready for sending to instrument        
+        @retval Returns string ready for sending to instrument
         """
 
         return "%s%s" % (cmd, self._newline)
-    
+
     def _build_keypress_command(self, cmd, *args):
         """
         Builder for simple, non-EOLN-terminated commands
 
         @param cmd The command to build
         @param args Unused arguments
-        @retval Returns string ready for sending to instrument        
+        @retval Returns string ready for sending to instrument
         """
 
 
         return "%s" % (cmd)
-    
+
     def _build_multi_keypress_command(self, cmd, *args):
         """
         Builder for simple, non-EOLN-terminated commands
 
         @param cmd The command to build
         @param args Unused arguments
-        @retval Returns string ready for sending to instrument        
+        @retval Returns string ready for sending to instrument
         """
 
 
@@ -704,12 +706,12 @@ class InstrumentProtocol(object):
         Write a boolean value to string formatted for "generic" set operations.
         Subclasses should overload this as needed for instrument-specific
         formatting.
-        
+
         @param v a boolean value.
         @retval A yes/no string formatted as a Python boolean for set operations.
         @throws InstrumentParameterException if value not a bool.
         """
-        
+
         if not isinstance(v,bool):
             raise InstrumentParameterException('Value %s is not a bool.' % str(v))
         return str(v)
@@ -720,12 +722,12 @@ class InstrumentProtocol(object):
         Write an int value to string formatted for "generic" set operations.
         Subclasses should overload this as needed for instrument-specific
         formatting.
-        
+
         @param v An int val.
         @retval an int string formatted for generic set operations.
         @throws InstrumentParameterException if value not an int.
         """
-        
+
         if not isinstance(v,int):
             raise InstrumentParameterException('Value %s is not an int.' % str(v))
         else:
@@ -737,7 +739,7 @@ class InstrumentProtocol(object):
         Write a float value to string formatted for "generic" set operations.
         Subclasses should overload this as needed for instrument-specific
         formatting.
-        
+
         @param v A float val.
         @retval a float string formatted for "generic" set operations.
         @throws InstrumentParameterException if value is not a float.
@@ -796,23 +798,23 @@ class CommandResponseInstrumentProtocol(InstrumentProtocol):
         @param newline The device newline.
         @driver_event The callback for asynchronous driver events.
         """
-        
+
         # Construct superclass.
         InstrumentProtocol.__init__(self, driver_event)
 
-        # The end of line delimiter.                
+        # The end of line delimiter.
         self._newline = newline
-    
+
         # Class of prompts used by device.
         self._prompts = prompts
-    
+
         # Line buffer for input from device.
         self._linebuf = ''
-        
+
         # Short buffer to look for prompts from device in command-response
         # mode.
         self._promptbuf = ''
-        
+
         # Lines of data awaiting further processing.
         self._datalines = []
 
@@ -845,7 +847,7 @@ class CommandResponseInstrumentProtocol(InstrumentProtocol):
         find. Leave some room for white space around prompts and not try to
         match that just in case we are off by a little whitespace or not quite
         at the end of a line.
-        
+
         @todo Consider cases with no prompt
         @param timeout The timeout in seconds
         @param expected_prompt Only consider the specific expected prompt as
@@ -864,13 +866,13 @@ class CommandResponseInstrumentProtocol(InstrumentProtocol):
         """
         # Grab time for timeout and wait for prompt.
         starttime = time.time()
-        
+
         if response_regex and not isinstance(response_regex, RE_PATTERN):
             raise InstrumentProtocolException('Response regex is not a compiled pattern!')
-        
+
         if expected_prompt and response_regex:
             raise InstrumentProtocolException('Cannot supply both regex and expected prompt!')
-            
+
         if expected_prompt is None:
             prompt_list = self._get_prompts()
         else:
@@ -907,7 +909,7 @@ class CommandResponseInstrumentProtocol(InstrumentProtocol):
         """
         Get a response from the instrument, but don't trim whitespace. Used in
         times when the whitespace is what we are looking for.
-        
+
         @param timeout The timeout in seconds
         @param expected_prompt Only consider the specific expected prompt as
         presented by this string
@@ -967,10 +969,10 @@ class CommandResponseInstrumentProtocol(InstrumentProtocol):
 
         if response_regex and not isinstance(response_regex, RE_PATTERN):
             raise InstrumentProtocolException('Response regex is not a compiled pattern!')
-        
+
         if expected_prompt and response_regex:
             raise InstrumentProtocolException('Cannot supply both regex and expected prompt!')
-        
+
         # Get the build handler.
         build_handler = self._build_handlers.get(cmd, None)
         if not build_handler:
@@ -980,7 +982,7 @@ class CommandResponseInstrumentProtocol(InstrumentProtocol):
         # Wakeup the device, pass up exception if timeout
 
         self._wakeup(timeout)
-        
+
         # Clear line and prompt buffers for result.
         self._linebuf = ''
         self._promptbuf = ''
@@ -1014,28 +1016,28 @@ class CommandResponseInstrumentProtocol(InstrumentProtocol):
             resp_result = resp_handler(result, prompt)
 
         return resp_result
-            
+
     def _do_cmd_no_resp(self, cmd, *args, **kwargs):
         """
         Issue a command to the instrument after a wake up and clearing of
         buffers. No response is handled as a result of the command.
-        
+
         @param cmd The command to execute.
         @param args positional arguments to pass to the build handler.
         @param timeout=timeout optional wakeup timeout.
         @raises InstrumentTimeoutException if the response did not occur in time.
-        @raises InstrumentProtocolException if command could not be built.        
+        @raises InstrumentProtocolException if command could not be built.
         """
 
         timeout = kwargs.get('timeout', DEFAULT_CMD_TIMEOUT)
         write_delay = kwargs.get('write_delay', DEFAULT_WRITE_DELAY)
-        
+
         build_handler = self._build_handlers.get(cmd, None)
         if not build_handler:
             log.error('_do_cmd_no_resp: no handler for command: %s' % (cmd))
             raise InstrumentProtocolException(error_code=InstErrorCode.BAD_DRIVER_COMMAND)
         cmd_line = build_handler(cmd, *args)
-        
+
         # Wakeup the device, timeout exception as needed
         prompt = self._wakeup(timeout)
 
@@ -1052,22 +1054,22 @@ class CommandResponseInstrumentProtocol(InstrumentProtocol):
             for char in cmd_line:
                 self._connection.send(char)
                 time.sleep(write_delay)
-    
+
     def _do_cmd_direct(self, cmd):
         """
-        Issue an untranslated command to the instrument. No response is handled 
+        Issue an untranslated command to the instrument. No response is handled
         as a result of the command.
-        
+
         @param cmd The high level command to issue
         """
 
         # Send command.
         log.debug('_do_cmd_direct: %r' % cmd)
         self._connection.send(cmd)
- 
+
     ########################################################################
     # Incoming data (for parsing) callback.
-    ########################################################################            
+    ########################################################################
     def got_data(self, port_agent_packet):
         """
         Called by the instrument connection when data is available.
@@ -1097,10 +1099,10 @@ class CommandResponseInstrumentProtocol(InstrumentProtocol):
 
     ########################################################################
     # Incoming raw data callback.
-    ########################################################################            
+    ########################################################################
     def got_raw(self, port_agent_packet):
         """
-        Called by the port agent client when raw data is available, such as data 
+        Called by the port agent client when raw data is available, such as data
         sent by the driver to the instrument, the instrument responses,etc.
         """
         self.publish_raw(port_agent_packet)
@@ -1135,7 +1137,7 @@ class CommandResponseInstrumentProtocol(InstrumentProtocol):
         # If our buffer exceeds the max allowable size then drop the leading
         # characters on the floor.
         if(len(self._promptbuf) > self._max_buffer_size()):
-            self._promptbuf = self._linebuf[self._max_buffer_size()*-1:]
+            self._promptbuf = self._promptbuf[self._max_buffer_size()*-1:]
 
         log.debug("LINE BUF: %r", self._linebuf[-50:])
         log.debug("PROMPT BUF: %r", self._promptbuf[-50:])
@@ -1145,15 +1147,15 @@ class CommandResponseInstrumentProtocol(InstrumentProtocol):
 
     ########################################################################
     # Wakeup helpers.
-    ########################################################################            
-    
+    ########################################################################
+
     def _send_wakeup(self):
         """
         Send a wakeup to the device. Overridden by device specific
         subclasses.
         """
         pass
-        
+
     def _wakeup(self, timeout, delay=1):
         """
         Clear buffers and send a wakeup command to the instrument
@@ -1164,10 +1166,10 @@ class CommandResponseInstrumentProtocol(InstrumentProtocol):
         # Clear the prompt buffer.
         log.trace("clearing promptbuf: %r", self._promptbuf)
         self._promptbuf = ''
-        
+
         # Grab time for timeout.
         starttime = time.time()
-        
+
         while True:
             # Send a line return and wait a sec.
             log.trace('Sending wakeup. timeout=%s', timeout)
@@ -1193,7 +1195,7 @@ class CommandResponseInstrumentProtocol(InstrumentProtocol):
         """
         Continue waking device until a specific prompt appears or a number
         of tries has occurred. Desired prompt must be in the instrument's
-        prompt list. 
+        prompt list.
         @param timeout The timeout to wake the device.
         @desired_prompt Continue waking until this prompt is seen.
         @delay Time to wake between consecutive wakeups.
@@ -1213,17 +1215,17 @@ class CommandResponseInstrumentProtocol(InstrumentProtocol):
                 count += 1
                 if count >= no_tries:
                     raise InstrumentProtocolException('Incorrect prompt.')
-                    
-                
+
+
 class MenuInstrumentProtocol(CommandResponseInstrumentProtocol):
     """
     Base class for menu-based instrument interfaces that can use a cmd/response approach to
     walking down the menu from its root.
     """
-    
+
     class MenuTree(object):
         # The _node_directions variable is a dictionary of menu sub-menus keyed by the sub-menu's name.
-        # Each sub-menu entry contains a list of directions, which are either cmd/response pairs or 
+        # Each sub-menu entry contains a list of directions, which are either cmd/response pairs or
         # sub_menu names. These commands need to be executed in the specified order to get from the root menu
         # to the sub-menu.
         # example:
@@ -1271,56 +1273,56 @@ class MenuInstrumentProtocol(CommandResponseInstrumentProtocol):
         #     response = directions.get_response()
         #     timeout = directions.get_timeout()
         #     do_cmd_reponse(command, expected_prompt = response, timeout = timeout)
-        
+
         class Directions(object):
             def __init__(self, command = None, response = None, timeout = 10):
                 if command == None:
-                    raise InstrumentProtocolException('MenuTree.Directions(): command parameter missing')                
+                    raise InstrumentProtocolException('MenuTree.Directions(): command parameter missing')
                 self.command = command
                 self.response = response
                 self.timeout = timeout
-                
+
             def __str__(self):
-                return "command=%s, response=%s, timeout=%s" %(repr(self.command), 
-                                                               repr(self.response), 
+                return "command=%s, response=%s, timeout=%s" %(repr(self.command),
+                                                               repr(self.response),
                                                                repr(self.timeout))
-            
+
             def get_command(self):
                 return self.command
-            
+
             def get_response(self):
                 return self.response
-                
+
             def get_timeout(self):
                 return self.timeout
-                
+
         _node_directions = {}
-        
+
         def __init__(self, node_directions):
             if not isinstance(node_directions, dict):
-                raise InstrumentProtocolException('MenuTree.__init__(): node_directions parameter not a dictionary')                
+                raise InstrumentProtocolException('MenuTree.__init__(): node_directions parameter not a dictionary')
             self._node_directions = node_directions
-            
+
         def get_directions(self, node):
             try:
                 directions_list = self._node_directions[node]
             except:
                 raise InstrumentProtocolException('MenuTree.get_directions(): node %s not in _node_directions dictionary'
-                                                  %str(node))                
-            log.trace("MenuTree.get_directions(): _node_directions = %s, node = %s, d_list = %s" 
+                                                  %str(node))
+            log.trace("MenuTree.get_directions(): _node_directions = %s, node = %s, d_list = %s"
                       %(str(self._node_directions), str(node), str(directions_list)))
             directions = []
             for item in directions_list:
                 if not isinstance(item, self.Directions):
                     raise InstrumentProtocolException('MenuTree.get_directions(): item %s in directions list not a Directions object'
-                                                      %str(item))                
+                                                      %str(item))
                 if item.response != None:
                     directions.append(item)
                 else:
                     directions += self.get_directions(item.command)
             return directions
-        
-           
+
+
     def __init__(self, menu, prompts, newline, driver_event, **kwargs):
         """
         Constructor.
@@ -1332,24 +1334,24 @@ class MenuInstrumentProtocol(CommandResponseInstrumentProtocol):
                attempting to read response from instrument (in _get_response).
 
         """
-        
+
         # Construct superclass.
         CommandResponseInstrumentProtocol.__init__(self, prompts, newline, driver_event)
         self._menu = menu
 
-        # The end of line delimiter.                
+        # The end of line delimiter.
         self._newline = newline
-    
+
         # Class of prompts used by device.
         self._prompts = prompts
-    
+
         # Linebuffer for input from device.
         self._linebuf = ''
-        
+
         # Short buffer to look for prompts from device in command-response
         # mode.
         self._promptbuf = ''
-        
+
         # Lines of data awaiting further processing.
         self._datalines = []
 
@@ -1360,10 +1362,10 @@ class MenuInstrumentProtocol(CommandResponseInstrumentProtocol):
         self._response_handlers = {}
 
         self._last_data_receive_timestamp = None
-        
+
         # Initialize read_delay
         self._read_delay = kwargs.get('read_delay', None)
-        
+
 
     def _get_response(self, timeout=10, expected_prompt=None, **kwargs):
         """
@@ -1376,19 +1378,19 @@ class MenuInstrumentProtocol(CommandResponseInstrumentProtocol):
         """
 
         """
-        Because the output of the instrument does not generate events, do_cmd_resp 
-        jumps right in here looking for a response, and often it is before the 
+        Because the output of the instrument does not generate events, do_cmd_resp
+        jumps right in here looking for a response, and often it is before the
         complete response has arrived, so we can miss it.  The read delay
         is to alleviate that problem.
         """
 
         if self._read_delay is not None:
             time.sleep(self._read_delay)
-        
+
         return CommandResponseInstrumentProtocol._get_response(self,
                     timeout=timeout,
                     expected_prompt=expected_prompt)
-                 
+
     def _navigate(self, menu, **kwargs):
         """
         Navigate to the given sub menu and then do nothing
@@ -1401,7 +1403,7 @@ class MenuInstrumentProtocol(CommandResponseInstrumentProtocol):
             raise InstrumentProtocolException('Menu parameter missing')
         result = (None, None) # base case in case of empty directions list
 
-        # iterate through the directions 
+        # iterate through the directions
         directions_list = self._menu.get_directions(menu)
         for directions in directions_list:
             log.debug('_navigate: directions: %s' %(directions))
@@ -1414,7 +1416,7 @@ class MenuInstrumentProtocol(CommandResponseInstrumentProtocol):
 
     def _navigate_and_execute(self, cmd, expected_prompt=None, **kwargs):
         """
-        Navigate to a sub-menu and execute a command.  
+        Navigate to a sub-menu and execute a command.
         @param cmd The command to execute.
         @param expected_prompt optional kwarg passed through to do_cmd_resp.
         @param timeout=timeout optional wakeup and command timeout.
@@ -1423,7 +1425,7 @@ class MenuInstrumentProtocol(CommandResponseInstrumentProtocol):
         @throws InstrumentProtocolException if command could not be built or if response
         was not recognized.
         """
-        
+
         self._navigate(kwargs['dest_submenu'], expected_prompt, **kwargs)
         self._do_cmd_resp(cmd, expected_prompt=expected_prompt, **kwargs)
         """
@@ -1432,18 +1434,18 @@ class MenuInstrumentProtocol(CommandResponseInstrumentProtocol):
         """
         value = kwargs.pop('value', None)
         if cmd is None:
-            cmd_line = self._build_simple_command(value) 
+            cmd_line = self._build_simple_command(value)
             log.debug('_navigate_and_execute: sending value: %s to connection.send.' %(cmd_line))
             self._connection.send(cmd_line)
         else:
             log.debug('_navigate_and_execute: sending cmd: %s with kwargs: %s to _do_cmd_resp.' %(cmd, kwargs))
             resp_result = self._do_cmd_resp(cmd, **kwargs)
- 
+
         return resp_result
-    
+
     def _go_to_root_menu(self):
         """
-        This method needs to be implemented for each instrument.  It performs the commands that 
+        This method needs to be implemented for each instrument.  It performs the commands that
         returns the instrument to its root menu
         """
         raise NotImplementedException('_go_to_root_menu() not implemented.')
