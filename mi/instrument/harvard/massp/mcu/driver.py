@@ -651,15 +651,17 @@ class Protocol(CommandResponseInstrumentProtocol):
         """
         Populate the command dictionary with commands.
         """
-        self._cmd_dict.add(Capability.START1, display_name="Execute ASTART1")
-        self._cmd_dict.add(Capability.START2, display_name="Execute ASTART2")
-        self._cmd_dict.add(Capability.SAMPLE, display_name="Execute ASAMPLEXX")
-        self._cmd_dict.add(Capability.CALIBRATE, display_name="Execute ACAL9")
-        self._cmd_dict.add(Capability.NAFREG, display_name="Execute U ANAFREG3")
-        self._cmd_dict.add(Capability.IONREG, display_name="Execute U AIONREG3")
-        self._cmd_dict.add(Capability.STANDBY, display_name="Execute U ASTANDBY")
-        self._cmd_dict.add(Capability.CLEAR, display_name="Clear Error State")
-        self._cmd_dict.add(Capability.POWEROFF, display_name="Execute U APOWEROFF")
+        for capability in Capability.list():
+            self._cmd_dict.add(capability, display_name=capability)
+        # self._cmd_dict.add(Capability.START1, display_name="Execute ASTART1")
+        # self._cmd_dict.add(Capability.START2, display_name="Execute ASTART2")
+        # self._cmd_dict.add(Capability.SAMPLE, display_name="Execute ASAMPLEXX")
+        # self._cmd_dict.add(Capability.CALIBRATE, display_name="Execute ACAL9")
+        # self._cmd_dict.add(Capability.NAFREG, display_name="Execute U ANAFREG3")
+        # self._cmd_dict.add(Capability.IONREG, display_name="Execute U AIONREG3")
+        # self._cmd_dict.add(Capability.STANDBY, display_name="Execute U ASTANDBY")
+        # self._cmd_dict.add(Capability.CLEAR, display_name="Clear Error State")
+        # self._cmd_dict.add(Capability.POWEROFF, display_name="Execute U APOWEROFF")
 
     def _build_driver_dict(self):
         """
