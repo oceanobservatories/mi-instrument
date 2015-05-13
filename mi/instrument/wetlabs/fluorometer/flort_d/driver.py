@@ -54,7 +54,7 @@ from mi.core.instrument.driver_dict import DriverDictKey
 from mi.core.driver_scheduler import DriverSchedulerConfigKey
 from mi.core.driver_scheduler import TriggerType
 
-from mi.core.time import get_timestamp_delayed
+from mi.core.time_tools import get_timestamp_delayed
 
 from mi.core.log import get_logging_metaclass
 

@@ -27,7 +27,7 @@ from mi.core.log import get_logger, get_logging_metaclass
 log = get_logger()
 
 from mi.core.util import dict_equal
-from mi.core.time import get_timestamp_delayed
+from mi.core.time_tools import get_timestamp_delayed
 from mi.core.common import InstErrorCode
 from mi.core.instrument.protocol_param_dict import ProtocolParameterDict
 from mi.core.instrument.protocol_param_dict import ParameterDictVisibility

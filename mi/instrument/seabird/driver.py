@@ -32,7 +32,7 @@ from mi.core.exceptions import InstrumentParameterException
 from mi.core.exceptions import NotImplementedException
 from mi.core.exceptions import SampleException
 
-from mi.core.time import get_timestamp_delayed
+from mi.core.time_tools import get_timestamp_delayed
 
 NEWLINE = '\r\n'
 ESCAPE = "\x1b"

@@ -11,7 +11,7 @@ import sys
 from mi.core.log import get_logger ; log = get_logger()
 
 from nose.plugins.attrib import attr
-from mi.core.time import *
+from mi.core.time_tools import *
 import unittest
 from mi.core.unit_test import MiUnitTest
 import datetime

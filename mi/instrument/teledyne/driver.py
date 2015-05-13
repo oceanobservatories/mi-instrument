@@ -14,7 +14,7 @@ import base64
 import time
 
 from mi.core.common import BaseEnum
-from mi.core.time import get_timestamp_delayed
+from mi.core.time_tools import get_timestamp_delayed
 
 from mi.core.exceptions import InstrumentParameterException, NotImplementedException
 from mi.core.exceptions import InstrumentProtocolException

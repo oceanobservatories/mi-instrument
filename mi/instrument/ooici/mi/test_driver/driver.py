@@ -22,7 +22,7 @@ from mi.core.log import get_logger ; log = get_logger()
 
 from threading import Thread
 
-import mi.core.time
+from mi.core.time_tools import time_to_ntp_date_time
 
 from mi.core.common import BaseEnum
 from mi.core.instrument.data_particle import RawDataParticle
@@ -544,7 +544,7 @@ class Protocol(CommandResponseInstrumentProtocol):
 
     def _publish_packet(self, packet_size):
         buf = self._get_payload_value(packet_size)
-        particle = TestDataParticle(buf, port_timestamp=mi.core.time.time_to_ntp_date_time())
+        particle = TestDataParticle(buf, port_timestamp=time_to_ntp_date_time())
 
         log.debug("_publish_packet, packet size: %d", len(buf))
         self._driver_event(DriverAsyncEvent.SAMPLE, particle.generate())

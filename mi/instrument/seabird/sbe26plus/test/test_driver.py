@@ -28,7 +28,6 @@ import copy
 from mock import Mock
 
 from mi.core.log import get_logger ; log = get_logger()
-from mi.core.time import get_timestamp_delayed
 from nose.plugins.attrib import attr
 from mi.idk.unit_test import DriverTestMixin
 from mi.idk.unit_test import ParameterTestConfigKey

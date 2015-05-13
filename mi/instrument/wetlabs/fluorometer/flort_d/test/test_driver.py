@@ -33,7 +33,7 @@ from mi.idk.unit_test import DriverTestMixin
 from mi.idk.unit_test import ParameterTestConfigKey
 from mi.idk.unit_test import AgentCapabilityType
 
-from mi.core.time import get_timestamp_delayed
+from mi.core.time_tools import get_timestamp_delayed
 
 from mi.core.instrument.chunker import StringChunker
 

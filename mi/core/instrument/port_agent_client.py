@@ -7,10 +7,6 @@
 @brief Client to connect to the port agent
 and logging.
 """
-import os
-import re
-from mi.core.time import string_to_ntp_date_time
-
 __author__ = 'David Everett'
 __license__ = 'Apache 2.0'
 
@@ -21,7 +17,10 @@ import time
 import datetime
 import struct
 import ctypes
+import os
+import re
 
+from mi.core.time_tools import string_to_ntp_date_time
 from mi.core.log import get_logger
 log = get_logger()
 

@@ -1,21 +1,17 @@
 #!/usr/bin/env python
 
 """
-@package mi.core.time
-@file mi/core/time.py
+@package mi.core.time_tools
+@file mi/core/time_tools.py
 @author Bill French
 @brief Common time functions for drivers
 """
-# Needed because we import the time module below.  With out this '.' is search first
-# and we import ourselves.
-from __future__ import absolute_import
-import calendar
-
 __author__ = 'Bill French'
 __license__ = 'Apache 2.0'
 
 from mi.core.log import get_logger ; log = get_logger()
 
+import calendar
 import datetime
 import ntplib
 import time

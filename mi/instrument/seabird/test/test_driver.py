@@ -32,7 +32,7 @@ from mi.instrument.seabird.driver import SeaBirdProtocol
 from mi.instrument.seabird.driver import SeaBirdParticle
 from mi.core.exceptions import InstrumentParameterException
 from mi.core.instrument.instrument_driver import DriverEvent
-from mi.core.time import get_timestamp_delayed
+from mi.core.time_tools import get_timestamp_delayed
 
 DEFAULT_CLOCK_DIFF = 5
 ###############################################################################

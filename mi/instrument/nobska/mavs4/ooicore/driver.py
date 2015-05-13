@@ -15,7 +15,7 @@ import re
 
 from mi.core.util import dict_equal
 from mi.core.common import BaseEnum
-from mi.core.time import get_timestamp_delayed
+from mi.core.time_tools import get_timestamp_delayed
 from mi.core.instrument.driver_dict import DriverDict, DriverDictKey
 from mi.core.instrument.instrument_protocol import MenuInstrumentProtocol
 from mi.core.instrument.instrument_driver import DriverParameter
