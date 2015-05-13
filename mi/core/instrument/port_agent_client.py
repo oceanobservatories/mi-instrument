@@ -753,14 +753,14 @@ class Listener(threading.Thread):
 
         while not self._done:
             try:
-                log.debug('RX NEW PACKET')
+                log.trace('RX NEW PACKET')
                 header = bytearray(HEADER_SIZE)
                 headerview = memoryview(header)
                 bytes_left = HEADER_SIZE
                 while bytes_left and not self._done:
                     try:
                         bytesrx = self.sock.recv_into(headerview[HEADER_SIZE - bytes_left:], bytes_left)
-                        log.debug('RX HEADER BYTES %d LEFT %d SOCK %r' % (
+                        log.trace('RX HEADER BYTES %d LEFT %d SOCK %r' % (
                             bytesrx, bytes_left, self.sock,))
                         if bytesrx <= 0:
                             raise SocketClosed()
@@ -780,12 +780,12 @@ class Listener(threading.Thread):
                     bytes_left = data_size
                     data = bytearray(data_size)
                     dataview = memoryview(data)
-                    log.debug('Expecting DATA BYTES %d' % data_size)
+                    log.trace('Expecting DATA BYTES %d' % data_size)
 
                 while bytes_left and not self._done:
                     try:
                         bytesrx = self.sock.recv_into(dataview[data_size - bytes_left:], bytes_left)
-                        log.debug('RX DATA BYTES %d LEFT %d SOCK %r' % (
+                        log.trace('RX DATA BYTES %d LEFT %d SOCK %r' % (
                             bytesrx, bytes_left, self.sock,))
                         if bytesrx <= 0:
                             raise SocketClosed()
@@ -799,7 +799,7 @@ class Listener(threading.Thread):
                 if not self._done:
                     # Should have complete port agent packet.
                     pa_packet.attach_data(str(data))
-                    log.debug("HANDLE PACKET")
+                    log.trace("HANDLE PACKET")
                     self.handle_packet(pa_packet)
 
             except SocketClosed:
