@@ -19,42 +19,32 @@ __license__ = 'Apache 2.0'
 import time
 
 from nose.plugins.attrib import attr
-from mock import Mock
 
 from mi.core.log import get_logger
 log = get_logger()
 
-# MI imports.
 from mi.idk.unit_test import InstrumentDriverTestCase
-from mi.idk.unit_test import DriverTestMixin
 from mi.idk.unit_test import ParameterTestConfigKey
 from mi.idk.unit_test import AgentCapabilityType
 
-from mi.core.exceptions import InstrumentParameterException
-from mi.core.exceptions import InstrumentProtocolException
 from mi.core.exceptions import InstrumentCommandException
 
 from mi.core.instrument.chunker import StringChunker
 
 from mi.core.instrument.instrument_driver import DriverConfigKey
 
-from mi.instrument.seabird.test.test_driver import SeaBirdUnitTest
-from mi.instrument.seabird.test.test_driver import SeaBirdIntegrationTest
-from mi.instrument.seabird.test.test_driver import SeaBirdQualificationTest
-
 from mi.instrument.seabird.sbe16plus_v2.ctdpf_jb.driver import ProtocolState
 
-from mi.instrument.seabird.sbe16plus_v2.ctdpf_jb.driver import Capability
-from mi.instrument.seabird.sbe16plus_v2.ctdpf_jb.driver import Command
+from mi.instrument.seabird.sbe16plus_v2.ctdpf_sbe43.driver import Capability
 
 from mi.instrument.seabird.sbe16plus_v2.ctdpf_jb.driver import SBE19CalibrationParticleKey
 from mi.instrument.seabird.sbe16plus_v2.ctdpf_jb.driver import SBE19ConfigurationParticleKey
-from mi.instrument.seabird.sbe16plus_v2.ctdpf_jb.driver import Prompt
-from mi.instrument.seabird.sbe16plus_v2.ctdpf_jb.driver import NEWLINE
+from mi.instrument.seabird.sbe16plus_v2.driver import NEWLINE
+from mi.instrument.seabird.sbe16plus_v2.test.test_driver import Sbe16plusUnitTestCase, Sbe16plusIntegrationTestCase, \
+    Sbe16plusQualTestCase, SeaBird16plusMixin
 
 from mi.instrument.seabird.sbe16plus_v2.ctdpf_sbe43.driver import ProtocolEvent
 from mi.instrument.seabird.sbe16plus_v2.ctdpf_sbe43.driver import Parameter
-from mi.instrument.seabird.sbe16plus_v2.ctdpf_sbe43.driver import ConfirmedParameter
 from mi.instrument.seabird.sbe16plus_v2.ctdpf_sbe43.driver import DataParticleType
 from mi.instrument.seabird.sbe16plus_v2.ctdpf_sbe43.driver import SBE43DataParticleKey
 from mi.instrument.seabird.sbe16plus_v2.ctdpf_sbe43.driver import SBE43HardwareParticleKey
@@ -110,7 +100,7 @@ InstrumentDriverTestCase.initialize(
 # This class defines a configuration structure for testing and common assert  #
 # methods for validating data particles.									  #
 ###############################################################################
-class SBE43Mixin(DriverTestMixin):
+class SBE43Mixin(SeaBird16plusMixin):
 
     InstrumentDriver = InstrumentDriver
 
@@ -459,11 +449,11 @@ class SBE43Mixin(DriverTestMixin):
 
     _driver_capabilities = {
         # capabilities defined in the IOS
-        Capability.ACQUIRE_SAMPLE : {STATES: [ProtocolState.COMMAND]},
         Capability.START_AUTOSAMPLE : {STATES: [ProtocolState.COMMAND]},
         Capability.STOP_AUTOSAMPLE : {STATES: [ProtocolState.AUTOSAMPLE]},
         Capability.CLOCK_SYNC : {STATES: [ProtocolState.COMMAND]},
-        Capability.ACQUIRE_STATUS : {STATES: [ProtocolState.COMMAND, ProtocolState.AUTOSAMPLE]},
+        Capability.ACQUIRE_STATUS : {STATES: [ProtocolState.COMMAND]},
+        Capability.ACQUIRE_SAMPLE : {STATES: [ProtocolState.COMMAND]},
     }
 
     def assert_driver_parameters(self, current_parameters, verify_values=False):
@@ -539,24 +529,18 @@ class SBE43Mixin(DriverTestMixin):
 #   driver process.                                                           #
 ###############################################################################
 @attr('UNIT', group='mi')
-class SBE43UnitTestCase(SeaBirdUnitTest, SBE43Mixin):
+class Sbe16plus43UnitTestCase(Sbe16plusUnitTestCase, SBE43Mixin):
 
-    def test_driver_enums(self):
-        """
-        Verify that all driver enumeration has no duplicate values that might cause confusion.  Also
-        do a little extra validation for the Capabilies
-        """
-        self.assert_enum_has_no_duplicates(Command())
-        self.assert_enum_has_no_duplicates(DataParticleType())
-        self.assert_enum_has_no_duplicates(ProtocolState())
-        self.assert_enum_has_no_duplicates(ProtocolEvent())
+    def setUp(self):
+        Sbe16plusUnitTestCase.setUp(self)
 
-        self.assert_enum_has_no_duplicates(Parameter())
-        self.assert_enum_complete(ConfirmedParameter(), Parameter())
-
-        # Test capabilities for duplicates, then verify that capabilities is a subset of proto events
-        self.assert_enum_has_no_duplicates(Capability())
-        self.assert_enum_complete(Capability(), ProtocolEvent())
+    # def test_driver_enums(self):
+    #     """
+    #     Verify that all driver enumeration has no duplicate values that might cause confusion.  Also
+    #     do a little extra validation for the Capabilities
+    #     """
+    #     self.assert_enum_has_no_duplicates(DataParticleType())
+    #     self.assert_enum_has_no_duplicates(Parameter())
 
     def test_driver_schema(self):
         """
@@ -565,113 +549,79 @@ class SBE43UnitTestCase(SeaBirdUnitTest, SBE43Mixin):
         driver = self.InstrumentDriver(self._got_data_event_callback)
         self.assert_driver_schema(driver, self._driver_parameters, self._driver_capabilities)
 
-    def test_chunker(self):
-        """
-        Test the chunker and verify the particles created.
-        """
-        chunker = StringChunker(SBE43Protocol.sieve_function)
+    # def test_chunker(self):
+    #     """
+    #     Test the chunker and verify the particles created.
+    #     """
+    #
+    #     chunker = StringChunker(SBE43Protocol.sieve_function)
+    #
+    #     self.assert_chunker_sample(chunker, self.VALID_SAMPLE)
+    #     self.assert_chunker_sample_with_noise(chunker, self.VALID_SAMPLE)
+    #     self.assert_chunker_fragmented_sample(chunker, self.VALID_SAMPLE)
+    #     self.assert_chunker_combined_sample(chunker, self.VALID_SAMPLE)
+    #
+    #     self.assert_chunker_sample(chunker, self.VALID_GETHD_RESPONSE)
+    #     self.assert_chunker_sample_with_noise(chunker, self.VALID_GETHD_RESPONSE)
+    #     self.assert_chunker_fragmented_sample(chunker, self.VALID_GETHD_RESPONSE)
+    #     self.assert_chunker_combined_sample(chunker, self.VALID_GETHD_RESPONSE)
+    #
+    #     self.assert_chunker_sample(chunker, self.VALID_GETCC_RESPONSE)
+    #     self.assert_chunker_sample_with_noise(chunker, self.VALID_GETCC_RESPONSE)
+    #     self.assert_chunker_fragmented_sample(chunker, self.VALID_GETCC_RESPONSE)
+    #     self.assert_chunker_combined_sample(chunker, self.VALID_GETCC_RESPONSE)
+    #
+    #     self.assert_chunker_sample(chunker, self.VALID_GETSD_RESPONSE)
+    #     self.assert_chunker_sample_with_noise(chunker, self.VALID_GETSD_RESPONSE)
+    #     self.assert_chunker_fragmented_sample(chunker, self.VALID_GETSD_RESPONSE)
+    #     self.assert_chunker_combined_sample(chunker, self.VALID_GETSD_RESPONSE)
+    #
+    #     self.assert_chunker_sample(chunker, self.VALID_GETCD_RESPONSE)
+    #     self.assert_chunker_sample_with_noise(chunker, self.VALID_GETCD_RESPONSE)
+    #     self.assert_chunker_fragmented_sample(chunker, self.VALID_GETCD_RESPONSE)
+    #     self.assert_chunker_combined_sample(chunker, self.VALID_GETCD_RESPONSE)
+    #
+    # def test_got_data(self):
+    #     """
+    #     Verify sample data passed through the got data method produces the correct data particles
+    #     """
+    #     # Create and initialize the instrument driver with a mock port agent
+    #     driver = InstrumentDriver(self._got_data_event_callback)
+    #     self.assert_initialize_driver(driver)
+    #
+    #     self.assert_raw_particle_published(driver, True)
+    #
+    #     # Start validating data particles
+    #     self.assert_particle_published(driver, self.VALID_SAMPLE, self.assert_particle_sample, True)
+    #     self.assert_particle_published(driver, self.VALID_GETHD_RESPONSE, self.assert_particle_hardware, True)
+    #     self.assert_particle_published(driver, self.VALID_GETCC_RESPONSE, self.assert_particle_calibration, True)
+    #     self.assert_particle_published(driver, self.VALID_GETSD_RESPONSE, self.assert_particle_status, True)
+    #     self.assert_particle_published(driver, self.VALID_GETCD_RESPONSE, self.assert_particle_configuration, True)
+    #
+    # def test_capabilities(self):
+    #     """
+    #     Verify the FSM reports capabilities as expected.  All states defined in this dict must
+    #     also be defined in the protocol FSM.
+    #     """
+    #     capabilities = {
+    #         ProtocolState.UNKNOWN: [ProtocolEvent.DISCOVER],
+    #         ProtocolState.COMMAND: [ProtocolEvent.ACQUIRE_SAMPLE,
+    #                                 ProtocolEvent.ACQUIRE_STATUS,
+    #                                 ProtocolEvent.CLOCK_SYNC,
+    #                                 ProtocolEvent.GET,
+    #                                 ProtocolEvent.SET,
+    #                                 ProtocolEvent.START_AUTOSAMPLE,
+    #                                 ProtocolEvent.START_DIRECT],
+    #         ProtocolState.AUTOSAMPLE: [ProtocolEvent.GET,
+    #                                    ProtocolEvent.STOP_AUTOSAMPLE,
+    #                                    ProtocolEvent.SCHEDULED_ACQUIRED_STATUS],
+    #         ProtocolState.DIRECT_ACCESS: [ProtocolEvent.STOP_DIRECT,
+    #                                       ProtocolEvent.EXECUTE_DIRECT]
+    #     }
+    #
+    #     driver = self.InstrumentDriver(self._got_data_event_callback)
+    #     self.assert_capabilities(driver, capabilities)
 
-        self.assert_chunker_sample(chunker, self.VALID_SAMPLE)
-        self.assert_chunker_sample_with_noise(chunker, self.VALID_SAMPLE)
-        self.assert_chunker_fragmented_sample(chunker, self.VALID_SAMPLE)
-        self.assert_chunker_combined_sample(chunker, self.VALID_SAMPLE)
-
-        self.assert_chunker_sample(chunker, self.VALID_GETHD_RESPONSE)
-        self.assert_chunker_sample_with_noise(chunker, self.VALID_GETHD_RESPONSE)
-        self.assert_chunker_fragmented_sample(chunker, self.VALID_GETHD_RESPONSE)
-        self.assert_chunker_combined_sample(chunker, self.VALID_GETHD_RESPONSE)
-
-        self.assert_chunker_sample(chunker, self.VALID_GETCC_RESPONSE)
-        self.assert_chunker_sample_with_noise(chunker, self.VALID_GETCC_RESPONSE)
-        self.assert_chunker_fragmented_sample(chunker, self.VALID_GETCC_RESPONSE)
-        self.assert_chunker_combined_sample(chunker, self.VALID_GETCC_RESPONSE)
-
-        self.assert_chunker_sample(chunker, self.VALID_GETSD_RESPONSE)
-        self.assert_chunker_sample_with_noise(chunker, self.VALID_GETSD_RESPONSE)
-        self.assert_chunker_fragmented_sample(chunker, self.VALID_GETSD_RESPONSE)
-        self.assert_chunker_combined_sample(chunker, self.VALID_GETSD_RESPONSE)
-
-        self.assert_chunker_sample(chunker, self.VALID_GETCD_RESPONSE)
-        self.assert_chunker_sample_with_noise(chunker, self.VALID_GETCD_RESPONSE)
-        self.assert_chunker_fragmented_sample(chunker, self.VALID_GETCD_RESPONSE)
-        self.assert_chunker_combined_sample(chunker, self.VALID_GETCD_RESPONSE)
-
-    def test_got_data(self):
-        """
-        Verify sample data passed through the got data method produces the correct data particles
-        """
-        # Create and initialize the instrument driver with a mock port agent
-        driver = InstrumentDriver(self._got_data_event_callback)
-        self.assert_initialize_driver(driver)
-
-        self.assert_raw_particle_published(driver, True)
-
-        # Start validating data particles
-        self.assert_particle_published(driver, self.VALID_SAMPLE, self.assert_particle_sample, True)
-        self.assert_particle_published(driver, self.VALID_GETHD_RESPONSE, self.assert_particle_hardware, True)
-        self.assert_particle_published(driver, self.VALID_GETCC_RESPONSE, self.assert_particle_calibration, True)
-        self.assert_particle_published(driver, self.VALID_GETSD_RESPONSE, self.assert_particle_status, True)
-        self.assert_particle_published(driver, self.VALID_GETCD_RESPONSE, self.assert_particle_configuration, True)
-
-    def test_protocol_filter_capabilities(self):
-        """
-        This tests driver filter_capabilities.
-        Iterate through available capabilities, and verify that they can pass successfully through the filter.
-        Test silly made up capabilities to verify they are blocked by filter.
-        """
-        my_event_callback = Mock()
-        protocol = SBE43Protocol(Prompt, NEWLINE, my_event_callback)
-        driver_capabilities = Capability.list()
-        test_capabilities = Capability.list()
-
-        # Add a bogus capability that will be filtered out.
-        test_capabilities.append("BOGUS_CAPABILITY")
-
-        # Verify "BOGUS_CAPABILITY was filtered out
-        self.assertEquals(driver_capabilities, protocol._filter_capabilities(test_capabilities))
-
-    def test_capabilities(self):
-        """
-        Verify the FSM reports capabilities as expected.  All states defined in this dict must
-        also be defined in the protocol FSM.
-        """
-        capabilities = {
-            ProtocolState.UNKNOWN: ['DRIVER_EVENT_DISCOVER'],
-            ProtocolState.COMMAND: ['DRIVER_EVENT_ACQUIRE_SAMPLE',
-                                    'DRIVER_EVENT_ACQUIRE_STATUS',
-                                    'DRIVER_EVENT_CLOCK_SYNC',
-                                    'DRIVER_EVENT_GET',
-                                    'DRIVER_EVENT_SET',
-                                    'DRIVER_EVENT_START_AUTOSAMPLE',
-                                    'DRIVER_EVENT_START_DIRECT',
-                                    'PROTOCOL_EVENT_GET_CONFIGURATION'],
-            ProtocolState.AUTOSAMPLE: ['DRIVER_EVENT_GET',
-                                       'DRIVER_EVENT_STOP_AUTOSAMPLE',
-                                       'PROTOCOL_EVENT_GET_CONFIGURATION',
-                                       'DRIVER_EVENT_ACQUIRE_STATUS'],
-            ProtocolState.DIRECT_ACCESS: ['DRIVER_EVENT_STOP_DIRECT', 'EXECUTE_DIRECT']
-        }
-
-        driver = InstrumentDriver(self._got_data_event_callback)
-        self.assert_capabilities(driver, capabilities)
-
-    def test_parse_set_response(self):
-        """
-        Test response from set commands.
-        """
-        driver = self.InstrumentDriver(self._got_data_event_callback)
-        self.assert_initialize_driver(driver, ProtocolState.COMMAND)
-
-        response = "Not an error"
-        driver._protocol._parse_set_response(response, Prompt.EXECUTED)
-        driver._protocol._parse_set_response(response, Prompt.COMMAND)
-
-        with self.assertRaises(InstrumentProtocolException):
-            driver._protocol._parse_set_response(response, Prompt.BAD_COMMAND)
-
-        response = "<ERROR type='INVALID ARGUMENT' msg='out of range'/>"
-        with self.assertRaises(InstrumentParameterException):
-            driver._protocol._parse_set_response(response, Prompt.EXECUTED)
 
 
 ###############################################################################
@@ -682,7 +632,7 @@ class SBE43UnitTestCase(SeaBirdUnitTest, SBE43Mixin):
 #     and common for all drivers (minimum requirement for ION ingestion)      #
 ###############################################################################
 @attr('INT', group='mi')
-class SBE43IntegrationTest(SeaBirdIntegrationTest, SBE43Mixin):
+class SBE43IntegrationTest(Sbe16plusIntegrationTestCase, SBE43Mixin):
 
     def test_connection(self):
         self.assert_initialize_driver()
@@ -757,7 +707,6 @@ class SBE43IntegrationTest(SeaBirdIntegrationTest, SBE43Mixin):
         self.assert_driver_command(ProtocolEvent.START_AUTOSAMPLE, state=ProtocolState.AUTOSAMPLE, delay=1)
         self.assert_driver_command(ProtocolEvent.STOP_AUTOSAMPLE, state=ProtocolState.COMMAND, delay=1)
         self.assert_driver_command(ProtocolEvent.ACQUIRE_STATUS)
-        self.assert_driver_command(ProtocolEvent.GET_CONFIGURATION)
 
         # Invalid command/state transition: try to stop autosampling in command mode
         self.assert_driver_command_exception(ProtocolEvent.STOP_AUTOSAMPLE, exception_class=InstrumentCommandException)
@@ -769,7 +718,6 @@ class SBE43IntegrationTest(SeaBirdIntegrationTest, SBE43Mixin):
         self.assert_driver_command(ProtocolEvent.START_AUTOSAMPLE, state=ProtocolState.AUTOSAMPLE, delay=1)
 
         self.assert_driver_command(ProtocolEvent.ACQUIRE_STATUS)
-        self.assert_driver_command(ProtocolEvent.GET_CONFIGURATION)
 
         # Invalid command/state transitions
         self.assert_driver_command_exception(ProtocolEvent.CLOCK_SYNC, exception_class=InstrumentCommandException)
@@ -851,12 +799,6 @@ class SBE43IntegrationTest(SeaBirdIntegrationTest, SBE43Mixin):
         self.assert_particle_generation(ProtocolEvent.ACQUIRE_STATUS, DataParticleType.DEVICE_CONFIGURATION, self.assert_particle_configuration)
         self.assert_particle_generation(ProtocolEvent.ACQUIRE_STATUS, DataParticleType.DEVICE_CALIBRATION, self.assert_particle_calibration)
 
-    def test_configuration(self):
-        self.assert_initialize_driver()
-
-        # test get_configuration particle
-        self.assert_particle_generation(ProtocolEvent.GET_CONFIGURATION, DataParticleType.DEVICE_CALIBRATION, self.assert_particle_calibration)
-
     def test_polled(self):
         """
         Test that we can generate particles with commands while in command mode
@@ -884,8 +826,6 @@ class SBE43IntegrationTest(SeaBirdIntegrationTest, SBE43Mixin):
         self.assert_particle_generation(ProtocolEvent.ACQUIRE_STATUS, DataParticleType.DEVICE_CONFIGURATION, self.assert_particle_configuration)
         self.assert_particle_generation(ProtocolEvent.ACQUIRE_STATUS, DataParticleType.DEVICE_CALIBRATION, self.assert_particle_calibration)
 
-        self.assert_particle_generation(ProtocolEvent.GET_CONFIGURATION, DataParticleType.DEVICE_CALIBRATION, self.assert_particle_calibration)
-
         self.assert_driver_command(ProtocolEvent.STOP_AUTOSAMPLE, state=ProtocolState.COMMAND, delay=1)
 
 
@@ -896,10 +836,10 @@ class SBE43IntegrationTest(SeaBirdIntegrationTest, SBE43Mixin):
 # be tackled after all unit and integration tests are complete                #
 ###############################################################################
 @attr('QUAL', group='mi')
-class SBE43QualificationTest(SeaBirdQualificationTest, SBE43Mixin):
+class SBE43QualificationTest(Sbe16plusQualTestCase, SBE43Mixin):
 
     def setUp(self):
-        SeaBirdQualificationTest.setUp(self)
+        Sbe16plusQualTestCase.setUp(self)
 
     def test_direct_access_telnet_mode(self):
         """
@@ -1000,8 +940,6 @@ class SBE43QualificationTest(SeaBirdQualificationTest, SBE43Mixin):
         self.assert_particle_polled(ProtocolEvent.ACQUIRE_STATUS, self.assert_particle_configuration, DataParticleType.DEVICE_CONFIGURATION, sample_count=1, timeout=30)
         self.assert_particle_polled(ProtocolEvent.ACQUIRE_STATUS, self.assert_particle_calibration, DataParticleType.DEVICE_CALIBRATION, sample_count=1, timeout=30)
 
-        self.assert_particle_polled(ProtocolEvent.GET_CONFIGURATION, self.assert_particle_calibration, DataParticleType.DEVICE_CALIBRATION, sample_count=1, timeout=30)
-
     def test_autosample(self):
         """
         Verify autosample works and data particles are created
@@ -1015,7 +953,6 @@ class SBE43QualificationTest(SeaBirdQualificationTest, SBE43Mixin):
         self.assert_particle_polled(ProtocolEvent.ACQUIRE_STATUS, self.assert_particle_hardware, DataParticleType.DEVICE_HARDWARE, sample_count=1, timeout=30)
         self.assert_particle_polled(ProtocolEvent.ACQUIRE_STATUS, self.assert_particle_configuration, DataParticleType.DEVICE_CONFIGURATION, sample_count=1, timeout=30)
         self.assert_particle_polled(ProtocolEvent.ACQUIRE_STATUS, self.assert_particle_calibration, DataParticleType.DEVICE_CALIBRATION, sample_count=1, timeout=30)
-        self.assert_particle_polled(ProtocolEvent.GET_CONFIGURATION, self.assert_particle_calibration, DataParticleType.DEVICE_CALIBRATION, sample_count=1, timeout=30)
 
         # Stop autosample and do run a couple commands.
         self.assert_stop_autosample()
@@ -1024,8 +961,6 @@ class SBE43QualificationTest(SeaBirdQualificationTest, SBE43Mixin):
         self.assert_particle_polled(ProtocolEvent.ACQUIRE_STATUS, self.assert_particle_hardware, DataParticleType.DEVICE_HARDWARE, sample_count=1, timeout=60)
         self.assert_particle_polled(ProtocolEvent.ACQUIRE_STATUS, self.assert_particle_configuration, DataParticleType.DEVICE_CONFIGURATION, sample_count=1, timeout=60)
         self.assert_particle_polled(ProtocolEvent.ACQUIRE_STATUS, self.assert_particle_calibration, DataParticleType.DEVICE_CALIBRATION, sample_count=1, timeout=60)
-
-        self.assert_particle_polled(ProtocolEvent.GET_CONFIGURATION, self.assert_particle_calibration, DataParticleType.DEVICE_CALIBRATION, sample_count=1, timeout=30)
 
         # Restart autosample and gather a couple samples
         self.assert_sample_autosample(self.assert_particle_sample, DataParticleType.CTD_PARSED)
