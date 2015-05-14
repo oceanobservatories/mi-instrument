@@ -18,16 +18,14 @@ from mi.core.log import get_logger
 
 log = get_logger()
 
-from mi.core.util import dict_equal
-from mi.core.common import BaseEnum
+from mi.core.common import BaseEnum, Units
 from mi.core.instrument.instrument_protocol import CommandResponseInstrumentProtocol
 from mi.core.instrument.data_particle import DataParticleKey
 from mi.core.instrument.instrument_fsm import InstrumentFSM
-from mi.core.instrument.instrument_driver import DriverEvent, ResourceAgentState
+from mi.core.instrument.instrument_driver import ResourceAgentState
 from mi.core.instrument.instrument_driver import DriverParameter
 from mi.core.instrument.data_particle import CommonDataParticleType
 from mi.core.instrument.chunker import StringChunker
-from mi.core.instrument.instrument_driver import DriverAsyncEvent
 
 from mi.core.exceptions import InstrumentProtocolException
 from mi.core.exceptions import InstrumentParameterException
@@ -38,40 +36,20 @@ from xml.dom.minidom import parseString
 from mi.core.instrument.protocol_param_dict import ParameterDictVisibility
 from mi.core.instrument.protocol_param_dict import ParameterDictType
 
-from mi.instrument.seabird.sbe16plus_v2.ctdpf_jb.driver import ParameterUnit
 from mi.instrument.seabird.sbe16plus_v2.ctdpf_jb.driver import ProtocolState
-from mi.instrument.seabird.sbe16plus_v2.ctdpf_jb.driver import SBE19Protocol
 from mi.instrument.seabird.sbe16plus_v2.ctdpf_jb.driver import SBE19ConfigurationParticle
 from mi.instrument.seabird.sbe16plus_v2.ctdpf_jb.driver import SBE19CalibrationParticle
 
-from mi.instrument.seabird.sbe16plus_v2.driver import Prompt
-
-from mi.instrument.seabird.driver import SeaBirdParticle
-from mi.instrument.seabird.driver import SeaBirdInstrumentDriver
-
-from mi.instrument.seabird.driver import NEWLINE
-from mi.instrument.seabird.driver import TIMEOUT
+from mi.instrument.seabird.sbe16plus_v2.driver import Prompt, SBE16InstrumentDriver, SBE16Protocol, ConfirmedParameter
+from mi.instrument.seabird.sbe16plus_v2.driver import Sbe16plusBaseParticle, NEWLINE, TIMEOUT, WAKEUP_TIMEOUT, Command, \
+    ProtocolEvent, Capability
 
 
 # Driver constants
-WAKEUP_TIMEOUT = 60
 MIN_PUMP_DELAY = 0
 MAX_PUMP_DELAY = 600
 MIN_AVG_SAMPLES = 1
 MAX_AVG_SAMPLES = 32767
-
-
-class Command(BaseEnum):
-    GET_CD = 'GetCD'
-    GET_SD = 'GetSD'
-    GET_CC = 'GetCC'
-    GET_EC = 'GetEC'
-    RESET_EC = 'ResetEC'
-    GET_HD = 'GetHD'
-    START_NOW = 'StartNow'
-    STOP = 'Stop'
-    TS = 'ts'
-    SET = 'set'
 
 
 class Parameter(DriverParameter):
@@ -101,46 +79,6 @@ class Parameter(DriverParameter):
     LOGGING = "logging"
 
 
-class ConfirmedParameter(BaseEnum):
-    """
-    List of all parameters that require confirmation
-    i.e. set sent twice to confirm.
-    """
-    PTYPE = Parameter.PTYPE
-    SBE38 = Parameter.SBE38
-    GTD = Parameter.GTD
-    DUAL_GTD = Parameter.DUAL_GTD
-    SBE63 = Parameter.SBE63
-    OPTODE = Parameter.OPTODE
-    WETLABS = Parameter.WETLABS
-    VOLT0 = Parameter.VOLT0
-    VOLT1 = Parameter.VOLT1
-    VOLT2 = Parameter.VOLT2
-    VOLT3 = Parameter.VOLT3
-    VOLT4 = Parameter.VOLT4
-    VOLT5 = Parameter.VOLT5
-
-
-class ProtocolEvent(BaseEnum):
-    """
-    Protocol events for SBE43. Cherry picked from DriverEvent enum.
-    """
-    ENTER = DriverEvent.ENTER
-    EXIT = DriverEvent.EXIT
-    GET = DriverEvent.GET
-    SET = DriverEvent.SET
-    DISCOVER = DriverEvent.DISCOVER
-    ACQUIRE_SAMPLE = DriverEvent.ACQUIRE_SAMPLE
-    GET_CONFIGURATION = 'PROTOCOL_EVENT_GET_CONFIGURATION'
-    START_AUTOSAMPLE = DriverEvent.START_AUTOSAMPLE
-    STOP_AUTOSAMPLE = DriverEvent.STOP_AUTOSAMPLE
-    EXECUTE_DIRECT = DriverEvent.EXECUTE_DIRECT
-    START_DIRECT = DriverEvent.START_DIRECT
-    STOP_DIRECT = DriverEvent.STOP_DIRECT
-    CLOCK_SYNC = DriverEvent.CLOCK_SYNC
-    ACQUIRE_STATUS = DriverEvent.ACQUIRE_STATUS
-
-
 ###############################################################################
 # Data Particles
 ###############################################################################
@@ -161,7 +99,7 @@ class SBE43DataParticleKey(BaseEnum):
     VOLT0 = "ext_volt0"
 
 
-class SBE43DataParticle(SeaBirdParticle):
+class SBE43DataParticle(Sbe16plusBaseParticle):
     """
     Routines for parsing raw data into a data particle structure. Override
     the building of values, and the rest should come along for free.
@@ -264,8 +202,7 @@ class SBE43StatusParticleKey(BaseEnum):
     PROFILES = "profiles"
 
 
-# noinspection PyPep8Naming
-class SBE43StatusParticle(SeaBirdParticle):
+class SBE43StatusParticle(Sbe16plusBaseParticle):
     """
     Routines for parsing raw data into a data particle structure. Override
     the building of values, and the rest should come along for free.
@@ -386,7 +323,7 @@ class SBE43HardwareParticleKey(BaseEnum):
 
 
 # noinspection PyPep8Naming
-class SBE43HardwareParticle(SeaBirdParticle):
+class SBE43HardwareParticle(Sbe16plusBaseParticle):
     _data_particle_type = DataParticleType.DEVICE_HARDWARE
 
     @staticmethod
@@ -540,7 +477,7 @@ class SBE43CalibrationParticle(SBE19CalibrationParticle):
 # Driver
 ###############################################################################
 # noinspection PyMethodMayBeStatic
-class InstrumentDriver(SeaBirdInstrumentDriver):
+class InstrumentDriver(SBE16InstrumentDriver):
     """
     InstrumentDriver subclass
     Subclasses SingleConnectionInstrumentDriver with connection state
@@ -552,7 +489,7 @@ class InstrumentDriver(SeaBirdInstrumentDriver):
         InstrumentDriver constructor.
         @param evt_callback Driver process event callback.
         """
-        SeaBirdInstrumentDriver.__init__(self, evt_callback)
+        SBE16InstrumentDriver.__init__(self, evt_callback)
 
     ########################################################################
     # Superclass overrides for resource query.
@@ -577,7 +514,7 @@ class InstrumentDriver(SeaBirdInstrumentDriver):
 ###########################################################################
 # Protocol
 ###########################################################################
-class SBE43Protocol(SBE19Protocol):
+class SBE43Protocol(SBE16Protocol):
     """
     Instrument protocol class
     Subclasses CommandResponseInstrumentProtocol
@@ -601,16 +538,15 @@ class SBE43Protocol(SBE19Protocol):
         handlers = {
             ProtocolState.UNKNOWN: [
                 (ProtocolEvent.ENTER, self._handler_unknown_enter),
-                (ProtocolEvent.EXIT, self._handler_unknown_exit),
+                (ProtocolEvent.EXIT, self._handler_generic_exit),
                 (ProtocolEvent.DISCOVER, self._handler_unknown_discover),
             ],
             ProtocolState.COMMAND: [
                 (ProtocolEvent.ENTER, self._handler_command_enter),
-                (ProtocolEvent.EXIT, self._handler_command_exit),
+                (ProtocolEvent.EXIT, self._handler_generic_exit),
                 (ProtocolEvent.ACQUIRE_SAMPLE, self._handler_command_acquire_sample),
-                (ProtocolEvent.GET_CONFIGURATION, self._handler_command_get_configuration),
                 (ProtocolEvent.START_AUTOSAMPLE, self._handler_command_start_autosample),
-                (ProtocolEvent.GET, self._handler_command_get),
+                (ProtocolEvent.GET, self._handler_get),
                 (ProtocolEvent.SET, self._handler_command_set),
                 (ProtocolEvent.START_DIRECT, self._handler_command_start_direct),
                 (ProtocolEvent.CLOCK_SYNC, self._handler_command_clock_sync_clock),
@@ -618,17 +554,16 @@ class SBE43Protocol(SBE19Protocol):
             ],
             ProtocolState.DIRECT_ACCESS: [
                 (ProtocolEvent.ENTER, self._handler_direct_access_enter),
-                (ProtocolEvent.EXIT, self._handler_direct_access_exit),
+                (ProtocolEvent.EXIT, self._handler_generic_exit),
                 (ProtocolEvent.EXECUTE_DIRECT, self._handler_direct_access_execute_direct),
                 (ProtocolEvent.STOP_DIRECT, self._handler_direct_access_stop_direct)
             ],
             ProtocolState.AUTOSAMPLE: [
                 (ProtocolEvent.ENTER, self._handler_autosample_enter),
-                (ProtocolEvent.EXIT, self._handler_autosample_exit),
-                (ProtocolEvent.GET, self._handler_command_get),
+                (ProtocolEvent.EXIT, self._handler_generic_exit),
+                (ProtocolEvent.GET, self._handler_get),
                 (ProtocolEvent.STOP_AUTOSAMPLE, self._handler_autosample_stop_autosample),
-                (ProtocolEvent.ACQUIRE_STATUS, self._handler_autosample_acquire_status),
-                (ProtocolEvent.GET_CONFIGURATION, self._handler_autosample_get_configuration)
+                (ProtocolEvent.SCHEDULED_ACQUIRED_STATUS, self._handler_autosample_acquire_status),
             ]
         }
 
@@ -662,6 +597,9 @@ class SBE43Protocol(SBE19Protocol):
         self._protocol_fsm.start(ProtocolState.UNKNOWN)
 
         self._chunker = StringChunker(self.sieve_function)
+
+    def _filter_capabilities(self, events):
+        return [x for x in events if Capability.has(x)]
 
     @staticmethod
     def sieve_function(raw_data):
@@ -706,6 +644,8 @@ class SBE43Protocol(SBE19Protocol):
         except IndexError:
             raise InstrumentParameterException('Set command requires a parameter dict.')
 
+        self._verify_not_readonly(*args, **kwargs)
+
         # check values that the instrument doesn't validate
         # handle special cases for driver specific parameters
         for (key, val) in params.iteritems():
@@ -713,8 +653,6 @@ class SBE43Protocol(SBE19Protocol):
                 raise InstrumentParameterException("pump delay out of range")
             elif key == Parameter.NUM_AVG_SAMPLES and (val < MIN_AVG_SAMPLES or val > MAX_AVG_SAMPLES):
                 raise InstrumentParameterException("num average samples out of range")
-
-        self._verify_not_readonly(*args, **kwargs)
 
         for (key, val) in params.iteritems():
 
@@ -748,7 +686,7 @@ class SBE43Protocol(SBE19Protocol):
         """
         if not self._is_logging():
 
-            self._do_cmd_no_resp(Command.START_NOW, *args, **kwargs)
+            self._do_cmd_no_resp(Command.STARTNOW, *args, **kwargs)
             time.sleep(2)
 
             if not self._is_logging():
@@ -772,65 +710,9 @@ class SBE43Protocol(SBE19Protocol):
         if self._is_logging(*args, **kwargs):
             raise InstrumentProtocolException("failed to stop logging")
 
-    def _is_logging(self, *args, **kwargs):
-        """
-        Wake up the instrument and inspect the prompt to determine if we
-        are in streaming
-        @return: True - instrument logging, False - not logging,
-                 None - unknown logging state
-        @raise: InstrumentProtocolException if we can't identify the prompt
-        """
-        response = self._do_cmd_resp(Command.GET_SD, response_regex=SBE43StatusParticle.regex_compiled(), timeout=TIMEOUT)
-        for line in response.split(NEWLINE):
-            self._param_dict.update(line)
-
-        return self._param_dict.get(Parameter.LOGGING)
-
     ########################################################################
     # Command handlers.
     ########################################################################
-    def _update_params(self, *args, **kwargs):
-        """
-        Update the parameter dictionary. Wake the device then issue
-        display status and display calibration commands. The parameter
-        dict will match line output and update itself.
-        @throws InstrumentTimeoutException if device cannot be timely woken.
-        @throws InstrumentProtocolException if ds/dc misunderstood.
-        """
-        self._wakeup(timeout=WAKEUP_TIMEOUT, delay=0.3)
-
-        # Get old param dict config.
-        old_config = self._param_dict.get_config()
-
-        # Issue display commands and parse results.
-        response = self._do_cmd_resp(Command.GET_SD, response_regex=SBE43StatusParticle.regex_compiled(),
-                                     timeout=TIMEOUT)
-        for line in response.split(NEWLINE):
-            self._param_dict.update(line)
-
-        response = self._do_cmd_resp(Command.GET_CD, response_regex=SBE43ConfigurationParticle.regex_compiled(),
-                                     timeout=TIMEOUT)
-        for line in response.split(NEWLINE):
-            self._param_dict.update(line)
-
-        response = self._do_cmd_resp(Command.GET_HD, response_regex=SBE43HardwareParticle.regex_compiled(),
-                                     timeout=TIMEOUT)
-
-        pressure_sensor_match = r"<Sensor id = 'Main Pressure'>.*?<type>(.*?)</type>.*?</Sensor>"
-        pressure_sensor_regex = re.compile(pressure_sensor_match.regex(), re.DOTALL)
-        match = pressure_sensor_regex.match(response)
-        self._param_dict.update(match.group(1), Parameter.PTYPE)
-
-        # Get new param dict config. If it differs from the old config,
-        # tell driver superclass to publish a config change event.
-        new_config = self._param_dict.get_config()
-
-        log.debug("Old Config: %s", old_config)
-        log.debug("New Config: %s", new_config)
-        if not dict_equal(new_config, old_config) and self._protocol_fsm.get_current_state() != ProtocolState.UNKNOWN:
-            log.debug("parameters updated, sending event")
-            self._driver_event(DriverAsyncEvent.CONFIG_CHANGE)
-
     def _handler_command_acquire_status(self, *args, **kwargs):
         """
         Get device status
@@ -887,28 +769,6 @@ class SBE43Protocol(SBE19Protocol):
 
         return None, (None, ''.join(result))
 
-    def _build_set_command(self, cmd, param, val):
-        """
-        Build handler for set commands. param=val followed by newline.
-        String val constructed by param dict formatting function.
-        @param param the parameter key to set.
-        @param val the parameter value to set.
-        @ retval The set command to be sent to the device.
-        @throws InstrumentProtocolException if the parameter is not valid or
-        if the formatting function could not accept the value passed.
-        """
-        try:
-            str_val = self._param_dict.format(param, val)
-            set_cmd = '%s=%s%s' % (param, str_val, NEWLINE)
-
-            # Some set commands need to be sent twice to confirm
-            if param in ConfirmedParameter.list():
-                set_cmd += set_cmd
-
-        except KeyError:
-            raise InstrumentParameterException('Unknown driver parameter %s' % param)
-
-        return set_cmd
 
     ########################################################################
     # response handlers.
@@ -968,6 +828,39 @@ class SBE43Protocol(SBE19Protocol):
         if not SBE43ConfigurationParticle.resp_regex_compiled().search(response):
             log.error('_validate_GetCD_response: GetCD command not recognized: %s.' % response)
             raise InstrumentProtocolException('GetCD command not recognized: %s.' % response)
+
+        return response
+
+    def _validate_GetCC_response(self, response, prompt):
+        """
+        validation handler for GetCC command
+        @param response command response string.
+        @param prompt prompt following command response.
+        @throws InstrumentProtocolException if command misunderstood.
+        """
+        error = self._find_error(response)
+
+        if error:
+            log.error("GetCC command encountered error; type='%s' msg='%s'", error[0], error[1])
+            raise InstrumentProtocolException('GetCC command failure: type="%s" msg="%s"' % (error[0], error[1]))
+
+        if not SBE43CalibrationParticle.resp_regex_compiled().search(response):
+            log.error('_validate_GetCC_response: GetCC command not recognized: %s.' % response)
+            raise InstrumentProtocolException('GetCC command not recognized: %s.' % response)
+
+        return response
+
+    def _validate_GetEC_response(self, response, prompt):
+        """
+        validation handler for GetEC command
+        @param response command response string.
+        @throws InstrumentProtocolException if command misunderstood.
+        """
+        error = self._find_error(response)
+
+        if error:
+            log.error("GetEC command encountered error; type='%s' msg='%s'", error[0], error[1])
+            raise InstrumentProtocolException('GetEC command failure: type="%s" msg="%s"' % (error[0], error[1]))
 
         return response
 
@@ -1154,7 +1047,7 @@ class SBE43Protocol(SBE19Protocol):
                              startup_param=True,
                              direct_access=False,
                              default_value=500,
-                             units=ParameterUnit.HERTZ,
+                             units=Units.HERTZ,
                              visibility=ParameterDictVisibility.IMMUTABLE)
         self._param_dict.add(Parameter.PUMP_DELAY,
                              r'PumpDelay>([\d]+)</PumpDelay',
@@ -1165,7 +1058,7 @@ class SBE43Protocol(SBE19Protocol):
                              startup_param=True,
                              direct_access=False,
                              default_value=60,
-                             units=ParameterUnit.SECOND,
+                             units=Units.SECOND,
                              visibility=ParameterDictVisibility.READ_WRITE)
         self._param_dict.add(Parameter.AUTO_RUN,
                              r'AutoRun>(.*)</AutoRun',
