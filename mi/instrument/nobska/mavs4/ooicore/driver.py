@@ -14,7 +14,7 @@ import time
 import re
 
 from mi.core.util import dict_equal
-from mi.core.common import BaseEnum
+from mi.core.common import BaseEnum, Units
 from mi.core.time_tools import get_timestamp_delayed
 from mi.core.instrument.driver_dict import DriverDict, DriverDictKey
 from mi.core.instrument.instrument_protocol import MenuInstrumentProtocol
@@ -36,7 +36,7 @@ from mi.core.instrument.protocol_param_dict import RegexParameter
 from mi.core.instrument.chunker import StringChunker
 from mi.core.instrument.data_particle import DataParticle, DataParticleKey, CommonDataParticleType
 from mi.core.instrument.instrument_driver import ResourceAgentState
-from mi.core.log import get_logger
+from mi.core.log import get_logger, get_logging_metaclass
 
 
 log = get_logger()
@@ -384,15 +384,9 @@ class SubMenues(BaseEnum):
 
 class Mavs4ProtocolParameterDict(ProtocolParameterDict):
     def update(self, name, response):
-        #log.debug('Mavs4ProtocolParameterDict.update(): set %s from \n%s',
-        # name, response)
         response = self._param_dict[name].update(response)
         return response
 
-
-###
-#   Driver for mavs4
-###
 class mavs4InstrumentDriver(SingleConnectionInstrumentDriver):
     """
     Instrument driver class for MAVS-4 driver.
@@ -414,7 +408,6 @@ class mavs4InstrumentDriver(SingleConnectionInstrumentDriver):
 ###############################################################################
 # Data particles
 ###############################################################################
-
 class Mavs4SampleDataParticleKey(BaseEnum):
     DATE_TIME_STRING = "date_time_string"
     ACOUSTIC_AXIS_VELOCITY_A = 'velocity_beam_a'
@@ -457,10 +450,10 @@ class Mavs4SampleDataParticle(DataParticle):
             datetime_nofrac = "%s %s" % (match.group(1), match.group(2))
             timestamp = time.strptime(datetime_nofrac, "%m %d %Y %H %M %S")
             self.set_internal_timestamp(unix_time=(time.mktime(timestamp) + fractional_second))
-            acoustic_axis_velocity_a = str(match.group(4))
-            acoustic_axis_velocity_b = str(match.group(5))
-            acoustic_axis_velocity_c = str(match.group(6))
-            acoustic_axis_velocity_d = str(match.group(7))
+            acoustic_axis_velocity_a = int(match.group(4), 16)
+            acoustic_axis_velocity_b = int(match.group(5), 16)
+            acoustic_axis_velocity_c = int(match.group(6), 16)
+            acoustic_axis_velocity_d = int(match.group(7), 16)
             velocity_frame_east = float(match.group(8))
             velocity_frame_north = float(match.group(9))
             velocity_frame_up = float(match.group(10))
@@ -558,11 +551,9 @@ class Mavs4StatusDataParticle(DataParticle):
         return result
 
 
-###
-#   Protocol for mavs4
-###
-# noinspection PyUnusedLocal,PyMethodMayBeStatic
 class mavs4InstrumentProtocol(MenuInstrumentProtocol):
+
+    __metaclass__ = get_logging_metaclass(log_level='debug')
     """
     This protocol implements a simple command-response interaction for the
     menu based MAVs-4 instrument. It utilizes a dictionary that holds info on
@@ -1069,9 +1060,6 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
         @retval (next_state, result), (ProtocolStates.COMMAND or
         ProtocolStates.AUTOSAMPLE, None) if successful.
         """
-        log.trace("Discovering from unknown state...")
-        next_state = None
-        result = None
 
         # try to get root menu prompt from the device using timeout if passed.
         # NOTE: this driver always tries to put instrument into command mode
@@ -1161,8 +1149,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                 self._param_dict.set_value(key, value)
             dest_submenu = self._param_dict.get_menu_path_write(InstrumentParameters.BURST_INTERVAL_DAYS)
             command = self._param_dict.get_submenu_write(InstrumentParameters.BURST_INTERVAL_DAYS)
-            self._navigate_and_execute(command, name=key,
-                                       dest_submenu=dest_submenu, timeout=15)
+            self._navigate_and_execute(command, dest_submenu=dest_submenu, timeout=15)
             # remove the sub-parameters from the params_to_set dictionary
             for parameter in parameters_dict:
                 parameters_handled.append(parameter)
@@ -1286,10 +1273,9 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
             false otherwise
         @retval (next_state, result) tuple, (None, None).
         """
-        next_state = None
         result = self._set_params(*args, **kwargs)
 
-        return next_state, result
+        return None, result
 
     def _handler_command_get(self, *args, **kwargs):
         """
@@ -1304,42 +1290,18 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
         @retval (next_state, result) tuple, (ProtocolStates.AUTOSAMPLE,
         None) if successful.
         """
-        next_state = None
-        result = None
 
-        # Issue start command and switch to autosample if successful.
         self._navigate_and_execute(InstrumentCmds.DEPLOY_GO,
                                    dest_submenu=SubMenues.DEPLOY,
                                    timeout=20,
                                    **kwargs)
 
-        next_state = ProtocolStates.AUTOSAMPLE
-        next_agent_state = ResourceAgentState.STREAMING
-
-        return next_state, (next_agent_state, result)
-
-    def _handler_command_test(self, *args, **kwargs):
-        """
-        Switch to test state to perform instrument tests.
-        @retval (next_state, result) tuple, (ProtocolStates.TEST, None).
-        """
-        next_state = None
-        result = None
-
-        next_state = ProtocolStates.TEST
-
-        return next_state, result
+        return ProtocolStates.AUTOSAMPLE, (ResourceAgentState.STREAMING, None)
 
     def _handler_command_start_direct(self):
         """
         """
-        next_state = None
-        result = None
-
-        next_state = ProtocolStates.DIRECT_ACCESS
-        next_agent_state = ResourceAgentState.DIRECT_ACCESS
-
-        return next_state, (next_agent_state, result)
+        return ProtocolStates.DIRECT_ACCESS, (ResourceAgentState.DIRECT_ACCESS, None)
 
     def _clock_sync(self):
         """
@@ -1360,24 +1322,15 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
         sync clock close to a second edge 
         @retval (next_state, result) tuple, (None, None) if successful.
         """
-
-        next_state = None
-        next_agent_state = None
-        result = None
         self._clock_sync()
-        return next_state, (next_agent_state, result)
+        return None, (None, None)
 
     def _handler_command_acquire_status(self, *args, **kwargs):
         """
         Get device status
         """
-        next_state = None
-        next_agent_state = None
-        result = None
-
         self._generate_status_event()
-
-        return next_state, (next_agent_state, result)
+        return None, (None, None)
 
     ########################################################################
     # Autosample handlers.
@@ -1403,8 +1356,6 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
         @retval (next_state, result) tuple, (ProtocolStates.COMMAND,
         None) if successful.
         """
-        next_state = None
-        result = None
 
         # Issue stop command and switch to command if successful.
         got_root_prompt = False
@@ -1413,16 +1364,13 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                 self._go_to_root_menu()
                 got_root_prompt = True
                 break
-            except:
+            except InstrumentTimeoutException:
                 pass
 
         if not got_root_prompt:
             raise InstrumentTimeoutException()
 
-        next_state = ProtocolStates.COMMAND
-        next_agent_state = ResourceAgentState.COMMAND
-
-        return next_state, (next_agent_state, result)
+        return ProtocolStates.COMMAND, (ResourceAgentState.COMMAND, None)
 
     def _handler_autosample_clock_sync(self, *args, **kwargs):
         """
@@ -1434,35 +1382,9 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
         @retval (next_state, result) tuple, (ProtocolState.AUTOSAMPLE,
         None) if successful.
         """
-        next_state = None
-        next_agent_state = None
-        result = None
-        error = None
+        self._clock_sync()
 
-        try:
-            # Switch to command mode,
-            self._stop_logging(*args, **kwargs)
-            next_state = ProtocolStates.COMMAND
-            next_agent_state = ResourceAgentState.COMMAND
-
-            # Sync the clock
-            self._clock_sync()
-
-        # Catch all error so we can put ourself back into
-        # streaming.  Then rethrow the error
-        except Exception as e:
-            error = e
-
-        finally:
-            # Switch back to streaming
-            self._start_logging(*args, **kwargs)
-            next_state = None
-            next_agent_state = None
-
-        if error:
-            raise error
-
-        return next_state, (next_agent_state, result)
+        return None, (None, None)
 
     ########################################################################
     # Direct access handlers.
@@ -1487,24 +1409,14 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
     def _handler_direct_access_execute_direct(self, data):
         """
         """
-        next_state = None
-        result = None
-
         self._do_cmd_direct(data)
-
-        return next_state, result
+        return None, None
 
     def _handler_direct_access_stop_direct(self):
         """
         @throw InstrumentProtocolException on invalid command
         """
-        next_state = None
-        result = None
-
-        next_state = ProtocolStates.COMMAND
-        next_agent_state = ResourceAgentState.COMMAND
-
-        return next_state, (next_agent_state, result)
+        return ProtocolStates.COMMAND, (ResourceAgentState.COMMAND, None)
 
     ########################################################################
     # Private helpers.
@@ -1554,10 +1466,10 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
             self._promptbuf = ''
             self._connection.send(InstrumentCmds.CONTROL_C)
             try:
-                (prompt, result) = self._get_response(timeout=4,
+                prompt, result = self._get_response(timeout=4,
                                                       expected_prompt=[InstrumentPrompts.MAIN_MENU,
                                                                        InstrumentPrompts.SLEEPING])
-            except:
+            except InstrumentTimeoutException:
                 log.debug('_go_to_root_menu: TIMED_OUT WAITING FOR ROOT MENU FROM ONE CONTROL-C !')
                 pass
             else:
@@ -1577,11 +1489,11 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
             log.debug("_go_to_root_menu: sending %d control-c characters to wake up sleeping instrument", count)
             self._send_control_c(count)
             try:
-                (prompt, result) = self._get_response(timeout=4,
+                prompt, result = self._get_response(timeout=4,
                                                       expected_prompt=[InstrumentPrompts.MAIN_MENU,
                                                                        InstrumentPrompts.SLEEP_WAKEUP,
                                                                        InstrumentPrompts.SLEEPING])
-            except:
+            except InstrumentTimeoutException:
                 log.debug('_go_to_root_menu: TIMED_OUT WAITING FOR PROMPT FROM 3 CONTROL-Cs !')
                 pass
             log.debug("_go_to_root_menu: prompt after sending %d control-c characters = <%s>",
@@ -1592,13 +1504,10 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                 count = 1  # send 1 control=c to get the root menu
             if prompt == InstrumentPrompts.SLEEPING:
                 count = 3  # send 3 control-c chars to get the instruments attention
-        log.debug("_go_to_root_menu: failed to get to root menu, prompt=%s (%s)",
-                  prompt, prompt.encode("hex"))
-        raise InstrumentTimeoutException("failed to get to root menu.")
+
 
     def _parse_sensor_orientation(self, sensor_orientation):
-        #log.debug('_parse_sensor_orientation: vf=%s (%s)',
-        #   sensor_orientation, sensor_orientation.encode('hex'))
+
         if 'Vertical/Down' in sensor_orientation:
             return '1'
         if 'Vertical/Up' in sensor_orientation:
@@ -1668,7 +1577,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            menu_path_write=SubMenues.SET_TIME,
                            submenu_write=InstrumentCmds.ENTER_TIME,
                            description="System clock",
-                           type="string",
+                           type=ParameterDictType.STRING,
                            value_description="A time between 1970 and 2038, formatted as 'MM/DD/YY HH:MM:SS'"))
 
         self._param_dict.add_parameter(
@@ -1683,7 +1592,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            submenu_write=InstrumentCmds.SET_NOTE,
                            description="Deployment note line 1",
                            display_name="Note line 1",
-                           type="string",
+                           type=ParameterDictType.STRING,
                            value_description="Line of a note describing the deployment"))
 
         self._param_dict.add_parameter(
@@ -1698,7 +1607,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            submenu_write=InstrumentCmds.SET_NOTE,
                            description="Deployment note line 2",
                            display_name="Note line 2",
-                           type="string",
+                           type=ParameterDictType.STRING,
                            value_description="Line of a note describing the deployment"))
 
         self._param_dict.add_parameter(
@@ -1713,7 +1622,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            submenu_write=InstrumentCmds.SET_NOTE,
                            description="Deployment note line 3",
                            display_name="Note line 3",
-                           type="string",
+                           type=ParameterDictType.STRING,
                            value_description="Line of a note describing the deployment"))
 
         self._param_dict.add_parameter(
@@ -1730,7 +1639,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            menu_path_write=SubMenues.DEPLOY,
                            submenu_write=InstrumentCmds.SET_VELOCITY_FRAME,
                            description="Velocity frame",
-                           type="enum",
+                           type=ParameterDictType.ENUM,
                            value_description="No velocity frame,  MAVS4 frame (U, V, W), Earth frame (E, N, W), or Earth Frame(S, ?, W)"))
 
         self._param_dict.add_parameter(
@@ -1747,7 +1656,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            submenu_write=InstrumentCmds.SET_MONITOR,
                            description="Data monitor enabled",
                            display_name="Data monitor",
-                           type="bool",
+                           type=ParameterDictType.BOOL,
                            value_description="On or off"))
 
         self._param_dict.add_parameter(
@@ -1760,7 +1669,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            default_value=True,
                            description="Log/display time with each sample while monitoring",
                            display_name="Log display time",
-                           type="bool",
+                           type=ParameterDictType.BOOL,
                            value_description="Time logging on or off"))
 
         self._param_dict.add_parameter(
@@ -1773,7 +1682,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            default_value=True,
                            description="Log/display time with fractional seconds",
                            display_name="Display fractional seconds",
-                           type="bool",
+                           type=ParameterDictType.BOOL,
                            value_description="Fractional seconds on or off"))
 
         self._param_dict.add_parameter(
@@ -1787,7 +1696,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            default_value=True,
                            description="Log/display format acoustic axis velocities",
                            display_name="Format of acoustic axis velocities",
-                           type="bool",
+                           type=ParameterDictType.BOOL,
                            value_description="Acoustic axis velocity format"))
 
         self._param_dict.add_parameter(
@@ -1818,7 +1727,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            submenu_write=InstrumentCmds.SET_QUERY,
                            description="Enable or disable query mode",
                            display_name="Query mode",
-                           type="bool",
+                           type=ParameterDictType.BOOL,
                            value_description="Query mode on or off"))
 
         self._param_dict.add_parameter(
@@ -1834,8 +1743,8 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            submenu_write=InstrumentCmds.SET_FREQUENCY,
                            description="The rate at which measurements are taken to form a sample (applies to all enabled sensors)",
                            display_name="Measurement frequency",
-                           type="float",
-                           units="Hz",
+                           type=ParameterDictType.FLOAT,
+                           units=Units.HERTZ,
                            value_description="0.01 to 50.0"))
 
         self._param_dict.add_parameter(
@@ -1851,7 +1760,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            submenu_write=InstrumentCmds.SET_MEAS_PER_SAMPLE,
                            description="The number of individual measurements that are averaged to form a sample (applies to all enabled sensors)",
                            display_name="Measurements per sample",
-                           type="int",
+                           type=ParameterDictType.INT,
                            value_description="1 to 10000"))
 
         self._param_dict.add_parameter(
@@ -1866,8 +1775,8 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            submenu_write=InstrumentCmds.SET_SAMPLE_PERIOD,
                            description="The interval between samples",
                            display_name="Sample period",
-                           type="float",
-                           units="seconds",
+                           type=ParameterDictType.FLOAT,
+                           units=Units.SECOND,
                            value_description="0.02 to 10000"))
 
         self._param_dict.add_parameter(
@@ -1882,7 +1791,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            submenu_write=InstrumentCmds.SET_SAMPLES_PER_BURST,
                            description="The number of samples (single data records) in a burst. Each sample is displayed if the data monitor is enabled and logged if flash card logging is enabled.",
                            display_name="Samples per burst",
-                           type="int",
+                           type=ParameterDictType.INT,
                            value_description="1 to 100000"))
 
         self._param_dict.add_parameter(
@@ -1898,8 +1807,8 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            submenu_write=InstrumentCmds.SET_BURST_INTERVAL_DAYS,
                            description="The days value in the interval between bursts. Set to 0 for continuous sampling. Burst interval is disabled when query mode is enabled.",
                            display_name="Burst interval days",
-                           type="int",
-                           units="days",
+                           type=ParameterDictType.INT,
+                           units="Days",
                            value_description="0 to 366"))
 
         self._param_dict.add_parameter(
@@ -1911,8 +1820,8 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            default_value=0,
                            description="The hours value in the interval between bursts. Set to 0 for continuous sampling. Burst interval is disabled when query mode is enabled.",
                            display_name="Burst interval hours",
-                           type="int",
-                           units="hours",
+                           type=ParameterDictType.INT,
+                           units=Units.HOUR,
                            value_description="0 to 23"))
 
         self._param_dict.add_parameter(
@@ -1924,8 +1833,8 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            default_value=0,
                            description="The minutes value in the interval between bursts. Set to 0 for continuous sampling. Burst interval is disabled when query mode is enabled.",
                            display_name="Burst interval minutes",
-                           type="int",
-                           units="minutes",
+                           type=ParameterDictType.INT,
+                           units=Units.MINUTE,
                            value_description="0 to 59"))
 
         self._param_dict.add_parameter(
@@ -1937,8 +1846,8 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            default_value=0,
                            description="The seconds value in the interval between bursts. Set to 0 for continuous sampling. Burst interval is disabled when query mode is enabled.",
                            display_name="Burst interval seconds",
-                           type="int",
-                           units="seconds",
+                           type=ParameterDictType.INT,
+                           units=Units.SECOND,
                            value_description="0 to 59"))
 
         self._param_dict.add_parameter(
@@ -1953,7 +1862,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            submenu_write=InstrumentCmds.SET_SI_CONVERSION,
                            description="Coefficient to use during conversion from binary to SI",
                            display_name="SI conversion coefficient",
-                           type="float",
+                           type=ParameterDictType.FLOAT,
                            value_description="0.0010000 to 0.0200000"))
 
         self._param_dict.add_parameter(
@@ -1971,7 +1880,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            submenu_write=InstrumentCmds.SET_WARM_UP_INTERVAL,
                            description="Adjusts warm up time to allow for working with auxiliary sensors that have slower response times to get the required accuracy",
                            display_name="Warm up interval for sensors",
-                           type="enum",
+                           type=ParameterDictType.ENUM,
                            value_description="Fast or slow"))
 
         self._param_dict.add_parameter(
@@ -1989,7 +1898,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            submenu_write=InstrumentCmds.SET_THREE_AXIS_COMPASS,
                            description="Enable the 3-axis compass sensor",
                            display_name="3-axis compass enabled",
-                           type="bool",
+                           type=ParameterDictType.BOOL,
                            value_description="On or off"))
 
         self._param_dict.add_parameter(
@@ -2007,7 +1916,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            submenu_write=InstrumentCmds.SET_SOLID_STATE_TILT,
                            description="Enable the solid state tilt sensor",
                            display_name="Solid state tilt sensor",
-                           type="bool",
+                           type=ParameterDictType.BOOL,
                            value_description="On or off"))
 
         self._param_dict.add_parameter(
@@ -2025,7 +1934,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            submenu_write=InstrumentCmds.SET_THERMISTOR,
                            description="Enable the thermister sensor",
                            display_name="Thermistor sensor",
-                           type="bool",
+                           type=ParameterDictType.BOOL,
                            value_description="On or off"))
 
         self._param_dict.add_parameter(
@@ -2044,7 +1953,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            submenu_write=InstrumentCmds.SET_PRESSURE,
                            description="Enable the pressure sensor",
                            display_name="Pressure sensor",
-                           type="bool",
+                           type=ParameterDictType.BOOL,
                            value_description="On or off"))
 
         self._param_dict.add_parameter(
@@ -2063,7 +1972,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            submenu_write=InstrumentCmds.SET_AUXILIARY,
                            description="Enable auxiliary sensor #1",
                            display_name="Aux sensor 1",
-                           type="bool",
+                           type=ParameterDictType.BOOL,
                            value_description="On or off"))
 
         self._param_dict.add_parameter(
@@ -2082,7 +1991,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            submenu_write=InstrumentCmds.SET_AUXILIARY,
                            description="Enable auxiliary sensor #2",
                            display_name="Aux sensor 2",
-                           type="bool",
+                           type=ParameterDictType.BOOL,
                            value_description="On or off"))
 
         self._param_dict.add_parameter(
@@ -2101,7 +2010,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            submenu_write=InstrumentCmds.SET_AUXILIARY,
                            description="Enable auxiliary sensor #3",
                            display_name="Aux sensor 3",
-                           type="bool",
+                           type=ParameterDictType.BOOL,
                            value_description="On or off"))
 
         self._param_dict.add_parameter(
@@ -2118,7 +2027,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            menu_path_write=SubMenues.CONFIGURATION,
                            submenu_write=InstrumentCmds.SET_SENSOR_ORIENTATION,
                            description="Sensor orientation",
-                           type="enum",
+                           type=ParameterDictType.ENUM,
                            value_description="One of: Veritcal/Down, Vertical/Up, Horizontal/Straight, Horizontal/Bent Left, Horizontal/Bent Right, Horizontal/Bent Down, Horizontal/Bent Up"))
 
         self._param_dict.add_parameter(
@@ -2134,14 +2043,14 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            submenu_write=None,
                            description="The instrument serial number",
                            display_name="Serial number",
-                           type="int",
+                           type=ParameterDictType.INT,
                            value_description="10000 to 20000"))
 
         self._param_dict.add_parameter(
             RegexParameter(InstrumentParameters.VELOCITY_OFFSET_PATH_A,
                            r'.*Current path offsets:\s+(\w+)\s+.*',
-                           lambda match: str(match.group(1)),
-                           lambda string: str(string),
+                           lambda match: int(match.group(1), 16),
+                           lambda num: '{:04x}'.format(num),
                            regex_flags=re.DOTALL,
                            visibility=ParameterDictVisibility.READ_ONLY,
                            menu_path_read=SubMenues.CALIBRATION,
@@ -2150,15 +2059,15 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            submenu_write=None,
                            description="The velocity offset value for path A",
                            display_name="Velocity offset path A",
-                           type="string",
-                           units="",
+                           type=ParameterDictType.INT,
+                           units="counts",
                            value_description="A hex value from F300 to 0D00"))
 
         self._param_dict.add_parameter(
             RegexParameter(InstrumentParameters.VELOCITY_OFFSET_PATH_B,
                            r'.*Current path offsets:\s+\w+\s+(\w+)\s+.*',
-                           lambda match: str(match.group(1)),
-                           lambda string: str(string),
+                           lambda match: int(match.group(1), 16),
+                           lambda num: '{:04x}'.format(num),
                            regex_flags=re.DOTALL,
                            visibility=ParameterDictVisibility.READ_ONLY,
                            menu_path_read=SubMenues.CALIBRATION,
@@ -2167,15 +2076,15 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            submenu_write=None,
                            description="The velocity offset value for path B",
                            display_name="Velocity offset path B",
-                           type="string",
-                           units="",
+                           type=ParameterDictType.INT,
+                           units="counts",
                            value_description="A hex value from F300 to 0D00"))
 
         self._param_dict.add_parameter(
             RegexParameter(InstrumentParameters.VELOCITY_OFFSET_PATH_C,
                            r'.*Current path offsets:\s+\w+\s+\w+\s+(\w+)\s+.*',
-                           lambda match: str(match.group(1)),
-                           lambda string: str(string),
+                           lambda match: int(match.group(1), 16),
+                           lambda num: '{:04x}'.format(num),
                            regex_flags=re.DOTALL,
                            visibility=ParameterDictVisibility.READ_ONLY,
                            menu_path_read=SubMenues.CALIBRATION,
@@ -2184,15 +2093,15 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            submenu_write=None,
                            description="The velocity offset value for path B",
                            display_name="Velocity offset path B",
-                           type="string",
-                           units="",
+                           type=ParameterDictType.INT,
+                           units="counts",
                            value_description="A hex value from F300 to 0D00"))
 
         self._param_dict.add_parameter(
             RegexParameter(InstrumentParameters.VELOCITY_OFFSET_PATH_D,
                            r'.*Current path offsets:\s+\w+\s+\w+\s+\w+\s+(\w+)\s+.*',
-                           lambda match: str(match.group(1)),
-                           lambda string: str(string),
+                           lambda match: int(match.group(1), 16),
+                           lambda num: '{:04x}'.format(num),
                            regex_flags=re.DOTALL,
                            visibility=ParameterDictVisibility.READ_ONLY,
                            menu_path_read=SubMenues.CALIBRATION,
@@ -2201,8 +2110,8 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            submenu_write=None,
                            description="The velocity offset value for path C",
                            display_name="Velocity offset path C",
-                           type="string",
-                           units="",
+                           type=ParameterDictType.INT,
+                           units="counts",
                            value_description="A hex value from F300 to 0D00"))
 
         self._param_dict.add_parameter(
@@ -2217,7 +2126,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            menu_path_write=None,
                            submenu_write=None,
                            description="Compass offset 0",
-                           type="int",
+                           type=ParameterDictType.INT,
                            value_description="-400 to 400"))
 
         self._param_dict.add_parameter(
@@ -2232,7 +2141,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            menu_path_write=None,
                            submenu_write=None,
                            description="Compass offset 1",
-                           type="int",
+                           type=ParameterDictType.INT,
                            value_description="-400 to 400"))
 
         self._param_dict.add_parameter(
@@ -2247,7 +2156,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            menu_path_write=None,
                            submenu_write=None,
                            description="Compass offset 2",
-                           type="int",
+                           type=ParameterDictType.INT,
                            value_description="-400 to 400"))
 
         self._param_dict.add_parameter(
@@ -2262,7 +2171,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            menu_path_write=None,
                            submenu_write=None,
                            description="Compass scale factor 0",
-                           type="float",
+                           type=ParameterDictType.FLOAT,
                            value_description="0.200 to 5.000"))
 
         self._param_dict.add_parameter(
@@ -2277,7 +2186,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            menu_path_write=None,
                            submenu_write=None,
                            description="Compass scale factor 1",
-                           type="float",
+                           type=ParameterDictType.FLOAT,
                            value_description="0.200 to 5.000"))
 
         self._param_dict.add_parameter(
@@ -2292,7 +2201,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            menu_path_write=None,
                            submenu_write=None,
                            description="Compass scale factor 2",
-                           type="float",
+                           type=ParameterDictType.FLOAT,
                            value_description="0.200 to 5.000"))
 
         self._param_dict.add_parameter(
@@ -2309,7 +2218,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            submenu_write=None,
                            description="Tilt offset for pitch axis",
                            display_name="Tilt offset (pitch)",
-                           type="int",
+                           type=ParameterDictType.INT,
                            value_description="0 to 30000"))
 
         self._param_dict.add_parameter(
@@ -2326,7 +2235,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            submenu_write=None,
                            description="Tilt offset for roll axis",
                            display_name="Tilt offset (roll)",
-                           type="int",
+                           type=ParameterDictType.INT,
                            value_description="0 to 30000"))
 
     def _build_command_handlers(self):
@@ -2597,8 +2506,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
             raise InstrumentParameterException('enter velocity frame command requires a value.')
         cmd = self._param_dict.format(name, value)
         log.debug("_build_enter_velocity_frame_command: cmd=%s", cmd)
-        if value == 1:
-            return cmd, InstrumentPrompts.DISPLAY_FORMAT, None
+
         return cmd, InstrumentPrompts.SELECTION, None
 
     def _build_set_note_command(self, **kwargs):
@@ -2948,7 +2856,6 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
             log.debug('dictionaries are not equal :(')
             self._driver_event(DriverAsyncEvent.CONFIG_CHANGE)
 
-    def _sorted_longest_to_shortest(self, list):
-        sorted_list = sorted(list, key=len, reverse=True)
-        #log.debug("list=%s \nsorted=%s", list, sorted_list)
+    def _sorted_longest_to_shortest(self, param_list):
+        sorted_list = sorted(param_list, key=len, reverse=True)
         return sorted_list
