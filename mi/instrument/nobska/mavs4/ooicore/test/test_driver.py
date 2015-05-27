@@ -171,10 +171,10 @@ class Mavs4Mixin(DriverTestMixin):
         InstrumentParameters.AUXILIARY_3: {TYPE: bool, READONLY: True, DA: False, STARTUP: True, DEFAULT: False},
         InstrumentParameters.SENSOR_ORIENTATION: {TYPE: str, READONLY: True, DA: False, STARTUP: True, DEFAULT: '2'},
         InstrumentParameters.SERIAL_NUMBER: {TYPE: str, READONLY: True, DA: False, STARTUP: False},
-        InstrumentParameters.VELOCITY_OFFSET_PATH_A: {TYPE: str, READONLY: True, DA: False, STARTUP: False},
-        InstrumentParameters.VELOCITY_OFFSET_PATH_B: {TYPE: str, READONLY: True, DA: False, STARTUP: False},
-        InstrumentParameters.VELOCITY_OFFSET_PATH_C: {TYPE: str, READONLY: True, DA: False, STARTUP: False},
-        InstrumentParameters.VELOCITY_OFFSET_PATH_D: {TYPE: str, READONLY: True, DA: False, STARTUP: False},
+        InstrumentParameters.VELOCITY_OFFSET_PATH_A: {TYPE: int, READONLY: True, DA: False, STARTUP: False},
+        InstrumentParameters.VELOCITY_OFFSET_PATH_B: {TYPE: int, READONLY: True, DA: False, STARTUP: False},
+        InstrumentParameters.VELOCITY_OFFSET_PATH_C: {TYPE: int, READONLY: True, DA: False, STARTUP: False},
+        InstrumentParameters.VELOCITY_OFFSET_PATH_D: {TYPE: int, READONLY: True, DA: False, STARTUP: False},
         InstrumentParameters.COMPASS_OFFSET_0: {TYPE: int, READONLY: True, DA: False, STARTUP: False},
         InstrumentParameters.COMPASS_OFFSET_1: {TYPE: int, READONLY: True, DA: False, STARTUP: False},
         InstrumentParameters.COMPASS_OFFSET_2: {TYPE: int, READONLY: True, DA: False, STARTUP: False},
@@ -225,10 +225,10 @@ class Mavs4Mixin(DriverTestMixin):
     }
 
     _status_parameters = {
-        Mavs4StatusDataParticleKey.VELOCITY_OFFSET_PATH_A: {TYPE: unicode, VALUE: "F300"},
-        Mavs4StatusDataParticleKey.VELOCITY_OFFSET_PATH_B: {TYPE: unicode, VALUE: "0000"},
-        Mavs4StatusDataParticleKey.VELOCITY_OFFSET_PATH_C: {TYPE: unicode, VALUE: "0100"},
-        Mavs4StatusDataParticleKey.VELOCITY_OFFSET_PATH_D: {TYPE: unicode, VALUE: "0300"},
+        Mavs4StatusDataParticleKey.VELOCITY_OFFSET_PATH_A: {TYPE: int, VALUE: 62208},
+        Mavs4StatusDataParticleKey.VELOCITY_OFFSET_PATH_B: {TYPE: int, VALUE: 0},
+        Mavs4StatusDataParticleKey.VELOCITY_OFFSET_PATH_C: {TYPE: int, VALUE: 256},
+        Mavs4StatusDataParticleKey.VELOCITY_OFFSET_PATH_D: {TYPE: int, VALUE: 62208},
         Mavs4StatusDataParticleKey.COMPASS_OFFSET_0: {TYPE: int, VALUE: 5},
         Mavs4StatusDataParticleKey.COMPASS_OFFSET_1: {TYPE: int, VALUE: 6},
         Mavs4StatusDataParticleKey.COMPASS_OFFSET_2: {TYPE: int, VALUE: 7},
@@ -248,10 +248,10 @@ class Mavs4Mixin(DriverTestMixin):
 
     # lame way to handle the mapping...
     _status_instrument_parameters = {
-        InstrumentParameters.VELOCITY_OFFSET_PATH_A: {TYPE: unicode, VALUE: "F300"},
-        InstrumentParameters.VELOCITY_OFFSET_PATH_B: {TYPE: unicode, VALUE: "0000"},
-        InstrumentParameters.VELOCITY_OFFSET_PATH_C: {TYPE: unicode, VALUE: "0100"},
-        InstrumentParameters.VELOCITY_OFFSET_PATH_D: {TYPE: unicode, VALUE: "0300"},
+        InstrumentParameters.VELOCITY_OFFSET_PATH_A: {TYPE: int, VALUE: 62208},
+        InstrumentParameters.VELOCITY_OFFSET_PATH_B: {TYPE: int, VALUE: 0},
+        InstrumentParameters.VELOCITY_OFFSET_PATH_C: {TYPE: int, VALUE: 256},
+        InstrumentParameters.VELOCITY_OFFSET_PATH_D: {TYPE: int, VALUE: 62208},
         InstrumentParameters.COMPASS_OFFSET_0: {TYPE: int, VALUE: 5},
         InstrumentParameters.COMPASS_OFFSET_1: {TYPE: int, VALUE: 6},
         InstrumentParameters.COMPASS_OFFSET_2: {TYPE: int, VALUE: 7},
@@ -271,10 +271,10 @@ class Mavs4Mixin(DriverTestMixin):
 
     _sample_parameters = {
         Mavs4SampleDataParticleKey.DATE_TIME_STRING: {TYPE: unicode, VALUE: "12 20 2012 18 50 50.40"},
-        Mavs4SampleDataParticleKey.ACOUSTIC_AXIS_VELOCITY_A: {TYPE: unicode, VALUE: "FDC5"},
-        Mavs4SampleDataParticleKey.ACOUSTIC_AXIS_VELOCITY_B: {TYPE: unicode, VALUE: "FF70"},
-        Mavs4SampleDataParticleKey.ACOUSTIC_AXIS_VELOCITY_C: {TYPE: unicode, VALUE: "FF1B"},
-        Mavs4SampleDataParticleKey.ACOUSTIC_AXIS_VELOCITY_D: {TYPE: unicode, VALUE: "FF8C"},
+        Mavs4SampleDataParticleKey.ACOUSTIC_AXIS_VELOCITY_A: {TYPE: int, VALUE: 64965},
+        Mavs4SampleDataParticleKey.ACOUSTIC_AXIS_VELOCITY_B: {TYPE: int, VALUE: 65392},
+        Mavs4SampleDataParticleKey.ACOUSTIC_AXIS_VELOCITY_C: {TYPE: int, VALUE: 65307},
+        Mavs4SampleDataParticleKey.ACOUSTIC_AXIS_VELOCITY_D: {TYPE: int, VALUE: 65420},
         Mavs4SampleDataParticleKey.VELOCITY_FRAME_EAST: {TYPE: float, VALUE: 1.2},
         Mavs4SampleDataParticleKey.VELOCITY_FRAME_NORTH: {TYPE: float, VALUE: 3.4},
         Mavs4SampleDataParticleKey.VELOCITY_FRAME_UP: {TYPE: float, VALUE: 5.6},
@@ -291,25 +291,25 @@ class Mavs4Mixin(DriverTestMixin):
                        "preferred_timestamp": "driver_timestamp",
                        "quality_flag": "ok",
                        "stream_name": "vel3d_b_engineering",
-                       "values": [{"value": 6, "value_id": "comapss_offset_1"},
-                                  {"value": 5, "value_id": "comapss_offset_0"},
+                       "values": [{"value": 6, "value_id": "compass_offset_1"},
+                                  {"value": 5, "value_id": "compass_offset_0"},
                                   {"value": 15, "value_id": "burst_interval_days"},
                                   {"value": 12, "value_id": "tilt_offset_roll"},
                                   {"value": 16, "value_id": "burst_interval_hours"},
                                   {"value": 11, "value_id": "tilt_offset_pitch"},
-                                  {"value": "0000", "value_id": "velocity_offset_b"},
+                                  {"value": 0, "value_id": "velocity_offset_b"},
                                   {"value": 18, "value_id": "burst_interval_seconds"},
                                   {"value": 19.0, "value_id": "bin_to_si_conversion"},
                                   {"value": 14, "value_id": "samples_per_burst"},
-                                  {"value": "0300", "value_id": "velocity_offset_d"},
+                                  {"value": 62208, "value_id": "velocity_offset_d"},
                                   {"value": 17, "value_id": "burst_interval_minutes"},
-                                  {"value": 7, "value_id": "comapss_offset_2"},
-                                  {"value": 10.0, "value_id": "comapss_scale_factor_2"},
-                                  {"value": 8.0, "value_id": "comapss_scale_factor_0"},
-                                  {"value": 9.0, "value_id": "comapss_scale_factor_1"},
+                                  {"value": 7, "value_id": "compass_offset_2"},
+                                  {"value": 10.0, "value_id": "compass_scale_factor_2"},
+                                  {"value": 8.0, "value_id": "compass_scale_factor_0"},
+                                  {"value": 9.0, "value_id": "compass_scale_factor_1"},
                                   {"value": 13.0, "value_id": "sample_period"},
-                                  {"value": "0100", "value_id": "velocity_offset_c"},
-                                  {"value": "F300", "value_id": "velocity_offset_a"}]
+                                  {"value": 256, "value_id": "velocity_offset_c"},
+                                  {"value": 62208, "value_id": "velocity_offset_a"}]
     }
 
     SAMPLE = "12 20 2012 18 50 50.40 FDC5 FF70 FF1B FF8C 1.2 3.4 5.6 22.21 0.96 0.28 3.0 -5.1\n"
@@ -421,20 +421,24 @@ class Testmavs4_UNIT(InstrumentDriverUnitTestCase, Mavs4Mixin):
         """
         Verify that all driver enumerations have no duplicate values that might cause confusion.  Also
         """
-        self.assert_enum_has_no_duplicates(DataParticleType())
-        self.assert_enum_has_no_duplicates(InstrumentPrompts())
-        self.assert_enum_has_no_duplicates(ProtocolStates())
-        self.assert_enum_has_no_duplicates(ProtocolEvent())
-        self.assert_enum_has_no_duplicates(InstrumentParameters())
-        self.assert_enum_has_no_duplicates(DeployMenuParameters())
-        self.assert_enum_has_no_duplicates(SystemConfigurationMenuParameters())
-        self.assert_enum_has_no_duplicates(VelocityOffsetParameters())
-        self.assert_enum_has_no_duplicates(CompassOffsetParameters())
-        self.assert_enum_has_no_duplicates(CompassScaleFactorsParameters())
-        self.assert_enum_has_no_duplicates(TiltOffsetParameters())
-        self.assert_enum_has_no_duplicates(SubMenues())
+        self.assert_enum_has_no_duplicates(DataParticleType)
+        self.assert_enum_has_no_duplicates(InstrumentPrompts)
+        self.assert_enum_has_no_duplicates(DeployMenuParameters)
+        self.assert_enum_has_no_duplicates(SystemConfigurationMenuParameters)
+        self.assert_enum_has_no_duplicates(VelocityOffsetParameters)
+        self.assert_enum_has_no_duplicates(CompassOffsetParameters)
+        self.assert_enum_has_no_duplicates(CompassScaleFactorsParameters)
+        self.assert_enum_has_no_duplicates(TiltOffsetParameters)
+        self.assert_enum_has_no_duplicates(SubMenues)
 
-        # Test capabilites for duplicates, then verify that capabilities is a subset of protocol events
+        self.assert_enum_has_no_duplicates(DriverEvent)
+        self.assert_enum_has_no_duplicates(ProtocolEvent)
+        self.assert_enum_has_no_duplicates(DriverProtocolState)
+        self.assert_enum_has_no_duplicates(ProtocolStates)
+        self.assert_enum_has_no_duplicates(DriverParameter)
+        self.assert_enum_has_no_duplicates(InstrumentParameters)
+
+        # Test capabilities for duplicates, then verify that capabilities is a subset of protocol events
         self.assert_enum_has_no_duplicates(Capability())
         self.assert_enum_complete(Capability(), ProtocolEvent())
 
@@ -540,73 +544,21 @@ class Testmavs4_UNIT(InstrumentDriverUnitTestCase, Mavs4Mixin):
         also be defined in the protocol FSM.
         """
         capabilities = {
-            ProtocolStates.UNKNOWN: ['DRIVER_EVENT_DISCOVER'],
-            ProtocolStates.COMMAND: ['DRIVER_EVENT_ACQUIRE_STATUS',
-                                     'DRIVER_EVENT_CLOCK_SYNC',
-                                     'DRIVER_EVENT_SCHEDULED_CLOCK_SYNC',
-                                     'DRIVER_EVENT_GET',
-                                     'DRIVER_EVENT_SET',
-                                     'DRIVER_EVENT_START_AUTOSAMPLE',
-                                     'DRIVER_EVENT_START_DIRECT'],
-            ProtocolStates.AUTOSAMPLE: ['DRIVER_EVENT_STOP_AUTOSAMPLE'],
-            ProtocolStates.DIRECT_ACCESS: ['DRIVER_EVENT_STOP_DIRECT',
-                                           'EXECUTE_DIRECT']
+            ProtocolStates.UNKNOWN: [ProtocolEvent.DISCOVER],
+            ProtocolStates.COMMAND: [ProtocolEvent.ACQUIRE_STATUS,
+                                     ProtocolEvent.CLOCK_SYNC,
+                                     ProtocolEvent.SCHEDULED_CLOCK_SYNC,
+                                     ProtocolEvent.GET,
+                                     ProtocolEvent.SET,
+                                     ProtocolEvent.START_AUTOSAMPLE,
+                                     ProtocolEvent.START_DIRECT],
+            ProtocolStates.AUTOSAMPLE: [ProtocolEvent.STOP_AUTOSAMPLE],
+            ProtocolStates.DIRECT_ACCESS: [ProtocolEvent.STOP_DIRECT,
+                                           ProtocolEvent.EXECUTE_DIRECT]
         }
 
         driver = mavs4InstrumentDriver(self._got_data_event_callback)
         self.assert_capabilities(driver, capabilities)
-
-    def test_parameter_enum(self):
-        """
-        @ brief InstrumentParameters enum test
-
-            1. test that InstrumentParameters matches the expected enums from DriverParameter.
-            2. test that multiple distinct parameters do not resolve back to the same string.
-        """
-
-        self.assertEqual(InstrumentParameters.ALL, DriverParameter.ALL)
-
-        self.assert_enum_has_no_duplicates(DriverParameter)
-        self.assert_enum_has_no_duplicates(InstrumentParameters)
-
-    def test_protocol_state_enum(self):
-        """
-        @ brief ProtocolState enum test
-
-            1. test that ProtocolState matches the expected enums from DriverProtocolState.
-            2. test that multiple distinct states do not resolve back to the same string.
-
-        """
-
-        self.assertEqual(ProtocolStates.UNKNOWN, DriverProtocolState.UNKNOWN)
-        self.assertEqual(ProtocolStates.COMMAND, DriverProtocolState.COMMAND)
-        self.assertEqual(ProtocolStates.AUTOSAMPLE, DriverProtocolState.AUTOSAMPLE)
-        self.assertEqual(ProtocolStates.DIRECT_ACCESS, DriverProtocolState.DIRECT_ACCESS)
-
-        self.assert_enum_has_no_duplicates(DriverProtocolState)
-        self.assert_enum_has_no_duplicates(ProtocolStates)
-
-    def test_protocol_event_enum(self):
-        """
-        @brief ProtocolEvent enum test
-
-            1. test that ProtocolEvent matches the expected enums from DriverProtocolState.
-            2. test that multiple distinct events do not resolve back to the same string.
-        """
-
-        self.assertEqual(ProtocolEvent.ENTER, DriverEvent.ENTER)
-        self.assertEqual(ProtocolEvent.EXIT, DriverEvent.EXIT)
-        self.assertEqual(ProtocolEvent.GET, DriverEvent.GET)
-        self.assertEqual(ProtocolEvent.SET, DriverEvent.SET)
-        self.assertEqual(ProtocolEvent.DISCOVER, DriverEvent.DISCOVER)
-        self.assertEqual(ProtocolEvent.START_AUTOSAMPLE, DriverEvent.START_AUTOSAMPLE)
-        self.assertEqual(ProtocolEvent.STOP_AUTOSAMPLE, DriverEvent.STOP_AUTOSAMPLE)
-        self.assertEqual(ProtocolEvent.EXECUTE_DIRECT, DriverEvent.EXECUTE_DIRECT)
-        self.assertEqual(ProtocolEvent.START_DIRECT, DriverEvent.START_DIRECT)
-        self.assertEqual(ProtocolEvent.STOP_DIRECT, DriverEvent.STOP_DIRECT)
-
-        self.assert_enum_has_no_duplicates(DriverEvent)
-        self.assert_enum_has_no_duplicates(ProtocolEvent)
 
 
 ###############################################################################
@@ -631,7 +583,7 @@ class Testmavs4_INT(InstrumentDriverIntegrationTestCase, Mavs4Mixin):
 
     def setup(self):
         time.sleep(10)
-        InstrumentDriverIntegrationTestCase.setUp()
+        InstrumentDriverIntegrationTestCase.setUp(self)
 
     def test_instrument_wakeup(self):
         """
@@ -711,14 +663,14 @@ class Testmavs4_INT(InstrumentDriverIntegrationTestCase, Mavs4Mixin):
         self.assert_initialize_driver()
 
         # start auto-sample.
-        reply = self.driver_client.cmd_dvr('execute_resource', ProtocolEvent.START_AUTOSAMPLE)
+        self.driver_client.cmd_dvr('execute_resource', ProtocolEvent.START_AUTOSAMPLE)
 
         # Test the driver is in autosample mode.
         state = self.driver_client.cmd_dvr('get_resource_state')
         self.assertEqual(state, ProtocolStates.AUTOSAMPLE)
 
         # stop auto-sample.
-        reply = self.driver_client.cmd_dvr('execute_resource', ProtocolEvent.STOP_AUTOSAMPLE)
+        self.driver_client.cmd_dvr('execute_resource', ProtocolEvent.STOP_AUTOSAMPLE)
 
         # Test the driver is in command mode.
         state = self.driver_client.cmd_dvr('get_resource_state')
