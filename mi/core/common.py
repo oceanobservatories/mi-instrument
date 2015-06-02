@@ -182,6 +182,7 @@ class Prefixes(BaseEnum):
 
 
 class Units(BaseEnum):
+    COUNTS = 'counts'
     ALTERNATING_CURRENT = 'ac'
     AMERICAN_WIRE_GAUGE = 'AWG'
     AMPERE = 'A'
