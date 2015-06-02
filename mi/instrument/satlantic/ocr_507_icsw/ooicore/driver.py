@@ -86,7 +86,6 @@ class DataParticleType(BaseEnum):
 class SatlanticSpecificDriverEvents(BaseEnum):
     START_POLL = 'DRIVER_EVENT_START_POLL'
     STOP_POLL = 'DRIVER_EVENT_STOP_POLL'
-    RESET = "DRIVER_EVENT_RESET"
 
 
 ####################################################################
@@ -131,7 +130,6 @@ class SatlanticProtocolEvent(BaseEnum):
     EXECUTE_DIRECT = DriverEvent.EXECUTE_DIRECT
     START_DIRECT = DriverEvent.START_DIRECT
     STOP_DIRECT = DriverEvent.STOP_DIRECT
-    RESET = SatlanticSpecificDriverEvents.RESET
 
 
 class SatlanticCapability(BaseEnum):
@@ -141,7 +139,10 @@ class SatlanticCapability(BaseEnum):
     START_AUTOSAMPLE = SatlanticProtocolEvent.START_AUTOSAMPLE
     STOP_AUTOSAMPLE = SatlanticProtocolEvent.STOP_AUTOSAMPLE
     ACQUIRE_STATUS = SatlanticProtocolEvent.ACQUIRE_STATUS
-    RESET = SatlanticProtocolEvent.RESET
+    GET = DriverEvent.GET
+    SET = DriverEvent.SET
+    START_DIRECT = DriverEvent.START_DIRECT
+    STOP_DIRECT = DriverEvent.STOP_DIRECT
 
 
 class Parameter(DriverParameter):
@@ -454,6 +455,7 @@ class SatlanticOCR507InstrumentProtocol(CommandResponseInstrumentProtocol):
                              display_name="Max Rate",
                              value_description="valid values: 0=auto, 0.125, 0.25, 0.5, 1, 2, 4, 8, 10, 12",
                              units=Units.HERTZ,
+                             description="Maximum frame rate.",
                              default_value='0',
                              startup_param=True,
                              direct_access=True)
@@ -463,7 +465,8 @@ class SatlanticOCR507InstrumentProtocol(CommandResponseInstrumentProtocol):
                              lambda match: True if match.group(1) == 'on' else False,
                              self._boolean_to_off_on,
                              type=ParameterDictType.BOOL,
-                             display_name="Init AT",
+                             display_name="Auto Telemetry",
+                             description="Enables auto telemetry: (true | false)",
                              default_value=True,
                              visibility=ParameterDictVisibility.IMMUTABLE,
                              startup_param=True,
@@ -474,7 +477,8 @@ class SatlanticOCR507InstrumentProtocol(CommandResponseInstrumentProtocol):
                              lambda match: True if match.group(1) == 'on' else False,
                              self._boolean_to_off_on,
                              type=ParameterDictType.BOOL,
-                             display_name="Init SM",
+                             display_name="Silent Mode",
+                             description="Enables silent mode: (true | false)",
                              default_value=True,
                              visibility=ParameterDictVisibility.IMMUTABLE,
                              startup_param=True,
@@ -486,6 +490,7 @@ class SatlanticOCR507InstrumentProtocol(CommandResponseInstrumentProtocol):
                              self._boolean_to_off_on,
                              type=ParameterDictType.BOOL,
                              display_name="Net Mode",
+                             description="Enables network operation: (true | false)",
                              default_value=False,
                              visibility=ParameterDictVisibility.IMMUTABLE,
                              startup_param=True,
@@ -498,6 +503,13 @@ class SatlanticOCR507InstrumentProtocol(CommandResponseInstrumentProtocol):
         self._driver_dict.add(DriverDictKey.VENDOR_SW_COMPATIBLE, True)
 
         self._chunker = StringChunker(self.sieve_function)
+
+    def _filter_capabilities(self, events):
+        """
+        Filters capabilities
+        """
+        events_out = [x for x in events if SatlanticCapability.has(x)]
+        return events_out
 
     @staticmethod
     def _boolean_to_off_on(v):

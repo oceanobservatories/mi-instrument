@@ -109,6 +109,8 @@ class Capability(BaseEnum):
     """
     Protocol events that should be exposed to users (subset of above).
     """
+    START_DIRECT = ProtocolEvent.START_DIRECT
+    STOP_DIRECT = ProtocolEvent.STOP_DIRECT
     GET = ProtocolEvent.GET
     SET = ProtocolEvent.SET
     START_AUTOSAMPLE = ProtocolEvent.START_AUTOSAMPLE
@@ -418,13 +420,13 @@ class Protocol(CommandResponseInstrumentProtocol):
         """
         Populate the command dictionary with commands.
         """
-        self._cmd_dict.add(Capability.START_AUTOSAMPLE, display_name="Start autosample")
-        self._cmd_dict.add(Capability.STOP_AUTOSAMPLE, display_name="Stop autosample")
-        self._cmd_dict.add(Capability.ACQUIRE_STATUS, display_name="Acquire instrument status")
-        self._cmd_dict.add(Capability.START_LEVELING, display_name="Start the LILY leveling sequence")
-        self._cmd_dict.add(Capability.STOP_LEVELING, display_name="Stop the LILY leveling sequence")
-        self._cmd_dict.add(Capability.START_HEATER, display_name="Start the heater")
-        self._cmd_dict.add(Capability.STOP_HEATER, display_name="Stop the heater")
+        self._cmd_dict.add(Capability.START_AUTOSAMPLE, display_name="Start Autosample")
+        self._cmd_dict.add(Capability.STOP_AUTOSAMPLE, display_name="Stop Autosample")
+        self._cmd_dict.add(Capability.ACQUIRE_STATUS, display_name="Acquire Status")
+        self._cmd_dict.add(Capability.START_LEVELING, display_name="Start LILY Leveling")
+        self._cmd_dict.add(Capability.STOP_LEVELING, display_name="Stop LILY Leveling")
+        self._cmd_dict.add(Capability.START_HEATER, display_name="Start Heater")
+        self._cmd_dict.add(Capability.STOP_HEATER, display_name="Stop Heater")
 
     def _build_param_dict(self):
         """
@@ -440,12 +442,14 @@ class Protocol(CommandResponseInstrumentProtocol):
             Parameter.AUTO_RELEVEL: {
                 'type': _bool,
                 'display_name': 'Automatic Releveling Enabled',
+                'description': 'Enable LILY re-leveling automatically: (true | off)',
                 'visibility': rw,
                 'startup_param': True,
             },
             Parameter.XTILT_TRIGGER: {
                 'type': _float,
                 'display_name': 'X-tilt Releveling Trigger',
+                'description': 'The X-tilt value that must be exceeded before LILY auto releveling occurs.',
                 'units': Prefixes.MICRO + Units.RADIAN,
                 'visibility': rw,
                 'startup_param': True,
@@ -453,12 +457,15 @@ class Protocol(CommandResponseInstrumentProtocol):
             Parameter.YTILT_TRIGGER: {
                 'type': _float,
                 'display_name': 'Y-tilt Releveling Trigger',
+                'description': 'The Y-tilt value that must be exceeded before LILY auto releveling occurs.',
+                'units': Prefixes.MICRO + Units.RADIAN,
                 'visibility': rw,
                 'startup_param': True,
             },
             Parameter.LEVELING_TIMEOUT: {
                 'type': _int,
                 'display_name': 'LILY Leveling Timeout',
+                'description': 'Leveling timeout',
                 'units': Units.SECOND,
                 'visibility': rw,
                 'startup_param': True,
@@ -466,6 +473,7 @@ class Protocol(CommandResponseInstrumentProtocol):
             Parameter.HEAT_DURATION: {
                 'type': _int,
                 'display_name': 'Heater Run Time Duration',
+                'description': 'The number of hours the heater will run when it is given the command to turn on.',
                 'units': Units.HOUR,
                 'visibility': rw,
                 'startup_param': True,
@@ -473,6 +481,7 @@ class Protocol(CommandResponseInstrumentProtocol):
             Parameter.OUTPUT_RATE: {
                 'type': _int,
                 'display_name': 'NANO Output Rate',
+                'description': 'Sample rate',
                 'units': Units.HERTZ,
                 'visibility': rw,
                 'startup_param': True,
@@ -480,18 +489,21 @@ class Protocol(CommandResponseInstrumentProtocol):
             Parameter.HEATER_ON: {
                 'type': _bool,
                 'display_name': 'Heater Running',
+                'description': 'Indicates if the heater is running: (true | false)',
                 'value': False,
                 'visibility': ro,
             },
             Parameter.LILY_LEVELING: {
                 'type': _bool,
                 'display_name': 'Lily Leveling',
+                'description': 'Indicates if LILY leveling is occurring: (true | false)',
                 'value': False,
                 'visibility': ro,
             },
             Parameter.LEVELING_FAILED: {
                 'type': _bool,
                 'display_name': 'LILY Leveling Failed',
+                'description': 'Indicates if LILY leveling failed: (true | false)',
                 'value': False,
                 'visibility': ro,
             },
