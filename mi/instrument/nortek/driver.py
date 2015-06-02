@@ -23,7 +23,8 @@ from mi.core.instrument.instrument_fsm import InstrumentFSM
 from mi.core.instrument.chunker import StringChunker
 from mi.core.instrument.data_particle import DataParticle, DataParticleKey
 from mi.core.instrument.data_particle import CommonDataParticleType
-from mi.core.instrument.instrument_protocol import CommandResponseInstrumentProtocol, DEFAULT_WRITE_DELAY
+from mi.core.instrument.instrument_protocol import CommandResponseInstrumentProtocol, DEFAULT_WRITE_DELAY, \
+    InitializationType
 from mi.core.instrument.driver_dict import DriverDict, DriverDictKey
 from mi.core.instrument.protocol_cmd_dict import ProtocolCommandDict
 from mi.core.instrument.protocol_param_dict import ParameterDictVisibility
@@ -107,15 +108,8 @@ INTERVAL_TIME_REGEX = r"([0-9][0-9]:[0-9][0-9]:[0-9][0-9])"
 
 
 class ParameterUnits(BaseEnum):
-    MILLIMETERS = 'mm'
-    CENTIMETERS = 'cm'
-    METERS = 'm'
-    HERTZ = 'Hz'
-    SECONDS = 's'
     TIME_INTERVAL = 'HH:MM:SS'
-    METERS_PER_SECOND = 'm/s'
     PARTS_PER_TRILLION = 'ppt'
-    COUNTS = 'counts'
 
 
 class ScheduledJob(BaseEnum):
@@ -531,6 +525,7 @@ class Parameter(DriverParameter):
     B0_2_SPARE = 'b0_2spare'
     NUMBER_SAMPLES_PER_BURST = NortekUserConfigDataParticleKey.NUM_SAMPLE_PER_BURST
     USER_2_SPARE = 'spare_2'
+    SAMPLE_RATE = 'sample_rate'
     ANALOG_OUTPUT_SCALE = NortekUserConfigDataParticleKey.ANALOG_SCALE_FACTOR
     CORRELATION_THRESHOLD = NortekUserConfigDataParticleKey.CORRELATION_THRS
     USER_3_SPARE = 'spare_3'
@@ -1216,6 +1211,8 @@ class NortekInstrumentProtocol(CommandResponseInstrumentProtocol):
         except IndexError:
             raise InstrumentParameterException('Set params requires a parameter dict.')
 
+        self._verify_not_readonly(*args, **kwargs)
+
         old_config = self._param_dict.get_config()
 
         # For each key, value in the params list set the value in parameters copy.
@@ -1349,8 +1346,9 @@ class NortekInstrumentProtocol(CommandResponseInstrumentProtocol):
         Enter command state. Configure the instrument and driver, sync the clock, and start scheduled events
         if they are set
         """
-        # Command device to update parameters and send a config change event.
-        self._update_params()
+        if self._init_type != InitializationType.NONE:
+            self._update_params()
+
         self._init_params()
 
         if self._param_dict.get(EngineeringParameter.CLOCK_SYNC_INTERVAL) is not None:
@@ -1557,6 +1555,11 @@ class NortekInstrumentProtocol(CommandResponseInstrumentProtocol):
         """
         Enter autosample state.
         """
+        if self._init_type != InitializationType.NONE:
+            self._update_params()
+
+        self._init_params()
+
         if self._param_dict.get(EngineeringParameter.CLOCK_SYNC_INTERVAL) is not None:
             log.debug("Configuring the scheduler to sync clock %s", self._param_dict.get(EngineeringParameter.CLOCK_SYNC_INTERVAL))
             if self._param_dict.get(EngineeringParameter.CLOCK_SYNC_INTERVAL) != '00:00:00':
@@ -1743,15 +1746,11 @@ class NortekInstrumentProtocol(CommandResponseInstrumentProtocol):
         from a file if present.
         """
         self._cmd_dict = ProtocolCommandDict()
-        self._cmd_dict.add(Capability.SET, display_name='set')
-        self._cmd_dict.add(Capability.GET, display_name='get')
-        self._cmd_dict.add(Capability.ACQUIRE_SAMPLE, display_name='acquire sample')
-        self._cmd_dict.add(Capability.START_AUTOSAMPLE, display_name='start autosample')
-        self._cmd_dict.add(Capability.STOP_AUTOSAMPLE, display_name='stop autosample')
-        self._cmd_dict.add(Capability.CLOCK_SYNC, display_name='clock sync')
-        self._cmd_dict.add(Capability.START_DIRECT, display_name='start direct access')
-        self._cmd_dict.add(Capability.STOP_DIRECT, display_name='stop direct access')
-        self._cmd_dict.add(Capability.ACQUIRE_STATUS, display_name='acquire status')
+        self._cmd_dict.add(Capability.ACQUIRE_SAMPLE, display_name='Acquire Sample')
+        self._cmd_dict.add(Capability.START_AUTOSAMPLE, display_name='Start Autosample')
+        self._cmd_dict.add(Capability.STOP_AUTOSAMPLE, display_name='Stop Autosample')
+        self._cmd_dict.add(Capability.CLOCK_SYNC, display_name='Synchronize Clock')
+        self._cmd_dict.add(Capability.ACQUIRE_STATUS, display_name='Acquire Status')
 
     def _build_param_dict(self):
         """
@@ -1825,6 +1824,11 @@ class NortekInstrumentProtocol(CommandResponseInstrumentProtocol):
                 output.append(base64.b64decode(parameters.format(param)))
             elif param == Parameter.VELOCITY_ADJ_TABLE:
                 output.append(base64.b64decode(parameters.format(param)))
+            elif param in [Parameter.A1_1_SPARE, Parameter.B0_1_SPARE, Parameter.B1_1_SPARE, Parameter.USER_1_SPARE,
+                           Parameter.A1_2_SPARE, Parameter.B0_2_SPARE, Parameter.USER_2_SPARE, Parameter.USER_3_SPARE]:
+                output.append('\x00'.ljust(2, "\x00"))
+            elif param == Parameter.USER_4_SPARE:
+                output.append('\x00'.ljust(30, "\x00"))
             else:
                 output.append(parameters.format(param))
             log.trace('_create_set_output: ADDED %s output size = %s', param, len(output))

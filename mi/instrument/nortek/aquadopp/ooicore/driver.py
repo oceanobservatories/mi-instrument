@@ -14,7 +14,7 @@ __license__ = 'Apache 2.0'
 import re
 import base64
 
-from mi.core.common import BaseEnum
+from mi.core.common import BaseEnum, Units
 
 from mi.core.log import get_logger
 log = get_logger()
@@ -205,7 +205,7 @@ class Protocol(NortekInstrumentProtocol):
                                    visibility=ParameterDictVisibility.IMMUTABLE,
                                    display_name="Transmit Pulse Length",
                                    default_value=125,
-                                   units=ParameterUnits.CENTIMETERS,
+                                   units=Units.CENTIMETER,
                                    startup_param=True,
                                    direct_access=True)
         self._param_dict.add(Parameter.BLANKING_DISTANCE,
@@ -217,7 +217,7 @@ class Protocol(NortekInstrumentProtocol):
                                    visibility=ParameterDictVisibility.READ_WRITE,
                                    display_name="Blanking Distance",
                                    default_value=49,
-                                   units=ParameterUnits.CENTIMETERS,
+                                   units=Units.CENTIMETER,
                                    startup_param=True,
                                    direct_access=True)
         self._param_dict.add(Parameter.RECEIVE_LENGTH,
@@ -229,7 +229,7 @@ class Protocol(NortekInstrumentProtocol):
                                    visibility=ParameterDictVisibility.IMMUTABLE,
                                    display_name="Receive Length",
                                    default_value=32,
-                                   units=ParameterUnits.CENTIMETERS,
+                                   units=Units.CENTIMETER,
                                    startup_param=True,
                                    direct_access=True)
         self._param_dict.add(Parameter.TIME_BETWEEN_PINGS,
@@ -240,7 +240,7 @@ class Protocol(NortekInstrumentProtocol):
                                    type=ParameterDictType.INT,
                                    visibility=ParameterDictVisibility.IMMUTABLE,
                                    display_name="Time Between Pings",
-                                   units=ParameterUnits.CENTIMETERS,
+                                   units=Units.COUNTS,
                                    default_value=437,
                                    startup_param=True,
                                    direct_access=True)
@@ -253,7 +253,7 @@ class Protocol(NortekInstrumentProtocol):
                                    visibility=ParameterDictVisibility.IMMUTABLE,
                                    display_name="Time Between Burst Sequences",
                                    default_value=512,
-                                   units=None,
+                                   units=Units.COUNTS,
                                    startup_param=True,
                                    direct_access=True)
         self._param_dict.add(Parameter.NUMBER_PINGS,
@@ -265,7 +265,7 @@ class Protocol(NortekInstrumentProtocol):
                                    visibility=ParameterDictVisibility.IMMUTABLE,
                                    display_name="Number Pings",
                                    default_value=1,
-                                   units=ParameterUnits.HERTZ,
+                                   units=Units.HERTZ,
                                    startup_param=True,
                                    direct_access=True)
         self._param_dict.add(Parameter.AVG_INTERVAL,
@@ -277,7 +277,7 @@ class Protocol(NortekInstrumentProtocol):
                                    visibility=ParameterDictVisibility.READ_WRITE,
                                    display_name="Average Interval",
                                    default_value=60,
-                                   units=ParameterUnits.SECONDS,
+                                   units=Units.SECOND,
                                    startup_param=True,
                                    direct_access=True)
         self._param_dict.add(Parameter.USER_NUMBER_BEAMS,
@@ -298,6 +298,7 @@ class Protocol(NortekInstrumentProtocol):
                                    type=ParameterDictType.INT,
                                    visibility=ParameterDictVisibility.READ_WRITE,
                                    display_name="Timing Control Register",
+                                   description="See manual for usage.",
                                    direct_access=True,
                                    value=130)
         self._param_dict.add(Parameter.POWER_CONTROL_REGISTER,
@@ -308,36 +309,10 @@ class Protocol(NortekInstrumentProtocol):
                                    type=ParameterDictType.INT,
                                    visibility=ParameterDictVisibility.IMMUTABLE,
                                    display_name="Power Control Register",
+                                   description="See manual for usage.",
                                    default_value=0,
                                    startup_param=True,
                                    direct_access=True)
-        self._param_dict.add(Parameter.A1_1_SPARE,
-                                   r'^.{%s}(.{2}).*' % str(24),
-                                   lambda match: match.group(1).encode('hex'),
-                                   lambda string: string.decode('hex'),
-                                   regex_flags=re.DOTALL,
-                                   type=ParameterDictType.STRING,
-                                   visibility=ParameterDictVisibility.READ_ONLY,
-                                   display_name="A1 1 Spare",
-                                   description='Not used.')
-        self._param_dict.add(Parameter.B0_1_SPARE,
-                                   r'^.{%s}(.{2}).*' % str(26),
-                                   lambda match: match.group(1).encode('hex'),
-                                   lambda string: string.decode('hex'),
-                                   regex_flags=re.DOTALL,
-                                   type=ParameterDictType.STRING,
-                                   visibility=ParameterDictVisibility.READ_ONLY,
-                                   display_name="B0 1 Spare",
-                                   description='Not used.')
-        self._param_dict.add(Parameter.B1_1_SPARE,
-                                   r'^.{%s}(.{2}).*' % str(28),
-                                   lambda match: match.group(1).encode('hex'),
-                                   lambda string: string.decode('hex'),
-                                   regex_flags=re.DOTALL,
-                                   type=ParameterDictType.STRING,
-                                   visibility=ParameterDictVisibility.READ_ONLY,
-                                   display_name="B1 1 Spare",
-                                   description='Not used.')
         self._param_dict.add(Parameter.COMPASS_UPDATE_RATE,
                                    r'^.{%s}(.{2}).*' % str(30),
                                    lambda match: NortekProtocolParameterDict.convert_word_to_int(match.group(1)),
@@ -347,7 +322,7 @@ class Protocol(NortekInstrumentProtocol):
                                    visibility=ParameterDictVisibility.READ_WRITE,
                                    display_name="Compass Update Rate",
                                    default_value=1,
-                                   units=ParameterUnits.HERTZ,
+                                   units=Units.HERTZ,
                                    startup_param=True,
                                    direct_access=True)
         self._param_dict.add(Parameter.COORDINATE_SYSTEM,
@@ -371,7 +346,7 @@ class Protocol(NortekInstrumentProtocol):
                                    visibility=ParameterDictVisibility.IMMUTABLE,
                                    display_name="Number Bins",
                                    default_value=1,
-                                   units=ParameterUnits.METERS,
+                                   units=Units.METER,
                                    startup_param=True,
                                    direct_access=True)
         self._param_dict.add(Parameter.BIN_LENGTH,
@@ -383,7 +358,7 @@ class Protocol(NortekInstrumentProtocol):
                                    visibility=ParameterDictVisibility.IMMUTABLE,
                                    display_name="Bin Length",
                                    default_value=7,
-                                   units=ParameterUnits.SECONDS,
+                                   units=Units.SECOND,
                                    startup_param=True,
                                    direct_access=True)
         self._param_dict.add(Parameter.MEASUREMENT_INTERVAL,
@@ -395,7 +370,7 @@ class Protocol(NortekInstrumentProtocol):
                                    visibility=ParameterDictVisibility.READ_WRITE,
                                    display_name="Measurement Interval",
                                    default_value=60,
-                                   units=ParameterUnits.SECONDS,
+                                   units=Units.SECOND,
                                    startup_param=True,
                                    direct_access=True)
         self._param_dict.add(Parameter.DEPLOYMENT_NAME,
@@ -431,6 +406,7 @@ class Protocol(NortekInstrumentProtocol):
                                    display_name="Clock Deploy",
                                    description='Deployment start time.',
                                    default_value=[0, 0, 0, 0, 0, 0],
+                                   units="[min, s, d, h, y, m]",
                                    startup_param=True,
                                    direct_access=True)
         self._param_dict.add(Parameter.DIAGNOSTIC_INTERVAL,
@@ -444,7 +420,7 @@ class Protocol(NortekInstrumentProtocol):
                                    description='Number of seconds between diagnostics measurements.',
                                    default_value=11250,
                                    startup_param=True,
-                                   units=ParameterUnits.SECONDS,
+                                   units=Units.SECOND,
                                    direct_access=True)
         self._param_dict.add(Parameter.MODE,
                                    r'^.{%s}(.{2}).*' % str(58),
@@ -454,6 +430,7 @@ class Protocol(NortekInstrumentProtocol):
                                    type=ParameterDictType.INT,
                                    visibility=ParameterDictVisibility.IMMUTABLE,
                                    display_name="Mode",
+                                   description="See manual for usage.",
                                    default_value=48,
                                    startup_param=True,
                                    direct_access=True)
@@ -466,7 +443,7 @@ class Protocol(NortekInstrumentProtocol):
                                    visibility=ParameterDictVisibility.IMMUTABLE,
                                    display_name="Adjustment Sound Speed",
                                    description='User input sound speed adjustment factor.',
-                                   units=ParameterUnits.METERS_PER_SECOND,
+                                   units=Units.METER + '/' + Units.SECOND,
                                    default_value=1525,
                                    startup_param=True,
                                    direct_access=True)
@@ -477,8 +454,8 @@ class Protocol(NortekInstrumentProtocol):
                                    regex_flags=re.DOTALL,
                                    type=ParameterDictType.INT,
                                    visibility=ParameterDictVisibility.IMMUTABLE,
-                                   display_name="Number Samples Diagnostic",
-                                   description='Samples in diagnostics mode.',
+                                   display_name="Diagnostic Samples",
+                                   description='Number of samples in diagnostics mode.',
                                    default_value=20,
                                    startup_param=True,
                                    direct_access=True)
@@ -490,7 +467,7 @@ class Protocol(NortekInstrumentProtocol):
                                    type=ParameterDictType.INT,
                                    visibility=ParameterDictVisibility.IMMUTABLE,
                                    display_name="Number Beams Cell Diagnostic",
-                                   description='Beams/cell number to measure in diagnostics mode',
+                                   description='Beams/cell number to measure in diagnostics mode.',
                                    default_value=1,
                                    startup_param=True,
                                    direct_access=True)
@@ -514,6 +491,7 @@ class Protocol(NortekInstrumentProtocol):
                                    type=ParameterDictType.STRING,
                                    visibility=ParameterDictVisibility.IMMUTABLE,
                                    display_name="Mode Test",
+                                   description="See manual for usage.",
                                    default_value=4,
                                    startup_param=True,
                                    direct_access=True)
@@ -539,15 +517,6 @@ class Protocol(NortekInstrumentProtocol):
                                    default_value=13902,
                                    startup_param=True,
                                    direct_access=True)
-        self._param_dict.add(Parameter.USER_1_SPARE,
-                                   r'^.{%s}(.{2}).*' % str(74),
-                                   lambda match: match.group(1).encode('hex'),
-                                   lambda string: string.decode('hex'),
-                                   regex_flags=re.DOTALL,
-                                   type=ParameterDictType.STRING,
-                                   visibility=ParameterDictVisibility.READ_ONLY,
-                                   display_name="User 1 Spare",
-                                   description='Not used.')
         self._param_dict.add(Parameter.VELOCITY_ADJ_TABLE,
                                    r'^.{%s}(.{180}).*' % str(76),
                                    lambda match: base64.b64encode(match.group(1)),
@@ -556,6 +525,8 @@ class Protocol(NortekInstrumentProtocol):
                                    type=ParameterDictType.STRING,
                                    visibility=ParameterDictVisibility.READ_ONLY,
                                    display_name="Velocity Adj Table",
+                                   description="Scaling factors to account for the speed of sound variation as a function of "
+                                               "temperature and salinity.",
                                    units=ParameterUnits.PARTS_PER_TRILLION,
                                    direct_access=True)
         self._param_dict.add(Parameter.COMMENTS,
@@ -577,6 +548,7 @@ class Protocol(NortekInstrumentProtocol):
                                    type=ParameterDictType.STRING,
                                    visibility=ParameterDictVisibility.IMMUTABLE,
                                    display_name="Wave Measurement Mode",
+                                   description="See manual for usage",
                                    default_value=0,
                                    startup_param=True,
                                    direct_access=True)
@@ -589,6 +561,7 @@ class Protocol(NortekInstrumentProtocol):
                                    visibility=ParameterDictVisibility.IMMUTABLE,
                                    display_name="Dyn Percentage Position",
                                    description='Percentage for wave cell positioning.',
+                                   units="32767 * N/100",
                                    default_value=0,
                                    startup_param=True,
                                    direct_access=True)
@@ -600,6 +573,7 @@ class Protocol(NortekInstrumentProtocol):
                                    type=ParameterDictType.INT,
                                    visibility=ParameterDictVisibility.IMMUTABLE,
                                    display_name="Wave Transmit Pulse",
+                                   units=Units.COUNTS,
                                    default_value=0,
                                    startup_param=True,
                                    direct_access=True)
@@ -611,6 +585,7 @@ class Protocol(NortekInstrumentProtocol):
                                    type=ParameterDictType.INT,
                                    visibility=ParameterDictVisibility.IMMUTABLE,
                                    display_name="Fixed Wave Blanking Distance",
+                                   units=Units.COUNTS,
                                    default_value=0,
                                    startup_param=True,
                                    direct_access=True)
@@ -622,8 +597,8 @@ class Protocol(NortekInstrumentProtocol):
                                    type=ParameterDictType.INT,
                                    visibility=ParameterDictVisibility.IMMUTABLE,
                                    display_name="Wave Measurement Cell Size",
+                                   units=Units.COUNTS,
                                    default_value=0,
-                                   units=ParameterUnits.METERS,
                                    startup_param=True,
                                    direct_access=True)
         self._param_dict.add(Parameter.NUMBER_DIAG_SAMPLES,
@@ -638,24 +613,6 @@ class Protocol(NortekInstrumentProtocol):
                                    default_value=0,
                                    startup_param=True,
                                    direct_access=True)
-        self._param_dict.add(Parameter.A1_2_SPARE,
-                                   r'^.{%s}(.{2}).*' % str(448),
-                                   lambda match: match.group(1).encode('hex'),
-                                   lambda string: string.decode('hex'),
-                                   regex_flags=re.DOTALL,
-                                   type=ParameterDictType.STRING,
-                                   visibility=ParameterDictVisibility.READ_ONLY,
-                                   display_name="A1 2 Spare",
-                                   description='Not used.')
-        self._param_dict.add(Parameter.B0_2_SPARE,
-                                   r'^.{%s}(.{2}).*' % str(450),
-                                   lambda match: match.group(1).encode('hex'),
-                                   lambda string: string.decode('hex'),
-                                   regex_flags=re.DOTALL,
-                                   type=ParameterDictType.STRING,
-                                   visibility=ParameterDictVisibility.READ_ONLY,
-                                   display_name="B0 2 Spare",
-                                   description='Not used.')
         self._param_dict.add(Parameter.NUMBER_SAMPLES_PER_BURST,
                                    r'^.{%s}(.{2}).*' % str(452),
                                    lambda match: NortekProtocolParameterDict.convert_word_to_int(match.group(1)),
@@ -668,15 +625,6 @@ class Protocol(NortekInstrumentProtocol):
                                    default_value=0,
                                    startup_param=True,
                                    direct_access=True)
-        self._param_dict.add(Parameter.USER_2_SPARE,
-                                   r'^.{%s}(.{2}).*' % str(454),
-                                   lambda match: match.group(1).encode('hex'),
-                                   lambda string: string.decode('hex'),
-                                   regex_flags=re.DOTALL,
-                                   type=ParameterDictType.STRING,
-                                   visibility=ParameterDictVisibility.READ_ONLY,
-                                   display_name="User 2 Spare",
-                                   description='Not used.')
         self._param_dict.add(Parameter.ANALOG_OUTPUT_SCALE,
                                    r'^.{%s}(.{2}).*' % str(456),
                                    lambda match: NortekProtocolParameterDict.convert_word_to_int(match.group(1)),
@@ -700,15 +648,6 @@ class Protocol(NortekInstrumentProtocol):
                                    default_value=0,
                                    startup_param=True,
                                    direct_access=True)
-        self._param_dict.add(Parameter.USER_3_SPARE,
-                                   r'^.{%s}(.{2}).*' % str(460),
-                                   lambda match: match.group(1).encode('hex'),
-                                   lambda string: string.decode('hex'),
-                                   regex_flags=re.DOTALL,
-                                   type=ParameterDictType.STRING,
-                                   visibility=ParameterDictVisibility.READ_ONLY,
-                                   display_name="User 3 Spare",
-                                   description='Not used.')
         self._param_dict.add(Parameter.TRANSMIT_PULSE_LENGTH_SECOND_LAG,
                                    r'^.{%s}(.{2}).*' % str(462),
                                    lambda match: NortekProtocolParameterDict.convert_word_to_int(match.group(1)),
@@ -717,25 +656,18 @@ class Protocol(NortekInstrumentProtocol):
                                    type=ParameterDictType.INT,
                                    visibility=ParameterDictVisibility.IMMUTABLE,
                                    display_name="Transmit Pulse Length Second Lag",
+                                   description="Second lag in transmit pulse length.",
+                                   units=Units.COUNTS,
                                    default_value=2,
                                    startup_param=True,
                                    direct_access=True)
-        self._param_dict.add(Parameter.USER_4_SPARE,
-                                   r'^.{%s}(.{30}).*' % str(464),
-                                   lambda match: match.group(1).encode('hex'),
-                                   lambda string: string.decode('hex'),
-                                   regex_flags=re.DOTALL,
-                                   type=ParameterDictType.STRING,
-                                   visibility=ParameterDictVisibility.READ_ONLY,
-                                   display_name="User 4 Spare",
-                                   description='Not used.')
         self._param_dict.add(Parameter.QUAL_CONSTANTS,
-                                   r'^.{%s}(.{16}).*' % str(494),
-                                   lambda match: base64.b64encode(match.group(1)),
-                                   lambda string: string,
-                                   regex_flags=re.DOTALL,
-                                   type=ParameterDictType.STRING,
-                                   visibility=ParameterDictVisibility.READ_ONLY,
-                                   display_name="Qual Constants",
-                                   description='Stage match filter constants.',
-                                   direct_access=True)
+                             r'^.{%s}(.{16}).*' % str(494),
+                             lambda match: base64.b64encode(match.group(1)),
+                             lambda string: string,
+                             regex_flags=re.DOTALL,
+                             type=ParameterDictType.STRING,
+                             visibility=ParameterDictVisibility.READ_ONLY,
+                             display_name="Qual Constants",
+                             description='Stage match filter constants.',
+                             direct_access=True)
