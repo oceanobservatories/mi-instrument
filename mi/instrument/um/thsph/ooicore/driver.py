@@ -19,7 +19,7 @@ from mi.core.exceptions import InstrumentException
 from mi.core.driver_scheduler import DriverSchedulerConfigKey, TriggerType
 from mi.core.exceptions import SampleException, InstrumentProtocolException, InstrumentParameterException
 from mi.core.instrument.driver_dict import DriverDictKey
-from mi.core.instrument.protocol_param_dict import ParameterDictType
+from mi.core.instrument.protocol_param_dict import ParameterDictType, ParameterDictVisibility
 
 from mi.core.log import get_logger, get_logging_metaclass
 
@@ -426,6 +426,8 @@ class THSPHProtocol(CommandResponseInstrumentProtocol):
                              type=ParameterDictType.INT,
                              units=Units.SECOND,
                              display_name="Polled Interval",
+                             description='Polling interval',
+                             visibility=ParameterDictVisibility.READ_WRITE,
                              startup_param=True,
                              direct_access=False,
                              default_value=5)
@@ -436,6 +438,8 @@ class THSPHProtocol(CommandResponseInstrumentProtocol):
                              str,
                              type=ParameterDictType.STRING,
                              display_name="Instrument Series",
+                             description='Defines instance of instrument series',
+                             visibility=ParameterDictVisibility.IMMUTABLE,
                              startup_param=True,
                              direct_access=False,
                              default_value='A')

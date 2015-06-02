@@ -440,12 +440,14 @@ class Protocol(CommandResponseInstrumentProtocol):
             Parameter.AUTO_RELEVEL: {
                 'type': _bool,
                 'display_name': 'Automatic Releveling Enabled',
+                'description': 'Allow LILY re-leveling to be initiated automatically',
                 'visibility': rw,
                 'startup_param': True,
             },
             Parameter.XTILT_TRIGGER: {
                 'type': _float,
                 'display_name': 'X-tilt Releveling Trigger',
+                'description': 'The X-tilt value that must be exceeded before LILY auto releveling occurs',
                 'units': Prefixes.MICRO + Units.RADIAN,
                 'visibility': rw,
                 'startup_param': True,
@@ -453,12 +455,14 @@ class Protocol(CommandResponseInstrumentProtocol):
             Parameter.YTILT_TRIGGER: {
                 'type': _float,
                 'display_name': 'Y-tilt Releveling Trigger',
+                'description': 'The Y-tilt value that must be exceeded before LILY auto releveling occurs',
                 'visibility': rw,
                 'startup_param': True,
             },
             Parameter.LEVELING_TIMEOUT: {
                 'type': _int,
                 'display_name': 'LILY Leveling Timeout',
+                'description': 'Leveling timeout',
                 'units': Units.SECOND,
                 'visibility': rw,
                 'startup_param': True,
@@ -466,6 +470,7 @@ class Protocol(CommandResponseInstrumentProtocol):
             Parameter.HEAT_DURATION: {
                 'type': _int,
                 'display_name': 'Heater Run Time Duration',
+                'description': 'The number of hours the heater will run when it is given the command to turn on',
                 'units': Units.HOUR,
                 'visibility': rw,
                 'startup_param': True,
@@ -473,6 +478,7 @@ class Protocol(CommandResponseInstrumentProtocol):
             Parameter.OUTPUT_RATE: {
                 'type': _int,
                 'display_name': 'NANO Output Rate',
+                'description': 'Sample rate',
                 'units': Units.HERTZ,
                 'visibility': rw,
                 'startup_param': True,
@@ -480,18 +486,21 @@ class Protocol(CommandResponseInstrumentProtocol):
             Parameter.HEATER_ON: {
                 'type': _bool,
                 'display_name': 'Heater Running',
+                'description': 'Indicates if the heater is running',
                 'value': False,
                 'visibility': ro,
             },
             Parameter.LILY_LEVELING: {
                 'type': _bool,
                 'display_name': 'Lily Leveling',
+                'description': 'Indicates if LILY leveling is occurring',
                 'value': False,
                 'visibility': ro,
             },
             Parameter.LEVELING_FAILED: {
                 'type': _bool,
                 'display_name': 'LILY Leveling Failed',
+                'description': 'Indicates if LILY leveling failed',
                 'value': False,
                 'visibility': ro,
             },

@@ -240,7 +240,7 @@ class Protocol(NortekInstrumentProtocol):
                                    type=ParameterDictType.INT,
                                    visibility=ParameterDictVisibility.IMMUTABLE,
                                    display_name="Time Between Pings",
-                                   units=ParameterUnits.CENTIMETERS,
+                                   units=ParameterUnits.COUNTS,
                                    default_value=437,
                                    startup_param=True,
                                    direct_access=True)
@@ -717,6 +717,7 @@ class Protocol(NortekInstrumentProtocol):
                                    type=ParameterDictType.INT,
                                    visibility=ParameterDictVisibility.IMMUTABLE,
                                    display_name="Transmit Pulse Length Second Lag",
+                                   units=ParameterUnits.COUNTS,
                                    default_value=2,
                                    startup_param=True,
                                    direct_access=True)
