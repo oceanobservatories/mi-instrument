@@ -7,16 +7,16 @@ Release notes:
 
 Driver for vector
 """
-import struct
-from mi.core.exceptions import SampleException
 
 __author__ = 'Rachel Manoni, Ronald Ronquillo'
 __license__ = 'Apache 2.0'
 
 import re
 import base64
+import struct
 
-from mi.core.common import BaseEnum
+from mi.core.exceptions import SampleException
+from mi.core.common import BaseEnum, Units
 from mi.core.instrument.protocol_param_dict import ParameterDictVisibility
 from mi.core.instrument.protocol_param_dict import ParameterDictType
 from mi.core.instrument.data_particle import DataParticle, DataParticleKey
@@ -375,7 +375,7 @@ class Protocol(NortekInstrumentProtocol):
                                    visibility=ParameterDictVisibility.IMMUTABLE,
                                    display_name="Average Interval",
                                    default_value=64,
-                                   units=ParameterUnits.SECONDS,
+                                   units=Units.SECOND,
                                    startup_param=True,
                                    direct_access=True)
         self._param_dict.add(Parameter.USER_NUMBER_BEAMS,
@@ -444,7 +444,7 @@ class Protocol(NortekInstrumentProtocol):
                                    visibility=ParameterDictVisibility.IMMUTABLE,
                                    display_name="Compass Update Rate",
                                    default_value=1,
-                                   units=ParameterUnits.HERTZ,
+                                   units=Units.HERTZ,
                                    startup_param=True,
                                    direct_access=True)
         self._param_dict.add(Parameter.COORDINATE_SYSTEM,
@@ -468,7 +468,7 @@ class Protocol(NortekInstrumentProtocol):
                                    visibility=ParameterDictVisibility.IMMUTABLE,
                                    display_name="Number Bins",
                                    default_value=1,
-                                   units=ParameterUnits.METERS,
+                                   units=Units.METER,
                                    startup_param=True,
                                    direct_access=True)
         self._param_dict.add(Parameter.BIN_LENGTH,
@@ -480,7 +480,7 @@ class Protocol(NortekInstrumentProtocol):
                                    visibility=ParameterDictVisibility.READ_WRITE,
                                    display_name="Bin Length",
                                    default_value=7,
-                                   units=ParameterUnits.SECONDS,
+                                   units=Units.SECOND,
                                    startup_param=True,
                                    direct_access=True)
         self._param_dict.add(Parameter.MEASUREMENT_INTERVAL,
@@ -539,7 +539,7 @@ class Protocol(NortekInstrumentProtocol):
                                    display_name="Diagnostic Interval",
                                    description='Number of seconds between diagnostics measurements.',
                                    default_value=10800,
-                                   units=ParameterUnits.SECONDS,
+                                   units=Units.SECOND,
                                    startup_param=True,
                                    direct_access=True)
         self._param_dict.add(Parameter.MODE,
@@ -563,7 +563,7 @@ class Protocol(NortekInstrumentProtocol):
                                    display_name="Adjustment Sound Speed",
                                    description='User input sound speed adjustment factor.',
                                    default_value=16657,
-                                   units=ParameterUnits.METERS_PER_SECOND,
+                                   units=Units.METERS_PER_SECOND,
                                    startup_param=True,
                                    direct_access=True)
         self._param_dict.add(Parameter.NUMBER_SAMPLES_DIAGNOSTIC,
@@ -717,7 +717,7 @@ class Protocol(NortekInstrumentProtocol):
                                    visibility=ParameterDictVisibility.IMMUTABLE,
                                    display_name="Wave Measurement Cell Size",
                                    default_value=0,
-                                   units=ParameterUnits.METERS,
+                                   units=Units.METER,
                                    startup_param=True,
                                    direct_access=True)
         self._param_dict.add(Parameter.NUMBER_DIAG_SAMPLES,
