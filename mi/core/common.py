@@ -292,6 +292,7 @@ class Units(BaseEnum):
     MEGOHM = 'MΩ'
     METAL_OXIDE_SEMICONDUCTOR = 'MOS'
     METER = 'm'
+    METERS_PER_SECOND = 'm/s'
     METER_KILOGRAM_SECOND = 'MKS'
     MICROAMPERE = 'µA'
     MICROFARAD = 'µF'
