@@ -147,7 +147,7 @@ class DriverProcess(object):
 
         signal.signal(signal.SIGINT, shand)
 
-        if self.construct_driver():
+        if self.driver is not None or self.construct_driver():
             self.start_messaging()
             while self.messaging_started:
                 if self.check_parent():
