@@ -124,7 +124,7 @@ class InstrumentPrompts(BaseEnum):
     BURST_INTERVAL_HOURS = 'Hours    (  0 to    23) ?'
     BURST_INTERVAL_MINUTES = 'Minutes  (  0 to    59) ?'
     BURST_INTERVAL_SECONDS = 'Seconds  (  0 to    59) ?'
-    BEGIN_MEASUREMENT = 'Beginning measurement cycle now.'
+    BEGIN_MEASUREMENT = 'MAVS4 is ready to deploy'
     SYSTEM_CONFIGURATION_MENU = '<X> Save Changes and Exit'
     SYSTEM_CONFIGURATION_PASSWORD = 'Password:'
     SI_CONVERSION = 'Enter binary to SI velocity conversion (0.0010000 to 0.0200000) ?'
