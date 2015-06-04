@@ -12,7 +12,8 @@ import struct
 
 from mi.core.instrument.chunker import StringChunker
 from mi.core.instrument.driver_dict import DriverDictKey
-from mi.core.instrument.instrument_protocol import CommandResponseInstrumentProtocol, RE_PATTERN, DEFAULT_CMD_TIMEOUT
+from mi.core.instrument.instrument_protocol import CommandResponseInstrumentProtocol, RE_PATTERN, DEFAULT_CMD_TIMEOUT, \
+    InitializationType
 from mi.core.instrument.protocol_param_dict import ParameterDictType, ParameterDictVisibility
 
 from mi.core.common import BaseEnum, Units
@@ -443,12 +444,13 @@ class SatlanticOCR507InstrumentProtocol(CommandResponseInstrumentProtocol):
         self._protocol_fsm.start(SatlanticProtocolState.UNKNOWN)
 
         self._add_response_handler(Command.GET, self._parse_get_response)
+        self._add_response_handler(Command.SHOW_ALL, self._parse_getAll_response)
         self._add_response_handler(Command.SET, self._parse_set_response)
         self._add_response_handler(Command.INVALID, self._parse_invalid_response)
 
         self._param_dict.add(Parameter.MAX_RATE,
                              r"Maximum\ Frame\ Rate:\ (\S+).*?\s*",
-                             lambda match: match.group(1),
+                             lambda match: '0' if match.group(1) == 'AUTO' else match.group(1),
                              lambda sVal: '%s' % sVal,
                              type=ParameterDictType.STRING,
                              display_name="Max Rate",
@@ -536,17 +538,6 @@ class SatlanticOCR507InstrumentProtocol(CommandResponseInstrumentProtocol):
         """
         events_out = [x for x in events if SatlanticCapability.has(x)]
         return events_out
-
-    def get_config(self, *args, **kwargs):
-        """ Get the entire configuration for the instrument
-
-        @param params The parameters and values to set
-        @retval None if nothing was done, otherwise result of FSM event handle
-        Should be a dict of parameters and values
-        """
-        for param in Parameter.list():
-            if param != Parameter.ALL:
-                self._do_cmd_resp(Command.GET, param, **kwargs)
 
     def _do_cmd(self, cmd, *args, **kwargs):
         """
@@ -725,6 +716,10 @@ class SatlanticOCR507InstrumentProtocol(CommandResponseInstrumentProtocol):
         """
         Enter command state.
         """
+
+        if self._init_type != InitializationType.NONE:
+            self._update_params()
+
         # Command device to update parameters and send a config change event.
         self._init_params()
 
@@ -807,6 +802,15 @@ class SatlanticOCR507InstrumentProtocol(CommandResponseInstrumentProtocol):
         """
         next_state = None
         result = None
+
+        # Command device to update parameters only on initialization.
+        if self._init_type != InitializationType.NONE:
+            self._send_break()
+            self._update_params()
+            self._init_params()
+            self._do_cmd_resp(Command.EXIT, response_regex=SAMPLE_REGEX, timeout=30)
+            time.sleep(0.115)
+            self._do_cmd_resp(Command.SWITCH_TO_AUTOSAMPLE, response_regex=SAMPLE_REGEX, timeout=30)
 
         if not self._confirm_autosample_mode:
             raise InstrumentProtocolException(error_code=InstErrorCode.HARDWARE_ERROR,
@@ -905,9 +909,20 @@ class SatlanticOCR507InstrumentProtocol(CommandResponseInstrumentProtocol):
             return True
         return False
 
+    def _parse_getAll_response(self, response, prompt):
+        """ Parse the response from the instrument for a 'Get All' query
+
+        @param response The response string from the instrument
+        @param prompt The prompt received from the instrument
+        @return The numerical value of the parameter in the known units
+        @raise InstrumentProtocolException When a bad response is encountered
+        """
+
+        self._param_dict.update_many(response)
+        return self._param_dict.get_all()
+
     def _parse_get_response(self, response, prompt):
-        """ Parse the response from the instrument for a couple of different
-        query responses.
+        """ Parse the response from the instrument for a 'Get [parameter]' query
 
         @param response The response string from the instrument
         @param prompt The prompt received from the instrument
@@ -970,7 +985,6 @@ class SatlanticOCR507InstrumentProtocol(CommandResponseInstrumentProtocol):
 
             time.sleep(0.5)
 
-
         # Get new param dict config. If it differs from the old config,
         # tell driver superclass to publish a config change event.
         new_config = self._param_dict.get_config()
@@ -990,11 +1004,7 @@ class SatlanticOCR507InstrumentProtocol(CommandResponseInstrumentProtocol):
         @param args Unused
         @param kwargs Takes timeout value
         """
-        old_config = self._param_dict.get_config()
-        self.get_config()
-        new_config = self._param_dict.get_config()
-        if new_config != old_config:
-            self._driver_event(DriverAsyncEvent.CONFIG_CHANGE)
+        return self._do_cmd_resp(Command.SHOW_ALL)
 
     def _send_break(self):
         """
