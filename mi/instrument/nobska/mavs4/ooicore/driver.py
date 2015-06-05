@@ -31,7 +31,6 @@ from mi.core.exceptions import InstrumentTimeoutException, \
     InstrumentProtocolException, \
     SampleException, \
     InstrumentStateException
-from mi.core.instrument.protocol_cmd_dict import ProtocolCommandDict
 from mi.core.instrument.protocol_param_dict import ParameterDictVisibility, ParameterDictType
 from mi.core.instrument.protocol_param_dict import ProtocolParameterDict
 from mi.core.instrument.protocol_param_dict import RegexParameter
@@ -1560,7 +1559,10 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
         Populate the command dictionary with MAVS4 metadata information. Empty
         for the MAVS4 instrument as no additional commands are supported.
         """
-        self._cmd_dict = ProtocolCommandDict()
+        self._cmd_dict.add(Capability.ACQUIRE_STATUS, display_name='Acquire Status')
+        self._cmd_dict.add(Capability.START_AUTOSAMPLE, display_name='Start Autosample')
+        self._cmd_dict.add(Capability.STOP_AUTOSAMPLE, display_name='Stop Autosample')
+        self._cmd_dict.add(Capability.CLOCK_SYNC, display_name='Synchronize Clock')
 
     def _build_param_dict(self):
         """
