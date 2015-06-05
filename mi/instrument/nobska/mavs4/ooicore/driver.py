@@ -31,7 +31,6 @@ from mi.core.exceptions import InstrumentTimeoutException, \
     InstrumentProtocolException, \
     SampleException, \
     InstrumentStateException
-from mi.core.instrument.protocol_cmd_dict import ProtocolCommandDict
 from mi.core.instrument.protocol_param_dict import ParameterDictVisibility, ParameterDictType
 from mi.core.instrument.protocol_param_dict import ProtocolParameterDict
 from mi.core.instrument.protocol_param_dict import RegexParameter
@@ -252,9 +251,8 @@ class Capability(BaseEnum):
     STOP_AUTOSAMPLE = ProtocolEvent.STOP_AUTOSAMPLE
     CLOCK_SYNC = ProtocolEvent.CLOCK_SYNC
     ACQUIRE_STATUS = ProtocolEvent.ACQUIRE_STATUS
-
-
-# Device specific parameters.
+    START_DIRECT = ProtocolEvent.START_DIRECT
+    STOP_DIRECT = ProtocolEvent.STOP_DIRECT
 
 
 class InstrumentParameters(DriverParameter):
@@ -1560,7 +1558,10 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
         Populate the command dictionary with MAVS4 metadata information. Empty
         for the MAVS4 instrument as no additional commands are supported.
         """
-        self._cmd_dict = ProtocolCommandDict()
+        self._cmd_dict.add(Capability.ACQUIRE_STATUS, display_name='Acquire Status')
+        self._cmd_dict.add(Capability.START_AUTOSAMPLE, display_name='Start Autosample')
+        self._cmd_dict.add(Capability.STOP_AUTOSAMPLE, display_name='Stop Autosample')
+        self._cmd_dict.add(Capability.CLOCK_SYNC, display_name='Synchronize Clock')
 
     def _build_param_dict(self):
         """
