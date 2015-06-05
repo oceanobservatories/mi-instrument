@@ -115,6 +115,7 @@ class BotptDataParticle(DataParticle):
         @throws SampleException
         """
         super(BotptDataParticle, self).__init__(*args, **kwargs)
+        self.contents[DataParticleKey.PREFERRED_TIMESTAMP] = DataParticleKey.INTERNAL_TIMESTAMP
         self.match = self.regex_compiled().match(self.raw_data)
         if not self.match:
             raise SampleException("No regex match of parsed sample data: [%r]" % self.raw_data)
