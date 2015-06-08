@@ -267,9 +267,6 @@ class ADCPTMixin(DriverTestMixin):
     _pd0_parameters_base = {
         ADCP_PD0_PARSED_KEY.HEADER_ID: {'type': int, 'value': 127},
         ADCP_PD0_PARSED_KEY.DATA_SOURCE_ID: {'type': int, 'value': 127},
-        ADCP_PD0_PARSED_KEY.NUM_BYTES: {'type': int, 'value': 2152},
-        ADCP_PD0_PARSED_KEY.NUM_DATA_TYPES: {'type': int, 'value': 6},
-        ADCP_PD0_PARSED_KEY.FIXED_LEADER_ID: {'type': int, 'value': 0},
         ADCP_PD0_PARSED_KEY.FIRMWARE_VERSION: {'type': int, 'value': 50},
         ADCP_PD0_PARSED_KEY.FIRMWARE_REVISION: {'type': int, 'value': 40},
         ADCP_PD0_PARSED_KEY.SYSCONFIG_FREQUENCY: {'type': int, 'value': 75},
@@ -369,15 +366,19 @@ class ADCPTMixin(DriverTestMixin):
         ADCP_PD0_PARSED_KEY.ABSOLUTE_PRESSURE: {'type': int, 'value': 4294963793},
         ADCP_PD0_PARSED_KEY.PRESSURE_VARIANCE: {'type': int, 'value': 0},
         # TODO: These should be removed from the particle
-        # ADCP_PD0_PARSED_KEY.OFFSET_DATA_TYPES: {'type': list, 'value': [18, 77, 142, 944, 1346, 1748, 2150]},
-        # ADCP_PD0_PARSED_KEY.VARIABLE_LEADER_ID: {'type': int, 'value': 128},
-        # ADCP_PD0_PARSED_KEY.ENSEMBLE_START_TIME: {'type': float, 'value': 3595104000},
-        # ADCP_PD0_PARSED_KEY.REAL_TIME_CLOCK: {'type': list, 'value': [13, 3, 15, 21, 33, 2, 46]},
-        # ADCP_PD0_PARSED_KEY.VELOCITY_DATA_ID: {'type': int, 'value': 256},
-        # ADCP_PD0_PARSED_KEY.CORRELATION_MAGNITUDE_ID: {'type': int, 'value': 512},
-        # ADCP_PD0_PARSED_KEY.ECHO_INTENSITY_ID: {'type': int, 'value': 768},
-        # ADCP_PD0_PARSED_KEY.PERCENT_GOOD_ID: {'type': int, 'value': 1024},
-        # ADCP_PD0_PARSED_KEY.CHECKSUM: {'type': int, 'value': 8239}
+        ADCP_PD0_PARSED_KEY.NUM_BYTES: {'type': int, 'value': 2152},
+        ADCP_PD0_PARSED_KEY.NUM_DATA_TYPES: {'type': int, 'value': 6},
+        ADCP_PD0_PARSED_KEY.FIXED_LEADER_ID: {'type': int, 'value': 0},
+        ADCP_PD0_PARSED_KEY.OFFSET_DATA_TYPES: {'type': tuple, 'value': (18, 77, 142, 944, 1346, 1748)},
+        ADCP_PD0_PARSED_KEY.VARIABLE_LEADER_ID: {'type': int, 'value': 128},
+        ADCP_PD0_PARSED_KEY.ENSEMBLE_START_TIME: {'type': float, 'value': 3572371982.46},
+        ADCP_PD0_PARSED_KEY.REAL_TIME_CLOCK: {'type': tuple, 'value': (20, 13, 3, 15, 21, 33, 2, 46)},
+        ADCP_PD0_PARSED_KEY.VELOCITY_DATA_ID: {'type': int, 'value': 256},
+        ADCP_PD0_PARSED_KEY.CORRELATION_MAGNITUDE_ID: {'type': int, 'value': 512},
+        ADCP_PD0_PARSED_KEY.ECHO_INTENSITY_ID: {'type': int, 'value': 768},
+        ADCP_PD0_PARSED_KEY.PERCENT_GOOD_ID: {'type': int, 'value': 1024},
+        ADCP_PD0_PARSED_KEY.CHECKSUM: {'type': int, 'value': 8239},
+        # TODO: END
         ADCP_PD0_PARSED_KEY.CORRELATION_MAGNITUDE_BEAM1: {'type': list,
                                                           'value': [77, 15, 7, 7, 7, 5, 7, 7, 5, 9, 6, 10, 5, 4, 6, 5,
                                                                     4, 7, 7, 11, 6, 10, 3, 4, 4, 4, 5, 2, 4, 5, 7, 5,
@@ -544,6 +545,7 @@ class ADCPTMixin(DriverTestMixin):
 
     _pd0_parameters = dict(_pd0_parameters_base.items() + beam_parameters.items())
     _pd0_parameters_earth = dict(_pd0_parameters_base.items() + earth_parameters.items())
+    _pd0_parameters_earth[ADCP_PD0_PARSED_KEY.CHECKSUM] = {'type': int, 'value': 8263}
 
     _pt2_dict = {
         ADCP_ANCILLARY_SYSTEM_DATA_KEY.ADCP_AMBIENT_CURRENT: {'type': float, 'value': 20.32},
