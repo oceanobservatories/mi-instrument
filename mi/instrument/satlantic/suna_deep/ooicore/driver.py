@@ -209,7 +209,7 @@ SUNA_TEST_REGEX = re.compile(SUNA_TEST_PATTERN)
 #    Driver Constant Definitions
 ###
 class ParameterUnit(BaseEnum):
-    DECISIEMENS = 'dS'
+    DECISECONDS = 'ds'
     MEGABYTE = 'MB'
 
 
@@ -961,7 +961,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                              direct_access=True,
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name="Light Duration",
-                             description='Light duration in seconds',
+                             description='How long lamp is on during sample collect.',
                              units=Units.SECOND)
 
         self._param_dict.add(Parameter.DARK_DURATION,
@@ -973,7 +973,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                              direct_access=True,
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name="Dark Duration",
-                             description='Dark duration in seconds',
+                             description='How long lamp is off during sample collect.',
                              units=Units.SECOND)
 
         self._param_dict.add(Parameter.POLLED_TIMEOUT,
@@ -999,7 +999,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                              default_value=True,
                              visibility=ParameterDictVisibility.IMMUTABLE,
                              display_name="Skip Sleep at Start",
-                             description='Skip putting instrument to sleep at start.')
+                             description='Do not put instrument to sleep at start.')
 
         self._param_dict.add(Parameter.COUNTDOWN,
                              r'COUNTDWN\s(\S*)',
@@ -1012,6 +1012,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                              default_value=15,
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name="Countdown",
+                             description="How long to wait before starting sampling.",
                              units=Units.SECOND)
 
         self._param_dict.add(Parameter.REF_MIN_AT_LAMP_ON,
@@ -1022,7 +1023,10 @@ class Protocol(CommandResponseInstrumentProtocol):
                              startup_param=False,
                              direct_access=False,
                              visibility=ParameterDictVisibility.READ_ONLY,
-                             display_name="Reference Minute at Lamp-On")
+                             units=Units.COUNTS,
+                             display_name="Reference Minute at Lamp-On",
+                             description="When switching on the lamp, the reference detector must register at least "
+                                         "the specified number of counts")
 
         self._param_dict.add(Parameter.LAMP_STABIL_TIME,
                              r'STBLTIME\s(\S*)',
@@ -1034,7 +1038,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                              default_value=5,
                              visibility=ParameterDictVisibility.IMMUTABLE,
                              display_name="Lamp Stability Time",
-                             units=ParameterUnit.DECISIEMENS)
+                             units=ParameterUnit.DECISECONDS)
 
         self._param_dict.add(Parameter.LAMP_SWITCH_OFF_TEMPERATURE,
                              r'LAMPTOFF\s(\S*)',
@@ -1106,7 +1110,8 @@ class Protocol(CommandResponseInstrumentProtocol):
                              direct_access=True,
                              default_value="Full_ASCII",
                              visibility=ParameterDictVisibility.IMMUTABLE,
-                             display_name="Output Frame Type")
+                             display_name="Output Frame Type",
+                             description="Full_ASCII, Full_Binary, Reduced_Binary, Concentration, APF, MBARI, None ")
 
         self._param_dict.add(Parameter.OUTPUT_DARK_FRAME,
                              r'OUTDRKFR\s(\S*)',
@@ -1117,7 +1122,8 @@ class Protocol(CommandResponseInstrumentProtocol):
                              direct_access=True,
                              default_value="Output",
                              visibility=ParameterDictVisibility.IMMUTABLE,
-                             display_name="Output Dark Frame")
+                             display_name="Output Dark Frame",
+                             description="Output, Suppress")
 
         # DATA PROCESSING
         self._param_dict.add(Parameter.TEMP_COMPENSATION,
@@ -1130,7 +1136,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                              default_value=False,
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name="Temperature Compensation",
-                             description="Temperature compensation")
+                             description="Enable temperature compensation: 1 or 0")
 
         self._param_dict.add(Parameter.FIT_WAVELENGTH_LOW,
                              r'WFIT_LOW\s(\S*)',
@@ -1141,6 +1147,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                              direct_access=False,
                              visibility=ParameterDictVisibility.READ_ONLY,
                              display_name="Fit Wavelength Low",
+                             description="Low value used for measuring nitrogen concentrations.",
                              units=Units.NANOMETER)
 
         self._param_dict.add(Parameter.FIT_WAVELENGTH_HIGH,
@@ -1152,6 +1159,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                              direct_access=False,
                              visibility=ParameterDictVisibility.READ_ONLY,
                              display_name="Fit Wavelength High",
+                             description="High value used for measuring nitrogen concentrations.",
                              units=Units.NANOMETER)
 
         self._param_dict.add(Parameter.FIT_WAVELENGTH_BOTH,
@@ -1164,6 +1172,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                              default_value="217.00,240.00",
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name="Fit Wavelength Both",
+                             description="Low and high value used for measuring nitrogen concentrations.",
                              units=Units.NANOMETER)
 
         self._param_dict.add(Parameter.CONCENTRATIONS_IN_FIT,
@@ -1186,7 +1195,8 @@ class Protocol(CommandResponseInstrumentProtocol):
                              direct_access=False,
                              value=1,
                              visibility=ParameterDictVisibility.READ_ONLY,
-                             display_name="Baseline Order")
+                             display_name="Baseline Order",
+                             description="1: Linear, 2: Quadratic")
 
         self._param_dict.add(Parameter.DARK_CORRECTION_METHOD,
                              r'DRKCORMT\s(\S*)',
@@ -1197,7 +1207,8 @@ class Protocol(CommandResponseInstrumentProtocol):
                              direct_access=True,
                              default_value="SpecAverage",
                              visibility=ParameterDictVisibility.READ_WRITE,
-                             display_name="Dark Correction Method")
+                             display_name="Dark Correction Method",
+                             description="The dark correction method: SpecAverage, SWAverage.")
 
         self._param_dict.add(Parameter.SALINITY_FITTING,
                              r'SALINFIT\s(\S*)',
@@ -1208,7 +1219,8 @@ class Protocol(CommandResponseInstrumentProtocol):
                              direct_access=True,
                              default_value=True,
                              visibility=ParameterDictVisibility.READ_WRITE,
-                             display_name="Salinity Fitting")
+                             display_name="Salinity Fitting",
+                             description="Enable salinity matching: on or off")
 
         self._param_dict.add(Parameter.BROMIDE_TRACING,
                              r'BRMTRACE\s(\S*)',
@@ -1219,7 +1231,8 @@ class Protocol(CommandResponseInstrumentProtocol):
                              direct_access=True,
                              default_value=False,
                              visibility=ParameterDictVisibility.READ_WRITE,
-                             display_name="Bromide Tracing")
+                             display_name="Bromide Tracing",
+                             description="Enable bromide tracing: on or off")
 
         self._param_dict.add(Parameter.ABSORBANCE_CUTOFF,
                              r'A_CUTOFF\s(\S*)',
@@ -1241,7 +1254,8 @@ class Protocol(CommandResponseInstrumentProtocol):
                              direct_access=True,
                              default_value=True,
                              visibility=ParameterDictVisibility.READ_WRITE,
-                             display_name="Integration Time Adjustment")
+                             display_name="Integration Time Adjustment",
+                             description="Enable integration time adjustment: on or off")
 
         self._param_dict.add(Parameter.INTEG_TIME_FACTOR,
                              r'INTPRFAC\s(\S*)',
@@ -1253,6 +1267,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                              default_value=1,
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name="Integration Time Factor",
+                             description="Value of 1 or 20 is permitted.",
                              units=Units.SECOND)
 
         self._param_dict.add(Parameter.INTEG_TIME_STEP,
