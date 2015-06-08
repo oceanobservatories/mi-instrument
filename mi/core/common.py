@@ -199,6 +199,7 @@ class Units(BaseEnum):
     BEAT_FREQUENCY_OSCILLATOR = 'BFO'
     BINARY_CODED_DECIMAL = 'BCD'
     BIT = 'b'
+    BYTE = 'B'
     BRITISH_THERMAL_UNIT = 'Btu'
     CALORIE = 'cal'
     CANDELA = 'cd'
