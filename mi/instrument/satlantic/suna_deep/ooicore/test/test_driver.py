@@ -150,7 +150,8 @@ class ParameterConstraints(BaseEnum):
     DARK_DURATION = (Parameter.DARK_DURATION, int, 1, 65535)
     COUNTDOWN = (Parameter.COUNTDOWN, int, 0, 3600)
     TEMP_COMPENSATION = (Parameter.TEMP_COMPENSATION, bool, True, False)
-    FIT_WAVELENGTH_BOTH = (Parameter.FIT_WAVELENGTH_BOTH, str, '210,210', '350,350')
+    FIT_WAVELENGTH_LOW = (Parameter.FIT_WAVELENGTH_LOW, int, 210, 350)
+    FIT_WAVELENGTH_HIGH = (Parameter.FIT_WAVELENGTH_HIGH, int, 210, 350)
     CONCENTRATIONS_IN_FIT = (Parameter.CONCENTRATIONS_IN_FIT, int, 1, 3)
     DARK_CORRECTION_METHOD = (Parameter.DARK_CORRECTION_METHOD, str, 'SpecAverage', 'SWAverage')
     SALINITY_FITTING = (Parameter.SALINITY_FITTING, bool, True, False)
@@ -497,7 +498,6 @@ class DriverUnitTest(InstrumentDriverUnitTestCase, DriverTestMixinSub):
             ProtocolState.COMMAND:       [ProtocolEvent.ACQUIRE_SAMPLE,
                                           ProtocolEvent.ACQUIRE_STATUS,
                                           ProtocolEvent.START_DIRECT,
-                                          #ProtocolEvent.START_POLL,
                                           ProtocolEvent.START_AUTOSAMPLE,
                                           ProtocolEvent.GET,
                                           ProtocolEvent.SET,
@@ -566,7 +566,8 @@ class DriverIntegrationTest(InstrumentDriverIntegrationTestCase, DriverTestMixin
         self.assert_set(Parameter.DARK_DURATION, 6)
         self.assert_set(Parameter.COUNTDOWN, 16)
         self.assert_set(Parameter.TEMP_COMPENSATION, True)
-        self.assert_set(Parameter.FIT_WAVELENGTH_BOTH, "218.00,241.00")
+        self.assert_set(Parameter.FIT_WAVELENGTH_LOW, 218)
+        self.assert_set(Parameter.FIT_WAVELENGTH_HIGH, 241)
         self.assert_set(Parameter.CONCENTRATIONS_IN_FIT, 3)
         self.assert_set(Parameter.DARK_CORRECTION_METHOD, "SWAverage")
         self.assert_set(Parameter.SALINITY_FITTING, False)
@@ -782,7 +783,8 @@ class DriverQualificationTest(InstrumentDriverQualificationTestCase, DriverTestM
         self.assert_get_parameter(Parameter.OUTPUT_FRAME_TYPE, "Full_ASCII")
         self.assert_get_parameter(Parameter.OUTPUT_DARK_FRAME, "Output")
         self.assert_get_parameter(Parameter.TEMP_COMPENSATION, False)
-        self.assert_get_parameter(Parameter.FIT_WAVELENGTH_BOTH, "217.00,240.00")
+        self.assert_get_parameter(Parameter.FIT_WAVELENGTH_LOW, 217)
+        self.assert_get_parameter(Parameter.FIT_WAVELENGTH_HIGH, 240)
         self.assert_get_parameter(Parameter.CONCENTRATIONS_IN_FIT, 1)
         self.assert_get_parameter(Parameter.BASELINE_ORDER, 1)
         self.assert_get_parameter(Parameter.DARK_CORRECTION_METHOD, "SpecAverage")
@@ -860,7 +862,8 @@ class DriverQualificationTest(InstrumentDriverQualificationTestCase, DriverTestM
         self.assert_set_parameter(Parameter.DARK_SAMPLES, 3)
         self.assert_set_parameter(Parameter.COUNTDOWN, 16)
         self.assert_set_parameter(Parameter.TEMP_COMPENSATION, True)
-        self.assert_set_parameter(Parameter.FIT_WAVELENGTH_BOTH, "218.00,241.00")
+        self.assert_get_parameter(Parameter.FIT_WAVELENGTH_LOW, 218)
+        self.assert_get_parameter(Parameter.FIT_WAVELENGTH_HIGH, 241)
         self.assert_set_parameter(Parameter.CONCENTRATIONS_IN_FIT, 3)
         self.assert_set_parameter(Parameter.DARK_CORRECTION_METHOD, "SWAverage")
         self.assert_set_parameter(Parameter.SALINITY_FITTING, False)
@@ -898,7 +901,7 @@ class DriverQualificationTest(InstrumentDriverQualificationTestCase, DriverTestM
                                                      'lgtsmpls', 'msgfsize', 'msglevel', 'nmlgtspl', 'operctrl',
                                                      'opermode', 'outdrkfr', 'outfrtyp', 'polltout', 'reflimit',
                                                      'salinfit', 'skpsleep', 'spintper', 'stbltime', 'tempcomp',
-                                                     'tlgtsmpl', 'wfit_hgh', 'wfit_low', 'wfitboth']}
+                                                     'tlgtsmpl', 'wfit_hgh', 'wfit_low']}
 
         self.assert_enter_command_mode()
         self.assert_capabilities(capabilities)
