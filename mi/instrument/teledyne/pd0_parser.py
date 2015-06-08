@@ -51,6 +51,7 @@ class AdcpPd0Record(object):
         self.sensor_avail = None
         self.bit_result = None
         self.error_word = None
+        self.stored_checksum = None
 
     def __str__(self):
         return repr(self)
@@ -98,11 +99,11 @@ class AdcpPd0Record(object):
                 (self.header.num_bytes+2, len(self.data)))
 
         calculated_checksum = sum(bytearray(self.data[:-2])) & 65535
-        stored_checksum = struct.unpack_from('<H', self.data, self.header.num_bytes)[0]
+        self.stored_checksum = struct.unpack_from('<H', self.data, self.header.num_bytes)[0]
 
-        if calculated_checksum != stored_checksum:
+        if calculated_checksum != self.stored_checksum:
             raise SampleException('Checksum failure in PD0 data (expected %d, calculated %d' %
-                                  (stored_checksum, calculated_checksum))
+                                  (self.stored_checksum, calculated_checksum))
 
     def process(self):
         self.validate()
