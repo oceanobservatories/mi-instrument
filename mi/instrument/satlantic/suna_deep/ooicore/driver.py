@@ -11,7 +11,6 @@ __author__ = 'Rachel Manoni'
 __license__ = 'Apache 2.0'
 
 import re
-import functools
 import datetime
 
 from mi.core.common import BaseEnum, Units
@@ -210,7 +209,7 @@ SUNA_TEST_REGEX = re.compile(SUNA_TEST_PATTERN)
 #    Driver Constant Definitions
 ###
 class ParameterUnit(BaseEnum):
-    DECISIEMENS = 'dS'
+    DECISECONDS = 'ds'
     MEGABYTE = 'MB'
 
 
@@ -248,8 +247,6 @@ class ProtocolEvent(BaseEnum):
     STOP_DIRECT = DriverEvent.STOP_DIRECT
     CLOCK_SYNC = DriverEvent.CLOCK_SYNC
     ACQUIRE_STATUS = DriverEvent.ACQUIRE_STATUS
-    START_POLL = "DRIVER_EVENT_START_POLL"
-    STOP_POLL = "DRIVER_EVENT_STOP_POLL"
     MEASURE_N = "DRIVER_EVENT_MEASURE_N"
     MEASURE_0 = "DRIVER_EVENT_MEASURE_0"
     TIMED_N = "DRIVER_EVENT_TIMED_N"
@@ -275,12 +272,13 @@ class Capability(BaseEnum):
     # Change States
     START_AUTOSAMPLE = ProtocolEvent.START_AUTOSAMPLE
     STOP_AUTOSAMPLE = ProtocolEvent.STOP_AUTOSAMPLE
-    START_POLL = ProtocolEvent.START_POLL
-    STOP_POLL = ProtocolEvent.STOP_POLL
 
     # Parameter Accessors/Mutators
     GET = ProtocolEvent.GET
     SET = ProtocolEvent.SET
+
+    START_DIRECT = ProtocolEvent.START_DIRECT
+    STOP_DIRECT = ProtocolEvent.STOP_DIRECT
 
     CLOCK_SYNC = ProtocolEvent.CLOCK_SYNC
 
@@ -331,20 +329,6 @@ class Parameter(DriverParameter):
     DATA_FILE_SIZE = "datfsize"
     OUTPUT_FRAME_TYPE = "outfrtyp"
     OUTPUT_DARK_FRAME = "outdrkfr"
-
-PARAM_TYPE_FUNC = {Parameter.OPERATION_MODE: str, Parameter.OPERATION_CONTROL: str, Parameter.LIGHT_SAMPLES: int,
-                   Parameter.DARK_SAMPLES: int, Parameter.LIGHT_DURATION: int, Parameter.DARK_DURATION: int,
-                   Parameter.COUNTDOWN: int, Parameter.TEMP_COMPENSATION: str, Parameter.FIT_WAVELENGTH_LOW: float,
-                   Parameter.FIT_WAVELENGTH_HIGH: float, Parameter.CONCENTRATIONS_IN_FIT: int,
-                   Parameter.BASELINE_ORDER: int, Parameter.DARK_CORRECTION_METHOD: str,
-                   Parameter.SALINITY_FITTING: str, Parameter.BROMIDE_TRACING: str,
-                   Parameter.ABSORBANCE_CUTOFF: float, Parameter.INTEG_TIME_ADJUSTMENT: str,
-                   Parameter.INTEG_TIME_FACTOR: int, Parameter.INTEG_TIME_STEP: int, Parameter.INTEG_TIME_MAX: int,
-                   Parameter.REF_MIN_AT_LAMP_ON: int, Parameter.SPECTROMETER_INTEG_PERIOD: int,
-                   Parameter.POLLED_TIMEOUT: int, Parameter.SKIP_SLEEP_AT_START: str,
-                   Parameter.LAMP_STABIL_TIME: int, Parameter.LAMP_SWITCH_OFF_TEMPERATURE: int,
-                   Parameter.MESSAGE_LEVEL: str, Parameter.MESSAGE_FILE_SIZE: int, Parameter.DATA_FILE_SIZE: int,
-                   Parameter.OUTPUT_FRAME_TYPE: str, Parameter.OUTPUT_DARK_FRAME: str}
 
 
 class Prompt(BaseEnum):
@@ -801,7 +785,7 @@ class Protocol(CommandResponseInstrumentProtocol):
     Instrument protocol class
     Subclasses CommandResponseInstrumentProtocol
     """
-     #logging level
+    #logging level
     __metaclass__ = get_logging_metaclass(log_level='debug')
 
     def __init__(self, prompts, newline, driver_event):
@@ -884,7 +868,6 @@ class Protocol(CommandResponseInstrumentProtocol):
         self._sent_cmds = []
 
         self._chunker = StringChunker(Protocol.sieve_function)
-        self._wakeup = functools.partial(self._wakeup, delay=.1)
 
     @staticmethod
     def sieve_function(raw_data):
@@ -907,17 +890,15 @@ class Protocol(CommandResponseInstrumentProtocol):
         """
         Populate the command dictionary with commands
         """
-        self._cmd_dict.add(Capability.ACQUIRE_SAMPLE, display_name='acquire a single sample')
-        self._cmd_dict.add(Capability.ACQUIRE_STATUS, display_name='Run all status commands')
-        self._cmd_dict.add(Capability.MEASURE_N, display_name='Take N light samples following one dark sample')
-        self._cmd_dict.add(Capability.MEASURE_0, display_name='Take one dark sample ')
-        self._cmd_dict.add(Capability.TIMED_N, display_name='Take light data frames for N seconds')
-        self._cmd_dict.add(Capability.TEST, display_name='Run test commands')
-        self._cmd_dict.add(Capability.START_AUTOSAMPLE, display_name='Start instrument sampling')
-        self._cmd_dict.add(Capability.STOP_AUTOSAMPLE, display_name='Stop instrument sampling')
-        self._cmd_dict.add(Capability.START_POLL, display_name='Begin continuous data acquisition')
-        self._cmd_dict.add(Capability.STOP_POLL, display_name='Stop continuous data acquisition')
-        self._cmd_dict.add(Capability.CLOCK_SYNC, display_name='Synchronize the clock')
+        self._cmd_dict.add(Capability.ACQUIRE_SAMPLE, display_name='Acquire Sample')
+        self._cmd_dict.add(Capability.ACQUIRE_STATUS, display_name='Acquire Status')
+        self._cmd_dict.add(Capability.MEASURE_N, display_name='Acquire N Light Samples')
+        self._cmd_dict.add(Capability.MEASURE_0, display_name='Acquire Dark Sample')
+        self._cmd_dict.add(Capability.TIMED_N, display_name='Acquire Light Samples (N seconds)')
+        self._cmd_dict.add(Capability.TEST, display_name='Execute Test')
+        self._cmd_dict.add(Capability.START_AUTOSAMPLE, display_name='Start Autosample')
+        self._cmd_dict.add(Capability.STOP_AUTOSAMPLE, display_name='Stop Autosample')
+        self._cmd_dict.add(Capability.CLOCK_SYNC, display_name='Synchronize Clock')
 
     def _build_param_dict(self):
         """
@@ -980,7 +961,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                              direct_access=True,
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name="Light Duration",
-                             description='Light duration in seconds',
+                             description='How long lamp is on during sample collect.',
                              units=Units.SECOND)
 
         self._param_dict.add(Parameter.DARK_DURATION,
@@ -992,7 +973,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                              direct_access=True,
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name="Dark Duration",
-                             description='Dark duration in seconds',
+                             description='How long lamp is off during sample collect.',
                              units=Units.SECOND)
 
         self._param_dict.add(Parameter.POLLED_TIMEOUT,
@@ -1005,7 +986,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                              default_value=65535,
                              visibility=ParameterDictVisibility.IMMUTABLE,
                              display_name="Polled Timeout",
-                             description='Instrument will go to sleep if not polled within time interval',
+                             description='Instrument will go to sleep if not polled within time interval.',
                              units=Units.SECOND)
 
         self._param_dict.add(Parameter.SKIP_SLEEP_AT_START,
@@ -1018,7 +999,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                              default_value=True,
                              visibility=ParameterDictVisibility.IMMUTABLE,
                              display_name="Skip Sleep at Start",
-                             description='Skip putting instrument to sleep at start')
+                             description='Do not put instrument to sleep at start.')
 
         self._param_dict.add(Parameter.COUNTDOWN,
                              r'COUNTDWN\s(\S*)',
@@ -1031,6 +1012,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                              default_value=15,
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name="Countdown",
+                             description="How long to wait before starting sampling.",
                              units=Units.SECOND)
 
         self._param_dict.add(Parameter.REF_MIN_AT_LAMP_ON,
@@ -1041,7 +1023,10 @@ class Protocol(CommandResponseInstrumentProtocol):
                              startup_param=False,
                              direct_access=False,
                              visibility=ParameterDictVisibility.READ_ONLY,
-                             display_name="Reference Minute at Lamp-On")
+                             units=Units.COUNTS,
+                             display_name="Reference Minute at Lamp-On",
+                             description="When switching on the lamp, the reference detector must register at least "
+                                         "the specified number of counts")
 
         self._param_dict.add(Parameter.LAMP_STABIL_TIME,
                              r'STBLTIME\s(\S*)',
@@ -1053,7 +1038,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                              default_value=5,
                              visibility=ParameterDictVisibility.IMMUTABLE,
                              display_name="Lamp Stability Time",
-                             units=ParameterUnit.DECISIEMENS)
+                             units=ParameterUnit.DECISECONDS)
 
         self._param_dict.add(Parameter.LAMP_SWITCH_OFF_TEMPERATURE,
                              r'LAMPTOFF\s(\S*)',
@@ -1065,7 +1050,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                              default_value=35,
                              visibility=ParameterDictVisibility.IMMUTABLE,
                              display_name="Lamp Switch-Off Temperature",
-                             description='Temperature at which lamp will turn off',
+                             description='Temperature at which lamp will turn off.',
                              units=Units.DEGREE_CELSIUS)
 
         self._param_dict.add(Parameter.SPECTROMETER_INTEG_PERIOD,
@@ -1125,7 +1110,8 @@ class Protocol(CommandResponseInstrumentProtocol):
                              direct_access=True,
                              default_value="Full_ASCII",
                              visibility=ParameterDictVisibility.IMMUTABLE,
-                             display_name="Output Frame Type")
+                             display_name="Output Frame Type",
+                             description="Full_ASCII, Full_Binary, Reduced_Binary, Concentration, APF, MBARI, None ")
 
         self._param_dict.add(Parameter.OUTPUT_DARK_FRAME,
                              r'OUTDRKFR\s(\S*)',
@@ -1136,7 +1122,8 @@ class Protocol(CommandResponseInstrumentProtocol):
                              direct_access=True,
                              default_value="Output",
                              visibility=ParameterDictVisibility.IMMUTABLE,
-                             display_name="Output Dark Frame")
+                             display_name="Output Dark Frame",
+                             description="Output, Suppress")
 
         # DATA PROCESSING
         self._param_dict.add(Parameter.TEMP_COMPENSATION,
@@ -1149,28 +1136,30 @@ class Protocol(CommandResponseInstrumentProtocol):
                              default_value=False,
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name="Temperature Compensation",
-                             description="Temperature compensation")
+                             description="Enable temperature compensation: 1 or 0")
 
         self._param_dict.add(Parameter.FIT_WAVELENGTH_LOW,
                              r'WFIT_LOW\s(\S*)',
                              lambda match: float(match.group(1)),
                              str,
-                             type=ParameterDictType.INT,
+                             type=ParameterDictType.FLOAT,
                              startup_param=False,
                              direct_access=False,
                              visibility=ParameterDictVisibility.READ_ONLY,
                              display_name="Fit Wavelength Low",
+                             description="Low value used for measuring nitrogen concentrations.",
                              units=Units.NANOMETER)
 
         self._param_dict.add(Parameter.FIT_WAVELENGTH_HIGH,
                              r'WFIT_HGH\s(\S*)',
                              lambda match: float(match.group(1)),
                              str,
-                             type=ParameterDictType.INT,
+                             type=ParameterDictType.FLOAT,
                              startup_param=False,
                              direct_access=False,
                              visibility=ParameterDictVisibility.READ_ONLY,
                              display_name="Fit Wavelength High",
+                             description="High value used for measuring nitrogen concentrations.",
                              units=Units.NANOMETER)
 
         self._param_dict.add(Parameter.FIT_WAVELENGTH_BOTH,
@@ -1180,9 +1169,10 @@ class Protocol(CommandResponseInstrumentProtocol):
                              type=ParameterDictType.STRING,
                              startup_param=True,
                              direct_access=True,
-                             default_value="217,240",
+                             default_value="217.00,240.00",
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name="Fit Wavelength Both",
+                             description="Low and high value used for measuring nitrogen concentrations.",
                              units=Units.NANOMETER)
 
         self._param_dict.add(Parameter.CONCENTRATIONS_IN_FIT,
@@ -1205,7 +1195,8 @@ class Protocol(CommandResponseInstrumentProtocol):
                              direct_access=False,
                              value=1,
                              visibility=ParameterDictVisibility.READ_ONLY,
-                             display_name="Baseline Order")
+                             display_name="Baseline Order",
+                             description="1: Linear, 2: Quadratic")
 
         self._param_dict.add(Parameter.DARK_CORRECTION_METHOD,
                              r'DRKCORMT\s(\S*)',
@@ -1216,7 +1207,8 @@ class Protocol(CommandResponseInstrumentProtocol):
                              direct_access=True,
                              default_value="SpecAverage",
                              visibility=ParameterDictVisibility.READ_WRITE,
-                             display_name="Dark Correction Method")
+                             display_name="Dark Correction Method",
+                             description="The dark correction method: SpecAverage, SWAverage.")
 
         self._param_dict.add(Parameter.SALINITY_FITTING,
                              r'SALINFIT\s(\S*)',
@@ -1227,7 +1219,8 @@ class Protocol(CommandResponseInstrumentProtocol):
                              direct_access=True,
                              default_value=True,
                              visibility=ParameterDictVisibility.READ_WRITE,
-                             display_name="Salinity Fitting")
+                             display_name="Salinity Fitting",
+                             description="Enable salinity matching: on or off")
 
         self._param_dict.add(Parameter.BROMIDE_TRACING,
                              r'BRMTRACE\s(\S*)',
@@ -1238,7 +1231,8 @@ class Protocol(CommandResponseInstrumentProtocol):
                              direct_access=True,
                              default_value=False,
                              visibility=ParameterDictVisibility.READ_WRITE,
-                             display_name="Bromide Tracing")
+                             display_name="Bromide Tracing",
+                             description="Enable bromide tracing: on or off")
 
         self._param_dict.add(Parameter.ABSORBANCE_CUTOFF,
                              r'A_CUTOFF\s(\S*)',
@@ -1260,7 +1254,8 @@ class Protocol(CommandResponseInstrumentProtocol):
                              direct_access=True,
                              default_value=True,
                              visibility=ParameterDictVisibility.READ_WRITE,
-                             display_name="Integration Time Adjustment")
+                             display_name="Integration Time Adjustment",
+                             description="Enable integration time adjustment: on or off")
 
         self._param_dict.add(Parameter.INTEG_TIME_FACTOR,
                              r'INTPRFAC\s(\S*)',
@@ -1272,6 +1267,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                              default_value=1,
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name="Integration Time Factor",
+                             description="Value of 1 or 20 is permitted.",
                              units=Units.SECOND)
 
         self._param_dict.add(Parameter.INTEG_TIME_STEP,
@@ -1301,7 +1297,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         #DRIVER PARAMETERS
         self._param_dict.add(Parameter.NUM_LIGHT_SAMPLES,
                              r'donotmatch',
-                             lambda match: int(match.group(1)),
+                             int,
                              str,
                              type=ParameterDictType.INT,
                              startup_param=True,
@@ -1312,7 +1308,7 @@ class Protocol(CommandResponseInstrumentProtocol):
 
         self._param_dict.add(Parameter.TIME_LIGHT_SAMPLE,
                              r'donotmatch',
-                             lambda match: int(match.group(1)),
+                             int,
                              str,
                              type=ParameterDictType.INT,
                              startup_param=True,
@@ -1379,6 +1375,10 @@ class Protocol(CommandResponseInstrumentProtocol):
         """
         Enter command state.
         """
+
+        if self._init_type != InitializationType.NONE:
+            self._update_params()
+
         self._init_params()
         self._driver_event(DriverAsyncEvent.STATE_CHANGE)
 
@@ -1447,6 +1447,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         """
         Used to set the parameters when startup config is set by _init_params call
         """
+
         try:
             params = args[0]
 
@@ -1460,9 +1461,6 @@ class Protocol(CommandResponseInstrumentProtocol):
 
         old_config = self._param_dict.get_config()
         log.debug("OLD CONFIG: %s", self._param_dict.get_config())
-
-        if self._init_type != InitializationType.NONE:
-            self._update_params()
 
         for (key, val) in params.iteritems():
             log.debug("KEY = %s VALUE = %s", key, val)
@@ -1484,9 +1482,9 @@ class Protocol(CommandResponseInstrumentProtocol):
                     str_val = self._param_dict.format(key, params[key])
                 except KeyError:
                     raise InstrumentParameterException('Could not format param %s' % key)
-                if str_val != self._param_dict.get(key):
+                if str_val != self._param_dict.format(key, self._param_dict.get(key)):
                     self._do_cmd_resp(InstrumentCommand.SET, key, str_val, timeout=TIMEOUT, expected_prompt=[Prompt.OK,
-                                                                                                         Prompt.ERROR])
+                                                                                                        Prompt.ERROR])
 
         status_output = self._do_cmd_resp(InstrumentCommand.STATUS, expected_prompt=[Prompt.OK])
         self._param_dict.update(status_output)
@@ -1724,14 +1722,14 @@ class Protocol(CommandResponseInstrumentProtocol):
         Update the parameter dictionary by getting new values from the instrument. The response
         is saved to the param dictionary.
         """
-        params = self._param_dict.get_keys()
-        for param in params:
-            if param in [Parameter.NUM_LIGHT_SAMPLES, Parameter.TIME_LIGHT_SAMPLE]:
-                #do nothing, cannot update this parameter via the instrument
-                pass
-            else:
-                val = self._get_from_instrument(param)
-                self._param_dict.set_value(param, val)
+
+        status_output = self._do_cmd_resp(InstrumentCommand.STATUS, expected_prompt=[Prompt.OK])
+        old_config = self._param_dict.get_config()
+        self._param_dict.update(status_output)
+        new_config = self._param_dict.get_config()
+
+        if new_config != old_config:
+            self._driver_event(DriverAsyncEvent.CONFIG_CHANGE)
 
     def _get_from_instrument(self, param):
         """
