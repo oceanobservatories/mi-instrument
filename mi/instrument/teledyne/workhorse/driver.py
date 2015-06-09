@@ -144,7 +144,7 @@ class WorkhorseProtocol(TeledyneProtocol):
                            display_name="Stop Autosample",
                            description="Exit autosample mode and return to command mode")
         self._cmd_dict.add(TeledyneCapability.CLOCK_SYNC,
-                           display_name="Sync Clock")
+                           display_name="Synchronize Clock")
         self._cmd_dict.add(TeledyneCapability.GET_CALIBRATION,
                            display_name="Get Calibration")
         self._cmd_dict.add(TeledyneCapability.RUN_TEST_200,

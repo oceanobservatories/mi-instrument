@@ -5,7 +5,7 @@
 @brief BOTPT
 Release notes:
 """
-import json
+
 import re
 import time
 import datetime

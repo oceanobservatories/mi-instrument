@@ -107,12 +107,15 @@ class Capability(BaseEnum):
     Protocol events that should be exposed to users (subset of above).
     """
     GET              = ProtocolEvent.GET
+    SET              = ProtocolEvent.SET
     ACQUIRE_STATUS   = ProtocolEvent.ACQUIRE_STATUS
     ACQUIRE_SAMPLE   = ProtocolEvent.ACQUIRE_SAMPLE
     CLOCK_SYNC       = ProtocolEvent.CLOCK_SYNC
     START_AUTOSAMPLE = ProtocolEvent.START_AUTOSAMPLE
     STOP_AUTOSAMPLE  = ProtocolEvent.STOP_AUTOSAMPLE
     FLASH_STATUS     = ProtocolEvent.FLASH_STATUS
+    START_DIRECT     = ProtocolEvent.START_DIRECT
+    STOP_DIRECT      = ProtocolEvent.STOP_DIRECT
  
 class Parameter(DriverParameter):
     """
@@ -957,12 +960,12 @@ class Protocol(CommandResponseInstrumentProtocol):
         """
         Populate the command dictionary with command.
         """
-        self._cmd_dict.add(Capability.START_AUTOSAMPLE, display_name="start autosample")
-        self._cmd_dict.add(Capability.STOP_AUTOSAMPLE, display_name="stop autosample")
-        self._cmd_dict.add(Capability.CLOCK_SYNC, display_name="synchronize clock")
-        self._cmd_dict.add(Capability.ACQUIRE_STATUS, display_name="acquire status")
-        self._cmd_dict.add(Capability.ACQUIRE_SAMPLE, display_name="acquire sample")
-        self._cmd_dict.add(Capability.FLASH_STATUS, display_name="flash status")
+        self._cmd_dict.add(Capability.START_AUTOSAMPLE, display_name="Start Autosample")
+        self._cmd_dict.add(Capability.STOP_AUTOSAMPLE, display_name="Stop Autosample")
+        self._cmd_dict.add(Capability.CLOCK_SYNC, display_name="Synchronize Clock")
+        self._cmd_dict.add(Capability.ACQUIRE_STATUS, display_name="Acquire Status")
+        self._cmd_dict.add(Capability.ACQUIRE_SAMPLE, display_name="Acquire Sample")
+        self._cmd_dict.add(Capability.FLASH_STATUS, display_name="Flash Status")
 
     def _build_param_dict(self):
         """
