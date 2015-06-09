@@ -235,6 +235,7 @@ class ADCP_PD0_PARSED_DataParticle(DataParticle):
     _data_particle_type = 'UNASSIGNED IN mi.instrument.teledyne.workhorse ADCP_PD0_PARSED_DataParticle'
     _slave = False
     _master = False
+    ntp_epoch = dt.datetime(1900, 1, 1)
 
     def _build_parsed_values(self):
         """
@@ -256,8 +257,8 @@ class ADCP_PD0_PARSED_DataParticle(DataParticle):
                           record.variable_data.rtc_y2k_seconds)
 
         mpt_seconds = float(record.variable_data.mpt_seconds + (record.variable_data.mpt_hundredths / 100))
-        rtc_time = time.mktime(dts.timetuple())
-        self.set_internal_timestamp(unix_time=rtc_time + record.variable_data.rtc_y2k_hundredths / 100.0)
+        rtc_time = (dts - self.ntp_epoch).total_seconds() + record.variable_data.rtc_y2k_hundredths / 100.0
+        self.set_internal_timestamp(rtc_time)
 
         fields = []
         if record.coord_transform.coord_transform == Pd0CoordinateTransformType.BEAM:
@@ -268,10 +269,12 @@ class ADCP_PD0_PARSED_DataParticle(DataParticle):
                 self._data_particle_type = VADCPDataParticleType.VADCP_PD0_BEAM_PARSED
 
             fields.extend([
+                (ADCP_PD0_PARSED_KEY.VELOCITY_DATA_ID, record.velocities.id),
                 (ADCP_PD0_PARSED_KEY.BEAM_1_VELOCITY, record.velocities.beam1),
                 (ADCP_PD0_PARSED_KEY.BEAM_2_VELOCITY, record.velocities.beam2),
                 (ADCP_PD0_PARSED_KEY.BEAM_3_VELOCITY, record.velocities.beam3),
                 (ADCP_PD0_PARSED_KEY.BEAM_4_VELOCITY, record.velocities.beam4),
+                (ADCP_PD0_PARSED_KEY.PERCENT_GOOD_ID, record.percent_good.id),
                 (ADCP_PD0_PARSED_KEY.PERCENT_GOOD_BEAM1, record.percent_good.beam1),
                 (ADCP_PD0_PARSED_KEY.PERCENT_GOOD_BEAM2, record.percent_good.beam2),
                 (ADCP_PD0_PARSED_KEY.PERCENT_GOOD_BEAM3, record.percent_good.beam3),
@@ -285,10 +288,12 @@ class ADCP_PD0_PARSED_DataParticle(DataParticle):
                 self._data_particle_type = VADCPDataParticleType.VADCP_PD0_EARTH_PARSED
 
             fields.extend([
+                (ADCP_PD0_PARSED_KEY.VELOCITY_DATA_ID, record.velocities.id),
                 (ADCP_PD0_PARSED_KEY.WATER_VELOCITY_EAST, record.velocities.beam1),
                 (ADCP_PD0_PARSED_KEY.WATER_VELOCITY_NORTH, record.velocities.beam2),
                 (ADCP_PD0_PARSED_KEY.WATER_VELOCITY_UP, record.velocities.beam3),
                 (ADCP_PD0_PARSED_KEY.ERROR_VELOCITY, record.velocities.beam4),
+                (ADCP_PD0_PARSED_KEY.PERCENT_GOOD_ID, record.percent_good.id),
                 (ADCP_PD0_PARSED_KEY.PERCENT_GOOD_3BEAM, record.percent_good.beam1),
                 (ADCP_PD0_PARSED_KEY.PERCENT_TRANSFORMS_REJECT, record.percent_good.beam2),
                 (ADCP_PD0_PARSED_KEY.PERCENT_BAD_BEAMS, record.percent_good.beam3),
@@ -301,8 +306,10 @@ class ADCP_PD0_PARSED_DataParticle(DataParticle):
             # FIXED LEADER
             (ADCP_PD0_PARSED_KEY.HEADER_ID, record.header.id),
             (ADCP_PD0_PARSED_KEY.DATA_SOURCE_ID, record.header.data_source),
+            (ADCP_PD0_PARSED_KEY.CHECKSUM, record.stored_checksum),
             (ADCP_PD0_PARSED_KEY.NUM_BYTES, record.header.num_bytes),
             (ADCP_PD0_PARSED_KEY.NUM_DATA_TYPES, record.header.num_data_types),
+            (ADCP_PD0_PARSED_KEY.OFFSET_DATA_TYPES, record.offsets),
             (ADCP_PD0_PARSED_KEY.FIXED_LEADER_ID, record.fixed_data.id),
             (ADCP_PD0_PARSED_KEY.FIRMWARE_VERSION, record.fixed_data.cpu_firmware_version),
             (ADCP_PD0_PARSED_KEY.FIRMWARE_REVISION, record.fixed_data.cpu_firmware_revision),
@@ -334,8 +341,10 @@ class ADCP_PD0_PARSED_DataParticle(DataParticle):
             (ADCP_PD0_PARSED_KEY.SERIAL_NUMBER, str(record.fixed_data.serial_number)),
             (ADCP_PD0_PARSED_KEY.BEAM_ANGLE, record.fixed_data.beam_angle),
             # VARIABLE LEADER
+            (ADCP_PD0_PARSED_KEY.VARIABLE_LEADER_ID, record.variable_data.id),
             (ADCP_PD0_PARSED_KEY.ENSEMBLE_NUMBER, record.variable_data.ensemble_number),
             (ADCP_PD0_PARSED_KEY.ENSEMBLE_NUMBER_INCREMENT, record.variable_data.ensemble_roll_over),
+            (ADCP_PD0_PARSED_KEY.ENSEMBLE_START_TIME, rtc_time),
             (ADCP_PD0_PARSED_KEY.SPEED_OF_SOUND, record.variable_data.speed_of_sound),
             (ADCP_PD0_PARSED_KEY.TRANSDUCER_DEPTH, record.variable_data.depth_of_transducer),
             (ADCP_PD0_PARSED_KEY.HEADING, record.variable_data.heading),
@@ -357,6 +366,15 @@ class ADCP_PD0_PARSED_DataParticle(DataParticle):
             (ADCP_PD0_PARSED_KEY.ADC_CONTAMINATION_SENSOR, record.variable_data.contamination_sensor),
             (ADCP_PD0_PARSED_KEY.ABSOLUTE_PRESSURE, record.variable_data.pressure),
             (ADCP_PD0_PARSED_KEY.PRESSURE_VARIANCE, record.variable_data.pressure_variance),
+            (ADCP_PD0_PARSED_KEY.REAL_TIME_CLOCK, (record.variable_data.rtc_y2k_century,
+                                                   record.variable_data.rtc_y2k_year,
+                                                   record.variable_data.rtc_y2k_month,
+                                                   record.variable_data.rtc_y2k_day,
+                                                   record.variable_data.rtc_y2k_hour,
+                                                   record.variable_data.rtc_y2k_minute,
+                                                   record.variable_data.rtc_y2k_seconds,
+                                                   record.variable_data.rtc_y2k_hundredths
+                                                   )),
             # SYSCONFIG BITMAP
             (ADCP_PD0_PARSED_KEY.SYSCONFIG_FREQUENCY, record.sysconfig.frequency),
             (ADCP_PD0_PARSED_KEY.SYSCONFIG_BEAM_PATTERN, record.sysconfig.beam_pattern),
@@ -412,11 +430,13 @@ class ADCP_PD0_PARSED_DataParticle(DataParticle):
             (ADCP_PD0_PARSED_KEY.TIME_PER_PING_SECONDS, tpp_float_seconds),
             (ADCP_PD0_PARSED_KEY.MPT_SECONDS, mpt_seconds),
             # CORRELATION MAGNITUDES
+            (ADCP_PD0_PARSED_KEY.CORRELATION_MAGNITUDE_ID, record.correlation_magnitudes.id),
             (ADCP_PD0_PARSED_KEY.CORRELATION_MAGNITUDE_BEAM1, record.correlation_magnitudes.beam1),
             (ADCP_PD0_PARSED_KEY.CORRELATION_MAGNITUDE_BEAM2, record.correlation_magnitudes.beam2),
             (ADCP_PD0_PARSED_KEY.CORRELATION_MAGNITUDE_BEAM3, record.correlation_magnitudes.beam3),
             (ADCP_PD0_PARSED_KEY.CORRELATION_MAGNITUDE_BEAM4, record.correlation_magnitudes.beam4),
             # ECHO INTENSITIES
+            (ADCP_PD0_PARSED_KEY.ECHO_INTENSITY_ID, record.echo_intensity.id),
             (ADCP_PD0_PARSED_KEY.ECHO_INTENSITY_BEAM1, record.echo_intensity.beam1),
             (ADCP_PD0_PARSED_KEY.ECHO_INTENSITY_BEAM2, record.echo_intensity.beam2),
             (ADCP_PD0_PARSED_KEY.ECHO_INTENSITY_BEAM3, record.echo_intensity.beam3),
