@@ -106,6 +106,8 @@ class Capability(BaseEnum):
     STOP_AUTOSAMPLE = ProtocolEvent.STOP_AUTOSAMPLE
     GET = ProtocolEvent.GET
     SET = ProtocolEvent.SET
+    START_DIRECT = DriverEvent.START_DIRECT
+    STOP_DIRECT = DriverEvent.STOP_DIRECT
 
 
 class Parameter(DriverParameter):
@@ -405,11 +407,9 @@ class THSPHProtocol(CommandResponseInstrumentProtocol):
         """
         Populate the command dictionary with command.
         """
-        self._cmd_dict.add(Capability.START_AUTOSAMPLE, display_name="start autosample")
-        self._cmd_dict.add(Capability.STOP_AUTOSAMPLE, display_name="stop autosample")
-        self._cmd_dict.add(Capability.ACQUIRE_SAMPLE, display_name="acquire sample")
-        self._cmd_dict.add(Capability.SET, display_name="set")
-        self._cmd_dict.add(Capability.GET, display_name="get")
+        self._cmd_dict.add(Capability.START_AUTOSAMPLE, display_name="Start Autosample")
+        self._cmd_dict.add(Capability.STOP_AUTOSAMPLE, display_name="Stop Autosample")
+        self._cmd_dict.add(Capability.ACQUIRE_SAMPLE, display_name="Acquire Sample")
 
     def _build_param_dict(self):
         """

@@ -124,6 +124,8 @@ class Capability(BaseEnum):
     ENTER_RECORD_INTERVAL = ProtocolEvent.ENTER_RECORD_INTERVAL
     EXTERNAL_FLASH_ENABLE = ProtocolEvent.EXTERNAL_FLASH_ENABLE
     EXTERNAL_FLASH_DISABLE = ProtocolEvent.EXTERNAL_FLASH_DISABLE
+    START_DIRECT = DriverEvent.START_DIRECT
+    STOP_DIRECT = DriverEvent.STOP_DIRECT
 
 
 class Command(BaseEnum):
@@ -397,11 +399,9 @@ class Protocol(CommandResponseInstrumentProtocol):
         """
         Populate the command dictionary with command.
         """
-        self._cmd_dict.add(Capability.START_AUTOSAMPLE, display_name="start autosample")
-        self._cmd_dict.add(Capability.STOP_AUTOSAMPLE, display_name="stop autosample")
-        self._cmd_dict.add(Capability.ACQUIRE_SAMPLE, display_name="acquire sample")
-        self._cmd_dict.add(Capability.SET, display_name="set")
-        self._cmd_dict.add(Capability.GET, display_name="get")
+        self._cmd_dict.add(Capability.START_AUTOSAMPLE, display_name="Start Autosample")
+        self._cmd_dict.add(Capability.STOP_AUTOSAMPLE, display_name="Stop Autosample")
+        self._cmd_dict.add(Capability.ACQUIRE_SAMPLE, display_name="Acquire Sample")
 
     def _build_param_dict(self):
         """

@@ -119,6 +119,10 @@ class Capability(BaseEnum):
     """
     START_AUTOSAMPLE = ProtocolEvent.START_AUTOSAMPLE
     STOP_AUTOSAMPLE = ProtocolEvent.STOP_AUTOSAMPLE
+    GET = DriverEvent.GET
+    SET = DriverEvent.SET
+    START_DIRECT = DriverEvent.START_DIRECT
+    STOP_DIRECT = DriverEvent.STOP_DIRECT
 
 
 class Prompt(BaseEnum):

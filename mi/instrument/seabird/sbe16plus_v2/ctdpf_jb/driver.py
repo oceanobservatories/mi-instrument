@@ -147,6 +147,10 @@ class Capability(BaseEnum):
     STOP_AUTOSAMPLE = DriverEvent.STOP_AUTOSAMPLE
     CLOCK_SYNC = DriverEvent.CLOCK_SYNC
     ACQUIRE_STATUS = DriverEvent.ACQUIRE_STATUS
+    GET = DriverEvent.GET
+    SET = DriverEvent.SET
+    START_DIRECT = DriverEvent.START_DIRECT
+    STOP_DIRECT = DriverEvent.STOP_DIRECT
 
 
 class Parameter(DriverParameter):
@@ -1887,7 +1891,7 @@ class SBE19Protocol(SBE16Protocol):
         self._cmd_dict.add(Capability.ACQUIRE_SAMPLE, display_name="Acquire Sample")
         self._cmd_dict.add(Capability.START_AUTOSAMPLE, display_name="Start Autosample")
         self._cmd_dict.add(Capability.STOP_AUTOSAMPLE, display_name="Stop Autosample")
-        self._cmd_dict.add(Capability.CLOCK_SYNC, display_name="Clock Sync")
+        self._cmd_dict.add(Capability.CLOCK_SYNC, display_name="Synchronize Clock")
         self._cmd_dict.add(Capability.ACQUIRE_STATUS, display_name="Acquire Status")
 
     def _build_param_dict(self):

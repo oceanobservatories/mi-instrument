@@ -115,6 +115,10 @@ class SBE37Capability(BaseEnum):
     ACQUIRE_STATUS  = SBE37ProtocolEvent.ACQUIRE_STATUS
     ACQUIRE_CONFIGURATION = SBE37ProtocolEvent.ACQUIRE_CONFIGURATION
     GAP_RECOVERY = SBE37ProtocolEvent.GAP_RECOVERY
+    GET = DriverEvent.GET
+    SET = DriverEvent.SET
+    START_DIRECT = DriverEvent.START_DIRECT
+    STOP_DIRECT = DriverEvent.STOP_DIRECT
 
 # Device specific parameters.
 class SBE37Parameter(DriverParameter):
@@ -1521,13 +1525,13 @@ class SBE37Protocol(CommandResponseInstrumentProtocol):
         """
         Populate the command dictionary with command.
         """
-        self._cmd_dict.add(SBE37Capability.ACQUIRE_STATUS, display_name="acquire status")
-        self._cmd_dict.add(SBE37Capability.TEST, display_name="test instrument")
-        self._cmd_dict.add(SBE37Capability.START_AUTOSAMPLE, display_name="start autosample")
-        self._cmd_dict.add(SBE37Capability.STOP_AUTOSAMPLE, display_name="stop autosample")
-        self._cmd_dict.add(SBE37Capability.ACQUIRE_CONFIGURATION, display_name="get configuration data")
-        self._cmd_dict.add(SBE37Capability.ACQUIRE_SAMPLE, display_name="acquire sample")
-        self._cmd_dict.add(SBE37Capability.GAP_RECOVERY, display_name="recover gap data")
+        self._cmd_dict.add(SBE37Capability.ACQUIRE_STATUS, display_name="Acquire Status")
+        self._cmd_dict.add(SBE37Capability.TEST, display_name="Test Instrument")
+        self._cmd_dict.add(SBE37Capability.START_AUTOSAMPLE, display_name="Start Autosample")
+        self._cmd_dict.add(SBE37Capability.STOP_AUTOSAMPLE, display_name="Stop Autosample")
+        self._cmd_dict.add(SBE37Capability.ACQUIRE_CONFIGURATION, display_name="Get Configuration Data")
+        self._cmd_dict.add(SBE37Capability.ACQUIRE_SAMPLE, display_name="Acquire Sample")
+        self._cmd_dict.add(SBE37Capability.GAP_RECOVERY, display_name="Recover Gap Data")
 
     def _build_param_dict(self):
         """

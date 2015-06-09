@@ -209,6 +209,10 @@ class TeledyneCapability(BaseEnum):
     GET_CALIBRATION = TeledyneProtocolEvent.GET_CALIBRATION
     RUN_TEST_200 = TeledyneProtocolEvent.RUN_TEST_200
     ACQUIRE_STATUS = TeledyneProtocolEvent.ACQUIRE_STATUS
+    GET = DriverEvent.GET
+    SET = DriverEvent.SET
+    START_DIRECT = DriverEvent.START_DIRECT
+    STOP_DIRECT = DriverEvent.STOP_DIRECT
 
 
 class TeledyneScheduledJob(BaseEnum):

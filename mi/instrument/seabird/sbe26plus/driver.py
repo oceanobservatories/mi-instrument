@@ -148,6 +148,10 @@ class Capability(BaseEnum):
     SEND_LAST_SAMPLE = ProtocolEvent.SEND_LAST_SAMPLE
     QUIT_SESSION = ProtocolEvent.QUIT_SESSION
     CLOCK_SYNC = ProtocolEvent.CLOCK_SYNC
+    GET = DriverEvent.GET
+    SET = DriverEvent.SET
+    START_DIRECT = DriverEvent.START_DIRECT
+    STOP_DIRECT = DriverEvent.STOP_DIRECT
 
 class Parameter(DriverParameter):
     """
@@ -2021,13 +2025,13 @@ class Protocol(SeaBirdProtocol):
         """
         Populate the command dictionary with command.
         """
-        self._cmd_dict.add(Capability.ACQUIRE_STATUS, display_name="acquire status")
-        self._cmd_dict.add(Capability.CLOCK_SYNC, display_name="sync clock")
-        self._cmd_dict.add(Capability.START_AUTOSAMPLE, display_name="start autosample")
-        self._cmd_dict.add(Capability.STOP_AUTOSAMPLE, display_name="stop autosample")
-        self._cmd_dict.add(Capability.ACQUIRE_CONFIGURATION, display_name="get configuration data")
-        self._cmd_dict.add(Capability.SEND_LAST_SAMPLE, display_name="get last sample")
-        self._cmd_dict.add(Capability.QUIT_SESSION, display_name="quit session")
+        self._cmd_dict.add(Capability.ACQUIRE_STATUS, display_name="Acquire Status")
+        self._cmd_dict.add(Capability.CLOCK_SYNC, display_name="Synchronize Clock")
+        self._cmd_dict.add(Capability.START_AUTOSAMPLE, display_name="Start Autosample")
+        self._cmd_dict.add(Capability.STOP_AUTOSAMPLE, display_name="Stop Autosample")
+        self._cmd_dict.add(Capability.ACQUIRE_CONFIGURATION, display_name="Get Configuration Data")
+        self._cmd_dict.add(Capability.SEND_LAST_SAMPLE, display_name="Get Last Sample")
+        self._cmd_dict.add(Capability.QUIT_SESSION, display_name="Quit Session")
 
     def _build_param_dict(self):
         """

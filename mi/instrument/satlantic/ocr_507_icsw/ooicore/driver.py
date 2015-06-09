@@ -142,8 +142,10 @@ class SatlanticCapability(BaseEnum):
     START_AUTOSAMPLE = SatlanticProtocolEvent.START_AUTOSAMPLE
     STOP_AUTOSAMPLE = SatlanticProtocolEvent.STOP_AUTOSAMPLE
     ACQUIRE_STATUS = SatlanticProtocolEvent.ACQUIRE_STATUS
-    RESET = SatlanticProtocolEvent.RESET
-
+    GET = DriverEvent.GET
+    SET = DriverEvent.SET
+    START_DIRECT = DriverEvent.START_DIRECT
+    STOP_DIRECT = DriverEvent.STOP_DIRECT
 
 class Parameter(DriverParameter):
     MAX_RATE = 'maxrate'

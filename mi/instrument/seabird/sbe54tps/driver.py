@@ -147,7 +147,10 @@ class Capability(BaseEnum):
     GET_STATUS_DATA = ProtocolEvent.GET_STATUS_DATA
     GET_EVENT_COUNTER = ProtocolEvent.GET_EVENT_COUNTER
     GET_HARDWARE_DATA = ProtocolEvent.GET_HARDWARE_DATA
-
+    GET = DriverEvent.GET
+    SET = DriverEvent.SET
+    START_DIRECT = DriverEvent.START_DIRECT
+    STOP_DIRECT = DriverEvent.STOP_DIRECT
 
 # Device specific parameters.
 class Parameter(DriverParameter):
@@ -1739,16 +1742,16 @@ class Protocol(SeaBirdProtocol):
         """
         Populate the command dictionary with command.
         """
-        self._cmd_dict.add(Capability.ACQUIRE_STATUS, display_name="acquire status")
-        self._cmd_dict.add(Capability.CLOCK_SYNC, display_name="sync clock")
-        self._cmd_dict.add(Capability.GET_CONFIGURATION_DATA, display_name="get configuration data")
-        self._cmd_dict.add(Capability.GET_EVENT_COUNTER, display_name="get event counter")
-        self._cmd_dict.add(Capability.GET_HARDWARE_DATA, display_name="get hardware data")
-        self._cmd_dict.add(Capability.GET_STATUS_DATA, display_name="get status data")
-        self._cmd_dict.add(Capability.SAMPLE_REFERENCE_OSCILLATOR, display_name="sample reference oscillator")
-        self._cmd_dict.add(Capability.START_AUTOSAMPLE, display_name="start autosample")
-        self._cmd_dict.add(Capability.STOP_AUTOSAMPLE, display_name="stop autosample")
-        self._cmd_dict.add(Capability.TEST_EEPROM, display_name="test eeprom")
+        self._cmd_dict.add(Capability.ACQUIRE_STATUS, display_name="Acquire Status")
+        self._cmd_dict.add(Capability.CLOCK_SYNC, display_name="Synchronize Clock")
+        self._cmd_dict.add(Capability.GET_CONFIGURATION_DATA, display_name="Get Configuration Data")
+        self._cmd_dict.add(Capability.GET_EVENT_COUNTER, display_name="Get Event Counter")
+        self._cmd_dict.add(Capability.GET_HARDWARE_DATA, display_name="Get Hardware Data")
+        self._cmd_dict.add(Capability.GET_STATUS_DATA, display_name="Get Status Data")
+        self._cmd_dict.add(Capability.SAMPLE_REFERENCE_OSCILLATOR, display_name="Sample Reference Oscillator")
+        self._cmd_dict.add(Capability.START_AUTOSAMPLE, display_name="Start Autosample")
+        self._cmd_dict.add(Capability.STOP_AUTOSAMPLE, display_name="Stop Autosample")
+        self._cmd_dict.add(Capability.TEST_EEPROM, display_name="Test Eeprom")
 
     def _build_param_dict(self):
         """

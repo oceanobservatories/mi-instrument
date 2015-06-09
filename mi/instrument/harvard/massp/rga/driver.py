@@ -542,9 +542,9 @@ class Protocol(CommandResponseInstrumentProtocol):
         """
         Populate the command dictionary with commands.
         """
-        self._cmd_dict.add(Capability.START_SCAN, display_name="Start scan")
-        self._cmd_dict.add(Capability.STOP_SCAN, display_name="Stop scan")
-        self._cmd_dict.add(Capability.CLEAR, display_name="Clear the error state")
+        self._cmd_dict.add(Capability.START_SCAN, display_name="Start Scan")
+        self._cmd_dict.add(Capability.STOP_SCAN, display_name="Stop Scan")
+        self._cmd_dict.add(Capability.CLEAR, display_name="Clear Error State")
 
     def _build_driver_dict(self):
         """

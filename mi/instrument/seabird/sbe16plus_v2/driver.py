@@ -126,6 +126,8 @@ class Capability(BaseEnum):
     GET_CONFIGURATION = ProtocolEvent.GET_CONFIGURATION
     TEST = DriverEvent.TEST
     RESET_EC = ProtocolEvent.RESET_EC
+    START_DIRECT = DriverEvent.START_DIRECT
+    STOP_DIRECT = DriverEvent.STOP_DIRECT
 
 # Device specific parameters.
 class Parameter(DriverParameter):
@@ -1612,14 +1614,14 @@ class SBE16Protocol(SeaBirdProtocol):
         """
         Populate the command dictionary with command.
         """
-        self._cmd_dict.add(Capability.QUIT_SESSION, display_name="acquire status")
-        self._cmd_dict.add(Capability.START_AUTOSAMPLE, display_name="start autosample")
-        self._cmd_dict.add(Capability.STOP_AUTOSAMPLE, display_name="stop autosample")
-        self._cmd_dict.add(Capability.CLOCK_SYNC, display_name="synchronize clock")
-        self._cmd_dict.add(Capability.ACQUIRE_STATUS, display_name="acquire status")
-        self._cmd_dict.add(Capability.GET_CONFIGURATION, display_name="get calibrations")
-        self._cmd_dict.add(Capability.TEST, display_name="test eeprom")
-        self._cmd_dict.add(Capability.RESET_EC, display_name="test eeprom")
+        self._cmd_dict.add(Capability.QUIT_SESSION, display_name="Acquire Status")
+        self._cmd_dict.add(Capability.START_AUTOSAMPLE, display_name="Start Autosample")
+        self._cmd_dict.add(Capability.STOP_AUTOSAMPLE, display_name="Stop Autosample")
+        self._cmd_dict.add(Capability.CLOCK_SYNC, display_name="Synchronize Clock")
+        self._cmd_dict.add(Capability.ACQUIRE_STATUS, display_name="Acquire Status")
+        self._cmd_dict.add(Capability.GET_CONFIGURATION, display_name="Get Calibrations")
+        self._cmd_dict.add(Capability.TEST, display_name="Test Eeprom")
+        self._cmd_dict.add(Capability.RESET_EC, display_name="Reset EC")
 
     def _build_param_dict(self):
         """
