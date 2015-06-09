@@ -479,9 +479,9 @@ class Protocol(CommandResponseInstrumentProtocol):
         Populate the command dictionary with commands.
         """
         self._cmd_dict.add(Capability.ACQUIRE_STATUS, display_name="Acquire status")
-        self._cmd_dict.add(Capability.START_TURBO, display_name="Start turbo")
-        self._cmd_dict.add(Capability.STOP_TURBO, display_name="Stop turbo")
-        self._cmd_dict.add(Capability.CLEAR, display_name="Clear error state")
+        self._cmd_dict.add(Capability.START_TURBO, display_name="Start Turbo")
+        self._cmd_dict.add(Capability.STOP_TURBO, display_name="Stop Turbo")
+        self._cmd_dict.add(Capability.CLEAR, display_name="Clear Error State")
 
     def _build_driver_dict(self):
         """

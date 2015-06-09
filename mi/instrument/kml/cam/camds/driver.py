@@ -663,6 +663,12 @@ class Capability(BaseEnum):
     SET_PRESET = ProtocolEvent.SET_PRESET
     GOTO_PRESET = ProtocolEvent.GOTO_PRESET
 
+    GET = DriverEvent.GET
+    SET = DriverEvent.SET
+
+    START_DIRECT = DriverEvent.START_DIRECT
+    STOP_DIRECT = DriverEvent.STOP_DIRECT
+
 
 class ScheduledJob(BaseEnum):
     SAMPLE = 'sample'
@@ -1297,35 +1303,35 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
                            description="Set the preset number")
         self._cmd_dict.add(Capability.LAMP_OFF,
                            timeout=DEFAULT_DICT_TIMEOUT,
-                           display_name="lamp off",
+                           display_name="Lamp Off",
                            description="Turn off the lamp")
         self._cmd_dict.add(Capability.LAMP_ON,
                            timeout=DEFAULT_DICT_TIMEOUT,
-                           display_name="lamp on",
+                           display_name="Lamp On",
                            description="Turn on the lamp")
         self._cmd_dict.add(Capability.LASER_1_OFF,
                            timeout=DEFAULT_DICT_TIMEOUT,
-                           display_name="Laser 1  off",
+                           display_name="Laser 1 Off",
                            description="Turn off the laser #1")
         self._cmd_dict.add(Capability.LASER_2_OFF,
                            timeout=DEFAULT_DICT_TIMEOUT,
-                           display_name="Laser 2 off",
+                           display_name="Laser 2 Off",
                            description="Turn off the laser #2")
         self._cmd_dict.add(Capability.LASER_BOTH_OFF,
                            timeout=DEFAULT_DICT_TIMEOUT,
-                           display_name="Laser off",
+                           display_name="Laser Off",
                            description="Turn off the all laser")
         self._cmd_dict.add(Capability.LASER_1_ON,
                            timeout=DEFAULT_DICT_TIMEOUT,
-                           display_name="Laser 1  on",
+                           display_name="Laser 1 On",
                            description="Turn on the laser #1")
         self._cmd_dict.add(Capability.LASER_2_ON,
                            timeout=DEFAULT_DICT_TIMEOUT,
-                           display_name="Laser 2 on",
+                           display_name="Laser 2 On",
                            description="Turn on the laser #2")
         self._cmd_dict.add(Capability.LASER_BOTH_ON,
                            timeout=DEFAULT_DICT_TIMEOUT,
-                           display_name="Laser on",
+                           display_name="Laser On",
                            description="Turn on the all laser")
         self._cmd_dict.add(Capability.STOP_CAPTURE,
                            timeout=DEFAULT_DICT_TIMEOUT,

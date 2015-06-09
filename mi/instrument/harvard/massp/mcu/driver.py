@@ -658,7 +658,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         self._cmd_dict.add(Capability.NAFREG, display_name="Execute U ANAFREG3")
         self._cmd_dict.add(Capability.IONREG, display_name="Execute U AIONREG3")
         self._cmd_dict.add(Capability.STANDBY, display_name="Execute U ASTANDBY")
-        self._cmd_dict.add(Capability.CLEAR, display_name="Clear the driver error state")
+        self._cmd_dict.add(Capability.CLEAR, display_name="Clear Error State")
         self._cmd_dict.add(Capability.POWEROFF, display_name="Execute U APOWEROFF")
 
     def _build_driver_dict(self):

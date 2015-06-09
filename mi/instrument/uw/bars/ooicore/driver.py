@@ -170,6 +170,8 @@ class Capability(BaseEnum):
     START_AUTOSAMPLE = ProtocolEvent.START_AUTOSAMPLE
     STOP_AUTOSAMPLE = ProtocolEvent.STOP_AUTOSAMPLE
     ACQUIRE_STATUS = ProtocolEvent.ACQUIRE_STATUS
+    START_DIRECT = DriverEvent.START_DIRECT
+    STOP_DIRECT = DriverEvent.STOP_DIRECT
 
 
 # Device specific parameters.
@@ -1104,11 +1106,9 @@ class Protocol(MenuInstrumentProtocol):
         """
         Populate the command dictionary with command.
         """
-        self._cmd_dict.add(Capability.START_AUTOSAMPLE, display_name="start autosample")
-        self._cmd_dict.add(Capability.STOP_AUTOSAMPLE, display_name="stop autosample")
-        self._cmd_dict.add(Capability.GET, display_name="get")
-        self._cmd_dict.add(Capability.SET, display_name="set")
-        self._cmd_dict.add(Capability.ACQUIRE_STATUS, display_name="acquire status")
+        self._cmd_dict.add(Capability.START_AUTOSAMPLE, display_name="Start Autosample")
+        self._cmd_dict.add(Capability.STOP_AUTOSAMPLE, display_name="Stop Autosample")
+        self._cmd_dict.add(Capability.ACQUIRE_STATUS, display_name="Acquire Status")
 
     def _build_param_dict(self):
         """
