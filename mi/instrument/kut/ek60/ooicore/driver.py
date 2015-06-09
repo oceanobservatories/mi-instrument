@@ -579,8 +579,6 @@ class Protocol(CommandResponseInstrumentProtocol):
         """
         self._cmd_dict.add(Capability.START_AUTOSAMPLE, display_name="Start Autosample")
         self._cmd_dict.add(Capability.STOP_AUTOSAMPLE, display_name="Stop Autosample")
-        self._cmd_dict.add(Capability.GET, display_name="Get")
-        self._cmd_dict.add(Capability.SET, display_name="Set")
         self._cmd_dict.add(Capability.ACQUIRE_STATUS, display_name="Acquire Status")
 
     def _filter_capabilities(self, events):

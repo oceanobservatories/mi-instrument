@@ -135,7 +135,10 @@ class Capability(BaseEnum):
     ACQUIRE_STATUS = ProtocolEvent.ACQUIRE_STATUS
     SAMPLE_REFERENCE_OSCILLATOR = ProtocolEvent.SAMPLE_REFERENCE_OSCILLATOR
     TEST_EEPROM = ProtocolEvent.TEST_EEPROM
-
+    GET = DriverEvent.GET
+    SET = DriverEvent.SET
+    START_DIRECT = DriverEvent.START_DIRECT
+    STOP_DIRECT = DriverEvent.STOP_DIRECT
 
 # Device specific parameters.
 class Parameter(DriverParameter):
@@ -1000,12 +1003,12 @@ class Protocol(SeaBirdProtocol):
         """
         Populate the command dictionary with command.
         """
-        self._cmd_dict.add(Capability.ACQUIRE_STATUS, display_name="acquire status")
-        self._cmd_dict.add(Capability.CLOCK_SYNC, display_name="sync clock")
-        self._cmd_dict.add(Capability.SAMPLE_REFERENCE_OSCILLATOR, display_name="sample reference oscillator")
-        self._cmd_dict.add(Capability.START_AUTOSAMPLE, display_name="start autosample")
-        self._cmd_dict.add(Capability.STOP_AUTOSAMPLE, display_name="stop autosample")
-        self._cmd_dict.add(Capability.TEST_EEPROM, display_name="test eeprom")
+        self._cmd_dict.add(Capability.ACQUIRE_STATUS, display_name="Acquire Status")
+        self._cmd_dict.add(Capability.CLOCK_SYNC, display_name="Synchronize Clock")
+        self._cmd_dict.add(Capability.SAMPLE_REFERENCE_OSCILLATOR, display_name="Sample Reference Oscillator")
+        self._cmd_dict.add(Capability.START_AUTOSAMPLE, display_name="Start Autosample")
+        self._cmd_dict.add(Capability.STOP_AUTOSAMPLE, display_name="Stop Autosample")
+        self._cmd_dict.add(Capability.TEST_EEPROM, display_name="Test EEPROM")
 
     def _send_wakeup(self):
         pass

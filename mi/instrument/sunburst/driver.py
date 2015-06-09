@@ -214,6 +214,10 @@ class SamiCapability(BaseEnum):
 
     REAGENT_FLUSH = SamiProtocolEvent.REAGENT_FLUSH
 
+    GET = DriverEvent.GET
+    SET = DriverEvent.SET
+    START_DIRECT = DriverEvent.START_DIRECT
+    STOP_DIRECT = DriverEvent.STOP_DIRECT
 
 class SamiParameter(DriverParameter):
     """

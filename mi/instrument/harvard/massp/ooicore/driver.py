@@ -122,6 +122,10 @@ class Capability(mcu.Capability, turbo.Capability, rga.Capability):
     START_MANUAL = ProtocolEvent.START_MANUAL
     STOP_MANUAL = ProtocolEvent.STOP_MANUAL
     GET_SLAVE_STATES = ProtocolEvent.GET_SLAVE_STATES
+    GET = DriverEvent.GET
+    SET = DriverEvent.SET
+    START_DIRECT = DriverEvent.START_DIRECT
+    STOP_DIRECT = DriverEvent.STOP_DIRECT
 
 
 class Parameter(DriverParameter):
@@ -520,16 +524,16 @@ class Protocol(InstrumentProtocol):
         """
         Populate the command dictionary with commands.
         """
-        self._cmd_dict.add(Capability.ACQUIRE_SAMPLE, display_name="Acquire one sample")
-        self._cmd_dict.add(Capability.START_AUTOSAMPLE, display_name="Start autosample")
-        self._cmd_dict.add(Capability.CALIBRATE, display_name="Acquire calibration samples")
-        self._cmd_dict.add(Capability.START_ION, display_name="Start the ion chamber regeneration sequence")
-        self._cmd_dict.add(Capability.START_NAFION, display_name="Start the nafion regeneration sequence")
-        self._cmd_dict.add(Capability.STOP_REGEN, display_name="Stop the current regeneration sequence")
-        self._cmd_dict.add(Capability.STOP_AUTOSAMPLE, display_name="Stop autosample")
-        self._cmd_dict.add(Capability.POWEROFF, display_name='Issue the "Power Off" command to the instrument')
+        self._cmd_dict.add(Capability.ACQUIRE_SAMPLE, display_name="Acquire Sample")
+        self._cmd_dict.add(Capability.START_AUTOSAMPLE, display_name="Start Autosample")
+        self._cmd_dict.add(Capability.CALIBRATE, display_name="Acquire Calibration Samples")
+        self._cmd_dict.add(Capability.START_ION, display_name="Start Ion Chamber Regeneration")
+        self._cmd_dict.add(Capability.START_NAFION, display_name="Start Nafion Regeneration")
+        self._cmd_dict.add(Capability.STOP_REGEN, display_name="Stop Current Regeneration")
+        self._cmd_dict.add(Capability.STOP_AUTOSAMPLE, display_name="Stop Autosample")
+        self._cmd_dict.add(Capability.POWEROFF, display_name='Low Power State')
         self._cmd_dict.add(Capability.GET_SLAVE_STATES,
-                           display_name='Report the states of the underlying slave protocols')
+                           display_name='Get Slave States')
 
     def _build_driver_dict(self):
         """
