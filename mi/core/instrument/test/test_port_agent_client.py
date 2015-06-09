@@ -196,7 +196,7 @@ class PAClientUnitTestCase(InstrumentDriverUnitTestCase):
         # Test INSTRUMENT_COMMAND; handle_packet should invoke raw callback.
         ###
         self.resetTestVars()
-        pa_packet = PortAgentPacket(PortAgentPacket.INSTRUMENT_COMMAND)
+        pa_packet = PortAgentPacket(PortAgentPacket.DIGI_CMD)
         pa_packet.attach_data(test_data)
         pa_packet.pack_header()
         pa_packet.verify_checksum()

@@ -50,6 +50,7 @@ MAX_RECOVERY_ATTEMPTS = 1  # !! MUST BE 1 and ONLY 1 (see above comment) !!
 MIN_RETRY_WINDOW = 2  # 2 seconds
 
 MAX_SEND_ATTEMPTS = 15  # Max number of times we can get EAGAIN
+NEWLINE = '\n'
 
 
 class SocketClosed(Exception):
@@ -69,11 +70,10 @@ class PortAgentPacket:
     PORT_AGENT_COMMAND = 3
     PORT_AGENT_STATUS = 4
     PORT_AGENT_FAULT = 5
-    INSTRUMENT_COMMAND = 6
-    HEARTBEAT = 7
-    PORT_AGENT_CONFIG = 8
-    PICKLED_DATA_FROM_INSTRUMENT = 9
-    PICKLED_DATA_FROM_DRIVER = 10
+    PORT_AGENT_CONFIG = 6
+    DIGI_CMD = 7
+    DIGI_RSP = 8
+    HEARTBEAT = 9
 
     def __init__(self, packet_type=None):
         self.__header = None
@@ -474,6 +474,8 @@ class PortAgentClient(object):
                         currently do this on init  where is should happen because
                         some instruments wont set the  command port quite yet.
         """
+        if not cmd.endswith(NEWLINE):
+            cmd += NEWLINE
         try:
             if not self.cmd_port:
                 raise InstrumentConnectionException("Missing port agent command port config")
@@ -720,35 +722,21 @@ class Listener(threading.Thread):
 
     def handle_packet(self, pa_packet):
         packet_type = pa_packet.get_header_type()
-
-        if packet_type == PortAgentPacket.DATA_FROM_INSTRUMENT:
-            self.callback_raw(pa_packet)
-            self.callback_data(pa_packet)
-        elif packet_type == PortAgentPacket.DATA_FROM_DRIVER:
-            self.callback_raw(pa_packet)
-        elif packet_type == PortAgentPacket.PICKLED_DATA_FROM_INSTRUMENT:
-            self.callback_raw(pa_packet)
-            self.callback_data(pa_packet)
-        elif packet_type == PortAgentPacket.PICKLED_DATA_FROM_DRIVER:
-            self.callback_raw(pa_packet)
-        elif packet_type == PortAgentPacket.PORT_AGENT_COMMAND:
-            self.callback_raw(pa_packet)
-        elif packet_type == PortAgentPacket.PORT_AGENT_STATUS:
-            self.callback_raw(pa_packet)
-        elif packet_type == PortAgentPacket.PORT_AGENT_CONFIG:
-            self.callback_config(pa_packet)
-        elif packet_type == PortAgentPacket.PORT_AGENT_FAULT:
-            self.callback_raw(pa_packet)
-        elif packet_type == PortAgentPacket.INSTRUMENT_COMMAND:
-            self.callback_raw(pa_packet)
-        elif packet_type == PortAgentPacket.HEARTBEAT:
+        if packet_type == PortAgentPacket.HEARTBEAT:
             # Got a heartbeat; reset the timer and re-init
             # heartbeat_missed_count.
             log.debug("HEARTBEAT Packet Received")
             if 0 < self.heartbeat:
                 self.start_heartbeat_timer()
-
             self.heartbeat_missed_count = self.max_missed_heartbeats
+
+        else:
+            self.callback_raw(pa_packet)
+
+            if packet_type == PortAgentPacket.DATA_FROM_INSTRUMENT:
+                self.callback_data(pa_packet)
+            elif packet_type == PortAgentPacket.PORT_AGENT_CONFIG:
+                self.callback_config(pa_packet)
 
     def run(self):
         """
