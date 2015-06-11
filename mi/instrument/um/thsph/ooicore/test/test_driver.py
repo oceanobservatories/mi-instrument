@@ -127,7 +127,7 @@ class THSPHMixinSub(DriverTestMixin):
     _driver_parameters = {
         # Parameters defined in the IOS
         Parameter.INTERVAL: {TYPE: int, READONLY: False, DA: False, STARTUP: True},
-        Parameter.INSTRUMENT_SERIES: {TYPE: str, READONLY: False, DA: False, STARTUP: True},
+        Parameter.INSTRUMENT_SERIES: {TYPE: str, READONLY: True, DA: False, STARTUP: True},
     }
 
     _driver_capabilities = {
@@ -326,7 +326,7 @@ class DriverIntegrationTest(InstrumentDriverIntegrationTestCase, THSPHMixinSub):
         """
         self.assert_initialize_driver()
         self.assert_set(Parameter.INTERVAL, TEST_POLLED_INTERVAL)
-        self.assert_set(Parameter.INSTRUMENT_SERIES, TEST_INSTRUMENT_SERIES)
+        self.assert_set_exception(Parameter.INSTRUMENT_SERIES, TEST_INSTRUMENT_SERIES)
         self.assert_set_exception(Parameter.INTERVAL, TEST_INVALID_POLLED_INTERVAL)
 
     def test_data_on(self):
