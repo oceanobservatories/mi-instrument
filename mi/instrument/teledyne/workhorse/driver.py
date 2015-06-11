@@ -105,14 +105,14 @@ class WorkhorseProtocol(TeledyneProtocol):
                 #
                 matcher2 = re.compile(r'\x7f\x7f(..)', re.DOTALL)
                 for match in matcher2.finditer(raw_data):
-                    l = unpack("H", match.group(1))
-                    outer_pos = match.start()
-                    ADCP_PD0_PARSED_TRUE_MATCHER = re.compile(r'\x7f\x7f(.{' + str(l[0]) + '})', re.DOTALL)
-                    for _match in ADCP_PD0_PARSED_TRUE_MATCHER.finditer(raw_data, outer_pos):
-                        inner_pos = _match.start()
+                    length = unpack('<H', match.group(1))[0]
+                    # if there is another sentinel after this data
+                    # then we assume we have a valid record. The parser
+                    # will mark the data as invalid should the checksum fail
+                    end_index = match.start() + length + 2
+                    if raw_data[end_index:end_index+2] == '\x7f\x7f':
+                        return_list.append((match.start(), end_index))
 
-                        if outer_pos == inner_pos:
-                            return_list.append((_match.start(), _match.end()))
             else:
                 for match in matcher.finditer(raw_data):
                     return_list.append((match.start(), match.end()))
