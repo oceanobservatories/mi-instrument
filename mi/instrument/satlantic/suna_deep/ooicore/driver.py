@@ -13,7 +13,7 @@ __license__ = 'Apache 2.0'
 import re
 import datetime
 
-from mi.core.common import BaseEnum, Units
+from mi.core.common import BaseEnum, Units, Prefixes
 from mi.core.log import get_logger, get_logging_metaclass
 log = get_logger()
 
@@ -208,11 +208,6 @@ SUNA_TEST_REGEX = re.compile(SUNA_TEST_PATTERN)
 ###
 #    Driver Constant Definitions
 ###
-class ParameterUnit(BaseEnum):
-    DECISIEMENS = 'dS'
-    MEGABYTE = 'MB'
-
-
 class DataParticleType(BaseEnum):
     """
     Data particle types produced by this driver
@@ -297,7 +292,7 @@ class Parameter(DriverParameter):
     TEMP_COMPENSATION = "tempcomp"
     FIT_WAVELENGTH_LOW = "wfit_low"     # read/get only
     FIT_WAVELENGTH_HIGH = "wfit_hgh"    # read/get only
-    FIT_WAVELENGTH_BOTH = "wfitboth"    # set only
+    #FIT_WAVELENGTH_BOTH = "wfitboth"    # set only DO NOT USE, COMBINE LOW/HIGH FOR EASIER OPERATOR USE
     CONCENTRATIONS_IN_FIT = "fitconcs"
     BASELINE_ORDER = "bl_order"
     DARK_CORRECTION_METHOD = "drkcormt"
@@ -917,7 +912,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                              direct_access=True,
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name="Operation Mode",
-                             description='Operation mode: Continuous or Polled')
+                             description='Operation mode: (Continuous | Polled) ')
 
         self._param_dict.add(Parameter.OPERATION_CONTROL,
                              r'OPERCTRL\s(\S*)',
@@ -928,7 +923,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                              direct_access=True,
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name="Operation Control",
-                             description='Operation control: Samples or Duration')
+                             description='Operation control: (Samples | Duration)')
 
         self._param_dict.add(Parameter.LIGHT_SAMPLES,
                              r'LGTSMPLS\s(\S*)',
@@ -961,7 +956,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                              direct_access=True,
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name="Light Duration",
-                             description='Light duration in seconds',
+                             description='How long lamp is on during sample collect.',
                              units=Units.SECOND)
 
         self._param_dict.add(Parameter.DARK_DURATION,
@@ -973,7 +968,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                              direct_access=True,
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name="Dark Duration",
-                             description='Dark duration in seconds',
+                             description='How long lamp is off during sample collect.',
                              units=Units.SECOND)
 
         self._param_dict.add(Parameter.POLLED_TIMEOUT,
@@ -999,7 +994,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                              default_value=True,
                              visibility=ParameterDictVisibility.IMMUTABLE,
                              display_name="Skip Sleep at Start",
-                             description='Skip putting instrument to sleep at start.')
+                             description='Disable sleep at start: (true | false)')
 
         self._param_dict.add(Parameter.COUNTDOWN,
                              r'COUNTDWN\s(\S*)',
@@ -1012,6 +1007,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                              default_value=15,
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name="Countdown",
+                             description="How long to wait before starting sampling.",
                              units=Units.SECOND)
 
         self._param_dict.add(Parameter.REF_MIN_AT_LAMP_ON,
@@ -1022,7 +1018,10 @@ class Protocol(CommandResponseInstrumentProtocol):
                              startup_param=False,
                              direct_access=False,
                              visibility=ParameterDictVisibility.READ_ONLY,
-                             display_name="Reference Minute at Lamp-On")
+                             units=Units.COUNTS,
+                             display_name="Reference Minute at Lamp-On",
+                             description="When switching on the lamp, the reference detector must register at least "
+                                         "the specified number of counts")
 
         self._param_dict.add(Parameter.LAMP_STABIL_TIME,
                              r'STBLTIME\s(\S*)',
@@ -1034,7 +1033,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                              default_value=5,
                              visibility=ParameterDictVisibility.IMMUTABLE,
                              display_name="Lamp Stability Time",
-                             units=ParameterUnit.DECISIEMENS)
+                             units=Prefixes.DECI + Units.SECOND)
 
         self._param_dict.add(Parameter.LAMP_SWITCH_OFF_TEMPERATURE,
                              r'LAMPTOFF\s(\S*)',
@@ -1071,7 +1070,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                              default_value="Info",
                              visibility=ParameterDictVisibility.IMMUTABLE,
                              display_name="Message Level",
-                             description="Level of logging: Error, Warn, Info, Debug")
+                             description="Level of logging: (Error | Warn | Info | Debug)")
 
         self._param_dict.add(Parameter.MESSAGE_FILE_SIZE,
                              r'MSGFSIZE\s(\S*)',
@@ -1083,7 +1082,8 @@ class Protocol(CommandResponseInstrumentProtocol):
                              default_value=0,
                              visibility=ParameterDictVisibility.IMMUTABLE,
                              display_name="Message File Size",
-                             units=ParameterUnit.MEGABYTE)
+                             description="Set size of logging file",
+                             units=Prefixes.MEGA + Units.BYTE)
 
         self._param_dict.add(Parameter.DATA_FILE_SIZE,
                              r'DATFSIZE\s(\S*)',
@@ -1095,7 +1095,8 @@ class Protocol(CommandResponseInstrumentProtocol):
                              default_value=5,
                              visibility=ParameterDictVisibility.IMMUTABLE,
                              display_name="Data File Size",
-                             units=ParameterUnit.MEGABYTE)
+                             description="Set size of data collection file",
+                             units=Prefixes.MEGA + Units.BYTE)
 
         self._param_dict.add(Parameter.OUTPUT_FRAME_TYPE,
                              r'OUTFRTYP\s(\S*)',
@@ -1106,7 +1107,8 @@ class Protocol(CommandResponseInstrumentProtocol):
                              direct_access=True,
                              default_value="Full_ASCII",
                              visibility=ParameterDictVisibility.IMMUTABLE,
-                             display_name="Output Frame Type")
+                             display_name="Output Frame Type",
+                             description="Type: (Full_ASCII | Full_Binary | Reduced_Binary | Concentration | APF | MBARI | None)")
 
         self._param_dict.add(Parameter.OUTPUT_DARK_FRAME,
                              r'OUTDRKFR\s(\S*)',
@@ -1117,7 +1119,8 @@ class Protocol(CommandResponseInstrumentProtocol):
                              direct_access=True,
                              default_value="Output",
                              visibility=ParameterDictVisibility.IMMUTABLE,
-                             display_name="Output Dark Frame")
+                             display_name="Output Dark Frame",
+                             description="Enable dark frame sampling: (Output | Suppress)")
 
         # DATA PROCESSING
         self._param_dict.add(Parameter.TEMP_COMPENSATION,
@@ -1130,17 +1133,18 @@ class Protocol(CommandResponseInstrumentProtocol):
                              default_value=False,
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name="Temperature Compensation",
-                             description="Temperature compensation")
+                             description="Enable temperature compensation: (true | false)")
 
         self._param_dict.add(Parameter.FIT_WAVELENGTH_LOW,
                              r'WFIT_LOW\s(\S*)',
                              lambda match: float(match.group(1)),
                              str,
                              type=ParameterDictType.FLOAT,
-                             startup_param=False,
-                             direct_access=False,
-                             visibility=ParameterDictVisibility.READ_ONLY,
+                             startup_param=True,
+                             direct_access=True,
+                             visibility=ParameterDictVisibility.READ_WRITE,
                              display_name="Fit Wavelength Low",
+                             description="Low value used for measuring nitrogen concentrations.",
                              units=Units.NANOMETER)
 
         self._param_dict.add(Parameter.FIT_WAVELENGTH_HIGH,
@@ -1148,22 +1152,11 @@ class Protocol(CommandResponseInstrumentProtocol):
                              lambda match: float(match.group(1)),
                              str,
                              type=ParameterDictType.FLOAT,
-                             startup_param=False,
-                             direct_access=False,
-                             visibility=ParameterDictVisibility.READ_ONLY,
-                             display_name="Fit Wavelength High",
-                             units=Units.NANOMETER)
-
-        self._param_dict.add(Parameter.FIT_WAVELENGTH_BOTH,
-                             r'WFIT_LOW\s(\S*)\s+WFIT_HGH\s(\S*)',
-                             lambda match: str(match.group(1) + ',' + match.group(2)),
-                             str,
-                             type=ParameterDictType.STRING,
                              startup_param=True,
                              direct_access=True,
-                             default_value="217.00,240.00",
                              visibility=ParameterDictVisibility.READ_WRITE,
-                             display_name="Fit Wavelength Both",
+                             display_name="Fit Wavelength High",
+                             description="High value used for measuring nitrogen concentrations.",
                              units=Units.NANOMETER)
 
         self._param_dict.add(Parameter.CONCENTRATIONS_IN_FIT,
@@ -1186,7 +1179,8 @@ class Protocol(CommandResponseInstrumentProtocol):
                              direct_access=False,
                              value=1,
                              visibility=ParameterDictVisibility.READ_ONLY,
-                             display_name="Baseline Order")
+                             display_name="Baseline Order",
+                             description="Function type to use: (1=Linear | 2=Quadratic")
 
         self._param_dict.add(Parameter.DARK_CORRECTION_METHOD,
                              r'DRKCORMT\s(\S*)',
@@ -1197,7 +1191,8 @@ class Protocol(CommandResponseInstrumentProtocol):
                              direct_access=True,
                              default_value="SpecAverage",
                              visibility=ParameterDictVisibility.READ_WRITE,
-                             display_name="Dark Correction Method")
+                             display_name="Dark Correction Method",
+                             description="Method: (SpecAverage | SWAverage)")
 
         self._param_dict.add(Parameter.SALINITY_FITTING,
                              r'SALINFIT\s(\S*)',
@@ -1208,7 +1203,8 @@ class Protocol(CommandResponseInstrumentProtocol):
                              direct_access=True,
                              default_value=True,
                              visibility=ParameterDictVisibility.READ_WRITE,
-                             display_name="Salinity Fitting")
+                             display_name="Salinity Fitting",
+                             description="Enable salinity matching: (true | false)")
 
         self._param_dict.add(Parameter.BROMIDE_TRACING,
                              r'BRMTRACE\s(\S*)',
@@ -1219,7 +1215,8 @@ class Protocol(CommandResponseInstrumentProtocol):
                              direct_access=True,
                              default_value=False,
                              visibility=ParameterDictVisibility.READ_WRITE,
-                             display_name="Bromide Tracing")
+                             display_name="Bromide Tracing",
+                             description="Enable bromide tracing: (true | false)")
 
         self._param_dict.add(Parameter.ABSORBANCE_CUTOFF,
                              r'A_CUTOFF\s(\S*)',
@@ -1241,7 +1238,8 @@ class Protocol(CommandResponseInstrumentProtocol):
                              direct_access=True,
                              default_value=True,
                              visibility=ParameterDictVisibility.READ_WRITE,
-                             display_name="Integration Time Adjustment")
+                             display_name="Integration Time Adjustment",
+                             description="Enable integration time adjustment: (true | false)")
 
         self._param_dict.add(Parameter.INTEG_TIME_FACTOR,
                              r'INTPRFAC\s(\S*)',
@@ -1253,6 +1251,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                              default_value=1,
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name="Integration Time Factor",
+                             description="Value of 1 or 20 is permitted.",
                              units=Units.SECOND)
 
         self._param_dict.add(Parameter.INTEG_TIME_STEP,
@@ -1650,6 +1649,12 @@ class Protocol(CommandResponseInstrumentProtocol):
         """
         if not Parameter.has(param):
             raise InstrumentParameterException("%s is not a parameter" % param)
+
+        if param is Parameter.FIT_WAVELENGTH_HIGH:
+            value = self._param_dict.get(Parameter.FIT_WAVELENGTH_LOW) + ',' + value
+        if param is Parameter.FIT_WAVELENGTH_LOW:
+            value = value + ',' + self._param_dict.get(Parameter.FIT_WAVELENGTH_HIGH)
+
         return "%s %s %s%s" % (InstrumentCommand.SET, param, value, NEWLINE)
 
     def _build_measure_command(self, cmd, samples):
