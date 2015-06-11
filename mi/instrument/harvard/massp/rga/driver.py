@@ -992,7 +992,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         @return next_state, (next_agent_state, None)
         """
         # empty the chunker
-        self._chunker.clean_all_chunks()
+        self._chunker.clean()
         # place sentinel value in chunker
         self._chunker.add_chunk(SCAN_START_SENTINEL, ntplib.system_to_ntp_time(time.time()))
         self.scan_start_time = time.time()

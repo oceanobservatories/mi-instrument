@@ -11,9 +11,7 @@ Generic Driver for ADCPS-K, ADCPS-I, ADCPT-B and ADCPT-DE
 __author__ = 'Sung Ahn'
 __license__ = 'Apache 2.0'
 
-import socket
 import re
-from mi.core.exceptions import InstrumentProtocolException
 from mi.instrument.teledyne.particles import ADCP_COMPASS_CALIBRATION_REGEX_MATCHER, \
     ADCP_SYSTEM_CONFIGURATION_REGEX_MATCHER, ADCP_ANCILLARY_SYSTEM_DATA_REGEX_MATCHER, ADCP_TRANSMIT_PATH_REGEX_MATCHER, \
     ADCP_PD0_PARSED_REGEX_MATCHER, ADCP_COMPASS_CALIBRATION_DataParticle, ADCP_PD0_PARSED_DataParticle, \
@@ -26,7 +24,7 @@ from mi.instrument.teledyne.driver import TeledyneCapability
 from mi.core.instrument.chunker import StringChunker
 
 from mi.core.log import get_logger
-from struct import unpack
+import struct
 
 log = get_logger()
 
@@ -105,13 +103,17 @@ class WorkhorseProtocol(TeledyneProtocol):
                 #
                 matcher2 = re.compile(r'\x7f\x7f(..)', re.DOTALL)
                 for match in matcher2.finditer(raw_data):
-                    length = unpack('<H', match.group(1))[0]
-                    # if there is another sentinel after this data
-                    # then we assume we have a valid record. The parser
-                    # will mark the data as invalid should the checksum fail
-                    end_index = match.start() + length + 2
-                    if raw_data[end_index:end_index+2] == '\x7f\x7f':
-                        return_list.append((match.start(), end_index))
+                    length = struct.unpack('<H', match.group(1))[0]
+                    end_index = match.start() + length
+                    # read the checksum and compute our own
+                    # if they match we have a PD0 record
+                    if len(raw_data) > end_index+1:
+                        checksum = struct.unpack_from('<H', raw_data, end_index)[0]
+                        calculated = sum(bytearray(raw_data[match.start():end_index])) & 0xffff
+                        log.info('%r %f', checksum, calculated)
+                        if checksum == calculated:
+                            # include the checksum in our match... (2 bytes)
+                            return_list.append((match.start(), end_index+2))
 
             else:
                 for match in matcher.finditer(raw_data):
