@@ -10,6 +10,7 @@ Release notes:
 
 Initial development
 """
+import datetime
 
 __author__ = 'Rachel Manoni'
 __license__ = 'Apache 2.0'
@@ -365,6 +366,8 @@ class FlortDSample_Particle(DataParticle):
     sig_3_offset = 0
     sig_3_scale = 0
 
+    ntp_epoch = datetime.datetime(1900, 1, 1)
+
     @staticmethod
     def regex_compiled():
         """
@@ -409,9 +412,21 @@ class FlortDSample_Particle(DataParticle):
             wave_cdom = int(split_data[6])
             raw_sig_cdom = int(split_data[7])
             raw_temp = int(split_data[8])
+            month, day, year = date_str.split('/')
+            hours, mins, secs = time_str.split(':')
+
+            month = int(month)
+            day = int(day)
+            year = int(year) + 2000
+            hours = int(hours)
+            mins = int(mins)
+            secs = int(secs)
 
         except Exception:
             raise SampleException('FlortDSample_Particle: cannot parse thru data')
+
+        record_time = datetime.datetime(year, month, day, hours, mins, secs)
+        self.set_internal_timestamp(timestamp=(record_time - self.ntp_epoch).total_seconds())
 
         result = [{DataParticleKey.VALUE_ID: FlortDSample_ParticleKey.date_string, DataParticleKey.VALUE: date_str},
             {DataParticleKey.VALUE_ID: FlortDSample_ParticleKey.time_string, DataParticleKey.VALUE: time_str},
