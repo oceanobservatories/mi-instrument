@@ -158,7 +158,6 @@ class PARMixin(DriverTestMixin):
                                         PARProtocolEvent.ACQUIRE_STATUS],
 
         PARProtocolState.AUTOSAMPLE:   [PARProtocolEvent.STOP_AUTOSAMPLE,
-                                        PARProtocolEvent.ACQUIRE_STATUS,
                                         PARProtocolEvent.SCHEDULED_ACQUIRE_STATUS],
 
         PARProtocolState.DIRECT_ACCESS: [PARProtocolEvent.STOP_DIRECT,
