@@ -38,7 +38,10 @@ log = get_logger()
 # Module-wide values
 ####################################################################
 
-SAMPLE_PATTERN = r'(?P<instrument_id>SATDI7)(?P<serial_number>\d{4})(?P<timer>\d{7}\.\d\d)(?P<binary_data>.{37})(?P<checksum>.)\r\n'
+# NOTE: Regex deviates from manual slightly. Manual indicates the timer field should be 10 bytes
+# but data collected from the instrument shows this will overflow to 11 bytes if left running long
+# enough. 11 bytes is enough to represent 3 years of continuous collect, so limiting it there.
+SAMPLE_PATTERN = r'(?P<instrument_id>SATDI7)(?P<serial_number>\d{4})(?P<timer>\d{7,8}\.\d\d)(?P<binary_data>.{37})(?P<checksum>.)\r\n'
 SAMPLE_REGEX = re.compile(SAMPLE_PATTERN, re.DOTALL)
 CONFIG_PATTERN = '''Satlantic\ OCR.*?
             Firmware\ version:\ (?P<firmware_version>.*?)\s*
