@@ -50,14 +50,14 @@ class DataParticleValue(BaseEnum):
     OUT_OF_RANGE = "out_of_range"
     INVALID = "invalid"
     QUESTIONABLE = "questionable"
-    
+
 class DataParticle(object):
     """
     This class is responsible for storing and ultimately generating data
     particles in the designated format from the associated inputs. It
     fills in fields as necessary, and is a valid Data Particle
     that can be sent up to the InstrumentAgent.
-    
+
     It is the intent that this class is subclassed as needed if an instrument must
     modify fields in the outgoing packet. The hope is to have most of the superclass
     code be called by the child class with just values overridden as needed.
@@ -75,7 +75,7 @@ class DataParticle(object):
                  quality_flag=DataParticleValue.OK,
                  new_sequence=None):
         """ Build a particle seeded with appropriate information
-        
+
         @param raw_data The raw data used in the particle
         """
         if new_sequence is not None and not isinstance(new_sequence, bool):
@@ -131,22 +131,22 @@ class DataParticle(object):
         @param unit_time: Unix time as returned from time.time()
         @raise InstrumentParameterException if timestamp or unix_time not supplied
         """
-        if(timestamp == None and unix_time == None):
+        if timestamp is None and unix_time is None:
             raise InstrumentParameterException("timestamp or unix_time required")
 
-        if(unix_time != None):
+        if unix_time is not None:
             timestamp = ntplib.system_to_ntp_time(unix_time)
 
-        # Do we want this to happen here or in down stream processes?
-        #if(not self._check_timestamp(timestamp)):
-        #    raise InstrumentParameterException("invalid timestamp")
+        if all([self.contents[DataParticleKey.PREFERRED_TIMESTAMP] == DataParticleKey.PORT_TIMESTAMP,
+                self.contents[DataParticleKey.PORT_TIMESTAMP] == 0]):
+            self.contents[DataParticleKey.PREFERRED_TIMESTAMP] = DataParticleKey.INTERNAL_TIMESTAMP
 
         self.contents[DataParticleKey.INTERNAL_TIMESTAMP] = float(timestamp)
 
     def set_value(self, id, value):
         """
         Set a content value, restricted as necessary
-        
+
         @param id The ID of the value to set, should be from DataParticleKey
         @param value The value to set
         @raises ReadOnlyException If the parameter cannot be set
@@ -156,10 +156,10 @@ class DataParticle(object):
         else:
             raise ReadOnlyException("Parameter %s not able to be set to %s after object creation!" %
                                     (id, value))
-    
+
     def get_value(self, id):
         """ Return a stored value
-        
+
         @param id The ID (from DataParticleKey) for the parameter to return
         @raises NotImplementedException If there is an invalid id
         """
@@ -167,7 +167,7 @@ class DataParticle(object):
             return self.contents[id]
         else:
             raise NotImplementedException("Value %s not available in particle!", id)
-        
+
 
     def data_particle_type(self):
         """
@@ -198,7 +198,7 @@ class DataParticle(object):
         # verify preferred timestamp exists in the structure...
         if not self._check_preferred_timestamps():
             raise SampleException("Preferred timestamp not in particle!")
-        
+
         # build response structure
         self._encoding_errors = []
         values = self._build_parsed_values()
@@ -208,24 +208,24 @@ class DataParticle(object):
 
         #log.debug("Serialize result: %s", result)
         return result
-        
+
     def generate(self, sorted=False):
         """
         Generates a JSON_parsed packet from a sample dictionary of sensor data and
         associates a timestamp with it
-        
+
         @param sorted ignored, maintained only to avoid breaking drivers
         @return A dictionary representing this particle
         @throws InstrumentDriverException If there is a problem with the inputs
         """
         return self.generate_dict()
-        
+
     def _build_parsed_values(self):
         """
         Build values of a parsed structure. Just the values are built so
         so that a child class can override this class, but call it with
         super() to get the base structure before modification
-        
+
         @return the values tag for this data structure ready to JSONify
         @raises SampleException when parsed values can not be properly returned
         """
@@ -236,7 +236,7 @@ class DataParticle(object):
         """
         Build the base/header information for an output structure.
         Follow on methods can then modify it by adding or editing values.
-        
+
         @return A fresh copy of a core structure to be exported
         """
         result = dict(self.contents)
@@ -246,11 +246,11 @@ class DataParticle(object):
         if not self.contents[DataParticleKey.INTERNAL_TIMESTAMP]:
             del result[DataParticleKey.INTERNAL_TIMESTAMP]
         return result
-    
+
     def _check_timestamp(self, timestamp):
         """
         Check to make sure the timestamp is reasonable
-        
+
         @param timestamp An NTP4 formatted timestamp (64bit)
         @return True if timestamp is okay or None, False otherwise
         """
@@ -258,22 +258,22 @@ class DataParticle(object):
             return True
         if not isinstance(timestamp, float):
             return False
-        
+
         # is it sufficiently in the future to be unreasonable?
         if timestamp > ntplib.system_to_ntp_time(time.time()+(86400*365)):
             return False
         else:
             return True
-    
+
     def _check_preferred_timestamps(self):
         """
         Check to make sure the preferred timestamp indicated in the
         particle is actually listed, possibly adjusting to 2nd best
         if not there.
-        
+
         @throws SampleException When there is a problem with the preferred
             timestamp in the sample.
-        """        
+        """
         if self.contents[DataParticleKey.PREFERRED_TIMESTAMP] == None:
             raise SampleException("Missing preferred timestamp, %s, in particle" %
                                   self.contents[DataParticleKey.PREFERRED_TIMESTAMP])
@@ -283,12 +283,12 @@ class DataParticle(object):
         #if self.contents[self.contents[DataParticleKey.PREFERRED_TIMESTAMP]] == None:
         #    raise SampleException("Preferred timestamp, %s, is not defined" %
         #                          self.contents[DataParticleKey.PREFERRED_TIMESTAMP])
-        
+
         return True
 
     def _encode_value(self, name, value, encoding_function):
         """
-        Encode a value using the encoding function, if it fails store the error in a queue 
+        Encode a value using the encoding function, if it fails store the error in a queue
         """
         encoded_val = None
 
@@ -343,24 +343,24 @@ class RawDataParticle(DataParticle):
         checksum = None
 
         # Attempt to convert values
-        try: 
+        try:
             payload = base64.b64encode(port_agent_packet.get("raw"))
         except TypeError:
             pass
 
-        try: 
+        try:
             length = int(port_agent_packet.get("length"))
-        except TypeError: 
+        except TypeError:
             pass
 
-        try: 
+        try:
             type = int(port_agent_packet.get("type"))
-        except TypeError: 
+        except TypeError:
             pass
 
-        try: 
+        try:
             checksum = int(port_agent_packet.get("checksum"))
-        except TypeError: 
+        except TypeError:
             pass
 
         result = [{
