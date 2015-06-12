@@ -91,9 +91,10 @@ class StringChunker(object):
 
         # remove overlapping segments from right to left
         # so the indexes don't change...
-        log.error('Found overlapping matches from sieve function: %r %r', remove_indices, len(results))
-        for index in reversed(remove_indices):
-            results.pop(index)
+        if remove_indices:
+            log.error('Found overlapping matches from sieve function: %r %r', remove_indices, len(results))
+            for index in reversed(remove_indices):
+                results.pop(index)
 
         return results
 
