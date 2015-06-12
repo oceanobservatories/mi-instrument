@@ -378,7 +378,6 @@ class SatlanticPARInstrumentProtocol(CommandResponseInstrumentProtocol):
         self._protocol_fsm.add_handler(PARProtocolState.AUTOSAMPLE, PARProtocolEvent.ENTER, self._handler_autosample_enter)
         self._protocol_fsm.add_handler(PARProtocolState.AUTOSAMPLE, PARProtocolEvent.STOP_AUTOSAMPLE, self._handler_autosample_stop_autosample)
         self._protocol_fsm.add_handler(PARProtocolState.AUTOSAMPLE, PARProtocolEvent.SCHEDULED_ACQUIRE_STATUS, self._handler_autosample_acquire_status)
-        self._protocol_fsm.add_handler(PARProtocolState.AUTOSAMPLE, PARProtocolEvent.ACQUIRE_STATUS, self._handler_autosample_acquire_status)
 
         self._protocol_fsm.add_handler(PARProtocolState.DIRECT_ACCESS, PARProtocolEvent.ENTER, self._handler_direct_access_enter)
         self._protocol_fsm.add_handler(PARProtocolState.DIRECT_ACCESS, PARProtocolEvent.EXECUTE_DIRECT, self._handler_direct_access_execute_direct)
@@ -403,24 +402,17 @@ class SatlanticPARInstrumentProtocol(CommandResponseInstrumentProtocol):
                              startup_param=True,
                              init_value=4,
                              display_name='Max Rate',
-                             description='Maximum sampling rate in Hz',
+                             description='Maximum sampling rate (0 (Auto) | 0.125 | 0.5 | 1 | 2 | 4 | 8 | 10 | 12)',
                              type=ParameterDictType.FLOAT,
                              units=Units.HERTZ,
-                             value_description='Only certain standard frame rates are accepted by this parameter:'
-                             '0, 0.125, 0.5, 1, 2, 4, 8, 10, and 12. Any non-integer values are truncated.'
-                             'To specify an automatic (AUTO) frame rate, input "0" as the value parameter.'
-                             'This will cause the instrument to output frames as fast as possible.'
-                             'Specifying a frame rate faster than is practically possible will not force the'
-                             'actual frame rate to that level. The instrument will only transmit as fast as possible'
-                             'for the given operating parameters.')
+                             visibility=ParameterDictVisibility.READ_WRITE)
 
         self._param_dict.add(Parameter.INSTRUMENT,
                              HEADER_PATTERN,
                              lambda match: match.group(1),
                              str,
                              visibility=ParameterDictVisibility.IMMUTABLE,
-                             display_name='Instrument',
-                             description='Instrument type',
+                             display_name='Instrument Type',
                              type=ParameterDictType.STRING,
                              startup_param=True)
 
@@ -430,7 +422,6 @@ class SatlanticPARInstrumentProtocol(CommandResponseInstrumentProtocol):
                              str,
                              visibility=ParameterDictVisibility.IMMUTABLE,
                              display_name='Serial Number',
-                             description='Serial number',
                              type=ParameterDictType.STRING,
                              startup_param=True)
 
@@ -439,8 +430,7 @@ class SatlanticPARInstrumentProtocol(CommandResponseInstrumentProtocol):
                              lambda match: match.group(1),
                              str,
                              visibility=ParameterDictVisibility.IMMUTABLE,
-                             display_name='Firmware',
-                             description='Instrument firmware',
+                             display_name='Firmware Version',
                              type=ParameterDictType.STRING,
                              startup_param=True)
 
@@ -449,9 +439,10 @@ class SatlanticPARInstrumentProtocol(CommandResponseInstrumentProtocol):
                              lambda match: match.group(1),
                              str,
                              display_name="Acquire Status Interval",
-                             description='Interval for gathering status particles',
+                             description='Interval for gathering status particles.',
                              type=ParameterDictType.STRING,
                              units=ParameterUnits.TIME_INTERVAL,
+                             visibility=ParameterDictVisibility.READ_WRITE,
                              default_value='00:00:00',
                              startup_param=True)
 
@@ -678,6 +669,9 @@ class SatlanticPARInstrumentProtocol(CommandResponseInstrumentProtocol):
         Enter command state.
         """
         # Command device to update parameters and send a config change event.
+        if self._init_type != InitializationType.NONE:
+            self._update_params()
+
         self._init_params()
         self._driver_event(DriverAsyncEvent.STATE_CHANGE)
 
@@ -711,36 +705,32 @@ class SatlanticPARInstrumentProtocol(CommandResponseInstrumentProtocol):
 
         if not isinstance(params, dict):
             raise InstrumentParameterException('Set params requires a parameter dict.')
+
         self._verify_not_readonly(params, startup)
+
         for name, value in params.iteritems():
-            if EngineeringParameter.has(name):
-                try:
-                    old_val = self._param_dict.format(name)
-                    new_val = self._param_dict.format(name, params[name])
-                except KeyError:
-                    raise InstrumentParameterException('No existing key for %s' % name)
-                if old_val != new_val:
-                    self._param_dict.set_value(name, new_val)
-                    scheduling_interval_changed = True
-            elif Parameter.has(name):
 
-                #get values from instrument on startup
-                if self._init_type != InitializationType.NONE:
-                    self._update_params()
+            old_val = self._param_dict.format(name)
+            new_val = self._param_dict.format(name, params[name])
 
-                if name == Parameter.MAXRATE and value not in VALID_MAXRATES:
+            log.debug('Changing param %r OLD = %r, NEW %r', name, old_val, new_val)
+
+            if name == Parameter.MAXRATE:
+                if value not in VALID_MAXRATES:
                     raise InstrumentParameterException("Maxrate %s out of range" % value)
-                try:
-                    old_val = self._param_dict.format(name)
-                    new_val = self._param_dict.format(name, params[name])
-                except KeyError:
-                    raise InstrumentParameterException('No existing key for %s' % name)
+
                 if old_val != new_val:
                     if self._do_cmd_resp(Command.SET, name, new_val, expected_prompt=Prompt.COMMAND):
                         instrument_params_changed = True
-                        log.debug('_set_params: %s was updated from %s to %s', name, old_val, new_val)
+            elif name == Parameter.ACQUIRE_STATUS_INTERVAL:
+                if old_val != new_val:
+                    self._param_dict.set_value(name, new_val)
+                    scheduling_interval_changed = True
+            elif name in [Parameter.FIRMWARE, Parameter.INSTRUMENT, Parameter.SERIAL]:
+                self._param_dict.set_value(name, new_val)
             else:
-                raise InstrumentParameterException('No existing key for %s' % name)
+                raise InstrumentParameterException("Parameter not in dictionary: %s" % name)
+
 
         if instrument_params_changed:
             self._do_cmd_resp(Command.SAVE, expected_prompt=Prompt.COMMAND)
@@ -839,6 +829,13 @@ class SatlanticPARInstrumentProtocol(CommandResponseInstrumentProtocol):
         Handle PARProtocolState.AUTOSAMPLE PARProtocolEvent.ENTER
         @retval return (next state, result)
         """
+        if self._init_type != InitializationType.NONE:
+            self._handler_autosample_stop_autosample()
+            self._update_params()
+            self._handler_command_start_autosample()
+
+        self._init_params()
+
         self._driver_event(DriverAsyncEvent.STATE_CHANGE)
         return None, None
 
