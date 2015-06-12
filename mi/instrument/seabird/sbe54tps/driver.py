@@ -20,7 +20,7 @@ log = get_logger()
 from mi.core.util import dict_equal
 
 from mi.core.common import BaseEnum, Units
-from mi.core.time import get_timestamp_delayed
+from mi.core.time_tools import get_timestamp_delayed
 
 from mi.core.instrument.instrument_fsm import InstrumentFSM
 from mi.core.instrument.instrument_driver import DriverEvent
@@ -1417,7 +1417,7 @@ class Protocol(SeaBirdProtocol):
                              self._int_to_string,
                              type=ParameterDictType.INT,
                              display_name="Battery Type",
-                             description="0: Lithium battery 1: Alkaline battery",
+                             description="Battery type: (0:lithium | 1:alkaline) ",
                              default_value=1,
                              visibility=ParameterDictVisibility.IMMUTABLE,
                              startup_param=True,
@@ -1429,7 +1429,7 @@ class Protocol(SeaBirdProtocol):
                              self._bool_to_int_string,
                              type=ParameterDictType.BOOL,
                              display_name="Enable Alerts",
-                             description="0: Do not output alerts 1: Output alerts",
+                             description="Enable output of alerts (true | false)",
                              default_value=1,
                              visibility=ParameterDictVisibility.IMMUTABLE,
                              startup_param=True,
