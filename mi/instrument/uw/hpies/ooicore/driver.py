@@ -430,7 +430,7 @@ class DataHeaderParticleKey(BaseEnum):
 
 class HPIESDataParticle(DataParticle):
     _compiled_regex = None
-    __metaclass__ = get_logging_metaclass(log_level='info')
+    __metaclass__ = get_logging_metaclass(log_level='trace')
 
     def __init__(self, *args, **kwargs):
         super(HPIESDataParticle, self).__init__(*args, **kwargs)
