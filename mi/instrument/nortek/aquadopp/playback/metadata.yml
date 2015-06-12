@@ -1,0 +1,8 @@
+driver_metadata:
+  author: Peter Cable
+  driver_make: nortek
+  driver_model: aquadopp
+  driver_name: playback
+  email: petercable@gmail.com
+  release_notes: Driver for ASCII-mode playback Aquadopp DW
+  version: '0.0.1'
