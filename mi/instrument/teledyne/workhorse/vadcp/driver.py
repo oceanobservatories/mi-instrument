@@ -978,7 +978,7 @@ class Protocol(WorkhorseProtocol):
                 if not found:
                     raise InstrumentTimeoutException("NO BREAK RESPONSE.")
             time.sleep(0.1)
-        self._chunker._clean_buffer(len(self._chunker.raw_chunk_list))
+        self._chunker.clean()
         self._promptbuf = ''
         self._linebuf = ''
         return True
@@ -1003,7 +1003,7 @@ class Protocol(WorkhorseProtocol):
                 if not found:
                     raise InstrumentTimeoutException("NO BREAK RESPONSE2.")
             time.sleep(0.1)
-        self._chunker2._clean_buffer(len(self._chunker2.raw_chunk_list))
+        self._chunker2.clean()
         self._promptbuf2 = ''
         self._linebuf2 = ''
         return True

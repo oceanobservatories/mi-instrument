@@ -415,9 +415,10 @@ class DriverUnitTest(InstrumentDriverUnitTestCase, DriverTestMixinSub):
             self.assertIsNotNone(stream_type)
             particles[stream_type] += 1
 
-        log.debug('Particles generated: %r', particles)
+        log.info('Particles generated: %r', particles)
         # verify we have received at least one of each particle type
         for particle_type in DataParticleType.list():
+            log.info('Checking particle type: %s', particle_type)
             self.assertGreaterEqual(particles[particle_type], 1)
 
     def test_connect(self, *args, **kwargs):
