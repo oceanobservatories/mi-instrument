@@ -457,10 +457,9 @@ class SatlanticOCR507InstrumentProtocol(CommandResponseInstrumentProtocol):
                              lambda match: '0' if match.group(1) == 'AUTO' else match.group(1),
                              lambda sVal: '%s' % sVal,
                              type=ParameterDictType.STRING,
-                             display_name="Max Rate",
-                             value_description="valid values: 0=auto, 0.125, 0.25, 0.5, 1, 2, 4, 8, 10, 12",
+                             display_name="Maximum Frame Rate",
                              units=Units.HERTZ,
-                             description="Maximum frame rate.",
+                             description="Frame rate: (0=auto | 0.125 | 0.25 | 0.5 | 1 | 2 | 4 | 8 | 10 | 12)",
                              default_value='0',
                              startup_param=True,
                              direct_access=True)
