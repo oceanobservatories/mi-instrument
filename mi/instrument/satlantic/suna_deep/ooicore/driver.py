@@ -447,7 +447,7 @@ class SUNASampleDataParticle(DataParticle):
 
             date = datetime.datetime.strptime(matched.group(3), '%Y%j')
 
-            secs = (date - datetime.datetime(1970, 1, 1)).total_seconds()
+            secs = (date - datetime.datetime(1900, 1, 1)).total_seconds()
             secs += float(matched.group(4)) * 3600
             self.set_internal_timestamp(secs)
 
