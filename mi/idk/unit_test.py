@@ -6,24 +6,15 @@
 @brief Base classes for instrument driver tests.
 """
 
-import subprocess
-import re
 import gc
-import os
 import time
-import ntplib
-import unittest
 import datetime
-from sets import Set
+import re
+import os
+import ntplib
 
-# Set testing to false because the capability container tries to clear out
-# couchdb if we are testing. Since we don't care about couchdb for the most
-# part we can ignore this. See initialize_ion_int_tests() for implementation.
-# If you DO care about couch content make sure you do a force_clean when needed.
-
-
-# Import pyon first for monkey patching.
 from mi.core.log import get_logger
+from mi.core.port_agent_process import PortAgentProcess
 
 log = get_logger()
 
@@ -31,12 +22,10 @@ import gevent
 
 from pprint import PrettyPrinter
 
-
 from mock import Mock
 from mi.core.unit_test import MiIntTestCase
 from mi.core.unit_test import MiUnitTest
 from mi.core.unit_test import ParticleTestMixin
-from mi.core.port_agent_simulator import TCPSimulatorServer
 from mi.core.instrument.instrument_driver import InstrumentDriver
 from mi.core.instrument.instrument_driver import DriverParameter
 from mi.core.instrument.instrument_driver import ConfigMetadataKey
@@ -48,13 +37,7 @@ from mi.core.instrument.protocol_param_dict import ParameterDictType
 from mi.core.instrument.protocol_cmd_dict import CommandDictKey
 from mi.core.instrument.driver_dict import DriverDictKey
 
-# from interface.objects import AgentCapability
-# from interface.objects import CapabilityType
-
 from mi.core.driver_process import DriverProcess, DriverProcessType
-
-# from interface.objects import AgentCommandResult
-# from interface.objects import AgentCommand
 
 from mi.idk.util import convert_enum_to_dict
 from mi.idk.util import get_dict_value
@@ -62,11 +45,7 @@ from mi.idk.comm_config import CommConfig
 from mi.idk.comm_config import ConfigTypes
 from mi.idk.config import Config
 from mi.idk.common import Singleton
-from mi.idk.instrument_agent_client import InstrumentAgentClient
-from mi.idk.instrument_agent_client import InstrumentAgentDataSubscribers
-from mi.idk.instrument_agent_client import InstrumentAgentEventSubscribers
 
-from mi.idk.exceptions import IDKException
 from mi.idk.exceptions import TestNotInitialized
 from mi.idk.exceptions import TestNoCommConfig
 
@@ -76,15 +55,12 @@ from mi.core.exceptions import InstrumentStateException
 from mi.core.instrument.port_agent_client import PortAgentClient
 from mi.core.instrument.port_agent_client import PortAgentPacket
 from mi.core.instrument.data_particle import CommonDataParticleType
-from mi.core.instrument.data_particle import DataParticle
 from mi.core.instrument.data_particle import DataParticleKey
-from mi.core.instrument.data_particle import DataParticleValue
 from mi.core.instrument.data_particle import RawDataParticleKey
 from mi.core.instrument.instrument_driver import DriverEvent
 from mi.core.instrument.instrument_driver import DriverConnectionState
 from mi.core.instrument.instrument_driver import DriverProtocolState
 from mi.core.instrument.instrument_driver import DriverAsyncEvent
-from mi.core.tcp_client import TcpClient
 from mi.core.common import BaseEnum
 from mi.core.driver_scheduler import DriverSchedulerConfigKey, DriverScheduler
 from mi.core.driver_scheduler import TriggerType
@@ -92,13 +68,10 @@ from mi.core.driver_scheduler import TriggerType
 
 from mi.core.exceptions import Conflict
 from mi.core.exceptions import ResourceError, BadRequest, Timeout, ServerError
-from mi.core.instrument.instrument_driver import ResourceAgentState
-from mi.core.instrument.instrument_driver import ResourceAgentEvent
 
 from ooi.logging import log
 
 # Do not remove this import.  It is for package building.
-from mi.core.instrument.zmq_driver_process import ZmqDriverProcess
 
 AGENT_DISCOVER_TIMEOUT = 900
 GO_ACTIVE_TIMEOUT = 900
@@ -233,7 +206,6 @@ class InstrumentDriverTestConfig(Singleton):
     def _build_packet_config(self, param_config):
         """
         Build a packet config from various data types.
-        @param packet_config: packet config object. Can be enum, dict or list
         @return list of stream names to create
         """
         params = []
@@ -500,8 +472,6 @@ class DriverTestMixin(MiUnitTest, ParticleTestMixin):
             if isinstance(param_def, dict):
                 param_type = param_def.get(ParameterTestConfigKey.TYPE)
                 self.assertIsNotNone(param_type)
-            else:
-                param_type = param_def
 
             try:
                 required_value = param_def[ParameterTestConfigKey.VALUE]
@@ -760,7 +730,7 @@ class DriverTestMixin(MiUnitTest, ParticleTestMixin):
         enum_list.sort()
         self.assertEqual(keys, enum_list)
 
-        # command metadata check 
+        # command metadata check
         self.assertTrue(metadata[ConfigMetadataKey.COMMANDS])
         keys = metadata[ConfigMetadataKey.COMMANDS].keys()
         keys.sort()
@@ -876,21 +846,19 @@ class InstrumentDriverTestCase(MiIntTestCase):
             'command_port': comm_config.command_port,
             'data_port': comm_config.data_port,
             'telnet_sniffer_port': comm_config.sniffer_port,
-     #       'process_type': PortAgentProcessType.UNIX,
             'log_level': 5,
         }
 
     @staticmethod
     def create_ethernet_comm_config(comm_config):
         config = {
-            'instrument_type': ConfigTypes.ETHERNET,
+            'instrument_type': ConfigTypes.TCP,
             'port_agent_addr': comm_config.host,
             'device_addr': comm_config.device_addr,
             'device_port': comm_config.device_port,
             'command_port': comm_config.command_port,
             'data_port': comm_config.data_port,
             'telnet_sniffer_port': comm_config.sniffer_port,
-        #    'process_type': PortAgentProcessType.UNIX,
             'log_level': 5,
         }
         return config
@@ -906,7 +874,6 @@ class InstrumentDriverTestCase(MiIntTestCase):
             'instrument_command_port': comm_config.instrument_command_port,
             'data_port': comm_config.data_port,
             'telnet_sniffer_port': comm_config.sniffer_port,
-        #    'process_type': PortAgentProcessType.UNIX,
             'log_level': 8,
         }
         return config
@@ -919,7 +886,6 @@ class InstrumentDriverTestCase(MiIntTestCase):
             'command_port': comm_config.command_port,
             'data_port': comm_config.data_port,
             'telnet_sniffer_port': comm_config.sniffer_port,
-     #       'process_type': PortAgentProcessType.UNIX,
             'device_tx_port': comm_config.device_tx_port,
             'device_rx_port': comm_config.device_rx_port,
             'log_level': 5,
@@ -929,7 +895,7 @@ class InstrumentDriverTestCase(MiIntTestCase):
     def create_multi_comm_config(self, comm_config):
         result = {}
         for name, config in comm_config.configs.items():
-            if config.method() == ConfigTypes.ETHERNET:
+            if config.method() == ConfigTypes.TCP:
                 result[name] = self.create_ethernet_comm_config(config)
             elif config.method() == ConfigTypes.SERIAL:
                 result[name] = self.create_serial_comm_config(config)
@@ -973,7 +939,7 @@ class InstrumentDriverTestCase(MiIntTestCase):
 
         if method == ConfigTypes.SERIAL:
             config = self.create_serial_comm_config(comm_config)
-        elif method == ConfigTypes.ETHERNET:
+        elif method == ConfigTypes.TCP:
             config = self.create_ethernet_comm_config(comm_config)
         elif method == ConfigTypes.RSN:
             config = self.create_rsn_comm_config(comm_config)
@@ -998,28 +964,28 @@ class InstrumentDriverTestCase(MiIntTestCase):
         interface with the instrument.
         @retval return the pid to the logger process
         """
-        # if self.port_agent:
-        #     log.error("Port agent already initialized")
-        #     return
-        #
-        # log.debug("Startup Port Agent")
-        #
-        # config = self.port_agent_config()
-        # log.debug("port agent config: %s", config)
-        #
-        # port_agent = PortAgentProcess.launch_process(config, timeout=60, test_mode=True)
-        #
-        # port = port_agent.get_data_port()
-        # pid = port_agent.get_pid()
-        #
-        # if self.get_comm_config().host == LOCALHOST:
-        #     log.info('Started port agent pid %s listening at port %s' % (pid, port))
-        # else:
-        #     log.info("Connecting to port agent on host: %s, port: %s", self.get_comm_config().host, port)
-        #
-        # self.addCleanup(self.stop_port_agent)
-        # self.port_agent = port_agent
-        # return port
+        if self.port_agent:
+            log.error("Port agent already initialized")
+            return
+
+        log.debug("Startup Port Agent")
+
+        config = self.port_agent_config()
+        log.debug("port agent config: %s", config)
+
+        port_agent = PortAgentProcess.launch_process(config, timeout=60, test_mode=True)
+
+        port = port_agent.get_data_port()
+        pid = port_agent.get_pid()
+
+        if self.get_comm_config().host == LOCALHOST:
+            log.info('Started port agent pid %s listening at port %s' % (pid, port))
+        else:
+            log.info("Connecting to port agent on host: %s, port: %s", self.get_comm_config().host, port)
+
+        self.addCleanup(self.stop_port_agent)
+        self.port_agent = port_agent
+        return port
 
     def stop_port_agent(self):
         """
@@ -1122,7 +1088,6 @@ class InstrumentDriverTestCase(MiIntTestCase):
         dic = convert_enum_to_dict(obj)
         occurrences = {}
         for k, v in dic.items():
-            #v = tuple(v)
             occurrences[v] = occurrences.get(v, 0) + 1
 
         for k in occurrences:
@@ -1274,8 +1239,8 @@ class InstrumentDriverUnitTestCase(InstrumentDriverTestCase):
         """
         Compare a data particle created with the raw input string to the structure
         that should be generated.
-        
-        @param The data particle class to create
+
+        @param particle_type The data particle class to create
         @param raw_input The input string that is instrument-specific
         @param happy_structure The structure that should result from parsing the
             raw input during DataParticle creation
@@ -1467,7 +1432,7 @@ class InstrumentDriverUnitTestCase(InstrumentDriverTestCase):
 
         for (state, capability_list) in capabilities.items():
             for s in capability_list:
-                if not s in expected_capabilities:
+                if s not in expected_capabilities:
                     expected_capabilities.append(s)
 
         expected_capabilities.sort()
@@ -1566,14 +1531,9 @@ class InstrumentDriverIntegrationTestCase(InstrumentDriverTestCase):  # Must inh
         # Configure driver for comms and transition to disconnected.
         reply = self.driver_client.cmd_dvr('configure', self.port_agent_comm_config())
 
-        # Test the driver is configured for comms.
-        self.assert_current_state(DriverConnectionState.DISCONNECTED)
-
-        # Configure driver for comms and transition to disconnected.
-        reply = self.driver_client.cmd_dvr('connect')
-
         # Test the driver is in unknown state.
         self.assert_current_state(DriverProtocolState.UNKNOWN)
+        log.error('made it to UNKNOWN')
 
         # Configure driver for comms and transition to disconnected.
         reply = self.driver_client.cmd_dvr('discover_state')
@@ -2034,11 +1994,6 @@ class InstrumentDriverIntegrationTestCase(InstrumentDriverTestCase):  # Must inh
         reply = self.driver_client.cmd_dvr('driver_ping', 'foo')
         self.assert_(reply.startswith('driver_ping: foo'))
 
-        # Test the driver is in state unconfigured.
-        # TODO: Add this test back in after driver code is merged from coi-services
-        #state = self.driver_client.cmd_dvr('get_current_state')
-        #self.assertEqual(state, DriverConnectionState.UNCONFIGURED)
-
         # Test the event thread publishes and client side picks up events.
         events = [
             'I am important event #1!',
@@ -2071,12 +2026,9 @@ class InstrumentDriverQualificationTestCase(InstrumentDriverTestCase):
     pass
 
 
-
-
 class InstrumentDriverPublicationTestCase(InstrumentDriverTestCase):
     """
     Test driver publication.  These test are not include in general driver
     qualification because publication definitions could change.
     """
     pass
-

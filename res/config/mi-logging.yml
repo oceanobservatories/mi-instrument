@@ -34,8 +34,8 @@ handlers:
 ### default for all loggers not otherwise specified
 root:
   handlers: [console, file]
-  level: INFO
+  level: DEBUG
 
 loggers:
   mi:
-    level: INFO
+    level: DEBUG
