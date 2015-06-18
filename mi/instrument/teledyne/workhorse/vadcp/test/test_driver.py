@@ -1037,7 +1037,7 @@ class IntFromIDK(WorkhorseDriverIntegrationTest, ADCPTMixin):
     def create_multi_comm_config(self, comm_config):
         result = {}
         for name, config in comm_config.configs.items():
-            if config.method() == ConfigTypes.ETHERNET:
+            if config.method() == ConfigTypes.TCP:
                 result[name] = self.create_ethernet_comm_config(config)
             elif config.method() == ConfigTypes.SERIAL:
                 result[name] = self.create_serial_comm_config(config)
@@ -1055,7 +1055,7 @@ class IntFromIDK(WorkhorseDriverIntegrationTest, ADCPTMixin):
 
         if method == ConfigTypes.SERIAL:
             config = self.create_serial_comm_config(comm_config)
-        elif method == ConfigTypes.ETHERNET:
+        elif method == ConfigTypes.TCP:
             config = self.create_ethernet_comm_config(comm_config)
         elif method == ConfigTypes.BOTPT:
             config = self.create_botpt_comm_config(comm_config)
@@ -1975,7 +1975,7 @@ class QualFromIDK(WorkhorseDriverQualificationTest, ADCPTMixin):
     def create_multi_comm_config(self, comm_config):
         result = {}
         for name, config in comm_config.configs.items():
-            if config.method() == ConfigTypes.ETHERNET:
+            if config.method() == ConfigTypes.TCP:
                 result[name] = self.create_ethernet_comm_config(config)
             elif config.method() == ConfigTypes.SERIAL:
                 result[name] = self.create_serial_comm_config(config)

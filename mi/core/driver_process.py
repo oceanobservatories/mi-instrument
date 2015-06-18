@@ -6,30 +6,25 @@
 @author Bill French
 @brief Drive process class that provides a factory for different launch mechanisms
 """
-from mi.core.exceptions import ServerError
-
 __author__ = 'Bill French'
 
-
 import os
-import sys
 import uuid
 import time
-import signal
 import subprocess
 
-from urllib2 import Request, urlopen, URLError, HTTPError
+from urllib2 import urlopen, URLError, HTTPError
 from mi.core.log import log
 from mi.core.common import BaseEnum
 
-
+from mi.core.exceptions import ServerError
+from mi.core.instrument.zmq_driver_client import ZmqDriverClient
 from mi.core.exceptions import DriverLaunchException
-from mi.core.exceptions import NotImplementedException
 
-
-PYTHON_PATH = 'bin/python'
+PYTHON_PATH = 'python'
 CACHE_DIR = '/tmp'
 REPO_BASE = 'http://sddevrepo.oceanobservatories.org/releases'
+
 
 class DriverProcessType(BaseEnum):
     """
@@ -53,7 +48,7 @@ class DriverProcess(object):
     _event_port = None
 
     @classmethod
-    def get_process(cls, driver_config, test_mode = False):
+    def get_process(cls, driver_config, test_mode=False):
         """
         Factory method to get the correct driver process object based on the type in driver_config
         @param driver_config a dict containing configuration information for the driver process. This will be different
@@ -82,7 +77,6 @@ class DriverProcess(object):
 
         else:
             raise DriverLaunchException("unknown driver process type: %s" % type)
-
 
     def launch(self):
         """
@@ -120,7 +114,7 @@ class DriverProcess(object):
 
         try:
             os.kill(self._driver_process.pid, 0)
-        except OSError, e:
+        except OSError:
             log.warn("Could not send a signal to the driver, pid: %s" % self._driver_process.pid)
             return False
 
@@ -194,7 +188,7 @@ class DriverProcess(object):
             return 0
 
         ps_process = subprocess.Popen(["ps", "-o rss,pid", "-p %s" % self.getpid()], stdout=subprocess.PIPE)
-        retcode = ps_process.poll()
+        ps_process.poll()
 
         usage = 0
         for line in ps_process.stdout:
@@ -225,7 +219,6 @@ class DriverProcess(object):
         log.debug("run cmd: %s", " ".join(spawnargs))
         return subprocess.Popen(spawnargs, close_fds=True)
 
-
     def _process_command(self):
         """
         Define the command that is sent to _spawn.  This will be specific to each driver process type
@@ -240,17 +233,18 @@ class DriverProcess(object):
         @return port port number read from the file
         @raise ServerError if file not read w/in 10sec
         """
-        maxWait=10          # try for up to 10sec
-        waitInterval=0.5    # repeating every 1/2 sec
+        max_wait = 10  # try for up to 10sec
+        wait_interval = 0.5  # repeating every 1/2 sec
         log.debug("about to read port from file %s", filename)
-        for n in xrange(int(maxWait/waitInterval)):
+        for n in xrange(int(max_wait / wait_interval)):
             try:
                 with open(filename, 'r') as f:
                     port = int(f.read().strip())
                     log.debug("read port %d from file %s", port, filename)
                     return port
-            except: pass
-            time.sleep(waitInterval)
+            except:
+                pass
+            time.sleep(wait_interval)
         raise ServerError('process PID file was not found: ' + filename)
 
     def _driver_workdir(self):
@@ -299,6 +293,7 @@ class DriverProcess(object):
 
         return self._driver_client
 
+
 class ZMQPyClassDriverProcess(DriverProcess):
     """
     Object to facilitate ZMQ driver processes using a python class and module path.
@@ -318,7 +313,8 @@ class ZMQPyClassDriverProcess(DriverProcess):
     @param driver_config configuration parameters for the driver process
     @param test_mode should the driver be run in test mode
     """
-    def __init__(self, driver_config, test_mode = False):
+
+    def __init__(self, driver_config, test_mode=False):
         self.config = driver_config
         self.test_mode = test_mode
 
@@ -339,23 +335,21 @@ class ZMQPyClassDriverProcess(DriverProcess):
             raise DriverLaunchException("missing driver config: driver_module")
         if not driver_class:
             raise DriverLaunchException("missing driver config: driver_class")
-        if not os.path.exists(python):
-            raise DriverLaunchException("could not find python executable: %s" % python)
 
         cmd_port_fname = self._driver_command_port_file()
         evt_port_fname = self._driver_event_port_file()
         cmd_str = ''
         if mi_repo:
             cmd_str += 'import sys; sys.path.insert(0,"%s");' % mi_repo
-        cmd_str += 'from %s import %s; dp = %s("%s", "%s", "%s", "%s", %s);dp.run()'\
-        % ('mi.core.instrument.zmq_driver_process', 'ZmqDriverProcess', 'ZmqDriverProcess', driver_module,
-           driver_class, cmd_port_fname, evt_port_fname, str(ppid))
+        cmd_str += 'from %s import %s; dp = %s("%s", "%s", "%s", "%s", %s);dp.run()' \
+                   % ('mi.core.instrument.zmq_driver_process', 'ZmqDriverProcess', 'ZmqDriverProcess', driver_module,
+                      driver_class, cmd_port_fname, evt_port_fname, str(ppid))
 
-        return [ python, '-c', cmd_str ]
+        return [python, '-c', cmd_str]
 
 
 class ZMQEggDriverProcess(DriverProcess):
-    '''
+    """
     Object to facilitate ZMQ driver processes using a python egg
 
     Driver config requirements:
@@ -370,8 +364,9 @@ class ZMQEggDriverProcess(DriverProcess):
     }
     @param driver_config configuration parameters for the driver process
     @param test_mode should the driver be run in test mode
-    '''
-    def __init__(self, driver_config, test_mode = False):
+    """
+
+    def __init__(self, driver_config, test_mode=False):
         self.config = driver_config
         self.test_mode = test_mode
 
@@ -440,10 +435,10 @@ class ZMQEggDriverProcess(DriverProcess):
 
     def _get_egg(self, egg_uri):
         filename = get_filename_from_uri(egg_uri)
-        log.debug("_get_egg: %s",filename)
+        log.debug("_get_egg: %s", filename)
         path = self._check_cache_for_egg(filename)
         if None == path:
-            path = self._get_remote_egg(filename) # Will exception out if problem.
+            path = self._get_remote_egg(filename)  # Will exception out if problem.
 
         return path
 
@@ -477,9 +472,9 @@ class ZMQEggDriverProcess(DriverProcess):
         cmd_str = "import sys; sys.path.insert(0, '%s/%s'); from mi.main import run; sys.exit(run(command_port_file='%s', event_port_file='%s', ppid=%s))" % \
                   (CACHE_DIR, get_filename_from_uri(driver_package), cmd_port_fname, evt_port_fname, str(ppid))
 
-        return [ python, '-c', cmd_str ]
+        return [python, '-c', cmd_str]
+
 
 def get_filename_from_uri(uri):
     (base, seperator, filename) = uri.rpartition('/')
     return filename
-
