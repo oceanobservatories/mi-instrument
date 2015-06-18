@@ -45,7 +45,7 @@ DEFAULT_INSTRUMENT_CMD_PORT = 6004
 
 class ConfigTypes(BaseEnum):
     RSN = 'rsn'
-    ETHERNET = 'ethernet'
+    TCP = 'tcp'
     SERIAL = 'serial'
     BOTPT = 'botpt'
     MULTI = 'multi'
@@ -58,7 +58,7 @@ class CommConfig(object):
 
     def __init__(self, config_file_path=None):
         """
-        @brief Constructor, attempt to read from a config file 
+        @brief Constructor, attempt to read from a config file
         @param metadata IDK Metadata object
         """
         self.config_file_path = None
@@ -222,7 +222,7 @@ class CommConfig(object):
         return False
 
     @staticmethod
-    def get_config_from_console(filename, default_type=ConfigTypes.ETHERNET):
+    def get_config_from_console(filename, default_type=ConfigTypes.TCP):
         """
         @brief Factory method.  Prompt and read the config type from the console
         @param filename The file where the comm config is stored in
@@ -253,7 +253,7 @@ class CommConfig(object):
         """
         valid_types = CommConfig.valid_type_list()
         if type in valid_types:
-            if ConfigTypes.ETHERNET == type:
+            if ConfigTypes.TCP == type:
                 config = CommConfigEthernet(filename)
             elif ConfigTypes.RSN == type:
                 config = CommConfigRSN(filename)
@@ -304,7 +304,7 @@ class CommConfigEthernet(CommConfig):
     """
 
     @staticmethod
-    def method(): return ConfigTypes.ETHERNET
+    def method(): return ConfigTypes.TCP
 
     def __init__(self, filename):
         self.device_addr = None
@@ -544,7 +544,7 @@ class CommConfigMulti(CommConfig):
             method = value['comm'].get('method')
             if method == ConfigTypes.SERIAL:
                 self.configs[key] = CommConfigSerial(None)
-            elif method == ConfigTypes.ETHERNET:
+            elif method == ConfigTypes.TCP:
                 self.configs[key] = CommConfigEthernet(None)
             elif method == ConfigTypes.RSN:
                 self.configs[key] = CommConfigRSN(None)
