@@ -1,8 +1,8 @@
 comm:
   command_port: 5113
   data_port: 5112
-  device_addr: 10.180.80.174
-  device_port: 4001
+  device_addr: 10.180.80.168
+  device_port: 2101
   host: localhost
-  method: ethernet
+  method: tcp
   sniffer_port: 6003
