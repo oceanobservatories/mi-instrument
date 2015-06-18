@@ -1,5 +1,5 @@
 import sys
-from mi.core.instrument.zmq_driver_process import ZmqDriverProcess
+from mi.core.instrument.wrapper import ZmqDriverProcess
 
 if __name__ == '__main__':
     module = sys.argv[1]
