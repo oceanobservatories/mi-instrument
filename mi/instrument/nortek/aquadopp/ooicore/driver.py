@@ -66,7 +66,7 @@ class AquadoppDwVelocityDataParticleKey(BaseEnum):
     TIMESTAMP = "date_time_string"
     ERROR = "error_code"
     ANALOG1 = "analog1"
-    BATTERY_VOLTAGE = "battery_voltage_dV"
+    BATTERY_VOLTAGE = "battery_voltage_dv"
     SOUND_SPEED_ANALOG2 = "sound_speed_dms"
     HEADING = "heading_decidegree"
     PITCH = "pitch_decidegree"

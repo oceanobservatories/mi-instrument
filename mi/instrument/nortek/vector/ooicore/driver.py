@@ -180,7 +180,7 @@ class VectorSystemDataParticleKey(BaseEnum):
     System data particles
     """
     TIMESTAMP = "date_time_string"
-    BATTERY = "battery_voltage_dV"
+    BATTERY = "battery_voltage_dv"
     SOUND_SPEED = "sound_speed_dms"
     HEADING = "heading_decidegree"
     PITCH = "pitch_decidegree"
