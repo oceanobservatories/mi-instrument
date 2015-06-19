@@ -861,7 +861,7 @@ class NortekUnitTest(InstrumentDriverUnitTestCase, DriverTestMixinSub):
         mock_callback = Mock(spec="PortAgentClient")
         protocol = NortekInstrumentProtocol(InstrumentPrompts, NEWLINE, mock_callback)
 
-        # #Verify there is nothing scheduled
+        #Verify there is nothing scheduled
         protocol._handler_autosample_enter()
         self.assertEqual(protocol._scheduler_callback.get(ScheduledJob.CLOCK_SYNC), None)
         self.assertEqual(protocol._scheduler_callback.get(ScheduledJob.ACQUIRE_STATUS), None)
@@ -888,7 +888,8 @@ class NortekUnitTest(InstrumentDriverUnitTestCase, DriverTestMixinSub):
                                    units=ParameterUnits.TIME_INTERVAL,
                                    default_value='00:00:02',
                                    startup_param=True)
-        # #set the values of the dictionary using set_default
+
+        #set the values of the dictionary using set_default
         protocol._param_dict.set_value(EngineeringParameter.ACQUIRE_STATUS_INTERVAL,
                                    protocol._param_dict.get_default_value(EngineeringParameter.ACQUIRE_STATUS_INTERVAL))
         protocol._param_dict.set_value(EngineeringParameter.CLOCK_SYNC_INTERVAL,

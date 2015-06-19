@@ -21,7 +21,8 @@ from mi.core.instrument.protocol_param_dict import ParameterDictVisibility
 from mi.core.instrument.protocol_param_dict import ParameterDictType
 from mi.core.instrument.data_particle import DataParticle, DataParticleKey
 
-from mi.instrument.nortek.driver import NortekDataParticleType, Parameter, ParameterUnits
+from mi.instrument.nortek.driver import NortekDataParticleType, Parameter, ParameterUnits, InstrumentCmds, \
+    USER_CONFIG_DATA_REGEX
 from mi.instrument.nortek.driver import NortekInstrumentDriver
 from mi.instrument.nortek.driver import NortekInstrumentProtocol
 from mi.instrument.nortek.driver import NortekProtocolParameterDict
@@ -322,6 +323,15 @@ class Protocol(NortekInstrumentProtocol):
         Parameter.USER_4_SPARE,
         Parameter.QUAL_CONSTANTS]
 
+    spare_param_values = {Parameter.A1_1_SPARE: '',
+                            Parameter.B0_1_SPARE: '',
+                            Parameter.B1_1_SPARE: '',
+                            Parameter.USER_1_SPARE: '',
+                            Parameter.A1_2_SPARE: '',
+                            Parameter.B0_2_SPARE: '',
+                            Parameter.USER_3_SPARE: '',
+                            Parameter.USER_4_SPARE: ''}
+
     def __init__(self, prompts, newline, driver_event):
         """
         Protocol constructor.
@@ -344,6 +354,63 @@ class Protocol(NortekInstrumentProtocol):
         self._extract_sample(VectorVelocityHeaderDataParticle, VELOCITY_HEADER_DATA_REGEX, structure, timestamp)
 
         self._got_chunk_base(structure, timestamp)
+
+    def _update_params(self):
+        """
+        Update the parameter dictionary. Issue the read config command. The response
+        needs to be saved to param dictionary.
+        """
+        ret_config = self._do_cmd_resp(InstrumentCmds.READ_USER_CONFIGURATION, response_regex=USER_CONFIG_DATA_REGEX)
+        self._param_dict.update(ret_config)
+
+        self.spare_param_values[Parameter.A1_1_SPARE] = ret_config[24:26]
+        self.spare_param_values[Parameter.B0_1_SPARE] = ret_config[26:28]
+        self.spare_param_values[Parameter.B1_1_SPARE] = ret_config[28:30]
+        self.spare_param_values[Parameter.USER_1_SPARE] = ret_config[74:76]
+        self.spare_param_values[Parameter.A1_2_SPARE] = ret_config[448:450]
+        self.spare_param_values[Parameter.B0_2_SPARE] = ret_config[450:452]
+        self.spare_param_values[Parameter.USER_3_SPARE] = ret_config[460:462]
+        self.spare_param_values[Parameter.USER_4_SPARE] = ret_config[464:494]
+
+    def _create_set_output(self, parameters):
+        """
+        load buffer with sync byte (A5), ID byte (01), and size word (# of words in little-endian form)
+        'user' configuration is 512 bytes = 256 words long = size 0x100
+        """
+        output = ['\xa5\x00\x00\x01']
+        CHECK_SUM_SEED = 0xb58c
+
+        for param in self.order_of_user_config:
+            log.trace('_create_set_output: adding %s to list', param)
+            if param == Parameter.COMMENTS:
+                output.append(parameters.format(param).ljust(180, "\x00"))
+            elif param == Parameter.DEPLOYMENT_NAME:
+                output.append(parameters.format(param).ljust(6, "\x00"))
+            elif param == Parameter.QUAL_CONSTANTS:
+                output.append(base64.b64decode(parameters.format(param)))
+            elif param == Parameter.VELOCITY_ADJ_TABLE:
+                output.append(base64.b64decode(parameters.format(param)))
+            elif param in [Parameter.A1_1_SPARE, Parameter.B0_1_SPARE, Parameter.B1_1_SPARE, Parameter.USER_1_SPARE,
+                           Parameter.A1_2_SPARE, Parameter.B0_2_SPARE, Parameter.USER_2_SPARE, Parameter.USER_3_SPARE]:
+                output.append(self.spare_param_values.get(param).ljust(2, "\x00"))
+            elif param == Parameter.USER_4_SPARE:
+                output.append(self.spare_param_values.get(param).ljust(30, "\x00"))
+            else:
+                output.append(parameters.format(param))
+            log.trace('_create_set_output: ADDED %s output size = %s', param, len(output))
+
+        log.debug("Created set output: %r with length: %s", output, len(output))
+
+        checksum = CHECK_SUM_SEED
+        output = "".join(output)
+        for word_index in range(0, len(output), 2):
+            word_value = NortekProtocolParameterDict.convert_word_to_int(output[word_index:word_index+2])
+            checksum = (checksum + word_value) % 0x10000
+        log.debug('_create_set_output: user checksum = %r', checksum)
+
+        output += (NortekProtocolParameterDict.word_to_string(checksum))
+
+        return output
 
     ########################################################################
     # Private helpers.

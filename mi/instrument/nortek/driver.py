@@ -1556,9 +1556,10 @@ class NortekInstrumentProtocol(CommandResponseInstrumentProtocol):
         Enter autosample state.
         """
         if self._init_type != InitializationType.NONE:
+            self._handler_autosample_stop_autosample()
             self._update_params()
-
-        self._init_params()
+            self._init_params()
+            self._do_cmd_resp(InstrumentCmds.START_MEASUREMENT_WITHOUT_RECORDER, timeout=SAMPLE_TIMEOUT, *args, **kwargs)
 
         if self._param_dict.get(EngineeringParameter.CLOCK_SYNC_INTERVAL) is not None:
             log.debug("Configuring the scheduler to sync clock %s", self._param_dict.get(EngineeringParameter.CLOCK_SYNC_INTERVAL))
