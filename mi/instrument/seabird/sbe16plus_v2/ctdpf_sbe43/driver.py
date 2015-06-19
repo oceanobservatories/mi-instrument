@@ -859,12 +859,6 @@ class SBE43Protocol(SBE16Protocol):
         For each parameter key, add match string, match lambda function,
         and value formatting function for set commands.
         """
-def _build_param_dict(self):
-        """
-        Populate the parameter dictionary with SBE19 parameters.
-        For each parameter key, add match string, match lambda function,
-        and value formatting function for set commands.
-        """
         self._build_common_param_dict()
 
         self._param_dict.add(Parameter.SBE63,
