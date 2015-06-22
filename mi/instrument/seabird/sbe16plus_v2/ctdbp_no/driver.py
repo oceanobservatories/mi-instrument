@@ -663,6 +663,8 @@ class SBE16NOProtocol(SBE19Protocol):
             log.error('_validate_GetCD_response: GetCD command not recognized: %s.' % response)
             raise InstrumentProtocolException('GetCD command not recognized: %s.' % response)
 
+        self._param_dict.update_many(response)
+
         return response
 
     def _validate_GetCC_response(self, response, prompt):
@@ -700,5 +702,7 @@ class SBE16NOProtocol(SBE19Protocol):
         if not SBE16NOHardwareParticle.resp_regex_compiled().search(response):
             log.error('_validate_GetHD_response: GetHD command not recognized: %s.' % response)
             raise InstrumentProtocolException('GetHD command not recognized: %s.' % response)
+
+        self._param_dict.update_many(response)
 
         return response
