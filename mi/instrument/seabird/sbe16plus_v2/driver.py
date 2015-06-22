@@ -25,7 +25,7 @@ from mi.core.instrument.instrument_driver import DriverParameter
 from mi.core.instrument.data_particle import CommonDataParticleType
 from mi.core.instrument.chunker import StringChunker
 from mi.core.instrument.driver_dict import DriverDictKey
-from mi.core.instrument.instrument_protocol import CommandResponseInstrumentProtocol
+from mi.core.instrument.instrument_protocol import CommandResponseInstrumentProtocol, InitializationType
 from mi.core.instrument.instrument_driver import SingleConnectionInstrumentDriver
 from mi.core.instrument.data_particle import DataParticle
 from mi.core.instrument.data_particle import DataParticleKey
@@ -187,7 +187,7 @@ class Prompt(BaseEnum):
     """
     SBE16 io prompts.
     """
-    COMMAND = 'S>'
+    COMMAND = NEWLINE + 'S>'
     BAD_COMMAND = '?cmd S>'
     AUTOSAMPLE = 'S>'
     EXECUTED = '<Executed/>'
@@ -1155,6 +1155,9 @@ class SBE16Protocol(CommandResponseInstrumentProtocol):
         @throws InstrumentTimeoutException if the device cannot be woken.
         @throws InstrumentProtocolException if the update commands and not recognized.
         """
+        if self._init_type != InitializationType.NONE:
+            self._update_params()
+
         self._init_params()
 
         self._driver_event(DriverAsyncEvent.STATE_CHANGE)
@@ -1232,9 +1235,10 @@ class SBE16Protocol(CommandResponseInstrumentProtocol):
         for (key, val) in params.iteritems():
 
             old_val = self._param_dict.get(key)
-            log.debug("KEY = %r OLD VALUE = %r NEW VALUE = %r", key, old_val, val)
+            new_val = self._param_dict.format(key, val)
+            log.debug("KEY = %r OLD VALUE = %r NEW VALUE = %r", key, old_val, new_val)
 
-            if old_val != val:
+            if old_val != new_val:
                 if ConfirmedParameter.has(key):
                     # We add a write delay here because this command has to be sent
                     # twice, the write delay allows it to process the first command
@@ -1279,7 +1283,7 @@ class SBE16Protocol(CommandResponseInstrumentProtocol):
         @throws InstrumentTimeoutException if device cannot be woken for command.
         @throws InstrumentProtocolException if command could not be built or misunderstood.
         """
-        self._wakeup(timeout=WAKEUP_TIMEOUT)
+        self._wakeup(timeout=TIMEOUT)
         self._sync_clock(Command.SET, Parameter.DATE_TIME, TIMEOUT, time_format="%d %b %Y %H:%M:%S")
 
         return None, (None, None)
@@ -1317,7 +1321,13 @@ class SBE16Protocol(CommandResponseInstrumentProtocol):
         """
         Enter autosample state.
         """
-        self._init_params()
+        if self._init_type != InitializationType.NONE:
+            self._stop_logging()
+            self._update_params()
+            self._init_params()
+            self._start_logging()
+
+
         self._driver_event(DriverAsyncEvent.STATE_CHANGE)
 
     def _handler_autosample_stop_autosample(self, *args, **kwargs):
@@ -1376,10 +1386,15 @@ class SBE16Protocol(CommandResponseInstrumentProtocol):
         self._linebuf = ''
         self._promptbuf = ''
 
-        log.debug("Set time format(%s) '%s''", time_format, date_time_param)
-        str_val = get_timestamp_delayed(time_format)
-        log.debug("Set time value == '%s'", str_val)
-        self._do_cmd_resp(command, date_time_param, str_val)
+        try:
+            log.error('SETTING THE CLOCK!!!!!')
+
+            log.error("Set time format(%s) '%s''", time_format, date_time_param)
+            str_val = get_timestamp_delayed(time_format)
+            log.error("Set time value == '%s'", str_val)
+            self._do_cmd_resp(command, date_time_param, str_val)
+        except:
+            log.error("DID NOT SET CLOCK!!!!!!")
 
     def _handler_generic_exit(self, *args, **kwargs):
         """
@@ -1505,19 +1520,8 @@ class SBE16Protocol(CommandResponseInstrumentProtocol):
 
         # Issue display commands and parse results.
         response = self._do_cmd_resp(Command.GET_SD,timeout=TIMEOUT)
-        for line in response.split(NEWLINE):
-            self._param_dict.update(line)
-
         response = self._do_cmd_resp(Command.GET_CD,timeout=TIMEOUT)
-        for line in response.split(NEWLINE):
-            self._param_dict.update(line)
-
         response = self._do_cmd_resp(Command.GET_HD,timeout=TIMEOUT)
-
-        pressure_sensor_match = r"<Sensor id = 'Main Pressure'>.*?<type>(.*?)</type>.*?</Sensor>"
-        pressure_sensor_regex = re.compile(pressure_sensor_match.regex(), re.DOTALL)
-        match = pressure_sensor_regex.match(response)
-        self._param_dict.update(match.group(1), Parameter.PTYPE)
 
         # Get new param dict config. If it differs from the old config,
         # tell driver superclass to publish a config change event.
@@ -1548,6 +1552,7 @@ class SBE16Protocol(CommandResponseInstrumentProtocol):
                 set_cmd += set_cmd
 
         except KeyError:
+            log.error('Unknown driver parameter %s' % param)
             raise InstrumentParameterException('Unknown driver parameter %s' % param)
             
         return set_cmd
