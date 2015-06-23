@@ -643,9 +643,10 @@ class SBE43Protocol(SBE16Protocol):
         for (key, val) in params.iteritems():
 
             old_val = self._param_dict.get(key)
-            log.debug("KEY = %r OLD VALUE = %r NEW VALUE = %r", key, old_val, val)
+            new_val = self._param_dict.format(key, val)
+            log.debug("KEY = %r OLD VALUE = %r NEW VALUE = %r", key, old_val, new_val)
 
-            if old_val != val:
+            if old_val != new_val:
                 if ConfirmedParameter.has(key):
                     # We add a write delay here because this command has to be sent
                     # twice, the write delay allows it to process the first command
@@ -663,6 +664,7 @@ class SBE43Protocol(SBE16Protocol):
         @retval (next_state, result) tuple, (ProtocolState.AUTOSAMPLE,
         (next_agent_state, None) if successful.
         """
+        self._start_logging()
         return ProtocolState.AUTOSAMPLE, (ResourceAgentState.STREAMING, None)
 
     def _start_logging(self, *args, **kwargs):
@@ -777,6 +779,8 @@ class SBE43Protocol(SBE16Protocol):
             log.error('_validate_GetSD_response: GetSD command not recognized: %s.' % response)
             raise InstrumentProtocolException('GetSD command not recognized: %s.' % response)
 
+        self._param_dict.update_many(response)
+
         return response
 
     def _validate_GetHD_response(self, response, prompt):
@@ -796,6 +800,8 @@ class SBE43Protocol(SBE16Protocol):
             log.error('_validate_GetHD_response: GetHD command not recognized: %s.' % response)
             raise InstrumentProtocolException('GetHD command not recognized: %s.' % response)
 
+        self._param_dict.update_many(response)
+
         return response
 
     def _validate_GetCD_response(self, response, prompt):
@@ -814,6 +820,8 @@ class SBE43Protocol(SBE16Protocol):
         if not SBE43ConfigurationParticle.resp_regex_compiled().search(response):
             log.error('_validate_GetCD_response: GetCD command not recognized: %s.' % response)
             raise InstrumentProtocolException('GetCD command not recognized: %s.' % response)
+
+        self._param_dict.update_many(response)
 
         return response
 
