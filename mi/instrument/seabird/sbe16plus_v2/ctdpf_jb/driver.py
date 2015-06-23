@@ -1467,6 +1467,27 @@ class SBE19Protocol(SBE16Protocol):
                              direct_access=True,
                              default_value=True,
                              visibility=ParameterDictVisibility.IMMUTABLE)
+        self._param_dict.add(Parameter.OPTODE,
+                             r'OPTODE>(.*)</OPTODE',
+                             lambda match: True if match.group(1) == 'yes' else False,
+                             self._true_false_to_string,
+                             type=ParameterDictType.BOOL,
+                             display_name="Optode Attached",
+                             startup_param=True,
+                             direct_access=True,
+                             default_value=True,
+                             visibility=ParameterDictVisibility.IMMUTABLE)
+        self._param_dict.add(Parameter.VOLT1,
+                             r'ExtVolt1>(.*)</ExtVolt1',
+                             lambda match: True if match.group(1) == 'yes' else False,
+                             self._true_false_to_string,
+                             type=ParameterDictType.BOOL,
+                             display_name="Volt 1",
+                             description="Yes: Enable external voltage 1. No: Do not.",
+                             startup_param=True,
+                             direct_access=True,
+                             default_value=True,
+                             visibility=ParameterDictVisibility.IMMUTABLE)
 
     def _got_chunk(self, chunk, timestamp):
         """
