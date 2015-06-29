@@ -13,7 +13,6 @@ __license__ = 'Apache 2.0'
 
 import re
 import time
-import string
 
 from mi.core.log import get_logger
 log = get_logger()
@@ -23,8 +22,6 @@ from mi.core.common import Units
 from mi.core.instrument.instrument_protocol import CommandResponseInstrumentProtocol
 from mi.core.instrument.data_particle import DataParticleKey
 from mi.core.instrument.instrument_fsm import InstrumentFSM
-from mi.core.instrument.instrument_driver import DriverParameter
-from mi.core.instrument.instrument_driver import ResourceAgentState
 from mi.core.instrument.data_particle import CommonDataParticleType
 from mi.core.instrument.chunker import StringChunker
 
@@ -169,8 +166,8 @@ class SBE19ConfigurationParticle(Sbe16plusBaseParticle):
 
                             SBE19ConfigurationParticleKey.ECHO_CHARACTERS: "EchoCharacters",
                             SBE19ConfigurationParticleKey.OUTPUT_EXECUTED_TAG: "OutputExecutedTag",
-                            SBE19ConfigurationParticleKey.OUTPUT_FORMAT: "OutputFormat",
-        }
+                            SBE19ConfigurationParticleKey.OUTPUT_FORMAT: "OutputFormat"}
+
         return map_param_to_tag[parameter_name]
 
     def _build_parsed_values(self):
@@ -288,8 +285,8 @@ class SBE19StatusParticle(Sbe16plusBaseParticle):
                             SBE19StatusParticleKey.NUMBER_OF_SAMPLES: "Samples",
                             SBE19StatusParticleKey.SAMPLES_FREE: "SamplesFree",
                             SBE19StatusParticleKey.SAMPLE_LENGTH: "SampleLength",
-                            SBE19StatusParticleKey.PROFILES: "Profiles",
-        }
+                            SBE19StatusParticleKey.PROFILES: "Profiles"}
+
         return map_param_to_tag[parameter_name]
 
     def _build_parsed_values(self):
@@ -327,8 +324,7 @@ class SBE19StatusParticle(Sbe16plusBaseParticle):
                   {DataParticleKey.VALUE_ID: SBE19StatusParticleKey.LOGGING_STATE,
                    DataParticleKey.VALUE: logging_status},
                   {DataParticleKey.VALUE_ID: SBE19StatusParticleKey.NUMBER_OF_EVENTS,
-                   DataParticleKey.VALUE: number_of_events},
-        ]
+                   DataParticleKey.VALUE: number_of_events}]
 
         element = self._extract_xml_elements(root, POWER)[0]
         result.append(self._get_xml_parameter(element, SBE19StatusParticleKey.BATTERY_VOLTAGE_MAIN))
@@ -514,8 +510,7 @@ class SBE19HardwareParticle(Sbe16plusBaseParticle):
                   {DataParticleKey.VALUE_ID: SBE19HardwareParticleKey.VOLT1_SERIAL_NUMBER,
                    DataParticleKey.VALUE: volt1_serial_number},
                   {DataParticleKey.VALUE_ID: SBE19HardwareParticleKey.VOLT1_TYPE,
-                   DataParticleKey.VALUE: volt1_type},
-        ]
+                   DataParticleKey.VALUE: volt1_type}]
 
         return result
 
@@ -649,8 +644,8 @@ class SBE19CalibrationParticle(Sbe16plusBaseParticle):
                             SBE19CalibrationParticleKey.EXT_VOLT5_OFFSET: "OFFSET",
                             SBE19CalibrationParticleKey.EXT_VOLT5_SLOPE: "SLOPE",
 
-                            SBE19CalibrationParticleKey.EXT_FREQ: "EXTFREQSF",
-        }
+                            SBE19CalibrationParticleKey.EXT_FREQ: "EXTFREQSF"}
+
         return map_param_to_tag[parameter_name]
 
     def _build_parsed_values(self):
@@ -684,8 +679,7 @@ class SBE19CalibrationParticle(Sbe16plusBaseParticle):
         log.debug("root.tagName = %s", root.tagName)
         serial_number = root.getAttribute(SERIAL_NUMBER)
         result = [{DataParticleKey.VALUE_ID: SBE19CalibrationParticleKey.SERIAL_NUMBER,
-                   DataParticleKey.VALUE: serial_number},
-        ]
+                   DataParticleKey.VALUE: serial_number}]
 
         calibration_elements = self._extract_xml_elements(root, CALIBRATION)
         for calibration in calibration_elements:
@@ -894,10 +888,7 @@ class OptodeSettingsParticle(Sbe16plusBaseParticle):
             OptodeSettingsParticleKey.ENABLE_HUM_COMP: self.yesno2bool,
             OptodeSettingsParticleKey.ENABLE_AIR_SAT: self.yesno2bool,
             OptodeSettingsParticleKey.ENABLE_RAW_DATA: self.yesno2bool,
-            OptodeSettingsParticleKey.INTERVAL: float,
-
-        }
-
+            OptodeSettingsParticleKey.INTERVAL: float}
 
     # noinspection PyPep8
     def regex_multiline(self):
@@ -910,9 +901,7 @@ class OptodeSettingsParticle(Sbe16plusBaseParticle):
             OptodeSettingsParticleKey.ENABLE_AIR_SAT: r'Optode RX = Enable AirSaturation[\s]*[\d]+[\s]+[\d]+[\s]+(Yes|No)',
             OptodeSettingsParticleKey.ENABLE_RAW_DATA: r'Optode RX = Enable Rawdata[\s]*[\d]+[\s]+[\d]+[\s]+(Yes|No)',
             OptodeSettingsParticleKey.INTERVAL: r'Optode RX = Interval[\s]+[\d]+[\s]+[\d]+[\s]+(\d+.\d+)',
-            OptodeSettingsParticleKey.MODE: r'Optode RX = Mode[\s]*[\d]+[\s]+[\d]+[\s]+([\w\- \t]+)',
-
-        }
+            OptodeSettingsParticleKey.MODE: r'Optode RX = Mode[\s]*[\d]+[\s]+[\d]+[\s]+([\w\- \t]+)'}
 
     def _build_parsed_values(self):
         """
@@ -959,7 +948,6 @@ class InstrumentDriver(SBE16InstrumentDriver):
         Return list of device parameters available.
         """
         return Parameter.list()
-
 
     ########################################################################
     # Protocol builder.
@@ -1104,6 +1092,7 @@ class SBE19Protocol(SBE16Protocol):
             raise InstrumentParameterException('Set command requires a parameter dict.')
 
         self._verify_not_readonly(*args, **kwargs)
+        update_params = False
 
         # check values that the instrument doesn't validate
         # handle special cases for driver specific parameters
@@ -1115,11 +1104,12 @@ class SBE19Protocol(SBE16Protocol):
 
         for (key, val) in params.iteritems():
 
-            old_val = self._param_dict.get(key)
+            old_val = self._param_dict.format(key)
             new_val = self._param_dict.format(key, val)
             log.debug("KEY = %r OLD VALUE = %r NEW VALUE = %r", key, old_val, new_val)
 
             if old_val != new_val:
+                update_params = True
                 if ConfirmedParameter.has(key):
                     # We add a write delay here because this command has to be sent
                     # twice, the write delay allows it to process the first command
@@ -1130,34 +1120,8 @@ class SBE19Protocol(SBE16Protocol):
 
         log.debug("set complete, update params")
         self._update_params()
-
-    def _handler_unknown_discover(self, *args, **kwargs):
-        """
-        Discover current state; can be COMMAND or AUTOSAMPLE.
-        @retval (next_state, next_agent_state), (ProtocolState.COMMAND or
-        SBE16State.AUTOSAMPLE, next_agent_state) if successful.
-        @throws InstrumentTimeoutException if the device cannot be woken.
-        @throws InstrumentProtocolException if the device response does not correspond to
-        an expected state.
-        """
-
-        logging = self._is_logging(*args, **kwargs)
-        log.debug("are we logging? %s", logging)
-
-        if logging is None:
-            raise InstrumentProtocolException('_handler_unknown_discover - unable to to determine state')
-        elif logging:
-            next_state = ProtocolState.AUTOSAMPLE
-            next_agent_state = ResourceAgentState.STREAMING
-        else:
-            # We want to sync the clock upon initialization
-            self._wakeup(timeout=WAKEUP_TIMEOUT)
-            self._sync_clock(Command.SET, Parameter.DATE_TIME, TIMEOUT, time_format="%Y-%m-%dT%H:%M:%S")
-
-            next_state = ProtocolState.COMMAND
-            next_agent_state = ResourceAgentState.IDLE
-
-        return next_state, next_agent_state
+        if update_params:
+            self._update_params()
 
     def _handler_command_acquire_status(self, *args, **kwargs):
         """
@@ -1233,46 +1197,6 @@ class SBE19Protocol(SBE16Protocol):
         self._do_cmd_no_resp(Command.RESET_EC)
 
         return None, (None, ''.join(result))
-
-    # need to override this method as time format for SBE19 is different
-    def _handler_command_clock_sync_clock(self, *args, **kwargs):
-        """
-        sync clock close to a second edge
-        @retval (next_state, result) tuple, (None, None) if successful.
-        @throws InstrumentTimeoutException if device cannot be woken for command.
-        @throws InstrumentProtocolException if command could not be built or misunderstood.
-        """
-        self._wakeup(timeout=WAKEUP_TIMEOUT)
-        self._sync_clock(Command.SET, Parameter.DATE_TIME, TIMEOUT, time_format="%Y-%m-%dT%H:%M:%S")
-
-        return None, (None, None)
-
-    # need to override this method as time format for SBE19 is different
-    def _handler_autosample_clock_sync(self, *args, **kwargs):
-        """
-        execute a clock sync on the leading edge of a second change from
-        autosample mode.  For this command we have to move the instrument
-        into command mode, do the clock sync, then switch back.  If an
-        exception is thrown we will try to get ourselves back into
-        streaming and then raise that exception.
-        @retval (next_state, result) tuple, (ProtocolState.AUTOSAMPLE,
-        None) if successful.
-        @throws InstrumentTimeoutException if device cannot be woken for command.
-        @throws InstrumentProtocolException if command could not be built or misunderstood.
-        """
-
-        try:
-            # Switch to command mode
-            self._stop_logging(*args, **kwargs)
-
-            # Sync the clock
-            self._sync_clock(Command.SET, Parameter.DATE_TIME, TIMEOUT, time_format="%Y-%m-%dT%H:%M:%S")
-
-        finally:
-            # Switch back to streaming
-            self._start_logging(*args, **kwargs)
-
-        return None, (None, None)
 
     def _build_send_optode_command(self, cmd, command):
         """
@@ -1406,14 +1330,13 @@ class SBE19Protocol(SBE16Protocol):
         """
         self._build_common_param_dict()
 
-
-
         self._param_dict.add(Parameter.NUM_AVG_SAMPLES,
                              r'ScansToAverage>([\d]+)</ScansToAverage>',
                              lambda match: int(match.group(1)),
                              str,
                              type=ParameterDictType.INT,
-                             display_name="Scans To Average",
+                             display_name="Scans to Average",
+                             description="Number of samples to average",
                              startup_param=True,
                              direct_access=False,
                              default_value=4,
@@ -1424,6 +1347,7 @@ class SBE19Protocol(SBE16Protocol):
                              str,
                              type=ParameterDictType.INT,
                              display_name="Minimum Conductivity Frequency",
+                             description="Minimum conductivity frequency to enable pump turn-on.",
                              startup_param=True,
                              direct_access=False,
                              default_value=500,
@@ -1435,7 +1359,7 @@ class SBE19Protocol(SBE16Protocol):
                              str,
                              type=ParameterDictType.INT,
                              display_name="Pump Delay",
-                             description="Time (s) to wait after minimum conductivity frequency is reached before turning pump on.",
+                             description="Time to wait after minimum conductivity frequency is reached before turning pump on.",
                              startup_param=True,
                              direct_access=False,
                              default_value=60,
@@ -1447,10 +1371,7 @@ class SBE19Protocol(SBE16Protocol):
                              self._true_false_to_string,
                              type=ParameterDictType.BOOL,
                              display_name="Auto Run",
-                             description="Yes: Automatically wake up and start logging when external power is applied; "
-                                         "stop logging when external power is removed. "
-                                         "Magnetic switch position has no effect on logging. "
-                                         "No: Do not automatically start logging when external power is applied.",
+                             description="Enable automatic logging when power is applied: (true | false).",
                              startup_param=True,
                              direct_access=True,
                              default_value=False,
@@ -1461,8 +1382,7 @@ class SBE19Protocol(SBE16Protocol):
                              self._true_false_to_string,
                              type=ParameterDictType.BOOL,
                              display_name="Ignore Switch",
-                             description="Yes: Ignore magnetic switch position for starting or stopping logging. "
-                                         "No: Do not ignore magnetic switch position.",
+                             description="Disable magnetic switch position for starting or stopping logging: (true | false)",
                              startup_param=True,
                              direct_access=True,
                              default_value=True,
@@ -1473,7 +1393,7 @@ class SBE19Protocol(SBE16Protocol):
                              self._true_false_to_string,
                              type=ParameterDictType.BOOL,
                              display_name="Optode Attached",
-                             description="Enable attached optode: (yes | no)",
+                             description="Enable optode: (true | false)",
                              startup_param=True,
                              direct_access=True,
                              default_value=True,
@@ -1484,11 +1404,27 @@ class SBE19Protocol(SBE16Protocol):
                              self._true_false_to_string,
                              type=ParameterDictType.BOOL,
                              display_name="Volt 1",
-                             description="Enable external voltage: (yes | no)",
+                             description="Enable external voltage 1: (true | false)",
                              startup_param=True,
                              direct_access=True,
                              default_value=True,
                              visibility=ParameterDictVisibility.IMMUTABLE)
+
+        self._build_ctd_specific_params()
+
+    def _build_ctd_specific_params(self):
+        self._param_dict.add(Parameter.PTYPE,
+                             r"<Sensor id = 'Main Pressure'>.*?<type>(.*?)</type>.*?</Sensor>",
+                             self._pressure_sensor_to_int,
+                             str,
+                             type=ParameterDictType.INT,
+                             display_name="Pressure Sensor Type",
+                             startup_param=True,
+                             direct_access=True,
+                             default_value=1,
+                             description="Sensor type: (1:strain gauge | 3:quartz with temp comp)",
+                             visibility=ParameterDictVisibility.IMMUTABLE,
+                             regex_flags=re.DOTALL)
 
     def _got_chunk(self, chunk, timestamp):
         """
@@ -1496,9 +1432,14 @@ class SBE19Protocol(SBE16Protocol):
         The base class got_data has gotten a chunk from the chunker.  Pass it to extract_sample
         with the appropriate particle objects and REGEXes.
         """
-        for particle_class in SBE19HardwareParticle, SBE19DataParticle, SBE19CalibrationParticle, \
-                              SBE19ConfigurationParticle, SBE19StatusParticle, OptodeSettingsParticle:
+        if self._extract_sample(SBE19DataParticle, SBE19DataParticle.regex_compiled(), chunk, timestamp):
+            self._sampling = True
+            return
+
+        for particle_class in SBE19HardwareParticle, \
+                              SBE19CalibrationParticle, \
+                              SBE19ConfigurationParticle, \
+                              SBE19StatusParticle, \
+                              OptodeSettingsParticle:
             if self._extract_sample(particle_class, particle_class.regex_compiled(), chunk, timestamp):
                 return
-
-        raise InstrumentProtocolException("Unhandled chunk %s" % chunk)

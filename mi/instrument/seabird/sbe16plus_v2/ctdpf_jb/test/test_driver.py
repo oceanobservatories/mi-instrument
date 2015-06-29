@@ -477,7 +477,6 @@ class SeaBird19plusMixin(SeaBird16plusMixin):
     ###
     _driver_parameters = {
         # Parameters defined in the IOS
-        Parameter.DATE_TIME : {TYPE: str, READONLY: True, DA: False, STARTUP: False},
         Parameter.PTYPE : {TYPE: int, READONLY: True, DA: True, STARTUP: True, DEFAULT: 1, VALUE: 1},
         Parameter.VOLT0 : {TYPE: bool, READONLY: True, DA: True, STARTUP: True, DEFAULT: True, VALUE: True},
         Parameter.VOLT1 : {TYPE: bool, READONLY: True, DA: True, STARTUP: True, DEFAULT: True, VALUE: True},
