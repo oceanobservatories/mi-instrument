@@ -5,6 +5,7 @@
 @brief Driver class for sbe16plus V2 CTD instrument.
 """
 
+
 __author__ = 'Tapana Gupta'
 __license__ = 'Apache 2.0'
 
@@ -36,6 +37,7 @@ from mi.instrument.seabird.sbe16plus_v2.ctdpf_jb.driver import OptodeSettingsPar
 
 from mi.instrument.seabird.sbe16plus_v2.driver import Prompt, SBE16InstrumentDriver, Sbe16plusBaseParticle, \
     WAKEUP_TIMEOUT, NEWLINE, TIMEOUT
+from mi.core.instrument.protocol_param_dict import ParameterDictType, ParameterDictVisibility
 
 
 class DataParticleType(BaseEnum):
@@ -246,8 +248,7 @@ class SBE16NOHardwareParticle(Sbe16plusBaseParticle):
                   {DataParticleKey.VALUE_ID: SBE16NOHardwareParticleKey.VOLT1_SERIAL_NUMBER,
                    DataParticleKey.VALUE: volt1_serial_number},
                   {DataParticleKey.VALUE_ID: SBE16NOHardwareParticleKey.VOLT1_TYPE,
-                   DataParticleKey.VALUE: volt1_type},
-        ]
+                   DataParticleKey.VALUE: volt1_type}]
 
         return result
 
@@ -376,8 +377,8 @@ class SBE16NOCalibrationParticle(Sbe16plusBaseParticle):
                             SBE16NOCalibrationParticleKey.EXT_VOLT5_OFFSET: "OFFSET",
                             SBE16NOCalibrationParticleKey.EXT_VOLT5_SLOPE: "SLOPE",
 
-                            SBE16NOCalibrationParticleKey.EXT_FREQ: "EXTFREQSF",
-        }
+                            SBE16NOCalibrationParticleKey.EXT_FREQ: "EXTFREQSF"}
+
         return map_param_to_tag[parameter_name]
 
     # noinspection PyPep8Naming
@@ -412,8 +413,7 @@ class SBE16NOCalibrationParticle(Sbe16plusBaseParticle):
         log.debug("root.tagName = %s", root.tagName)
         serial_number = root.getAttribute(SERIAL_NUMBER)
         result = [{DataParticleKey.VALUE_ID: SBE16NOCalibrationParticleKey.SERIAL_NUMBER,
-                   DataParticleKey.VALUE: serial_number},
-        ]
+                   DataParticleKey.VALUE: serial_number}]
 
         calibration_elements = self._extract_xml_elements(root, CALIBRATION)
         for calibration in calibration_elements:
@@ -558,12 +558,17 @@ class SBE16NOProtocol(SBE19Protocol):
         The base class got_data has gotten a chunk from the chunker.  Pass it to extract_sample
         with the appropriate particle objects and REGEXes. 
         """
-        for particle_class in SBE16NOHardwareParticle, SBE16NODataParticle, SBE16NOCalibrationParticle, \
-                              SBE16NOConfigurationParticle, SBE16NOStatusParticle, SBE16NOOptodeSettingsParticle:
+        if self._extract_sample(SBE16NODataParticle, SBE16NODataParticle.regex_compiled(), chunk, timestamp):
+            self._sampling = True
+            return
+
+        for particle_class in SBE16NOHardwareParticle, \
+                              SBE16NOCalibrationParticle, \
+                              SBE16NOConfigurationParticle, \
+                              SBE16NOStatusParticle, \
+                              SBE16NOOptodeSettingsParticle:
             if self._extract_sample(particle_class, particle_class.regex_compiled(), chunk, timestamp):
                 return
-
-        raise InstrumentProtocolException("Unhandled chunk %s" % chunk)
 
     ########################################################################
     # Command handlers.
@@ -620,8 +625,8 @@ class SBE16NOProtocol(SBE19Protocol):
         result = []
 
         # When in autosample this command requires two wakeups to get to the right prompt
-        self._wakeup(timeout=WAKEUP_TIMEOUT, delay=0.3)
-        self._wakeup(timeout=WAKEUP_TIMEOUT, delay=0.3)
+        self._wakeup(timeout=WAKEUP_TIMEOUT)
+        self._wakeup(timeout=WAKEUP_TIMEOUT)
 
         result.append(self._do_cmd_resp(Command.GET_SD, response_regex=SBE16NOStatusParticle.regex_compiled(),
                                    timeout=TIMEOUT))
@@ -706,3 +711,17 @@ class SBE16NOProtocol(SBE19Protocol):
         self._param_dict.update_many(response)
 
         return response
+
+    def _build_ctd_specific_params(self):
+        self._param_dict.add(Parameter.PTYPE,
+                             r"<Sensor id = 'Main Pressure'>.*?<type>(.*?)</type>.*?</Sensor>",
+                             self._pressure_sensor_to_int,
+                             str,
+                             type=ParameterDictType.INT,
+                             display_name="Pressure Sensor Type",
+                             startup_param=True,
+                             direct_access=True,
+                             default_value=3,
+                             description="Sensor type: (1:strain gauge | 3:quartz with temp comp)",
+                             visibility=ParameterDictVisibility.IMMUTABLE,
+                             regex_flags=re.DOTALL)

@@ -10,7 +10,6 @@ __author__ = 'David Everett'
 __license__ = 'Apache 2.0'
 
 import time
-import string
 import re
 
 
@@ -42,17 +41,14 @@ from mi.core.exceptions import SampleException
 from xml.dom.minidom import parseString
 from mi.core.time_tools import get_timestamp_delayed
 
-WAKEUP_TIMEOUT = 60
+WAKEUP_TIMEOUT = 3
 NEWLINE = '\r\n'
-SBE_EPOCH = 946713600 # Unix time for SBE epoch 2000-01-01 00:00:00
+SBE_EPOCH = 946713600  # Unix time for SBE epoch 2000-01-01 00:00:00
 TIMEOUT = 20
 DEFAULT_ENCODER_KEY = '__default__'
 
 ERROR_PATTERN = r"<ERROR type='(.*?)' msg='(.*?)'\/>"
 ERROR_REGEX   = re.compile(ERROR_PATTERN, re.DOTALL)
-
-LOGGING_PATTERN = r'<LoggingState>(.*?)</LoggingState>'
-LOGGING_REGEX = re.compile(LOGGING_PATTERN, re.DOTALL)
 
 
 class ScheduledJob(BaseEnum):
@@ -141,7 +137,6 @@ class CommonParameter(DriverParameter):
         LOGGING = "logging"
 
 
-
 class Parameter(CommonParameter):
     """
     Device parameters for SBE16.
@@ -160,26 +155,25 @@ class Parameter(CommonParameter):
     SYNCWAIT = "SyncWait"
 
 
-
 class ConfirmedParameter(BaseEnum):
     """
     List of all parameters that require confirmation
     i.e. set sent twice to confirm.
     """
-    PTYPE    =  Parameter.PTYPE
-    SBE63    =  Parameter.SBE63
-    SBE38    =  Parameter.SBE38
-    SBE50    =  Parameter.SBE50
-    GTD      =  Parameter.GTD
+    PTYPE    = Parameter.PTYPE
+    SBE63    = Parameter.SBE63
+    SBE38    = Parameter.SBE38
+    SBE50    = Parameter.SBE50
+    GTD      = Parameter.GTD
     DUAL_GTD = Parameter.DUAL_GTD
-    OPTODE   =  Parameter.OPTODE
-    WETLABS  =  Parameter.WETLABS
-    VOLT0    =  Parameter.VOLT0
-    VOLT1    =  Parameter.VOLT1
-    VOLT2    =  Parameter.VOLT2
-    VOLT3    =  Parameter.VOLT3
-    VOLT4    =  Parameter.VOLT4
-    VOLT5    =  Parameter.VOLT5
+    OPTODE   = Parameter.OPTODE
+    WETLABS  = Parameter.WETLABS
+    VOLT0    = Parameter.VOLT0
+    VOLT1    = Parameter.VOLT1
+    VOLT2    = Parameter.VOLT2
+    VOLT3    = Parameter.VOLT3
+    VOLT4    = Parameter.VOLT4
+    VOLT5    = Parameter.VOLT5
 
 
 # Device prompts.
@@ -347,8 +341,7 @@ class Sbe16plusBaseParticle(DataParticle):
     def _get_xml_parameter(self, xml_element, parameter_name, dtype=float, raise_exception_if_none_found=True):
 
         try:
-            value = dtype(self._extract_xml_element_value(xml_element,
-                                                            self._map_param_to_xml_tag(parameter_name)))
+            value = dtype(self._extract_xml_element_value(xml_element, self._map_param_to_xml_tag(parameter_name)))
 
         except SampleException:
             if raise_exception_if_none_found:
@@ -423,6 +416,7 @@ class SBE16DataParticleKey(BaseEnum):
     PRESSURE_TEMP = "pressure_temp"
     TIME = "ctd_time"
 
+
 class SBE16DataParticle(Sbe16plusBaseParticle):
     """
     Routines for parsing raw data into a data particle structure. Override
@@ -453,13 +447,13 @@ class SBE16DataParticle(Sbe16plusBaseParticle):
         @return: regex string
         """
         #ttttttccccccppppppvvvvvvvvvvvvssssssss
-        pattern = r'#? *' # patter may or may not start with a '
-        pattern += r'([0-9A-F]{6})' # temperature
-        pattern += r'([0-9A-F]{6})' # conductivity
-        pattern += r'([0-9A-F]{6})' # pressure
-        pattern += r'([0-9A-F]{4})' # pressure temp
-        pattern += r'[0-9A-F]*' # consume extra voltage measurements
-        pattern += r'([0-9A-F]{8})' # time
+        pattern = r'#? *'            # patter may or may not start with a '
+        pattern += r'([0-9A-F]{6})'  # temperature
+        pattern += r'([0-9A-F]{6})'  # conductivity
+        pattern += r'([0-9A-F]{6})'  # pressure
+        pattern += r'([0-9A-F]{4})'  # pressure temp
+        pattern += r'[0-9A-F]*'      # consume extra voltage measurements
+        pattern += r'([0-9A-F]{8})'  # time
         pattern += NEWLINE
         return pattern
 
@@ -547,6 +541,7 @@ class SBE16StatusParticleKey(BaseEnum):
     OUTPUT_SOUND_VELOCITY = "output_sound_velocity"
     SERIAL_SYNC_MODE = "serial_sync_mode"
 
+
 class SBE16StatusParticle(Sbe16plusBaseParticle):
     """
     Routines for parsing raw data into a data particle structure. Override
@@ -556,8 +551,8 @@ class SBE16StatusParticle(Sbe16plusBaseParticle):
 
     @staticmethod
     def regex():
-        pattern =  r'(<StatusData.*?</StatusData>).*?(<HardwareData.*?</HardwareData>).*?(<ConfigurationData.*?' \
-                   r'</ConfigurationData>)'
+        pattern = r'(<StatusData.*?</StatusData>).*?(<HardwareData.*?</HardwareData>).*?(<ConfigurationData.*?' \
+                  r'</ConfigurationData>)'
         return pattern
 
     @staticmethod
@@ -578,7 +573,7 @@ class SBE16StatusParticle(Sbe16plusBaseParticle):
             #GetHD response
             SBE16StatusParticleKey.FIRMWARE_VERSION: 'FirmwareVersion',
             #GetCD response
-            SBE16StatusParticleKey.PUMP_MODE :  'AutoRun',
+            SBE16StatusParticleKey.PUMP_MODE : 'AutoRun',
             SBE16StatusParticleKey.DELAY_BEFORE_SAMPLING : 'PumpDelay',
             SBE16StatusParticleKey.DELAY_AFTER_SAMPLING : 'PumpDelay',
             SBE16StatusParticleKey.SBE38 : 'SBE38',
@@ -604,11 +599,9 @@ class SBE16StatusParticle(Sbe16plusBaseParticle):
             SBE16StatusParticleKey.BATTERY_CUTOFF : 'CutOff',
             SBE16StatusParticleKey.PRESSURE_SENSOR : 'type',
             SBE16StatusParticleKey.SAMPLE_INTERVAL : 'SampleInterval',
-            SBE16StatusParticleKey.MEASUREMENTS_PER_SAMPLE :  'NCycles',
-
+            SBE16StatusParticleKey.MEASUREMENTS_PER_SAMPLE : 'NCycles',
         }
         return map_param_to_tag[parameter_name]
-
 
     def _build_parsed_values(self):
         """
@@ -627,8 +620,7 @@ class SBE16StatusParticle(Sbe16plusBaseParticle):
         root = dom.documentElement
         serial_number = root.getAttribute("SerialNumber")
 
-        result = [{DataParticleKey.VALUE_ID: SBE16StatusParticleKey.SERIAL_NUMBER, DataParticleKey.VALUE: serial_number},
-        ]
+        result = [{DataParticleKey.VALUE_ID: SBE16StatusParticleKey.SERIAL_NUMBER, DataParticleKey.VALUE: serial_number}]
 
         result.append(self._get_xml_parameter(root, SBE16StatusParticleKey.DATE_TIME, str))
         result.append(self._get_xml_parameter(root, SBE16StatusParticleKey.VBATT))
@@ -651,7 +643,6 @@ class SBE16StatusParticle(Sbe16plusBaseParticle):
                 result.append(self._get_xml_parameter(sensor, SBE16StatusParticleKey.PRESSURE_SENSOR, str))
         result.append(self._get_xml_parameter(root, SBE16StatusParticleKey.FIRMWARE_VERSION, str))
         result.append(self._get_xml_parameter(root, SBE16StatusParticleKey.RANGE, int, False))
-
 
         dom = parseString(match.group(3))
         root = dom.documentElement
@@ -742,6 +733,7 @@ class SBE16CalibrationParticleKey(BaseEnum):
     EXT_VOLT5_OFFSET = "ext_volt5_offset"
     EXT_VOLT5_SLOPE = "ext_volt5_slope"
     EXT_FREQ = "ext_freq_sf"
+
 
 class SBE16CalibrationParticle(Sbe16plusBaseParticle):
     """
@@ -864,13 +856,13 @@ class SBE16CalibrationParticle(Sbe16plusBaseParticle):
         serial_number = root.getAttribute(SERIAL_NUMBER)
         firmware_version = root.getAttribute("DeviceType")
         result = [{DataParticleKey.VALUE_ID: SBE16CalibrationParticleKey.SERIAL_NUMBER, DataParticleKey.VALUE: serial_number},
-                  {DataParticleKey.VALUE_ID: SBE16CalibrationParticleKey.FIRMWARE_VERSION, DataParticleKey.VALUE: firmware_version},
-        ]
+                  {DataParticleKey.VALUE_ID: SBE16CalibrationParticleKey.FIRMWARE_VERSION, DataParticleKey.VALUE: firmware_version}]
+
         calibration_elements = self._extract_xml_elements(root, CALIBRATION)
         for calibration in calibration_elements:
             id_attr = calibration.getAttribute(ID)
             if id_attr == TEMPERATURE_SENSOR_ID:
-                result.append(self._get_xml_parameter(calibration,SBE16CalibrationParticleKey.DATE_TIME, str))
+                result.append(self._get_xml_parameter(calibration, SBE16CalibrationParticleKey.DATE_TIME, str))
                 result.append(self._get_xml_parameter(calibration, SBE16CalibrationParticleKey.TEMP_CAL_DATE, str))
                 result.append(self._get_xml_parameter(calibration, SBE16CalibrationParticleKey.TA0))
                 result.append(self._get_xml_parameter(calibration, SBE16CalibrationParticleKey.TA1))
@@ -904,7 +896,6 @@ class SBE16CalibrationParticle(Sbe16plusBaseParticle):
                 result.append(self._get_xml_parameter(calibration, SBE16CalibrationParticleKey.POFFSET))
                 result.append(self._get_xml_parameter(calibration, SBE16CalibrationParticleKey.PRES_RANGE, self.float_to_int, False))
 
-
                 result.append(self._get_xml_parameter(calibration, SBE16CalibrationParticleKey.PC1, float, False))
                 result.append(self._get_xml_parameter(calibration, SBE16CalibrationParticleKey.PC2, float, False))
                 result.append(self._get_xml_parameter(calibration, SBE16CalibrationParticleKey.PC3, float, False))
@@ -917,7 +908,6 @@ class SBE16CalibrationParticle(Sbe16plusBaseParticle):
                 result.append(self._get_xml_parameter(calibration, SBE16CalibrationParticleKey.PT3, float, False))
                 result.append(self._get_xml_parameter(calibration, SBE16CalibrationParticleKey.PT4, float, False))
                 result.append(self._get_xml_parameter(calibration, SBE16CalibrationParticleKey.PSLOPE, float, False))
-
 
             elif id_attr == VOLT0:
                 result.append(self._get_xml_parameter(calibration, SBE16CalibrationParticleKey.EXT_VOLT0_OFFSET))
@@ -939,7 +929,6 @@ class SBE16CalibrationParticle(Sbe16plusBaseParticle):
                 result.append(self._get_xml_parameter(calibration, SBE16CalibrationParticleKey.EXT_VOLT5_SLOPE))
             elif id_attr == EXTERNAL_FREQUENCY_CHANNEL:
                 result.append(self._get_xml_parameter(calibration, SBE16CalibrationParticleKey.EXT_FREQ))
-
 
         log.debug('RESULT = %r', result)
         return result
@@ -970,12 +959,12 @@ class SBE16InstrumentDriver(SingleConnectionInstrumentDriver):
     ########################################################################
     # Protocol builder.
     ########################################################################
-
     def _build_protocol(self):
         """
         Construct the driver protocol state machine.
         """
         self._protocol = SBE16Protocol(Prompt, NEWLINE, self._driver_event)
+
 
 ###############################################################################
 # Seabird Electronics 37-SMP MicroCAT protocol.
@@ -986,6 +975,7 @@ class SBE16Protocol(CommandResponseInstrumentProtocol):
     Subclasses SeaBirdProtocol
     """
     __metaclass__ = get_logging_metaclass(log_level='debug')
+    _sampling = False
 
     def __init__(self, prompts, newline, driver_event):
         """
@@ -997,8 +987,7 @@ class SBE16Protocol(CommandResponseInstrumentProtocol):
         CommandResponseInstrumentProtocol.__init__(self, prompts, newline, driver_event)
         
         # Build SBE16 protocol state machine.
-        self._protocol_fsm = InstrumentFSM(ProtocolState, ProtocolEvent,
-                            ProtocolEvent.ENTER, ProtocolEvent.EXIT)
+        self._protocol_fsm = InstrumentFSM(ProtocolState, ProtocolEvent, ProtocolEvent.ENTER, ProtocolEvent.EXIT)
 
         # Add event handlers for protocol state machine.
         handlers = {
@@ -1096,10 +1085,11 @@ class SBE16Protocol(CommandResponseInstrumentProtocol):
         The base class got_data has gotten a chunk from the chunker.  Pass it to extract_sample
         with the appropriate particle objects and REGEXes.
         """
-        if not (self._extract_sample(SBE16DataParticle, SBE16DataParticle.regex_compiled(), chunk, timestamp) or
-                self._extract_sample(SBE16StatusParticle, SBE16StatusParticle.regex_compiled(), chunk, timestamp) or
-                self._extract_sample(SBE16CalibrationParticle, SBE16CalibrationParticle.regex_compiled(), chunk, timestamp)):
-            raise InstrumentProtocolException("Unhandled chunk")
+        if self._extract_sample(SBE16DataParticle, SBE16DataParticle.regex_compiled(), chunk, timestamp):
+            self._sampling = True
+        any([
+            self._extract_sample(SBE16StatusParticle, SBE16StatusParticle.regex_compiled(), chunk, timestamp),
+            self._extract_sample(SBE16CalibrationParticle, SBE16CalibrationParticle.regex_compiled(), chunk, timestamp)])
 
     def _build_driver_dict(self):
         """
@@ -1133,18 +1123,18 @@ class SBE16Protocol(CommandResponseInstrumentProtocol):
         @throws InstrumentProtocolException if the device response does not correspond to
         an expected state.
         """
-        logging = self._is_logging(*args, **kwargs)
 
-        if logging is None:
-            raise InstrumentProtocolException('Discover unable to to determine state')
-        elif logging:
-            next_state = ProtocolState.AUTOSAMPLE
-            next_agent_state = ResourceAgentState.STREAMING
-        else:
-            next_state = ProtocolState.COMMAND
-            next_agent_state = ResourceAgentState.IDLE
+        #check for a sample particle
+        self._sampling = False
+        timeout = 2
+        end_time = time.time() + timeout
+        while time.time() < end_time:
+            time.sleep(.1)
 
-        return next_state, next_agent_state
+        if self._sampling:
+            return ProtocolState.AUTOSAMPLE, ResourceAgentState.STREAMING
+
+        return ProtocolState.COMMAND, ResourceAgentState.IDLE
 
     ########################################################################
     # Command handlers.
@@ -1224,6 +1214,7 @@ class SBE16Protocol(CommandResponseInstrumentProtocol):
             raise InstrumentParameterException('Set command requires a parameter dict.')
 
         self._verify_not_readonly(*args, **kwargs)
+        update_params = False
 
         # Pump Mode is the only parameter that is set by the driver
         # that where the input isn't validated by the instrument.  So
@@ -1234,11 +1225,12 @@ class SBE16Protocol(CommandResponseInstrumentProtocol):
 
         for (key, val) in params.iteritems():
 
-            old_val = self._param_dict.get(key)
+            old_val = self._param_dict.format(key)
             new_val = self._param_dict.format(key, val)
             log.debug("KEY = %r OLD VALUE = %r NEW VALUE = %r", key, old_val, new_val)
 
             if old_val != new_val:
+                update_params = True
                 if ConfirmedParameter.has(key):
                     # We add a write delay here because this command has to be sent
                     # twice, the write delay allows it to process the first command
@@ -1248,7 +1240,8 @@ class SBE16Protocol(CommandResponseInstrumentProtocol):
                     self._do_cmd_resp(Command.SET, key, val, **kwargs)
 
         log.debug("set complete, update params")
-        self._update_params()
+        if update_params:
+            self._update_params()
 
     def _handler_command_acquire_sample(self, *args, **kwargs):
         """
@@ -1284,7 +1277,7 @@ class SBE16Protocol(CommandResponseInstrumentProtocol):
         @throws InstrumentProtocolException if command could not be built or misunderstood.
         """
         self._wakeup(timeout=TIMEOUT)
-        self._sync_clock(Command.SET, Parameter.DATE_TIME, TIMEOUT, time_format="%d %b %Y %H:%M:%S")
+        self._sync_clock(Command.SET, Parameter.DATE_TIME, TIMEOUT, time_format='%m%d%Y%H%M%S')
 
         return None, (None, None)
 
@@ -1303,13 +1296,12 @@ class SBE16Protocol(CommandResponseInstrumentProtocol):
         @throws InstrumentTimeoutException if device cannot be woken for command.
         @throws InstrumentProtocolException if command could not be built or misunderstood.
         """
-
         try:
             # Switch to command mode,
             self._stop_logging(*args, **kwargs)
 
             # Sync the clock
-            self._sync_clock(Command.SET, Parameter.DATE_TIME, TIMEOUT, time_format="%d %b %Y %H:%M:%S")
+            self._sync_clock(Command.SET, Parameter.DATE_TIME, TIMEOUT, time_format='%m%d%Y%H%M%S')
 
         finally:
             # Switch back to streaming
@@ -1326,7 +1318,6 @@ class SBE16Protocol(CommandResponseInstrumentProtocol):
             self._update_params()
             self._init_params()
             self._start_logging()
-
 
         self._driver_event(DriverAsyncEvent.STATE_CHANGE)
 
@@ -1372,7 +1363,7 @@ class SBE16Protocol(CommandResponseInstrumentProtocol):
     ########################################################################
     # Common handlers.
     ########################################################################
-    def _sync_clock(self, command, date_time_param, timeout=TIMEOUT, delay=1, time_format="%d %b %Y %H:%M:%S"):
+    def _sync_clock(self, command, date_time_param, timeout=TIMEOUT, delay=1, time_format="%m%d%Y%H%M%S"):
         """
         Send the command to the instrument to synchronize the clock
         @param command: command to set6 date time
@@ -1396,31 +1387,6 @@ class SBE16Protocol(CommandResponseInstrumentProtocol):
         Exit unknown state.
         """
         pass
-
-    def _stop_logging(self, *args, **kwargs):
-        """
-        Command the instrument to stop logging
-        @param timeout: how long to wait for a prompt
-        @return: True if successful
-        @raise: InstrumentTimeoutException if prompt isn't seen
-        @raise: InstrumentProtocolException failed to stop logging
-        """
-        log.debug("Stop Logging!")
-
-        self._wakeup(timeout=WAKEUP_TIMEOUT, delay=0.3)
-        self._wakeup(timeout=WAKEUP_TIMEOUT, delay=0.3)
-
-        # Issue the stop command.
-        # We can get here from handle_unknown_discover, hence it's possible that the current state is unknown
-        # handle_unknown_discover checks if we are currently streaming before we get here.
-        if self.get_current_state() in [ProtocolState.AUTOSAMPLE, ProtocolState.UNKNOWN]:
-            kwargs['timeout'] = TIMEOUT
-            self._do_cmd_resp(Command.STOP, *args, **kwargs)
-
-        if self._is_logging(*args, **kwargs):
-            raise InstrumentProtocolException("failed to stop logging")
-
-        return True
 
     ########################################################################
     # Direct access handlers.
@@ -1456,23 +1422,6 @@ class SBE16Protocol(CommandResponseInstrumentProtocol):
     ########################################################################
     # Private helpers.
     ########################################################################
-    def _is_logging(self, *args, **kwargs):
-        """
-        Wake up the instrument and inspect the prompt to determine if we
-        are in streaming
-        @param: timeout - Command timeout
-        @return: True - instrument logging, False - not logging,
-                 None - unknown logging state
-        @raise: InstrumentProtocolException if we can't identify the prompt
-        """
-        self._wakeup(timeout=WAKEUP_TIMEOUT, delay=0.3)
-
-        response = self._do_cmd_resp(Command.GET_SD, timeout=TIMEOUT)
-        for line in response.split(NEWLINE):
-            self._param_dict.update(line)
-
-        return self._param_dict.get(Parameter.LOGGING)
-
     def _start_logging(self, *args, **kwargs):
         """
         Command the instrument to start logging
@@ -1480,17 +1429,19 @@ class SBE16Protocol(CommandResponseInstrumentProtocol):
         @return: True if successful
         @raise: InstrumentProtocolException if failed to start logging
         """
-        if self._is_logging():
-            return True
+        self._do_cmd_resp(Command.STARTNOW, *args, **kwargs)
 
-        self._do_cmd_no_resp(Command.STARTNOW, *args, **kwargs)
-        time.sleep(2)
+    def _stop_logging(self, *args, **kwargs):
+        """
+        Command the instrument to stop logging
+        @param timeout: how long to wait for a prompt
+        @return: True if successful
+        @raise: InstrumentTimeoutException if prompt isn't seen
+        @raise: InstrumentProtocolException failed to stop logging
+        """
+        kwargs['timeout'] = TIMEOUT
+        self._do_cmd_resp(Command.STOP, *args, **kwargs)
 
-        if not self._is_logging(20):
-            raise InstrumentProtocolException("failed to start logging")
-
-        return True
-        
     def _send_wakeup(self):
         """
         Send a newline to attempt to wake the SBE16 device.
@@ -1513,10 +1464,10 @@ class SBE16Protocol(CommandResponseInstrumentProtocol):
         # Get old param dict config.
         old_config = self._param_dict.get_config()
 
-        # Issue display commands and parse results.
-        response = self._do_cmd_resp(Command.GET_SD,timeout=TIMEOUT)
-        response = self._do_cmd_resp(Command.GET_CD,timeout=TIMEOUT)
-        response = self._do_cmd_resp(Command.GET_HD,timeout=TIMEOUT)
+        # Issue status commands
+        self._do_cmd_resp(Command.GET_SD, timeout=TIMEOUT)
+        self._do_cmd_resp(Command.GET_CD, timeout=TIMEOUT)
+        self._do_cmd_resp(Command.GET_HD, timeout=TIMEOUT)
 
         # Get new param dict config. If it differs from the old config,
         # tell driver superclass to publish a config change event.
@@ -1539,8 +1490,11 @@ class SBE16Protocol(CommandResponseInstrumentProtocol):
         if the formatting function could not accept the value passed.
         """
         try:
-            str_val = self._param_dict.format(param, val)
-            set_cmd = '%s=%s%s' % (param, str_val, NEWLINE)
+            if param is Parameter.DATE_TIME:
+                set_cmd = '%s=%s%s' % (param, val, NEWLINE)
+            else:
+                str_val = self._param_dict.format(param, val)
+                set_cmd = '%s=%s%s' % (param, str_val, NEWLINE)
 
             # Some set commands need to be sent twice to confirm
             if param in ConfirmedParameter.list():
@@ -1595,47 +1549,23 @@ class SBE16Protocol(CommandResponseInstrumentProtocol):
 
         return response
 
-    @staticmethod
-    def _date_time_string_to_numeric(date_time_string):
-        """
-        convert string from "2014-03-27T14:36:15" to numeric "mmddyyyyhhmmss"
-        """
-        return time.strftime("%m%d%Y%H%M%S", time.strptime(date_time_string, "%Y-%m-%dT%H:%M:%S"))
-
     def _build_common_param_dict(self):
-        self._param_dict.add(Parameter.DATE_TIME,
-                             r'DateTime>(.*)</DateTime',
-                             lambda match: string.upper(match.group(1)),
-                             self._date_time_string_to_numeric,
-                             type=ParameterDictType.STRING,
-                             display_name="Date/Time",
-                             description="Y-M-DayTH:M:S",
-                             visibility=ParameterDictVisibility.READ_ONLY)
+
         self._param_dict.add(Parameter.LOGGING,
                              r'LoggingState>(not )?logging</LoggingState',
                              lambda match: False if (match.group(1)) else True,
                              self._true_false_to_string,
                              type=ParameterDictType.BOOL,
-                             display_name="Is Logging",
+                             display_name="Logging",
+                             description="Enable logging: (true | false)",
                              visibility=ParameterDictVisibility.READ_ONLY)
-        self._param_dict.add(Parameter.PTYPE,
-                             r"<Sensor id = 'Main Pressure'>.*?<type>(.*?)</type>.*?</Sensor>",
-                             self._pressure_sensor_to_int,
-                             str,
-                             type=ParameterDictType.INT,
-                             display_name="Pressure Sensor Type",
-                             startup_param=True,
-                             direct_access=True,
-                             default_value=1,
-                             description="1: strain gauge/strain-0, 2: quartz without temp comp, 3: quartz with temp comp",
-                             visibility=ParameterDictVisibility.IMMUTABLE)
         self._param_dict.add(Parameter.VOLT0,
                              r'ExtVolt0>(.*)</ExtVolt0',
                              lambda match: True if match.group(1) == 'yes' else False,
                              self._true_false_to_string,
                              type=ParameterDictType.BOOL,
                              display_name="Volt 0",
-                             description="Yes: Enable external voltage 0. No: Do not.",
+                             description="Enable external voltage 0: (true | false)",
                              startup_param=True,
                              direct_access=True,
                              default_value=True,
@@ -1646,7 +1576,7 @@ class SBE16Protocol(CommandResponseInstrumentProtocol):
                              self._true_false_to_string,
                              type=ParameterDictType.BOOL,
                              display_name="Volt 1",
-                             description="Yes: Enable external voltage 1. No: Do not.",
+                             description="Enable external voltage 1: (true | false)",
                              startup_param=True,
                              direct_access=True,
                              default_value=False,
@@ -1657,7 +1587,7 @@ class SBE16Protocol(CommandResponseInstrumentProtocol):
                              self._true_false_to_string,
                              type=ParameterDictType.BOOL,
                              display_name="Volt 2",
-                             description="Yes: Enable external voltage 2. No: Do not.",
+                             description="Enable external voltage 2: (true | false)",
                              startup_param=True,
                              direct_access=True,
                              default_value=False,
@@ -1668,7 +1598,7 @@ class SBE16Protocol(CommandResponseInstrumentProtocol):
                              self._true_false_to_string,
                              type=ParameterDictType.BOOL,
                              display_name="Volt 3",
-                             description="Yes: Enable external voltage 3. No: Do not.",
+                             description="Enable external voltage 3: (true | false)",
                              startup_param=True,
                              direct_access=True,
                              default_value=False,
@@ -1679,7 +1609,7 @@ class SBE16Protocol(CommandResponseInstrumentProtocol):
                              self._true_false_to_string,
                              type=ParameterDictType.BOOL,
                              display_name="Volt 4",
-                             description="Yes: Enable external voltage 4. No: Do not.",
+                             description="Enable external voltage 4: (true | false)",
                              startup_param=True,
                              direct_access=True,
                              default_value=False,
@@ -1690,7 +1620,7 @@ class SBE16Protocol(CommandResponseInstrumentProtocol):
                              self._true_false_to_string,
                              type=ParameterDictType.BOOL,
                              display_name="Volt 5",
-                             description="Yes: Enable external voltage 5. No: Do not.",
+                             description="Enable external voltage 5: (true | false)",
                              startup_param=True,
                              direct_access=True,
                              default_value=False,
@@ -1701,6 +1631,7 @@ class SBE16Protocol(CommandResponseInstrumentProtocol):
                              self._true_false_to_string,
                              type=ParameterDictType.BOOL,
                              display_name="SBE38 Attached",
+                             description="Enable SBE38: (true | false)",
                              startup_param=True,
                              direct_access=True,
                              default_value=False,
@@ -1711,6 +1642,7 @@ class SBE16Protocol(CommandResponseInstrumentProtocol):
                              self._true_false_to_string,
                              type=ParameterDictType.BOOL,
                              display_name="SBE63 Attached",
+                             description="Enable SBE63: (true | false)",
                              startup_param=True,
                              direct_access=True,
                              default_value=False,
@@ -1720,7 +1652,8 @@ class SBE16Protocol(CommandResponseInstrumentProtocol):
                              lambda match: True if match.group(1) == 'yes' else False,
                              self._true_false_to_string,
                              type=ParameterDictType.BOOL,
-                             display_name="Enable Wetlabs Sensor",
+                             display_name="Wetlabs Sensor Attached",
+                             description="Enable Wetlabs sensor: (true | false)",
                              startup_param=True,
                              direct_access=True,
                              default_value=False,
@@ -1731,6 +1664,7 @@ class SBE16Protocol(CommandResponseInstrumentProtocol):
                              self._true_false_to_string,
                              type=ParameterDictType.BOOL,
                              display_name="GTD Attached",
+                             description="Enable GTD: (true | false)",
                              startup_param=True,
                              direct_access=True,
                              default_value=False,
@@ -1741,16 +1675,7 @@ class SBE16Protocol(CommandResponseInstrumentProtocol):
                              self._true_false_to_string,
                              type=ParameterDictType.BOOL,
                              display_name="Dual GTD Attached",
-                             startup_param=True,
-                             direct_access=True,
-                             default_value=False,
-                             visibility=ParameterDictVisibility.IMMUTABLE)
-        self._param_dict.add(Parameter.OPTODE,
-                             r'OPTODE>(.*)</OPTODE',
-                             lambda match: True if match.group(1) == 'yes' else False,
-                             self._true_false_to_string,
-                             type=ParameterDictType.BOOL,
-                             display_name="Optode Attached",
+                             description="Enable second GTD: (true | false)",
                              startup_param=True,
                              direct_access=True,
                              default_value=False,
@@ -1761,11 +1686,22 @@ class SBE16Protocol(CommandResponseInstrumentProtocol):
                              int,
                              type=ParameterDictType.INT,
                              display_name="Output Format",
-                             description="0: raw hex, 1: converted hex, 2: raw decimal, 3: converted decimal, "
-                                         "4: converted hex for afm, 5: converted xml uvic",
+                             description="Format for the instrument output: (0:raw hex | 1:converted hex | 2:raw decimal, "
+                                         "3:converted decimal | 4:converted hex for afm | 5:converted xml uvic)",
                              startup_param=True,
                              direct_access=True,
                              default_value=0,
+                             visibility=ParameterDictVisibility.IMMUTABLE)
+        self._param_dict.add(Parameter.OPTODE,
+                             r'OPTODE>(.*)</OPTODE',
+                             lambda match: True if match.group(1) == 'yes' else False,
+                             self._true_false_to_string,
+                             type=ParameterDictType.BOOL,
+                             display_name="Optode Attached",
+                             description="Enable optode: (true | false)",
+                             startup_param=True,
+                             direct_access=True,
+                             default_value=False,
                              visibility=ParameterDictVisibility.IMMUTABLE)
 
     def _build_param_dict(self):
@@ -1776,15 +1712,28 @@ class SBE16Protocol(CommandResponseInstrumentProtocol):
         """
         self._build_common_param_dict()
 
+        self._param_dict.add(Parameter.PTYPE,
+                             r"<Sensor id = 'Main Pressure'>.*?<type>(.*?)</type>.*?</Sensor>",
+                             self._pressure_sensor_to_int,
+                             str,
+                             type=ParameterDictType.INT,
+                             display_name="Pressure Sensor Type",
+                             startup_param=True,
+                             direct_access=True,
+                             default_value=1,
+                             description="Sensor type: (1:strain gauge | 3:quartz with temp comp)",
+                             visibility=ParameterDictVisibility.IMMUTABLE,
+                             regex_flags=re.DOTALL)
         self._param_dict.add(Parameter.ECHO,
                              r'<EchoCharacters>(.*)</EchoCharacters>',
-                             lambda match : True if match.group(1)=='yes' else False,
+                             lambda match : True if match.group(1) == 'yes' else False,
                              self._true_false_to_string,
                              type=ParameterDictType.BOOL,
                              display_name="Echo Characters",
-                             startup_param = True,
-                             direct_access = True,
-                             default_value = True,
+                             description="Enable characters to be echoed as typed (true | false)",
+                             startup_param=True,
+                             direct_access=True,
+                             default_value=True,
                              visibility=ParameterDictVisibility.IMMUTABLE)
         self._param_dict.add(Parameter.OUTPUT_EXEC_TAG,
                              r'<OutputExecutedTag>(.*)</OutputExecutedTag>',
@@ -1792,9 +1741,10 @@ class SBE16Protocol(CommandResponseInstrumentProtocol):
                              self._true_false_to_string,
                              type=ParameterDictType.BOOL,
                              display_name="Output Execute Tag",
-                             startup_param = True,
-                             direct_access = True,
-                             default_value = True,
+                             description="Enable display of XML executing and executed tags (true | false)",
+                             startup_param=True,
+                             direct_access=True,
+                             default_value=True,
                              visibility=ParameterDictVisibility.IMMUTABLE)
         self._param_dict.add(Parameter.PUMP_MODE,
                              r'<AutoRun>(.*)</AutoRun>',
@@ -1802,19 +1752,20 @@ class SBE16Protocol(CommandResponseInstrumentProtocol):
                              str,
                              type=ParameterDictType.INT,
                              display_name="Pump Mode",
-                             description="0: no pump, 1: run pump for 0.5 sec, 2: run pump during sample",
-                             startup_param = True,
-                             direct_access = True,
-                             default_value = 2)
+                             description="Mode: (0:no pump | 1:run pump for 0.5 sec | 2:run pump during sample)",
+                             startup_param=True,
+                             direct_access=True,
+                             default_value=2)
         self._param_dict.add(Parameter.SBE50,
                              r'SBE50>(.*)</SBE50',
                              lambda match : True if match.group(1) == 'yes' else False,
                              self._true_false_to_string,
                              type=ParameterDictType.BOOL,
                              display_name="SBE50 Attached",
-                             startup_param = True,
-                             direct_access = True,
-                             default_value = False,
+                             description="Enabled SBE50 (true | false)",
+                             startup_param=True,
+                             direct_access=True,
+                             default_value=False,
                              visibility=ParameterDictVisibility.IMMUTABLE)
         self._param_dict.add(Parameter.DELAY_BEFORE_SAMPLE,
                              r'DelayBeforeSampling>(.*?)</DelayBeforeSampling',
@@ -1822,9 +1773,11 @@ class SBE16Protocol(CommandResponseInstrumentProtocol):
                              self._float_to_string,
                              type=ParameterDictType.FLOAT,
                              display_name="Delay Before Sample",
-                             startup_param = True,
-                             direct_access = True,
-                             default_value = 0.0,
+                             description=" Time to wait after switching on external voltages and RS-232 sensors "
+                                         "before sampling: (0-600).",
+                             startup_param=True,
+                             direct_access=True,
+                             default_value=0.0,
                              units=Units.SECOND,
                              visibility=ParameterDictVisibility.IMMUTABLE)
         self._param_dict.add(Parameter.DELAY_AFTER_SAMPLE,
@@ -1833,9 +1786,11 @@ class SBE16Protocol(CommandResponseInstrumentProtocol):
                              str,
                              type=ParameterDictType.FLOAT,
                              display_name="Delay After Sample",
-                             startup_param = True,
-                             direct_access = True,
-                             default_value = 0.0,
+                             description="Time to wait after sampling is completed, before turning off power "
+                                         "to external voltages and RS-232 sensors.",
+                             startup_param=True,
+                             direct_access=True,
+                             default_value=0.0,
                              units=Units.SECOND,
                              visibility=ParameterDictVisibility.IMMUTABLE)
         self._param_dict.add(Parameter.SYNCMODE,
@@ -1844,21 +1799,10 @@ class SBE16Protocol(CommandResponseInstrumentProtocol):
                              self._true_false_to_string,
                              type=ParameterDictType.BOOL,
                              display_name="Enable Serial Sync",
-                             startup_param = True,
-                             direct_access = True,
-                             default_value = False,
-                             visibility=ParameterDictVisibility.IMMUTABLE)
-        self._param_dict.add(Parameter.SYNCWAIT,
-                             r'SyncWait>(.*?)</SyncWait',
-                             lambda match : int(match.group(1)),
-                             str,
-                             type=ParameterDictType.BOOL,
-                             display_name="Serial Sync Wait",
-                             # Not a startup parameter because syncmode is read only false.
-                             # This parameter is not needed.
-                             startup_param = False,
-                             direct_access = False,
-                             default_value = 0,
+                             description="Enable serial line sync mode (true | false)",
+                             startup_param=True,
+                             direct_access=True,
+                             default_value=False,
                              visibility=ParameterDictVisibility.IMMUTABLE)
         self._param_dict.add(Parameter.NCYCLES,
                              r'NCycles>(.*?)</NCycles',
@@ -1867,42 +1811,42 @@ class SBE16Protocol(CommandResponseInstrumentProtocol):
                              type=ParameterDictType.INT,
                              display_name="Ncycles",
                              description="Number of measurements to take and average every SampleInterval seconds.",
-                             startup_param = True,
-                             direct_access = False,
-                             default_value = 4)
+                             startup_param=True,
+                             direct_access=False,
+                             default_value=4)
         self._param_dict.add(Parameter.INTERVAL,
                              r'SampleInterval>(.*?)</SampleInterval',
                              lambda match : int(match.group(1)),
                              str,
                              type=ParameterDictType.INT,
                              display_name="Sample Interval",
-                             startup_param = True,
-                             direct_access = False,
+                             description="Interval between samples: (10 - 14,400).",
+                             startup_param=True,
+                             direct_access=False,
                              units=Units.SECOND,
-                             default_value = 10)
+                             default_value=10)
         self._param_dict.add(Parameter.BIOWIPER,
                              r'Biowiper>(.*?)</Biowiper',
                              lambda match : False,
                              self._true_false_to_string,
                              type=ParameterDictType.BOOL,
                              display_name="Biowiper",
-                             description="Yes: Configuration includes ECO-FL fluorometer with Bio-Wiper. No: Does not.",
-                             startup_param = True,
-                             direct_access = True,
-                             default_value = False,
+                             description="Enable ECO-FL fluorometer with Bio-Wiper (true | false)",
+                             startup_param=True,
+                             direct_access=True,
+                             default_value=False,
                              visibility=ParameterDictVisibility.IMMUTABLE)
         self._param_dict.add(Parameter.TXREALTIME,
                              r'TxRealTime>(yes|no)</TxRealTime',
-                             lambda match : True if match.group(1)=='yes' else False,
+                             lambda match : True if match.group(1) == 'yes' else False,
                              self._true_false_to_string,
                              type=ParameterDictType.BOOL,
                              display_name="Transmit Real-Time",
-                             description="Yes: Output real-time data. No: Do not.",
-                             startup_param = True,
-                             direct_access = True,
-                             default_value = True,
+                             description="Enable real-time data output (true | false)",
+                             startup_param=True,
+                             direct_access=True,
+                             default_value=True,
                              visibility=ParameterDictVisibility.IMMUTABLE)
-
 
     ########################################################################
     # Static helpers to format set commands.
@@ -1921,7 +1865,7 @@ class SBE16Protocol(CommandResponseInstrumentProtocol):
             return 1
         elif v == "quartz without temp comp":
             return 2
-        elif v == "quartz with temp comp":
+        elif v == "quartz with temp comp" or v == "quartzTC-0":
             return 3
         else:
             return None

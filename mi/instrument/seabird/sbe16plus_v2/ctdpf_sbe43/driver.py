@@ -11,8 +11,6 @@ __author__ = 'Tapana Gupta'
 __license__ = 'Apache 2.0'
 
 import re
-import string
-import time
 
 from mi.core.log import get_logger
 
@@ -22,8 +20,6 @@ from mi.core.common import BaseEnum, Units
 from mi.core.instrument.instrument_protocol import CommandResponseInstrumentProtocol
 from mi.core.instrument.data_particle import DataParticleKey
 from mi.core.instrument.instrument_fsm import InstrumentFSM
-from mi.core.instrument.instrument_driver import ResourceAgentState
-from mi.core.instrument.instrument_driver import DriverParameter
 from mi.core.instrument.data_particle import CommonDataParticleType
 from mi.core.instrument.chunker import StringChunker
 
@@ -62,7 +58,6 @@ class Parameter(CommonParameter):
     PUMP_DELAY = "PumpDelay"
     AUTO_RUN = "AutoRun"
     IGNORE_SWITCH = "IgnoreSwitch"
-
 
 
 ###############################################################################
@@ -614,12 +609,16 @@ class SBE43Protocol(SBE16Protocol):
         The base class got_data has gotten a chunk from the chunker.  Pass it to extract_sample
         with the appropriate particle objects and REGEXes.
         """
-        for particle_class in SBE43HardwareParticle, SBE43DataParticle, SBE43CalibrationParticle, \
-                              SBE43ConfigurationParticle, SBE43StatusParticle:
+        if self._extract_sample(SBE43DataParticle, SBE43DataParticle.regex_compiled(), chunk, timestamp):
+            self._sampling = True
+            return
+
+        for particle_class in SBE43HardwareParticle, \
+                              SBE43CalibrationParticle, \
+                              SBE43ConfigurationParticle, \
+                              SBE43StatusParticle:
             if self._extract_sample(particle_class, particle_class.regex_compiled(), chunk, timestamp):
                 return
-
-        raise InstrumentProtocolException("Unhandled chunk %s" % chunk)
 
     def _set_params(self, *args, **kwargs):
         """
@@ -631,6 +630,7 @@ class SBE43Protocol(SBE16Protocol):
             raise InstrumentParameterException('Set command requires a parameter dict.')
 
         self._verify_not_readonly(*args, **kwargs)
+        update_params = False
 
         # check values that the instrument doesn't validate
         # handle special cases for driver specific parameters
@@ -642,11 +642,12 @@ class SBE43Protocol(SBE16Protocol):
 
         for (key, val) in params.iteritems():
 
-            old_val = self._param_dict.get(key)
+            old_val = self._param_dict.format(key)
             new_val = self._param_dict.format(key, val)
             log.debug("KEY = %r OLD VALUE = %r NEW VALUE = %r", key, old_val, new_val)
 
             if old_val != new_val:
+                update_params = True
                 if ConfirmedParameter.has(key):
                     # We add a write delay here because this command has to be sent
                     # twice, the write delay allows it to process the first command
@@ -656,47 +657,8 @@ class SBE43Protocol(SBE16Protocol):
                     self._do_cmd_resp(Command.SET, key, val, **kwargs)
 
         log.debug("set complete, update params")
-        self._update_params()
-
-    def _handler_command_start_autosample(self, *args, **kwargs):
-        """
-        Switch into autosample mode.
-        @retval (next_state, result) tuple, (ProtocolState.AUTOSAMPLE,
-        (next_agent_state, None) if successful.
-        """
-        self._start_logging()
-        return ProtocolState.AUTOSAMPLE, (ResourceAgentState.STREAMING, None)
-
-    def _start_logging(self, *args, **kwargs):
-        """
-        Command the instrument to start logging
-        @raise: InstrumentProtocolException if failed to start logging
-        """
-        if not self._is_logging():
-
-            self._do_cmd_no_resp(Command.STARTNOW, *args, **kwargs)
-            time.sleep(2)
-
-            if not self._is_logging():
-                raise InstrumentProtocolException("failed to start logging")
-
-    def _stop_logging(self, *args, **kwargs):
-        """
-        Command the instrument to stop logging
-        @param timeout: how long to wait for a prompt
-        @raise: InstrumentTimeoutException if prompt isn't seen
-        @raise: InstrumentProtocolException failed to stop logging
-        """
-
-        # Issue the stop command.
-        # We can get here from handle_unknown_discover, hence it's possible that the current state is unknown
-        # handle_unknown_discover checks if we are currently streaming before we get here.
-        if self.get_current_state() in [ProtocolState.AUTOSAMPLE, ProtocolState.UNKNOWN]:
-            kwargs['timeout'] = TIMEOUT
-            self._do_cmd_resp(Command.STOP, *args, **kwargs)
-
-        if self._is_logging(*args, **kwargs):
-            raise InstrumentProtocolException("failed to stop logging")
+        if update_params:
+            self._update_params()
 
     ########################################################################
     # Command handlers.
@@ -756,7 +718,6 @@ class SBE43Protocol(SBE16Protocol):
         self._do_cmd_no_resp(Command.RESET_EC)
 
         return None, (None, ''.join(result))
-
 
     ########################################################################
     # response handlers.
@@ -875,17 +836,18 @@ class SBE43Protocol(SBE16Protocol):
                              self._true_false_to_string,
                              type=ParameterDictType.BOOL,
                              display_name="SBE63 Attached",
+                             description="Enable SBE63: (true | false)",
                              startup_param=True,
                              direct_access=True,
                              default_value=False,
                              visibility=ParameterDictVisibility.IMMUTABLE)
-
         self._param_dict.add(Parameter.NUM_AVG_SAMPLES,
                              r'ScansToAverage>([\d]+)</ScansToAverage>',
                              lambda match: int(match.group(1)),
                              str,
                              type=ParameterDictType.INT,
-                             display_name="Scans To Average",
+                             display_name="Scans to Average",
+                             description="Number of samples to average",
                              startup_param=True,
                              direct_access=False,
                              default_value=4,
@@ -896,6 +858,7 @@ class SBE43Protocol(SBE16Protocol):
                              str,
                              type=ParameterDictType.INT,
                              display_name="Minimum Conductivity Frequency",
+                             description="Minimum conductivity frequency to enable pump turn-on.",
                              startup_param=True,
                              direct_access=False,
                              default_value=500,
@@ -907,7 +870,7 @@ class SBE43Protocol(SBE16Protocol):
                              str,
                              type=ParameterDictType.INT,
                              display_name="Pump Delay",
-                             description="Time (s) to wait after minimum conductivity frequency is reached before turning pump on.",
+                             description="Time to wait after minimum conductivity frequency is reached before turning pump on.",
                              startup_param=True,
                              direct_access=False,
                              default_value=60,
@@ -919,10 +882,7 @@ class SBE43Protocol(SBE16Protocol):
                              self._true_false_to_string,
                              type=ParameterDictType.BOOL,
                              display_name="Auto Run",
-                             description="Yes: Automatically wake up and start logging when external power is applied; "
-                                         "stop logging when external power is removed. "
-                                         "Magnetic switch position has no effect on logging. "
-                                         "No: Do not automatically start logging when external power is applied.",
+                             description="Enable automatic logging when power is applied: (true | false).",
                              startup_param=True,
                              direct_access=True,
                              default_value=False,
@@ -933,9 +893,42 @@ class SBE43Protocol(SBE16Protocol):
                              self._true_false_to_string,
                              type=ParameterDictType.BOOL,
                              display_name="Ignore Switch",
-                             description="Yes: Ignore magnetic switch position for starting or stopping logging. "
-                                         "No: Do not ignore magnetic switch position.",
+                             description="Disable magnetic switch position for starting or stopping logging: (true | false)",
                              startup_param=True,
                              direct_access=True,
                              default_value=True,
+                             visibility=ParameterDictVisibility.IMMUTABLE)
+        self._param_dict.add(Parameter.PTYPE,
+                             r"<Sensor id = 'Main Pressure'>.*?<type>(.*?)</type>.*?</Sensor>",
+                             self._pressure_sensor_to_int,
+                             str,
+                             type=ParameterDictType.INT,
+                             display_name="Pressure Sensor Type",
+                             startup_param=True,
+                             direct_access=True,
+                             default_value=1,
+                             description="Sensor type: (1:strain gauge | 3:quartz with temp comp)",
+                             visibility=ParameterDictVisibility.IMMUTABLE,
+                             regex_flags=re.DOTALL)
+        self._param_dict.add(Parameter.OPTODE,
+                             r'OPTODE>(.*)</OPTODE',
+                             lambda match: True if match.group(1) == 'yes' else False,
+                             self._true_false_to_string,
+                             type=ParameterDictType.BOOL,
+                             display_name="Optode Attached",
+                             description="Enable optode: (true | false)",
+                             startup_param=True,
+                             direct_access=True,
+                             default_value=False,
+                             visibility=ParameterDictVisibility.IMMUTABLE)
+        self._param_dict.add(Parameter.VOLT1,
+                             r'ExtVolt1>(.*)</ExtVolt1',
+                             lambda match: True if match.group(1) == 'yes' else False,
+                             self._true_false_to_string,
+                             type=ParameterDictType.BOOL,
+                             display_name="Volt 1",
+                             description="Enable external voltage 1: (true | false)",
+                             startup_param=True,
+                             direct_access=True,
+                             default_value=False,
                              visibility=ParameterDictVisibility.IMMUTABLE)
