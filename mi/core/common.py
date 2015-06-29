@@ -215,6 +215,7 @@ class Units(BaseEnum):
     CUBIC_FOOT_PER_MINUTE = 'ft³/min'
     CUBIC_METER = 'm³'
     CUBIC_METER_PER_SECOND = 'm³/s'
+    DAY = 'd'
     DECIBEL = 'dB'
     DEGREE_CELSIUS = '°C'
     DEGREE_FAHRENHEIT = '°F'
