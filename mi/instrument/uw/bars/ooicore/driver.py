@@ -1125,7 +1125,7 @@ class Protocol(MenuInstrumentProtocol):
                                                             int(match.group(2))),
                              self._int_to_string,
                              type=ParameterDictType.INT,
-                             display_name="Cycle Time in seconds",
+                             display_name="Cycle Time",
                              visibility=ParameterDictVisibility.READ_WRITE,
                              startup_param=True,
                              direct_access=True,
@@ -1133,8 +1133,9 @@ class Protocol(MenuInstrumentProtocol):
                              menu_path_read=SubMenu.SHOW_PARAM,
                              submenu_read=[],
                              menu_path_write=SubMenu.CHANGE_PARAM,
-                             value_description="Value over 59 will be rounded down to the nearest minute ",
                              units=Units.SECOND,
+                             description='Sample interval (15 - 3600), where time greater than 59 is rounded down to '
+                                         'the nearest minute.',
                              submenu_write=[["1", Prompt.CYCLE_TIME_PROMPT]])
 
         self._param_dict.add(Parameter.VERBOSE,
@@ -1147,6 +1148,7 @@ class Protocol(MenuInstrumentProtocol):
                              startup_param=True,
                              direct_access=True,
                              init_value=0,
+                             description="Enable verbosity with data points (1:on | 0:off)",
                              menu_path_write=SubMenu.CHANGE_PARAM,
                              submenu_write=[["2", Prompt.VERBOSE_PROMPT]])
 
@@ -1160,6 +1162,7 @@ class Protocol(MenuInstrumentProtocol):
                              startup_param=True,
                              direct_access=True,
                              init_value=0,
+                             description="Enable display of metadata at startup (1:on | 0:off)",
                              menu_path_write=SubMenu.CHANGE_PARAM,
                              submenu_write=[["3", Prompt.METADATA_PROMPT]])
 
@@ -1173,11 +1176,12 @@ class Protocol(MenuInstrumentProtocol):
                              startup_param=True,
                              direct_access=True,
                              init_value=0,
+                             description="Enable display of metadata at restart (1:on | 0:off)",
                              menu_path_write=SubMenu.CHANGE_PARAM,
                              submenu_write=[["4", Prompt.METADATA_PROMPT]])
 
         self._param_dict.add(Parameter.RES_SENSOR_POWER,
-                             r'(0|1)\s+= Res Power Status',
+                             r'(0|1)\s+= Res Power',
                              lambda match: int(match.group(1)),
                              self._int_to_string,
                              type=ParameterDictType.INT,
@@ -1187,11 +1191,12 @@ class Protocol(MenuInstrumentProtocol):
                              direct_access=False,
                              menu_path_read=SubMenu.SHOW_PARAM,
                              submenu_read=[],
+                             description="Enable res sensor power (1:on | 0:off)",
                              menu_path_write=SubMenu.SENSOR_POWER,
                              submenu_write=[["1"]])
 
         self._param_dict.add(Parameter.INST_AMP_POWER,
-                             r'(0|1)\s+= Thermocouple & Hydrogen Amp Power Status',
+                             r'(0|1)\s+= Thermocouple & Hydrogen Amp Power',
                              lambda match: int(match.group(1)),
                              self._int_to_string,
                              type=ParameterDictType.INT,
@@ -1199,13 +1204,14 @@ class Protocol(MenuInstrumentProtocol):
                              visibility=ParameterDictVisibility.READ_ONLY,
                              startup_param=False,
                              direct_access=False,
+                             description="Enable instrumentation amp power (1:on | 0:off)",
                              menu_path_read=SubMenu.SHOW_PARAM,
                              submenu_read=[],
                              menu_path_write=SubMenu.SENSOR_POWER,
                              submenu_write=[["2"]])
 
         self._param_dict.add(Parameter.EH_ISOLATION_AMP_POWER,
-                             r'(0|1)\s+= eh Amp Power Status',
+                             r'(0|1)\s+= eh Amp Power',
                              lambda match: int(match.group(1)),
                              self._int_to_string,
                              type=ParameterDictType.INT,
@@ -1213,13 +1219,14 @@ class Protocol(MenuInstrumentProtocol):
                              visibility=ParameterDictVisibility.READ_ONLY,
                              startup_param=False,
                              direct_access=False,
+                             description="Enable eH isolation amp power (1:on | 0:off)",
                              menu_path_read=SubMenu.SHOW_PARAM,
                              submenu_read=[],
                              menu_path_write=SubMenu.SENSOR_POWER,
                              submenu_write=[["3"]])
 
         self._param_dict.add(Parameter.HYDROGEN_POWER,
-                             r'(0|1)\s+= Hydrogen Sensor Power Status',
+                             r'(0|1)\s+= Hydrogen Sensor Power',
                              lambda match: int(match.group(1)),
                              self._int_to_string,
                              type=ParameterDictType.INT,
@@ -1227,13 +1234,14 @@ class Protocol(MenuInstrumentProtocol):
                              visibility=ParameterDictVisibility.READ_ONLY,
                              startup_param=False,
                              direct_access=False,
+                             description="Enable hydrogen sensor power (1:on | 0:off)",
                              menu_path_read=SubMenu.SHOW_PARAM,
                              submenu_read=[],
                              menu_path_write=SubMenu.SENSOR_POWER,
                              submenu_write=[["4"]])
 
         self._param_dict.add(Parameter.REFERENCE_TEMP_POWER,
-                             r'(0|1)\s+= Reference Temperature Power Status',
+                             r'(0|1)\s+= Reference Temperature Power',
                              lambda match: int(match.group(1)),
                              self._int_to_string,
                              type=ParameterDictType.INT,
@@ -1241,6 +1249,7 @@ class Protocol(MenuInstrumentProtocol):
                              visibility=ParameterDictVisibility.READ_ONLY,
                              startup_param=False,
                              direct_access=False,
+                             description="Enable reference temperature power (1:on | 0:off)",
                              menu_path_read=SubMenu.SHOW_PARAM,
                              submenu_read=[],
                              menu_path_write=SubMenu.SENSOR_POWER,
