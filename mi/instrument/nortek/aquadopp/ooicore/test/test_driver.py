@@ -79,23 +79,23 @@ def velocity_sample():
     sample_as_hex = "a5011500101926221211000000009300f83b810628017f01002d0000e3094c0122ff9afe1e1416006093"
     return sample_as_hex.decode('hex')
 
-velocity_particle = [{'value_id': 'date_time_string', 'value': '26/11/2012 22:10:19'},
-                     {'value_id': 'error_code', 'value': 0},
-                     {'value_id': 'analog1', 'value': 0}, 
-                     {'value_id': 'battery_voltage_dV', 'value': 147},
-                     {'value_id': 'sound_speed_dms', 'value': 15352},
-                     {'value_id': 'heading_decidegree', 'value': 1665},
-                     {'value_id': 'pitch_decidegree', 'value': 296},
-                     {'value_id': 'roll_decidegree', 'value': 383},
-                     {'value_id': 'status', 'value': 45}, 
-                     {'value_id': 'pressure_mbar', 'value': 0},
-                     {'value_id': 'temperature_centidegree', 'value': 2531},
-                     {'value_id': 'velocity_beam1', 'value': 332}, 
-                     {'value_id': 'velocity_beam2', 'value': -222},
-                     {'value_id': 'velocity_beam3', 'value': -358},
-                     {'value_id': 'amplitude_beam1', 'value': 30}, 
-                     {'value_id': 'amplitude_beam2', 'value': 20}, 
-                     {'value_id': 'amplitude_beam3', 'value': 22}]
+velocity_particle = [{'value_id': AquadoppDwVelocityDataParticleKey.TIMESTAMP, 'value': '26/11/2012 22:10:19'},
+                     {'value_id': AquadoppDwVelocityDataParticleKey.ERROR, 'value': 0},
+                     {'value_id': AquadoppDwVelocityDataParticleKey.ANALOG1, 'value': 0},
+                     {'value_id': AquadoppDwVelocityDataParticleKey.BATTERY_VOLTAGE, 'value': 147},
+                     {'value_id': AquadoppDwVelocityDataParticleKey.SOUND_SPEED_ANALOG2, 'value': 15352},
+                     {'value_id': AquadoppDwVelocityDataParticleKey.HEADING, 'value': 1665},
+                     {'value_id': AquadoppDwVelocityDataParticleKey.PITCH, 'value': 296},
+                     {'value_id': AquadoppDwVelocityDataParticleKey.ROLL, 'value': 383},
+                     {'value_id': AquadoppDwVelocityDataParticleKey.STATUS, 'value': 45},
+                     {'value_id': AquadoppDwVelocityDataParticleKey.PRESSURE, 'value': 0},
+                     {'value_id': AquadoppDwVelocityDataParticleKey.TEMPERATURE, 'value': 2531},
+                     {'value_id': AquadoppDwVelocityDataParticleKey.VELOCITY_BEAM1, 'value': 332},
+                     {'value_id': AquadoppDwVelocityDataParticleKey.VELOCITY_BEAM2, 'value': -222},
+                     {'value_id': AquadoppDwVelocityDataParticleKey.VELOCITY_BEAM3, 'value': -358},
+                     {'value_id': AquadoppDwVelocityDataParticleKey.AMPLITUDE_BEAM1, 'value': 30},
+                     {'value_id': AquadoppDwVelocityDataParticleKey.AMPLITUDE_BEAM2, 'value': 20},
+                     {'value_id': AquadoppDwVelocityDataParticleKey.AMPLITUDE_BEAM3, 'value': 22}]
 
 
 ###############################################################################
