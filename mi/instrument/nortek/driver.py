@@ -849,9 +849,9 @@ class NortekProtocolParameterDict(ProtocolParameterDict):
     @staticmethod
     def double_word_to_string(value):
         """
-        Converts 2 words into a string field
+        Converts an int to a hex string
         """
-        r, = struct.unpack('<4s', value)
+        r = struct.pack('<I', value)
         return r
 
     @staticmethod
@@ -1493,7 +1493,8 @@ class NortekInstrumentProtocol(CommandResponseInstrumentProtocol):
         self._do_cmd_resp(InstrumentCmds.SET_REAL_TIME_CLOCK, byte_time, **kwargs)
 
         response = self._do_cmd_resp(InstrumentCmds.READ_REAL_TIME_CLOCK, *args, **kwargs)
-        response = NortekProtocolParameterDict.convert_time(response)
+        minutes, seconds, day, hour, year, month, _ = struct.unpack('<6B2s', response)
+        response = '%02x/%02x/20%02x %02x:%02x:%02x' % (day, month, year, hour, minutes, seconds)
 
         # verify that the dates match
         date_str = get_timestamp_delayed('%d/%m/%Y %H:%M:%S')
