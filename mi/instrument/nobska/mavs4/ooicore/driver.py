@@ -2016,7 +2016,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            submenu_write=InstrumentCmds.SET_SENSOR_ORIENTATION,
                            display_name="Sensor Orientation",
                            type=ParameterDictType.ENUM,
-                           value_description="Orientation: (1:Veritcal/Down | 2:Vertical/Up | 3:Horizontal/Straight | "
+                           value_description="Orientation: (1:Vertical/Down | 2:Vertical/Up | 3:Horizontal/Straight | "
                                              "4:Horizontal/Bent Left | 5:Horizontal/Bent Right | 6:Horizontal/Bent Down"
                                              " | 7:Horizontal/Bent Up)"))
 
