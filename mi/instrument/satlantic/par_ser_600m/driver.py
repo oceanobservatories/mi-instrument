@@ -413,6 +413,7 @@ class SatlanticPARInstrumentProtocol(CommandResponseInstrumentProtocol):
                              str,
                              visibility=ParameterDictVisibility.IMMUTABLE,
                              display_name='Instrument Type',
+                             description="",
                              type=ParameterDictType.STRING,
                              startup_param=True)
 
@@ -422,6 +423,7 @@ class SatlanticPARInstrumentProtocol(CommandResponseInstrumentProtocol):
                              str,
                              visibility=ParameterDictVisibility.IMMUTABLE,
                              display_name='Serial Number',
+                             description="",
                              type=ParameterDictType.STRING,
                              startup_param=True)
 
@@ -431,6 +433,7 @@ class SatlanticPARInstrumentProtocol(CommandResponseInstrumentProtocol):
                              str,
                              visibility=ParameterDictVisibility.IMMUTABLE,
                              display_name='Firmware Version',
+                             description="",
                              type=ParameterDictType.STRING,
                              startup_param=True)
 
