@@ -493,7 +493,7 @@ class SatlanticOCR507InstrumentProtocol(CommandResponseInstrumentProtocol):
                              lambda match: True if match.group(1) == 'on' else False,
                              self._boolean_to_off_on,
                              type=ParameterDictType.BOOL,
-                             display_name="Net Mode",
+                             display_name="Network Mode",
                              description="Enables network operation: (true | false)",
                              default_value=False,
                              visibility=ParameterDictVisibility.IMMUTABLE,
