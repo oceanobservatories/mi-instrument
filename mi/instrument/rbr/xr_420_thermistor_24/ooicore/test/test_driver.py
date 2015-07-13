@@ -25,7 +25,8 @@ __author__ = 'Bill Bollenbacher'
 __license__ = 'Apache 2.0'
 
 # Ensure the test class is monkey patched for gevent
-from gevent import monkey; monkey.patch_all()
+from gevent import monkey
+monkey.patch_all()
 import gevent
 from mock import Mock
 import unittest
@@ -39,7 +40,8 @@ import json
 from nose.plugins.attrib import attr
 
 # MI logger
-from mi.core.log import get_logger ; log = get_logger()
+from mi.core.log import get_logger
+log = get_logger()
 from mi.core.instrument.instrument_driver import ResourceAgentEvent
 
 from mi.core.instrument.instrument_driver import DriverAsyncEvent
@@ -65,7 +67,7 @@ from mi.instrument.rbr.xr_420_thermistor_24.ooicore.driver import Capability
 from mi.instrument.rbr.xr_420_thermistor_24.ooicore.driver import ScheduledJob
 from mi.instrument.rbr.xr_420_thermistor_24.ooicore.driver import InstrumentResponses
 from mi.instrument.rbr.xr_420_thermistor_24.ooicore.driver import AdvancedFunctionsParameters
-from mi.instrument.rbr.xr_420_thermistor_24.ooicore.driver import AdvancedFuntionsBits
+from mi.instrument.rbr.xr_420_thermistor_24.ooicore.driver import AdvancedFunctionsBits
 from mi.instrument.rbr.xr_420_thermistor_24.ooicore.driver import XR_420EngineeringDataParticleKey
 from mi.instrument.rbr.xr_420_thermistor_24.ooicore.driver import XR_420SampleDataParticleKey
 from mi.instrument.rbr.xr_420_thermistor_24.ooicore.driver import XR_420SampleDataParticle
@@ -83,26 +85,27 @@ from mi.idk.unit_test import AgentCapabilityType
 
 from mi.core.instrument.chunker import StringChunker
 
-## Initialize the test configuration
+# Initialize the test configuration
 InstrumentDriverTestCase.initialize(
     driver_module='mi.instrument.rbr.xr_420_thermistor_24.ooicore.driver',
     driver_class="InstrumentDriver",
 
-    instrument_agent_resource_id = 'rbr_xr_420_ooicore',
-    instrument_agent_name = 'rbr_xr_420_ooicore_agent',
-    instrument_agent_packet_config = DataParticleType(),
+    instrument_agent_resource_id='rbr_xr_420_ooicore',
+    instrument_agent_name='rbr_xr_420_ooicore_agent',
+    instrument_agent_packet_config=DataParticleType(),
     
-    driver_startup_config = {
+    driver_startup_config={
         DriverStartupConfigKey.PARAMETERS: {
             #InstrumentParameters.SYS_CLOCK: '3',
         },
     }
 )
 
+
 class UtilMixin(DriverTestMixin):
-    '''
+    """
     Mixin class used for storing data particle constants and common data assertion methods.
-    '''
+    """
     
     # Create some short names for the parameter test config
     TYPE = ParameterTestConfigKey.TYPE
@@ -204,7 +207,7 @@ class UtilMixin(DriverTestMixin):
         XR_420EngineeringDataParticleKey.CALIBRATION_COEFFICIENTS: {
             TYPE: list,
             
-            # Coefficients for S/N 021968
+            # Coefficients for S/N 021968 uncomment when testing with this specific instrument
             #VALUE: [
             #    [0.00348434592083916, -0.00025079534389118, 2.46625541318206e-06, -4.68427140350704e-08],
             #    [0.00350431927843206, -0.000251204828829799, 2.47944749760338e-06, -6.07097826319064e-08],
@@ -299,12 +302,12 @@ class UtilMixin(DriverTestMixin):
         "21.0069 21.5426 21.3204 21.2402 21.3968 21.4371 21.0411 21.4361 " + \
         "BV: 11.5916 SN: 021964 FET"
              
-    def assert_particle_sample(self, data_particle, verify_values = False):
-        '''
+    def assert_particle_sample(self, data_particle, verify_values=False):
+        """
         Verify a take sample data particle
         @param data_particle:  data particle
         @param verify_values:  bool, should we verify parameter values
-        '''
+        """
         self.assert_data_particle_header(data_particle, DataParticleType.SAMPLE)
         self.assert_data_particle_parameters(data_particle, self._sample_parameters, verify_values)
 
@@ -326,12 +329,12 @@ class UtilMixin(DriverTestMixin):
         self.assertIsNotNone(sample_dict.get(DataParticleKey.DRIVER_TIMESTAMP))
         self.assertIsInstance(sample_dict.get(DataParticleKey.DRIVER_TIMESTAMP), float)
 
-    def assert_particle_engineering(self, data_particle, verify_values = True):
-        '''
+    def assert_particle_engineering(self, data_particle, verify_values=True):
+        """
         Verify an engineering data particle
         @param data_particle:  status data particle
         @param verify_values:  bool, should we verify parameter values
-        '''
+        """
         self.assert_engineering_data_particle_header(data_particle, DataParticleType.ENGINEERING)
         self.assert_data_particle_parameters(data_particle, self._engineering_parameters, verify_values)
 
@@ -361,15 +364,13 @@ class TestUNIT(InstrumentDriverUnitTestCase, UtilMixin):
     def setUp(self):
         InstrumentDriverUnitTestCase.setUp(self)
     
-    def assert_engineering_particle_published(self, particle_assert_method, verify_values = False):
+    def assert_engineering_particle_published(self, particle_assert_method, verify_values=False):
         """
         Verify that we can send data through the port agent and the the correct particles
         are generated.
 
         Create a port agent packet, send it through got_data, then finally grab the data particle
         from the data particle queue and verify it using the passed in assert method.
-        @param driver: instrument driver with mock port agent client
-        @param sample_data: the byte string we want to send to the driver
         @param particle_assert_method: assert method to validate the data particle.
         @param verify_values: Should we validate values?
         """
@@ -379,7 +380,7 @@ class TestUNIT(InstrumentDriverUnitTestCase, UtilMixin):
             particle_dict = json.loads(p)
             stream_type = particle_dict.get('stream_name')
             self.assertIsNotNone(stream_type)
-            if(stream_type == DataParticleType.ENGINEERING):
+            if stream_type == DataParticleType.ENGINEERING:
                 particles.append(p)
 
         log.debug("status particles: %s " % particles)
@@ -391,7 +392,7 @@ class TestUNIT(InstrumentDriverUnitTestCase, UtilMixin):
     def test_driver_enums(self):
         """
         Verify that all driver enumerations have no duplicate values that might cause confusion.  Also
-        do a little extra validation for the Capabilites
+        do a little extra validation for the Capabilities
         """
         self.assert_enum_has_no_duplicates(ScheduledJob())
         self.assert_enum_has_no_duplicates(DataParticleType())
@@ -401,7 +402,7 @@ class TestUNIT(InstrumentDriverUnitTestCase, UtilMixin):
         self.assert_enum_has_no_duplicates(ProtocolEvent())
         self.assert_enum_has_no_duplicates(InstrumentParameters())
         self.assert_enum_has_no_duplicates(AdvancedFunctionsParameters())
-        self.assert_enum_has_no_duplicates(AdvancedFuntionsBits())
+        self.assert_enum_has_no_duplicates(AdvancedFunctionsBits())
 
         # Test capabilities for duplicates, then verify that capabilities is a subset of protocol events
         self.assert_enum_has_no_duplicates(Capability())
@@ -424,11 +425,11 @@ class TestUNIT(InstrumentDriverUnitTestCase, UtilMixin):
         self.assert_chunker_sample_with_noise(chunker, self.SAMPLE)
         self.assert_chunker_fragmented_sample(chunker, self.SAMPLE)
         self.assert_chunker_combined_sample(chunker, self.SAMPLE)
-    
+
     def test_corrupt_data_sample(self):
         # garbage is not okay
         particle = XR_420SampleDataParticle(self.SAMPLE.replace('020225135300', 'foobar'),
-                                            port_timestamp = 3558720820.531179)
+                                            port_timestamp=3558720820.531179)
         with self.assertRaises(SampleException):
             particle.generate()
 
@@ -439,7 +440,7 @@ class TestUNIT(InstrumentDriverUnitTestCase, UtilMixin):
         """
         driver = InstrumentDriver(self._got_data_event_callback)
         self.assert_initialize_driver(driver, ProtocolStates.COMMAND)
-        
+
         # mock the _update_params() method which tries to get parameters from an actual instrument
         _update_params_mock = Mock(spec="_update_params")
         driver._protocol._update_params = _update_params_mock
@@ -448,16 +449,16 @@ class TestUNIT(InstrumentDriverUnitTestCase, UtilMixin):
         pd = driver._protocol._param_dict
         for name in self._raw_coefficients.keys():
             pd.update(self._raw_coefficients[name], target_params=name)
-            
+
         # clear out any old events
         self.clear_data_particle_queue()
 
         # call the method in the driver that generates and sends the status data particle
         driver._protocol._generate_status_event()
-        
+
         # check that the status data particle was published
         self.assert_engineering_particle_published(self.assert_particle_engineering, verify_values=True)
-    
+
     def test_got_data(self):
         """
         Verify sample data passed through the got data method produces the correct data particles
@@ -487,7 +488,7 @@ class TestUNIT(InstrumentDriverUnitTestCase, UtilMixin):
 
         # Verify "BOGUS_CAPABILITY was filtered out
         self.assertEquals(driver_capabilities, protocol._filter_capabilities(test_capabilities))
-        
+
     def test_driver_parameters(self):
         """
         Verify the set of parameters known by the driver
@@ -521,8 +522,8 @@ class TestUNIT(InstrumentDriverUnitTestCase, UtilMixin):
                                      'DRIVER_EVENT_START_AUTOSAMPLE',
                                      'DRIVER_EVENT_START_DIRECT'],
             ProtocolStates.AUTOSAMPLE: ['DRIVER_EVENT_STOP_AUTOSAMPLE',
-                                        'DRIVER_EVENT_ACQUIRE_STATUS',
-                                        'DRIVER_EVENT_CLOCK_SYNC',
+                                        'PROTOCOL_EVENT_SCHEDULED_ACQUIRE_STATUS',
+                                        'DRIVER_EVENT_SCHEDULED_CLOCK_SYNC',
                                         'DRIVER_EVENT_GET'],
             ProtocolStates.DIRECT_ACCESS: ['DRIVER_EVENT_STOP_DIRECT', 
                                            'EXECUTE_DIRECT']
@@ -531,14 +532,13 @@ class TestUNIT(InstrumentDriverUnitTestCase, UtilMixin):
         driver = InstrumentDriver(self._got_data_event_callback)
         self.assert_capabilities(driver, capabilities)
 
-
     def test_parse_status(self):
         status = "Logger status 00"
 
         driver = InstrumentDriver(self._got_data_event_callback)
         self.assert_initialize_driver(driver)
 
-        driver._protocol._parse_status_response(status)
+        driver._protocol._parse_status_response(status, None)
 
         config = driver._protocol._param_dict.get_all()
         log.debug(config)
@@ -556,7 +556,7 @@ class TestUNIT(InstrumentDriverUnitTestCase, UtilMixin):
 class TestINT(InstrumentDriverIntegrationTestCase, UtilMixin):
     """Integration Test Container"""
     
-    def _is_time_set(self, time_param, expected_time, time_format = "%d %b %Y %H:%M:%S", tolerance=3):
+    def _is_time_set(self, time_param, expected_time, time_format="%d %b %Y %H:%M:%S", tolerance=3):
         """
         Verify is what we expect it to be within a given tolerance
         @param time_param: driver parameter
@@ -569,7 +569,7 @@ class TestINT(InstrumentDriverIntegrationTestCase, UtilMixin):
         result_time_struct = time.strptime(result_time, time_format)
         converted_time = time.mktime(result_time_struct)
 
-        if(isinstance(expected_time, float)):
+        if isinstance(expected_time, float):
             expected_time_struct = time.localtime(expected_time)
         else:
             # convert time struct to string and back again to get around DST issue so that
@@ -585,7 +585,7 @@ class TestINT(InstrumentDriverIntegrationTestCase, UtilMixin):
         # Verify the clock is set within the tolerance
         return abs(converted_time - time.mktime(expected_time_struct)) <= tolerance
 
-    def assert_clock_set(self, time_param, sync_clock_cmd = DriverEvent.CLOCK_SYNC, timeout = 20, tolerance=3):
+    def assert_clock_set(self, time_param, sync_clock_cmd=DriverEvent.CLOCK_SYNC, timeout=20, tolerance=3):
         """
         Verify the clock is set to at least the current date
         """
@@ -593,7 +593,7 @@ class TestINT(InstrumentDriverIntegrationTestCase, UtilMixin):
 
         timeout_time = time.time() + timeout
         
-        while(not self._is_time_set(time_param, time.gmtime(), tolerance=tolerance)):
+        while not self._is_time_set(time_param, time.gmtime(), tolerance=tolerance):
             log.debug("time isn't current. sleep for a bit")
             time.sleep(2)
 
@@ -611,17 +611,17 @@ class TestINT(InstrumentDriverIntegrationTestCase, UtilMixin):
         self.assert_current_state(DriverConnectionState.UNCONFIGURED)
 
         # Configure driver for comms and transition to disconnected.
-        reply = self.driver_client.cmd_dvr('configure', self.port_agent_comm_config())
+        self.driver_client.cmd_dvr('configure', self.port_agent_comm_config())
 
         # Test the driver is configured for comms.
         self.assert_current_state(DriverConnectionState.DISCONNECTED)
 
-        reply = self.driver_client.cmd_dvr('connect')
+        self.driver_client.cmd_dvr('connect')
 
         # Test the driver is in unknown state.
         self.assert_current_state(DriverProtocolState.UNKNOWN)
 
-        reply = self.driver_client.cmd_dvr('discover_state')
+        self.driver_client.cmd_dvr('discover_state')
 
         state = self.driver_client.cmd_dvr('get_resource_state')
         log.debug("initialize final state: %s" % state)
@@ -646,7 +646,7 @@ class TestINT(InstrumentDriverIntegrationTestCase, UtilMixin):
         """
         reply = self._assert_parameters_on_initialization()
         for (name, value) in reply.iteritems():
-            log.debug("test_get_parameters: name=%s, value=%s" %(name, str(value)))
+            log.debug("test_get_parameters: name=%s, value=%s", name, str(value))
 
     def test_set_clock(self):
         """
@@ -768,7 +768,7 @@ class TestINT(InstrumentDriverIntegrationTestCase, UtilMixin):
         self.assert_set_bulk(new_values)
         self.assert_driver_command(ProtocolEvent.START_AUTOSAMPLE, state=ProtocolStates.AUTOSAMPLE, delay=1)
         # Force a re-apply startup parameters
-        reply = self.driver_client.cmd_dvr('apply_startup_params')
+        self.driver_client.cmd_dvr('apply_startup_params')
         # Should be back to our startup parameters.
         reply = self.driver_client.cmd_dvr('get_resource', DriverParameter.ALL)
         self.assert_parameters(reply, self._driver_parameters, True)
@@ -807,24 +807,23 @@ class TestINT(InstrumentDriverIntegrationTestCase, UtilMixin):
         """
         self.assert_initialize_driver()
                 
-        log.debug('test_instrumment_start_stop_autosample: starting autosample')
+        log.debug('test_instrument_start_stop_autosample: starting autosample')
         # start auto-sample.
-        reply = self.driver_client.cmd_dvr('execute_resource', ProtocolEvent.START_AUTOSAMPLE)
+        self.driver_client.cmd_dvr('execute_resource', ProtocolEvent.START_AUTOSAMPLE)
 
         # Test the driver is in autosample mode.
         state = self.driver_client.cmd_dvr('get_resource_state')
         self.assertEqual(state, ProtocolStates.AUTOSAMPLE)
-        log.debug('test_instrumment_start_stop_autosample: autosample started')        
+        log.debug('test_instrument_start_stop_autosample: autosample started')
                 
-        log.debug('test_instrumment_start_stop_autosample: stopping autosample')
+        log.debug('test_instrument_start_stop_autosample: stopping autosample')
         # stop auto-sample.
-        reply = self.driver_client.cmd_dvr('execute_resource', ProtocolEvent.STOP_AUTOSAMPLE)
+        self.driver_client.cmd_dvr('execute_resource', ProtocolEvent.STOP_AUTOSAMPLE)
 
         # Test the driver is in command mode.
         state = self.driver_client.cmd_dvr('get_resource_state')
         self.assertEqual(state, ProtocolStates.COMMAND)
-        log.debug('test_instrumment_start_stop_autosample: autosample stopped')        
-
+        log.debug('test_instrument_start_stop_autosample: autosample stopped')
 
     def test_instrument_autosample_samples(self):
         """
@@ -842,17 +841,17 @@ class TestINT(InstrumentDriverIntegrationTestCase, UtilMixin):
         gevent.sleep(45)
 
         # Verify we received at least 2 samples.
-        sample_events = [evt for evt in self.events if evt['type']==DriverAsyncEvent.SAMPLE]
-        log.debug('test_instrument_start_stop_autosample: # 0f samples = %d' %len(sample_events))
+        sample_events = [evt for evt in self.events if evt['type'] == DriverAsyncEvent.SAMPLE]
+        log.debug('test_instrument_start_stop_autosample: # 0f samples = %d', len(sample_events))
         for sample in sample_events:
             if sample['value'].find(DataParticleType.SAMPLE) != -1:
-                log.debug('parsed sample=%s\n' %sample)
+                log.debug('parsed sample=%s\n', sample)
                 sample_dict = eval(sample['value'])     # turn string into dictionary
                 values = sample_dict['values']          # get particle dictionary
                 # pull timestamp out of particle
                 ntp_timestamp = [item for item in values if item["value_id"] == "timestamp"][0]['value']
                 float_timestamp = ntplib.ntp_to_system_time(ntp_timestamp)
-                log.debug('dt=%s' %time.ctime(float_timestamp))
+                log.debug('dt=%s', time.ctime(float_timestamp))
         self.assertTrue(len(sample_events) >= 2)
 
         # stop autosample and return to command mode
@@ -918,7 +917,7 @@ class TestINT(InstrumentDriverIntegrationTestCase, UtilMixin):
         self.assert_scheduled_event(ScheduledJob.CLOCK_SYNC, delay=timeout)
         self.assert_current_state(ProtocolStates.COMMAND)
 
-        # Check the clock until it is set correctly (by a schedued event)
+        # Check the clock until it is set correctly (by a scheduled event)
         self.assert_clock_set(InstrumentParameters.LOGGER_DATE_AND_TIME)
 
     def test_scheduled_clock_sync_autosample(self):
@@ -1056,7 +1055,7 @@ class TestQUAL(InstrumentDriverQualificationTestCase, UtilMixin):
             ],
             AgentCapabilityType.RESOURCE_INTERFACE: None,
             AgentCapabilityType.RESOURCE_PARAMETER: self._driver_parameters.keys()
-            }
+        }
 
         self.assert_enter_command_mode()
         self.assert_capabilities(capabilities)
@@ -1065,10 +1064,9 @@ class TestQUAL(InstrumentDriverQualificationTestCase, UtilMixin):
         #  Streaming Mode
         ##################
 
-        capabilities[AgentCapabilityType.AGENT_COMMAND] = [ResourceAgentEvent.RESET, ResourceAgentEvent.GO_INACTIVE ]
-        capabilities[AgentCapabilityType.RESOURCE_COMMAND] =  [
+        capabilities[AgentCapabilityType.AGENT_COMMAND] = [ResourceAgentEvent.RESET, ResourceAgentEvent.GO_INACTIVE]
+        capabilities[AgentCapabilityType.RESOURCE_COMMAND] = [
             DriverEvent.CLOCK_SYNC,
-            #DriverEvent.GET,
             DriverEvent.ACQUIRE_STATUS,
             DriverEvent.STOP_AUTOSAMPLE,
         ]
@@ -1096,16 +1094,17 @@ class TestQUAL(InstrumentDriverQualificationTestCase, UtilMixin):
         self.assert_sample_async(self.assert_particle_sample, DataParticleType.SAMPLE, timeout=30, sample_count=1)
         
     def test_poll(self):
-        '''
+        """
         Verify that we can poll for an engineering particle.
-        '''
+        """
         self.assert_enter_command_mode()
 
         self.assert_particle_polled(ProtocolEvent.ACQUIRE_STATUS, self.assert_particle_engineering, DataParticleType.ENGINEERING, timeout=30)
 
+
 ###############################################################################
 #                             PUBLICATION TESTS                               #
-# Device specific pulication tests are for                                    #
+# Device specific publication tests are for                                    #
 # testing device specific capabilities                                        #
 ###############################################################################
 @attr('PUB', group='mi')
