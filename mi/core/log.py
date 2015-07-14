@@ -121,17 +121,53 @@ class LoggerManager(Singleton):
                 print >> sys.stderr, str(os.getpid()) + ' supplemented logging from ' + LOGGING_CONTAINER_OVERRIDE
 
 
+class LoggingMetaClass(type):
+    _log_level = 'trace'
+
+    def __new__(mcs, class_name, bases, class_dict):
+        wrapped_set_name = '__wrapped'
+        wrapper = log_method(class_name=class_name, log_level=mcs._log_level)
+        new_class_dict = {}
+
+        wrapped = class_dict.get(wrapped_set_name, set())
+
+        # wrap all methods, unless they have been previously wrapped
+        for attributeName, attribute in class_dict.items():
+            if attributeName not in wrapped and type(attribute) == FunctionType:
+                attribute = wrapper(attribute)
+                wrapped.add(attributeName)
+            new_class_dict[attributeName] = attribute
+
+        new_class_dict[wrapped_set_name] = wrapped
+        return type.__new__(mcs, class_name, bases, new_class_dict)
+
+
+class DebugLoggingMetaClass(LoggingMetaClass):
+    _log_level = 'debug'
+
+
+class InfoLoggingMetaClass(DebugLoggingMetaClass):
+    _log_level = 'info'
+
+
+class WarnLoggingMetaClass(InfoLoggingMetaClass):
+    _log_level = 'warn'
+
+
+class ErrorLoggingMetaClass(WarnLoggingMetaClass):
+    _log_level = 'error'
+
+
 def get_logging_metaclass(log_level='trace'):
-    class LoggingMetaClass(type):
-        def __new__(mcs, class_name, bases, class_dict):
-            wrapper = log_method(class_name=class_name, log_level=log_level)
-            new_class_dict = {}
-            for attributeName, attribute in class_dict.items():
-                if type(attribute) == FunctionType:
-                    attribute = wrapper(attribute)
-                new_class_dict[attributeName] = attribute
-            return type.__new__(mcs, class_name, bases, new_class_dict)
-    return LoggingMetaClass
+    class_map = {
+        'trace': LoggingMetaClass,
+        'debug': DebugLoggingMetaClass,
+        'info': InfoLoggingMetaClass,
+        'warn': WarnLoggingMetaClass,
+        'error': ErrorLoggingMetaClass,
+    }
+
+    return class_map.get(log_level, LoggingMetaClass)
 
 
 def log_method(class_name=None, log_level='trace'):
