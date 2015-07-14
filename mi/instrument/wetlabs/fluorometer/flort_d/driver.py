@@ -20,7 +20,7 @@ import re
 from mi.core.log import get_logger
 log = get_logger()
 
-from mi.core.common import BaseEnum
+from mi.core.common import BaseEnum, Units
 
 from mi.core.util import dict_equal
 
@@ -1187,7 +1187,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                              expiration=None,
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name="Measurements per Reported Value",
-                             description='Number of measurements for each reported value.',
+                             description='Number of measurements for each reported value: (1 - 255)',
                              default_value=1,
                              startup_param=True,
                              direct_access=True)
@@ -1213,7 +1213,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                              expiration=None,
                              visibility=ParameterDictVisibility.READ_ONLY,
                              display_name="Measurement 1 Dark Count",
-                             description='Measurement 1 dark count value for calculating engineering unit output.',
+                             description='Measurement 1 dark count value for calculating engineering unit output: (0 - 65535)',
                              default_value=None,
                              units=ParameterUnit.COUNTS,
                              startup_param=False,
@@ -1227,7 +1227,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                              expiration=None,
                              visibility=ParameterDictVisibility.READ_ONLY,
                              display_name="Measurement 2 Dark Count",
-                             description='Measurement 2 dark count value for calculating engineering unit output.',
+                             description='Measurement 2 dark count value for calculating engineering unit output: (0 - 65535)',
                              default_value=None,
                              units=ParameterUnit.COUNTS,
                              startup_param=False,
@@ -1241,7 +1241,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                              expiration=None,
                              visibility=ParameterDictVisibility.READ_ONLY,
                              display_name="Measurement 3 Dark Count",
-                             description='Measurement 3 dark count value for calculating engineering unit output.',
+                             description='Measurement 3 dark count value for calculating engineering unit output: (0 - 65535)',
                              default_value=None,
                              units=ParameterUnit.COUNTS,
                              startup_param=False,
@@ -1297,7 +1297,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                              expiration=None,
                              visibility=ParameterDictVisibility.IMMUTABLE,
                              display_name="Predefined Output Sequence",
-                             description='Indicates which pre-defined output sequences to use when outputting data.',
+                             description='Indicates which pre-defined output sequences to use when outputting data: (0 - 3)',
                              default_value=0,
                              startup_param=True,
                              direct_access=True)
@@ -1310,7 +1310,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                              expiration=None,
                              visibility=ParameterDictVisibility.READ_ONLY,
                              display_name="Baud Rate",
-                             description='Baud rate for instrument communications.',
+                             description='Baud rate for instrument communications: (2400 to 230400)',
                              default_value=None,
                              startup_param=False,
                              direct_access=False)
@@ -1322,8 +1322,8 @@ class Protocol(CommandResponseInstrumentProtocol):
                              type=ParameterDictType.INT,
                              expiration=None,
                              visibility=ParameterDictVisibility.IMMUTABLE,
-                             display_name="Recording Mode",
-                             description='Number of packets in a set. 0 results in the stored configuration repeating continuously.',
+                             display_name="Packets per Set",
+                             description='Number of packets in a set (0 - 65535). 0 results in the stored configuration repeating continuously.',
                              default_value=0,
                              startup_param=True,
                              direct_access=True)
@@ -1335,7 +1335,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                              type=ParameterDictType.INT,
                              expiration=None,
                              visibility=ParameterDictVisibility.IMMUTABLE,
-                             display_name="Packets per Set",
+                             display_name="Recording Mode",
                              description='Enables (1) or disables (0) data recording to internal memory.',
                              default_value=0,
                              startup_param=True,
@@ -1404,6 +1404,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                              expiration=None,
                              visibility=ParameterDictVisibility.READ_ONLY,
                              display_name="Manual Start Time",
+                             description="Instrument will wait until this time to start sampling when powered.",
                              default_value=None,
                              units=ParameterUnit.TIME_INTERVAL,
                              startup_param=False,
@@ -1418,6 +1419,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                              visibility=ParameterDictVisibility.READ_ONLY,
                              display_name="Internal Memory Size",
                              description='Amount of internal memory.',
+                             units=Units.BYTE,
                              default_value=None,
                              startup_param=False,
                              direct_access=False)
