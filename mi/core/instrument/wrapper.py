@@ -297,8 +297,10 @@ class ZmqDriverProcess(driver_process.DriverProcess):
                 evt = self.events.get_nowait()
                 while evt:
                     try:
-                        if isinstance(evt, Exception):
-                            evt = self._encode_exception(evt)
+                        if isinstance(evt['value'], Exception):
+                            evt['value'] = self._encode_exception(evt['value'])
+                        if evt['type'] == Events.DRIVER_EXCEPTION:
+                            log.error(evt)
                         sock.send_json(evt, flags=zmq.NOBLOCK)
                         evt = None
                         log.trace('Event sent!')
