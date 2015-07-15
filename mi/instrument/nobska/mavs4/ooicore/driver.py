@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 """
 @package mi.instrument.nobska.mavs4.ooicore.driver
 @file /marine-integrations/mi/instrument/nobska/mavs4/ooicore/driver.py
