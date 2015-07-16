@@ -787,12 +787,13 @@ class Protocol(CommandResponseInstrumentProtocol):
         """
         sample = self._particle_to_dict(sample)
         pps_sync = sample[particles.NanoSampleParticleKey.PPS_SYNC] == 'P'
-        if pps_sync and not self.has_pps:
-            # pps sync regained, sync the time
-            self.has_pps = True
-            if self.get_current_state() in [ProtocolState.COMMAND, ProtocolState.AUTOSAMPLE]:
-                self._async_raise_fsm_event(ProtocolEvent.NANO_TIME_SYNC)
-        elif self.has_pps:
+        if pps_sync:
+            if not self.has_pps:
+                # pps sync regained, sync the time
+                self.has_pps = True
+                if self.get_current_state() in [ProtocolState.COMMAND, ProtocolState.AUTOSAMPLE]:
+                    self._async_raise_fsm_event(ProtocolEvent.NANO_TIME_SYNC)
+        else:
             self.has_pps = False
 
     ########################################################################
