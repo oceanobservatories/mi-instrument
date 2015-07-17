@@ -532,7 +532,8 @@ class DriverTestMixinSub(DriverTestMixin):
             ProtocolState.AUTOSAMPLE:   [ProtocolEvent.STOP_AUTOSAMPLE,
                                          ProtocolEvent.SCHEDULED_CLOCK_SYNC,
                                          ProtocolEvent.SCHEDULED_ACQUIRE_STATUS,
-                                         ProtocolEvent.READ_MODE],
+                                         ProtocolEvent.READ_MODE,
+                                         ProtocolEvent.GET],
 
             ProtocolState.DIRECT_ACCESS: [ProtocolEvent.STOP_DIRECT,
                                           ProtocolEvent.EXECUTE_DIRECT,
