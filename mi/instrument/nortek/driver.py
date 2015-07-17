@@ -24,7 +24,7 @@ log = get_logger()
 
 from mi.core.instrument.instrument_fsm import InstrumentFSM
 from mi.core.instrument.chunker import StringChunker
-from mi.core.instrument.data_particle import DataParticle, DataParticleKey
+from mi.core.instrument.data_particle import DataParticle, DataParticleKey, DataParticleValue
 from mi.core.instrument.data_particle import CommonDataParticleType
 from mi.core.instrument.instrument_protocol import CommandResponseInstrumentProtocol, DEFAULT_WRITE_DELAY, \
     InitializationType
@@ -316,7 +316,7 @@ class NortekHardwareConfigDataParticle(DataParticle):
         """
         if not _check_configuration(self.raw_data, HW_CONFIG_SYNC_BYTES, HW_CONFIG_LEN):
             log.warn("_parse_read_hw_config: Bad read hw response from instrument (%r)", self.raw_data)
-            raise SampleException("Invalid read hw response. (%r)" % self.raw_data)
+            self.contents[DataParticleKey.QUALITY_FLAG] = DataParticleValue.CHECKSUM_FAILED
 
         try:
             unpack_string = '<4s14s2s4H2s12s4sh2s'
@@ -378,7 +378,7 @@ class NortekHeadConfigDataParticle(DataParticle):
         """
         if not _check_configuration(self.raw_data, HEAD_CONFIG_SYNC_BYTES, HEAD_CONFIG_LEN):
             log.warn("_parse_read_head_config: Bad read head response from instrument (%r)", self.raw_data)
-            raise SampleException("Invalid read head response. (%r)" % self.raw_data)
+            self.contents[DataParticleKey.QUALITY_FLAG] = DataParticleValue.CHECKSUM_FAILED
 
         try:
             unpack_string = '<4s2s2H12s176s22sHh2s'
@@ -559,7 +559,7 @@ class NortekUserConfigDataParticle(DataParticle):
         """
         if not _check_configuration(self.raw_data, USER_CONFIG_SYNC_BYTES, USER_CONFIG_LEN):
             log.warn("_parse_read_head_config: Bad read hw config response from instrument (%r)", self.raw_data)
-            raise SampleException("Invalid hw config response. (%r)" % self.raw_data)
+            self.contents[DataParticleKey.QUALITY_FLAG] = DataParticleValue.CHECKSUM_FAILED
 
         try:
             unpack_string = '<4s8H2s2s6s5H6sH6sI2s4H2s2H2s180s180s2s5H4sH2s2H2sH30s16sH2s'
