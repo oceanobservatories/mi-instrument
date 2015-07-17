@@ -17,7 +17,7 @@ from mock import Mock
 
 from mi.core.instrument.instrument_driver import ResourceAgentState
 
-from mi.core.log import get_logger;
+from mi.core.log import get_logger
 log = get_logger()
 
 from mi.idk.unit_test import InstrumentDriverUnitTestCase, ParameterTestConfigKey, InstrumentDriverTestCase
