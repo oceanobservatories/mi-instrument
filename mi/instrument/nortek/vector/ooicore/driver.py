@@ -93,11 +93,11 @@ class VectorVelocityDataParticle(DataParticle):
 
         try:
         
-            unpack_string = '<4s4B2H3h6B'
+            unpack_string = '<2s4B2H3h6B2s'
         
-            sync, analog_input2_lsb, count, pressure_msb, analog_input2_msb, pressure_lsw, analog_input1,\
+            sync_id, analog_input2_lsb, count, pressure_msb, analog_input2_msb, pressure_lsw, analog_input1,\
                 velocity_beam1, velocity_beam2, velocity_beam3, amplitude_beam1, amplitude_beam2, amplitude_beam3, \
-                correlation_beam1, correlation_beam2, correlation_beam3 = struct.unpack(unpack_string, self.raw_data)
+                correlation_beam1, correlation_beam2, correlation_beam3, checksum = struct.unpack(unpack_string, self.raw_data)
 
             analog_input2 = analog_input2_msb * 0x100 + analog_input2_lsb
             pressure = pressure_msb * 0x10000 + pressure_lsw
