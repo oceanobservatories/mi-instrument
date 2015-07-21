@@ -212,27 +212,7 @@ class WorkhorseScheduledJob(BaseEnum):
 
 
 class WorkhorseADCPUnits(Units):
-    CDEGREE = '1/100 degree'
-    DM = Prefixes.DECI + Units.METER
-    MPERS = Units.METER + '/' + Units.SECOND
     PPTHOUSAND = 'ppt'
-    ENSEMBLEPERBURST = 'Ensembles Per Burst'
-    CMPERSRADIAL = 'cm/s radial'
-    TENTHMILLISECOND = '1/10 msec'
-
-
-class WorkhorseADCPDescription(BaseEnum):
-    INTERVALTIME = 'hh:mm:ss'
-    INTERVALTIMEHundredth = 'hh:mm:ss.ss/100'
-    DATETIME = 'CCYY/MM/DD,hh:mm:ss'
-    PINGTIME = "mm:ss.ss/100"
-    SETTIME = 'CCYY/MM/DD,hh:mm:ss'
-    SERIALDATAOUT = 'Vel Cor Amp'
-    FLOWCONTROL = 'BITS: EnsCyc PngCyc Binry Ser Rec'
-    SLEEP = '0 = Disable, 1 = Enable, 2 See Manual'
-    XMTPOWER = 'XMT Power 0-255'
-    TRUEON = 'False=OFF,True=ON'
-    TRUEOFF = "False=ON,True=OFF"
 
 
 parameter_regexes = {
@@ -437,7 +417,7 @@ parameter_names = {
     WorkhorseParameter.SLEEP_ENABLE: "Sleep Enable",
     WorkhorseParameter.SAVE_NVRAM_TO_RECORDER: "Save NVRAM to Recorder",
     WorkhorseParameter.POLLED_MODE: "Polled Mode",
-    WorkhorseParameter.XMIT_POWER: "Xmit Power",
+    WorkhorseParameter.XMIT_POWER: "Transmit Power",
     WorkhorseParameter.LATENCY_TRIGGER: "Latency trigger",
     WorkhorseParameter.HEADING_ALIGNMENT: "Heading Alignment",
     WorkhorseParameter.HEADING_BIAS: "Heading Bias",
@@ -457,7 +437,7 @@ parameter_names = {
     WorkhorseParameter.BUFFERED_OUTPUT_PERIOD: 'Buffered Output Period',
     WorkhorseParameter.FALSE_TARGET_THRESHOLD: 'False Target Threshold',
     WorkhorseParameter.BANDWIDTH_CONTROL: 'Bandwidth Control',
-    WorkhorseParameter.CORRELATION_THRESHOLD: 'Correlation threshold',
+    WorkhorseParameter.CORRELATION_THRESHOLD: 'Correlation Threshold',
     WorkhorseParameter.SERIAL_OUT_FW_SWITCHES: 'Serial Out FW Switches',
     WorkhorseParameter.ERROR_VELOCITY_THRESHOLD: 'Error Velocity Threshold',
     WorkhorseParameter.BLANK_AFTER_TRANSMIT: 'Blank After Transmit',
@@ -471,7 +451,7 @@ parameter_names = {
     WorkhorseParameter.PING_WEIGHT: 'Ping Weight',
     WorkhorseParameter.AMBIGUITY_VELOCITY: 'Ambiguity Velocity',
     WorkhorseParameter.CLOCK_SYNCH_INTERVAL: 'Clock Sync Interval',
-    WorkhorseParameter.GET_STATUS_INTERVAL: 'Get Status Interval',
+    WorkhorseParameter.GET_STATUS_INTERVAL: 'Acquire Status Interval',
     WorkhorseParameter.SYNC_PING_ENSEMBLE: 'Sync Ping Ensemble',
     WorkhorseParameter.RDS3_MODE_SEL: 'RDS3 Mode Selection',
     WorkhorseParameter.SLAVE_TIMEOUT: 'Slave Timeout',
@@ -479,26 +459,82 @@ parameter_names = {
 }
 
 parameter_descriptions = {
-    WorkhorseParameter.SERIAL_DATA_OUT: WorkhorseADCPDescription.SERIALDATAOUT,
-    WorkhorseParameter.SERIAL_FLOW_CONTROL: WorkhorseADCPDescription.FLOWCONTROL,
-    WorkhorseParameter.BANNER: WorkhorseADCPDescription.TRUEON,
-    WorkhorseParameter.SLEEP_ENABLE: WorkhorseADCPDescription.SLEEP,
-    WorkhorseParameter.SAVE_NVRAM_TO_RECORDER: WorkhorseADCPDescription.TRUEOFF,
-    WorkhorseParameter.POLLED_MODE: WorkhorseADCPDescription.TRUEON,
-    WorkhorseParameter.XMIT_POWER: WorkhorseADCPDescription.XMTPOWER,
-    WorkhorseParameter.LATENCY_TRIGGER: WorkhorseADCPDescription.TRUEON,
-    WorkhorseParameter.TIME_PER_ENSEMBLE: WorkhorseADCPDescription.INTERVALTIMEHundredth,
-    WorkhorseParameter.TIME_OF_FIRST_PING: WorkhorseADCPDescription.DATETIME,
-    WorkhorseParameter.TIME_PER_PING: WorkhorseADCPDescription.PINGTIME,
-    WorkhorseParameter.TIME: WorkhorseADCPDescription.SETTIME,
-    WorkhorseParameter.BUFFERED_OUTPUT_PERIOD: WorkhorseADCPDescription.INTERVALTIME,
-    WorkhorseParameter.BANDWIDTH_CONTROL: '(0:Wide | 1:Narrow)',
-    WorkhorseParameter.CLIP_DATA_PAST_BOTTOM: WorkhorseADCPDescription.TRUEON,
-    WorkhorseParameter.RECEIVER_GAIN_SELECT: '(0:Low | 1:High)',
-    WorkhorseParameter.SAMPLE_AMBIENT_SOUND: WorkhorseADCPDescription.TRUEON,
-    WorkhorseParameter.PING_WEIGHT: '(0:Box | 1:Triangle)',
-    WorkhorseParameter.CLOCK_SYNCH_INTERVAL: WorkhorseADCPDescription.INTERVALTIME,
-    WorkhorseParameter.GET_STATUS_INTERVAL: WorkhorseADCPDescription.INTERVALTIME,
+    WorkhorseParameter.SERIAL_DATA_OUT: 'Firmware switches for serial data types collected by the ADCP. See manual for usage.',
+    WorkhorseParameter.SERIAL_FLOW_CONTROL: 'Sets various ADCP dta flow-control parameters. See manual for firmware switches.',
+    WorkhorseParameter.BANNER: 'Enable suppressing the banner: (true | false)',
+    WorkhorseParameter.SLEEP_ENABLE: 'Enable sleeping between pings: (true | false)',
+    WorkhorseParameter.SAVE_NVRAM_TO_RECORDER: 'Disable saving NVRAM to recorder at the end of a deployment: (true | false)',
+    WorkhorseParameter.POLLED_MODE: 'Enable ADCP to be polled for data: (true | false)',
+    WorkhorseParameter.XMIT_POWER: 'Allow transmit power to be set high or low: (1 - 255)',
+    WorkhorseParameter.LATENCY_TRIGGER: 'Enable the low latency trigger input: (true | false)',
+    WorkhorseParameter.TIME_PER_ENSEMBLE: 'Minimum interval between data collection cycles.',
+    WorkhorseParameter.TIME_OF_FIRST_PING: 'Time ADCP wakes up to start data collection.',
+    WorkhorseParameter.TIME_PER_PING: 'Minimum time between pings.',
+    WorkhorseParameter.TIME: 'Time of internal real-time clock from last clock sync.',
+    WorkhorseParameter.BUFFERED_OUTPUT_PERIOD: 'Minimum interval between buffered data outputs.',
+    WorkhorseParameter.BANDWIDTH_CONTROL: 'Profiling mode 1 bandwidth: (0:Wide | 1:Narrow)',
+    WorkhorseParameter.CLIP_DATA_PAST_BOTTOM: 'Enable flagging of velocity data as bad (true | false)',
+    WorkhorseParameter.RECEIVER_GAIN_SELECT: 'Receiver gain: (0:reduce receiver gain by 40 dB | 1:normal receiver gain)',
+    WorkhorseParameter.SAMPLE_AMBIENT_SOUND: 'Enable ambient sound samples (true | false)',
+    WorkhorseParameter.PING_WEIGHT: 'Ensemble weighting method: (0:Box | 1:Triangle)',
+    WorkhorseParameter.CLOCK_SYNCH_INTERVAL: 'Interval to schedule clock synchronization.',
+    WorkhorseParameter.GET_STATUS_INTERVAL: 'Interval to schedule acquire status.',
+    WorkhorseParameter.INSTRUMENT_ID: "Identification of the ADCP: (0 - 255)",
+    WorkhorseParameter.HEADING_ALIGNMENT: "Correction for physical misalignment between Beam 3 and the heading reference: (-17999 to 18000)",
+    WorkhorseParameter.HEADING_BIAS: "Correction for electrical/magnetic bias between heading value and heading reference: (-17999 to 18000)",
+    WorkhorseParameter.SPEED_OF_SOUND: 'Speed of sound value used for ADCP data processing.',
+    WorkhorseParameter.TRANSDUCER_DEPTH: 'Measurement from sea level to transducer faces: (0 - 65535)',
+    WorkhorseParameter.PITCH: 'Pitch/tilt 1 angle: (-6000 - 6000)',
+    WorkhorseParameter.ROLL: 'Roll/tilt 2 angle: (-6000 - 6000)',
+    WorkhorseParameter.SALINITY: 'Salinity of the water: (0 - 40)',
+    WorkhorseParameter.COORDINATE_TRANSFORMATION: 'Firmware switches for velocity and percent-good data. See manual for usage.',
+    WorkhorseParameter.SENSOR_SOURCE: 'Firmware switches to use data from manual settings or from an associated sensor. See manual for usage.',
+    WorkhorseParameter.DATA_STREAM_SELECTION: 'Type of ensemble output data structure: (0 - 18)',
+    WorkhorseParameter.ENSEMBLE_PER_BURST: 'Number of ensembles per burst: (0 - 65535)',
+    WorkhorseParameter.FALSE_TARGET_THRESHOLD: 'False target filter: (0 - 255, 255 = disable filter)',
+    WorkhorseParameter.CORRELATION_THRESHOLD: 'Minimum threshold of water-track data that must meet correlation criteria: (0 - 255)',
+    WorkhorseParameter.SERIAL_OUT_FW_SWITCHES: 'Firmware switches for data types collected by the ADCP. See manual for usage.',
+    WorkhorseParameter.ERROR_VELOCITY_THRESHOLD: 'Maximum error velocity for good water-current data: (0 - 9999)',
+    WorkhorseParameter.BLANK_AFTER_TRANSMIT: 'Moves location of first depth cell away from transducer head: (0 - 9999)',
+    WorkhorseParameter.NUMBER_OF_DEPTH_CELLS: 'Number of depth cells over which the ADCP collects data: (1 - 255)',
+    WorkhorseParameter.PINGS_PER_ENSEMBLE: 'Number of pings to average in each data ensemble: (0 - 16384)',
+    WorkhorseParameter.DEPTH_CELL_SIZE: 'Volume of water for one measurement cell.',
+    WorkhorseParameter.TRANSMIT_LENGTH: 'Transmit length different from the depth cell length: (0 - 3200)',
+    WorkhorseParameter.AMBIGUITY_VELOCITY: 'Radial ambiguity velocity: (2 - 700)',
+
+    #VADCP Params
+    WorkhorseParameter.SYNC_PING_ENSEMBLE: 'Firmware switches for synchronization pulse. See manual for usage.',
+    WorkhorseParameter.RDS3_MODE_SEL: 'RDS3 Mode: (0:Off | 1:RDS3 master | 2:RDS3 slave | 3: NEMO)',
+    WorkhorseParameter.SLAVE_TIMEOUT: 'Wait time to hear a synch pulse before slave proceeds: (0 - 10800)',
+    WorkhorseParameter.SYNCH_DELAY: 'Wait time after sending a pulse: (0 - 65535)'
+}
+
+parameter_units = {
+    WorkhorseParameter.HEADING_ALIGNMENT: Prefixes.DECI + Units.DEGREE_PLANE_ANGLE,
+    WorkhorseParameter.HEADING_BIAS: Prefixes.DECI + Units.DEGREE_PLANE_ANGLE,
+    WorkhorseParameter.SPEED_OF_SOUND: Units.METER + '/' + Units.SECOND,
+    WorkhorseParameter.TRANSDUCER_DEPTH: Prefixes.DECI + Units.METER,
+    WorkhorseParameter.PITCH: Prefixes.DECI + Units.DEGREE_PLANE_ANGLE,
+    WorkhorseParameter.ROLL: Prefixes.DECI + Units.DEGREE_PLANE_ANGLE,
+    WorkhorseParameter.SALINITY: 'ppt',
+    WorkhorseParameter.BLANK_AFTER_TRANSMIT: Units.CENTIMETER,
+    WorkhorseParameter.DEPTH_CELL_SIZE: Units.CENTIMETER,
+    WorkhorseParameter.TRANSMIT_LENGTH: Units.CENTIMETER,
+    WorkhorseParameter.AMBIGUITY_VELOCITY: Units.CENTIMETER + '/' + Units.SECOND,
+    WorkhorseParameter.TIME_PER_ENSEMBLE: 'hh:mm:ss:ff',
+    WorkhorseParameter.TIME_OF_FIRST_PING: 'yy/mm/dd,hh:mm:ss',
+    WorkhorseParameter.TIME_PER_PING: 'mm:ss:ff',
+    WorkhorseParameter.BUFFERED_OUTPUT_PERIOD: 'hh:mm:ss',
+    WorkhorseParameter.FALSE_TARGET_THRESHOLD: 'nnn,bbb',
+    WorkhorseParameter.CORRELATION_THRESHOLD: Units.COUNTS,
+    WorkhorseParameter.ERROR_VELOCITY_THRESHOLD: Units.MILLIMETER + '/' + Units.SECOND,
+    WorkhorseParameter.CLOCK_SYNCH_INTERVAL: 'hh:mm:ss',
+    WorkhorseParameter.GET_STATUS_INTERVAL: 'hh:mm:ss',
+    WorkhorseParameter.TIME: 'yyyy/mm/dd,hh:mm:ss',
+
+    #VADCP Params
+    WorkhorseParameter.SYNCH_DELAY: '1/10'+Units.MILLISECOND,
+    WorkhorseParameter.SLAVE_TIMEOUT: Units.SECOND,
 }
 
 parameter_startup = {
@@ -620,24 +656,6 @@ parameter_visibility = {
     WorkhorseParameter.RDS3_MODE_SEL: ParameterDictVisibility.IMMUTABLE,
     WorkhorseParameter.SLAVE_TIMEOUT: ParameterDictVisibility.IMMUTABLE,
     WorkhorseParameter.SYNCH_DELAY: ParameterDictVisibility.IMMUTABLE,
-}
-
-parameter_units = {
-    WorkhorseParameter.HEADING_ALIGNMENT: WorkhorseADCPUnits.CDEGREE,
-    WorkhorseParameter.HEADING_BIAS: WorkhorseADCPUnits.CDEGREE,
-    WorkhorseParameter.SPEED_OF_SOUND: WorkhorseADCPUnits.MPERS,
-    WorkhorseParameter.TRANSDUCER_DEPTH: WorkhorseADCPUnits.DM,
-    WorkhorseParameter.PITCH: WorkhorseADCPUnits.CDEGREE,
-    WorkhorseParameter.ROLL: WorkhorseADCPUnits.CDEGREE,
-    WorkhorseParameter.SALINITY: WorkhorseADCPUnits.PPTHOUSAND,
-    WorkhorseParameter.ENSEMBLE_PER_BURST: WorkhorseADCPUnits.ENSEMBLEPERBURST,
-    WorkhorseParameter.ERROR_VELOCITY_THRESHOLD: WorkhorseADCPUnits.MPERS,
-    WorkhorseParameter.BLANK_AFTER_TRANSMIT: WorkhorseADCPUnits.CENTIMETER,
-    WorkhorseParameter.DEPTH_CELL_SIZE: WorkhorseADCPUnits.CENTIMETER,
-    WorkhorseParameter.TRANSMIT_LENGTH: WorkhorseADCPUnits.CENTIMETER,
-    WorkhorseParameter.AMBIGUITY_VELOCITY: WorkhorseADCPUnits.CMPERSRADIAL,
-    WorkhorseParameter.SLAVE_TIMEOUT: WorkhorseADCPUnits.SECOND,
-    WorkhorseParameter.SYNCH_DELAY: WorkhorseADCPUnits.TENTHMILLISECOND,
 }
 
 parameter_defaults = {
