@@ -24,7 +24,7 @@ log = get_logger()
 from mi.core.exceptions import SampleException
 from mi.core.exceptions import InstrumentTimeoutException
 
-from mi.core.common import BaseEnum
+from mi.core.common import BaseEnum, Units
 from mi.core.instrument.data_particle import DataParticle
 from mi.core.instrument.data_particle import DataParticleKey
 from mi.core.instrument.chunker import StringChunker
@@ -672,9 +672,10 @@ class Protocol(Pco2wProtocol):
                              type=ParameterDictType.INT,
                              startup_param=True,
                              direct_access=True,
-                             default_value=0x0A,
+                             default_value=0x02,
                              visibility=ParameterDictVisibility.READ_ONLY,
-                             display_name='Mode Bits')
+                             display_name='Mode Bits',
+                             description='Switch bits for sample scheduling.')
 
         self._param_dict.add(Parameter.DEVICE1_SAMPLE_INTERVAL, configuration_string_regex,
                              lambda match: int(match.group(8), 16),
@@ -684,7 +685,9 @@ class Protocol(Pco2wProtocol):
                              direct_access=True,
                              default_value=0x000E10,
                              visibility=ParameterDictVisibility.READ_ONLY,
-                             display_name='Device 1 Sample Interval')
+                             display_name='Device 1 Sample Interval',
+                             description='Device 1 sampling interval.',
+                             units=Units.SECOND)
 
         self._param_dict.add(Parameter.DEVICE1_DRIVER_VERSION, configuration_string_regex,
                              lambda match: int(match.group(9), 16),
@@ -694,7 +697,8 @@ class Protocol(Pco2wProtocol):
                              direct_access=True,
                              default_value=0x01,
                              visibility=ParameterDictVisibility.READ_ONLY,
-                             display_name='Device 1 Driver Version')
+                             display_name='Device 1 Driver Version',
+                             description='Device 1 driver version.')
 
         self._param_dict.add(Parameter.DEVICE1_PARAMS_POINTER, configuration_string_regex,
                              lambda match: int(match.group(10), 16),
@@ -704,7 +708,8 @@ class Protocol(Pco2wProtocol):
                              direct_access=True,
                              default_value=0x0B,
                              visibility=ParameterDictVisibility.READ_ONLY,
-                             display_name='Device 1 Parameter Pointer')
+                             display_name='Device 1 Parameter Pointer',
+                             description='Pointer to device 1 parameters (offset from position 76).')
 
         self._param_dict.add(Parameter.EXTERNAL_PUMP_SETTINGS, configuration_string_regex,
                              lambda match: int(match.group(30), 16),
@@ -714,7 +719,9 @@ class Protocol(Pco2wProtocol):
                              direct_access=True,
                              default_value=0x1E,
                              visibility=ParameterDictVisibility.READ_WRITE,
-                             display_name='External Pump Settings')
+                             display_name='External Pump Settings',
+                             description='Timeout for taking a device 1 sample.',
+                             units=Units.SECOND)
 
         ## Engineering parameter to set delay after running external pump to take a sample, set as startup parameter
         ##   because it is configurable by the user and should be reapplied on application of startup parameters.
@@ -726,7 +733,9 @@ class Protocol(Pco2wProtocol):
                              direct_access=False,
                              default_value=360,
                              visibility=ParameterDictVisibility.READ_WRITE,
-                             display_name='External Pump Delay')
+                             display_name='External Pump Delay',
+                             description='Time to wait before taking a sample after running the external pump.',
+                             units=Units.SECOND)
 
     ########################################################################
     # Overridden base class methods
@@ -765,7 +774,7 @@ class Protocol(Pco2wProtocol):
                           Parameter.NUMBER_REAGENT_CYCLES,
                           Parameter.NUMBER_BLANK_CYCLES,
                           Parameter.FLUSH_PUMP_INTERVAL,
-                          Parameter.BIT_SWITCHES,
+                          Parameter.PUMP_SETTINGS,
                           Parameter.NUMBER_EXTRA_PUMP_CYCLES,
                           Parameter.EXTERNAL_PUMP_SETTINGS]
 
