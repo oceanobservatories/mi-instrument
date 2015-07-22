@@ -69,7 +69,7 @@ InstrumentDriverTestCase.initialize(
     instrument_agent_packet_config=DataParticleType(),
     driver_startup_config={
         DriverStartupConfigKey.PARAMETERS: {
-            Parameter.BIT_SWITCHES: 0x01,
+            Parameter.PUMP_SETTINGS: 0x01,
         },
     }
 )
@@ -226,7 +226,7 @@ class DriverTestMixinSub(Pco2DriverTestMixinSub):
                                         DEFAULT: 0x1C, VALUE: 0x1C, REQUIRED: True},
         Parameter.FLUSH_PUMP_INTERVAL: {TYPE: int, READONLY: False, DA: True, STARTUP: True,
                                         DEFAULT: 0x01, VALUE: 0x01, REQUIRED: True},
-        Parameter.BIT_SWITCHES: {TYPE: int, READONLY: False, DA: True, STARTUP: True,
+        Parameter.PUMP_SETTINGS: {TYPE: int, READONLY: False, DA: True, STARTUP: True,
                                  DEFAULT: 0x00, VALUE: 0x00, REQUIRED: True},
         Parameter.NUMBER_EXTRA_PUMP_CYCLES: {TYPE: int, READONLY: False, DA: True, STARTUP: True,
                                              DEFAULT: 0x38, VALUE: 0x38, REQUIRED: True},
@@ -653,7 +653,7 @@ class DriverIntegrationTest(Pco2DriverIntegrationTest, DriverTestMixinSub):
             Parameter.NUMBER_REAGENT_CYCLES: 0x18,
             Parameter.NUMBER_BLANK_CYCLES: 0x1C,
             Parameter.FLUSH_PUMP_INTERVAL: 0x01,
-            Parameter.BIT_SWITCHES: 0x01,
+            Parameter.PUMP_SETTINGS: 0x01,
             Parameter.NUMBER_EXTRA_PUMP_CYCLES: 0x38,
             Parameter.AUTO_SAMPLE_INTERVAL: 3600,
             Parameter.REAGENT_FLUSH_DURATION: 0x08,
@@ -669,7 +669,7 @@ class DriverIntegrationTest(Pco2DriverIntegrationTest, DriverTestMixinSub):
             Parameter.NUMBER_REAGENT_CYCLES: 0x19,
             Parameter.NUMBER_BLANK_CYCLES: 0x1D,
             Parameter.FLUSH_PUMP_INTERVAL: 0x02,
-            Parameter.BIT_SWITCHES: 0x02,
+            Parameter.PUMP_SETTINGS: 0x02,
             Parameter.NUMBER_EXTRA_PUMP_CYCLES: 0x39,
             Parameter.AUTO_SAMPLE_INTERVAL: 600,
             Parameter.REAGENT_FLUSH_DURATION: 0x01,
@@ -698,7 +698,7 @@ class DriverIntegrationTest(Pco2DriverIntegrationTest, DriverTestMixinSub):
         self.assert_set(Parameter.NUMBER_REAGENT_CYCLES, 26)
         self.assert_set(Parameter.NUMBER_BLANK_CYCLES, 30)
         self.assert_set(Parameter.FLUSH_PUMP_INTERVAL, 2)
-        self.assert_set(Parameter.BIT_SWITCHES, 1)
+        self.assert_set(Parameter.PUMP_SETTINGS, 1)
         self.assert_set(Parameter.NUMBER_EXTRA_PUMP_CYCLES, 88)
         self.assert_set(Parameter.REAGENT_FLUSH_DURATION, 16)
         self.assert_set(Parameter.DEIONIZED_WATER_FLUSH_DURATION, 4)
@@ -720,7 +720,7 @@ class DriverIntegrationTest(Pco2DriverIntegrationTest, DriverTestMixinSub):
             Parameter.NUMBER_REAGENT_CYCLES: 26,
             Parameter.NUMBER_BLANK_CYCLES: 30,
             Parameter.FLUSH_PUMP_INTERVAL: 2,
-            Parameter.BIT_SWITCHES: 1,
+            Parameter.PUMP_SETTINGS: 1,
             Parameter.NUMBER_EXTRA_PUMP_CYCLES: 88,
             Parameter.REAGENT_FLUSH_DURATION: 4,
             Parameter.DEIONIZED_WATER_FLUSH_DURATION: 16,
@@ -737,7 +737,7 @@ class DriverIntegrationTest(Pco2DriverIntegrationTest, DriverTestMixinSub):
         self.assert_set_exception(Parameter.NUMBER_REAGENT_CYCLES, 26.0)
         self.assert_set_exception(Parameter.NUMBER_BLANK_CYCLES, 30.0)
         self.assert_set_exception(Parameter.FLUSH_PUMP_INTERVAL, 2.0)
-        self.assert_set_exception(Parameter.BIT_SWITCHES, 1.0)
+        self.assert_set_exception(Parameter.PUMP_SETTINGS, 1.0)
         self.assert_set_exception(Parameter.NUMBER_EXTRA_PUMP_CYCLES, 88.0)
 
     def test_acquire_sample(self):
@@ -892,7 +892,7 @@ class DriverQualificationTest(Pco2DriverQualificationTest, DriverTestMixinSub):
         """
         self.assert_enter_command_mode()
 
-        self.assert_set_parameter(Parameter.BIT_SWITCHES, 0x00)
+        self.assert_set_parameter(Parameter.PUMP_SETTINGS, 0x00)
 
         self.assert_particle_polled(ProtocolEvent.ACQUIRE_SAMPLE, self.assert_particle_sami_blank_sample,
                                     DataParticleType.PCO2W_A_SAMI_SAMPLE, sample_count=1, timeout=200)

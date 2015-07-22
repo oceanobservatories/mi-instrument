@@ -74,7 +74,7 @@ InstrumentDriverTestCase.initialize(
     driver_startup_config={
         DriverStartupConfigKey.PARAMETERS: {
             Parameter.EXTERNAL_PUMP_DELAY: 10,
-            Parameter.BIT_SWITCHES: 0x01
+            Parameter.PUMP_SETTINGS: 0x01
         },
     }
 )
@@ -233,7 +233,7 @@ class DriverTestMixinSub(Pco2DriverTestMixinSub):
                                         DEFAULT: 0x1C, VALUE: 0x1C},
         Parameter.FLUSH_PUMP_INTERVAL: {TYPE: int, READONLY: False, DA: True, STARTUP: True,
                                         DEFAULT: 0x01, VALUE: 0x01},
-        Parameter.BIT_SWITCHES: {TYPE: int, READONLY: False, DA: True, STARTUP: True,
+        Parameter.PUMP_SETTINGS: {TYPE: int, READONLY: False, DA: True, STARTUP: True,
                                  DEFAULT: 0x00, VALUE: 0x00},
         Parameter.NUMBER_EXTRA_PUMP_CYCLES: {TYPE: int, READONLY: False, DA: True, STARTUP: True,
                                              DEFAULT: 0x38, VALUE: 0x38},
@@ -670,7 +670,7 @@ class DriverIntegrationTest(Pco2DriverIntegrationTest, DriverTestMixinSub):
             Parameter.NUMBER_REAGENT_CYCLES: 0x18,
             Parameter.NUMBER_BLANK_CYCLES: 0x1C,
             Parameter.FLUSH_PUMP_INTERVAL: 0x01,
-            Parameter.BIT_SWITCHES: 0x01,
+            Parameter.PUMP_SETTINGS: 0x01,
             Parameter.NUMBER_EXTRA_PUMP_CYCLES: 0x38,
             Parameter.EXTERNAL_PUMP_SETTINGS: 0x1E,
             Parameter.EXTERNAL_PUMP_DELAY: 10,
@@ -688,7 +688,7 @@ class DriverIntegrationTest(Pco2DriverIntegrationTest, DriverTestMixinSub):
             Parameter.NUMBER_REAGENT_CYCLES: 0x19,
             Parameter.NUMBER_BLANK_CYCLES: 0x1D,
             Parameter.FLUSH_PUMP_INTERVAL: 0x02,
-            Parameter.BIT_SWITCHES: 0x02,
+            Parameter.PUMP_SETTINGS: 0x02,
             Parameter.NUMBER_EXTRA_PUMP_CYCLES: 0x39,
             Parameter.EXTERNAL_PUMP_SETTINGS: 0x40,
             Parameter.EXTERNAL_PUMP_DELAY: 300,
@@ -719,7 +719,7 @@ class DriverIntegrationTest(Pco2DriverIntegrationTest, DriverTestMixinSub):
         self.assert_set(Parameter.NUMBER_REAGENT_CYCLES, 26)
         self.assert_set(Parameter.NUMBER_BLANK_CYCLES, 30)
         self.assert_set(Parameter.FLUSH_PUMP_INTERVAL, 2)
-        self.assert_set(Parameter.BIT_SWITCHES, 1)
+        self.assert_set(Parameter.PUMP_SETTINGS, 1)
         self.assert_set(Parameter.NUMBER_EXTRA_PUMP_CYCLES, 88)
         self.assert_set(Parameter.EXTERNAL_PUMP_SETTINGS, 40)
         self.assert_set(Parameter.EXTERNAL_PUMP_DELAY, 60)
@@ -743,7 +743,7 @@ class DriverIntegrationTest(Pco2DriverIntegrationTest, DriverTestMixinSub):
             Parameter.NUMBER_REAGENT_CYCLES: 26,
             Parameter.NUMBER_BLANK_CYCLES: 30,
             Parameter.FLUSH_PUMP_INTERVAL: 2,
-            Parameter.BIT_SWITCHES: 1,
+            Parameter.PUMP_SETTINGS: 1,
             Parameter.NUMBER_EXTRA_PUMP_CYCLES: 88,
             Parameter.EXTERNAL_PUMP_SETTINGS: 40,
             Parameter.EXTERNAL_PUMP_DELAY: 60,
@@ -762,7 +762,7 @@ class DriverIntegrationTest(Pco2DriverIntegrationTest, DriverTestMixinSub):
         self.assert_set_exception(Parameter.NUMBER_REAGENT_CYCLES, 26.0)
         self.assert_set_exception(Parameter.NUMBER_BLANK_CYCLES, 30.0)
         self.assert_set_exception(Parameter.FLUSH_PUMP_INTERVAL, 2.0)
-        self.assert_set_exception(Parameter.BIT_SWITCHES, 1.0)
+        self.assert_set_exception(Parameter.PUMP_SETTINGS, 1.0)
         self.assert_set_exception(Parameter.NUMBER_EXTRA_PUMP_CYCLES, 88.0)
         self.assert_set_exception(Parameter.EXTERNAL_PUMP_SETTINGS, 40.0)
 
@@ -1026,7 +1026,7 @@ class DriverQualificationTest(Pco2DriverQualificationTest, DriverTestMixinSub):
         Verify autosample at default rate
         """
         self.assert_enter_command_mode()
-        self.assert_set_parameter(Parameter.BIT_SWITCHES, 0x00)
+        self.assert_set_parameter(Parameter.PUMP_SETTINGS, 0x00)
         self.assert_set_parameter(Parameter.EXTERNAL_PUMP_DELAY, 360)
         request_sample = time.time()
         self.assert_particle_polled(ProtocolEvent.ACQUIRE_SAMPLE, self.assert_particle_dev1_sample,
