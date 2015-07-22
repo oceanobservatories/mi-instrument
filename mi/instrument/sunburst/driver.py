@@ -34,7 +34,7 @@ from mi.core.driver_scheduler import \
     TriggerType
 
 from mi.core.util import dict_equal
-from mi.core.common import BaseEnum
+from mi.core.common import BaseEnum, Units
 from mi.core.instrument.data_particle import DataParticle
 from mi.core.instrument.data_particle import DataParticleKey
 from mi.core.instrument.data_particle import CommonDataParticleType
@@ -2012,7 +2012,9 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
                              direct_access=True,
                              default_value=0x00000000,
                              visibility=ParameterDictVisibility.READ_ONLY,
-                             display_name='Launch Time')
+                             display_name='Launch Time',
+                             description='Total seconds from 1904-01-01, derived from system clock at time of launch.',
+                             units=Units.SECOND)
 
         self._param_dict.add(SamiParameter.START_TIME_FROM_LAUNCH, configuration_string_regex,
                              lambda match: int(match.group(2), 16),
@@ -2022,7 +2024,9 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
                              direct_access=True,
                              default_value=FIVE_YEARS_IN_SECONDS,
                              visibility=ParameterDictVisibility.READ_ONLY,
-                             display_name='Start Time After Launch Time')
+                             display_name='Start Time After Launch Time',
+                             description='',
+                             units=Units.SECOND)
 
         self._param_dict.add(SamiParameter.STOP_TIME_FROM_START, configuration_string_regex,
                              lambda match: int(match.group(3), 16),
@@ -2032,7 +2036,9 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
                              direct_access=True,
                              default_value=ONE_YEAR_IN_SECONDS,
                              visibility=ParameterDictVisibility.READ_ONLY,
-                             display_name='Stop Time After Start Time')
+                             display_name='Stop Time After Start Time',
+                             description='',
+                             units=Units.SECOND)
 
         self._param_dict.add(SamiParameter.SAMI_SAMPLE_INTERVAL, configuration_string_regex,
                              lambda match: int(match.group(5), 16),
@@ -2042,7 +2048,9 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
                              direct_access=True,
                              default_value=0x000E10,
                              visibility=ParameterDictVisibility.READ_ONLY,
-                             display_name='Sami Sample Interval')
+                             display_name='Sami Sample Interval',
+                             description='',
+                             units=Units.SECOND)
 
         self._param_dict.add(SamiParameter.SAMI_PARAMS_POINTER, configuration_string_regex,
                              lambda match: int(match.group(7), 16),
@@ -2052,7 +2060,8 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
                              direct_access=True,
                              default_value=0x02,
                              visibility=ParameterDictVisibility.READ_ONLY,
-                             display_name='Sami Parameter Pointer')
+                             display_name='Sami Parameter Pointer',
+                             description='Pointer to SAMI parameters (offset from position 76).')
 
         self._param_dict.add(SamiParameter.DEVICE2_SAMPLE_INTERVAL, configuration_string_regex,
                              lambda match: int(match.group(11), 16),
@@ -2062,7 +2071,9 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
                              direct_access=True,
                              default_value=0x000000,
                              visibility=ParameterDictVisibility.READ_ONLY,
-                             display_name='Device 2 Sample Interval')
+                             display_name='Device 2 Sample Interval',
+                             description='',
+                             units=Units.SECOND)
 
         self._param_dict.add(SamiParameter.DEVICE2_DRIVER_VERSION, configuration_string_regex,
                              lambda match: int(match.group(12), 16),
@@ -2072,17 +2083,20 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
                              direct_access=True,
                              default_value=0x00,
                              visibility=ParameterDictVisibility.READ_ONLY,
-                             display_name='Device 2 Driver Version')
+                             display_name='Device 2 Driver Version',
+                             description='')
 
         self._param_dict.add(SamiParameter.DEVICE2_PARAMS_POINTER, configuration_string_regex,
                              lambda match: int(match.group(13), 16),
                              lambda x: self._int_to_hexstring(x, 2),
+
                              type=ParameterDictType.INT,
                              startup_param=True,
                              direct_access=True,
                              default_value=0x00,
                              visibility=ParameterDictVisibility.READ_ONLY,
-                             display_name='Device 2 Parameter Pointer')
+                             display_name='Device 2 Parameter Pointer',
+                             description='Pointer to device 2 parameters (offset from position 76).')
 
         self._param_dict.add(SamiParameter.DEVICE3_SAMPLE_INTERVAL, configuration_string_regex,
                              lambda match: int(match.group(14), 16),
@@ -2092,7 +2106,9 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
                              direct_access=True,
                              default_value=0x000000,
                              visibility=ParameterDictVisibility.READ_ONLY,
-                             display_name='Device 3 Sample Interval')
+                             display_name='Device 3 Sample Interval',
+                             description='',
+                             units=Units.SECOND)
 
         self._param_dict.add(SamiParameter.DEVICE3_DRIVER_VERSION, configuration_string_regex,
                              lambda match: int(match.group(15), 16),
@@ -2102,7 +2118,8 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
                              direct_access=True,
                              default_value=0x00,
                              visibility=ParameterDictVisibility.READ_ONLY,
-                             display_name='Device 3 Driver Version')
+                             display_name='Device 3 Driver Version',
+                             description='')
 
         self._param_dict.add(SamiParameter.DEVICE3_PARAMS_POINTER, configuration_string_regex,
                              lambda match: int(match.group(16), 16),
@@ -2112,7 +2129,8 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
                              direct_access=True,
                              default_value=0x00,
                              visibility=ParameterDictVisibility.READ_ONLY,
-                             display_name='Device 3 Parameter Pointer')
+                             display_name='Device 3 Parameter Pointer',
+                             description='Pointer to device 3 parameters (offset from position 76).')
 
         self._param_dict.add(SamiParameter.PRESTART_SAMPLE_INTERVAL, configuration_string_regex,
                              lambda match: int(match.group(17), 16),
@@ -2122,7 +2140,9 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
                              direct_access=True,
                              default_value=0x000000,
                              visibility=ParameterDictVisibility.READ_ONLY,
-                             display_name='Prestart Sample Interval')
+                             display_name='Prestart Sample Interval',
+                             description='',
+                             units=Units.SECOND)
 
         self._param_dict.add(SamiParameter.PRESTART_DRIVER_VERSION, configuration_string_regex,
                              lambda match: int(match.group(18), 16),
@@ -2132,7 +2152,8 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
                              direct_access=True,
                              default_value=0x00,
                              visibility=ParameterDictVisibility.READ_ONLY,
-                             display_name='Prestart Driver Version')
+                             display_name='Prestart Driver Version',
+                             description='')
 
         # Changed from 0x0D to 0x00 since there is not external device
         self._param_dict.add(SamiParameter.PRESTART_PARAMS_POINTER, configuration_string_regex,
@@ -2143,7 +2164,8 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
                              direct_access=True,
                              default_value=0x00,
                              visibility=ParameterDictVisibility.READ_ONLY,
-                             display_name='Prestart Parameter Pointer')
+                             display_name='Prestart Parameter Pointer',
+                             description='Pointer to prestart parameters (offset from position 76).')
 
         # Changed from invalid value 0x00 to 0x07 setting bits, (2) Send live records, (1) Send ^(record type),
         #   (0) 57600 serial port
@@ -2155,7 +2177,8 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
                              direct_access=True,
                              default_value=0x07,
                              visibility=ParameterDictVisibility.READ_ONLY,
-                             display_name='Global Bits')
+                             display_name='Global Bits',
+                             description='Global mode switches.')
 
         # Engineering parameter to set pseudo auto sample rate, set as startup parameter because it is configurable
         #   by the user and should be reapplied on application of startup parameters.
@@ -2167,7 +2190,9 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
                              direct_access=False,
                              default_value=3600,
                              visibility=ParameterDictVisibility.READ_WRITE,
-                             display_name='Auto Sample Interval')
+                             display_name='Auto Sample Interval',
+                             description='Interval implemented by the driver to create pseudo-autosample mode.',
+                             units=Units.SECOND)
 
     def _pre_sample_processing(self):
         """

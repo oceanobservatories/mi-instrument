@@ -21,6 +21,8 @@ log = get_logger()
 
 from mi.core.exceptions import SampleException
 
+from mi.core.common import Units
+
 from mi.core.instrument.data_particle import DataParticle
 from mi.core.instrument.data_particle import DataParticleKey
 from mi.core.instrument.chunker import StringChunker
@@ -446,7 +448,8 @@ class Protocol(Pco2wProtocol):
                              direct_access=True,
                              default_value=0x02,
                              visibility=ParameterDictVisibility.READ_ONLY,
-                             display_name='Mode Bits')
+                             display_name='Mode Bits',
+                             description='Switch bits for sample scheduling.')
 
         # Changed from 0x000E10 to 0x000000 to indicate there is not external device
         self._param_dict.add(Parameter.DEVICE1_SAMPLE_INTERVAL, configuration_string_regex,
@@ -457,7 +460,9 @@ class Protocol(Pco2wProtocol):
                              direct_access=True,
                              default_value=0x000000,
                              visibility=ParameterDictVisibility.READ_ONLY,
-                             display_name='Device 1 Sample Interval')
+                             display_name='Device 1 Sample Interval',
+                             description='',
+                             units=Units.SECOND)
 
         # Changed from 0x01 to 0x00 to indicate there is not external device
         self._param_dict.add(Parameter.DEVICE1_DRIVER_VERSION, configuration_string_regex,
@@ -468,7 +473,8 @@ class Protocol(Pco2wProtocol):
                              direct_access=True,
                              default_value=0x00,
                              visibility=ParameterDictVisibility.READ_ONLY,
-                             display_name='Device 1 Driver Version')
+                             display_name='Device 1 Driver Version',
+                             description='')
 
         # Changed from 0x0B to 0x00 to indicate there is not external device
         self._param_dict.add(Parameter.DEVICE1_PARAMS_POINTER, configuration_string_regex,
@@ -479,7 +485,8 @@ class Protocol(Pco2wProtocol):
                              direct_access=True,
                              default_value=0x00,
                              visibility=ParameterDictVisibility.READ_ONLY,
-                             display_name='Device 1 Parameter Pointer')
+                             display_name='Device 1 Parameter Pointer',
+                             description='Pointer to device 1 parameters (offset from position 76).')
 
     ########################################################################
     # Overridden base class methods
@@ -518,7 +525,7 @@ class Protocol(Pco2wProtocol):
                           Parameter.NUMBER_REAGENT_CYCLES,
                           Parameter.NUMBER_BLANK_CYCLES,
                           Parameter.FLUSH_PUMP_INTERVAL,
-                          Parameter.BIT_SWITCHES,
+                          Parameter.PUMP_SETTINGS,
                           Parameter.NUMBER_EXTRA_PUMP_CYCLES]
 
         return parameter_list
