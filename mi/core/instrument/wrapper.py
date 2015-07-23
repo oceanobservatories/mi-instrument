@@ -388,25 +388,40 @@ class DriverWrapper(object):
         on a ZMQ PUB socket to the driver process client.
         """
         self.stop_evt_thread = False
-        headers = {'sensor': self.refdes, 'delivery_type': 'streamed'}
+        headers = {'sensor': self.refdes, 'deliveryType': 'streamed'}
         event_publisher = Publisher.from_url(self.event_url, headers)
         particle_publisher = Publisher.from_url(self.particle_url, headers)
+
+        events = []
+        particles = []
 
         while not self.stop_evt_thread:
             try:
                 evt = self.events.get_nowait()
+                log.info(evt)
                 if isinstance(evt[EventKeys.VALUE], Exception):
                     evt[EventKeys.VALUE] = encode_exception(evt[EventKeys.VALUE])
                 if evt[EventKeys.TYPE] == DriverAsyncEvent.ERROR:
                     log.error(evt)
 
                 if evt[EventKeys.TYPE] == DriverAsyncEvent.SAMPLE:
-                    particle_publisher.publish(evt)
+                    if evt[EventKeys.VALUE].get('stream_name') == 'raw':
+                        # don't publish raw
+                        continue
+                    particles.append(evt)
                 else:
-                    event_publisher.publish(evt)
+                    events.append(evt)
 
             except Queue.Empty:
-                time.sleep(.1)
+                if particles:
+                    particle_publisher.publish(particles)
+                    particles = []
+
+                if events:
+                    event_publisher.publish(events)
+                    events = []
+
+                time.sleep(.5)
             except Exception:
                 traceback.print_exc()
 
