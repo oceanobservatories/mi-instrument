@@ -24,6 +24,7 @@ __license__ = 'Apache 2.0'
 
 from nose.plugins.attrib import attr
 from mock import Mock
+from collections import OrderedDict
 
 from mi.core.log import get_logger
 log = get_logger()
@@ -37,6 +38,7 @@ from mi.idk.unit_test import AgentCapabilityType
 
 from mi.core.common import BaseEnum
 
+from mi.core.instrument.data_particle import DataParticleKey, DataParticleValue
 from mi.core.instrument.chunker import StringChunker
 from mi.core.instrument.instrument_driver import DriverConnectionState, ResourceAgentState, DriverConfigKey, DriverEvent
 
@@ -91,7 +93,7 @@ InstrumentDriverTestCase.initialize(
 # Qualification tests are driven through the instrument_agent                 #
 #                                                                             #
 ###############################################################################
-SUNA_ASCII_SAMPLE = "SATSDF0344,2014125,21.278082,0.00,0.0000,0.0000,0.0000,0.00,476,0,1,475,483,494,465,487,490,488," \
+SUNA_ASCII_DARK_SAMPLE = "SATSDF0344,2014125,21.278082,0.00,0.0000,0.0000,0.0000,0.00,476,0,1,475,483,494,465,487,490,488," \
                     "477,465,471,477,476,475,469,477,482,485,485,481,481,474,467,484,472,469,483,489,488,484,497,488," \
                     "482,484,474,461,455,485,469,495,481,485,474,487,464,491,477,464,485,492,492,475,485,478,479,477," \
                     "465,455,471,482,486,482,480,486,478,484,488,480,485,485,473,480,481,485,462,469,466,455,487,488," \
@@ -105,6 +107,23 @@ SUNA_ASCII_SAMPLE = "SATSDF0344,2014125,21.278082,0.00,0.0000,0.0000,0.0000,0.00
                     "490,484,493,480,485,464,469,477,276,0.0,0.0,-99.0,172578,6.2,12.0,0.1,5.0,54,0.00,0.00,0.0000," \
                     "0.000000,0.000000,,,,,203\r\n"
 
+
+SUNA_ASCII_SAMPLE = "SATSLF0379,2015090,2.940748,63.70,0.8923,0.0248,0.0249,0.00,23881,820,1,836,855,840,842,852,834,839,839," \
+                    "831,839,845,852,858,856,863,842,851,852,853,869,874,890,943,1040,1216,1543,2050,2855,3988,5521,7467,9847," \
+                    "12633,15708,18950,22231,25277,27924,30030,31458,32199,32363,32042,31462,30754,30054,29477,29056,28851," \
+                    "28858,29104,29576,30273,31194,32297,33585,35061,36665,38398,40221,42011,43808,45453,46840,47976,48656," \
+                    "48912,48725,47977,46872,45386,43677,41847,39989,38163,36448,34822,33358,32050,30921,29881,290475,28360," \
+                    "27787,27373,27068,26914,26917,27002,27218,27560,28004,28501,29155,29857,30586,31371,32100,32761,33326," \
+                    "33669,33853,33828,33561,33056,32369,31497,30566,29544,28486,27417,26429,25484,24648,23909,23295,22749," \
+                    "22345,21994,21758,21609,21562,21618,21810,22092,22539,23065,23645,24359,25097,25880,26720,27566,28484," \
+                    "29400,30357,31330,32261,33292,34261,35201,36084,36930,37664,38336,38912,39393,39688,39907,39976,39898," \
+                    "39688,39367,38906,38379,37763,37049,36347,35561,34761,33995,33218,32441,31751,31034,30346,29696,29044," \
+                    "28401,27769,27124,26487,25916,25377,24866,24439,24029,23681,23392,23169,22966,22793,22625,22485,22337," \
+                    "22241,22106,22013,21889,21770,21656,21514,21463,21400,21335,21317,21273,21233,21207,21239,21262,21309," \
+                    "21341,21368,21401,21439,1441,21465,21459,21449,21394,21317,21244,21122,20989,20849,20664,20485,20293,20131," \
+                    "19896,19581,19223,18821,18416,18010,17699,17384,17069,16782,16501,16260,16004,15830,15682,15473,15177,14817," \
+                    "14506,14233,13940,13691,13467,13260,13100,12980,12808,12651,12489,12294,12059,11598,10935,9965,8839,7586," \
+                    "11.2,11.4,9.4,240854,0.0,11.8,12.1,5.0,515,-1.00,-1.00,-67.7992,29.052687,0.012319,,,,,231\r\n"
 
 SUNA_ASCII_STATUS = "SENSTYPE SUNA\r\nSENSVERS V2\r\nSERIALNO 344\r\nTHEBRAND Missing\r\nPATHLGTH Missing\r\n" \
                     "INTWIPER Available\r\nEXTPPORT Missing\r\n" \
@@ -178,20 +197,20 @@ class ParameterConstraints(BaseEnum):
 # noinspection PyPep8
 class DriverTestMixinSub(DriverTestMixin):
 
-    _reference_sample_parameters = {
-        SUNASampleDataParticleKey.FRAME_TYPE: {'type': unicode, 'value': "SDF"},
-        SUNASampleDataParticleKey.SERIAL_NUM: {'type': unicode, 'value': "0344"},
-        SUNASampleDataParticleKey.SAMPLE_DATE: {'type': int, 'value': 2014125},
-        SUNASampleDataParticleKey.SAMPLE_TIME: {'type': float, 'value': 21.278082},
-        SUNASampleDataParticleKey.NITRATE_CONCEN: {'type': float, 'value': 0.00},
-        SUNASampleDataParticleKey.NITROGEN: {'type': float, 'value': 0.0000},
-        SUNASampleDataParticleKey.ABSORB_254: {'type': float, 'value': 0.0000},
-        SUNASampleDataParticleKey.ABSORB_350: {'type': float, 'value': 0.0000},
-        SUNASampleDataParticleKey.BROMIDE_TRACE: {'type': float, 'value': 0.00},
-        SUNASampleDataParticleKey.SPECTRUM_AVE: {'type': int, 'value': 476},
-        SUNASampleDataParticleKey.FIT_DARK_VALUE: {'type': int, 'value': 0},
-        SUNASampleDataParticleKey.TIME_FACTOR: {'type': int, 'value': 1},
-        SUNASampleDataParticleKey.SPECTRAL_CHANNELS: {'type': list, 'value': [475, 483, 494, 465, 487, 490, 488, 477,
+    _reference_dark_sample_parameters = OrderedDict([
+        (SUNASampleDataParticleKey.FRAME_TYPE, {'type': unicode, 'value': "SDF"}),
+        (SUNASampleDataParticleKey.SERIAL_NUM, {'type': unicode, 'value': "0344"}),
+        (SUNASampleDataParticleKey.SAMPLE_DATE, {'type': int, 'value': 2014125}),
+        (SUNASampleDataParticleKey.SAMPLE_TIME, {'type': float, 'value': 21.278082}),
+        (SUNASampleDataParticleKey.NITRATE_CONCEN, {'type': float, 'value': 0.00}),
+        (SUNASampleDataParticleKey.NITROGEN, {'type': float, 'value': 0.0000}),
+        (SUNASampleDataParticleKey.ABSORB_254, {'type': float, 'value': 0.0000}),
+        (SUNASampleDataParticleKey.ABSORB_350, {'type': float, 'value': 0.0000}),
+        (SUNASampleDataParticleKey.BROMIDE_TRACE, {'type': float, 'value': 0.00}),
+        (SUNASampleDataParticleKey.SPECTRUM_AVE, {'type': int, 'value': 476}),
+        (SUNASampleDataParticleKey.FIT_DARK_VALUE, {'type': int, 'value': 0}),
+        (SUNASampleDataParticleKey.TIME_FACTOR, {'type': int, 'value': 1}),
+        (SUNASampleDataParticleKey.SPECTRAL_CHANNELS, {'type': list, 'value': [475, 483, 494, 465, 487, 490, 488, 477,
                                                                               465, 471, 477, 476, 475, 469, 477, 482,
                                                                               485, 485, 481, 481, 474, 467, 484, 472,
                                                                               469, 483, 489, 488, 484, 497, 488, 482,
@@ -222,23 +241,95 @@ class DriverTestMixinSub(DriverTestMixin):
                                                                               484, 470, 489, 482, 481, 474, 471, 479,
                                                                               479, 468, 479, 481, 484, 480, 491, 468,
                                                                               479, 474, 474, 468, 471, 477, 480, 490,
-                                                                              484, 493, 480, 485, 464, 469, 477, 276]},
-        SUNASampleDataParticleKey.TEMP_INTERIOR: {'type': float, 'value': 0.0},
-        SUNASampleDataParticleKey.TEMP_SPECTROMETER: {'type': float, 'value': 0.0},
-        SUNASampleDataParticleKey.TEMP_LAMP: {'type': float, 'value': -99.0},
-        SUNASampleDataParticleKey.LAMP_TIME: {'type': int, 'value': 172578},
-        SUNASampleDataParticleKey.HUMIDITY: {'type': float, 'value': 6.2},
-        SUNASampleDataParticleKey.VOLTAGE_MAIN: {'type': float, 'value': 12.0},
-        SUNASampleDataParticleKey.VOLTAGE_LAMP: {'type': float, 'value': 0.1},
-        SUNASampleDataParticleKey.VOLTAGE_INT: {'type': float, 'value': 5.0},
-        SUNASampleDataParticleKey.CURRENT_MAIN: {'type': float, 'value': 54.0},
-        SUNASampleDataParticleKey.FIT_1: {'type': float, 'value': 0.00},
-        SUNASampleDataParticleKey.FIT_2: {'type': float, 'value': 0.00},
-        SUNASampleDataParticleKey.FIT_BASE_1: {'type': float, 'value': 0.0000},
-        SUNASampleDataParticleKey.FIT_BASE_2: {'type': float, 'value': 0.000000},
-        SUNASampleDataParticleKey.FIT_RMSE: {'type': float, 'value': 0.0000000},
-        SUNASampleDataParticleKey.CHECKSUM: {'type': int, 'value': 203},
-    }
+                                                                              484, 493, 480, 485, 464, 469, 477, 276]}),
+        (SUNASampleDataParticleKey.TEMP_SPECTROMETER, {'type': float, 'value': 0.0}),
+        (SUNASampleDataParticleKey.TEMP_INTERIOR, {'type': float, 'value': 0.0}),
+        (SUNASampleDataParticleKey.TEMP_LAMP, {'type': float, 'value': -99.0}),
+        (SUNASampleDataParticleKey.LAMP_TIME, {'type': int, 'value': 172578}),
+        (SUNASampleDataParticleKey.HUMIDITY, {'type': float, 'value': 6.2}),
+        (SUNASampleDataParticleKey.VOLTAGE_MAIN, {'type': float, 'value': 12.0}),
+        (SUNASampleDataParticleKey.VOLTAGE_LAMP, {'type': float, 'value': 0.1}),
+        (SUNASampleDataParticleKey.VOLTAGE_INT, {'type': float, 'value': 5.0}),
+        (SUNASampleDataParticleKey.CURRENT_MAIN, {'type': float, 'value': 54.0}),
+        (SUNASampleDataParticleKey.FIT_1, {'type': float, 'value': 0.00}),
+        (SUNASampleDataParticleKey.FIT_2, {'type': float, 'value': 0.00}),
+        (SUNASampleDataParticleKey.FIT_BASE_1, {'type': float, 'value': 0.0000}),
+        (SUNASampleDataParticleKey.FIT_BASE_2, {'type': float, 'value': 0.000000}),
+        (SUNASampleDataParticleKey.FIT_RMSE, {'type': float, 'value': 0.0000000}),
+        (SUNASampleDataParticleKey.CHECKSUM, {'type': int, 'value': 203}),
+    ])
+
+    _reference_sample_parameters = OrderedDict([
+        (SUNASampleDataParticleKey.FRAME_TYPE, {'type': unicode, 'value': "SLF"}),
+        (SUNASampleDataParticleKey.SERIAL_NUM, {'type': unicode, 'value': "0379"}),
+        (SUNASampleDataParticleKey.SAMPLE_DATE, {'type': int, 'value': 2015090}),
+        (SUNASampleDataParticleKey.SAMPLE_TIME, {'type': float, 'value': 2.940748}),
+        (SUNASampleDataParticleKey.NITRATE_CONCEN, {'type': float, 'value': 63.7}),
+        (SUNASampleDataParticleKey.NITROGEN, {'type': float, 'value': 0.8923}),
+        (SUNASampleDataParticleKey.ABSORB_254, {'type': float, 'value': 0.0248}),
+        (SUNASampleDataParticleKey.ABSORB_350, {'type': float, 'value': 0.0249}),
+        (SUNASampleDataParticleKey.BROMIDE_TRACE, {'type': float, 'value': 0.00}),
+        (SUNASampleDataParticleKey.SPECTRUM_AVE, {'type': int, 'value': 23881}),
+        (SUNASampleDataParticleKey.FIT_DARK_VALUE, {'type': int, 'value': 820}),
+        (SUNASampleDataParticleKey.TIME_FACTOR, {'type': int, 'value': 1}),
+        (SUNASampleDataParticleKey.SPECTRAL_CHANNELS, {'type': list, 'value': [836, 855, 840, 842, 852, 834, 839, 839,
+                                                                               831, 839, 845, 852, 858, 856, 863, 842,
+                                                                               851, 852, 853, 869, 874, 890, 943, 1040,
+                                                                               1216, 1543, 2050, 2855, 3988, 5521, 7467,
+                                                                               9847, 12633, 15708, 18950, 22231, 25277,
+                                                                               27924, 30030, 31458, 32199, 32363, 32042,
+                                                                               31462, 30754, 30054, 29477, 29056, 28851,
+                                                                               28858, 29104, 29576, 30273, 31194, 32297,
+                                                                               33585, 35061, 36665, 38398, 40221, 42011,
+                                                                               43808, 45453, 46840, 47976, 48656, 48912,
+                                                                               48725, 47977, 46872, 45386, 43677, 41847,
+                                                                               39989, 38163, 36448, 34822, 33358, 32050,
+                                                                               30921, 29881, 290475, 28360, 27787, 27373,
+                                                                               27068, 26914, 26917, 27002, 27218, 27560,
+                                                                               28004, 28501, 29155, 29857, 30586, 31371,
+                                                                               32100, 32761, 33326, 33669, 33853, 33828,
+                                                                               33561, 33056, 32369, 31497, 30566, 29544,
+                                                                               28486, 27417, 26429, 25484, 24648, 23909,
+                                                                               23295, 22749, 22345, 21994, 21758, 21609,
+                                                                               21562, 21618, 21810, 22092, 22539, 23065,
+                                                                               23645, 24359, 25097, 25880, 26720, 27566,
+                                                                               28484, 29400, 30357, 31330, 32261, 33292,
+                                                                               34261, 35201, 36084, 36930, 37664, 38336,
+                                                                               38912, 39393, 39688, 39907, 39976, 39898,
+                                                                               39688, 39367, 38906, 38379, 37763, 37049,
+                                                                               36347, 35561, 34761, 33995, 33218, 32441,
+                                                                               31751, 31034, 30346, 29696, 29044, 28401,
+                                                                               27769, 27124, 26487, 25916, 25377, 24866,
+                                                                               24439, 24029, 23681, 23392, 23169, 22966,
+                                                                               22793, 22625, 22485, 22337, 22241, 22106,
+                                                                               22013, 21889, 21770, 21656, 21514, 21463,
+                                                                               21400, 21335, 21317, 21273, 21233, 21207,
+                                                                               21239, 21262, 21309, 21341, 21368, 21401,
+                                                                               21439, 1441, 21465, 21459, 21449, 21394,
+                                                                               21317, 21244, 21122, 20989, 20849, 20664,
+                                                                               20485, 20293, 20131, 19896, 19581, 19223,
+                                                                               18821, 18416, 18010, 17699, 17384, 17069,
+                                                                               16782, 16501, 16260, 16004, 15830, 15682,
+                                                                               15473, 15177, 14817, 14506, 14233, 13940,
+                                                                               13691, 13467, 13260, 13100, 12980, 12808,
+                                                                               12651, 12489, 12294, 12059, 11598, 10935,
+                                                                               9965, 8839, 7586]}),
+        (SUNASampleDataParticleKey.TEMP_SPECTROMETER, {'type': float, 'value': 11.2}),
+        (SUNASampleDataParticleKey.TEMP_INTERIOR, {'type': float, 'value': 11.4}),
+        (SUNASampleDataParticleKey.TEMP_LAMP, {'type': float, 'value': 9.4}),
+        (SUNASampleDataParticleKey.LAMP_TIME, {'type': int, 'value': 240854}),
+        (SUNASampleDataParticleKey.HUMIDITY, {'type': float, 'value': 0.0}),
+        (SUNASampleDataParticleKey.VOLTAGE_MAIN, {'type': float, 'value': 11.8}),
+        (SUNASampleDataParticleKey.VOLTAGE_LAMP, {'type': float, 'value': 12.1}),
+        (SUNASampleDataParticleKey.VOLTAGE_INT, {'type': float, 'value': 5.0}),
+        (SUNASampleDataParticleKey.CURRENT_MAIN, {'type': float, 'value': 515.0}),
+        (SUNASampleDataParticleKey.FIT_1, {'type': float, 'value': -1.0}),
+        (SUNASampleDataParticleKey.FIT_2, {'type': float, 'value': -1.0}),
+        (SUNASampleDataParticleKey.FIT_BASE_1, {'type': float, 'value': -67.7992}),
+        (SUNASampleDataParticleKey.FIT_BASE_2, {'type': float, 'value': 29.052687}),
+        (SUNASampleDataParticleKey.FIT_RMSE, {'type': float, 'value': 0.012319}),
+        (SUNASampleDataParticleKey.CHECKSUM, {'type': int, 'value': 231}),
+    ])
 
     _reference_status_parameters = {
         SUNAStatusDataParticleKey.SENSOR_TYPE: {'type': unicode, 'value': "SUNA"},
@@ -367,6 +458,16 @@ class DriverTestMixinSub(DriverTestMixin):
         self.assert_data_particle_header(data_particle, DataParticleType.SUNA_SAMPLE, require_instrument_timestamp=True)
         self.assert_data_particle_parameters(data_particle, self._reference_sample_parameters, verify_values)
 
+    def assert_data_particle_dark_sample(self, data_particle, verify_values=False):
+        """
+        Verify that all driver parameters are correct and potentially verify values.
+        @param data_particle: driver parameters read from the driver instance
+        @param verify_values:bool,  False = do not verify values against definition
+        """
+        self.assert_data_particle_keys(SUNASampleDataParticleKey, self._reference_dark_sample_parameters)
+        self.assert_data_particle_header(data_particle, DataParticleType.SUNA_DARK_SAMPLE, require_instrument_timestamp=True)
+        self.assert_data_particle_parameters(data_particle, self._reference_dark_sample_parameters, verify_values)
+
     def assert_data_particle_status(self, data_particle, verify_values=False):
         """
         Verify a SUNA status data particle
@@ -454,6 +555,43 @@ class DriverUnitTest(InstrumentDriverUnitTestCase, DriverTestMixinSub):
         with self.assertRaises(SampleException):
             particle.generate()
 
+    def test_sample_format(self):
+        """
+        Verify driver can get sample data out in a reasonable format.
+        Parsed is all we care about...raw is tested in the base DataParticle tests
+        """
+
+        # construct the expected particle
+        expected_dark = {
+            DataParticleKey.PKT_FORMAT_ID: DataParticleValue.JSON_DATA,
+            DataParticleKey.PKT_VERSION: 1,
+            DataParticleKey.STREAM_NAME: DataParticleType.SUNA_DARK_SAMPLE,
+            DataParticleKey.PORT_TIMESTAMP: 3555423720.711772,
+            DataParticleKey.INTERNAL_TIMESTAMP: 3608313401.0952,
+            DataParticleKey.DRIVER_TIMESTAMP: 3555423722.711772,
+            DataParticleKey.PREFERRED_TIMESTAMP: DataParticleKey.PORT_TIMESTAMP,
+            DataParticleKey.QUALITY_FLAG: DataParticleValue.OK,
+            DataParticleKey.VALUES: [
+                {DataParticleKey.VALUE_ID: value_id, DataParticleKey.VALUE: value['value']}
+                for value_id, value in self._reference_dark_sample_parameters.iteritems()]
+        }
+        self.compare_parsed_data_particle(SUNASampleDataParticle, SUNA_ASCII_DARK_SAMPLE, expected_dark)
+
+        expected_light = {
+            DataParticleKey.PKT_FORMAT_ID: DataParticleValue.JSON_DATA,
+            DataParticleKey.PKT_VERSION: 1,
+            DataParticleKey.STREAM_NAME: DataParticleType.SUNA_SAMPLE,
+            DataParticleKey.PORT_TIMESTAMP: 3555423720.711772,
+            DataParticleKey.INTERNAL_TIMESTAMP: 3636759386.6928,
+            DataParticleKey.DRIVER_TIMESTAMP: 3555423722.711772,
+            DataParticleKey.PREFERRED_TIMESTAMP: DataParticleKey.PORT_TIMESTAMP,
+            DataParticleKey.QUALITY_FLAG: DataParticleValue.OK,
+            DataParticleKey.VALUES: [
+                {DataParticleKey.VALUE_ID: value_id, DataParticleKey.VALUE: value['value']}
+                for value_id, value in self._reference_sample_parameters.iteritems()]
+        }
+        self.compare_parsed_data_particle(SUNASampleDataParticle, SUNA_ASCII_SAMPLE, expected_light)
+
     def test_got_data(self):
         """
         Verify sample data passed through the got data method produces the correct data particles
@@ -466,6 +604,7 @@ class DriverUnitTest(InstrumentDriverUnitTestCase, DriverTestMixinSub):
 
         #validate data particles
         self.assert_particle_published(driver, SUNA_ASCII_SAMPLE, self.assert_data_particle_sample, True)
+        self.assert_particle_published(driver, SUNA_ASCII_DARK_SAMPLE, self.assert_data_particle_dark_sample, True)
         self.assert_particle_published(driver, SUNA_ASCII_STATUS, self.assert_data_particle_status, True)
         self.assert_particle_published(driver, SUNA_ASCII_TEST, self.assert_data_particle, True)
 
