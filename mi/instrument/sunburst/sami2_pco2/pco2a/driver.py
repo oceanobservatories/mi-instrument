@@ -461,7 +461,7 @@ class Protocol(Pco2wProtocol):
                              default_value=0x000000,
                              visibility=ParameterDictVisibility.READ_ONLY,
                              display_name='Device 1 Sample Interval',
-                             description='Device 1 sampling interval.',
+                             description='',
                              units=Units.SECOND)
 
         # Changed from 0x01 to 0x00 to indicate there is not external device
@@ -474,7 +474,7 @@ class Protocol(Pco2wProtocol):
                              default_value=0x00,
                              visibility=ParameterDictVisibility.READ_ONLY,
                              display_name='Device 1 Driver Version',
-                             description='Device 1 driver version.')
+                             description='')
 
         # Changed from 0x0B to 0x00 to indicate there is not external device
         self._param_dict.add(Parameter.DEVICE1_PARAMS_POINTER, configuration_string_regex,

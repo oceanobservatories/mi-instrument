@@ -686,7 +686,7 @@ class Protocol(Pco2wProtocol):
                              default_value=0x000E10,
                              visibility=ParameterDictVisibility.READ_ONLY,
                              display_name='Device 1 Sample Interval',
-                             description='Device 1 sampling interval.',
+                             description='',
                              units=Units.SECOND)
 
         self._param_dict.add(Parameter.DEVICE1_DRIVER_VERSION, configuration_string_regex,
@@ -698,7 +698,7 @@ class Protocol(Pco2wProtocol):
                              default_value=0x01,
                              visibility=ParameterDictVisibility.READ_ONLY,
                              display_name='Device 1 Driver Version',
-                             description='Device 1 driver version.')
+                             description='')
 
         self._param_dict.add(Parameter.DEVICE1_PARAMS_POINTER, configuration_string_regex,
                              lambda match: int(match.group(10), 16),
