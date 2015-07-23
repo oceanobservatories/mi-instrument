@@ -414,6 +414,7 @@ class SeaBird54PlusUnitTest(SeaBirdUnitTest, SeaBird54tpsMixin):
                                     ProtocolEvent.SAMPLE_REFERENCE_OSCILLATOR,
                                     ProtocolEvent.RECOVER_AUTOSAMPLE,
                                     ProtocolEvent.TEST_EEPROM],
+            ProtocolState.OSCILLATOR: [ProtocolEvent.ACQUIRE_OSCILLATOR_SAMPLE],
             ProtocolState.AUTOSAMPLE: [ProtocolEvent.GET,
                                        ProtocolEvent.INIT_PARAMS,
                                        ProtocolEvent.STOP_AUTOSAMPLE,
