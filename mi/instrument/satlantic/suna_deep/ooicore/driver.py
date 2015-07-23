@@ -214,6 +214,7 @@ class DataParticleType(BaseEnum):
     """
     RAW = CommonDataParticleType.RAW
     SUNA_SAMPLE = "nutnr_a_sample"
+    SUNA_DARK_SAMPLE = "nutnr_a_dark_sample"
     SUNA_STATUS = "nutnr_a_status"
     SUNA_TEST = "nutnr_a_test"
 
@@ -413,6 +414,10 @@ class SUNASampleDataParticle(DataParticle):
 
         if not matched:
             raise SampleException("No regex match for sample [%s]" % self.raw_data)
+
+        # 'SDF', 'SDC', 'SDB', 'SDR' are dark samples
+        if str(matched.group(1)).startswith('D', 1):
+            self._data_particle_type = DataParticleType.SUNA_DARK_SAMPLE
 
         try:
             parsed_data_list = [
