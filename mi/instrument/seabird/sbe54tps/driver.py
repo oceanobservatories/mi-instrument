@@ -98,6 +98,7 @@ class ProtocolState(BaseEnum):
     UNKNOWN = DriverProtocolState.UNKNOWN
     COMMAND = DriverProtocolState.COMMAND
     AUTOSAMPLE = DriverProtocolState.AUTOSAMPLE
+    OSCILLATOR = "DRIVER_STATE_OSCILLATOR"
     DIRECT_ACCESS = DriverProtocolState.DIRECT_ACCESS
 
 
@@ -123,6 +124,7 @@ class ProtocolEvent(BaseEnum):
     INIT_PARAMS = DriverEvent.INIT_PARAMS
     SCHEDULED_CLOCK_SYNC = DriverEvent.SCHEDULED_CLOCK_SYNC
     SCHEDULED_ACQUIRE_STATUS = 'PROTOCOL_EVENT_SCHEDULED_ACQUIRE_STATUS'
+    ACQUIRE_OSCILLATOR_SAMPLE = 'PROTOCOL_EVENT_ACQUIRE_OSCILLATOR_SAMPLE'
 
 
 class Capability(BaseEnum):
@@ -897,6 +899,10 @@ class Protocol(SeaBirdProtocol):
         self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.TEST_EEPROM, self._handler_command_test_eeprom)
         self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.INIT_PARAMS, self._handler_command_init_params)
 
+        self._protocol_fsm.add_handler(ProtocolState.OSCILLATOR, ProtocolEvent.ENTER, self._handler_oscillator_enter)
+        self._protocol_fsm.add_handler(ProtocolState.OSCILLATOR, ProtocolEvent.ACQUIRE_OSCILLATOR_SAMPLE, self._handler_oscillator_acquire_sample)
+        self._protocol_fsm.add_handler(ProtocolState.OSCILLATOR, ProtocolEvent.EXIT, self._handler_oscillator_exit)
+
         self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.SCHEDULED_ACQUIRE_STATUS, self._handler_autosample_acquire_status)
         self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.SCHEDULED_CLOCK_SYNC, self._handler_autosample_clock_sync)
         self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.ENTER, self._handler_autosample_enter)
@@ -1089,11 +1095,48 @@ class Protocol(SeaBirdProtocol):
 
     def _handler_command_sample_ref_osc(self, *args, **kwargs):
 
+        #Transition to a separate state to allow the instrument enough time to acquire a sample
+        result = None
+
+        next_state = ProtocolState.OSCILLATOR
+
+        next_agent_state = ResourceAgentState.BUSY
+        return next_state, (next_agent_state, result)
+
+    # def _handler_command_start_oscillator(self, *args, **kwargs):
+    #
+    #     result = None
+    #
+    #     next_state = ProtocolState.OSCILLATOR
+    #
+    #     next_agent_state = ResourceAgentState.BUSY
+    #     return next_state, (next_agent_state, result)
+
+    def _handler_oscillator_enter(self, *args, **kwargs):
+        """
+        Enter the Oscillator state
+        """
+        # Tell driver superclass to send a state change event.
+        # Superclass will query the state.
+
+        self._driver_event(DriverAsyncEvent.STATE_CHANGE)
+
+        self._async_raise_fsm_event(ProtocolEvent.ACQUIRE_OSCILLATOR_SAMPLE)
+
+    def _handler_oscillator_acquire_sample(self, *args, **kwargs):
+
         kwargs['expected_prompt'] = "</Sample>"
         kwargs['timeout'] = LONG_TIMEOUT
+
         result = self._do_cmd_resp(InstrumentCmds.SAMPLE_REFERENCE_OSCILLATOR, *args, **kwargs)
 
-        return None, (None, result)
+        return ProtocolState.COMMAND, (ResourceAgentState.COMMAND, result)
+
+    def _handler_oscillator_exit(self, *args, **kwargs):
+        """
+        Exit the Oscillator state
+        """
+        pass
 
     def _handler_command_clock_sync(self, *args, **kwargs):
         """
@@ -1258,13 +1301,8 @@ class Protocol(SeaBirdProtocol):
 
     def _parse_sample_ref_osc(self, response, prompt):
 
-        if prompt != 'S>':
-                raise InstrumentProtocolException('SAMPLE_REFERENCE_OSCILLATOR command not recognized: %s' % response)
-
-        response = response.replace("S>" + NEWLINE, "")
-        response = response.replace("<Executed/>" + NEWLINE, "")
-        response = response.replace(InstrumentCmds.SAMPLE_REFERENCE_OSCILLATOR + NEWLINE, "")
-        response = response.replace("S>", "")
+        if not SAMPLE_REF_OSC_MATCHER.search(response):
+            log.error("Unexpected reply received from instrument in response to sample reference oscillator command.")
 
         return response
 
