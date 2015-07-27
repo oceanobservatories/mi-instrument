@@ -38,4 +38,4 @@ root:
 
 loggers:
   mi:
-    level: INFO
+    level: DEBUG 

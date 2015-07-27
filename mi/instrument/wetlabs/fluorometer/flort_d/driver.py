@@ -65,6 +65,9 @@ NEWLINE = '\r\n'
 # default timeout.
 TIMEOUT = 30
 
+# Instrument class flort
+FLORT_CLASS = 'flort'
+
 
 ###
 #    Driver Constant Definitions
@@ -84,7 +87,9 @@ class DataParticleType(BaseEnum):
     """
     RAW = CommonDataParticleType.RAW
     FLORTD_MNU = 'flort_d_status'
+    FLORDD_MNU = 'flord_d_status'
     FLORTD_SAMPLE = 'flort_d_data_record'
+    FLORDD_SAMPLE = 'flord_d_data_record'
 
 
 class ProtocolState(BaseEnum):
@@ -170,6 +175,7 @@ class Parameter(DriverParameter):
     RUN_WIPER_INTERVAL = "wiper_interval"            # Interval to schedule running wiper    str
     RUN_CLOCK_SYNC_INTERVAL = 'clk_interval'         # Interval to schedule syncing clock    str
     RUN_ACQUIRE_STATUS_INTERVAL = 'status_interval'  # Interval to schedule status           str
+    INSTRUMENT_CLASS = 'instrument_class'            # Instrument class (flort or flord)     str
 
 
 class ScheduledJob(BaseEnum):
@@ -217,21 +223,21 @@ MET_REGEX_MATCHER = re.compile(MET_REGEX, re.DOTALL)
 
 TIME_INTERVAL = r"blahblahblahfakeregexdon'tmatchme"
 
-SAMPLE_REGEX = r"(\d+/\d+/\d+\s+\d+:\d+:\d+(\s+\d+){7}\r\n)"
-SAMPLE_REGEX_MATCHER = re.compile(SAMPLE_REGEX)
+FLORD_SAMPLE_REGEX = r"(\d+/\d+/\d+\s+\d+:\d+:\d+(\s+\d+){5}\r\n)"
+FLORD_SAMPLE_REGEX_MATCHER = re.compile(FLORD_SAMPLE_REGEX)
 
+FLORT_SAMPLE_REGEX = r"(\d+/\d+/\d+\s+\d+:\d+:\d+(\s+\d+){7}\r\n)"
+FLORT_SAMPLE_REGEX_MATCHER = re.compile(FLORT_SAMPLE_REGEX)
 
-class FlortDMNU_ParticleKey(BaseEnum):
+class FlordDMNU_ParticleKey(BaseEnum):
     SERIAL_NUM = "serial_number"
     FIRMWARE_VER = "firmware_version"
     AVE = "number_measurements_per_reported_value"
     PKT = "number_of_reported_values_per_packet"
     M1D = "measurement_1_dark_count_value"
     M2D = "measurement_2_dark_count_value"
-    M3D = "measurement_3_dark_count_value"
     M1S = "measurement_1_slope_value"
     M2S = "measurement_2_slope_value"
-    M3S = "measurement_3_slope_value"
     SEQ = "predefined_output_sequence"
     RAT = "baud_rate"
     SET = "number_of_packets_per_set"
@@ -244,12 +250,18 @@ class FlortDMNU_ParticleKey(BaseEnum):
     MEM = "internal_memory"
 
 
-class FlortDMNU_Particle(DataParticle):
+class FlortDMNU_ParticleKey(FlordDMNU_ParticleKey):
+    M3D = "measurement_3_dark_count_value"
+    M3S = "measurement_3_slope_value"
+
+
+class FlordDMNU_Particle(DataParticle):
     """
     Routines for parsing raw data into a data particle structure. Override
     the building of values, and the rest comes along for free.
     """
-    _data_particle_type = DataParticleType.FLORTD_MNU
+    _data_particle_type = DataParticleType.FLORDD_MNU
+
 
     LINE01 = r"Ser\s*(\S*)"
     LINE02 = r"Ver\s*(\S*)"
@@ -257,10 +269,10 @@ class FlortDMNU_Particle(DataParticle):
     LINE04 = r"Pkt\s*(\S*)"
     LINE05 = r"M1d\s*(\S*)"
     LINE06 = r"M2d\s*(\S*)"
-    LINE07 = r"M3d\s*(\S*)"
+    #LINE07 = r"M3d\s*(\S*)"
     LINE08 = r"M1s\s*(\S*)"
     LINE09 = r"M2s\s*(\S*)"
-    LINE10 = r"M3s\s*(\S*)"
+    #LINE10 = r"M3s\s*(\S*)"
     LINE11 = r"Seq\s*(\S*)"
     LINE12 = r"Rat\s*(\S*)"
     LINE13 = r"Set\s*(\S*)"
@@ -278,7 +290,8 @@ class FlortDMNU_Particle(DataParticle):
         values with appropriate tags
         @throws SampleException If there is a problem with sample creation
         """
-        log.debug("raw data = %r", self.raw_data)
+        log.debug("FlordDMNU_Particle _build_parsed_values enter...")
+        log.debug("FlordDMNU raw data = %r", self.raw_data)
 
         try:
 
@@ -288,10 +301,8 @@ class FlortDMNU_Particle(DataParticle):
             pkt = int(re.compile(self.LINE04).search(self.raw_data).group(1))
             m1d = int(re.compile(self.LINE05).search(self.raw_data).group(1))
             m2d = int(re.compile(self.LINE06).search(self.raw_data).group(1))
-            m3d = int(re.compile(self.LINE07).search(self.raw_data).group(1))
             m1s = float(re.compile(self.LINE08).search(self.raw_data).group(1))
             m2s = float(re.compile(self.LINE09).search(self.raw_data).group(1))
-            m3s = float(re.compile(self.LINE10).search(self.raw_data).group(1))
             seq = int(re.compile(self.LINE11).search(self.raw_data).group(1))
             rat = int(re.compile(self.LINE12).search(self.raw_data).group(1))
             set = int(re.compile(self.LINE13).search(self.raw_data).group(1))
@@ -303,28 +314,62 @@ class FlortDMNU_Particle(DataParticle):
             mst = str(re.compile(self.LINE19).search(self.raw_data).group(1))
             mem = int(re.compile(self.LINE20).search(self.raw_data).group(1))
 
-            result = [{DataParticleKey.VALUE_ID: FlortDMNU_ParticleKey.SERIAL_NUM, DataParticleKey.VALUE: serial_num},
-                  {DataParticleKey.VALUE_ID: FlortDMNU_ParticleKey.FIRMWARE_VER, DataParticleKey.VALUE: firmware_ver},
-                  {DataParticleKey.VALUE_ID: FlortDMNU_ParticleKey.AVE, DataParticleKey.VALUE: ave},
-                  {DataParticleKey.VALUE_ID: FlortDMNU_ParticleKey.PKT, DataParticleKey.VALUE: pkt},
-                  {DataParticleKey.VALUE_ID: FlortDMNU_ParticleKey.M1D, DataParticleKey.VALUE: m1d},
-                  {DataParticleKey.VALUE_ID: FlortDMNU_ParticleKey.M2D, DataParticleKey.VALUE: m2d},
-                  {DataParticleKey.VALUE_ID: FlortDMNU_ParticleKey.M3D, DataParticleKey.VALUE: m3d},
-                  {DataParticleKey.VALUE_ID: FlortDMNU_ParticleKey.M1S, DataParticleKey.VALUE: m1s},
-                  {DataParticleKey.VALUE_ID: FlortDMNU_ParticleKey.M2S, DataParticleKey.VALUE: m2s},
-                  {DataParticleKey.VALUE_ID: FlortDMNU_ParticleKey.M3S, DataParticleKey.VALUE: m3s},
-                  {DataParticleKey.VALUE_ID: FlortDMNU_ParticleKey.SEQ, DataParticleKey.VALUE: seq},
-                  {DataParticleKey.VALUE_ID: FlortDMNU_ParticleKey.RAT, DataParticleKey.VALUE: rat},
-                  {DataParticleKey.VALUE_ID: FlortDMNU_ParticleKey.SET, DataParticleKey.VALUE: set},
-                  {DataParticleKey.VALUE_ID: FlortDMNU_ParticleKey.REC, DataParticleKey.VALUE: rec},
-                  {DataParticleKey.VALUE_ID: FlortDMNU_ParticleKey.MAN, DataParticleKey.VALUE: man},
-                  {DataParticleKey.VALUE_ID: FlortDMNU_ParticleKey.INT, DataParticleKey.VALUE: interval},
-                  {DataParticleKey.VALUE_ID: FlortDMNU_ParticleKey.DAT, DataParticleKey.VALUE: dat},
-                  {DataParticleKey.VALUE_ID: FlortDMNU_ParticleKey.CLK, DataParticleKey.VALUE: clk},
-                  {DataParticleKey.VALUE_ID: FlortDMNU_ParticleKey.MST, DataParticleKey.VALUE: mst},
-                  {DataParticleKey.VALUE_ID: FlortDMNU_ParticleKey.MEM, DataParticleKey.VALUE: mem}]
+            result = [{DataParticleKey.VALUE_ID: FlordDMNU_ParticleKey.SERIAL_NUM, DataParticleKey.VALUE: serial_num},
+                  {DataParticleKey.VALUE_ID: FlordDMNU_ParticleKey.FIRMWARE_VER, DataParticleKey.VALUE: firmware_ver},
+                  {DataParticleKey.VALUE_ID: FlordDMNU_ParticleKey.AVE, DataParticleKey.VALUE: ave},
+                  {DataParticleKey.VALUE_ID: FlordDMNU_ParticleKey.PKT, DataParticleKey.VALUE: pkt},
+                  {DataParticleKey.VALUE_ID: FlordDMNU_ParticleKey.M1D, DataParticleKey.VALUE: m1d},
+                  {DataParticleKey.VALUE_ID: FlordDMNU_ParticleKey.M2D, DataParticleKey.VALUE: m2d},
+                  {DataParticleKey.VALUE_ID: FlordDMNU_ParticleKey.M1S, DataParticleKey.VALUE: m1s},
+                  {DataParticleKey.VALUE_ID: FlordDMNU_ParticleKey.M2S, DataParticleKey.VALUE: m2s},
+                  {DataParticleKey.VALUE_ID: FlordDMNU_ParticleKey.SEQ, DataParticleKey.VALUE: seq},
+                  {DataParticleKey.VALUE_ID: FlordDMNU_ParticleKey.RAT, DataParticleKey.VALUE: rat},
+                  {DataParticleKey.VALUE_ID: FlordDMNU_ParticleKey.SET, DataParticleKey.VALUE: set},
+                  {DataParticleKey.VALUE_ID: FlordDMNU_ParticleKey.REC, DataParticleKey.VALUE: rec},
+                  {DataParticleKey.VALUE_ID: FlordDMNU_ParticleKey.MAN, DataParticleKey.VALUE: man},
+                  {DataParticleKey.VALUE_ID: FlordDMNU_ParticleKey.INT, DataParticleKey.VALUE: interval},
+                  {DataParticleKey.VALUE_ID: FlordDMNU_ParticleKey.DAT, DataParticleKey.VALUE: dat},
+                  {DataParticleKey.VALUE_ID: FlordDMNU_ParticleKey.CLK, DataParticleKey.VALUE: clk},
+                  {DataParticleKey.VALUE_ID: FlordDMNU_ParticleKey.MST, DataParticleKey.VALUE: mst},
+                  {DataParticleKey.VALUE_ID: FlordDMNU_ParticleKey.MEM, DataParticleKey.VALUE: mem}]
 
-            log.debug('parsed particle = %r', result)
+            log.debug('FlordDMNU parsed particle = %r', result)
+
+            return result
+
+        except Exception:
+            raise SampleException('Error building FlordDMNU_Particle')
+
+
+class FlortDMNU_Particle(FlordDMNU_Particle):
+    """
+    Routines for parsing raw data into a data particle structure. Override
+    the building of values, and the rest comes along for free.
+    """
+    _data_particle_type = DataParticleType.FLORTD_MNU
+
+    LINE07 = r"M3d\s*(\S*)"
+    LINE10 = r"M3s\s*(\S*)"
+
+    def _build_parsed_values(self):
+        """
+        Take something in the StatusData format and split it into
+        values with appropriate tags
+        @throws SampleException If there is a problem with sample creation
+        """
+        log.debug("FlortDMNU_Particle _build_parsed_values enter...")
+        log.debug("FlortDMNU raw data = %r", self.raw_data)
+
+        try:
+
+            result = super(FlortDMNU_Particle, self)._build_parsed_values()
+            m3d = int(re.compile(self.LINE07).search(self.raw_data).group(1))
+            m3s = float(re.compile(self.LINE10).search(self.raw_data).group(1))
+
+            result = result.append({DataParticleKey.VALUE_ID: FlortDMNU_ParticleKey.M3D, DataParticleKey.VALUE: m3d})
+            result = result.append({DataParticleKey.VALUE_ID: FlortDMNU_ParticleKey.M3S, DataParticleKey.VALUE: m3s})
+
+            log.debug('FlortDMNU parsed particle = %r', result)
 
             return result
 
@@ -332,15 +377,13 @@ class FlortDMNU_Particle(DataParticle):
             raise SampleException('Error building FlortDMNU_Particle')
 
 
-class FlortDSample_ParticleKey(BaseEnum):
+class FlordDSample_ParticleKey(BaseEnum):
     date_string = 'date_string'
     time_string = 'time_string'
     wave_beta = 'measurement_wavelength_beta'
     raw_sig_beta = 'raw_signal_beta'
     wave_chl = 'measurement_wavelength_chl'
     raw_sig_chl = 'raw_signal_chl'
-    wave_cdom = 'measurement_wavelength_cdom'
-    raw_sig_cdom = 'raw_signal_cdom'
     raw_temp = 'raw_internal_temp'
 
     # the following comes from $met command
@@ -349,8 +392,114 @@ class FlortDSample_ParticleKey(BaseEnum):
     SIG_1_OFFSET = 'signal_1_offset'
     SIG_2_SCALE_FACTOR = 'signal_2_scale_factor'
     SIG_2_OFFSET = 'signal_2_offset'
+
+
+class FlortDSample_ParticleKey(FlordDSample_ParticleKey):
+    wave_cdom = 'measurement_wavelength_cdom'
+    raw_sig_cdom = 'raw_signal_cdom'
+
+    # the following comes from $met command
+    # since these values will never change, on initialization they are stored and then used for the remainder
     SIG_3_SCALE_FACTOR = 'signal_3_scale_factor'
     SIG_3_OFFSET = 'signal_3_offset'
+
+
+class FlordDSample_Particle(DataParticle):
+    """
+    Routines for parsing raw data into a data particle structure. Override
+    the building of values, and the rest should come along for free.
+    """
+    _data_particle_type = DataParticleType.FLORDD_SAMPLE
+
+    _compiled_regex = None
+
+    sig_1_offset = 0
+    sig_1_scale = 0
+    sig_2_offset = 0
+    sig_2_scale = 0
+    #sig_3_offset = 0
+    #sig_3_scale = 0
+
+    ntp_epoch = datetime.datetime(1900, 1, 1)
+
+    @staticmethod
+    def regex_compiled():
+        """
+        get the compiled regex pattern
+        @return: compiled re
+        """
+        if FlordDSample_Particle._compiled_regex is None:
+            FlordDSample_Particle._compiled_regex = re.compile(FlordDSample_Particle.regex())
+        return FlordDSample_Particle._compiled_regex
+
+    @staticmethod
+    def regex():
+        """
+        Regular expression to match a sample pattern
+        @return: regex string
+        """
+        return FLORD_SAMPLE_REGEX
+
+    def _build_parsed_values(self):
+        """
+        Take something in the StatusData format and split it into
+        values with appropriate tags
+
+        @throws SampleException If there is a problem with sample creation
+        """
+        log.debug("raw data = %r", self.raw_data)
+
+        match = FlortDSample_Particle.regex_compiled().search(self.raw_data)
+
+        if not match:
+            raise SampleException("No regex match of parsed sample data: [%s]" % self.raw_data)
+
+        try:
+
+            split_data = match.group(0).split('\t')
+            date_str = str(split_data[0])
+            time_str = str(split_data[1])
+            wave_beta = int(split_data[2])
+            raw_sig_beta = int(split_data[3])
+            wave_chl = int(split_data[4])
+            raw_sig_chl = int(split_data[5])
+            #wave_cdom = int(split_data[6])
+            #raw_sig_cdom = int(split_data[7])
+            raw_temp = int(split_data[6])
+            month, day, year = date_str.split('/')
+            hours, mins, secs = time_str.split(':')
+
+            month = int(month)
+            day = int(day)
+            year = int(year) + 2000
+            hours = int(hours)
+            mins = int(mins)
+            secs = int(secs)
+
+        except Exception:
+            raise SampleException('FlortDSample_Particle: cannot parse thru data')
+
+        record_time = datetime.datetime(year, month, day, hours, mins, secs)
+        self.set_internal_timestamp(timestamp=(record_time - self.ntp_epoch).total_seconds())
+
+        result = [{DataParticleKey.VALUE_ID: FlortDSample_ParticleKey.date_string, DataParticleKey.VALUE: date_str},
+            {DataParticleKey.VALUE_ID: FlortDSample_ParticleKey.time_string, DataParticleKey.VALUE: time_str},
+            {DataParticleKey.VALUE_ID: FlortDSample_ParticleKey.wave_beta, DataParticleKey.VALUE: wave_beta},
+            {DataParticleKey.VALUE_ID: FlortDSample_ParticleKey.raw_sig_beta, DataParticleKey.VALUE: raw_sig_beta},
+            {DataParticleKey.VALUE_ID: FlortDSample_ParticleKey.wave_chl, DataParticleKey.VALUE: wave_chl},
+            {DataParticleKey.VALUE_ID: FlortDSample_ParticleKey.raw_sig_chl, DataParticleKey.VALUE: raw_sig_chl},
+            #{DataParticleKey.VALUE_ID: FlortDSample_ParticleKey.wave_cdom, DataParticleKey.VALUE: wave_cdom},
+            #{DataParticleKey.VALUE_ID: FlortDSample_ParticleKey.raw_sig_cdom, DataParticleKey.VALUE: raw_sig_cdom},
+            {DataParticleKey.VALUE_ID: FlortDSample_ParticleKey.raw_temp, DataParticleKey.VALUE: raw_temp},
+            {DataParticleKey.VALUE_ID: FlortDSample_ParticleKey.SIG_1_OFFSET, DataParticleKey.VALUE: FlortDSample_Particle.sig_1_offset},
+            {DataParticleKey.VALUE_ID: FlortDSample_ParticleKey.SIG_1_SCALE_FACTOR, DataParticleKey.VALUE: FlortDSample_Particle.sig_1_scale},
+            {DataParticleKey.VALUE_ID: FlortDSample_ParticleKey.SIG_2_OFFSET, DataParticleKey.VALUE: FlortDSample_Particle.sig_2_offset},
+            {DataParticleKey.VALUE_ID: FlortDSample_ParticleKey.SIG_2_SCALE_FACTOR, DataParticleKey.VALUE: FlortDSample_Particle.sig_2_scale}]
+            #{DataParticleKey.VALUE_ID: FlortDSample_ParticleKey.SIG_3_OFFSET, DataParticleKey.VALUE: FlortDSample_Particle.sig_3_offset},
+            #{DataParticleKey.VALUE_ID: FlortDSample_ParticleKey.SIG_3_SCALE_FACTOR, DataParticleKey.VALUE: FlortDSample_Particle.sig_3_scale}]
+
+        log.debug('parsed particle = %r', result)
+        return result
 
 
 class FlortDSample_Particle(DataParticle):
@@ -359,6 +508,7 @@ class FlortDSample_Particle(DataParticle):
     the building of values, and the rest should come along for free.
     """
     _data_particle_type = DataParticleType.FLORTD_SAMPLE
+
     _compiled_regex = None
 
     sig_1_offset = 0
@@ -386,7 +536,7 @@ class FlortDSample_Particle(DataParticle):
         Regular expression to match a sample pattern
         @return: regex string
         """
-        return SAMPLE_REGEX
+        return FLORT_SAMPLE_REGEX
 
     def _build_parsed_values(self):
         """
@@ -584,7 +734,8 @@ class Protocol(CommandResponseInstrumentProtocol):
         sieve_match = [MNU_REGEX_MATCHER,
                        RUN_REGEX_MATCHER,
                        MET_REGEX_MATCHER,
-                       SAMPLE_REGEX_MATCHER]
+                       FLORD_SAMPLE_REGEX_MATCHER,
+                       FLORT_SAMPLE_REGEX_MATCHER]
 
         for matcher in sieve_match:
             for match in matcher.finditer(raw_data):
@@ -677,7 +828,11 @@ class Protocol(CommandResponseInstrumentProtocol):
 
         try:
             # Listen to data stream to determine the current state
-            response = self._get_response(timeout=TIMEOUT, response_regex=SAMPLE_REGEX_MATCHER)[0]
+            if self._param_dict.get(Parameter.INSTRUMENT_CLASS) == FLORT_CLASS:
+                res_regex = FLORT_SAMPLE_REGEX_MATCHER
+            else:
+                res_regex = FLORD_SAMPLE_REGEX_MATCHER
+            response = self._get_response(timeout=TIMEOUT, response_regex=res_regex)[0]
 
             if FlortDSample_Particle.regex_compiled().search(response):
                 next_state = DriverProtocolState.AUTOSAMPLE
@@ -757,7 +912,11 @@ class Protocol(CommandResponseInstrumentProtocol):
         """
         Get one sample from the instrument
         """
-        self._do_cmd_resp(InstrumentCommand.RUN_SETTINGS, timeout=TIMEOUT, response_regex=SAMPLE_REGEX_MATCHER)
+        if self._param_dict.get(Parameter.INSTRUMENT_CLASS) == FLORT_CLASS:
+            resp_regex = FLORT_SAMPLE_REGEX_MATCHER
+        else:
+            resp_regex = FLORD_SAMPLE_REGEX_MATCHER
+        self._do_cmd_resp(InstrumentCommand.RUN_SETTINGS, timeout=TIMEOUT, response_regex=resp_regex)
         result = self._do_cmd_resp(InstrumentCommand.INTERRUPT_INSTRUMENT, *args, timeout=TIMEOUT,
                                    response_regex=MNU_REGEX_MATCHER)
 
@@ -767,7 +926,11 @@ class Protocol(CommandResponseInstrumentProtocol):
         """
         Switch into autosample mode. ($run)
         """
-        result = self._do_cmd_resp(InstrumentCommand.RUN_SETTINGS, timeout=TIMEOUT, response_regex=SAMPLE_REGEX_MATCHER)
+        if self._param_dict.get(Parameter.INSTRUMENT_CLASS) == FLORT_CLASS:
+            resp_regex = FLORT_SAMPLE_REGEX_MATCHER
+        else:
+            resp_regex = FLORD_SAMPLE_REGEX_MATCHER
+        result = self._do_cmd_resp(InstrumentCommand.RUN_SETTINGS, timeout=TIMEOUT, response_regex=resp_regex)
         return ProtocolState.AUTOSAMPLE, (ResourceAgentState.STREAMING, result)
 
     def _handler_command_acquire_status(self, *args, **kwargs):
@@ -851,8 +1014,12 @@ class Protocol(CommandResponseInstrumentProtocol):
 
         self._init_params()
 
+        if self._param_dict.get(Parameter.INSTRUMENT_CLASS) == FLORT_CLASS:
+            resp_regex = FLORT_SAMPLE_REGEX_MATCHER
+        else:
+            resp_regex = FLORD_SAMPLE_REGEX_MATCHER
         self._do_cmd_resp(InstrumentCommand.RUN_SETTINGS, *args, timeout=TIMEOUT,
-                                   response_regex=SAMPLE_REGEX_MATCHER)
+                                   response_regex=resp_regex)
 
         # Start scheduling for running the wiper and syncing the clock
         log.debug("Configuring the scheduler to run wiper %s", self._param_dict.get(Parameter.RUN_WIPER_INTERVAL))
@@ -911,8 +1078,12 @@ class Protocol(CommandResponseInstrumentProtocol):
             finally:
                 if attempt == max_attempts:
                     raise InstrumentCommandException('ERROR: Wiper did not make it to the next cycle')
+        if self._param_dict.get(Parameter.INSTRUMENT_CLASS) == FLORT_CLASS:
+            resp_regex = FLORT_SAMPLE_REGEX_MATCHER
+        else:
+            resp_regex = FLORD_SAMPLE_REGEX_MATCHER
 
-        result = self._do_cmd_resp(InstrumentCommand.RUN_SETTINGS, timeout=TIMEOUT, response_regex=SAMPLE_REGEX_MATCHER)
+        result = self._do_cmd_resp(InstrumentCommand.RUN_SETTINGS, timeout=TIMEOUT, response_regex=resp_regex)
         return None, (None, result)
 
     def _handler_autosample_acquire_status(self, *args, **kwargs):
@@ -925,7 +1096,11 @@ class Protocol(CommandResponseInstrumentProtocol):
 
         self._do_cmd_no_resp(InstrumentCommand.RUN_SETTINGS, timeout=TIMEOUT, response_regex=MNU_REGEX_MATCHER)
 
-        result = self._do_cmd_resp(InstrumentCommand.RUN_SETTINGS, timeout=TIMEOUT, response_regex=SAMPLE_REGEX_MATCHER)
+        if self._param_dict.get(Parameter.INSTRUMENT_CLASS) == FLORT_CLASS:
+            resp_regex = FLORT_SAMPLE_REGEX_MATCHER
+        else:
+            resp_regex = FLORD_SAMPLE_REGEX_MATCHER
+        result = self._do_cmd_resp(InstrumentCommand.RUN_SETTINGS, timeout=TIMEOUT, response_regex=resp_regex)
 
         return None, (None, result)
 
@@ -936,7 +1111,12 @@ class Protocol(CommandResponseInstrumentProtocol):
         """
         self._do_cmd_resp(InstrumentCommand.INTERRUPT_INSTRUMENT, timeout=TIMEOUT, response_regex=MNU_REGEX_MATCHER)
         self._sync_clock()
-        result = self._do_cmd_resp(InstrumentCommand.RUN_SETTINGS, timeout=TIMEOUT, response_regex=SAMPLE_REGEX_MATCHER)
+
+        if self._param_dict.get(Parameter.INSTRUMENT_CLASS) == FLORT_CLASS:
+            resp_regex = FLORT_SAMPLE_REGEX_MATCHER
+        else:
+            resp_regex = FLORD_SAMPLE_REGEX_MATCHER
+        result = self._do_cmd_resp(InstrumentCommand.RUN_SETTINGS, timeout=TIMEOUT, response_regex=resp_regex)
         return None, (None, result)
 
     def _handler_autosample_exit(self, *args, **kwargs):
@@ -1020,10 +1200,12 @@ class Protocol(CommandResponseInstrumentProtocol):
                 log.debug('KEY = %r, old = %r new %r', key, old_val, new_val)
 
                 if old_val != new_val:
-                    # if setting the mvs interval/clock sync interval/acquire status interval, do not send a command
+                    # if setting the mvs interval/clock sync interval/acquire status interval/ instrument class,
+                    # do not send a command
                     if key in[Parameter.RUN_WIPER_INTERVAL,
                               Parameter.RUN_CLOCK_SYNC_INTERVAL,
-                              Parameter.RUN_ACQUIRE_STATUS_INTERVAL]:
+                              Parameter.RUN_ACQUIRE_STATUS_INTERVAL,
+                              Parameter.INSTRUMENT_CLASS]:
                         self._param_dict.set_value(key, val)
                     # else perform regular command
                     else:
@@ -1084,10 +1266,18 @@ class Protocol(CommandResponseInstrumentProtocol):
         The base class got_data has gotten a chunk from the chunker.  Pass it to extract_sample
         with the appropriate particle objects and REGEXes.
         """
-        if self._extract_sample(FlortDMNU_Particle, MNU_REGEX_MATCHER, chunk, timestamp):
-            return
-        if self._extract_sample(FlortDSample_Particle, SAMPLE_REGEX_MATCHER, chunk, timestamp):
-            return
+        if self._param_dict.get(Parameter.INSTRUMENT_CLASS) == FLORT_CLASS:
+            log.debug("_got_chunk - Instrument class == flort")
+            if self._extract_sample(FlortDMNU_Particle, MNU_REGEX_MATCHER, chunk, timestamp):
+                log.debug("_got_chunk - successful match for FlortDMNU_Particle")
+            elif self._extract_sample(FlortDSample_Particle, FLORT_SAMPLE_REGEX_MATCHER, chunk, timestamp):
+                log.debug("_got_chunk - successful match for FlortDSample_Particle")
+        else:
+            log.debug("_got_chunk - _param_dict == %s", str(self._param_dict))
+            if self._extract_sample(FlordDMNU_Particle, MNU_REGEX_MATCHER, chunk, timestamp):
+                log.debug("_got_chunk - successful match for FlordDMNU_Particle")
+            elif self._extract_sample(FlordDSample_Particle, FLORD_SAMPLE_REGEX_MATCHER, chunk, timestamp):
+                log.debug("_got_chunk - successful match for FlordDSample_Particle")
 
     def _wakeup(self, timeout, delay=1):
         """
@@ -1465,5 +1655,17 @@ class Protocol(CommandResponseInstrumentProtocol):
                              description='Time interval for running acquiring status.',
                              default_value='00:00:00',
                              units=ParameterUnit.TIME_INTERVAL,
+                             startup_param=True,
+                             direct_access=False)
+
+        self._param_dict.add(Parameter.INSTRUMENT_CLASS,
+                             r'Instrument Series = ([flort, flord])',
+                             lambda match: match.group(1),
+                             str,
+                             type=ParameterDictType.STRING,
+                             display_name="Instrument Class",
+                             description='Defines instance of instrument class [flort, flord].',
+                             default_value=FLORT_CLASS,
+                             visibility=ParameterDictVisibility.IMMUTABLE,
                              startup_param=True,
                              direct_access=False)
