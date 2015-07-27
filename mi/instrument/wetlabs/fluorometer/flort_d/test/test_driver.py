@@ -76,7 +76,8 @@ InstrumentDriverTestCase.initialize(
     driver_startup_config={
         DriverConfigKey.PARAMETERS: {Parameter.RUN_WIPER_INTERVAL: '00:10:00',
                                      Parameter.RUN_CLOCK_SYNC_INTERVAL: '00:10:00',
-                                     Parameter.RUN_ACQUIRE_STATUS_INTERVAL: '00:10:00'}}
+                                     Parameter.RUN_ACQUIRE_STATUS_INTERVAL: '00:10:00',
+                                     Parameter.INSTRUMENT_CLASS: 'flort'}}
 )
 
 #################################### RULES ####################################
@@ -149,7 +150,8 @@ class DriverTestMixinSub(DriverTestMixin):
         Parameter.INTERNAL_MEMORY: {TYPE: int, READONLY: True, DA: False, STARTUP: False, DEFAULT: None, VALUE: 4095},
         Parameter.RUN_WIPER_INTERVAL: {TYPE: str, READONLY: True, DA: False, STARTUP: True, DEFAULT: '00:00:00', VALUE: '00:01:00'},
         Parameter.RUN_CLOCK_SYNC_INTERVAL: {TYPE: str, READONLY: True, DA: False, STARTUP: True, DEFAULT: '00:00:00', VALUE: '12:00:00'},
-        Parameter.RUN_ACQUIRE_STATUS_INTERVAL: {TYPE: str, READONLY: True, DA: False, STARTUP: True, DEFAULT: '00:00:00', VALUE: '12:00:00'}
+        Parameter.RUN_ACQUIRE_STATUS_INTERVAL: {TYPE: str, READONLY: True, DA: False, STARTUP: True, DEFAULT: '00:00:00', VALUE: '12:00:00'},
+        Parameter.INSTRUMENT_CLASS: {TYPE: str, READONLY: True, DA: False, STARTUP: True, DEFAULT: 'flort', VALUE: 'flort'}
     }
 
     _driver_capabilities = {
