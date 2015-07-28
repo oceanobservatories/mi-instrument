@@ -126,6 +126,7 @@ class Capability(mcu.Capability, turbo.Capability, rga.Capability):
     SET = DriverEvent.SET
     START_DIRECT = DriverEvent.START_DIRECT
     STOP_DIRECT = DriverEvent.STOP_DIRECT
+    DISCOVER = ProtocolEvent.DISCOVER
 
 
 class Parameter(DriverParameter):
@@ -534,6 +535,7 @@ class Protocol(InstrumentProtocol):
         self._cmd_dict.add(Capability.POWEROFF, display_name='Low Power State')
         self._cmd_dict.add(Capability.GET_SLAVE_STATES,
                            display_name='Get Slave States')
+        self._cmd_dict.add(Capability.DISCOVER, display_name='Discover')
 
     def _build_driver_dict(self):
         """

@@ -126,6 +126,7 @@ class SeaBird16plusMixin(DriverTestMixin):
     }
 
     _driver_capabilities = {
+        Capability.DISCOVER: {STATES: [ProtocolState.UNKNOWN]},
         Capability.ACQUIRE_SAMPLE : {STATES: [ProtocolState.COMMAND]},
         Capability.START_AUTOSAMPLE : {STATES: [ProtocolState.COMMAND]},
         Capability.STOP_AUTOSAMPLE : {STATES: [ProtocolState.AUTOSAMPLE]},

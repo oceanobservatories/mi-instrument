@@ -208,6 +208,7 @@ class DriverTestMixinSub(DriverTestMixin):
 
     _driver_capabilities = {
         # capabilities defined in the IOS
+        Capability.DISCOVER: {STATES: [ProtocolState.UNKNOWN]},
         Capability.START_TURBO: {STATES: [ProtocolState.COMMAND]},
         Capability.STOP_TURBO: {STATES: [ProtocolState.SPINNING_UP, ProtocolState.AT_SPEED]},
         Capability.CLEAR: {STATES: [ProtocolState.ERROR]},

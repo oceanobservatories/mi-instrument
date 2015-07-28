@@ -116,6 +116,7 @@ class Capability(BaseEnum):
     ACQUIRE_SAMPLE = DriverEvent.ACQUIRE_SAMPLE
     START_DIRECT = DriverEvent.START_DIRECT
     STOP_DIRECT = DriverEvent.STOP_DIRECT
+    DISCOVER = DriverEvent.DISCOVER
 
 
 class CommonParameter(DriverParameter):
@@ -1106,6 +1107,7 @@ class SBE16Protocol(CommandResponseInstrumentProtocol):
         self._cmd_dict.add(Capability.CLOCK_SYNC, display_name="Synchronize Clock")
         self._cmd_dict.add(Capability.ACQUIRE_STATUS, display_name="Acquire Status")
         self._cmd_dict.add(Capability.ACQUIRE_SAMPLE, display_name="Acquire Sample")
+        self._cmd_dict.add(Capability.DISCOVER, display_name='Discover')
 
     ########################################################################
     # Unknown handlers.

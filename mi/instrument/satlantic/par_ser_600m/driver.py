@@ -163,6 +163,7 @@ class PARCapability(BaseEnum):
     SET = DriverEvent.SET
     START_DIRECT = DriverEvent.START_DIRECT
     STOP_DIRECT = DriverEvent.STOP_DIRECT
+    DISCOVER = DriverEvent.DISCOVER
 
 
 class Parameter(DriverParameter):
@@ -460,6 +461,7 @@ class SatlanticPARInstrumentProtocol(CommandResponseInstrumentProtocol):
         self._cmd_dict.add(PARCapability.ACQUIRE_STATUS, display_name='Acquire Status')
         self._cmd_dict.add(PARCapability.START_AUTOSAMPLE, display_name='Start Autosample')
         self._cmd_dict.add(PARCapability.STOP_AUTOSAMPLE, display_name='Stop Autosample')
+        self._cmd_dict.add(PARCapability.DISCOVER, display_name='Discover')
 
     def _build_driver_dict(self):
         """

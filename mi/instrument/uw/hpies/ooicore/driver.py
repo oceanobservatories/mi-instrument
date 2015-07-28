@@ -173,6 +173,7 @@ class Capability(BaseEnum):
     STOP_AUTOSAMPLE = ProtocolEvent.STOP_AUTOSAMPLE
     START_DIRECT = DriverEvent.START_DIRECT
     STOP_DIRECT = DriverEvent.STOP_DIRECT
+    DISCOVER = DriverEvent.DISCOVER
 
 
 class Parameter(DriverParameter):
@@ -1954,6 +1955,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         """
         self._cmd_dict.add(Capability.START_AUTOSAMPLE, display_name='Start Autosample')
         self._cmd_dict.add(Capability.STOP_AUTOSAMPLE, display_name='Stop Autosample')
+        self._cmd_dict.add(Capability.DISCOVER, display_name='Discover')
 
     def _parse_hef_params_response(self, response, prompt):
         """

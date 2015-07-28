@@ -152,6 +152,7 @@ class Capability(BaseEnum):
     SET = DriverEvent.SET
     START_DIRECT = DriverEvent.START_DIRECT
     STOP_DIRECT = DriverEvent.STOP_DIRECT
+    DISCOVER = DriverEvent.DISCOVER
 
 class Parameter(DriverParameter):
     """
@@ -2032,6 +2033,7 @@ class Protocol(SeaBirdProtocol):
         self._cmd_dict.add(Capability.ACQUIRE_CONFIGURATION, display_name="Get Configuration")
         self._cmd_dict.add(Capability.SEND_LAST_SAMPLE, display_name="Get Last Sample")
         self._cmd_dict.add(Capability.QUIT_SESSION, display_name="Quit Session")
+        self._cmd_dict.add(Capability.DISCOVER, display_name='Discover')
 
     def _build_param_dict(self):
         """

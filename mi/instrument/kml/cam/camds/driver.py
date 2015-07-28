@@ -669,6 +669,8 @@ class Capability(BaseEnum):
     START_DIRECT = DriverEvent.START_DIRECT
     STOP_DIRECT = DriverEvent.STOP_DIRECT
 
+    DISCOVER = DriverEvent.DISCOVER
+
 
 class ScheduledJob(BaseEnum):
     SAMPLE = 'sample'
@@ -1337,6 +1339,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
                            timeout=DEFAULT_DICT_TIMEOUT,
                            display_name="Stop Capture",
                            description="Stop Capture")
+        self._cmd_dict.add(Capability.DISCOVER, display_name='Discover')
 
     def _build_driver_dict(self):
         """

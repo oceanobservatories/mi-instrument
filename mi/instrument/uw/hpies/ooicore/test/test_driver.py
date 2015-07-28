@@ -169,6 +169,7 @@ class UtilMixin(DriverTestMixin):
     SAMPLE_HEF_WRONG_CHECKSUM = '{0}dead'.format(SAMPLE_HEF_MISSING_CHECKSUM)
 
     _driver_capabilities = {
+        Capability.DISCOVER: {STATES: [ProtocolState.UNKNOWN]},
         Capability.START_AUTOSAMPLE: {STATES: [ProtocolState.COMMAND]},
         Capability.STOP_AUTOSAMPLE: {STATES: [ProtocolState.AUTOSAMPLE]}
     }

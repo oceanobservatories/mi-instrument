@@ -365,10 +365,9 @@ class DriverTestMixinSub(DriverTestMixin):
 
     _driver_capabilities = {
         # capabilities defined in the IOS
+        Capability.DISCOVER: {STATES: [ProtocolState.UNKNOWN]},
         Capability.START_AUTOSAMPLE: {STATES: [ProtocolState.COMMAND]},
         Capability.STOP_AUTOSAMPLE: {STATES: [ProtocolState.AUTOSAMPLE]},
-        Capability.GET: {STATES: [ProtocolState.COMMAND, ProtocolState.AUTOSAMPLE]},
-        Capability.SET: {STATES: [ProtocolState.COMMAND]},
         Capability.ACQUIRE_STATUS: {STATES: [ProtocolState.COMMAND]}
     }
 
@@ -502,7 +501,8 @@ class DriverUnitTest(InstrumentDriverUnitTestCase, DriverTestMixinSub):
                                     'DRIVER_EVENT_GET',
                                     'DRIVER_EVENT_SET',
                                     'DRIVER_EVENT_ACQUIRE_STATUS'],
-            ProtocolState.AUTOSAMPLE: ['DRIVER_EVENT_STOP_AUTOSAMPLE'],
+            ProtocolState.AUTOSAMPLE: ['DRIVER_EVENT_STOP_AUTOSAMPLE',
+                                       'DRIVER_EVENT_GET'],
             ProtocolState.UNKNOWN: ['DRIVER_EVENT_DISCOVER']
         }
         driver = self.InstrumentDriver(self._got_data_event_callback)

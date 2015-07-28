@@ -153,6 +153,7 @@ class DriverTestMixinSub(DriverTestMixin):
     }
 
     _driver_capabilities = {
+        Capability.DISCOVER: {STATES: [ProtocolState.UNKNOWN]},
         Capability.RUN_WIPER: {STATES: [ProtocolState.COMMAND]},
         Capability.CLOCK_SYNC: {STATES: [ProtocolState.COMMAND]},
         Capability.ACQUIRE_SAMPLE: {STATES: [ProtocolState.COMMAND]},
