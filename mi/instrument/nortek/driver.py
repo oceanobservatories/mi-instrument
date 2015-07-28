@@ -24,7 +24,7 @@ log = get_logger()
 
 from mi.core.instrument.instrument_fsm import InstrumentFSM
 from mi.core.instrument.chunker import StringChunker
-from mi.core.instrument.data_particle import DataParticle, DataParticleKey
+from mi.core.instrument.data_particle import DataParticle, DataParticleKey, DataParticleValue
 from mi.core.instrument.data_particle import CommonDataParticleType
 from mi.core.instrument.instrument_protocol import CommandResponseInstrumentProtocol, DEFAULT_WRITE_DELAY, \
     InitializationType
@@ -239,6 +239,13 @@ class Capability(BaseEnum):
     ACQUIRE_STATUS = DriverEvent.ACQUIRE_STATUS
 
 
+def validate_checksum(str_struct, raw_data, checksum):
+    if (0xb58c + sum(struct.unpack_from(str_struct, raw_data))) & 0xffff != checksum:
+        log.warn("Bad vel3d_cd_velocity_data from instrument (%r)", raw_data)
+        return False
+    return True
+
+
 def _check_configuration(input_bytes, sync, length):
         """
         Perform a check on the configuration:
@@ -273,7 +280,7 @@ def _check_configuration(input_bytes, sync, length):
             word_value = NortekProtocolParameterDict.convert_word_to_int(input_bytes[word_index:word_index + 2])
             calculated_checksum = (calculated_checksum + word_value) % 0x10000
 
-        # calculated_checksum = NortekProtocolParameterDict.calculate_checksum(input, length)
+        # calculate checksum
         log.debug('_check_configuration: user c_c = %s', calculated_checksum)
         sent_checksum = NortekProtocolParameterDict.convert_word_to_int(input_bytes[length - 2:length])
         if sent_checksum != calculated_checksum:
@@ -314,14 +321,14 @@ class NortekHardwareConfigDataParticle(DataParticle):
         Take the hardware config data and parse it into
         values with appropriate tags.
         """
-        if not _check_configuration(self.raw_data, HW_CONFIG_SYNC_BYTES, HW_CONFIG_LEN):
-            log.warn("_parse_read_hw_config: Bad read hw response from instrument (%r)", self.raw_data)
-            raise SampleException("Invalid read hw response. (%r)" % self.raw_data)
-
         try:
             unpack_string = '<4s14s2s4H2s12s4sh2s'
             sync, serial_num, config, board_frequency, pic_version, hw_revision, recorder_size, status, spare, fw_version, cksum, _ = \
                 struct.unpack(unpack_string, self.raw_data)
+
+            if not validate_checksum('<23H', self.raw_data[0:HW_CONFIG_LEN-2], cksum):
+                log.warn("_parse_read_hw_config: Bad read hw response from instrument (%r)", self.raw_data)
+                self.contents[DataParticleKey.QUALITY_FLAG] = DataParticleValue.CHECKSUM_FAILED
 
             config = NortekProtocolParameterDict.convert_bytes_to_bit_field(config)
             status = NortekProtocolParameterDict.convert_bytes_to_bit_field(status)
@@ -376,13 +383,13 @@ class NortekHeadConfigDataParticle(DataParticle):
         values with appropriate tags.
         @throws SampleException If there is a problem with sample creation
         """
-        if not _check_configuration(self.raw_data, HEAD_CONFIG_SYNC_BYTES, HEAD_CONFIG_LEN):
-            log.warn("_parse_read_head_config: Bad read head response from instrument (%r)", self.raw_data)
-            raise SampleException("Invalid read head response. (%r)" % self.raw_data)
-
         try:
             unpack_string = '<4s2s2H12s176s22sHh2s'
             sync, config, head_freq, head_type, head_serial, system_data, _, num_beams, cksum, _ = struct.unpack(unpack_string, self.raw_data)
+
+            if not validate_checksum('<111H', self.raw_data[0:HEAD_CONFIG_LEN-2], cksum):
+                log.warn("_parse_read_head_config: Bad read hw response from instrument (%r)", self.raw_data)
+                self.contents[DataParticleKey.QUALITY_FLAG] = DataParticleValue.CHECKSUM_FAILED
 
             config = NortekProtocolParameterDict.convert_bytes_to_bit_field(config)
             system_data = base64.b64encode(system_data)
@@ -557,9 +564,6 @@ class NortekUserConfigDataParticle(DataParticle):
         values with appropriate tags.
         @throws SampleException If there is a problem with sample creation
         """
-        if not _check_configuration(self.raw_data, USER_CONFIG_SYNC_BYTES, USER_CONFIG_LEN):
-            log.warn("_parse_read_head_config: Bad read hw config response from instrument (%r)", self.raw_data)
-            raise SampleException("Invalid hw config response. (%r)" % self.raw_data)
 
         try:
             unpack_string = '<4s8H2s2s6s5H6sH6sI2s4H2s2H2s180s180s2s5H4sH2s2H2sH30s16sH2s'
@@ -571,9 +575,12 @@ class NortekUserConfigDataParticle(DataParticle):
                 num_diag_per_wave, _, num_sample_burst, _, analog_scale_factor, correlation_thrs, _, tx_pulse_len_2nd,\
                 _, filter_constants, cksum, _ = struct.unpack(unpack_string, self.raw_data)
 
+            if not validate_checksum('<255H', self.raw_data[0:USER_CONFIG_LEN-2], cksum):
+                log.warn("_parse_read_head_config: Bad read hw response from instrument (%r)", self.raw_data)
+                self.contents[DataParticleKey.QUALITY_FLAG] = DataParticleValue.CHECKSUM_FAILED
+
             tcr = NortekProtocolParameterDict.convert_bytes_to_bit_field(tcr)
             pcr = NortekProtocolParameterDict.convert_bytes_to_bit_field(pcr)
-
 
             deploy_start_time = NortekProtocolParameterDict.convert_words_to_datetime(deploy_start_time)
 

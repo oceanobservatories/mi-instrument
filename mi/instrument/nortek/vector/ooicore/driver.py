@@ -19,10 +19,10 @@ from mi.core.exceptions import SampleException
 from mi.core.common import BaseEnum, Units
 from mi.core.instrument.protocol_param_dict import ParameterDictVisibility
 from mi.core.instrument.protocol_param_dict import ParameterDictType
-from mi.core.instrument.data_particle import DataParticle, DataParticleKey
+from mi.core.instrument.data_particle import DataParticle, DataParticleKey, DataParticleValue
 
 from mi.instrument.nortek.driver import NortekDataParticleType, Parameter, InstrumentCmds, \
-    USER_CONFIG_DATA_REGEX
+    USER_CONFIG_DATA_REGEX, validate_checksum
 from mi.instrument.nortek.driver import NortekInstrumentDriver
 from mi.instrument.nortek.driver import NortekInstrumentProtocol
 from mi.instrument.nortek.driver import NortekProtocolParameterDict
@@ -93,11 +93,15 @@ class VectorVelocityDataParticle(DataParticle):
 
         try:
         
-            unpack_string = '<4s4B2H3h6B'
+            unpack_string = '<2s4B2H3h6BH'
         
-            sync, analog_input2_lsb, count, pressure_msb, analog_input2_msb, pressure_lsw, analog_input1,\
+            sync_id, analog_input2_lsb, count, pressure_msb, analog_input2_msb, pressure_lsw, analog_input1,\
                 velocity_beam1, velocity_beam2, velocity_beam3, amplitude_beam1, amplitude_beam2, amplitude_beam3, \
-                correlation_beam1, correlation_beam2, correlation_beam3 = struct.unpack(unpack_string, self.raw_data)
+                correlation_beam1, correlation_beam2, correlation_beam3, checksum = struct.unpack(unpack_string, self.raw_data)
+
+            if not validate_checksum('<11H', self.raw_data, checksum):
+                log.warn("Bad vel3d_cd_velocity_data from instrument (%r)", self.raw_data)
+                self.contents[DataParticleKey.QUALITY_FLAG] = DataParticleValue.CHECKSUM_FAILED
 
             analog_input2 = analog_input2_msb * 0x100 + analog_input2_lsb
             pressure = pressure_msb * 0x10000 + pressure_lsw
@@ -153,9 +157,13 @@ class VectorVelocityHeaderDataParticle(DataParticle):
         log.debug('VectorVelocityHeaderDataParticle: raw data =%r', self.raw_data)
 
         try:
-            unpack_string = '<4s6sH8B20sh'
+            unpack_string = '<4s6sH8B20sH'
             sync, timestamp, number_of_records, noise1, noise2, noise3, _, correlation1, correlation2, correlation3, _,\
                 _, cksum = struct.unpack(unpack_string, self.raw_data)
+
+            if not validate_checksum('<20H', self.raw_data, cksum):
+                log.warn("Bad vel3d_cd_data_header from instrument (%r)", self.raw_data)
+                self.contents[DataParticleKey.QUALITY_FLAG] = DataParticleValue.CHECKSUM_FAILED
         
             timestamp = NortekProtocolParameterDict.convert_time(timestamp)
             
@@ -208,10 +216,14 @@ class VectorSystemDataParticle(DataParticle):
 
         try:
         
-            unpack_string = '<4s6s2H4h2bHh'
+            unpack_string = '<4s6s2H4h2bHH'
             
             sync, timestamp, battery, sound_speed, heading, pitch, roll, temperature, error, status, analog_input, cksum =\
                 struct.unpack_from(unpack_string, self.raw_data)
+
+            if not validate_checksum('<13H', self.raw_data, cksum):
+                log.warn("Bad vel3d_cd_system_data from instrument (%r)", self.raw_data)
+                self.contents[DataParticleKey.QUALITY_FLAG] = DataParticleValue.CHECKSUM_FAILED
         
             timestamp = NortekProtocolParameterDict.convert_time(timestamp)
 

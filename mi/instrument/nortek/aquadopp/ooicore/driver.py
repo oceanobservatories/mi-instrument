@@ -20,9 +20,10 @@ log = get_logger()
 
 from mi.core.exceptions import SampleException
 
-from mi.core.instrument.data_particle import DataParticle, DataParticleKey
+from mi.core.instrument.data_particle import DataParticle, DataParticleKey, DataParticleValue
 
-from mi.instrument.nortek.driver import NortekInstrumentProtocol, InstrumentPrompts, NortekProtocolParameterDict
+from mi.instrument.nortek.driver import NortekInstrumentProtocol, InstrumentPrompts, NortekProtocolParameterDict, \
+    validate_checksum
 from mi.instrument.nortek.driver import Parameter, NortekInstrumentDriver, NEWLINE
 from mi.instrument.nortek.driver import NortekHardwareConfigDataParticle, NortekHeadConfigDataParticle, NortekUserConfigDataParticle\
     , NortekEngBatteryDataParticle, NortekEngIdDataParticle, NortekEngClockDataParticle
@@ -95,11 +96,15 @@ class AquadoppDwVelocityDataParticle(DataParticle):
         log.debug('AquadoppDwVelocityDataParticle: raw data =%r', self.raw_data)
 
         try:
-            unpack_string = '<4s6s2h2H3hBbH4h3B1sh'
+            unpack_string = '<4s6s2h2H3hBbH4h3B1sH'
 
             sync, timestamp, error, analog1, battery_voltage, sound_speed, heading, pitch, roll, pressure_msb, status, \
                pressure_lsw, temperature, velocity_beam1, velocity_beam2, velocity_beam3, amplitude_beam1, \
                amplitude_beam2, amplitude_beam3, _, cksum = struct.unpack(unpack_string, self.raw_data)
+
+            if not validate_checksum('<20H', self.raw_data, cksum):
+                log.warn("Bad velpt_velocity_data instrument (%r)", self.raw_data)
+                self.contents[DataParticleKey.QUALITY_FLAG] = DataParticleValue.CHECKSUM_FAILED
 
             timestamp = NortekProtocolParameterDict.convert_time(timestamp)
             pressure = pressure_msb * 0x10000 + pressure_lsw
