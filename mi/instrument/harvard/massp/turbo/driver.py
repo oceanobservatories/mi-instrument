@@ -124,6 +124,7 @@ class Capability(BaseEnum):
     START_TURBO = ProtocolEvent.START_TURBO
     STOP_TURBO = ProtocolEvent.STOP_TURBO
     CLEAR = ProtocolEvent.CLEAR
+    DISCOVER = ProtocolEvent.DISCOVER
 
 
 class Parameter(DriverParameter):
@@ -478,10 +479,11 @@ class Protocol(CommandResponseInstrumentProtocol):
         """
         Populate the command dictionary with commands.
         """
-        self._cmd_dict.add(Capability.ACQUIRE_STATUS, display_name="Acquire status")
+        self._cmd_dict.add(Capability.ACQUIRE_STATUS, display_name="Acquire Status")
         self._cmd_dict.add(Capability.START_TURBO, display_name="Start Turbo")
         self._cmd_dict.add(Capability.STOP_TURBO, display_name="Stop Turbo")
         self._cmd_dict.add(Capability.CLEAR, display_name="Clear Error State")
+        self._cmd_dict.add(Capability.DISCOVER, display_name='Discover')
 
     def _build_driver_dict(self):
         """

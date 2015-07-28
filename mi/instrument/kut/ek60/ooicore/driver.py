@@ -169,6 +169,7 @@ class Capability(BaseEnum):
     ACQUIRE_STATUS = ProtocolEvent.ACQUIRE_STATUS
     GET = ProtocolEvent.GET
     SET = ProtocolEvent.SET
+    DISCOVER = ProtocolEvent.DISCOVER
 
 
 class Parameter(DriverParameter):
@@ -500,6 +501,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.SET, self._handler_command_set)
 
         self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.STOP_AUTOSAMPLE, self._handler_autosample_stop)
+        self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.GET, self._handler_command_get)
 
         # Construct the parameter dictionary containing device parameters,
         # current parameter values, and set formatting functions.
@@ -585,6 +587,8 @@ class Protocol(CommandResponseInstrumentProtocol):
         self._cmd_dict.add(Capability.START_AUTOSAMPLE, display_name="Start Autosample")
         self._cmd_dict.add(Capability.STOP_AUTOSAMPLE, display_name="Stop Autosample")
         self._cmd_dict.add(Capability.ACQUIRE_STATUS, display_name="Acquire Status")
+        self._cmd_dict.add(Capability.DISCOVER, display_name='Discover')
+
 
     def _filter_capabilities(self, events):
         """

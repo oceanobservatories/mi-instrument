@@ -11,8 +11,6 @@ __author__ = 'Sung Ahn'
 __license__ = 'Apache 2.0'
 
 import copy
-import base64
-import datetime as dt
 from nose.plugins.attrib import attr
 from mock import Mock
 from mi.core.instrument.chunker import StringChunker
@@ -25,8 +23,6 @@ log = get_logger()
 
 from mi.idk.unit_test import InstrumentDriverUnitTestCase
 from mi.idk.unit_test import InstrumentDriverIntegrationTestCase
-from mi.idk.unit_test import InstrumentDriverQualificationTestCase
-from mi.idk.unit_test import InstrumentDriverPublicationTestCase
 
 from mi.instrument.kml.cam.camds.driver import DataParticleType, CAMDS_DISK_STATUS_KEY, CAMDS_HEALTH_STATUS_KEY
 
@@ -39,9 +35,6 @@ from mi.instrument.kml.cam.camds.driver import CAMDSPrompt, InstrumentDriver, CA
 from mi.instrument.kml.cam.camds.driver import ScheduledJob
 from mi.instrument.kml.cam.camds.driver import InstrumentCmds, ProtocolState, ProtocolEvent, Capability
 
-from mi.core.instrument.instrument_driver import DriverConnectionState
-from mi.core.instrument.instrument_driver import DriverProtocolState
-from mi.core.instrument.port_agent_client import PortAgentClient
 from mi.core.port_agent_process import PortAgentProcess
 
 from mi.idk.comm_config import ConfigTypes
@@ -258,6 +251,7 @@ class CAMDSMixin(DriverTestMixin):
 
     _driver_capabilities = {
         # capabilities defined in the IOS
+        Capability.DISCOVER: {STATES: [ProtocolState.UNKNOWN]},
         Capability.START_AUTOSAMPLE: {STATES: [ProtocolState.COMMAND, ProtocolState.AUTOSAMPLE]},
         Capability.STOP_AUTOSAMPLE: {STATES: [ProtocolState.COMMAND, ProtocolState.AUTOSAMPLE]},
         Capability.STOP_CAPTURE: {STATES: [ProtocolState.COMMAND, ProtocolState.AUTOSAMPLE]},

@@ -110,6 +110,7 @@ class Capability(BaseEnum):
     STANDBY = ProtocolEvent.STANDBY
     CLEAR = ProtocolEvent.CLEAR
     POWEROFF = ProtocolEvent.POWEROFF
+    DISCOVER = ProtocolEvent.DISCOVER
 
 
 class Parameter(DriverParameter):
@@ -660,6 +661,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         self._cmd_dict.add(Capability.STANDBY, display_name="Execute U ASTANDBY")
         self._cmd_dict.add(Capability.CLEAR, display_name="Clear Error State")
         self._cmd_dict.add(Capability.POWEROFF, display_name="Execute U APOWEROFF")
+        self._cmd_dict.add(Capability.DISCOVER, display_name='Discover')
 
     def _build_driver_dict(self):
         """

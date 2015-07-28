@@ -268,6 +268,7 @@ class Capability(BaseEnum):
     # Change States
     START_AUTOSAMPLE = ProtocolEvent.START_AUTOSAMPLE
     STOP_AUTOSAMPLE = ProtocolEvent.STOP_AUTOSAMPLE
+    DISCOVER = ProtocolEvent.DISCOVER
 
     # Parameter Accessors/Mutators
     GET = ProtocolEvent.GET
@@ -899,6 +900,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         self._cmd_dict.add(Capability.START_AUTOSAMPLE, display_name='Start Autosample')
         self._cmd_dict.add(Capability.STOP_AUTOSAMPLE, display_name='Stop Autosample')
         self._cmd_dict.add(Capability.CLOCK_SYNC, display_name='Synchronize Clock')
+        self._cmd_dict.add(Capability.DISCOVER, display_name='Discover')
 
     def _build_param_dict(self):
         """
