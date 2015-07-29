@@ -1,0 +1,410 @@
+streams:
+
+  sec_node_port:
+    variables:
+    - port_num
+    - port_type
+    parameters:
+    - omc_parameter_name: "{port_type} Port {port_num} Board State"
+      ion_parameter_name: sec_node_port_board_state
+      monitor_cycle_seconds: 600
+      scale_factor: 1
+    - omc_parameter_name: "{port_type} Port {port_num} Error State"
+      ion_parameter_name: sec_node_port_error_state
+      monitor_cycle_seconds: 600
+      scale_factor: 1
+    - omc_parameter_name: "{port_type} Port {port_num} GFD High"
+      ion_parameter_name: sec_node_port_gfd_high
+      monitor_cycle_seconds: 600
+      scale_factor: 1
+    - omc_parameter_name: "{port_type} Port {port_num} GFD Low"
+      ion_parameter_name: sec_node_port_gfd_low
+      monitor_cycle_seconds: 600
+      scale_factor: 1
+    - omc_parameter_name: "{port_type} Port {port_num} GP I/O State"
+      ion_parameter_name: sec_node_port_gpio_state
+      monitor_cycle_seconds: 600
+      scale_factor: 1
+    - omc_parameter_name: "{port_type} Port {port_num} OCD Current"
+      ion_parameter_name: sec_node_port_ocd_current
+      monitor_cycle_seconds: 600
+      scale_factor: 0.001
+    - omc_parameter_name: "{port_type} Port {port_num} OCD Time Const"
+      ion_parameter_name: sec_node_port_ocd_time_const
+      monitor_cycle_seconds: 600
+      scale_factor: 0.001
+    - omc_parameter_name: "{port_type} Port {port_num} Output Current"
+      ion_parameter_name: sec_node_port_output_current
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    - omc_parameter_name: "{port_type} Port {port_num} Output Voltage"
+      ion_parameter_name: sec_node_port_output_voltage
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    - omc_parameter_name: "{port_type} Port {port_num} Power State"
+      ion_parameter_name: sec_node_port_power_state
+      monitor_cycle_seconds: 600
+      scale_factor: 1
+    - omc_parameter_name: "{port_type} Port {port_num} Unit Temperature"
+      ion_parameter_name: sec_node_port_unit_temperature
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+
+  node_eng_data:
+    variables: null
+    parameters:
+    - omc_parameter_name: "Ambient Temperature"
+      ion_parameter_name: sec_node_ambient_temperature
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    - omc_parameter_name: "CIB 5V Current"
+      ion_parameter_name: sec_node_cib_5v_current
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    - omc_parameter_name: "CIB Board State"
+      ion_parameter_name: sec_node_cib_board_state
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    - omc_parameter_name: "CIB Error State"
+      ion_parameter_name: sec_node_cib_error_state
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    - omc_parameter_name: "CIB Hotel Current"
+      ion_parameter_name: sec_node_cib_hotel_current
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    - omc_parameter_name: "CIB Hotel Voltage"
+      ion_parameter_name: sec_node_cib_hotel_voltage
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    - omc_parameter_name: "Internal Pressure"
+      ion_parameter_name: sec_node_internal_pressure
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    - omc_parameter_name: "Pitch"
+      ion_parameter_name: sec_node_pitch
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    - omc_parameter_name: "Relative Humidity"
+      ion_parameter_name: sec_node_relative_humidity
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    - omc_parameter_name: "Roll"
+      ion_parameter_name: sec_node_roll
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    - omc_parameter_name: "Tilt-X"
+      ion_parameter_name: sec_node_tilt_x
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    - omc_parameter_name: "Tilt-Y"
+      ion_parameter_name: sec_node_tilt_y
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    - omc_parameter_name: "Tilt-Z"
+      ion_parameter_name: sec_node_tilt_z
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    - omc_parameter_name: "GFD 375V High"
+      ion_parameter_name: sec_node_gfd_375_high
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    - omc_parameter_name: "GFD 375V Low"
+      ion_parameter_name: sec_node_gfd_375_low
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    - omc_parameter_name: "HPB Board State"
+      ion_parameter_name: sec_node_hpb_board_state
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    - omc_parameter_name: "HPB Error State"
+      ion_parameter_name: sec_node_hpb_error_state
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    - omc_parameter_name: "HPB Hotel Current"
+      ion_parameter_name: sec_node_hpb_hotel_current
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    - omc_parameter_name: "HPB Hotel Temperature"
+      ion_parameter_name: sec_node_hpb_hotel_temperature
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    - omc_parameter_name: "HPB Hotel Voltage"
+      ion_parameter_name: sec_node_hpb_hotel_voltate
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    - omc_parameter_name: "HPB Input Voltage"
+      ion_parameter_name: sec_node_hpb_input_voltage
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+
+  pn_port:
+  - variables:
+    - port_name
+  - parameters:
+    - omc_parameter_name: "channelValue{port_name}"
+      ion_parameter_name: pn_oob_sfp_enabled
+      monitor_cycle_seconds: 780.0
+      scale_factor: 1
+    - omc_parameter_name: "channelValue{port_name}InPackets"
+      ion_parameter_name: pn_oob_sfp_inpackets
+      monitor_cycle_seconds: 780.0
+      scale_factor: 1
+    - omc_parameter_name: "channelValue{port_name}LinkDownState"
+      ion_parameter_name: pn_oob_sfp_linkdownstate
+      monitor_cycle_seconds: 780.0
+      scale_factor: 1
+    - omc_parameter_name: "channelValue{port_name}OutPackets"
+      ion_parameter_name: pn_oob_sfp_outpackets
+      monitor_cycle_seconds: 780.0
+      scale_factor: 1
+    - omc_parameter_name: "channelValue{port_name}RxErrors"
+      ion_parameter_name: pn_oob_sfp_rxerrors
+      monitor_cycle_seconds: 780.0
+      scale_factor: 1
+    - omc_parameter_name: "channelValue{port_name}SFPCurrent"
+      ion_parameter_name: pn_oob_sfp_current
+      monitor_cycle_seconds: 780.0
+      scale_factor: 1
+    - omc_parameter_name: "channelValue{port_name}SFPRxPower"
+      ion_parameter_name: pn_oob_sfp_sfprxpower
+      monitor_cycle_seconds: 780.0
+      scale_factor: 1
+    - omc_parameter_name: "channelValue{port_name}SFPTemp"
+      ion_parameter_name: pn_oob_sfp_temp
+      monitor_cycle_seconds: 780.0
+      scale_factor: 1
+    - omc_parameter_name: "channelValue{port_name}SFPTxPower"
+      ion_parameter_name: pn_oob_sfp_txpower
+      monitor_cycle_seconds: 780.0
+      scale_factor: 1
+    - omc_parameter_name: "channelValue{port_name}SFPVoltage"
+      ion_parameter_name: pn_oob_sfp_voltage
+      monitor_cycle_seconds: 780.0
+      scale_factor: 1
+    - omc_parameter_name: "channelValue{port_name}TimeoutState"
+      ion_parameter_name: pn_oob_sfp_timeoutstate
+      monitor_cycle_seconds: 780.0
+      scale_factor: 1
+
+  pn_eng:
+  - variables: null
+  - parameters:
+    - omc_parameter_name: channelValueCurrentSustainingLoad
+      ion_parameter_name: pn_currentsustainingload
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    - omc_parameter_name: channelValueCurrentSustainingLoadImbalanceCurrent
+      ion_parameter_name: pn_currentsustainingloadimbalancecurrent
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    - omc_parameter_name: channelValueCurrentSustainingLoadPortCurrent
+      ion_parameter_name: pn_currentsustainingloadportcurrent
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    - omc_parameter_name: channelValueHotelCurrent
+      ion_parameter_name: pn_hotelcurrent
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    - omc_parameter_name: channelValueInputBusCurrent
+      ion_parameter_name: pn_inputbuscurrent
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    - omc_parameter_name: channelValueInputEarthLeakage
+      ion_parameter_name: pn_inputearthleakage
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    - omc_parameter_name: channelValueInputVoltage
+      ion_parameter_name: pn_inputvoltage
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    - omc_parameter_name: channelValueMVPCExpansionPort1Current
+      ion_parameter_name: pn_mvpcexpansionport1current
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    - omc_parameter_name: channelValueMVPCExpansionPort2Current
+      ion_parameter_name: pn_mvpcexpansionport2current
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    - omc_parameter_name: channelValueMVPCInputCurrent
+      ion_parameter_name: pn_mvpcinputcurrent
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    - omc_parameter_name: channelValueMVPCInputVoltage
+      ion_parameter_name: pn_mvpcinputvoltage
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    - omc_parameter_name: channelValueMVPCPressure1
+      ion_parameter_name: pn_mvpcpressure1
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    - omc_parameter_name: channelValueMVPCPressure2
+      ion_parameter_name: pn_mvpcpressure2
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    - omc_parameter_name: channelValueMVPCTemperature
+      ion_parameter_name: pn_mvpctemperature
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    - omc_parameter_name: channelValueMonitoringBoardHumidity
+      ion_parameter_name: pn_monitoringboardhumidity
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    - omc_parameter_name: channelValueMonitoringBoardTemperature
+      ion_parameter_name: pn_monitoringboardtemperature
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    - omc_parameter_name: channelValuePitch
+      ion_parameter_name: pn_pitch
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    - omc_parameter_name: channelValuePrimaryOOBTemperature
+      ion_parameter_name: pn_primaryoobtemperature
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    - omc_parameter_name: channelValuePrimaryPowerModuleTemperature
+      ion_parameter_name: pn_primarypowermoduletemperature
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    - omc_parameter_name: channelValuePrimarySWTemperature
+      ion_parameter_name: pn_primaryswtemperature
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    - omc_parameter_name: channelValueRoll
+      ion_parameter_name: pn_roll
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    - omc_parameter_name: channelValueSciencePort1
+      ion_parameter_name: pn_scienceport1
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    - omc_parameter_name: channelValueSciencePort1Current
+      ion_parameter_name: pn_scienceport1current
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    - omc_parameter_name: channelValueSciencePort1ImbalanceCurrent
+      ion_parameter_name: pn_scienceport1imbalancecurrent
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    - omc_parameter_name: channelValueSciencePort2
+      ion_parameter_name: pn_scienceport2
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    - omc_parameter_name: channelValueSciencePort2Current
+      ion_parameter_name: pn_scienceport2current
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    - omc_parameter_name: channelValueSciencePort2ImbalanceCurrent
+      ion_parameter_name: pn_scienceport2imbalancecurrent
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    - omc_parameter_name: channelValueSciencePort3
+      ion_parameter_name: pn_scienceport3
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    - omc_parameter_name: channelValueSciencePort3Current
+      ion_parameter_name: pn_scienceport3current
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    - omc_parameter_name: channelValueSciencePort3ImbalanceCurrent
+      ion_parameter_name: pn_scienceport3imbalancecurrent
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    - omc_parameter_name: channelValueSciencePort4
+      ion_parameter_name: pn_scienceport4
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    - omc_parameter_name: channelValueSciencePort4Current
+      ion_parameter_name: pn_scienceport4current
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    - omc_parameter_name: channelValueSciencePort4ImbalanceCurrent
+      ion_parameter_name: pn_scienceport4imbalancecurrent
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    - omc_parameter_name: channelValueSciencePort5
+      ion_parameter_name: pn_scienceport5
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    - omc_parameter_name: channelValueSciencePort5Current
+      ion_parameter_name: pn_scienceport5current
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    - omc_parameter_name: channelValueSciencePort5ImbalanceCurrent
+      ion_parameter_name: pn_scienceport5imbalancecurrent
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    - omc_parameter_name: channelValueSciencePort6
+      ion_parameter_name: pn_scienceport6
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    - omc_parameter_name: channelValueSciencePort6Current
+      ion_parameter_name: pn_scienceport6current
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    - omc_parameter_name: channelValueSciencePort6ImbalanceCurrent
+      ion_parameter_name: pn_scienceport6imbalancecurrent
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    - omc_parameter_name: channelValueSciencePort7:
+      ion_parameter_name: pn_scienceport7
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    - omc_parameter_name: channelValueSciencePort7Current
+      ion_parameter_name: pn_scienceport7current
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    - omc_parameter_name: channelValueSciencePort7ImbalanceCurrent
+      ion_parameter_name: pn_scienceport7imbalancecurrent
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    - omc_parameter_name: channelValueSecondaryOOBTemperature
+      ion_parameter_name: pn_secondaryoobtemperature
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    - omc_parameter_name: channelValueSecondaryPowerModuleTemperature
+      ion_parameter_name: pn_secondarypowermoduletemperature
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    - omc_parameter_name: channelValueSecondarySWTemperature
+      ion_parameter_name: pn_secondaryswtemperature
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+
+  otn:
+    ifAdminStatusData_Interface_1:
+      ion_parameter_name: otn_ifadminstatusdata
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOperStatusData_Interface_1:
+      ion_parameter_name: otn_ifoperstatusdata
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    sfpDiagModuleTemperatureDegreesCSFP_Interface_1:
+      ion_parameter_name: otn_sfpdiagmoduletemperaturedegreescsfp
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    sfpDiagRxInputPowerDBmSFP_Interface_1:
+      ion_parameter_name: otn_sfpdiagrxinputpowerdbmsfp
+      monitor_cycle_seconds: 600.0
+      scale_factor: 1
+    sfpDiagRxLaserTemperatureDegreesCSFP_Interface_1:
+      ion_parameter_name: otn_sfpdiagrxlasertemperaturedegreescsfp
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    sfpDiagTxOutputPowerDBmSFP_Interface_1:
+      ion_parameter_name: otn_sfpdiagtxoutputpowerdbmsfp
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    slOTNConfigOperationModePort1:
+      ion_parameter_name: otn_slotnconfigoperationmode
+      monitor_cycle_seconds: 86400.0
+      scale_factor: 1
+    slOTNPmFecQFactorFEPort1:
+      ion_parameter_name: otn_slotnpmfecqfactorfe
+      monitor_cycle_seconds: 600.0
+      scale_factor: 1
+    slOTNPmFecQFactorNEPort1:
+      ion_parameter_name: otn_slotnpmfecqfactorne
+      monitor_cycle_seconds: 600.0
+      scale_factor: 1

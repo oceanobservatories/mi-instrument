@@ -1,0 +1,30 @@
+node_meta_data:
+  description: MPJBox Hydrate Ridge
+  location: SUM2
+  node_id_name: SN0024-MJ01B
+  node_type: MPJBox
+  oms_sample_rate: 60
+  reference_designator: MJ01B
+  serial_number: SN0024
+
+node_streams:
+  sec_node_port:
+    - port_type: Instrument
+      port_num: 0
+      name: 05-IP1
+    - port_type: Instrument
+      port_num: 1
+      name: 06-IP2
+    - port_type: Instrument
+      port_num: 7
+      name: 12-IP8
+  node_eng_data:
+    - name: 00-ENG
+
+port_info:
+  J05-IP1:
+    port_oms_port_cntl_id: 0
+  J06-IP2:
+    port_oms_port_cntl_id: 1
+  J12-IP8:
+    port_oms_port_cntl_id: 7

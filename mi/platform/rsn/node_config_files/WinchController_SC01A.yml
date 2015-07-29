@@ -1,0 +1,455 @@
+node_meta_data:
+  description: Winch Controller Slope Base
+  location: Slope Base
+  node_id_name: SN0120-SC01A
+  node_type: WinchController
+  oms_sample_rate: 60
+  reference_designator: SC01A
+  serial_number: SN0120
+node_streams:
+  sec_node_sc01a_brake-ip2:
+    Instrument Port 1 Board State:
+      ion_parameter_name: sec_node_port_board_state
+      monitor_cycle_seconds: 600
+      scale_factor: 1
+    Instrument Port 1 Error State:
+      ion_parameter_name: sec_node_port_error_state
+      monitor_cycle_seconds: 600
+      scale_factor: 1
+    Instrument Port 1 GFD High:
+      ion_parameter_name: sec_node_port_gfd_high
+      monitor_cycle_seconds: 600
+      scale_factor: 1
+    Instrument Port 1 GFD Low:
+      ion_parameter_name: sec_node_port_gfd_low
+      monitor_cycle_seconds: 600
+      scale_factor: 1
+    Instrument Port 1 GP I/O State:
+      ion_parameter_name: sec_node_port_gpio_state
+      monitor_cycle_seconds: 600
+      scale_factor: 1
+    Instrument Port 1 OCD Current:
+      ion_parameter_name: sec_node_port_ocd_current
+      monitor_cycle_seconds: 600
+      scale_factor: 0.001
+    Instrument Port 1 OCD Time Const:
+      ion_parameter_name: sec_node_port_ocd_time_const
+      monitor_cycle_seconds: 600
+      scale_factor: 0.001
+    Instrument Port 1 Output Current:
+      ion_parameter_name: sec_node_port_output_current
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    Instrument Port 1 Output Voltage:
+      ion_parameter_name: sec_node_port_output_voltage
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    Instrument Port 1 Power State:
+      ion_parameter_name: sec_node_port_power_state
+      monitor_cycle_seconds: 600
+      scale_factor: 1
+    Instrument Port 1 Unit Temperature:
+      ion_parameter_name: sec_node_port_unit_temperature
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+  sec_node_sc01a_j04-ep1:
+    Expansion Port 0 Board State:
+      ion_parameter_name: sec_node_port_board_state
+      monitor_cycle_seconds: 600
+      scale_factor: 1
+    Expansion Port 0 Error State:
+      ion_parameter_name: sec_node_port_error_state
+      monitor_cycle_seconds: 600
+      scale_factor: 1
+    Expansion Port 0 GFD High:
+      ion_parameter_name: sec_node_port_gfd_high
+      monitor_cycle_seconds: 600
+      scale_factor: 1
+    Expansion Port 0 GFD Low:
+      ion_parameter_name: sec_node_port_gfd_low
+      monitor_cycle_seconds: 600
+      scale_factor: 1
+    Expansion Port 0 GP I/O State:
+      ion_parameter_name: sec_node_port_gpio_state
+      monitor_cycle_seconds: 600
+      scale_factor: 1
+    Expansion Port 0 OCD Current:
+      ion_parameter_name: sec_node_port_ocd_current
+      monitor_cycle_seconds: 600
+      scale_factor: 0.001
+    Expansion Port 0 OCD Time Const:
+      ion_parameter_name: sec_node_port_ocd_time_const
+      monitor_cycle_seconds: 600
+      scale_factor: 0.001
+    Expansion Port 0 Output Current:
+      ion_parameter_name: sec_node_port_output_current
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    Expansion Port 0 Output Voltage:
+      ion_parameter_name: sec_node_port_output_voltage
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    Expansion Port 0 Power State:
+      ion_parameter_name: sec_node_port_power_state
+      monitor_cycle_seconds: 600
+      scale_factor: 1
+    Expansion Port 0 Unit Temperature:
+      ion_parameter_name: sec_node_port_unit_temperature
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+  sec_node_sc01a_j05-ip1:
+    Instrument Port 0 Board State:
+      ion_parameter_name: sec_node_port_board_state
+      monitor_cycle_seconds: 600
+      scale_factor: 1
+    Instrument Port 0 Error State:
+      ion_parameter_name: sec_node_port_error_state
+      monitor_cycle_seconds: 600
+      scale_factor: 1
+    Instrument Port 0 GFD High:
+      ion_parameter_name: sec_node_port_gfd_high
+      monitor_cycle_seconds: 600
+      scale_factor: 1
+    Instrument Port 0 GFD Low:
+      ion_parameter_name: sec_node_port_gfd_low
+      monitor_cycle_seconds: 600
+      scale_factor: 1
+    Instrument Port 0 GP I/O State:
+      ion_parameter_name: sec_node_port_gpio_state
+      monitor_cycle_seconds: 600
+      scale_factor: 1
+    Instrument Port 0 OCD Current:
+      ion_parameter_name: sec_node_port_ocd_current
+      monitor_cycle_seconds: 600
+      scale_factor: 0.001
+    Instrument Port 0 OCD Time Const:
+      ion_parameter_name: sec_node_port_ocd_time_const
+      monitor_cycle_seconds: 600
+      scale_factor: 0.001
+    Instrument Port 0 Output Current:
+      ion_parameter_name: sec_node_port_output_current
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    Instrument Port 0 Output Voltage:
+      ion_parameter_name: sec_node_port_output_voltage
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    Instrument Port 0 Power State:
+      ion_parameter_name: sec_node_port_power_state
+      monitor_cycle_seconds: 600
+      scale_factor: 1
+    Instrument Port 0 Unit Temperature:
+      ion_parameter_name: sec_node_port_unit_temperature
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+  sec_node_sc01a_node_eng_data:
+    Ambient Temperature:
+      ion_parameter_name: sec_node_ambient_temperature
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    CIB 5V Current:
+      ion_parameter_name: sec_node_cib_5v_current
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    CIB Board State:
+      ion_parameter_name: sec_node_cib_board_state
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    CIB Error State:
+      ion_parameter_name: sec_node_cib_error_state
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    CIB Hotel Current:
+      ion_parameter_name: sec_node_cib_hotel_current
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    CIB Hotel Voltage:
+      ion_parameter_name: sec_node_cib_hotel_voltage
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    GFD 375V High:
+      ion_parameter_name: sec_node_gfd_375_high
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    GFD 375V Low:
+      ion_parameter_name: sec_node_gfd_375_low
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    HPB Board State:
+      ion_parameter_name: sec_node_hpb_board_state
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    HPB Error State:
+      ion_parameter_name: sec_node_hpb_error_state
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    HPB Hotel Current:
+      ion_parameter_name: sec_node_hpb_hotel_current
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    HPB Hotel Temperature:
+      ion_parameter_name: sec_node_hpb_hotel_temperature
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    HPB Hotel Voltage:
+      ion_parameter_name: sec_node_hpb_hotel_voltate
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    HPB Input Voltage:
+      ion_parameter_name: sec_node_hpb_input_voltage
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    Internal Pressure:
+      ion_parameter_name: sec_node_internal_pressure
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    Pitch:
+      ion_parameter_name: sec_node_pitch
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    Relative Humidity:
+      ion_parameter_name: sec_node_relative_humidity
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    Roll:
+      ion_parameter_name: sec_node_roll
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    Tilt-X:
+      ion_parameter_name: sec_node_tilt_x
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    Tilt-Y:
+      ion_parameter_name: sec_node_tilt_y
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    Tilt-Z:
+      ion_parameter_name: sec_node_tilt_z
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+  sec_node_sc01a_vfd-ep2:
+    Expansion Port 1 Board State:
+      ion_parameter_name: sec_node_port_board_state
+      monitor_cycle_seconds: 600
+      scale_factor: 1
+    Expansion Port 1 Error State:
+      ion_parameter_name: sec_node_port_error_state
+      monitor_cycle_seconds: 600
+      scale_factor: 1
+    Expansion Port 1 GFD High:
+      ion_parameter_name: sec_node_port_gfd_high
+      monitor_cycle_seconds: 600
+      scale_factor: 1
+    Expansion Port 1 GFD Low:
+      ion_parameter_name: sec_node_port_gfd_low
+      monitor_cycle_seconds: 600
+      scale_factor: 1
+    Expansion Port 1 GP I/O State:
+      ion_parameter_name: sec_node_port_gpio_state
+      monitor_cycle_seconds: 600
+      scale_factor: 1
+    Expansion Port 1 OCD Current:
+      ion_parameter_name: sec_node_port_ocd_current
+      monitor_cycle_seconds: 600
+      scale_factor: 0.001
+    Expansion Port 1 OCD Time Const:
+      ion_parameter_name: sec_node_port_ocd_time_const
+      monitor_cycle_seconds: 600
+      scale_factor: 0.001
+    Expansion Port 1 Output Current:
+      ion_parameter_name: sec_node_port_output_current
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    Expansion Port 1 Output Voltage:
+      ion_parameter_name: sec_node_port_output_voltage
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    Expansion Port 1 Power State:
+      ion_parameter_name: sec_node_port_power_state
+      monitor_cycle_seconds: 600
+      scale_factor: 1
+    Expansion Port 1 Unit Temperature:
+      ion_parameter_name: sec_node_port_unit_temperature
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+  sec_node_sc01a_winch_info:
+    Shallow Profiler Mission Control Engineering Mode On:
+      ion_parameter_name: shallow_profiler_mission_control_engineering_mode_on
+      monitor_cycle_seconds: 3
+      scale_factor: 1
+    Shallow Profiler Mission Control Mission Control Event:
+      ion_parameter_name: shallow_profiler_mission_control_mission_control_event
+      monitor_cycle_seconds: 3
+      scale_factor: 1
+    Shallow Profiler Mission Control Mission Is Active:
+      ion_parameter_name: shallow_profiler_mission_control_mission_is_active
+      monitor_cycle_seconds: 3
+      scale_factor: 1
+    Shallow Profiler Mission Control SP Timestamp MicroSec Component:
+      ion_parameter_name: shallow_profiler_mission_control_sp_timestamp_microsec_component
+      monitor_cycle_seconds: 3
+      scale_factor: 1
+    Shallow Profiler Mission Control SciPod Is Docked:
+      ion_parameter_name: shallow_profiler_mission_control_scipod_is_docked
+      monitor_cycle_seconds: 3
+      scale_factor: 1
+    Shallow Profiler Mission Control SciPod Is Idle:
+      ion_parameter_name: shallow_profiler_mission_control_scipod_is_idle
+      monitor_cycle_seconds: 3
+      scale_factor: 1
+    Shallow Profiler Navigational Data Accel-X:
+      ion_parameter_name: shallow_profiler_navigational_data_accel_x
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    Shallow Profiler Navigational Data Accel-Y:
+      ion_parameter_name: shallow_profiler_navigational_data_accel_y
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    Shallow Profiler Navigational Data Accel-Z:
+      ion_parameter_name: shallow_profiler_navigational_data_accel_z
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    Shallow Profiler Navigational Data Magnetic Flux Density X:
+      ion_parameter_name: shallow_profiler_navigational_data_magnetic_flux_density_x
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    Shallow Profiler Navigational Data Magnetic Flux Density Y:
+      ion_parameter_name: shallow_profiler_navigational_data_magnetic_flux_density_y
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    Shallow Profiler Navigational Data Magnetic Flux Density Z:
+      ion_parameter_name: shallow_profiler_navigational_data_magnetic_flux_density_z
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    Shallow Profiler Navigational Data Mission Control Event:
+      ion_parameter_name: shallow_profiler_navigational_data_mission_control_event
+      monitor_cycle_seconds: 3
+      scale_factor: 1
+    Shallow Profiler Navigational Data NavData Timestamp MicroSec Component:
+      ion_parameter_name: shallow_profiler_navigational_data_navdata_timestamp_microsec_component
+      monitor_cycle_seconds: 3
+      scale_factor: 1
+    Shallow Profiler Navigational Data Pitch:
+      ion_parameter_name: shallow_profiler_navigational_data_pitch
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    Shallow Profiler Navigational Data Pitch Rate:
+      ion_parameter_name: shallow_profiler_navigational_data_pitch_rate
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    Shallow Profiler Navigational Data Roll:
+      ion_parameter_name: shallow_profiler_navigational_data_roll
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    Shallow Profiler Navigational Data Roll Rate:
+      ion_parameter_name: shallow_profiler_navigational_data_roll_rate
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    Shallow Profiler Navigational Data Yaw:
+      ion_parameter_name: shallow_profiler_navigational_data_yaw
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    Shallow Profiler Navigational Data Yaw Rate:
+      ion_parameter_name: shallow_profiler_navigational_data_yaw_rate
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    Shallow Profiler Science Pod Depth:
+      ion_parameter_name: shallow_profiler_science_pod_depth
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    Shallow Profiler Science Pod Direction:
+      ion_parameter_name: shallow_profiler_science_pod_direction
+      monitor_cycle_seconds: 3
+      scale_factor: 1
+    Shallow Profiler Science Pod Mission Control Event:
+      ion_parameter_name: shallow_profiler_science_pod_mission_control_event
+      monitor_cycle_seconds: 3
+      scale_factor: 1
+    Shallow Profiler Science Pod Speed:
+      ion_parameter_name: shallow_profiler_science_pod_speed
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    Shallow Profiler Science Pod Wave Height:
+      ion_parameter_name: shallow_profiler_science_pod_wave_height
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    Shallow Profiler Winch Control Cable Out:
+      ion_parameter_name: shallow_profiler_winch_control_cable_out
+      monitor_cycle_seconds: 3
+      scale_factor: 1
+    Shallow Profiler Winch Control Is Bottom Layer:
+      ion_parameter_name: shallow_profiler_winch_control_is_bottom_layer
+      monitor_cycle_seconds: 3
+      scale_factor: 1
+    Shallow Profiler Winch Control Levelwind Cart Direction:
+      ion_parameter_name: shallow_profiler_winch_control_levelwind_cart_direction
+      monitor_cycle_seconds: 3
+      scale_factor: 1
+    Shallow Profiler Winch Control Levelwind Levelwind Direction:
+      ion_parameter_name: shallow_profiler_winch_control_levelwind_levelwind_direction
+      monitor_cycle_seconds: 3
+      scale_factor: 1
+    Shallow Profiler Winch Control Levelwind Levelwind Direction Is Clockwise:
+      ion_parameter_name: shallow_profiler_winch_control_levelwind_levelwind_direction_is_clockwise
+      monitor_cycle_seconds: 3
+      scale_factor: 1
+    Shallow Profiler Winch Control Levelwind Levelwind One-Way Strokes:
+      ion_parameter_name: shallow_profiler_winch_control_levelwind_levelwind_one_way_strokes
+      monitor_cycle_seconds: 3
+      scale_factor: 1
+    Shallow Profiler Winch Control Levelwind Levelwind Position at Last Reverse Index:
+      ion_parameter_name: shallow_profiler_winch_control_levelwind_levelwind_position_at_last_reverse_index
+      monitor_cycle_seconds: 3
+      scale_factor: 1
+    Shallow Profiler Winch Control Levelwind Levelwind VFD Board Temperature:
+      ion_parameter_name: shallow_profiler_winch_control_levelwind_levelwind_vfd_board_temperature
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    Shallow Profiler Winch Control Levelwind Levelwind VFD Sink Temperature:
+      ion_parameter_name: shallow_profiler_winch_control_levelwind_levelwind_vfd_sink_temperature
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    Shallow Profiler Winch Control Levelwind Mission Control Event:
+      ion_parameter_name: shallow_profiler_winch_control_levelwind_mission_control_event
+      monitor_cycle_seconds: 3
+      scale_factor: 1
+    Shallow Profiler Winch Control Levelwind levelwind Speed:
+      ion_parameter_name: shallow_profiler_winch_control_levelwind_levelwind_speed
+      monitor_cycle_seconds: 3
+      scale_factor: 1
+    Shallow Profiler Winch Control Mission Control Event:
+      ion_parameter_name: shallow_profiler_winch_control_mission_control_event
+      monitor_cycle_seconds: 3
+      scale_factor: 1
+    Shallow Profiler Winch Control Winch Cable Wrap Index:
+      ion_parameter_name: shallow_profiler_winch_control_winch_cable_wrap_index
+      monitor_cycle_seconds: 3
+      scale_factor: 1
+    Shallow Profiler Winch Control Winch Cable Wrap Layer:
+      ion_parameter_name: shallow_profiler_winch_control_winch_cable_wrap_layer
+      monitor_cycle_seconds: 3
+      scale_factor: 1
+    Shallow Profiler Winch Control Winch Position at Last Drum Index:
+      ion_parameter_name: shallow_profiler_winch_control_winch_position_at_last_drum_index
+      monitor_cycle_seconds: 3
+      scale_factor: 1
+    Shallow Profiler Winch Control Winch Revs:
+      ion_parameter_name: shallow_profiler_winch_control_winch_revs
+      monitor_cycle_seconds: 3
+      scale_factor: 1
+    Shallow Profiler Winch Control Winch Speed:
+      ion_parameter_name: shallow_profiler_winch_control_winch_speed
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    Shallow Profiler Winch Control Winch VFD Board Temp:
+      ion_parameter_name: shallow_profiler_winch_control_winch_vfd_board_temp
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    Shallow Profiler Winch Control Winch VFD Sink Temp:
+      ion_parameter_name: shallow_profiler_winch_control_winch_vfd_sink_temp
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    Shallow Profiler Winch Controller Based XML/RPC Data Server Mission Control Event:
+      ion_parameter_name: shallow_profiler_winch_controller_based_xml/rpc_data_server_mission_control_event
+      monitor_cycle_seconds: 3
+      scale_factor: 1

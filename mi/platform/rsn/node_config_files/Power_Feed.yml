@@ -1,0 +1,103 @@
+node_meta_data:
+  description: pfe
+  location: Shore Station
+  node_id_name: pfe
+  reference_designator: pfe
+  nms_source: 0
+  node_type: PFE
+  oms_sample_rate: 300
+  serial_number: N/A
+node_streams:
+  pfe:
+    pfe-HVPS1-ON:
+      ion_parameter_name: pfe_hvps1_on
+      monitor_cycle_seconds: 1140
+      scale_factor: 1
+    pfe-HVPS2-ON:
+      ion_parameter_name: pfe_hvps2_on
+      monitor_cycle_seconds: 1140
+      scale_factor: 1
+    pfe-I-GND:
+      ion_parameter_name: pfe_i_gnd
+      monitor_cycle_seconds: 1
+      scale_factor: 1
+    pfe-I-NCBL:
+      ion_parameter_name: pfe_i_ncbl
+      monitor_cycle_seconds: 660
+      scale_factor: 1
+    pfe-I-SCBL:
+      ion_parameter_name: pfe_i_scbl
+      monitor_cycle_seconds: 660
+      scale_factor: 1
+    pfe-I-phaseA:
+      ion_parameter_name: pfe_i_phasea
+      monitor_cycle_seconds: 660
+      scale_factor: 1
+    pfe-I-phaseB:
+      ion_parameter_name: pfe_i_phaseb
+      monitor_cycle_seconds: 660
+      scale_factor: 1
+    pfe-I-phaseC:
+      ion_parameter_name: pfe_i_phasec
+      monitor_cycle_seconds: 660
+      scale_factor: 1
+    pfe-IMON-1:
+      ion_parameter_name: pfe_imon_1
+      monitor_cycle_seconds: 660
+      scale_factor: 1
+    pfe-IMON-2:
+      ion_parameter_name: pfe_imon_2
+      monitor_cycle_seconds: 660
+      scale_factor: 1
+    pfe-MODE:
+      ion_parameter_name: pfe_mode
+      monitor_cycle_seconds: 660
+      scale_factor: 1
+    pfe-P-HVPS1:
+      ion_parameter_name: pfe_p_hvps1
+      monitor_cycle_seconds: 1140
+      scale_factor: 1
+    pfe-P-HVPS2:
+      ion_parameter_name: pfe_p_hvps2
+      monitor_cycle_seconds: 1140
+      scale_factor: 1
+    pfe-P-NCBL:
+      ion_parameter_name: pfe_p_ncbl
+      monitor_cycle_seconds: 1140
+      scale_factor: 1
+    pfe-P-SCBL:
+      ion_parameter_name: pfe_p_scbl
+      monitor_cycle_seconds: 1140
+      scale_factor: 1
+    pfe-V-GND:
+      ion_parameter_name: pfe_v_gnd
+      monitor_cycle_seconds: 1140
+      scale_factor: 1
+    pfe-V-NCBL:
+      ion_parameter_name: pfe_v_ncbl
+      monitor_cycle_seconds: 1140
+      scale_factor: 1
+    pfe-V-SCBL:
+      ion_parameter_name: pfe_v_scbl
+      monitor_cycle_seconds: 1140
+      scale_factor: 1
+    pfe-V-phaseA:
+      ion_parameter_name: pfe_v_phasea
+      monitor_cycle_seconds: 1140
+      scale_factor: 1
+    pfe-V-phaseB:
+      ion_parameter_name: pfe_v_phaseb
+      monitor_cycle_seconds: 1140
+      scale_factor: 1
+    pfe-V-phaseC:
+      ion_parameter_name: pfe_v_phasec
+      monitor_cycle_seconds: 1140
+      scale_factor: 1
+    pfe-VMON-1:
+      ion_parameter_name: pfe_vmon_1
+      monitor_cycle_seconds: 1140
+      scale_factor: 1
+    pfe-VMON-2:
+      ion_parameter_name: pfe_vmon_2
+      monitor_cycle_seconds: 1140
+      scale_factor: 1

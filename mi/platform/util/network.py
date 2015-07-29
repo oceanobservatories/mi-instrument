@@ -99,7 +99,7 @@ class AttrNode(BaseNode):
             self._attr_name     = defn.get('attr_name', attr_id)
             self._attr_instance = defn.get('attr_instance', "0")
 
-        self._attr_id = "%s|%s" % (self._attr_name, self._attr_instance)
+        self._attr_id = self._attr_name
         defn['attr_id'] = self._attr_id
         self._defn = defn
 
@@ -243,6 +243,35 @@ class PortNode(BaseNode):
         return hash_obj.hexdigest()
 
 
+class MissionNode(BaseNode):
+    """
+    Represents the missions available.
+    """
+    def __init__(self, mission_id):
+        BaseNode.__init__(self)
+
+        self._mission_id = mission_id
+
+    def __repr__(self):
+        return "MissionNode(%s)" % self._mission_id
+
+    @property
+    def mission_id(self):
+        return self._mission_id
+
+    def diff(self, other):
+        """
+        Returns None if they are the same.
+        """
+        if self._mission_id != other.mission_id:
+            return "Mission Ids are differnt"
+
+        return None
+
+    def _compute_checksum(self):
+        return 2
+
+
 class InstrumentNode(BaseNode):
     """
     Represents an instrument in a port.
@@ -345,6 +374,7 @@ class PlatformNode(BaseNode):
         self._parent = None
         self._instruments = {}
         self._CFG = CFG
+        self._missions = {}
 
     def set_name(self, name):
         self._name = name
@@ -358,6 +388,11 @@ class PlatformNode(BaseNode):
         if attr.attr_id in self._attrs:
             raise Exception('%s: duplicate attribute ID' % attr.attr_id)
         self._attrs[attr.attr_id] = attr
+
+    def add_mission(self, mission):
+        if mission.mission_id in self._missions:
+            raise Exception('%s: duplicate mission ID' % mission.mission_id)
+        self._missions[mission.mission_id] = mission
 
     @property
     def platform_id(self):
@@ -378,6 +413,10 @@ class PlatformNode(BaseNode):
     @property
     def attrs(self):
         return self._attrs
+
+    @property
+    def missions(self):
+        return self._missions
 
     def get_port(self, port_id):
         return self._ports[port_id]
@@ -413,16 +452,18 @@ class PlatformNode(BaseNode):
         self._instruments[instrument.instrument_id] = instrument
 
     def __str__(self):
-        s = "<%s" % self.platform_id
+        s = []
+        s.append("<%s" % self.platform_id)
         if self.name:
-            s += "/name=%s" % self.name
-        s += "/types=%s" % self.platform_types
-        s += ">\n"
-        s += "ports=%s\n"         % list(self.ports.itervalues())
-        s += "attrs=%s\n"         % list(self.attrs.itervalues())
-        s += "#subplatforms=%d\n" % len(self.subplatforms)
-        s += "#instruments=%d\n"  % len(self.instruments)
-        return s
+            s.append("/name=%s" % self.name)
+        s.append("/types=%s" % self.platform_types)
+        s.append(">\n")
+        s.append("ports=%s\n" % list(self.ports.itervalues()))
+        s.append("attrs=%s\n" % list(self.attrs.itervalues()))
+        s.append("missions=%s\n" % list(self.missions.itervalues()))
+        s.append("#subplatforms=%d\n" % len(self.subplatforms))
+        s.append("#instruments=%d\n" % len(self.instruments))
+        return ''.join(s)
 
     def get_map(self, pairs):
         """
