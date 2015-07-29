@@ -1,0 +1,140 @@
+node_meta_data:
+  description: Time Server North
+  location: Shore Station
+  node_id_name: Time Server North
+  oms_sample_rate: 300
+  reference_designator: Time Server North
+node_streams:
+  time_server_north:
+    faultAuxRef:
+      ion_parameter_name: time_server_fault_aux_reference_clock_lock
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    faultDac:
+      ion_parameter_name: time_server_fault_digital_to_audio_converter
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    faultFirstTimeLock:
+      ion_parameter_name: time_server_fault_first_time_locking
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    faultIrig:
+      ion_parameter_name: time_server_fault_irig_lock
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    faultLpnPll:
+      ion_parameter_name: time_server_fault_lpn_pll
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    faultPllSynthesizer:
+      ion_parameter_name: time_server_fault_pll_synthesizer
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    faultPrimaryPower:
+      ion_parameter_name: time_server_fault_primary_power
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    faultPrimaryRefClk:
+      ion_parameter_name: time_server_fault_primary_ref_clk
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    faultRbOsc:
+      ion_parameter_name: time_server_fault_rubidium_oscillator
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    faultSecondaryPower:
+      ion_parameter_name: time_server_fault_secondary_power
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    faultSecondaryRefClk:
+      ion_parameter_name: time_server_fault_secondary_ref_clk
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    faultTimeError:
+      ion_parameter_name: time_server_fault_time_error
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    faultTimeout:
+      ion_parameter_name: time_server_fault_timeout
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    ntpAuthFail:
+      ion_parameter_name: time_server_ntp_auth_fail
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    ntpInErrors:
+      ion_parameter_name: time_server_ntp_in_errors
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    ntpInPkts:
+      ion_parameter_name: time_server_ntp_in_pkts
+      monitor_cycle_seconds: 1020.0
+      scale_factor: 1
+    ntpOutPkts:
+      ion_parameter_name: time_server_ntp_out_pkts
+      monitor_cycle_seconds: 1020.0
+      scale_factor: 1
+    statusAuxRef:
+      ion_parameter_name: time_server_status_aux_ref_clock
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    statusClock:
+      ion_parameter_name: time_server_status_clock
+      monitor_cycle_seconds: 1020.0
+      scale_factor: 1
+    statusClockSource:
+      ion_parameter_name: time_server_status_clock_source
+      monitor_cycle_seconds: 1020.0
+      scale_factor: 1
+    statusDac:
+      ion_parameter_name: time_server_status_digital_to_audio_converter
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    statusFirstTimeLock:
+      ion_parameter_name: time_server_status_first_time_locking
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    statusIrig:
+      ion_parameter_name: time_server_status_irig_lock
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    statusLpnPll:
+      ion_parameter_name: time_server_status_lpn_pll
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    statusPllSynthesizer:
+      ion_parameter_name: time_server_status_pll_synthesizer
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    statusPrimaryPower:
+      ion_parameter_name: time_server_status_primary_power
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    statusPrimaryRefClk:
+      ion_parameter_name: time_server_status_primary_reference_clock
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    statusRbOsc:
+      ion_parameter_name: time_server_status_rubidium_oscillator
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    statusSecondaryPower:
+      ion_parameter_name: time_server_status_secondary_power
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    statusSecondaryRefClk:
+      ion_parameter_name: time_server_status_secondary_reference_clock
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    statusTimeError:
+      ion_parameter_name: time_server_status_time_error
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    statusTimeout:
+      ion_parameter_name: time_server_status_timeout_error
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    sysUpTime:
+      ion_parameter_name: time_server_system_up_time
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1

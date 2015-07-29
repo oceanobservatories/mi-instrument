@@ -57,13 +57,11 @@ class CIOMSClient(object):
     def instr(self):
         return self
 
-    def ping(self):
-        """
-        See https://confluence.oceanobservatories.org/display/syseng/CIAD+MI+SV+CI-OMS+interface
-        """
-        raise NotImplementedError()  #pragma: no cover
+    @property
+    def profiler(self):
+        return self
 
-    def get_platform_map(self):
+    def ping(self):
         """
         See https://confluence.oceanobservatories.org/display/syseng/CIAD+MI+SV+CI-OMS+interface
         """
@@ -93,31 +91,7 @@ class CIOMSClient(object):
         """
         raise NotImplementedError()  #pragma: no cover
 
-    def set_platform_attribute_values(self, platform_id, attrs):
-        """
-        See https://confluence.oceanobservatories.org/display/syseng/CIAD+MI+SV+CI-OMS+interface
-        """
-        raise NotImplementedError()  #pragma: no cover
-
     def get_platform_ports(self, platform_id):
-        """
-        See https://confluence.oceanobservatories.org/display/syseng/CIAD+MI+SV+CI-OMS+interface
-        """
-        raise NotImplementedError()  #pragma: no cover
-
-    def connect_instrument(self, platform_id, port_id, instrument_id, attributes):
-        """
-        See https://confluence.oceanobservatories.org/display/syseng/CIAD+MI+SV+CI-OMS+interface
-        """
-        raise NotImplementedError()  #pragma: no cover
-
-    def disconnect_instrument(self, platform_id, port_id, instrument_id):
-        """
-        See https://confluence.oceanobservatories.org/display/syseng/CIAD+MI+SV+CI-OMS+interface
-        """
-        raise NotImplementedError()  #pragma: no cover
-
-    def get_connected_instruments(self, platform_id, port_id):
         """
         See https://confluence.oceanobservatories.org/display/syseng/CIAD+MI+SV+CI-OMS+interface
         """
@@ -133,6 +107,18 @@ class CIOMSClient(object):
         """
         See https://confluence.oceanobservatories.org/display/syseng/CIAD+MI+SV+CI-OMS+interface
         """
+        raise NotImplementedError()  #pragma: no cover
+
+    def get_available_missions(self, platform_id):
+        raise NotImplementedError()  #pragma: no cover
+
+    def get_mission_status(self, platform_id):
+        raise NotImplementedError()  #pragma: no cover
+
+    def start_mission(self, platform_id, mission_name, src):
+        raise NotImplementedError()
+
+    def stop_mission(self, platform_id, flag, src):
         raise NotImplementedError()  #pragma: no cover
 
     def register_event_listener(self, url):

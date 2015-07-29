@@ -1,0 +1,26 @@
+node_meta_data:
+  description: LVNode Slope Base
+  location: SBVM
+  node_id_name: SN0043-LV01A
+  node_type: LVNode
+  oms_sample_rate: 60
+  reference_designator: LV01A
+  serial_number: SN0043
+
+node_streams:
+  sec_node_port:
+    - port_type: Expansion
+      port_num: 0
+      name: 02-EP1
+    - port_type: Expansion
+      port_num: 1
+      name: 03-EP2
+    - port_type: Instrument
+      port_num: 0
+      name: 05-IP1
+  node_eng_data:
+    - name: 00-ENG
+
+port_info:
+  J05-IP1:
+    port_oms_port_cntl_id: 0

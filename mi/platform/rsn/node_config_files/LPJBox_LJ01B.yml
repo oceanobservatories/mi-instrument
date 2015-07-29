@@ -1,11 +1,11 @@
 node_meta_data:
-  description: Low Power JBox CI testing Ben Hall
-  location: Ben Hall Lab
-  node_id_name: LPJBox_CI_Ben_Hall
+  description: LPJBox at Hydrate Ridge
+  location: Hydrate Ridge
+  node_id_name: SN0004-LJ01B
   node_type: LPJBox
-  oms_sample_rate: 5
-  reference_designator: RS01BEN1-LJ0CI
-  serial_number: N/A
+  oms_sample_rate: 60
+  reference_designator: LJ01B
+  serial_number: SN0004
 
 node_streams:
   sec_node_port:
@@ -21,6 +21,12 @@ node_streams:
     - port_type: Instrument
       port_num: 3
       name: 08-IP4
+    - port_type: Instrument
+      port_num: 4
+      name: 09-IP5
+    - port_type: Instrument
+      port_num: 7
+      name: 12-IP8
   node_eng_data:
     - name: 00-ENG
 
@@ -33,3 +39,7 @@ port_info:
     port_oms_port_cntl_id: 2
   J08-IP4:
     port_oms_port_cntl_id: 3
+  J09-IP5:
+    port_oms_port_cntl_id: 4
+  J12-IP8:
+    port_oms_port_cntl_id: 7
