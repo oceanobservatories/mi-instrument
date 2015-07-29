@@ -1,13 +1,13 @@
 node_meta_data:
-  description: Low Power JBox CI testing Ben Hall
-  location: Ben Hall Lab
-  node_id_name: LPJBox_CI_Ben_Hall
-  node_type: LPJBox
+  description: MPJbox Endurance
+  location: Endurance Shelf
+  node_id_name: SN0025-MJ01C
+  node_type: MPJBox
   oms_sample_rate: 60
-  reference_designator: LJ0CI
-  serial_number: N/A
+  reference_designator: MJ01C
+  serial_number: SN0025
 node_streams:
-  sec_node_lj0ci_j05-ip1:
+  sec_node_mj01c_j05-ip1:
     Instrument Port 0 Board State:
       ion_parameter_name: sec_node_port_board_state
       monitor_cycle_seconds: 600
@@ -52,7 +52,7 @@ node_streams:
       ion_parameter_name: sec_node_port_unit_temperature
       monitor_cycle_seconds: 3
       scale_factor: 0.001
-  sec_node_lj0ci_j06-ip2:
+  sec_node_mj01c_j06-ip2:
     Instrument Port 1 Board State:
       ion_parameter_name: sec_node_port_board_state
       monitor_cycle_seconds: 600
@@ -97,7 +97,7 @@ node_streams:
       ion_parameter_name: sec_node_port_unit_temperature
       monitor_cycle_seconds: 3
       scale_factor: 0.001
-  sec_node_lj0ci_j07-ip3:
+  sec_node_mj01c_j07-ip3:
     Instrument Port 2 Board State:
       ion_parameter_name: sec_node_port_board_state
       monitor_cycle_seconds: 600
@@ -142,7 +142,7 @@ node_streams:
       ion_parameter_name: sec_node_port_unit_temperature
       monitor_cycle_seconds: 3
       scale_factor: 0.001
-  sec_node_lj0ci_j08-ip4:
+  sec_node_mj01c_j08-ip4:
     Instrument Port 3 Board State:
       ion_parameter_name: sec_node_port_board_state
       monitor_cycle_seconds: 600
@@ -187,7 +187,7 @@ node_streams:
       ion_parameter_name: sec_node_port_unit_temperature
       monitor_cycle_seconds: 3
       scale_factor: 0.001
-  sec_node_lj0ci_node_eng_data:
+  sec_node_mj01c_node_eng_data:
     Ambient Temperature:
       ion_parameter_name: sec_node_ambient_temperature
       monitor_cycle_seconds: 3
@@ -210,6 +210,38 @@ node_streams:
       scale_factor: 0.001
     CIB Hotel Voltage:
       ion_parameter_name: sec_node_cib_hotel_voltage
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    GFD 375V High:
+      ion_parameter_name: sec_node_gfd_375_high
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    GFD 375V Low:
+      ion_parameter_name: sec_node_gfd_375_low
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    HPB Board State:
+      ion_parameter_name: sec_node_hpb_board_state
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    HPB Error State:
+      ion_parameter_name: sec_node_hpb_error_state
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    HPB Hotel Current:
+      ion_parameter_name: sec_node_hpb_hotel_current
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    HPB Hotel Temperature:
+      ion_parameter_name: sec_node_hpb_hotel_temperature
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    HPB Hotel Voltage:
+      ion_parameter_name: sec_node_hpb_hotel_voltate
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    HPB Input Voltage:
+      ion_parameter_name: sec_node_hpb_input_voltage
       monitor_cycle_seconds: 3
       scale_factor: 0.001
     Internal Pressure:

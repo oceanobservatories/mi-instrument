@@ -1,0 +1,553 @@
+node_meta_data:
+  description: North OTN Manager A
+  location: Shore Station
+  node_id_name: North OTN Manager A
+  oms_sample_rate: 300
+  reference_designator: North OTN Manager A
+node_streams:
+  north_otn_a_sea_side_port_1:
+    ifAdminStatusData_Interface_1:
+      ion_parameter_name: otn_ifadminstatusdata
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOperStatusData_Interface_1:
+      ion_parameter_name: otn_ifoperstatusdata
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    sfpDiagModuleTemperatureDegreesCSFP_Interface_1:
+      ion_parameter_name: otn_sfpdiagmoduletemperaturedegreescsfp
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    sfpDiagRxInputPowerDBmSFP_Interface_1:
+      ion_parameter_name: otn_sfpdiagrxinputpowerdbmsfp
+      monitor_cycle_seconds: 600.0
+      scale_factor: 1
+    sfpDiagRxLaserTemperatureDegreesCSFP_Interface_1:
+      ion_parameter_name: otn_sfpdiagrxlasertemperaturedegreescsfp
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    sfpDiagTxOutputPowerDBmSFP_Interface_1:
+      ion_parameter_name: otn_sfpdiagtxoutputpowerdbmsfp
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    slOTNConfigOperationModePort1:
+      ion_parameter_name: otn_slotnconfigoperationmode
+      monitor_cycle_seconds: 86400.0
+      scale_factor: 1
+    slOTNPmFecQFactorFEPort1:
+      ion_parameter_name: otn_slotnpmfecqfactorfe
+      monitor_cycle_seconds: 600.0
+      scale_factor: 1
+    slOTNPmFecQFactorNEPort1:
+      ion_parameter_name: otn_slotnpmfecqfactorne
+      monitor_cycle_seconds: 600.0
+      scale_factor: 1
+  north_otn_a_sea_side_port_2:
+    ifAdminStatusData_Interface_2:
+      ion_parameter_name: otn_ifadminstatusdata
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOperStatusData_Interface_2:
+      ion_parameter_name: otn_ifoperstatusdata
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    sfpDiagModuleTemperatureDegreesCSFP_Interface_2:
+      ion_parameter_name: otn_sfpdiagmoduletemperaturedegreescsfp
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    sfpDiagRxInputPowerDBmSFP_Interface_2:
+      ion_parameter_name: otn_sfpdiagrxinputpowerdbmsfp
+      monitor_cycle_seconds: 600.0
+      scale_factor: 1
+    sfpDiagRxLaserTemperatureDegreesCSFP_Interface_2:
+      ion_parameter_name: otn_sfpdiagrxlasertemperaturedegreescsfp
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    sfpDiagTxOutputPowerDBmSFP_Interface_2:
+      ion_parameter_name: otn_sfpdiagtxoutputpowerdbmsfp
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    slOTNConfigOperationModePort2:
+      ion_parameter_name: otn_slotnconfigoperationmode
+      monitor_cycle_seconds: 86400.0
+      scale_factor: 1
+    slOTNPmFecQFactorFEPort2:
+      ion_parameter_name: otn_slotnpmfecqfactorfe
+      monitor_cycle_seconds: 600.0
+      scale_factor: 1
+    slOTNPmFecQFactorNEPort2:
+      ion_parameter_name: otn_slotnpmfecqfactorne
+      monitor_cycle_seconds: 600.0
+      scale_factor: 1
+  north_otn_a_sea_side_port_3:
+    ifAdminStatusData_Interface_3:
+      ion_parameter_name: otn_ifadminstatusdata
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOperStatusData_Interface_3:
+      ion_parameter_name: otn_ifoperstatusdata
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    sfpDiagModuleTemperatureDegreesCSFP_Interface_3:
+      ion_parameter_name: otn_sfpdiagmoduletemperaturedegreescsfp
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    sfpDiagRxInputPowerDBmSFP_Interface_3:
+      ion_parameter_name: otn_sfpdiagrxinputpowerdbmsfp
+      monitor_cycle_seconds: 600.0
+      scale_factor: 1
+    sfpDiagRxLaserTemperatureDegreesCSFP_Interface_3:
+      ion_parameter_name: otn_sfpdiagrxlasertemperaturedegreescsfp
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    sfpDiagTxOutputPowerDBmSFP_Interface_3:
+      ion_parameter_name: otn_sfpdiagtxoutputpowerdbmsfp
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    slOTNConfigOperationModePort3:
+      ion_parameter_name: otn_slotnconfigoperationmode
+      monitor_cycle_seconds: 86400.0
+      scale_factor: 1
+    slOTNPmFecQFactorFEPort3:
+      ion_parameter_name: otn_slotnpmfecqfactorfe
+      monitor_cycle_seconds: 600.0
+      scale_factor: 1
+    slOTNPmFecQFactorNEPort3:
+      ion_parameter_name: otn_slotnpmfecqfactorne
+      monitor_cycle_seconds: 600.0
+      scale_factor: 1
+  north_otn_a_sea_side_port_4:
+    ifAdminStatusData_Interface_4:
+      ion_parameter_name: otn_ifadminstatusdata
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOperStatusData_Interface_4:
+      ion_parameter_name: otn_ifoperstatusdata
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    sfpDiagModuleTemperatureDegreesCSFP_Interface_4:
+      ion_parameter_name: otn_sfpdiagmoduletemperaturedegreescsfp
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    sfpDiagRxInputPowerDBmSFP_Interface_4:
+      ion_parameter_name: otn_sfpdiagrxinputpowerdbmsfp
+      monitor_cycle_seconds: 600.0
+      scale_factor: 1
+    sfpDiagRxLaserTemperatureDegreesCSFP_Interface_4:
+      ion_parameter_name: otn_sfpdiagrxlasertemperaturedegreescsfp
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    sfpDiagTxOutputPowerDBmSFP_Interface_4:
+      ion_parameter_name: otn_sfpdiagtxoutputpowerdbmsfp
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    slOTNConfigOperationModePort4:
+      ion_parameter_name: otn_slotnconfigoperationmode
+      monitor_cycle_seconds: 86400.0
+      scale_factor: 1
+    slOTNPmFecQFactorFEPort4:
+      ion_parameter_name: otn_slotnpmfecqfactorfe
+      monitor_cycle_seconds: 600.0
+      scale_factor: 1
+    slOTNPmFecQFactorNEPort4:
+      ion_parameter_name: otn_slotnpmfecqfactorne
+      monitor_cycle_seconds: 600.0
+      scale_factor: 1
+  north_otn_a_sea_side_port_5:
+    ifAdminStatusData_Interface_5:
+      ion_parameter_name: otn_ifadminstatusdata
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOperStatusData_Interface_5:
+      ion_parameter_name: otn_ifoperstatusdata
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    sfpDiagModuleTemperatureDegreesCSFP_Interface_5:
+      ion_parameter_name: otn_sfpdiagmoduletemperaturedegreescsfp
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    sfpDiagRxInputPowerDBmSFP_Interface_5:
+      ion_parameter_name: otn_sfpdiagrxinputpowerdbmsfp
+      monitor_cycle_seconds: 600.0
+      scale_factor: 1
+    sfpDiagRxLaserTemperatureDegreesCSFP_Interface_5:
+      ion_parameter_name: otn_sfpdiagrxlasertemperaturedegreescsfp
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    sfpDiagTxOutputPowerDBmSFP_Interface_5:
+      ion_parameter_name: otn_sfpdiagtxoutputpowerdbmsfp
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    slOTNConfigOperationModePort5:
+      ion_parameter_name: otn_slotnconfigoperationmode
+      monitor_cycle_seconds: 86400.0
+      scale_factor: 1
+    slOTNPmFecQFactorFEPort5:
+      ion_parameter_name: otn_slotnpmfecqfactorfe
+      monitor_cycle_seconds: 600.0
+      scale_factor: 1
+    slOTNPmFecQFactorNEPort5:
+      ion_parameter_name: otn_slotnpmfecqfactorne
+      monitor_cycle_seconds: 600.0
+      scale_factor: 1
+  north_otn_a_sea_side_port_6:
+    ifAdminStatusData_Interface_6:
+      ion_parameter_name: otn_ifadminstatusdata
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOperStatusData_Interface_6:
+      ion_parameter_name: otn_ifoperstatusdata
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    sfpDiagModuleTemperatureDegreesCSFP_Interface_6:
+      ion_parameter_name: otn_sfpdiagmoduletemperaturedegreescsfp
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    sfpDiagRxInputPowerDBmSFP_Interface_6:
+      ion_parameter_name: otn_sfpdiagrxinputpowerdbmsfp
+      monitor_cycle_seconds: 600.0
+      scale_factor: 1
+    sfpDiagRxLaserTemperatureDegreesCSFP_Interface_6:
+      ion_parameter_name: otn_sfpdiagrxlasertemperaturedegreescsfp
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    sfpDiagTxOutputPowerDBmSFP_Interface_6:
+      ion_parameter_name: otn_sfpdiagtxoutputpowerdbmsfp
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    slOTNConfigOperationModePort6:
+      ion_parameter_name: otn_slotnconfigoperationmode
+      monitor_cycle_seconds: 86400.0
+      scale_factor: 1
+    slOTNPmFecQFactorFEPort6:
+      ion_parameter_name: otn_slotnpmfecqfactorfe
+      monitor_cycle_seconds: 600.0
+      scale_factor: 1
+    slOTNPmFecQFactorNEPort6:
+      ion_parameter_name: otn_slotnpmfecqfactorne
+      monitor_cycle_seconds: 600.0
+      scale_factor: 1
+  north_otn_a_sea_side_port_7:
+    ifAdminStatusData_Interface_7:
+      ion_parameter_name: otn_ifadminstatusdata
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOperStatusData_Interface_7:
+      ion_parameter_name: otn_ifoperstatusdata
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    sfpDiagModuleTemperatureDegreesCSFP_Interface_7:
+      ion_parameter_name: otn_sfpdiagmoduletemperaturedegreescsfp
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    sfpDiagRxInputPowerDBmSFP_Interface_7:
+      ion_parameter_name: otn_sfpdiagrxinputpowerdbmsfp
+      monitor_cycle_seconds: 600.0
+      scale_factor: 1
+    sfpDiagRxLaserTemperatureDegreesCSFP_Interface_7:
+      ion_parameter_name: otn_sfpdiagrxlasertemperaturedegreescsfp
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    sfpDiagTxOutputPowerDBmSFP_Interface_7:
+      ion_parameter_name: otn_sfpdiagtxoutputpowerdbmsfp
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    slOTNConfigOperationModePort7:
+      ion_parameter_name: otn_slotnconfigoperationmode
+      monitor_cycle_seconds: 86400.0
+      scale_factor: 1
+    slOTNPmFecQFactorFEPort7:
+      ion_parameter_name: otn_slotnpmfecqfactorfe
+      monitor_cycle_seconds: 600.0
+      scale_factor: 1
+    slOTNPmFecQFactorNEPort7:
+      ion_parameter_name: otn_slotnpmfecqfactorne
+      monitor_cycle_seconds: 600.0
+      scale_factor: 1
+  north_otn_a_shore_side_port_1:
+    ifAdminStatusSFP_Interface_1:
+      ion_parameter_name: otn_ifadminstatussfp
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOperStatusSFP_Interface_1:
+      ion_parameter_name: otn_ifoperstatussfp
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    sfpDiagModuleTemperatureSFP_Interface_1:
+      ion_parameter_name: otn_sfpdiagmoduletemperaturesfp
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    sfpDiagRxInputPowerSFP_Interface_1:
+      ion_parameter_name: otn_sfpdiagrxinputpowersfp
+      monitor_cycle_seconds: 600.0
+      scale_factor: 1
+    sfpDiagRxLaserTemperatureSFP_Interface_1:
+      ion_parameter_name: otn_sfpdiagrxlasertemperaturesfp
+      monitor_cycle_seconds: 180.0
+      scale_factor: 1
+    sfpDiagRxMeasuredWavelengthSFP_Interface_1:
+      ion_parameter_name: otn_sfpdiagrxmeasuredwavelengthsfp
+      monitor_cycle_seconds: 180.0
+      scale_factor: 1
+    sfpDiagSupplyVoltageSFP_Interface_1:
+      ion_parameter_name: otn_sfpdiagsupplyvoltagesfp
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    sfpDiagTxBiasSFP_Interface_1:
+      ion_parameter_name: otn_sfpdiagtxbiassfp
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    sfpDiagTxOutputPowerDBmSFP_Interface_1:
+      ion_parameter_name: otn_sfpdiagtxoutputpowerdbmsfp
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    sfpDiagTxOutputPowerSFP_Interface_1:
+      ion_parameter_name: otn_sfpdiagtxoutputpowersfp
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+  north_otn_a_shore_side_port_2:
+    ifAdminStatusSFP_Interface_2:
+      ion_parameter_name: otn_ifadminstatussfp
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOperStatusSFP_Interface_2:
+      ion_parameter_name: otn_ifoperstatussfp
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    sfpDiagModuleTemperatureSFP_Interface_2:
+      ion_parameter_name: otn_sfpdiagmoduletemperaturesfp
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    sfpDiagRxInputPowerSFP_Interface_2:
+      ion_parameter_name: otn_sfpdiagrxinputpowersfp
+      monitor_cycle_seconds: 600.0
+      scale_factor: 1
+    sfpDiagRxLaserTemperatureSFP_Interface_2:
+      ion_parameter_name: otn_sfpdiagrxlasertemperaturesfp
+      monitor_cycle_seconds: 180.0
+      scale_factor: 1
+    sfpDiagRxMeasuredWavelengthSFP_Interface_2:
+      ion_parameter_name: otn_sfpdiagrxmeasuredwavelengthsfp
+      monitor_cycle_seconds: 180.0
+      scale_factor: 1
+    sfpDiagSupplyVoltageSFP_Interface_2:
+      ion_parameter_name: otn_sfpdiagsupplyvoltagesfp
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    sfpDiagTxBiasSFP_Interface_2:
+      ion_parameter_name: otn_sfpdiagtxbiassfp
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    sfpDiagTxOutputPowerDBmSFP_Interface_2:
+      ion_parameter_name: otn_sfpdiagtxoutputpowerdbmsfp
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    sfpDiagTxOutputPowerSFP_Interface_2:
+      ion_parameter_name: otn_sfpdiagtxoutputpowersfp
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+  north_otn_a_shore_side_port_3:
+    ifAdminStatusSFP_Interface_3:
+      ion_parameter_name: otn_ifadminstatussfp
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOperStatusSFP_Interface_3:
+      ion_parameter_name: otn_ifoperstatussfp
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    sfpDiagModuleTemperatureSFP_Interface_3:
+      ion_parameter_name: otn_sfpdiagmoduletemperaturesfp
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    sfpDiagRxInputPowerSFP_Interface_3:
+      ion_parameter_name: otn_sfpdiagrxinputpowersfp
+      monitor_cycle_seconds: 600.0
+      scale_factor: 1
+    sfpDiagRxLaserTemperatureSFP_Interface_3:
+      ion_parameter_name: otn_sfpdiagrxlasertemperaturesfp
+      monitor_cycle_seconds: 180.0
+      scale_factor: 1
+    sfpDiagRxMeasuredWavelengthSFP_Interface_3:
+      ion_parameter_name: otn_sfpdiagrxmeasuredwavelengthsfp
+      monitor_cycle_seconds: 180.0
+      scale_factor: 1
+    sfpDiagSupplyVoltageSFP_Interface_3:
+      ion_parameter_name: otn_sfpdiagsupplyvoltagesfp
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    sfpDiagTxBiasSFP_Interface_3:
+      ion_parameter_name: otn_sfpdiagtxbiassfp
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    sfpDiagTxOutputPowerDBmSFP_Interface_3:
+      ion_parameter_name: otn_sfpdiagtxoutputpowerdbmsfp
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    sfpDiagTxOutputPowerSFP_Interface_3:
+      ion_parameter_name: otn_sfpdiagtxoutputpowersfp
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+  north_otn_a_shore_side_port_4:
+    ifAdminStatusSFP_Interface_4:
+      ion_parameter_name: otn_ifadminstatussfp
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOperStatusSFP_Interface_4:
+      ion_parameter_name: otn_ifoperstatussfp
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    sfpDiagModuleTemperatureSFP_Interface_4:
+      ion_parameter_name: otn_sfpdiagmoduletemperaturesfp
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    sfpDiagRxInputPowerSFP_Interface_4:
+      ion_parameter_name: otn_sfpdiagrxinputpowersfp
+      monitor_cycle_seconds: 600.0
+      scale_factor: 1
+    sfpDiagRxLaserTemperatureSFP_Interface_4:
+      ion_parameter_name: otn_sfpdiagrxlasertemperaturesfp
+      monitor_cycle_seconds: 180.0
+      scale_factor: 1
+    sfpDiagRxMeasuredWavelengthSFP_Interface_4:
+      ion_parameter_name: otn_sfpdiagrxmeasuredwavelengthsfp
+      monitor_cycle_seconds: 180.0
+      scale_factor: 1
+    sfpDiagSupplyVoltageSFP_Interface_4:
+      ion_parameter_name: otn_sfpdiagsupplyvoltagesfp
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    sfpDiagTxBiasSFP_Interface_4:
+      ion_parameter_name: otn_sfpdiagtxbiassfp
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    sfpDiagTxOutputPowerDBmSFP_Interface_4:
+      ion_parameter_name: otn_sfpdiagtxoutputpowerdbmsfp
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    sfpDiagTxOutputPowerSFP_Interface_4:
+      ion_parameter_name: otn_sfpdiagtxoutputpowersfp
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+  north_otn_a_shore_side_port_5:
+    ifAdminStatusSFP_Interface_5:
+      ion_parameter_name: otn_ifadminstatussfp
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOperStatusSFP_Interface_5:
+      ion_parameter_name: otn_ifoperstatussfp
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    sfpDiagModuleTemperatureSFP_Interface_5:
+      ion_parameter_name: otn_sfpdiagmoduletemperaturesfp
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    sfpDiagRxInputPowerSFP_Interface_5:
+      ion_parameter_name: otn_sfpdiagrxinputpowersfp
+      monitor_cycle_seconds: 600.0
+      scale_factor: 1
+    sfpDiagRxLaserTemperatureSFP_Interface_5:
+      ion_parameter_name: otn_sfpdiagrxlasertemperaturesfp
+      monitor_cycle_seconds: 180.0
+      scale_factor: 1
+    sfpDiagRxMeasuredWavelengthSFP_Interface_5:
+      ion_parameter_name: otn_sfpdiagrxmeasuredwavelengthsfp
+      monitor_cycle_seconds: 180.0
+      scale_factor: 1
+    sfpDiagSupplyVoltageSFP_Interface_5:
+      ion_parameter_name: otn_sfpdiagsupplyvoltagesfp
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    sfpDiagTxBiasSFP_Interface_5:
+      ion_parameter_name: otn_sfpdiagtxbiassfp
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    sfpDiagTxOutputPowerDBmSFP_Interface_5:
+      ion_parameter_name: otn_sfpdiagtxoutputpowerdbmsfp
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    sfpDiagTxOutputPowerSFP_Interface_5:
+      ion_parameter_name: otn_sfpdiagtxoutputpowersfp
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+  north_otn_a_shore_side_port_6:
+    ifAdminStatusSFP_Interface_6:
+      ion_parameter_name: otn_ifadminstatussfp
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOperStatusSFP_Interface_6:
+      ion_parameter_name: otn_ifoperstatussfp
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    sfpDiagModuleTemperatureSFP_Interface_6:
+      ion_parameter_name: otn_sfpdiagmoduletemperaturesfp
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    sfpDiagRxInputPowerSFP_Interface_6:
+      ion_parameter_name: otn_sfpdiagrxinputpowersfp
+      monitor_cycle_seconds: 600.0
+      scale_factor: 1
+    sfpDiagRxLaserTemperatureSFP_Interface_6:
+      ion_parameter_name: otn_sfpdiagrxlasertemperaturesfp
+      monitor_cycle_seconds: 180.0
+      scale_factor: 1
+    sfpDiagRxMeasuredWavelengthSFP_Interface_6:
+      ion_parameter_name: otn_sfpdiagrxmeasuredwavelengthsfp
+      monitor_cycle_seconds: 180.0
+      scale_factor: 1
+    sfpDiagSupplyVoltageSFP_Interface_6:
+      ion_parameter_name: otn_sfpdiagsupplyvoltagesfp
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    sfpDiagTxBiasSFP_Interface_6:
+      ion_parameter_name: otn_sfpdiagtxbiassfp
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    sfpDiagTxOutputPowerDBmSFP_Interface_6:
+      ion_parameter_name: otn_sfpdiagtxoutputpowerdbmsfp
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    sfpDiagTxOutputPowerSFP_Interface_6:
+      ion_parameter_name: otn_sfpdiagtxoutputpowersfp
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+  north_otn_a_shore_side_port_7:
+    ifAdminStatusSFP_Interface_7:
+      ion_parameter_name: otn_ifadminstatussfp
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOperStatusSFP_Interface_7:
+      ion_parameter_name: otn_ifoperstatussfp
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    sfpDiagModuleTemperatureSFP_Interface_7:
+      ion_parameter_name: otn_sfpdiagmoduletemperaturesfp
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    sfpDiagRxInputPowerSFP_Interface_7:
+      ion_parameter_name: otn_sfpdiagrxinputpowersfp
+      monitor_cycle_seconds: 600.0
+      scale_factor: 1
+    sfpDiagRxLaserTemperatureSFP_Interface_7:
+      ion_parameter_name: otn_sfpdiagrxlasertemperaturesfp
+      monitor_cycle_seconds: 180.0
+      scale_factor: 1
+    sfpDiagRxMeasuredWavelengthSFP_Interface_7:
+      ion_parameter_name: otn_sfpdiagrxmeasuredwavelengthsfp
+      monitor_cycle_seconds: 180.0
+      scale_factor: 1
+    sfpDiagSupplyVoltageSFP_Interface_7:
+      ion_parameter_name: otn_sfpdiagsupplyvoltagesfp
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    sfpDiagTxBiasSFP_Interface_7:
+      ion_parameter_name: otn_sfpdiagtxbiassfp
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    sfpDiagTxOutputPowerDBmSFP_Interface_7:
+      ion_parameter_name: otn_sfpdiagtxoutputpowerdbmsfp
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    sfpDiagTxOutputPowerSFP_Interface_7:
+      ion_parameter_name: otn_sfpdiagtxoutputpowersfp
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1

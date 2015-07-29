@@ -1,0 +1,322 @@
+node_meta_data:
+  description: Node 3B OOB.PT A
+  location: Shore Station
+  node_id_name: Node 3B OOB.PT A
+  oms_sample_rate: 300
+  reference_designator: Node 3B OOB.PT A
+node_streams:
+  pn3b_oob_a_sfp_egress:
+    channelValuePrimaryEgressInPackets:
+      ion_parameter_name: pn_oob_sfp_inpackets
+      monitor_cycle_seconds: 780.0
+      scale_factor: 1
+    channelValuePrimaryEgressLinkDownState:
+      ion_parameter_name: pn_oob_sfp_linkdownstate
+      monitor_cycle_seconds: 780.0
+      scale_factor: 1
+    channelValuePrimaryEgressOutPackets:
+      ion_parameter_name: pn_oob_sfp_outpackets
+      monitor_cycle_seconds: 780.0
+      scale_factor: 1
+    channelValuePrimaryEgressPort:
+      ion_parameter_name: pn_oob_sfp_enabled
+      monitor_cycle_seconds: 780.0
+      scale_factor: 1
+    channelValuePrimaryEgressRxErrors:
+      ion_parameter_name: pn_oob_sfp_rxerrors
+      monitor_cycle_seconds: 780.0
+      scale_factor: 1
+    channelValuePrimaryEgressSFPCurrent:
+      ion_parameter_name: pn_oob_sfp_current
+      monitor_cycle_seconds: 780.0
+      scale_factor: 1
+    channelValuePrimaryEgressSFPRxPower:
+      ion_parameter_name: pn_oob_sfp_rxpower
+      monitor_cycle_seconds: 780.0
+      scale_factor: 1
+    channelValuePrimaryEgressSFPTemp:
+      ion_parameter_name: pn_oob_sfp_temp
+      monitor_cycle_seconds: 780.0
+      scale_factor: 1
+    channelValuePrimaryEgressSFPTxPower:
+      ion_parameter_name: pn_oob_sfp_txpower
+      monitor_cycle_seconds: 780.0
+      scale_factor: 1
+    channelValuePrimaryEgressSFPVoltage:
+      ion_parameter_name: pn_oob_sfp_voltage
+      monitor_cycle_seconds: 780.0
+      scale_factor: 1
+    channelValuePrimaryEgressTimeoutState:
+      ion_parameter_name: pn_oob_sfp_timeoutstate
+      monitor_cycle_seconds: 780.0
+      scale_factor: 1
+  pn3b_oob_a_sfp_sp1:
+    channelValueSciencePort1:
+      ion_parameter_name: pn_oob_sfp_enabled
+      monitor_cycle_seconds: 780.0
+      scale_factor: 1
+    channelValueSciencePort1InPackets:
+      ion_parameter_name: pn_oob_sfp_inpackets
+      monitor_cycle_seconds: 780.0
+      scale_factor: 1
+    channelValueSciencePort1LinkDownState:
+      ion_parameter_name: pn_oob_sfp_linkdownstate
+      monitor_cycle_seconds: 780.0
+      scale_factor: 1
+    channelValueSciencePort1OutPackets:
+      ion_parameter_name: pn_oob_sfp_outpackets
+      monitor_cycle_seconds: 780.0
+      scale_factor: 1
+    channelValueSciencePort1RxErrors:
+      ion_parameter_name: pn_oob_sfp_rxerrors
+      monitor_cycle_seconds: 780.0
+      scale_factor: 1
+    channelValueSciencePort1SFPCurrent:
+      ion_parameter_name: pn_oob_sfp_current
+      monitor_cycle_seconds: 780.0
+      scale_factor: 1
+    channelValueSciencePort1SFPRxPower:
+      ion_parameter_name: pn_oob_sfp_rxpower
+      monitor_cycle_seconds: 780.0
+      scale_factor: 1
+    channelValueSciencePort1SFPTemp:
+      ion_parameter_name: pn_oob_sfp_temp
+      monitor_cycle_seconds: 780.0
+      scale_factor: 1
+    channelValueSciencePort1SFPTxPower:
+      ion_parameter_name: pn_oob_sfp_txpower
+      monitor_cycle_seconds: 780.0
+      scale_factor: 1
+    channelValueSciencePort1SFPVoltage:
+      ion_parameter_name: pn_oob_sfp_voltage
+      monitor_cycle_seconds: 780.0
+      scale_factor: 1
+    channelValueSciencePort1TimeoutState:
+      ion_parameter_name: pn_oob_sfp_timeoutstate
+      monitor_cycle_seconds: 780.0
+      scale_factor: 1
+  pn3b_oob_a_sfp_sp2:
+    channelValueSciencePort2:
+      ion_parameter_name: pn_oob_sfp_enabled
+      monitor_cycle_seconds: 780.0
+      scale_factor: 1
+    channelValueSciencePort2InPackets:
+      ion_parameter_name: pn_oob_sfp_inpackets
+      monitor_cycle_seconds: 780.0
+      scale_factor: 1
+    channelValueSciencePort2LinkDownState:
+      ion_parameter_name: pn_oob_sfp_linkdownstate
+      monitor_cycle_seconds: 780.0
+      scale_factor: 1
+    channelValueSciencePort2OutPackets:
+      ion_parameter_name: pn_oob_sfp_outpackets
+      monitor_cycle_seconds: 780.0
+      scale_factor: 1
+    channelValueSciencePort2RxErrors:
+      ion_parameter_name: pn_oob_sfp_rxerrors
+      monitor_cycle_seconds: 780.0
+      scale_factor: 1
+    channelValueSciencePort2SFPCurrent:
+      ion_parameter_name: pn_oob_sfp_current
+      monitor_cycle_seconds: 780.0
+      scale_factor: 1
+    channelValueSciencePort2SFPRxPower:
+      ion_parameter_name: pn_oob_sfp_rxpower
+      monitor_cycle_seconds: 780.0
+      scale_factor: 1
+    channelValueSciencePort2SFPTemp:
+      ion_parameter_name: pn_oob_sfp_temp
+      monitor_cycle_seconds: 780.0
+      scale_factor: 1
+    channelValueSciencePort2SFPTxPower:
+      ion_parameter_name: pn_oob_sfp_txpower
+      monitor_cycle_seconds: 780.0
+      scale_factor: 1
+    channelValueSciencePort2SFPVoltage:
+      ion_parameter_name: pn_oob_sfp_voltage
+      monitor_cycle_seconds: 780.0
+      scale_factor: 1
+    channelValueSciencePort2TimeoutState:
+      ion_parameter_name: pn_oob_sfp_timeoutstate
+      monitor_cycle_seconds: 780.0
+      scale_factor: 1
+  pn3b_oob_a_sfp_sp3:
+    channelValueSciencePort3:
+      ion_parameter_name: pn_oob_sfp_enabled
+      monitor_cycle_seconds: 780.0
+      scale_factor: 1
+    channelValueSciencePort3InPackets:
+      ion_parameter_name: pn_oob_sfp_inpackets
+      monitor_cycle_seconds: 780.0
+      scale_factor: 1
+    channelValueSciencePort3LinkDownState:
+      ion_parameter_name: pn_oob_sfp_linkdownstate
+      monitor_cycle_seconds: 780.0
+      scale_factor: 1
+    channelValueSciencePort3OutPackets:
+      ion_parameter_name: pn_oob_sfp_outpackets
+      monitor_cycle_seconds: 780.0
+      scale_factor: 1
+    channelValueSciencePort3RxErrors:
+      ion_parameter_name: pn_oob_sfp_rxerrors
+      monitor_cycle_seconds: 780.0
+      scale_factor: 1
+    channelValueSciencePort3SFPCurrent:
+      ion_parameter_name: pn_oob_sfp_current
+      monitor_cycle_seconds: 780.0
+      scale_factor: 1
+    channelValueSciencePort3SFPRxPower:
+      ion_parameter_name: pn_oob_sfp_rxpower
+      monitor_cycle_seconds: 780.0
+      scale_factor: 1
+    channelValueSciencePort3SFPTemp:
+      ion_parameter_name: pn_oob_sfp_temp
+      monitor_cycle_seconds: 780.0
+      scale_factor: 1
+    channelValueSciencePort3SFPTxPower:
+      ion_parameter_name: pn_oob_sfp_txpower
+      monitor_cycle_seconds: 780.0
+      scale_factor: 1
+    channelValueSciencePort3SFPVoltage:
+      ion_parameter_name: pn_oob_sfp_voltage
+      monitor_cycle_seconds: 780.0
+      scale_factor: 1
+    channelValueSciencePort3TimeoutState:
+      ion_parameter_name: pn_oob_sfp_timeoutstate
+      monitor_cycle_seconds: 780.0
+      scale_factor: 1
+  pn3b_oob_a_sfp_sp4:
+    channelValueSciencePort4:
+      ion_parameter_name: pn_oob_sfp_enabled
+      monitor_cycle_seconds: 780.0
+      scale_factor: 1
+    channelValueSciencePort4InPackets:
+      ion_parameter_name: pn_oob_sfp_inpackets
+      monitor_cycle_seconds: 780.0
+      scale_factor: 1
+    channelValueSciencePort4LinkDownState:
+      ion_parameter_name: pn_oob_sfp_linkdownstate
+      monitor_cycle_seconds: 780.0
+      scale_factor: 1
+    channelValueSciencePort4OutPackets:
+      ion_parameter_name: pn_oob_sfp_outpackets
+      monitor_cycle_seconds: 780.0
+      scale_factor: 1
+    channelValueSciencePort4RxErrors:
+      ion_parameter_name: pn_oob_sfp_rxerrors
+      monitor_cycle_seconds: 780.0
+      scale_factor: 1
+    channelValueSciencePort4SFPCurrent:
+      ion_parameter_name: pn_oob_sfp_current
+      monitor_cycle_seconds: 780.0
+      scale_factor: 1
+    channelValueSciencePort4SFPRxPower:
+      ion_parameter_name: pn_oob_sfp_rxpower
+      monitor_cycle_seconds: 780.0
+      scale_factor: 1
+    channelValueSciencePort4SFPTemp:
+      ion_parameter_name: pn_oob_sfp_temp
+      monitor_cycle_seconds: 780.0
+      scale_factor: 1
+    channelValueSciencePort4SFPTxPower:
+      ion_parameter_name: pn_oob_sfp_txpower
+      monitor_cycle_seconds: 780.0
+      scale_factor: 1
+    channelValueSciencePort4SFPVoltage:
+      ion_parameter_name: pn_oob_sfp_voltage
+      monitor_cycle_seconds: 780.0
+      scale_factor: 1
+    channelValueSciencePort4TimeoutState:
+      ion_parameter_name: pn_oob_sfp_timeoutstate
+      monitor_cycle_seconds: 780.0
+      scale_factor: 1
+  pn3b_oob_a_sfp_sp5:
+    channelValueSciencePort5:
+      ion_parameter_name: pn_oob_sfp_enabled
+      monitor_cycle_seconds: 780.0
+      scale_factor: 1
+    channelValueSciencePort5InPackets:
+      ion_parameter_name: pn_oob_sfp_inpackets
+      monitor_cycle_seconds: 780.0
+      scale_factor: 1
+    channelValueSciencePort5LinkDownState:
+      ion_parameter_name: pn_oob_sfp_linkdownstate
+      monitor_cycle_seconds: 780.0
+      scale_factor: 1
+    channelValueSciencePort5OutPackets:
+      ion_parameter_name: pn_oob_sfp_outpackets
+      monitor_cycle_seconds: 780.0
+      scale_factor: 1
+    channelValueSciencePort5RxErrors:
+      ion_parameter_name: pn_oob_sfp_rxerrors
+      monitor_cycle_seconds: 780.0
+      scale_factor: 1
+    channelValueSciencePort5SFPCurrent:
+      ion_parameter_name: pn_oob_sfp_current
+      monitor_cycle_seconds: 780.0
+      scale_factor: 1
+    channelValueSciencePort5SFPRxPower:
+      ion_parameter_name: pn_oob_sfp_rxpower
+      monitor_cycle_seconds: 780.0
+      scale_factor: 1
+    channelValueSciencePort5SFPTemp:
+      ion_parameter_name: pn_oob_sfp_temp
+      monitor_cycle_seconds: 780.0
+      scale_factor: 1
+    channelValueSciencePort5SFPTxPower:
+      ion_parameter_name: pn_oob_sfp_txpower
+      monitor_cycle_seconds: 780.0
+      scale_factor: 1
+    channelValueSciencePort5SFPVoltage:
+      ion_parameter_name: pn_oob_sfp_voltage
+      monitor_cycle_seconds: 780.0
+      scale_factor: 1
+    channelValueSciencePort5TimeoutState:
+      ion_parameter_name: pn_oob_sfp_timeoutstate
+      monitor_cycle_seconds: 780.0
+      scale_factor: 1
+  pn3b_oob_a_sfp_sp6:
+    channelValueSciencePort6:
+      ion_parameter_name: pn_oob_sfp_enabled
+      monitor_cycle_seconds: 780.0
+      scale_factor: 1
+    channelValueSciencePort6InPackets:
+      ion_parameter_name: pn_oob_sfp_inpackets
+      monitor_cycle_seconds: 780.0
+      scale_factor: 1
+    channelValueSciencePort6LinkDownState:
+      ion_parameter_name: pn_oob_sfp_linkdownstate
+      monitor_cycle_seconds: 780.0
+      scale_factor: 1
+    channelValueSciencePort6OutPackets:
+      ion_parameter_name: pn_oob_sfp_outpackets
+      monitor_cycle_seconds: 780.0
+      scale_factor: 1
+    channelValueSciencePort6RxErrors:
+      ion_parameter_name: pn_oob_sfp_rxerrors
+      monitor_cycle_seconds: 780.0
+      scale_factor: 1
+    channelValueSciencePort6SFPCurrent:
+      ion_parameter_name: pn_oob_sfp_current
+      monitor_cycle_seconds: 780.0
+      scale_factor: 1
+    channelValueSciencePort6SFPRxPower:
+      ion_parameter_name: pn_oob_sfp_rxpower
+      monitor_cycle_seconds: 780.0
+      scale_factor: 1
+    channelValueSciencePort6SFPTemp:
+      ion_parameter_name: pn_oob_sfp_temp
+      monitor_cycle_seconds: 780.0
+      scale_factor: 1
+    channelValueSciencePort6SFPTxPower:
+      ion_parameter_name: pn_oob_sfp_txpower
+      monitor_cycle_seconds: 780.0
+      scale_factor: 1
+    channelValueSciencePort6SFPVoltage:
+      ion_parameter_name: pn_oob_sfp_voltage
+      monitor_cycle_seconds: 780.0
+      scale_factor: 1
+    channelValueSciencePort6TimeoutState:
+      ion_parameter_name: pn_oob_sfp_timeoutstate
+      monitor_cycle_seconds: 780.0
+      scale_factor: 1

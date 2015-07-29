@@ -46,6 +46,27 @@ network:
   - port_id: ShoreStation_port_1
   - port_id: ShoreStation_port_2
   subplatforms:
+  - platform_id: LPJBox_LJ0CI
+    platform_types: []
+    attrs:
+    - attr_id: test_1
+      type: int
+      units: xyz
+      min_val: -2
+      max_val: 10
+      read_write: read
+      group: power
+      monitor_cycle_seconds: 5
+    ports:
+    - port_id: LPJBox_LJ0CI_port_1
+    - port_id: LPJBox_LJ0CI_port_2
+    - port_id: 0
+    - port_id: 1
+    - port_id: 2
+    - port_id: 3
+    missions:
+    - mission_id: UP_DOWN
+    - mission_id: SLOW_START
   - platform_id: L3-UPS1
     platform_types: []
     attrs:

@@ -1,0 +1,188 @@
+node_meta_data:
+  description: Node 3B LVPS
+  location: Shore Station
+  node_id_name: Node 3B LVPS
+  oms_sample_rate: 300
+  reference_designator: Node 3B LVPS
+node_streams:
+  pn3b_lvps:
+    channelValueCurrentSustainingLoad:
+      ion_parameter_name: pn_currentsustainingload
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    channelValueCurrentSustainingLoadImbalanceCurrent:
+      ion_parameter_name: pn_currentsustainingloadimbalancecurrent
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    channelValueCurrentSustainingLoadPortCurrent:
+      ion_parameter_name: pn_currentsustainingloadportcurrent
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    channelValueHotelCurrent:
+      ion_parameter_name: pn_hotelcurrent
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    channelValueInputBusCurrent:
+      ion_parameter_name: pn_inputbuscurrent
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    channelValueInputEarthLeakage:
+      ion_parameter_name: pn_inputearthleakage
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    channelValueInputVoltage:
+      ion_parameter_name: pn_inputvoltage
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    channelValueMVPCExpansionPort1Current:
+      ion_parameter_name: pn_mvpcexpansionport1current
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    channelValueMVPCExpansionPort2Current:
+      ion_parameter_name: pn_mvpcexpansionport2current
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    channelValueMVPCInputCurrent:
+      ion_parameter_name: pn_mvpcinputcurrent
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    channelValueMVPCInputVoltage:
+      ion_parameter_name: pn_mvpcinputvoltage
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    channelValueMVPCPressure1:
+      ion_parameter_name: pn_mvpcpressure1
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    channelValueMVPCPressure2:
+      ion_parameter_name: pn_mvpcpressure2
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    channelValueMVPCTemperature:
+      ion_parameter_name: pn_mvpctemperature
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    channelValueMonitoringBoardHumidity:
+      ion_parameter_name: pn_monitoringboardhumidity
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    channelValueMonitoringBoardTemperature:
+      ion_parameter_name: pn_monitoringboardtemperature
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    channelValuePitch:
+      ion_parameter_name: pn_pitch
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    channelValuePrimaryOOBTemperature:
+      ion_parameter_name: pn_primaryoobtemperature
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    channelValuePrimaryPowerModuleTemperature:
+      ion_parameter_name: pn_primarypowermoduletemperature
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    channelValuePrimarySWTemperature:
+      ion_parameter_name: pn_primaryswtemperature
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    channelValueRoll:
+      ion_parameter_name: pn_roll
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    channelValueSciencePort1:
+      ion_parameter_name: pn_scienceport1
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    channelValueSciencePort1Current:
+      ion_parameter_name: pn_scienceport1current
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    channelValueSciencePort1ImbalanceCurrent:
+      ion_parameter_name: pn_scienceport1imbalancecurrent
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    channelValueSciencePort2:
+      ion_parameter_name: pn_scienceport2
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    channelValueSciencePort2Current:
+      ion_parameter_name: pn_scienceport2current
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    channelValueSciencePort2ImbalanceCurrent:
+      ion_parameter_name: pn_scienceport2imbalancecurrent
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    channelValueSciencePort3:
+      ion_parameter_name: pn_scienceport3
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    channelValueSciencePort3Current:
+      ion_parameter_name: pn_scienceport3current
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    channelValueSciencePort3ImbalanceCurrent:
+      ion_parameter_name: pn_scienceport3imbalancecurrent
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    channelValueSciencePort4:
+      ion_parameter_name: pn_scienceport4
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    channelValueSciencePort4Current:
+      ion_parameter_name: pn_scienceport4current
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    channelValueSciencePort4ImbalanceCurrent:
+      ion_parameter_name: pn_scienceport4imbalancecurrent
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    channelValueSciencePort5:
+      ion_parameter_name: pn_scienceport5
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    channelValueSciencePort5Current:
+      ion_parameter_name: pn_scienceport5current
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    channelValueSciencePort5ImbalanceCurrent:
+      ion_parameter_name: pn_scienceport5imbalancecurrent
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    channelValueSciencePort6:
+      ion_parameter_name: pn_scienceport6
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    channelValueSciencePort6Current:
+      ion_parameter_name: pn_scienceport6current
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    channelValueSciencePort6ImbalanceCurrent:
+      ion_parameter_name: pn_scienceport6imbalancecurrent
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    channelValueSciencePort7:
+      ion_parameter_name: pn_scienceport7
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    channelValueSciencePort7Current:
+      ion_parameter_name: pn_scienceport7current
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    channelValueSciencePort7ImbalanceCurrent:
+      ion_parameter_name: pn_scienceport7imbalancecurrent
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    channelValueSecondaryOOBTemperature:
+      ion_parameter_name: pn_secondaryoobtemperature
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    channelValueSecondaryPowerModuleTemperature:
+      ion_parameter_name: pn_secondarypowermoduletemperature
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1
+    channelValueSecondarySWTemperature:
+      ion_parameter_name: pn_secondaryswtemperature
+      monitor_cycle_seconds: 300.0
+      scale_factor: 1

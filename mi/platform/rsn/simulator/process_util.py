@@ -136,7 +136,7 @@ class ProcessUtil(object):
                          program and arguments much be in additional list elements.
         @return subprocess.Popen object
         """
-        log.error('spawnargs: %s', spawnargs)
+        log.info('spawnargs: %s', spawnargs)
         return subprocess.Popen(spawnargs, env=os.environ, close_fds=True)
 
 

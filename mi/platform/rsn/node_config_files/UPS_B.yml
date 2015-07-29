@@ -1,0 +1,143 @@
+node_meta_data:
+  description: UPS B
+  location: Shore Station
+  node_id_name: UPS B
+  oms_sample_rate: 300
+  reference_designator: UPS B
+node_streams:
+  ups_b_line_1:
+    upsInputCurrentLine1:
+      ion_parameter_name: ups_line_input_current
+      monitor_cycle_seconds: 660.0
+      scale_factor: 0.1
+    upsInputFrequencyLine1:
+      ion_parameter_name: ups_line_input_frequency
+      monitor_cycle_seconds: 660.0
+      scale_factor: 0.1
+    upsInputVoltageLine1:
+      ion_parameter_name: ups_line_input_voltage
+      monitor_cycle_seconds: 660.0
+      scale_factor: 1
+    upsOutputCurrentLine1:
+      ion_parameter_name: ups_line_output_current
+      monitor_cycle_seconds: 660.0
+      scale_factor: 0.1
+    upsOutputPercentLoadLine1:
+      ion_parameter_name: ups_line_output_percent_load
+      monitor_cycle_seconds: 660.0
+      scale_factor: 1
+    upsOutputPowerLine1:
+      ion_parameter_name: ups_line_output_power
+      monitor_cycle_seconds: 660.0
+      scale_factor: 1
+    upsOutputVoltageLine1:
+      ion_parameter_name: ups_line_output_voltage
+      monitor_cycle_seconds: 660.0
+      scale_factor: 1
+  ups_b_line_2:
+    upsInputCurrentLine2:
+      ion_parameter_name: ups_line_input_current
+      monitor_cycle_seconds: 660.0
+      scale_factor: 0.1
+    upsInputFrequencyLine2:
+      ion_parameter_name: ups_line_input_frequency
+      monitor_cycle_seconds: 660.0
+      scale_factor: 0.1
+    upsInputVoltageLine2:
+      ion_parameter_name: ups_line_input_voltage
+      monitor_cycle_seconds: 660.0
+      scale_factor: 1
+    upsOutputCurrentLine2:
+      ion_parameter_name: ups_line_output_current
+      monitor_cycle_seconds: 660.0
+      scale_factor: 0.1
+    upsOutputPercentLoadLine2:
+      ion_parameter_name: ups_line_output_percent_load
+      monitor_cycle_seconds: 660.0
+      scale_factor: 1
+    upsOutputPowerLine2:
+      ion_parameter_name: ups_line_output_power
+      monitor_cycle_seconds: 660.0
+      scale_factor: 1
+    upsOutputVoltageLine2:
+      ion_parameter_name: ups_line_output_voltage
+      monitor_cycle_seconds: 660.0
+      scale_factor: 1
+  ups_b_line_3:
+    upsInputCurrentLine3:
+      ion_parameter_name: ups_line_input_current
+      monitor_cycle_seconds: 660.0
+      scale_factor: 0.1
+    upsInputFrequencyLine3:
+      ion_parameter_name: ups_line_input_frequency
+      monitor_cycle_seconds: 660.0
+      scale_factor: 0.1
+    upsInputVoltageLine3:
+      ion_parameter_name: ups_line_input_voltage
+      monitor_cycle_seconds: 660.0
+      scale_factor: 1
+    upsOutputCurrentLine3:
+      ion_parameter_name: ups_line_output_current
+      monitor_cycle_seconds: 660.0
+      scale_factor: 0.1
+    upsOutputPercentLoadLine3:
+      ion_parameter_name: ups_line_output_percent_load
+      monitor_cycle_seconds: 660.0
+      scale_factor: 1
+    upsOutputPowerLine3:
+      ion_parameter_name: ups_line_output_power
+      monitor_cycle_seconds: 660.0
+      scale_factor: 1
+    upsOutputVoltageLine3:
+      ion_parameter_name: ups_line_output_voltage
+      monitor_cycle_seconds: 660.0
+      scale_factor: 1
+  ups_b_status:
+    sysUpTime:
+      ion_parameter_name: ups_system_up_time
+      monitor_cycle_seconds: 660.0
+      scale_factor: 1
+    upsBatteryCurrent:
+      ion_parameter_name: ups_battery_current
+      monitor_cycle_seconds: 660.0
+      scale_factor: 0.1
+    upsBatteryStatus:
+      ion_parameter_name: ups_battery_status
+      monitor_cycle_seconds: 660.0
+      scale_factor: 1
+    upsBatteryVoltage:
+      ion_parameter_name: ups_battery_voltage
+      monitor_cycle_seconds: 660.0
+      scale_factor: 0.1
+    upsEstimatedChargeRemaining:
+      ion_parameter_name: ups_estimated_charge_remaining
+      monitor_cycle_seconds: 660.0
+      scale_factor: 1
+    upsEstimatedMinutesRemaining:
+      ion_parameter_name: ups_estimated_minutes_remaining
+      monitor_cycle_seconds: 660.0
+      scale_factor: 1
+    upsInputLineBads:
+      ion_parameter_name: ups_input_line_bads
+      monitor_cycle_seconds: 660.0
+      scale_factor: 1
+    upsInputNumLines:
+      ion_parameter_name: ups_input_num_lines
+      monitor_cycle_seconds: 86400.0
+      scale_factor: 1
+    upsOutputFrequency:
+      ion_parameter_name: ups_output_frequency
+      monitor_cycle_seconds: 660.0
+      scale_factor: 0.1
+    upsOutputNumLines:
+      ion_parameter_name: ups_output_num_lines
+      monitor_cycle_seconds: 86400.0
+      scale_factor: 1
+    upsOutputSource:
+      ion_parameter_name: ups_output_source
+      monitor_cycle_seconds: 660.0
+      scale_factor: 1
+    upsSecondsOnBattery:
+      ion_parameter_name: ups_seconds_on_battery
+      monitor_cycle_seconds: 660.0
+      scale_factor: 1
