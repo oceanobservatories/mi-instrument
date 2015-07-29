@@ -283,14 +283,14 @@ class PlatformDriver(PlatformDriver):
         # TODO(OOIION-1495) review the following. Commented out for the moment.
         # 2014-06-05: The pending review in terms of ports is still relevant in
         # what follows from the original comment here, but note that the
-        # connect_instrument and disconnect_instrument operations have been
+        # Connect_instrument and disConnect_instrument operations have been
         # removed from the CI-OMS interface.
         # Note, per the CI-OMS spec ports need to be turned OFF to then proceed
         # with connecting instruments. So we need to determine whether we
         # want to turn all ports ON in this "connect driver" operation,
         # and then add the logic to turn a port OFF before connecting
         # instruments, and then ON again; or, just do the OFF/ON logic in the
-        # connect_instrument and disconnect_instrument operations,
+        # Connect_instrument and disConnect_instrument operations,
         # but not here.
         """
         # power all ports with connected devices

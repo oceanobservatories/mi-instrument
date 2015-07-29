@@ -1,0 +1,1318 @@
+node_meta_data:
+  description: North Service Switch A
+  location: Shore Station
+  node_id_name: North Service Switch A
+  oms_sample_rate: 300
+  reference_designator: North Service Switch A
+node_streams:
+  f10_north_a_port_1:
+    ifAdminStatusPort1:
+      ion_parameter_name: f10_ifadminstatus
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInDiscardsPort1:
+      ion_parameter_name: f10_ifindiscards
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInErrorsPort1:
+      ion_parameter_name: f10_ifinerrors
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInNUcastPktsPort1:
+      ion_parameter_name: f10_ifinnucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInOctetsPort1:
+      ion_parameter_name: f10_ifinoctets
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInUcastPktsPort1:
+      ion_parameter_name: f10_ifinucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInUnknownProtosPort1:
+      ion_parameter_name: f10_ifinunknownprotos
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOperStatusPort1:
+      ion_parameter_name: f10_ifoperstatus
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutDiscardsPort1:
+      ion_parameter_name: f10_ifoutdiscards
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutErrorsPort1:
+      ion_parameter_name: f10_ifouterrors
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutNUcastPktsPort1:
+      ion_parameter_name: f10_ifoutnucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutOctetsPort1:
+      ion_parameter_name: f10_ifoutoctets
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutUcastPktsPort1:
+      ion_parameter_name: f10_ifoutucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifSpeedPort1:
+      ion_parameter_name: f10_ifspeed
+      monitor_cycle_seconds: 86400.0
+      scale_factor: 1
+  f10_north_a_port_10:
+    ifAdminStatusPort10:
+      ion_parameter_name: f10_ifadminstatus
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInDiscardsPort10:
+      ion_parameter_name: f10_ifindiscards
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInErrorsPort10:
+      ion_parameter_name: f10_ifinerrors
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInNUcastPktsPort10:
+      ion_parameter_name: f10_ifinnucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInOctetsPort10:
+      ion_parameter_name: f10_ifinoctets
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInUcastPktsPort10:
+      ion_parameter_name: f10_ifinucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInUnknownProtosPort10:
+      ion_parameter_name: f10_ifinunknownprotos
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOperStatusPort10:
+      ion_parameter_name: f10_ifoperstatus
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutDiscardsPort10:
+      ion_parameter_name: f10_ifoutdiscards
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutErrorsPort10:
+      ion_parameter_name: f10_ifouterrors
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutNUcastPktsPort10:
+      ion_parameter_name: f10_ifoutnucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutOctetsPort10:
+      ion_parameter_name: f10_ifoutoctets
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutUcastPktsPort10:
+      ion_parameter_name: f10_ifoutucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifSpeedPort10:
+      ion_parameter_name: f10_ifspeed
+      monitor_cycle_seconds: 86400.0
+      scale_factor: 1
+  f10_north_a_port_11:
+    ifAdminStatusPort11:
+      ion_parameter_name: f10_ifadminstatus
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInDiscardsPort11:
+      ion_parameter_name: f10_ifindiscards
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInErrorsPort11:
+      ion_parameter_name: f10_ifinerrors
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInNUcastPktsPort11:
+      ion_parameter_name: f10_ifinnucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInOctetsPort11:
+      ion_parameter_name: f10_ifinoctets
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInUcastPktsPort11:
+      ion_parameter_name: f10_ifinucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInUnknownProtosPort11:
+      ion_parameter_name: f10_ifinunknownprotos
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOperStatusPort11:
+      ion_parameter_name: f10_ifoperstatus
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutDiscardsPort11:
+      ion_parameter_name: f10_ifoutdiscards
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutErrorsPort11:
+      ion_parameter_name: f10_ifouterrors
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutNUcastPktsPort11:
+      ion_parameter_name: f10_ifoutnucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutOctetsPort11:
+      ion_parameter_name: f10_ifoutoctets
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutUcastPktsPort11:
+      ion_parameter_name: f10_ifoutucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifSpeedPort11:
+      ion_parameter_name: f10_ifspeed
+      monitor_cycle_seconds: 86400.0
+      scale_factor: 1
+  f10_north_a_port_12:
+    ifAdminStatusPort12:
+      ion_parameter_name: f10_ifadminstatus
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInDiscardsPort12:
+      ion_parameter_name: f10_ifindiscards
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInErrorsPort12:
+      ion_parameter_name: f10_ifinerrors
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInNUcastPktsPort12:
+      ion_parameter_name: f10_ifinnucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInOctetsPort12:
+      ion_parameter_name: f10_ifinoctets
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInUcastPktsPort12:
+      ion_parameter_name: f10_ifinucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInUnknownProtosPort12:
+      ion_parameter_name: f10_ifinunknownprotos
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOperStatusPort12:
+      ion_parameter_name: f10_ifoperstatus
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutDiscardsPort12:
+      ion_parameter_name: f10_ifoutdiscards
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutErrorsPort12:
+      ion_parameter_name: f10_ifouterrors
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutNUcastPktsPort12:
+      ion_parameter_name: f10_ifoutnucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutOctetsPort12:
+      ion_parameter_name: f10_ifoutoctets
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutUcastPktsPort12:
+      ion_parameter_name: f10_ifoutucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifSpeedPort12:
+      ion_parameter_name: f10_ifspeed
+      monitor_cycle_seconds: 86400.0
+      scale_factor: 1
+  f10_north_a_port_13:
+    ifAdminStatusPort13:
+      ion_parameter_name: f10_ifadminstatus
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInDiscardsPort13:
+      ion_parameter_name: f10_ifindiscards
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInErrorsPort13:
+      ion_parameter_name: f10_ifinerrors
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInNUcastPktsPort13:
+      ion_parameter_name: f10_ifinnucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInOctetsPort13:
+      ion_parameter_name: f10_ifinoctets
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInUcastPktsPort13:
+      ion_parameter_name: f10_ifinucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInUnknownProtosPort13:
+      ion_parameter_name: f10_ifinunknownprotos
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOperStatusPort13:
+      ion_parameter_name: f10_ifoperstatus
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutDiscardsPort13:
+      ion_parameter_name: f10_ifoutdiscards
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutErrorsPort13:
+      ion_parameter_name: f10_ifouterrors
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutNUcastPktsPort13:
+      ion_parameter_name: f10_ifoutnucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutOctetsPort13:
+      ion_parameter_name: f10_ifoutoctets
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutUcastPktsPort13:
+      ion_parameter_name: f10_ifoutucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifSpeedPort13:
+      ion_parameter_name: f10_ifspeed
+      monitor_cycle_seconds: 86400.0
+      scale_factor: 1
+  f10_north_a_port_14:
+    ifAdminStatusPort14:
+      ion_parameter_name: f10_ifadminstatus
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInDiscardsPort14:
+      ion_parameter_name: f10_ifindiscards
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInErrorsPort14:
+      ion_parameter_name: f10_ifinerrors
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInNUcastPktsPort14:
+      ion_parameter_name: f10_ifinnucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInOctetsPort14:
+      ion_parameter_name: f10_ifinoctets
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInUcastPktsPort14:
+      ion_parameter_name: f10_ifinucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInUnknownProtosPort14:
+      ion_parameter_name: f10_ifinunknownprotos
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOperStatusPort14:
+      ion_parameter_name: f10_ifoperstatus
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutDiscardsPort14:
+      ion_parameter_name: f10_ifoutdiscards
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutErrorsPort14:
+      ion_parameter_name: f10_ifouterrors
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutNUcastPktsPort14:
+      ion_parameter_name: f10_ifoutnucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutOctetsPort14:
+      ion_parameter_name: f10_ifoutoctets
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutUcastPktsPort14:
+      ion_parameter_name: f10_ifoutucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifSpeedPort14:
+      ion_parameter_name: f10_ifspeed
+      monitor_cycle_seconds: 86400.0
+      scale_factor: 1
+  f10_north_a_port_15:
+    ifAdminStatusPort15:
+      ion_parameter_name: f10_ifadminstatus
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInDiscardsPort15:
+      ion_parameter_name: f10_ifindiscards
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInErrorsPort15:
+      ion_parameter_name: f10_ifinerrors
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInNUcastPktsPort15:
+      ion_parameter_name: f10_ifinnucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInOctetsPort15:
+      ion_parameter_name: f10_ifinoctets
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInUcastPktsPort15:
+      ion_parameter_name: f10_ifinucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInUnknownProtosPort15:
+      ion_parameter_name: f10_ifinunknownprotos
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOperStatusPort15:
+      ion_parameter_name: f10_ifoperstatus
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutDiscardsPort15:
+      ion_parameter_name: f10_ifoutdiscards
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutErrorsPort15:
+      ion_parameter_name: f10_ifouterrors
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutNUcastPktsPort15:
+      ion_parameter_name: f10_ifoutnucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutOctetsPort15:
+      ion_parameter_name: f10_ifoutoctets
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutUcastPktsPort15:
+      ion_parameter_name: f10_ifoutucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifSpeedPort15:
+      ion_parameter_name: f10_ifspeed
+      monitor_cycle_seconds: 86400.0
+      scale_factor: 1
+  f10_north_a_port_16:
+    ifAdminStatusPort16:
+      ion_parameter_name: f10_ifadminstatus
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInDiscardsPort16:
+      ion_parameter_name: f10_ifindiscards
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInErrorsPort16:
+      ion_parameter_name: f10_ifinerrors
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInNUcastPktsPort16:
+      ion_parameter_name: f10_ifinnucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInOctetsPort16:
+      ion_parameter_name: f10_ifinoctets
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInUcastPktsPort16:
+      ion_parameter_name: f10_ifinucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInUnknownProtosPort16:
+      ion_parameter_name: f10_ifinunknownprotos
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOperStatusPort16:
+      ion_parameter_name: f10_ifoperstatus
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutDiscardsPort16:
+      ion_parameter_name: f10_ifoutdiscards
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutErrorsPort16:
+      ion_parameter_name: f10_ifouterrors
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutNUcastPktsPort16:
+      ion_parameter_name: f10_ifoutnucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutOctetsPort16:
+      ion_parameter_name: f10_ifoutoctets
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutUcastPktsPort16:
+      ion_parameter_name: f10_ifoutucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifSpeedPort16:
+      ion_parameter_name: f10_ifspeed
+      monitor_cycle_seconds: 86400.0
+      scale_factor: 1
+  f10_north_a_port_17:
+    ifAdminStatusPort17:
+      ion_parameter_name: f10_ifadminstatus
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInDiscardsPort17:
+      ion_parameter_name: f10_ifindiscards
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInErrorsPort17:
+      ion_parameter_name: f10_ifinerrors
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInNUcastPktsPort17:
+      ion_parameter_name: f10_ifinnucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInOctetsPort17:
+      ion_parameter_name: f10_ifinoctets
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInUcastPktsPort17:
+      ion_parameter_name: f10_ifinucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInUnknownProtosPort17:
+      ion_parameter_name: f10_ifinunknownprotos
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOperStatusPort17:
+      ion_parameter_name: f10_ifoperstatus
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutDiscardsPort17:
+      ion_parameter_name: f10_ifoutdiscards
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutErrorsPort17:
+      ion_parameter_name: f10_ifouterrors
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutNUcastPktsPort17:
+      ion_parameter_name: f10_ifoutnucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutOctetsPort17:
+      ion_parameter_name: f10_ifoutoctets
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutUcastPktsPort17:
+      ion_parameter_name: f10_ifoutucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifSpeedPort17:
+      ion_parameter_name: f10_ifspeed
+      monitor_cycle_seconds: 86400.0
+      scale_factor: 1
+  f10_north_a_port_18:
+    ifAdminStatusPort18:
+      ion_parameter_name: f10_ifadminstatus
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInDiscardsPort18:
+      ion_parameter_name: f10_ifindiscards
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInErrorsPort18:
+      ion_parameter_name: f10_ifinerrors
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInNUcastPktsPort18:
+      ion_parameter_name: f10_ifinnucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInOctetsPort18:
+      ion_parameter_name: f10_ifinoctets
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInUcastPktsPort18:
+      ion_parameter_name: f10_ifinucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInUnknownProtosPort18:
+      ion_parameter_name: f10_ifinunknownprotos
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOperStatusPort18:
+      ion_parameter_name: f10_ifoperstatus
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutDiscardsPort18:
+      ion_parameter_name: f10_ifoutdiscards
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutErrorsPort18:
+      ion_parameter_name: f10_ifouterrors
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutNUcastPktsPort18:
+      ion_parameter_name: f10_ifoutnucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutOctetsPort18:
+      ion_parameter_name: f10_ifoutoctets
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutUcastPktsPort18:
+      ion_parameter_name: f10_ifoutucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifSpeedPort18:
+      ion_parameter_name: f10_ifspeed
+      monitor_cycle_seconds: 86400.0
+      scale_factor: 1
+  f10_north_a_port_19:
+    ifAdminStatusPort19:
+      ion_parameter_name: f10_ifadminstatus
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInDiscardsPort19:
+      ion_parameter_name: f10_ifindiscards
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInErrorsPort19:
+      ion_parameter_name: f10_ifinerrors
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInNUcastPktsPort19:
+      ion_parameter_name: f10_ifinnucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInOctetsPort19:
+      ion_parameter_name: f10_ifinoctets
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInUcastPktsPort19:
+      ion_parameter_name: f10_ifinucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInUnknownProtosPort19:
+      ion_parameter_name: f10_ifinunknownprotos
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOperStatusPort19:
+      ion_parameter_name: f10_ifoperstatus
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutDiscardsPort19:
+      ion_parameter_name: f10_ifoutdiscards
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutErrorsPort19:
+      ion_parameter_name: f10_ifouterrors
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutNUcastPktsPort19:
+      ion_parameter_name: f10_ifoutnucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutOctetsPort19:
+      ion_parameter_name: f10_ifoutoctets
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutUcastPktsPort19:
+      ion_parameter_name: f10_ifoutucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifSpeedPort19:
+      ion_parameter_name: f10_ifspeed
+      monitor_cycle_seconds: 86400.0
+      scale_factor: 1
+  f10_north_a_port_2:
+    ifAdminStatusPort2:
+      ion_parameter_name: f10_ifadminstatus
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInDiscardsPort2:
+      ion_parameter_name: f10_ifindiscards
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInErrorsPort2:
+      ion_parameter_name: f10_ifinerrors
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInNUcastPktsPort2:
+      ion_parameter_name: f10_ifinnucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInOctetsPort2:
+      ion_parameter_name: f10_ifinoctets
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInUcastPktsPort2:
+      ion_parameter_name: f10_ifinucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInUnknownProtosPort2:
+      ion_parameter_name: f10_ifinunknownprotos
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOperStatusPort2:
+      ion_parameter_name: f10_ifoperstatus
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutDiscardsPort2:
+      ion_parameter_name: f10_ifoutdiscards
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutErrorsPort2:
+      ion_parameter_name: f10_ifouterrors
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutNUcastPktsPort2:
+      ion_parameter_name: f10_ifoutnucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutOctetsPort2:
+      ion_parameter_name: f10_ifoutoctets
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutUcastPktsPort2:
+      ion_parameter_name: f10_ifoutucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifSpeedPort2:
+      ion_parameter_name: f10_ifspeed
+      monitor_cycle_seconds: 86400.0
+      scale_factor: 1
+  f10_north_a_port_20:
+    ifAdminStatusPort20:
+      ion_parameter_name: f10_ifadminstatus
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInDiscardsPort20:
+      ion_parameter_name: f10_ifindiscards
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInErrorsPort20:
+      ion_parameter_name: f10_ifinerrors
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInNUcastPktsPort20:
+      ion_parameter_name: f10_ifinnucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInOctetsPort20:
+      ion_parameter_name: f10_ifinoctets
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInUcastPktsPort20:
+      ion_parameter_name: f10_ifinucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInUnknownProtosPort20:
+      ion_parameter_name: f10_ifinunknownprotos
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOperStatusPort20:
+      ion_parameter_name: f10_ifoperstatus
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutDiscardsPort20:
+      ion_parameter_name: f10_ifoutdiscards
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutErrorsPort20:
+      ion_parameter_name: f10_ifouterrors
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutNUcastPktsPort20:
+      ion_parameter_name: f10_ifoutnucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutOctetsPort20:
+      ion_parameter_name: f10_ifoutoctets
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutUcastPktsPort20:
+      ion_parameter_name: f10_ifoutucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifSpeedPort20:
+      ion_parameter_name: f10_ifspeed
+      monitor_cycle_seconds: 86400.0
+      scale_factor: 1
+  f10_north_a_port_21:
+    ifAdminStatusPort21:
+      ion_parameter_name: f10_ifadminstatus
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInDiscardsPort21:
+      ion_parameter_name: f10_ifindiscards
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInErrorsPort21:
+      ion_parameter_name: f10_ifinerrors
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInNUcastPktsPort21:
+      ion_parameter_name: f10_ifinnucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInOctetsPort21:
+      ion_parameter_name: f10_ifinoctets
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInUcastPktsPort21:
+      ion_parameter_name: f10_ifinucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInUnknownProtosPort21:
+      ion_parameter_name: f10_ifinunknownprotos
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOperStatusPort21:
+      ion_parameter_name: f10_ifoperstatus
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutDiscardsPort21:
+      ion_parameter_name: f10_ifoutdiscards
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutErrorsPort21:
+      ion_parameter_name: f10_ifouterrors
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutNUcastPktsPort21:
+      ion_parameter_name: f10_ifoutnucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutOctetsPort21:
+      ion_parameter_name: f10_ifoutoctets
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutUcastPktsPort21:
+      ion_parameter_name: f10_ifoutucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifSpeedPort21:
+      ion_parameter_name: f10_ifspeed
+      monitor_cycle_seconds: 86400.0
+      scale_factor: 1
+  f10_north_a_port_22:
+    ifAdminStatusPort22:
+      ion_parameter_name: f10_ifadminstatus
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInDiscardsPort22:
+      ion_parameter_name: f10_ifindiscards
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInErrorsPort22:
+      ion_parameter_name: f10_ifinerrors
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInNUcastPktsPort22:
+      ion_parameter_name: f10_ifinnucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInOctetsPort22:
+      ion_parameter_name: f10_ifinoctets
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInUcastPktsPort22:
+      ion_parameter_name: f10_ifinucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInUnknownProtosPort22:
+      ion_parameter_name: f10_ifinunknownprotos
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOperStatusPort22:
+      ion_parameter_name: f10_ifoperstatus
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutDiscardsPort22:
+      ion_parameter_name: f10_ifoutdiscards
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutErrorsPort22:
+      ion_parameter_name: f10_ifouterrors
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutNUcastPktsPort22:
+      ion_parameter_name: f10_ifoutnucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutOctetsPort22:
+      ion_parameter_name: f10_ifoutoctets
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutUcastPktsPort22:
+      ion_parameter_name: f10_ifoutucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifSpeedPort22:
+      ion_parameter_name: f10_ifspeed
+      monitor_cycle_seconds: 86400.0
+      scale_factor: 1
+  f10_north_a_port_23:
+    ifAdminStatusPort23:
+      ion_parameter_name: f10_ifadminstatus
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInDiscardsPort23:
+      ion_parameter_name: f10_ifindiscards
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInErrorsPort23:
+      ion_parameter_name: f10_ifinerrors
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInNUcastPktsPort23:
+      ion_parameter_name: f10_ifinnucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInOctetsPort23:
+      ion_parameter_name: f10_ifinoctets
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInUcastPktsPort23:
+      ion_parameter_name: f10_ifinucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInUnknownProtosPort23:
+      ion_parameter_name: f10_ifinunknownprotos
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOperStatusPort23:
+      ion_parameter_name: f10_ifoperstatus
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutDiscardsPort23:
+      ion_parameter_name: f10_ifoutdiscards
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutErrorsPort23:
+      ion_parameter_name: f10_ifouterrors
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutNUcastPktsPort23:
+      ion_parameter_name: f10_ifoutnucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutOctetsPort23:
+      ion_parameter_name: f10_ifoutoctets
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutUcastPktsPort23:
+      ion_parameter_name: f10_ifoutucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifSpeedPort23:
+      ion_parameter_name: f10_ifspeed
+      monitor_cycle_seconds: 86400.0
+      scale_factor: 1
+  f10_north_a_port_3:
+    ifAdminStatusPort3:
+      ion_parameter_name: f10_ifadminstatus
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInDiscardsPort3:
+      ion_parameter_name: f10_ifindiscards
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInErrorsPort3:
+      ion_parameter_name: f10_ifinerrors
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInNUcastPktsPort3:
+      ion_parameter_name: f10_ifinnucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInOctetsPort3:
+      ion_parameter_name: f10_ifinoctets
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInUcastPktsPort3:
+      ion_parameter_name: f10_ifinucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInUnknownProtosPort3:
+      ion_parameter_name: f10_ifinunknownprotos
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOperStatusPort3:
+      ion_parameter_name: f10_ifoperstatus
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutDiscardsPort3:
+      ion_parameter_name: f10_ifoutdiscards
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutErrorsPort3:
+      ion_parameter_name: f10_ifouterrors
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutNUcastPktsPort3:
+      ion_parameter_name: f10_ifoutnucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutOctetsPort3:
+      ion_parameter_name: f10_ifoutoctets
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutUcastPktsPort3:
+      ion_parameter_name: f10_ifoutucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifSpeedPort3:
+      ion_parameter_name: f10_ifspeed
+      monitor_cycle_seconds: 86400.0
+      scale_factor: 1
+  f10_north_a_port_4:
+    ifAdminStatusPort4:
+      ion_parameter_name: f10_ifadminstatus
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInDiscardsPort4:
+      ion_parameter_name: f10_ifindiscards
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInErrorsPort4:
+      ion_parameter_name: f10_ifinerrors
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInNUcastPktsPort4:
+      ion_parameter_name: f10_ifinnucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInOctetsPort4:
+      ion_parameter_name: f10_ifinoctets
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInUcastPktsPort4:
+      ion_parameter_name: f10_ifinucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInUnknownProtosPort4:
+      ion_parameter_name: f10_ifinunknownprotos
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOperStatusPort4:
+      ion_parameter_name: f10_ifoperstatus
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutDiscardsPort4:
+      ion_parameter_name: f10_ifoutdiscards
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutErrorsPort4:
+      ion_parameter_name: f10_ifouterrors
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutNUcastPktsPort4:
+      ion_parameter_name: f10_ifoutnucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutOctetsPort4:
+      ion_parameter_name: f10_ifoutoctets
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutUcastPktsPort4:
+      ion_parameter_name: f10_ifoutucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifSpeedPort4:
+      ion_parameter_name: f10_ifspeed
+      monitor_cycle_seconds: 86400.0
+      scale_factor: 1
+  f10_north_a_port_5:
+    ifAdminStatusPort5:
+      ion_parameter_name: f10_ifadminstatus
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInDiscardsPort5:
+      ion_parameter_name: f10_ifindiscards
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInErrorsPort5:
+      ion_parameter_name: f10_ifinerrors
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInNUcastPktsPort5:
+      ion_parameter_name: f10_ifinnucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInOctetsPort5:
+      ion_parameter_name: f10_ifinoctets
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInUcastPktsPort5:
+      ion_parameter_name: f10_ifinucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInUnknownProtosPort5:
+      ion_parameter_name: f10_ifinunknownprotos
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOperStatusPort5:
+      ion_parameter_name: f10_ifoperstatus
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutDiscardsPort5:
+      ion_parameter_name: f10_ifoutdiscards
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutErrorsPort5:
+      ion_parameter_name: f10_ifouterrors
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutNUcastPktsPort5:
+      ion_parameter_name: f10_ifoutnucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutOctetsPort5:
+      ion_parameter_name: f10_ifoutoctets
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutUcastPktsPort5:
+      ion_parameter_name: f10_ifoutucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifSpeedPort5:
+      ion_parameter_name: f10_ifspeed
+      monitor_cycle_seconds: 86400.0
+      scale_factor: 1
+  f10_north_a_port_6:
+    ifAdminStatusPort6:
+      ion_parameter_name: f10_ifadminstatus
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInDiscardsPort6:
+      ion_parameter_name: f10_ifindiscards
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInErrorsPort6:
+      ion_parameter_name: f10_ifinerrors
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInNUcastPktsPort6:
+      ion_parameter_name: f10_ifinnucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInOctetsPort6:
+      ion_parameter_name: f10_ifinoctets
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInUcastPktsPort6:
+      ion_parameter_name: f10_ifinucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInUnknownProtosPort6:
+      ion_parameter_name: f10_ifinunknownprotos
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOperStatusPort6:
+      ion_parameter_name: f10_ifoperstatus
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutDiscardsPort6:
+      ion_parameter_name: f10_ifoutdiscards
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutErrorsPort6:
+      ion_parameter_name: f10_ifouterrors
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutNUcastPktsPort6:
+      ion_parameter_name: f10_ifoutnucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutOctetsPort6:
+      ion_parameter_name: f10_ifoutoctets
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutUcastPktsPort6:
+      ion_parameter_name: f10_ifoutucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifSpeedPort6:
+      ion_parameter_name: f10_ifspeed
+      monitor_cycle_seconds: 86400.0
+      scale_factor: 1
+  f10_north_a_port_7:
+    ifAdminStatusPort7:
+      ion_parameter_name: f10_ifadminstatus
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInDiscardsPort7:
+      ion_parameter_name: f10_ifindiscards
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInErrorsPort7:
+      ion_parameter_name: f10_ifinerrors
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInNUcastPktsPort7:
+      ion_parameter_name: f10_ifinnucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInOctetsPort7:
+      ion_parameter_name: f10_ifinoctets
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInUcastPktsPort7:
+      ion_parameter_name: f10_ifinucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInUnknownProtosPort7:
+      ion_parameter_name: f10_ifinunknownprotos
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOperStatusPort7:
+      ion_parameter_name: f10_ifoperstatus
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutDiscardsPort7:
+      ion_parameter_name: f10_ifoutdiscards
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutErrorsPort7:
+      ion_parameter_name: f10_ifouterrors
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutNUcastPktsPort7:
+      ion_parameter_name: f10_ifoutnucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutOctetsPort7:
+      ion_parameter_name: f10_ifoutoctets
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutUcastPktsPort7:
+      ion_parameter_name: f10_ifoutucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifSpeedPort7:
+      ion_parameter_name: f10_ifspeed
+      monitor_cycle_seconds: 86400.0
+      scale_factor: 1
+  f10_north_a_port_8:
+    ifAdminStatusPort8:
+      ion_parameter_name: f10_ifadminstatus
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInDiscardsPort8:
+      ion_parameter_name: f10_ifindiscards
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInErrorsPort8:
+      ion_parameter_name: f10_ifinerrors
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInNUcastPktsPort8:
+      ion_parameter_name: f10_ifinnucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInOctetsPort8:
+      ion_parameter_name: f10_ifinoctets
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInUcastPktsPort8:
+      ion_parameter_name: f10_ifinucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInUnknownProtosPort8:
+      ion_parameter_name: f10_ifinunknownprotos
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOperStatusPort8:
+      ion_parameter_name: f10_ifoperstatus
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutDiscardsPort8:
+      ion_parameter_name: f10_ifoutdiscards
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutErrorsPort8:
+      ion_parameter_name: f10_ifouterrors
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutNUcastPktsPort8:
+      ion_parameter_name: f10_ifoutnucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutOctetsPort8:
+      ion_parameter_name: f10_ifoutoctets
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutUcastPktsPort8:
+      ion_parameter_name: f10_ifoutucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifSpeedPort8:
+      ion_parameter_name: f10_ifspeed
+      monitor_cycle_seconds: 86400.0
+      scale_factor: 1
+  f10_north_a_port_9:
+    ifAdminStatusPort9:
+      ion_parameter_name: f10_ifadminstatus
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInDiscardsPort9:
+      ion_parameter_name: f10_ifindiscards
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInErrorsPort9:
+      ion_parameter_name: f10_ifinerrors
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInNUcastPktsPort9:
+      ion_parameter_name: f10_ifinnucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInOctetsPort9:
+      ion_parameter_name: f10_ifinoctets
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInUcastPktsPort9:
+      ion_parameter_name: f10_ifinucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifInUnknownProtosPort9:
+      ion_parameter_name: f10_ifinunknownprotos
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOperStatusPort9:
+      ion_parameter_name: f10_ifoperstatus
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutDiscardsPort9:
+      ion_parameter_name: f10_ifoutdiscards
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutErrorsPort9:
+      ion_parameter_name: f10_ifouterrors
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutNUcastPktsPort9:
+      ion_parameter_name: f10_ifoutnucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutOctetsPort9:
+      ion_parameter_name: f10_ifoutoctets
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifOutUcastPktsPort9:
+      ion_parameter_name: f10_ifoutucastpkts
+      monitor_cycle_seconds: 2220.0
+      scale_factor: 1
+    ifSpeedPort9:
+      ion_parameter_name: f10_ifspeed
+      monitor_cycle_seconds: 86400.0
+      scale_factor: 1

@@ -1,0 +1,283 @@
+node_meta_data:
+  description: MPJbox Endurance
+  location: Endurance Shelf
+  node_id_name: SN0025-MJ01C
+  node_type: MPJBox
+  oms_sample_rate: 60
+  reference_designator: MJ01C
+  serial_number: SN0025
+node_streams:
+  sec_node_mj01c_j05-ip1:
+    Instrument Port 0 Board State:
+      ion_parameter_name: sec_node_port_board_state
+      monitor_cycle_seconds: 600
+      scale_factor: 1
+    Instrument Port 0 Error State:
+      ion_parameter_name: sec_node_port_error_state
+      monitor_cycle_seconds: 600
+      scale_factor: 1
+    Instrument Port 0 GFD High:
+      ion_parameter_name: sec_node_port_gfd_high
+      monitor_cycle_seconds: 600
+      scale_factor: 1
+    Instrument Port 0 GFD Low:
+      ion_parameter_name: sec_node_port_gfd_low
+      monitor_cycle_seconds: 600
+      scale_factor: 1
+    Instrument Port 0 GP I/O State:
+      ion_parameter_name: sec_node_port_gpio_state
+      monitor_cycle_seconds: 600
+      scale_factor: 1
+    Instrument Port 0 OCD Current:
+      ion_parameter_name: sec_node_port_ocd_current
+      monitor_cycle_seconds: 600
+      scale_factor: 0.001
+    Instrument Port 0 OCD Time Const:
+      ion_parameter_name: sec_node_port_ocd_time_const
+      monitor_cycle_seconds: 600
+      scale_factor: 0.001
+    Instrument Port 0 Output Current:
+      ion_parameter_name: sec_node_port_output_current
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    Instrument Port 0 Output Voltage:
+      ion_parameter_name: sec_node_port_output_voltage
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    Instrument Port 0 Power State:
+      ion_parameter_name: sec_node_port_power_state
+      monitor_cycle_seconds: 600
+      scale_factor: 1
+    Instrument Port 0 Unit Temperature:
+      ion_parameter_name: sec_node_port_unit_temperature
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+  sec_node_mj01c_j06-ip2:
+    Instrument Port 1 Board State:
+      ion_parameter_name: sec_node_port_board_state
+      monitor_cycle_seconds: 600
+      scale_factor: 1
+    Instrument Port 1 Error State:
+      ion_parameter_name: sec_node_port_error_state
+      monitor_cycle_seconds: 600
+      scale_factor: 1
+    Instrument Port 1 GFD High:
+      ion_parameter_name: sec_node_port_gfd_high
+      monitor_cycle_seconds: 600
+      scale_factor: 1
+    Instrument Port 1 GFD Low:
+      ion_parameter_name: sec_node_port_gfd_low
+      monitor_cycle_seconds: 600
+      scale_factor: 1
+    Instrument Port 1 GP I/O State:
+      ion_parameter_name: sec_node_port_gpio_state
+      monitor_cycle_seconds: 600
+      scale_factor: 1
+    Instrument Port 1 OCD Current:
+      ion_parameter_name: sec_node_port_ocd_current
+      monitor_cycle_seconds: 600
+      scale_factor: 0.001
+    Instrument Port 1 OCD Time Const:
+      ion_parameter_name: sec_node_port_ocd_time_const
+      monitor_cycle_seconds: 600
+      scale_factor: 0.001
+    Instrument Port 1 Output Current:
+      ion_parameter_name: sec_node_port_output_current
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    Instrument Port 1 Output Voltage:
+      ion_parameter_name: sec_node_port_output_voltage
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    Instrument Port 1 Power State:
+      ion_parameter_name: sec_node_port_power_state
+      monitor_cycle_seconds: 600
+      scale_factor: 1
+    Instrument Port 1 Unit Temperature:
+      ion_parameter_name: sec_node_port_unit_temperature
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+  sec_node_mj01c_j07-ip3:
+    Instrument Port 2 Board State:
+      ion_parameter_name: sec_node_port_board_state
+      monitor_cycle_seconds: 600
+      scale_factor: 1
+    Instrument Port 2 Error State:
+      ion_parameter_name: sec_node_port_error_state
+      monitor_cycle_seconds: 600
+      scale_factor: 1
+    Instrument Port 2 GFD High:
+      ion_parameter_name: sec_node_port_gfd_high
+      monitor_cycle_seconds: 600
+      scale_factor: 1
+    Instrument Port 2 GFD Low:
+      ion_parameter_name: sec_node_port_gfd_low
+      monitor_cycle_seconds: 600
+      scale_factor: 1
+    Instrument Port 2 GP I/O State:
+      ion_parameter_name: sec_node_port_gpio_state
+      monitor_cycle_seconds: 600
+      scale_factor: 1
+    Instrument Port 2 OCD Current:
+      ion_parameter_name: sec_node_port_ocd_current
+      monitor_cycle_seconds: 600
+      scale_factor: 0.001
+    Instrument Port 2 OCD Time Const:
+      ion_parameter_name: sec_node_port_ocd_time_const
+      monitor_cycle_seconds: 600
+      scale_factor: 0.001
+    Instrument Port 2 Output Current:
+      ion_parameter_name: sec_node_port_output_current
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    Instrument Port 2 Output Voltage:
+      ion_parameter_name: sec_node_port_output_voltage
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    Instrument Port 2 Power State:
+      ion_parameter_name: sec_node_port_power_state
+      monitor_cycle_seconds: 600
+      scale_factor: 1
+    Instrument Port 2 Unit Temperature:
+      ion_parameter_name: sec_node_port_unit_temperature
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+  sec_node_mj01c_j08-ip4:
+    Instrument Port 3 Board State:
+      ion_parameter_name: sec_node_port_board_state
+      monitor_cycle_seconds: 600
+      scale_factor: 1
+    Instrument Port 3 Error State:
+      ion_parameter_name: sec_node_port_error_state
+      monitor_cycle_seconds: 600
+      scale_factor: 1
+    Instrument Port 3 GFD High:
+      ion_parameter_name: sec_node_port_gfd_high
+      monitor_cycle_seconds: 600
+      scale_factor: 1
+    Instrument Port 3 GFD Low:
+      ion_parameter_name: sec_node_port_gfd_low
+      monitor_cycle_seconds: 600
+      scale_factor: 1
+    Instrument Port 3 GP I/O State:
+      ion_parameter_name: sec_node_port_gpio_state
+      monitor_cycle_seconds: 600
+      scale_factor: 1
+    Instrument Port 3 OCD Current:
+      ion_parameter_name: sec_node_port_ocd_current
+      monitor_cycle_seconds: 600
+      scale_factor: 0.001
+    Instrument Port 3 OCD Time Const:
+      ion_parameter_name: sec_node_port_ocd_time_const
+      monitor_cycle_seconds: 600
+      scale_factor: 0.001
+    Instrument Port 3 Output Current:
+      ion_parameter_name: sec_node_port_output_current
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    Instrument Port 3 Output Voltage:
+      ion_parameter_name: sec_node_port_output_voltage
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    Instrument Port 3 Power State:
+      ion_parameter_name: sec_node_port_power_state
+      monitor_cycle_seconds: 600
+      scale_factor: 1
+    Instrument Port 3 Unit Temperature:
+      ion_parameter_name: sec_node_port_unit_temperature
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+  sec_node_mj01c_node_eng_data:
+    Ambient Temperature:
+      ion_parameter_name: sec_node_ambient_temperature
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    CIB 5V Current:
+      ion_parameter_name: sec_node_cib_5v_current
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    CIB Board State:
+      ion_parameter_name: sec_node_cib_board_state
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    CIB Error State:
+      ion_parameter_name: sec_node_cib_error_state
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    CIB Hotel Current:
+      ion_parameter_name: sec_node_cib_hotel_current
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    CIB Hotel Voltage:
+      ion_parameter_name: sec_node_cib_hotel_voltage
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    GFD 375V High:
+      ion_parameter_name: sec_node_gfd_375_high
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    GFD 375V Low:
+      ion_parameter_name: sec_node_gfd_375_low
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    HPB Board State:
+      ion_parameter_name: sec_node_hpb_board_state
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    HPB Error State:
+      ion_parameter_name: sec_node_hpb_error_state
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    HPB Hotel Current:
+      ion_parameter_name: sec_node_hpb_hotel_current
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    HPB Hotel Temperature:
+      ion_parameter_name: sec_node_hpb_hotel_temperature
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    HPB Hotel Voltage:
+      ion_parameter_name: sec_node_hpb_hotel_voltate
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    HPB Input Voltage:
+      ion_parameter_name: sec_node_hpb_input_voltage
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    Internal Pressure:
+      ion_parameter_name: sec_node_internal_pressure
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    Pitch:
+      ion_parameter_name: sec_node_pitch
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    Relative Humidity:
+      ion_parameter_name: sec_node_relative_humidity
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    Roll:
+      ion_parameter_name: sec_node_roll
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    Tilt-X:
+      ion_parameter_name: sec_node_tilt_x
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    Tilt-Y:
+      ion_parameter_name: sec_node_tilt_y
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+    Tilt-Z:
+      ion_parameter_name: sec_node_tilt_z
+      monitor_cycle_seconds: 3
+      scale_factor: 0.001
+port_info:
+  J05-IP1:
+    port_oms_port_cntl_id: 0
+  J06-IP2:
+    port_oms_port_cntl_id: 1
+  J07-IP3:
+    port_oms_port_cntl_id: 2
+  J08-IP4:
+    port_oms_port_cntl_id: 3
