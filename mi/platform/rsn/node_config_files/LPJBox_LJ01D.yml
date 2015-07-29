@@ -1,11 +1,11 @@
 node_meta_data:
-  description: Low Power JBox CI testing Ben Hall
-  location: Ben Hall Lab
-  node_id_name: LPJBox_CI_Ben_Hall
+  description: Shelf BEP
+  location: SHBP
+  node_id_name: SN0006-LJ01D
   node_type: LPJBox
-  oms_sample_rate: 5
-  reference_designator: RS01BEN1-LJ0CI
-  serial_number: N/A
+  oms_sample_rate: 60
+  reference_designator: LJ01D
+  serial_number: SN0006
 
 node_streams:
   sec_node_port:
@@ -21,6 +21,15 @@ node_streams:
     - port_type: Instrument
       port_num: 3
       name: 08-IP4
+    - port_type: Instrument
+      port_num: 4
+      name: 09-IP5
+    - port_type: Instrument
+      port_num: 5
+      name: 10-IP6
+    - port_type: Instrument
+      port_num: 6
+      name: 11-IP7
   node_eng_data:
     - name: 00-ENG
 
@@ -33,3 +42,9 @@ port_info:
     port_oms_port_cntl_id: 2
   J08-IP4:
     port_oms_port_cntl_id: 3
+  J09-IP5:
+    port_oms_port_cntl_id: 4
+  J10-IP6:
+    port_oms_port_cntl_id: 5
+  J11-IP7:
+    port_oms_port_cntl_id: 6

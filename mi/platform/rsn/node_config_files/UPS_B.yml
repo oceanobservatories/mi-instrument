@@ -1,0 +1,18 @@
+node_meta_data:
+  description: UPS B
+  location: Shore Station
+  node_id_name: UPS B
+  oms_sample_rate: 300
+  reference_designator: UPS B
+
+node_streams:
+  ups_line:
+  - name: LINE1
+    linenum: 1
+  - name: LINE2
+    linenum: 2
+  - name: LINE3
+    linenum: 3
+  ups_status:
+  - name: STATUS
+

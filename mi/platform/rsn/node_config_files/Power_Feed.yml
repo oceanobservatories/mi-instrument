@@ -1,0 +1,13 @@
+node_meta_data:
+  description: pfe
+  location: Shore Station
+  node_id_name: pfe
+  reference_designator: pfe
+  nms_source: 0
+  node_type: PFE
+  oms_sample_rate: 300
+  serial_number: N/A
+
+node_streams:
+  pfe:
+  - name: STATUS
