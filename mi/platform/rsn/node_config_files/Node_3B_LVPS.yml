@@ -1,0 +1,11 @@
+node_meta_data:
+  description: Node 3B LVPS
+  location: Shore Station
+  node_id_name: Node 3B LVPS
+  oms_sample_rate: 300
+  reference_designator: Node 3B LVPS
+
+node_streams:
+  pn_eng:
+    - name: PN3B_LVPS
+

@@ -1,0 +1,10 @@
+node_meta_data:
+  description: Time Server South
+  location: Shore Station
+  node_id_name: Time Server South
+  oms_sample_rate: 3
+  reference_designator: Time Server South
+
+node_streams:
+  time_server:
+  - name: STATUS

@@ -1,0 +1,25 @@
+node_meta_data:
+  description: MPJBox Central Caldera
+  location: CCAL
+  node_id_name: SN0031-MJ03F
+  node_type: MPJBox
+  oms_sample_rate: 60
+  reference_designator: MJ03F
+  serial_number: SN0031
+
+node_streams:
+  sec_node_port:
+    - port_type: Instrument
+      port_num: 0
+      name: 05-IP1
+    - port_type: Instrument
+      port_num: 1
+      name: 06-IP2
+  node_eng_data:
+    - name: 00-ENG
+
+port_info:
+  J05-IP1:
+    port_oms_port_cntl_id: 0
+  J06-IP2:
+    port_oms_port_cntl_id: 1

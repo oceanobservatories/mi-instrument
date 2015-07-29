@@ -1,0 +1,17 @@
+node_meta_data:
+  description: Node 3A OOB.PT A
+  location: Shore Station
+  node_id_name: Node 3A OOB.PT A
+  oms_sample_rate: 300
+  reference_designator: Node 3A OOB.PT A
+
+node_streams:
+  pn_port:
+    - name: PN3A_PRI
+      port_name: PrimaryEgress
+    - name: PN3A_SP1
+      port_name: SciencePort1
+    - name: PN3A_SP2
+      port_name: SciencePort2
+    - name: PN3A_SP3
+      port_name: SciencePort3

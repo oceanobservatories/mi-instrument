@@ -1,0 +1,32 @@
+node_meta_data:
+  description: Winch Controller Axial Base
+  location: Axial Base
+  node_id_name: SN0122-SC03A
+  node_type: WinchController
+  oms_sample_rate: 60
+  reference_designator: SC03A
+  serial_number: SN0122
+
+node_streams:
+  sec_node_port:
+    - port_type: Instrument
+      port_num: 1
+      name: BRAKE-IP2
+
+    - port_type: Expansion
+      port_num: 0
+      name: 04-EP1
+
+    - port_type: Instrument
+      port_num: 0
+      name: 05-IP1
+
+    - port_type: Expansion
+      port_num: 1
+      name: VFD-EP2
+
+  node_eng_data:
+    - name: 00-ENG
+
+  winch_info:
+    - name: 00-WINCH

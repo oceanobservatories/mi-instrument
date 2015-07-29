@@ -1,0 +1,45 @@
+node_meta_data:
+  description: LJJBox at Axial Base
+  location: Axial Base
+  node_id_name: SN0007-LJ03A
+  node_type: LPJBox
+  oms_sample_rate: 60
+  reference_designator: LJ03A
+  serial_number: SN0007
+
+node_streams:
+  sec_node_port:
+    - port_type: Instrument
+      port_num: 0
+      name: 05-IP1
+    - port_type: Instrument
+      port_num: 3
+      name: 08-IP4
+    - port_type: Instrument
+      port_num: 4
+      name: 09-IP5
+    - port_type: Instrument
+      port_num: 5
+      name: 10-IP6
+    - port_type: Instrument
+      port_num: 6
+      name: 11-IP7
+    - port_type: Instrument
+      port_num: 7
+      name: 12-IP8
+  node_eng_data:
+    - name: 00-ENG
+
+port_info:
+  J05-IP1:
+    port_oms_port_cntl_id: 0
+  J08-IP4:
+    port_oms_port_cntl_id: 3
+  J09-IP5:
+    port_oms_port_cntl_id: 4
+  J10-IP6:
+    port_oms_port_cntl_id: 5
+  J11-IP7:
+    port_oms_port_cntl_id: 6
+  J12-IP8:
+    port_oms_port_cntl_id: 7
