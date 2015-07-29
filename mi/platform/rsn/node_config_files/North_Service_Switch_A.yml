@@ -1,0 +1,55 @@
+node_meta_data:
+  description: North Service Switch A
+  location: Shore Station
+  node_id_name: North Service Switch A
+  oms_sample_rate: 300
+  reference_designator: North Service Switch A
+
+node_streams:
+  f10:
+  - name: F10-1
+    port_num: 1
+  - name: F10-2
+    port_num: 3
+  - name: F10-3
+    port_num: 3
+  - name: F10-4
+    port_num: 4
+  - name: F10-5
+    port_num: 5
+  - name: F10-6
+    port_num: 6
+  - name: F10-7
+    port_num: 7
+  - name: F10-8
+    port_num: 8
+  - name: F10-9
+    port_num: 9
+  - name: F10-10
+    port_num: 10
+  - name: F10-11
+    port_num: 11
+  - name: F10-12
+    port_num: 12
+  - name: F10-13
+    port_num: 13
+  - name: F10-14
+    port_num: 14
+  - name: F10-15
+    port_num: 15
+  - name: F10-16
+    port_num: 16
+  - name: F10-17
+    port_num: 17
+  - name: F10-18
+    port_num: 18
+  - name: F10-19
+    port_num: 19
+  - name: F10-20
+    port_num: 20
+  - name: F10-21
+    port_num: 21
+  - name: F10-22
+    port_num: 22
+  - name: F10-23
+    port_num: 23

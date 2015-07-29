@@ -1,0 +1,230 @@
+node_meta_data:
+    node_id_name: North Server A
+    description: Shore Station North Server A
+    location: Shore Station
+    node_type: Shore Station
+    reference_designator: na    
+port_info:
+node_streams:
+    facilities:
+        Ambient Temperature:
+          monitor_cycle_seconds : 3
+          scale_factor  : 0.001
+          ion_parameter_name: sec_node_ambient_temperature
+        CIB 5V Current:
+          monitor_cycle_seconds : 3
+          scale_factor  : 0.001
+          ion_parameter_name: sec_node_cib_5v_current
+        CIB Board State:
+          monitor_cycle_seconds : 600
+          scale_factor  : 1
+          ion_parameter_name: sec_node_cib_board_state
+        CIB Error State:
+          monitor_cycle_seconds : 600
+          scale_factor  : 1
+          ion_parameter_name: sec_node_cib_error_state
+        CIB Hotel Current:
+          monitor_cycle_seconds : 3
+          scale_factor  : 0.001
+          ion_parameter_name: sec_node_cib_hotel_current
+        CIB Hotel Voltage:
+          monitor_cycle_seconds : 3
+          scale_factor  : 0.001
+          ion_parameter_name: sec_node_cib_hotel_voltage
+    lpjbox_ci_ben_hall_j05-ip1:
+         Instrument Port 0 Output Current :
+           monitor_cycle_seconds : 3
+           scale_factor : 0.001
+           ion_parameter_name: sec_node_port_J5_IP1_output_current
+         Instrument Port 0 Output Voltage :
+           attr_id : Output Voltage
+           monitor_cycle_seconds : 3
+           scale_factor : 0.001
+           ion_parameter_name: sec_node_port_J5_IP1_output_voltage
+         Instrument Port 0 Unit Temperature :
+           attr_id : Unit Temperature
+           monitor_cycle_seconds : 3
+           scale_factor : 0.001
+           ion_parameter_name: sec_node_port_J5_IP1_output_temperature
+         Instrument Port 0 GFD High :
+           attr_id : GFD High
+           monitor_cycle_seconds : 600
+           scale_factor : 1
+           ion_parameter_name: sec_node_port_J5_IP1_gfd_high
+         Instrument Port 0 GFD Low :
+           attr_id : GFD Low
+           monitor_cycle_seconds : 600
+           scale_factor : 1
+           ion_parameter_name: sec_node_port_J5_IP1_gfd_low
+         Instrument Port 0 Board State:
+           attr_id : Board State
+           monitor_cycle_seconds : 600
+           scale_factor  : 1
+           ion_parameter_name: sec_node_port_J5_IP1_board_state
+         Instrument Port 0 Error State:
+           attr_id : Error State
+           monitor_cycle_seconds : 600
+           scale_factor  : 1
+           ion_parameter_name: sec_node_port_J5_IP1_error_state
+         Instrument Port 0 GP I/O State :
+           attr_id : GP I/O State
+           monitor_cycle_seconds : 600
+           scale_factor  : 1
+           ion_parameter_name: sec_node_port_J5_IP1_gpio_state         
+         Instrument Port 0 OCD Current :
+           attr_id : OCD Current
+           monitor_cycle_seconds : 600
+           scale_factor  : 0.001
+           ion_parameter_name: sec_node_port_J5_IP1_ocd_current    
+         Instrument Port 0 OCD Time Const :
+           monitor_cycle_seconds : 600
+           scale_factor  : 0.001
+           ion_parameter_name: sec_node_port_J5_IP1_ocd_time_const
+    lpjbox_ci_ben_hall_j06-ip2:
+         Instrument Port 0 Output Current :
+           monitor_cycle_seconds : 3
+           scale_factor : 0.001
+           ion_parameter_name: sec_node_port_J6_IP2_output_current
+         Instrument Port 0 Output Voltage :
+           attr_id : Output Voltage
+           monitor_cycle_seconds : 3
+           scale_factor : 0.001
+           ion_parameter_name: sec_node_port_J6_IP2_output_voltage
+         Instrument Port 0 Unit Temperature :
+           attr_id : Unit Temperature
+           monitor_cycle_seconds : 3
+           scale_factor : 0.001
+           ion_parameter_name: sec_node_port_J6_IP2_output_temperature
+         Instrument Port 0 GFD High :
+           attr_id : GFD High
+           monitor_cycle_seconds : 600
+           scale_factor : 1
+           ion_parameter_name: sec_node_port_J6_IP2_gfd_high
+         Instrument Port 0 GFD Low :
+           attr_id : GFD Low
+           monitor_cycle_seconds : 600
+           scale_factor : 1
+           ion_parameter_name: sec_node_port_J6_IP2_gfd_low
+         Instrument Port 0 Board State:
+           attr_id : Board State
+           monitor_cycle_seconds : 600
+           scale_factor  : 1
+           ion_parameter_name: sec_node_port_J6_IP2_board_state
+         Instrument Port 0 Error State:
+           attr_id : Error State
+           monitor_cycle_seconds : 600
+           scale_factor  : 1
+           ion_parameter_name: sec_node_port_J6_IP2_error_state
+         Instrument Port 0 GP I/O State :
+           attr_id : GP I/O State
+           monitor_cycle_seconds : 600
+           scale_factor  : 1
+           ion_parameter_name: sec_node_port_J6_IP2_gpio_state         
+         Instrument Port 0 OCD Current :
+           attr_id : OCD Current
+           monitor_cycle_seconds : 600
+           scale_factor  : 0.001
+           ion_parameter_name: sec_node_port_J6_IP2_ocd_current    
+         Instrument Port 0 OCD Time Const :
+           monitor_cycle_seconds : 600
+           scale_factor  : 0.001
+           ion_parameter_name: sec_node_port_J6_IP2_ocd_time_const
+    lpjbox_ci_ben_hall_j07-ip3:
+         Instrument Port 0 Output Current :
+           monitor_cycle_seconds : 3
+           scale_factor : 0.001
+           ion_parameter_name: sec_node_port_J7_IP3_output_current
+         Instrument Port 0 Output Voltage :
+           attr_id : Output Voltage
+           monitor_cycle_seconds : 3
+           scale_factor : 0.001
+           ion_parameter_name: sec_node_port_J7_IP3_output_voltage
+         Instrument Port 0 Unit Temperature :
+           attr_id : Unit Temperature
+           monitor_cycle_seconds : 3
+           scale_factor : 0.001
+           ion_parameter_name: sec_node_port_J7_IP3_output_temperature
+         Instrument Port 0 GFD High :
+           attr_id : GFD High
+           monitor_cycle_seconds : 600
+           scale_factor : 1
+           ion_parameter_name: sec_node_port_J7_IP3_gfd_high
+         Instrument Port 0 GFD Low :
+           attr_id : GFD Low
+           monitor_cycle_seconds : 600
+           scale_factor : 1
+           ion_parameter_name: sec_node_port_J7_IP3_gfd_low
+         Instrument Port 0 Board State:
+           attr_id : Board State
+           monitor_cycle_seconds : 600
+           scale_factor  : 1
+           ion_parameter_name: sec_node_port_J7_IP3_board_state
+         Instrument Port 0 Error State:
+           attr_id : Error State
+           monitor_cycle_seconds : 600
+           scale_factor  : 1
+           ion_parameter_name: sec_node_port_J7_IP3_error_state
+         Instrument Port 0 GP I/O State :
+           attr_id : GP I/O State
+           monitor_cycle_seconds : 600
+           scale_factor  : 1
+           ion_parameter_name: sec_node_port_J7_IP3_gpio_state         
+         Instrument Port 0 OCD Current :
+           attr_id : OCD Current
+           monitor_cycle_seconds : 600
+           scale_factor  : 0.001
+           ion_parameter_name: sec_node_port_J7_IP3_ocd_current    
+         Instrument Port 0 OCD Time Const :
+           monitor_cycle_seconds : 600
+           scale_factor  : 0.001
+           ion_parameter_name: sec_node_port_J7_IP3_ocd_time_const
+    lpjbox_ci_ben_hall_j08-ip4:
+         Instrument Port 0 Output Current :
+           monitor_cycle_seconds : 3
+           scale_factor : 0.001
+           ion_parameter_name: sec_node_port_J8_IP4_output_current
+         Instrument Port 0 Output Voltage :
+           attr_id : Output Voltage
+           monitor_cycle_seconds : 3
+           scale_factor : 0.001
+           ion_parameter_name: sec_node_port_J8_IP4_output_voltage
+         Instrument Port 0 Unit Temperature :
+           attr_id : Unit Temperature
+           monitor_cycle_seconds : 3
+           scale_factor : 0.001
+           ion_parameter_name: sec_node_port_J8_IP4_output_temperature
+         Instrument Port 0 GFD High :
+           attr_id : GFD High
+           monitor_cycle_seconds : 600
+           scale_factor : 1
+           ion_parameter_name: sec_node_port_J8_IP4_gfd_high
+         Instrument Port 0 GFD Low :
+           attr_id : GFD Low
+           monitor_cycle_seconds : 600
+           scale_factor : 1
+           ion_parameter_name: sec_node_port_J8_IP4_gfd_low
+         Instrument Port 0 Board State:
+           attr_id : Board State
+           monitor_cycle_seconds : 600
+           scale_factor  : 1
+           ion_parameter_name: sec_node_port_J8_IP4_board_state
+         Instrument Port 0 Error State:
+           attr_id : Error State
+           monitor_cycle_seconds : 600
+           scale_factor  : 1
+           ion_parameter_name: sec_node_port_J8_IP4_error_state
+         Instrument Port 0 GP I/O State :
+           attr_id : GP I/O State
+           monitor_cycle_seconds : 600
+           scale_factor  : 1
+           ion_parameter_name: sec_node_port_J8_IP4_gpio_state         
+         Instrument Port 0 OCD Current :
+           attr_id : OCD Current
+           monitor_cycle_seconds : 600
+           scale_factor  : 0.001
+           ion_parameter_name: sec_node_port_J8_IP4_ocd_current    
+         Instrument Port 0 OCD Time Const :
+           monitor_cycle_seconds : 600
+           scale_factor  : 0.001
+           ion_parameter_name: sec_node_port_J8_IP4_ocd_time_const
+   
