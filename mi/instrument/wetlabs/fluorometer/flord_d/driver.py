@@ -14,7 +14,7 @@ Initial development
 __author__ = 'Richard Han'
 __license__ = 'Apache 2.0'
 
-from mi.instrument.wetlabs.fluorometer.flort_d.driver import InstrumentDriver
+from mi.core.instrument.instrument_driver import SingleConnectionInstrumentDriver
 from mi.instrument.wetlabs.fluorometer.flort_d.driver import Parameter
 from mi.instrument.wetlabs.fluorometer.flort_d.driver import Prompt
 from mi.instrument.wetlabs.fluorometer.flort_d.driver import NEWLINE
@@ -27,7 +27,7 @@ FLORD_CLASS = 'flord'
 ###############################################################################
 # Driver
 ###############################################################################
-class FlordInstrumentDriver(InstrumentDriver):
+class InstrumentDriver(SingleConnectionInstrumentDriver):
     """
     InstrumentDriver subclass
     Subclasses InstrumentDriver with connection state
@@ -40,7 +40,7 @@ class FlordInstrumentDriver(InstrumentDriver):
         @param evt_callback Driver process event callback.
         """
         # Construct superclass.
-        super(FlordInstrumentDriver, self).__init__(self, evt_callback)
+        SingleConnectionInstrumentDriver.__init__(self, evt_callback)
 
     ########################################################################
     # Superclass overrides for resource query.
@@ -59,7 +59,7 @@ class FlordInstrumentDriver(InstrumentDriver):
         """
         Construct the driver protocol state machine.
         """
-        self._protocol = Protocol(Prompt, NEWLINE, self._driver_event)
+        self._protocol = FlordProtocol(Prompt, NEWLINE, self._driver_event)
 
 
 ###########################################################################
