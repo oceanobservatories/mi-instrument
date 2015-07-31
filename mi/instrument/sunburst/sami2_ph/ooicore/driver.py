@@ -27,7 +27,7 @@ log = get_logger()
 from mi.core.exceptions import SampleException
 from mi.core.exceptions import InstrumentTimeoutException
 
-from mi.core.common import BaseEnum
+from mi.core.common import BaseEnum, Units
 from mi.core.instrument.chunker import StringChunker
 from mi.core.instrument.data_particle import DataParticle
 from mi.core.instrument.data_particle import DataParticleKey
@@ -881,7 +881,8 @@ class Protocol(SamiProtocol):
                              direct_access=True,
                              default_value=0x02,
                              visibility=ParameterDictVisibility.READ_ONLY,
-                             display_name='Mode Bits')
+                             display_name='Mode Bits',
+                             description='Switch bits for sample scheduling.')
 
         # PCO2 0x04, PHSEN 0x0A
         self._param_dict.add(Parameter.SAMI_DRIVER_VERSION, configuration_string_regex,
@@ -892,7 +893,8 @@ class Protocol(SamiProtocol):
                              direct_access=True,
                              default_value=0x0A,
                              visibility=ParameterDictVisibility.READ_ONLY,
-                             display_name='Sami Driver Version')
+                             display_name='Sami Driver Version',
+                             description='SAMI driver version: (0A = PHSEN | 04 = PCO2)')
 
         self._param_dict.add(Parameter.DEVICE1_SAMPLE_INTERVAL, configuration_string_regex,
                              lambda match: int(match.group(8), 16),
@@ -902,7 +904,9 @@ class Protocol(SamiProtocol):
                              direct_access=True,
                              default_value=0x000000,
                              visibility=ParameterDictVisibility.READ_ONLY,
-                             display_name='Device 1 Sample Interval')
+                             display_name='Device 1 Sample Interval',
+                             description='',
+                             units=Units.SECOND)
 
         self._param_dict.add(Parameter.DEVICE1_DRIVER_VERSION, configuration_string_regex,
                              lambda match: int(match.group(9), 16),
@@ -912,7 +916,8 @@ class Protocol(SamiProtocol):
                              direct_access=True,
                              default_value=0x00,
                              visibility=ParameterDictVisibility.READ_ONLY,
-                             display_name='Device 1 Driver Version')
+                             display_name='Device 1 Driver Version',
+                             description='')
 
         self._param_dict.add(Parameter.DEVICE1_PARAMS_POINTER, configuration_string_regex,
                              lambda match: int(match.group(10), 16),
@@ -922,7 +927,8 @@ class Protocol(SamiProtocol):
                              direct_access=True,
                              default_value=0x00,
                              visibility=ParameterDictVisibility.READ_ONLY,
-                             display_name='Device 1 Parameter Pointer')
+                             display_name='Device 1 Parameter Pointer',
+                             description='Pointer to device 1 parameters (offset from position 76).')
 
         self._param_dict.add(Parameter.NUMBER_SAMPLES_AVERAGED, configuration_string_regex,
                              lambda match: int(match.group(21), 16),
@@ -932,7 +938,8 @@ class Protocol(SamiProtocol):
                              direct_access=True,
                              default_value=0x01,
                              visibility=ParameterDictVisibility.READ_WRITE,
-                             display_name='Number of Samples Averaged')
+                             display_name='Number of Samples Averaged',
+                             description='Number of readings to be averaged.')
 
         self._param_dict.add(Parameter.NUMBER_FLUSHES, configuration_string_regex,
                              lambda match: int(match.group(22), 16),
@@ -942,7 +949,8 @@ class Protocol(SamiProtocol):
                              direct_access=True,
                              default_value=0x37,
                              visibility=ParameterDictVisibility.READ_WRITE,
-                             display_name='Number of Flushes')
+                             display_name='Number of Flushes',
+                             description='')
 
         self._param_dict.add(Parameter.PUMP_ON_FLUSH, configuration_string_regex,
                              lambda match: int(match.group(23), 16),
@@ -952,7 +960,9 @@ class Protocol(SamiProtocol):
                              direct_access=True,
                              default_value=0x04,
                              visibility=ParameterDictVisibility.READ_WRITE,
-                             display_name='Pump On Flush')
+                             display_name='Pump On Flush',
+                             description='How long to flush when the pump is on.',
+                             units='16 ' + Units.HERTZ)
 
         self._param_dict.add(Parameter.PUMP_OFF_FLUSH, configuration_string_regex,
                              lambda match: int(match.group(24), 16),
@@ -962,7 +972,9 @@ class Protocol(SamiProtocol):
                              direct_access=True,
                              default_value=0x20,
                              visibility=ParameterDictVisibility.READ_WRITE,
-                             display_name='Pump Off Flush')
+                             display_name='Pump Off Flush',
+                             description='How long to flush when the pump is off.',
+                             units='16 ' + Units.HERTZ)
 
         self._param_dict.add(Parameter.NUMBER_REAGENT_PUMPS, configuration_string_regex,
                              lambda match: int(match.group(25), 16),
@@ -972,7 +984,8 @@ class Protocol(SamiProtocol):
                              direct_access=True,
                              default_value=0x01,
                              visibility=ParameterDictVisibility.READ_WRITE,
-                             display_name='Number of Reagent Pumps')
+                             display_name='Number of Reagent Pumps',
+                             description='')
 
         self._param_dict.add(Parameter.VALVE_DELAY, configuration_string_regex,
                              lambda match: int(match.group(26), 16),
@@ -982,7 +995,9 @@ class Protocol(SamiProtocol):
                              direct_access=True,
                              default_value=0x08,
                              visibility=ParameterDictVisibility.READ_WRITE,
-                             display_name='Valve Delay')
+                             display_name='Valve Delay',
+                             description='How long to delay opening valve.',
+                             units='16 ' + Units.HERTZ)
 
         self._param_dict.add(Parameter.PUMP_ON_IND, configuration_string_regex,
                              lambda match: int(match.group(27), 16),
@@ -992,7 +1007,9 @@ class Protocol(SamiProtocol):
                              direct_access=True,
                              default_value=0x08,
                              visibility=ParameterDictVisibility.READ_WRITE,
-                             display_name='Pump On Ind')
+                             display_name='Pump On Ind',
+                             description='Turn pump on and restore after time interval.',
+                             units='16 ' + Units.HERTZ)
 
         self._param_dict.add(Parameter.PV_OFF_IND, configuration_string_regex,
                              lambda match: int(match.group(28), 16),
@@ -1002,7 +1019,9 @@ class Protocol(SamiProtocol):
                              direct_access=True,
                              default_value=0x10,
                              visibility=ParameterDictVisibility.READ_WRITE,
-                             display_name='P/V Off Ind')
+                             display_name='P/V Off Ind',
+                             description='Turn pump valve off and restore after time interval.',
+                             units='16 ' + Units.HERTZ)
 
         self._param_dict.add(Parameter.NUMBER_BLANKS, configuration_string_regex,
                              lambda match: int(match.group(29), 16),
@@ -1012,7 +1031,8 @@ class Protocol(SamiProtocol):
                              direct_access=True,
                              default_value=0x04,
                              visibility=ParameterDictVisibility.READ_WRITE,
-                             display_name='Number of Blanks')
+                             display_name='Number of Blanks',
+                             description='Number of blanks: (1 - 63)')
 
         self._param_dict.add(Parameter.PUMP_MEASURE_T, configuration_string_regex,
                              lambda match: int(match.group(30), 16),
@@ -1022,7 +1042,9 @@ class Protocol(SamiProtocol):
                              direct_access=True,
                              default_value=0x08,
                              visibility=ParameterDictVisibility.READ_WRITE,
-                             display_name='Pump Measure T')
+                             display_name='Pump Measure T',
+                             description='',
+                             units='16 ' + Units.HERTZ)
 
         self._param_dict.add(Parameter.PUMP_OFF_TO_MEASURE, configuration_string_regex,
                              lambda match: int(match.group(31), 16),
@@ -1032,7 +1054,9 @@ class Protocol(SamiProtocol):
                              direct_access=True,
                              default_value=0x10,
                              visibility=ParameterDictVisibility.READ_WRITE,
-                             display_name='Pump Off to Measure')
+                             display_name='Pump Off to Measure',
+                             description='Time from turning pump off to start measuring.',
+                             units='16 ' + Units.HERTZ)
 
         self._param_dict.add(Parameter.MEASURE_TO_PUMP_ON, configuration_string_regex,
                              lambda match: int(match.group(32), 16),
@@ -1042,7 +1066,9 @@ class Protocol(SamiProtocol):
                              direct_access=True,
                              default_value=0x08,
                              visibility=ParameterDictVisibility.READ_WRITE,
-                             display_name='Measure to Pump On')
+                             display_name='Measure to Pump On',
+                             description='Time from measurement taken to turning pump on.',
+                             units='16 ' + Units.HERTZ)
 
         self._param_dict.add(Parameter.NUMBER_MEASUREMENTS, configuration_string_regex,
                              lambda match: int(match.group(33), 16),
@@ -1052,7 +1078,8 @@ class Protocol(SamiProtocol):
                              direct_access=True,
                              default_value=0x17,
                              visibility=ParameterDictVisibility.READ_WRITE,
-                             display_name='Number of Measurements')
+                             display_name='Number of Measurements',
+                             description='Number of measurements: (0 - 26)')
 
         self._param_dict.add(Parameter.SALINITY_DELAY, configuration_string_regex,
                              lambda match: int(match.group(34), 16),
@@ -1062,7 +1089,9 @@ class Protocol(SamiProtocol):
                              direct_access=True,
                              default_value=0x00,
                              visibility=ParameterDictVisibility.READ_WRITE,
-                             display_name='Salinity Delay')
+                             display_name='Salinity Delay',
+                             description='',
+                             units='16 ' + Units.HERTZ)
 
         self._param_dict.add(Parameter.FLUSH_CYCLES, r'flush cycles = ([0-9]+)',
                              lambda match: match.group(1),
@@ -1072,7 +1101,8 @@ class Protocol(SamiProtocol):
                              direct_access=False,
                              default_value=0x1,
                              visibility=ParameterDictVisibility.READ_WRITE,
-                             display_name='Seawater 2750ml and Reagent 50ml Flush Cycles')
+                             display_name='Seawater 2750ml and Reagent 50ml Flush Cycles',
+                             description='Number of pump cycles for either pumping seawater or reagent.')
 
         self._param_dict.add(Parameter.REAGENT_FLUSH_DURATION, r'Reagent flush duration = ([0-9]+)',
                              lambda match: match.group(1),
@@ -1082,7 +1112,9 @@ class Protocol(SamiProtocol):
                              direct_access=False,
                              default_value=0x4,
                              visibility=ParameterDictVisibility.READ_WRITE,
-                             display_name='Reagent Flush Duration')
+                             display_name='Reagent Flush Duration',
+                             description='Set duration of reagent flush: (0 - 255)',
+                             units='8 ' + Units.HERTZ)
 
         self._param_dict.add(Parameter.SEAWATER_FLUSH_DURATION, r'Seawater flush duration = ([0-9]+)',
                              lambda match: match.group(1),
@@ -1092,7 +1124,9 @@ class Protocol(SamiProtocol):
                              direct_access=False,
                              default_value=0x2,
                              visibility=ParameterDictVisibility.READ_WRITE,
-                             display_name='Seawater Flush Duration')
+                             display_name='Seawater Flush Duration',
+                             description='Set duration of seawater flush: (0 - 255)',
+                             units='8 ' + Units.HERTZ)
 
     def _get_specific_configuration_string_parameters(self):
 
