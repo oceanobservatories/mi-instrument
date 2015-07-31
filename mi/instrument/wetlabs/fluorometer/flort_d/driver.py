@@ -222,10 +222,10 @@ MET_REGEX_MATCHER = re.compile(MET_REGEX, re.DOTALL)
 
 TIME_INTERVAL = r"blahblahblahfakeregexdon'tmatchme"
 
-FLORD_SAMPLE_REGEX = r"(\d+/\d+/\d+\s+\d+:\d+:\d+(\s+\d+){5}\r\n)"
+FLORD_SAMPLE_REGEX = r"(\d+/\d+/\d+\s+\d+:\d+:\d+(\s+-?\d+){5}\r\n)"
 FLORD_SAMPLE_REGEX_MATCHER = re.compile(FLORD_SAMPLE_REGEX)
 
-FLORT_SAMPLE_REGEX = r"(\d+/\d+/\d+\s+\d+:\d+:\d+(\s+\d+){7}\r\n)"
+FLORT_SAMPLE_REGEX = r"(\d+/\d+/\d+\s+\d+:\d+:\d+(\s+-?\d+){7}\r\n)"
 FLORT_SAMPLE_REGEX_MATCHER = re.compile(FLORT_SAMPLE_REGEX)
 
 class FlordDMNU_ParticleKey(BaseEnum):
@@ -362,8 +362,8 @@ class FlortDMNU_Particle(FlordDMNU_Particle):
             m3d = int(re.compile(self.LINE07).search(self.raw_data).group(1))
             m3s = float(re.compile(self.LINE10).search(self.raw_data).group(1))
 
-            result = result.append({DataParticleKey.VALUE_ID: FlortDMNU_ParticleKey.M3D, DataParticleKey.VALUE: m3d})
-            result = result.append({DataParticleKey.VALUE_ID: FlortDMNU_ParticleKey.M3S, DataParticleKey.VALUE: m3s})
+            result.append({DataParticleKey.VALUE_ID: FlortDMNU_ParticleKey.M3D, DataParticleKey.VALUE: m3d})
+            result.append({DataParticleKey.VALUE_ID: FlortDMNU_ParticleKey.M3S, DataParticleKey.VALUE: m3s})
 
             log.debug('FlortDMNU parsed particle = %r', result)
 
@@ -443,7 +443,7 @@ class FlordDSample_Particle(DataParticle):
         """
         log.debug("raw data = %r", self.raw_data)
 
-        match = FlortDSample_Particle.regex_compiled().search(self.raw_data)
+        match = FlordDSample_Particle.regex_compiled().search(self.raw_data)
 
         if not match:
             raise SampleException("No regex match of parsed sample data: [%s]" % self.raw_data)
@@ -820,11 +820,14 @@ class Protocol(CommandResponseInstrumentProtocol):
             # Listen to data stream to determine the current state
             if self.__instrument_class__ == FLORT_CLASS:
                 res_regex = FLORT_SAMPLE_REGEX_MATCHER
+                sample_regex = FlortDSample_Particle.regex_compiled()
             else:
                 res_regex = FLORD_SAMPLE_REGEX_MATCHER
+                sample_regex = FlordDSample_Particle.regex_compiled()
+
             response = self._get_response(timeout=TIMEOUT, response_regex=res_regex)[0]
 
-            if FlortDSample_Particle.regex_compiled().search(response):
+            if sample_regex.search(response):
                 next_state = DriverProtocolState.AUTOSAMPLE
                 next_agent_state = ResourceAgentState.STREAMING
             else:
