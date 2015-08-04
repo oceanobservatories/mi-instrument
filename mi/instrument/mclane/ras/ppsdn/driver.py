@@ -7,6 +7,7 @@ Release notes:
 
 initial version
 """
+from mi.core.common import Units, Prefixes
 from mi.core.instrument.instrument_driver import SingleConnectionInstrumentDriver
 
 __author__ = 'Dan Mergens'
@@ -219,9 +220,10 @@ class Protocol(McLaneProtocol):
                              self._int_to_string,
                              type=ParameterDictType.INT,
                              default_value=FLUSH_VOLUME,
-                             units='mL',
+                             units=Prefixes.MILLI + Units.LITER,
                              startup_param=True,
-                             display_name="flush_volume",
+                             display_name="Flush Volume",
+                             description="Amount of sea water to flush prior to taking sample: (10 - 20000)",
                              visibility=ParameterDictVisibility.IMMUTABLE)
         self._param_dict.add(Parameter.FLUSH_FLOWRATE,
                              r'Flush Flow Rate: (.*)mL/min',
@@ -229,9 +231,10 @@ class Protocol(McLaneProtocol):
                              self._int_to_string,
                              type=ParameterDictType.INT,
                              default_value=FLUSH_RATE,
-                             units='mL/min',
+                             units=Prefixes.MILLI + Units.LITER + '/' + Units.MINUTE,
                              startup_param=True,
-                             display_name="flush_flow_rate",
+                             display_name="Flush Flow Rate",
+                             description="Rate at which to flush: (100 - 250)",
                              visibility=ParameterDictVisibility.IMMUTABLE)
         self._param_dict.add(Parameter.FLUSH_MINFLOW,
                              r'Flush Min Flow: (.*)mL/min',
@@ -239,9 +242,11 @@ class Protocol(McLaneProtocol):
                              self._int_to_string,
                              type=ParameterDictType.INT,
                              default_value=FLUSH_MIN_RATE,
-                             units='mL/min',
+                             units=Prefixes.MILLI + Units.LITER + '/' + Units.MINUTE,
                              startup_param=True,
-                             display_name="flush_min_flow",
+                             display_name="Flush Minimum Flow",
+                             description="If the flow rate falls below this value the flush will be terminated, "
+                                         "obstruction suspected: (75 - 100)",
                              visibility=ParameterDictVisibility.IMMUTABLE)
         self._param_dict.add(Parameter.FILL_VOLUME,
                              r'Fill Volume: (.*)mL',
@@ -249,9 +254,10 @@ class Protocol(McLaneProtocol):
                              self._int_to_string,
                              type=ParameterDictType.INT,
                              default_value=FILL_VOLUME,
-                             units='mL',
+                             units=Prefixes.MILLI + Units.LITER,
                              startup_param=True,
-                             display_name="fill_volume",
+                             display_name="Fill Volume",
+                             description="Amount of seawater to run through the collection filter (10 - 20000)",
                              visibility=ParameterDictVisibility.IMMUTABLE)
         self._param_dict.add(Parameter.FILL_FLOWRATE,
                              r'Fill Flow Rate: (.*)mL/min',
@@ -259,9 +265,10 @@ class Protocol(McLaneProtocol):
                              self._int_to_string,
                              type=ParameterDictType.INT,
                              default_value=FILL_RATE,
-                             units='mL/min',
+                             units=Prefixes.MILLI + Units.LITER + '/' + Units.MINUTE,
                              startup_param=True,
-                             display_name="fill_flow_rate",
+                             display_name="Fill Flow Rate",
+                             description="Flow rate during sampling: (100 - 250)",
                              visibility=ParameterDictVisibility.IMMUTABLE)
         self._param_dict.add(Parameter.FILL_MINFLOW,
                              r'Fill Min Flow: (.*)mL/min',
@@ -269,9 +276,11 @@ class Protocol(McLaneProtocol):
                              self._int_to_string,
                              type=ParameterDictType.INT,
                              default_value=FILL_MIN_RATE,
-                             units='mL/min',
+                             units=Prefixes.MILLI + Units.LITER + '/' + Units.MINUTE,
                              startup_param=True,
-                             display_name="fill_min_flow",
+                             display_name="Fill Minimum Flow",
+                             description="If the flow rate falls below this value the fill will be terminated, "
+                                         "obstruction suspected: (75 - 100)",
                              visibility=ParameterDictVisibility.IMMUTABLE)
         self._param_dict.add(Parameter.CLEAR_VOLUME,
                              r'Reverse Volume: (.*)mL',
@@ -279,9 +288,10 @@ class Protocol(McLaneProtocol):
                              self._int_to_string,
                              type=ParameterDictType.INT,
                              default_value=CLEAR_VOLUME,
-                             units='mL',
+                             units=Prefixes.MILLI + Units.LITER,
                              startup_param=True,
-                             display_name="clear_volume",
+                             display_name="Clear Volume",
+                             description="Amount of sea water to flush the home port after taking sample: (10 - 20000)",
                              visibility=ParameterDictVisibility.IMMUTABLE)
         self._param_dict.add(Parameter.CLEAR_FLOWRATE,
                              r'Reverse Flow Rate: (.*)mL/min',
@@ -289,9 +299,10 @@ class Protocol(McLaneProtocol):
                              self._int_to_string,
                              type=ParameterDictType.INT,
                              default_value=CLEAR_RATE,
-                             units='mL/min',
+                             units=Prefixes.MILLI + Units.LITER + '/' + Units.MINUTE,
                              startup_param=True,
-                             display_name="clear_flow_rate",
+                             display_name="Clear Flow Rate",
+                             description="Rate at which to flush: (100 - 250)",
                              visibility=ParameterDictVisibility.IMMUTABLE)
         self._param_dict.add(Parameter.CLEAR_MINFLOW,
                              r'Reverse Min Flow: (.*)mL/min',
@@ -299,9 +310,11 @@ class Protocol(McLaneProtocol):
                              self._int_to_string,
                              type=ParameterDictType.INT,
                              default_value=CLEAR_MIN_RATE,
-                             units='mL/min',
+                             units=Prefixes.MILLI + Units.LITER + '/' + Units.MINUTE,
                              startup_param=True,
-                             display_name="clear_min_flow",
+                             display_name="Clear Minimum Flow",
+                             description="If the flow rate falls below this value the reverse flush will be terminated, "
+                                         "obstruction suspected: (75 - 100)",
                              visibility=ParameterDictVisibility.IMMUTABLE)
 
         self._param_dict.set_value(Parameter.FLUSH_VOLUME, FLUSH_VOLUME)

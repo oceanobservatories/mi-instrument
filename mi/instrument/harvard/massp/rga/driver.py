@@ -62,7 +62,6 @@ STATUS = 'status'
 
 
 class DriverUnits(Units):
-    COUNT = 'count'
     AMU = 'amu'
 
 
@@ -461,7 +460,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                 name: 'Steps per AMU',
                 desc: 'Set the number of steps executed per amu of analog scan.',
                 val_desc: 'The parameter specifies the number of steps-per-amu.',
-                units: DriverUnits.COUNT,
+                units: DriverUnits.COUNTS,
             },
             Parameter.MI: {
                 name: 'Initial Mass',
@@ -491,7 +490,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                       'during an analog scan under the current scan conditions.',
                 val_desc: 'Total number of ion currents to be transmitted.  Does not include the four extra' +
                           'bytes for total pressure included when performing an analog scan.',
-                units: DriverUnits.COUNT
+                units: DriverUnits.COUNTS
             },
             Parameter.HV: {
                 name: 'High Voltage CDEM',
