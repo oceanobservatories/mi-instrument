@@ -13,6 +13,7 @@ __license__ = 'Apache 2.0'
 
 from mi.platform.util.network import PlatformNode
 from mi.platform.util.network import AttrNode
+from mi.platform.util.network import MissionNode
 from mi.platform.util.network import PortNode
 from mi.platform.util.network import InstrumentNode
 from mi.platform.util.network import NetworkDefinition
@@ -148,6 +149,11 @@ class NetworkUtil(object):
                     assert 'units' in attr_defn
                     pn.add_attribute(AttrNode(attr_id, attr_defn))
 
+            def build_and_add_missions_to_node(missions, pn):
+                for mission_defn in missions:
+                    mission_id = mission_defn['mission_id']
+                    pn.add_mission(MissionNode(mission_id))
+
             def build_node(platObj, parent_node):
                 assert 'platform_id' in platObj
                 assert 'platform_types' in platObj
@@ -157,10 +163,12 @@ class NetworkUtil(object):
                     assert platform_type in ndef._platform_types
                 ports = platObj['ports'] if 'ports' in platObj else []
                 attrs = platObj['attrs'] if 'attrs' in platObj else []
+                missions = platObj['missions'] if 'missions' in platObj else []
                 pn = create_node(platform_id, platform_types)
                 parent_node.add_subplatform(pn)
                 build_and_add_ports_to_node(ports, pn)
                 build_and_add_attrs_to_node(attrs, pn)
+                build_and_add_missions_to_node(missions, pn)
                 if 'subplatforms' in platObj:
                     for subplat in platObj['subplatforms']:
                         subplat_id = subplat['platform_id']
@@ -548,3 +556,5 @@ def _get_attr_id(attr_defn):
             "attr_defn = %s" % attr_defn)
 
     return attr_id
+
+

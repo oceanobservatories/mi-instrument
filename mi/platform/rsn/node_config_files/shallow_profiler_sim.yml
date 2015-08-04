@@ -1,0 +1,38 @@
+node_meta_data:
+    node_id_name: Shallow_Profiler_Jesse_Office
+    description: Shallow_Profiler_Jesse_Office
+    location: Ben Hall
+    node_type: shallow Profiler
+    reference_designator: SC01A
+    nms_source : 0
+    oms_sample_rate : 3
+
+node_streams:
+  sec_node_port:
+    - port_type: Instrument
+      port_num: 1
+      name: BRAKE-IP2
+
+    - port_type: Expansion
+      port_num: 0
+      name: 04-EP1
+
+    - port_type: Instrument
+      port_num: 0
+      name: 05-IP1
+
+    - port_type: Expansion
+      port_num: 1
+      name: VFD-EP2
+
+  node_eng_data:
+    - name: 00-ENG
+
+  winch_info:
+    - name: 00-WINCH
+
+port_info:
+    J05-IP1:
+       port_oms_port_cntl_id : '0'
+    J06-IP2:
+       port_oms_port_cntl_id : '1'

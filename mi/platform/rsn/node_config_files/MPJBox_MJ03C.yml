@@ -1,0 +1,40 @@
+node_meta_data:
+  description: MPJBox at International District
+  location: INT1
+  node_id_name: SN0028-MJ03C
+  node_type: MPJBox
+  oms_sample_rate: 60
+  reference_designator: MJ03C
+  serial_number: SN0028
+
+node_streams:
+  sec_node_port:
+    - port_type: Instrument
+      port_num: 0
+      name: 05-IP1
+    - port_type: Instrument
+      port_num: 1
+      name: 06-IP2
+    - port_type: Instrument
+      port_num: 2
+      name: 07-IP3
+    - port_type: Instrument
+      port_num: 4
+      name: 09-IP5
+    - port_type: Instrument
+      port_num: 5
+      name: 10-IP6
+  node_eng_data:
+    - name: 00-ENG
+
+port_info:
+  J05-IP1:
+    port_oms_port_cntl_id: 0
+  J06-IP2:
+    port_oms_port_cntl_id: 1
+  J07-IP3:
+    port_oms_port_cntl_id: 2
+  J09-IP5:
+    port_oms_port_cntl_id: 4
+  J10-IP6:
+    port_oms_port_cntl_id: 5
