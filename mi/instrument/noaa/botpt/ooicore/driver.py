@@ -1032,6 +1032,10 @@ class Protocol(CommandResponseInstrumentProtocol):
                               self._param_dict.get(Parameter.HEAT_DURATION),
                               response_regex=RegexResponse.HEAT)
             self._param_dict.set_value(Parameter.HEATER_ON, True)
+
+            # Want to disable auto leveling when the heater is on
+            self._param_dict.set_value(Parameter.AUTO_RELEVEL, False)
+
             self._schedule_heater_timeout()
             self._driver_event(DriverAsyncEvent.CONFIG_CHANGE)
         return None, (None, None)
