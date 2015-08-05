@@ -8,6 +8,7 @@
 """
 import Queue
 import importlib
+import json
 import traceback
 import threading
 import time
@@ -23,6 +24,8 @@ from ooi.logging import log
 from logging import _levelNames
 from mi.core.common import BaseEnum
 from mi.core.exceptions import UnexpectedError, InstrumentCommandException, InstrumentException
+
+log.info('help!')
 
 __author__ = 'Peter Cable'
 __license__ = 'Apache 2.0'
@@ -117,11 +120,11 @@ class StatusThread(threading.Thread):
 
 
 class CommandHandler(threading.Thread):
-    def __init__(self, wrapper, events, worker_url):
+    def __init__(self, wrapper, worker_url):
         super(CommandHandler, self).__init__()
         self.wrapper = wrapper
         self.driver = wrapper.driver
-        self.events = events
+        self.events = wrapper.events
         self.worker_url = worker_url
         self._stop = False
 
@@ -137,6 +140,8 @@ class CommandHandler(threading.Thread):
     def _execute(self, command, args, kwargs):
 
         _func = self._routes.get(command, self._send_command)
+        if not isinstance(args, (list, tuple)):
+            args = (args,)
 
         try:
             reply = _func(command, *args, **kwargs)
@@ -232,26 +237,90 @@ class CommandHandler(threading.Thread):
         driver for processing and returning the result.
         """
         context = zmq.Context.instance()
-        sock = context.socket(zmq.REP)
+        sock = context.socket(zmq.REQ)
         sock.connect(self.worker_url)
+        sock.send('READY')
+        address = None
 
         while not self._stop:
             try:
-                msg = sock.recv_json()
+                address, _, request = sock.recv_multipart()
+                msg = json.loads(request)
+                log.info('received message: %r', msg)
                 reply = self.cmd_driver(msg)
-                sock.send_json(reply)
+                sock.send_multipart([address, '', json.dumps(reply)])
+                # sock.send_json(reply)
             except zmq.ContextTerminated:
                 log.info('ZMQ Context terminated, exiting worker thread')
                 break
             except zmq.ZMQError:
                 # If we have an error on the socket we'll need to restart it
-                sock = context.socket(zmq.REP)
+                sock = context.socket(zmq.REQ)
                 sock.connect(self.worker_url)
+                sock.send('READY')
             except Exception as e:
                 log.error('Exception in command loop: %r', e)
-                sock.send_json(build_event(DriverAsyncEvent.ERROR, repr(e)))
+                if address is not None:
+                    event = build_event(DriverAsyncEvent.ERROR, repr(e))
+                    sock.send_multipart([address, '', event])
 
         sock.close()
+
+
+class LoadBalancer(object):
+    """
+    The load balancer creates two router connections.
+    Workers and clients create REQ sockets to connect. A worker will
+    send 'READY' upon initialization and subsequent "requests" will be
+    the results from the previous command.
+    """
+    def __init__(self, wrapper, num_workers, worker_url='inproc://workers'):
+        self.wrapper = wrapper
+        self.num_workers = num_workers
+        self.worker_url = worker_url
+        self.context = zmq.Context.instance()
+        self.frontend = self.context.socket(zmq.ROUTER)
+        self.backend = self.context.socket(zmq.ROUTER)
+        self.port = self.frontend.bind_to_random_port('tcp://*')
+        self.backend.bind(worker_url)
+        self._start_workers()
+
+    def run(self):
+        workers = []
+        poller = zmq.Poller()
+
+        poller.register(self.backend, zmq.POLLIN)
+        while True:
+            sockets = dict(poller.poll())
+
+            if self.backend in sockets:
+                request = self.backend.recv_multipart()
+                log.info('received backend request: %r', request)
+                worker, _, client = request[:3]
+                if not workers:
+                    poller.register(self.frontend, zmq.POLLIN)
+
+                workers.append(worker)
+                if client != 'READY' and len(request) > 3:
+                    _, reply = request[3:]
+                    log.info('sending backend reply: %r', (client, reply))
+                    self.frontend.send_multipart([client, '', reply])
+
+            if self.frontend in sockets:
+                client, _, request = self.frontend.recv_multipart()
+                log.info('received frontend request: %r', (client, request))
+                worker = workers.pop(0)
+
+                log.info('sending frontend request: %r', (worker, client, request))
+                self.backend.send_multipart([worker, '', client, '', request])
+                if not workers:
+                    poller.unregister(self.frontend)
+
+    def _start_workers(self):
+        for _ in xrange(self.num_workers):
+            t = CommandHandler(self.wrapper, self.worker_url)
+            t.setDaemon(True)
+            t.start()
 
 
 class DriverWrapper(object):
@@ -345,27 +414,36 @@ class DriverWrapper(object):
         self.evt_thread.start()
         self.messaging_started = True
 
-        for _ in range(self.num_workers):
-            worker = CommandHandler(self, self.events, self.worker_url)
-            worker.start()
+        # for _ in range(self.num_workers):
+        #     worker = CommandHandler(self, self.events, self.worker_url)
+        #     worker.start()
+        #
+        # context = zmq.Context.instance()
+        # clients = context.socket(zmq.ROUTER)
+        # self.port = clients.bind_to_random_port('tcp://*')
+        # workers = context.socket(zmq.DEALER)
+        # workers.bind(self.worker_url)
+        #
+        # # now that we have a port, start our status thread
+        # self.status_thread = StatusThread(self)
+        # self.status_thread.start()
+        #
+        # # self.proxy = zmq.devices.ThreadProxy(zmq.ROUTER, zmq.DEALER)
+        # # self.proxy.bind_in(self.cmd_host_string)
+        # # self.proxy.bind_out(self.worker_url)
+        # # self.proxy.start()
+        # t = threading.Thread(target=zmq.proxy, args=(clients, workers))
+        # t.daemon = True
+        # t.start()
 
-        context = zmq.Context.instance()
-        clients = context.socket(zmq.ROUTER)
-        self.port = clients.bind_to_random_port('tcp://*')
-        workers = context.socket(zmq.DEALER)
-        workers.bind(self.worker_url)
+        load_balancer = LoadBalancer(self, self.num_workers)
+        self.port = load_balancer.port
 
         # now that we have a port, start our status thread
         self.status_thread = StatusThread(self)
         self.status_thread.start()
 
-        # self.proxy = zmq.devices.ThreadProxy(zmq.ROUTER, zmq.DEALER)
-        # self.proxy.bind_in(self.cmd_host_string)
-        # self.proxy.bind_out(self.worker_url)
-        # self.proxy.start()
-        t = threading.Thread(target=zmq.proxy, args=(clients, workers))
-        t.daemon = True
-        t.start()
+        load_balancer.run()
 
         self.events.put(build_event(DriverAsyncEvent.DRIVER_CONFIG,
                                     'started on port %d' % self.port))
