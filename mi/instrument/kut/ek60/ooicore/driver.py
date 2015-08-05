@@ -528,6 +528,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                              str,
                              type=ParameterDictType.STRING,
                              display_name="Schedule",
+                             description="Large block of text used to create the .yaml file defining the sampling schedule.",
                              startup_param=True,
                              default_value=yaml.dump(DEFAULT_CONFIG, default_flow_style=False))
 
@@ -537,6 +538,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                              str,
                              type=ParameterDictType.STRING,
                              display_name="FTP IP Address",
+                             description="IP address the driver uses to connect to the instrument FTP server.",
                              startup_param=True,
                              default_value=DEFAULT_HOST)
 
@@ -546,6 +548,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                              str,
                              type=ParameterDictType.STRING,
                              display_name="FTP User Name",
+                             description="Username used to connect to the FTP server.",
                              startup_param=True,
                              default_value=USER_NAME)
 
@@ -555,6 +558,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                              str,
                              type=ParameterDictType.STRING,
                              display_name="FTP Password",
+                             description="Password used to connect to the FTP server.",
                              startup_param=True,
                              default_value=PASSWORD)
 
@@ -564,6 +568,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                              str,
                              type=ParameterDictType.STRING,
                              display_name="FTP Port",
+                             description="Location on the OOI infrastructure where .raw files and echogram images will be stored.",
                              startup_param=True,
                              default_value=DEFAULT_PORT)
 
