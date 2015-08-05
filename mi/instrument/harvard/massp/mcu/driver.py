@@ -615,8 +615,8 @@ class Protocol(CommandResponseInstrumentProtocol):
                              startup_param=True,
                              display_name='Data Telegram Interval in Sample',
                              units=Prefixes.MILLI + Units.SECOND,
-                             description='The interval in milliseconds between successive MCU data telegrams' +
-                                         'while in the SAMPLE/CAL state')
+                             description='The interval between successive MCU data telegrams' +
+                                         ' while in the SAMPLE/CAL state: (1 - 30000)')
         self._param_dict.add(Parameter.SAMPLE_TIME,
                              '',
                              None,
@@ -625,7 +625,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                              startup_param=True,
                              display_name='Sample Cycle Time',
                              units=Units.MINUTE,
-                             description='The length of each portion of the sample cycle')
+                             description='The length of each portion of the sample cycle: (1 - 99)')
         self._param_dict.add(Parameter.ONE_MINUTE,
                              '',
                              None,
@@ -636,7 +636,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                              default_value=60000,
                              display_name='Length of One Minute',
                              units=Prefixes.MILLI + Units.SECOND,
-                             description='MCU timing constant representing the number of seconds per minute')
+                             description='MCU timing constant representing the number of seconds per minute: (1 - 99999)')
         self._param_dict.add(Parameter.ERROR_REASON,
                              '',
                              None,
@@ -645,7 +645,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                              type=ParameterDictType.STRING,
                              value='',
                              display_name='Reason for Error State',
-                             description='Reason for Error State')
+                             description='MCU reason for error state.')
 
     def _build_command_dict(self):
         """

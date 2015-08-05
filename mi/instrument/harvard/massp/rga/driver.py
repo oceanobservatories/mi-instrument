@@ -428,28 +428,28 @@ class Protocol(CommandResponseInstrumentProtocol):
         parameters = {
             Parameter.ID: {
                 name: 'RGA ID String',
-                desc: 'RGA ID String',
+                desc: '',
             },
             Parameter.EE: {
                 name: 'Electron Energy',
-                desc: 'The desired electron ionization energy',
+                desc: 'The desired electron ionization energy: (25 - 105)',
                 units: DriverUnits.ELECTRONVOLT,
                 val_desc: 'The desired electron ionization energy in units of eV'
             },
             Parameter.IE: {
                 name: 'Ion Energy',
-                desc: 'Set the Ion Energy to one of two possible levels: Low (8eV) or High(12eV)',
+                desc: 'The ion energy: (0:8eV | 1:12eV)',
                 val_desc: 'Ion energy level: 0 for Low and 1 for High',
             },
             Parameter.VF: {
                 name: 'Focus Plate Voltage',
-                desc: 'The focus plate voltage in the ionizer',
+                desc: 'The focus plate voltage in the ionizer: (0 - 150)',
                 val_desc: 'The parameter represents the magnitude of the biasing voltage (negative) in units of volts.',
                 units: DriverUnits.VOLT,
             },
             Parameter.NF: {
                 name: 'Noise Floor',
-                desc: 'Set the rate and detection limit for ion current measurements.',
+                desc: 'Rate and detection limit for ion current measurements: (0 - 7)',
                 val_desc: 'The parameter represents the noise-floor level desired. Lower parameter values ' +
                           'correspond to lower baseline noise, better detection limits and increased measurement ' +
                           'times. Please refer to the Electrometer section of the RGA Electronics Control Unit ' +
@@ -458,35 +458,35 @@ class Protocol(CommandResponseInstrumentProtocol):
             },
             Parameter.SA: {
                 name: 'Steps per AMU',
-                desc: 'Set the number of steps executed per amu of analog scan.',
+                desc: 'Number of steps executed per amu of analog scan: (10 - 25)',
                 val_desc: 'The parameter specifies the number of steps-per-amu.',
                 units: DriverUnits.COUNTS,
             },
             Parameter.MI: {
                 name: 'Initial Mass',
-                desc: 'The initial scan mass',
+                desc: 'The initial scan mass: (1 - 200)',
                 units: DriverUnits.AMU,
             },
             Parameter.MF: {
                 name: 'Final Mass',
-                desc: 'The final scan mass',
+                desc: 'The final scan mass: (1 - 200)',
                 units: DriverUnits.AMU,
             },
             Parameter.FL: {
                 name: 'Electron Emission Current',
-                desc: 'Set the electron emission current level in the ionizer.',
+                desc: 'Electron emission current level in the ionizer: (0 - 3.5)',
                 val_desc: 'The parameter represents the desired electron emission current.',
                 units: Prefixes.MILLI + Units.AMPERE
             },
             Parameter.FL_ACTUAL: {
                 name: 'Actual Electron Emission Current',
-                desc: 'The actual electron emission current level in the ionizer',
+                desc: 'The actual electron emission current level in the ionizer.',
                 val_desc: 'The parameter represents the actual electron emission current.',
                 units: Prefixes.MILLI + Units.AMPERE
             },
             Parameter.AP: {
                 name: 'Analog Scan Points',
-                desc: 'The total number of ion currents that will be measured and transmitted' +
+                desc: 'The total number of ion currents that will be measured and transmitted ' +
                       'during an analog scan under the current scan conditions.',
                 val_desc: 'Total number of ion currents to be transmitted.  Does not include the four extra' +
                           'bytes for total pressure included when performing an analog scan.',
@@ -494,18 +494,18 @@ class Protocol(CommandResponseInstrumentProtocol):
             },
             Parameter.HV: {
                 name: 'High Voltage CDEM',
-                desc: 'Electron Multiplier High Voltage Bias setting',
+                desc: 'Electron multiplier high voltage bias setting: (0:disables CDEM, 10 - 2490)',
                 val_desc: '0 disables the CDEM, values from 10-2490 enable the CDEM and specify the CDEM bias voltage',
                 units: Units.VOLT
             },
             Parameter.ER: {
                 name: 'Status Byte',
-                desc: 'Bit-mapped value representing any errors detected by the RGA',
+                desc: 'Bit-mapped value representing any errors detected by the RGA.',
                 val_desc: '0 indicates no errors detected.  See the RGA manual if this value is non-zero.',
             },
             Parameter.ERROR_REASON: {
                 name: 'RGA Error Reason',
-                desc: 'Reason for RGA error state'
+                desc: 'Reason for RGA error state.'
             }
         }
 
