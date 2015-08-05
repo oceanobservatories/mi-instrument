@@ -1,0 +1,7 @@
+comm:
+  command_port: 9000
+  data_port: 9001
+  device_addr: localhost
+  device_port: 8100
+  host: localhost
+  method: antelope
