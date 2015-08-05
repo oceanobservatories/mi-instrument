@@ -17,12 +17,13 @@ import time
 import datetime
 import struct
 import ctypes
+from ooi_port_agent import lrc
 
 from mi.core.log import get_logger
 
 log = get_logger()
 
-from mi.core.exceptions import InstrumentConnectionException
+from mi.core.exceptions import InstrumentConnectionException, InstrumentException
 
 HEADER_SIZE = 16  # BBBBHHII = 1 + 1 + 1 + 1 + 2 + 2 + 4 + 4 = 16
 
@@ -74,6 +75,7 @@ class PortAgentPacket:
     DIGI_CMD = 7
     DIGI_RSP = 8
     HEARTBEAT = 9
+    PICKLED_FROM_INSTRUMENT = 10
 
     def __init__(self, packet_type=None):
         self.__header = None
@@ -149,15 +151,16 @@ class PortAgentPacket:
         return checksum
 
     def verify_checksum(self):
-        checksum = 0
-        for i in range(HEADER_SIZE):
-            if i < OFFSET_P_CHECKSUM_LOW or i > OFFSET_P_CHECKSUM_HIGH:
-                checksum ^= struct.unpack_from('B', self.__header[i])[0]
+        checksum = lrc.lrc(self.__header, lrc.lrc(self.__data))
+        # checksum = 0
+        # for i in range(HEADER_SIZE):
+        #     if i < OFFSET_P_CHECKSUM_LOW or i > OFFSET_P_CHECKSUM_HIGH:
+        #         checksum ^= struct.unpack_from('B', self.__header[i])[0]
+        #
+        # for i in range(self.__length):
+        #     checksum ^= struct.unpack_from('B', self.__data[i])[0]
 
-        for i in range(self.__length):
-            checksum ^= struct.unpack_from('B', self.__data[i])[0]
-
-        if checksum == self.__recv_checksum:
+        if checksum == 0:
             self.__isValid = True
         else:
             self.__isValid = False
@@ -733,7 +736,7 @@ class Listener(threading.Thread):
         else:
             self.callback_raw(pa_packet)
 
-            if packet_type == PortAgentPacket.DATA_FROM_INSTRUMENT:
+            if packet_type in [PortAgentPacket.DATA_FROM_INSTRUMENT, PortAgentPacket.PICKLED_FROM_INSTRUMENT]:
                 self.callback_data(pa_packet)
             elif packet_type == PortAgentPacket.PORT_AGENT_CONFIG:
                 self.callback_config(pa_packet)
@@ -825,6 +828,10 @@ class Listener(threading.Thread):
                 self._done = True
 
             except Exception as e:
+                if not isinstance(e, InstrumentException):
+                    e = InstrumentException(e.message)
+
+                log.error(e.get_triple())
                 self.default_callback_error(e)
 
         log.info('Port_agent_client thread done listening; going away.')
