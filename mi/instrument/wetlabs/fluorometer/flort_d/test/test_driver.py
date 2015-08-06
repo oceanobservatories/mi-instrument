@@ -60,7 +60,7 @@ from mi.instrument.wetlabs.fluorometer.flort_d.test.sample_data import SAMPLE_MN
 from mi.instrument.wetlabs.fluorometer.flort_d.test.sample_data import SAMPLE_SAMPLE_RESPONSE
 from mi.instrument.wetlabs.fluorometer.flort_d.test.sample_data import SAMPLE_MET_RESPONSE
 
-from mi.core.exceptions import InstrumentCommandException, SampleException
+from mi.core.exceptions import InstrumentCommandException, SampleException, InstrumentParameterException
 
 ###
 #   Driver parameters for the tests
@@ -475,6 +475,34 @@ class DriverUnitTest(InstrumentDriverUnitTestCase, DriverTestMixinSub):
         self.assertEqual(cmd, '$dat 041014' + NEWLINE)
         cmd = protocol._build_single_parameter_command('$clk', Parameter.TIME, '010034')
         self.assertEqual(cmd, '$clk 010034' + NEWLINE)
+
+    def test_measurements_per_reported_valid_range(self):
+        """
+        Test that "Number of measurements for each reported value:" handles
+         out of range data cleanly
+        """
+
+        mock_callback = Mock()
+        protocol = Protocol(Prompt, NEWLINE, mock_callback)
+
+        #VALID
+        strval = protocol._int_to_string_inrange(30)
+        self.assertEqual(strval, '30')
+        strval = protocol._int_to_string_inrange(255)
+        self.assertEqual(strval, '255')
+
+        #INVALID: throws exception
+
+
+        with self.assertRaises(InstrumentParameterException):
+            protocol._int_to_string_inrange(-1)
+
+        with self.assertRaises(InstrumentParameterException):
+            protocol._int_to_string_inrange(0)
+
+        with self.assertRaises(InstrumentParameterException):
+            protocol._int_to_string_inrange(355)
+
 
 
 ###############################################################################

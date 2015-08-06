@@ -1311,6 +1311,18 @@ class Protocol(CommandResponseInstrumentProtocol):
         else:
             return str(v)
 
+    def _int_to_string_inrange(self, v):
+        """
+        Validate that integer is in range (between 1 and 255) before returning the string value
+        @param v An int value.
+        @retval a string representing the input (v) parameter
+        @throws InstrumentParameterException if value is not within the range.
+        """
+        if v < 1 or v > 255:
+            raise InstrumentParameterException('Value %s must be between 1 and 255' % (v,))
+        else:
+            return self._int_to_string(v)
+
     def _build_driver_dict(self):
         """
         Populate the driver dictionary with options
@@ -1364,7 +1376,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         self._param_dict.add(Parameter.MEASUREMENTS_PER_REPORTED,
                              FlortDMNU_Particle.LINE03,
                              lambda match: int(match.group(1)),
-                             self._int_to_string,
+                             self._int_to_string_inrange,
                              type=ParameterDictType.INT,
                              expiration=None,
                              visibility=ParameterDictVisibility.READ_WRITE,
