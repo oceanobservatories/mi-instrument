@@ -824,7 +824,7 @@ class WorkhorseProtocol(CommandResponseInstrumentProtocol):
                                  parameter_formatters.get(param),
                                  type=parameter_types.get(param),
                                  display_name=parameter_names.get(param),
-                                 value_description=parameter_descriptions.get(param),
+                                 description=parameter_descriptions.get(param),
                                  startup_param=parameter_startup.get(param, False),
                                  direct_access=parameter_direct.get(param, False),
                                  visibility=parameter_visibility.get(param, ParameterDictVisibility.READ_WRITE),
