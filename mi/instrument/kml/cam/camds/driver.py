@@ -1062,7 +1062,6 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
                              value_description=Parameter.SHUTTER_SPEED[ParameterIndex.DESCRIPTION],
                              startup_param=False,
                              direct_access=False)
-                             #default_value=Parameter.SHUTTER_SPEED[ParameterIndex.D_DEFAULT])
 
         self._param_dict.add(Parameter.CAMERA_GAIN[ParameterIndex.KEY],
                              r'NOT USED',
@@ -1073,7 +1072,6 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
                              value_description=Parameter.CAMERA_GAIN[ParameterIndex.DESCRIPTION],
                              startup_param=False,
                              direct_access=False)
-                             #default_value=Parameter.CAMERA_GAIN[ParameterIndex.D_DEFAULT])
 
         self._param_dict.add(Parameter.LAMP_BRIGHTNESS[ParameterIndex.KEY],
                              r'NOT USED',
@@ -1084,7 +1082,6 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
                              value_description=Parameter.LAMP_BRIGHTNESS[ParameterIndex.DESCRIPTION],
                              startup_param=False,
                              direct_access=False)
-                             #default_value=Parameter.LAMP_BRIGHTNESS[ParameterIndex.D_DEFAULT])
 
         self._param_dict.add(Parameter.FOCUS_SPEED[ParameterIndex.KEY],
                              r'NOT USED',
@@ -1095,7 +1092,6 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
                              value_description=Parameter.FOCUS_SPEED[ParameterIndex.DESCRIPTION],
                              startup_param=False,
                              direct_access=False)
-                             #default_value=Parameter.FOCUS_SPEED[ParameterIndex.D_DEFAULT])
 
         self._param_dict.add(Parameter.FOCUS_POSITION[ParameterIndex.KEY],
                              r'NOT USED',
@@ -1106,7 +1102,6 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
                              value_description=Parameter.FOCUS_POSITION[ParameterIndex.DESCRIPTION],
                              startup_param=False,
                              direct_access=False)
-                             #default_value=Parameter.FOCUS_POSITION[ParameterIndex.D_DEFAULT])
 
         self._param_dict.add(Parameter.ZOOM_SPEED[ParameterIndex.KEY],
                              r'NOT USED',
@@ -1117,7 +1112,6 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
                              value_description=Parameter.ZOOM_SPEED[ParameterIndex.DESCRIPTION],
                              direct_access=False,
                              startup_param=False)
-                             #default_value=Parameter.ZOOM_SPEED[ParameterIndex.D_DEFAULT])
 
         self._param_dict.add(Parameter.IRIS_POSITION[ParameterIndex.KEY],
                              r'NOT USED',
@@ -1128,7 +1122,6 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
                              value_description=Parameter.IRIS_POSITION[ParameterIndex.DESCRIPTION],
                              startup_param=False,
                              direct_access=False)
-                             #default_value=Parameter.IRIS_POSITION[ParameterIndex.D_DEFAULT])
 
         self._param_dict.add(Parameter.ZOOM_POSITION[ParameterIndex.KEY],
                              r'NOT USED',
@@ -1139,7 +1132,6 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
                              value_description=Parameter.ZOOM_POSITION[ParameterIndex.DESCRIPTION],
                              startup_param=False,
                              direct_access=False)
-                             #default_value=Parameter.ZOOM_POSITION[ParameterIndex.D_DEFAULT])
 
         self._param_dict.add(Parameter.PAN_SPEED[ParameterIndex.KEY],
                              r'NOT USED',
@@ -1150,7 +1142,6 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
                              value_description=Parameter.PAN_SPEED[ParameterIndex.DESCRIPTION],
                              startup_param=False,
                              direct_access=False)
-                             #default_value=Parameter.PAN_SPEED[ParameterIndex.D_DEFAULT])
 
         self._param_dict.add(Parameter.TILT_SPEED[ParameterIndex.KEY],
                              r'NOT USED',
@@ -1161,7 +1152,6 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
                              value_description=Parameter.TILT_SPEED[ParameterIndex.DESCRIPTION],
                              startup_param=False,
                              direct_access=False)
-                             #default_value=Parameter.TILT_SPEED[ParameterIndex.D_DEFAULT])
 
         self._param_dict.add(Parameter.SOFT_END_STOPS[ParameterIndex.KEY],
                              r'NOT USED',
@@ -1172,18 +1162,16 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
                              value_description=Parameter.SOFT_END_STOPS[ParameterIndex.DESCRIPTION],
                              startup_param=False,
                              direct_access=False)
-                             #default_value=Parameter.SOFT_END_STOPS[ParameterIndex.D_DEFAULT])
 
         self._param_dict.add(Parameter.PAN_POSITION[ParameterIndex.KEY],
                              r'NOT USED',
                              None,
-                             str, # format before sending sensror
+                             str,
                              type=ParameterDictType.STRING, # meta data
                              display_name=Parameter.PAN_POSITION[ParameterIndex.DISPLAY_NAME],
                              value_description=Parameter.PAN_POSITION[ParameterIndex.DESCRIPTION],
                              startup_param=False,
                              direct_access=False)
-                             #default_value=Parameter.PAN_POSITION[ParameterIndex.D_DEFAULT])
 
         self._param_dict.add(Parameter.TILT_POSITION[ParameterIndex.KEY],
                              r'NOT USED',
@@ -1194,7 +1182,6 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
                              value_description=Parameter.TILT_POSITION[ParameterIndex.DESCRIPTION],
                              startup_param=False,
                              direct_access=False)
-                             #default_value=Parameter.TILT_POSITION[ParameterIndex.D_DEFAULT])
 
         self._param_dict.add(Parameter.SAMPLE_INTERVAL[ParameterIndex.KEY],
                              r'NOT USED',
@@ -1379,6 +1366,9 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
                                                  Parameter.PAN_SPEED[ParameterIndex.KEY],
                                                  Parameter.TILT_SPEED[ParameterIndex.KEY],
                                                  Parameter.ZOOM_SPEED[ParameterIndex.KEY],
+
+                                                 # No response from instrument, busy response to subsequent commands
+                                                 Parameter.SHUTTER_SPEED[ParameterIndex.KEY],
                                                  'ALL']:
 
                 if param in ['DRIVER_PARAMETER_ALL']:
@@ -1479,7 +1469,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
                     if key in [Parameter.CAMERA_MODE[ParameterIndex.KEY],
                                Parameter.IMAGE_RESOLUTION[ParameterIndex.KEY]]:
                         log.debug("Just set Camera parameters, sleeping for 15 seconds")
-                        time.sleep(15)
+                        time.sleep(25)
 
         self._update_params()
 
@@ -2061,19 +2051,18 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
 
         kwargs['timeout'] = 2
 
-        # Before performing capture, update parameters
-        self._update_metadata_params()
-
         capturing_duration = self._param_dict.get(Parameter.AUTO_CAPTURE_DURATION[ParameterIndex.KEY])
 
         if capturing_duration != ZERO_TIME_INTERVAL:
+            # Before performing capture, update parameters
+            self._update_metadata_params()
+
             self.start_scheduled_job(Parameter.AUTO_CAPTURE_DURATION[ParameterIndex.KEY],
                                      ScheduledJob.STOP_CAPTURE,
                                      ProtocolEvent.STOP_CAPTURE)
+            self._do_cmd_resp(InstrumentCmds.START_CAPTURE, *args, **kwargs)
         else:
             log.error("Capturing Duration set to 0: Not Performing Capture.")
-
-        self._do_cmd_resp(InstrumentCmds.START_CAPTURE, *args, **kwargs)
 
     def _handler_command_stop_capture(self, *args, **kwargs):
         """
