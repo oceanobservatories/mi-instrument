@@ -62,6 +62,7 @@ class Parameter(BaseEnum):
     FLUSH_INTERVAL = 'flush_interval'
     DB_ADDR = 'database_address'
     DB_PORT = 'database_port'
+    FILE_LOCATION = 'file_location'
 
 
 class ScheduledJob(BaseEnum):
@@ -160,6 +161,9 @@ class Protocol(InstrumentProtocol):
         self._build_command_dict()
         self._build_driver_dict()
 
+        # Set the base directory for the packet data file location.
+        PacketLog.file_location(self._param_dict.get(Parameter.FILE_LOCATION))
+
         # State state machine in UNKNOWN state.
         self._protocol_fsm.start(ProtocolState.UNKNOWN)
         self._logs = {}
@@ -246,6 +250,17 @@ class Protocol(InstrumentProtocol):
                              description='Postgres database port number',
                              type=ParameterDictType.INT,
                              value_description='Integer port number (default 5432)')
+        self._param_dict.add(Parameter.FILE_LOCATION,
+                             'NA',
+                             str,
+                             str,
+                             visibility=ParameterDictVisibility.IMMUTABLE,
+                             startup_param=True,
+                             default_value="./",
+                             display_name='File Location',
+                             description='Root file path of the packet data files',
+                             type=ParameterDictType.STRING,
+                             value_description='String representing the packet data root file path')
 
     def _build_driver_dict(self):
         """
