@@ -5,4 +5,4 @@ driver_metadata:
   driver_name: adcp
   email: locateSung@gmail.com
   release_notes: Generic Driver for ADCPS-K, ADCPS-I, ADCPT-B and ADCPT-DE
-  version: 0.2.1
+  version: 0.3.1

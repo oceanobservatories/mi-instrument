@@ -657,7 +657,7 @@ class AdcpAncillarySystemDataParticle(DataParticle):
         for key, regex, formatter in [
             (AdcpAncillarySystemDataKey.ADCP_AMBIENT_CURRENT, self.RE01, float),
             (AdcpAncillarySystemDataKey.ADCP_ATTITUDE_TEMP, self.RE02, float),
-            (AdcpAncillarySystemDataKey.ADCP_INTERNAL_MOISTURE, self.RE03, str),
+            (AdcpAncillarySystemDataKey.ADCP_INTERNAL_MOISTURE, self.RE03, lambda hexval: int(hexval[:-1], 16))
         ]:
             match = regex.search(self.raw_data)
             matches[key] = formatter(match.group(1))
