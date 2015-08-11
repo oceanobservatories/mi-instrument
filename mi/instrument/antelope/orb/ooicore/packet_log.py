@@ -75,6 +75,7 @@ class PacketLogHeader(object):
 
 class PacketLog(object):
     TIME_FUDGE_PCNT = 10
+    base_directory = './antelope_data'
 
     def __init__(self):
         self.header = None
@@ -103,7 +104,7 @@ class PacketLog(object):
 
     @property
     def filename(self):
-        return self.header.name + '.' + self.header.time + '.mseed'
+        return PacketLog.base_directory + '/' + self.header.name + '.' + self.header.time + '.mseed'
 
     def add_packet(self, packet):
         if self.header.starttime > packet['time'] or packet['time'] >= self.header.maxtime:

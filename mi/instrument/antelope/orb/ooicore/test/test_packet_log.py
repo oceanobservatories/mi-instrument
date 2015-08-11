@@ -45,9 +45,10 @@ class PacketLogUnitTest(TestCase):
     def test_log_properties(self):
         log = PacketLog()
         log.filehandle = BytesIO()
+        PacketLog.base_directory = './antelope_data'
         log.create(*header_values)
 
-        self.assertEqual(log.filename, 'OO.AXAS1.XX.EHE.1970-01-01T00:00:01.000000.mseed')
+        self.assertEqual(log.filename, './antelope_data/OO.AXAS1.XX.EHE.1970-01-01T00:00:01.000000.mseed')
 
     def test_log_add_packet(self):
         log = PacketLog()

@@ -62,6 +62,7 @@ class Parameter(BaseEnum):
     FLUSH_INTERVAL = 'flush_interval'
     DB_ADDR = 'database_address'
     DB_PORT = 'database_port'
+    FILE_LOCATION = 'file_location'
 
 
 class ScheduledJob(BaseEnum):
@@ -246,6 +247,17 @@ class Protocol(InstrumentProtocol):
                              description='Postgres database port number',
                              type=ParameterDictType.INT,
                              value_description='Integer port number (default 5432)')
+        self._param_dict.add(Parameter.FILE_LOCATION,
+                             'NA',
+                             str,
+                             str,
+                             visibility=ParameterDictVisibility.IMMUTABLE,
+                             startup_param=True,
+                             default_value="./antelope_data",
+                             display_name='File Location',
+                             description='Root file path of the packet data files',
+                             type=ParameterDictType.STRING,
+                             value_description='String representing the packet data root file path')
 
     def _build_driver_dict(self):
         """
@@ -291,6 +303,9 @@ class Protocol(InstrumentProtocol):
 
         if not old_config == new_config:
             self._driver_event(DriverAsyncEvent.CONFIG_CHANGE)
+
+        # Set the base directory for the packet data file location.
+        PacketLog.base_directory = self._param_dict.get(Parameter.FILE_LOCATION)
 
     def _flush(self, close_all=False):
         log.info('flush')
