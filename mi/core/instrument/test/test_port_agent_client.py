@@ -33,11 +33,15 @@ from mi.core.port_agent_simulator import TCPSimulatorServer
 from mi.core.unit_test import MiUnitTest
 from mi.idk.unit_test import InstrumentDriverTestCase
 from mi.idk.unit_test import InstrumentDriverUnitTestCase
+from ooi_port_agent.lrc import lrc
+from mi.core.instrument.instrument_driver import DriverConnectionState
+from mi.idk.exceptions import IDKException
 from mi.core.instrument.port_agent_client import PortAgentClient, PortAgentPacket, Listener
 from mi.core.instrument.port_agent_client import HEADER_SIZE
-from mi.core.instrument.instrument_driver import DriverConnectionState
+from mi.core.instrument.port_agent_client import py_lrc
 from mi.core.exceptions import InstrumentConnectionException
-from mi.instrument.seabird.sbe37smb.ooicore.driver import SBE37Driver
+from mi.instrument.seabird.sbe16plus_v2.ctdpf_jb.driver import InstrumentDriver
+
 
 
 # MI logger
@@ -302,7 +306,7 @@ class PAClientUnitTestCase(InstrumentDriverUnitTestCase):
         Test that when the the port agent client cannot initially connect, it
         raises an InstrumentConnectionException
         """
-        driver = SBE37Driver(self._got_data_event_callback)
+        driver = InstrumentDriver(self._got_data_event_callback)
         driver._autoconnect = False
 
         current_state = driver.get_resource_state()
@@ -314,12 +318,16 @@ class PAClientUnitTestCase(InstrumentDriverUnitTestCase):
         current_state = driver.get_resource_state()
         self.assertEqual(current_state, DriverConnectionState.DISCONNECTED)
 
-
         # Try to connect: it should not because there is no port agent running.
         # The state should remain DISCONNECTED
         driver.connect()
         current_state = driver.get_resource_state()
         self.assertEqual(current_state, DriverConnectionState.DISCONNECTED)
+
+    def test_lrc(self):
+        test_data = 'this is a test'
+
+        assert lrc(test_data) == py_lrc(test_data)
 
 
 @attr('UNIT', group='mi')
