@@ -547,7 +547,7 @@ class ADCPTMixin(DriverTestMixin):
     _pt2_dict = {
         AdcpAncillarySystemDataKey.ADCP_AMBIENT_CURRENT: {'type': float, 'value': 20.32},
         AdcpAncillarySystemDataKey.ADCP_ATTITUDE_TEMP: {'type': float, 'value': 24.65},
-        AdcpAncillarySystemDataKey.ADCP_INTERNAL_MOISTURE: {'type': unicode, 'value': "8F0Ah"}
+        AdcpAncillarySystemDataKey.ADCP_INTERNAL_MOISTURE: {'type': int, 'value': 36618}
     }
 
     _pt4_dict = {
