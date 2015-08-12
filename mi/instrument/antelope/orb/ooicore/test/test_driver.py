@@ -41,6 +41,7 @@ antelope_startup_config = {
             Parameter.FLUSH_INTERVAL: 60,
             Parameter.REFDES: 'test',
             Parameter.SOURCE_REGEX: '.*',
+            Parameter.FILE_LOCATION: '/antelope_data/',
         }
 }
 
@@ -101,6 +102,7 @@ class AntelopeTestMixinSub(DriverTestMixin):
         Parameter.FLUSH_INTERVAL: {TYPE: int, READONLY: True, DA: True, STARTUP: True, DEFAULT: 60, VALUE: 60},
         Parameter.REFDES: {TYPE: str, READONLY: True, DA: True, STARTUP: True, DEFAULT: 'test', VALUE: 'test'},
         Parameter.SOURCE_REGEX: {TYPE: str, READONLY: True, DA: True, STARTUP: True, DEFAULT: '.*', VALUE: '.*'},
+        Parameter.FILE_LOCATION: {TYPE: str, READONLY: True, DA: True, STARTUP: True, DEFAULT: '/antelope_data/', VALUE: '/antelope_data/'},
     }
 
     _samples = []
