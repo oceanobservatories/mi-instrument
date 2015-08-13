@@ -1,3 +1,4 @@
+import os
 from datetime import datetime
 
 from obspy.core import Stats
@@ -75,7 +76,7 @@ class PacketLogHeader(object):
 
 class PacketLog(object):
     TIME_FUDGE_PCNT = 10
-    base_directory = './antelope_data'
+    base_dir = './antelope_data'
 
     def __init__(self):
         self.header = None
@@ -104,7 +105,17 @@ class PacketLog(object):
 
     @property
     def filename(self):
-        return PacketLog.base_directory + '/' + self.header.name + '.' + self.header.time + '.mseed'
+        # Get the year, month and day for the directory structure of the data file from the start time
+        utc_timestamp = datetime.utcfromtimestamp(self.header.starttime)
+        year = str(utc_timestamp.year)
+        month = str(utc_timestamp.month)
+        if utc_timestamp.month < 10:
+            month = '0' + month
+        day = str(utc_timestamp.day)
+        if utc_timestamp.day < 10:
+            day = '0' + day
+
+        return os.path.join(PacketLog.base_dir, year, month, day, self.header.name + '.' + self.header.time + '.mseed')
 
     def add_packet(self, packet):
         if self.header.starttime > packet['time'] or packet['time'] >= self.header.maxtime:
