@@ -18,6 +18,11 @@ class TimeRangeException(Exception):
 
 
 class PacketLogHeader(object):
+    base_dir = './antelope_data'
+    year_dir = '00'
+    month_dir = '00'
+    day_dir = '00'
+
     def __init__(self, net, location, station, channel, starttime, maxtime, rate, calib, calper):
         self.net = net
         self.location = location
@@ -36,7 +41,14 @@ class PacketLogHeader(object):
 
     @staticmethod
     def _format_time(timestamp):
-        t = datetime.isoformat(datetime.utcfromtimestamp(timestamp))
+        utc_timestamp = datetime.utcfromtimestamp(timestamp)
+        t = datetime.isoformat(utc_timestamp)
+
+        # Get the year, month and day for the directory structure of the data file
+        PacketLogHeader.year_dir = str(utc_timestamp.year)
+        PacketLogHeader.month_dir = str(utc_timestamp.month)
+        PacketLogHeader.day_dir = str(utc_timestamp.day)
+
         # if the time has no fractional value the iso timestamp won't contain the trailing zeros
         # add them back in if they are missing for consistency in file naming
         if t[-3] == ':':
@@ -75,7 +87,6 @@ class PacketLogHeader(object):
 
 class PacketLog(object):
     TIME_FUDGE_PCNT = 10
-    base_directory = './antelope_data'
 
     def __init__(self):
         self.header = None
@@ -104,7 +115,9 @@ class PacketLog(object):
 
     @property
     def filename(self):
-        return PacketLog.base_directory + '/' + self.header.name + '.' + self.header.time + '.mseed'
+        return PacketLogHeader.base_dir + '/' + \
+               PacketLogHeader.year_dir + '/' + PacketLogHeader.month_dir + '/' + PacketLogHeader.day_dir + '/' + \
+               self.header.name + '.' + self.header.time + '.mseed'
 
     def add_packet(self, packet):
         if self.header.starttime > packet['time'] or packet['time'] >= self.header.maxtime:

@@ -9,7 +9,7 @@ from mi.core.instrument.driver_dict import DriverDictKey
 from mi.core.instrument.port_agent_client import PortAgentPacket
 from mi.core.instrument.protocol_param_dict import ParameterDictVisibility, ParameterDictType
 from mi.core.log import get_logger, get_logging_metaclass
-from mi.instrument.antelope.orb.ooicore.packet_log import PacketLog, GapException
+from mi.instrument.antelope.orb.ooicore.packet_log import PacketLogHeader, PacketLog, GapException
 
 log = get_logger()
 meta = get_logging_metaclass('info')
@@ -305,7 +305,7 @@ class Protocol(InstrumentProtocol):
             self._driver_event(DriverAsyncEvent.CONFIG_CHANGE)
 
         # Set the base directory for the packet data file location.
-        PacketLog.base_directory = self._param_dict.get(Parameter.FILE_LOCATION)
+        PacketLogHeader.base_dir = self._param_dict.get(Parameter.FILE_LOCATION)
 
     def _flush(self, close_all=False):
         log.info('flush')
