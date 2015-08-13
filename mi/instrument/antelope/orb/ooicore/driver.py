@@ -1,3 +1,4 @@
+import os
 import cPickle as pickle
 import time
 from threading import Lock, Thread
@@ -305,7 +306,8 @@ class Protocol(InstrumentProtocol):
             self._driver_event(DriverAsyncEvent.CONFIG_CHANGE)
 
         # Set the base directory for the packet data file location.
-        PacketLog.base_directory = self._param_dict.get(Parameter.FILE_LOCATION)
+        PacketLog.base_dir = os.path.join(self._param_dict.get(Parameter.FILE_LOCATION), \
+                                          self._param_dict.get(Parameter.REFDES))
 
     def _flush(self, close_all=False):
         log.info('flush')
