@@ -1,4 +1,5 @@
 import os
+import errno
 from datetime import datetime
 
 from obspy.core import Stats
@@ -111,7 +112,16 @@ class PacketLog(object):
         month = '%02d' % packet_start_time.month
         day = '%02d' % packet_start_time.day
 
-        return os.path.join(PacketLog.base_dir, year, month, day, self.header.name + '.' + self.header.time + '.mseed')
+        # Generate the data file path and create it on the disk
+        file_path = os.path.join(PacketLog.base_dir, year, month, day)
+        try:
+            os.makedirs(file_path)
+        except OSError, e:
+            # If the file path exists it's OK, otherwise use the current directory
+            if e.errno != errno.EEXIST:
+                file_path = '.'
+
+        return os.path.join(file_path, self.header.name + '.' + self.header.time + '.mseed')
 
     def add_packet(self, packet):
         if self.header.starttime > packet['time'] or packet['time'] >= self.header.maxtime:
