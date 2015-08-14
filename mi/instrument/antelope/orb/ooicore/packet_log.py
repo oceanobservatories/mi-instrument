@@ -6,6 +6,7 @@ import numpy as np
 from obspy import Trace
 
 from mi.core.log import get_logger
+from mi.core.exceptions import InstrumentProtocolException
 
 log = get_logger()
 
@@ -111,7 +112,17 @@ class PacketLog(object):
         month = '%02d' % packet_start_time.month
         day = '%02d' % packet_start_time.day
 
-        return os.path.join(PacketLog.base_dir, year, month, day, self.header.name + '.' + self.header.time + '.mseed')
+        # Generate the data file path and create it on the disk
+        file_path = os.path.join(PacketLog.base_dir, year, month, day)
+        if not os.path.exists(file_path):
+            try:
+                os.makedirs(file_path)
+            except OSError:
+                raise InstrumentProtocolException
+        elif os.path.isfile(file_path):
+            raise InstrumentProtocolException
+
+        return os.path.join(file_path, self.header.name + '.' + self.header.time + '.mseed')
 
     def add_packet(self, packet):
         if self.header.starttime > packet['time'] or packet['time'] >= self.header.maxtime:
