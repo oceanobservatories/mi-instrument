@@ -35,6 +35,7 @@ class ProtocolState(BaseEnum):
     UNKNOWN = DriverProtocolState.UNKNOWN
     COMMAND = DriverProtocolState.COMMAND
     AUTOSAMPLE = DriverProtocolState.AUTOSAMPLE
+    WRITE_ERROR = "DRIVER_STATE_WRITE_ERROR"
 
 
 class ProtocolEvent(BaseEnum):
@@ -46,6 +47,8 @@ class ProtocolEvent(BaseEnum):
     GET = DriverEvent.GET
     SET = DriverEvent.SET
     FLUSH = 'PROTOCOL_EVENT_FLUSH'
+    PROCESS_WRITE_ERROR = "PROTOCOL_EVENT_PROCESS_WRITE_ERROR"
+    CLEAR_WRITE_ERROR = "PROTOCOL_EVENT_CLEAR_WRITE_ERROR"
 
 
 class Capability(BaseEnum):
@@ -151,6 +154,12 @@ class Protocol(InstrumentProtocol):
                 (ProtocolEvent.GET, self._handler_get),
                 (ProtocolEvent.FLUSH, self._flush),
                 (ProtocolEvent.STOP_AUTOSAMPLE, self._handler_autosample_stop_autosample),
+                (ProtocolEvent.PROCESS_WRITE_ERROR, self._handler_process_write_error),
+            ),
+            ProtocolState.WRITE_ERROR: (
+                (ProtocolEvent.ENTER, self._handler_write_error_enter),
+                (ProtocolEvent.EXIT, self._handler_write_error_exit),
+                (ProtocolEvent.CLEAR_WRITE_ERROR, self._handler_clear_write_error),
             )}
 
         for state in handlers:
@@ -319,13 +328,21 @@ class Protocol(InstrumentProtocol):
                 self._logs = {}
 
             for _log in self._logs.itervalues():
-                log.info('flushing incomplete')
-                _log.flush()
+                try:
+                    _log.flush()
+                except InstrumentProtocolException:
+                    self._async_raise_fsm_event(ProtocolEvent.PROCESS_WRITE_ERROR)
+                    raise
+
                 particles.append(AntelopeMetadataParticle(_log, True))
 
             for _log in self._filled_logs:
-                log.info('flushing complete')
-                _log.flush()
+                try:
+                    _log.flush()
+                except InstrumentProtocolException:
+                    self._async_raise_fsm_event(ProtocolEvent.PROCESS_WRITE_ERROR)
+                    raise
+
                 particles.append(AntelopeMetadataParticle(_log, False))
                 _log.data = []
 
@@ -517,6 +534,7 @@ class Protocol(InstrumentProtocol):
         """
         Exit autosample state.
         """
+        self._orbstop()
         self.stop_scheduled_job(ScheduledJob.FLUSH)
 
     def _handler_autosample_stop_autosample(self, *args, **kwargs):
@@ -527,9 +545,39 @@ class Protocol(InstrumentProtocol):
         """
         result = None
 
-        self._orbstop()
         self._flush(True)
         next_state = ProtocolState.COMMAND
         next_agent_state = ResourceAgentState.COMMAND
 
         return next_state, (next_agent_state, result)
+
+    def _handler_process_write_error(self, *args, **kwargs):
+        """
+        Process the write error by transitioning to the WRITE ERROR protocol state.
+        @return  next_state, (next_agent_state, result) if successful.
+        """
+        return ProtocolState.WRITE_ERROR, (ResourceAgentState.STOPPED, None)
+
+    ######################################################
+    # WRITE_ERROR handlers
+    ######################################################
+
+    def _handler_write_error_enter(self, *args, **kwargs):
+        """
+        Enter write error state.
+        """
+        # Tell driver superclass to send a state change event.
+        # Superclass will query the state.
+        self._driver_event(DriverAsyncEvent.STATE_CHANGE)
+
+    def _handler_write_error_exit(self, *args, **kwargs):
+        """
+        Exit write error state.
+        """
+
+    def _handler_clear_write_error(self, *args, **kwargs):
+        """
+        Clear the WRITE_ERROR state by transitioning to the COMMAND state.
+        @return next_state, (next_agent_state, result)
+        """
+        return ProtocolState.COMMAND, (ResourceAgentState.COMMAND, None)
