@@ -174,6 +174,7 @@ class Capability(BaseEnum):
     SET = DriverEvent.SET
     START_DIRECT = DriverEvent.START_DIRECT
     STOP_DIRECT = DriverEvent.STOP_DIRECT
+    DISCOVER = DriverEvent.DISCOVER
 
 
 # Device specific parameters.
@@ -1134,9 +1135,11 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
         Populate the command dictionary with command.
         """
         self._cmd_dict.add(Capability.ACQUIRE_STATUS, display_name="Acquire Status")
-        self._cmd_dict.add(Capability.CLOCK_SYNC, display_name="Sync Clock")
+        self._cmd_dict.add(Capability.CLOCK_SYNC, display_name='Synchronize Clock')
         self._cmd_dict.add(Capability.START_AUTOSAMPLE, display_name="Start Autosample")
         self._cmd_dict.add(Capability.STOP_AUTOSAMPLE, display_name="Stop Autosample")
+        self._cmd_dict.add(Capability.DISCOVER, display_name='Discover')
+
 
     def _build_param_dict(self):
         """

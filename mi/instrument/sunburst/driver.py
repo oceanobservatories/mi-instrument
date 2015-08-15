@@ -218,6 +218,7 @@ class SamiCapability(BaseEnum):
     SET = DriverEvent.SET
     START_DIRECT = DriverEvent.START_DIRECT
     STOP_DIRECT = DriverEvent.STOP_DIRECT
+    DISCOVER = DriverEvent.DISCOVER
 
 class SamiParameter(DriverParameter):
     """
@@ -1441,6 +1442,7 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
         self._cmd_dict.add(SamiCapability.START_AUTOSAMPLE, display_name="Start Autosample")
         self._cmd_dict.add(SamiCapability.STOP_AUTOSAMPLE, display_name="Stop Autosample")
         self._cmd_dict.add(SamiCapability.REAGENT_FLUSH, display_name="Reagent Flush")
+        self._cmd_dict.add(SamiCapability.DISCOVER, display_name='Discover')
 
     def _build_driver_dict(self):
         """

@@ -124,6 +124,7 @@ class PARMixin(DriverTestMixin):
 
     _driver_capabilities = {
         # capabilities defined in the IOS
+        PARProtocolEvent.DISCOVER: {STATES: [PARProtocolState.UNKNOWN]},
         PARProtocolEvent.ACQUIRE_SAMPLE: {STATES: [PARProtocolState.COMMAND]},
         PARProtocolEvent.START_AUTOSAMPLE: {STATES: [PARProtocolState.COMMAND]},
         PARProtocolEvent.STOP_AUTOSAMPLE: {STATES: [PARProtocolState.AUTOSAMPLE]},

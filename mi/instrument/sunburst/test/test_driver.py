@@ -12,7 +12,6 @@ USAGE:
        $ bin/test_driver -i [-t testname]
        $ bin/test_driver -q [-t testname]
 """
-
 __author__ = 'Kevin Stiemke'
 __license__ = 'Apache 2.0'
 
@@ -38,12 +37,11 @@ from mi.idk.unit_test import ParameterTestConfigKey
 from mi.idk.unit_test import GO_ACTIVE_TIMEOUT
 from mi.idk.unit_test import DriverProtocolState
 from mi.idk.unit_test import DriverEvent
-from mi.idk.unit_test import ResourceAgentState
-# from interface.objects import AgentCommand
 
 from mi.core.instrument.port_agent_client import PortAgentPacket
 from mi.core.instrument.data_particle import DataParticleKey
 from mi.core.instrument.data_particle import DataParticleValue
+from mi.core.instrument.instrument_driver import ResourceAgentState
 
 from mi.instrument.sunburst.driver import Prompt, SamiRegularStatusDataParticle, SamiBatteryVoltageDataParticle, \
     SamiThermistorVoltageDataParticle

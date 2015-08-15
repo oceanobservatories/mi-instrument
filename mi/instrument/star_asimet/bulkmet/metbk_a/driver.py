@@ -116,6 +116,7 @@ class Capability(BaseEnum):
     FLASH_STATUS     = ProtocolEvent.FLASH_STATUS
     START_DIRECT     = ProtocolEvent.START_DIRECT
     STOP_DIRECT      = ProtocolEvent.STOP_DIRECT
+    DISCOVER = ProtocolEvent.DISCOVER
  
 class Parameter(DriverParameter):
     """
@@ -966,6 +967,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         self._cmd_dict.add(Capability.ACQUIRE_STATUS, display_name="Acquire Status")
         self._cmd_dict.add(Capability.ACQUIRE_SAMPLE, display_name="Acquire Sample")
         self._cmd_dict.add(Capability.FLASH_STATUS, display_name="Flash Status")
+        self._cmd_dict.add(Capability.DISCOVER, display_name='Discover')
 
     def _build_param_dict(self):
         """

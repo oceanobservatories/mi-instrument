@@ -203,6 +203,7 @@ class ADCPTMixin(DriverTestMixin):
 
     _driver_capabilities = {
         # capabilities defined in the IOS
+        WorkhorseCapability.DISCOVER: {STATES: [WorkhorseProtocolState.UNKNOWN]},
         WorkhorseCapability.START_AUTOSAMPLE: {STATES: [WorkhorseProtocolState.COMMAND]},
         WorkhorseCapability.STOP_AUTOSAMPLE: {STATES: [WorkhorseProtocolState.AUTOSAMPLE]},
         WorkhorseCapability.CLOCK_SYNC: {STATES: [WorkhorseProtocolState.COMMAND]},

@@ -152,6 +152,7 @@ class Capability(BaseEnum):
     START_AUTOSAMPLE = ProtocolEvent.START_AUTOSAMPLE
     STOP_AUTOSAMPLE = ProtocolEvent.STOP_AUTOSAMPLE
     ACQUIRE_SAMPLE = DriverEvent.ACQUIRE_SAMPLE
+    DISCOVER = DriverEvent.DISCOVER
 
 
     # baud rate (9- 57600, 8- 115200, 7- 300, 6- 600, 5- 1200, 4- 2400, 3- 4800, 2-9600, 1- 19200, 0-38400)
@@ -714,6 +715,9 @@ class Protocol(CommandResponseInstrumentProtocol):
         self._cmd_dict.add(Capability.START_AUTOSAMPLE, display_name="Start Autosample")
         self._cmd_dict.add(Capability.STOP_AUTOSAMPLE, display_name="Stop Autosample")
         self._cmd_dict.add(Capability.ACQUIRE_SAMPLE, display_name="Acquire Sample")
+
+        self._cmd_dict.add(Capability.DISCOVER, display_name='Discover')
+
 
     def _add_setup_param(self, name, fmt, **kwargs):
         """

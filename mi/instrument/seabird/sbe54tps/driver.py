@@ -142,6 +142,7 @@ class Capability(BaseEnum):
     SET = DriverEvent.SET
     START_DIRECT = DriverEvent.START_DIRECT
     STOP_DIRECT = DriverEvent.STOP_DIRECT
+    DISCOVER = DriverEvent.DISCOVER
 
 # Device specific parameters.
 class Parameter(DriverParameter):
@@ -1016,6 +1017,7 @@ class Protocol(SeaBirdProtocol):
         self._cmd_dict.add(Capability.START_AUTOSAMPLE, display_name="Start Autosample")
         self._cmd_dict.add(Capability.STOP_AUTOSAMPLE, display_name="Stop Autosample")
         self._cmd_dict.add(Capability.TEST_EEPROM, display_name="Test EEPROM")
+        self._cmd_dict.add(Capability.DISCOVER, display_name='Discover')
 
     def _send_wakeup(self):
         pass

@@ -193,7 +193,8 @@ class DriverTestMixinSub(DriverTestMixin):
         ProtocolState.REGEN: ['PROTOCOL_EVENT_STOP_REGEN',
                               'PROTOCOL_EVENT_ERROR',
                               'PROTOCOL_EVENT_REGEN_COMPLETE'],
-        ProtocolState.MANUAL_OVERRIDE: ['PROTOCOL_EVENT_STOP_MANUAL_OVERRIDE',
+        ProtocolState.MANUAL_OVERRIDE: ['DRIVER_EVENT_DISCOVER',
+                                        'PROTOCOL_EVENT_STOP_MANUAL_OVERRIDE',
                                         'PROTOCOL_EVENT_GET_SLAVE_STATES',
                                         'DRIVER_EVENT_CALIBRATE',
                                         'PROTOCOL_EVENT_START1',
@@ -221,6 +222,7 @@ class DriverTestMixinSub(DriverTestMixin):
 
     _driver_capabilities = {
         # capabilities defined in the IOS
+        Capability.DISCOVER: {STATES: [ProtocolState.UNKNOWN]},
         Capability.CALIBRATE: {STATES: [ProtocolState.COMMAND, ProtocolState.MANUAL_OVERRIDE]},
         Capability.CLEAR: {STATES: [ProtocolState.ERROR, ProtocolState.MANUAL_OVERRIDE]},
         Capability.POWEROFF: {STATES: [ProtocolState.COMMAND, ProtocolState.MANUAL_OVERRIDE]},
