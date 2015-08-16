@@ -1,16 +1,16 @@
 import os
 import cPickle as pickle
-import time
-from threading import Lock, Thread
+from threading import Lock
+
 from mi.core.driver_scheduler import DriverSchedulerConfigKey, TriggerType
 from mi.core.exceptions import InstrumentProtocolException, InstrumentParameterException
 from mi.core.instrument.data_particle import DataParticle
 from mi.core.instrument.driver_dict import DriverDictKey
-
 from mi.core.instrument.port_agent_client import PortAgentPacket
 from mi.core.instrument.protocol_param_dict import ParameterDictVisibility, ParameterDictType
 from mi.core.log import get_logger, get_logging_metaclass
 from mi.instrument.antelope.orb.ooicore.packet_log import PacketLog, GapException
+
 
 log = get_logger()
 meta = get_logging_metaclass('info')
@@ -87,15 +87,14 @@ class AntelopeMetadataParticleKey(BaseEnum):
     RATE = 'sampling_rate'
     NSAMPS = 'num_samples'
     FILENAME = 'filename'
-    OPEN = 'open'
+    UUID = 'uuid'
 
 
 class AntelopeMetadataParticle(DataParticle):
     _data_particle_type = AntelopeDataParticles.METADATA
 
-    def __init__(self, raw_data, is_open, **kwargs):
+    def __init__(self, raw_data, **kwargs):
         super(AntelopeMetadataParticle, self).__init__(raw_data, **kwargs)
-        self.is_open = is_open
 
     def _build_parsed_values(self):
         header = self.raw_data.header
@@ -110,7 +109,7 @@ class AntelopeMetadataParticle(DataParticle):
             self._encode_value(pk.RATE, header.rate, float),
             self._encode_value(pk.NSAMPS, header.num_samples, int),
             self._encode_value(pk.FILENAME, self.raw_data.filename, str),
-            self._encode_value(pk.OPEN, self.is_open, int),
+            self._encode_value(pk.UUID, self.raw_data.bin_uuid, int),
         ]
 
 
@@ -315,7 +314,7 @@ class Protocol(InstrumentProtocol):
             self._driver_event(DriverAsyncEvent.CONFIG_CHANGE)
 
         # Set the base directory for the packet data file location.
-        PacketLog.base_dir = os.path.join(self._param_dict.get(Parameter.FILE_LOCATION), \
+        PacketLog.base_dir = os.path.join(self._param_dict.get(Parameter.FILE_LOCATION),
                                           self._param_dict.get(Parameter.REFDES))
 
     def _flush(self, close_all=False):
@@ -334,7 +333,7 @@ class Protocol(InstrumentProtocol):
                     self._async_raise_fsm_event(ProtocolEvent.PROCESS_WRITE_ERROR)
                     raise
 
-                particles.append(AntelopeMetadataParticle(_log, True))
+                particles.append(AntelopeMetadataParticle(_log))
 
             for _log in self._filled_logs:
                 try:
@@ -343,7 +342,7 @@ class Protocol(InstrumentProtocol):
                     self._async_raise_fsm_event(ProtocolEvent.PROCESS_WRITE_ERROR)
                     raise
 
-                particles.append(AntelopeMetadataParticle(_log, False))
+                particles.append(AntelopeMetadataParticle(_log))
                 _log.data = []
 
             self._filled_logs = []
@@ -429,7 +428,10 @@ class Protocol(InstrumentProtocol):
         rate = packet['samprate']
         bin_size = rate_map.get(rate, 60)
         bin_value = int(start_time/bin_size)
-        return bin_value * bin_size, (bin_value + 1) * bin_size
+        bin_start = bin_value * bin_size
+        bin_end = (bin_value + 1) * bin_size
+
+        return bin_start, bin_end
 
     def _bin_data(self, packet):
         key = '%s.%s.%s.%s' % (packet['net'], packet.get('location', ''),
