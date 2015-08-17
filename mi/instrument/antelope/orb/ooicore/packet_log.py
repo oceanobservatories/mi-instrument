@@ -1,4 +1,5 @@
 import os
+import uuid
 from datetime import datetime
 
 from obspy.core import Stats
@@ -84,6 +85,9 @@ class PacketLog(object):
         self.needs_flush = False
         self.closed = False
         self.data = []
+
+        # Generate a UUID for this PacketLog
+        self.bin_uuid = str(uuid.uuid4())
 
     def create(self, net, location, station, channel, start, end, rate, calib, calper):
         self.header = PacketLogHeader(net, location, station, channel, start, end, rate, calib, calper)
