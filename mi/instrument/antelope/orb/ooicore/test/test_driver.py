@@ -114,6 +114,7 @@ class AntelopeTestMixinSub(DriverTestMixin):
         Capability.GET: {STATES: [ProtocolState.COMMAND, ProtocolState.AUTOSAMPLE]},
         Capability.SET: {STATES: [ProtocolState.COMMAND]},
         Capability.DISCOVER: {STATES: [ProtocolState.UNKNOWN]},
+        Capability.CLEAR_WRITE_ERROR: {STATES: [ProtocolState.WRITE_ERROR]}
     }
 
     _capabilities = {
@@ -123,7 +124,9 @@ class AntelopeTestMixinSub(DriverTestMixin):
                                 'DRIVER_EVENT_START_AUTOSAMPLE'],
         ProtocolState.AUTOSAMPLE: ['DRIVER_EVENT_GET',
                                    'DRIVER_EVENT_STOP_AUTOSAMPLE',
-                                   'PROTOCOL_EVENT_FLUSH'],
+                                   'PROTOCOL_EVENT_FLUSH',
+                                   'PROTOCOL_EVENT_PROCESS_WRITE_ERROR'],
+        ProtocolState.WRITE_ERROR: ['PROTOCOL_EVENT_CLEAR_WRITE_ERROR'],
     }
 
     def assert_driver_parameters(self, current_parameters, verify_values=False):
