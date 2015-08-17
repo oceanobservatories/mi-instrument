@@ -35,7 +35,7 @@ from mi.core.instrument.instrument_driver import DriverConfigKey
 from mi.core.driver_scheduler import DriverSchedulerConfigKey
 from mi.core.driver_scheduler import TriggerType
 
-from mi.core.instrument.instrument_protocol import MenuInstrumentProtocol
+from mi.core.instrument.instrument_protocol import MenuInstrumentProtocol, InitializationType
 from mi.core.instrument.protocol_param_dict import ProtocolParameterDict, ParameterDictVisibility, ParameterDictType
 
 from mi.core.log import get_logger
@@ -95,7 +95,6 @@ class Command(BaseEnum):
     CHANGE_EH_ISOLATION_AMP_POWER = "CHANGE_EH_ISOLATION_AMP_POWER"
     CHANGE_HYDROGEN_POWER = "CHANGE_HYDROGEN_POWER"
     CHANGE_REFERENCE_TEMP_POWER = "CHANGE_REFERENCE_TEMP_POWER"
-
 
 # Strings should line up with Command class
 COMMAND_CHAR = {
@@ -350,27 +349,27 @@ class BarsStatusParticle(DataParticle):
         result = [{DataParticleKey.VALUE_ID: BarsStatusParticleKey.SYSTEM_INFO,
                    DataParticleKey.VALUE: system_info},
                   {DataParticleKey.VALUE_ID: BarsStatusParticleKey.EPROM_STATUS,
-                  DataParticleKey.VALUE: eprom_status},
+                   DataParticleKey.VALUE: eprom_status},
                   {DataParticleKey.VALUE_ID: BarsStatusParticleKey.CYCLE_TIME,
-                  DataParticleKey.VALUE: cycle_time},
+                   DataParticleKey.VALUE: cycle_time},
                   {DataParticleKey.VALUE_ID: BarsStatusParticleKey.CYCLE_TIME_UNIT,
-                  DataParticleKey.VALUE: unit},
+                   DataParticleKey.VALUE: unit},
                   {DataParticleKey.VALUE_ID: BarsStatusParticleKey.POWER_CONTROL_WORD,
-                  DataParticleKey.VALUE: power_control},
+                   DataParticleKey.VALUE: power_control},
                   {DataParticleKey.VALUE_ID: BarsStatusParticleKey.RES_POWER,
-                  DataParticleKey.VALUE: res_power},
+                   DataParticleKey.VALUE: res_power},
                   {DataParticleKey.VALUE_ID: BarsStatusParticleKey.THERMO_HYDRO_AMP_POWER,
-                  DataParticleKey.VALUE: thermo_hydro_amp},
+                   DataParticleKey.VALUE: thermo_hydro_amp},
                   {DataParticleKey.VALUE_ID: BarsStatusParticleKey.EH_AMP_POWER,
-                  DataParticleKey.VALUE: eh_amp_power},
+                   DataParticleKey.VALUE: eh_amp_power},
                   {DataParticleKey.VALUE_ID: BarsStatusParticleKey.HYDRO_SENSOR_POWER,
-                  DataParticleKey.VALUE: hydro_sensor_power},
+                   DataParticleKey.VALUE: hydro_sensor_power},
                   {DataParticleKey.VALUE_ID: BarsStatusParticleKey.REF_TEMP_POWER,
-                  DataParticleKey.VALUE: ref_temp_power},
+                   DataParticleKey.VALUE: ref_temp_power},
                   {DataParticleKey.VALUE_ID: BarsStatusParticleKey.METADATA_ON_POWERUP,
-                  DataParticleKey.VALUE: print_on_powerup},
+                   DataParticleKey.VALUE: print_on_powerup},
                   {DataParticleKey.VALUE_ID: BarsStatusParticleKey.METADATA_ON_RESTART,
-                  DataParticleKey.VALUE: print_on_restart}]
+                   DataParticleKey.VALUE: print_on_restart}]
         return result
 
 
@@ -419,7 +418,7 @@ class BarsDataParticle(DataParticle):
         """
         Take something in the sample format and split it into
         a PAR values (with an appropriate tag)
-        
+
         @throw SampleException If there is a problem with sample creation
         """
 
@@ -487,7 +486,6 @@ class InstrumentDriver(SingleConnectionInstrumentDriver):
         Driver constructor.
         @param evt_callback Driver process event callback.
         """
-        #Construct superclass.
         SingleConnectionInstrumentDriver.__init__(self, evt_callback)
 
     ########################################################################
@@ -631,7 +629,6 @@ class Protocol(MenuInstrumentProtocol):
             for match in matcher.finditer(raw_data):
                 return_list.append((match.start(), match.end()))
 
-        #log.debug("return_list = %s" % return_list)
         return return_list
 
     def _go_to_root_menu(self):
@@ -702,6 +699,9 @@ class Protocol(MenuInstrumentProtocol):
         # Command device to update parameters and send a config change event.
         # Tell driver superclass to send a state change event.
         # Superclass will query the state.
+        if self._init_type != InitializationType.NONE:
+            self._update_params()
+
         self._init_params()
         self._driver_event(DriverAsyncEvent.STATE_CHANGE)
 
@@ -736,7 +736,6 @@ class Protocol(MenuInstrumentProtocol):
             result_vals[param] = self._param_dict.get(param)
         result = result_vals
 
-        #log.debug("Get finished, next: %s, result: %s", next_state, result)
         return next_state, result
 
     def _set_trhph_params(self, params):
@@ -749,67 +748,74 @@ class Protocol(MenuInstrumentProtocol):
             if not Parameter.has(key):
                 raise InstrumentParameterException()
 
-            # restrict operations to just the read/write parameters
-            if key == Parameter.CYCLE_TIME:
-                self._navigate(SubMenu.CYCLE_TIME)
-                (unit, value) = self._from_seconds(val)
+            old_val = self._param_dict.format(key)
+            new_val = self._param_dict.format(key, params[key])
+            log.debug('KEY = %r, old = %r new %r', key, old_val, new_val)
 
-                try:
-                    self._do_cmd_resp(Command.DIRECT_SET, unit,
-                                      expected_prompt=[Prompt.CYCLE_TIME_SEC_VALUE_PROMPT,
-                                                       Prompt.CYCLE_TIME_MIN_VALUE_PROMPT])
-                    self._do_cmd_resp(Command.DIRECT_SET, value,
-                                      expected_prompt=Prompt.CHANGE_PARAM_MENU)
+            if old_val != new_val:
 
-                except InstrumentParameterException:
+                # restrict operations to just the read/write parameters
+                if key == Parameter.CYCLE_TIME:
+                    self._navigate(SubMenu.CYCLE_TIME)
+                    (unit, value) = self._from_seconds(val)
+
+                    try:
+                        self._do_cmd_resp(Command.DIRECT_SET, unit,
+                                          expected_prompt=[Prompt.CYCLE_TIME_SEC_VALUE_PROMPT,
+                                                           Prompt.CYCLE_TIME_MIN_VALUE_PROMPT])
+                        self._do_cmd_resp(Command.DIRECT_SET, value,
+                                          expected_prompt=Prompt.CHANGE_PARAM_MENU)
+
+                    except InstrumentParameterException:
+
+                        self._go_to_root_menu()
+                        raise InstrumentProtocolException("Could not set cycle time")
 
                     self._go_to_root_menu()
-                    raise InstrumentProtocolException("Could not set cycle time")
 
-                self._go_to_root_menu()
+                elif key == Parameter.METADATA_POWERUP:
+                    self._navigate(SubMenu.METADATA_POWERUP)
+                    result = self._do_cmd_resp(Command.DIRECT_SET, self._param_dict.get_init_value(key),
+                                               expected_prompt=Prompt.CHANGE_PARAM_MENU)
+                    if not result:
+                        raise InstrumentParameterException("Could not set param %s" % key)
 
-            elif key == Parameter.METADATA_POWERUP:
-                self._navigate(SubMenu.METADATA_POWERUP)
-                result = self._do_cmd_resp(Command.DIRECT_SET, (1 + int(self._param_dict.get_init_value(key))),
-                                           expected_prompt=Prompt.CHANGE_PARAM_MENU)
-                if not result:
-                    raise InstrumentParameterException("Could not set param %s" % key)
+                    self._go_to_root_menu()
 
-                self._go_to_root_menu()
+                elif key == Parameter.METADATA_RESTART:
 
-            elif key == Parameter.METADATA_RESTART:
+                    self._navigate(SubMenu.METADATA_RESTART)
+                    result = self._do_cmd_resp(Command.DIRECT_SET, self._param_dict.get_init_value(key),
+                                               expected_prompt=Prompt.CHANGE_PARAM_MENU)
+                    if not result:
+                        raise InstrumentParameterException("Could not set param %s" % key)
 
-                self._navigate(SubMenu.METADATA_RESTART)
-                result = self._do_cmd_resp(Command.DIRECT_SET, (1 + int(self._param_dict.get_init_value(key))),
-                                           expected_prompt=Prompt.CHANGE_PARAM_MENU)
-                if not result:
-                    raise InstrumentParameterException("Could not set param %s" % key)
+                    self._go_to_root_menu()
 
-                self._go_to_root_menu()
+                elif key == Parameter.VERBOSE:
 
-            elif key == Parameter.VERBOSE:
+                    self._navigate(SubMenu.VERBOSE)
+                    result = self._do_cmd_resp(Command.DIRECT_SET, self._param_dict.get_init_value(key),
+                                               expected_prompt=Prompt.CHANGE_PARAM_MENU)
+                    if not result:
+                        raise InstrumentParameterException("Could not set param %s" % key)
 
-                self._navigate(SubMenu.VERBOSE)
-                result = self._do_cmd_resp(Command.DIRECT_SET, self._param_dict.get_init_value(key),
-                                           expected_prompt=Prompt.CHANGE_PARAM_MENU)
-                if not result:
-                    raise InstrumentParameterException("Could not set param %s" % key)
+                    # need to set value direct because the instrument does not indicate whether it was successful
+                    # as long as the instrument returns from 'setting' with the command prompt, we assume success
+                    self._param_dict.set_value(key, self._param_dict.get_init_value(key))
 
-                #need to set value direct because the instrument does not indicate whether it was successful
-                #as long as the instrument returns from 'setting' with the command prompt, we assume success
-                self._param_dict.set_value(key, self._param_dict.get_init_value(key))
-
-                self._go_to_root_menu()
+                    self._go_to_root_menu()
 
             elif key == Parameter.RUN_ACQUIRE_STATUS_INTERVAL:
                 self._param_dict.set_value(key, val)
 
                 self.stop_scheduled_job(ScheduledJob.ACQUIRE_STATUS)
 
-                log.debug("Configuring the scheduler to acquire status %s", self._param_dict.get(Parameter.RUN_ACQUIRE_STATUS_INTERVAL))
+                log.debug("Configuring the scheduler to acquire status %s",
+                          self._param_dict.get(Parameter.RUN_ACQUIRE_STATUS_INTERVAL))
                 if self._param_dict.get(Parameter.RUN_ACQUIRE_STATUS_INTERVAL) != '00:00:00':
-                    self.start_scheduled_job(Parameter.RUN_ACQUIRE_STATUS_INTERVAL, ScheduledJob.ACQUIRE_STATUS, ProtocolEvent.SCHEDULED_ACQUIRE_STATUS)
-
+                    self.start_scheduled_job(Parameter.RUN_ACQUIRE_STATUS_INTERVAL, ScheduledJob.ACQUIRE_STATUS,
+                                             ProtocolEvent.SCHEDULED_ACQUIRE_STATUS)
 
     def _set_params(self, *args, **kwargs):
         """
@@ -826,7 +832,6 @@ class Protocol(MenuInstrumentProtocol):
             raise InstrumentProtocolException("Not in command state. Unable to set params")
 
         self._verify_not_readonly(*args, **kwargs)
-
         self._set_trhph_params(params)
 
         # re-sync with param dict
@@ -855,14 +860,7 @@ class Protocol(MenuInstrumentProtocol):
         if params is None or (not isinstance(params, dict)):
             raise InstrumentParameterException()
 
-        # Verify parameters are not read only
-        self._verify_not_readonly(params, False)
-
-        self._set_trhph_params(params)
-
-        # re-sync with param dict
-        self._go_to_root_menu()
-        self._update_params()
+        self._set_params(*args, **kwargs)
 
         return next_state, result
 
@@ -879,7 +877,7 @@ class Protocol(MenuInstrumentProtocol):
         next_state = ProtocolState.AUTOSAMPLE
         next_agent_state = ResourceAgentState.STREAMING
 
-        return next_state, (next_agent_state, result)
+        return ProtocolState.AUTOSAMPLE, (ResourceAgentState.STREAMING, result)
 
     def _handler_command_acquire_status(self, *args, **kwargs):
         """
@@ -1034,12 +1032,11 @@ class Protocol(MenuInstrumentProtocol):
             next_state = ProtocolState.COMMAND
             next_agent_state = ResourceAgentState.COMMAND
 
-
         return next_state, (next_agent_state, result)
 
     ########################################################################
     # Command builders
-    ########################################################################    
+    ########################################################################
     def _build_solo_command(self, cmd):
         """ Issue a simple command that does NOT require a newline at the end to
         execute. Likely used for control characters or special characters """
@@ -1054,7 +1051,7 @@ class Protocol(MenuInstrumentProtocol):
 
     def _build_direct_command(self, cmd, arg):
         """ Build a command where we just send the argument to the instrument.
-        Ignore the command part, we dont need it here as we are already in
+        Ignore the command part, we don't need it here as we are already in
         a submenu.
         """
         return "%s%s" % (arg, self._newline)
@@ -1064,7 +1061,7 @@ class Protocol(MenuInstrumentProtocol):
     ########################################################################
     def _parse_menu_change_response(self, response, prompt):
         """ Parse a response to a menu change
-        
+
         @param response What was sent back from the command that was sent
         @param prompt The prompt that was returned from the device
         @retval The prompt that was encountered after the change
@@ -1092,7 +1089,7 @@ class Protocol(MenuInstrumentProtocol):
         """
 
         if not (self._extract_sample(BarsDataParticle, SAMPLE_REGEX, chunk, timestamp) or
-                self._extract_sample(BarsStatusParticle, BarsStatusParticle.regex_compiled(), chunk, timestamp)):
+                    self._extract_sample(BarsStatusParticle, BarsStatusParticle.regex_compiled(), chunk, timestamp)):
             raise InstrumentProtocolException("Unhandled chunk")
 
     def _update_params(self):
@@ -1109,7 +1106,7 @@ class Protocol(MenuInstrumentProtocol):
 
     def _get_config(self, *args, **kwargs):
         """ Get the entire configuration for the instrument
-        
+
         @param params The parameters and values to set
         Should be a dict of parameters and values
         @throw InstrumentProtocolException On a deeper issue
@@ -1211,6 +1208,8 @@ class Protocol(MenuInstrumentProtocol):
                              startup_param=True,
                              direct_access=True,
                              init_value=0,
+                             value=0,
+                             # TODO - HAD PROBLEMS COMPARING VALUES BEFORE SETTING DURING INIT BECAUSE VALUE WASN'T SET IN UPDATE PARAMS (NO WAY TO GET VALUE FROM INSTRUMENT)
                              description="Enable verbosity with data points (1:on | 0:off)",
                              menu_path_write=SubMenu.CHANGE_PARAM,
                              submenu_write=[["2", Prompt.VERBOSE_PROMPT]])
@@ -1355,7 +1354,7 @@ class Protocol(MenuInstrumentProtocol):
     def _from_seconds(value):
         """
         Converts a number of seconds into a (unit, value) tuple.
-        
+
         @param value The number of seconds to convert
         @retval A tuple of unit and value where the unit is 1 for seconds and 2
             for minutes. If the value is 15-59, units should be returned in
