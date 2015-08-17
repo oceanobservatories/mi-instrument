@@ -35,7 +35,7 @@ class ProtocolState(BaseEnum):
     UNKNOWN = DriverProtocolState.UNKNOWN
     COMMAND = DriverProtocolState.COMMAND
     AUTOSAMPLE = DriverProtocolState.AUTOSAMPLE
-    WRITE_ERROR = "DRIVER_STATE_WRITE_ERROR"
+    WRITE_ERROR = 'DRIVER_STATE_WRITE_ERROR'
 
 
 class ProtocolEvent(BaseEnum):
@@ -47,8 +47,8 @@ class ProtocolEvent(BaseEnum):
     GET = DriverEvent.GET
     SET = DriverEvent.SET
     FLUSH = 'PROTOCOL_EVENT_FLUSH'
-    PROCESS_WRITE_ERROR = "PROTOCOL_EVENT_PROCESS_WRITE_ERROR"
-    CLEAR_WRITE_ERROR = "PROTOCOL_EVENT_CLEAR_WRITE_ERROR"
+    PROCESS_WRITE_ERROR = 'PROTOCOL_EVENT_PROCESS_WRITE_ERROR'
+    CLEAR_WRITE_ERROR = 'PROTOCOL_EVENT_CLEAR_WRITE_ERROR'
 
 
 class Capability(BaseEnum):
@@ -57,6 +57,7 @@ class Capability(BaseEnum):
     STOP_AUTOSAMPLE = DriverEvent.STOP_AUTOSAMPLE
     GET = DriverEvent.GET
     SET = DriverEvent.SET
+    CLEAR_WRITE_ERROR = ProtocolEvent.CLEAR_WRITE_ERROR
 
 
 class Parameter(BaseEnum):
