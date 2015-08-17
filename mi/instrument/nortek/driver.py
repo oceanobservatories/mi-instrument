@@ -110,6 +110,18 @@ NORTEK_COMMON_REGEXES = [USER_CONFIG_DATA_REGEX,
 INTERVAL_TIME_REGEX = r"([0-9][0-9]:[0-9][0-9]:[0-9][0-9])"
 
 
+class ParameterConstraint(BaseEnum):
+    """
+    Constraints for parameters
+    (type, min, max)
+    """
+    average_interval = (int, 1, 65535)
+    cell_size = (int, 1, 65535)
+    blanking_distance = (int, 1, 65535)
+    coordinate_system = (int, 0, 3) #enum 0, 1, 2
+    measurement_interval = (int, 0, 65535)
+
+
 class ParameterUnits(BaseEnum):
     TIME_INTERVAL = 'HH:MM:SS'
     PARTS_PER_TRILLION = 'ppt'
@@ -1225,40 +1237,72 @@ class NortekInstrumentProtocol(CommandResponseInstrumentProtocol):
         self._verify_not_readonly(*args, **kwargs)
 
         old_config = self._param_dict.get_config()
+        constraints = ParameterConstraint.dict()
+        set_params = False
 
         # For each key, value in the params list set the value in parameters copy.
         try:
             for name, value in params.iteritems():
-                log.debug('_set_params: setting %s to %s', name, value)
-                self._param_dict.set_from_value(name, value)
-        except Exception as ex:
-            raise InstrumentParameterException('Unable to set parameter %s to %s: %s' % (name, value, ex))
 
-        output = self._create_set_output(self._param_dict)
+                if name in constraints:
+                    var_type, minimum, maximum = constraints[name]
+                    constraint_string = 'Parameter: %s Value: %s Type: %s Minimum: %s Maximum: %s' % \
+                                    (name, value, var_type, minimum, maximum)
+                    log.debug('SET CONSTRAINT: %s', constraint_string)
+                    try:
+                        var_type(value)
+                    except ValueError:
+                        raise InstrumentParameterException('Type mismatch: %s' % constraint_string)
 
-        # Clear the prompt buffer.
-        self._promptbuf = ''
-        self._linebuf = ''
+                    if value < minimum or value > maximum:
+                        raise InstrumentParameterException('Out of range: %s' % constraint_string)
 
-        log.debug('_set_params: writing instrument configuration to instrument')
-        self._connection.send(InstrumentCmds.CONFIGURE_INSTRUMENT)
-        self._connection.send(output)
+                old_val = self._param_dict.format(name)
+                new_val = self._param_dict.format(name, params[name])
 
-        result = self._get_response(timeout=30,
-                                    expected_prompt=[InstrumentPrompts.Z_ACK, InstrumentPrompts.Z_NACK])
+                if old_val != new_val:
+                    log.debug('_set_params: setting %s to %s', name, value)
+                    self._param_dict.set_from_value(name, value)
 
-        log.debug('_set_params: result=%r', result)
-        if result[1] == InstrumentPrompts.Z_NACK:
-            raise InstrumentParameterException("NortekInstrumentProtocol._set_params(): Invalid configuration file! ")
+                    if name not in [EngineeringParameter.ACQUIRE_STATUS_INTERVAL,
+                                    EngineeringParameter.CLOCK_SYNC_INTERVAL]:
+                        set_params = True
 
-        self._update_params()
+        except Exception:
+            self._update_params()
+            raise InstrumentParameterException('Unable to set parameter %s to %s' % (name, value))
 
-        new_config = self._param_dict.get_config()
-        log.trace("_set_params: old_config: %s", old_config)
-        log.trace("_set_params: new_config: %s", new_config)
-        if old_config != new_config:
-            self._driver_event(DriverAsyncEvent.CONFIG_CHANGE)
-            log.debug('_set_params: config updated!')
+        if set_params:
+            output = self._create_set_output(self._param_dict)
+
+            #Clear the prompt buffer.
+            self._promptbuf = ''
+            self._linebuf = ''
+
+            log.debug('_set_params: writing instrument configuration to instrument')
+            self._connection.send(InstrumentCmds.SOFT_BREAK_FIRST_HALF)
+            time.sleep(.5)
+            self._promptbuf = ''
+            self._linebuf = ''
+            self._connection.send(InstrumentCmds.CONFIGURE_INSTRUMENT)
+            self._connection.send(output)
+
+            result = self._get_response(timeout=30,
+                                        expected_prompt=[InstrumentPrompts.Z_ACK, InstrumentPrompts.Z_NACK])
+
+            log.debug('_set_params: result=%r', result)
+            if result[1] == InstrumentPrompts.Z_NACK:
+                self._update_params()
+                raise InstrumentParameterException("NortekInstrumentProtocol._set_params(): Invalid configuration file! ")
+
+            self._update_params()
+
+            new_config = self._param_dict.get_config()
+            log.trace("_set_params: old_config: %s", old_config)
+            log.trace("_set_params: new_config: %s", new_config)
+            if old_config != new_config:
+                self._driver_event(DriverAsyncEvent.CONFIG_CHANGE)
+                log.debug('_set_params: config updated!')
 
     def _send_wakeup(self):
         """
@@ -1796,7 +1840,7 @@ class NortekInstrumentProtocol(CommandResponseInstrumentProtocol):
                              display_name="Timing Control Register",
                              description="See manual for usage.",
                              direct_access=True,
-                             value=130)
+                             default_value=130)
         self._param_dict.add(Parameter.COMPASS_UPDATE_RATE,
                              r'^.{%s}(.{2}).*' % str(30),
                              lambda match: NortekProtocolParameterDict.convert_word_to_int(match.group(1)),
