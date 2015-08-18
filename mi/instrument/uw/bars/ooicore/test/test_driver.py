@@ -71,7 +71,8 @@ InstrumentDriverTestCase.initialize(
     driver_startup_config={
         DriverConfigKey.PARAMETERS: {Parameter.CYCLE_TIME: 20,
                                      Parameter.METADATA_POWERUP: 0,
-                                     Parameter.METADATA_RESTART: 0}}
+                                     Parameter.METADATA_RESTART: 0,
+                                     Parameter.RUN_ACQUIRE_STATUS_INTERVAL: '00:10:00'}}
 )
 
 #################################### RULES ####################################
@@ -162,9 +163,9 @@ class TRHPHMixinSub(DriverTestMixin):
         # capabilities defined in the IOS
         Capability.START_AUTOSAMPLE: {STATES: [ProtocolState.COMMAND]},
         Capability.STOP_AUTOSAMPLE: {STATES: [ProtocolState.AUTOSAMPLE]},
-        Capability.GET: {STATES: [ProtocolState.COMMAND, ProtocolState.AUTOSAMPLE]},
-        Capability.SET: {STATES: [ProtocolState.COMMAND]},
-        Capability.ACQUIRE_STATUS: {STATES: [ProtocolState.COMMAND, ProtocolState.AUTOSAMPLE]}
+        #Capability.GET: {STATES: [ProtocolState.COMMAND, ProtocolState.AUTOSAMPLE]},
+        #Capability.SET: {STATES: [ProtocolState.COMMAND]},
+        Capability.ACQUIRE_STATUS: {STATES: [ProtocolState.COMMAND, ProtocolState.AUTOSAMPLE]},
     }
 
     ###
@@ -182,6 +183,8 @@ class TRHPHMixinSub(DriverTestMixin):
         Parameter.EH_ISOLATION_AMP_POWER: {TYPE: int, READONLY: True, DA: False, STARTUP: False, DEFAULT: 1, VALUE: 1},
         Parameter.HYDROGEN_POWER: {TYPE: int, READONLY: True, DA: False, STARTUP: False, DEFAULT: 1, VALUE: 1},
         Parameter.REFERENCE_TEMP_POWER: {TYPE: int, READONLY: True, DA: False, STARTUP: False, DEFAULT: 1, VALUE: 1},
+        Parameter.RUN_ACQUIRE_STATUS_INTERVAL: {TYPE: str, READONLY: True, DA: False, STARTUP: True, DEFAULT: '00:00:00', VALUE: '12:00:00'},
+
     }
 
     _status_parameters = {
@@ -512,6 +515,11 @@ class DriverIntegrationTest(InstrumentDriverIntegrationTestCase, TRHPHMixinSub):
         # verify we can set read/write parameters
         self.assert_set(Parameter.CYCLE_TIME, 30)
 
+        self.assert_set(Parameter.RUN_ACQUIRE_STATUS_INTERVAL, '00:00:30', startup=True, no_get=True)
+        self.assert_get(Parameter.RUN_ACQUIRE_STATUS_INTERVAL, '00:00:30')
+        self.assert_set_exception(Parameter.RUN_ACQUIRE_STATUS_INTERVAL, "00:00:00")
+
+
     def test_out_of_range(self):
         """
         Verify setting driver parameters with out of range values will cause
@@ -758,6 +766,8 @@ class DriverQualificationTest(InstrumentDriverQualificationTestCase, TRHPHMixinS
         self.assert_get_parameter(Parameter.EH_ISOLATION_AMP_POWER, 1)
         self.assert_get_parameter(Parameter.HYDROGEN_POWER, 1)
         self.assert_get_parameter(Parameter.REFERENCE_TEMP_POWER, 1)
+        self.assert_get_parameter(Parameter.RUN_ACQUIRE_STATUS_INTERVAL, "00:10:00")
+
 
         self.assert_reset()
 
