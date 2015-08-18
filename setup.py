@@ -42,6 +42,8 @@ setup(  name = 'marine-integrations',
             'snakefood==1.4',
             'ntplib>=0.1.9',
             'apscheduler==2.1.0',
+            'consulate',
+            'backoff',
             #'utilities',
         ],
      )
