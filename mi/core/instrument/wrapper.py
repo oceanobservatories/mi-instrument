@@ -25,6 +25,11 @@ from logging import _levelNames
 from mi.core.common import BaseEnum
 from mi.core.exceptions import UnexpectedError, InstrumentCommandException, InstrumentException
 
+from mi.core.log import get_logger, get_logging_metaclass
+log = get_logger()
+
+META_LOGGER = get_logging_metaclass('trace')
+
 log.info('help!')
 
 __author__ = 'Peter Cable'
@@ -329,6 +334,7 @@ class DriverWrapper(object):
     run loop, dynamic driver import and construction and interface
     for messaging implementation subclasses.
     """
+    __metaclass__ = META_LOGGER
     worker_url = "inproc://workers"
     num_workers = 5
 
@@ -360,13 +366,13 @@ class DriverWrapper(object):
         try:
             module = importlib.import_module(self.driver_module)
             driver_class = getattr(module, self.driver_class)
-            self.driver = driver_class(self.send_event)
-            log.info('Imported and created driver from module: %r class: %r driver: %r',
-                     module, driver_class, self.driver)
+            self.driver = driver_class(self.send_event, self.refdes)
+            log.info('Imported and created driver from module: %r class: %r driver: %r refdes: %r',
+                     module, driver_class, self.driver, self.refdes)
             return True
         except Exception as e:
-            log.error('Could not import/construct driver module %s, class %s.',
-                      self.driver_module, self.driver_class)
+            log.error('Could not import/construct driver module %s, class %s, refdes: %r.',
+                      self.driver_module, self.driver_class, self.refdes)
             log.error('%s' % str(e))
             return False
 

@@ -7,11 +7,13 @@
 @brief Instrument driver classes that provide structure towards interaction
 with individual instruments in the system.
 """
-import random
 
 __author__ = 'Steve Foley'
 __license__ = 'Apache 2.0'
 
+import backoff
+import consulate
+import random
 import time
 
 from threading import Thread
@@ -25,13 +27,16 @@ from mi.core.exceptions import InstrumentConnectionException
 from mi.core.instrument.instrument_fsm import ThreadSafeFSM
 from mi.core.instrument.port_agent_client import PortAgentClient
 
-from mi.core.log import get_logger, LoggerManager
+from mi.core.log import get_logger, LoggerManager, get_logging_metaclass
 
 log = get_logger()
 
+META_LOGGER = get_logging_metaclass('trace')
 
 STARTING_RECONNECT_INTERVAL = 1
 MAXIMUM_RECONNECT_INTERVAL = 256
+MAXIMUM_CONSUL_QUERIES = 5
+MAXIMUM_BACKOFF = 5  # seconds
 
 
 class ConfigMetadataKey(BaseEnum):
@@ -66,7 +71,7 @@ class ResourceAgentState(BaseEnum):
     STREAMING = 'RESOURCE_AGENT_STATE_STREAMING'
     TEST = 'RESOURCE_AGENT_STATE_TEST'
     CALIBRATE = 'RESOURCE_AGENT_STATE_CALIBRATE'
-    DIRECT_ACCESS = 'RESOUCE_AGENT_STATE_DIRECT_ACCESS'
+    DIRECT_ACCESS = 'RESOURCE_AGENT_STATE_DIRECT_ACCESS'
     BUSY = 'RESOURCE_AGENT_STATE_BUSY'
     LOST_CONNECTION = 'RESOURCE_AGENT_STATE_LOST_CONNECTION'
     ACTIVE_UNKNOWN = 'RESOURCE_AGENT_STATE_ACTIVE_UNKNOWN'
@@ -211,7 +216,7 @@ class InstrumentDriver(object):
         """
         Constructor.
         @param event_callback The driver process callback used to send
-        asynchrous driver events to the agent.
+        asynchronous driver events to the agent.
         """
         LoggerManager()
         self._send_event = event_callback
@@ -287,7 +292,7 @@ class InstrumentDriver(object):
         """
         Return driver commands and parameters.
         @param current_state True to retrieve commands available in current
-        state, otherwise reutrn all commands.
+        state, otherwise return all commands.
         @retval list of AgentCapability objects representing the drivers
         capabilities.
         @raises NotImplementedException if not implemented by subclass.
@@ -305,7 +310,7 @@ class InstrumentDriver(object):
     def get_resource(self, *args, **kwargs):
         """
         Retrieve device parameters.
-        @param args[0] DriverParameter.ALL or a list of parameters to retrive.
+        @param args[0] DriverParameter.ALL or a list of parameters to retrieve
         @retval parameter : value dict.
         @raises InstrumentParameterException if missing or invalid get parameters.
         @raises InstrumentStateException if command not allowed in current state
@@ -422,7 +427,7 @@ class InstrumentDriver(object):
         Test exception handling in the driver process.
         @param msg message string to put in a raised exception to be caught in
         a test.
-        @raises InstrumentExeption always.
+        @raises InstrumentException always.
         """
         raise InstrumentException(msg)
 
@@ -431,11 +436,12 @@ class InstrumentDriver(object):
 class SingleConnectionInstrumentDriver(InstrumentDriver):
     """
     Base class for instrument drivers with a single device connection.
-    Provides connenction state logic for single connection drivers. This is
+    Provides connection state logic for single connection drivers. This is
     the base class for the majority of driver implementation classes.
     """
+    __metaclass__ = META_LOGGER
 
-    def __init__(self, event_callback):
+    def __init__(self, event_callback, refdes):
         """
         Constructor for singly connected instrument drivers.
         @param event_callback Callback to the driver process to send asynchronous
@@ -443,12 +449,18 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
         """
         InstrumentDriver.__init__(self, event_callback)
 
-        # The only and only instrument connection.
+        # The one and only instrument connection.
         # Exists in the connected state.
         self._connection = None
 
         # The one and only instrument protocol.
         self._protocol = None
+
+        # Consul
+        self.consul = consulate.Consul()
+
+        # Reference Designator to the port agent service
+        self.refdes = refdes
 
         # Build connection state machine.
         self._connection_fsm = ThreadSafeFSM(DriverConnectionState,
@@ -471,13 +483,6 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
                 (DriverEvent.CONFIGURE, self._handler_disconnected_configure),
                 (DriverEvent.CONNECT, self._handler_disconnected_connect),
             ],
-            DriverConnectionState.CONNECT_FAILED: [
-                (DriverEvent.ENTER, self._handler_connect_failed_enter),
-                (DriverEvent.EXIT, self._handler_connect_failed_exit),
-                (DriverEvent.INITIALIZE, self._handler_connect_failed_initialize),
-                (DriverEvent.CONFIGURE, self._handler_connect_failed_configure),
-                (DriverEvent.CONNECT, self._handler_connect_failed_connect),
-            ],
             DriverConnectionState.CONNECTED: [
                 (DriverEvent.ENTER, self._handler_connected_enter),
                 (DriverEvent.EXIT, self._handler_connected_exit),
@@ -497,9 +502,6 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
             for event, handler in handlers[state]:
                 self._connection_fsm.add_handler(state, event, handler)
 
-        # Start state machine.
-        self._connection_fsm.start(DriverConnectionState.UNCONFIGURED)
-
         self._pre_da_config = {}
         self._startup_config = {}
 
@@ -513,6 +515,9 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
         self._autoconnect = True
         self._reconnect_interval = STARTING_RECONNECT_INTERVAL
         self._max_reconnect_interval = MAXIMUM_RECONNECT_INTERVAL
+
+        # Start state machine.
+        self._connection_fsm.start(DriverConnectionState.UNCONFIGURED)
 
     #############################################################
     # Device connection interface.
@@ -691,13 +696,14 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
         @raises NotImplementedException if not implemented by subclass.
         """
         # Forward event and argument to the protocol FSM.
-        return self._connection_fsm.on_event(DriverEvent.DISCOVER, DriverEvent.DISCOVER, *args, **kwargs)
+        return self._connection_fsm.on_event(
+            DriverEvent.DISCOVER, DriverEvent.DISCOVER, *args, **kwargs)
 
     def get_resource_capabilities(self, current_state=True, *args, **kwargs):
         """
         Return driver commands and parameters.
         @param current_state True to retrieve commands available in current
-        state, otherwise reutrn all commands.
+        state, otherwise return all commands.
         @retval list of AgentCapability objects representing the drivers
         capabilities.
         @raises NotImplementedException if not implemented by subclass.
@@ -724,7 +730,7 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
     def get_resource(self, *args, **kwargs):
         """
         Retrieve device parameters.
-        @param args[0] DriverParameter.ALL or a list of parameters to retrive.
+        @param args[0] DriverParameter.ALL or a list of parameters to retrieve.
         @retval parameter : value dict.
         @raises InstrumentParameterException if missing or invalid get parameters.
         @raises InstrumentStateException if command not allowed in current state
@@ -776,7 +782,7 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
 
     def execute_direct(self, *args, **kwargs):
         """
-        execute direct accesscommand
+        execute direct access command
         @param timeout=timeout Optional command timeout.
         @ retval Device sample dict.
         @raises InstrumentTimeoutException if could not wake device or no response.
@@ -815,7 +821,7 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
             raise InstrumentParameterException('Missing state parameter.')
 
         # We are mucking with internal FSM parameters which may be bad.
-        # The alternative was to raise an event to change the state.  Dont
+        # The alternative was to raise an event to change the state. Don't
         # know which is better.
         self._protocol._protocol_fsm.current_state = state
 
@@ -829,6 +835,9 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
         """
         # Send state change event to agent.
         self._driver_event(DriverAsyncEvent.STATE_CHANGE)
+
+        # Query consul for the port agent's configuration
+        self._get_config_from_consul()
 
     def _handler_unconfigured_exit(self, *args, **kwargs):
         """
@@ -864,7 +873,6 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
         Enter disconnected state.
         """
         # Send state change event to agent.
-        self._connection_lost = True
         self._driver_event(DriverAsyncEvent.STATE_CHANGE)
 
         if self._autoconnect:
@@ -894,13 +902,13 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
         @raises InstrumentParameterException if missing or invalid param dict.
         """
         # Verify configuration dict, and update connection if possible.
-        self._connection = self._build_connection(*args, **kwargs)
-        return None, None
+
+        return DriverConnectionState.UNCONFIGURED, None
 
     def _handler_disconnected_connect(self, *args, **kwargs):
         """
         Establish communications with the device via port agent / logger and
-        construct and intialize a protocol FSM for device interaction.
+        construct and initialize a protocol FSM for device interaction.
         @retval (next_state, result) tuple, (DriverConnectionState.CONNECTED,
         None) if successful.
         @raises InstrumentConnectionException if the attempt to connect failed.
@@ -919,78 +927,10 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
             log.error("Connection Exception: %s", e)
             log.error("Instrument Driver remaining in disconnected state.")
             if self._autoconnect:
-                next_state = DriverConnectionState.CONNECT_FAILED
+                self._create_delayed_reconnect_event()
+                next_state = None
             else:
                 next_state = DriverConnectionState.DISCONNECTED
-
-        return next_state, result
-
-    ########################################################################
-    # Connect Failed handlers.
-    ########################################################################
-
-    def _handler_connect_failed_enter(self, *args, **kwargs):
-        """
-        Enter disconnected state.
-        """
-        # Send state change event to agent.
-        self._connection_lost = True
-        self._driver_event(DriverAsyncEvent.STATE_CHANGE)
-        self._create_delayed_reconnect_event()
-
-    def _handler_connect_failed_exit(self, *args, **kwargs):
-        """
-        Exit disconnected state.
-        """
-        pass
-
-    def _handler_connect_failed_initialize(self, *args, **kwargs):
-        """
-        Initialize device communications. Causes the connection parameters to
-        be reset.
-        @retval (next_state, result) tuple, (DriverConnectionState.UNCONFIGURED,
-        None).
-        """
-        self._connection = None
-        return DriverConnectionState.UNCONFIGURED, None
-
-    def _handler_connect_failed_configure(self, *args, **kwargs):
-        """
-        Configure driver for device comms.
-        @param args[0] Communications config dictionary.
-        @retval (next_state, result) tuple, (None, None).
-        @raises InstrumentParameterException if missing or invalid param dict.
-        """
-        # Verify configuration dict, and update connection if possible.
-        self._connection = self._build_connection(*args, **kwargs)
-        return None, None
-
-    def _handler_connect_failed_connect(self, *args, **kwargs):
-        """
-        Establish communications with the device via port agent / logger and
-        construct and initialize a protocol FSM for device interaction.
-        @retval (next_state, result) tuple, (DriverConnectionState.CONNECTED,
-        None) if successful.
-        If unsuccessful, try again after self._reconnect_interval
-        """
-        result = None
-        self._build_protocol()
-        try:
-            self._connection.init_comms(self._protocol.got_data,
-                                        self._protocol.got_raw,
-                                        self._got_config,
-                                        self._got_exception,
-                                        self._lost_connection_callback)
-            self._protocol._connection = self._connection
-            next_state = DriverConnectionState.CONNECTED
-        except InstrumentConnectionException as e:
-            log.error("Connection Exception: %s", e)
-            log.error("Instrument Driver remaining in connect failed state.")
-            # exponential backoff until max_reconnect_interval has been reached
-            if self._reconnect_interval <= self._max_reconnect_interval:
-                self._reconnect_interval *= 2
-            self._create_delayed_reconnect_event()
-            next_state = None
 
         return next_state, result
 
@@ -1134,7 +1074,7 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
             port = config['port']
             cmd_port = config.get('cmd_port')
 
-            if isinstance(addr, str) and isinstance(port, int) and len(addr) > 0:
+            if isinstance(addr, basestring) and isinstance(port, int) and len(addr) > 0:
                 return PortAgentClient(addr, port, cmd_port)
             else:
                 raise InstrumentParameterException('Invalid comms config dict.')
@@ -1142,13 +1082,44 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
         except (TypeError, KeyError):
             raise InstrumentParameterException('Invalid comms config dict.')
 
+    @backoff.on_exception(backoff.expo, InstrumentParameterException,
+                          max_tries=MAXIMUM_CONSUL_QUERIES, max_value=MAXIMUM_BACKOFF)
+    def _get_config_from_consul(self):
+        """
+        Query consul for the port agent service
+        configuration parameters: data port, command port, and address
+        This will retry a specified number of times with exponential backoff.
+        """
+        if self.refdes is not None:
+
+            self.data_port_id = 'port-agent_%s' % self.refdes
+            self.command_port_id = 'command_port_agent_%s' % self.refdes
+
+            data_port = self.consul.catalog.service(self.data_port_id)
+            cmd_port = self.consul.catalog.service(self.command_port_id)
+
+            if data_port and cmd_port:
+                port = data_port[0]['ServicePort']
+                addr = data_port[0]['Address']
+                cmd_port = cmd_port[0]['ServicePort']
+                self.port_agent_config = {'port': port, 'cmd_port': cmd_port, 'addr': addr}
+
+                self.configure(config=self.port_agent_config)
+
+                self._driver_event(DriverAsyncEvent.DRIVER_CONFIG, self.port_agent_config)
+
+            else:
+                raise InstrumentParameterException(
+                    'Invalid port agent reference designator: %s' % self.refdes)
+
     def _got_exception(self, exception):
         """
         Callback for the client for exception handling with async data.  Exceptions
         are wrapped in an event and sent up to the agent.
         """
         try:
-            log.error("ASYNC Data Exception Detected: %s (%s)", exception.__class__.__name__, str(exception))
+            log.error("ASYNC Data Exception Detected: %s (%s)",
+                      exception.__class__.__name__, str(exception))
         finally:
             self._driver_event(DriverAsyncEvent.ERROR, exception)
 
@@ -1197,8 +1168,8 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
     def _create_delayed_reconnect_event(self):
         def delayed_raise_reconnect(interval):
             time.sleep(interval)
-            log.info('Reconnect interval expired, raising CONNECT event')
-            self._connection_fsm.on_event(DriverEvent.CONNECT)
+            log.info('Reconnect interval expired, raising CONFIGURE event')
+            self._connection_fsm.on_event(DriverEvent.CONFIGURE)
 
         # randomness to prevent all instrument drivers from trying to reconnect
         # at the same exact time.
