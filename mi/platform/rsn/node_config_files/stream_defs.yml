@@ -1,144 +1,144 @@
 streams:
 
-  sec_node_port:
+  secondary_node_port_eng_data:
     variables:
     - port_num
     - port_type
     parameters:
     - omc_parameter_name: "{port_type} Port {port_num} Board State"
-      ion_parameter_name: sec_node_port_board_state
+      ion_parameter_name: sn_port_board_state
       monitor_cycle_seconds: 600
       scale_factor: 1
     - omc_parameter_name: "{port_type} Port {port_num} Error State"
-      ion_parameter_name: sec_node_port_error_state
+      ion_parameter_name: sn_port_error_state
       monitor_cycle_seconds: 600
       scale_factor: 1
     - omc_parameter_name: "{port_type} Port {port_num} GFD High"
-      ion_parameter_name: sec_node_port_gfd_high
+      ion_parameter_name: sn_port_gfd_high
       monitor_cycle_seconds: 600
       scale_factor: 1
     - omc_parameter_name: "{port_type} Port {port_num} GFD Low"
-      ion_parameter_name: sec_node_port_gfd_low
+      ion_parameter_name: sn_port_gfd_low
       monitor_cycle_seconds: 600
       scale_factor: 1
     - omc_parameter_name: "{port_type} Port {port_num} GP I/O State"
-      ion_parameter_name: sec_node_port_gpio_state
+      ion_parameter_name: sn_port_gpio_state
       monitor_cycle_seconds: 600
       scale_factor: 1
     - omc_parameter_name: "{port_type} Port {port_num} OCD Current"
-      ion_parameter_name: sec_node_port_ocd_current
+      ion_parameter_name: sn_port_ocd_current
       monitor_cycle_seconds: 600
       scale_factor: 0.001
     - omc_parameter_name: "{port_type} Port {port_num} OCD Time Const"
-      ion_parameter_name: sec_node_port_ocd_time_const
+      ion_parameter_name: sn_port_ocd_time_const
       monitor_cycle_seconds: 600
       scale_factor: 0.001
     - omc_parameter_name: "{port_type} Port {port_num} Output Current"
-      ion_parameter_name: sec_node_port_output_current
+      ion_parameter_name: sn_port_output_current
       monitor_cycle_seconds: 3
       scale_factor: 0.001
     - omc_parameter_name: "{port_type} Port {port_num} Output Voltage"
-      ion_parameter_name: sec_node_port_output_voltage
+      ion_parameter_name: sn_port_output_voltage
       monitor_cycle_seconds: 3
       scale_factor: 0.001
     - omc_parameter_name: "{port_type} Port {port_num} Power State"
-      ion_parameter_name: sec_node_port_power_state
+      ion_parameter_name: sn_port_power_state
       monitor_cycle_seconds: 600
       scale_factor: 1
     - omc_parameter_name: "{port_type} Port {port_num} Unit Temperature"
-      ion_parameter_name: sec_node_port_unit_temperature
+      ion_parameter_name: sn_port_unit_temperature
       monitor_cycle_seconds: 3
       scale_factor: 0.001
 
-  node_eng_data:
+  secondary_secondary_secondary_node_eng_data:
     variables: null
     parameters:
     - omc_parameter_name: "Ambient Temperature"
-      ion_parameter_name: sec_node_ambient_temperature
+      ion_parameter_name: sn_ambient_temperature
       monitor_cycle_seconds: 3
       scale_factor: 0.001
     - omc_parameter_name: "CIB 5V Current"
-      ion_parameter_name: sec_node_cib_5v_current
+      ion_parameter_name: sn_cib_5v_current
       monitor_cycle_seconds: 3
       scale_factor: 0.001
     - omc_parameter_name: "CIB Board State"
-      ion_parameter_name: sec_node_cib_board_state
+      ion_parameter_name: sn_cib_board_state
       monitor_cycle_seconds: 3
       scale_factor: 0.001
     - omc_parameter_name: "CIB Error State"
-      ion_parameter_name: sec_node_cib_error_state
+      ion_parameter_name: sn_cib_error_state
       monitor_cycle_seconds: 3
       scale_factor: 0.001
     - omc_parameter_name: "CIB Hotel Current"
-      ion_parameter_name: sec_node_cib_hotel_current
+      ion_parameter_name: sn_cib_hotel_current
       monitor_cycle_seconds: 3
       scale_factor: 0.001
     - omc_parameter_name: "CIB Hotel Voltage"
-      ion_parameter_name: sec_node_cib_hotel_voltage
+      ion_parameter_name: sn_cib_hotel_voltage
       monitor_cycle_seconds: 3
       scale_factor: 0.001
     - omc_parameter_name: "Internal Pressure"
-      ion_parameter_name: sec_node_internal_pressure
+      ion_parameter_name: sn_internal_pressure
       monitor_cycle_seconds: 3
       scale_factor: 0.001
     - omc_parameter_name: "Pitch"
-      ion_parameter_name: sec_node_pitch
+      ion_parameter_name: sn_pitch
       monitor_cycle_seconds: 3
       scale_factor: 0.001
     - omc_parameter_name: "Relative Humidity"
-      ion_parameter_name: sec_node_relative_humidity
+      ion_parameter_name: sn_relative_humidity
       monitor_cycle_seconds: 3
       scale_factor: 0.001
     - omc_parameter_name: "Roll"
-      ion_parameter_name: sec_node_roll
+      ion_parameter_name: sn_roll
       monitor_cycle_seconds: 3
       scale_factor: 0.001
     - omc_parameter_name: "Tilt-X"
-      ion_parameter_name: sec_node_tilt_x
+      ion_parameter_name: sn_tilt_x
       monitor_cycle_seconds: 3
       scale_factor: 0.001
     - omc_parameter_name: "Tilt-Y"
-      ion_parameter_name: sec_node_tilt_y
+      ion_parameter_name: sn_tilt_y
       monitor_cycle_seconds: 3
       scale_factor: 0.001
     - omc_parameter_name: "Tilt-Z"
-      ion_parameter_name: sec_node_tilt_z
+      ion_parameter_name: sn_tilt_z
       monitor_cycle_seconds: 3
       scale_factor: 0.001
     - omc_parameter_name: "GFD 375V High"
-      ion_parameter_name: sec_node_gfd_375_high
+      ion_parameter_name: sn_hpb_gfd_375_high
       monitor_cycle_seconds: 3
       scale_factor: 0.001
     - omc_parameter_name: "GFD 375V Low"
-      ion_parameter_name: sec_node_gfd_375_low
+      ion_parameter_name: sn_hpb_gfd_375_low
       monitor_cycle_seconds: 3
       scale_factor: 0.001
     - omc_parameter_name: "HPB Board State"
-      ion_parameter_name: sec_node_hpb_board_state
+      ion_parameter_name: sn_hpb_board_state
       monitor_cycle_seconds: 3
       scale_factor: 0.001
     - omc_parameter_name: "HPB Error State"
-      ion_parameter_name: sec_node_hpb_error_state
+      ion_parameter_name: sn_hpb_error_state
       monitor_cycle_seconds: 3
       scale_factor: 0.001
     - omc_parameter_name: "HPB Hotel Current"
-      ion_parameter_name: sec_node_hpb_hotel_current
+      ion_parameter_name: sn_hpb_hotel_current
       monitor_cycle_seconds: 3
       scale_factor: 0.001
     - omc_parameter_name: "HPB Hotel Temperature"
-      ion_parameter_name: sec_node_hpb_hotel_temperature
+      ion_parameter_name: sn_hpb_hotel_temperature
       monitor_cycle_seconds: 3
       scale_factor: 0.001
     - omc_parameter_name: "HPB Hotel Voltage"
-      ion_parameter_name: sec_node_hpb_hotel_voltate
+      ion_parameter_name: sn_hpb_hotel_voltage
       monitor_cycle_seconds: 3
       scale_factor: 0.001
     - omc_parameter_name: "HPB Input Voltage"
-      ion_parameter_name: sec_node_hpb_input_voltage
+      ion_parameter_name: sn_hpb_input_voltage
       monitor_cycle_seconds: 3
       scale_factor: 0.001
 
-  pn_port:
+  primary_node_out_of_band_port_data:
     variables:
     - port_name
     parameters:
@@ -167,7 +167,7 @@ streams:
       monitor_cycle_seconds: 780.0
       scale_factor: 1
     - omc_parameter_name: "channelValue{port_name}SFPRxPower"
-      ion_parameter_name: pn_oob_sfp_sfprxpower
+      ion_parameter_name: pn_oob_sfp_rxpower
       monitor_cycle_seconds: 780.0
       scale_factor: 1
     - omc_parameter_name: "channelValue{port_name}SFPTemp"
@@ -187,7 +187,7 @@ streams:
       monitor_cycle_seconds: 780.0
       scale_factor: 1
 
-  pn_eng:
+  primary_secondary_secondary_node_eng_data:
     variables: null
     parameters:
     - omc_parameter_name: channelValueCurrentSustainingLoad
@@ -371,7 +371,7 @@ streams:
       monitor_cycle_seconds: 300.0
       scale_factor: 1
 
-  otn_port:
+  shore_station_optical_transport_network_seaside_port_data:
     variables:
     - interface_num
     parameters:
@@ -399,20 +399,20 @@ streams:
       ion_parameter_name: otn_sfpdiagtxoutputpowerdbmsfp
       monitor_cycle_seconds: 2220.0
       scale_factor: 1
-    - omc_parameter_name: "slOTNConfigOperationModeInterface_{interface_num}"
+    - omc_parameter_name: "slOTNConfigOperationModePort{interface_num}"
       ion_parameter_name: otn_slotnconfigoperationmode
       monitor_cycle_seconds: 86400.0
       scale_factor: 1
-    - omc_parameter_name: "slOTNPmFecQFactorFEInterface_{interface_num}"
+    - omc_parameter_name: "slOTNPmFecQFactorFEPort{interface_num}"
       ion_parameter_name: otn_slotnpmfecqfactorfe
       monitor_cycle_seconds: 600.0
       scale_factor: 1
-    - omc_parameter_name: "slOTNPmFecQFactorNEInterface_{interface_num}"
+    - omc_parameter_name: "slOTNPmFecQFactorNEPort{interface_num}"
       ion_parameter_name: otn_slotnpmfecqfactorne
       monitor_cycle_seconds: 600.0
       scale_factor: 1
 
-  otn_port_shore:
+  shore_station_optical_transport_network_shoreside_port_data:
     variables:
     - interface_num
     parameters:
@@ -457,191 +457,191 @@ streams:
       monitor_cycle_seconds: 2220.0
       scale_factor: 1
 
-  winch_info:
+  shallow_profiler_winch_eng_data:
     variables: null
     parameters:
     - omc_parameter_name: Shallow Profiler Mission Control Engineering Mode On
-      ion_parameter_name: shallow_profiler_mission_control_engineering_mode_on
+      ion_parameter_name: sp_mc_engineering_mode_on
       monitor_cycle_seconds: 3
       scale_factor: 1
     - omc_parameter_name: Shallow Profiler Mission Control Mission Control Event
-      ion_parameter_name: shallow_profiler_mission_control_mission_control_event
+      ion_parameter_name: sp_mc_mc_event
       monitor_cycle_seconds: 3
       scale_factor: 1
     - omc_parameter_name: Shallow Profiler Mission Control Mission Is Active
-      ion_parameter_name: shallow_profiler_mission_control_mission_is_active
+      ion_parameter_name: sp_mc_mission_is_active
       monitor_cycle_seconds: 3
       scale_factor: 1
     - omc_parameter_name: Shallow Profiler Mission Control SP Timestamp MicroSec Component
-      ion_parameter_name: shallow_profiler_mission_control_sp_timestamp_microsec_component
+      ion_parameter_name: sp_mc_sp_timestamp_microsec_component
       monitor_cycle_seconds: 3
       scale_factor: 1
     - omc_parameter_name: Shallow Profiler Mission Control SciPod Is Docked
-      ion_parameter_name: shallow_profiler_mission_control_scipod_is_docked
+      ion_parameter_name: sp_mc_scipod_is_docked
       monitor_cycle_seconds: 3
       scale_factor: 1
     - omc_parameter_name: Shallow Profiler Mission Control SciPod Is Idle
-      ion_parameter_name: shallow_profiler_mission_control_scipod_is_idle
+      ion_parameter_name: sp_mc_scipod_is_idle
       monitor_cycle_seconds: 3
       scale_factor: 1
     - omc_parameter_name: Shallow Profiler Navigational Data Accel-X
-      ion_parameter_name: shallow_profiler_navigational_data_accel_x
+      ion_parameter_name: sp_nav_accel_x
       monitor_cycle_seconds: 3
       scale_factor: 0.001
     - omc_parameter_name: Shallow Profiler Navigational Data Accel-Y
-      ion_parameter_name: shallow_profiler_navigational_data_accel_y
+      ion_parameter_name: sp_nav_accel_y
       monitor_cycle_seconds: 3
       scale_factor: 0.001
     - omc_parameter_name: Shallow Profiler Navigational Data Accel-Z
-      ion_parameter_name: shallow_profiler_navigational_data_accel_z
+      ion_parameter_name: sp_nav_accel_z
       monitor_cycle_seconds: 3
       scale_factor: 0.001
     - omc_parameter_name: Shallow Profiler Navigational Data Magnetic Flux Density X
-      ion_parameter_name: shallow_profiler_navigational_data_magnetic_flux_density_x
+      ion_parameter_name: sp_nav_magnetic_flux_density_x
       monitor_cycle_seconds: 3
       scale_factor: 0.001
     - omc_parameter_name: Shallow Profiler Navigational Data Magnetic Flux Density Y
-      ion_parameter_name: shallow_profiler_navigational_data_magnetic_flux_density_y
+      ion_parameter_name: sp_nav_magnetic_flux_density_y
       monitor_cycle_seconds: 3
       scale_factor: 0.001
     - omc_parameter_name: Shallow Profiler Navigational Data Magnetic Flux Density Z
-      ion_parameter_name: shallow_profiler_navigational_data_magnetic_flux_density_z
+      ion_parameter_name: sp_nav_magnetic_flux_density_z
       monitor_cycle_seconds: 3
       scale_factor: 0.001
     - omc_parameter_name: Shallow Profiler Navigational Data Mission Control Event
-      ion_parameter_name: shallow_profiler_navigational_data_mission_control_event
+      ion_parameter_name: sp_nav_mission_control_event
       monitor_cycle_seconds: 3
       scale_factor: 1
     - omc_parameter_name: Shallow Profiler Navigational Data NavData Timestamp MicroSec Component
-      ion_parameter_name: shallow_profiler_navigational_data_navdata_timestamp_microsec_component
+      ion_parameter_name: sp_nav_navdata_timestamp_microsec_component
       monitor_cycle_seconds: 3
       scale_factor: 1
     - omc_parameter_name: Shallow Profiler Navigational Data Pitch
-      ion_parameter_name: shallow_profiler_navigational_data_pitch
+      ion_parameter_name: sp_nav_pitch
       monitor_cycle_seconds: 3
       scale_factor: 0.001
     - omc_parameter_name: Shallow Profiler Navigational Data Pitch Rate
-      ion_parameter_name: shallow_profiler_navigational_data_pitch_rate
+      ion_parameter_name: sp_nav_pitch_rate
       monitor_cycle_seconds: 3
       scale_factor: 0.001
     - omc_parameter_name: Shallow Profiler Navigational Data Roll
-      ion_parameter_name: shallow_profiler_navigational_data_roll
+      ion_parameter_name: sp_nav_roll
       monitor_cycle_seconds: 3
       scale_factor: 0.001
     - omc_parameter_name: Shallow Profiler Navigational Data Roll Rate
-      ion_parameter_name: shallow_profiler_navigational_data_roll_rate
+      ion_parameter_name: sp_nav_roll_rate
       monitor_cycle_seconds: 3
       scale_factor: 0.001
     - omc_parameter_name: Shallow Profiler Navigational Data Yaw
-      ion_parameter_name: shallow_profiler_navigational_data_yaw
+      ion_parameter_name: sp_nav_yaw
       monitor_cycle_seconds: 3
       scale_factor: 0.001
     - omc_parameter_name: Shallow Profiler Navigational Data Yaw Rate
-      ion_parameter_name: shallow_profiler_navigational_data_yaw_rate
+      ion_parameter_name: sp_nav_yaw_rate
       monitor_cycle_seconds: 3
       scale_factor: 0.001
     - omc_parameter_name: Shallow Profiler Science Pod Depth
-      ion_parameter_name: shallow_profiler_science_pod_depth
+      ion_parameter_name: sp_science_pod_depth
       monitor_cycle_seconds: 3
       scale_factor: 0.001
     - omc_parameter_name: Shallow Profiler Science Pod Direction
-      ion_parameter_name: shallow_profiler_science_pod_direction
+      ion_parameter_name: sp_science_pod_direction
       monitor_cycle_seconds: 3
       scale_factor: 1
     - omc_parameter_name: Shallow Profiler Science Pod Mission Control Event
-      ion_parameter_name: shallow_profiler_science_pod_mission_control_event
+      ion_parameter_name: sp_science_pod_mission_control_event
       monitor_cycle_seconds: 3
       scale_factor: 1
     - omc_parameter_name: Shallow Profiler Science Pod Speed
-      ion_parameter_name: shallow_profiler_science_pod_speed
+      ion_parameter_name: sp_science_pod_speed
       monitor_cycle_seconds: 3
       scale_factor: 0.001
     - omc_parameter_name: Shallow Profiler Science Pod Wave Height
-      ion_parameter_name: shallow_profiler_science_pod_wave_height
+      ion_parameter_name: sp_science_pod_wave_height
       monitor_cycle_seconds: 3
       scale_factor: 0.001
     - omc_parameter_name: Shallow Profiler Winch Control Cable Out
-      ion_parameter_name: shallow_profiler_winch_control_cable_out
+      ion_parameter_name: sp_wc_cable_out
       monitor_cycle_seconds: 3
       scale_factor: 1
     - omc_parameter_name: Shallow Profiler Winch Control Is Bottom Layer
-      ion_parameter_name: shallow_profiler_winch_control_is_bottom_layer
+      ion_parameter_name: sp_wc_is_bottom_layer
       monitor_cycle_seconds: 3
       scale_factor: 1
     - omc_parameter_name: Shallow Profiler Winch Control Levelwind Cart Direction
-      ion_parameter_name: shallow_profiler_winch_control_levelwind_cart_direction
+      ion_parameter_name: sp_wc_levelwind_cart_direction
       monitor_cycle_seconds: 3
       scale_factor: 1
     - omc_parameter_name: Shallow Profiler Winch Control Levelwind Levelwind Direction
-      ion_parameter_name: shallow_profiler_winch_control_levelwind_levelwind_direction
+      ion_parameter_name: sp_wc_levelwind_direction
       monitor_cycle_seconds: 3
       scale_factor: 1
     - omc_parameter_name: Shallow Profiler Winch Control Levelwind Levelwind Direction Is Clockwise
-      ion_parameter_name: shallow_profiler_winch_control_levelwind_levelwind_direction_is_clockwise
+      ion_parameter_name: sp_wc_levelwind_direction_is_clockwise
       monitor_cycle_seconds: 3
       scale_factor: 1
     - omc_parameter_name: Shallow Profiler Winch Control Levelwind Levelwind One-Way Strokes
-      ion_parameter_name: shallow_profiler_winch_control_levelwind_levelwind_one_way_strokes
+      ion_parameter_name: sp_wc_levelwind_one_way_strokes
       monitor_cycle_seconds: 3
       scale_factor: 1
     - omc_parameter_name: Shallow Profiler Winch Control Levelwind Levelwind Position at Last Reverse Index
-      ion_parameter_name: shallow_profiler_winch_control_levelwind_levelwind_position_at_last_reverse_index
+      ion_parameter_name: sp_wc_levelwind_position_at_last_reverse_index
       monitor_cycle_seconds: 3
       scale_factor: 1
     - omc_parameter_name: Shallow Profiler Winch Control Levelwind Levelwind VFD Board Temperature
-      ion_parameter_name: shallow_profiler_winch_control_levelwind_levelwind_vfd_board_temperature
+      ion_parameter_name: sp_wc_levelwind_vfd_board_temperature
       monitor_cycle_seconds: 3
       scale_factor: 0.001
     - omc_parameter_name: Shallow Profiler Winch Control Levelwind Levelwind VFD Sink Temperature
-      ion_parameter_name: shallow_profiler_winch_control_levelwind_levelwind_vfd_sink_temperature
+      ion_parameter_name: sp_wc_levelwind_vfd_sink_temperature
       monitor_cycle_seconds: 3
       scale_factor: 0.001
     - omc_parameter_name: Shallow Profiler Winch Control Levelwind Mission Control Event
-      ion_parameter_name: shallow_profiler_winch_control_levelwind_mission_control_event
+      ion_parameter_name: sp_wc_levelwind_mission_control_event
       monitor_cycle_seconds: 3
       scale_factor: 1
     - omc_parameter_name: Shallow Profiler Winch Control Levelwind levelwind Speed
-      ion_parameter_name: shallow_profiler_winch_control_levelwind_levelwind_speed
+      ion_parameter_name: sp_wc_levelwind_speed
       monitor_cycle_seconds: 3
       scale_factor: 1
     - omc_parameter_name: Shallow Profiler Winch Control Mission Control Event
-      ion_parameter_name: shallow_profiler_winch_control_mission_control_event
+      ion_parameter_name: sp_wc_mission_control_event
       monitor_cycle_seconds: 3
       scale_factor: 1
     - omc_parameter_name: Shallow Profiler Winch Control Winch Cable Wrap Index
-      ion_parameter_name: shallow_profiler_winch_control_winch_cable_wrap_index
+      ion_parameter_name: sp_wc_winch_cable_wrap_index
       monitor_cycle_seconds: 3
       scale_factor: 1
     - omc_parameter_name: Shallow Profiler Winch Control Winch Cable Wrap Layer
-      ion_parameter_name: shallow_profiler_winch_control_winch_cable_wrap_layer
+      ion_parameter_name: sp_wc_winch_cable_wrap_layer
       monitor_cycle_seconds: 3
       scale_factor: 1
     - omc_parameter_name: Shallow Profiler Winch Control Winch Position at Last Drum Index
-      ion_parameter_name: shallow_profiler_winch_control_winch_position_at_last_drum_index
+      ion_parameter_name: sp_wc_winch_position_at_last_drum_index
       monitor_cycle_seconds: 3
       scale_factor: 1
     - omc_parameter_name: Shallow Profiler Winch Control Winch Revs
-      ion_parameter_name: shallow_profiler_winch_control_winch_revs
+      ion_parameter_name: sp_wc_winch_revs
       monitor_cycle_seconds: 3
       scale_factor: 1
     - omc_parameter_name: Shallow Profiler Winch Control Winch Speed
-      ion_parameter_name: shallow_profiler_winch_control_winch_speed
+      ion_parameter_name: sp_wc_winch_speed
       monitor_cycle_seconds: 3
       scale_factor: 0.001
     - omc_parameter_name: Shallow Profiler Winch Control Winch VFD Board Temp
-      ion_parameter_name: shallow_profiler_winch_control_winch_vfd_board_temp
+      ion_parameter_name: sp_wc_winch_vfd_board_temp
       monitor_cycle_seconds: 3
       scale_factor: 0.001
     - omc_parameter_name: Shallow Profiler Winch Control Winch VFD Sink Temp
-      ion_parameter_name: shallow_profiler_winch_control_winch_vfd_sink_temp
+      ion_parameter_name: sp_wc_winch_vfd_sink_temp
       monitor_cycle_seconds: 3
       scale_factor: 0.001
     - omc_parameter_name: Shallow Profiler Winch Controller Based XML/RPC Data Server Mission Control Event
-      ion_parameter_name: shallow_profiler_winch_controller_based_xml/rpc_data_server_mission_control_event
+      ion_parameter_name: sp_wcler_based_xmlrpc_data_server_mission_control_event
       monitor_cycle_seconds: 3
       scale_factor: 1
 
-  ups_line:
+  shore_station_ups_line_eng_data:
     variables:
     - line_num
     parameters:
@@ -674,7 +674,7 @@ streams:
       monitor_cycle_seconds: 660.0
       scale_factor: 1
 
-  ups_status:
+  shore_station_shore_station_ups_status:
     variables: null
     parameters:
     - omc_parameter_name: sysUpTime
@@ -726,143 +726,143 @@ streams:
       monitor_cycle_seconds: 660.0
       scale_factor: 1
 
-  time_server:
+  shore_station_time_server_eng_data:
     variables: null
     parameters:
     - omc_parameter_name: faultAuxRef
-      ion_parameter_name: time_server_fault_aux_reference_clock_lock
+      ion_parameter_name: ts_fault_aux_reference_clock_lock
       monitor_cycle_seconds: 300.0
       scale_factor: 1
     - omc_parameter_name: faultDac
-      ion_parameter_name: time_server_fault_digital_to_audio_converter
+      ion_parameter_name: ts_fault_digital_to_audio_converter
       monitor_cycle_seconds: 300.0
       scale_factor: 1
     - omc_parameter_name: faultFirstTimeLock
-      ion_parameter_name: time_server_fault_first_time_locking
+      ion_parameter_name: ts_fault_first_time_locking
       monitor_cycle_seconds: 300.0
       scale_factor: 1
     - omc_parameter_name: faultIrig
-      ion_parameter_name: time_server_fault_irig_lock
+      ion_parameter_name: ts_fault_irig_lock
       monitor_cycle_seconds: 300.0
       scale_factor: 1
     - omc_parameter_name: faultLpnPll
-      ion_parameter_name: time_server_fault_lpn_pll
+      ion_parameter_name: ts_fault_lpn_pll
       monitor_cycle_seconds: 300.0
       scale_factor: 1
     - omc_parameter_name: faultPllSynthesizer
-      ion_parameter_name: time_server_fault_pll_synthesizer
+      ion_parameter_name: ts_fault_pll_synthesizer
       monitor_cycle_seconds: 300.0
       scale_factor: 1
     - omc_parameter_name: faultPrimaryPower
-      ion_parameter_name: time_server_fault_primary_power
+      ion_parameter_name: ts_fault_primary_power
       monitor_cycle_seconds: 300.0
       scale_factor: 1
     - omc_parameter_name: faultPrimaryRefClk
-      ion_parameter_name: time_server_fault_primary_ref_clk
+      ion_parameter_name: ts_fault_primary_ref_clk
       monitor_cycle_seconds: 300.0
       scale_factor: 1
     - omc_parameter_name: faultRbOsc
-      ion_parameter_name: time_server_fault_rubidium_oscillator
+      ion_parameter_name: ts_fault_rubidium_oscillator
       monitor_cycle_seconds: 300.0
       scale_factor: 1
     - omc_parameter_name: faultSecondaryPower
-      ion_parameter_name: time_server_fault_secondary_power
+      ion_parameter_name: ts_fault_secondary_power
       monitor_cycle_seconds: 300.0
       scale_factor: 1
     - omc_parameter_name: faultSecondaryRefClk
-      ion_parameter_name: time_server_fault_secondary_ref_clk
+      ion_parameter_name: ts_fault_secondary_ref_clk
       monitor_cycle_seconds: 300.0
       scale_factor: 1
     - omc_parameter_name: faultTimeError
-      ion_parameter_name: time_server_fault_time_error
+      ion_parameter_name: ts_fault_time_error
       monitor_cycle_seconds: 300.0
       scale_factor: 1
     - omc_parameter_name: faultTimeout
-      ion_parameter_name: time_server_fault_timeout
+      ion_parameter_name: ts_fault_timeout
       monitor_cycle_seconds: 300.0
       scale_factor: 1
     - omc_parameter_name: ntpAuthFail
-      ion_parameter_name: time_server_ntp_auth_fail
+      ion_parameter_name: ts_ntp_auth_fail
       monitor_cycle_seconds: 300.0
       scale_factor: 1
     - omc_parameter_name: ntpInErrors
-      ion_parameter_name: time_server_ntp_in_errors
+      ion_parameter_name: ts_ntp_in_errors
       monitor_cycle_seconds: 300.0
       scale_factor: 1
     - omc_parameter_name: ntpInPkts
-      ion_parameter_name: time_server_ntp_in_pkts
+      ion_parameter_name: ts_ntp_in_pkts
       monitor_cycle_seconds: 1020.0
       scale_factor: 1
     - omc_parameter_name: ntpOutPkts
-      ion_parameter_name: time_server_ntp_out_pkts
+      ion_parameter_name: ts_ntp_out_pkts
       monitor_cycle_seconds: 1020.0
       scale_factor: 1
     - omc_parameter_name: statusAuxRef
-      ion_parameter_name: time_server_status_aux_ref_clock
+      ion_parameter_name: ts_status_aux_ref_clock
       monitor_cycle_seconds: 300.0
       scale_factor: 1
     - omc_parameter_name: statusClock
-      ion_parameter_name: time_server_status_clock
+      ion_parameter_name: ts_status_clock
       monitor_cycle_seconds: 1020.0
       scale_factor: 1
     - omc_parameter_name: statusClockSource
-      ion_parameter_name: time_server_status_clock_source
+      ion_parameter_name: ts_status_clock_source
       monitor_cycle_seconds: 1020.0
       scale_factor: 1
     - omc_parameter_name: statusDac
-      ion_parameter_name: time_server_status_digital_to_audio_converter
+      ion_parameter_name: ts_status_digital_to_audio_converter
       monitor_cycle_seconds: 300.0
       scale_factor: 1
     - omc_parameter_name: statusFirstTimeLock
-      ion_parameter_name: time_server_status_first_time_locking
+      ion_parameter_name: ts_status_first_time_locking
       monitor_cycle_seconds: 300.0
       scale_factor: 1
     - omc_parameter_name: statusIrig
-      ion_parameter_name: time_server_status_irig_lock
+      ion_parameter_name: ts_status_irig_lock
       monitor_cycle_seconds: 300.0
       scale_factor: 1
     - omc_parameter_name: statusLpnPll
-      ion_parameter_name: time_server_status_lpn_pll
+      ion_parameter_name: ts_status_lpn_pll
       monitor_cycle_seconds: 300.0
       scale_factor: 1
     - omc_parameter_name: statusPllSynthesizer
-      ion_parameter_name: time_server_status_pll_synthesizer
+      ion_parameter_name: ts_status_pll_synthesizer
       monitor_cycle_seconds: 300.0
       scale_factor: 1
     - omc_parameter_name: statusPrimaryPower
-      ion_parameter_name: time_server_status_primary_power
+      ion_parameter_name: ts_status_primary_power
       monitor_cycle_seconds: 300.0
       scale_factor: 1
     - omc_parameter_name: statusPrimaryRefClk
-      ion_parameter_name: time_server_status_primary_reference_clock
+      ion_parameter_name: ts_status_primary_reference_clock
       monitor_cycle_seconds: 300.0
       scale_factor: 1
     - omc_parameter_name: statusRbOsc
-      ion_parameter_name: time_server_status_rubidium_oscillator
+      ion_parameter_name: ts_status_rubidium_oscillator
       monitor_cycle_seconds: 300.0
       scale_factor: 1
     - omc_parameter_name: statusSecondaryPower
-      ion_parameter_name: time_server_status_secondary_power
+      ion_parameter_name: ts_status_secondary_power
       monitor_cycle_seconds: 300.0
       scale_factor: 1
     - omc_parameter_name: statusSecondaryRefClk
-      ion_parameter_name: time_server_status_secondary_reference_clock
+      ion_parameter_name: ts_status_secondary_reference_clock
       monitor_cycle_seconds: 300.0
       scale_factor: 1
     - omc_parameter_name: statusTimeError
-      ion_parameter_name: time_server_status_time_error
+      ion_parameter_name: ts_status_time_error
       monitor_cycle_seconds: 300.0
       scale_factor: 1
     - omc_parameter_name: statusTimeout
-      ion_parameter_name: time_server_status_timeout_error
+      ion_parameter_name: ts_status_timeout_error
       monitor_cycle_seconds: 300.0
       scale_factor: 1
     - omc_parameter_name: sysUpTime
-      ion_parameter_name: time_server_system_up_time
+      ion_parameter_name: ts_system_up_time
       monitor_cycle_seconds: 300.0
       scale_factor: 1
 
-  f10:
+  shore_station_force_10_network_port_data:
     variables:
     - port_num
     parameters:
@@ -923,7 +923,7 @@ streams:
       monitor_cycle_seconds: 86400.0
       scale_factor: 1
 
-  pfe:
+  shore_station_power_feed_equipment_eng_data:
     variables: null
     parameters:
     - omc_parameter_name: pfe-HVPS1-ON

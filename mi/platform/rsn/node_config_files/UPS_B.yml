@@ -6,13 +6,13 @@ node_meta_data:
   reference_designator: UPS B
 
 node_streams:
-  ups_line:
+  shore_station_ups_line_eng_data:
   - name: LINE1
     linenum: 1
   - name: LINE2
     linenum: 2
   - name: LINE3
     linenum: 3
-  ups_status:
+  shore_station_ups_status:
   - name: STATUS
 

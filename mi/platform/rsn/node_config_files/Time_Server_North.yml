@@ -6,5 +6,5 @@ node_meta_data:
   reference_designator: Time Server North
 
 node_streams:
-  time_server:
+  shore_station_time_server_eng_data:
   - name: STATUS

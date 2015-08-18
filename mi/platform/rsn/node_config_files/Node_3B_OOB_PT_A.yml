@@ -6,7 +6,7 @@ node_meta_data:
   reference_designator: Node 3B OOB.PT A
 
 node_streams:
-  pn_port:
+  primary_node_out_of_band_port_data:
     - name: PN3B_PRI
       port_name: PrimaryEgress
     - name: PN3B_SP1
