@@ -189,6 +189,7 @@ class Parameter(DriverParameter):
     EH_ISOLATION_AMP_POWER = "trhph_eh_amp_power_status"
     HYDROGEN_POWER = "trhph_hydro_sensor_power_status"
     REFERENCE_TEMP_POWER = "trhph_ref_temp_power_status"
+    RUN_ACQUIRE_STATUS_INTERVAL = 'status_interval'
 
 
 # Device prompts.
@@ -794,6 +795,9 @@ class Protocol(MenuInstrumentProtocol):
 
                 self._go_to_root_menu()
 
+            elif key == Parameter.RUN_ACQUIRE_STATUS_INTERVAL:
+                self._param_dict.set_value(key, val)
+
     def _set_params(self, *args, **kwargs):
         """
         Verify not readonly params and call set_trhph_params to issue commands to the instrument
@@ -940,6 +944,10 @@ class Protocol(MenuInstrumentProtocol):
         Enter autosample mode
         """
         self._driver_event(DriverAsyncEvent.STATE_CHANGE)
+
+        log.debug("Configuring the scheduler to acquire status %s", self._param_dict.get(Parameter.RUN_ACQUIRE_STATUS_INTERVAL))
+        if self._param_dict.get(Parameter.RUN_ACQUIRE_STATUS_INTERVAL) != '00:00:00':
+            self.start_scheduled_job(Parameter.RUN_ACQUIRE_STATUS_INTERVAL, ScheduledJob.ACQUIRE_STATUS, ProtocolEvent.SCHEDULED_ACQUIRE_STATUS)
 
     def _handler_autosample_acquire_status(self, *args, **kwargs):
         """
@@ -1256,6 +1264,20 @@ class Protocol(MenuInstrumentProtocol):
                              submenu_read=[],
                              menu_path_write=SubMenu.SENSOR_POWER,
                              submenu_write=[["5"]])
+
+        self._param_dict.add(Parameter.RUN_ACQUIRE_STATUS_INTERVAL,
+                             "fakeregexdontmatch",
+                             lambda match: match.group(0),
+                             str,
+                             type=ParameterDictType.STRING,
+                             expiration=None,
+                             visibility=ParameterDictVisibility.IMMUTABLE,
+                             display_name="Acquire Status Interval",
+                             description='Time interval for running acquiring status.',
+                             default_value='00:00:00',
+                             units='HH:MM:SS',
+                             startup_param=True,
+                             direct_access=False)
 
     @staticmethod
     def _to_seconds(value, unit):
