@@ -68,6 +68,8 @@ DEFAULT_DICT_TIMEOUT = 30
 
 DEFAULT_PRESET_POSITION = 0
 
+DEFAULT_USER_PRESET_POSITION = 1
+
 #'NAK' reply from the instrument, indicating bad command sent to the instrument
 NAK = '\x15'
 
@@ -586,7 +588,7 @@ class Parameter(DriverParameter):
                         'True - Turn on Video, False - Turn off video', 'VIDEO_FORWARDING', False)
     VIDEO_FORWARDING_TIMEOUT = (None, None, None, None, '01:00:00', 'video forwarding timeout',
                                 'hh:mm:ss', 'VIDEO_FORWARDING_TIMEOUT', '01:00:00')
-    PRESET_NUMBER = (None, None, None, None, 0, 'Preset number', 'preset number (1- 15)', 'PRESET_NUMBER', 0)
+    PRESET_NUMBER = (None, None, None, None, 1, 'Preset number', 'preset number (1- 15)', 'PRESET_NUMBER', 1)
     AUTO_CAPTURE_DURATION = (None, None, None, None, '00:00:03', 'Auto Capture Duration', 'hh:mm:ss, 1 to 5 Seconds',
                              'AUTO_CAPTURE_DURATION', '00:00:03')
 
@@ -2036,7 +2038,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
         result = []
 
         #set default preset position
-        preset_number = DEFAULT_PRESET_POSITION
+        preset_number = DEFAULT_USER_PRESET_POSITION
 
         for key, value in pd.iteritems():
             if key == Parameter.PRESET_NUMBER[ParameterIndex.KEY]:
@@ -2099,8 +2101,8 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
 
         kwargs['timeout'] = 2
 
-        #set default preset position
-        preset_number = DEFAULT_PRESET_POSITION
+        #set to default user preset position
+        preset_number = DEFAULT_USER_PRESET_POSITION
 
         # Check if the user set a preset position, if so, make the camera go to that position
         pd = self._param_dict.get_all()
