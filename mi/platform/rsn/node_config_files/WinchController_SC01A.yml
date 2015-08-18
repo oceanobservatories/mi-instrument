@@ -8,7 +8,7 @@ node_meta_data:
   serial_number: SN0120
 
 node_streams:
-  sec_node_port:
+  secondary_node_port_eng_data:
     - port_type: Instrument
       port_num: 1
       name: BRAKE-IP2
@@ -25,8 +25,8 @@ node_streams:
       port_num: 1
       name: VFD-EP2
 
-  node_eng_data:
+  secondary_node_eng_data:
     - name: 00-ENG
 
-  winch_info:
+  shallow_profiler_winch_eng_data:
     - name: 00-WINCH

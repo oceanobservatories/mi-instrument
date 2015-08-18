@@ -6,6 +6,6 @@ node_meta_data:
   reference_designator: Node 3B LVPS
 
 node_streams:
-  pn_eng:
+  primary_secondary_secondary_node_eng_data:
     - name: PN3B_LVPS
 

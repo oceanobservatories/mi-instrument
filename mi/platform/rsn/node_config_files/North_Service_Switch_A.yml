@@ -6,7 +6,7 @@ node_meta_data:
   reference_designator: North Service Switch A
 
 node_streams:
-  f10:
+  shore_station_force_10_network_port_data:
   - name: F10-1
     port_num: 1
   - name: F10-2

@@ -8,7 +8,7 @@ node_meta_data:
   serial_number: SN0028
 
 node_streams:
-  sec_node_port:
+  secondary_node_port_eng_data:
     - port_type: Instrument
       port_num: 0
       name: 05-IP1
@@ -24,7 +24,7 @@ node_streams:
     - port_type: Instrument
       port_num: 5
       name: 10-IP6
-  node_eng_data:
+  secondary_node_eng_data:
     - name: 00-ENG
 
 port_info:
