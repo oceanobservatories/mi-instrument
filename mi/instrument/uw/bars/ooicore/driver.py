@@ -31,6 +31,10 @@ from mi.core.instrument.instrument_driver import DriverAsyncEvent
 from mi.core.instrument.instrument_driver import DriverProtocolState
 from mi.core.instrument.instrument_driver import DriverParameter
 from mi.core.instrument.instrument_driver import ResourceAgentState
+from mi.core.instrument.instrument_driver import DriverConfigKey
+from mi.core.driver_scheduler import DriverSchedulerConfigKey
+from mi.core.driver_scheduler import TriggerType
+
 from mi.core.instrument.instrument_protocol import MenuInstrumentProtocol
 from mi.core.instrument.protocol_param_dict import ProtocolParameterDict, ParameterDictVisibility, ParameterDictType
 
@@ -189,6 +193,7 @@ class Parameter(DriverParameter):
     EH_ISOLATION_AMP_POWER = "trhph_eh_amp_power_status"
     HYDROGEN_POWER = "trhph_hydro_sensor_power_status"
     REFERENCE_TEMP_POWER = "trhph_ref_temp_power_status"
+    RUN_ACQUIRE_STATUS_INTERVAL = 'status_interval'
 
 
 # Device prompts.
@@ -698,6 +703,11 @@ class Protocol(MenuInstrumentProtocol):
         self._init_params()
         self._driver_event(DriverAsyncEvent.STATE_CHANGE)
 
+        log.debug("Configuring the scheduler to acquire status %s", self._param_dict.get(Parameter.RUN_ACQUIRE_STATUS_INTERVAL))
+        if self._param_dict.get(Parameter.RUN_ACQUIRE_STATUS_INTERVAL) != '00:00:00':
+            self.start_scheduled_job(Parameter.RUN_ACQUIRE_STATUS_INTERVAL, ScheduledJob.ACQUIRE_STATUS, ProtocolEvent.SCHEDULED_ACQUIRE_STATUS)
+
+
     def _handler_command_get(self, params=None, *args, **kwargs):
         """
         Get parameters while in the command state.
@@ -793,6 +803,9 @@ class Protocol(MenuInstrumentProtocol):
                 self._param_dict.set_value(key, self._param_dict.get_init_value(key))
 
                 self._go_to_root_menu()
+
+            elif key == Parameter.RUN_ACQUIRE_STATUS_INTERVAL:
+                self._param_dict.set_value(key, val)
 
     def _set_params(self, *args, **kwargs):
         """
@@ -935,11 +948,50 @@ class Protocol(MenuInstrumentProtocol):
     ########################################################################
     # Autosample handlers
     ########################################################################
+
+    def stop_scheduled_job(self, schedule_job):
+        """
+        Remove the scheduled job
+        """
+        if self._scheduler is not None:
+            try:
+                self._remove_scheduler(schedule_job)
+            except KeyError:
+                log.debug("_remove_scheduler could not find %s", schedule_job)
+
+    def start_scheduled_job(self, param, schedule_job, protocol_event):
+        """
+        Add a scheduled job
+        """
+        interval = self._param_dict.get(param).split(':')
+        hours = interval[0]
+        minutes = interval[1]
+        seconds = interval[2]
+        log.debug("Setting scheduled interval to: %s %s %s", hours, minutes, seconds)
+
+        config = {DriverConfigKey.SCHEDULER: {
+            schedule_job: {
+                DriverSchedulerConfigKey.TRIGGER: {
+                    DriverSchedulerConfigKey.TRIGGER_TYPE: TriggerType.INTERVAL,
+                    DriverSchedulerConfigKey.HOURS: int(hours),
+                    DriverSchedulerConfigKey.MINUTES: int(minutes),
+                    DriverSchedulerConfigKey.SECONDS: int(seconds)
+                }
+            }
+        }
+        }
+        self.set_init_params(config)
+        self._add_scheduler_event(schedule_job, protocol_event)
+
     def _handler_autosample_enter(self, *args, **kwargs):
         """
         Enter autosample mode
         """
         self._driver_event(DriverAsyncEvent.STATE_CHANGE)
+
+        log.debug("Configuring the scheduler to acquire status %s", self._param_dict.get(Parameter.RUN_ACQUIRE_STATUS_INTERVAL))
+        if self._param_dict.get(Parameter.RUN_ACQUIRE_STATUS_INTERVAL) != '00:00:00':
+            self.start_scheduled_job(Parameter.RUN_ACQUIRE_STATUS_INTERVAL, ScheduledJob.ACQUIRE_STATUS, ProtocolEvent.SCHEDULED_ACQUIRE_STATUS)
 
     def _handler_autosample_acquire_status(self, *args, **kwargs):
         """
@@ -970,9 +1022,12 @@ class Protocol(MenuInstrumentProtocol):
         next_agent_state = None
         result = None
 
+        self.stop_scheduled_job(ScheduledJob.ACQUIRE_STATUS)
+
         if self._send_break():
             next_state = ProtocolState.COMMAND
             next_agent_state = ResourceAgentState.COMMAND
+
 
         return next_state, (next_agent_state, result)
 
@@ -1110,7 +1165,7 @@ class Protocol(MenuInstrumentProtocol):
         self._cmd_dict.add(Capability.START_AUTOSAMPLE, display_name="Start Autosample")
         self._cmd_dict.add(Capability.STOP_AUTOSAMPLE, display_name="Stop Autosample")
         self._cmd_dict.add(Capability.ACQUIRE_STATUS, display_name="Acquire Status")
-        self._cmd_dict.add(Capability.DISCOVER, display_name='Discover')
+        self._cmd_dict.add(Capability.DISCOVER, display_name="Discover")
 
     def _build_param_dict(self):
         """
@@ -1256,6 +1311,20 @@ class Protocol(MenuInstrumentProtocol):
                              submenu_read=[],
                              menu_path_write=SubMenu.SENSOR_POWER,
                              submenu_write=[["5"]])
+
+        self._param_dict.add(Parameter.RUN_ACQUIRE_STATUS_INTERVAL,
+                             "fakeregexdontmatch",
+                             lambda match: match.group(0),
+                             str,
+                             type=ParameterDictType.STRING,
+                             expiration=None,
+                             visibility=ParameterDictVisibility.READ_WRITE,
+                             display_name="Acquire Status Interval",
+                             description='Time interval for running acquiring status.',
+                             default_value='00:00:00',
+                             units='HH:MM:SS',
+                             startup_param=True,
+                             direct_access=False)
 
     @staticmethod
     def _to_seconds(value, unit):
