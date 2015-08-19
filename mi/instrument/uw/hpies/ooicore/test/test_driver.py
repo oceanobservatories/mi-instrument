@@ -133,8 +133,10 @@ class UtilMixin(DriverTestMixin):
         '#3__s1 -748633661 31 23 0 C:\\DATA\\12345.000 OK*3e90' + NEWLINE + \
         '#3__s2 10 0 0 984001 0 0 0*ac87' + NEWLINE + \
         '#3__s3 0 0 0 0 0 0 1*35b7'
-    SAMPLE_IES = '#5_AUX,1398880200,04,999999,999999,999999,999999,0010848,021697,022030,' + \
-                 '04000005.252,1B05,1398966715*c69e'
+    SAMPLE_IES_5AUX = '#5_AUX,1398880200,04,999999,999999,999999,999999,0010848,021697,022030,' + \
+                      '04000005.252,1B05,1398966715*c69e'
+    SAMPLE_IES_4AUX = '#4_AUX,1439251200,04,390262,390286,390213,390484,2954625,001426,001420,' + \
+                      '04000018.093,4851\r\r\n*46cc'
     # SAMPLE_HEADING = "#3_hdg=  65.48 pitch=  -3.23 roll=  -2.68 temp=  30.20\r\n*1049"
     # SAMPLE_SM = "#3__SM 0 172 7*c5b2"
     # SAMPLE_Sm = "#3__Sm 0 32*df9f"
@@ -158,7 +160,8 @@ class UtilMixin(DriverTestMixin):
         SAMPLE_CAL_HEADER,
         SAMPLE_CAL,
         SAMPLE_HPIES_STATUS,
-        SAMPLE_IES,
+        SAMPLE_IES_4AUX,
+        SAMPLE_IES_5AUX,
         SAMPLE_IES_STATUS,
         SAMPLE_TIMESTAMP
     ]
