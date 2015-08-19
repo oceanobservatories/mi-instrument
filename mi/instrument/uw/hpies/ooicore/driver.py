@@ -830,10 +830,11 @@ class IESDataParticle(HPIESDataParticle):
 
         Sample Data:
         #5_AUX,1398880200,04,999999,999999,999999,999999,0010848,021697,022030,04000005.252,1B05,1398966715*c69e
+        #4_AUX,1439251200,04,390262,390286,390213,390484,2954625,001426,001420,04000018.093,4851\r\r\n*46cc
         """
         pattern = r"""
             (?x)
-                                \#5_AUX    ,
+                                \#[45]_AUX    ,
             (?P<ies_timestamp>  %(int)s)   ,
             (?P<n_travel_times> %(int)s)   ,
             (?P<travel_1>       %(int)s)   ,
@@ -844,8 +845,8 @@ class IESDataParticle(HPIESDataParticle):
             (?P<temp>           %(int)s)   ,
             (?P<bliley_temp>    %(int)s)   ,
             (?P<bliley_freq>    %(float)s) ,
-                                %(crc)s    ,
-            (?P<stm_timestamp>  %(int)s)
+                                %(crc)s    ,?
+            (?P<stm_timestamp>  %(int)s | \r\r\n)
                                 \*
             (?P<crc>            %(crc)s)
             """ % common_matches
@@ -857,6 +858,9 @@ class IESDataParticle(HPIESDataParticle):
         Parse data sample for individual values (statistics)
         @throws SampleException If there is a problem with sample creation
         """
+        stm_timestamp = 1;
+        if self.match.group(1) == '5':
+            stm_timestamp = self.match.group('stm_timestamp')
 
         return [
             self._encode_value(IESDataParticleKey.DATA_VALID, self.check_crc(), int),
@@ -870,7 +874,7 @@ class IESDataParticle(HPIESDataParticle):
             self._encode_value(IESDataParticleKey.TEMPERATURE, self.match.group('temp'), int),
             self._encode_value(IESDataParticleKey.BLILEY_TEMPERATURE, self.match.group('bliley_temp'), int),
             self._encode_value(IESDataParticleKey.BLILEY_FREQUENCY, self.match.group('bliley_freq'), float),
-            self._encode_value(IESDataParticleKey.STM_TIMESTAMP, self.match.group('stm_timestamp'), int),
+            self._encode_value(IESDataParticleKey.STM_TIMESTAMP, stm_timestamp, int),
         ]
 
 
