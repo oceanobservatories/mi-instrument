@@ -1048,29 +1048,14 @@ class Protocol(CommandResponseInstrumentProtocol):
 
     def _handler_autosample_run_wiper(self, *args, **kwargs):
         """
-        Runs the wiper.  Puts the instrument into command mode, sends the command.  Will try up to 5 times to
-        send the command.  If it fails, propagate the error to the operator, and keep instrument in command mode,
-        no sense in trying collect samples.  If wiper is run successfully, put instrument back into
-        autosample mode.
+        Runs the wiper.  Puts the instrument into command mode, sends the command. If wiper is run successfully,
+        put instrument back into autosample mode.
         """
-        max_attempts = 5
-        attempt = 0
-        wiper_ran = False
 
         # put instrument into command mode to send run wiper command ($mvs)
         self._do_cmd_resp(InstrumentCommand.INTERRUPT_INSTRUMENT, *args, timeout=TIMEOUT, response_regex=MNU_REGEX_MATCHER)
+        self._do_cmd_resp(InstrumentCommand.RUN_WIPER, *args, timeout=TIMEOUT, response_regex=RUN_REGEX_MATCHER)
 
-        while (attempt < max_attempts) or wiper_ran == False:
-            try:
-                log.debug('Sending $mvs command, attempt %s', attempt)
-                self._do_cmd_resp(InstrumentCommand.RUN_WIPER, *args, timeout=TIMEOUT, response_regex=RUN_REGEX_MATCHER)
-                wiper_ran = True
-
-            except InstrumentCommandException:
-                attempt += 1
-            finally:
-                if attempt == max_attempts:
-                    raise InstrumentCommandException('ERROR: Wiper did not make it to the next cycle')
         if self.__instrument_class__ == FLORT_CLASS:
             resp_regex = FLORT_SAMPLE_REGEX_MATCHER
         else:
