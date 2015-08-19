@@ -117,8 +117,6 @@ class InstrumentDriver(SingleConnectionInstrumentDriver):
     Subclasses SingleConnectionInstrumentDriver with connection state
     machine.
     """
-    def __init__(self, evt_callback):
-        SingleConnectionInstrumentDriver.__init__(self, evt_callback)
 
     ########################################################################
     # Superclass overrides for resource query.

@@ -125,12 +125,12 @@ class VadcpPd0SlaveDataParticle(AdcpPd0ParsedDataParticle):
 
 
 class InstrumentDriver(SingleConnectionInstrumentDriver):
-    def __init__(self, evt_callback):
+    def __init__(self, evt_callback, refdes):
         """
         InstrumentDriver constructor.
         @param evt_callback Driver process event callback.
         """
-        SingleConnectionInstrumentDriver.__init__(self, evt_callback)
+        SingleConnectionInstrumentDriver.__init__(self, evt_callback, refdes)
 
         # multiple portAgentClient
         self._connection = {}
