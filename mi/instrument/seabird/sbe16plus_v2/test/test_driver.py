@@ -1,7 +1,7 @@
 """
 @package mi.instrument.seabird.sbe16plus_v2.test.test_driver
 @file mi/instrument/seabird/sbe16plus_v2/test/test_driver.py
-@author David Everett 
+@author David Everett
 @brief Test cases for InstrumentDriver
 
 USAGE:
@@ -19,7 +19,7 @@ USAGE:
        $ bin/nosetests -s -v .../mi/instrument/seabird/sbe16plus_v2/ooicore -a QUAL
 """
 from mock import Mock
-from mi.core.time import get_timestamp_delayed
+from mi.core.time_tools import get_timestamp_delayed
 from mi.instrument.seabird.sbe16plus_v2.test.sample_particles import VALID_STATUS_RESPONSE, VALID_SAMPLE, VALID_SAMPLE2, \
     VALID_DCAL_STRAIN, VALID_DCAL_QUARTZ
 
@@ -79,7 +79,7 @@ InstrumentDriverTestCase.initialize(
 
 
 class SeaBird16plusMixin(DriverTestMixin):
-    
+
     InstrumentDriver = SBE16InstrumentDriver
 
     # Create some short names for the parameter test config
@@ -91,7 +91,7 @@ class SeaBird16plusMixin(DriverTestMixin):
     REQUIRED  = ParameterTestConfigKey.REQUIRED
     DEFAULT   = ParameterTestConfigKey.DEFAULT
     STATES    = ParameterTestConfigKey.STATES
-    
+
     ###
     #  Parameter and Type Definitions
     ###
@@ -912,7 +912,7 @@ class Sbe16plusIntegrationTestCase(InstrumentDriverIntegrationTestCase, SeaBird1
         self.assert_initialize_driver()
         self.assert_cycle()
         self.assert_cycle()
-        
+
     def test_metadata(self):
         metadata = self.driver_client.cmd_dvr('get_config_metadata')
         self.assertEqual(metadata, None) # must be connected
@@ -920,7 +920,7 @@ class Sbe16plusIntegrationTestCase(InstrumentDriverIntegrationTestCase, SeaBird1
         metadata = self.driver_client.cmd_dvr('get_config_metadata')
         log.debug("Metadata: %s", metadata)
         self.assertTrue(isinstance(metadata, str))
-        
+
 ###############################################################################
 #                            QUALIFICATION TESTS                              #
 # Device specific qualification tests are for                                 #
