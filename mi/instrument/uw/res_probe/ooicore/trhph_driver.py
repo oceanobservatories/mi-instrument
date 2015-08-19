@@ -61,13 +61,13 @@ class TrhphInstrumentDriver(InstrumentDriver):
     """
     TRHPH driver
     """
-    def __init__(self, evt_callback):
+    def __init__(self, evt_callback, refdes):
         """
         Constructor.
 
         @param evt_callback Driver process event callback.
         """
-        InstrumentDriver.__init__(self, evt_callback)
+        InstrumentDriver.__init__(self, evt_callback, refdes)
 
         # _trhph_client created in configure()
         self._trhph_client = None

@@ -256,13 +256,6 @@ class InstrumentDriver(NortekInstrumentDriver):
     Subclasses SingleConnectionInstrumentDriver with connection state
     machine.
     """
-    def __init__(self, evt_callback):
-        """
-        Driver constructor.
-        @param evt_callback Driver process event callback.
-        """
-        NortekInstrumentDriver.__init__(self, evt_callback)
-
     ########################################################################
     # Protocol builder.
     ########################################################################
