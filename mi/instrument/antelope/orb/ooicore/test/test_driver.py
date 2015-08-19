@@ -18,6 +18,8 @@ import time
 import ntplib
 from mock import Mock
 from nose.plugins.attrib import attr
+import os
+import shutil
 
 from mi.core.instrument.port_agent_client import PortAgentPacket
 from mi.core.log import get_logger
@@ -333,11 +335,25 @@ class DriverIntegrationTest(InstrumentDriverIntegrationTestCase, AntelopeTestMix
         self.assert_driver_command(Capability.START_AUTOSAMPLE, state=ProtocolState.AUTOSAMPLE)
 
         # autosample for 10 seconds, then count the samples...
-        # we can't test "inline" because the nano data rate is too high.
         time.sleep(10)
         self.assert_driver_command(Capability.STOP_AUTOSAMPLE, state=ProtocolState.COMMAND, delay=1)
+        time.sleep(10)
 
-        for particle_type, assert_func, count in [
+        # Search through the list of events for the data particle.  Extract the filename from the
+        # metadata and assert that a file with that name was created.  Then clean up the data file.
+        events = self.events
+        file_location_created = False
+        for event in self.events:
+            if event['type'] == 'DRIVER_ASYNC_EVENT_SAMPLE':
+                particle = event['value']
+                particle_values = particle['values']
+                for particle_value in particle_values:
+                    if particle_value['value_id'] == 'filename':
+                        filename = particle_value['value']
+                        file_exists = os.path.exists(filename)
+                        self.assertTrue(file_exists, 'creation of antelope data file: ' + filename)
+                        if file_exists:
+                            file_location_created = True
 
-        ]:
-            self.assert_async_particle_generation(particle_type, assert_func, particle_count=count, timeout=1)
+        if file_location_created:
+            shutil.rmtree(self._driver_parameters[Parameter.FILE_LOCATION][self.VALUE])
