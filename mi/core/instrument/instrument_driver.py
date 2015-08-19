@@ -7,11 +7,11 @@
 @brief Instrument driver classes that provide structure towards interaction
 with individual instruments in the system.
 """
+from requests import ConnectionError
 
 __author__ = 'Steve Foley'
 __license__ = 'Apache 2.0'
 
-import backoff
 import consulate
 import random
 import time
@@ -33,7 +33,7 @@ log = get_logger()
 
 META_LOGGER = get_logging_metaclass('trace')
 
-STARTING_RECONNECT_INTERVAL = 1
+STARTING_RECONNECT_INTERVAL = .5
 MAXIMUM_RECONNECT_INTERVAL = 256
 MAXIMUM_CONSUL_QUERIES = 5
 MAXIMUM_BACKOFF = 5  # seconds
@@ -497,7 +497,7 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
                 (DriverEvent.STOP_DIRECT, self._handler_connected_stop_direct_event),
             ],
         }
-        
+
         for state in handlers:
             for event, handler in handlers[state]:
                 self._connection_fsm.add_handler(state, event, handler)
@@ -734,7 +734,7 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
         @retval parameter : value dict.
         @raises InstrumentParameterException if missing or invalid get parameters.
         @raises InstrumentStateException if command not allowed in current state
-        @raises NotImplementedException if not implemented by subclass.                        
+        @raises NotImplementedException if not implemented by subclass.
         """
         # Forward event and argument to the protocol FSM.
         return self._connection_fsm.on_event(DriverEvent.GET, DriverEvent.GET, *args, **kwargs)
@@ -748,7 +748,7 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
         @raises InstrumentTimeoutException if could not wake device or no response.
         @raises InstrumentProtocolException if set command not recognized.
         @raises InstrumentStateException if command not allowed in current state.
-        @raises NotImplementedException if not implemented by subclass.                        
+        @raises NotImplementedException if not implemented by subclass.
         """
         # Forward event and argument to the protocol FSM.
         return self._connection_fsm.on_event(DriverEvent.SET, DriverEvent.SET, *args, **kwargs)
@@ -835,9 +835,8 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
         """
         # Send state change event to agent.
         self._driver_event(DriverAsyncEvent.STATE_CHANGE)
-
-        # Query consul for the port agent's configuration
-        self._get_config_from_consul()
+        # attempt to auto-configure from consul
+        self._auto_config_with_backoff()
 
     def _handler_unconfigured_exit(self, *args, **kwargs):
         """
@@ -861,7 +860,12 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
         @raises InstrumentParameterException if missing or invalid param dict.
         """
         # Verify configuration dict, and update connection if possible.
-        self._connection = self._build_connection(*args, **kwargs)
+        try:
+            self._connection = self._build_connection(*args, **kwargs)
+        except InstrumentException:
+            self._auto_config_with_backoff()
+            raise
+
         return DriverConnectionState.DISCONNECTED, None
 
     ########################################################################
@@ -876,7 +880,7 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
         self._driver_event(DriverAsyncEvent.STATE_CHANGE)
 
         if self._autoconnect:
-            self._connection_fsm.on_event(DriverEvent.CONNECT, *args, **kwargs)
+            self._async_raise_event(DriverEvent.CONNECT, *args, **kwargs)
 
     def _handler_disconnected_exit(self, *args, **kwargs):
         """
@@ -902,7 +906,7 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
         @raises InstrumentParameterException if missing or invalid param dict.
         """
         # Verify configuration dict, and update connection if possible.
-
+        self._connection = self._build_connection(*args, **kwargs)
         return DriverConnectionState.UNCONFIGURED, None
 
     def _handler_disconnected_connect(self, *args, **kwargs):
@@ -925,12 +929,8 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
             next_state = DriverConnectionState.CONNECTED
         except InstrumentConnectionException as e:
             log.error("Connection Exception: %s", e)
-            log.error("Instrument Driver remaining in disconnected state.")
-            if self._autoconnect:
-                self._create_delayed_reconnect_event()
-                next_state = None
-            else:
-                next_state = DriverConnectionState.DISCONNECTED
+            log.error("Instrument Driver returning to unconfigured state.")
+            next_state = DriverConnectionState.UNCONFIGURED
 
         return next_state, result
 
@@ -963,8 +963,12 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
         """
         log.info("_handler_connected_disconnect: invoking stop_comms().")
         self._connection.stop_comms()
-        self._protocol = None
-        return DriverConnectionState.DISCONNECTED, None
+        scheduler = self._protocol._scheduler
+        if scheduler:
+            scheduler._scheduler.shutdown()
+        scheduler = None
+
+        return DriverConnectionState.UNCONFIGURED, None
 
     def _handler_connected_connection_lost(self, *args, **kwargs):
         """
@@ -979,11 +983,11 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
 
         # Send async agent state change event.
         log.info("_handler_connected_connection_lost: sending LOST_CONNECTION "
-                 "event, moving to DISCONNECTED state.")
+                 "event, moving to UNCONFIGURED state.")
         self._driver_event(DriverAsyncEvent.AGENT_EVENT,
                            ResourceAgentEvent.LOST_CONNECTION)
 
-        return DriverConnectionState.DISCONNECTED, None
+        return DriverConnectionState.UNCONFIGURED, None
 
     def _handler_connected_protocol_event(self, event, *args, **kwargs):
         """
@@ -1061,7 +1065,10 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
                 pass
 
         if config is None:
-            raise InstrumentParameterException('Missing comms config parameter.')
+            config = self._get_config_from_consul()
+
+        if config is None:
+            raise InstrumentParameterException('No port agent config supplied and failed to auto-discover port agent')
 
         if 'mock_port_agent' in config:
             mock_port_agent = config['mock_port_agent']
@@ -1082,8 +1089,6 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
         except (TypeError, KeyError):
             raise InstrumentParameterException('Invalid comms config dict.')
 
-    @backoff.on_exception(backoff.expo, InstrumentParameterException,
-                          max_tries=MAXIMUM_CONSUL_QUERIES, max_value=MAXIMUM_BACKOFF)
     def _get_config_from_consul(self):
         """
         Query consul for the port agent service
@@ -1092,25 +1097,21 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
         """
         if self.refdes is not None:
 
-            self.data_port_id = 'port-agent_%s' % self.refdes
-            self.command_port_id = 'command_port_agent_%s' % self.refdes
+            try:
+                self.data_port_id = 'port-agent_%s' % self.refdes
+                self.command_port_id = 'command_port_agent_%s' % self.refdes
 
-            data_port = self.consul.catalog.service(self.data_port_id)
-            cmd_port = self.consul.catalog.service(self.command_port_id)
+                data_port = self.consul.catalog.service(self.data_port_id)
+                cmd_port = self.consul.catalog.service(self.command_port_id)
 
-            if data_port and cmd_port:
-                port = data_port[0]['ServicePort']
-                addr = data_port[0]['Address']
-                cmd_port = cmd_port[0]['ServicePort']
-                self.port_agent_config = {'port': port, 'cmd_port': cmd_port, 'addr': addr}
-
-                self.configure(config=self.port_agent_config)
-
-                self._driver_event(DriverAsyncEvent.DRIVER_CONFIG, self.port_agent_config)
-
-            else:
-                raise InstrumentParameterException(
-                    'Invalid port agent reference designator: %s' % self.refdes)
+                if data_port and cmd_port:
+                    port = data_port[0]['ServicePort']
+                    addr = data_port[0]['Address']
+                    cmd_port = cmd_port[0]['ServicePort']
+                    port_agent_config = {'port': port, 'cmd_port': cmd_port, 'addr': addr}
+                    return port_agent_config
+            except ConnectionError:
+                return None
 
     def _got_exception(self, exception):
         """
@@ -1151,10 +1152,7 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
             log.info("_lost_connection_callback: starting thread to send "
                      "CONNECTION_LOST event to instrument driver.")
             self._connection_lost = True
-            lost_comms_thread = Thread(
-                target=self._connection_fsm.on_event,
-                args=(DriverEvent.CONNECTION_LOST, ))
-            lost_comms_thread.start()
+            self._async_raise_event(DriverEvent.CONNECTION_LOST)
         else:
             log.info("_lost_connection_callback: connection_lost flag true.")
 
@@ -1165,17 +1163,25 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
         """
         pass
 
-    def _create_delayed_reconnect_event(self):
-        def delayed_raise_reconnect(interval):
-            time.sleep(interval)
-            log.info('Reconnect interval expired, raising CONFIGURE event')
-            self._connection_fsm.on_event(DriverEvent.CONFIGURE)
+    def _auto_config_with_backoff(self):
+        # randomness to prevent all instrument drivers from trying to reconnect at the same exact time.
+        self._reconnect_interval = self._reconnect_interval * 2 + random.uniform(-.5, .5)
+        interval = min(self._reconnect_interval, self._max_reconnect_interval)
+        self._async_raise_event(DriverEvent.CONFIGURE, delay=interval)
+        log.info('Created delayed CONFIGURE event with %.2f second delay', interval)
 
-        # randomness to prevent all instrument drivers from trying to reconnect
-        # at the same exact time.
-        # min delay of 1.5 seconds to 1 + self._max_reconnect_interval
-        # max delay of 1 + self._max_reconnect_interval * .5 to 1 + self._max_reconnect_interval
-        reconnect_interval = 1 + self._reconnect_interval * random.uniform(.5, 1)
-        thread = Thread(target=delayed_raise_reconnect, args=(reconnect_interval,))
+    def _async_raise_event(self, event, *args, **kwargs):
+        delay = kwargs.pop('event_delay', 0)
+
+        def inner():
+            try:
+                time.sleep(delay)
+                log.info('Async raise event: %r', event)
+                self._connection_fsm.on_event(event)
+            except Exception as exc:
+                log.error('Exception in asynchronous thread: %r', exc)
+                self._driver_event(DriverAsyncEvent.ERROR, exc)
+            log.info('_async_raise_fsm_event: event complete. bub bye thread. (%r)', args)
+
+        thread = Thread(target=inner)
         thread.start()
-        log.info('Created delayed reconnect event with %.2f second delay', reconnect_interval)

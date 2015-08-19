@@ -266,14 +266,6 @@ class InstrumentDriver(SingleConnectionInstrumentDriver):
     """
     __metaclass__ = META_LOGGER
 
-    def __init__(self, evt_callback, refdes):
-        """
-        Driver constructor.
-        @param evt_callback Driver process event callback.
-        """
-        #Construct superclass.
-        SingleConnectionInstrumentDriver.__init__(self, evt_callback, refdes)
-
     ########################################################################
     # Superclass overrides for resource query.
     ########################################################################
