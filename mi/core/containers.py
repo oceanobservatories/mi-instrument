@@ -14,6 +14,7 @@ import os
 import re
 from types import NoneType
 from copy import deepcopy
+from mi.core.time_tools import timegm_to_float
 
 DICT_LOCKING_ATTR = "__locked__"
 
@@ -266,7 +267,7 @@ def get_datetime(ts, local_time=True):
     """
     tsf = float(ts) / 1000
     timev = time.localtime(tsf) if local_time else time.gmtime(tsf)
-    dt = datetime.datetime.fromtimestamp(time.mktime(timev))
+    dt = datetime.datetime.fromtimestamp(timegm_to_float(timev))
     return dt
 
 def get_datetime_str(ts, show_millis=False, local_time=True):
