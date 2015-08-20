@@ -41,6 +41,7 @@ from mi.core.instrument.data_particle import DataParticleKey, DataParticleValue
 from mi.core.instrument.chunker import StringChunker
 
 from mi.core.exceptions import SampleException
+from mi.core.time_tools import timegm_to_float
 
 from mi.instrument.nortek.driver import ProtocolState, TIMEOUT, Parameter, NEWLINE, EngineeringParameter
 
@@ -266,7 +267,7 @@ class UnitFromIDK(NortekUnitTest):
         port_timestamp = 3555423720.711772
         driver_timestamp = 3555423722.711772
         text_timestamp = time.strptime('17/12/2012 11:12:49', "%d/%m/%Y %H:%M:%S")
-        internal_timestamp = ntplib.system_to_ntp_time(time.mktime(text_timestamp))
+        internal_timestamp = ntplib.system_to_ntp_time(timegm_to_float(text_timestamp))
 
         # construct the expected particle
         expected_particle = {
@@ -321,7 +322,7 @@ class UnitFromIDK(NortekUnitTest):
         port_timestamp = 3555423720.711772
         driver_timestamp = 3555423722.711772
         text_timestamp = time.strptime('13/12/2012 17:03:26', "%d/%m/%Y %H:%M:%S")
-        internal_timestamp = ntplib.system_to_ntp_time(time.mktime(text_timestamp))
+        internal_timestamp = ntplib.system_to_ntp_time(timegm_to_float(text_timestamp))
 
         # construct the expected particle
         expected_particle = {
