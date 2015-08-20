@@ -1,3 +1,5 @@
+import os
+import uuid
 from datetime import datetime
 
 from obspy.core import Stats
@@ -5,6 +7,7 @@ import numpy as np
 from obspy import Trace
 
 from mi.core.log import get_logger
+from mi.core.exceptions import InstrumentProtocolException
 
 log = get_logger()
 
@@ -75,12 +78,16 @@ class PacketLogHeader(object):
 
 class PacketLog(object):
     TIME_FUDGE_PCNT = 10
+    base_dir = './antelope_data'
 
     def __init__(self):
         self.header = None
         self.needs_flush = False
         self.closed = False
         self.data = []
+
+        # Generate a UUID for this PacketLog
+        self.bin_uuid = str(uuid.uuid4())
 
     def create(self, net, location, station, channel, start, end, rate, calib, calper):
         self.header = PacketLogHeader(net, location, station, channel, start, end, rate, calib, calper)
@@ -103,7 +110,23 @@ class PacketLog(object):
 
     @property
     def filename(self):
-        return self.header.name + '.' + self.header.time + '.mseed'
+        # Get the year, month and day for the directory structure of the data file from the packet start time
+        packet_start_time = datetime.utcfromtimestamp(self.header.starttime)
+        year = str(packet_start_time.year)
+        month = '%02d' % packet_start_time.month
+        day = '%02d' % packet_start_time.day
+
+        # Generate the data file path and create it on the disk
+        file_path = os.path.join(PacketLog.base_dir, year, month, day)
+        if not os.path.exists(file_path):
+            try:
+                os.makedirs(file_path)
+            except OSError:
+                raise InstrumentProtocolException('OSError occurred while creating file path: ' + file_path)
+        elif os.path.isfile(file_path):
+            raise InstrumentProtocolException('Error creating file path: File exists with same name: ' + file_path)
+
+        return os.path.join(file_path, self.header.name + '.' + self.header.time + '.mseed')
 
     def add_packet(self, packet):
         if self.header.starttime > packet['time'] or packet['time'] >= self.header.maxtime:

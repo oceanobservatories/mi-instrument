@@ -8,14 +8,14 @@ node_meta_data:
   serial_number: SN0031
 
 node_streams:
-  sec_node_port:
+  secondary_node_port_eng_data:
     - port_type: Instrument
       port_num: 0
       name: 05-IP1
     - port_type: Instrument
       port_num: 1
       name: 06-IP2
-  node_eng_data:
+  secondary_node_eng_data:
     - name: 00-ENG
 
 port_info:

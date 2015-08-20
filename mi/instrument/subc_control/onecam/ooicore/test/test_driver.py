@@ -112,10 +112,9 @@ class DriverTestMixinSub(DriverTestMixin):
 
     _driver_capabilities = {
         # capabilities defined in the IOS
+        Capability.DISCOVER: {STATES: [ProtocolState.UNKNOWN]},
         Capability.START_AUTOSAMPLE: {STATES: [ProtocolState.COMMAND]},
         Capability.STOP_AUTOSAMPLE: {STATES: [ProtocolState.AUTOSAMPLE]},
-        Capability.GET: {STATES: [ProtocolState.COMMAND]},
-        Capability.SET: {STATES: [ProtocolState.COMMAND]},
         Capability.ACQUIRE_SAMPLE: {STATES: [ProtocolState.COMMAND]}
     }
 

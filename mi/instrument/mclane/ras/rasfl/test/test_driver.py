@@ -153,6 +153,7 @@ class UtilMixin(DriverTestMixin):
 
     _driver_capabilities = {
         # capabilities defined in the IOS
+        Capability.DISCOVER: {STATES: [ProtocolState.UNKNOWN]},
         Capability.CLOCK_SYNC: {STATES: [ProtocolState.COMMAND]},
     }
 

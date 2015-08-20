@@ -123,6 +123,7 @@ class Capability(BaseEnum):
     SET = DriverEvent.SET
     START_DIRECT = DriverEvent.START_DIRECT
     STOP_DIRECT = DriverEvent.STOP_DIRECT
+    DISCOVER = DriverEvent.DISCOVER
 
 
 class Prompt(BaseEnum):
@@ -400,6 +401,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         self._chunker = StringChunker(Protocol.sieve_function)
 
         self._build_driver_dict()
+        self._cmd_dict.add(Capability.DISCOVER, display_name='Discover')
 
     @staticmethod
     def sieve_function(raw_data):

@@ -9,5 +9,5 @@ node_meta_data:
   serial_number: N/A
 
 node_streams:
-  pfe:
+  shore_station_power_feed_equipment_eng_data:
   - name: STATUS

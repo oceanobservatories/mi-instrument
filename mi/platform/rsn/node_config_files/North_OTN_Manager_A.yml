@@ -6,7 +6,7 @@ node_meta_data:
   reference_designator: North OTN Manager A
 
 node_streams:
-  otn_port:
+  shore_station_optical_transport_network_seaside_port_data:
   - name: 01_SEA
     interface_num: 1
   - name: 02_SEA
@@ -22,7 +22,7 @@ node_streams:
   - name: 07_SEA
     interface_num: 7
 
-  otn_port_shore:
+  shore_station_optical_transport_network_shoreside_port_data:
   - name: 01_SHORE
     interface_num: 1
   - name: 02_SHORE

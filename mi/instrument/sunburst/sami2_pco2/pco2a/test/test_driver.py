@@ -122,6 +122,7 @@ class DriverTestMixinSub(Pco2DriverTestMixinSub):
 
     _driver_capabilities = {
         # capabilities defined in the IOS
+        Capability.DISCOVER: {STATES: [ProtocolState.UNKNOWN]},
         Capability.ACQUIRE_STATUS: {STATES: [ProtocolState.COMMAND,
                                              ProtocolState.AUTOSAMPLE]},
         Capability.ACQUIRE_SAMPLE: {STATES: [ProtocolState.COMMAND]},

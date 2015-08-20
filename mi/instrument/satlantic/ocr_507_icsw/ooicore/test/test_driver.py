@@ -159,6 +159,7 @@ class SatlanticMixin(DriverTestMixin):
 
     _driver_capabilities = {
         # capabilities defined in the IOS
+        SatlanticCapability.DISCOVER: {STATES: [SatlanticProtocolState.UNKNOWN]},
         SatlanticCapability.START_AUTOSAMPLE: {STATES: [SatlanticProtocolState.COMMAND]},
         SatlanticCapability.STOP_AUTOSAMPLE: {STATES: [SatlanticProtocolState.AUTOSAMPLE]},
         SatlanticCapability.ACQUIRE_STATUS: {STATES: [SatlanticProtocolState.COMMAND]},

@@ -18,6 +18,8 @@ import time
 import ntplib
 from mock import Mock
 from nose.plugins.attrib import attr
+import os
+import shutil
 
 from mi.core.instrument.port_agent_client import PortAgentPacket
 from mi.core.log import get_logger
@@ -41,6 +43,7 @@ antelope_startup_config = {
             Parameter.FLUSH_INTERVAL: 60,
             Parameter.REFDES: 'test',
             Parameter.SOURCE_REGEX: '.*',
+            Parameter.FILE_LOCATION: './antelope_data',
         }
 }
 
@@ -101,6 +104,7 @@ class AntelopeTestMixinSub(DriverTestMixin):
         Parameter.FLUSH_INTERVAL: {TYPE: int, READONLY: True, DA: True, STARTUP: True, DEFAULT: 60, VALUE: 60},
         Parameter.REFDES: {TYPE: str, READONLY: True, DA: True, STARTUP: True, DEFAULT: 'test', VALUE: 'test'},
         Parameter.SOURCE_REGEX: {TYPE: str, READONLY: True, DA: True, STARTUP: True, DEFAULT: '.*', VALUE: '.*'},
+        Parameter.FILE_LOCATION: {TYPE: str, READONLY: True, DA: True, STARTUP: True, DEFAULT: './antelope_data', VALUE: './antelope_data'},
     }
 
     _samples = []
@@ -112,6 +116,7 @@ class AntelopeTestMixinSub(DriverTestMixin):
         Capability.GET: {STATES: [ProtocolState.COMMAND, ProtocolState.AUTOSAMPLE]},
         Capability.SET: {STATES: [ProtocolState.COMMAND]},
         Capability.DISCOVER: {STATES: [ProtocolState.UNKNOWN]},
+        Capability.CLEAR_WRITE_ERROR: {STATES: [ProtocolState.WRITE_ERROR]}
     }
 
     _capabilities = {
@@ -121,7 +126,9 @@ class AntelopeTestMixinSub(DriverTestMixin):
                                 'DRIVER_EVENT_START_AUTOSAMPLE'],
         ProtocolState.AUTOSAMPLE: ['DRIVER_EVENT_GET',
                                    'DRIVER_EVENT_STOP_AUTOSAMPLE',
-                                   'PROTOCOL_EVENT_FLUSH'],
+                                   'PROTOCOL_EVENT_FLUSH',
+                                   'PROTOCOL_EVENT_PROCESS_WRITE_ERROR'],
+        ProtocolState.WRITE_ERROR: ['PROTOCOL_EVENT_CLEAR_WRITE_ERROR'],
     }
 
     def assert_driver_parameters(self, current_parameters, verify_values=False):
@@ -328,11 +335,21 @@ class DriverIntegrationTest(InstrumentDriverIntegrationTestCase, AntelopeTestMix
         self.assert_driver_command(Capability.START_AUTOSAMPLE, state=ProtocolState.AUTOSAMPLE)
 
         # autosample for 10 seconds, then count the samples...
-        # we can't test "inline" because the nano data rate is too high.
         time.sleep(10)
         self.assert_driver_command(Capability.STOP_AUTOSAMPLE, state=ProtocolState.COMMAND, delay=1)
+        time.sleep(10)
 
-        for particle_type, assert_func, count in [
-
-        ]:
-            self.assert_async_particle_generation(particle_type, assert_func, particle_count=count, timeout=1)
+        # Search through the list of events for the data particle.  Extract the filename from the
+        # metadata and assert that a file with that name was created.  Then clean up the data file.
+        events = self.events
+        for event in self.events:
+            if event['type'] == 'DRIVER_ASYNC_EVENT_SAMPLE':
+                particle = event['value']
+                particle_values = particle['values']
+                for particle_value in particle_values:
+                    if particle_value['value_id'] == 'filename':
+                        filename = particle_value['value']
+                        file_exists = os.path.exists(filename)
+                        self.assertTrue(file_exists, 'creation of antelope data file: ' + filename)
+                        if file_exists:
+                            os.remove(filename)

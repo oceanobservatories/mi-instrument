@@ -147,6 +147,7 @@ class SatlanticCapability(BaseEnum):
     SET = DriverEvent.SET
     START_DIRECT = DriverEvent.START_DIRECT
     STOP_DIRECT = DriverEvent.STOP_DIRECT
+    DISCOVER = DriverEvent.DISCOVER
 
 
 class Parameter(DriverParameter):
@@ -503,6 +504,7 @@ class SatlanticOCR507InstrumentProtocol(CommandResponseInstrumentProtocol):
         self._cmd_dict.add(SatlanticCapability.START_AUTOSAMPLE, display_name="Start Autosample")
         self._cmd_dict.add(SatlanticCapability.STOP_AUTOSAMPLE, display_name="Stop Autosample")
         self._cmd_dict.add(SatlanticCapability.ACQUIRE_STATUS, display_name="Acquire Status")
+        self._cmd_dict.add(SatlanticCapability.DISCOVER, display_name='Discover')
 
         self._driver_dict.add(DriverDictKey.VENDOR_SW_COMPATIBLE, True)
 

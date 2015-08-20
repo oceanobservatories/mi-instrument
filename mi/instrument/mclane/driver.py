@@ -121,6 +121,7 @@ class Capability(BaseEnum):
     CLEAR = ProtocolEvent.CLEAR
     START_DIRECT = DriverEvent.START_DIRECT
     STOP_DIRECT = DriverEvent.STOP_DIRECT
+    DISCOVER = DriverEvent.DISCOVER
 
 
 class Parameter(DriverParameter):
@@ -1090,6 +1091,7 @@ class McLaneProtocol(CommandResponseInstrumentProtocol):
         Populate the command dictionary with command.
         """
         self._cmd_dict.add(Capability.CLOCK_SYNC, display_name="Synchronize Clock")
+        self._cmd_dict.add(Capability.DISCOVER, display_name='Discover')
 
     def _build_param_dict(self):
         """

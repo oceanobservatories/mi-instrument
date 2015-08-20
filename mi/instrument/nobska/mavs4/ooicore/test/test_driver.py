@@ -5,7 +5,7 @@
 @file /Users/Bill/WorkSpace/marine-integrations/mi/instrument/nobska/mavs4/mavs4/driver.py
 @author Bill Bollenbacher
 @brief Test cases for mavs4 driver
- 
+
 USAGE:
  Make tests verbose and provide stdout
    * From the IDK
@@ -147,7 +147,7 @@ class Mavs4Mixin(DriverTestMixin):
         InstrumentParameters.LOG_DISPLAY_ACOUSTIC_AXIS_VELOCITIES: {
             TYPE: bool, READONLY: False, DA: True, STARTUP: True, DEFAULT: True, VALUE: True},
         InstrumentParameters.LOG_DISPLAY_ACOUSTIC_AXIS_VELOCITIES_FORMAT: {
-            TYPE: str, READONLY: False, DA: True, STARTUP: True, DEFAULT: 'HEX', VALUE: 'HEX'},
+            TYPE: str, READONLY: False, DA: True, STARTUP: True, DEFAULT: 'H', VALUE: 'H'},
         InstrumentParameters.QUERY_MODE: {TYPE: bool, READONLY: False, DA: False, STARTUP: True, DEFAULT: False},
         InstrumentParameters.FREQUENCY: {TYPE: float, READONLY: False, DA: False, STARTUP: False, DEFAULT: 1.0},
         InstrumentParameters.MEASUREMENTS_PER_SAMPLE: {
@@ -211,7 +211,7 @@ class Mavs4Mixin(DriverTestMixin):
         InstrumentParameters.NOTE3: 'New note3 at %s' % time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime()),
         InstrumentParameters.MONITOR: False,
         InstrumentParameters.LOG_DISPLAY_ACOUSTIC_AXIS_VELOCITIES: True,
-        InstrumentParameters.LOG_DISPLAY_ACOUSTIC_AXIS_VELOCITIES_FORMAT: 'HEX',
+        InstrumentParameters.LOG_DISPLAY_ACOUSTIC_AXIS_VELOCITIES_FORMAT: 'H',
         InstrumentParameters.QUERY_MODE: False,
         InstrumentParameters.FREQUENCY: 10.0,
         InstrumentParameters.MEASUREMENTS_PER_SAMPLE: 20,
@@ -985,7 +985,7 @@ class Testmavs4_QUAL(InstrumentDriverQualificationTestCase, Mavs4Mixin):
 
     # Qualification tests live in the base class.  This class is extended
     # here so that when running this test from 'nosetests' all tests
-    # (UNIT, INT, and QUAL) are run.  
+    # (UNIT, INT, and QUAL) are run.
 
     def test_direct_access_telnet_mode(self):
         """

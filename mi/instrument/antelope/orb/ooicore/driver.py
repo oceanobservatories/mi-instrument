@@ -1,15 +1,16 @@
+import os
 import cPickle as pickle
-import time
-from threading import Lock, Thread
+from threading import Lock
+
 from mi.core.driver_scheduler import DriverSchedulerConfigKey, TriggerType
 from mi.core.exceptions import InstrumentProtocolException, InstrumentParameterException
 from mi.core.instrument.data_particle import DataParticle
 from mi.core.instrument.driver_dict import DriverDictKey
-
 from mi.core.instrument.port_agent_client import PortAgentPacket
 from mi.core.instrument.protocol_param_dict import ParameterDictVisibility, ParameterDictType
 from mi.core.log import get_logger, get_logging_metaclass
 from mi.instrument.antelope.orb.ooicore.packet_log import PacketLog, GapException
+
 
 log = get_logger()
 meta = get_logging_metaclass('info')
@@ -34,6 +35,7 @@ class ProtocolState(BaseEnum):
     UNKNOWN = DriverProtocolState.UNKNOWN
     COMMAND = DriverProtocolState.COMMAND
     AUTOSAMPLE = DriverProtocolState.AUTOSAMPLE
+    WRITE_ERROR = 'DRIVER_STATE_WRITE_ERROR'
 
 
 class ProtocolEvent(BaseEnum):
@@ -45,6 +47,8 @@ class ProtocolEvent(BaseEnum):
     GET = DriverEvent.GET
     SET = DriverEvent.SET
     FLUSH = 'PROTOCOL_EVENT_FLUSH'
+    PROCESS_WRITE_ERROR = 'PROTOCOL_EVENT_PROCESS_WRITE_ERROR'
+    CLEAR_WRITE_ERROR = 'PROTOCOL_EVENT_CLEAR_WRITE_ERROR'
 
 
 class Capability(BaseEnum):
@@ -53,6 +57,7 @@ class Capability(BaseEnum):
     STOP_AUTOSAMPLE = DriverEvent.STOP_AUTOSAMPLE
     GET = DriverEvent.GET
     SET = DriverEvent.SET
+    CLEAR_WRITE_ERROR = ProtocolEvent.CLEAR_WRITE_ERROR
 
 
 class Parameter(BaseEnum):
@@ -62,6 +67,7 @@ class Parameter(BaseEnum):
     FLUSH_INTERVAL = 'flush_interval'
     DB_ADDR = 'database_address'
     DB_PORT = 'database_port'
+    FILE_LOCATION = 'file_location'
 
 
 class ScheduledJob(BaseEnum):
@@ -82,15 +88,14 @@ class AntelopeMetadataParticleKey(BaseEnum):
     RATE = 'sampling_rate'
     NSAMPS = 'num_samples'
     FILENAME = 'filename'
-    OPEN = 'open'
+    UUID = 'uuid'
 
 
 class AntelopeMetadataParticle(DataParticle):
     _data_particle_type = AntelopeDataParticles.METADATA
 
-    def __init__(self, raw_data, is_open, **kwargs):
+    def __init__(self, raw_data, **kwargs):
         super(AntelopeMetadataParticle, self).__init__(raw_data, **kwargs)
-        self.is_open = is_open
 
     def _build_parsed_values(self):
         header = self.raw_data.header
@@ -105,7 +110,7 @@ class AntelopeMetadataParticle(DataParticle):
             self._encode_value(pk.RATE, header.rate, float),
             self._encode_value(pk.NSAMPS, header.num_samples, int),
             self._encode_value(pk.FILENAME, self.raw_data.filename, str),
-            self._encode_value(pk.OPEN, self.is_open, int),
+            self._encode_value(pk.UUID, self.raw_data.bin_uuid, str),
         ]
 
 
@@ -149,6 +154,12 @@ class Protocol(InstrumentProtocol):
                 (ProtocolEvent.GET, self._handler_get),
                 (ProtocolEvent.FLUSH, self._flush),
                 (ProtocolEvent.STOP_AUTOSAMPLE, self._handler_autosample_stop_autosample),
+                (ProtocolEvent.PROCESS_WRITE_ERROR, self._handler_process_write_error),
+            ),
+            ProtocolState.WRITE_ERROR: (
+                (ProtocolEvent.ENTER, self._handler_write_error_enter),
+                (ProtocolEvent.EXIT, self._handler_write_error_exit),
+                (ProtocolEvent.CLEAR_WRITE_ERROR, self._handler_clear_write_error),
             )}
 
         for state in handlers:
@@ -192,6 +203,7 @@ class Protocol(InstrumentProtocol):
         self._cmd_dict.add(Capability.GET, display_name="Get")
         self._cmd_dict.add(Capability.SET, display_name="Set")
         self._cmd_dict.add(Capability.DISCOVER, display_name="Discover")
+        self._cmd_dict.add(Capability.CLEAR_WRITE_ERROR, display_name="Clear Write Error")
 
     def _build_param_dict(self):
         self._param_dict.add(Parameter.REFDES,
@@ -246,6 +258,17 @@ class Protocol(InstrumentProtocol):
                              description='Postgres database port number',
                              type=ParameterDictType.INT,
                              value_description='Integer port number (default 5432)')
+        self._param_dict.add(Parameter.FILE_LOCATION,
+                             'NA',
+                             str,
+                             str,
+                             visibility=ParameterDictVisibility.IMMUTABLE,
+                             startup_param=True,
+                             default_value="./antelope_data",
+                             display_name='File Location',
+                             description='Root file path of the packet data files',
+                             type=ParameterDictType.STRING,
+                             value_description='String representing the packet data root file path')
 
     def _build_driver_dict(self):
         """
@@ -292,6 +315,10 @@ class Protocol(InstrumentProtocol):
         if not old_config == new_config:
             self._driver_event(DriverAsyncEvent.CONFIG_CHANGE)
 
+        # Set the base directory for the packet data file location.
+        PacketLog.base_dir = os.path.join(self._param_dict.get(Parameter.FILE_LOCATION),
+                                          self._param_dict.get(Parameter.REFDES))
+
     def _flush(self, close_all=False):
         log.info('flush')
         particles = []
@@ -302,14 +329,22 @@ class Protocol(InstrumentProtocol):
                 self._logs = {}
 
             for _log in self._logs.itervalues():
-                log.info('flushing incomplete')
-                _log.flush()
-                particles.append(AntelopeMetadataParticle(_log, True))
+                try:
+                    _log.flush()
+                except InstrumentProtocolException:
+                    self._async_raise_fsm_event(ProtocolEvent.PROCESS_WRITE_ERROR)
+                    raise
+
+                particles.append(AntelopeMetadataParticle(_log))
 
             for _log in self._filled_logs:
-                log.info('flushing complete')
-                _log.flush()
-                particles.append(AntelopeMetadataParticle(_log, False))
+                try:
+                    _log.flush()
+                except InstrumentProtocolException:
+                    self._async_raise_fsm_event(ProtocolEvent.PROCESS_WRITE_ERROR)
+                    raise
+
+                particles.append(AntelopeMetadataParticle(_log))
                 _log.data = []
 
             self._filled_logs = []
@@ -395,7 +430,10 @@ class Protocol(InstrumentProtocol):
         rate = packet['samprate']
         bin_size = rate_map.get(rate, 60)
         bin_value = int(start_time/bin_size)
-        return bin_value * bin_size, (bin_value + 1) * bin_size
+        bin_start = bin_value * bin_size
+        bin_end = (bin_value + 1) * bin_size
+
+        return bin_start, bin_end
 
     def _bin_data(self, packet):
         key = '%s.%s.%s.%s' % (packet['net'], packet.get('location', ''),
@@ -500,6 +538,7 @@ class Protocol(InstrumentProtocol):
         """
         Exit autosample state.
         """
+        self._orbstop()
         self.stop_scheduled_job(ScheduledJob.FLUSH)
 
     def _handler_autosample_stop_autosample(self, *args, **kwargs):
@@ -510,9 +549,39 @@ class Protocol(InstrumentProtocol):
         """
         result = None
 
-        self._orbstop()
         self._flush(True)
         next_state = ProtocolState.COMMAND
         next_agent_state = ResourceAgentState.COMMAND
 
         return next_state, (next_agent_state, result)
+
+    def _handler_process_write_error(self, *args, **kwargs):
+        """
+        Process the write error by transitioning to the WRITE ERROR protocol state.
+        @return  next_state, (next_agent_state, result) if successful.
+        """
+        return ProtocolState.WRITE_ERROR, (ResourceAgentState.STOPPED, None)
+
+    ######################################################
+    # WRITE_ERROR handlers
+    ######################################################
+
+    def _handler_write_error_enter(self, *args, **kwargs):
+        """
+        Enter write error state.
+        """
+        # Tell driver superclass to send a state change event.
+        # Superclass will query the state.
+        self._driver_event(DriverAsyncEvent.STATE_CHANGE)
+
+    def _handler_write_error_exit(self, *args, **kwargs):
+        """
+        Exit write error state.
+        """
+
+    def _handler_clear_write_error(self, *args, **kwargs):
+        """
+        Clear the WRITE_ERROR state by transitioning to the COMMAND state.
+        @return next_state, (next_agent_state, result)
+        """
+        return ProtocolState.COMMAND, (ResourceAgentState.COMMAND, None)

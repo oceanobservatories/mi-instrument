@@ -126,6 +126,7 @@ class Capability(BaseEnum):
     EXTERNAL_FLASH_DISABLE = ProtocolEvent.EXTERNAL_FLASH_DISABLE
     START_DIRECT = DriverEvent.START_DIRECT
     STOP_DIRECT = DriverEvent.STOP_DIRECT
+    DISCOVER = DriverEvent.DISCOVER
 
 
 class Command(BaseEnum):
@@ -402,6 +403,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         self._cmd_dict.add(Capability.START_AUTOSAMPLE, display_name="Start Autosample")
         self._cmd_dict.add(Capability.STOP_AUTOSAMPLE, display_name="Stop Autosample")
         self._cmd_dict.add(Capability.ACQUIRE_SAMPLE, display_name="Acquire Sample")
+        self._cmd_dict.add(Capability.DISCOVER, display_name='Discover')
 
     def _build_param_dict(self):
         """

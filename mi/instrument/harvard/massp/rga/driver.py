@@ -120,6 +120,7 @@ class Capability(BaseEnum):
     STOP_SCAN = ProtocolEvent.STOP_SCAN
     TAKE_SCAN = ProtocolEvent.TAKE_SCAN
     CLEAR = ProtocolEvent.CLEAR
+    DISCOVER = ProtocolEvent.DISCOVER
 
 
 class Parameter(DriverParameter):
@@ -544,6 +545,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         self._cmd_dict.add(Capability.START_SCAN, display_name="Start Scan")
         self._cmd_dict.add(Capability.STOP_SCAN, display_name="Stop Scan")
         self._cmd_dict.add(Capability.CLEAR, display_name="Clear Error State")
+        self._cmd_dict.add(Capability.DISCOVER, display_name='Discover')
 
     def _build_driver_dict(self):
         """

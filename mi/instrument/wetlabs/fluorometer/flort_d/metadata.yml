@@ -4,5 +4,5 @@ driver_metadata:
   driver_model: fluorometer
   driver_name: flort_d
   email: Arthur.M.Teranishi@raytheon.com
-  release_notes: Initial development
-  version: 0.0.6
+  release_notes: Corrected scheduled event for wiper
+  version: 0.0.7

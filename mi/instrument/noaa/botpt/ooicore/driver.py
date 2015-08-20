@@ -120,6 +120,7 @@ class Capability(BaseEnum):
     STOP_LEVELING = ProtocolEvent.STOP_LEVELING
     START_HEATER = ProtocolEvent.START_HEATER
     STOP_HEATER = ProtocolEvent.STOP_HEATER
+    DISCOVER = ProtocolEvent.DISCOVER
 
 
 class Parameter(DriverParameter):
@@ -419,6 +420,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         self._cmd_dict.add(Capability.STOP_LEVELING, display_name="Stop LILY Leveling")
         self._cmd_dict.add(Capability.START_HEATER, display_name="Start Heater")
         self._cmd_dict.add(Capability.STOP_HEATER, display_name="Stop Heater")
+        self._cmd_dict.add(Capability.DISCOVER, display_name='Discover')
 
     def _build_param_dict(self):
         """

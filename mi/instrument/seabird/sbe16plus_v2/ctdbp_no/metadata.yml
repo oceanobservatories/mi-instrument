@@ -5,4 +5,4 @@ driver_metadata:
   driver_name: ctdbp_no
   email: tapana_gupta@raytheon.com
   release_notes: SBE Driver
-  version: 0.2.3
+  version: 0.3.3
