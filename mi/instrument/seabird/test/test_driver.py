@@ -32,6 +32,7 @@ from mi.instrument.seabird.driver import SeaBirdParticle
 from mi.core.exceptions import InstrumentParameterException
 from mi.core.instrument.instrument_driver import DriverEvent
 from mi.core.time_tools import get_timestamp_delayed
+from mi.core.time_tools import timegm_to_float
 
 DEFAULT_CLOCK_DIFF = 5
 ###############################################################################
@@ -135,7 +136,7 @@ class SeaBirdIntegrationTest(InstrumentDriverIntegrationTestCase):
 
         result_time = self.assert_get(time_param)
         result_time_struct = time.strptime(result_time, time_format)
-        converted_time = time.mktime(result_time_struct)
+        converted_time = timegm_to_float(result_time_struct)
 
         if isinstance(expected_time, float):
             expected_time_struct = time.localtime(expected_time)
@@ -146,10 +147,10 @@ class SeaBirdIntegrationTest(InstrumentDriverIntegrationTestCase):
                   time.strftime("%d %b %y %H:%M:%S", expected_time_struct))
 
         log.debug("Current Time: %s, Expected Time: %s, Tolerance: %s",
-                  converted_time, time.mktime(expected_time_struct), tolerance)
+                  converted_time, timegm_to_float(expected_time_struct), tolerance)
 
         # Verify the clock is set within the tolerance
-        return abs(converted_time - time.mktime(expected_time_struct)) <= tolerance
+        return abs(converted_time - timegm_to_float(expected_time_struct)) <= tolerance
 
     def assert_clock_set(self, time_param, sync_clock_cmd = DriverEvent.ACQUIRE_STATUS, timeout = 60, tolerance=DEFAULT_CLOCK_DIFF):
         """
@@ -159,7 +160,7 @@ class SeaBirdIntegrationTest(InstrumentDriverIntegrationTestCase):
 
         timeout_time = time.time() + timeout
 
-        while not self._is_time_set(time_param, time.mktime(time.gmtime()), tolerance=tolerance):
+        while not self._is_time_set(time_param, timegm_to_float(time.gmtime()), tolerance=tolerance):
             log.debug("time isn't current. sleep for a bit")
 
             # Run acquire status command to set clock parameter

@@ -9,6 +9,7 @@ Generic test Driver for ADCPS-K, ADCPS-I, ADCPT-B and ADCPT-DE
 import time
 import copy
 from mi.core.exceptions import InstrumentCommandException
+from mi.core.time_tools import timegm_to_float
 from mi.core.log import get_logger
 
 log = get_logger()
@@ -211,14 +212,14 @@ class ADCPTMixin(DriverTestMixin):
     }
 
     _calibration_data_parameters = {
-        AdcpCompassCalibrationKey.FLUXGATE_CALIBRATION_TIMESTAMP: {'type': float, 'value': 1347639932.0},
+        AdcpCompassCalibrationKey.FLUXGATE_CALIBRATION_TIMESTAMP: {'type': float, 'value': 1347614732.0}, #1347639932.0
         AdcpCompassCalibrationKey.S_INVERSE_BX: {'type': list, 'value': [0.39218, 0.3966, -0.031681, 0.0064332]},
         AdcpCompassCalibrationKey.S_INVERSE_BY: {'type': list, 'value': [-0.02432, -0.010376, -0.0022428, -0.60628]},
         AdcpCompassCalibrationKey.S_INVERSE_BZ: {'type': list, 'value': [0.22453, -0.21972, -0.2799, -0.0024339]},
         AdcpCompassCalibrationKey.S_INVERSE_ERR: {'type': list, 'value': [0.46514, -0.40455, 0.69083, -0.014291]},
         AdcpCompassCalibrationKey.COIL_OFFSET: {'type': list, 'value': [34233.0, 34449.0, 34389.0, 34698.0]},
         AdcpCompassCalibrationKey.ELECTRICAL_NULL: {'type': float, 'value': 34285.0},
-        AdcpCompassCalibrationKey.TILT_CALIBRATION_TIMESTAMP: {'type': float, 'value': 1347639285.0},
+        AdcpCompassCalibrationKey.TILT_CALIBRATION_TIMESTAMP: {'type': float, 'value': 1347614085.0}, #1347639285.0
         AdcpCompassCalibrationKey.CALIBRATION_TEMP: {'type': float, 'value': 24.4},
         AdcpCompassCalibrationKey.ROLL_UP_DOWN: {'type': list,
                                                  'value': [7.4612e-07, -3.1727e-05, -3.0054e-07, 3.219e-05]},
@@ -1261,7 +1262,7 @@ class WorkhorseDriverIntegrationTest(InstrumentDriverIntegrationTestCase, ADCPTM
         log.debug("RESULT TIME = " + str(result_time))
         log.debug("TIME FORMAT = " + time_format)
         result_time_struct = time.strptime(result_time, time_format)
-        converted_time = time.mktime(result_time_struct)
+        converted_time = timegm_to_float(result_time_struct)
 
         if isinstance(expected_time, float):
             expected_time_struct = time.localtime(expected_time)
@@ -1272,10 +1273,10 @@ class WorkhorseDriverIntegrationTest(InstrumentDriverIntegrationTestCase, ADCPTM
                   time.strftime("%d %b %y %H:%M:%S", expected_time_struct))
 
         log.debug("Current Time: %s, Expected Time: %s, Tolerance: %s",
-                  converted_time, time.mktime(expected_time_struct), tolerance)
+                  converted_time, timegm_to_float(expected_time_struct), tolerance)
 
         # Verify the clock is set within the tolerance
-        return abs(converted_time - time.mktime(expected_time_struct)) <= tolerance
+        return abs(converted_time - timegm_to_float(expected_time_struct)) <= tolerance
 
     def assert_acquire_status(self):
         """
@@ -1390,10 +1391,10 @@ class WorkhorseDriverQualificationTest(InstrumentDriverQualificationTestCase):
         # Now verify that at least the date matches
         check_new_params = self.instrument_agent_client.get_resource([WorkhorseParameter.TIME], timeout=45)
 
-        instrument_time = time.mktime(
+        instrument_time = timegm_to_float(
             time.strptime(check_new_params.get(WorkhorseParameter.TIME).lower(), "%Y/%m/%d,%H:%M:%S %Z"))
 
-        self.assertLessEqual(abs(instrument_time - time.mktime(time.gmtime())), 45)
+        self.assertLessEqual(abs(instrument_time - timegm_to_float(time.gmtime())), 45)
 
     def test_get_capabilities(self):
         """

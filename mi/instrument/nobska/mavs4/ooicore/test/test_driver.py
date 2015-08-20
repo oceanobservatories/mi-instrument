@@ -91,6 +91,7 @@ from mi.core.instrument.chunker import StringChunker
 
 # MI logger
 from mi.core.log import get_logger
+from mi.core.time_tools import timegm_to_float
 
 log = get_logger()
 
@@ -320,9 +321,9 @@ class Mavs4Mixin(DriverTestMixin):
         self.assertTrue(sent_time[:12].upper() in rcvd_time.upper())
 
         sent_timestamp = time.strptime(sent_time, "%m/%d/%Y %H:%M:%S")
-        ntp_sent_timestamp = ntplib.system_to_ntp_time(time.mktime(sent_timestamp))
+        ntp_sent_timestamp = ntplib.system_to_ntp_time(timegm_to_float(sent_timestamp))
         rcvd_timestamp = time.strptime(rcvd_time, "%m/%d/%Y %H:%M:%S")
-        ntp_rcvd_timestamp = ntplib.system_to_ntp_time(time.mktime(rcvd_timestamp))
+        ntp_rcvd_timestamp = ntplib.system_to_ntp_time(timegm_to_float(rcvd_timestamp))
         # verify that the times match closely
         log.trace("sts=%d, rts=%d", ntp_sent_timestamp, ntp_rcvd_timestamp)
         if ntp_rcvd_timestamp - ntp_sent_timestamp > 45:
@@ -1070,7 +1071,7 @@ class Testmavs4_QUAL(InstrumentDriverQualificationTestCase, Mavs4Mixin):
         params = [InstrumentParameters.SYS_CLOCK]
         reply = self.instrument_agent_client.get_resource(params)
         rcvd_time = reply[InstrumentParameters.SYS_CLOCK]
-        lt = time.strftime("%m/%d/%Y %H:%M:%S", time.gmtime(time.mktime(time.localtime())))
+        lt = time.strftime("%m/%d/%Y %H:%M:%S", time.gmtime(timegm_to_float(time.localtime())))
         self.assert_clock_set(lt, rcvd_time)
 
     def test_sample_autosample(self):

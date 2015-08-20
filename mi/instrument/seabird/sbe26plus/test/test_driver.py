@@ -28,6 +28,7 @@ import copy
 from mock import Mock
 
 from mi.core.log import get_logger ; log = get_logger()
+from mi.core.time_tools import timegm_to_float
 from nose.plugins.attrib import attr
 from mi.idk.unit_test import DriverTestMixin
 from mi.idk.unit_test import ParameterTestConfigKey
@@ -1514,7 +1515,7 @@ class SeaBird26PlusQualificationTest(SeaBirdQualificationTest, SeaBird26PlusMixi
         # Now verify that at least the date matches
         params = [Parameter.DS_DEVICE_DATE_TIME]
         check_new_params = self.instrument_agent_client.get_resource(params)
-        lt = time.strftime("%d %b %Y  %H:%M:%S", time.gmtime(time.mktime(time.localtime())))
+        lt = time.strftime("%d %b %Y  %H:%M:%S", time.gmtime(timegm_to_float(time.localtime())))
         log.debug("TIME: %s && %s" % (lt, check_new_params[Parameter.DS_DEVICE_DATE_TIME]))
         self.assertTrue(lt[:12].upper() in check_new_params[Parameter.DS_DEVICE_DATE_TIME].upper())
 
