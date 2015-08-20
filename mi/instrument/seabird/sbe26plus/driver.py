@@ -23,6 +23,7 @@ from mi.instrument.seabird.driver import NEWLINE
 from mi.instrument.seabird.driver import ESCAPE
 
 from mi.core.util import dict_equal
+from mi.core.time_tools import timegm_to_float
 from mi.core.common import BaseEnum
 from mi.core.instrument.instrument_fsm import InstrumentFSM
 from mi.core.instrument.instrument_driver import DriverEvent
@@ -267,7 +268,7 @@ class SBE26plusTideSampleDataParticle(DataParticle):
             if(match1):
                 text_timestamp = match.group(1)
                 py_timestamp = time.strptime(text_timestamp, "%d %b %Y %H:%M:%S")
-                self.set_internal_timestamp(unix_time=time.mktime(py_timestamp))
+                self.set_internal_timestamp(unix_time=timegm_to_float(py_timestamp))
 
             pressure = float(match.group(2))
             pressure_temp = float(match.group(3))
@@ -336,7 +337,7 @@ class SBE26plusWaveBurstDataParticle(DataParticle):
                 try:
                     text_timestamp = match.group(1)
                     py_timestamp = time.strptime(text_timestamp, "%d %b %Y %H:%M:%S")
-                    self.set_internal_timestamp(unix_time=time.mktime(py_timestamp))
+                    self.set_internal_timestamp(unix_time=timegm_to_float(py_timestamp))
                 except ValueError:
                     raise SampleException("ValueError while decoding floats in data: [%s]" %
                                       self.raw_data)
