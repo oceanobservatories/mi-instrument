@@ -8,6 +8,7 @@ log = get_logger()
 
 from mi.core.common import BaseEnum
 from mi.core.exceptions import SampleException
+from mi.core.time_tools import timegm_to_float
 from mi.core.instrument.data_particle import CommonDataParticleType, DataParticle, DataParticleKey
 from mi.instrument.teledyne.workhorse.pd0_parser import AdcpPd0Record
 
@@ -572,7 +573,7 @@ class AdcpCompassCalibrationDataParticle(DataParticle):
         lines = self.raw_data.split(NEWLINE)
         match = self.RE01.match(lines[1])
         timestamp = match.group(1)
-        matches[AdcpCompassCalibrationKey.FLUXGATE_CALIBRATION_TIMESTAMP] = time.mktime(
+        matches[AdcpCompassCalibrationKey.FLUXGATE_CALIBRATION_TIMESTAMP] = timegm_to_float(
             time.strptime(timestamp, "%m/%d/%Y  %H:%M:%S"))
 
         match = self.RE04.match(lines[4])
@@ -602,7 +603,7 @@ class AdcpCompassCalibrationDataParticle(DataParticle):
 
         match = self.RE21.match(lines[21])
         timestamp = match.group(1)
-        matches[AdcpCompassCalibrationKey.TILT_CALIBRATION_TIMESTAMP] = time.mktime(
+        matches[AdcpCompassCalibrationKey.TILT_CALIBRATION_TIMESTAMP] = timegm_to_float(
             time.strptime(timestamp, "%m/%d/%Y  %H:%M:%S"))
 
         match = self.RE22.match(lines[22])

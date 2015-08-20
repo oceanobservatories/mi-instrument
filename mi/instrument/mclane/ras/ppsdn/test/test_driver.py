@@ -24,6 +24,7 @@ from mock import Mock
 from nose.plugins.attrib import attr
 from mi.core.log import get_logger
 from mi.core.instrument.instrument_driver import DriverConfigKey, DriverProtocolState
+from mi.core.time_tools import timegm_to_float
 
 log = get_logger()
 
@@ -223,7 +224,7 @@ class UtilMixin(DriverTestMixin):
         """
         pps_time = time.strptime(pps_time + 'UTC', '%m/%d/%y %H:%M:%S %Z')
         current_time = time.gmtime()
-        diff = time.mktime(current_time) - time.mktime(pps_time)
+        diff = timegm_to_float(current_time) - timegm_to_float(pps_time)
         log.info('clock synched within %d seconds', diff)
 
         # verify that the time matches to within tolerance seconds

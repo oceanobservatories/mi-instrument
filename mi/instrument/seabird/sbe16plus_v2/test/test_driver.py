@@ -47,6 +47,8 @@ from mi.core.exceptions import InstrumentParameterException, SampleException
 from mi.core.exceptions import InstrumentProtocolException
 from mi.core.exceptions import InstrumentCommandException
 
+from mi.core.time_tools import timegm_to_float
+
 from mi.instrument.seabird.sbe16plus_v2.driver import SBE16Protocol, Sbe16plusBaseParticle, SBE16DataParticle, \
     SBE16StatusParticle, SBE16CalibrationParticle
 from mi.instrument.seabird.sbe16plus_v2.driver import SBE16InstrumentDriver
@@ -626,7 +628,7 @@ class Sbe16plusIntegrationTestCase(InstrumentDriverIntegrationTestCase, SeaBird1
 
         result_time = self.assert_get(time_param)
         result_time_struct = time.strptime(result_time, time_format)
-        converted_time = time.mktime(result_time_struct)
+        converted_time = timegm_to_float(result_time_struct)
 
         if isinstance(expected_time, float):
             expected_time_struct = time.localtime(expected_time)
@@ -637,10 +639,10 @@ class Sbe16plusIntegrationTestCase(InstrumentDriverIntegrationTestCase, SeaBird1
                   time.strftime("%d %b %y %H:%M:%S", expected_time_struct))
 
         log.debug("Current Time: %s, Expected Time: %s, Tolerance: %s",
-                  converted_time, time.mktime(expected_time_struct), tolerance)
+                  converted_time, timegm_to_float(expected_time_struct), tolerance)
 
         # Verify the clock is set within the tolerance
-        return abs(converted_time - time.mktime(expected_time_struct)) <= tolerance
+        return abs(converted_time - timegm_to_float(expected_time_struct)) <= tolerance
 
     def assert_clock_set(self, time_param, sync_clock_cmd = DriverEvent.ACQUIRE_STATUS, timeout = 60, tolerance=DEFAULT_CLOCK_DIFF):
         """
@@ -650,7 +652,7 @@ class Sbe16plusIntegrationTestCase(InstrumentDriverIntegrationTestCase, SeaBird1
 
         timeout_time = time.time() + timeout
 
-        while not self._is_time_set(time_param, time.mktime(time.gmtime()), tolerance=tolerance):
+        while not self._is_time_set(time_param, timegm_to_float(time.gmtime()), tolerance=tolerance):
             log.debug("time isn't current. sleep for a bit")
 
             # Run acquire status command to set clock parameter
@@ -1013,13 +1015,13 @@ class Sbe16plusQualTestCase(InstrumentDriverQualificationTestCase, SeaBird16plus
         # get the time from the driver
         check_new_params = self.instrument_agent_client.get_resource([Parameter.DATE_TIME])
         # convert driver's time from formatted date/time string to seconds integer
-        instrument_time = time.mktime(time.strptime(check_new_params.get(Parameter.DATE_TIME).lower(), "%d %b %Y %H:%M:%S"))
+        instrument_time = timegm_to_float(time.strptime(check_new_params.get(Parameter.DATE_TIME).lower(), "%d %b %Y %H:%M:%S"))
 
         # need to convert local machine's time to date/time string and back to seconds to 'drop' the DST attribute so test passes
         # get time from local machine
-        lt = time.strftime("%d %b %Y %H:%M:%S", time.gmtime(time.mktime(time.localtime())))
+        lt = time.strftime("%d %b %Y %H:%M:%S", time.gmtime(timegm_to_float(time.localtime())))
         # convert local time from formatted date/time string to seconds integer to drop DST
-        local_time = time.mktime(time.strptime(lt, "%d %b %Y %H:%M:%S"))
+        local_time = timegm_to_float(time.strptime(lt, "%d %b %Y %H:%M:%S"))
 
         # Now verify that the time matches to within 15 seconds
         self.assertLessEqual(abs(instrument_time - local_time), 15)

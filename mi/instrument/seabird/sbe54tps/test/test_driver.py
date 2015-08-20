@@ -31,6 +31,7 @@ import time
 
 from mi.core.log import get_logger
 log = get_logger()
+from mi.core.time_tools import timegm_to_float
 
 # MI imports.
 from mi.idk.unit_test import DriverTestMixin, DriverStartupConfigKey, InstrumentDriverTestCase
@@ -611,7 +612,7 @@ class SeaBird54PlusIntegrationTest(SeaBirdIntegrationTest, SeaBird54tpsMixin):
         """
         self.assert_driver_command(ProtocolEvent.ACQUIRE_STATUS)
         dt = self.assert_get(Parameter.TIME)
-        lt = time.strftime("%Y-%m-%dT%H:%M:%S", time.gmtime(time.mktime(time.localtime())))
+        lt = time.strftime("%Y-%m-%dT%H:%M:%S", time.gmtime(timegm_to_float(time.localtime())))
         self.assertTrue(lt[:12].upper() in dt.upper())
 
     def test_scheduled_clock_sync_command(self):

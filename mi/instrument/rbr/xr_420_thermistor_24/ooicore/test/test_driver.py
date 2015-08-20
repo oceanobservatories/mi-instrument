@@ -33,6 +33,7 @@ import unittest
 
 # Standard lib imports
 import time
+import calendar
 import ntplib
 import json
 
@@ -42,6 +43,7 @@ from nose.plugins.attrib import attr
 # MI logger
 from mi.core.log import get_logger
 log = get_logger()
+from mi.core.time_tools import timegm_to_float
 from mi.core.instrument.instrument_driver import ResourceAgentEvent
 
 from mi.core.instrument.instrument_driver import DriverAsyncEvent
@@ -266,7 +268,7 @@ class UtilMixin(DriverTestMixin):
     }
         
     _sample_parameters = {
-        XR_420SampleDataParticleKey.TIMESTAMP: {TYPE: float, VALUE: 3223662780.0},
+        XR_420SampleDataParticleKey.TIMESTAMP: {TYPE: float, VALUE: 3223633980.0}, # was 3223662780.0
         XR_420SampleDataParticleKey.TEMPERATURE01: {TYPE: float, VALUE: 21.4548},
         XR_420SampleDataParticleKey.TEMPERATURE02: {TYPE: float, VALUE: 21.0132},
         XR_420SampleDataParticleKey.TEMPERATURE03: {TYPE: float, VALUE: 20.9255},
@@ -567,7 +569,7 @@ class TestINT(InstrumentDriverIntegrationTestCase, UtilMixin):
 
         result_time = self.assert_get(time_param)
         result_time_struct = time.strptime(result_time, time_format)
-        converted_time = time.mktime(result_time_struct)
+        converted_time = (result_time_struct)
 
         if isinstance(expected_time, float):
             expected_time_struct = time.localtime(expected_time)
@@ -580,10 +582,10 @@ class TestINT(InstrumentDriverIntegrationTestCase, UtilMixin):
                   time.strftime("%d %b %y %H:%M:%S", expected_time_struct))
 
         log.debug("Current Time: %s, Expected Time: %s, Tolerance: %s",
-                  converted_time, time.mktime(expected_time_struct), tolerance)
+                  converted_time, timegm_to_float(expected_time_struct), tolerance)
 
         # Verify the clock is set within the tolerance
-        return abs(converted_time - time.mktime(expected_time_struct)) <= tolerance
+        return abs(converted_time - timegm_to_float(expected_time_struct)) <= tolerance
 
     def assert_clock_set(self, time_param, sync_clock_cmd=DriverEvent.CLOCK_SYNC, timeout=20, tolerance=3):
         """
