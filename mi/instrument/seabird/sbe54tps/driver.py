@@ -21,6 +21,7 @@ from mi.core.util import dict_equal
 
 from mi.core.common import BaseEnum, Units
 from mi.core.time_tools import get_timestamp_delayed
+from mi.core.time_tools import timegm_to_float
 
 from mi.core.instrument.instrument_fsm import InstrumentFSM
 from mi.core.instrument.instrument_driver import DriverEvent
@@ -265,7 +266,7 @@ class SBE54tpsStatusDataParticle(DataParticle):
                         elif key in [SBE54tpsStatusDataParticleKey.TIME]:
                             values[key] = val
                             py_timestamp = time.strptime(val, "%Y-%m-%dT%H:%M:%S")
-                            self.set_internal_timestamp(unix_time=time.mktime(py_timestamp))
+                            self.set_internal_timestamp(unix_time=timegm_to_float(py_timestamp))
 
         result = []
         for key, value in values.iteritems():
@@ -711,7 +712,7 @@ class SBE54tpsSampleDataParticle(DataParticle):
                             # <Time>2012-11-07T12:21:25</Time>
                             # yyyy-mm-ddThh:mm:ss
                             py_timestamp = time.strptime(val, "%Y-%m-%dT%H:%M:%S")
-                            self.set_internal_timestamp(unix_time=time.mktime(py_timestamp))
+                            self.set_internal_timestamp(unix_time=timegm_to_float(py_timestamp))
                             values[key] = val
 
         result = []
@@ -811,7 +812,7 @@ class SBE54tpsSampleRefOscDataParticle(DataParticle):
                             # yyyy-mm-ddThh:mm:ss
                             values[key] = val
                             py_timestamp = time.strptime(val, "%Y-%m-%dT%H:%M:%S")
-                            self.set_internal_timestamp(unix_time=time.mktime(py_timestamp))
+                            self.set_internal_timestamp(unix_time=timegm_to_float(py_timestamp))
 
         result = []
         for key, value in values.iteritems():
