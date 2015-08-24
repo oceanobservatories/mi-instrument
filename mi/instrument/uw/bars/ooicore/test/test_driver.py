@@ -161,10 +161,11 @@ class TRHPHMixinSub(DriverTestMixin):
 
     _driver_capabilities = {
         # capabilities defined in the IOS
-        Capability.DISCOVER: {STATES: [ProtocolState.UNKNOWN]},
         Capability.START_AUTOSAMPLE: {STATES: [ProtocolState.COMMAND]},
         Capability.STOP_AUTOSAMPLE: {STATES: [ProtocolState.AUTOSAMPLE]},
-        Capability.ACQUIRE_STATUS: {STATES: [ProtocolState.COMMAND, ProtocolState.AUTOSAMPLE]}
+        #Capability.GET: {STATES: [ProtocolState.COMMAND, ProtocolState.AUTOSAMPLE]},
+        #Capability.SET: {STATES: [ProtocolState.COMMAND]},
+        Capability.ACQUIRE_STATUS: {STATES: [ProtocolState.COMMAND, ProtocolState.AUTOSAMPLE]},
     }
 
     ###
@@ -182,7 +183,7 @@ class TRHPHMixinSub(DriverTestMixin):
         Parameter.EH_ISOLATION_AMP_POWER: {TYPE: int, READONLY: True, DA: False, STARTUP: False, DEFAULT: 1, VALUE: 1},
         Parameter.HYDROGEN_POWER: {TYPE: int, READONLY: True, DA: False, STARTUP: False, DEFAULT: 1, VALUE: 1},
         Parameter.REFERENCE_TEMP_POWER: {TYPE: int, READONLY: True, DA: False, STARTUP: False, DEFAULT: 1, VALUE: 1},
-        Parameter.RUN_ACQUIRE_STATUS_INTERVAL: {TYPE: str, READONLY: True, DA: False, STARTUP: True, DEFAULT: '00:00:00', VALUE: '12:00:00'},
+        Parameter.RUN_ACQUIRE_STATUS_INTERVAL: {TYPE: str, READONLY: False, DA: False, STARTUP: True, DEFAULT: '00:00:00', VALUE: '12:00:00'},
 
     }
 
@@ -431,6 +432,7 @@ class DriverUnitTest(InstrumentDriverUnitTestCase, TRHPHMixinSub):
                           Protocol._from_seconds, 3601)
         self.assertRaises(InstrumentParameterException,
                           Protocol._from_seconds, 14)
+
 
 
 ###############################################################################
