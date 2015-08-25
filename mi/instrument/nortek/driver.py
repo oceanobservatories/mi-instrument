@@ -958,12 +958,6 @@ class NortekInstrumentDriver(SingleConnectionInstrumentDriver):
     """
     Base class for all seabird instrument drivers.
     """
-    def __init__(self, evt_callback):
-        """
-        Driver constructor.
-        @param evt_callback Driver process event callback.
-        """
-        SingleConnectionInstrumentDriver.__init__(self, evt_callback)
 
     def _build_protocol(self):
         """

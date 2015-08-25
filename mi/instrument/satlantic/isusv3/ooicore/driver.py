@@ -406,9 +406,6 @@ class InstrumentPrompts(BaseEnum):
 class InstrumentDriver(SingleConnectionInstrumentDriver):
     """
     """
-    def __init__(self, evt_callback):
-        SingleConnectionInstrumentDriver.__init__(self, evt_callback)
-
 
     # DHE Added
     ########################################################################

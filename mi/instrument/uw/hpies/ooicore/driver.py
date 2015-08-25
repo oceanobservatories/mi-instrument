@@ -1053,13 +1053,6 @@ class InstrumentDriver(SingleConnectionInstrumentDriver):
     machine.
     """
 
-    def __init__(self, evt_callback):
-        """
-        Driver constructor.
-        @param evt_callback Driver process event callback.
-        """
-        SingleConnectionInstrumentDriver.__init__(self, evt_callback)
-
     def _build_protocol(self):
         """
         Construct the driver protocol state machine.
