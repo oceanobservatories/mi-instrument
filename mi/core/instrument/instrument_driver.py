@@ -1098,16 +1098,13 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
         if self.refdes is not None:
 
             try:
-                self.data_port_id = 'port-agent-%s' % self.refdes
-                self.command_port_id = 'command-port-agent-%s' % self.refdes
-
-                data_port = self.consul.catalog.service(self.data_port_id)
-                cmd_port = self.consul.catalog.service(self.command_port_id)
+                data_port = self.consul.health.service('port-agent', passing=True, tag=self.refdes)
+                cmd_port = self.consul.health.service('command-port-agent', passing=True, tag=self.refdes)
 
                 if data_port and cmd_port:
-                    port = data_port[0]['ServicePort']
-                    addr = data_port[0]['Address']
-                    cmd_port = cmd_port[0]['ServicePort']
+                    port = data_port[0]['Service']['Port']
+                    addr = data_port[0]['Node']['Address']
+                    cmd_port = cmd_port[0]['Service']['Port']
                     port_agent_config = {'port': port, 'cmd_port': cmd_port, 'addr': addr}
                     return port_agent_config
             except ConnectionError:
