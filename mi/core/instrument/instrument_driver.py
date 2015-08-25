@@ -1098,8 +1098,8 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
         if self.refdes is not None:
 
             try:
-                self.data_port_id = 'port-agent_%s' % self.refdes
-                self.command_port_id = 'command_port_agent_%s' % self.refdes
+                self.data_port_id = 'port-agent-%s' % self.refdes
+                self.command_port_id = 'command-port-agent-%s' % self.refdes
 
                 data_port = self.consul.catalog.service(self.data_port_id)
                 cmd_port = self.consul.catalog.service(self.command_port_id)
