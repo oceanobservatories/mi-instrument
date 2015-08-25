@@ -448,10 +448,6 @@ streams:
       ion_parameter_name: otn_sfpdiagtxbiassfp
       monitor_cycle_seconds: 2220.0
       scale_factor: 1
-    - omc_parameter_name: "sfpDiagTxOutputPowerDBmSFP_Interface_{interface_num}"
-      ion_parameter_name: otn_sfpdiagtxoutputpowerdbmsfp
-      monitor_cycle_seconds: 2220.0
-      scale_factor: 1
     - omc_parameter_name: "sfpDiagTxOutputPowerSFP_Interface_{interface_num}"
       ion_parameter_name: otn_sfpdiagtxoutputpowersfp
       monitor_cycle_seconds: 2220.0
