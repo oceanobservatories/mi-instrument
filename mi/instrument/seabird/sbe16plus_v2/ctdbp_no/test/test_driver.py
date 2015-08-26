@@ -21,6 +21,7 @@ import time
 from nose.plugins.attrib import attr
 
 from mi.core.log import get_logger ; log = get_logger()
+from mi.core.time_tools import timegm_to_float
 
 from mi.idk.unit_test import InstrumentDriverTestCase
 from mi.idk.unit_test import ParameterTestConfigKey
@@ -1096,13 +1097,13 @@ class SBE16NOQualTestCase(Sbe16plusQualTestCase, SBE16NOMixin):
         check_new_params = self.instrument_agent_client.get_resource([Parameter.DATE_TIME])
 
         # convert driver's time from formatted date/time string to seconds integer
-        instrument_time = time.mktime(time.strptime(check_new_params.get(Parameter.DATE_TIME).lower(), "%d %b %Y %H:%M:%S"))
+        instrument_time = timegm_to_float(time.strptime(check_new_params.get(Parameter.DATE_TIME).lower(), "%d %b %Y %H:%M:%S"))
 
         # need to convert local machine's time to date/time string and back to seconds to 'drop' the DST attribute so test passes
         # get time from local machine
-        lt = time.strftime("%d %b %Y %H:%M:%S", time.gmtime(time.mktime(time.localtime())))
+        lt = time.strftime("%d %b %Y %H:%M:%S", time.gmtime(timegm_to_float(time.localtime())))
         # convert local time from formatted date/time string to seconds integer to drop DST
-        local_time = time.mktime(time.strptime(lt, "%d %b %Y %H:%M:%S"))
+        local_time = timegm_to_float(time.strptime(lt, "%d %b %Y %H:%M:%S"))
 
         # Now verify that the time matches to within 10 seconds
         # The instrument time will be slightly behind as assert_discover takes a few seconds to complete

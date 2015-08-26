@@ -13,6 +13,7 @@ from mi.core.common import BaseEnum
 from mi.core.instrument.data_particle import DataParticle, DataParticleKey, CommonDataParticleType
 from mi.core.exceptions import SampleException
 from mi.core.log import get_logging_metaclass
+from mi.core.time_tools import timegm_to_float
 
 
 __author__ = 'Pete Cable'
@@ -148,7 +149,7 @@ class BotptDataParticle(DataParticle):
         else:
             fraction = 0
         timestamp = time.strptime(ts, "%Y/%m/%d %H:%M:%S")
-        self.set_internal_timestamp(unix_time=time.mktime(timestamp) + fraction)
+        self.set_internal_timestamp(unix_time=timegm_to_float(timestamp) + fraction)
 
     def _encode_all(self):
         """
