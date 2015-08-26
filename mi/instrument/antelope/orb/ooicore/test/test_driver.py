@@ -19,7 +19,6 @@ import ntplib
 from mock import Mock
 from nose.plugins.attrib import attr
 import os
-import shutil
 
 from mi.core.instrument.port_agent_client import PortAgentPacket
 from mi.core.log import get_logger
@@ -151,6 +150,31 @@ class AntelopeTestMixinSub(DriverTestMixin):
         self.assert_data_particle_keys(particle_keys, sample_data)
         self.assert_data_particle_header(data_particle, particle_type, require_instrument_timestamp=True)
         self.assert_data_particle_parameters(data_particle, sample_data, verify_values)
+
+    def assert_data_files_exist(self, events):
+        """
+        Search through the list of events for the DRIVER_ASYNC_EVENT_SAMPLE events.  Extract the
+        filename from the metadata and assert that a file with that name was created. Then clean
+        up the data file. Multiple DRIVER_ASYNC_EVENT_SAMPLE events can contain the same filename
+        if a flush occurs and that file is not yet "full". So, keep track of files that have been
+        cleaned up and so we don't assert them.
+        @param events: events list used to search for data files created by a DRIVER_ASYNC_EVENT_SAMPLE event
+        """
+        deleted_data_files = []
+        for event in events:
+            if event['type'] == 'DRIVER_ASYNC_EVENT_SAMPLE':
+                particle = event['value']
+                particle_values = particle['values']
+                for particle_value in particle_values:
+                    if particle_value['value_id'] == 'filename':
+                        filename = particle_value['value']
+                        if filename not in deleted_data_files:
+                            file_exists = os.path.exists(filename)
+                            self.assertTrue(file_exists, 'creation of antelope data file: ' + filename)
+                            if file_exists:
+                                os.remove(filename)
+                                deleted_data_files.append(filename)
+                        break
 
     def _create_port_agent_packet(self, data_item):
         ts = ntplib.system_to_ntp_time(time.time())
@@ -308,7 +332,7 @@ class DriverIntegrationTest(InstrumentDriverIntegrationTestCase, AntelopeTestMix
         Break our startup config, then verify the driver raises an exception
         """
         # grab the old config
-        startup_params = self.test_config.driver_startup_config[DriverConfigKey.PARAMETERS]
+        # startup_params = self.test_config.driver_startup_config[DriverConfigKey.PARAMETERS]
         # old_value = startup_params[Parameter.LEVELING_TIMEOUT]
         # failed = False
         #
@@ -331,25 +355,52 @@ class DriverIntegrationTest(InstrumentDriverIntegrationTestCase, AntelopeTestMix
         """
         Test for turning data on
         """
+        # Initialize the antelope instrument driver.
         self.assert_initialize_driver()
-        self.assert_driver_command(Capability.START_AUTOSAMPLE, state=ProtocolState.AUTOSAMPLE)
 
-        # autosample for 10 seconds, then count the samples...
-        time.sleep(10)
-        self.assert_driver_command(Capability.STOP_AUTOSAMPLE, state=ProtocolState.COMMAND, delay=1)
-        time.sleep(10)
+        # Start auto sampling for a little longer than the flush interval,
+        # then stop auto sampling and assert the data files
+        self.assert_driver_command(Capability.START_AUTOSAMPLE, state=ProtocolState.AUTOSAMPLE, delay=1)
+        time.sleep(int(antelope_startup_config[DriverConfigKey.PARAMETERS][Parameter.FLUSH_INTERVAL])*2 + 5)
+        self.assert_driver_command(Capability.STOP_AUTOSAMPLE, state=ProtocolState.COMMAND, delay=10)
+        self.assert_data_files_exist(self.events)
 
-        # Search through the list of events for the data particle.  Extract the filename from the
-        # metadata and assert that a file with that name was created.  Then clean up the data file.
-        events = self.events
-        for event in self.events:
-            if event['type'] == 'DRIVER_ASYNC_EVENT_SAMPLE':
-                particle = event['value']
-                particle_values = particle['values']
-                for particle_value in particle_values:
-                    if particle_value['value_id'] == 'filename':
-                        filename = particle_value['value']
-                        file_exists = os.path.exists(filename)
-                        self.assertTrue(file_exists, 'creation of antelope data file: ' + filename)
-                        if file_exists:
-                            os.remove(filename)
+    def test_write_error(self):
+        """
+        Test the proper state transition if a write error occurs and is then cleared.
+        """
+        # Get the base directory for data files
+        base_dir = os.path.join(str(antelope_startup_config[DriverConfigKey.PARAMETERS][Parameter.FILE_LOCATION]),
+                                str(antelope_startup_config[DriverConfigKey.PARAMETERS][Parameter.REFDES]))
+
+        # Create the base directory if it doesn't exist, then set the permission to read only.
+        if not os.path.exists(base_dir):
+            os.makedirs(base_dir)
+        os.chmod(base_dir, 0444)
+
+        # Initialize the antelope instrument driver.
+        self.assert_initialize_driver()
+
+        # Start AUTOSAMPLE, then stop AUTOSAMPLE to induce a flush, which will attempt to write the data files,
+        # but since the folder is write protected it will cause the FSM to go into the WRITE ERROR state.
+        self.assert_driver_command(Capability.START_AUTOSAMPLE, state=ProtocolState.AUTOSAMPLE, delay=1)
+        self.assert_driver_command(Capability.STOP_AUTOSAMPLE, state=ProtocolState.WRITE_ERROR, delay=2)
+
+        # Clear the write error
+        self.assert_driver_command(Capability.CLEAR_WRITE_ERROR, state=ProtocolState.COMMAND)
+
+        # Now test the flush being invoked by the exceeding the flush interval.  Since the folder is still read
+        # only it will cause the FSM to go into the WRITE ERROR state again.
+        self.assert_driver_command(Capability.START_AUTOSAMPLE, state=ProtocolState.AUTOSAMPLE, delay=1)
+        time.sleep(int(antelope_startup_config[DriverConfigKey.PARAMETERS][Parameter.FLUSH_INTERVAL]) + 2)
+        self.assert_current_state(ProtocolState.WRITE_ERROR)
+
+        # Set the base directory to to read/write.
+        os.chmod(base_dir, 0777)
+        self.clear_events()
+
+        # Simulate the user clearing the write error, start auto sampling again and then assert the data files.
+        self.assert_driver_command(Capability.CLEAR_WRITE_ERROR, state=ProtocolState.COMMAND, delay=1)
+        self.assert_driver_command(Capability.START_AUTOSAMPLE, state=ProtocolState.AUTOSAMPLE, delay=1)
+        self.assert_driver_command(Capability.STOP_AUTOSAMPLE, state=ProtocolState.COMMAND, delay=10)
+        self.assert_data_files_exist(self.events)
