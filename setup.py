@@ -23,6 +23,9 @@ setup(  name = 'mi-instrument',
         ],
         test_suite = 'pyon',
         entry_points = {
+            'console_scripts': [
+                'run_driver=mi.core.instrument.wrapper:main',
+            ],
         },
         install_requires = [
             'ntplib>=0.1.9',
