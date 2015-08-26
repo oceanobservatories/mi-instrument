@@ -121,3 +121,15 @@ def time_to_ntp_date_time(unix_time=None):
 
         timestamp = ntplib.system_to_ntp_time(unix_time)
         return float(timestamp)
+
+def timegm_to_float(timestamp):
+    """
+    takes the timestamp, applies time.mktime to capture the fraction.
+        then, gets the time "converted" from gmt using calendar.timegm(timegm assumes gmt for param)
+        then adds the fraction back on and returns the float value.
+    :param timestamp: time in gmt
+    :return: float epoch time (gmt)
+    """
+    gmfloat = float(calendar.timegm(timestamp))
+    return gmfloat
+

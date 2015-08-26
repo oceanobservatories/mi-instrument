@@ -19,6 +19,7 @@ import time
 import re
 
 from mi.core.util import dict_equal
+from mi.core.time_tools import timegm_to_float
 from mi.core.common import BaseEnum, Units, Prefixes
 from mi.core.time_tools import get_timestamp_delayed
 from mi.core.instrument.driver_dict import DriverDict, DriverDictKey
@@ -449,7 +450,7 @@ class Mavs4SampleDataParticle(DataParticle):
             datetime = "%s %s.%s" % (match.group(1), match.group(2), fractional_second)
             datetime_nofrac = "%s %s" % (match.group(1), match.group(2))
             timestamp = time.strptime(datetime_nofrac, "%m %d %Y %H %M %S")
-            self.set_internal_timestamp(unix_time=(time.mktime(timestamp) + fractional_second))
+            self.set_internal_timestamp(unix_time=(timegm_to_float(timestamp) + fractional_second))
             acoustic_axis_velocity_a = struct.unpack('>h', match.group(4).decode('hex'))[0]
             acoustic_axis_velocity_b = struct.unpack('>h', match.group(5).decode('hex'))[0]
             acoustic_axis_velocity_c = struct.unpack('>h', match.group(6).decode('hex'))[0]
