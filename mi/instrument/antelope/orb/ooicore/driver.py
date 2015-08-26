@@ -47,7 +47,6 @@ class ProtocolEvent(BaseEnum):
     GET = DriverEvent.GET
     SET = DriverEvent.SET
     FLUSH = 'PROTOCOL_EVENT_FLUSH'
-    PROCESS_WRITE_ERROR = 'PROTOCOL_EVENT_PROCESS_WRITE_ERROR'
     CLEAR_WRITE_ERROR = 'PROTOCOL_EVENT_CLEAR_WRITE_ERROR'
 
 
@@ -154,7 +153,6 @@ class Protocol(InstrumentProtocol):
                 (ProtocolEvent.GET, self._handler_get),
                 (ProtocolEvent.FLUSH, self._flush),
                 (ProtocolEvent.STOP_AUTOSAMPLE, self._handler_autosample_stop_autosample),
-                (ProtocolEvent.PROCESS_WRITE_ERROR, self._handler_process_write_error),
             ),
             ProtocolState.WRITE_ERROR: (
                 (ProtocolEvent.ENTER, self._handler_write_error_enter),
@@ -331,18 +329,24 @@ class Protocol(InstrumentProtocol):
             for _log in self._logs.itervalues():
                 try:
                     _log.flush()
-                except InstrumentProtocolException:
-                    self._async_raise_fsm_event(ProtocolEvent.PROCESS_WRITE_ERROR)
-                    raise
+                except InstrumentProtocolException as ex:
+                    # Ensure the current logs are clear to prevent residual data from being flushed.
+                    self._driver_event(DriverAsyncEvent.ERROR, ex)
+                    self._logs = {}
+                    self._filled_logs = []
+                    return ProtocolState.WRITE_ERROR, (ResourceAgentState.STOPPED, None)
 
                 particles.append(AntelopeMetadataParticle(_log))
 
             for _log in self._filled_logs:
                 try:
                     _log.flush()
-                except InstrumentProtocolException:
-                    self._async_raise_fsm_event(ProtocolEvent.PROCESS_WRITE_ERROR)
-                    raise
+                except InstrumentProtocolException as ex:
+                    # Ensure the current logs are clear to prevent residual data from being flushed.
+                    self._driver_event(DriverAsyncEvent.ERROR, ex)
+                    self._logs = {}
+                    self._filled_logs = []
+                    return ProtocolState.WRITE_ERROR, (ResourceAgentState.STOPPED, None)
 
                 particles.append(AntelopeMetadataParticle(_log))
                 _log.data = []
@@ -439,9 +443,10 @@ class Protocol(InstrumentProtocol):
         key = '%s.%s.%s.%s' % (packet['net'], packet.get('location', ''),
                                packet.get('sta', ''), packet['chan'])
         start, end = self._get_bin(packet)
-        self._pktid = packet['pktid']
 
         with self._lock:
+            self._pktid = packet['pktid']
+
             if key not in self._logs:
                 self._logs[key] = PacketLog.from_packet(packet, end)
 
@@ -517,6 +522,10 @@ class Protocol(InstrumentProtocol):
         """
         result = None
 
+        # Ensure the current logs are clear to prevent residual data from being flushed.
+        self._logs = {}
+        self._filled_logs = []
+
         self._orbstart()
         next_state = ProtocolState.AUTOSAMPLE
         next_agent_state = ResourceAgentState.STREAMING
@@ -549,18 +558,14 @@ class Protocol(InstrumentProtocol):
         """
         result = None
 
-        self._flush(True)
-        next_state = ProtocolState.COMMAND
-        next_agent_state = ResourceAgentState.COMMAND
+        states = self._flush(True)
+        if states != (None, None):
+            next_state, next_agent_state = states
+        else:
+            next_state = ProtocolState.COMMAND
+            next_agent_state = ResourceAgentState.COMMAND
 
         return next_state, (next_agent_state, result)
-
-    def _handler_process_write_error(self, *args, **kwargs):
-        """
-        Process the write error by transitioning to the WRITE ERROR protocol state.
-        @return  next_state, (next_agent_state, result) if successful.
-        """
-        return ProtocolState.WRITE_ERROR, (ResourceAgentState.STOPPED, None)
 
     ######################################################
     # WRITE_ERROR handlers
@@ -578,6 +583,7 @@ class Protocol(InstrumentProtocol):
         """
         Exit write error state.
         """
+        pass
 
     def _handler_clear_write_error(self, *args, **kwargs):
         """
