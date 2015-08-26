@@ -46,6 +46,7 @@ from mi.core.instrument.instrument_driver import DriverParameter
 from mi.core.instrument.instrument_driver import ResourceAgentState
 from mi.core.instrument.instrument_driver import DriverConfigKey
 from mi.core.instrument.instrument_protocol import CommandResponseInstrumentProtocol
+from mi.core.instrument.instrument_protocol import InitializationType
 from mi.core.instrument.driver_dict import DriverDictKey
 from mi.core.instrument.protocol_param_dict import ParameterDictType
 from mi.core.instrument.protocol_param_dict import ParameterDictVisibility
@@ -1100,6 +1101,7 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
         Discover current state; can be UNKNOWN, COMMAND or REGULAR_SAMPLE
         @retval (next_state, result)
         """
+        self._update_params()
         next_state, next_agent_state = self._discover()
 
         return next_state, next_agent_state
@@ -1668,10 +1670,33 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
 
         self._check_for_engineering_parameters(params)
 
-        if len(params) > 0:
+        # #check for changes. if nothing has changed, don't issue the command
+        changed = False;
+        old_config = self._param_dict.get_config()
+
+        # Compare values here to send config change event
+        if not dict_equal(old_config, params, ignore_keys=SamiParameter.LAUNCH_TIME):
+            log.debug("Configuration has changed.")
+            changed = True
+
+        if len(params) > 0 and changed:
             self._set_configuration(override_params_dict=params)
         else:
             log.debug('SamiProtocol._set_params(): No parameters to reconfigure instrument.')
+
+    def _update_params(self, *args, **kwargs):
+
+        if self._init_type != InitializationType.NONE:
+            configuration_string_regex = self._get_configuration_string_regex_matcher()
+
+            instrument_configuration_string = self._do_cmd_resp(SamiInstrumentCommand.SAMI_GET_CONFIG,
+                                                            timeout=SAMI_DEFAULT_TIMEOUT,
+                                                            response_regex=configuration_string_regex)
+
+            log.debug('SamiProtocol._update_params: instrument_configuration_string = %s',
+                      instrument_configuration_string)
+
+            self._param_dict.update(instrument_configuration_string + SAMI_NEWLINE)
 
     def _set_configuration(self, override_params_dict=None):
         """
