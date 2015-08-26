@@ -1668,7 +1668,20 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
 
         self._check_for_engineering_parameters(params)
 
-        if len(params) > 0:
+        configuration_string_regex = self._get_configuration_string_regex_matcher()
+
+        instrument_configuration_string = self._do_cmd_resp(SamiInstrumentCommand.SAMI_GET_CONFIG,
+                                                            timeout=SAMI_DEFAULT_TIMEOUT,
+                                                            response_regex=configuration_string_regex)
+
+        # #check for changes. if nothing has changed, don't issue the command
+        changed = False;
+        for key, val in params.iteritems():
+            if val != instrument_configuration_string.get(key):
+                changed = True;
+                break
+
+        if len(params) > 0 and changed:
             self._set_configuration(override_params_dict=params)
         else:
             log.debug('SamiProtocol._set_params(): No parameters to reconfigure instrument.')
