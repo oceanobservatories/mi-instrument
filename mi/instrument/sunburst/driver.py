@@ -46,6 +46,7 @@ from mi.core.instrument.instrument_driver import DriverParameter
 from mi.core.instrument.instrument_driver import ResourceAgentState
 from mi.core.instrument.instrument_driver import DriverConfigKey
 from mi.core.instrument.instrument_protocol import CommandResponseInstrumentProtocol
+from mi.core.instrument.instrument_protocol import InitializationType
 from mi.core.instrument.driver_dict import DriverDictKey
 from mi.core.instrument.protocol_param_dict import ParameterDictType
 from mi.core.instrument.protocol_param_dict import ParameterDictVisibility
@@ -779,7 +780,7 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
         # commands sent sent to device to be filtered in responses for telnet DA
         self._sent_cmds = []
 
-        self._startup = True
+        #self._startup = True
 
         self._queued_commands = QueuedCommands()
 
@@ -1564,12 +1565,7 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
         """
         Apply the startup values previously stored in the protocol to
         the running config of the live instrument.
-        @raise InstrumentParameterException If attempt to set init value in any state but command
         """
-
-        log.debug('SamiProtocol.apply_startup_params: CURRENT STATE: %s', self.get_current_state())
-        if self.get_current_state() != SamiProtocolState.COMMAND:
-            raise InstrumentProtocolException("Not in command. Unable to apply startup params")
 
         startup_config = self.get_startup_config()
 
@@ -1608,20 +1604,6 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
         # Clear command queue
         self._queued_commands.reset()
 
-        # Set default and startup config values in param_dict to establish a baseline
-        if self._startup:
-
-            old_config_params = self._param_dict.get_all()
-            log.debug('SamiProtocol._discover: old_config_params = %s', old_config_params)
-
-            for (key, val) in old_config_params.iteritems():
-                self._param_dict.set_value(key, self._param_dict.get_config_value(key))
-
-            new_config_params = self._param_dict.get_all()
-            log.debug('SamiProtocol._discover: new_config_params = %s', new_config_params)
-
-            self._startup = False
-
         # Stop status and check for boot prompt
         try:
             response = self._do_cmd_resp(SamiInstrumentCommand.SAMI_STOP_STATUS,
@@ -1633,9 +1615,10 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
             log.debug('SamiProtocol._discover: boot prompt did not occur.')
 
         try:
-            log.debug('SamiProtocol._discover: _set_configuration BEGIN')
-            self._set_configuration()
-            log.debug('SamiProtocol._discover: _set_configuration END')
+            log.debug('SamiProtocol._discover: update and init params BEGIN')
+            self._update_params()
+            self._init_params()
+            log.debug('SamiProtocol._discover: update and init params END')
 
         except (InstrumentTimeoutException, InstrumentProtocolException) as e:
 
@@ -1668,10 +1651,34 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
 
         self._check_for_engineering_parameters(params)
 
-        if len(params) > 0:
+        # #check for changes. if nothing has changed, don't issue the command
+        changed = False;
+        old_config = self._param_dict.get_config()
+
+        # Compare values here to send config change event
+        for key, val in params.iteritems():
+            if val != old_config.get(key):
+                log.debug("Configuration has changed.")
+                changed = True
+                break
+
+        if len(params) > 0 and changed:
             self._set_configuration(override_params_dict=params)
         else:
             log.debug('SamiProtocol._set_params(): No parameters to reconfigure instrument.')
+
+    def _update_params(self, *args, **kwargs):
+
+        configuration_string_regex = self._get_configuration_string_regex_matcher()
+
+        instrument_configuration_string = self._do_cmd_resp(SamiInstrumentCommand.SAMI_GET_CONFIG,
+                                                            timeout=SAMI_DEFAULT_TIMEOUT,
+                                                            response_regex=configuration_string_regex)
+
+        log.debug('SamiProtocol._update_params: instrument_configuration_string = %s',
+                  instrument_configuration_string)
+
+        self._param_dict.update(instrument_configuration_string + SAMI_NEWLINE)
 
     def _set_configuration(self, override_params_dict=None):
         """
