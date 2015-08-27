@@ -1,4 +1,5 @@
 import os
+import math
 import uuid
 from datetime import datetime
 
@@ -145,8 +146,8 @@ class PacketLog(object):
             return None
 
         diff = self.header.maxtime - packet['time']
-        nsamps = int(round(diff * self.header.rate, 10))
-        self._write_data(packet['data'][:nsamps])
+        nsamps = int(math.ceil(diff * self.header.rate))
+        self._write_data(packet['data'][:nsamps-1])
         packet['data'] = packet['data'][nsamps:]
         packet['nsamp'] = len(packet['data'])
         packet['time'] += nsamps * self.header.delta
