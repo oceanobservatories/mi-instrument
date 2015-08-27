@@ -157,7 +157,7 @@ class AntelopeTestMixinSub(DriverTestMixin):
         filename from the metadata and assert that a file with that name was created. Then clean
         up the data file. Multiple DRIVER_ASYNC_EVENT_SAMPLE events can contain the same filename
         if a flush occurs and that file is not yet "full". So, keep track of files that have been
-        cleaned up and so we don't assert them.
+        cleaned up so we don't assert them.
         @param events: events list used to search for data files created by a DRIVER_ASYNC_EVENT_SAMPLE event
         """
         deleted_data_files = []
