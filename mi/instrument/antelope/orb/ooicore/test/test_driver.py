@@ -39,7 +39,7 @@ antelope_startup_config = {
         DriverConfigKey.PARAMETERS: {
             Parameter.DB_ADDR: '127.0.0.1',
             Parameter.DB_PORT: 5432,
-            Parameter.FLUSH_INTERVAL: 60,
+            Parameter.FLUSH_INTERVAL: 30,
             Parameter.REFDES: 'test',
             Parameter.SOURCE_REGEX: '.*',
             Parameter.FILE_LOCATION: './antelope_data',
@@ -100,7 +100,7 @@ class AntelopeTestMixinSub(DriverTestMixin):
         # Parameters defined in the IOS
         Parameter.DB_ADDR: {TYPE: str, READONLY: True, DA: True, STARTUP: True, DEFAULT: '127.0.0.1', VALUE: '127.0.0.1'},
         Parameter.DB_PORT: {TYPE: int, READONLY: True, DA: True, STARTUP: True, DEFAULT: 5432, VALUE: 5432},
-        Parameter.FLUSH_INTERVAL: {TYPE: int, READONLY: True, DA: True, STARTUP: True, DEFAULT: 60, VALUE: 60},
+        Parameter.FLUSH_INTERVAL: {TYPE: int, READONLY: True, DA: True, STARTUP: True, DEFAULT: 30, VALUE: 30},
         Parameter.REFDES: {TYPE: str, READONLY: True, DA: True, STARTUP: True, DEFAULT: 'test', VALUE: 'test'},
         Parameter.SOURCE_REGEX: {TYPE: str, READONLY: True, DA: True, STARTUP: True, DEFAULT: '.*', VALUE: '.*'},
         Parameter.FILE_LOCATION: {TYPE: str, READONLY: True, DA: True, STARTUP: True, DEFAULT: './antelope_data', VALUE: './antelope_data'},
