@@ -558,6 +558,9 @@ class Protocol(InstrumentProtocol):
         """
         result = None
 
+        # Stop the ORB and the scheduled flush job before the final flush.
+        self._orbstop()
+        self.stop_scheduled_job(ScheduledJob.FLUSH)
         states = self._flush(True)
         if states != (None, None):
             next_state, next_agent_state = states
