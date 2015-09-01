@@ -125,8 +125,7 @@ class AntelopeTestMixinSub(DriverTestMixin):
                                 'DRIVER_EVENT_START_AUTOSAMPLE'],
         ProtocolState.AUTOSAMPLE: ['DRIVER_EVENT_GET',
                                    'DRIVER_EVENT_STOP_AUTOSAMPLE',
-                                   'PROTOCOL_EVENT_FLUSH',
-                                   'PROTOCOL_EVENT_PROCESS_WRITE_ERROR'],
+                                   'PROTOCOL_EVENT_FLUSH'],
         ProtocolState.WRITE_ERROR: ['PROTOCOL_EVENT_CLEAR_WRITE_ERROR'],
     }
 
