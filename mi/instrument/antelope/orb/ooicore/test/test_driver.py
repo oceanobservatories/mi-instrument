@@ -28,7 +28,8 @@ from mi.idk.unit_test import InstrumentDriverIntegrationTestCase
 from mi.idk.unit_test import DriverTestMixin
 from mi.idk.unit_test import ParameterTestConfigKey
 from mi.core.instrument.instrument_driver import DriverConfigKey
-from mi.instrument.antelope.orb.ooicore.driver import Capability, ProtocolState, InstrumentDriver, Protocol, ProtocolEvent, Parameter
+from mi.instrument.antelope.orb.ooicore.driver import Capability, ProtocolState, InstrumentDriver, Protocol,\
+                                                        ProtocolEvent, Parameter, AntelopeMetadataParticleKey
 
 __author__ = 'Pete Cable'
 __license__ = 'Apache 2.0'
@@ -165,7 +166,7 @@ class AntelopeTestMixinSub(DriverTestMixin):
                 particle = event['value']
                 particle_values = particle['values']
                 for particle_value in particle_values:
-                    if particle_value['value_id'] == 'filename':
+                    if particle_value['value_id'] == AntelopeMetadataParticleKey.FILENAME:
                         filename = particle_value['value']
                         if filename not in deleted_data_files:
                             file_exists = os.path.exists(filename)
