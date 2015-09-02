@@ -17,10 +17,6 @@ class GapException(Exception):
     pass
 
 
-class TimeRangeException(Exception):
-    pass
-
-
 class PacketLogHeader(object):
     def __init__(self, net, location, station, channel, starttime, maxtime, rate, calib, calper):
         self.net = net
@@ -131,7 +127,7 @@ class PacketLog(object):
 
     def add_packet(self, packet):
         if self.header.starttime > packet['time'] or packet['time'] >= self.header.maxtime:
-            raise TimeRangeException()
+            raise GapException()
 
         # check if there is a gap, if so reject this packet
         diff = abs(self.header.endtime - packet['time'])
