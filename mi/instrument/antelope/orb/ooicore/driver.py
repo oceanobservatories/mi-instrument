@@ -35,6 +35,7 @@ class ProtocolState(BaseEnum):
     UNKNOWN = DriverProtocolState.UNKNOWN
     COMMAND = DriverProtocolState.COMMAND
     AUTOSAMPLE = DriverProtocolState.AUTOSAMPLE
+    STOPPING = 'DRIVER_STATE_STOPPING'
     WRITE_ERROR = 'DRIVER_STATE_WRITE_ERROR'
 
 
@@ -150,6 +151,11 @@ class Protocol(InstrumentProtocol):
                 (ProtocolEvent.GET, self._handler_get),
                 (ProtocolEvent.FLUSH, self._flush),
                 (ProtocolEvent.STOP_AUTOSAMPLE, self._handler_autosample_stop_autosample),
+            ),
+            ProtocolState.STOPPING: (
+                (ProtocolEvent.ENTER, self._handler_stopping_enter),
+                (ProtocolEvent.EXIT, self._handler_stopping_exit),
+                (ProtocolEvent.FLUSH, self._flush),
             ),
             ProtocolState.WRITE_ERROR: (
                 (ProtocolEvent.ENTER, self._handler_write_error_enter),
@@ -314,12 +320,15 @@ class Protocol(InstrumentProtocol):
         PacketLog.base_dir = os.path.join(self._param_dict.get(Parameter.FILE_LOCATION),
                                           self._param_dict.get(Parameter.REFDES))
 
-    def _flush(self, close_all=False):
+    def _flush(self):
         log.info('flush')
         particles = []
         with self._lock:
             log.info('got lock')
-            if close_all:
+
+            # On the last flush, close all the bins.
+            last_flush = self.get_current_state() == ProtocolState.STOPPING
+            if last_flush:
                 self._filled_logs.extend(self._logs.values())
                 self._logs = {}
 
@@ -354,6 +363,10 @@ class Protocol(InstrumentProtocol):
 
         for particle in particles:
             self._driver_event(DriverAsyncEvent.SAMPLE, particle.generate())
+
+        if last_flush:
+            self.stop_scheduled_job(ScheduledJob.FLUSH)
+            return ProtocolState.COMMAND, ProtocolState.COMMAND
 
         return None, None
 
@@ -549,26 +562,37 @@ class Protocol(InstrumentProtocol):
         Exit autosample state.
         """
         self._orbstop()
-        self.stop_scheduled_job(ScheduledJob.FLUSH)
 
     def _handler_autosample_stop_autosample(self, *args, **kwargs):
         """
         Stop autosample and switch back to command mode.
         @return  next_state, (next_agent_state, result) if successful.
         """
-        result = None
-
-        # Stop the ORB and the scheduled flush job before the final flush.
         self._orbstop()
-        self.stop_scheduled_job(ScheduledJob.FLUSH)
-        states = self._flush(True)
-        if states != (None, None):
-            next_state, next_agent_state = states
-        else:
-            next_state = ProtocolState.COMMAND
-            next_agent_state = ResourceAgentState.COMMAND
+
+        result = None
+        next_state = ProtocolState.STOPPING
+        next_agent_state = None
 
         return next_state, (next_agent_state, result)
+
+    ######################################################
+    # STOPPING handlers
+    ######################################################
+
+    def _handler_stopping_enter(self, *args, **kwargs):
+        """
+        Enter stopping state.
+        """
+        self._driver_event(DriverAsyncEvent.STATE_CHANGE)
+
+    def _handler_stopping_exit(self, *args, **kwargs):
+        """
+        Exit stopping state.
+        Stop the scheduled flush job and schedule flush one more time and
+        indicate that it is the last flush before stopping auto sampling.
+        """
+        pass
 
     ######################################################
     # WRITE_ERROR handlers
@@ -578,6 +602,8 @@ class Protocol(InstrumentProtocol):
         """
         Enter write error state.
         """
+        self.stop_scheduled_job(ScheduledJob.FLUSH)
+
         # Tell driver superclass to send a state change event.
         # Superclass will query the state.
         self._driver_event(DriverAsyncEvent.STATE_CHANGE)

@@ -127,6 +127,7 @@ class AntelopeTestMixinSub(DriverTestMixin):
         ProtocolState.AUTOSAMPLE: ['DRIVER_EVENT_GET',
                                    'DRIVER_EVENT_STOP_AUTOSAMPLE',
                                    'PROTOCOL_EVENT_FLUSH'],
+        ProtocolState.STOPPING: ['PROTOCOL_EVENT_FLUSH'],
         ProtocolState.WRITE_ERROR: ['PROTOCOL_EVENT_CLEAR_WRITE_ERROR'],
     }
 
@@ -242,7 +243,7 @@ class DriverUnitTest(InstrumentDriverUnitTestCase, AntelopeTestMixinSub):
         self.assertEqual(driver._protocol.get_current_state(), ProtocolState.AUTOSAMPLE)
 
         driver._protocol._protocol_fsm.on_event(ProtocolEvent.STOP_AUTOSAMPLE)
-        self.assertEqual(driver._protocol.get_current_state(), ProtocolState.COMMAND)
+        self.assertEqual(driver._protocol.get_current_state(), ProtocolState.STOPPING)
 
     def test_driver_enums(self):
         """
@@ -355,20 +356,24 @@ class DriverIntegrationTest(InstrumentDriverIntegrationTestCase, AntelopeTestMix
         """
         Test for turning data on
         """
+        flush_interval = int(antelope_startup_config[DriverConfigKey.PARAMETERS][Parameter.FLUSH_INTERVAL])
+
         # Initialize the antelope instrument driver.
         self.assert_initialize_driver()
 
         # Start auto sampling for a little longer than the flush interval,
         # then stop auto sampling and assert the data files
-        self.assert_driver_command(Capability.START_AUTOSAMPLE, state=ProtocolState.AUTOSAMPLE, delay=1)
-        time.sleep(int(antelope_startup_config[DriverConfigKey.PARAMETERS][Parameter.FLUSH_INTERVAL])*2 + 5)
-        self.assert_driver_command(Capability.STOP_AUTOSAMPLE, state=ProtocolState.COMMAND, delay=10)
+        self.assert_driver_command(Capability.START_AUTOSAMPLE, state=ProtocolState.AUTOSAMPLE)
+        time.sleep(flush_interval*2 + 1)
+        self.assert_driver_command(Capability.STOP_AUTOSAMPLE, state=ProtocolState.STOPPING)
         self.assert_data_files_exist(self.events)
 
     def test_write_error(self):
         """
         Test the proper state transition if a write error occurs and is then cleared.
         """
+        flush_interval = int(antelope_startup_config[DriverConfigKey.PARAMETERS][Parameter.FLUSH_INTERVAL])
+
         # Get the base directory for data files
         base_dir = os.path.join(str(antelope_startup_config[DriverConfigKey.PARAMETERS][Parameter.FILE_LOCATION]),
                                 str(antelope_startup_config[DriverConfigKey.PARAMETERS][Parameter.REFDES]))
@@ -383,16 +388,18 @@ class DriverIntegrationTest(InstrumentDriverIntegrationTestCase, AntelopeTestMix
 
         # Start AUTOSAMPLE, then stop AUTOSAMPLE to induce a flush, which will attempt to write the data files,
         # but since the folder is write protected it will cause the FSM to go into the WRITE ERROR state.
-        self.assert_driver_command(Capability.START_AUTOSAMPLE, state=ProtocolState.AUTOSAMPLE, delay=1)
-        self.assert_driver_command(Capability.STOP_AUTOSAMPLE, state=ProtocolState.WRITE_ERROR, delay=2)
+        self.assert_driver_command(Capability.START_AUTOSAMPLE, state=ProtocolState.AUTOSAMPLE)
+        self.assert_driver_command(Capability.STOP_AUTOSAMPLE, state=ProtocolState.STOPPING)
+
+        time.sleep(flush_interval)
 
         # Clear the write error
         self.assert_driver_command(Capability.CLEAR_WRITE_ERROR, state=ProtocolState.COMMAND)
 
         # Now test the flush being invoked by the exceeding the flush interval.  Since the folder is still read
         # only it will cause the FSM to go into the WRITE ERROR state again.
-        self.assert_driver_command(Capability.START_AUTOSAMPLE, state=ProtocolState.AUTOSAMPLE, delay=1)
-        time.sleep(int(antelope_startup_config[DriverConfigKey.PARAMETERS][Parameter.FLUSH_INTERVAL]) + 2)
+        self.assert_driver_command(Capability.START_AUTOSAMPLE, state=ProtocolState.AUTOSAMPLE)
+        time.sleep(flush_interval + 1)
         self.assert_current_state(ProtocolState.WRITE_ERROR)
 
         # Set the base directory to to read/write.
@@ -400,7 +407,8 @@ class DriverIntegrationTest(InstrumentDriverIntegrationTestCase, AntelopeTestMix
         self.clear_events()
 
         # Simulate the user clearing the write error, start auto sampling again and then assert the data files.
-        self.assert_driver_command(Capability.CLEAR_WRITE_ERROR, state=ProtocolState.COMMAND, delay=1)
-        self.assert_driver_command(Capability.START_AUTOSAMPLE, state=ProtocolState.AUTOSAMPLE, delay=1)
-        self.assert_driver_command(Capability.STOP_AUTOSAMPLE, state=ProtocolState.COMMAND, delay=10)
+        self.assert_driver_command(Capability.CLEAR_WRITE_ERROR, state=ProtocolState.COMMAND)
+        self.assert_driver_command(Capability.START_AUTOSAMPLE, state=ProtocolState.AUTOSAMPLE)
+        time.sleep(flush_interval*2 + 1)
+        self.assert_driver_command(Capability.STOP_AUTOSAMPLE, state=ProtocolState.STOPPING)
         self.assert_data_files_exist(self.events)
