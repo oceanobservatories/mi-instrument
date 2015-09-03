@@ -13,6 +13,34 @@ from mi.core.exceptions import InstrumentProtocolException
 log = get_logger()
 
 
+class Vector(object):
+    def __init__(self, size, dtype, factor=1.25):
+        self.dtype = dtype
+        self.factor = factor
+        self.backing_store = np.zeros(size, dtype=dtype)
+        self.length = size
+        self.index = 0
+
+    def append(self, value):
+        self._realloc(self.index+1)
+        self.backing_store[self.index] = value
+        self.index += 1
+
+    def extend(self, value):
+        new_index = self.index + len(value)
+        self._realloc(new_index)
+        self.backing_store[self.index:new_index] = value
+        self.index = new_index
+
+    def _realloc(self, new_index):
+        while new_index >= self.length:
+            self.length = int(self.length * self.factor)
+            self.backing_store.resize(self.length)
+
+    def get(self):
+        return self.backing_store[:self.index]
+
+
 class GapException(Exception):
     pass
 
@@ -81,7 +109,7 @@ class PacketLog(object):
         self.header = None
         self.needs_flush = False
         self.closed = False
-        self.data = []
+        self.data = Vector(1000, 'i')
 
         # Generate a UUID for this PacketLog
         self.bin_uuid = str(uuid.uuid4())
@@ -156,7 +184,7 @@ class PacketLog(object):
         self.needs_flush = True
 
     def _write_trace(self):
-        trace = Trace(np.array(self.data, dtype='int32'), self.header.stats)
+        trace = Trace(self.data.get(), self.header.stats)
         trace.write(self.filename, format='MSEED')
 
     def flush(self):
