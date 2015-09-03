@@ -3,7 +3,7 @@ import mock
 from io import BytesIO
 from unittest import TestCase
 from nose.plugins.attrib import attr
-from mi.instrument.antelope.orb.ooicore.packet_log import PacketLogHeader, PacketLog, GapException, TimeRangeException
+from mi.instrument.antelope.orb.ooicore.packet_log import PacketLogHeader, PacketLog, GapException
 from collections import namedtuple
 
 from mi.core.log import get_logger
@@ -60,7 +60,7 @@ class PacketLogUnitTest(TestCase):
 
         packet_log.add_packet(packet_values._asdict())
 
-        self.assertEqual(packet_log.data, packet_values.data)
+        self.assertEqual(list(packet_log.data.get()), packet_values.data)
 
     def test_log_flush(self):
         # here we'll mock the methods that actually write to disk
@@ -98,10 +98,10 @@ class PacketLogUnitTest(TestCase):
 
         log.add_packet(packet_values._asdict())
 
-        with self.assertRaises(TimeRangeException):
+        with self.assertRaises(GapException):
             log.add_packet(early_packet_values._asdict())
 
-        with self.assertRaises(TimeRangeException):
+        with self.assertRaises(GapException):
             log.add_packet(late_packet_values._asdict())
 
     def test_packet_overlap(self):
