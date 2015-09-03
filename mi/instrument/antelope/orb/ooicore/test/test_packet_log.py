@@ -6,6 +6,9 @@ from nose.plugins.attrib import attr
 from mi.instrument.antelope.orb.ooicore.packet_log import PacketLogHeader, PacketLog, GapException, TimeRangeException
 from collections import namedtuple
 
+from mi.core.log import get_logger
+log = get_logger()
+
 __author__ = 'petercable'
 
 HeaderTuple = namedtuple('HeaderTuple', 'net, location, station, channel, starttime, maxtime, rate, calib, calper')
@@ -51,13 +54,13 @@ class PacketLogUnitTest(TestCase):
         self.assertEqual(log.filename, './antelope_data/refdes/1970/01/01/OO.AXAS1.XX.EHE.1970-01-01T00:00:01.000000.mseed')
 
     def test_log_add_packet(self):
-        log = PacketLog()
-        log.filehandle = BytesIO()
-        log.create(*header_values)
+        packet_log = PacketLog()
+        packet_log.filehandle = BytesIO()
+        packet_log.create(*header_values)
 
-        log.add_packet(packet_values._asdict())
+        packet_log.add_packet(packet_values._asdict())
 
-        self.assertEqual(log.data, packet_values.data)
+        self.assertEqual(packet_log.data, packet_values.data)
 
     def test_log_flush(self):
         # here we'll mock the methods that actually write to disk
@@ -65,18 +68,18 @@ class PacketLogUnitTest(TestCase):
         trace_write = 'obspy.core.trace.Trace.write'
 
         with mock.patch(trace_write, new_callable=mock.Mock) as mocked_write:
-            log = PacketLog()
-            log.filehandle = BytesIO()
-            log.create(*header_values)
+            packet_log = PacketLog()
+            packet_log.filehandle = BytesIO()
+            packet_log.create(*header_values)
 
-            log.add_packet(packet_values._asdict())
+            packet_log.add_packet(packet_values._asdict())
             # assert the record was updated
-            self.assertEqual(log.header.num_samples, 5)
+            self.assertEqual(packet_log.header.num_samples, 5)
 
-            log.flush()
+            packet_log.flush()
 
             # assert Trace.write was called
-            mocked_write.assert_called_once()
+            mocked_write.assert_called_once_with(packet_log.filename, format='MSEED')
 
     def test_packet_gap_exception(self):
         log = PacketLog()

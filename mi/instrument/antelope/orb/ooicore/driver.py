@@ -1,19 +1,19 @@
+import ntplib
 import os
 import cPickle as pickle
 from threading import Lock
 
 from mi.core.driver_scheduler import DriverSchedulerConfigKey, TriggerType
 from mi.core.exceptions import InstrumentProtocolException, InstrumentParameterException
-from mi.core.instrument.data_particle import DataParticle
+from mi.core.instrument.data_particle import DataParticle, DataParticleKey
 from mi.core.instrument.driver_dict import DriverDictKey
 from mi.core.instrument.port_agent_client import PortAgentPacket
 from mi.core.instrument.protocol_param_dict import ParameterDictVisibility, ParameterDictType
-from mi.core.log import get_logger, get_logging_metaclass
+from mi.core.log import get_logger
 from mi.instrument.antelope.orb.ooicore.packet_log import PacketLog, GapException
 
 
 log = get_logger()
-meta = get_logging_metaclass('info')
 
 from mi.core.common import BaseEnum, Units
 from mi.core.persistent_store import PersistentStoreDict
@@ -35,6 +35,7 @@ class ProtocolState(BaseEnum):
     UNKNOWN = DriverProtocolState.UNKNOWN
     COMMAND = DriverProtocolState.COMMAND
     AUTOSAMPLE = DriverProtocolState.AUTOSAMPLE
+    STOPPING = 'DRIVER_STATE_STOPPING'
     WRITE_ERROR = 'DRIVER_STATE_WRITE_ERROR'
 
 
@@ -78,15 +79,15 @@ class AntelopeDataParticles(BaseEnum):
 
 
 class AntelopeMetadataParticleKey(BaseEnum):
-    NET = 'network'
-    STATION = 'station'
-    LOCATION = 'location'
-    CHANNEL = 'channel'
-    START = 'starttime'
-    END = 'endtime'
-    RATE = 'sampling_rate'
-    NSAMPS = 'num_samples'
-    FILENAME = 'filename'
+    NET = 'antelope_network'
+    STATION = 'antelope_station'
+    LOCATION = 'antelope_location'
+    CHANNEL = 'antelope_channel'
+    START = 'antelope_starttime'
+    END = 'antelope_endtime'
+    RATE = 'antelope_sampling_rate'
+    NSAMPS = 'antelope_num_samples'
+    FILENAME = 'antelope_filename'
     UUID = 'uuid'
 
 
@@ -95,6 +96,7 @@ class AntelopeMetadataParticle(DataParticle):
 
     def __init__(self, raw_data, **kwargs):
         super(AntelopeMetadataParticle, self).__init__(raw_data, **kwargs)
+        self.set_internal_timestamp(unix_time=raw_data.header.starttime)
 
     def _build_parsed_values(self):
         header = self.raw_data.header
@@ -104,8 +106,8 @@ class AntelopeMetadataParticle(DataParticle):
             self._encode_value(pk.STATION, header.station, str),
             self._encode_value(pk.LOCATION, header.location, str),
             self._encode_value(pk.CHANNEL, header.channel, str),
-            self._encode_value(pk.START, header.starttime, str),
-            self._encode_value(pk.END, header.endtime, str),
+            self._encode_value(pk.START, ntplib.system_to_ntp_time(header.starttime), float),
+            self._encode_value(pk.END, ntplib.system_to_ntp_time(header.endtime), float),
             self._encode_value(pk.RATE, header.rate, float),
             self._encode_value(pk.NSAMPS, header.num_samples, int),
             self._encode_value(pk.FILENAME, self.raw_data.filename, str),
@@ -117,8 +119,6 @@ class InstrumentDriver(SingleConnectionInstrumentDriver):
     """
     Generic antelope instrument driver
     """
-    # __metaclass__ = meta
-
     def _build_protocol(self):
         """
         Construct the driver protocol state machine.
@@ -127,8 +127,6 @@ class InstrumentDriver(SingleConnectionInstrumentDriver):
 
 
 class Protocol(InstrumentProtocol):
-    #__metaclass__ = meta
-
     def __init__(self, driver_event):
         super(Protocol, self).__init__(driver_event)
         self._protocol_fsm = ThreadSafeFSM(ProtocolState, ProtocolEvent,
@@ -153,6 +151,11 @@ class Protocol(InstrumentProtocol):
                 (ProtocolEvent.GET, self._handler_get),
                 (ProtocolEvent.FLUSH, self._flush),
                 (ProtocolEvent.STOP_AUTOSAMPLE, self._handler_autosample_stop_autosample),
+            ),
+            ProtocolState.STOPPING: (
+                (ProtocolEvent.ENTER, self._handler_stopping_enter),
+                (ProtocolEvent.EXIT, self._handler_stopping_exit),
+                (ProtocolEvent.FLUSH, self._flush),
             ),
             ProtocolState.WRITE_ERROR: (
                 (ProtocolEvent.ENTER, self._handler_write_error_enter),
@@ -317,12 +320,15 @@ class Protocol(InstrumentProtocol):
         PacketLog.base_dir = os.path.join(self._param_dict.get(Parameter.FILE_LOCATION),
                                           self._param_dict.get(Parameter.REFDES))
 
-    def _flush(self, close_all=False):
+    def _flush(self):
         log.info('flush')
         particles = []
         with self._lock:
             log.info('got lock')
-            if close_all:
+
+            # On the last flush, close all the bins.
+            last_flush = self.get_current_state() == ProtocolState.STOPPING
+            if last_flush:
                 self._filled_logs.extend(self._logs.values())
                 self._logs = {}
 
@@ -336,7 +342,7 @@ class Protocol(InstrumentProtocol):
                     self._filled_logs = []
                     return ProtocolState.WRITE_ERROR, (ResourceAgentState.STOPPED, None)
 
-                particles.append(AntelopeMetadataParticle(_log))
+                particles.append(AntelopeMetadataParticle(_log, preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP))
 
             for _log in self._filled_logs:
                 try:
@@ -348,7 +354,7 @@ class Protocol(InstrumentProtocol):
                     self._filled_logs = []
                     return ProtocolState.WRITE_ERROR, (ResourceAgentState.STOPPED, None)
 
-                particles.append(AntelopeMetadataParticle(_log))
+                particles.append(AntelopeMetadataParticle(_log, preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP))
                 _log.data = []
 
             self._filled_logs = []
@@ -357,6 +363,10 @@ class Protocol(InstrumentProtocol):
 
         for particle in particles:
             self._driver_event(DriverAsyncEvent.SAMPLE, particle.generate())
+
+        if last_flush:
+            self.stop_scheduled_job(ScheduledJob.FLUSH)
+            return ProtocolState.COMMAND, ProtocolState.COMMAND
 
         return None, None
 
@@ -411,6 +421,10 @@ class Protocol(InstrumentProtocol):
 
         if data_type == PortAgentPacket.PICKLED_FROM_INSTRUMENT:
             self._pickle_cache.append(port_agent_packet.get_data())
+            # this is the max size (65535) minus the header size (16)
+            # any packet of this length will be followed by one or more packets
+            # with additional data. Keep accumulating packets until we have
+            # the complete data, then unpickle.
             if data_length != 65519:
                 data = pickle.loads(''.join(self._pickle_cache))
                 self._pickle_cache = []
@@ -548,24 +562,37 @@ class Protocol(InstrumentProtocol):
         Exit autosample state.
         """
         self._orbstop()
-        self.stop_scheduled_job(ScheduledJob.FLUSH)
 
     def _handler_autosample_stop_autosample(self, *args, **kwargs):
         """
         Stop autosample and switch back to command mode.
         @return  next_state, (next_agent_state, result) if successful.
-        incorrect prompt received.
         """
-        result = None
+        self._orbstop()
 
-        states = self._flush(True)
-        if states != (None, None):
-            next_state, next_agent_state = states
-        else:
-            next_state = ProtocolState.COMMAND
-            next_agent_state = ResourceAgentState.COMMAND
+        result = None
+        next_state = ProtocolState.STOPPING
+        next_agent_state = None
 
         return next_state, (next_agent_state, result)
+
+    ######################################################
+    # STOPPING handlers
+    ######################################################
+
+    def _handler_stopping_enter(self, *args, **kwargs):
+        """
+        Enter stopping state.
+        """
+        self._driver_event(DriverAsyncEvent.STATE_CHANGE)
+
+    def _handler_stopping_exit(self, *args, **kwargs):
+        """
+        Exit stopping state.
+        Stop the scheduled flush job and schedule flush one more time and
+        indicate that it is the last flush before stopping auto sampling.
+        """
+        pass
 
     ######################################################
     # WRITE_ERROR handlers
@@ -575,6 +602,8 @@ class Protocol(InstrumentProtocol):
         """
         Enter write error state.
         """
+        self.stop_scheduled_job(ScheduledJob.FLUSH)
+
         # Tell driver superclass to send a state change event.
         # Superclass will query the state.
         self._driver_event(DriverAsyncEvent.STATE_CHANGE)
