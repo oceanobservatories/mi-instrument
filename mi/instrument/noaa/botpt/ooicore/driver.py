@@ -549,17 +549,15 @@ class Protocol(CommandResponseInstrumentProtocol):
                 constraint_string = 'Parameter: %s Value: %s Type: %s Minimum: %s Maximum: %s' % \
                                     (key, val, var_type, minimum, maximum)
                 log.debug('SET CONSTRAINT: %s', constraint_string)
-                # check bool values are actual booleans
-                if var_type == bool:
-                    if val not in [True, False]:
-                        raise InstrumentParameterException('Non-boolean value!: %s' % constraint_string)
-                # else, check if we can cast to the correct type
-                else:
-                    try:
-                        var_type(val)
-                    except ValueError:
-                        raise InstrumentParameterException('Type mismatch: %s' % constraint_string)
-                    # now, verify we are within min/max
+
+                # attempt to cast val to target type
+                try:
+                    val = var_type(val)
+                except ValueError:
+                    raise InstrumentParameterException('Type mismatch: %s' % constraint_string)
+
+                # now, verify we are within min/max
+                if not var_type == bool:
                     if val < minimum or val > maximum:
                         raise InstrumentParameterException('Out of range: %s' % constraint_string)
 
