@@ -366,9 +366,9 @@ class Protocol(InstrumentProtocol):
 
         if last_flush:
             self.stop_scheduled_job(ScheduledJob.FLUSH)
-            return ProtocolState.COMMAND, ProtocolState.COMMAND
+            return ProtocolState.COMMAND, (ResourceAgentState.COMMAND, None)
 
-        return None, None
+        return None, (None, None)
 
     def _orbstart(self):
         self._connection._command_port_agent('orbselect %s' % self._param_dict.get(Parameter.SOURCE_REGEX))
