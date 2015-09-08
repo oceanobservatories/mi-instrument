@@ -6,24 +6,22 @@
 @author Peter Cable
 @brief Driver process using ZMQ messaging.
 """
-import Queue
+import consulate
 import importlib
 import json
-import traceback
+import os
+import Queue
+import signal
 import threading
 import time
-import signal
-import consulate
-
-import os
+import traceback
 import zmq
-from mi.core.instrument.instrument_driver import DriverAsyncEvent
-from mi.core.instrument.publisher import Publisher
 
-#from ooi.logging import log
 from logging import _levelNames
 from mi.core.common import BaseEnum
 from mi.core.exceptions import UnexpectedError, InstrumentCommandException, InstrumentException
+from mi.core.instrument.instrument_driver import DriverAsyncEvent
+from mi.core.instrument.publisher import Publisher
 
 from mi.core.log import get_logger, get_logging_metaclass
 log = get_logger()
@@ -360,7 +358,9 @@ class DriverWrapper(object):
 
         self.evt_thread = None
         self.load_balancer = None
+        self.status_thread = None
         self.stop_evt_thread = True
+        self.particle_count = 0
 
     def construct_driver(self):
         """
@@ -385,7 +385,7 @@ class DriverWrapper(object):
 
     def send_event(self, evt):
         """
-        Append an event to the list to be sent by the event threaed.
+        Append an event to the list to be sent by the event thread.
         """
         self.events.put(evt)
 
@@ -404,7 +404,8 @@ class DriverWrapper(object):
                 self.stop_messaging()
             else:
                 self.int_time = now
-                log.info('mi/core/instrument/driver_process.py DRIVER GOT SIGINT and is ignoring it...')
+                log.info(
+                    'mi/core/instrument/driver_process.py DRIVER GOT SIGINT and is ignoring it...')
 
         signal.signal(signal.SIGINT, shand)
 
@@ -444,11 +445,12 @@ class DriverWrapper(object):
         Close messaging resource for the driver. Set flags to cause
         command and event threads to close sockets and conclude.
         """
-        self.stop_cmd_thread = True
         self.stop_evt_thread = True
         self.messaging_started = False
-        self.status_thread.running = False
-        self.load_balancer.running = False
+        if self.status_thread:
+            self.status_thread.running = False
+        if self.load_balancer:
+            self.load_balancer.running = False
 
         zmq.Context.instance().term()
 
@@ -494,14 +496,3 @@ class DriverWrapper(object):
                 time.sleep(.5)
             except Exception:
                 traceback.print_exc()
-
-
-def main():
-    import sys
-    module = sys.argv[1]
-    klass = sys.argv[2]
-    refdes = sys.argv[3]
-    event_url = sys.argv[4]
-    particle_url = sys.argv[5]
-    dp = DriverWrapper(module, klass, refdes, event_url, particle_url)
-    dp.run()
