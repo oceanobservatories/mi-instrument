@@ -32,5 +32,7 @@ setup(  name = 'mi-instrument',
             'apscheduler==2.1.0',
             'consulate',
             'qpid-python',
+            'zmq',
+            'docopt'
         ],
      )
