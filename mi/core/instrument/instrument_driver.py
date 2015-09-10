@@ -218,7 +218,6 @@ class InstrumentDriver(object):
         @param event_callback The driver process callback used to send
         asynchronous driver events to the agent.
         """
-        LoggerManager()
         self._send_event = event_callback
         self._test_mode = False
 

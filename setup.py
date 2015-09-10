@@ -5,10 +5,7 @@ try:
 except ImportError:
     from distutils.core import setup
 
-import os
-import sys
-
-version = '0.3.0'
+version = '0.3.1'
 
 setup(  name = 'mi-instrument',
         version = version,
@@ -25,6 +22,7 @@ setup(  name = 'mi-instrument',
         entry_points = {
             'console_scripts': [
                 'run_driver=mi.core.instrument.wrapper:main',
+                'playback=mi.core.instrument.playback:main',
             ],
         },
         install_requires = [
@@ -32,7 +30,7 @@ setup(  name = 'mi-instrument',
             'apscheduler==2.1.0',
             'consulate',
             'qpid-python',
-            'zmq',
+            'pyzmq',
             'docopt'
         ],
      )

@@ -1,10 +1,16 @@
 #!/usr/bin/env python
-
 """
 @package mi.core.instrument.wrapper
 @file mi/core/instrument/wrapper.py
 @author Peter Cable
 @brief Driver process using ZMQ messaging.
+
+Usage:
+    run_driver <module> <driver_class> <refdes> <event_url> <particle_url>
+
+Options:
+    -h, --help          Show this screen.
+
 """
 import consulate
 import importlib
@@ -17,6 +23,7 @@ import time
 import traceback
 import zmq
 
+from docopt import docopt
 from logging import _levelNames
 from mi.core.common import BaseEnum
 from mi.core.exceptions import UnexpectedError, InstrumentCommandException, InstrumentException
@@ -28,7 +35,6 @@ log = get_logger()
 
 META_LOGGER = get_logging_metaclass('trace')
 
-log.info('help!')
 
 __author__ = 'Peter Cable'
 __license__ = 'Apache 2.0'
@@ -496,3 +502,19 @@ class DriverWrapper(object):
                 time.sleep(.5)
             except Exception:
                 traceback.print_exc()
+
+
+def main():
+    options = docopt(__doc__)
+
+    module = options['<module>']
+    event_url = options['<event_url>']
+    particle_url = options['<particle_url>']
+    klass = options.get('<driver_class>')
+    refdes = options['<refdes>']
+
+    wrapper = DriverWrapper(module, klass, refdes, event_url, particle_url)
+    wrapper.run()
+
+if __name__ == '__main__':
+    main()
