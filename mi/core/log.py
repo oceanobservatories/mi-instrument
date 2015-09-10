@@ -201,3 +201,6 @@ def log_method(class_name=None, log_level='trace'):
 
 def get_logger():
     return log
+
+
+manager = LoggerManager()
