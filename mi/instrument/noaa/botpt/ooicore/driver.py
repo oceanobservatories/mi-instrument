@@ -838,7 +838,7 @@ class Protocol(CommandResponseInstrumentProtocol):
             self._handler_time_sync()
 
         self._init_params()
-        self._stop_autosample()
+        #self._stop_autosample()
         self._driver_event(DriverAsyncEvent.STATE_CHANGE)
 
     def _handler_command_get(self, *args, **kwargs):
@@ -963,9 +963,9 @@ class Protocol(CommandResponseInstrumentProtocol):
                                       particles.BotptStatusParticle.regex_compiled(),
                                       NEWLINE.join(parts), ts)
 
-        if self.get_current_state() == ProtocolState.AUTOSAMPLE:
+        #if self.get_current_state() == ProtocolState.AUTOSAMPLE:
             # acquiring status stops NANO output, restart it
-            self._do_cmd_resp(InstrumentCommand.NANO_ON, expected_prompt=NANO_STRING)
+        self._do_cmd_resp(InstrumentCommand.NANO_ON, expected_prompt=NANO_STRING)
 
         if not sample:
             raise InstrumentProtocolException('Failed to generate status particle')
@@ -977,8 +977,8 @@ class Protocol(CommandResponseInstrumentProtocol):
         @return next_state, (next_agent_state, result)
         """
         self._do_cmd_resp(InstrumentCommand.NANO_SET_TIME, expected_prompt=NANO_STRING)
-        if self.get_current_state() == ProtocolState.COMMAND:
-            self._do_cmd_no_resp(InstrumentCommand.NANO_OFF)
+        #if self.get_current_state() == ProtocolState.COMMAND:
+            #self._do_cmd_no_resp(InstrumentCommand.NANO_OFF)
         return None, (None, None)
 
     def _handler_start_leveling(self):
@@ -1004,8 +1004,8 @@ class Protocol(CommandResponseInstrumentProtocol):
             self._do_cmd_resp(InstrumentCommand.LILY_STOP_LEVELING, expected_prompt=Prompt.LILY_STOP_LEVELING)
             self._param_dict.set_value(Parameter.LILY_LEVELING, False)
 
-            if self.get_current_state() == ProtocolState.AUTOSAMPLE:
-                self._do_cmd_resp(InstrumentCommand.LILY_ON, expected_prompt=Prompt.LILY_ON)
+            #if self.get_current_state() == ProtocolState.AUTOSAMPLE:
+            self._do_cmd_resp(InstrumentCommand.LILY_ON, expected_prompt=Prompt.LILY_ON)
 
             self._driver_event(DriverAsyncEvent.CONFIG_CHANGE)
 
