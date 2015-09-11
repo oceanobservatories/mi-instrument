@@ -55,12 +55,18 @@ class PlaybackWrapper(object):
         self.event_publisher = Publisher.from_url(event_url, headers)
         self.particle_publisher = Publisher.from_url(particle_url, headers)
 
-        protocol = self.construct_protocol(module, klass)
-        self.reader = reader_klass(files, protocol.got_data)
+        self.protocol = self.construct_protocol(module, klass)
+        self.reader = reader_klass(files, self.got_data)
 
     def playback(self):
         while self.reader.read():
             pass
+
+    def got_data(self, packet):
+        try:
+            self.protocol.got_data(packet)
+        except:
+            log.exception()
 
     def construct_protocol(self, proto_module, proto_class):
         module = importlib.import_module(proto_module)

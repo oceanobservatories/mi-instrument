@@ -962,10 +962,12 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
         """
         log.info("_handler_connected_disconnect: invoking stop_comms().")
         self._connection.stop_comms()
+
         scheduler = self._protocol._scheduler
         if scheduler:
             scheduler._scheduler.shutdown()
         scheduler = None
+        self._protocol = None
 
         return DriverConnectionState.UNCONFIGURED, None
 
@@ -978,6 +980,11 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
         """
         log.info("_handler_connected_connection_lost: invoking stop_comms().")
         self._connection.stop_comms()
+
+        scheduler = self._protocol._scheduler
+        if scheduler:
+            scheduler._scheduler.shutdown()
+        scheduler = None
         self._protocol = None
 
         # Send async agent state change event.
