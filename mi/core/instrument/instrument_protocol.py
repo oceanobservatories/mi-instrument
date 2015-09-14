@@ -613,7 +613,7 @@ class InstrumentProtocol(object):
         default, it is a dictionary of parameter names and values.
         """
         assert self._param_dict != None
-        return self._param_dict.get_config()
+        return self._param_dict.get_all(timestamp=0)
 
     def get_config_metadata_dict(self):
         """
