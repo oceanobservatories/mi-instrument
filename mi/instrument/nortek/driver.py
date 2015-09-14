@@ -110,6 +110,18 @@ NORTEK_COMMON_REGEXES = [USER_CONFIG_DATA_REGEX,
 INTERVAL_TIME_REGEX = r"([0-9][0-9]:[0-9][0-9]:[0-9][0-9])"
 
 
+class ParameterConstraint(BaseEnum):
+    """
+    Constraints for parameters
+    (type, min, max)
+    """
+    average_interval = (int, 1, 65535)
+    cell_size = (int, 1, 65535)
+    blanking_distance = (int, 1, 65535)
+    coordinate_system = (int, 0, 2) #enum 0, 1, 2
+    measurement_interval = (int, 0, 65535)
+
+
 class ParameterUnits(BaseEnum):
     TIME_INTERVAL = 'HH:MM:SS'
     PARTS_PER_TRILLION = 'ppt'
@@ -1104,6 +1116,7 @@ class NortekInstrumentProtocol(CommandResponseInstrumentProtocol):
 
         # Add build handlers for device commands.
         self._add_build_handler(InstrumentCmds.SET_REAL_TIME_CLOCK, self._build_set_real_time_clock_command)
+        self._add_build_handler(InstrumentCmds.CONFIGURE_INSTRUMENT, self._build_set_configuration)
 
         # Add response handlers for device commands.
         self._add_response_handler(InstrumentCmds.ACQUIRE_DATA, self._parse_acquire_data_response)
@@ -1114,6 +1127,7 @@ class NortekInstrumentProtocol(CommandResponseInstrumentProtocol):
         self._add_response_handler(InstrumentCmds.READ_HEAD_CONFIGURATION, self._parse_read_head_config)
         self._add_response_handler(InstrumentCmds.READ_USER_CONFIGURATION, self._parse_read_user_config)
         self._add_response_handler(InstrumentCmds.SOFT_BREAK_SECOND_HALF, self._parse_second_break_response)
+        self._add_response_handler(InstrumentCmds.CONFIGURE_INSTRUMENT, self._parse_configure_response)
 
         # Construct the parameter dictionary containing device parameters,
         # current parameter values, and set formatting functions.
@@ -1226,40 +1240,60 @@ class NortekInstrumentProtocol(CommandResponseInstrumentProtocol):
         self._verify_not_readonly(*args, **kwargs)
 
         old_config = self._param_dict.get_config()
+        constraints = ParameterConstraint.dict()
+        set_params = False
 
         # For each key, value in the params list set the value in parameters copy.
         try:
             for name, value in params.iteritems():
-                log.debug('_set_params: setting %s to %s', name, value)
-                self._param_dict.set_from_value(name, value)
-        except Exception as ex:
-            raise InstrumentParameterException('Unable to set parameter %s to %s: %s' % (name, value, ex))
 
-        output = self._create_set_output(self._param_dict)
+                if name in constraints:
+                    var_type, minimum, maximum = constraints[name]
+                    constraint_string = 'Parameter: %s Value: %s Type: %s Minimum: %s Maximum: %s' % \
+                                    (name, value, var_type, minimum, maximum)
+                    log.debug('SET CONSTRAINT: %s', constraint_string)
+                    try:
+                        var_type(value)
+                    except ValueError:
+                        raise InstrumentParameterException('Type mismatch: %s' % constraint_string)
 
-        # Clear the prompt buffer.
-        self._promptbuf = ''
-        self._linebuf = ''
+                    if value < minimum or value > maximum:
+                        raise InstrumentParameterException('Out of range: %s' % constraint_string)
 
-        log.debug('_set_params: writing instrument configuration to instrument')
-        self._connection.send(InstrumentCmds.CONFIGURE_INSTRUMENT)
-        self._connection.send(output)
+                old_val = self._param_dict.format(name)
+                new_val = self._param_dict.format(name, params[name])
 
-        result = self._get_response(timeout=30,
-                                    expected_prompt=[InstrumentPrompts.Z_ACK, InstrumentPrompts.Z_NACK])
+                if old_val != new_val:
+                    log.debug('_set_params: setting %s to %s', name, value)
+                    self._param_dict.set_from_value(name, value)
 
-        log.debug('_set_params: result=%r', result)
-        if result[1] == InstrumentPrompts.Z_NACK:
-            raise InstrumentParameterException("NortekInstrumentProtocol._set_params(): Invalid configuration file! ")
+                    if name not in [EngineeringParameter.ACQUIRE_STATUS_INTERVAL,
+                                    EngineeringParameter.CLOCK_SYNC_INTERVAL]:
+                        set_params = True
 
-        self._update_params()
+        except Exception:
+            self._update_params()
+            raise InstrumentParameterException('Unable to set parameter %s to %s' % (name, value))
 
-        new_config = self._param_dict.get_config()
-        log.trace("_set_params: old_config: %s", old_config)
-        log.trace("_set_params: new_config: %s", new_config)
-        if old_config != new_config:
-            self._driver_event(DriverAsyncEvent.CONFIG_CHANGE)
-            log.debug('_set_params: config updated!')
+        if set_params:
+            output = self._create_set_output(self._param_dict)
+
+            prompt, result = super(NortekInstrumentProtocol, self)._do_cmd_resp(InstrumentCmds.CONFIGURE_INSTRUMENT, output, timeout=TIMEOUT,
+                                      expected_prompt=[InstrumentPrompts.Z_ACK, InstrumentPrompts.Z_NACK])
+
+            log.debug('_set_params: prompt=%r', prompt)
+            if prompt == InstrumentPrompts.Z_NACK:
+                self._update_params()
+                raise InstrumentParameterException("NortekInstrumentProtocol._set_params(): Invalid configuration file! ")
+
+            self._update_params()
+
+            new_config = self._param_dict.get_config()
+            log.trace("_set_params: old_config: %s", old_config)
+            log.trace("_set_params: new_config: %s", new_config)
+            if old_config != new_config:
+                self._driver_event(DriverAsyncEvent.CONFIG_CHANGE)
+                log.debug('_set_params: config updated!')
 
     def _send_wakeup(self):
         """
@@ -1279,7 +1313,7 @@ class NortekInstrumentProtocol(CommandResponseInstrumentProtocol):
         @raises InstrumentProtocolException if command could not be built or if response
         was not recognized.
         """
-        
+
         # Get timeout and initialize response.
         timeout = kwargs.get('timeout', TIMEOUT)
         response_regex = kwargs.get('response_regex', None)
@@ -1798,7 +1832,7 @@ class NortekInstrumentProtocol(CommandResponseInstrumentProtocol):
                              display_name="Timing Control Register",
                              description="See manual for usage.",
                              direct_access=True,
-                             value=130)
+                             default_value=130)
         self._param_dict.add(Parameter.COMPASS_UPDATE_RATE,
                              r'^.{%s}(.{2}).*' % str(30),
                              lambda match: NortekProtocolParameterDict.convert_word_to_int(match.group(1)),
@@ -2116,6 +2150,9 @@ class NortekInstrumentProtocol(CommandResponseInstrumentProtocol):
         """
         return cmd + str_time
 
+    def _build_set_configuration(self, cmd, str_config, **kwargs):
+        return cmd + str_config
+
     def _parse_acquire_data_response(self, response, prompt):
         """
         Parse the response from the instrument for a acquire data command.
@@ -2189,6 +2226,15 @@ class NortekInstrumentProtocol(CommandResponseInstrumentProtocol):
     def _parse_read_clock_response(self, response, prompt):
         """
         Parse the response from the instrument for a read clock command.
+
+        @param response The response string from the instrument
+        @param prompt The prompt received from the instrument
+        """
+        return response
+
+    def _parse_configure_response(self, response, prompt):
+        """
+        Parse the response from the instrument for a set configuration command.
 
         @param response The response string from the instrument
         @param prompt The prompt received from the instrument
