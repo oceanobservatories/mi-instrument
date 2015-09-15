@@ -125,12 +125,12 @@ class VadcpPd0SlaveDataParticle(AdcpPd0ParsedDataParticle):
 
 
 class InstrumentDriver(SingleConnectionInstrumentDriver):
-    def __init__(self, evt_callback):
+    def __init__(self, evt_callback, refdes):
         """
         InstrumentDriver constructor.
         @param evt_callback Driver process event callback.
         """
-        SingleConnectionInstrumentDriver.__init__(self, evt_callback)
+        SingleConnectionInstrumentDriver.__init__(self, evt_callback, refdes)
 
         # multiple portAgentClient
         self._connection = {}
@@ -187,30 +187,36 @@ class InstrumentDriver(SingleConnectionInstrumentDriver):
     def _handler_connected_disconnect(self, *args, **kwargs):
         """
         Disconnect to the device via port agent / logger and destroy the protocol FSM.
-        @return (next_state, result) tuple, (DriverConnectionState.DISCONNECTED, None) if successful.
+        @return (next_state, result) tuple, (DriverConnectionState.UNCONFIGURED, None) if successful.
         """
         for connection in self._connection.values():
             connection.stop_comms()
+
+        scheduler = self._protocol._scheduler
+        if scheduler:
+            scheduler._scheduler.shutdown()
+        scheduler = None
         self._protocol = None
-        return DriverConnectionState.DISCONNECTED, None
+
+        return DriverConnectionState.UNCONFIGURED, None
 
     def _handler_connected_connection_lost(self, *args, **kwargs):
         """
-        The device connection was lost. Stop comms, destroy protocol FSM and revert to disconnected state.
-        @return (next_state, result) tuple, (DriverConnectionState.DISCONNECTED, None).
+        The device connection was lost. Stop comms, destroy protocol FSM and revert to unconfigured state.
+        @return (next_state, result) tuple, (DriverConnectionState.UNCONFIGURED, None).
         """
         for connection in self._connection.values():
             connection.stop_comms()
+
+        scheduler = self._protocol._scheduler
+        if scheduler:
+            scheduler._scheduler.shutdown()
+        scheduler = None
         self._protocol = None
 
-        # Send async agent state change event.
-        log.info("_handler_connected_connection_lost: sending LOST_CONNECTION event, moving to DISCONNECTED state.")
-        self._driver_event(DriverAsyncEvent.AGENT_EVENT,
-                           ResourceAgentEvent.LOST_CONNECTION)
+        return DriverConnectionState.UNCONFIGURED, None
 
-        return DriverConnectionState.DISCONNECTED, None
-
-    def _build_connection(self, all_configs):
+    def _build_connection(self, *args, **kwargs):
         """
         Constructs and returns a Connection object according to the given
         configuration. The connection object is a LoggerClient instance in
@@ -223,6 +229,18 @@ class InstrumentDriver(SingleConnectionInstrumentDriver):
         @returns a dictionary of Connection instances, which will be assigned to self._connection
         @throws InstrumentParameterException Invalid configuration.
         """
+        all_configs = kwargs.get('config', None)  # via kwargs
+        if all_configs is None and len(args) > 0:
+            all_configs = args[0]  # via first argument
+
+        if all_configs is None:
+            all_configs = {SlaveProtocol.FOURBEAM: self._get_config_from_consul(self.refdes + '-4'),
+                           SlaveProtocol.FIFTHBEAM: self._get_config_from_consul(self.refdes + '-5')}
+
+        for key in all_configs:
+            if all_configs[key] is None:
+                raise InstrumentParameterException('No %s port agent config supplied and failed to auto-discover' % key)
+
         connections = {}
         for name, config in all_configs.items():
             if not isinstance(config, dict):

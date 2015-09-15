@@ -832,12 +832,6 @@ class SBE54PlusInstrumentDriver(SeaBirdInstrumentDriver):
     Subclasses Seabird driver with connection state
     machine.
     """
-    def __init__(self, evt_callback):
-        """
-        Driver constructor.
-        @param evt_callback Driver process event callback.
-        """
-        SeaBirdInstrumentDriver.__init__(self, evt_callback)
 
     ########################################################################
     # Superclass overrides for resource query.

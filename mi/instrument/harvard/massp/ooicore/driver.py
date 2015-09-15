@@ -165,13 +165,13 @@ class InstrumentDriver(SingleConnectionInstrumentDriver):
     """
     __metaclass__ = META_LOGGER
 
-    def __init__(self, evt_callback):
+    def __init__(self, evt_callback, refdes):
         """
         Driver constructor.
         @param evt_callback Driver process event callback.
         """
         #Construct superclass.
-        SingleConnectionInstrumentDriver.__init__(self, evt_callback)
+        SingleConnectionInstrumentDriver.__init__(self, evt_callback, refdes)
         self._slave_protocols = {}
 
     def _massp_got_config(self, name, port_agent_packet):
@@ -215,49 +215,10 @@ class InstrumentDriver(SingleConnectionInstrumentDriver):
             next_state = DriverConnectionState.CONNECTED
         except InstrumentConnectionException as e:
             log.error("Connection Exception: %s", e)
-            log.error("Instrument Driver remaining in disconnected state.")
-            if self._autoconnect:
-                next_state = DriverConnectionState.CONNECT_FAILED
-            else:
-                next_state = DriverConnectionState.DISCONNECTED
-
-        log.debug('_handler_disconnected_connect exit')
+            log.error("Instrument Driver returning to unconfigured state.")
+            next_state = DriverConnectionState.UNCONFIGURED
 
         return next_state, None
-
-    ########################################################################
-    # Connect Failed handlers.
-    ########################################################################
-
-    def _handler_connect_failed_connect(self, *args, **kwargs):
-        """
-        Establish communications with the device via port agent / logger and
-        construct and initialize a protocol FSM for device interaction.
-        @retval (next_state, result) tuple, (DriverConnectionState.CONNECTED,
-        None) if successful.
-        If unsuccessful, try again after self._reconnect_interval
-        """
-        result = None
-        self._build_protocol()
-        try:
-            for name, connection in self._connection.items():
-                connection.init_comms(self._slave_protocols[name].got_data,
-                                      self._slave_protocols[name].got_raw,
-                                      functools.partial(self._massp_got_config, name),
-                                      self._got_exception,
-                                      self._lost_connection_callback)
-                self._slave_protocols[name]._connection = connection
-            next_state = DriverConnectionState.CONNECTED
-        except InstrumentConnectionException as e:
-            log.error("Connection Exception: %s", e)
-            log.error("Instrument Driver remaining in connect failed state.")
-            # exponential backoff until max_reconnect_interval has been reached
-            if self._reconnect_interval <= self._max_reconnect_interval:
-                self._reconnect_interval *= 2
-            self._create_delayed_reconnect_event()
-            next_state = None
-
-        return next_state, result
 
     ########################################################################
     # Connected handlers.
@@ -270,9 +231,16 @@ class InstrumentDriver(SingleConnectionInstrumentDriver):
         """
         for connection in self._connection.values():
             connection.stop_comms()
+
+        scheduler = self._protocol._scheduler
+        if scheduler:
+            scheduler._scheduler.shutdown()
+        scheduler = None
+
         self._protocol = None
         self._slave_protocols = {}
-        return DriverConnectionState.DISCONNECTED, None
+
+        return DriverConnectionState.UNCONFIGURED, None
 
     def _handler_connected_connection_lost(self, *args, **kwargs):
         """
@@ -281,6 +249,12 @@ class InstrumentDriver(SingleConnectionInstrumentDriver):
         """
         for connection in self._connection.values():
             connection.stop_comms()
+
+        scheduler = self._protocol._scheduler
+        if scheduler:
+            scheduler._scheduler.shutdown()
+        scheduler = None
+
         self._protocol = None
         self._slave_protocols = {}
 
@@ -290,13 +264,13 @@ class InstrumentDriver(SingleConnectionInstrumentDriver):
         self._driver_event(DriverAsyncEvent.AGENT_EVENT,
                            ResourceAgentEvent.LOST_CONNECTION)
 
-        return DriverConnectionState.DISCONNECTED, None
+        return DriverConnectionState.UNCONFIGURED, None
 
     ########################################################################
     # Helpers.
     ########################################################################
 
-    def _build_connection(self, config):
+    def _build_connection(self, *args, **kwargs):
         """
         Constructs and returns a Connection object according to the given
         configuration. The connection object is a LoggerClient instance in
@@ -309,8 +283,21 @@ class InstrumentDriver(SingleConnectionInstrumentDriver):
         @returns a dictionary of Connection instances, which will be assigned to self._connection
         @throws InstrumentParameterException Invalid configuration.
         """
-        all_configs = config
+        all_configs = kwargs.get('config', None)  # via kwargs
+        if all_configs is None and len(args) > 0:
+            all_configs = args[0]  # via first argument
+
+        if all_configs is None:
+            all_configs = {MCU: self._get_config_from_consul(self.refdes + '-MCU'),
+                           TURBO: self._get_config_from_consul(self.refdes + '-TURBO'),
+                           RGA: self._get_config_from_consul(self.refdes + '-RGA')}
+
+        for key in all_configs:
+            if all_configs[key] is None:
+                raise InstrumentParameterException('No %s port agent config supplied and failed to auto-discover' % key)
+
         connections = {}
+
         for name, config in all_configs.items():
             if not isinstance(config, dict):
                 continue
