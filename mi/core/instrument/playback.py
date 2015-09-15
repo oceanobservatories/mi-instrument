@@ -183,7 +183,7 @@ class DigiDatalogAsciiReader(DatalogReader):
                     packet = PlaybackPacket(payload=payload, header=header)
                     self.callback(packet)
                 except ValueError:
-                    log.err('Unable to extract timestamp from record: %r' % match.group())
+                    log.error('Unable to extract timestamp from record: %r' % match.group())
                 new_index = match.end()
 
             if new_index > 0:
