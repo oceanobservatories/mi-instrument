@@ -944,12 +944,6 @@ class SBE16InstrumentDriver(SingleConnectionInstrumentDriver):
     Subclasses SingleConnectionInstrumentDriver with connection state
     machine.
     """
-    def __init__(self, evt_callback):
-        """
-        InstrumentDriver constructor.
-        @param evt_callback Driver process event callback.
-        """
-        SingleConnectionInstrumentDriver.__init__(self, evt_callback)
 
     def get_resource_params(self):
         """
