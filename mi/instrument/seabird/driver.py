@@ -276,13 +276,7 @@ class SeaBirdInstrumentDriver(SingleConnectionInstrumentDriver):
     """
     Base class for all seabird instrument drivers.
     """
-    def __init__(self, evt_callback):
-        """
-        Driver constructor.
-        @param evt_callback Driver process event callback.
-        """
-        #Construct superclass.
-        SingleConnectionInstrumentDriver.__init__(self, evt_callback)
+
 
 ###############################################################################
 # Protocol

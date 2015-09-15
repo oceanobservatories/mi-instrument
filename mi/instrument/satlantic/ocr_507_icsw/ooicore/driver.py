@@ -175,12 +175,6 @@ class SatlanticOCR507InstrumentDriver(SingleConnectionInstrumentDriver):
     The InstrumentDriver class for the Satlantic OCR507 sensor SPKIR.
     """
 
-    def __init__(self, evt_callback):
-        """Instrument-specific enums
-        @param evt_callback The callback function to use for events
-        """
-        SingleConnectionInstrumentDriver.__init__(self, evt_callback)
-
     def _build_protocol(self):
         """ Construct driver protocol state machine """
         self._protocol = SatlanticOCR507InstrumentProtocol(self._driver_event)
