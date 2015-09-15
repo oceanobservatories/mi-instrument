@@ -4,7 +4,7 @@
 @package ion.services.mi.instrument_fsm Instrument Finite State Machine
 @file ion/services/mi/instrument_fsm.py
 @author Edward Hunter
-@brief Simple state mahcine for driver and agent classes.
+@brief Simple state machine for driver and agent classes.
 """
 
 __author__ = 'Edward Hunter'
@@ -14,12 +14,13 @@ from threading import RLock
 
 from mi.core.exceptions import InstrumentStateException
 
-from mi.core.log import get_logger,LoggerManager
+from mi.core.log import get_logger, LoggerManager
 log = get_logger()
+
 
 class InstrumentFSM(object):
     """
-    Simple state mahcine for driver and agent classes.
+    Simple state machine for driver and agent classes.
     """
 
     def __init__(self, states, events, enter_event, exit_event):
@@ -29,7 +30,6 @@ class InstrumentFSM(object):
         @param events The list of events that the FSM handles
         @param enter_event The event that indicates a state is being entered
         @param exit_event The event that indicates a state is being exited
-        @param err_unhandled The error code to return on unhandled event
         """
 
         self.states = states
@@ -45,14 +45,14 @@ class InstrumentFSM(object):
         Return current state.
         """
 
-
         return self.current_state
 
     def add_handler(self, state, event, handler):
         """
         Add an event handler.
-        @param state the state to handler the event in.
-        @param the event to handle.
+        @param state the state to handle the event in.
+        @param event the event to handle.
+        @param handler
         @retval True if successful, False otherwise.
         """
 
@@ -62,7 +62,7 @@ class InstrumentFSM(object):
         if not self.events.has(event):
             return False
 
-        self.state_handlers[(state,event)] = handler
+        self.state_handlers[(state, event)] = handler
         return True
 
     def start(self, state, *args, **kwargs):
@@ -88,7 +88,7 @@ class InstrumentFSM(object):
     def on_event(self, event, *args, **kwargs):
         """
         Handle an event. Call the current state handler passing the event
-        and paramters.
+        and parameters.
         @param event A string indicating the event that has occurred.
         @param args positional arguments to pass to the handler.
         @param kwargs keyword arguments to pass to the handler.
@@ -105,14 +105,17 @@ class InstrumentFSM(object):
             if handler:
                 (next_state, result) = handler(*args, **kwargs)
             else:
-                raise InstrumentStateException('Command (%s) not handled in current state (%s).' % (event, self.current_state))
+                raise InstrumentStateException(
+                    'Command (%s) not handled in current state (%s).' % (event, self.current_state))
         else:
-            raise InstrumentStateException(str(event) + " was not handled by InstrumentFSM.on_event()")
+            raise InstrumentStateException(
+                str(event) + " was not handled by InstrumentFSM.on_event()")
 
         if self.states.has(next_state):
             self._on_transition(next_state, *args, **kwargs)
         else:
-            log.debug("No next state: %r, remaining in current_state: %r.", next_state, self.current_state)
+            log.debug("No next state: %r, remaining in current_state: %r.",
+                      next_state, self.current_state)
 
         return result
 
@@ -147,7 +150,7 @@ class InstrumentFSM(object):
             event = key[1]
             if not ((event == self.enter_event) or (event == self.exit_event)):
                 if current_state:
-                    if (self.current_state==state):
+                    if self.current_state == state:
                         if event not in events:
                             events.append(event)
                 else:
@@ -165,8 +168,7 @@ class ThreadSafeFSM(InstrumentFSM):
     def __init__(self, states, events, enter_event, exit_event):
         """
         """
-        super(ThreadSafeFSM, self).__init__(states, events, enter_event,
-                                            exit_event)
+        super(ThreadSafeFSM, self).__init__(states, events, enter_event, exit_event)
         self._lock = RLock()
 
     def on_event(self, event, *args, **kwargs):

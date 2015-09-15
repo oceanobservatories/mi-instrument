@@ -399,9 +399,6 @@ class mavs4InstrumentDriver(SingleConnectionInstrumentDriver):
     Uses CommandResponseInstrumentProtocol to communicate with the device
     """
 
-    def __init__(self, evt_callback):
-        SingleConnectionInstrumentDriver.__init__(self, evt_callback)
-
     def _build_protocol(self):
         """
         Construct the driver protocol state machine.

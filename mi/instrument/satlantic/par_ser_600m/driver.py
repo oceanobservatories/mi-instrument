@@ -202,12 +202,6 @@ class SatlanticPARInstrumentDriver(SingleConnectionInstrumentDriver):
     Note that single character control commands need not be delayed.
     """
 
-    def __init__(self, evt_callback):
-        """Instrument-specific enums
-        @param evt_callback The callback function to use for events
-        """
-        SingleConnectionInstrumentDriver.__init__(self, evt_callback)
-
     def _build_protocol(self):
         """ Construct driver protocol state machine """
         self._protocol = SatlanticPARInstrumentProtocol(self._driver_event)

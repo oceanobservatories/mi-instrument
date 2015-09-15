@@ -273,8 +273,8 @@ class InstrumentDriver(SingleConnectionInstrumentDriver):
     Uses CommandResponseInstrumentProtocol to communicate with the device
     """
 
-    def __init__(self, evt_callback):
-        SingleConnectionInstrumentDriver.__init__(self, evt_callback)
+    def __init__(self, evt_callback, refdes):
+        SingleConnectionInstrumentDriver.__init__(self, evt_callback, refdes)
         # replace the driver's discover handler with one that applies the startup values after discovery
         self._connection_fsm.add_handler(DriverConnectionState.CONNECTED, 
                                          DriverEvent.DISCOVER, 
