@@ -264,14 +264,7 @@ class InstrumentDriver(SingleConnectionInstrumentDriver):
     InstrumentDriver subclass
     Subclasses SingleConnectionInstrumentDriver with connection state machine.
     """
-
-    def __init__(self, evt_callback):
-        """
-        Driver constructor.
-        @param evt_callback Driver process event callback.
-        """
-        #Construct superclass.
-        SingleConnectionInstrumentDriver.__init__(self, evt_callback)
+    __metaclass__ = META_LOGGER
 
     ########################################################################
     # Superclass overrides for resource query.
@@ -292,7 +285,7 @@ class InstrumentDriver(SingleConnectionInstrumentDriver):
     def _handler_unconfigured_configure(self, *args, **kwargs):
         """
         Configure driver for device comms.
-        @param args[0] Communiations config dictionary.
+        @param args[0] Communications config dictionary.
         @retval (next_state, result) tuple, (DriverConnectionState.DISCONNECTED,
         None) if successful, (None, None) otherwise.
         @raises InstrumentParameterException if missing or invalid param dict.
@@ -310,7 +303,7 @@ class InstrumentDriver(SingleConnectionInstrumentDriver):
     def _handler_disconnected_configure(self, *args, **kwargs):
         """
         Configure driver for device comms.
-        @param args[0] Communiations config dictionary.
+        @param args[0] Communications config dictionary.
         @retval (next_state, result) tuple, (None, None).
         @raises InstrumentParameterException if missing or invalid param dict.
         """
@@ -323,7 +316,7 @@ class InstrumentDriver(SingleConnectionInstrumentDriver):
     def _handler_disconnected_connect(self, *args, **kwargs):
         """
         Establish communications with the device via port agent / logger and
-        construct and intialize a protocol FSM for device interaction.
+        construct and initialize a protocol FSM for device interaction.
         @retval (next_state, result) tuple, (DriverConnectionState.CONNECTED,
         None) if successful.
         @raises InstrumentConnectionException if the attempt to connect failed.

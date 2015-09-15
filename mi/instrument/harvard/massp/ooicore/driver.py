@@ -165,13 +165,13 @@ class InstrumentDriver(SingleConnectionInstrumentDriver):
     """
     __metaclass__ = META_LOGGER
 
-    def __init__(self, evt_callback):
+    def __init__(self, evt_callback, refdes):
         """
         Driver constructor.
         @param evt_callback Driver process event callback.
         """
         #Construct superclass.
-        SingleConnectionInstrumentDriver.__init__(self, evt_callback)
+        SingleConnectionInstrumentDriver.__init__(self, evt_callback, refdes)
         self._slave_protocols = {}
 
     def _massp_got_config(self, name, port_agent_packet):
@@ -229,7 +229,7 @@ class InstrumentDriver(SingleConnectionInstrumentDriver):
     # Connect Failed handlers.
     ########################################################################
 
-    def _handler_connect_failed_connect(self, *args, **kwargs):
+    def _handler_connect_failed_connect(self, *args, **kwargs): # TODO: rid this!
         """
         Establish communications with the device via port agent / logger and
         construct and initialize a protocol FSM for device interaction.
