@@ -82,7 +82,7 @@ class QpidPublisher(Publisher):
         self.connection.error = None
 
         for event in events:
-            message = qm.Message(content=json.dumps(event), content_type='text/plain', durable=True,
+            message = qm.Message(content=json.dumps(event), content_type='text/plain', durable=False,
                                  properties=msg_headers, user_id='guest')
             log.info('Publishing message: %r', message)
             self.sender.send(message, sync=False)
