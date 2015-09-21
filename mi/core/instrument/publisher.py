@@ -84,13 +84,15 @@ class QpidPublisher(Publisher):
         # HACK!
         self.connection.error = None
 
+        now = time.time()
         for event in events:
             message = qm.Message(content=json.dumps(event), content_type='text/plain', durable=False,
                                  properties=msg_headers, user_id='guest')
-            log.info('Publishing message: %r', message)
             self.sender.send(message, sync=False)
 
         self.sender.sync()
+        elapsed = time.time() - now
+        log.info('Published %d messages to QPID in %.2f secs', len(events), elapsed)
 
 class LogPublisher(Publisher):
     def publish(self, events):
