@@ -11,7 +11,7 @@ from mi.core.exceptions import SampleException
 from mi.core.instrument.chunker import StringChunker
 from mi.core.instrument.instrument_driver import DriverAsyncEvent, SingleConnectionInstrumentDriver
 from mi.core.instrument.instrument_protocol import CommandResponseInstrumentProtocol
-from mi.core.instrument_fsm import InstrumentFSM
+from mi.core.instrument.instrument_fsm import ThreadSafeFSM
 from mi.instrument.nortek.aquadopp.ooicore.driver import NortekDataParticleType
 
 __author__ = 'Pete Cable'
@@ -63,7 +63,7 @@ class AquadoppDwVelocityDataParticleKey(BaseEnum):
 
 class AquadoppDwVelocityAsciiDataParticle(DataParticle):
     """
-    Routine for parsing velocity data into a data particle structure for the Aquadopp DW sensor. 
+    Routine for parsing velocity data into a data particle structure for the Aquadopp DW sensor.
     """
     _data_particle_type = NortekDataParticleType.VELOCITY
     ntp_epoch = datetime.datetime(1900, 1, 1)
@@ -172,7 +172,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         """
         CommandResponseInstrumentProtocol.__init__(self, prompts, newline, driver_event)
 
-        self._protocol_fsm = InstrumentFSM(ProtocolState,
+        self._protocol_fsm = ThreadSafeFSM(ProtocolState,
                                            ProtocolEvent,
                                            ProtocolEvent.ENTER,
                                            ProtocolEvent.EXIT)
