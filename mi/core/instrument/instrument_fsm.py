@@ -14,7 +14,7 @@ from threading import RLock
 
 from mi.core.exceptions import InstrumentStateException
 
-from mi.core.log import get_logger, LoggerManager
+from mi.core.log import get_logger
 log = get_logger()
 
 
@@ -81,7 +81,7 @@ class InstrumentFSM(object):
 
         self.current_state = state
         handler = self.state_handlers.get((state, self.enter_event), None)
-        if handler:
+        if callable(handler):
             handler(*args, **kwargs)
         return True
 
@@ -96,13 +96,9 @@ class InstrumentFSM(object):
         @raises InstrumentStateException if no handler for the event exists in current state.
         @raises Any exception raised by the handlers.
         """
-
-        next_state = None
-        result = None
-
         if self.events.has(event):
             handler = self.state_handlers.get((self.current_state, event), None)
-            if handler:
+            if callable(handler):
                 (next_state, result) = handler(*args, **kwargs)
             else:
                 raise InstrumentStateException(
@@ -130,12 +126,12 @@ class InstrumentFSM(object):
         """
 
         handler = self.state_handlers.get((self.current_state, self.exit_event), None)
-        if handler:
+        if callable(handler):
             handler(*args, **kwargs)
         self.previous_state = self.current_state
         self.current_state = next_state
         handler = self.state_handlers.get((self.current_state, self.enter_event), None)
-        if handler:
+        if callable(handler):
             handler(*args, **kwargs)
 
     def get_events(self, current_state=True):
@@ -193,4 +189,3 @@ class ThreadSafeFSM(InstrumentFSM):
             raise ex
 
         return result
-
