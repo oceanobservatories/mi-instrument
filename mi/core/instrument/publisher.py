@@ -94,11 +94,18 @@ class QpidPublisher(Publisher):
         elapsed = time.time() - now
         log.info('Published %d messages to QPID in %.2f secs', len(events), elapsed)
 
+
 class LogPublisher(Publisher):
     def publish(self, events):
         log.info('Publish events: %r', events)
 
 
 class CountPublisher(Publisher):
+    def __init__(self):
+        super(CountPublisher, self).__init__()
+        self.total = 0
+
     def publish(self, events):
-        log.info('Publish %d events', len(events))
+        count = len(events)
+        self.total += count
+        log.info('Publish %d events (%d total)', count, self.total)
