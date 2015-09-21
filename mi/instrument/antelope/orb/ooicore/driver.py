@@ -25,7 +25,7 @@ from mi.core.instrument.instrument_driver import DriverAsyncEvent
 from mi.core.instrument.instrument_driver import ResourceAgentState
 
 from mi.core.instrument.instrument_protocol import InstrumentProtocol
-from mi.core.instrument_fsm import ThreadSafeFSM
+from mi.core.instrument.instrument_fsm import ThreadSafeFSM
 
 
 ORBOLDEST = -13

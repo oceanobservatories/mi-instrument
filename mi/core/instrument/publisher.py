@@ -53,6 +53,9 @@ class Publisher(object):
         elif result.scheme == 'log':
             return LogPublisher()
 
+        elif result.scheme == 'count':
+            return CountPublisher()
+
 
 class QpidPublisher(Publisher):
     def __init__(self, url, queue, headers):
@@ -90,5 +93,10 @@ class QpidPublisher(Publisher):
         self.sender.sync()
 
 class LogPublisher(Publisher):
-    def publish(self, event):
-        log.info('Publish event: %r', event)
+    def publish(self, events):
+        log.info('Publish events: %r', events)
+
+
+class CountPublisher(Publisher):
+    def publish(self, events):
+        log.info('Publish %d events', len(events))

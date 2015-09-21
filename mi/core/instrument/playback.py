@@ -19,6 +19,7 @@ Options:
 
 import importlib
 import glob
+import os
 import re
 import time
 from docopt import docopt
@@ -40,13 +41,16 @@ __license__ = 'Apache 2.0'
 
 class PlaybackPacket(Packet):
     def get_data_length(self):
-        return len(self.data)
+        return len(self.payload)
 
     def get_data(self):
-        return self.data
+        return self.payload
 
     def get_timestamp(self):
         return self.header.time
+
+    def __repr__(self):
+        return repr(self.payload)
 
 
 class PlaybackWrapper(object):
@@ -54,19 +58,25 @@ class PlaybackWrapper(object):
         headers = {'sensor': refdes, 'deliveryType': 'playback'}
         self.event_publisher = Publisher.from_url(event_url, headers)
         self.particle_publisher = Publisher.from_url(particle_url, headers)
+        self.events = []
+        self.particles = []
 
         self.protocol = self.construct_protocol(module, klass)
         self.reader = reader_klass(files, self.got_data)
 
     def playback(self):
-        while self.reader.read():
-            pass
+        for index, _ in enumerate(self.reader.read()):
+            if index % 100 == 0:
+                self.publish()
+        self.publish()
 
     def got_data(self, packet):
         try:
             self.protocol.got_data(packet)
-        except:
-            log.exception()
+        except KeyboardInterrupt:
+            raise
+        except Exception as e:
+            log.exception(e)
 
     def construct_protocol(self, proto_module, proto_class):
         module = importlib.import_module(proto_module)
@@ -82,6 +92,14 @@ class PlaybackWrapper(object):
             pass
 
         log.info('Unable to import and create protocol from module: %r class: %r', module, proto_class)
+
+    def publish(self):
+        if self.events:
+            self.event_publisher.publish(self.events)
+            self.events = []
+        if self.particles:
+            self.particle_publisher.publish(self.particles)
+            self.particles = []
 
     def handle_event(self, event_type, val=None):
         """
@@ -104,9 +122,11 @@ class PlaybackWrapper(object):
         if event[EventKeys.TYPE] == DriverAsyncEvent.SAMPLE:
             if event[EventKeys.VALUE].get('stream_name') != 'raw':
                 # don't publish raw
-                self.particle_publisher.publish(event)
+                self.particles.append(event)
+                # self.particle_publisher.publish(event)
         else:
-            self.event_publisher.publish(event)
+            self.events.append(event)
+            # self.event_publisher.publish(event)
 
 
 class DatalogReader(object):
@@ -118,24 +138,27 @@ class DatalogReader(object):
             self.files.extend(glob.glob(each))
 
         self.files.sort()
+        if not all([os.path.isfile(f) for f in self.files]):
+            raise Exception('Not all files found')
         self._filehandle = None
         self.target_types = [PacketType.FROM_INSTRUMENT, PacketType.PA_CONFIG]
 
     def read(self):
-        if self._filehandle is None and not self.files:
-            log.info('Completed reading specified port agent logs, exiting...')
-            return False
+        while True:
+            if self._filehandle is None and not self.files:
+                log.info('Completed reading specified port agent logs, exiting...')
+                raise StopIteration
 
-        if self._filehandle is None:
-            name = self.files.pop(0)
-            log.info('Begin reading: %r', name)
-            self._filehandle = open(name, 'r')
+            if self._filehandle is None:
+                name = self.files.pop(0)
+                log.info('Begin reading: %r', name)
+                self._filehandle = open(name, 'r')
 
-        if not self._process_packet():
-            self._filehandle.close()
-            self._filehandle = None
+            if not self._process_packet():
+                self._filehandle.close()
+                self._filehandle = None
 
-        return True
+            yield
 
     def _process_packet(self):
         packet = PlaybackPacket.packet_from_fh(self._filehandle)
@@ -217,6 +240,11 @@ def main():
     particle_url = options['<particle_url>']
     klass = options.get('<protocol_class>')
     files = options.get('<files>')
+
+    # when running with the profiler, files will be a string
+    # coerce to list
+    if isinstance(files, basestring):
+        files = [files]
 
     if options['datalog']:
         reader = DatalogReader
