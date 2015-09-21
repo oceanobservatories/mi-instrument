@@ -13,6 +13,10 @@ from mi.core.common import BaseEnum
 from mi.core.exceptions import SampleException
 
 
+namedtuple_store = {}
+bitmapped_namedtuple_store = {}
+
+
 class BlockId(BaseEnum):
     FIXED_DATA = 0
     VARIABLE_DATA = 128
@@ -63,7 +67,9 @@ class AdcpPd0Record(object):
         format_string = ''.join([item[1] for item in formatter])
         fields = [item[0] for item in formatter]
         data = struct.unpack_from('<' + format_string, self.data, offset)
-        _class = namedtuple(name, fields)
+        if name not in namedtuple_store:
+            namedtuple_store[name] = namedtuple(name, fields)
+        _class = namedtuple_store[name]
         return _class(*data)
 
     def _unpack_cell_data(self, name, format_string, offset):
@@ -77,8 +83,18 @@ class AdcpPd0Record(object):
         return _object
 
     def _unpack_bitmapped(self, name, formatter, source_data):
+        # short circuit if we've seen this bitmap before
+        short_circuit_key = (name, source_data)
+        if short_circuit_key in bitmapped_namedtuple_store:
+            return bitmapped_namedtuple_store[short_circuit_key]
+
+        # create the namedtuple class if it doesn't already exist
         fields = [item[0] for item in formatter]
-        _class = namedtuple(name, fields)
+        if name not in namedtuple_store:
+            namedtuple_store[name] = namedtuple(name, fields)
+        _class = namedtuple_store[name]
+
+        # create an instance of the namedtuple for this data
         data = []
         for _, bitmask, lookup_table in formatter:
             raw = (source_data & bitmask) >> count_zero_bits(bitmask)
@@ -86,7 +102,11 @@ class AdcpPd0Record(object):
                 data.append(lookup_table[raw])
             else:
                 data.append(raw)
-        return _class(*data)
+        value = _class(*data)
+
+        # store this value for future short circuit operations
+        bitmapped_namedtuple_store[short_circuit_key] = value
+        return value
 
     def validate(self):
         self._process_header()
@@ -441,12 +461,17 @@ class AdcpPd0Record(object):
         self.error_word = self._unpack_bitmapped('error_word', error_word_format, self.variable_data.error_status_word)
 
 
-if __name__ == '__main__':
+def main():
     # Simple test for checking out a particle
     # more extensive testing in driver unit tests
     from mi.instrument.teledyne.workhorse.test.test_data import RSN_SAMPLE_RAW_DATA
-    record = AdcpPd0Record(RSN_SAMPLE_RAW_DATA)
-    record.validate()
-    record.process()
-    record.parse_bitmapped_fields()
-    print record
+    for _ in xrange(1000):
+        record = AdcpPd0Record(RSN_SAMPLE_RAW_DATA)
+        record.validate()
+        record.process()
+        record.parse_bitmapped_fields()
+
+
+if __name__ == '__main__':
+    import cProfile
+    cProfile.run('main()', 'stats')
