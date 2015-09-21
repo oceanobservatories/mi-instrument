@@ -213,6 +213,9 @@ class PortAgentPacket:
     def is_valid(self):
         return self.__isValid
 
+    def __repr__(self):
+        return repr(self.get_as_dict())
+
 
 class PortAgentClient(object):
     """
