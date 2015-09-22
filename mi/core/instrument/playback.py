@@ -92,6 +92,7 @@ class PlaybackWrapper(object):
             pass
 
         log.info('Unable to import and create protocol from module: %r class: %r', module, proto_class)
+        raise
 
     def publish(self):
         if self.events:
