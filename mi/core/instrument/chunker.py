@@ -23,7 +23,7 @@ class StringChunker(object):
     breaks apart collections of data segments so they can be broken into
     individual blocks.
     """
-    def __init__(self, data_sieve_fn):
+    def __init__(self, data_sieve_fn, max_buff_size=65535):
         """
         Initialize the buffer and indexing structures
         The lists keep track of the start and stop index values (inclusive)
@@ -41,6 +41,7 @@ class StringChunker(object):
             IN SEQUENTIAL ORDER and WITHOUT OVERLAP.
         """
         self.sieve = data_sieve_fn
+        self.max_buff_size = max_buff_size
 
         self.buffer = ""
         self.timestamps = []
@@ -54,6 +55,17 @@ class StringChunker(object):
         """
         start_index = len(self.buffer)
         end_index = start_index + len(raw_data)
+
+        # check the size of the buffer. If we have exceeded max_buff_size then drop the oldest data.
+        if end_index > self.max_buff_size:
+            oversize = end_index - self.max_buff_size
+            log.warn('Chunker buffer has grown beyond specified limit (%d), truncating %d bytes',
+                     self.max_buff_size, oversize)
+
+            self._rebase_times(oversize)
+            self.buffer = self.buffer[oversize:]
+            start_index -= oversize
+            end_index -= oversize
 
         self.timestamps.append((start_index, end_index, timestamp))
         self.buffer += raw_data
