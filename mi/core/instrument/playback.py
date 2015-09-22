@@ -81,17 +81,19 @@ class PlaybackWrapper(object):
     def construct_protocol(self, proto_module, proto_class):
         module = importlib.import_module(proto_module)
         klass = getattr(module, proto_class)
+
+        # attempt to import with the CommandResponseInstrumentProtocol signature
         try:
             return klass(BaseEnum, None, self.handle_event)
         except TypeError:
             pass
 
+        # CommandResponseInstrumentProtocol failed, fall back to InstrumentProtocol
         try:
             return klass(self.handle_event)
         except TypeError:
-            pass
-
-        log.info('Unable to import and create protocol from module: %r class: %r', module, proto_class)
+            log.error('Unable to import and create protocol from module: %r class: %r', module, proto_class)
+            raise
 
     def publish(self):
         if self.events:
