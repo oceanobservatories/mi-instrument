@@ -552,7 +552,7 @@ class Protocol(MenuInstrumentProtocol):
         self._protocol_fsm.add_handler(ProtocolState.DIRECT_ACCESS, ProtocolEvent.EXECUTE_DIRECT,
                                        self._handler_direct_access_execute_direct)
         self._protocol_fsm.add_handler(ProtocolState.DIRECT_ACCESS, ProtocolEvent.SCHEDULED_ACQUIRE_STATUS,
-                                       self._handler_direct_scheduled_acquire_status)
+                                       self._handler_direct_access_scheduled_acquire_status)
 
         # Construct the parameter dictionary containing device parameters,
         # current parameter values, and set formatting functions.
