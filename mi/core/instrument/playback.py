@@ -19,6 +19,9 @@ Options:
 
 import importlib
 import glob
+import sys
+from mi.core.instrument.instrument_protocol import MenuInstrumentProtocol, CommandResponseInstrumentProtocol, \
+    InstrumentProtocol
 import os
 import re
 import time
@@ -81,19 +84,18 @@ class PlaybackWrapper(object):
     def construct_protocol(self, proto_module, proto_class):
         module = importlib.import_module(proto_module)
         klass = getattr(module, proto_class)
-
-        # attempt to import with the CommandResponseInstrumentProtocol signature
-        try:
+        if klass.__base__ == MenuInstrumentProtocol:
+            log.info('Found MenuInstrumentProtocol')
+            return klass(None, None, None, self.handle_event)
+        elif klass.__base__ == CommandResponseInstrumentProtocol:
+            log.info('Found CommandResponseInstrumentProtocol')
             return klass(BaseEnum, None, self.handle_event)
-        except TypeError:
-            pass
-
-        # CommandResponseInstrumentProtocol failed, fall back to InstrumentProtocol
-        try:
+        elif klass.__base__ ==  InstrumentProtocol:
+            log.info('Found InstrumentProtocol')
             return klass(self.handle_event)
-        except TypeError:
-            log.error('Unable to import and create protocol from module: %r class: %r', module, proto_class)
-            raise
+
+        log.error('Unable to import and create protocol from module: %r class: %r', module, proto_class)
+        sys.exit(1)
 
     def publish(self):
         if self.events:
