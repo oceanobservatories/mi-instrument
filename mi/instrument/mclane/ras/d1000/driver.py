@@ -7,21 +7,11 @@ Release notes:
 
 initial version
 """
-import functools
-import math
-from types import FunctionType
-
-from mi.core.driver_scheduler import \
-    DriverSchedulerConfigKey, \
-    TriggerType
-from mi.core.instrument.protocol_cmd_dict import ProtocolCommandDict
-from mi.core.util import dict_equal
-
-
 __author__ = 'Dan Mergens'
 __license__ = 'Apache 2.0'
 
 import re
+import math
 
 from mi.core.log import get_logger
 
@@ -34,6 +24,11 @@ from mi.core.exceptions import SampleException, \
 from mi.core.instrument.instrument_protocol import CommandResponseInstrumentProtocol
 from mi.core.instrument.instrument_fsm import ThreadSafeFSM
 from mi.core.instrument.chunker import StringChunker
+
+from mi.core.driver_scheduler import \
+    DriverSchedulerConfigKey, \
+    TriggerType
+from mi.core.util import dict_equal
 
 from mi.core.instrument.instrument_driver import \
     SingleConnectionInstrumentDriver, \
@@ -67,27 +62,6 @@ INTER_CHARACTER_DELAY = .2
 DEFAULT_SAMPLE_RATE = 15  # sample periodicity in seconds
 MIN_SAMPLE_RATE = 1  # in seconds
 MAX_SAMPLE_RATE = 3600  # in seconds (1 hour)
-
-
-class LoggingMetaClass(type):
-    def __new__(mcs, class_name, bases, class_dict):
-        new_class_dict = {}
-        for attributeName, attribute in class_dict.items():
-            if type(attribute) == FunctionType:
-                attribute = log_method(attribute)  # replace with a wrapped version of method
-            new_class_dict[attributeName] = attribute
-        return type.__new__(mcs, class_name, bases, new_class_dict)
-
-
-def log_method(func):
-    @functools.wraps(func)
-    def inner(*args, **kwargs):
-        log.debug('entered %s | args: %r | kwargs: %r', func.__name__, args, kwargs)
-        r = func(*args, **kwargs)
-        log.debug('exiting %s | returning %r', func.__name__, r)
-        return r
-
-    return inner
 
 
 def checksum(data):
@@ -155,9 +129,7 @@ class Capability(BaseEnum):
     DISCOVER = DriverEvent.DISCOVER
 
 
-    # baud rate (9- 57600, 8- 115200, 7- 300, 6- 600, 5- 1200, 4- 2400, 3- 4800, 2-9600, 1- 19200, 0-38400)
-
-
+# baud rate (9- 57600, 8- 115200, 7- 300, 6- 600, 5- 1200, 4- 2400, 3- 4800, 2-9600, 1- 19200, 0-38400)
 class BaudRate(BaseEnum):
     BAUD_38400 = 0
     BAUD_19200 = 1
@@ -191,9 +163,7 @@ class UnitPrecision(BaseEnum):
     DIGITS_7 = 3
 
 
-    # (0- no filter, 1- .25, 2- .5, 3- 1, 4- 2, 5- 4, 6- 8, 7- 16)
-
-
+# (0- no filter, 1- .25, 2- .5, 3- 1, 4- 2, 5- 4, 6- 8, 7- 16)
 def filter_enum(value):
     if value == 0:
         return 0
@@ -423,8 +393,6 @@ class Protocol(CommandResponseInstrumentProtocol):
     Instrument protocol class
     Subclasses CommandResponseInstrumentProtocol
     """
-    __metaclass__ = LoggingMetaClass
-
     def __init__(self, prompts, newline, driver_event):
         """
         Protocol constructor.
@@ -512,7 +480,6 @@ class Protocol(CommandResponseInstrumentProtocol):
         matchers.append(D1000TemperatureDataParticle.regex_compiled())
 
         for matcher in matchers:
-            print repr(raw_data), matcher.pattern
             for match in matcher.finditer(raw_data):
                 return_list.append((match.start(), match.end()))
 
@@ -631,7 +598,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         temp_units = self._param_dict.format(Parameter.TEMP_UNITS)
         echo = self._param_dict.format(Parameter.ECHO)
         delay_units = self._param_dict.format(Parameter.COMMUNICATION_DELAY)
-        #byte 3
+        # byte 3
         precision = self._param_dict.format(Parameter.PRECISION)
         precision = getattr(UnitPrecision, 'DIGITS_%d' % precision, UnitPrecision.DIGITS_6)
         large_signal_filter_constant = self._param_dict.format(Parameter.LARGE_SIGNAL_FILTER_C)
@@ -709,7 +676,6 @@ class Protocol(CommandResponseInstrumentProtocol):
         self._cmd_dict.add(Capability.ACQUIRE_SAMPLE, display_name="Acquire Sample")
 
         self._cmd_dict.add(Capability.DISCOVER, display_name='Discover')
-
 
     def _add_setup_param(self, name, fmt, **kwargs):
         """
@@ -847,7 +813,7 @@ class Protocol(CommandResponseInstrumentProtocol):
 
     def _update_params(self):
         """
-        Update the parameter dictionary. 
+        Update the parameter dictionary.
         """
         pass
 
