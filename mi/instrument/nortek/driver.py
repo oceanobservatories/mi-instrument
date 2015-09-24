@@ -10,7 +10,7 @@
 @brief Base class for Nortek instruments
 """
 import struct
-
+from datetime import datetime
 
 __author__ = 'Rachel Manoni, Ronald Ronquillo'
 __license__ = 'Apache 2.0'
@@ -252,9 +252,9 @@ class Capability(BaseEnum):
     DISCOVER = DriverEvent.DISCOVER
 
 
-def validate_checksum(str_struct, raw_data, checksum):
+def validate_checksum(str_struct, raw_data):
+    checksum = struct.unpack_from('<H', raw_data, -2)[0]
     if (0xb58c + sum(struct.unpack_from(str_struct, raw_data))) & 0xffff != checksum:
-        log.warn("Bad vel3d_cd_velocity_data from instrument (%r)", raw_data)
         return False
     return True
 
@@ -339,7 +339,7 @@ class NortekHardwareConfigDataParticle(DataParticle):
             sync, serial_num, config, board_frequency, pic_version, hw_revision, recorder_size, status, spare, fw_version, cksum, _ = \
                 struct.unpack(unpack_string, self.raw_data)
 
-            if not validate_checksum('<23H', self.raw_data[0:HW_CONFIG_LEN-2], cksum):
+            if not validate_checksum('<23H', self.raw_data):
                 log.warn("_parse_read_hw_config: Bad read hw response from instrument (%r)", self.raw_data)
                 self.contents[DataParticleKey.QUALITY_FLAG] = DataParticleValue.CHECKSUM_FAILED
 
@@ -400,7 +400,7 @@ class NortekHeadConfigDataParticle(DataParticle):
             unpack_string = '<4s2s2H12s176s22sHh2s'
             sync, config, head_freq, head_type, head_serial, system_data, _, num_beams, cksum, _ = struct.unpack(unpack_string, self.raw_data)
 
-            if not validate_checksum('<111H', self.raw_data[0:HEAD_CONFIG_LEN-2], cksum):
+            if not validate_checksum('<111H', self.raw_data):
                 log.warn("_parse_read_head_config: Bad read hw response from instrument (%r)", self.raw_data)
                 self.contents[DataParticleKey.QUALITY_FLAG] = DataParticleValue.CHECKSUM_FAILED
 
@@ -588,7 +588,7 @@ class NortekUserConfigDataParticle(DataParticle):
                 num_diag_per_wave, _, num_sample_burst, _, analog_scale_factor, correlation_thrs, _, tx_pulse_len_2nd,\
                 _, filter_constants, cksum, _ = struct.unpack(unpack_string, self.raw_data)
 
-            if not validate_checksum('<255H', self.raw_data[0:USER_CONFIG_LEN-2], cksum):
+            if not validate_checksum('<255H', self.raw_data):
                 log.warn("_parse_read_head_config: Bad read hw response from instrument (%r)", self.raw_data)
                 self.contents[DataParticleKey.QUALITY_FLAG] = DataParticleValue.CHECKSUM_FAILED
 
@@ -894,7 +894,7 @@ class NortekProtocolParameterDict(ProtocolParameterDict):
         Convert bytes to a bit field, reversing bytes in the process.
         ie ['\x05', '\x01'] becomes [0, 0, 0, 1, 0, 1, 0, 1]
         @param input_bytes an array of string literal bytes.
-        @retval an list of 1 or 0 in order 
+        @retval an list of 1 or 0 in order
         """
         byte_list = list(input_bytes)
         byte_list.reverse()
@@ -946,11 +946,17 @@ class NortekProtocolParameterDict(ProtocolParameterDict):
     @staticmethod
     def convert_time(response):
         """
-        Converts the timestamp in hex to D/M/YYYY HH:MM:SS
+        Converts the timestamp in BCD to a datetime object
         """
         minutes, seconds, day, hour, year, month = struct.unpack('6B', response)
-        return '%02x/%02x/20%02x %02x:%02x:%02x' % (day, month, year, hour, minutes, seconds)
-
+        year = 2000 + int('%02x' % year)
+        month = int('%02x' % month)
+        day = int('%02x' % day)
+        hour = int('%02x' % hour)
+        minutes = int('%02x' % minutes)
+        seconds = int('%02x' % seconds)
+        dt = datetime(year, month, day, hour, minutes, seconds)
+        return dt
 
     @staticmethod
     def convert_bytes_to_string(bytes_in):
@@ -1561,7 +1567,7 @@ class NortekInstrumentProtocol(CommandResponseInstrumentProtocol):
 
     def _handler_command_clock_sync(self, *args, **kwargs):
         """
-        sync clock close to a second edge 
+        sync clock close to a second edge
         @retval (next_state, result) tuple, (None, None) if successful.
         @throws InstrumentTimeoutException if device cannot be woken for command.
         @throws InstrumentProtocolException if command could not be built or misunderstood.
@@ -1574,7 +1580,7 @@ class NortekInstrumentProtocol(CommandResponseInstrumentProtocol):
     ########################################################################
     def _handler_autosample_clock_sync(self, *args, **kwargs):
         """
-        While in autosample, sync a clock close to a second edge 
+        While in autosample, sync a clock close to a second edge
         @retval next_state, (next_agent_state, result) tuple, AUTOSAMPLE, (STREAMING, None) if successful.
         """
 
@@ -2168,7 +2174,7 @@ class NortekInstrumentProtocol(CommandResponseInstrumentProtocol):
     def _parse_what_mode_response(self, response, prompt):
         """
         Parse the response from the instrument for a 'what mode' command.
-        
+
         @param response The response string from the instrument
         @param prompt The prompt received from the instrument
         @retval return The mode as an int
@@ -2254,7 +2260,7 @@ class NortekInstrumentProtocol(CommandResponseInstrumentProtocol):
 
     def _parse_read_hw_config(self, response, prompt):
         """ Parse the response from the instrument for a read hw config command.
-        
+
         @param response The response string from the instrument
         @param prompt The prompt received from the instrument
         @retval response

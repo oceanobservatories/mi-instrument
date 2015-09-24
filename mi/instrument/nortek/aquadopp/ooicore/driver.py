@@ -7,6 +7,7 @@ Release notes:
 Driver for Aquadopp DW
 """
 import struct
+from datetime import datetime
 
 __author__ = 'Rachel Manoni, Ronald Ronquillo'
 __license__ = 'Apache 2.0'
@@ -84,7 +85,7 @@ class AquadoppDwVelocityDataParticleKey(BaseEnum):
 
 class AquadoppDwVelocityDataParticle(DataParticle):
     """
-    Routine for parsing velocity data into a data particle structure for the Aquadopp DW sensor. 
+    Routine for parsing velocity data into a data particle structure for the Aquadopp DW sensor.
     """
     _data_particle_type = NortekDataParticleType.VELOCITY
 
@@ -102,18 +103,20 @@ class AquadoppDwVelocityDataParticle(DataParticle):
                pressure_lsw, temperature, velocity_beam1, velocity_beam2, velocity_beam3, amplitude_beam1, \
                amplitude_beam2, amplitude_beam3, _, cksum = struct.unpack(unpack_string, self.raw_data)
 
-            if not validate_checksum('<20H', self.raw_data, cksum):
+            if not validate_checksum('<20H', self.raw_data):
                 log.warn("Bad velpt_velocity_data instrument (%r)", self.raw_data)
                 self.contents[DataParticleKey.QUALITY_FLAG] = DataParticleValue.CHECKSUM_FAILED
 
             timestamp = NortekProtocolParameterDict.convert_time(timestamp)
+            self.set_internal_timestamp((timestamp-datetime(1900, 1, 1)).total_seconds())
+
             pressure = pressure_msb * 0x10000 + pressure_lsw
 
         except Exception:
             log.error('Error creating particle velpt_velocity_data, raw data: %r', self.raw_data)
             raise SampleException
 
-        result = [{DataParticleKey.VALUE_ID: AquadoppDwVelocityDataParticleKey.TIMESTAMP, DataParticleKey.VALUE: timestamp},
+        result = [{DataParticleKey.VALUE_ID: AquadoppDwVelocityDataParticleKey.TIMESTAMP, DataParticleKey.VALUE: str(timestamp)},
                   {DataParticleKey.VALUE_ID: AquadoppDwVelocityDataParticleKey.ERROR, DataParticleKey.VALUE: error},
                   {DataParticleKey.VALUE_ID: AquadoppDwVelocityDataParticleKey.ANALOG1, DataParticleKey.VALUE: analog1},
                   {DataParticleKey.VALUE_ID: AquadoppDwVelocityDataParticleKey.BATTERY_VOLTAGE, DataParticleKey.VALUE: battery_voltage},
