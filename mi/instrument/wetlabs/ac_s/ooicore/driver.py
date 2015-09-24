@@ -7,13 +7,19 @@ Release notes:
 
 initial version
 """
-
 __author__ = 'Rachel Manoni'
 __license__ = 'Apache 2.0'
 
+from _ctypes import sizeof
+from collections import OrderedDict
+from ctypes import BigEndianStructure, c_ushort, c_uint, c_ubyte
+from io import BytesIO
+import struct
+from datetime import datetime
+import os
 import re
 
-from mi.core.log import get_logger, get_logging_metaclass
+from mi.core.log import get_logger
 log = get_logger()
 
 from mi.core.common import BaseEnum
@@ -43,28 +49,10 @@ SIZE_OF_CHECKSUM_PLUS_PAD = 3   # three bytes for 2 byte checksum and 1 byte pad
 PACKET_REGISTRATION_PATTERN = '\xff\x00\xff\x00'
 PACKET_REGISTRATION_REGEX = re.compile(PACKET_REGISTRATION_PATTERN)
 
-SAMPLE_HEADER_PATTERN = (r'^%s' % PACKET_REGISTRATION_PATTERN +
-                         '(.{2})' +  # group 1  - record length
-                         '(.{1})' +  # group 2  - packet type
-                         '\x01' +    # reserved
-                         '(.{1})' +  # group 3  - meter type
-                         '(.{3})' +  # group 4  - serial number
-                         '(.{2})' +  # group 5  - A reference dark counts
-                         '(.{2})' +  # group 6  - pressure counts
-                         '(.{2})' +  # group 7  - A signal dark counts
-                         '(.{2})' +  # group 8  - raw external temp counts
-                         '(.{2})' +  # group 9  - raw internal temp counts
-                         '(.{2})' +  # group 10 - C reference dark counts
-                         '(.{2})' +  # group 11 - C signal dark counts
-                         '(.{4})' +  # group 12 - time in milliseconds since power up
-                         '\x01' +    # reserved
-                         '(.{1})')   # group 13 - number of output wavelengths
-SAMPLE_RECORD_HEADER_REGEX = re.compile(SAMPLE_HEADER_PATTERN, re.DOTALL)
-
 STATUS_PATTERN = r'AC-Spectra .+? quit\.'
 STATUS_REGEX = re.compile(STATUS_PATTERN, re.DOTALL)
 
-#Regexes for status particles
+# Regexes for status particles
 FLOAT_PATTERN = r'\d+\.\d+'
 FLOAT_REGEX = re.compile(FLOAT_PATTERN)
 
@@ -92,9 +80,7 @@ class ProtocolState(BaseEnum):
     Instrument protocol states
     """
     UNKNOWN = DriverProtocolState.UNKNOWN
-    COMMAND = DriverProtocolState.COMMAND
     AUTOSAMPLE = DriverProtocolState.AUTOSAMPLE
-    DIRECT_ACCESS = DriverProtocolState.DIRECT_ACCESS
 
 
 class ProtocolEvent(BaseEnum):
@@ -104,25 +90,12 @@ class ProtocolEvent(BaseEnum):
     ENTER = DriverEvent.ENTER
     EXIT = DriverEvent.EXIT
     DISCOVER = DriverEvent.DISCOVER
-    START_AUTOSAMPLE = DriverEvent.START_AUTOSAMPLE     
-    STOP_AUTOSAMPLE = DriverEvent.STOP_AUTOSAMPLE
-    EXECUTE_DIRECT = DriverEvent.EXECUTE_DIRECT
-    START_DIRECT = DriverEvent.START_DIRECT
-    STOP_DIRECT = DriverEvent.STOP_DIRECT
-    GET = DriverEvent.GET
-    SET = DriverEvent.SET
 
 
 class Capability(BaseEnum):
     """
     Protocol events that should be exposed to users (subset of above).
     """
-    START_AUTOSAMPLE = ProtocolEvent.START_AUTOSAMPLE
-    STOP_AUTOSAMPLE = ProtocolEvent.STOP_AUTOSAMPLE
-    GET = DriverEvent.GET
-    SET = DriverEvent.SET
-    START_DIRECT = DriverEvent.START_DIRECT
-    STOP_DIRECT = DriverEvent.STOP_DIRECT
     DISCOVER = DriverEvent.DISCOVER
 
 
@@ -131,18 +104,6 @@ class Prompt(BaseEnum):
     Device i/o prompts.
     """
 
-
-def get_two_byte_value(str_input, index=0):
-    return ord(str_input[index])*2**8 + ord(str_input[index+1])
-
-
-def get_three_byte_value(str_input, index=0):
-    return ord(str_input[index])*2**16 + get_two_byte_value(str_input, index+1)
-
-
-def get_four_byte_value(str_input, index=0):
-    return ord(str_input[index])*2**24 + get_three_byte_value(str_input, index+1)
-        
 
 ###############################################################################
 # Data Particles
@@ -167,89 +128,91 @@ class OptaaSampleDataParticleKey(BaseEnum):
     A_SIGNAL_COUNTS = 'a_signal_counts'
 
 
+class OptaaSampleHeader(BigEndianStructure):
+    _fields_ = [
+        ('packet_registration', c_uint),
+        ('record_length', c_ushort),
+        ('packet_type', c_ubyte),
+        ('reserved', c_ubyte),
+        ('meter_type', c_ubyte),
+        ('serial_number_high', c_ubyte),
+        ('serial_number_low', c_ushort),
+        ('a_ref_dark_counts', c_ushort),
+        ('pressure_counts', c_ushort),
+        ('a_signal_dark_counts', c_ushort),
+        ('raw_external_temp_counts', c_ushort),
+        ('raw_internal_temp_counts', c_ushort),
+        ('c_ref_dark_counts', c_ushort),
+        ('c_signal_dark_counts', c_ushort),
+        ('time_high', c_ushort),
+        ('time_low', c_ushort),
+        ('reserved2', c_ubyte),
+        ('num_wavelengths', c_ubyte),
+    ]
+
+    @staticmethod
+    def from_string(input_str):
+        header = OptaaSampleHeader()
+        BytesIO(input_str).readinto(header)
+        return header
+
+    def __str__(self):
+        d = OrderedDict()
+        for name, _ in self._fields_:
+            d[name] = getattr(self, name)
+        return str(d)
+
+
 class OptaaSampleDataParticle(DataParticle):
     _data_particle_type = DataParticleType.OPTAA_SAMPLE
-        
+
+    def __init__(self, *args, **kwargs):
+        super(OptaaSampleDataParticle, self).__init__(*args, **kwargs)
+        # for playback, we want to obtain the elapsed run time prior to generating
+        # the particle, so we'll go ahead and parse the header on object creation
+        self.header = OptaaSampleHeader.from_string(self.raw_data)
+        self.data = struct.unpack_from('>%dH' % (self.header.num_wavelengths*4), self.raw_data, sizeof(self.header))
+        self.elapsed = (self.header.time_high << 16) + self.header.time_low
+
     def _build_parsed_values(self):
 
-        match = SAMPLE_RECORD_HEADER_REGEX.match(self.raw_data)
-        if not match:
-            raise SampleException("OPTAA_SampleDataParticle: No regex match of parsed sample data: [%r]"
-                                  % self.raw_data)
+        cref = self.data[::4]
+        aref = self.data[1::4]
+        csig = self.data[2::4]
+        asig = self.data[3::4]
 
-        record_length = get_two_byte_value(match.group(1), 0)
-        packet_checksum = get_two_byte_value(self.raw_data, record_length)
-        checksum = 0
+        key = OptaaSampleDataParticleKey
+        header = self.header
+        identity = lambda x: x
 
-        for i in range(0, record_length):
-            checksum += ord(self.raw_data[i])
-            checksum &= 0xffff
-        if checksum != packet_checksum:
-            log.debug('OPTAA_SampleDataParticle: Checksum mismatch in data packet, rcvd=%d, calc=%d.', packet_checksum,
-                      checksum)
-            raise SampleException('OPTAA_SampleDataParticle: Checksum mismatch in data packet, rcvd=%d, calc=%d.'
-                                  % (packet_checksum, checksum))
-
-        ### Now build four vectors out of the wavelength data
-        index = INDEX_OF_START_OF_SCAN_DATA
-        c_ref_count_vector = []
-        a_ref_count_vector = []
-        c_signal_counts_vector = []
-        a_signal_counts_vector = []
-
-        while index < record_length:
-            c_ref_count_vector.append(get_two_byte_value(self.raw_data, index))
-            index += SIZE_OF_SCAN_DATA_SIGNAL_COUNTS
-            a_ref_count_vector.append(get_two_byte_value(self.raw_data, index))
-            index += SIZE_OF_SCAN_DATA_SIGNAL_COUNTS
-            c_signal_counts_vector.append(get_two_byte_value(self.raw_data, index))
-            index += SIZE_OF_SCAN_DATA_SIGNAL_COUNTS
-            a_signal_counts_vector.append(get_two_byte_value(self.raw_data, index))
-            index += SIZE_OF_SCAN_DATA_SIGNAL_COUNTS
+        serial_number = (header.serial_number_high << 16) + header.serial_number_low
 
         result = [
-            {DataParticleKey.VALUE_ID: OptaaSampleDataParticleKey.RECORD_LENGTH,
-             DataParticleKey.VALUE: record_length},
-            {DataParticleKey.VALUE_ID: OptaaSampleDataParticleKey.PACKET_TYPE,
-             DataParticleKey.VALUE: ord(match.group(2))},
-            {DataParticleKey.VALUE_ID: OptaaSampleDataParticleKey.METER_TYPE,
-             DataParticleKey.VALUE: ord(match.group(3))},
-            {DataParticleKey.VALUE_ID: OptaaSampleDataParticleKey.SERIAL_NUMBER,
-             DataParticleKey.VALUE: str(get_three_byte_value(match.group(4)))},
-            {DataParticleKey.VALUE_ID: OptaaSampleDataParticleKey.A_REFERENCE_DARK_COUNTS,
-             DataParticleKey.VALUE: get_two_byte_value(match.group(5))},
-            {DataParticleKey.VALUE_ID: OptaaSampleDataParticleKey.PRESSURE_COUNTS,
-             DataParticleKey.VALUE: get_two_byte_value(match.group(6))},
-            {DataParticleKey.VALUE_ID: OptaaSampleDataParticleKey.A_SIGNAL_DARK_COUNTS,
-             DataParticleKey.VALUE: get_two_byte_value(match.group(7))},
-            {DataParticleKey.VALUE_ID: OptaaSampleDataParticleKey.EXTERNAL_TEMP_RAW,
-             DataParticleKey.VALUE: get_two_byte_value(match.group(8))},
-            {DataParticleKey.VALUE_ID: OptaaSampleDataParticleKey.INTERNAL_TEMP_RAW,
-             DataParticleKey.VALUE: get_two_byte_value(match.group(9))},
-            {DataParticleKey.VALUE_ID: OptaaSampleDataParticleKey.C_REFERENCE_DARK_COUNTS,
-             DataParticleKey.VALUE: get_two_byte_value(match.group(10))},
-            {DataParticleKey.VALUE_ID: OptaaSampleDataParticleKey.C_SIGNAL_DARK_COUNTS,
-             DataParticleKey.VALUE: get_two_byte_value(match.group(11))},
-            {DataParticleKey.VALUE_ID: OptaaSampleDataParticleKey.ELAPSED_RUN_TIME,
-             DataParticleKey.VALUE: get_four_byte_value(match.group(12))},
-            {DataParticleKey.VALUE_ID: OptaaSampleDataParticleKey.NUM_WAVELENGTHS,
-             DataParticleKey.VALUE: ord(match.group(13))},
-            {DataParticleKey.VALUE_ID: OptaaSampleDataParticleKey.C_REFERENCE_COUNTS,
-             DataParticleKey.VALUE: c_ref_count_vector},
-            {DataParticleKey.VALUE_ID: OptaaSampleDataParticleKey.A_REFERENCE_COUNTS,
-             DataParticleKey.VALUE: a_ref_count_vector},
-            {DataParticleKey.VALUE_ID: OptaaSampleDataParticleKey.C_SIGNAL_COUNTS,
-             DataParticleKey.VALUE: c_signal_counts_vector},
-            {DataParticleKey.VALUE_ID: OptaaSampleDataParticleKey.A_SIGNAL_COUNTS,
-             DataParticleKey.VALUE: a_signal_counts_vector}
-        ]
+            self._encode_value(key.RECORD_LENGTH, header.record_length, identity),
+            self._encode_value(key.PACKET_TYPE, header.packet_type, identity),
+            self._encode_value(key.METER_TYPE, header.meter_type, identity),
+            self._encode_value(key.SERIAL_NUMBER, serial_number, str),
+            self._encode_value(key.A_REFERENCE_DARK_COUNTS, header.a_ref_dark_counts, identity),
+            self._encode_value(key.PRESSURE_COUNTS, header.pressure_counts, identity),
+            self._encode_value(key.A_SIGNAL_DARK_COUNTS, header.a_signal_dark_counts, identity),
+            self._encode_value(key.EXTERNAL_TEMP_RAW, header.raw_external_temp_counts, identity),
+            self._encode_value(key.INTERNAL_TEMP_RAW, header.raw_internal_temp_counts, identity),
+            self._encode_value(key.C_REFERENCE_DARK_COUNTS, header.c_ref_dark_counts, identity),
+            self._encode_value(key.C_SIGNAL_DARK_COUNTS, header.c_signal_dark_counts, identity),
+            self._encode_value(key.ELAPSED_RUN_TIME, self.elapsed, identity),
+            self._encode_value(key.NUM_WAVELENGTHS, header.num_wavelengths, identity),
+            self._encode_value(key.C_REFERENCE_COUNTS, cref, list),
+            self._encode_value(key.A_REFERENCE_COUNTS, aref, list),
+            self._encode_value(key.C_SIGNAL_COUNTS, csig, list),
+            self._encode_value(key.A_SIGNAL_COUNTS, asig, list),
+            ]
 
         log.debug("raw data = %r", self.raw_data)
         log.debug('parsed particle = %r', result)
 
         return result
-    
-    
+
+
 class OptaaStatusDataParticleKey(BaseEnum):
     FIRMWARE_VERSION = 'firmware_version'
     FIRMWARE_DATE = 'firmware_date'
@@ -260,11 +223,11 @@ class OptaaStatusDataParticleKey(BaseEnum):
 
 class OptaaStatusDataParticle(DataParticle):
     _data_particle_type = DataParticleType.OPTAA_STATUS
-    
+
     def _build_parsed_values(self):
-        
+
         data_stream = self.raw_data
-            
+
         # This regex searching can be made a lot more specific, but at the expense of
         # more code. For now, grabbing all three floating point numbers in one sweep is
         # pretty efficient. Note, however, that if the manufacturer ever changes the
@@ -276,7 +239,7 @@ class OptaaStatusDataParticle(DataParticle):
             picodos = fp_results[2]
         else:
             raise SampleException('Unable to find exactly three floating-point numbers in status message.')
-            
+
         # find the date/time string and remove enclosing parens
         m = re.search(DATE_REGEX, data_stream)
         if m is not None:
@@ -295,7 +258,7 @@ class OptaaStatusDataParticle(DataParticle):
                 persistor_sn = 'None found'
         else:
             persistor_sn = 'None found'
-        
+
         result = [{DataParticleKey.VALUE_ID: OptaaStatusDataParticleKey.FIRMWARE_VERSION,
                    DataParticleKey.VALUE: str(version)},
                   {DataParticleKey.VALUE_ID: OptaaStatusDataParticleKey.FIRMWARE_DATE,
@@ -310,7 +273,7 @@ class OptaaStatusDataParticle(DataParticle):
         log.debug("raw data = %r", self.raw_data)
         log.debug('parsed particle = %r', result)
 
-        return result                      
+        return result
 
 
 ###############################################################################
@@ -350,8 +313,6 @@ class Protocol(CommandResponseInstrumentProtocol):
     Instrument protocol class
     Subclasses CommandResponseInstrumentProtocol
     """
-    __metaclass__ = get_logging_metaclass(log_level='debug')
-
     def __init__(self, prompts, newline, driver_event):
         """
         Protocol constructor.
@@ -367,28 +328,8 @@ class Protocol(CommandResponseInstrumentProtocol):
         self._protocol_fsm.add_handler(ProtocolState.UNKNOWN, ProtocolEvent.EXIT, self._handler_unknown_exit)
         self._protocol_fsm.add_handler(ProtocolState.UNKNOWN, ProtocolEvent.DISCOVER, self._handler_unknown_discover)
 
-        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.ENTER, self._handler_command_enter)
-        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.EXIT, self._handler_command_exit)
-        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.START_AUTOSAMPLE,
-                                       self._handler_command_start_autosample)
-        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.START_DIRECT,
-                                       self._handler_command_start_direct)
-        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.GET, self._handler_command_get)
-        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.SET, self._handler_command_set)
-
         self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.ENTER, self._handler_autosample_enter)
         self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.EXIT, self._handler_autosample_exit)
-        self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.STOP_AUTOSAMPLE,
-                                       self._handler_autosample_stop_autosample)
-
-        self._protocol_fsm.add_handler(ProtocolState.DIRECT_ACCESS, ProtocolEvent.ENTER,
-                                       self._handler_direct_access_enter)
-        self._protocol_fsm.add_handler(ProtocolState.DIRECT_ACCESS, ProtocolEvent.EXIT,
-                                       self._handler_direct_access_exit)
-        self._protocol_fsm.add_handler(ProtocolState.DIRECT_ACCESS, ProtocolEvent.EXECUTE_DIRECT,
-                                       self._handler_direct_access_execute_direct)
-        self._protocol_fsm.add_handler(ProtocolState.DIRECT_ACCESS, ProtocolEvent.STOP_DIRECT,
-                                       self._handler_direct_access_stop_direct)
 
         self._protocol_fsm.start(ProtocolState.UNKNOWN)
 
@@ -404,20 +345,31 @@ class Protocol(CommandResponseInstrumentProtocol):
         """
         raw_data_len = len(raw_data)
         return_list = []
-        
-        # look for samples
-        for match in PACKET_REGISTRATION_REGEX.finditer(raw_data):
-            if match.start() + INDEX_OF_PACKET_RECORD_LENGTH + SIZE_OF_PACKET_RECORD_LENGTH < raw_data_len:
-                packet_length = get_two_byte_value(raw_data,
-                                                   match.start() + INDEX_OF_PACKET_RECORD_LENGTH) + SIZE_OF_CHECKSUM_PLUS_PAD
 
-                if match.start() + packet_length <= raw_data_len:
-                    return_list.append((match.start(), match.start() + packet_length))
-                    
+        # look for samples
+        # OPTAA record looks like this:
+        # ff00ff00  <- packet registration
+        # 02d0      <- record length minus checksum
+        # ...       <- data
+        # 2244      <- checksum
+        # 00        <- pad
+        for match in PACKET_REGISTRATION_REGEX.finditer(raw_data):
+            # make sure I have at least 6 bytes (packet registration plus 2 bytes for record length)
+            start = match.start()
+            if (start+6) <= raw_data_len:
+                packet_length = struct.unpack_from('>H', raw_data, start+4)[0]
+                # make sure we have enough data to construct a whole packet
+                if (start+packet_length+SIZE_OF_CHECKSUM_PLUS_PAD) <= raw_data_len:
+                    # validate the checksum, if valid add to the return list
+                    checksum = struct.unpack_from('>H', raw_data, start+packet_length)[0]
+                    calulated_checksum = sum(bytearray(raw_data[start:start+packet_length])) & 0xffff
+                    if checksum == calulated_checksum:
+                        return_list.append((match.start(), match.start() + packet_length + SIZE_OF_CHECKSUM_PLUS_PAD))
+
         # look for status
         for match in STATUS_REGEX.finditer(raw_data):
             return_list.append((match.start(), match.end()))
-                    
+
         return return_list
 
     def _got_chunk(self, chunk, timestamp):
@@ -425,16 +377,8 @@ class Protocol(CommandResponseInstrumentProtocol):
         The base class got_data has gotten a chunk from the chunker.  Pass it to extract_sample
         with the appropriate particle objects and REGEXes.
         """
-
-        # On a rare occurrence the particle sample coming in will be missing a byte
-        # trap the exception thrown and log an error
-        try:
-            self._extract_sample(OptaaSampleDataParticle, PACKET_REGISTRATION_REGEX, chunk, timestamp)
-            self._extract_sample(OptaaStatusDataParticle, STATUS_REGEX, chunk, timestamp)
-
-        except SampleException:
-            log.error("Unable to process sample (%r)", SampleException.message)
-
+        self._extract_sample(OptaaSampleDataParticle, PACKET_REGISTRATION_REGEX, chunk, timestamp)
+        self._extract_sample(OptaaStatusDataParticle, STATUS_REGEX, chunk, timestamp)
 
     def _filter_capabilities(self, events):
         """
@@ -464,34 +408,6 @@ class Protocol(CommandResponseInstrumentProtocol):
         return ProtocolState.AUTOSAMPLE, ResourceAgentState.STREAMING
 
     ########################################################################
-    # Command handlers.
-    # Implemented to make DA possible, instrument has no actual command mode
-    ########################################################################
-    def _handler_command_enter(self, *args, **kwargs):
-        self._driver_event(DriverAsyncEvent.STATE_CHANGE)
-
-    def _handler_command_exit(self, *args, **kwargs):
-        pass
-
-    def _handler_command_get(self, *args, **kwargs):
-        """
-        Does nothing, implemented to make framework happy
-        """
-        return None, None
-
-    def _handler_command_set(self, *args, **kwargs):
-        """
-        Does nothing, implemented to make framework happy
-        """
-        return None, None
-
-    def _handler_command_start_direct(self, *args, **kwargs):
-        return ProtocolState.DIRECT_ACCESS, (ResourceAgentState.DIRECT_ACCESS, None)
-
-    def _handler_command_start_autosample(self, *args, **kwargs):
-        return ProtocolState.AUTOSAMPLE, (ResourceAgentState.STREAMING, None)
-
-    ########################################################################
     # Autosample handlers.
     ########################################################################
     def _handler_autosample_enter(self, *args, **kwargs):
@@ -500,26 +416,43 @@ class Protocol(CommandResponseInstrumentProtocol):
     def _handler_autosample_exit(self, *args, **kwargs):
         pass
 
-    def _handler_autosample_stop_autosample(self):
-        return ProtocolState.COMMAND, (ResourceAgentState.COMMAND, None)
 
-    ########################################################################
-    # Direct access handlers.
-    ########################################################################
-    def _handler_direct_access_enter(self, *args, **kwargs):
-        self._driver_event(DriverAsyncEvent.STATE_CHANGE)
-        self._sent_cmds = []
-    
-    def _handler_direct_access_exit(self, *args, **kwargs):
-        pass
+class PlaybackProtocol(Protocol):
+    def __init__(self, prompts, newline, driver_event):
+        super(PlaybackProtocol, self).__init__(prompts, newline, driver_event)
+        self.offset_timestamp = None
+        self.offset = 0
 
-    def _handler_direct_access_execute_direct(self, data):
-        self._do_cmd_direct(data)
-        return None, None
+    def got_filename(self, filename):
+        filename = os.path.basename(filename)
+        date_time_regex = re.compile(r'(\d{8}T\d{4}_UTC)')
+        date_format = '%Y%m%dT%H%M_%Z'
+        dt = datetime.strptime(date_time_regex.search(filename).group(1), date_format)
+        self.offset_timestamp = (dt - datetime(1900, 1, 1)).total_seconds()
 
-    def _handler_direct_access_stop_direct(self):
+    def _got_chunk(self, chunk, timestamp):
         """
-        Instead of using discover(), as is the norm, put instrument into
-        Command state.  Instrument can only sample, even when in a command state.
+        The base class got_data has gotten a chunk from the chunker.  Pass it to extract_sample
+        with the appropriate particle objects and REGEXes.
         """
-        return DriverProtocolState.COMMAND, (ResourceAgentState.COMMAND, None)
+        self._extract_sample(OptaaSampleDataParticle, PACKET_REGISTRATION_REGEX, chunk, timestamp)
+        self._extract_sample(OptaaStatusDataParticle, STATUS_REGEX, chunk, timestamp)
+
+    def _extract_sample(self, particle_class, regex, line, timestamp, publish=True):
+        if regex.match(line):
+            particle = particle_class(line, port_timestamp=timestamp)
+
+            if hasattr(particle, 'elapsed'):
+                if self.offset_timestamp is not None:
+                    self.offset = self.offset_timestamp - particle.elapsed
+                    self.offset_timestamp = None
+
+                new_timestamp = particle.elapsed + self.offset
+                particle.set_internal_timestamp(new_timestamp)
+
+            parsed_sample = particle.generate()
+
+            if publish and self._driver_event:
+                self._driver_event(DriverAsyncEvent.SAMPLE, parsed_sample)
+
+            return parsed_sample

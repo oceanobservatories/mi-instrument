@@ -108,7 +108,7 @@ def short_sample():
                            2C 06 2D AD  3B 1D 22 51  29 9F 2B 11  37 F3 20 64 \
                            27 61 28 A8  34 FF 1E 9B  25 4B 26 6E  32 40 1C FA \
                            23 5E 24 61  2F B9 11 0A  00"
-                           
+
     output = ''
     for value in short_sample_values.split():
         output += chr(int(value, 16))
@@ -228,7 +228,7 @@ class UtilMixin(DriverTestMixin):
                                                                                 21182, 20041, 18950, 17898, 16905,
                                                                                 15993, 15133, 14323, 13567, 12864,
                                                                                 12217]}}
-            
+
     _status_parameters = {
         OptaaStatusDataParticleKey.FIRMWARE_VERSION: {'type': unicode, 'value': '1.10'},
         OptaaStatusDataParticleKey.FIRMWARE_DATE: {'type': unicode, 'value': 'May 16 2005 09:40:13'},
@@ -270,7 +270,7 @@ class UtilMixin(DriverTestMixin):
 ###############################################################################
 @attr('UNIT', group='mi')
 class TestUNIT(InstrumentDriverUnitTestCase, UtilMixin):
-    
+
     def setUp(self):
         InstrumentDriverUnitTestCase.setUp(self)
 
@@ -343,20 +343,23 @@ class TestUNIT(InstrumentDriverUnitTestCase, UtilMixin):
         self.assert_chunker_fragmented_sample(chunker, OPTAA_STATUS_DATA)
         self.assert_chunker_combined_sample(chunker, OPTAA_STATUS_DATA)
 
-    def test_corrupt_data_sample(self):
-        """
-        Verify corrupt data will throw error
-        """
-        particle = OptaaSampleDataParticle(OPTAA_SAMPLE_DATA.replace('\xff\x00\xff\x00', 'foo'))
-        with self.assertRaises(SampleException):
-            particle.generate()
-         
+    def test_chunker_invalid_checksum(self):
+        sample = bytearray(OPTAA_SAMPLE_DATA)
+        # change 1 byte, checksum should fail and no chunk should be generated
+        sample[20] = sample[20] + 1
+        chunker = StringChunker(Protocol.sieve_function)
+        ts = self.get_ntp_timestamp()
+        chunker.add_chunk(sample, ts)
+        (timestamp, result) = chunker.get_next_data()
+        self.assertEqual(timestamp, None)
+        self.assertEqual(result, None)
+
     def test_got_data(self):
         """
         Verify sample data passed through the got data method produces the correct data particles
         """
         # Create and initialize the instrument driver with a mock port agent
-        driver = InstrumentDriver(self._got_data_event_callback)
+        driver = InstrumentDriver(self._got_data_event_callback, None)
         self.assert_initialize_driver(driver)
 
         self.assert_raw_particle_published(driver, True)
@@ -390,15 +393,10 @@ class TestUNIT(InstrumentDriverUnitTestCase, UtilMixin):
         """
         capabilities = {
             ProtocolState.UNKNOWN: [ProtocolEvent.DISCOVER],
-            ProtocolState.COMMAND: [ProtocolEvent.GET,
-                                    ProtocolEvent.SET,
-                                    ProtocolEvent.START_AUTOSAMPLE,
-                                    ProtocolEvent.START_DIRECT],
-            ProtocolState.AUTOSAMPLE: [ProtocolEvent.STOP_AUTOSAMPLE],
-            ProtocolState.DIRECT_ACCESS: [ProtocolEvent.STOP_DIRECT,
-                                          ProtocolEvent.EXECUTE_DIRECT]}
+            ProtocolState.AUTOSAMPLE: []
+        }
 
-        driver = InstrumentDriver(self._got_data_event_callback)
+        driver = InstrumentDriver(self._got_data_event_callback, None)
         self.assert_capabilities(driver, capabilities)
 
 
@@ -482,7 +480,7 @@ class TestQUAL(InstrumentDriverQualificationTestCase, UtilMixin):
         returned by get_current_capabilities
         """
         self.assert_enter_command_mode()
-        
+
         ##################
         #  Command Mode
         ##################
