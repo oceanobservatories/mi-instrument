@@ -373,7 +373,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         for particle_type, func in possible_particles:
             sample = self._extract_sample(particle_type, particle_type.regex_compiled(), chunk, ts)
             if sample:
-                if func:
+                if func and self.get_current_state() != ProtocolState.UNKNOWN:
                     func(sample)
                 return sample
 
