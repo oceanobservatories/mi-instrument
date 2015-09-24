@@ -68,7 +68,10 @@ class PlaybackWrapper(object):
         self.reader = reader_klass(files, self.got_data)
 
     def playback(self):
-        for index, _ in enumerate(self.reader.read()):
+        for index, filename in enumerate(self.reader.read()):
+            if filename is not None:
+                if hasattr(self.protocol, 'got_filename'):
+                    self.protocol.got_filename(filename)
             if index % 100 == 0:
                 self.publish()
         self.publish()
@@ -163,6 +166,8 @@ class DatalogReader(object):
             if self._filehandle is None:
                 name = self.files.pop(0)
                 log.info('Begin reading: %r', name)
+                # yield the filename so we can pass it through to the driver
+                yield name
                 self._filehandle = open(name, 'r')
 
             if not self._process_packet():

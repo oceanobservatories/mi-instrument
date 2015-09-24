@@ -137,10 +137,6 @@ class DataParticle(object):
         if unix_time is not None:
             timestamp = ntplib.system_to_ntp_time(unix_time)
 
-        if all([self.contents[DataParticleKey.PREFERRED_TIMESTAMP] == DataParticleKey.PORT_TIMESTAMP,
-                self.contents[DataParticleKey.PORT_TIMESTAMP] == 0]):
-            self.contents[DataParticleKey.PREFERRED_TIMESTAMP] = DataParticleKey.INTERNAL_TIMESTAMP
-
         self.contents[DataParticleKey.INTERNAL_TIMESTAMP] = float(timestamp)
 
     def set_value(self, id, value):
@@ -198,6 +194,11 @@ class DataParticle(object):
         # verify preferred timestamp exists in the structure...
         if not self._check_preferred_timestamps():
             raise SampleException("Preferred timestamp not in particle!")
+
+        if all([self.contents[DataParticleKey.PREFERRED_TIMESTAMP] == DataParticleKey.PORT_TIMESTAMP,
+                self.contents[DataParticleKey.PORT_TIMESTAMP] == 0,
+                self.contents[DataParticleKey.INTERNAL_TIMESTAMP] is not None]):
+            self.contents[DataParticleKey.PREFERRED_TIMESTAMP] = DataParticleKey.INTERNAL_TIMESTAMP
 
         # build response structure
         self._encoding_errors = []

@@ -7,6 +7,12 @@ Release notes:
 
 Driver for vector
 """
+from datetime import datetime
+
+import os
+
+from mi.core.instrument.chunker import StringChunker
+from mi.core.instrument.instrument_driver import DriverAsyncEvent
 
 __author__ = 'Rachel Manoni, Ronald Ronquillo'
 __license__ = 'Apache 2.0'
@@ -22,7 +28,7 @@ from mi.core.instrument.protocol_param_dict import ParameterDictType
 from mi.core.instrument.data_particle import DataParticle, DataParticleKey, DataParticleValue
 
 from mi.instrument.nortek.driver import NortekDataParticleType, Parameter, InstrumentCmds, \
-    USER_CONFIG_DATA_REGEX, validate_checksum
+    USER_CONFIG_DATA_REGEX, validate_checksum, NORTEK_COMMON_REGEXES
 from mi.instrument.nortek.driver import NortekInstrumentDriver
 from mi.instrument.nortek.driver import NortekInstrumentProtocol
 from mi.instrument.nortek.driver import NortekProtocolParameterDict
@@ -75,11 +81,11 @@ class VectorVelocityDataParticleKey(BaseEnum):
     CORRELATION_BEAM1 = "correlation_beam_1"
     CORRELATION_BEAM2 = "correlation_beam_2"
     CORRELATION_BEAM3 = "correlation_beam_3"
-    
-            
+
+
 class VectorVelocityDataParticle(DataParticle):
     """
-    Routine for parsing velocity data into a data particle structure for the Vector sensor. 
+    Routine for parsing velocity data into a data particle structure for the Vector sensor.
     """
     _data_particle_type = DataParticleType.VELOCITY
 
@@ -92,23 +98,23 @@ class VectorVelocityDataParticle(DataParticle):
         log.debug('VectorVelocityDataParticle: raw data =%r', self.raw_data)
 
         try:
-        
+
             unpack_string = '<2s4B2H3h6BH'
-        
+
             sync_id, analog_input2_lsb, count, pressure_msb, analog_input2_msb, pressure_lsw, analog_input1,\
                 velocity_beam1, velocity_beam2, velocity_beam3, amplitude_beam1, amplitude_beam2, amplitude_beam3, \
                 correlation_beam1, correlation_beam2, correlation_beam3, checksum = struct.unpack(unpack_string, self.raw_data)
 
-            if not validate_checksum('<11H', self.raw_data, checksum):
-                log.warn("Bad vel3d_cd_velocity_data from instrument (%r)", self.raw_data)
+            if not validate_checksum('<11H', self.raw_data):
+                log.warn("Failed checksum in %s from instrument (%r)", self._data_particle_type, self.raw_data)
                 self.contents[DataParticleKey.QUALITY_FLAG] = DataParticleValue.CHECKSUM_FAILED
 
             analog_input2 = analog_input2_msb * 0x100 + analog_input2_lsb
             pressure = pressure_msb * 0x10000 + pressure_lsw
 
-        except Exception:
+        except Exception as e:
             log.error('Error creating particle vel3d_cd_velocity_data, raw data: %r', self.raw_data)
-            raise SampleException
+            raise SampleException(e)
 
         result = [{DataParticleKey.VALUE_ID: VectorVelocityDataParticleKey.ANALOG_INPUT2, DataParticleKey.VALUE: analog_input2},
                   {DataParticleKey.VALUE_ID: VectorVelocityDataParticleKey.COUNT, DataParticleKey.VALUE: count},
@@ -123,7 +129,7 @@ class VectorVelocityDataParticle(DataParticle):
                   {DataParticleKey.VALUE_ID: VectorVelocityDataParticleKey.CORRELATION_BEAM1, DataParticleKey.VALUE: correlation_beam1},
                   {DataParticleKey.VALUE_ID: VectorVelocityDataParticleKey.CORRELATION_BEAM2, DataParticleKey.VALUE: correlation_beam2},
                   {DataParticleKey.VALUE_ID: VectorVelocityDataParticleKey.CORRELATION_BEAM3, DataParticleKey.VALUE: correlation_beam3}]
- 
+
         log.debug('VectorVelocityDataParticle: particle=%s', result)
         return result
 
@@ -144,7 +150,7 @@ class VectorVelocityHeaderDataParticleKey(BaseEnum):
 
 class VectorVelocityHeaderDataParticle(DataParticle):
     """
-    Routine for parsing velocity header data into a data particle structure for the Vector sensor. 
+    Routine for parsing velocity header data into a data particle structure for the Vector sensor.
     """
     _data_particle_type = DataParticleType.VELOCITY_HEADER
 
@@ -161,17 +167,18 @@ class VectorVelocityHeaderDataParticle(DataParticle):
             sync, timestamp, number_of_records, noise1, noise2, noise3, _, correlation1, correlation2, correlation3, _,\
                 _, cksum = struct.unpack(unpack_string, self.raw_data)
 
-            if not validate_checksum('<20H', self.raw_data, cksum):
-                log.warn("Bad vel3d_cd_data_header from instrument (%r)", self.raw_data)
+            if not validate_checksum('<20H', self.raw_data):
+                log.warn("Failed checksum in %s from instrument (%r)", self._data_particle_type, self.raw_data)
                 self.contents[DataParticleKey.QUALITY_FLAG] = DataParticleValue.CHECKSUM_FAILED
-        
+
             timestamp = NortekProtocolParameterDict.convert_time(timestamp)
-            
-        except Exception:
+            self.set_internal_timestamp((timestamp-datetime(1900, 1, 1)).total_seconds())
+
+        except Exception as e:
             log.error('Error creating particle vel3d_cd_data_header, raw data: %r', self.raw_data)
-            raise SampleException
-        
-        result = [{DataParticleKey.VALUE_ID: VectorVelocityHeaderDataParticleKey.TIMESTAMP, DataParticleKey.VALUE: timestamp},
+            raise SampleException(e)
+
+        result = [{DataParticleKey.VALUE_ID: VectorVelocityHeaderDataParticleKey.TIMESTAMP, DataParticleKey.VALUE: str(timestamp)},
                   {DataParticleKey.VALUE_ID: VectorVelocityHeaderDataParticleKey.NUMBER_OF_RECORDS, DataParticleKey.VALUE: number_of_records},
                   {DataParticleKey.VALUE_ID: VectorVelocityHeaderDataParticleKey.NOISE1, DataParticleKey.VALUE: noise1},
                   {DataParticleKey.VALUE_ID: VectorVelocityHeaderDataParticleKey.NOISE2, DataParticleKey.VALUE: noise2},
@@ -179,7 +186,7 @@ class VectorVelocityHeaderDataParticle(DataParticle):
                   {DataParticleKey.VALUE_ID: VectorVelocityHeaderDataParticleKey.CORRELATION1, DataParticleKey.VALUE: correlation1},
                   {DataParticleKey.VALUE_ID: VectorVelocityHeaderDataParticleKey.CORRELATION2, DataParticleKey.VALUE: correlation2},
                   {DataParticleKey.VALUE_ID: VectorVelocityHeaderDataParticleKey.CORRELATION3, DataParticleKey.VALUE: correlation3}]
- 
+
         log.debug('VectorVelocityHeaderDataParticle: particle=%s', result)
         return result
 
@@ -202,7 +209,7 @@ class VectorSystemDataParticleKey(BaseEnum):
 
 class VectorSystemDataParticle(DataParticle):
     """
-    Routine for parsing system data into a data particle structure for the Vector sensor. 
+    Routine for parsing system data into a data particle structure for the Vector sensor.
     """
     _data_particle_type = DataParticleType.SYSTEM
 
@@ -215,23 +222,24 @@ class VectorSystemDataParticle(DataParticle):
         log.debug('VectorSystemDataParticle: raw data =%r', self.raw_data)
 
         try:
-        
+
             unpack_string = '<4s6s2H4h2bHH'
-            
+
             sync, timestamp, battery, sound_speed, heading, pitch, roll, temperature, error, status, analog_input, cksum =\
                 struct.unpack_from(unpack_string, self.raw_data)
 
-            if not validate_checksum('<13H', self.raw_data, cksum):
-                log.warn("Bad vel3d_cd_system_data from instrument (%r)", self.raw_data)
+            if not validate_checksum('<13H', self.raw_data):
+                log.warn("Failed checksum in %s from instrument (%r)", self._data_particle_type, self.raw_data)
                 self.contents[DataParticleKey.QUALITY_FLAG] = DataParticleValue.CHECKSUM_FAILED
-        
+
             timestamp = NortekProtocolParameterDict.convert_time(timestamp)
+            self.set_internal_timestamp((timestamp-datetime(1900, 1, 1)).total_seconds())
 
-        except Exception:
+        except Exception as e:
             log.error('Error creating particle vel3d_cd_system_data, raw data: %r', self.raw_data)
-            raise SampleException
+            raise SampleException(e)
 
-        result = [{DataParticleKey.VALUE_ID: VectorSystemDataParticleKey.TIMESTAMP, DataParticleKey.VALUE: timestamp},
+        result = [{DataParticleKey.VALUE_ID: VectorSystemDataParticleKey.TIMESTAMP, DataParticleKey.VALUE: str(timestamp)},
                   {DataParticleKey.VALUE_ID: VectorSystemDataParticleKey.BATTERY, DataParticleKey.VALUE: battery},
                   {DataParticleKey.VALUE_ID: VectorSystemDataParticleKey.SOUND_SPEED, DataParticleKey.VALUE: sound_speed},
                   {DataParticleKey.VALUE_ID: VectorSystemDataParticleKey.HEADING, DataParticleKey.VALUE: heading},
@@ -241,7 +249,7 @@ class VectorSystemDataParticle(DataParticle):
                   {DataParticleKey.VALUE_ID: VectorSystemDataParticleKey.ERROR, DataParticleKey.VALUE: error},
                   {DataParticleKey.VALUE_ID: VectorSystemDataParticleKey.STATUS, DataParticleKey.VALUE: status},
                   {DataParticleKey.VALUE_ID: VectorSystemDataParticleKey.ANALOG_INPUT, DataParticleKey.VALUE: analog_input}]
- 
+
         log.debug('VectorSystemDataParticle: particle=%r', result)
 
         return result
@@ -329,14 +337,17 @@ class Protocol(NortekInstrumentProtocol):
         Parameter.QUAL_CONSTANTS]
 
     spare_param_values = {Parameter.A1_1_SPARE: '',
-                            Parameter.B0_1_SPARE: '',
-                            Parameter.B1_1_SPARE: '',
-                            Parameter.USER_1_SPARE: '',
-                            Parameter.A1_2_SPARE: '',
-                            Parameter.B0_2_SPARE: '',
-                            Parameter.USER_3_SPARE: '',
-                            Parameter.USER_4_SPARE: ''}
+                          Parameter.B0_1_SPARE: '',
+                          Parameter.B1_1_SPARE: '',
+                          Parameter.USER_1_SPARE: '',
+                          Parameter.A1_2_SPARE: '',
+                          Parameter.B0_2_SPARE: '',
+                          Parameter.USER_3_SPARE: '',
+                          Parameter.USER_4_SPARE: ''}
 
+    ########################################################################
+    # overridden superclass methods
+    ########################################################################
     def __init__(self, prompts, newline, driver_event):
         """
         Protocol constructor.
@@ -344,19 +355,45 @@ class Protocol(NortekInstrumentProtocol):
         @param newline The newline.
         @param driver_event Driver process event callback.
         """
-        super(Protocol, self).__init__(prompts, newline, driver_event)
+        NortekInstrumentProtocol.__init__(self, prompts, newline, driver_event)
 
-    ########################################################################
-    # overridden superclass methods
-    ########################################################################
+        # create chunker for processing instrument samples.
+        self._chunker = StringChunker(self.sieve_function)
+
+    @classmethod
+    def sieve_function(cls, raw_data):
+        """
+        The method that detects data sample structures from instrument
+        Should be in the format [[structure_sync_bytes, structure_len]*]
+        """
+        return_list = []
+        sieve_matchers = NORTEK_COMMON_REGEXES + cls.velocity_data_regex
+
+        for matcher in sieve_matchers:
+            for match in matcher.finditer(raw_data):
+                if matcher == VELOCITY_DATA_REGEX:
+                    # two bytes is not enough for an accurate match
+                    # check for a valid checksum
+                    data = raw_data[match.start():match.end()]
+                    if validate_checksum('<11H', data):
+                        return_list.append((match.start(), match.end()))
+                else:
+                    return_list.append((match.start(), match.end()))
+                    log.debug("sieve_function: regex found %r", raw_data[match.start():match.end()])
+
+        return return_list
+
     def _got_chunk(self, structure, timestamp):
         """
         The base class got_data has gotten a structure from the chunker.  Pass it to extract_sample
-        with the appropriate particle objects and REGEXes. 
+        with the appropriate particle objects and REGEXes.
         """
-        self._extract_sample(VectorVelocityDataParticle, VELOCITY_DATA_REGEX, structure, timestamp)
-        self._extract_sample(VectorSystemDataParticle, SYSTEM_DATA_REGEX, structure, timestamp)
-        self._extract_sample(VectorVelocityHeaderDataParticle, VELOCITY_HEADER_DATA_REGEX, structure, timestamp)
+        if any((
+            self._extract_sample(VectorVelocityDataParticle, VELOCITY_DATA_REGEX, structure, timestamp),
+            self._extract_sample(VectorSystemDataParticle, SYSTEM_DATA_REGEX, structure, timestamp),
+            self._extract_sample(VectorVelocityHeaderDataParticle, VELOCITY_HEADER_DATA_REGEX, structure, timestamp),
+        )):
+            return
 
         self._got_chunk_base(structure, timestamp)
 
@@ -605,3 +642,81 @@ class Protocol(NortekInstrumentProtocol):
                              default_value=6711,
                              startup_param=True,
                              direct_access=True)
+
+
+###############################################################################
+# PlaybackProtocol
+################################################################################
+class PlaybackProtocol(Protocol):
+    def __init__(self, prompts, newline, driver_event):
+        """
+        Protocol constructor.
+        @param prompts A BaseEnum class containing instrument prompts.
+        @param newline The newline.
+        @param driver_event Driver process event callback.
+        """
+        super(PlaybackProtocol, self).__init__(prompts, newline, driver_event)
+        self.last_header_timestamp = None
+        self.offset = 0
+        self.offset_timestamp = None
+
+    # Playback specific method due to incorrect time on deployed instrument
+    def got_filename(self, filename):
+        filename = os.path.basename(filename)
+        date_time_regex = re.compile(r'(\d{8}T\d{4}_UTC)')
+        date_format = '%Y%m%dT%H%M_%Z'
+        dt = datetime.strptime(date_time_regex.search(filename).group(1), date_format)
+        self.offset_timestamp = (dt - datetime(1900, 1, 1)).total_seconds()
+        # if we have an RSN archive style filename we will store the time
+        # and generate an offset on the next received system data particle
+
+    ########################################################################
+    # overridden superclass methods
+    ########################################################################
+    def _got_chunk(self, structure, timestamp):
+        """
+        The base class got_data has gotten a structure from the chunker.  Pass it to extract_sample
+        with the appropriate particle objects and REGEXes.
+        """
+        if self._extract_sample(VectorVelocityDataParticle, VELOCITY_DATA_REGEX, structure,
+                                timestamp, internal_timestamp=self.last_header_timestamp):
+            return
+
+        if self._extract_sample(VectorSystemDataParticle, SYSTEM_DATA_REGEX, structure, timestamp):
+            return
+
+        if self._extract_sample(VectorVelocityHeaderDataParticle, VELOCITY_HEADER_DATA_REGEX, structure, timestamp):
+            return
+
+        self._got_chunk_base(structure, timestamp)
+
+    def _extract_sample(self, particle_class, regex, line, timestamp, publish=True, internal_timestamp=None):
+        """
+        Overridden to allow us to supply an internal timestamp and to generate
+        a timestamp offset during playback
+        """
+        if regex.match(line):
+
+            particle = particle_class(line, port_timestamp=timestamp, internal_timestamp=internal_timestamp)
+            parsed_sample = particle.generate()
+
+            # grab the internal timestamp from the particle
+            new_internal_timestamp = parsed_sample.get(DataParticleKey.INTERNAL_TIMESTAMP)
+
+            if internal_timestamp is None:
+                self.last_header_timestamp = new_internal_timestamp
+                # this timestamp came from the instrument, check if we need to update our offset
+                if self.offset_timestamp is not None:
+                    self.offset = self.offset_timestamp - new_internal_timestamp
+                    log.info('Setting new offset: %r', self.offset)
+                    self.offset_timestamp = None
+            else:
+                # bump the last_header_timestamp value by 1/8th of a second (sample rate)
+                self.last_header_timestamp += 1.0/8
+
+            parsed_sample[DataParticleKey.INTERNAL_TIMESTAMP] = new_internal_timestamp + self.offset
+
+            if publish and self._driver_event:
+                self._driver_event(DriverAsyncEvent.SAMPLE, parsed_sample)
+
+            return parsed_sample
