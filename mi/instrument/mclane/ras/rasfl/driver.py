@@ -7,9 +7,6 @@ Release notes:
 
 initial version
 """
-from mi.core.common import Prefixes, Units
-from mi.core.instrument.instrument_driver import SingleConnectionInstrumentDriver
-
 __author__ = 'Bill Bollenbacher & Dan Mergens'
 __license__ = 'Apache 2.0'
 
@@ -18,6 +15,9 @@ import re
 from mi.core.log import get_logger
 
 log = get_logger()
+
+from mi.core.common import Prefixes, Units
+from mi.core.instrument.instrument_driver import SingleConnectionInstrumentDriver
 
 from mi.core.instrument.protocol_param_dict import \
     ProtocolParameterDict, \
@@ -177,12 +177,12 @@ class Protocol(McLaneProtocol):
         The base class got_data has gotten a chunk from the chunker.  Pass it to extract_sample
         with the appropriate particle objects and REGEXes.
         """
-        filling = self.get_current_state() == ProtocolState.FILL
+        filling = self.get_current_state() in [ProtocolState.FILL, ProtocolState.UNKNOWN]
         log.debug("_got_chunk:\n%s", chunk)
         sample_dict = self._extract_sample(RASFLSampleDataParticle,
                                            RASFLSampleDataParticle.regex_compiled(), chunk, timestamp, publish=filling)
 
-        if sample_dict:
+        if sample_dict and self.get_current_state() != ProtocolState.UNKNOWN:
             self._linebuf = ''
             self._promptbuf = ''
             self._protocol_fsm.on_event(ProtocolEvent.PUMP_STATUS,
