@@ -86,9 +86,12 @@ class QpidPublisher(Publisher):
 
         now = time.time()
         for event in events:
-            message = qm.Message(content=json.dumps(event), content_type='text/plain', durable=False,
-                                 properties=msg_headers, user_id='guest')
-            self.sender.send(message, sync=False)
+            try:
+                message = qm.Message(content=json.dumps(event), content_type='text/plain', durable=False,
+                                     properties=msg_headers, user_id='guest')
+                self.sender.send(message, sync=False)
+            except (ValueError, UnicodeDecodeError) as e:
+                log.exception('Unable to publish event: %r %r', event, e)
 
         self.sender.sync()
         elapsed = time.time() - now
@@ -106,6 +109,11 @@ class CountPublisher(Publisher):
         self.total = 0
 
     def publish(self, events):
+        for e in events:
+            try:
+                json.dumps(e)
+            except (ValueError, UnicodeDecodeError) as err:
+                log.exception('Unable to publish event: %r %r', e, err)
         count = len(events)
         self.total += count
         log.info('Publish %d events (%d total)', count, self.total)
