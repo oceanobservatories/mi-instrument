@@ -34,6 +34,7 @@ from mi.core.log import get_logger, get_logging_metaclass
 log = get_logger()
 
 META_LOGGER = get_logging_metaclass('trace')
+PUBLISH_INTERVAL = 5
 
 
 __author__ = 'Peter Cable'
@@ -463,10 +464,13 @@ class DriverWrapper(object):
 
         while not self.stop_evt_thread:
             try:
+                # TODO: should events be a deque?
+                # TODO: should we fire this with a timer instead of a loop?
                 evt = self.events.get_nowait()
-                log.info(evt)
+
                 if isinstance(evt[EventKeys.VALUE], Exception):
                     evt[EventKeys.VALUE] = encode_exception(evt[EventKeys.VALUE])
+
                 if evt[EventKeys.TYPE] == DriverAsyncEvent.ERROR:
                     log.error(evt)
 
@@ -487,9 +491,15 @@ class DriverWrapper(object):
                     event_publisher.publish(events)
                     events = []
 
-                time.sleep(.5)
-            except Exception:
-                traceback.print_exc()
+                time.sleep(PUBLISH_INTERVAL)
+
+            except KeyboardInterrupt:
+                raise
+
+            # log all other exceptions
+            except Exception as e:
+                log.exception('Exception in event publishing loop: %r', e)
+
 
 
 def main():
