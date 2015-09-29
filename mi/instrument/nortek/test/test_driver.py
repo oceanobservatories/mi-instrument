@@ -756,6 +756,7 @@ class NortekUnitTest(InstrumentDriverUnitTestCase, DriverTestMixinSub):
         reasonable format. Parsed is all we care about...raw is tested in the
         base DataParticle tests.
         """
+        self.maxDiff = None
         port_timestamp = PORT_TIMESTAMP
         driver_timestamp = DRIVER_TIMESTAMP
 
@@ -852,7 +853,7 @@ class NortekUnitTest(InstrumentDriverUnitTestCase, DriverTestMixinSub):
         also be defined in the protocol FSM.
         """
 
-        driver = NortekInstrumentDriver(self._got_data_event_callback)
+        driver = NortekInstrumentDriver(self._got_data_event_callback, None)
         self.assert_capabilities(driver, self._capabilities)
 
     @unittest.skip("this test needs more mocks!")
