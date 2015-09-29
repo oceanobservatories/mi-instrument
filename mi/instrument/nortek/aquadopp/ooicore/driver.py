@@ -97,7 +97,7 @@ class AquadoppDwVelocityDataParticle(DataParticle):
         log.debug('AquadoppDwVelocityDataParticle: raw data =%r', self.raw_data)
 
         try:
-            unpack_string = '<4s6s2h2H3hBbH4h3B1sH'
+            unpack_string = '<4s6sHh2H3hBbH4h3B1sH'
 
             sync, timestamp, error, analog1, battery_voltage, sound_speed, heading, pitch, roll, pressure_msb, status, \
                pressure_lsw, temperature, velocity_beam1, velocity_beam2, velocity_beam3, amplitude_beam1, \

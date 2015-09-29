@@ -852,7 +852,7 @@ class NortekUnitTest(InstrumentDriverUnitTestCase, DriverTestMixinSub):
         also be defined in the protocol FSM.
         """
 
-        driver = NortekInstrumentDriver(self._got_data_event_callback)
+        driver = NortekInstrumentDriver(self._got_data_event_callback, None)
         self.assert_capabilities(driver, self._capabilities)
 
     @unittest.skip("this test needs more mocks!")
