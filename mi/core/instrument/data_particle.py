@@ -195,17 +195,20 @@ class DataParticle(object):
         if not self._check_preferred_timestamps():
             raise SampleException("Preferred timestamp not in particle!")
 
+        # build response structure
+        self._encoding_errors = []
+        values = self._build_parsed_values()
+
         if all([self.contents[DataParticleKey.PREFERRED_TIMESTAMP] == DataParticleKey.PORT_TIMESTAMP,
                 self.contents[DataParticleKey.PORT_TIMESTAMP] == 0,
                 self.contents[DataParticleKey.INTERNAL_TIMESTAMP] is not None]):
             self.contents[DataParticleKey.PREFERRED_TIMESTAMP] = DataParticleKey.INTERNAL_TIMESTAMP
 
-        # build response structure
-        self._encoding_errors = []
-        values = self._build_parsed_values()
         result = self._build_base_structure()
         result[DataParticleKey.STREAM_NAME] = self.data_particle_type()
         result[DataParticleKey.VALUES] = values
+
+
 
         #log.debug("Serialize result: %s", result)
         return result
