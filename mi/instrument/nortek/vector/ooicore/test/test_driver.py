@@ -70,7 +70,7 @@ InstrumentDriverTestCase.initialize(
 )
 
 
-# velocity data particle & sample 
+# velocity data particle & sample
 def velocity_sample():
     sample_as_hex = "a51000db00008f10000049f041f72303303132120918d8f7"
     return sample_as_hex.decode('hex')
@@ -91,13 +91,13 @@ velocity_particle = [{DataParticleKey.VALUE_ID: VectorVelocityDataParticleKey.AN
                      {DataParticleKey.VALUE_ID: VectorVelocityDataParticleKey.CORRELATION_BEAM3, DataParticleKey.VALUE: 24}]
 
 
-# velocity header data particle & sample 
+# velocity header data particle & sample
 def velocity_header_sample():
     sample_as_hex = "a512150012491711121270032f2f2e0002090d0000000000000000000000000000000000000000005d70"
     return sample_as_hex.decode('hex')
 
 # these values checkout against the sample above
-velocity_header_particle = [{DataParticleKey.VALUE_ID: VectorVelocityHeaderDataParticleKey.TIMESTAMP, DataParticleKey.VALUE: '17/12/2012 11:12:49'},
+velocity_header_particle = [{DataParticleKey.VALUE_ID: VectorVelocityHeaderDataParticleKey.TIMESTAMP, DataParticleKey.VALUE: '2012-12-17 11:12:49'},
                             {DataParticleKey.VALUE_ID: VectorVelocityHeaderDataParticleKey.NUMBER_OF_RECORDS, DataParticleKey.VALUE: 880},
                             {DataParticleKey.VALUE_ID: VectorVelocityHeaderDataParticleKey.NOISE1, DataParticleKey.VALUE: 47},
                             {DataParticleKey.VALUE_ID: VectorVelocityHeaderDataParticleKey.NOISE2, DataParticleKey.VALUE: 47},
@@ -107,13 +107,13 @@ velocity_header_particle = [{DataParticleKey.VALUE_ID: VectorVelocityHeaderDataP
                             {DataParticleKey.VALUE_ID: VectorVelocityHeaderDataParticleKey.CORRELATION3, DataParticleKey.VALUE: 13}]
 
 
-# system data particle & sample 
+# system data particle & sample
 def system_sample():
     sample_as_hex = "a5110e0003261317121294007c3b83041301cdfe0a08007b0000e4d9"
     return sample_as_hex.decode('hex')
 
 # these values checkout against the sample above
-system_particle = [{DataParticleKey.VALUE_ID: VectorSystemDataParticleKey.TIMESTAMP, DataParticleKey.VALUE: '13/12/2012 17:03:26'},
+system_particle = [{DataParticleKey.VALUE_ID: VectorSystemDataParticleKey.TIMESTAMP, DataParticleKey.VALUE: '2012-12-13 17:03:26'},
                    {DataParticleKey.VALUE_ID: VectorSystemDataParticleKey.BATTERY, DataParticleKey.VALUE: 148},
                    {DataParticleKey.VALUE_ID: VectorSystemDataParticleKey.SOUND_SPEED, DataParticleKey.VALUE: 15228},
                    {DataParticleKey.VALUE_ID: VectorSystemDataParticleKey.HEADING, DataParticleKey.VALUE: 1155},
@@ -318,7 +318,6 @@ class UnitFromIDK(NortekUnitTest):
         format. Parsed is all we care about...raw is tested in the base
         DataParticle tests
         """
-
         port_timestamp = 3555423720.711772
         driver_timestamp = 3555423722.711772
         text_timestamp = time.strptime('13/12/2012 17:03:26', "%d/%m/%Y %H:%M:%S")
