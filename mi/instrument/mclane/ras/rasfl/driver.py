@@ -309,3 +309,7 @@ class Protocol(McLaneProtocol):
         self._param_dict.set_value(Parameter.CLEAR_VOLUME, CLEAR_VOLUME)
         self._param_dict.set_value(Parameter.CLEAR_FLOWRATE, CLEAR_RATE)
         self._param_dict.set_value(Parameter.CLEAR_MINFLOW, CLEAR_MIN_RATE)
+
+
+def create_playback_protocol(callback):
+    return Protocol(None, None, callback)

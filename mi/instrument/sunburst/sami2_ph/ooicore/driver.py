@@ -1196,4 +1196,6 @@ class Protocol(SamiProtocol):
         """
         return PHSEN_SAMPLE_REGEX_MATCHER
 
-# End of File driver.py
+
+def create_playback_protocol(callback):
+    return Protocol(None, None, callback)

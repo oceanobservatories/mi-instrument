@@ -1436,3 +1436,7 @@ class SBE19Protocol(SBE16Protocol):
                               OptodeSettingsParticle:
             if self._extract_sample(particle_class, particle_class.regex_compiled(), chunk, timestamp):
                 return
+
+
+def create_playback_protocol(callback):
+    return SBE19Protocol(None, None, callback)

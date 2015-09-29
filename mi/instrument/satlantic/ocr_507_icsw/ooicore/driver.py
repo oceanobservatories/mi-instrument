@@ -34,6 +34,7 @@ __license__ = 'Apache 2.0'
 
 log = get_logger()
 
+
 # ###################################################################
 # Module-wide values
 ####################################################################
@@ -403,8 +404,6 @@ class SatlanticOCR507InstrumentProtocol(CommandResponseInstrumentProtocol):
     _data_particle_regex = SAMPLE_REGEX
     _config_particle_regex = CONFIG_REGEX
 
-    __metaclass__ = get_logging_metaclass(log_level='debug')
-
     def __init__(self, callback=None):
         CommandResponseInstrumentProtocol.__init__(self, Prompt, EOLN, callback)
 
@@ -526,7 +525,6 @@ class SatlanticOCR507InstrumentProtocol(CommandResponseInstrumentProtocol):
             return 'on'
         return 'off'
 
-
     @staticmethod
     def sieve_function(raw_data):
         """ The method that splits samples
@@ -541,13 +539,6 @@ class SatlanticOCR507InstrumentProtocol(CommandResponseInstrumentProtocol):
                 return_list.append((match.start(), match.end()))
 
         return return_list
-
-
-    def _filter_capabilities(self, events):
-        """
-        """
-        events_out = [x for x in events if SatlanticCapability.has(x)]
-        return events_out
 
     def _do_cmd(self, cmd, *args, **kwargs):
         """
@@ -679,13 +670,12 @@ class SatlanticOCR507InstrumentProtocol(CommandResponseInstrumentProtocol):
         resp_handler = self._response_handlers.get((self.get_current_state(), cmd), None) or \
                        self._response_handlers.get(cmd, None)
         resp_result = None
-        if resp_handler:
+        if callable(resp_handler):
             resp_result = resp_handler(result, prompt)
 
         time.sleep(0.3)  # give some time for the instrument connection to keep up
 
         return resp_result
-
 
     ########################################################################
     # Unknown handlers.
@@ -979,7 +969,7 @@ class SatlanticOCR507InstrumentProtocol(CommandResponseInstrumentProtocol):
 
         for key in params:
             if key not in self._param_dict._param_dict:
-                exception = InstrumentParameterException ("Bad parameter: %r" % key)
+                exception = InstrumentParameterException("Bad parameter: %r" % key)
                 break
             val = self._param_dict.format(key, params[key])
             log.debug("KEY = %s VALUE = %s", str(key), str(val))
@@ -1074,3 +1064,7 @@ class SatlanticOCR507InstrumentProtocol(CommandResponseInstrumentProtocol):
             return True
         log.debug("Confirmed NOT in autosample mode")
         return False
+
+
+def create_playback_protocol(callback):
+    return SatlanticOCR507InstrumentProtocol(callback)

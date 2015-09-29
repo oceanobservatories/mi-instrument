@@ -2362,3 +2362,6 @@ class Protocol(CommandResponseInstrumentProtocol):
             log.debug('djm configuration differs, saving parameters and signaling event')
             self._driver_event(DriverAsyncEvent.CONFIG_CHANGE)
 
+
+def create_playback_protocol(callback):
+    return Protocol(None, None, callback)

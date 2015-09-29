@@ -726,7 +726,6 @@ class WorkhorseProtocol(CommandResponseInstrumentProtocol):
     """
     Specialization for this version of the workhorse driver
     """
-    # __metaclass__ = get_logging_metaclass()
 
     def __init__(self, prompts, newline, driver_event):
         """
@@ -1465,3 +1464,7 @@ class WorkhorseProtocol(CommandResponseInstrumentProtocol):
         if 'ERR' in response:
             raise InstrumentParameterException('Error setting parameter: %s' % response)
         return response
+
+
+def create_playback_protocol(callback):
+    return WorkhorseProtocol(None, None, callback)

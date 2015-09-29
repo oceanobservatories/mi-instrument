@@ -591,7 +591,7 @@ class SBE54tpsHardwareDataParticle(DataParticle):
     the building of values, and the rest should come along for free.
     """
     _data_particle_type = DataParticleType.PREST_HARDWARE_DATA
-    
+
     LINE1 = r"<HardwareData DeviceType='([^']+)' SerialNumber='(\d+)'>"
     LINE2 = r"<Manufacturer>([^<]+)</Manufacturer>"
     LINE3 = r"<FirmwareVersion>([^<]+)</FirmwareVersion>"
@@ -1465,3 +1465,7 @@ class Protocol(SeaBirdProtocol):
                              visibility=ParameterDictVisibility.IMMUTABLE,
                              startup_param=True,
                              direct_access=True)
+
+
+def create_playback_protocol(callback):
+    return Protocol(None, None, callback)

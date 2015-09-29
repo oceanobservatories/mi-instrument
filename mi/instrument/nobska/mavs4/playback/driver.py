@@ -145,3 +145,7 @@ class Protocol(CommandResponseInstrumentProtocol):
 
     def get_current_state(self):
         return ProtocolStates.UNKNOWN
+
+
+def create_playback_protocol(callback):
+    return Protocol(callback)

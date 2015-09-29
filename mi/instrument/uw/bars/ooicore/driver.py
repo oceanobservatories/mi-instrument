@@ -1362,3 +1362,7 @@ class Protocol(MenuInstrumentProtocol):
             return 1, value
         else:
             return 2, value // 60
+
+
+def create_playback_protocol(callback):
+    return Protocol(None, None, None, callback)

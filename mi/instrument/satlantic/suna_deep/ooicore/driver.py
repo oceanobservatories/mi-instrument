@@ -1764,3 +1764,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         ret_prompt = self._do_cmd_resp(InstrumentCommand.CMD_LINE, timeout=TIMEOUT,
                                        expected_prompt=[Prompt.COMMAND, Prompt.POLLED])
         return ret_prompt
+
+
+def create_playback_protocol(callback):
+    return Protocol(None, None, callback)

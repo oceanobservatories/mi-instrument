@@ -516,7 +516,6 @@ class SBE16NOProtocol(SBE19Protocol):
     Instrument protocol class for SBE16 NO driver.
     Subclasses SBE16Protocol
     """
-
     def __init__(self, prompts, newline, driver_event):
         """
         SBE16Protocol constructor.
@@ -550,7 +549,7 @@ class SBE16NOProtocol(SBE19Protocol):
         """
         Over-ride sieve function to handle additional particles.
         The base class got_data has gotten a chunk from the chunker.  Pass it to extract_sample
-        with the appropriate particle objects and REGEXes. 
+        with the appropriate particle objects and REGEXes.
         """
         if self._extract_sample(SBE16NODataParticle, SBE16NODataParticle.regex_compiled(), chunk, timestamp):
             self._sampling = True
@@ -719,3 +718,7 @@ class SBE16NOProtocol(SBE19Protocol):
                              description="Sensor type: (1:strain gauge | 3:quartz with temp comp)",
                              visibility=ParameterDictVisibility.IMMUTABLE,
                              regex_flags=re.DOTALL)
+
+
+def create_playback_protocol(callback):
+    return SBE16NOProtocol(None, None, callback)

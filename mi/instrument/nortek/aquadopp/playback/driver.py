@@ -6,26 +6,26 @@ Release notes:
 
 Driver for Aquadopp DW
 """
-import datetime
-from mi.core.exceptions import SampleException
-from mi.core.instrument.chunker import StringChunker
-from mi.core.instrument.instrument_driver import DriverAsyncEvent, SingleConnectionInstrumentDriver
-from mi.core.instrument.instrument_protocol import CommandResponseInstrumentProtocol
-from mi.core.instrument.instrument_fsm import ThreadSafeFSM
-from mi.instrument.nortek.aquadopp.ooicore.driver import NortekDataParticleType
 
 __author__ = 'Pete Cable'
 __license__ = 'Apache 2.0'
 
 import re
+import datetime
+
 
 from mi.core.log import get_logger
 log = get_logger()
 
+from mi.core.exceptions import SampleException
+from mi.core.instrument.chunker import StringChunker
+from mi.core.instrument.instrument_driver import DriverAsyncEvent
+from mi.core.instrument.instrument_protocol import CommandResponseInstrumentProtocol
+from mi.core.instrument.instrument_fsm import ThreadSafeFSM
+from mi.instrument.nortek.aquadopp.ooicore.driver import NortekDataParticleType
 from mi.core.instrument.data_particle import DataParticle, DataParticleKey
 from mi.core.common import BaseEnum
-from mi.instrument.nortek.driver import InstrumentPrompts, ProtocolState, ProtocolEvent
-from mi.instrument.nortek.driver import NEWLINE
+from mi.instrument.nortek.driver import ProtocolState, ProtocolEvent
 
 integer_pattern = r'\d+'
 float_pattern = r'[+\-\d.]+'
@@ -134,25 +134,6 @@ class AquadoppDwVelocityAsciiDataParticle(DataParticle):
         return result
 
 
-###############################################################################
-# Driver
-###############################################################################
-class InstrumentDriver(SingleConnectionInstrumentDriver):
-    """
-    InstrumentDriver subclass
-    Subclasses SingleConnectionInstrumentDriver with connection state
-    machine.
-    """
-
-    ########################################################################
-    # Protocol builder.
-    ########################################################################
-    def _build_protocol(self):
-        """
-        Construct the driver protocol state machine.
-        """
-        self._protocol = Protocol(InstrumentPrompts, NEWLINE, self._driver_event)
-
 
 ###############################################################################
 # Protocol
@@ -163,33 +144,14 @@ class Protocol(CommandResponseInstrumentProtocol):
     Subclasses NortekInstrumentProtocol
     """
 
-    def __init__(self, prompts, newline, driver_event):
+    def __init__(self, driver_event):
         """
         Protocol constructor.
         @param prompts A BaseEnum class containing instrument prompts.
         @param newline The newline.
         @param driver_event Driver process event callback.
         """
-        CommandResponseInstrumentProtocol.__init__(self, prompts, newline, driver_event)
-
-        self._protocol_fsm = ThreadSafeFSM(ProtocolState,
-                                           ProtocolEvent,
-                                           ProtocolEvent.ENTER,
-                                           ProtocolEvent.EXIT)
-
-        handlers = {
-            ProtocolState.UNKNOWN: [
-                (ProtocolEvent.ENTER, self._handler_unknown_enter),
-                (ProtocolEvent.EXIT, self._handler_unknown_exit)
-            ],
-        }
-
-        for state in handlers:
-            for event, handler in handlers[state]:
-                self._protocol_fsm.add_handler(state, event, handler)
-
-        # State state machine in UNKNOWN state.
-        self._protocol_fsm.start(ProtocolState.UNKNOWN)
+        CommandResponseInstrumentProtocol.__init__(self, None, None, driver_event)
 
         # create chunker for processing instrument samples.
         self._chunker = StringChunker(self.sieve_function)
@@ -220,18 +182,8 @@ class Protocol(CommandResponseInstrumentProtocol):
         """
         self._extract_sample(AquadoppDwVelocityAsciiDataParticle, VELOCITY_DATA_REGEX, structure, timestamp)
 
-    ########################################################################
-    # Unknown handlers.
-    ########################################################################
+    def get_current_state(self):
+        return ProtocolState.UNKNOWN
 
-    def _handler_unknown_enter(self, *args, **kwargs):
-        """
-        Enter unknown state.
-        """
-        self._driver_event(DriverAsyncEvent.STATE_CHANGE)
-
-    def _handler_unknown_exit(self, *args, **kwargs):
-        """
-        Exiting Unknown state
-        """
-        pass
+def create_playback_protocol(callback):
+    return Protocol(callback)
