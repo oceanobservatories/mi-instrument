@@ -5,7 +5,7 @@ try:
 except ImportError:
     from distutils.core import setup
 
-version = '0.3.15'
+version = '0.3.16'
 
 setup(name='mi-instrument',
       version=version,
@@ -37,5 +37,8 @@ setup(name='mi-instrument',
           'docopt',
           'pyyaml',
           'ooi_port_agent',
+          'pika',
+          'qpid-python',
+          'psycopg2',
       ],
       )
