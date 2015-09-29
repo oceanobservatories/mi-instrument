@@ -35,6 +35,7 @@ log = get_logger()
 
 META_LOGGER = get_logging_metaclass('trace')
 PUBLISH_INTERVAL = 5
+MAX_NUM_EVENTS = 1000
 
 
 __author__ = 'Peter Cable'
@@ -481,6 +482,14 @@ class DriverWrapper(object):
                     particles.append(evt)
                 else:
                     events.append(evt)
+
+                if len(particles) >= MAX_NUM_EVENTS:
+                    particle_publisher.publish(particles)
+                    particles = []
+
+                if len(events) >= MAX_NUM_EVENTS:
+                    event_publisher.publish(events)
+                    events = []
 
             except Queue.Empty:
                 if particles:
