@@ -925,3 +925,7 @@ class SBE43Protocol(SBE16Protocol):
                              direct_access=True,
                              default_value=False,
                              visibility=ParameterDictVisibility.IMMUTABLE)
+
+
+def create_playback_protocol(callback):
+    return SBE43Protocol(None, None, callback)

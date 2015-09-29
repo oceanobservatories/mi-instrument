@@ -1639,3 +1639,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                              units=ParameterUnit.TIME_INTERVAL,
                              startup_param=True,
                              direct_access=False)
+
+
+def create_playback_protocol(callback):
+    return Protocol(None, None, callback)

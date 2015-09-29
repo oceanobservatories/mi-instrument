@@ -920,19 +920,3 @@ class Protocol(WorkhorseProtocol):
         # add sent command to list for 'echo' filtering in callback
         self._sent_cmds.append(data)
         return next_state, (next_agent_state, result)
-
-
-class PlaybackProtocol4(Protocol):
-    def __init__(self, prompts, newline, driver_event):
-        super(PlaybackProtocol4, self).__init__(prompts, newline, driver_event, [SlaveProtocol.FOURBEAM])
-
-    def got_data(self, port_agent_packet, connection=SlaveProtocol.FOURBEAM):
-        super(PlaybackProtocol4, self).got_data(port_agent_packet, connection)
-
-
-class PlaybackProtocol5(Protocol):
-    def __init__(self, prompts, newline, driver_event):
-        super(PlaybackProtocol5, self).__init__(prompts, newline, driver_event, [SlaveProtocol.FIFTHBEAM])
-
-    def got_data(self, port_agent_packet, connection=SlaveProtocol.FIFTHBEAM):
-        super(PlaybackProtocol5, self).got_data(port_agent_packet, connection)

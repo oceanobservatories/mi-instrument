@@ -1053,3 +1053,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         self._param_dict.set_value(Parameter.HEATER_ON, False)
         self._driver_event(DriverAsyncEvent.CONFIG_CHANGE)
         return None, None
+
+
+def create_playback_protocol(callback):
+    return Protocol(None, None, callback)

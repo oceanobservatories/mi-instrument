@@ -648,14 +648,14 @@ class Protocol(NortekInstrumentProtocol):
 # PlaybackProtocol
 ################################################################################
 class PlaybackProtocol(Protocol):
-    def __init__(self, prompts, newline, driver_event):
+    def __init__(self, driver_event):
         """
         Protocol constructor.
         @param prompts A BaseEnum class containing instrument prompts.
         @param newline The newline.
         @param driver_event Driver process event callback.
         """
-        super(PlaybackProtocol, self).__init__(prompts, newline, driver_event)
+        super(PlaybackProtocol, self).__init__(None, None, driver_event)
         self.last_header_timestamp = None
         self.offset = 0
         self.offset_timestamp = None
@@ -720,3 +720,6 @@ class PlaybackProtocol(Protocol):
                 self._driver_event(DriverAsyncEvent.SAMPLE, parsed_sample)
 
             return parsed_sample
+
+def create_playback_protocol(callback):
+    return PlaybackProtocol(callback)

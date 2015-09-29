@@ -210,3 +210,7 @@ class THSPHProtocol(CommandResponseInstrumentProtocol):
 
     def get_current_state(self):
         return DriverProtocolState.UNKNOWN
+
+
+def create_playback_protocol(callback):
+    return THSPHProtocol(callback)

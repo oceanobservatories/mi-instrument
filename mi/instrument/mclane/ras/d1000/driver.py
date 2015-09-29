@@ -1018,8 +1018,8 @@ class Protocol(CommandResponseInstrumentProtocol):
 class PlaybackProtocol(Protocol):
     timestamp_regex = re.compile(r'(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} UTC)')
 
-    def __init__(self, prompts, newline, driver_event):
-        super(PlaybackProtocol, self). __init__(prompts, newline, driver_event)
+    def __init__(self, driver_event):
+        super(PlaybackProtocol, self). __init__(None, None, driver_event)
         self.log_timestamp = None
         self._chunker = StringChunker(self.sieve_function)
 
@@ -1057,3 +1057,7 @@ class PlaybackProtocol(Protocol):
         if self.log_timestamp is not None:
             self._extract_sample(D1000TemperatureDataParticle, D1000TemperatureDataParticle.regex_compiled(), chunk,
                                  self.log_timestamp)
+
+
+def create_playback_protocol(callback):
+    return PlaybackProtocol(callback)
