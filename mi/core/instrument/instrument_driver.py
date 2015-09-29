@@ -440,7 +440,7 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
     """
     __metaclass__ = META_LOGGER
 
-    def __init__(self, event_callback, refdes):
+    def __init__(self, event_callback, refdes=None):
         """
         Constructor for singly connected instrument drivers.
         @param event_callback Callback to the driver process to send asynchronous

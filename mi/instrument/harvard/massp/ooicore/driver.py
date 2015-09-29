@@ -165,7 +165,7 @@ class InstrumentDriver(SingleConnectionInstrumentDriver):
     """
     __metaclass__ = META_LOGGER
 
-    def __init__(self, evt_callback, refdes):
+    def __init__(self, evt_callback, refdes=None):
         """
         Driver constructor.
         @param evt_callback Driver process event callback.

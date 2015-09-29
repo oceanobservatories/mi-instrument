@@ -252,8 +252,8 @@ class Capability(BaseEnum):
     DISCOVER = DriverEvent.DISCOVER
 
 
-def validate_checksum(str_struct, raw_data):
-    checksum = struct.unpack_from('<H', raw_data, -2)[0]
+def validate_checksum(str_struct, raw_data, offset=-2):
+    checksum = struct.unpack_from('<H', raw_data, offset)[0]
     if (0xb58c + sum(struct.unpack_from(str_struct, raw_data))) & 0xffff != checksum:
         return False
     return True
@@ -339,7 +339,7 @@ class NortekHardwareConfigDataParticle(DataParticle):
             sync, serial_num, config, board_frequency, pic_version, hw_revision, recorder_size, status, spare, fw_version, cksum, _ = \
                 struct.unpack(unpack_string, self.raw_data)
 
-            if not validate_checksum('<23H', self.raw_data):
+            if not validate_checksum('<23H', self.raw_data, -4):
                 log.warn("_parse_read_hw_config: Bad read hw response from instrument (%r)", self.raw_data)
                 self.contents[DataParticleKey.QUALITY_FLAG] = DataParticleValue.CHECKSUM_FAILED
 
@@ -400,7 +400,7 @@ class NortekHeadConfigDataParticle(DataParticle):
             unpack_string = '<4s2s2H12s176s22sHh2s'
             sync, config, head_freq, head_type, head_serial, system_data, _, num_beams, cksum, _ = struct.unpack(unpack_string, self.raw_data)
 
-            if not validate_checksum('<111H', self.raw_data):
+            if not validate_checksum('<111H', self.raw_data, -4):
                 log.warn("Failed checksum in %s from instrument (%r)", self._data_particle_type, self.raw_data)
                 self.contents[DataParticleKey.QUALITY_FLAG] = DataParticleValue.CHECKSUM_FAILED
 
@@ -588,8 +588,8 @@ class NortekUserConfigDataParticle(DataParticle):
                 num_diag_per_wave, _, num_sample_burst, _, analog_scale_factor, correlation_thrs, _, tx_pulse_len_2nd,\
                 _, filter_constants, cksum, _ = struct.unpack(unpack_string, self.raw_data)
 
-            if not validate_checksum('<255H', self.raw_data):
-                log.warn("Failed checksum in %s from instrument (%r)", self._data_particle_type, self.raw_data)
+            if not validate_checksum('<255H', self.raw_data, -4):
+                log.warn("Failed checksum in %s from instrument (%r) %r", self._data_particle_type, self.raw_data, cksum)
                 self.contents[DataParticleKey.QUALITY_FLAG] = DataParticleValue.CHECKSUM_FAILED
 
             tcr = NortekProtocolParameterDict.convert_bytes_to_bit_field(tcr)

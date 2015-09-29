@@ -272,21 +272,6 @@ class InstrumentDriver(SingleConnectionInstrumentDriver):
     Instrument driver class for XR-420 driver.
     Uses CommandResponseInstrumentProtocol to communicate with the device
     """
-
-    def __init__(self, evt_callback, refdes):
-        SingleConnectionInstrumentDriver.__init__(self, evt_callback, refdes)
-        # replace the driver's discover handler with one that applies the startup values after discovery
-        self._connection_fsm.add_handler(DriverConnectionState.CONNECTED,
-                                         DriverEvent.DISCOVER,
-                                         self._handler_connected_discover)
-
-    def _handler_connected_discover(self, event, *args, **kwargs):
-        # Redefine discover handler so that we can apply startup params after we discover.
-        # For this instrument the driver puts the instrument into command mode during discover.
-        result = SingleConnectionInstrumentDriver._handler_connected_protocol_event(self, event, *args, **kwargs)
-        self.apply_startup_params()
-        return result
-
     def _build_protocol(self):
         """
         Construct the driver protocol state machine.

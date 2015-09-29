@@ -79,7 +79,7 @@ def velocity_sample():
     sample_as_hex = "a5011500101926221211000000009300f83b810628017f01002d0000e3094c0122ff9afe1e1416006093"
     return sample_as_hex.decode('hex')
 
-velocity_particle = [{'value_id': AquadoppDwVelocityDataParticleKey.TIMESTAMP, 'value': '26/11/2012 22:10:19'},
+velocity_particle = [{'value_id': AquadoppDwVelocityDataParticleKey.TIMESTAMP, 'value': '2012-11-26 22:10:19'},
                      {'value_id': AquadoppDwVelocityDataParticleKey.ERROR, 'value': 0},
                      {'value_id': AquadoppDwVelocityDataParticleKey.ANALOG1, 'value': 0},
                      {'value_id': AquadoppDwVelocityDataParticleKey.BATTERY_VOLTAGE, 'value': 147},
@@ -192,6 +192,7 @@ class DriverUnitTest(NortekUnitTest):
         """
         port_timestamp = 3555423720.711772
         driver_timestamp = 3555423722.711772
+        internal_timestamp = 3562956619.0
 
         # construct the expected particle
         expected_particle = {
@@ -200,10 +201,11 @@ class DriverUnitTest(NortekUnitTest):
             DataParticleKey.STREAM_NAME: NortekDataParticleType.VELOCITY,
             DataParticleKey.PORT_TIMESTAMP: port_timestamp,
             DataParticleKey.DRIVER_TIMESTAMP: driver_timestamp,
+            DataParticleKey.INTERNAL_TIMESTAMP: internal_timestamp,
             DataParticleKey.PREFERRED_TIMESTAMP: DataParticleKey.PORT_TIMESTAMP,
             DataParticleKey.QUALITY_FLAG: DataParticleValue.OK,
             DataParticleKey.VALUES: velocity_particle}
-        
+
         self.compare_parsed_data_particle(AquadoppDwVelocityDataParticle, velocity_sample(), expected_particle)
 
     def test_chunker(self):
@@ -230,7 +232,7 @@ class DriverUnitTest(NortekUnitTest):
         with self.assertRaises(SampleException):
             particle.generate()
 
- 
+
 ###############################################################################
 #                            INTEGRATION TESTS                                #
 #     Integration test test the direct driver / instrument interaction        #
@@ -240,7 +242,7 @@ class DriverUnitTest(NortekUnitTest):
 ###############################################################################
 @attr('INT', group='mi')
 class IntFromIDK(NortekIntTest, AquadoppDriverTestMixinSub):
-    
+
     def setUp(self):
         NortekIntTest.setUp(self)
 
