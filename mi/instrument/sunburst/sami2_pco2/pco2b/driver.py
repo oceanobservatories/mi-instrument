@@ -793,3 +793,7 @@ class Protocol(Pco2wProtocol):
         @retval configuration string regex matcher
         """
         return PCO2WB_CONFIGURATION_REGEX_MATCHER
+
+
+def create_playback_protocol(callback):
+    return Protocol(None, None, callback)

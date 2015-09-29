@@ -648,14 +648,14 @@ class Protocol(NortekInstrumentProtocol):
 # PlaybackProtocol
 ################################################################################
 class PlaybackProtocol(Protocol):
-    def __init__(self, prompts, newline, driver_event):
+    def __init__(self, driver_event):
         """
         Protocol constructor.
         @param prompts A BaseEnum class containing instrument prompts.
         @param newline The newline.
         @param driver_event Driver process event callback.
         """
-        super(PlaybackProtocol, self).__init__(prompts, newline, driver_event)
+        super(PlaybackProtocol, self).__init__(None, None, driver_event)
         self.last_header_timestamp = None
         self.offset = 0
         self.offset_timestamp = None
@@ -703,20 +703,24 @@ class PlaybackProtocol(Protocol):
             # grab the internal timestamp from the particle
             new_internal_timestamp = parsed_sample.get(DataParticleKey.INTERNAL_TIMESTAMP)
 
-            if internal_timestamp is None:
-                self.last_header_timestamp = new_internal_timestamp
-                # this timestamp came from the instrument, check if we need to update our offset
-                if self.offset_timestamp is not None:
-                    self.offset = self.offset_timestamp - new_internal_timestamp
-                    log.info('Setting new offset: %r', self.offset)
-                    self.offset_timestamp = None
-            else:
-                # bump the last_header_timestamp value by 1/8th of a second (sample rate)
-                self.last_header_timestamp += 1.0/8
+            if new_internal_timestamp is not None:
+                if internal_timestamp is None:
+                    self.last_header_timestamp = new_internal_timestamp
+                    # this timestamp came from the instrument, check if we need to update our offset
+                    if self.offset_timestamp is not None:
+                        self.offset = self.offset_timestamp - new_internal_timestamp
+                        log.info('Setting new offset: %r', self.offset)
+                        self.offset_timestamp = None
+                else:
+                    # bump the last_header_timestamp value by 1/8th of a second (sample rate)
+                    self.last_header_timestamp += 1.0/8
 
-            parsed_sample[DataParticleKey.INTERNAL_TIMESTAMP] = new_internal_timestamp + self.offset
+                parsed_sample[DataParticleKey.INTERNAL_TIMESTAMP] = new_internal_timestamp + self.offset
 
             if publish and self._driver_event:
                 self._driver_event(DriverAsyncEvent.SAMPLE, parsed_sample)
 
             return parsed_sample
+
+def create_playback_protocol(callback):
+    return PlaybackProtocol(callback)

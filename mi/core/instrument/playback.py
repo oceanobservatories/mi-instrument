@@ -6,9 +6,9 @@
 @brief Playback process using ZMQ messaging.
 
 Usage:
-    playback datalog <module> <protocol_class> <refdes> <event_url> <particle_url> <files>...
-    playback ascii <module> <protocol_class> <refdes> <event_url> <particle_url> <files>...
-    playback chunky <module> <protocol_class> <refdes> <event_url> <particle_url> <files>...
+    playback datalog <module> <refdes> <event_url> <particle_url> <files>...
+    playback ascii <module> <refdes> <event_url> <particle_url> <files>...
+    playback chunky <module> <refdes> <event_url> <particle_url> <files>...
 
 Options:
     -h, --help          Show this screen
@@ -57,14 +57,14 @@ class PlaybackPacket(Packet):
 
 
 class PlaybackWrapper(object):
-    def __init__(self, module, klass, refdes, event_url, particle_url, reader_klass, files):
+    def __init__(self, module, refdes, event_url, particle_url, reader_klass, files):
         headers = {'sensor': refdes, 'deliveryType': 'playback'}
         self.event_publisher = Publisher.from_url(event_url, headers)
         self.particle_publisher = Publisher.from_url(particle_url, headers)
         self.events = []
         self.particles = []
 
-        self.protocol = self.construct_protocol(module, klass)
+        self.protocol = self.construct_protocol(module)
         self.reader = reader_klass(files, self.got_data)
 
     def playback(self):
@@ -92,21 +92,12 @@ class PlaybackWrapper(object):
                 return base
             base = base.__base__
 
-    def construct_protocol(self, proto_module, proto_class):
+    def construct_protocol(self, proto_module):
         module = importlib.import_module(proto_module)
-        klass = getattr(module, proto_class)
-        base = self.find_base_class(klass)
-        if base == MenuInstrumentProtocol:
-            log.info('Found MenuInstrumentProtocol')
-            return klass(None, None, None, self.handle_event)
-        elif base == CommandResponseInstrumentProtocol:
-            log.info('Found CommandResponseInstrumentProtocol')
-            return klass(BaseEnum, None, self.handle_event)
-        elif base == InstrumentProtocol:
-            log.info('Found InstrumentProtocol')
-            return klass(self.handle_event)
+        if hasattr(module, 'create_playback_protocol'):
+            return module.create_playback_protocol(self.handle_event)
 
-        log.error('Unable to import and create protocol from module: %r class: %r', module, proto_class)
+        log.error('Unable to import and create playback protocol from module: %r', module)
         sys.exit(1)
 
     def publish(self):
@@ -254,7 +245,6 @@ def main():
     refdes = options['<refdes>']
     event_url = options['<event_url>']
     particle_url = options['<particle_url>']
-    klass = options.get('<protocol_class>')
     files = options.get('<files>')
 
     # when running with the profiler, files will be a string
@@ -271,7 +261,7 @@ def main():
     else:
         reader = None
 
-    wrapper = PlaybackWrapper(module, klass, refdes, event_url, particle_url, reader, files)
+    wrapper = PlaybackWrapper(module, refdes, event_url, particle_url, reader, files)
     wrapper.playback()
 
 if __name__ == '__main__':

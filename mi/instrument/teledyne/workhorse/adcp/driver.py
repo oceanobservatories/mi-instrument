@@ -8,7 +8,6 @@ class InstrumentDriver(SingleConnectionInstrumentDriver):
     Specialization for this version of the workhorse ADCP driver
     """
 
-
     def _build_protocol(self):
         """
         Construct the driver protocol state machine.

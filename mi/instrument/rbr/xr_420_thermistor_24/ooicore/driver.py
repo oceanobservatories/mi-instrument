@@ -110,8 +110,8 @@ class InstrumentResponses(BaseEnum):
     UNKNOWN_COMMAND = '? Unknown command \r\n'
     START_SAMPLING = 'Logger started in mode '
 
-        
-class InstrumentCmds(BaseEnum):   
+
+class InstrumentCmds(BaseEnum):
     GET_IDENTIFICATION = 'A'
     GET_LOGGER_DATE_AND_TIME = 'B'
     GET_SAMPLE_INTERVAL = 'C'
@@ -143,7 +143,7 @@ class ProtocolStates(BaseEnum):
     AUTOSAMPLE = DriverProtocolState.AUTOSAMPLE
     DIRECT_ACCESS = DriverProtocolState.DIRECT_ACCESS
 
-    
+
 class ProtocolEvent(BaseEnum):
     """
     Protocol events for XR-420. Cherry picked from DriverEvent enum.
@@ -276,12 +276,12 @@ class InstrumentDriver(SingleConnectionInstrumentDriver):
     def __init__(self, evt_callback, refdes):
         SingleConnectionInstrumentDriver.__init__(self, evt_callback, refdes)
         # replace the driver's discover handler with one that applies the startup values after discovery
-        self._connection_fsm.add_handler(DriverConnectionState.CONNECTED, 
-                                         DriverEvent.DISCOVER, 
+        self._connection_fsm.add_handler(DriverConnectionState.CONNECTED,
+                                         DriverEvent.DISCOVER,
                                          self._handler_connected_discover)
-    
+
     def _handler_connected_discover(self, event, *args, **kwargs):
-        # Redefine discover handler so that we can apply startup params after we discover. 
+        # Redefine discover handler so that we can apply startup params after we discover.
         # For this instrument the driver puts the instrument into command mode during discover.
         result = SingleConnectionInstrumentDriver._handler_connected_protocol_event(self, event, *args, **kwargs)
         self.apply_startup_params()
@@ -326,10 +326,10 @@ class XR_420SampleDataParticleKey(BaseEnum):
     BATTERY_VOLTAGE = "battery_voltage"
     SERIAL_NUMBER = "serial_number"
 
-                
+
 class XR_420SampleDataParticle(DataParticle):
     """
-    Class for parsing sample data into a data particle structure for the XR-420 sensor. 
+    Class for parsing sample data into a data particle structure for the XR-420 sensor.
     """
     _data_particle_type = DataParticleType.SAMPLE
 
@@ -345,9 +345,9 @@ class XR_420SampleDataParticle(DataParticle):
 
         if not match:
             raise SampleException("XR_420SampleDataParticle: No regex match of parsed sample data: [%r]", self.raw_data)
-        
+
         log.debug('_build_parsed_values: match=%s', match.group(0))
-                
+
         try:
             log.debug('_build_parsed_values: group(1)=%s', match.group(1))
             timestamp = time.strptime(match.group(1), "%y%m%d%H%M%S")
@@ -360,10 +360,10 @@ class XR_420SampleDataParticle(DataParticle):
 
             battery_voltage = float(match.group(26))
             serial_number = match.group(27)
-            
+
         except (ValueError, TypeError, IndexError) as ex:
             raise SampleException("Error (%s) while decoding parameters in data: [%r]" % (ex, self.raw_data))
-                     
+
         result = [{DataParticleKey.VALUE_ID: XR_420SampleDataParticleKey.TIMESTAMP,
                    DataParticleKey.VALUE: ntp_timestamp},
                   {DataParticleKey.VALUE_ID: XR_420SampleDataParticleKey.TEMPERATURE01,
@@ -418,7 +418,7 @@ class XR_420SampleDataParticle(DataParticle):
                    DataParticleKey.VALUE: battery_voltage},
                   {DataParticleKey.VALUE_ID: XR_420SampleDataParticleKey.SERIAL_NUMBER,
                    DataParticleKey.VALUE: serial_number}]
- 
+
         log.debug('XR_420SampleDataParticle: particle=%r', result)
         return result
 
@@ -505,7 +505,7 @@ class XR_420EngineeringDataParticle(DataParticle):
 ###############################################################################
 class InstrumentProtocol(CommandResponseInstrumentProtocol):
     """
-    This protocol implements a simple command-response interaction for the XR-420 instrument.  
+    This protocol implements a simple command-response interaction for the XR-420 instrument.
     """
     __metaclass__ = get_logging_metaclass(log_level='debug')
 
@@ -516,11 +516,11 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
         self._last_data_timestamp = None
         self.eoln = INSTRUMENT_NEWLINE
         self.advanced_functions_bits = AdvancedFunctionsBits.dict()
-        
+
         CommandResponseInstrumentProtocol.__init__(self, prompts, newline, driver_event)
-                
-        self._protocol_fsm = InstrumentFSM(ProtocolStates, 
-                                           ProtocolEvent, 
+
+        self._protocol_fsm = InstrumentFSM(ProtocolStates,
+                                           ProtocolEvent,
                                            ProtocolEvent.ENTER,
                                            ProtocolEvent.EXIT)
 
@@ -548,11 +548,11 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
         self._protocol_fsm.add_handler(ProtocolStates.DIRECT_ACCESS, ProtocolEvent.EXECUTE_DIRECT, self._handler_direct_access_execute_direct)
         self._protocol_fsm.add_handler(ProtocolStates.DIRECT_ACCESS, ProtocolEvent.STOP_DIRECT, self._handler_direct_access_stop_direct)
 
-        # Set state machine in UNKNOWN state. 
+        # Set state machine in UNKNOWN state.
         self._protocol_fsm.start(ProtocolStates.UNKNOWN)
 
         self._build_command_handlers()
- 
+
         # Construct the parameter dictionary containing device parameters,
         # current parameter values, and set formatting functions.
         self._build_param_dict()
@@ -567,24 +567,24 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
     @staticmethod
     def chunker_sieve_function(raw_data):
         # The method that detects data sample structures from instrument
- 
+
         return_list = []
-        
+
         for match in SAMPLE_DATA_REGEX.finditer(raw_data):
             return_list.append((match.start(), match.end()))
-                
+
         return return_list
-    
+
     def _filter_capabilities(self, events):
         """
-        """ 
+        """
         events_out = [x for x in events if Capability.has(x)]
         return events_out
 
     def _got_chunk(self, structure, timestamp):
         """
         The base class got_data has gotten a structure from the chunker.  Pass it to extract_sample
-        with the appropriate particle objects and REGEXes. 
+        with the appropriate particle objects and REGEXes.
         """
         log.debug("_got_chunk: detected structure = <%s>", structure)
         self._extract_sample(XR_420SampleDataParticle, SAMPLE_DATA_REGEX, structure, timestamp)
@@ -599,7 +599,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
         find. Leave some room for white space around prompts and not try to
         match that just in case we are off by a little whitespace or not quite
         at the end of a line.
-        
+
         @todo Consider cases with no prompt
         @param timeout The timeout in seconds
         @param expected_prompt Only consider the specific expected prompt as
@@ -644,7 +644,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
         timeout = kwargs.get('timeout', 10)
         expected_prompt = kwargs.get('expected_prompt', None)
         write_delay = kwargs.get('write_delay', 0)
-        
+
         # Get the build handler.
         build_handler = self._build_handlers.get(cmd, None)
         if not build_handler:
@@ -653,10 +653,10 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
         (cmd_line, expected_response) = build_handler(command=cmd, **kwargs)
         if expected_prompt is None:
             expected_prompt = expected_response
-            
+
         # Wakeup the device, pass up exception if timeout
         self._wakeup()
-        
+
         # Clear line and prompt buffers for result.
 
         self._linebuf = ''
@@ -693,16 +693,16 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
         @param delay The time to wait between consecutive wakeups.
         @throw InstrumentTimeoutException if the device could not be woken.
         """
-        
+
         timeout = 5
         response_delay = 1
-        
+
         # Clear the prompt buffer.
         self._promptbuf = ''
-        
+
         # Grab start time for overall timeout.
         start_time = time.time()
-        
+
         while True:
             # Send 'get status' command.
             log.debug('_wakeup: sending <%r>' % InstrumentCmds.GET_STATUS)
@@ -736,7 +736,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
         # Tell driver superclass to send a state change event.
         # Superclass will query the state.
         self._driver_event(DriverAsyncEvent.STATE_CHANGE)
-    
+
     def _handler_unknown_exit(self, *args, **kwargs):
         """
         Exit unknown state.
@@ -745,7 +745,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
 
     def _handler_unknown_discover(self, *args, **kwargs):
         """
-        Discover current state; can be COMMAND or AUTOSAMPLE.  
+        Discover current state; can be COMMAND or AUTOSAMPLE.
         @retval (next_state, result), (ProtocolStates.COMMAND or ProtocolStates.AUTOSAMPLE, None) if successful.
         @raise InstrumentProtocolException if we fail to discover our state
         """
@@ -754,7 +754,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
         except InstrumentTimeoutException:
             # didn't get status response, so indicate that there is trouble with the instrument
             raise InstrumentProtocolException('Failed to discover instrument state. Unable to wake up instrument.')
-        
+
         match = re.search('Logger status (\d{2})', self._promptbuf)
         if match is not None:
             # got status response, so determine what mode the instrument is in
@@ -771,7 +771,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
                 result = ResourceAgentState.IDLE
         else:
             raise InstrumentProtocolException('Failed to discover instrument state. prompt mismatch.')
-                    
+
         return next_state, result
 
     ########################################################################
@@ -789,7 +789,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
             self._init_params()
 
         self._driver_event(DriverAsyncEvent.STATE_CHANGE)
-            
+
     def _handler_command_exit(self, *args, **kwargs):
         """
         Exit command state.
@@ -868,7 +868,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
         return ProtocolStates.AUTOSAMPLE, (ResourceAgentState.STREAMING, None)
 
     def _handler_command_start_direct(self):
-        
+
         return ProtocolStates.DIRECT_ACCESS, (ResourceAgentState.DIRECT_ACCESS, None)
 
     ########################################################################
@@ -885,7 +885,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
             self._start_sampling()
 
         self._driver_event(DriverAsyncEvent.STATE_CHANGE)
-    
+
     def _handler_autosample_exit(self, *args, **kwargs):
         """
         Exit autosample state.
@@ -906,7 +906,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
         self._reset_instrument()
 
         return ProtocolStates.COMMAND, (ResourceAgentState.COMMAND, None)
-        
+
     ########################################################################
     # Direct access handlers.
     ########################################################################
@@ -915,11 +915,11 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
         Enter direct access state.
         """
         # Tell driver superclass to send a state change event.
-        # Superclass will query the state.                
+        # Superclass will query the state.
         self._driver_event(DriverAsyncEvent.STATE_CHANGE)
-        
+
         self._sent_cmds = []
-    
+
     def _handler_direct_access_exit(self, *args, **kwargs):
         """
         Exit direct access state.
@@ -928,7 +928,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
 
     def _handler_direct_access_execute_direct(self, data):
         self._do_cmd_direct(data)
-                        
+
         return None, None
 
     def _handler_direct_access_stop_direct(self):
@@ -939,7 +939,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
     ########################################################################
     def _handler_clock_sync(self, *args, **kwargs):
         """
-        sync clock close to a second edge 
+        sync clock close to a second edge
         @retval (next_state, result) tuple, (None, None) if successful.
         @throws InstrumentTimeoutException if device cannot be woken for command.
         @throws InstrumentProtocolException if command could not be built or misunderstood.
@@ -1005,23 +1005,23 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
                     raise InstrumentParameterException(msg)
 
     def _start_sampling(self):
-        
+
         # now start sampling
         status_response = self._do_cmd_resp(InstrumentCmds.START_SAMPLING)
         log.debug('_start_sampling: status=%s', status_response)
         status_as_int = int(status_response, 16)
         if status_as_int not in [Status.ENABLED_SAMPLING_NOT_STARTED, Status.STARTED_SAMPLING]:
             raise InstrumentCommandException("_handler_command_start_autosample: " +
-                                             "Failed to start sampling, status=%s" 
+                                             "Failed to start sampling, status=%s"
                                              % status_response)
-            
+
     def _reset_instrument(self):
 
         ENABLING_SEQUENCE = '!U01N'
         ERASE_TIMEOUT = 60
         # Issue reset command and return if successful.
         for i in range(2):
-            # Wakeup the device, pass up exception if timeout    
+            # Wakeup the device, pass up exception if timeout
             self._wakeup()
             # Send 'reset sampling' command.
             log.debug('_reset_instrument: sending <%r>' % ENABLING_SEQUENCE)
@@ -1044,14 +1044,14 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
                 elif status_as_int == Status.DATA_MEMORY_ERASE_FAILED:
                     # serious instrument failure
                     raise InstrumentCommandException("_reset_instrument: " +
-                                                     "SERIOUS FAILURE to reset instrument! status=%s" 
+                                                     "SERIOUS FAILURE to reset instrument! status=%s"
                                                      % Status.DATA_MEMORY_ERASE_FAILED)
                 if time.time() > starttime + ERASE_TIMEOUT:
                     break
         raise InstrumentCommandException("_reset_instrument: " +
-                                         "Failed to reset instrument after 2 tries of %d seconds each, status=%s" 
+                                         "Failed to reset instrument after 2 tries of %d seconds each, status=%s"
                                          % (ERASE_TIMEOUT, self._param_dict.get(InstrumentParameters.STATUS)))
-            
+
     def _convert_battery_voltage(self, reported_battery_voltage):
         battery_voltage = int(reported_battery_voltage, 16)
         battery_voltage *= .0816485
@@ -1069,7 +1069,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
         convert string from ION "21 AUG 2012  09:51:55" to XR-420 "yymmddhhmmss"
         """
         return time.strftime("%y%m%d%H%M%S", time.strptime(ion_date_time_string, "%d %b %Y %H:%M:%S"))
-    
+
     def _convert_xr_420_time(self, reported_time):
         """
         convert string from XR-420 "hhmmss to ION "09:51:55"
@@ -1081,7 +1081,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
         convert string from ION "09:51:55" to XR-420 "hhmmss"
         """
         return time.strftime("%H%M%S", time.strptime(ion_date_time_string, "%H:%M:%S"))
-    
+
     def _convert_calibration(self, calibration_string):
         """
         convert calibration string from 32 hex byte values to 4 floating point values
@@ -1096,7 +1096,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
             float_value = struct.unpack('<d', bytes_in_hex)
             float_list.append(float_value[0])
         return float_list
-    
+
     def _check_bit_value(self, value):
         if value in [0, 1]:
             log.debug('_check_bit_value: value <%s> is binary', value)
@@ -1107,11 +1107,11 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
 
     def _update_params(self, *args, **kwargs):
         """
-        Update the parameter dictionary. 
+        Update the parameter dictionary.
         """
         # Get old param dict config.
         old_config = self._param_dict.get_config()
-        
+
         for key in InstrumentParameters.list():
             if key != InstrumentParameters.ALL:
                 command = self._param_dict.get_submenu_read(key)
@@ -1150,10 +1150,10 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
         """
         # The parameter dictionary.
         self._param_dict = ProtocolParameterDict()
-        
+
         # Add parameter handlers to parameter dictionary for instrument configuration parameters.
         self._param_dict.add(InstrumentParameters.STATUS,
-                             r'Logger status (.*)\r\n', 
+                             r'Logger status (.*)\r\n',
                              lambda match : match.group(1),
                              str,
                              type=ParameterDictType.STRING,
@@ -1163,7 +1163,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
                              submenu_read=InstrumentCmds.GET_STATUS)
 
         self._param_dict.add(InstrumentParameters.IDENTIFICATION,
-                             r'(RBR XR-420 .*)\r\n', 
+                             r'(RBR XR-420 .*)\r\n',
                              lambda match : match.group(1),
                              str,
                              type=ParameterDictType.STRING,
@@ -1173,7 +1173,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
                              submenu_read=InstrumentCmds.GET_IDENTIFICATION)
 
         self._param_dict.add(InstrumentParameters.LOGGER_DATE_AND_TIME,
-                             r'(\d{12})CTD\r\n', 
+                             r'(\d{12})CTD\r\n',
                              lambda match : self._convert_xr_420_date_and_time(match.group(1)),
                              str,
                              type=ParameterDictType.STRING,
@@ -1185,7 +1185,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
                              submenu_write=InstrumentCmds.SET_LOGGER_DATE_AND_TIME)
 
         self._param_dict.add(InstrumentParameters.SAMPLE_INTERVAL,
-                             r'(\d{6})CSP\r\n', 
+                             r'(\d{6})CSP\r\n',
                              lambda match : self._convert_xr_420_time(match.group(1)),
                              str,
                              startup_param=True,
@@ -1198,7 +1198,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
                              submenu_write=InstrumentCmds.SET_SAMPLE_INTERVAL)
 
         self._param_dict.add(InstrumentParameters.START_DATE_AND_TIME,
-                             r'(\d{12})CST\r\n', 
+                             r'(\d{12})CST\r\n',
                              lambda match : self._convert_xr_420_date_and_time(match.group(1)),
                              str,
                              startup_param=True,
@@ -1213,7 +1213,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
                              submenu_write=InstrumentCmds.SET_START_DATE_AND_TIME)
 
         self._param_dict.add(InstrumentParameters.END_DATE_AND_TIME,
-                             r'(\d{12})CET\r\n', 
+                             r'(\d{12})CET\r\n',
                              lambda match : self._convert_xr_420_date_and_time(match.group(1)),
                              str,
                              default_value='01 Jan 2050 00:00:00',
@@ -1228,7 +1228,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
                              submenu_write=InstrumentCmds.SET_END_DATE_AND_TIME)
 
         self._param_dict.add(InstrumentParameters.BATTERY_VOLTAGE,
-                             r'(\w{2})BAT\r\n', 
+                             r'(\w{2})BAT\r\n',
                              lambda match : self._convert_battery_voltage(match.group(1)),
                              self._float_to_string,
                              type=ParameterDictType.FLOAT,
@@ -1350,7 +1350,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
                              submenu_write=InstrumentCmds.SET_ADVANCED_FUNCTIONS)
 
         self._param_dict.add(InstrumentParameters.CALIBRATION_COEFFICIENTS_CHANNEL_1,
-                             r'(\w{64})CAL\r\n', 
+                             r'(\w{64})CAL\r\n',
                              lambda match : self._convert_calibration(match.group(1)),
                              str,
                              type=ParameterDictType.LIST,
@@ -1360,7 +1360,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
                              submenu_read=InstrumentCmds.GET_CHANNEL_CALIBRATION)
 
         self._param_dict.add(InstrumentParameters.CALIBRATION_COEFFICIENTS_CHANNEL_2,
-                             r'(\w{64})CAL\r\n', 
+                             r'(\w{64})CAL\r\n',
                              lambda match : self._convert_calibration(match.group(1)),
                              str,
                              type=ParameterDictType.LIST,
@@ -1370,7 +1370,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
                              submenu_read=InstrumentCmds.GET_CHANNEL_CALIBRATION)
 
         self._param_dict.add(InstrumentParameters.CALIBRATION_COEFFICIENTS_CHANNEL_3,
-                             r'(\w{64})CAL\r\n', 
+                             r'(\w{64})CAL\r\n',
                              lambda match : self._convert_calibration(match.group(1)),
                              str,
                              type=ParameterDictType.LIST,
@@ -1380,7 +1380,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
                              submenu_read=InstrumentCmds.GET_CHANNEL_CALIBRATION)
 
         self._param_dict.add(InstrumentParameters.CALIBRATION_COEFFICIENTS_CHANNEL_4,
-                             r'(\w{64})CAL\r\n', 
+                             r'(\w{64})CAL\r\n',
                              lambda match : self._convert_calibration(match.group(1)),
                              str,
                              type=ParameterDictType.LIST,
@@ -1390,7 +1390,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
                              submenu_read=InstrumentCmds.GET_CHANNEL_CALIBRATION)
 
         self._param_dict.add(InstrumentParameters.CALIBRATION_COEFFICIENTS_CHANNEL_5,
-                             r'(\w{64})CAL\r\n', 
+                             r'(\w{64})CAL\r\n',
                              lambda match : self._convert_calibration(match.group(1)),
                              str,
                              type=ParameterDictType.LIST,
@@ -1400,7 +1400,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
                              submenu_read=InstrumentCmds.GET_CHANNEL_CALIBRATION)
 
         self._param_dict.add(InstrumentParameters.CALIBRATION_COEFFICIENTS_CHANNEL_6,
-                             r'(\w{64})CAL\r\n', 
+                             r'(\w{64})CAL\r\n',
                              lambda match : self._convert_calibration(match.group(1)),
                              str,
                              type=ParameterDictType.LIST,
@@ -1410,7 +1410,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
                              submenu_read=InstrumentCmds.GET_CHANNEL_CALIBRATION)
 
         self._param_dict.add(InstrumentParameters.CALIBRATION_COEFFICIENTS_CHANNEL_7,
-                             r'(\w{64})CAL\r\n', 
+                             r'(\w{64})CAL\r\n',
                              lambda match : self._convert_calibration(match.group(1)),
                              str,
                              type=ParameterDictType.LIST,
@@ -1420,7 +1420,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
                              submenu_read=InstrumentCmds.GET_CHANNEL_CALIBRATION)
 
         self._param_dict.add(InstrumentParameters.CALIBRATION_COEFFICIENTS_CHANNEL_8,
-                             r'(\w{64})CAL\r\n', 
+                             r'(\w{64})CAL\r\n',
                              lambda match : self._convert_calibration(match.group(1)),
                              str,
                              type=ParameterDictType.LIST,
@@ -1430,7 +1430,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
                              submenu_read=InstrumentCmds.GET_CHANNEL_CALIBRATION)
 
         self._param_dict.add(InstrumentParameters.CALIBRATION_COEFFICIENTS_CHANNEL_9,
-                             r'(\w{64})CAL\r\n', 
+                             r'(\w{64})CAL\r\n',
                              lambda match : self._convert_calibration(match.group(1)),
                              str,
                              type=ParameterDictType.LIST,
@@ -1440,7 +1440,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
                              submenu_read=InstrumentCmds.GET_CHANNEL_CALIBRATION)
 
         self._param_dict.add(InstrumentParameters.CALIBRATION_COEFFICIENTS_CHANNEL_10,
-                             r'(\w{64})CAL\r\n', 
+                             r'(\w{64})CAL\r\n',
                              lambda match : self._convert_calibration(match.group(1)),
                              str,
                              type=ParameterDictType.LIST,
@@ -1450,7 +1450,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
                              submenu_read=InstrumentCmds.GET_CHANNEL_CALIBRATION)
 
         self._param_dict.add(InstrumentParameters.CALIBRATION_COEFFICIENTS_CHANNEL_11,
-                             r'(\w{64})CAL\r\n', 
+                             r'(\w{64})CAL\r\n',
                              lambda match : self._convert_calibration(match.group(1)),
                              str,
                              type=ParameterDictType.LIST,
@@ -1460,7 +1460,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
                              submenu_read=InstrumentCmds.GET_CHANNEL_CALIBRATION)
 
         self._param_dict.add(InstrumentParameters.CALIBRATION_COEFFICIENTS_CHANNEL_12,
-                             r'(\w{64})CAL\r\n', 
+                             r'(\w{64})CAL\r\n',
                              lambda match : self._convert_calibration(match.group(1)),
                              str,
                              type=ParameterDictType.LIST,
@@ -1470,7 +1470,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
                              submenu_read=InstrumentCmds.GET_CHANNEL_CALIBRATION)
 
         self._param_dict.add(InstrumentParameters.CALIBRATION_COEFFICIENTS_CHANNEL_13,
-                             r'(\w{64})CAL\r\n', 
+                             r'(\w{64})CAL\r\n',
                              lambda match : self._convert_calibration(match.group(1)),
                              str,
                              type=ParameterDictType.LIST,
@@ -1480,7 +1480,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
                              submenu_read=InstrumentCmds.GET_CHANNEL_CALIBRATION)
 
         self._param_dict.add(InstrumentParameters.CALIBRATION_COEFFICIENTS_CHANNEL_14,
-                             r'(\w{64})CAL\r\n', 
+                             r'(\w{64})CAL\r\n',
                              lambda match : self._convert_calibration(match.group(1)),
                              str,
                              type=ParameterDictType.LIST,
@@ -1490,7 +1490,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
                              submenu_read=InstrumentCmds.GET_CHANNEL_CALIBRATION)
 
         self._param_dict.add(InstrumentParameters.CALIBRATION_COEFFICIENTS_CHANNEL_15,
-                             r'(\w{64})CAL\r\n', 
+                             r'(\w{64})CAL\r\n',
                              lambda match : self._convert_calibration(match.group(1)),
                              str,
                              type=ParameterDictType.LIST,
@@ -1500,7 +1500,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
                              submenu_read=InstrumentCmds.GET_CHANNEL_CALIBRATION)
 
         self._param_dict.add(InstrumentParameters.CALIBRATION_COEFFICIENTS_CHANNEL_16,
-                             r'(\w{64})CAL\r\n', 
+                             r'(\w{64})CAL\r\n',
                              lambda match : self._convert_calibration(match.group(1)),
                              str,
                              type=ParameterDictType.LIST,
@@ -1510,7 +1510,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
                              submenu_read=InstrumentCmds.GET_CHANNEL_CALIBRATION)
 
         self._param_dict.add(InstrumentParameters.CALIBRATION_COEFFICIENTS_CHANNEL_17,
-                             r'(\w{64})CAL\r\n', 
+                             r'(\w{64})CAL\r\n',
                              lambda match : self._convert_calibration(match.group(1)),
                              str,
                              type=ParameterDictType.LIST,
@@ -1520,7 +1520,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
                              submenu_read=InstrumentCmds.GET_CHANNEL_CALIBRATION)
 
         self._param_dict.add(InstrumentParameters.CALIBRATION_COEFFICIENTS_CHANNEL_18,
-                             r'(\w{64})CAL\r\n', 
+                             r'(\w{64})CAL\r\n',
                              lambda match : self._convert_calibration(match.group(1)),
                              str,
                              type=ParameterDictType.LIST,
@@ -1530,7 +1530,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
                              submenu_read=InstrumentCmds.GET_CHANNEL_CALIBRATION)
 
         self._param_dict.add(InstrumentParameters.CALIBRATION_COEFFICIENTS_CHANNEL_19,
-                             r'(\w{64})CAL\r\n', 
+                             r'(\w{64})CAL\r\n',
                              lambda match : self._convert_calibration(match.group(1)),
                              str,
                              type=ParameterDictType.LIST,
@@ -1540,7 +1540,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
                              submenu_read=InstrumentCmds.GET_CHANNEL_CALIBRATION)
 
         self._param_dict.add(InstrumentParameters.CALIBRATION_COEFFICIENTS_CHANNEL_20,
-                             r'(\w{64})CAL\r\n', 
+                             r'(\w{64})CAL\r\n',
                              lambda match : self._convert_calibration(match.group(1)),
                              str,
                              type=ParameterDictType.LIST,
@@ -1550,7 +1550,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
                              submenu_read=InstrumentCmds.GET_CHANNEL_CALIBRATION)
 
         self._param_dict.add(InstrumentParameters.CALIBRATION_COEFFICIENTS_CHANNEL_21,
-                             r'(\w{64})CAL\r\n', 
+                             r'(\w{64})CAL\r\n',
                              lambda match : self._convert_calibration(match.group(1)),
                              str,
                              type=ParameterDictType.LIST,
@@ -1560,7 +1560,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
                              submenu_read=InstrumentCmds.GET_CHANNEL_CALIBRATION)
 
         self._param_dict.add(InstrumentParameters.CALIBRATION_COEFFICIENTS_CHANNEL_22,
-                             r'(\w{64})CAL\r\n', 
+                             r'(\w{64})CAL\r\n',
                              lambda match : self._convert_calibration(match.group(1)),
                              str,
                              type=ParameterDictType.LIST,
@@ -1570,7 +1570,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
                              submenu_read=InstrumentCmds.GET_CHANNEL_CALIBRATION)
 
         self._param_dict.add(InstrumentParameters.CALIBRATION_COEFFICIENTS_CHANNEL_23,
-                             r'(\w{64})CAL\r\n', 
+                             r'(\w{64})CAL\r\n',
                              lambda match : self._convert_calibration(match.group(1)),
                              str,
                              type=ParameterDictType.LIST,
@@ -1580,7 +1580,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
                              submenu_read=InstrumentCmds.GET_CHANNEL_CALIBRATION)
 
         self._param_dict.add(InstrumentParameters.CALIBRATION_COEFFICIENTS_CHANNEL_24,
-                             r'(\w{64})CAL\r\n', 
+                             r'(\w{64})CAL\r\n',
                              lambda match : self._convert_calibration(match.group(1)),
                              str,
                              type=ParameterDictType.LIST,
@@ -1590,7 +1590,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
                              submenu_read=InstrumentCmds.GET_CHANNEL_CALIBRATION)
 
     def _build_command_handlers(self):
-        
+
         # Add build handlers for device get commands.
         self._add_build_handler(InstrumentCmds.GET_STATUS, self._build_get_status_command)
         self._add_build_handler(InstrumentCmds.GET_IDENTIFICATION, self._build_get_identification_command)
@@ -1602,7 +1602,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
         self._add_build_handler(InstrumentCmds.GET_CHANNEL_CALIBRATION, self._build_get_channel_calibration_command)
         self._add_build_handler(InstrumentCmds.GET_ADVANCED_FUNCTIONS, self._build_get_advanced_functions_command)
         self._add_build_handler(InstrumentCmds.START_SAMPLING, self._build_start_sampling_command)
-        
+
         # Add build handlers for device set commands.
         self._add_build_handler(InstrumentCmds.SET_LOGGER_DATE_AND_TIME, self._build_set_date_time_command)
         self._add_build_handler(InstrumentCmds.SET_START_DATE_AND_TIME, self._build_set_date_time_command)
@@ -1621,7 +1621,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
         self._add_response_handler(InstrumentCmds.GET_CHANNEL_CALIBRATION, self._parse_channel_calibration_response)
         self._add_response_handler(InstrumentCmds.GET_ADVANCED_FUNCTIONS, self._parse_advanced_functions_response)
         self._add_response_handler(InstrumentCmds.START_SAMPLING, self._parse_start_sampling_response)
-   
+
 ##################################################################################################
 # set command handlers
 ##################################################################################################
@@ -1642,7 +1642,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
             return command
         except Exception as ex:
             raise InstrumentParameterException('_build_set_time_command: %r.' % ex)
-        
+
     def _build_set_advanced_functions_command(self, cmd, *args):
         try:
             value = 0
@@ -1665,43 +1665,43 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
         if cmd_name is None:
             raise InstrumentParameterException('_build_get_status_command requires a command.')
         return cmd_name, InstrumentResponses.GET_STATUS
-    
+
     def _build_get_identification_command(self, **kwargs):
         cmd_name = kwargs.get('command', None)
         if cmd_name is None:
             raise InstrumentParameterException('_build_get_identification_command requires a command.')
         return cmd_name, InstrumentResponses.GET_IDENTIFICATION
-    
+
     def _build_get_logger_date_and_time_command(self, **kwargs):
         cmd_name = kwargs.get('command', None)
         if cmd_name is None:
             raise InstrumentParameterException('_build_get_logger_date_and_time_command requires a command.')
         return cmd_name, InstrumentResponses.GET_LOGGER_DATE_AND_TIME
-    
+
     def _build_get_sample_interval_command(self, **kwargs):
         cmd_name = kwargs.get('command', None)
         if cmd_name is None:
             raise InstrumentParameterException('_build_get_sample_interval_command requires a command.')
         return cmd_name, InstrumentResponses.GET_SAMPLE_INTERVAL
-    
+
     def _build_get_start_date_and_time_command(self, **kwargs):
         cmd_name = kwargs.get('command', None)
         if cmd_name is None:
             raise InstrumentParameterException('_build_get_start_date_and_time_command requires a command.')
         return cmd_name, InstrumentResponses.GET_START_DATE_AND_TIME
-    
+
     def _build_get_end_date_and_time_command(self, **kwargs):
         cmd_name = kwargs.get('command', None)
         if cmd_name is None:
             raise InstrumentParameterException('_build_get_end_date_and_time_command requires a command.')
         return cmd_name, InstrumentResponses.GET_END_DATE_AND_TIME
-    
+
     def _build_get_battery_voltage_command(self, **kwargs):
         cmd_name = kwargs.get('command', None)
         if cmd_name is None:
             raise InstrumentParameterException('_build_get_battery_voltage_command requires a command.')
         return cmd_name, InstrumentResponses.GET_BATTERY_VOLTAGE
-    
+
     def _build_get_channel_calibration_command(self, **kwargs):
         cmd_name = kwargs.get('command', None)
         if cmd_name is None:
@@ -1712,19 +1712,19 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
         channel_number = '%02X' % int(param_name.split('_')[-1])
         cmd = cmd_name + channel_number
         return cmd, InstrumentResponses.GET_CHANNEL_CALIBRATION
-    
+
     def _build_get_advanced_functions_command(self, **kwargs):
         cmd_name = kwargs.get('command', None)
         if cmd_name is None:
             raise InstrumentParameterException('_build_get_advanced_functions_command requires a command.')
         return cmd_name, InstrumentResponses.GET_ADVANCED_FUNCTIONS
-    
+
     def _build_start_sampling_command(self, **kwargs):
         cmd_name = kwargs.get('command', None)
         if cmd_name is None:
             raise InstrumentParameterException('_build_start_sampling_command requires a command.')
         return cmd_name, InstrumentResponses.START_SAMPLING
-    
+
 ##################################################################################################
 # response handlers
 ##################################################################################################
@@ -1733,19 +1733,19 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
             self._param_dict.update(response)
         else:
             raise InstrumentParameterException('Get status response not correct: %r.' % response)
-               
+
     def _parse_identification_response(self, response, prompt, **kwargs):
         if InstrumentResponses.GET_IDENTIFICATION in response:
             self._param_dict.update(response)
         else:
             raise InstrumentParameterException('Get identification response not correct: %r.' % response)
-               
+
     def _parse_logger_date_and_time_response(self, response, prompt, **kwargs):
         if InstrumentResponses.GET_LOGGER_DATE_AND_TIME in response:
             self._param_dict.update(response)
         else:
             raise InstrumentParameterException('Get logger date and time response not correct: %r.' % response)
-               
+
     def _parse_sample_interval_response(self, response, prompt, **kwargs):
         if InstrumentResponses.GET_SAMPLE_INTERVAL in response:
             self._param_dict.update(response)
@@ -1783,7 +1783,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
         bit_value = value & self.advanced_functions_bits[name]
         log.debug("_get_bit_value: value=%x, a_f[%s]=%x, bit_value=%d", value, name, self.advanced_functions_bits[name], bit_value)
         return 0 if bit_value == 0 else 1
-    
+
     def _parse_advanced_functions_response(self, response, prompt, **kwargs):
         match = re.search('([0-9A-F]{4})[0-9A-F]{4}STC', response)
         if match is not None:
@@ -1793,10 +1793,14 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
                 self._param_dict.set_value(name, self._get_bit_value(name, hex_value))
         else:
             raise InstrumentParameterException('Get advanced functions response not correct: %r.' % response)
-  
+
     def _parse_start_sampling_response(self, response, prompt, **kwargs):
         match = re.search('Logger started in mode (\d{2})', response)
         if match is not None:
             return match.group(1)
         else:
             raise InstrumentParameterException('Start sampling response not correct: %r.' % response)
+
+
+def create_playback_protocol(callback):
+    return InstrumentProtocol(None, None, callback)

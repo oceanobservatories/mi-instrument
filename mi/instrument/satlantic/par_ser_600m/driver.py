@@ -1130,3 +1130,7 @@ class SatlanticPARInstrumentProtocol(CommandResponseInstrumentProtocol):
                 self._driver_event(DriverAsyncEvent.SAMPLE, parsed_sample)
 
             return parsed_sample
+
+
+def create_playback_protocol(callback):
+    return SatlanticPARInstrumentProtocol(callback)
