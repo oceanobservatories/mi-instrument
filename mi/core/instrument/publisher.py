@@ -94,7 +94,7 @@ class QpidPublisher(Publisher):
     def connect(self):
         self.connection.open()
         self.session = self.connection.session()
-        self.sender = self.session.sender('%s; {create: always, node: {type: queue, durable: False}}' % self.queue)
+        self.sender = self.session.sender('%s; {create: always, node: {type: queue, durable: True}}' % self.queue)
 
     def publish(self, events, headers=None):
         msg_headers = self.headers
