@@ -6,21 +6,19 @@ Release notes:
 
 Driver for Aquadopp DW
 """
-import struct
-from datetime import datetime
-
 __author__ = 'Rachel Manoni, Ronald Ronquillo'
 __license__ = 'Apache 2.0'
 
 import re
-
-from mi.core.common import BaseEnum, Units
+from collections import namedtuple
+import struct
+from datetime import datetime
 
 from mi.core.log import get_logger
 log = get_logger()
 
 from mi.core.exceptions import SampleException
-
+from mi.core.common import BaseEnum, Units
 from mi.core.instrument.data_particle import DataParticle, DataParticleKey, DataParticleValue
 
 from mi.instrument.nortek.driver import NortekInstrumentProtocol, InstrumentPrompts, NortekProtocolParameterDict, \
@@ -37,6 +35,17 @@ VELOCITY_DATA_SYNC_BYTES = '\xa5\x01\x15\x00'
 
 VELOCITY_DATA_PATTERN = r'%s.{38}' % VELOCITY_DATA_SYNC_BYTES
 VELOCITY_DATA_REGEX = re.compile(VELOCITY_DATA_PATTERN, re.DOTALL)
+
+
+namedtuple_store = {}
+def unpack_from_format(name, unpack_format, data):
+    format_string = ''.join([item[1] for item in unpack_format])
+    fields = [item[0] for item in unpack_format]
+    data = struct.unpack_from(format_string, data)
+    if name not in namedtuple_store:
+        namedtuple_store[name] = namedtuple(name, fields)
+    _class = namedtuple_store[name]
+    return _class(*data)
 
 
 class NortekDataParticleType(BaseEnum):
@@ -93,48 +102,90 @@ class AquadoppDwVelocityDataParticle(DataParticle):
         """
         Take the velocity data sample and parse it into values with appropriate tags.
         @throws SampleException If there is a problem with sample creation
+
+        typedef struct {
+            unsigned char cSync; // sync = 0xa5
+            unsigned char cId; // identification (0x01=normal, 0x80=diag)
+            unsigned short hSize; // size of structure (words)
+            PdClock clock; // date and time
+            short hError; // error code:
+            unsigned short hAnaIn1; // analog input 1
+            unsigned short hBattery; // battery voltage (0.1 V)
+            union {
+                unsigned short hSoundSpeed; // speed of sound (0.1 m/s)
+                unsigned short hAnaIn2; // analog input 2
+            } u;
+            short hHeading; // compass heading (0.1 deg)
+            short hPitch; // compass pitch (0.1 deg)
+            short hRoll; // compass roll (0.1 deg)
+            unsigned char cPressureMSB; // pressure MSB
+            char cStatus; // status:
+            unsigned short hPressureLSW; // pressure LSW
+            short hTemperature; // temperature (0.01 deg C)
+            short hVel[3]; // velocity
+            unsigned char cAmp[3]; // amplitude
+            char cFill;
+            short hChecksum; // checksum
+        } PdMeas;
         """
-        log.debug('AquadoppDwVelocityDataParticle: raw data =%r', self.raw_data)
-
         try:
-            unpack_string = '<4s6sHh2H3hBbH4h3B1sH'
+            unpack_format = (
+                ('sync',            '<4s'),  # cSync, cId, hSize
+                ('timestamp',       '6s'),   # PdClock
+                ('error',           'H'),    # defined as signed short, but represents bitmap, using unsigned
+                ('analog1',         'H'),
+                ('battery_voltage', 'H'),
+                ('sound_speed',     'H'),
+                ('heading',         'h'),
+                ('pitch',           'h'),
+                ('roll',            'h'),
+                ('pressure_msb',    'B'),
+                ('status',          'B'),    # defined as char, but represents bitmap, using unsigned
+                ('pressure_lsw',    'H'),
+                ('temperature',     'h'),
+                ('velocity_beam1',  'h'),
+                ('velocity_beam2',  'h'),
+                ('velocity_beam3',  'h'),
+                ('amplitude_beam1', 'B'),
+                ('amplitude_beam2', 'B'),
+                ('amplitude_beam3', 'B'),
+            )
 
-            sync, timestamp, error, analog1, battery_voltage, sound_speed, heading, pitch, roll, pressure_msb, status, \
-               pressure_lsw, temperature, velocity_beam1, velocity_beam2, velocity_beam3, amplitude_beam1, \
-               amplitude_beam2, amplitude_beam3, _, cksum = struct.unpack(unpack_string, self.raw_data)
+            data = unpack_from_format(self._data_particle_type, unpack_format, self.raw_data)
 
             if not validate_checksum('<20H', self.raw_data):
                 log.warn("Failed checksum in %s from instrument (%r)", self._data_particle_type, self.raw_data)
                 self.contents[DataParticleKey.QUALITY_FLAG] = DataParticleValue.CHECKSUM_FAILED
 
-            timestamp = NortekProtocolParameterDict.convert_time(timestamp)
+            timestamp = NortekProtocolParameterDict.convert_time(data.timestamp)
             self.set_internal_timestamp((timestamp-datetime(1900, 1, 1)).total_seconds())
 
-            pressure = pressure_msb * 0x10000 + pressure_lsw
+            pressure = data.pressure_msb * 0x10000 + data.pressure_lsw
 
         except Exception as e:
             log.error('Error creating particle velpt_velocity_data, raw data: %r', self.raw_data)
             raise SampleException(e)
 
-        result = [{DataParticleKey.VALUE_ID: AquadoppDwVelocityDataParticleKey.TIMESTAMP, DataParticleKey.VALUE: str(timestamp)},
-                  {DataParticleKey.VALUE_ID: AquadoppDwVelocityDataParticleKey.ERROR, DataParticleKey.VALUE: error},
-                  {DataParticleKey.VALUE_ID: AquadoppDwVelocityDataParticleKey.ANALOG1, DataParticleKey.VALUE: analog1},
-                  {DataParticleKey.VALUE_ID: AquadoppDwVelocityDataParticleKey.BATTERY_VOLTAGE, DataParticleKey.VALUE: battery_voltage},
-                  {DataParticleKey.VALUE_ID: AquadoppDwVelocityDataParticleKey.SOUND_SPEED_ANALOG2, DataParticleKey.VALUE: sound_speed},
-                  {DataParticleKey.VALUE_ID: AquadoppDwVelocityDataParticleKey.HEADING, DataParticleKey.VALUE: heading},
-                  {DataParticleKey.VALUE_ID: AquadoppDwVelocityDataParticleKey.PITCH, DataParticleKey.VALUE: pitch},
-                  {DataParticleKey.VALUE_ID: AquadoppDwVelocityDataParticleKey.ROLL, DataParticleKey.VALUE: roll},
-                  {DataParticleKey.VALUE_ID: AquadoppDwVelocityDataParticleKey.STATUS, DataParticleKey.VALUE: status},
-                  {DataParticleKey.VALUE_ID: AquadoppDwVelocityDataParticleKey.PRESSURE, DataParticleKey.VALUE: pressure},
-                  {DataParticleKey.VALUE_ID: AquadoppDwVelocityDataParticleKey.TEMPERATURE, DataParticleKey.VALUE: temperature},
-                  {DataParticleKey.VALUE_ID: AquadoppDwVelocityDataParticleKey.VELOCITY_BEAM1, DataParticleKey.VALUE: velocity_beam1},
-                  {DataParticleKey.VALUE_ID: AquadoppDwVelocityDataParticleKey.VELOCITY_BEAM2, DataParticleKey.VALUE: velocity_beam2},
-                  {DataParticleKey.VALUE_ID: AquadoppDwVelocityDataParticleKey.VELOCITY_BEAM3, DataParticleKey.VALUE: velocity_beam3},
-                  {DataParticleKey.VALUE_ID: AquadoppDwVelocityDataParticleKey.AMPLITUDE_BEAM1, DataParticleKey.VALUE: amplitude_beam1},
-                  {DataParticleKey.VALUE_ID: AquadoppDwVelocityDataParticleKey.AMPLITUDE_BEAM2, DataParticleKey.VALUE: amplitude_beam2},
-                  {DataParticleKey.VALUE_ID: AquadoppDwVelocityDataParticleKey.AMPLITUDE_BEAM3, DataParticleKey.VALUE: amplitude_beam3}]
+        key = AquadoppDwVelocityDataParticleKey
 
-        log.debug('AquadoppDwVelocityDataParticle: particle=%s', result)
+        result = [{DataParticleKey.VALUE_ID: key.TIMESTAMP, DataParticleKey.VALUE: str(timestamp)},
+                  {DataParticleKey.VALUE_ID: key.ERROR, DataParticleKey.VALUE: data.error},
+                  {DataParticleKey.VALUE_ID: key.ANALOG1, DataParticleKey.VALUE: data.analog1},
+                  {DataParticleKey.VALUE_ID: key.BATTERY_VOLTAGE, DataParticleKey.VALUE: data.battery_voltage},
+                  {DataParticleKey.VALUE_ID: key.SOUND_SPEED_ANALOG2, DataParticleKey.VALUE: data.sound_speed},
+                  {DataParticleKey.VALUE_ID: key.HEADING, DataParticleKey.VALUE: data.heading},
+                  {DataParticleKey.VALUE_ID: key.PITCH, DataParticleKey.VALUE: data.pitch},
+                  {DataParticleKey.VALUE_ID: key.ROLL, DataParticleKey.VALUE: data.roll},
+                  {DataParticleKey.VALUE_ID: key.STATUS, DataParticleKey.VALUE: data.status},
+                  {DataParticleKey.VALUE_ID: key.PRESSURE, DataParticleKey.VALUE: pressure},
+                  {DataParticleKey.VALUE_ID: key.TEMPERATURE, DataParticleKey.VALUE: data.temperature},
+                  {DataParticleKey.VALUE_ID: key.VELOCITY_BEAM1, DataParticleKey.VALUE: data.velocity_beam1},
+                  {DataParticleKey.VALUE_ID: key.VELOCITY_BEAM2, DataParticleKey.VALUE: data.velocity_beam2},
+                  {DataParticleKey.VALUE_ID: key.VELOCITY_BEAM3, DataParticleKey.VALUE: data.velocity_beam3},
+                  {DataParticleKey.VALUE_ID: key.AMPLITUDE_BEAM1, DataParticleKey.VALUE: data.amplitude_beam1},
+                  {DataParticleKey.VALUE_ID: key.AMPLITUDE_BEAM2, DataParticleKey.VALUE: data.amplitude_beam2},
+                  {DataParticleKey.VALUE_ID: key.AMPLITUDE_BEAM3, DataParticleKey.VALUE: data.amplitude_beam3}]
+
         return result
 
 
