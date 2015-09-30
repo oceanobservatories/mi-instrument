@@ -20,8 +20,7 @@ Options:
 import importlib
 import glob
 import sys
-from mi.core.instrument.instrument_protocol import MenuInstrumentProtocol, CommandResponseInstrumentProtocol, \
-    InstrumentProtocol
+from datetime import datetime
 import os
 import re
 import time
@@ -30,16 +29,23 @@ from docopt import docopt
 from mi.core.log import get_logger
 log = get_logger()
 
-from mi.core.common import BaseEnum
-from mi.core.instrument.instrument_driver import DriverAsyncEvent
-from mi.core.instrument.publisher import Publisher
 from ooi_port_agent.packet import Packet, PacketHeader
 from ooi_port_agent.common import string_to_ntp_date_time, PacketType
 from wrapper import EventKeys, encode_exception
+from mi.core.instrument.instrument_driver import DriverAsyncEvent
+from mi.core.instrument.publisher import Publisher
+from mi.core.instrument.data_particle import DataParticleKey
+from mi.core.instrument.instrument_protocol import \
+    MenuInstrumentProtocol,\
+    CommandResponseInstrumentProtocol, \
+    InstrumentProtocol
 
 
 __author__ = 'Ronald Ronquillo'
 __license__ = 'Apache 2.0'
+
+NTP_DIFF = (datetime(1970, 1, 1) - datetime(1900, 1, 1)).total_seconds()
+Y2K = (datetime(2000, 1, 1) - datetime(1900, 1, 1)).total_seconds()
 
 
 class PlaybackPacket(Packet):
@@ -105,8 +111,26 @@ class PlaybackWrapper(object):
             self.event_publisher.publish(self.events)
             self.events = []
         if self.particles:
-            self.particle_publisher.publish(self.particles)
-            self.particles = []
+            self.filter_bad_time_particles()
+            if self.particles:
+                self.particle_publisher.publish(self.particles)
+                self.particles = []
+
+    def filter_bad_time_particles(self):
+        """
+        Filter out any particles with times before 2000 or after the current time
+        """
+        now = (datetime.utcnow() - datetime(1900, 1, 1)).total_seconds()
+        particles = []
+        for p in self.particles:
+            v = p.get('value')
+            if v is not None:
+                ts = v.get(v.get(DataParticleKey.PREFERRED_TIMESTAMP), 0)
+                if Y2K < ts < now:
+                    particles.append(p)
+                else:
+                    log.info('Rejecting particle for bad timestamp: %s', datetime.utcfromtimestamp(ts - NTP_DIFF))
+        self.particles = particles
 
     def handle_event(self, event_type, val=None):
         """

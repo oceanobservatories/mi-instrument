@@ -82,8 +82,8 @@ class Publisher(object):
 
 
 class QpidPublisher(Publisher):
-    def __init__(self, url, queue, headers):
-        self.connection = qm.Connection(url, reconnect=True, ssl=False)
+    def __init__(self, url, queue, headers, username='guest', password='guest'):
+        self.connection = qm.Connection(url, reconnect=True, username=username, password=password)
         self.queue = queue
         self.session = None
         self.sender = None
@@ -94,7 +94,7 @@ class QpidPublisher(Publisher):
     def connect(self):
         self.connection.open()
         self.session = self.connection.session()
-        self.sender = self.session.sender('%s; {create: always, node: {type: queue, durable: False}}' % self.queue)
+        self.sender = self.session.sender('%s; {create: always, node: {type: queue, durable: true}}' % self.queue)
 
     def publish(self, events, headers=None):
         msg_headers = self.headers
