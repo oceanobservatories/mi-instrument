@@ -122,9 +122,9 @@ except LookupError:
 __author__ = 'Bill French'
 __license__ = 'Apache 2.0'
 
-import inspect
 
-from mi.core.log import get_logger; log = get_logger()
+from mi.core.log import get_logger
+log = get_logger()
 
 from mi.core.common import BaseEnum
 from mi.core.scheduler import PolledScheduler
@@ -232,7 +232,7 @@ class DriverScheduler(object):
 
     def remove_job(self, callback):
         self._scheduler.unschedule_func(callback)
-    
+
     def _add_job(self, name, config):
         """
         Add a new job to the scheduler based on the trigger configuration

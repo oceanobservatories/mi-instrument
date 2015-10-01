@@ -12,16 +12,10 @@ __license__ = 'Apache 2.0'
 
 from gevent import monkey; monkey.patch_all()
 
-import time
-import unittest
 import logging
 
 from nose.plugins.attrib import attr
 
-
-from mi.core.instrument.zmq_driver_client import ZmqDriverClient
-from mi.core.instrument.zmq_driver_process import ZmqDriverProcess
-import mi.core.mi_logger
 from mi.core.unit_test import MiTestCase
 
 mi_logger = logging.getLogger('mi_logger')
@@ -35,7 +29,7 @@ class TestZmqDriverProcess(MiTestCase):
     """
     Unit tests for ZMQ driver process.
     """
-    
+
     def setUp(self):
         """
         Setup test cases.
@@ -44,7 +38,7 @@ class TestZmqDriverProcess(MiTestCase):
         self.host = 'localhost'
         self.cmd_port = 5556
         self.evt_port = 5557
-        
+
         # Driver module parameters.
         self.dvr_mod = 'ion.services.mi.drivers.sbe37.sbe37_driver'
         self.dvr_cls = 'SBE37Driver'
@@ -53,19 +47,19 @@ class TestZmqDriverProcess(MiTestCase):
         # Add cleanup handler functions.
         # self.addCleanup()
 
-        
+
     def test_driver_process(self):
         """
         Test driver process launch and comms.
         """
-        
+
         """
         driver_process = ZmqDriverProcess.launch_process(5556, 5557,
                         'ion.services.mi.drivers.sbe37.sbe37_driver', 'SBE37Driver')
         driver_client = ZmqDriverClient('localhost', 5556, 5557)
         driver_client.start_messaging()
         time.sleep(3)
-        
+
         reply = driver_client.cmd_dvr('process_echo', data='test 1 2 3')
         self.assertIsInstance(reply, dict)
         self.assertTrue('cmd' in reply)
@@ -97,10 +91,10 @@ class TestZmqDriverProcess(MiTestCase):
         driver_client.done()
         """
         pass
-    
-    
+
+
     def test_number_2(self):
         """
         """
-        
-        pass 
+
+        pass
