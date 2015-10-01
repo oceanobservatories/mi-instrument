@@ -14,14 +14,13 @@ USAGE:
 """
 
 import time
-
-import ntplib
 from mock import Mock
 from nose.plugins.attrib import attr
 import os
 
 from mi.core.instrument.port_agent_client import PortAgentPacket
 from mi.core.log import get_logger
+from mi.core.time_tools import system_to_ntp_time
 from mi.idk.unit_test import InstrumentDriverTestCase
 from mi.idk.unit_test import InstrumentDriverUnitTestCase
 from mi.idk.unit_test import InstrumentDriverIntegrationTestCase
@@ -178,7 +177,7 @@ class AntelopeTestMixinSub(DriverTestMixin):
                         break
 
     def _create_port_agent_packet(self, data_item):
-        ts = ntplib.system_to_ntp_time(time.time())
+        ts = system_to_ntp_time(time.time())
         port_agent_packet = PortAgentPacket()
         port_agent_packet.attach_data(data_item)
         port_agent_packet.attach_timestamp(ts)

@@ -71,13 +71,13 @@ data:
 
 
 """
+from mi.core.time_tools import system_to_ntp_time
 
 __author__ = 'Bill French'
 __license__ = 'Apache 2.0'
 
 import re
 import yaml
-import ntplib
 import time
 from dateutil import parser
 
@@ -435,7 +435,7 @@ class ResultSet(object):
             # remove the local time zone to convert to gmt (seconds since gmt jan 1 1970)
             gmt_sec = local_sec - time.timezone
             # convert to ntp (seconds since gmt jan 1 1900)
-            timestamp = ntplib.system_to_ntp_time(gmt_sec)
+            timestamp = system_to_ntp_time(gmt_sec)
 
         except ValueError as e:
             raise ValueError('Value %s could not be formatted to a date. %s' % (str(datestr), e))

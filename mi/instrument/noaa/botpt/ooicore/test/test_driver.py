@@ -14,8 +14,8 @@ USAGE:
 """
 
 import time
-import ntplib
 import unittest
+from mi.core.time_tools import system_to_ntp_time
 import mi.instrument.noaa.botpt.ooicore.particles as particles
 from mi.core.instrument.port_agent_client import PortAgentPacket
 from mock import Mock, call
@@ -360,7 +360,7 @@ class BotptTestMixinSub(DriverTestMixin):
                              particles.LilyLevelingParticleKey, self.lily_leveling_parameters_03, verify_values)
 
     def _create_port_agent_packet(self, data_item):
-        ts = ntplib.system_to_ntp_time(time.time())
+        ts = system_to_ntp_time(time.time())
         port_agent_packet = PortAgentPacket()
         port_agent_packet.attach_data(data_item)
         port_agent_packet.attach_timestamp(ts)
@@ -488,7 +488,7 @@ class DriverUnitTest(InstrumentDriverUnitTestCase, BotptTestMixinSub):
         This particle is not generated via the chunker (because it may contain embedded samples)
         so we will test it by manually generating the particle.
         """
-        ts = ntplib.system_to_ntp_time(time.time())
+        ts = system_to_ntp_time(time.time())
         status = NEWLINE.join([samples.SYST_STATUS, samples.LILY_STATUS1, samples.LILY_STATUS2,
                                samples.IRIS_STATUS1, samples.IRIS_STATUS2, samples.NANO_STATUS])
         self.assert_particle_botpt_status(particles.BotptStatusParticle(status, port_timestamp=ts), verify_values=True)

@@ -16,7 +16,6 @@ USAGE:
 from nose.plugins.attrib import attr
 from mock import Mock
 import time
-import ntplib
 
 from mi.core.exceptions import InstrumentProtocolException
 from mi.core.exceptions import InstrumentCommandException
@@ -26,6 +25,7 @@ from mi.core.instrument.instrument_driver import ResourceAgentState
 from mi.core.instrument.instrument_driver import DriverProtocolState
 from mi.core.instrument.port_agent_client import PortAgentPacket
 from mi.core.log import get_logger
+from mi.core.time_tools import system_to_ntp_time
 from mi.idk.unit_test import InstrumentDriverTestCase
 from mi.idk.unit_test import ParameterTestConfigKey
 from mi.idk.unit_test import AgentCapabilityType
@@ -244,7 +244,7 @@ class DriverTestMixinSub(DriverTestMixin):
         @param driver Instrument Driver instance
         @param data data to send
         """
-        ts = ntplib.system_to_ntp_time(time.time())
+        ts = system_to_ntp_time(time.time())
         port_agent_packet = PortAgentPacket()
         port_agent_packet.attach_data(data)
         port_agent_packet.attach_timestamp(ts)

@@ -12,13 +12,14 @@ USAGE:
        $ bin/test_driver -i [-t testname]
        $ bin/test_driver -q [-t testname]
 """
+from mi.core.time_tools import system_to_ntp_time
+
 __author__ = 'Kevin Stiemke'
 __license__ = 'Apache 2.0'
 
 import time
 import datetime
 
-import ntplib
 from nose.plugins.attrib import attr
 from mock import Mock
 from mi.core.log import get_logger
@@ -263,7 +264,7 @@ class SamiMixin(DriverTestMixin):
 
     @staticmethod
     def send_port_agent_packet(protocol, data):
-        ts = ntplib.system_to_ntp_time(time.time())
+        ts = system_to_ntp_time(time.time())
         port_agent_packet = PortAgentPacket()
         port_agent_packet.attach_data(data)
         port_agent_packet.attach_timestamp(ts)

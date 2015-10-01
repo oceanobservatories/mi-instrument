@@ -8,15 +8,14 @@
          Demo program included that allows to run both a listener server and a
          notifier. See demo program usage at the end of this file.
 """
+from mi.core.time_tools import system_to_ntp_time
 
 __author__ = 'Carlos Rueda'
 __license__ = 'Apache 2.0'
 
 
-import sys
 from time import sleep
 import time
-import ntplib
 from urlparse import urlparse
 import httplib
 import yaml
@@ -53,7 +52,7 @@ class EventNotifier(object):
         url_dict = self._listeners[event_type]
 
         if not url in url_dict:
-            url_dict[url] = ntplib.system_to_ntp_time(time.time())
+            url_dict[url] = system_to_ntp_time(time.time())
             log.trace("added listener=%s for event_type=%s", url, event_type)
 
         return url_dict[url]
@@ -65,7 +64,7 @@ class EventNotifier(object):
 
         unreg_time = 0
         if url in url_dict:
-            unreg_time = ntplib.system_to_ntp_time(time.time())
+            unreg_time = system_to_ntp_time(time.time())
             del url_dict[url]
             log.trace("removed listener=%s for event_type=%s", url, event_type)
 
@@ -160,7 +159,7 @@ class EventGenerator(object):
         platform_id = "TODO_some_platform_id"
         message = "%s (synthetic event generated from simulator)" % event_type['name']
         group = event_type['group']
-        timestamp = ntplib.system_to_ntp_time(time.time())
+        timestamp = system_to_ntp_time(time.time())
         first_time_timestamp = timestamp
         severity = event_type['severity']
         event_instance = {

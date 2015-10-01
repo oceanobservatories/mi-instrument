@@ -6,6 +6,7 @@
 @author  Carlos Rueda
 @brief   Some basic and direct tests to RSNPlatformDriver.
 """
+from mi.core.time_tools import system_to_ntp_time
 
 __author__ = 'Carlos Rueda'
 __license__ = 'Apache 2.0'
@@ -14,7 +15,6 @@ __license__ = 'Apache 2.0'
 # bin/nosetests -sv ion/agents/platform/rsn/test/test_rsn_platform_driver.py
 
 from ooi.logging import log
-import logging
 
 # from pyon.util.containers import get_ion_ts
 
@@ -26,9 +26,7 @@ from mi.core.unit_test import IonIntegrationTestCase
 
 from nose.plugins.attrib import attr
 
-from gevent import sleep
 import os
-import ntplib
 import time
 
 from mi.platform.test.helper import HelperTestMixin
@@ -99,7 +97,7 @@ class TestRsnPlatformDriver(IonIntegrationTestCase, HelperTestMixin):
         attrNames = self.ATTR_NAMES
 
         # see OOIION-631 note in test_platform_agent_with_rsn
-        from_time = ntplib.system_to_ntp_time(time.time() - 50)
+        from_time = system_to_ntp_time(time.time() - 50)
         req_attrs = [(attr_id, from_time) for attr_id in attrNames]
         attr_values = self._plat_driver.get_attribute_values(req_attrs)
         log.info("attr_values = %s" % str(attr_values))
