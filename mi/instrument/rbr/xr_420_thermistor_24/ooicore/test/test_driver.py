@@ -5,7 +5,7 @@
 @file /Users/Bill/WorkSpace/marine-integrations/mi/instrument/rbr/xr_420_thermistor_24/driver.py
 @author Bill Bollenbacher
 @brief Test cases for xr_420 thermistor driver
- 
+
 USAGE:
  Make tests verbose and provide stdout
    * From the IDK
@@ -33,8 +33,6 @@ import unittest
 
 # Standard lib imports
 import time
-import calendar
-import ntplib
 import json
 
 # 3rd party import
@@ -43,7 +41,7 @@ from nose.plugins.attrib import attr
 # MI logger
 from mi.core.log import get_logger
 log = get_logger()
-from mi.core.time_tools import timegm_to_float
+from mi.core.time_tools import timegm_to_float, ntp_to_system_time
 from mi.core.instrument.instrument_driver import ResourceAgentEvent
 
 from mi.core.instrument.instrument_driver import DriverAsyncEvent
@@ -95,7 +93,7 @@ InstrumentDriverTestCase.initialize(
     instrument_agent_resource_id='rbr_xr_420_ooicore',
     instrument_agent_name='rbr_xr_420_ooicore_agent',
     instrument_agent_packet_config=DataParticleType(),
-    
+
     driver_startup_config={
         DriverStartupConfigKey.PARAMETERS: {
             #InstrumentParameters.SYS_CLOCK: '3',
@@ -108,7 +106,7 @@ class UtilMixin(DriverTestMixin):
     """
     Mixin class used for storing data particle constants and common data assertion methods.
     """
-    
+
     # Create some short names for the parameter test config
     TYPE = ParameterTestConfigKey.TYPE
     READONLY = ParameterTestConfigKey.READONLY
@@ -118,7 +116,7 @@ class UtilMixin(DriverTestMixin):
     REQUIRED = ParameterTestConfigKey.REQUIRED
     DEFAULT = ParameterTestConfigKey.DEFAULT
     STATES = ParameterTestConfigKey.STATES
-    
+
     CLOCK_SYNC_TIME = '21 Feb 2002 11:18:42'
     TIME_IN_PAST    = '01 Jan 2000 12:23:00'
     TIME_IN_FUTURE  = '27 Dec 2023 01:10:59'
@@ -204,12 +202,12 @@ class UtilMixin(DriverTestMixin):
         InstrumentParameters.CALIBRATION_COEFFICIENTS_CHANNEL_23: 'A8A8D23B47876C3F08CCD99F676330BF849601A38FB8C43E3DCF7A08A8EA67BECAL\r\n',
         InstrumentParameters.CALIBRATION_COEFFICIENTS_CHANNEL_24: '13ED538DBED06C3F73B8DB10687030BF1014A4477326C53E8B9E285D3F586CBECAL\r\n',
     }
-    
+
     _engineering_parameters = {
         XR_420EngineeringDataParticleKey.BATTERY_VOLTAGE: {TYPE: float, REQUIRED: False},
         XR_420EngineeringDataParticleKey.CALIBRATION_COEFFICIENTS: {
             TYPE: list,
-            
+
             # Coefficients for S/N 021968 uncomment when testing with this specific instrument
             #VALUE: [
             #    [0.00348434592083916, -0.00025079534389118, 2.46625541318206e-06, -4.68427140350704e-08],
@@ -237,7 +235,7 @@ class UtilMixin(DriverTestMixin):
             #    [0.0034824744494318, -0.000250065611772488, 2.47012874159369e-06, -4.45481883026538e-08],
             #    [0.00351750580977995, -0.000250840574934303, 2.52129990230494e-06, -5.2796149358899e-08],
             #]
-            
+
             # Coefficients for S/N 021964
             VALUE: [
                 [0.00350351257503633, -0.000251016837008213, 2.50346349940003e-06, -7.03583240832029e-08],
@@ -267,7 +265,7 @@ class UtilMixin(DriverTestMixin):
             ]
         }
     }
-        
+
     _sample_parameters = {
         XR_420SampleDataParticleKey.TIMESTAMP: {TYPE: float, VALUE: 3223633980.0},
         XR_420SampleDataParticleKey.TEMPERATURE01: {TYPE: float, VALUE: 21.4548},
@@ -304,7 +302,7 @@ class UtilMixin(DriverTestMixin):
         "21.3044 21.1320 21.1798 21.2352 21.3488 21.1214 21.6426 21.1479 " + \
         "21.0069 21.5426 21.3204 21.2402 21.3968 21.4371 21.0411 21.4361 " + \
         "BV: 11.5916 SN: 021964 FET"
-             
+
     def assert_particle_sample(self, data_particle, verify_values=False):
         """
         Verify a take sample data particle
@@ -318,7 +316,7 @@ class UtilMixin(DriverTestMixin):
         # Verify a engineering data particle header is formatted properly w/o port agent timestamp
         # @param data_particle: version 1 data particle
         # @param stream_name: version 1 data particle
-        
+
         sample_dict = self.convert_data_particle_to_dict(data_particle)
         log.debug("assert_engineering_data_particle_header: SAMPLEDICT = %s" % sample_dict)
 
@@ -363,10 +361,10 @@ class UtilMixin(DriverTestMixin):
 @attr('UNIT', group='mi')
 class TestUNIT(InstrumentDriverUnitTestCase, UtilMixin):
     """Unit Test Container"""
-    
+
     def setUp(self):
         InstrumentDriverUnitTestCase.setUp(self)
-    
+
     def assert_engineering_particle_published(self, particle_assert_method, verify_values=False):
         """
         Verify that we can send data through the port agent and the the correct particles
@@ -528,7 +526,7 @@ class TestUNIT(InstrumentDriverUnitTestCase, UtilMixin):
                                         'PROTOCOL_EVENT_SCHEDULED_ACQUIRE_STATUS',
                                         'DRIVER_EVENT_SCHEDULED_CLOCK_SYNC',
                                         'DRIVER_EVENT_GET'],
-            ProtocolStates.DIRECT_ACCESS: ['DRIVER_EVENT_STOP_DIRECT', 
+            ProtocolStates.DIRECT_ACCESS: ['DRIVER_EVENT_STOP_DIRECT',
                                            'EXECUTE_DIRECT']
         }
 
@@ -558,7 +556,7 @@ class TestUNIT(InstrumentDriverUnitTestCase, UtilMixin):
 @attr('INT', group='mi')
 class TestINT(InstrumentDriverIntegrationTestCase, UtilMixin):
     """Integration Test Container"""
-    
+
     def _is_time_set(self, time_param, expected_time, time_format="%d %b %Y %H:%M:%S", tolerance=3):
         """
         Verify is what we expect it to be within a given tolerance
@@ -578,7 +576,7 @@ class TestINT(InstrumentDriverIntegrationTestCase, UtilMixin):
             # convert time struct to string and back again to get around DST issue so that
             # time is interpreted the same for both the instrument and test
             expected_time_struct = time.strptime(time.strftime(time_format, expected_time), time_format)
-        
+
         log.debug("Current Time: %s, Expected Time: %s", time.strftime("%d %b %y %H:%M:%S", result_time_struct),
                   time.strftime("%d %b %y %H:%M:%S", expected_time_struct))
 
@@ -595,7 +593,7 @@ class TestINT(InstrumentDriverIntegrationTestCase, UtilMixin):
         log.debug("verify clock is set to the current time")
 
         timeout_time = time.time() + timeout
-        
+
         while not self._is_time_set(time_param, time.gmtime(), tolerance=tolerance):
             log.debug("time isn't current. sleep for a bit")
             time.sleep(2)
@@ -608,7 +606,7 @@ class TestINT(InstrumentDriverIntegrationTestCase, UtilMixin):
 
     def assert_initialize_driver_unspecific(self):
         """
-        Walk an uninitialized driver through it's initialize process.  
+        Walk an uninitialized driver through it's initialize process.
         """
         # Test the driver is in state unconfigured.
         self.assert_current_state(DriverConnectionState.UNCONFIGURED)
@@ -628,7 +626,7 @@ class TestINT(InstrumentDriverIntegrationTestCase, UtilMixin):
 
         state = self.driver_client.cmd_dvr('get_resource_state')
         log.debug("initialize final state: %s" % state)
-        
+
     def _assert_parameters_on_initialization(self):
         self.assert_initialize_driver_unspecific()
         reply = self.driver_client.cmd_dvr('get_resource', InstrumentParameters.ALL)
@@ -640,7 +638,7 @@ class TestINT(InstrumentDriverIntegrationTestCase, UtilMixin):
         @brief Test for instrument wakeup, expects instrument to be in 'command' state
         """
         self.assert_initialize_driver()
-                
+
     def test_get_parameters(self):
         """
         Test driver parameters and verify their type.  Startup parameters also verify the parameter
@@ -748,7 +746,7 @@ class TestINT(InstrumentDriverIntegrationTestCase, UtilMixin):
         self.assert_set_readonly(InstrumentParameters.CALIBRATION_COEFFICIENTS_CHANNEL_22)
         self.assert_set_readonly(InstrumentParameters.CALIBRATION_COEFFICIENTS_CHANNEL_23)
         self.assert_set_readonly(InstrumentParameters.CALIBRATION_COEFFICIENTS_CHANNEL_24)
-    
+
     def test_startup_params(self):
         """
         Verify that startup parameters are applied correctly. Generally this
@@ -798,7 +796,7 @@ class TestINT(InstrumentDriverIntegrationTestCase, UtilMixin):
         self.assert_driver_command(ProtocolEvent.CLOCK_SYNC)
         self.assert_driver_command(ProtocolEvent.ACQUIRE_STATUS)
         self.assert_driver_command(ProtocolEvent.STOP_AUTOSAMPLE, state=ProtocolStates.COMMAND, delay=1)
-        
+
         ####
         # Test a bad command
         ####
@@ -809,7 +807,7 @@ class TestINT(InstrumentDriverIntegrationTestCase, UtilMixin):
         @brief Test for start/stop of instrument autosample, puts instrument in 'command' state first
         """
         self.assert_initialize_driver()
-                
+
         log.debug('test_instrument_start_stop_autosample: starting autosample')
         # start auto-sample.
         self.driver_client.cmd_dvr('execute_resource', ProtocolEvent.START_AUTOSAMPLE)
@@ -818,7 +816,7 @@ class TestINT(InstrumentDriverIntegrationTestCase, UtilMixin):
         state = self.driver_client.cmd_dvr('get_resource_state')
         self.assertEqual(state, ProtocolStates.AUTOSAMPLE)
         log.debug('test_instrument_start_stop_autosample: autosample started')
-                
+
         log.debug('test_instrument_start_stop_autosample: stopping autosample')
         # stop auto-sample.
         self.driver_client.cmd_dvr('execute_resource', ProtocolEvent.STOP_AUTOSAMPLE)
@@ -838,7 +836,7 @@ class TestINT(InstrumentDriverIntegrationTestCase, UtilMixin):
         self.driver_client.cmd_dvr('execute_resource', ProtocolEvent.START_AUTOSAMPLE)
 
         self.assert_current_state(ProtocolStates.AUTOSAMPLE)
-           
+
         # wait for some samples to be generated
         log.debug('test_instrument_start_stop_autosample: waiting 45 seconds for samples')
         gevent.sleep(45)
@@ -853,13 +851,13 @@ class TestINT(InstrumentDriverIntegrationTestCase, UtilMixin):
                 values = sample_dict['values']          # get particle dictionary
                 # pull timestamp out of particle
                 ntp_timestamp = [item for item in values if item["value_id"] == "timestamp"][0]['value']
-                float_timestamp = ntplib.ntp_to_system_time(ntp_timestamp)
+                float_timestamp = ntp_to_system_time(ntp_timestamp)
                 log.debug('dt=%s', time.ctime(float_timestamp))
         self.assertTrue(len(sample_events) >= 2)
 
         # stop autosample and return to command mode
         self.driver_client.cmd_dvr('execute_resource', ProtocolEvent.STOP_AUTOSAMPLE)
-                
+
         self.assert_current_state(ProtocolStates.COMMAND)
 
     def test_command_autosample(self):
@@ -884,7 +882,7 @@ class TestINT(InstrumentDriverIntegrationTestCase, UtilMixin):
         self.assert_initialize_driver()
 
         self.assert_particle_generation(ProtocolEvent.ACQUIRE_STATUS, DataParticleType.ENGINEERING, self.assert_particle_engineering, delay=10)
-        
+
     ###
     #   Test scheduled events
     ###
@@ -947,10 +945,10 @@ class TestINT(InstrumentDriverIntegrationTestCase, UtilMixin):
 @attr('QUAL', group='mi')
 class TestQUAL(InstrumentDriverQualificationTestCase, UtilMixin):
     """Qualification Test Container"""
-    
+
     # Qualification tests live in the base class.  This class is extended
     # here so that when running this test from 'nosetests' all tests
-    # (UNIT, INT, and QUAL) are run.  
+    # (UNIT, INT, and QUAL) are run.
 
     def test_direct_access_telnet_mode(self):
         """
@@ -980,7 +978,7 @@ class TestQUAL(InstrumentDriverQualificationTestCase, UtilMixin):
         self.tcp_client.send_data("")
 
         self.assert_direct_access_stop_telnet()
-        
+
     def test_parameter_enum(self):
         """
         @ brief InstrumentParameters enum test
@@ -1095,7 +1093,7 @@ class TestQUAL(InstrumentDriverQualificationTestCase, UtilMixin):
         self.assert_start_autosample()
 
         self.assert_sample_async(self.assert_particle_sample, DataParticleType.SAMPLE, timeout=30, sample_count=1)
-        
+
     def test_poll(self):
         """
         Verify that we can poll for an engineering particle.

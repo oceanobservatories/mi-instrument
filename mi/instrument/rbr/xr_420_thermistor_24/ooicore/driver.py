@@ -13,13 +13,11 @@ __license__ = 'Apache 2.0'
 
 
 import time
-import calendar
 import re
-import ntplib
 import struct
 
 from mi.core.common import BaseEnum, Units
-from mi.core.time_tools import get_timestamp_delayed
+from mi.core.time_tools import get_timestamp_delayed, system_to_ntp_time
 from mi.core.time_tools import timegm_to_float
 from mi.core.instrument.instrument_driver import DriverParameter
 
@@ -338,7 +336,7 @@ class XR_420SampleDataParticle(DataParticle):
             timestamp = time.strptime(match.group(1), "%y%m%d%H%M%S")
             log.debug("_build_parsed_values: ts=%s", timestamp)
             self.set_internal_timestamp(unix_time=timegm_to_float(timestamp))
-            ntp_timestamp = ntplib.system_to_ntp_time(timegm_to_float(timestamp))
+            ntp_timestamp = system_to_ntp_time(timegm_to_float(timestamp))
 
             for i in range(2, 26):
                 temps.append(float(match.group(i)))

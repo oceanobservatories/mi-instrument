@@ -19,13 +19,13 @@ from pprint import pformat
 from collections import Counter
 import unittest
 
-import ntplib
 import gevent
 from nose.plugins.attrib import attr
 from mock import Mock
 from mi.core.exceptions import ResourceError, BadRequest
 from mi.core.exceptions import InstrumentCommandException
 from mi.core.instrument.port_agent_client import PortAgentClient, PortAgentPacket
+from mi.core.time_tools import system_to_ntp_time
 from mi.idk.comm_config import ConfigTypes
 from mi.idk.unit_test import InstrumentDriverTestCase, LOCALHOST, ParameterTestConfigKey, AgentCapabilityType
 from mi.idk.unit_test import InstrumentDriverUnitTestCase
@@ -127,7 +127,7 @@ class DriverTestMixinSub(DriverTestMixin):
         @param protocol Instrument Protocol instance
         @param data data to send
         """
-        ts = ntplib.system_to_ntp_time(time.time())
+        ts = system_to_ntp_time(time.time())
         port_agent_packet = PortAgentPacket()
         port_agent_packet.attach_data(data)
         port_agent_packet.attach_timestamp(ts)

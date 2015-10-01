@@ -10,7 +10,6 @@ import re
 import time
 import datetime
 
-import ntplib
 from mi.core.driver_scheduler import DriverSchedulerConfigKey, TriggerType
 from mi.core.instrument.data_particle import DataParticleKey, DataParticleValue
 from mi.core.instrument.protocol_param_dict import ParameterDictVisibility, ParameterDictType
@@ -29,6 +28,7 @@ from mi.core.exceptions import InstrumentParameterException
 from mi.core.exceptions import InstrumentProtocolException
 from mi.core.exceptions import InstrumentDataException
 from mi.core.instrument.driver_dict import DriverDictKey
+from mi.core.time_tools import system_to_ntp_time
 import mi.instrument.noaa.botpt.ooicore.particles as particles
 import mi.core.log
 
@@ -938,7 +938,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         messages with embedded messages from the other parts of the instrument.
         @return next_state, (next_agent_state, result)
         """
-        ts = ntplib.system_to_ntp_time(time.time())
+        ts = system_to_ntp_time(time.time())
         parts = []
 
         for command, particle_class in [

@@ -5,7 +5,7 @@ try:
 except ImportError:
     from distutils.core import setup
 
-version = '0.3.23'
+version = '0.3.24'
 
 setup(name='mi-instrument',
       version=version,
@@ -29,7 +29,6 @@ setup(name='mi-instrument',
           ],
       },
       install_requires=[
-          'ntplib>=0.1.9',
           'apscheduler==2.1.0',
           'consulate',
           'qpid-python',
@@ -40,5 +39,6 @@ setup(name='mi-instrument',
           'pika',
           'qpid-python',
           'psycopg2',
+          'nose',
       ],
       )

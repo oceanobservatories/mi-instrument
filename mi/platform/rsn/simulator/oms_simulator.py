@@ -6,24 +6,21 @@
 @author  Carlos Rueda
 @brief   OMS simulator
 """
+from mi.core.time_tools import system_to_ntp_time
 
 __author__ = 'Carlos Rueda'
 __license__ = 'Apache 2.0'
 
+import time
+
 from mi.platform.rsn.oms_client import CIOMSClient
-from mi.platform.rsn.oms_client import REQUIRED_INSTRUMENT_ATTRIBUTES
 from mi.platform.responses import NormalResponse, InvalidResponse
 from mi.platform.util.network_util import NetworkUtil
-
-from mi.platform.rsn.simulator.oms_events import EventInfo
 from mi.platform.rsn.simulator.oms_events import EventNotifier
 from mi.platform.rsn.simulator.oms_events import EventGenerator
 from mi.platform.rsn.simulator.oms_values import generate_values
-
-import time
-import ntplib
-
 from mi.platform.rsn.simulator.logger import Logger
+
 log = Logger.get_logger()
 
 ###########################################################################
@@ -174,7 +171,7 @@ class CIOMSSimulator(CIOMSClient):
             return {platform_id: InvalidResponse.PLATFORM_ID}
 
         # complete time window until current time:
-        to_time = ntplib.system_to_ntp_time(time.time())
+        to_time = system_to_ntp_time(time.time())
         attrs = self._pnodes[platform_id].attrs
         vals = {}
         for attrName, from_time in req_attrs:
@@ -275,7 +272,7 @@ class CIOMSSimulator(CIOMSClient):
 
         if platform_id not in self._pnodes:
             return {platform_id: InvalidResponse.PLATFORM_ID}
-        
+
         if flag not in self._mission_flags:
             return {platform_id: InvalidResponse.FLAG}
 
@@ -352,7 +349,7 @@ class CIOMSSimulator(CIOMSClient):
             # copy event and include the additional fields:
             event_instance = event.copy()
             event_instance['test_event'] = True
-            timestamp = ntplib.system_to_ntp_time(time.time())
+            timestamp = system_to_ntp_time(time.time())
             if 'timestamp' not in event_instance:
                 event_instance['timestamp'] = timestamp
             if 'first_time_timestamp' not in event_instance:

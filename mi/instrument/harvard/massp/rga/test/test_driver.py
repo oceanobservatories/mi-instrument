@@ -12,6 +12,7 @@ USAGE:
        $ bin/test_driver -i [-t testname]
        $ bin/test_driver -q [-t testname]
 """
+from mi.core.time_tools import system_to_ntp_time
 
 __author__ = 'Peter Cable'
 __license__ = 'Apache 2.0'
@@ -20,7 +21,6 @@ import struct
 import time
 import unittest
 
-import ntplib
 from nose.plugins.attrib import attr
 from mock import Mock, call
 from mi.idk.unit_test import InstrumentDriverTestCase, ParameterTestConfigKey
@@ -224,7 +224,7 @@ class DriverTestMixinSub(DriverTestMixin):
         @param driver: instrument driver instance
         @param data: data to be sent
         """
-        ts = ntplib.system_to_ntp_time(time.time())
+        ts = system_to_ntp_time(time.time())
         port_agent_packet = PortAgentPacket()
         port_agent_packet.attach_data(data)
         port_agent_packet.attach_timestamp(ts)

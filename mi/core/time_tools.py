@@ -9,21 +9,23 @@
 __author__ = 'Bill French'
 __license__ = 'Apache 2.0'
 
-from mi.core.log import get_logger ; log = get_logger()
+from mi.core.log import get_logger
+log = get_logger()
 
 import calendar
-import datetime
-import ntplib
+from datetime import datetime
 import time
 import re
 
 DATE_PATTERN = r'^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?Z?$'
 DATE_MATCHER = re.compile(DATE_PATTERN)
 DATE_FORMAT = "%Y-%m-%dT%H:%M:%S.%fZ"
+NTP_DIFF = (datetime(1970, 1, 1) - datetime(1900, 1, 1)).total_seconds()
+Y2K = (datetime(2000, 1, 1) - datetime(1900, 1, 1)).total_seconds()
 
 
-def get_timestamp_delayed(format):
-    '''
+def get_timestamp_delayed(time_format):
+    """
     Return a formatted date string of the current utc time,
     but the string return is delayed until the next second
     transition.
@@ -31,43 +33,43 @@ def get_timestamp_delayed(format):
     Formatting:
     http://docs.python.org/library/time.html#time.strftime
 
-    @param format: strftime() format string
+    @param time_format: strftime() format string
     @return: formatted date string
     @raise ValueError if format is None
-    '''
-    if(not format):
+    """
+    if not time_format:
         raise ValueError
 
-    result = None
-    now = datetime.datetime.utcnow()
+    now = datetime.utcnow()
 
     # If we are too close to a second transition then sleep for a bit.
-    if(now.microsecond < 100000):
+    if now.microsecond < 100000:
         time.sleep(0.2)
-        now = datetime.datetime.utcnow()
+        now = datetime.utcnow()
 
-    current = datetime.datetime.utcnow()
-    while(current.microsecond > now.microsecond):
-        current = datetime.datetime.utcnow()
+    current = datetime.utcnow()
+    while current.microsecond > now.microsecond:
+        current = datetime.utcnow()
 
-    return time.strftime(format, time.gmtime())
+    return time.strftime(time_format, time.gmtime())
 
 
-def get_timestamp(format):
-    '''
+def get_timestamp(time_format):
+    """
     Return a formatted date string of the current utc time.
 
     Formatting:
     http://docs.python.org/library/time.html#time.strftime
 
-    @param format: strftime() format string
+    @param time_format: strftime() format string
     @return: formatted date string
     @raise ValueError if format is None
-    '''
-    if(not format):
+    """
+    if not time_format:
         raise ValueError
 
-    return time.strftime(format, time.gmtime())
+    return time.strftime(time_format, time.gmtime())
+
 
 def string_to_ntp_date_time(datestr):
     """
@@ -77,7 +79,7 @@ def string_to_ntp_date_time(datestr):
     @throws InstrumentParameterException if datestr cannot be formatted to
     a date.
     """
-    if not isinstance(datestr, str):
+    if not isinstance(datestr, basestring):
         raise IOError('Value %s is not a string.' % str(datestr))
 
     if not DATE_MATCHER.match(datestr):
@@ -97,30 +99,26 @@ def string_to_ntp_date_time(datestr):
         if datestr[-1:] != 'Z':
             datestr += 'Z'
 
-        dt = datetime.datetime.strptime(datestr, DATE_FORMAT)
-
-        unix_timestamp = calendar.timegm(dt.timetuple()) + (dt.microsecond / 1000000.0)
-
-        # convert to ntp (seconds since gmt jan 1 1900)
-        timestamp = ntplib.system_to_ntp_time(unix_timestamp)
-        #log.debug("converted time string '%s', unix_ts: %s ntp: %s", datestr, unix_timestamp, timestamp)
+        dt = datetime.strptime(datestr, DATE_FORMAT)
+        timestamp = (dt - datetime(1900, 1, 1)).total_seconds()
 
     except ValueError as e:
         raise ValueError('Value %s could not be formatted to a date. %s' % (str(datestr), e))
 
     return timestamp
 
+
 def time_to_ntp_date_time(unix_time=None):
         """
         return an NTP timestamp.  Currently this is a float, but should be a 64bit fixed point block.
         TODO: Fix return value
-        @param unit_time: Unix time as returned from time.time()
+        @param unix_time: Unix time as returned from time.time()
         """
         if unix_time is None:
             unix_time = time.time()
 
-        timestamp = ntplib.system_to_ntp_time(unix_time)
-        return float(timestamp)
+        return unix_time + NTP_DIFF
+
 
 def timegm_to_float(timestamp):
     """
@@ -133,3 +131,10 @@ def timegm_to_float(timestamp):
     gmfloat = float(calendar.timegm(timestamp))
     return gmfloat
 
+
+def system_to_ntp_time(unix_timestamp):
+    return unix_timestamp + NTP_DIFF
+
+
+def ntp_to_system_time(ntp_timestamp):
+    return ntp_timestamp - NTP_DIFF

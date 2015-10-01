@@ -1,4 +1,3 @@
-import ntplib
 import os
 import cPickle as pickle
 from threading import Lock
@@ -10,6 +9,7 @@ from mi.core.instrument.driver_dict import DriverDictKey
 from mi.core.instrument.port_agent_client import PortAgentPacket
 from mi.core.instrument.protocol_param_dict import ParameterDictVisibility, ParameterDictType
 from mi.core.log import get_logger
+from mi.core.time_tools import system_to_ntp_time
 from mi.instrument.antelope.orb.ooicore.packet_log import PacketLog, GapException
 
 
@@ -106,8 +106,8 @@ class AntelopeMetadataParticle(DataParticle):
             self._encode_value(pk.STATION, header.station, str),
             self._encode_value(pk.LOCATION, header.location, str),
             self._encode_value(pk.CHANNEL, header.channel, str),
-            self._encode_value(pk.START, ntplib.system_to_ntp_time(header.starttime), float),
-            self._encode_value(pk.END, ntplib.system_to_ntp_time(header.endtime), float),
+            self._encode_value(pk.START, system_to_ntp_time(header.starttime), float),
+            self._encode_value(pk.END, system_to_ntp_time(header.endtime), float),
             self._encode_value(pk.RATE, header.rate, float),
             self._encode_value(pk.NSAMPS, header.num_samples, int),
             self._encode_value(pk.FILENAME, self.raw_data.filename, str),
