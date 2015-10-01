@@ -7,6 +7,7 @@ Release notes:
 
 RGA driver for the MASSP in-situ mass spectrometer
 """
+from mi.core.time_tools import system_to_ntp_time
 
 __author__ = 'Peter Cable'
 __license__ = 'Apache 2.0'
@@ -16,7 +17,6 @@ import struct
 import time
 import datetime
 import functools
-import ntplib
 import mi.core.log
 import mi.core.exceptions as exceptions
 from mi.core.driver_scheduler import DriverSchedulerConfigKey
@@ -973,7 +973,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         # publish the config as a status particle
         pd = self._param_dict.get_all()
         log.debug('parameter dictionary: %r', pd)
-        ts = ntplib.system_to_ntp_time(time.time())
+        ts = system_to_ntp_time(time.time())
         self._driver_event(DriverAsyncEvent.SAMPLE, RGAStatusParticle(pd, port_timestamp=ts).generate())
 
         # replace the sieve function
@@ -987,7 +987,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         # empty the chunker
         self._chunker.clean()
         # place sentinel value in chunker
-        self._chunker.add_chunk(SCAN_START_SENTINEL, ntplib.system_to_ntp_time(time.time()))
+        self._chunker.add_chunk(SCAN_START_SENTINEL, system_to_ntp_time(time.time()))
         self.scan_start_time = time.time()
         if self.in_scan:
             log.error('FAILED scan detected, in_scan sentinel set to TRUE')

@@ -13,8 +13,6 @@ import sqlite3
 import string
 import time
 
-import ntplib
-
 from mi.core.common import BaseEnum
 from mi.core.driver_scheduler import DriverSchedulerConfigKey, TriggerType
 from mi.core.instrument.data_particle import DataParticle
@@ -30,7 +28,7 @@ from mi.core.exceptions import InstrumentParameterException, SampleException
 from mi.core.instrument.driver_dict import DriverDictKey
 from mi.core.instrument.protocol_param_dict import ProtocolParameterDict
 import mi.core.log
-
+from mi.core.time_tools import system_to_ntp_time
 
 __author__ = 'Pete Cable'
 __license__ = 'Apache 2.0'
@@ -397,7 +395,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         # the overall rate will be close enough
         particle = VirtualParticle(stream_name, port_timestamp=0)
         for x in range(count):
-            particle.contents['port_timestamp'] = ntplib.system_to_ntp_time(time.time())
+            particle.contents['port_timestamp'] = system_to_ntp_time(time.time())
             self._driver_event(DriverAsyncEvent.SAMPLE, particle.generate())
             time.sleep(.001)
 

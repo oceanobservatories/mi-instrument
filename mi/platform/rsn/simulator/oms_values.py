@@ -6,18 +6,18 @@
 @author  Carlos Rueda
 @brief   Platform attribute value generators for the RSN OMS simulator.
 """
+from mi.core.time_tools import system_to_ntp_time
 
 __author__ = 'Carlos Rueda'
 __license__ = 'Apache 2.0'
 
 
 import time
-import ntplib
 import math
 
 
 # time begins a few secs ago from now for purposes of reporting
-_START_TIME = ntplib.system_to_ntp_time(time.time() - 30)
+_START_TIME = system_to_ntp_time(time.time() - 30)
 
 # maximum value array size for a single generation call
 _MAX_RESULT_SIZE = 1000
@@ -201,7 +201,7 @@ if __name__ == "__main__":  # pragma: no cover
         """)
         exit()
 
-    cur_time = ntplib.system_to_ntp_time(time.time())
+    cur_time = system_to_ntp_time(time.time())
 
     platform_id = sys.argv[1]
     attr_id     = sys.argv[2]

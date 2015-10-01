@@ -6,12 +6,11 @@
 @author  Carlos Rueda
 @brief   Some utilities / placeholders
 """
+from mi.core.time_tools import system_to_ntp_time, ntp_to_system_time
 
 __author__ = 'Carlos Rueda'
 __license__ = 'Apache 2.0'
 
-
-import ntplib
 
 
 def ion_ts_2_ntp(ion_ts):
@@ -30,14 +29,14 @@ def ion_ts_2_ntp(ion_ts):
             https://github.com/ooici/pyon/blob/6a9e4199db1e9/pyon/util/containers.py#L243-248
 
     @retval float corresponding to NTP calculated as
-            ntplib.system_to_ntp_time(float(ion_ts) / 1000)
+            system_to_ntp_time(float(ion_ts) / 1000)
     """
 
     # convert to seconds:
     sys_time = float(ion_ts) / 1000
 
     # convert to NTP
-    ntp_time = ntplib.system_to_ntp_time(sys_time)
+    ntp_time = system_to_ntp_time(sys_time)
 
     return ntp_time
 
@@ -56,11 +55,11 @@ def ntp_2_ion_ts(ntp_time):
 
     @retval str representing an integer number, the millis in UNIX epoch,
             corresponding to the given NTP time. This is calculated as
-            str( int(round(ntplib.ntp_to_system_time(ntp_time) * 1000)) )
+            str( int(round(ntp_to_system_time(ntp_time) * 1000)) )
     """
 
     # convert to system time:
-    sys_time = ntplib.ntp_to_system_time(ntp_time)
+    sys_time = ntp_to_system_time(ntp_time)
 
     # convert to milliseconds rounding to the nearest integer:
     sys_time = int(round(sys_time * 1000))

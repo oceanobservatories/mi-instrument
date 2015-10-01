@@ -33,7 +33,6 @@ from mock import Mock
 
 # Standard lib imports
 import time
-import ntplib
 import json
 import unittest
 
@@ -91,7 +90,7 @@ from mi.core.instrument.chunker import StringChunker
 
 # MI logger
 from mi.core.log import get_logger
-from mi.core.time_tools import timegm_to_float
+from mi.core.time_tools import timegm_to_float, system_to_ntp_time
 
 log = get_logger()
 
@@ -321,9 +320,9 @@ class Mavs4Mixin(DriverTestMixin):
         self.assertTrue(sent_time[:12].upper() in rcvd_time.upper())
 
         sent_timestamp = time.strptime(sent_time, "%m/%d/%Y %H:%M:%S")
-        ntp_sent_timestamp = ntplib.system_to_ntp_time(timegm_to_float(sent_timestamp))
+        ntp_sent_timestamp = system_to_ntp_time(timegm_to_float(sent_timestamp))
         rcvd_timestamp = time.strptime(rcvd_time, "%m/%d/%Y %H:%M:%S")
-        ntp_rcvd_timestamp = ntplib.system_to_ntp_time(timegm_to_float(rcvd_timestamp))
+        ntp_rcvd_timestamp = system_to_ntp_time(timegm_to_float(rcvd_timestamp))
         # verify that the times match closely
         log.trace("sts=%d, rts=%d", ntp_sent_timestamp, ntp_rcvd_timestamp)
         if ntp_rcvd_timestamp - ntp_sent_timestamp > 45:
@@ -705,7 +704,7 @@ class Testmavs4_INT(InstrumentDriverIntegrationTestCase, Mavs4Mixin):
                 ntp_timestamp = sample_dict[DataParticleKey.INTERNAL_TIMESTAMP]
                 # ntp_timestamp = [item for item in values if item["value_id"] ==
                 #                                             Mavs4SampleDataParticleKey.TIMESTAMP][0]['value']
-                float_timestamp = ntplib.ntp_to_system_time(ntp_timestamp)
+                float_timestamp = ntp_to_system_time(ntp_timestamp)
                 log.debug('dt=%s' % time.ctime(float_timestamp))
         self.assertTrue(len(sample_events) >= 2)
 
