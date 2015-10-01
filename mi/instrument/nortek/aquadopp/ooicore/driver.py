@@ -6,6 +6,8 @@ Release notes:
 
 Driver for Aquadopp DW
 """
+import functools
+
 __author__ = 'Rachel Manoni, Ronald Ronquillo'
 __license__ = 'Apache 2.0'
 
