@@ -30,7 +30,7 @@ from mi.core.log import get_logger
 log = get_logger()
 
 from ooi_port_agent.packet import Packet, PacketHeader
-from ooi_port_agent.common import string_to_ntp_date_time, PacketType
+from ooi_port_agent.common import PacketType
 from wrapper import EventKeys, encode_exception
 from mi.core.instrument.instrument_driver import DriverAsyncEvent
 from mi.core.instrument.publisher import Publisher
@@ -46,6 +46,45 @@ __license__ = 'Apache 2.0'
 
 NTP_DIFF = (datetime(1970, 1, 1) - datetime(1900, 1, 1)).total_seconds()
 Y2K = (datetime(2000, 1, 1) - datetime(1900, 1, 1)).total_seconds()
+DATE_PATTERN = r'^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?Z?$'
+DATE_MATCHER = re.compile(DATE_PATTERN)
+DATE_FORMAT = "%Y-%m-%dT%H:%M:%S.%fZ"
+
+def string_to_ntp_date_time(datestr):
+    """
+    Extract an ntp date from a ISO8601 formatted date string.
+    @param datestr an ISO8601 formatted string containing date information
+    @retval an ntp date number (seconds since jan 1 1900)
+    @throws InstrumentParameterException if datestr cannot be formatted to
+    a date.
+    """
+    if not isinstance(datestr, str):
+        raise IOError('Value %s is not a string.' % str(datestr))
+
+    if not DATE_MATCHER.match(datestr):
+        raise ValueError("date string not in ISO8601 format YYYY-MM-DDTHH:MM:SS.SSSSZ")
+
+    try:
+        # This assumes input date string are in UTC (=GMT)
+
+        # if there is no decimal place, add one to match the date format
+        if datestr.find('.') == -1:
+            if datestr[-1] != 'Z':
+                datestr += '.0Z'
+            else:
+                datestr = datestr[:-1] + '.0Z'
+
+        # if there is no trailing 'Z' on the input string add one
+        if datestr[-1:] != 'Z':
+            datestr += 'Z'
+
+        dt = datetime.strptime(datestr, DATE_FORMAT)
+        timestamp = (dt - datetime(1900, 1, 1)).total_seconds()
+
+    except ValueError as e:
+        raise ValueError('Value %s could not be formatted to a date. %s' % (str(datestr), e))
+
+    return timestamp
 
 
 class PlaybackPacket(Packet):
