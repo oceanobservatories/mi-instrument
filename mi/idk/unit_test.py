@@ -11,10 +11,10 @@ import time
 import datetime
 import re
 import os
-import ntplib
 
 from mi.core.log import get_logger
 from mi.core.port_agent_process import PortAgentProcess
+from mi.core.time_tools import system_to_ntp_time
 
 log = get_logger()
 
@@ -764,7 +764,7 @@ class InstrumentDriverTestCase(MiIntTestCase):
         if unix_time is None:
             unix_time = time.time()
 
-        return ntplib.system_to_ntp_time(unix_time)
+        return system_to_ntp_time(unix_time)
 
     def clear_events(self):
         """
@@ -1230,7 +1230,7 @@ class InstrumentDriverUnitTestCase(InstrumentDriverTestCase):
         else:
             test_particle = particle_type(raw_input, port_timestamp=port_timestamp)
 
-        parsed_result = test_particle.generate(sorted=True)
+        parsed_result = test_particle.generate(sort_values=True)
 
         driver_time = parsed_result[DataParticleKey.DRIVER_TIMESTAMP]
         happy_structure[DataParticleKey.DRIVER_TIMESTAMP] = driver_time
@@ -1338,7 +1338,7 @@ class InstrumentDriverUnitTestCase(InstrumentDriverTestCase):
         @param particle_assert_method: assert method to validate the data particle.
         @param verify_values: Should we validate values?
         """
-        ts = ntplib.system_to_ntp_time(time.time())
+        ts = system_to_ntp_time(time.time())
 
         log.debug("Sample to publish: %r", sample_data)
         # Create and populate the port agent packet.

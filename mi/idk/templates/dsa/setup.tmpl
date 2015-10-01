@@ -20,14 +20,13 @@ setup(
     entry_points = {
         '${entry_point_group}': '${versioned_constructor}'
     },
-    
+
     dependency_links = [
         'https://github.com/ooici/utilities/tarball/master#egg=utilities-9999'
     ],
     install_requires = [
         'pyzmq==2.2.0',
         'pyyaml==3.10',
-        'ntplib',
         'utilities'
     ]
 )

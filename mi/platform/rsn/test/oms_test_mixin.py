@@ -20,7 +20,6 @@
 # from ion.agents.platform.responses import NormalResponse, InvalidResponse
 #
 # import time
-# import ntplib
 # from gevent.pywsgi import WSGIServer
 # import socket
 # import yaml
@@ -100,7 +99,7 @@
 #     def test_ah_get_platform_attribute_values(self):
 #         platform_id = self.PLATFORM_ID
 #         attrNames = self.ATTR_NAMES
-#         cur_time = ntplib.system_to_ntp_time(time.time())
+#         cur_time = system_to_ntp_time(time.time())
 #         from_time = cur_time - 50  # a 50-sec time window
 #         req_attrs = [(attr_id, from_time) for attr_id in attrNames]
 #         log.debug("attr.get_platform_attribute_values(%r, %r)" % (platform_id, req_attrs))
@@ -114,7 +113,7 @@
 #     def test_ah_get_platform_attribute_values_invalid_platform_id(self):
 #         platform_id = BOGUS_PLATFORM_ID
 #         attrNames = self.ATTR_NAMES
-#         cur_time = ntplib.system_to_ntp_time(time.time())
+#         cur_time = system_to_ntp_time(time.time())
 #         from_time = cur_time - 50  # a 50-sec time window
 #         req_attrs = [(attr_id, from_time) for attr_id in attrNames]
 #         log.debug("attr.get_platform_attribute_values(%r, %r)" % (platform_id, req_attrs))
@@ -125,7 +124,7 @@
 #     def test_ah_get_platform_attribute_values_invalid_attributes(self):
 #         platform_id = self.PLATFORM_ID
 #         attrNames = BOGUS_ATTR_NAMES
-#         cur_time = ntplib.system_to_ntp_time(time.time())
+#         cur_time = system_to_ntp_time(time.time())
 #         from_time = cur_time - 50  # a 50-sec time window
 #         req_attrs = [(attr_id, from_time) for attr_id in attrNames]
 #         log.debug("attr.get_platform_attribute_values(%r, %r)" % (platform_id, req_attrs))

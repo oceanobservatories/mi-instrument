@@ -6,11 +6,11 @@
 @author  Carlos Rueda
 @brief   The main RSN OMS platform driver class.
 """
+from mi.core.time_tools import system_to_ntp_time
 
 __author__ = 'Carlos Rueda'
 __license__ = 'Apache 2.0'
 
-import ntplib
 import time
 from copy import deepcopy
 from functools import partial
@@ -276,7 +276,7 @@ class RSNPlatformDriver(PlatformDriver):
     def get_eng_data(self):
         log.debug("%r: get_eng_data...", self._platform_id)
 
-        ntp_time = ntplib.system_to_ntp_time(time.time())
+        ntp_time = system_to_ntp_time(time.time())
         max_time = ntp_time - self.oms_sample_rate * 10
 
         for key, stream in self.nodeCfg.node_streams.iteritems():
