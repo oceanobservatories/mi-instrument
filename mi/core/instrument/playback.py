@@ -103,7 +103,7 @@ class PlaybackPacket(Packet):
 
 class PlaybackWrapper(object):
     def __init__(self, module, refdes, event_url, particle_url, reader_klass, files):
-        headers = {'sensor': refdes, 'deliveryType': 'playback'}
+        headers = {'sensor': refdes, 'deliveryType': 'streamed'}
         self.event_publisher = Publisher.from_url(event_url, headers)
         self.particle_publisher = Publisher.from_url(particle_url, headers)
         self.events = []
