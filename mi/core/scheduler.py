@@ -55,7 +55,6 @@ __license__ = 'Apache 2.0'
 
 from datetime import timedelta
 from datetime import datetime
-from math import ceil
 
 from apscheduler.scheduler import Scheduler
 from apscheduler.scheduler import JobStoreEvent
@@ -64,7 +63,8 @@ from apscheduler.job import Job
 
 from apscheduler.util import convert_to_datetime, timedelta_seconds
 
-from mi.core.log import get_logger; log = get_logger()
+from mi.core.log import get_logger
+log = get_logger()
 
 class PolledScheduler(Scheduler):
     """
@@ -73,7 +73,7 @@ class PolledScheduler(Scheduler):
     """
     def __init__(self):
         """
-        ensure we are running in daemon mode, so we won't wait for 
+        ensure we are running in daemon mode, so we won't wait for
         unfinished threads on shutdown
         """
         Scheduler.__init__(self, {'daemonic': True})

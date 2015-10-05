@@ -5,7 +5,7 @@
 @file /Users/foley/sandbox/ooici/marine-integrations/mi/instrument/satlantic/isusv3/ooicore/driver.py
 @author Steve Foley
 @brief Test cases for ooicore driver
- 
+
 USAGE:
  Make tests verbose and provide stdout
    * From the IDK
@@ -37,7 +37,6 @@ import unittest
 # 3rd party imports.
 from nose.plugins.attrib import attr
 from mock import Mock
-from mock import patch
 
 from mi.idk.unit_test import InstrumentDriverTestCase
 from mi.idk.unit_test import InstrumentDriverUnitTestCase
@@ -45,8 +44,6 @@ from mi.idk.unit_test import InstrumentDriverIntegrationTestCase
 from mi.idk.unit_test import InstrumentDriverQualificationTestCase
 
 # from interface.objects import AgentCommand
-
-from mi.core.common import BaseEnum
 
 from mi.core.instrument.data_particle import DataParticleKey, DataParticleValue
 
@@ -56,16 +53,6 @@ from mi.core.instrument.port_agent_client import PortAgentPacket
 from mi.core.instrument.instrument_driver import DriverAsyncEvent
 from mi.core.instrument.instrument_driver import DriverConnectionState
 from mi.core.instrument.instrument_driver import DriverProtocolState
-from mi.core.instrument.instrument_driver import DriverEvent
-from mi.core.instrument.instrument_driver import DriverParameter
-
-from mi.core.instrument.logger_client import LoggerClient
-
-from mi.core.exceptions import InstrumentException
-from mi.core.exceptions import InstrumentTimeoutException
-from mi.core.exceptions import InstrumentParameterException
-from mi.core.exceptions import InstrumentStateException
-from mi.core.exceptions import InstrumentCommandException
 
 from mi.instrument.satlantic.isusv3.ooicore.driver import InstrumentDriver
 from mi.instrument.satlantic.isusv3.ooicore.driver import State
@@ -76,7 +63,6 @@ from mi.instrument.satlantic.isusv3.ooicore.driver import DataParticleType
 
 from mi.core.instrument.instrument_driver import ResourceAgentState
 from mi.core.instrument.instrument_driver import ResourceAgentEvent
-from mi.core.exceptions import Conflict
 
 # MI logger
 from mi.core.log import get_logger ; log = get_logger()
@@ -125,7 +111,7 @@ class ISUS3UnitTestCase(InstrumentDriverUnitTestCase):
         self.raw_stream_received = False
         self.parsed_stream_received = False
 
-        
+
     def my_event_callback(self, event):
         event_type = event['type']
         print "my_event_callback received: " + str(event)
@@ -156,9 +142,9 @@ class ISUS3UnitTestCase(InstrumentDriverUnitTestCase):
         """
         Instantiate the driver class directly (no driver client, no driver
         client, no zmq driver process, no driver process; just own the driver)
-        """                  
+        """
         test_driver = InstrumentDriver(self.my_event_callback)
-        
+
         """
         Put the driver into test mode
         """
@@ -170,7 +156,7 @@ class ISUS3UnitTestCase(InstrumentDriverUnitTestCase):
         current_state = test_driver.get_resource_state()
         print "DHE: DriverConnectionState: " + str(current_state)
         self.assertEqual(current_state, DriverConnectionState.UNCONFIGURED)
-        
+
         """
         Now configure the driver with the mock_port_agent, verifying
         that the driver transitions to that state
@@ -180,7 +166,7 @@ class ISUS3UnitTestCase(InstrumentDriverUnitTestCase):
         current_state = test_driver.get_resource_state()
         print "DHE: DriverConnectionState: " + str(current_state)
         self.assertEqual(current_state, DriverConnectionState.DISCONNECTED)
-        
+
         """
         Invoke the connect method of the driver: should connect to mock
         port agent.  Verify that the connection FSM transitions to CONNECTED,
@@ -192,9 +178,9 @@ class ISUS3UnitTestCase(InstrumentDriverUnitTestCase):
         self.assertEqual(current_state, DriverProtocolState.UNKNOWN)
 
         """
-        Force the driver into AUTOSAMPLE state so that it will parse and 
+        Force the driver into AUTOSAMPLE state so that it will parse and
         publish samples
-        """        
+        """
         test_driver.test_force_state(state = DriverProtocolState.AUTOSAMPLE)
         current_state = test_driver.get_resource_state()
         print "DHE: DriverConnectionState: " + str(current_state)
@@ -247,7 +233,7 @@ class ISUS3UnitTestCase(InstrumentDriverUnitTestCase):
         test_sample += "\x03\x7B"       # channel 27
         test_sample += "\x03\xC6"       # channel 28
         test_sample += "\x03\x0D"       # channel 29
-        
+
 
         """
         HEX SAMPLE:
@@ -297,7 +283,7 @@ class ISUS3UnitTestCase(InstrumentDriverUnitTestCase):
         05 7B       // channel 27
         05 C6       // channel 28
         06 0D       // channel 29
-        """        
+        """
         """
         ASCII SAMPLE: IOS SAYS USE BINARY
         test_sample = "SATNDF0196,2012219,18.770632,0.00,0.00,0.00,0.00,0.000000,24.38,23.31,18.53,255095,19.41,12.04," + \
@@ -318,16 +304,16 @@ class ISUS3UnitTestCase(InstrumentDriverUnitTestCase):
         Create a PortAgentPacket object and pass the header in.  (This is usually the job of the PortAgentClient, but
         we need to pass a PortAgentPacket object to the got_data method.)
         """
-        paPacket = PortAgentPacket()         
+        paPacket = PortAgentPacket()
         paPacket.attach_data(test_sample)
         paPacket.pack_header()
 
         test_driver._protocol.got_data(paPacket)
-        
+
         #self.assertTrue(self.raw_stream_received)
         #self.assertTrue(self.parsed_stream_received)
 
-        
+
     def test_packet_invalid_sample(self):
         # instantiate a mock object for port agent client
         # not sure doing that here is that helpful...
@@ -339,14 +325,14 @@ class ISUS3UnitTestCase(InstrumentDriverUnitTestCase):
         """
         Create a mock port agent
         """
-        mock_port_agent = Mock(spec=LoggerClient)
+        mock_port_agent = Mock()
 
         """
         Instantiate the driver class directly (no driver client, no driver
         client, no zmq driver process, no driver process; just own the driver)
-        """                  
+        """
         test_driver = InstrumentDriver(self.my_event_callback)
-        
+
         """
         Put the driver into test mode
         """
@@ -358,7 +344,7 @@ class ISUS3UnitTestCase(InstrumentDriverUnitTestCase):
         current_state = test_driver.get_resource_state()
         print "DHE: DriverConnectionState: " + str(current_state)
         self.assertEqual(current_state, DriverConnectionState.UNCONFIGURED)
-        
+
         """
         Now configure the driver with the mock_port_agent, verifying
         that the driver transitions to that state
@@ -368,7 +354,7 @@ class ISUS3UnitTestCase(InstrumentDriverUnitTestCase):
         current_state = test_driver.get_resource_state()
         print "DHE: DriverConnectionState: " + str(current_state)
         self.assertEqual(current_state, DriverConnectionState.DISCONNECTED)
-        
+
         """
         Invoke the connect method of the driver: should connect to mock
         port agent.  Verify that the connection FSM transitions to CONNECTED,
@@ -378,7 +364,7 @@ class ISUS3UnitTestCase(InstrumentDriverUnitTestCase):
         current_state = test_driver.get_resource_state()
         print "DHE: DriverConnectionState: " + str(current_state)
         self.assertEqual(current_state, DriverProtocolState.UNKNOWN)
-        
+
         test_driver.test_force_state(state = DriverProtocolState.AUTOSAMPLE)
         current_state = test_driver.get_resource_state()
         print "DHE: DriverConnectionState: " + str(current_state)
@@ -392,19 +378,19 @@ class ISUS3UnitTestCase(InstrumentDriverUnitTestCase):
         """
         self.reset_test_vars()
         test_sample = "this is a bogus test\r\n"
-        
+
         """
         Create a PortAgentPacket object and pass the header in.  (This is usually the job of the PortAgentClient, but
         we need to pass a PortAgentPacket object to the got_data method.)
         """
-        paPacket = PortAgentPacket()         
+        paPacket = PortAgentPacket()
         paHeader = "\xa3\x9d\x7a\x02\x00\x29\x0b\x2e\x00\x00\x00\x01\x80\x00\x00\x00"
         paPacket.unpack_header(paHeader)
-        
+
         paPacket.attach_data(test_sample)
 
         test_driver._protocol.got_data(paPacket)
-        
+
         self.assertFalse(self.parsed_stream_received)
 
 
@@ -412,9 +398,9 @@ class ISUS3UnitTestCase(InstrumentDriverUnitTestCase):
     def test_packet_fragmented_sample(self):
         """
         Simulate a complete sample that arrives in separate invocations of got_data();
-        result should be a complete sample published 
+        result should be a complete sample published
         """
-        
+
         """
         Create a mock port agent
         """
@@ -423,9 +409,9 @@ class ISUS3UnitTestCase(InstrumentDriverUnitTestCase):
         """
         Instantiate the driver class directly (no driver client, no driver
         client, no zmq driver process, no driver process; just own the driver)
-        """                  
+        """
         test_driver = InstrumentDriver(self.my_event_callback)
-        
+
         """
         Put the driver into test mode
         """
@@ -434,7 +420,7 @@ class ISUS3UnitTestCase(InstrumentDriverUnitTestCase):
         current_state = test_driver.get_resource_state()
         print "DHE: DriverConnectionState: " + str(current_state)
         self.assertEqual(current_state, DriverConnectionState.UNCONFIGURED)
-        
+
         """
         Now configure the driver with the mock_port_agent, verifying
         that the driver transitions to that state
@@ -444,7 +430,7 @@ class ISUS3UnitTestCase(InstrumentDriverUnitTestCase):
         current_state = test_driver.get_resource_state()
         print "DHE: DriverConnectionState: " + str(current_state)
         self.assertEqual(current_state, DriverConnectionState.DISCONNECTED)
-        
+
         """
         Invoke the connect method of the driver: should connect to mock
         port agent.  Verify that the connection FSM transitions to CONNECTED,
@@ -456,9 +442,9 @@ class ISUS3UnitTestCase(InstrumentDriverUnitTestCase):
         self.assertEqual(current_state, DriverProtocolState.UNKNOWN)
 
         """
-        Force the driver into AUTOSAMPLE state so that it will parse and 
+        Force the driver into AUTOSAMPLE state so that it will parse and
         publish samples
-        """        
+        """
         test_driver.test_force_state(state = DriverProtocolState.AUTOSAMPLE)
         current_state = test_driver.get_resource_state()
         print "DHE: DriverConnectionState: " + str(current_state)
@@ -483,14 +469,14 @@ class ISUS3UnitTestCase(InstrumentDriverUnitTestCase):
         Create a PortAgentPacket object and pass the header in.  (This is usually the job of the PortAgentClient, but
         we need to pass a PortAgentPacket object to the got_data method.)
         """
-        paPacket = PortAgentPacket()         
+        paPacket = PortAgentPacket()
         paHeader = "\xa3\x9d\x7a\x02\x00\x29\x0b\x2e\x00\x00\x00\x01\x80\x00\x00\x00"
         paPacket.unpack_header(paHeader)
-        
+
         paPacket.attach_data(test_sample)
 
         test_driver._protocol.got_data(paPacket)
-        
+
         self.assertFalse(self.parsed_stream_received)
 
         """
@@ -506,14 +492,14 @@ class ISUS3UnitTestCase(InstrumentDriverUnitTestCase):
             "949,938,945,953,959,951,957,976,952,953,953,949,949,951,945,961,945,953,949,956,970,974,973,957,948,954," + \
             "956,957,946,948,946,946,247\r\n"
 
-        paPacket = PortAgentPacket()         
+        paPacket = PortAgentPacket()
         paHeader = "\xa3\x9d\x7a\x02\x00\x29\x0b\x2e\x00\x00\x00\x01\x80\x00\x00\x00"
         paPacket.unpack_header(paHeader)
-        
+
         paPacket.attach_data(test_sample)
 
         test_driver._protocol.got_data(paPacket)
-        
+
         self.assertTrue(self.parsed_stream_received)
 
     @unittest.skip("Needs update port publish fix")
@@ -521,9 +507,9 @@ class ISUS3UnitTestCase(InstrumentDriverUnitTestCase):
         """
         Simulate a complete sample that arrives in with a fragment concatenated.  The concatenated fragment
         should have have a terminator.  A separate invocations of got_data() will have the remainder;
-        result should be a complete sample published 
+        result should be a complete sample published
         """
-        
+
         """
         Create a mock port agent
         """
@@ -532,9 +518,9 @@ class ISUS3UnitTestCase(InstrumentDriverUnitTestCase):
         """
         Instantiate the driver class directly (no driver client, no driver
         client, no zmq driver process, no driver process; just own the driver)
-        """                  
+        """
         test_driver = InstrumentDriver(self.my_event_callback)
-        
+
         """
         Put the driver into test mode
         """
@@ -543,7 +529,7 @@ class ISUS3UnitTestCase(InstrumentDriverUnitTestCase):
         current_state = test_driver.get_resource_state()
         print "DHE: DriverConnectionState: " + str(current_state)
         self.assertEqual(current_state, DriverConnectionState.UNCONFIGURED)
-        
+
         """
         Now configure the driver with the mock_port_agent, verifying
         that the driver transitions to that state
@@ -553,7 +539,7 @@ class ISUS3UnitTestCase(InstrumentDriverUnitTestCase):
         current_state = test_driver.get_resource_state()
         print "DHE: DriverConnectionState: " + str(current_state)
         self.assertEqual(current_state, DriverConnectionState.DISCONNECTED)
-        
+
         """
         Invoke the connect method of the driver: should connect to mock
         port agent.  Verify that the connection FSM transitions to CONNECTED,
@@ -565,9 +551,9 @@ class ISUS3UnitTestCase(InstrumentDriverUnitTestCase):
         self.assertEqual(current_state, DriverProtocolState.UNKNOWN)
 
         """
-        Force the driver into AUTOSAMPLE state so that it will parse and 
+        Force the driver into AUTOSAMPLE state so that it will parse and
         publish samples
-        """        
+        """
         test_driver.test_force_state(state = DriverProtocolState.AUTOSAMPLE)
         current_state = test_driver.get_resource_state()
         print "DHE: DriverConnectionState: " + str(current_state)
@@ -608,14 +594,14 @@ class ISUS3UnitTestCase(InstrumentDriverUnitTestCase):
             "15903,16377,16869,17390,17861,18322,18762,19109,19370,19451,19449,19351,19083,18692,18225,17681,17097," + \
             "16509,15941,15362,14866,14421,14024,13707,13450,13227,13094,13019,12994,13019,13097,13223,13443,13662,"
 
-        paPacket = PortAgentPacket()         
+        paPacket = PortAgentPacket()
         paHeader = "\xa3\x9d\x7a\x02\x00\x29\x0b\x2e\x00\x00\x00\x01\x80\x00\x00\x00"
         paPacket.unpack_header(paHeader)
-        
+
         paPacket.attach_data(test_sample)
 
         test_driver._protocol.got_data(paPacket)
-        
+
         self.assertTrue(self.parsed_stream_received)
 
         """
@@ -635,10 +621,10 @@ class ISUS3UnitTestCase(InstrumentDriverUnitTestCase):
             "10486,10255,10023,9832,9661,9511,9356,9247,9171,9119,8986,8809,8656,8520,8411,8293,8196,8107,8026,8020," + \
             "7991,7960,7866,7829,7872,7882,7750,7361,6756,6098,6098,170\r\n"
 
-        paPacket = PortAgentPacket()         
+        paPacket = PortAgentPacket()
         paHeader = "\xa3\x9d\x7a\x02\x00\x29\x0b\x2e\x00\x00\x00\x01\x80\x00\x00\x00"
         paPacket.unpack_header(paHeader)
-        
+
         paPacket.attach_data(test_sample)
 
         test_driver._protocol.got_data(paPacket)
@@ -646,7 +632,7 @@ class ISUS3UnitTestCase(InstrumentDriverUnitTestCase):
         self.assertTrue(self.raw_stream_received)
         self.assertTrue(self.parsed_stream_received)
 
-    
+
 
 ###############################################################################
 #                            INTEGRATION TESTS                                #
@@ -659,7 +645,7 @@ class ISUS3UnitTestCase(InstrumentDriverUnitTestCase):
 @attr('INT', group='mi')
 class ISUS3IntTestCase(InstrumentDriverIntegrationTestCase):
     """Integration Test Container"""
-    
+
     def assertParamDict(self, pd, all_params=False):
         """
         Verify all device parameters exist and are correct type.
@@ -1013,20 +999,20 @@ Remaining tests:
 @attr('HARDWARE', group='mi')
 class Testooicore_HW(InstrumentDriverTestCase):
     """Hardware Test Container"""
-    
+
     def setUp(self):
         driver_module = 'mi.instrument.satlantic.isusv3.ooicore.driver'
         driver_class = 'OoiCoreInstrumentProtocol'
         # @todo Make this configurable
-        
+
         # test_device_addr = "67.58.40.195"
         # test_device_port = 2001
         test_device_addr = self.comm_config.device_addr
         test_device_port = self.comm_config.device_port
         delim = ['<<', '>>']
-        
+
         # Zmq parameters used by driver process and client.
-        self.config_params = {'addr': 'localhost'}                
+        self.config_params = {'addr': 'localhost'}
         self._support = DriverIntegrationTestSupport(driver_module,
                                                      driver_class,
                                                      test_device_addr,
@@ -1040,13 +1026,13 @@ class Testooicore_HW(InstrumentDriverTestCase):
         mi_logger.info("Starting port agent")
         self.config_params['port'] = self._support.start_pagent()
         self.addCleanup(self._support.stop_pagent)
-        
+
         mi_logger.info("Starting Satlantic ISUSv3 driver")
         self._dvr_client = self._support.start_driver()
         self.addCleanup(self._support.stop_driver)
-        
+
         self._dvr_client = self._support._dvr_client
-        
+
         # we never get to the protocol if we never connect!
         self._connect()
 
@@ -1063,7 +1049,7 @@ class Testooicore_HW(InstrumentDriverTestCase):
             #                                 {Parameter.MAXRATE:1},
             #                                  timeout=20)
             self._disconnect()
-        
+
         self._support.stop_driver()
 
     def tearDown(self):
@@ -1088,7 +1074,7 @@ class Testooicore_HW(InstrumentDriverTestCase):
         self.assertEqual(DriverProtocolState.UNKNOWN, reply)
 
         self._initialize()
-        
+
         reply = self._dvr_client.cmd_dvr('get_resource_state')
         self.assertEqual(PARProtocolState.COMMAND_MODE, reply)
 
@@ -1104,7 +1090,7 @@ class Testooicore_HW(InstrumentDriverTestCase):
         """ Just a place holder for running just the basic setUp, teardown
         routines that handle connecting and disconnecting """
         pass
-    
+
     def test_get_RW_param(self):
         """ Test getting a read-write parameter """
         reply = self._dvr_client.cmd_dvr('get_resource', [Parameter.INITIAL_DELAY,
@@ -1117,7 +1103,7 @@ class Testooicore_HW(InstrumentDriverTestCase):
     def test_get_DA_param(self):
         """ Test getting a direct access parameter """
         self._assert(False)
-        
+
     def test_range_params(self):
         """ Some parameters like the nitrate DAC range have min and max values
         set via one menu path (min first, max next). Make sure they can be
@@ -1125,7 +1111,7 @@ class Testooicore_HW(InstrumentDriverTestCase):
         can be set and returned to a prompt properly.
         """
         self._assert(False)
-        
+
 ###############################################################################
 #                            QUALIFICATION TESTS                              #
 # Device specific qualification tests are for                                 #
@@ -1135,17 +1121,17 @@ class Testooicore_HW(InstrumentDriverTestCase):
 @attr('QUAL', group='mi')
 class ISUS3QualTestCase(InstrumentDriverQualificationTestCase):
     """Qualification Test Container"""
-    
+
     # Qualification tests live in the base class.  This class is extended
     # here so that when running this test from 'nosetests' all tests
-    # (UNIT, INT, and QUAL) are run.  
+    # (UNIT, INT, and QUAL) are run.
     pass
 
 
     def assertSampleDataParticle(self, val):
         """
         Verify the value for ISUSv3 sample data particle
-    
+
         {
           'quality_flag': 'ok',
           'preferred_timestamp': 'driver_timestamp',
@@ -1173,12 +1159,12 @@ class ISUS3QualTestCase(InstrumentDriverQualificationTestCase):
           ],
         }
         """
-    
+
         if (isinstance(val, ISUSDataParticle)):
             sample_dict = json.loads(val.generate_parsed())
         else:
             sample_dict = val
-    
+
         self.assertTrue(sample_dict[DataParticleKey.STREAM_NAME],
             DataParticleValue.PARSED)
         self.assertTrue(sample_dict[DataParticleKey.PKT_FORMAT_ID],
@@ -1188,32 +1174,32 @@ class ISUS3QualTestCase(InstrumentDriverQualificationTestCase):
             list))
         self.assertTrue(isinstance(sample_dict.get(DataParticleKey.DRIVER_TIMESTAMP), float))
         self.assertTrue(sample_dict.get(DataParticleKey.PREFERRED_TIMESTAMP))
-    
+
         for x in sample_dict['values']:
             #print "--->> DHE: " + x['value_id'] + " value: " + str(x['value'])
             if x['value_id'] in ['frame_type', 'serial_num']:
                 #print "--->> DHE: " + x['value_id'] + " is of type: " + str((x['value']).__class__.__name__)
                 self.assertTrue(isinstance(x['value'], str))
             elif x['value_id'] in [
-                    'date', 
-                    'ch001', 
-                    'ch002', 
-                    'ch003', 
-                    'ch004', 
-                    'ch005', 
-                    'ch006', 
-                    'ch007', 
-                    'ch008', 
-                    'ch009', 
-                    'ch010', 
-                    'ch011', 
-                    'ch012', 
-                    'ch013', 
-                    'ch014', 
-                    'ch015', 
-                    'ch016', 
-                    'ch017', 
-                    'ch018', 
+                    'date',
+                    'ch001',
+                    'ch002',
+                    'ch003',
+                    'ch004',
+                    'ch005',
+                    'ch006',
+                    'ch007',
+                    'ch008',
+                    'ch009',
+                    'ch010',
+                    'ch011',
+                    'ch012',
+                    'ch013',
+                    'ch014',
+                    'ch015',
+                    'ch016',
+                    'ch017',
+                    'ch018',
                     'ch019'
                     'ch020']:
                 #print "--->> DHE: " + x['value_id'] + " is of type: " + str((x['value'][0]).__class__.__name__)
@@ -1273,10 +1259,9 @@ class ISUS3QualTestCase(InstrumentDriverQualificationTestCase):
         log.debug("done sleeping")
 
         self.assert_stop_autosample()
-        
+
     def test_sample_autosample(self):
         self.assert_sample_autosample(self.assertSampleDataParticle,
                                   DataParticleValue.PARSED, timeout = 60*5)
         pass
 
-        
