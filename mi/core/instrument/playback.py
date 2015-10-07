@@ -100,6 +100,30 @@ class PlaybackPacket(Packet):
     def __repr__(self):
         return repr(self.payload)
 
+    @staticmethod
+    def packet_from_fh(file_handle):
+        data_buffer = bytearray()
+        while True:
+            byte = file_handle.read(1)
+            if byte == '':
+                return None
+
+            data_buffer.append(byte)
+            sync_index = data_buffer.find(PacketHeader.sync)
+            if sync_index != -1:
+                # found the sync bytes, read the rest of the header
+                data_buffer.extend(file_handle.read(PacketHeader.header_size - len(PacketHeader.sync)))
+
+                if len(data_buffer) < PacketHeader.header_size:
+                    return None
+
+                header = PacketHeader.from_buffer(data_buffer, sync_index)
+                # read the payload
+                payload = file_handle.read(header.payload_size)
+                if len(payload) == header.payload_size:
+                    packet = PlaybackPacket(payload=payload, header=header)
+                    return packet
+
 
 class PlaybackWrapper(object):
     def __init__(self, module, refdes, event_url, particle_url, reader_klass, files):
