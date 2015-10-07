@@ -2855,3 +2855,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
     def _sorted_longest_to_shortest(self, param_list):
         sorted_list = sorted(param_list, key=len, reverse=True)
         return sorted_list
+
+
+def create_playback_protocol(callback):
+    return mavs4InstrumentProtocol(None, None, callback)
