@@ -414,3 +414,7 @@ class Protocol(NortekInstrumentProtocol):
                              default_value=0,
                              startup_param=True,
                              direct_access=True)
+
+
+def create_playback_protocol(callback):
+    return Protocol(None, None, callback)
