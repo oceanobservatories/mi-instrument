@@ -23,7 +23,7 @@ class StringChunker(object):
     breaks apart collections of data segments so they can be broken into
     individual blocks.
     """
-    def __init__(self, data_sieve_fn, max_buff_size=65535):
+    def __init__(self, data_sieve_fn, max_buff_size=8192):
         """
         Initialize the buffer and indexing structures
         The lists keep track of the start and stop index values (inclusive)
