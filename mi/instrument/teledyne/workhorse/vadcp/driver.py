@@ -256,7 +256,7 @@ class InstrumentDriver(SingleConnectionInstrumentDriver):
                     port = config['port']
                     cmd_port = config.get('cmd_port')
 
-                    if isinstance(addr, str) and isinstance(port, int) and len(addr) > 0:
+                    if isinstance(addr, basestring) and isinstance(port, int) and len(addr) > 0:
                         connections[name] = PortAgentClient(addr, port, cmd_port)
                     else:
                         raise InstrumentParameterException('Invalid comms config dict in build_connections.')

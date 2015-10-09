@@ -261,7 +261,6 @@ class FlordDMNU_Particle(DataParticle):
     """
     _data_particle_type = DataParticleType.FLORDD_MNU
 
-
     LINE01 = r"Ser\s*(\S*)"
     LINE02 = r"Ver\s*(\S*)"
     LINE03 = r"Ave\s*(\S*)"
@@ -309,6 +308,16 @@ class FlordDMNU_Particle(DataParticle):
             clk = str(re.compile(self.LINE18).search(self.raw_data).group(1))
             mst = str(re.compile(self.LINE19).search(self.raw_data).group(1))
             mem = int(re.compile(self.LINE20).search(self.raw_data).group(1))
+
+            month, day, year = dat.split('/')
+            hours, mins, seconds = clk.split(':')
+
+            try:
+                dt = datetime.datetime(2000 + int(year), int(month), int(day), int(hours), int(mins), int(seconds))
+                ntp_ts = (dt - datetime.datetime(1900, 1, 1)).total_seconds()
+                self.set_internal_timestamp(ntp_ts)
+            except ValueError:
+                log.exception('Unable to decode timestamp in FlordDMNU particle')
 
             result = [{DataParticleKey.VALUE_ID: FlordDMNU_ParticleKey.SERIAL_NUM, DataParticleKey.VALUE: serial_num},
                   {DataParticleKey.VALUE_ID: FlordDMNU_ParticleKey.FIRMWARE_VER, DataParticleKey.VALUE: firmware_ver},

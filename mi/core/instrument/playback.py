@@ -6,12 +6,13 @@
 @brief Playback process using ZMQ messaging.
 
 Usage:
-    playback datalog <module> <refdes> <event_url> <particle_url> <files>...
-    playback ascii <module> <refdes> <event_url> <particle_url> <files>...
-    playback chunky <module> <refdes> <event_url> <particle_url> <files>...
+    playback datalog <module> <refdes> <event_url> <particle_url> [--allowed=<particles>] <files>...
+    playback ascii <module> <refdes> <event_url> <particle_url> [--allowed=<particles>] <files>...
+    playback chunky <module> <refdes> <event_url> <particle_url> [--allowed=<particles>] <files>...
 
 Options:
     -h, --help          Show this screen
+    --allowed=<particles> Comma-separated list of publishable particles
 
     To run without installing:
     python -m mi.core.instrument.playback ...
@@ -126,10 +127,10 @@ class PlaybackPacket(Packet):
 
 
 class PlaybackWrapper(object):
-    def __init__(self, module, refdes, event_url, particle_url, reader_klass, files):
+    def __init__(self, module, refdes, event_url, particle_url, reader_klass, allowed, files):
         headers = {'sensor': refdes, 'deliveryType': 'streamed'}
         self.event_publisher = Publisher.from_url(event_url, headers)
-        self.particle_publisher = Publisher.from_url(particle_url, headers)
+        self.particle_publisher = Publisher.from_url(particle_url, headers, allowed)
         self.events = []
         self.particles = []
 
@@ -333,6 +334,9 @@ def main():
     event_url = options['<event_url>']
     particle_url = options['<particle_url>']
     files = options.get('<files>')
+    allowed = options.get('--allowed')
+    if allowed is not None:
+        allowed = [_.strip() for _ in allowed.split(',')]
 
     # when running with the profiler, files will be a string
     # coerce to list
@@ -348,7 +352,7 @@ def main():
     else:
         reader = None
 
-    wrapper = PlaybackWrapper(module, refdes, event_url, particle_url, reader, files)
+    wrapper = PlaybackWrapper(module, refdes, event_url, particle_url, reader, allowed, files)
     wrapper.playback()
 
 if __name__ == '__main__':
