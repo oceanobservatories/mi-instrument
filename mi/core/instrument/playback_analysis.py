@@ -113,17 +113,31 @@ def analyze(items):
     count = 0
     for _, start, stop, _, path in items:
         size = os.stat(path).st_size
-        if size > 0:
-            total_size += size
-            count += 1
-            if items_start is None:
-                items_start = start
-            else:
-                items_start = min(items_start, start)
-            if items_stop is None:
-                items_stop = stop
-            else:
-                items_stop = max(items_stop, stop)
+        if size == 0:
+            continue
+        if size < 1000:
+            # attempt to filter out "empty" files
+            valid = False
+            with open(path) as fh:
+                for line in fh:
+                    if line.startswith('####'):
+                        continue
+                    if line.strip() == '':
+                        continue
+                    valid = True
+            if not valid:
+                continue
+
+        total_size += size
+        count += 1
+        if items_start is None:
+            items_start = start
+        else:
+            items_start = min(items_start, start)
+        if items_stop is None:
+            items_stop = stop
+        else:
+            items_stop = max(items_stop, stop)
 
     return count, total_size, items_start, items_stop
 
