@@ -91,14 +91,20 @@ def find_type(path, f):
 def walk_tree(root, sensor):
     found = []
     for path, dirs, files in os.walk(root):
-        files = [f for f in files if f.endswith('.dat')]
+        files = [f for f in files if f.endswith('.dat') and 'DigiCmd' not in f]
         if sensor is not None:
             files = [f for f in files if sensor in f]
         if files:
+            files.sort()
             print('Processing %d files in %s: ' % (len(files), path))
-            for f in tqdm(files, leave=True):
+            for index in tqdm(xrange(len(files)), leave=True):
+                f = files[index]
                 sensor = find_sensor(f)
                 time_range = find_time_range(f)
+                # if there is a next file, grab the start time from it
+                if len(files) > index+1:
+                    next_time_range = find_time_range(files[index+1])
+                    time_range = time_range[0], next_time_range[0]
                 if time_range:
                     start, stop = time_range
                     record_type = find_type(path, f)
@@ -113,17 +119,31 @@ def analyze(items):
     count = 0
     for _, start, stop, _, path in items:
         size = os.stat(path).st_size
-        if size > 0:
-            total_size += size
-            count += 1
-            if items_start is None:
-                items_start = start
-            else:
-                items_start = min(items_start, start)
-            if items_stop is None:
-                items_stop = stop
-            else:
-                items_stop = max(items_stop, stop)
+        if size == 0:
+            continue
+        if size < 1000:
+            # attempt to filter out "empty" files
+            valid = False
+            with open(path) as fh:
+                for line in fh:
+                    if line.startswith('####'):
+                        continue
+                    if line.strip() == '':
+                        continue
+                    valid = True
+            if not valid:
+                continue
+
+        total_size += size
+        count += 1
+        if items_start is None:
+            items_start = start
+        else:
+            items_start = min(items_start, start)
+        if items_stop is None:
+            items_stop = stop
+        else:
+            items_stop = max(items_stop, stop)
 
     return count, total_size, items_start, items_stop
 
