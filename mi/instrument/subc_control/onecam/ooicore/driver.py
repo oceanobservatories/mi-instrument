@@ -3,24 +3,18 @@
 @file marine-integrations/mi/instrument/subc_control/onecam/ooicore/driver.py
 @author Tapana Gupta
 @brief Driver for the CAMHD instrument
-Release notes:
-
-CAMHD Driver
 
 """
+__author__ = 'Tapana Gupta'
+__license__ = 'Apache 2.0'
 
 import re
 import json
-import time
 
 from mi.core.instrument.driver_dict import DriverDictKey
 from mi.core.instrument.protocol_param_dict import ParameterDictType
 
-__author__ = 'Tapana Gupta'
-__license__ = 'Apache 2.0'
-
 from mi.core.log import get_logger
-
 log = get_logger()
 
 from mi.core.common import BaseEnum, Units
@@ -41,7 +35,6 @@ from mi.core.instrument.data_particle import DataParticle
 from mi.core.instrument.data_particle import DataParticleKey
 from mi.core.instrument.data_particle import CommonDataParticleType
 from mi.core.instrument.chunker import StringChunker
-
 from mi.core.driver_scheduler import DriverSchedulerConfigKey
 from mi.core.driver_scheduler import TriggerType
 
@@ -84,7 +77,7 @@ ADREAD_RESPONSE_PATTERN = re.compile(ADREAD_RESPONSE_REGEX, re.DOTALL)
 # data particle matchers
 
 # lookat, lights, camera always get executed sequentially.
-# This Regex will save us from generating too many paricles. Since 'CAMERA' is the last command to get
+# This Regex will save us from generating too many particles. Since 'CAMERA' is the last command to get
 # executed, all other params will have been updated before. Hence it's the perfect time to capture
 # param values and generate the metadata particle.
 CAMHD_METADATA_REGEX = r'(CAMERA)(.*)' + NEWLINE
@@ -183,6 +176,10 @@ class Parameter(DriverParameter):
     AUTO_CAPTURE_DURATION = 'Auto_Capture_Duration'
 
 
+class ParameterUnit(BaseEnum):
+    TIME_INTERVAL = 'HH:MM:SS'
+
+
 class ScheduledJob(BaseEnum):
     """
     Scheduled Jobs for CAMHD
@@ -197,6 +194,7 @@ class Prompt(BaseEnum):
     Device i/o prompts..
     """
     # No prompts here. Stays empty.
+
 
 ###############################################################################
 # Data Particles
@@ -224,11 +222,8 @@ class CAMHDStreamingStatusParticle(DataParticle):
 
         result = []
 
-        log.debug("STREAMING_STATUS: Building data particle...")
-
         param_dict = self.raw_data.get_all()
-
-        log.debug("Param Dict: %s" % param_dict)
+        log.debug("Streaming status - Param Dict: %s" % param_dict)
 
         result.append({DataParticleKey.VALUE_ID: CAMHDStreamingStatusParticleKey.PAN_POSITION,
                        DataParticleKey.VALUE: param_dict.get(Parameter.PAN_POSITION)})
@@ -267,8 +262,6 @@ class CAMHDSAdreadStatusParticle(DataParticle):
     def _build_parsed_values(self):
 
         result = []
-
-        log.debug("ADREAD STATUS: Building data particle...")
 
         log.debug("Raw Data: %s" % self.raw_data)
 
@@ -568,7 +561,9 @@ class CAMHDProtocol(CommandResponseInstrumentProtocol):
         and value formatting function for set commands.
         """
 
-        FLOAT_REGEX = r'((?:[+-]?[0-9]|[1-9][0-9])+\.[0-9]+)'
+        #TODO: leave this regex here for now - we've only tested against a simulator
+        # the real instrument might give us floats, then we'll need this
+        #FLOAT_REGEX = r'((?:[+-]?[0-9]|[1-9][0-9])+\.[0-9]+)'
 
         INT_REGEX = r'([+-]?[0-9]+)'
 
@@ -579,6 +574,7 @@ class CAMHDProtocol(CommandResponseInstrumentProtocol):
                              str,
                              type=ParameterDictType.STRING,
                              display_name="Endpoint",
+                             description='IP address of the system running the UltraGrid receiver process.',
                              startup_param=False,
                              direct_access=False,
                              default_value=DEFAULT_ENDPOINT,
@@ -590,9 +586,11 @@ class CAMHDProtocol(CommandResponseInstrumentProtocol):
                              str,
                              type=ParameterDictType.FLOAT,
                              display_name="Pan",
+                             description='Camera pan position: (45 - 315)',
                              startup_param=False,
                              direct_access=False,
                              default_value=180.0,
+                             units=Units.DEGREE_PLANE_ANGLE,
                              visibility=ParameterDictVisibility.READ_WRITE)
 
         self._param_dict.add(Parameter.TILT_POSITION,
@@ -601,9 +599,11 @@ class CAMHDProtocol(CommandResponseInstrumentProtocol):
                              str,
                              type=ParameterDictType.FLOAT,
                              display_name="Tilt",
+                             description='Camera tilt position: (50 - 140)',
                              startup_param=False,
                              direct_access=False,
                              default_value=90.0,
+                             units=Units.DEGREE_PLANE_ANGLE,
                              visibility=ParameterDictVisibility.READ_WRITE)
 
         self._param_dict.add(Parameter.PAN_TILT_SPEED,
@@ -612,9 +612,11 @@ class CAMHDProtocol(CommandResponseInstrumentProtocol):
                              str,
                              type=ParameterDictType.FLOAT,
                              display_name="Speed",
+                             description='Pan-Tilt speed, in 0.5 deg/s increments: (0.5 - 40)',
                              startup_param=False,
                              direct_access=False,
                              default_value=10.0,
+                             units=Units.DEGREE_PLANE_ANGLE_PER_SECOND,
                              visibility=ParameterDictVisibility.READ_WRITE)
 
         self._param_dict.add(Parameter.HEADING,
@@ -623,9 +625,11 @@ class CAMHDProtocol(CommandResponseInstrumentProtocol):
                              str,
                              type=ParameterDictType.FLOAT,
                              display_name="Heading",
+                             description='Heading relative to magnetic North: (0 - 360)',
                              startup_param=False,
                              direct_access=False,
                              default_value=0.0,
+                             units=Units.DEGREE_PLANE_ANGLE,
                              visibility=ParameterDictVisibility.READ_ONLY)
 
         self._param_dict.add(Parameter.PITCH,
@@ -634,9 +638,12 @@ class CAMHDProtocol(CommandResponseInstrumentProtocol):
                              str,
                              type=ParameterDictType.FLOAT,
                              display_name="Pitch",
+                             description='Gravity referenced pitch angle. Negative values are up, '
+                                         'positive values are down: (-90 - 90)',
                              startup_param=False,
                              direct_access=False,
                              default_value=0.0,
+                             units=Units.DEGREE_PLANE_ANGLE,
                              visibility=ParameterDictVisibility.READ_ONLY)
 
         self._param_dict.add(Parameter.LIGHT_1_LEVEL,
@@ -644,10 +651,12 @@ class CAMHDProtocol(CommandResponseInstrumentProtocol):
                              lambda match: int(match.group(1)),
                              str,
                              type=ParameterDictType.INT,
-                             display_name="Light 1 level",
+                             display_name="Light 1 Level",
+                             description='Relative intensity of light 1: (0 - 100)',
                              startup_param=False,
                              direct_access=False,
                              default_value=50,
+                             units=Units.PERCENT,
                              visibility=ParameterDictVisibility.READ_WRITE)
 
         self._param_dict.add(Parameter.LIGHT_2_LEVEL,
@@ -655,10 +664,12 @@ class CAMHDProtocol(CommandResponseInstrumentProtocol):
                              lambda match: int(match.group(2)),
                              str,
                              type=ParameterDictType.INT,
-                             display_name="Light 2 level",
+                             display_name="Light 2 Level",
+                             description='Relative intensity of light 2: (0 - 100)',
                              startup_param=False,
                              direct_access=False,
                              default_value=50,
+                             units=Units.PERCENT,
                              visibility=ParameterDictVisibility.READ_WRITE)
 
         self._param_dict.add(Parameter.ZOOM_LEVEL,
@@ -667,6 +678,7 @@ class CAMHDProtocol(CommandResponseInstrumentProtocol):
                              str,
                              type=ParameterDictType.INT,
                              display_name="Zoom Level",
+                             description='Zoom level in steps relative to the current setting: (+/- integer value)',
                              startup_param=False,
                              direct_access=False,
                              default_value=0,
@@ -678,21 +690,23 @@ class CAMHDProtocol(CommandResponseInstrumentProtocol):
                              str,
                              type=ParameterDictType.STRING,
                              display_name="Lasers State",
+                             description='Lasers state: (on | off)',
                              startup_param=False,
                              direct_access=False,
                              default_value='off',
                              visibility=ParameterDictVisibility.READ_WRITE)
 
-        #TODO: change default value back to original (as per the IOS). These values are for testing only.
         self._param_dict.add(Parameter.SAMPLE_INTERVAL,
                              r'NOT USED',
                              None,
                              str,
                              type=ParameterDictType.STRING,
                              display_name="Sample Interval",
+                             description='Time to wait between taking time-lapsed samples.',
                              startup_param=False,
                              direct_access=False,
-                             default_value='00:01:00',
+                             default_value='00:30:00',
+                             units=ParameterUnit.TIME_INTERVAL,
                              visibility=ParameterDictVisibility.READ_WRITE)
 
         self._param_dict.add(Parameter.STATUS_INTERVAL,
@@ -701,21 +715,25 @@ class CAMHDProtocol(CommandResponseInstrumentProtocol):
                              str,
                              type=ParameterDictType.STRING,
                              display_name="Acquire Status Interval",
+                             description='Driver parameter used for acquire status schedule.',
                              startup_param=False,
                              direct_access=False,
                              default_value='00:00:00',
+                             units=ParameterUnit.TIME_INTERVAL,
                              visibility=ParameterDictVisibility.READ_WRITE)
 
-        #TODO: change default value back to original (as per the IOS). These values are for testing only.
         self._param_dict.add(Parameter.AUTO_CAPTURE_DURATION,
                              r'NOT USED',
                              None,
                              str,
                              type=ParameterDictType.STRING,
                              display_name="Auto Capture Duration",
+                             description='Duration for which streaming video will be captured before '
+                                         'it is stopped by the driver.',
                              startup_param=False,
                              direct_access=False,
-                             default_value='00:00:30',
+                             default_value='00:05:00',
+                             units=ParameterUnit.TIME_INTERVAL,
                              visibility=ParameterDictVisibility.READ_WRITE)
 
         self._param_dict.set_default(Parameter.SAMPLE_INTERVAL)
@@ -789,12 +807,10 @@ class CAMHDProtocol(CommandResponseInstrumentProtocol):
         @retval The command to be sent to the device.
         """
 
-        log.debug("Inside _build_camhd_command, for %s" % cmd)
+        log.debug("_build_camhd_command, for %s" % cmd)
 
         # JSON encode argument dictionary
         args_encoded = json.dumps(args_dict)
-
-        log.debug("Inside _build_camhd_command 2")
 
         # Return a JSON encoded list containing the command and argument dictionary,
         # followed by a newline.
@@ -811,7 +827,7 @@ class CAMHDProtocol(CommandResponseInstrumentProtocol):
         @retval The command to be sent to the device.
         """
 
-        log.debug("Inside _build_simple_command, for %s" % cmd)
+        log.debug("_build_simple_command, for %s" % cmd)
 
         return self._build_camhd_command(cmd, {})
 
@@ -822,7 +838,7 @@ class CAMHDProtocol(CommandResponseInstrumentProtocol):
         @retval The command to be sent to the device.
         """
 
-        log.debug("Inside _build_start_command, for %s" % cmd)
+        log.debug("_build_start_command, for %s" % cmd)
 
         return self._build_camhd_command(cmd, {'endpoint': DEFAULT_ENDPOINT})
 
@@ -831,7 +847,6 @@ class CAMHDProtocol(CommandResponseInstrumentProtocol):
         Build handler for CAMHD set commands: LOOKAT, LIGHTS and CAMERA
         @param cmd the set command.
         @param param the parameter to be set.
-        @param val the value of the parameter.
         @retval The command to be sent to the device.
         """
         cmd_args = {}
@@ -1277,9 +1292,8 @@ class CAMHDProtocol(CommandResponseInstrumentProtocol):
         """
         Acquire status
         """
-        next_state = None
 
-        log.debug("Inside _handler_command_acquire_status...sending ADREAD")
+        next_state = None
 
         resp = self._do_cmd_resp(Command.ADREAD, response_regex=ADREAD_RESPONSE_PATTERN)
 
@@ -1292,7 +1306,6 @@ class CAMHDProtocol(CommandResponseInstrumentProtocol):
         """
         Start streaming video in command mode.
         """
-        log.debug("Inside _handler_command_start_streaming")
 
         next_state = None
 
@@ -1307,8 +1320,6 @@ class CAMHDProtocol(CommandResponseInstrumentProtocol):
         kwargs['timeout'] = 30
         kwargs['response_regex'] = START_RESPONSE_PATTERN
 
-        log.debug("Inside _handler_start_streaming")
-
         resp = self._do_cmd_resp(Command.START, **kwargs)
 
         if resp.startswith('ERROR'):
@@ -1318,8 +1329,6 @@ class CAMHDProtocol(CommandResponseInstrumentProtocol):
         """
         Stop streaming video.
         """
-
-        log.debug("Inside _handler_command_stop_streaming")
 
         next_state = None
 
@@ -1335,8 +1344,6 @@ class CAMHDProtocol(CommandResponseInstrumentProtocol):
         """
         Get video streaming status.
         """
-
-        log.debug("Inside _handler_command_get_status_streaming")
 
         if not self._streaming:
             log.error("Unable to get Streaming Status: Video streaming must be turned on first.")
@@ -1438,8 +1445,6 @@ class CAMHDProtocol(CommandResponseInstrumentProtocol):
         """
         Stop streaming video.
         """
-
-        log.debug("Inside _handler_autosample_stop_streaming")
 
         # Remove the job that was scheduled to stop streaming
         self._remove_scheduler(ScheduledJob.STOP_CAPTURE)
