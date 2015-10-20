@@ -108,7 +108,7 @@ class AntelopeMetadataParticle(DataParticle):
             self._encode_value(pk.CHANNEL, header.channel, str),
             self._encode_value(pk.START, ntplib.system_to_ntp_time(header.starttime), float),
             self._encode_value(pk.END, ntplib.system_to_ntp_time(header.endtime), float),
-            self._encode_value(pk.RATE, header.rate, float),
+            self._encode_value(pk.RATE, header.rate, int),
             self._encode_value(pk.NSAMPS, header.num_samples, int),
             self._encode_value(pk.FILENAME, self.raw_data.filename, str),
             self._encode_value(pk.UUID, self.raw_data.bin_uuid, str),
@@ -284,7 +284,7 @@ class Protocol(InstrumentProtocol):
         port = self._param_dict.get(Parameter.DB_PORT)
 
         self._persistent_store = PersistentStoreDict(name, refdes, host=host, port=port)
-        if not 'pktid' in self._persistent_store:
+        if 'pktid' not in self._persistent_store:
             self._persistent_store['pktid'] = ORBOLDEST
 
     def _handler_set(self, *args, **kwargs):
@@ -370,11 +370,13 @@ class Protocol(InstrumentProtocol):
 
         return None, (None, None)
 
+    # noinspection PyProtectedMember
     def _orbstart(self):
         self._connection._command_port_agent('orbselect %s' % self._param_dict.get(Parameter.SOURCE_REGEX))
         self._connection._command_port_agent('orbseek %s' % self._persistent_store['pktid'])
         self._connection._command_port_agent('orbstart')
 
+    # noinspection PyProtectedMember
     def _orbstop(self):
         self._connection._command_port_agent('orbstop')
 

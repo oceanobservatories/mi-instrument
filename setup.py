@@ -5,7 +5,7 @@ try:
 except ImportError:
     from distutils.core import setup
 
-version = '0.3.30'
+version = '0.3.31'
 
 setup(name='mi-instrument',
       version=version,
@@ -29,18 +29,4 @@ setup(name='mi-instrument',
               'analyze=mi.core.instrument.playback_analysis:main',
           ],
       },
-      install_requires=[
-          'ntplib>=0.1.9',
-          'apscheduler==2.1.0',
-          'consulate',
-          'qpid-python',
-          'pyzmq',
-          'docopt',
-          'pyyaml',
-          'ooi_port_agent',
-          'pika',
-          'qpid-python',
-          'psycopg2',
-          'tqdm'
-      ],
       )

@@ -1,0 +1,12 @@
+ntplib>=0.1.9
+apscheduler==2.1.0
+consulate
+qpid-python
+pyzmq
+docopt
+pyyaml
+ooi_port_agent
+pika
+qpid-python
+psycopg2
+tqdm
