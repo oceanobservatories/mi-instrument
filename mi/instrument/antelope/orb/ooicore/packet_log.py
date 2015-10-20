@@ -35,7 +35,7 @@ class Vector(object):
     def _realloc(self, new_index):
         while new_index >= self.length:
             self.length = int(self.length * self.factor)
-            self.backing_store.resize(self.length)
+            self.backing_store.resize((self.length,))
 
     def get(self):
         return self.backing_store[:self.index]
@@ -46,7 +46,7 @@ class GapException(Exception):
 
 
 class PacketLogHeader(object):
-    def __init__(self, net, location, station, channel, starttime, maxtime, rate, calib, calper):
+    def __init__(self, net, location, station, channel, starttime, maxtime, rate, calib, calper, refdes):
         self.net = net
         self.location = location
         self.station = station
@@ -56,6 +56,7 @@ class PacketLogHeader(object):
         self.rate = rate
         self.calib = calib
         self.calper = calper
+        self.refdes = refdes
         self.num_samples = 0
 
     @property
@@ -74,6 +75,10 @@ class PacketLogHeader(object):
     @property
     def name(self):
         return '%s.%s.%s.%s' % (self.net, self.station, self.location, self.channel)
+
+    @property
+    def fname(self):
+        return '%s.%s.mseed' % (self.name, self.time)
 
     @property
     def stats(self):
@@ -110,15 +115,23 @@ class PacketLog(object):
         self.needs_flush = False
         self.closed = False
         self.data = Vector(1000, 'i')
+        self._relpath = None
 
         # Generate a UUID for this PacketLog
         self.bin_uuid = str(uuid.uuid4())
 
-    def create(self, net, location, station, channel, start, end, rate, calib, calper):
-        self.header = PacketLogHeader(net, location, station, channel, start, end, rate, calib, calper)
+    def create(self, net, location, station, channel, start, end, rate, calib, calper, refdes):
+        self.header = PacketLogHeader(net, location, station, channel, start, end, rate, calib, calper, refdes)
+        if not os.path.exists(self.abspath):
+            try:
+                os.makedirs(self.abspath)
+            except OSError:
+                raise InstrumentProtocolException('OSError occurred while creating file path: ' + self.abspath)
+        elif os.path.isfile(self.abspath):
+            raise InstrumentProtocolException('Error creating file path: File exists with same name: ' + self.abspath)
 
     @staticmethod
-    def from_packet(packet, end):
+    def from_packet(packet, end, refdes):
         packet_log = PacketLog()
         packet_log.create(
             packet.get('net', ''),
@@ -129,29 +142,33 @@ class PacketLog(object):
             end,
             packet['samprate'],
             packet['calib'],
-            packet['calper']
+            packet['calper'],
+            refdes
             )
         return packet_log
 
     @property
-    def filename(self):
-        # Get the year, month and day for the directory structure of the data file from the packet start time
-        packet_start_time = datetime.utcfromtimestamp(self.header.starttime)
-        year = str(packet_start_time.year)
-        month = '%02d' % packet_start_time.month
-        day = '%02d' % packet_start_time.day
+    def relpath(self):
+        if self._relpath is None:
+            # Get the year, month and day for the directory structure of the data file from the packet start time
+            packet_start_time = datetime.utcfromtimestamp(self.header.starttime)
+            year = str(packet_start_time.year)
+            month = '%02d' % packet_start_time.month
+            day = '%02d' % packet_start_time.day
+            self._relpath = os.path.join('antelope', self.header.refdes, year, month, day)
+        return self._relpath
 
-        # Generate the data file path and create it on the disk
-        file_path = os.path.join(PacketLog.base_dir, year, month, day)
-        if not os.path.exists(file_path):
-            try:
-                os.makedirs(file_path)
-            except OSError:
-                raise InstrumentProtocolException('OSError occurred while creating file path: ' + file_path)
-        elif os.path.isfile(file_path):
-            raise InstrumentProtocolException('Error creating file path: File exists with same name: ' + file_path)
+    @property
+    def abspath(self):
+        return os.path.join(self.base_dir, self.relpath)
 
-        return os.path.join(file_path, self.header.name + '.' + self.header.time + '.mseed')
+    @property
+    def relname(self):
+        return os.path.join(self.relpath, self.header.name + '.' + self.header.time + '.mseed')
+
+    @property
+    def absname(self):
+        return os.path.join(self.base_dir, self.relname)
 
     def add_packet(self, packet):
         if self.header.starttime > packet['time'] or packet['time'] >= self.header.maxtime:
@@ -185,11 +202,11 @@ class PacketLog(object):
 
     def _write_trace(self):
         trace = Trace(self.data.get(), self.header.stats)
-        trace.write(self.filename, format='MSEED')
+        trace.write(self.absname, format='MSEED')
 
     def flush(self):
         if self.needs_flush:
-            log.info('flush: %-40s', self.filename)
+            log.info('flush: %-40s', self.absname)
             self._write_trace()
 
             self.needs_flush = False
