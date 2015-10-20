@@ -50,8 +50,8 @@ class Publisher(object):
 
     @staticmethod
     def filter_events(events, allowed):
-        log.info('Filtering %d events with: %r', len(events), allowed)
         if allowed is not None and isinstance(allowed, list):
+            log.info('Filtering %d events with: %r', len(events), allowed)
             new_events = []
             dropped = 0
             for event in events:

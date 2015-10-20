@@ -11,8 +11,8 @@ log = get_logger()
 
 __author__ = 'petercable'
 
-HeaderTuple = namedtuple('HeaderTuple', 'net, location, station, channel, starttime, maxtime, rate, calib, calper')
-header_values = HeaderTuple('OO', 'XX', 'AXAS1', 'EHE', 1.0, 100.0, 200.0, 1.0, 0.0)
+HeaderTuple = namedtuple('HeaderTuple', 'net, location, station, channel, starttime, maxtime, rate, calib, calper refdes')
+header_values = HeaderTuple('OO', 'XX', 'AXAS1', 'EHE', 1.0, 100.0, 200.0, 1.0, 0.0, 'refdes')
 
 PacketTuple = namedtuple('PacketTuple',
                          'net, loc, sta, chan, time, rate, calib, calper, nsamp, data')
@@ -48,10 +48,11 @@ class PacketLogUnitTest(TestCase):
     def test_log_properties(self):
         log = PacketLog()
         log.filehandle = BytesIO()
-        PacketLog.base_dir = './antelope_data/refdes'
+        PacketLog.base_dir = './antelope_data'
         log.create(*header_values)
 
-        self.assertEqual(log.filename, './antelope_data/refdes/1970/01/01/OO.AXAS1.XX.EHE.1970-01-01T00:00:01.000000.mseed')
+        self.assertEqual(log.absname, './antelope_data/antelope/refdes/1970/01/01/'
+                                      'OO.AXAS1.XX.EHE.1970-01-01T00:00:01.000000.mseed')
 
     def test_log_add_packet(self):
         packet_log = PacketLog()
@@ -79,7 +80,7 @@ class PacketLogUnitTest(TestCase):
             packet_log.flush()
 
             # assert Trace.write was called
-            mocked_write.assert_called_once_with(packet_log.filename, format='MSEED')
+            mocked_write.assert_called_once_with(packet_log.absname, format='MSEED')
 
     def test_packet_gap_exception(self):
         log = PacketLog()

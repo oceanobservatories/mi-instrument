@@ -10,3 +10,4 @@ pika
 qpid-python
 psycopg2
 tqdm
+obspy
