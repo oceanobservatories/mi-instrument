@@ -70,7 +70,7 @@ DEFAULT_PRESET_POSITION = 0
 
 DEFAULT_USER_PRESET_POSITION = 1
 
-#'NAK' reply from the instrument, indicating bad command sent to the instrument
+# 'NAK' reply from the instrument, indicating bad command sent to the instrument
 NAK = '\x15'
 
 # Minimum length of a response form the CAMDS Instrument
@@ -86,7 +86,7 @@ CAMDS_METADATA_MATCHER = r'<\x04:\x06:(CI|SP|SR)>'
 CAMDS_METADATA_MATCHER_COM = re.compile(CAMDS_METADATA_MATCHER, re.DOTALL)
 
 
-def CAMDS_failure_message(error_code):
+def camds_failure_message(error_code):
     """
     Create an error message based on error code
     """
@@ -105,16 +105,15 @@ def CAMDS_failure_message(error_code):
 
 
 def validate_response(response):
-
     if len(response) < MIN_RESPONSE_LENGTH:
         return False
     if not all([response.startswith('<'), response.endswith('>')]):
         return False
 
     if response[3] == NAK:
-            reason = CAMDS_failure_message(response[5])
-            raise InstrumentProtocolException(
-                'NAK received from instrument: ' + reason)
+        reason = camds_failure_message(response[5])
+        raise InstrumentProtocolException(
+            'NAK received from instrument: ' + reason)
 
     return True
 
@@ -155,7 +154,7 @@ class DataParticleType(BaseEnum):
 
 
 # HS command
-class CAMDS_HEALTH_STATUS_KEY(BaseEnum):
+class CamdsHealthStatusKey(BaseEnum):
     """
     cam health status keys
     """
@@ -165,7 +164,7 @@ class CAMDS_HEALTH_STATUS_KEY(BaseEnum):
 
 
 # Data particle for HS
-class CAMDS_HEALTH_STATUS(DataParticle):
+class CamdsHealthStatus(DataParticle):
     """
     cam health status data particle
     """
@@ -176,19 +175,18 @@ class CAMDS_HEALTH_STATUS(DataParticle):
     ERROR_INDEX = 9
 
     def _build_parsed_values(self):
-
-        #check the response
+        # check the response
         if not validate_response(self.raw_data):
             log.error("Invalid response received for Health status request: %r" + self.raw_data)
             return
 
         int_bytes = bytearray(self.raw_data)
 
-        parsed_sample = [{DataParticleKey.VALUE_ID: CAMDS_HEALTH_STATUS_KEY.temp,
+        parsed_sample = [{DataParticleKey.VALUE_ID: CamdsHealthStatusKey.temp,
                           DataParticleKey.VALUE: int_bytes[self.TEMP_INDEX]},
-                         {DataParticleKey.VALUE_ID: CAMDS_HEALTH_STATUS_KEY.humidity,
+                         {DataParticleKey.VALUE_ID: CamdsHealthStatusKey.humidity,
                           DataParticleKey.VALUE: int_bytes[self.HUMIDITY_INDEX]},
-                         {DataParticleKey.VALUE_ID: CAMDS_HEALTH_STATUS_KEY.error,
+                         {DataParticleKey.VALUE_ID: CamdsHealthStatusKey.error,
                           DataParticleKey.VALUE: int_bytes[self.ERROR_INDEX]}]
 
         log.debug("CAMDS_HEALTH_STATUS: Finished building particle: %s" % parsed_sample)
@@ -197,7 +195,7 @@ class CAMDS_HEALTH_STATUS(DataParticle):
 
 
 # GC command
-class CAMDS_DISK_STATUS_KEY(BaseEnum):
+class CamdsDiskStatusKey(BaseEnum):
     """
     cam disk status keys
     """
@@ -208,17 +206,16 @@ class CAMDS_DISK_STATUS_KEY(BaseEnum):
 
 
 # Data particle for GC command
-class CAMDS_DISK_STATUS(DataParticle):
+class CamdsDiskStatus(DataParticle):
     """
     cam disk status data particle
     """
     _data_particle_type = DataParticleType.CAMDS_DISK_STATUS
 
     def _build_parsed_values(self):
-
         response_stripped = self.raw_data.strip()
 
-        #check the response
+        # check the response
         if not validate_response(response_stripped):
             log.error("Invalid response received for Disk status request: %r" + response_stripped)
             return
@@ -228,13 +225,13 @@ class CAMDS_DISK_STATUS(DataParticle):
         available_disk = byte1 * pow(10, byte2)
         available_disk_percent = byte3
 
-        parsed_sample = [{DataParticleKey.VALUE_ID: CAMDS_DISK_STATUS_KEY.size,
+        parsed_sample = [{DataParticleKey.VALUE_ID: CamdsDiskStatusKey.size,
                           DataParticleKey.VALUE: available_disk},
-                         {DataParticleKey.VALUE_ID: CAMDS_DISK_STATUS_KEY.disk_remaining,
+                         {DataParticleKey.VALUE_ID: CamdsDiskStatusKey.disk_remaining,
                           DataParticleKey.VALUE: available_disk_percent},
-                         {DataParticleKey.VALUE_ID: CAMDS_DISK_STATUS_KEY.image_remaining,
+                         {DataParticleKey.VALUE_ID: CamdsDiskStatusKey.image_remaining,
                           DataParticleKey.VALUE: images_remaining},
-                         {DataParticleKey.VALUE_ID: CAMDS_DISK_STATUS_KEY.image_on_disk,
+                         {DataParticleKey.VALUE_ID: CamdsDiskStatusKey.image_on_disk,
                           DataParticleKey.VALUE: images_on_disk}]
 
         log.debug("CAMDS_DISK_STATUS: Finished building particle: %s" % parsed_sample)
@@ -243,7 +240,7 @@ class CAMDS_DISK_STATUS(DataParticle):
 
 
 # Data particle for CAMDS Image Metadata
-class CAMDS_IMAGE_METADATA(DataParticle):
+class CamdsImageMetadata(DataParticle):
     """
     camds_image_metadata particle
     """
@@ -287,7 +284,7 @@ class CAMDS_IMAGE_METADATA(DataParticle):
                       "formatted: %s" % brightness_param)
 
         result.append({DataParticleKey.VALUE_ID: "camds_gain",
-                   DataParticleKey.VALUE: param_dict.get(Parameter.CAMERA_GAIN[ParameterIndex.KEY])})
+                       DataParticleKey.VALUE: param_dict.get(Parameter.CAMERA_GAIN[ParameterIndex.KEY])})
 
         log.debug("CAMDS_IMAGE_METADATA: Finished building particle: %s" % result)
 
@@ -320,14 +317,14 @@ class Parameter(DriverParameter):
                    'interval(in second), NTP port, NTP Server name', 'NTP_SETTING', 255)
 
     """
-    set <\x04:CL:\x00>
+    set <\x04:FL:\x00>
     variable number of bytes representing \0 terminated ASCII string.
     (\0 only) indicates files are saved in the default location on the camera
 
-    get <\x03:FL:>
+    get <\x03:CL:>
     Byte1 to end = Network location as an ASCII string with \0 end of string. Send only \0 character to set default
     """
-    NETWORK_DRIVE_LOCATION = ('CL', '<\x04:CL:\x00>', 1, None, '\x00',
+    NETWORK_DRIVE_LOCATION = ('CL', '<\x03:CL:>', 1, None, '\x00',
                               'Network Drive Location', '\x00 for local default location', 'NETWORK_DRIVE_LOCATION', 0)
 
     """
@@ -420,7 +417,7 @@ class Parameter(DriverParameter):
     """
     SHUTTER_SPEED = ('ET', '<\x03:EG:>', 1, 2, '\xFF\xFF', 'Shutter Speed',
                      'Byte1 = Value (starting value), Byte2 = Exponent (Number of zeros to add)', 'SHUTTER_SPEED',
-                     '255:255')
+                     None)
 
     """
     get <\x04:GS:\xFF>
@@ -433,7 +430,7 @@ class Parameter(DriverParameter):
     Value 0x01 to 0x20 for a static value and 0xFF for auto GAIN
     """
     CAMERA_GAIN = ('GS', '<\x03:GG:>', 1, 1, '\xFF', 'Camera Gain', 'From 1 to 32 and 255 sets auto gain',
-                   'CAMERA_GAIN', 255)
+                   'CAMERA_GAIN', None)
 
     """
     set <\x05:BF:\x03\x32>
@@ -448,7 +445,7 @@ class Parameter(DriverParameter):
     """
     LAMP_BRIGHTNESS = ('BF', '<\x03:PF:>', 1, 2, '\x03\x32', 'Lamp Brightness',
                        'Byte 1 is lamp to control: 1 = Lamp1, 2 = Lamp2, 3 = Both Lamps, '
-                       'Byte 2 is brightness between 0 and 100', 'LAMP_BRIGHTNESS', '3:50')
+                       'Byte 2 is brightness between 0 and 100', 'LAMP_BRIGHTNESS', None)
 
     """
     Set <\x04:FX:\x00>
@@ -482,7 +479,7 @@ class Parameter(DriverParameter):
     IP + 1 byte between 0x00
     get <0x03:IP>
     """
-    IRIS_POSITION = ('IG', '<\x03:IP:>', 1, 1, '\x08', 'Iris Position', 'between 0 and 15', 'IRIS_POSITION', 8)
+    IRIS_POSITION = ('IG', '<\x03:IP:>', 1, 1, '\x08', 'Iris Position', 'between 0 and 15', 'IRIS_POSITION', None)
 
     """
     Zoom Position
@@ -493,21 +490,21 @@ class Parameter(DriverParameter):
     ZP + 1 byte between 0x00 and 0xC8
     get <0x03:ZP:>
     """
-    ZOOM_POSITION = ('ZG', '<\x03:ZP:>', 1, 1, '\x64', 'Zoom Position', 'between 0 and 200', 'ZOOM_POSITION', 100)
+    ZOOM_POSITION = ('ZG', '<\x03:ZP:>', 1, 1, '\x64', 'Zoom Position', 'between 0 and 200', 'ZOOM_POSITION', None)
 
     """
     Pan Speed
     1 byte between 0x00 and 0x64
     Default is 0x32 : set <0x04:DS:0x32>
     """
-    PAN_SPEED = ('DS', None, None, None, '\x32', 'Pan Speed', 'between 0 and 100', 'PAN_SPEED', 50)
+    PAN_SPEED = ('DS', None, None, None, '\x32', 'Pan Speed', 'between 0 and 100', 'PAN_SPEED', None)
 
     """
     Set tilt speed
     1 byte between 0x00 and 0x64
     Default is 0x32 : <0x04:TA:0x32>
     """
-    TILT_SPEED = ('TA', None, None, None, '\x32', 'TILT Speed', 'between 0 and 100', 'TILT_SPEED', 50)
+    TILT_SPEED = ('TA', None, None, None, '\x32', 'TILT Speed', 'between 0 and 100', 'TILT_SPEED', None)
 
     """
     Enable or disable the soft end stops of the pan and tilt device
@@ -525,7 +522,7 @@ class Parameter(DriverParameter):
     Bytes 1 to 6 are ASCII characters between 0x30 and 0x39
     """
     SOFT_END_STOPS = ('ES', '<\x03:AS:>', 7, 1, '\x01', 'Soft End Stops', '0 = Disable, 1 = Enable',
-                      'SOFT_END_STOPS', 1)
+                      'SOFT_END_STOPS', None)
 
     """
     3 Bytes representing a three letter string containing the required pan location.
@@ -547,7 +544,7 @@ class Parameter(DriverParameter):
     """
     PAN_POSITION = ('PP', '<\x03:AS:>', 4, 3, '\x30\x37\x35', 'Pan Position',
                     'Byte1 = Hundreds of degrees, Byte2 = Tens of degrees, Byte 3 = Units of degrees',
-                    'PAN_POSITION', 90)
+                    'PAN_POSITION', None)
 
     """
     3 Bytes representing a three letter string containing the required tilt location.
@@ -569,7 +566,7 @@ class Parameter(DriverParameter):
     """
     TILT_POSITION = ('TP', '<\x03:AS:>', 1, 3, '\x30\x37\x35', 'Tilt Position',
                      'Byte1 = Hundreds of degrees, Byte2 = Tens of degrees, Byte 3 = Units of degrees',
-                     'TILT_POSITION', 90)
+                     'TILT_POSITION', None)
 
     """
     set <\x04:FG:\x64>
@@ -577,7 +574,7 @@ class Parameter(DriverParameter):
 
     get <\x03:FP:>
     """
-    FOCUS_POSITION = ('FG', '<\x03:FP:>', 1, 1, '\x64', 'Focus Position', 'between 0 and 200', 'FOCUS_POSITION', 100)
+    FOCUS_POSITION = ('FG', '<\x03:FP:>', 1, 1, '\x64', 'Focus Position', 'between 0 and 200', 'FOCUS_POSITION', None)
 
     # Engineering parameters for the scheduled commands
     SAMPLE_INTERVAL = (None, None, None, None, '00:30:00', 'Sample Interval',
@@ -753,8 +750,6 @@ class InstrumentDriver(SingleConnectionInstrumentDriver):
     Subclasses SingleConnectionInstrumentDriver with connection state
     machine.
     """
-    #__metaclass__ = METALOGGER
-
     # #######################################################################
     # Protocol builder.
     # #######################################################################
@@ -769,14 +764,12 @@ class InstrumentDriver(SingleConnectionInstrumentDriver):
 ###########################################################################
 # Protocol
 ###########################################################################
+# noinspection PyUnusedLocal,PyMethodMayBeStatic
 class CAMDSProtocol(CommandResponseInstrumentProtocol):
     """
     Instrument protocol class
     Subclasses CommandResponseInstrumentProtocol
     """
-    #__metaclass__ = METALOGGER
-
-
 
     def __init__(self, prompts, newline, driver_event):
         """
@@ -819,7 +812,6 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
         # commands sent sent to device to be
         # filtered in responses for telnet DA
         self._sent_cmds = []
-
 
     @staticmethod
     def sieve_function(raw_data):
@@ -892,7 +884,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
         self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.LASER_2_OFF,
                                        self._handler_command_laser2_off)
         self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.LASER_BOTH_OFF,
-                                      self._handler_command_laser_both_off)
+                                       self._handler_command_laser_both_off)
         self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.SET_PRESET,
                                        self._handler_command_set_preset)
         self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.GOTO_PRESET,
@@ -935,7 +927,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
         self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.LASER_2_OFF,
                                        self._handler_command_laser2_off)
         self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.LASER_BOTH_OFF,
-                                      self._handler_command_laser_both_off)
+                                       self._handler_command_laser_both_off)
         self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.SET_PRESET,
                                        self._handler_command_set_preset)
         self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.GOTO_PRESET,
@@ -1162,7 +1154,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
                              r'NOT USED',
                              None,
                              str,
-                             type=ParameterDictType.STRING, # meta data
+                             type=ParameterDictType.STRING,  # meta data
                              display_name=Parameter.PAN_POSITION[ParameterIndex.DISPLAY_NAME],
                              value_description=Parameter.PAN_POSITION[ParameterIndex.DESCRIPTION],
                              startup_param=False,
@@ -1337,10 +1329,6 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
         """
         Update the parameter dictionary.
         """
-
-        error = None
-        results = None
-
         # Get old param dict config.
         old_config = self._param_dict.get_config()
 
@@ -1382,7 +1370,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
 
         return results
 
-    def _update_metadata_params(self, *args, **kwargs):
+    def _update_metadata_params(self):
         """
         Update parameters specific to the camds_image_metadata particle.
         Also get the frame rate here, as it's needed to calculate how
@@ -1411,8 +1399,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
                                                  Parameter.CAMERA_GAIN[ParameterIndex.KEY],
                                                  Parameter.IMAGE_RESOLUTION[ParameterIndex.KEY],
                                                  Parameter.LAMP_BRIGHTNESS[ParameterIndex.KEY]]:
-
-                    result = self._do_cmd_resp(InstrumentCmds.GET, param, **kwargs)
+                    result = self._do_cmd_resp(InstrumentCmds.GET, param)
                     results += result + NEWLINE
 
             new_config = self._param_dict.get_config()
@@ -1448,7 +1435,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
         for key, val in params.iteritems():
             log.debug("In _set_params, %s, %s", key, val)
 
-            #These are driver specific parameters. They are not set on the instrument.
+            # These are driver specific parameters. They are not set on the instrument.
             if key not in [Parameter.SAMPLE_INTERVAL[ParameterIndex.KEY],
                            Parameter.VIDEO_FORWARDING_TIMEOUT[ParameterIndex.KEY],
                            Parameter.ACQUIRE_STATUS_INTERVAL[ParameterIndex.KEY],
@@ -1458,14 +1445,14 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
                            Parameter.NTP_SETTING[ParameterIndex.KEY],
                            Parameter.WHEN_DISK_IS_FULL[ParameterIndex.KEY]]:
 
-                    result = self._do_cmd_resp(InstrumentCmds.SET, key, val, **kwargs)
-                    time.sleep(2)
+                result = self._do_cmd_resp(InstrumentCmds.SET, key, val, **kwargs)
+                time.sleep(2)
 
-                    #The instrument needs extra time to process these commands
-                    if key in [Parameter.CAMERA_MODE[ParameterIndex.KEY],
-                               Parameter.IMAGE_RESOLUTION[ParameterIndex.KEY]]:
-                        log.debug("Just set Camera parameters, sleeping for 15 seconds")
-                        time.sleep(25)
+                # The instrument needs extra time to process these commands
+                if key in [Parameter.CAMERA_MODE[ParameterIndex.KEY],
+                           Parameter.IMAGE_RESOLUTION[ParameterIndex.KEY]]:
+                    log.debug("Just set Camera parameters, sleeping for 15 seconds")
+                    time.sleep(25)
 
         self._update_params()
 
@@ -1508,9 +1495,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
         return False
 
     def build_simple_command(self, cmd):
-
         command = '<\x03:%s:>' % cmd
-        log.debug("Built simple command: %s" % command)
         return command
 
     def _build_get_command(self, cmd, param, **kwargs):
@@ -1521,14 +1506,10 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
         @param val the parameter value to set.
         @return The get command to be sent to the device.
         """
-
-        log.debug("build_get_command %r", param)
         param_tuple = param
         self.get_param = param[ParameterIndex.KEY]
         self.get_param_dict = param
-        self.get_cmd = cmd
 
-        log.debug("build_get_command %r", param_tuple[ParameterIndex.GET])
         return param_tuple[ParameterIndex.GET]
 
     def _build_set_command(self, cmd, param, val):
@@ -1541,9 +1522,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
         @throws InstrumentParameterException if the parameter is not valid or
         if the formatting function could not accept the value passed.
         """
-
         self.get_param = param
-        self.get_cmd = cmd
 
         try:
 
@@ -1580,9 +1559,6 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
         Build handler for status command.
         @param cmd the command.
         """
-
-        self.get_cmd = cmd
-
         command = '<\x03:%s:>' % cmd
         return command
 
@@ -1593,9 +1569,6 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
         @param data the data value.
         @return The command to be sent to the device.
         """
-
-        self.get_cmd = cmd
-
         command = '<\x04:%s:%s>' % (cmd, data)
 
         return command
@@ -1607,17 +1580,13 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
         @param data the data value.
         @return The command to be sent to the device.
         """
-
-        self.get_cmd = cmd
-
         command = '<\x04:%s:%s>' % (cmd, chr(data))
         return command
 
     def _parse_set_response(self, response, prompt):
-
         log.debug("SET RESPONSE = %r" % response)
 
-        #Make sure the response is the right format
+        # Make sure the response is the right format
         response_stripped = response.strip()
 
         if not validate_response(response_stripped):
@@ -1631,7 +1600,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
 
         start_index = 6
 
-        #Make sure the response is the right format
+        # Make sure the response is the right format
         response_stripped = response.strip()
 
         if not validate_response(response_stripped):
@@ -1640,7 +1609,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
 
         log.debug("GET RESPONSE : Response for %r is: %s" % (self.get_param, response_stripped))
 
-        #parse out parameter value first
+        # parse out parameter value first
 
         if self.get_param[ParameterIndex.GET] is None:
             # No response data to process
@@ -1655,9 +1624,9 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
             log.debug("GET RESPONSE : response raw : %r", raw_value)
 
             if self.get_param[ParameterIndex.KEY] == Parameter.NTP_SETTING[ParameterIndex.KEY]:
-                self._param_dict.update(ord(raw_value[0]), target_params = self.get_param)
+                self._param_dict.update(ord(raw_value[0]), target_params=self.get_param)
             if self.get_param[ParameterIndex.KEY] == Parameter.NETWORK_DRIVE_LOCATION[ParameterIndex.KEY]:
-                self._param_dict.update(raw_value.trim(), target_params = self.get_param)
+                self._param_dict.update(raw_value.trim(), target_params=self.get_param)
 
         else:
 
@@ -1666,9 +1635,10 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
                 raw_value = response_stripped[self.get_param_dict[ParameterIndex.Start] + start_index: -1]
 
             else:
-                raw_value = response_stripped[self.get_param_dict[ParameterIndex.Start] + start_index:
-                                              self.get_param_dict[ParameterIndex.Start] +
-                                              self.get_param_dict[ParameterIndex.LENGTH] + start_index]
+                param_start = self.get_param_dict[ParameterIndex.Start]
+                start = param_start + start_index
+                stop = start + self.get_param_dict[ParameterIndex.LENGTH]
+                raw_value = response_stripped[start:stop]
 
             if len(raw_value) == 1:
 
@@ -1679,7 +1649,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
             else:
 
                 if self.get_param_dict[ParameterIndex.KEY] in [Parameter.PAN_POSITION[ParameterIndex.KEY],
-                                                          Parameter.TILT_POSITION[ParameterIndex.KEY]]:
+                                                               Parameter.TILT_POSITION[ParameterIndex.KEY]]:
 
                     log.debug("About to update Parameter %s in param_dict to %s" %
                               (self.get_param_dict[ParameterIndex.KEY], int(raw_value)))
@@ -1713,7 +1683,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
 
     def _parse_simple_response(self, response, prompt):
 
-        #Make sure the response is the right format
+        # Make sure the response is the right format
         response_stripped = response.strip()
 
         if not validate_response(response_stripped):
@@ -1722,7 +1692,6 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
 
         self.get_count = 0
         return response
-
 
     ###############################################################
     # Unknown State handlers
@@ -1753,7 +1722,6 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
             agent_state = ResourceAgentState.IDLE
 
         return protocol_state, agent_state
-
 
     def stop_scheduled_job(self, schedule_job):
         """
@@ -1786,7 +1754,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
         # make sure the sample interval is never less than the instrument recovery time
         # otherwise we'll be trying to collect samples faster than the instrument can process them
         if param == Parameter.SAMPLE_INTERVAL[ParameterIndex.KEY]:
-            interval_secs = hours*3600 + minutes*60 + seconds
+            interval_secs = hours * 3600 + minutes * 60 + seconds
             recovery_time = self._calculate_recovery_time()
             if interval_secs < recovery_time:
                 hours = recovery_time / 3600
@@ -1916,7 +1884,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
 
         log.debug("Acquire Sample: Captured snapshot!")
 
-        #Camera needs time to recover after taking a snapshot
+        # Camera needs time to recover after taking a snapshot
         self._do_recover(CAMERA_RECOVERY_TIME)
 
         return next_state, (None, None)
@@ -2028,7 +1996,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
         pd = self._param_dict.get_all()
         result = []
 
-        #set default preset position
+        # set default preset position
         preset_number = DEFAULT_USER_PRESET_POSITION
 
         for key, value in pd.iteritems():
@@ -2070,10 +2038,10 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
 
         self._do_cmd_resp(InstrumentCmds.STOP_CAPTURE, *args, **kwargs)
 
-        #Camera needs time to recover after capturing images
+        # Camera needs time to recover after capturing images
         self._do_recover(self._calculate_recovery_time())
 
-    def _handler_command_stop_forward (self, *args, **kwargs):
+    def _handler_command_stop_forward(self, *args, **kwargs):
         """
         Stop Video Forwarding
         """
@@ -2092,7 +2060,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
 
         kwargs['timeout'] = 2
 
-        #set to default user preset position
+        # set to default user preset position
         preset_number = DEFAULT_USER_PRESET_POSITION
 
         # Check if the user set a preset position, if so, make the camera go to that position
@@ -2153,11 +2121,11 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
 
     def _do_recover(self, recovery_time):
 
-        #start timer here
+        # start timer here
         log.debug("Starting timer for %s seconds" % recovery_time)
         Timer(recovery_time, self._recovery_timer_expired, [self._protocol_fsm.get_current_state()]).start()
 
-        #Transiton to the Recovery State until the timer expires
+        # Transiton to the Recovery State until the timer expires
         self._async_raise_fsm_event(ProtocolEvent.START_RECOVER)
 
     ###################################################################################
@@ -2237,7 +2205,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
 
         log.debug("Acquire Sample: Captured snapshot!")
 
-        #Camera needs time to recover after taking a snapshot
+        # Camera needs time to recover after taking a snapshot
         self._do_recover(CAMERA_RECOVERY_TIME)
 
         return next_state, (None, None)
@@ -2492,10 +2460,10 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
         self._add_response_handler(InstrumentCmds.TILE_UP_SOFT, self._parse_simple_response)
         self._add_response_handler(InstrumentCmds.TILE_DOWN_SOFT, self._parse_simple_response)
 
-        #Generate data particle
+        # Generate data particle
         self._add_response_handler(InstrumentCmds.GET_DISK_USAGE, self._parse_simple_response)
 
-        #Generate data particle
+        # Generate data particle
         self._add_response_handler(InstrumentCmds.HEALTH_REQUEST, self._parse_simple_response)
         self._add_response_handler(InstrumentCmds.START_ZOOM_IN, self._parse_simple_response)
         self._add_response_handler(InstrumentCmds.START_ZOOM_OUT, self._parse_simple_response)
@@ -2514,19 +2482,19 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
         objects and REGEXes.
         """
 
-        if (self._extract_sample(CAMDS_DISK_STATUS,
+        if (self._extract_sample(CamdsDiskStatus,
                                  CAMDS_DISK_STATUS_MATCHER_COM,
                                  chunk,
                                  timestamp)):
             log.debug("_got_chunk - successful match for CAMDS_DISK_STATUS")
 
-        elif (self._extract_sample(CAMDS_HEALTH_STATUS,
+        elif (self._extract_sample(CamdsHealthStatus,
                                    CAMDS_HEALTH_STATUS_MATCHER_COM,
                                    chunk,
                                    timestamp)):
             log.debug("_got_chunk - successful match for CAMDS_HEALTH_STATUS")
 
-        elif (self._extract_metadata_sample(CAMDS_IMAGE_METADATA,
+        elif (self._extract_metadata_sample(CamdsImageMetadata,
                                             CAMDS_METADATA_MATCHER_COM,
                                             chunk,
                                             timestamp)):
