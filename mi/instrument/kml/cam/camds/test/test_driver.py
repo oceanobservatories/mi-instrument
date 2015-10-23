@@ -11,12 +11,12 @@ __author__ = 'Sung Ahn'
 __license__ = 'Apache 2.0'
 
 import copy
-from nose.plugins.attrib import attr
-from mock import Mock
-from mi.core.instrument.chunker import StringChunker
-
 import time
 
+from nose.plugins.attrib import attr
+from mock import Mock
+
+from mi.core.instrument.chunker import StringChunker
 from mi.core.log import get_logger
 
 log = get_logger()
@@ -24,7 +24,7 @@ log = get_logger()
 from mi.idk.unit_test import InstrumentDriverUnitTestCase
 from mi.idk.unit_test import InstrumentDriverIntegrationTestCase
 
-from mi.instrument.kml.cam.camds.driver import DataParticleType, CAMDS_DISK_STATUS_KEY, CAMDS_HEALTH_STATUS_KEY
+from mi.instrument.kml.cam.camds.driver import DataParticleType, CamdsDiskStatusKey, CamdsHealthStatusKey
 
 from mi.idk.unit_test import DriverTestMixin
 
@@ -35,13 +35,9 @@ from mi.instrument.kml.cam.camds.driver import CAMDSPrompt, InstrumentDriver, CA
 from mi.instrument.kml.cam.camds.driver import ScheduledJob
 from mi.instrument.kml.cam.camds.driver import InstrumentCmds, ProtocolState, ProtocolEvent, Capability
 
-from mi.core.port_agent_process import PortAgentProcess
-
-from mi.idk.comm_config import ConfigTypes
-from mi.idk.unit_test import InstrumentDriverTestCase, LOCALHOST, ParameterTestConfigKey
+from mi.idk.unit_test import InstrumentDriverTestCase, ParameterTestConfigKey
 
 from mi.core.common import BaseEnum
-
 
 NEWLINE = '\r\n'
 
@@ -59,8 +55,10 @@ InstrumentDriverTestCase.initialize(
 
     driver_startup_config={
         DriverStartupConfigKey.PARAMETERS: {
-            Parameter.ACQUIRE_STATUS_INTERVAL[ParameterIndex.KEY]: Parameter.ACQUIRE_STATUS_INTERVAL[ParameterIndex.DEFAULT_DATA],
-            Parameter.AUTO_CAPTURE_DURATION[ParameterIndex.KEY]: Parameter.AUTO_CAPTURE_DURATION[ParameterIndex.DEFAULT_DATA],
+            Parameter.ACQUIRE_STATUS_INTERVAL[ParameterIndex.KEY]: Parameter.ACQUIRE_STATUS_INTERVAL[
+                ParameterIndex.DEFAULT_DATA],
+            Parameter.AUTO_CAPTURE_DURATION[ParameterIndex.KEY]: Parameter.AUTO_CAPTURE_DURATION[
+                ParameterIndex.DEFAULT_DATA],
             Parameter.CAMERA_GAIN[ParameterIndex.KEY]: Parameter.CAMERA_GAIN[ParameterIndex.DEFAULT_DATA],
             Parameter.CAMERA_MODE[ParameterIndex.KEY]: Parameter.CAMERA_MODE[ParameterIndex.DEFAULT_DATA],
             Parameter.COMPRESSION_RATIO[ParameterIndex.KEY]: Parameter.COMPRESSION_RATIO[ParameterIndex.DEFAULT_DATA],
@@ -71,7 +69,8 @@ InstrumentDriverTestCase.initialize(
             Parameter.IRIS_POSITION[ParameterIndex.KEY]: Parameter.IRIS_POSITION[ParameterIndex.DEFAULT_DATA],
 
             Parameter.LAMP_BRIGHTNESS[ParameterIndex.KEY]: Parameter.LAMP_BRIGHTNESS[ParameterIndex.DEFAULT_DATA],
-            Parameter.NETWORK_DRIVE_LOCATION[ParameterIndex.KEY]: Parameter.NETWORK_DRIVE_LOCATION[ParameterIndex.DEFAULT_DATA],
+            Parameter.NETWORK_DRIVE_LOCATION[ParameterIndex.KEY]: Parameter.NETWORK_DRIVE_LOCATION[
+                ParameterIndex.DEFAULT_DATA],
             Parameter.NTP_SETTING[ParameterIndex.KEY]: Parameter.NTP_SETTING[ParameterIndex.DEFAULT_DATA],
             Parameter.PAN_POSITION[ParameterIndex.KEY]: Parameter.PAN_POSITION[ParameterIndex.DEFAULT_DATA],
             Parameter.PAN_SPEED[ParameterIndex.KEY]: Parameter.PAN_SPEED[ParameterIndex.DEFAULT_DATA],
@@ -83,7 +82,8 @@ InstrumentDriverTestCase.initialize(
             Parameter.TILT_SPEED[ParameterIndex.KEY]: Parameter.TILT_SPEED[ParameterIndex.DEFAULT_DATA],
 
             Parameter.VIDEO_FORWARDING[ParameterIndex.KEY]: Parameter.VIDEO_FORWARDING[ParameterIndex.DEFAULT_DATA],
-            Parameter.VIDEO_FORWARDING_TIMEOUT[ParameterIndex.KEY]: Parameter.VIDEO_FORWARDING_TIMEOUT[ParameterIndex.DEFAULT_DATA],
+            Parameter.VIDEO_FORWARDING_TIMEOUT[ParameterIndex.KEY]: Parameter.VIDEO_FORWARDING_TIMEOUT[
+                ParameterIndex.DEFAULT_DATA],
             Parameter.WHEN_DISK_IS_FULL[ParameterIndex.KEY]: Parameter.WHEN_DISK_IS_FULL[ParameterIndex.DEFAULT_DATA],
             Parameter.ZOOM_POSITION[ParameterIndex.KEY]: Parameter.ZOOM_POSITION[ParameterIndex.DEFAULT_DATA],
             Parameter.ZOOM_SPEED[ParameterIndex.KEY]: Parameter.ZOOM_SPEED[ParameterIndex.DEFAULT_DATA]
@@ -146,107 +146,107 @@ class CAMDSMixin(DriverTestMixin):
         Parameter.CAMERA_GAIN[ParameterIndex.KEY]:
             {TYPE: str, READONLY: False, DA: False, STARTUP: False,
              DEFAULT: Parameter.CAMERA_GAIN[ParameterIndex.D_DEFAULT],
-                                    VALUE: Parameter.CAMERA_GAIN[ParameterIndex.D_DEFAULT]},
+             VALUE: Parameter.CAMERA_GAIN[ParameterIndex.D_DEFAULT]},
         Parameter.CAMERA_MODE[ParameterIndex.KEY]:
             {TYPE: str, READONLY: False, DA: True, STARTUP: True,
              DEFAULT: Parameter.CAMERA_MODE[ParameterIndex.D_DEFAULT],
-                                    VALUE: Parameter.CAMERA_MODE[ParameterIndex.D_DEFAULT]},
+             VALUE: Parameter.CAMERA_MODE[ParameterIndex.D_DEFAULT]},
         Parameter.COMPRESSION_RATIO[ParameterIndex.KEY]:
             {TYPE: str, READONLY: False, DA: True, STARTUP: True,
              DEFAULT: Parameter.COMPRESSION_RATIO[ParameterIndex.D_DEFAULT],
-                                    VALUE: Parameter.COMPRESSION_RATIO[ParameterIndex.D_DEFAULT]},
+             VALUE: Parameter.COMPRESSION_RATIO[ParameterIndex.D_DEFAULT]},
         Parameter.FOCUS_POSITION[ParameterIndex.KEY]:
             {TYPE: str, READONLY: False, DA: False, STARTUP: False,
              DEFAULT: Parameter.FOCUS_POSITION[ParameterIndex.D_DEFAULT],
-                                    VALUE: Parameter.FOCUS_POSITION[ParameterIndex.D_DEFAULT]},
+             VALUE: Parameter.FOCUS_POSITION[ParameterIndex.D_DEFAULT]},
         Parameter.FOCUS_SPEED[ParameterIndex.KEY]:
             {TYPE: str, READONLY: False, DA: False, STARTUP: False,
              DEFAULT: Parameter.FOCUS_SPEED[ParameterIndex.D_DEFAULT],
-                                    VALUE: Parameter.FOCUS_SPEED[ParameterIndex.D_DEFAULT]},
+             VALUE: Parameter.FOCUS_SPEED[ParameterIndex.D_DEFAULT]},
         Parameter.FRAME_RATE[ParameterIndex.KEY]:
             {TYPE: str, READONLY: False, DA: True, STARTUP: True,
              DEFAULT: Parameter.FRAME_RATE[ParameterIndex.D_DEFAULT],
-                                    VALUE: Parameter.FRAME_RATE[ParameterIndex.D_DEFAULT]},
+             VALUE: Parameter.FRAME_RATE[ParameterIndex.D_DEFAULT]},
         Parameter.IMAGE_RESOLUTION[ParameterIndex.KEY]:
             {TYPE: str, READONLY: False, DA: True, STARTUP: True,
              DEFAULT: Parameter.IMAGE_RESOLUTION[ParameterIndex.D_DEFAULT],
-                                    VALUE: Parameter.IMAGE_RESOLUTION[ParameterIndex.D_DEFAULT]},
+             VALUE: Parameter.IMAGE_RESOLUTION[ParameterIndex.D_DEFAULT]},
         Parameter.IRIS_POSITION[ParameterIndex.KEY]:
             {TYPE: str, READONLY: False, DA: False, STARTUP: False,
              DEFAULT: Parameter.IRIS_POSITION[ParameterIndex.D_DEFAULT],
-                                    VALUE: Parameter.IRIS_POSITION[ParameterIndex.D_DEFAULT]},
+             VALUE: Parameter.IRIS_POSITION[ParameterIndex.D_DEFAULT]},
         Parameter.LAMP_BRIGHTNESS[ParameterIndex.KEY]:
             {TYPE: str, READONLY: False, DA: False, STARTUP: False,
              DEFAULT: Parameter.LAMP_BRIGHTNESS[ParameterIndex.D_DEFAULT],
-                                    VALUE: Parameter.LAMP_BRIGHTNESS[ParameterIndex.D_DEFAULT]},
+             VALUE: Parameter.LAMP_BRIGHTNESS[ParameterIndex.D_DEFAULT]},
         Parameter.NETWORK_DRIVE_LOCATION[ParameterIndex.KEY]:
             {TYPE: str, READONLY: False, DA: False, STARTUP: True,
              DEFAULT: Parameter.NETWORK_DRIVE_LOCATION[ParameterIndex.D_DEFAULT],
-                                    VALUE: Parameter.NETWORK_DRIVE_LOCATION[ParameterIndex.D_DEFAULT]},
+             VALUE: Parameter.NETWORK_DRIVE_LOCATION[ParameterIndex.D_DEFAULT]},
         Parameter.NTP_SETTING[ParameterIndex.KEY]:
             {TYPE: str, READONLY: True, DA: True, STARTUP: False,
              DEFAULT: None, VALUE: None},
         Parameter.PAN_POSITION[ParameterIndex.KEY]:
             {TYPE: str, READONLY: False, DA: False, STARTUP: False,
              DEFAULT: Parameter.PAN_POSITION[ParameterIndex.D_DEFAULT],
-                                    VALUE: Parameter.PAN_POSITION[ParameterIndex.D_DEFAULT]},
+             VALUE: Parameter.PAN_POSITION[ParameterIndex.D_DEFAULT]},
         Parameter.PAN_SPEED[ParameterIndex.KEY]:
             {TYPE: str, READONLY: False, DA: False, STARTUP: False,
              DEFAULT: Parameter.PAN_SPEED[ParameterIndex.D_DEFAULT],
-                                    VALUE: Parameter.PAN_SPEED[ParameterIndex.D_DEFAULT]},
+             VALUE: Parameter.PAN_SPEED[ParameterIndex.D_DEFAULT]},
         Parameter.SHUTTER_SPEED[ParameterIndex.KEY]:
             {TYPE: str, READONLY: False, DA: False, STARTUP: False,
              DEFAULT: Parameter.SHUTTER_SPEED[ParameterIndex.D_DEFAULT],
-                                    VALUE: Parameter.SHUTTER_SPEED[ParameterIndex.D_DEFAULT]},
+             VALUE: Parameter.SHUTTER_SPEED[ParameterIndex.D_DEFAULT]},
         Parameter.SOFT_END_STOPS[ParameterIndex.KEY]:
             {TYPE: str, READONLY: False, DA: False, STARTUP: False,
              DEFAULT: Parameter.SOFT_END_STOPS[ParameterIndex.D_DEFAULT],
-                                    VALUE: Parameter.SOFT_END_STOPS[ParameterIndex.D_DEFAULT]},
+             VALUE: Parameter.SOFT_END_STOPS[ParameterIndex.D_DEFAULT]},
         Parameter.TILT_POSITION[ParameterIndex.KEY]:
             {TYPE: str, READONLY: False, DA: False, STARTUP: False,
              DEFAULT: Parameter.TILT_POSITION[ParameterIndex.D_DEFAULT],
-                                    VALUE: Parameter.TILT_POSITION[ParameterIndex.D_DEFAULT]},
+             VALUE: Parameter.TILT_POSITION[ParameterIndex.D_DEFAULT]},
         Parameter.TILT_SPEED[ParameterIndex.KEY]:
             {TYPE: str, READONLY: False, DA: False, STARTUP: False,
              DEFAULT: Parameter.TILT_SPEED[ParameterIndex.D_DEFAULT],
-                                    VALUE: Parameter.TILT_SPEED[ParameterIndex.D_DEFAULT]},
+             VALUE: Parameter.TILT_SPEED[ParameterIndex.D_DEFAULT]},
         Parameter.WHEN_DISK_IS_FULL[ParameterIndex.KEY]:
             {TYPE: str, READONLY: True, DA: True, STARTUP: False,
              DEFAULT: None, VALUE: None},
         Parameter.ZOOM_POSITION[ParameterIndex.KEY]:
             {TYPE: str, READONLY: False, DA: False, STARTUP: False,
              DEFAULT: Parameter.ZOOM_POSITION[ParameterIndex.D_DEFAULT],
-                                    VALUE: Parameter.ZOOM_POSITION[ParameterIndex.D_DEFAULT]},
+             VALUE: Parameter.ZOOM_POSITION[ParameterIndex.D_DEFAULT]},
         Parameter.ZOOM_SPEED[ParameterIndex.KEY]:
             {TYPE: str, READONLY: False, DA: False, STARTUP: False,
              DEFAULT: Parameter.ZOOM_SPEED[ParameterIndex.D_DEFAULT],
-                                    VALUE: Parameter.ZOOM_SPEED[ParameterIndex.D_DEFAULT]},
+             VALUE: Parameter.ZOOM_SPEED[ParameterIndex.D_DEFAULT]},
 
         # Engineering parameters
         Parameter.PRESET_NUMBER[ParameterIndex.KEY]:
             {TYPE: str, READONLY: False, DA: False, STARTUP: False,
              DEFAULT: Parameter.PRESET_NUMBER[ParameterIndex.DEFAULT_DATA],
-                                    VALUE: Parameter.PRESET_NUMBER[ParameterIndex.D_DEFAULT]},
+             VALUE: Parameter.PRESET_NUMBER[ParameterIndex.D_DEFAULT]},
         Parameter.ACQUIRE_STATUS_INTERVAL[ParameterIndex.KEY]:
             {TYPE: str, READONLY: False, DA: False, STARTUP: False,
              DEFAULT: Parameter.ACQUIRE_STATUS_INTERVAL[ParameterIndex.DEFAULT_DATA],
-                                    VALUE: Parameter.ACQUIRE_STATUS_INTERVAL[ParameterIndex.D_DEFAULT]},
+             VALUE: Parameter.ACQUIRE_STATUS_INTERVAL[ParameterIndex.D_DEFAULT]},
         Parameter.VIDEO_FORWARDING[ParameterIndex.KEY]:
             {TYPE: str, READONLY: False, DA: False, STARTUP: False,
              DEFAULT: Parameter.VIDEO_FORWARDING[ParameterIndex.DEFAULT_DATA],
-                                    VALUE: Parameter.VIDEO_FORWARDING[ParameterIndex.D_DEFAULT]},
+             VALUE: Parameter.VIDEO_FORWARDING[ParameterIndex.D_DEFAULT]},
         Parameter.VIDEO_FORWARDING_TIMEOUT[ParameterIndex.KEY]:
             {TYPE: str, READONLY: False, DA: False, STARTUP: False,
              DEFAULT: Parameter.VIDEO_FORWARDING_TIMEOUT[ParameterIndex.DEFAULT_DATA],
-                                    VALUE: Parameter.VIDEO_FORWARDING_TIMEOUT[ParameterIndex.D_DEFAULT]},
+             VALUE: Parameter.VIDEO_FORWARDING_TIMEOUT[ParameterIndex.D_DEFAULT]},
         Parameter.SAMPLE_INTERVAL[ParameterIndex.KEY]:
             {TYPE: str, READONLY: False, DA: False, STARTUP: False,
              DEFAULT: Parameter.SAMPLE_INTERVAL[ParameterIndex.DEFAULT_DATA],
-                                    VALUE: Parameter.SAMPLE_INTERVAL[ParameterIndex.D_DEFAULT]},
+             VALUE: Parameter.SAMPLE_INTERVAL[ParameterIndex.D_DEFAULT]},
         Parameter.AUTO_CAPTURE_DURATION[ParameterIndex.KEY]:
             {TYPE: str, READONLY: False, DA: False, STARTUP: False,
              DEFAULT: Parameter.AUTO_CAPTURE_DURATION[ParameterIndex.DEFAULT_DATA],
-                                    VALUE: Parameter.AUTO_CAPTURE_DURATION[ParameterIndex.D_DEFAULT]}
+             VALUE: Parameter.AUTO_CAPTURE_DURATION[ParameterIndex.D_DEFAULT]}
     }
 
     _driver_capabilities = {
@@ -255,7 +255,6 @@ class CAMDSMixin(DriverTestMixin):
         Capability.START_AUTOSAMPLE: {STATES: [ProtocolState.COMMAND, ProtocolState.AUTOSAMPLE]},
         Capability.STOP_AUTOSAMPLE: {STATES: [ProtocolState.COMMAND, ProtocolState.AUTOSAMPLE]},
         Capability.STOP_CAPTURE: {STATES: [ProtocolState.COMMAND, ProtocolState.AUTOSAMPLE]},
-        #Capability.START_CAPTURE: {STATES: [ProtocolState.COMMAND, ProtocolState.AUTOSAMPLE]},
         Capability.ACQUIRE_STATUS: {STATES: [ProtocolState.COMMAND, ProtocolState.AUTOSAMPLE]},
         Capability.GOTO_PRESET: {STATES: [ProtocolState.COMMAND, ProtocolState.AUTOSAMPLE]},
         Capability.SET_PRESET: {STATES: [ProtocolState.COMMAND, ProtocolState.AUTOSAMPLE]},
@@ -270,7 +269,6 @@ class CAMDSMixin(DriverTestMixin):
         Capability.ACQUIRE_SAMPLE: {STATES: [ProtocolState.COMMAND, ProtocolState.AUTOSAMPLE]},
         Capability.EXECUTE_AUTO_CAPTURE: {STATES: [ProtocolState.COMMAND, ProtocolState.AUTOSAMPLE]},
     }
-
 
     size_1 = chr(0x01)
     size_2 = chr(0x02)
@@ -287,23 +285,22 @@ class CAMDSMixin(DriverTestMixin):
     size_B = chr(0x0B)
     _ACK = chr(0x06)
 
-
     _health_data = '<' + size_7 + ':' + size_6 + ':' + 'HS' + size_1 + size_2 + size_3 + '>'
 
     _health_dict = {
-        CAMDS_HEALTH_STATUS_KEY.humidity: {'type': int, 'value': 2},
-        CAMDS_HEALTH_STATUS_KEY.temp: {'type': int, 'value': 1},
-        CAMDS_HEALTH_STATUS_KEY.error: {'type': int, 'value': 3}
+        CamdsHealthStatusKey.humidity: {'type': int, 'value': 2},
+        CamdsHealthStatusKey.temp: {'type': int, 'value': 1},
+        CamdsHealthStatusKey.error: {'type': int, 'value': 3}
     }
 
     _disk_data = '<' + size_B + ':' + size_6 + ':' + 'GC' + size_1 + size_2 + \
-                  size_3 + size_4 + size_5 + size_6 + size_7+ '>'
+                 size_3 + size_4 + size_5 + size_6 + size_7 + '>'
 
     _disk_status_dict = {
-        CAMDS_DISK_STATUS_KEY.disk_remaining: {'type': int, 'value':100},
-        CAMDS_DISK_STATUS_KEY.image_on_disk: {'type': int, 'value': 3},
-        CAMDS_DISK_STATUS_KEY.image_remaining: {'type': int, 'value':1029 },
-        CAMDS_DISK_STATUS_KEY.size: {'type': int, 'value': 1543},
+        CamdsDiskStatusKey.disk_remaining: {'type': int, 'value': 100},
+        CamdsDiskStatusKey.image_on_disk: {'type': int, 'value': 3},
+        CamdsDiskStatusKey.image_remaining: {'type': int, 'value': 1029},
+        CamdsDiskStatusKey.size: {'type': int, 'value': 1543},
 
     }
 
@@ -349,12 +346,12 @@ class DriverUnitTest(InstrumentDriverUnitTestCase, CAMDSMixin):
         InstrumentDriverUnitTestCase.setUp(self)
 
     def test_driver_schema(self):
-         """
+        """
          get the driver schema and verify it is configured properly
          """
-         temp_parameters = copy.deepcopy(self._driver_parameters)
-         driver = InstrumentDriver(self._got_data_event_callback)
-         self.assert_driver_schema(driver, temp_parameters, self._driver_capabilities)
+        temp_parameters = copy.deepcopy(self._driver_parameters)
+        driver = InstrumentDriver(self._got_data_event_callback)
+        self.assert_driver_schema(driver, temp_parameters, self._driver_capabilities)
 
     def test_got_data(self):
         """
@@ -431,7 +428,7 @@ class DriverUnitTest(InstrumentDriverUnitTestCase, CAMDSMixin):
         driver_capabilities = Capability().list()
         test_capabilities = Capability().list()
 
-        #Add a bogus capability that will be filtered out.
+        # Add a bogus capability that will be filtered out.
         test_capabilities.append("BOGUS_CAPABILITY")
 
         # Verify "BOGUS_CAPABILITY was filtered out
@@ -506,7 +503,7 @@ class DriverUnitTest(InstrumentDriverUnitTestCase, CAMDSMixin):
             (Parameter.SOFT_END_STOPS, 1, '<\x04:ES:\x01>'),
             (Parameter.FOCUS_POSITION, 100, '<\x04:FG:d>'),
             (Parameter.COMPRESSION_RATIO, 100, '<\x04:CD:d>'),
-            (Parameter.NETWORK_DRIVE_LOCATION, 0, '<\x04:CL:\x00>'),
+            (Parameter.NETWORK_DRIVE_LOCATION, 0, '<\x04:FL:\x00>'),
             (Parameter.LAMP_BRIGHTNESS, '3:50', '<\x05:BF:\x032>'),
 
         ]
@@ -557,6 +554,7 @@ class DriverUnitTest(InstrumentDriverUnitTestCase, CAMDSMixin):
 
         return set_cmd
 
+
 ###############################################################################
 #                            INTEGRATION TESTS                                #
 #     Integration test test the direct driver / instrument interaction        #
@@ -606,106 +604,13 @@ class DriverIntegrationTest(InstrumentDriverIntegrationTestCase, CAMDSMixin):
                                               timeout=60)
         self.assert_async_particle_generation(DataParticleType.CAMDS_HEALTH_STATUS,
                                               self.assert_health_status, timeout=60)
+
     def assert_acquire_sample(self):
         """
         Check data stream types for acquire_status()
         """
         self.assert_async_particle_generation(DataParticleType.CAMDS_IMAGE_METADATA, self.assert_sample_meta,
                                               timeout=60)
-
-    def create_multi_comm_config(self, comm_config):
-        result = {}
-        for name, config in comm_config.configs.items():
-            if config.method() == ConfigTypes.TCP:
-                result[name] = self.create_ethernet_comm_config(config)
-            elif config.method() == ConfigTypes.SERIAL:
-                result[name] = self.create_serial_comm_config(config)
-            elif config.method() == ConfigTypes.RSN:
-                result[name] = self.create_rsn_comm_config(config)
-        return result
-
-    def port_agent_config(self):
-        """
-        return the port agent configuration
-        """
-        comm_config = self.get_comm_config()
-        method = comm_config.method()
-        config = {}
-
-        if method == ConfigTypes.SERIAL:
-            config = self.create_serial_comm_config(comm_config)
-        elif method == ConfigTypes.TCP:
-            config = self.create_ethernet_comm_config(comm_config)
-        elif method == ConfigTypes.MULTI:
-            config = self.create_multi_comm_config(comm_config)
-
-        config['instrument_type'] = comm_config.method()
-
-        if comm_config.sniffer_prefix:
-            config['telnet_sniffer_prefix'] = comm_config.sniffer_prefix
-        if comm_config.sniffer_suffix:
-            config['telnet_sniffer_suffix'] = comm_config.sniffer_suffix
-
-        return config
-
-    def init_port_agent(self):
-        """
-        @brief Launch the driver process and driver client.  This is used in the
-        integration and qualification tests.  The port agent abstracts the physical
-        interface with the instrument.
-        @return return the pid to the logger process
-        """
-        if self.port_agents:
-            log.error("Port agent already initialized")
-            return
-
-        config = self.port_agent_config()
-        log.debug("port agent config: %s", config)
-
-        port_agents = {}
-
-        if config['instrument_type'] != ConfigTypes.MULTI:
-            config = {'only one port agent here!': config}
-        for name, each in config.items():
-            if type(each) != dict:
-                continue
-            port_agent_host = each.get('device_addr')
-            if port_agent_host is not None:
-                port_agent = PortAgentProcess.launch_process(each, timeout=60, test_mode=True)
-                port = port_agent.get_data_port()
-                pid = port_agent.get_pid()
-                if port_agent_host == LOCALHOST:
-                    log.info('Started port agent pid %s listening at port %s' % (pid, port))
-                else:
-                    log.info("Connecting to port agent on host: %s, port: %s", port_agent_host, port)
-                port_agents[name] = port_agent
-
-        self.addCleanup(self.stop_port_agent)
-        self.port_agents = port_agents
-
-    def stop_port_agent(self):
-        """
-        Stop the port agent.
-        """
-        if self.port_agents:
-            log.debug("found port agents, now stop them")
-            for agent in self.port_agents.values():
-                agent.stop()
-        self.port_agents = {}
-
-    def port_agent_comm_config(self):
-        config = {}
-        for name, each in self.port_agents.items():
-            port = each.get_data_port()
-            cmd_port = each.get_command_port()
-
-            config[name] = {
-                'addr': each._config['port_agent_addr'],
-                'port': port,
-                'cmd_port': cmd_port
-            }
-        return config
-
 
     def test_connection(self):
         log.debug("######## Starting test_connection ##########")
@@ -752,7 +657,7 @@ class DriverIntegrationTest(InstrumentDriverIntegrationTestCase, CAMDSMixin):
         #     exception_str = 'Oh no, something bad happened!'
         #     self.driver_client.cmd_dvr('test_exceptions', exception_str)
 
-    #Set bulk params and test auto sampling
+    # Set bulk params and test auto sampling
     def test_autosample_particle_generation(self):
         """
         Test that we can generate particles when in autosample
@@ -779,7 +684,6 @@ class DriverIntegrationTest(InstrumentDriverIntegrationTestCase, CAMDSMixin):
 
     # test commands in different modes
 
-    # @unittest.skip('It takes many hours for this test')
     def test_commands(self):
 
         """
@@ -793,10 +697,10 @@ class DriverIntegrationTest(InstrumentDriverIntegrationTestCase, CAMDSMixin):
         self.assert_driver_command(ProtocolEvent.START_AUTOSAMPLE, state=ProtocolState.AUTOSAMPLE,
                                    delay=20)
         self.assert_driver_command(ProtocolEvent.STOP_AUTOSAMPLE, state=ProtocolState.COMMAND, delay=1)
-        self.assert_driver_command(ProtocolEvent.ACQUIRE_STATUS, delay = 2)
-        self.assert_acquire_status ()
+        self.assert_driver_command(ProtocolEvent.ACQUIRE_STATUS, delay=2)
+        self.assert_acquire_status()
 
-        self.assert_driver_command(ProtocolEvent.ACQUIRE_SAMPLE, delay = 2)
+        self.assert_driver_command(ProtocolEvent.ACQUIRE_SAMPLE, delay=2)
         self.assert_acquire_sample()
         self.assert_driver_command(ProtocolEvent.GOTO_PRESET)
         self.assert_driver_command(ProtocolEvent.SET_PRESET)
@@ -816,10 +720,10 @@ class DriverIntegrationTest(InstrumentDriverIntegrationTestCase, CAMDSMixin):
         # # Put us in streaming
         self.assert_driver_command(ProtocolEvent.START_AUTOSAMPLE, state=ProtocolState.AUTOSAMPLE,
                                    delay=1)
-        self.assert_driver_command(ProtocolEvent.ACQUIRE_STATUS, delay =2)
-        self.assert_acquire_status ()
+        self.assert_driver_command(ProtocolEvent.ACQUIRE_STATUS, delay=2)
+        self.assert_acquire_status()
 
-        self.assert_driver_command(ProtocolEvent.ACQUIRE_SAMPLE, delay = 2)
+        self.assert_driver_command(ProtocolEvent.ACQUIRE_SAMPLE, delay=2)
         self.assert_acquire_sample()
         self.assert_driver_command(ProtocolEvent.GOTO_PRESET)
         self.assert_driver_command(ProtocolEvent.SET_PRESET)
@@ -847,7 +751,6 @@ class DriverIntegrationTest(InstrumentDriverIntegrationTestCase, CAMDSMixin):
         self.assert_set(Parameter.ACQUIRE_STATUS_INTERVAL[ParameterIndex.KEY], '00:00:00')
         self.assert_current_state(ProtocolState.COMMAND)
 
-    # @unittest.skip('It takes many hours for this test')
     def test_scheduled_acquire_status_autosample(self):
         """
         Verify the scheduled acquire status is triggered and functions as expected
@@ -879,7 +782,6 @@ class DriverIntegrationTest(InstrumentDriverIntegrationTestCase, CAMDSMixin):
         time.sleep(2)
         self.assert_current_state(ProtocolState.COMMAND)
 
-    #@unittest.skip('It takes time')
     def test_acquire_status(self):
         """
         Verify the acquire_status command is functional
@@ -889,10 +791,8 @@ class DriverIntegrationTest(InstrumentDriverIntegrationTestCase, CAMDSMixin):
         self.assert_driver_command(ProtocolEvent.ACQUIRE_STATUS)
         self.assert_acquire_status()
 
-
 ###############################################################################
 #                            QUALIFICATION TESTS                              #
 # Device specific qualification tests are for                                 #
 # testing device specific capabilities                                        #
 ###############################################################################
-
