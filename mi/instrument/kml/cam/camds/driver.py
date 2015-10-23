@@ -29,7 +29,7 @@ from mi.core.instrument.instrument_driver import DriverAsyncEvent
 from mi.core.instrument.instrument_driver import DriverProtocolState
 from mi.core.instrument.instrument_driver import ResourceAgentState
 from mi.core.instrument.instrument_driver import SingleConnectionInstrumentDriver
-from mi.core.instrument.instrument_protocol import CommandResponseInstrumentProtocol
+from mi.core.instrument.instrument_protocol import CommandResponseInstrumentProtocol, InitializationType
 
 from mi.core.driver_scheduler import DriverSchedulerConfigKey
 from mi.core.driver_scheduler import TriggerType
@@ -1361,8 +1361,6 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
                 result = self._do_cmd_resp(InstrumentCmds.GET, param, **kwargs)
                 results += result + NEWLINE
 
-                time.sleep(2)
-
         new_config = self._param_dict.get_config()
 
         if new_config != old_config:
@@ -1791,6 +1789,9 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
         @throws InstrumentTimeoutException if the device cannot be woken.
         @throws InstrumentProtocolException if the update commands and not recognized.
         """
+        if self._init_type != InitializationType.NONE:
+            self._update_params()
+
         # Command device to initialize parameters
         self._init_params()
 
@@ -2532,9 +2533,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
 
             return parsed_sample
 
-    def _send_wakeup(self):
+    def _wakeup(self, timeout, delay=1):
         """
-        Send a wakeup to the device. Overridden by device specific
-        subclasses.
+        This driver does not require a wakeup
         """
-        self._connection.send(NEWLINE)
