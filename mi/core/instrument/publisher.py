@@ -35,6 +35,9 @@ def extract_param(param, query):
 
 
 class Publisher(object):
+    def __init__(self, allowed):
+        self.allowed = None
+
     def jsonify(self, events):
         try:
             return json.dumps(events)
@@ -49,14 +52,37 @@ class Publisher(object):
             return json.dumps(temp)
 
     @staticmethod
-    def filter_events(events, allowed):
-        if allowed is not None and isinstance(allowed, list):
-            log.info('Filtering %d events with: %r', len(events), allowed)
+    def group_events(events):
+        group_dict = {}
+        for event in events:
+            group = event.pop('instance', None)
+            group_dict[group].setdefault(group, []).append(event)
+        return group_dict
+
+    def publish(self, events, headers=None):
+        if not isinstance(events, list):
+            events = [events]
+
+        events = self.filter_events(events)
+        groups = self.group_events(events)
+        for instance, group in groups:
+            if instance is None:
+                self._publish(group, instance)
+            else:
+                self._publish(group, {'sensor': instance})
+        self._publish(events, headers)
+
+    def _publish(self, events, headers):
+        raise NotImplemented
+
+    def filter_events(self, events):
+        if self.allowed is not None and isinstance(self.allowed, list):
+            log.info('Filtering %d events with: %r', len(events), self.allowed)
             new_events = []
             dropped = 0
             for event in events:
                 if event.get('type') == DriverAsyncEvent.SAMPLE:
-                    if event.get('value', {}).get('stream_name') in allowed:
+                    if event.get('value', {}).get('stream_name') in self.allowed:
                         new_events.append(event)
                     else:
                         dropped += 1
@@ -102,30 +128,24 @@ class Publisher(object):
 
 class QpidPublisher(Publisher):
     def __init__(self, url, queue, headers, allowed, username='guest', password='guest'):
+        super(QpidPublisher, self).__init__(allowed)
         self.connection = qm.Connection(url, reconnect=True, username=username, password=password)
         self.queue = queue
         self.session = None
         self.sender = None
         self.headers = headers
-        self.allowed = allowed
         self.connect()
-        super(QpidPublisher, self).__init__()
 
     def connect(self):
         self.connection.open()
         self.session = self.connection.session()
         self.sender = self.session.sender('%s; {create: always, node: {type: queue, durable: true}}' % self.queue)
 
-    def publish(self, events, headers=None):
+    def _publish(self, events, headers):
         msg_headers = self.headers
         if headers is not None:
             # apply any new header values
             msg_headers.update(headers)
-
-        if not isinstance(events, list):
-            events = [events]
-
-        events = self.filter_events(events, self.allowed)
 
         # HACK!
         self.connection.error = None
@@ -140,24 +160,22 @@ class QpidPublisher(Publisher):
 
 class RabbitPublisher(Publisher):
     def __init__(self, url, queue, headers, allowed):
+        super(RabbitPublisher, self).__init__(allowed)
         self._url = url
         self.queue = queue
         self.session = None
         self.sender = None
         self.headers = headers
-        self.allowed = allowed
         self.connect()
-        super(RabbitPublisher, self).__init__()
 
     def connect(self):
         self.connection = pika.BlockingConnection(pika.URLParameters(self._url))
         self.channel = self.connection.channel()
         self.channel.queue_declare(self.queue, durable=True)
 
-    def publish(self, events, headers=None):
+    def _publish(self, events, headers=None):
         # TODO: add headers to message
         now = time.time()
-        events = self.filter_events(events, self.allowed)
         self.channel.basic_publish('', self.queue, self.jsonify(events),
                                    pika.BasicProperties(content_type='text/plain', delivery_mode=2))
 
@@ -165,22 +183,18 @@ class RabbitPublisher(Publisher):
 
 
 class LogPublisher(Publisher):
-    def __init__(self, allowed):
-        self.allowed = allowed
 
-    def publish(self, events):
-        events = self.filter_events(events, self.allowed)
+    def _publish(self, events, headers):
         for e in events:
             log.info('Publish event: %r', e)
 
 
 class CountPublisher(Publisher):
     def __init__(self, allowed):
-        self.allowed = allowed
+        super(CountPublisher, self).__init__(allowed)
         self.total = 0
 
-    def publish(self, events):
-        events = self.filter_events(events, self.allowed)
+    def _publish(self, events, headers):
         for e in events:
             try:
                 json.dumps(e)
