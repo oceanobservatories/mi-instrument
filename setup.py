@@ -5,7 +5,7 @@ try:
 except ImportError:
     from distutils.core import setup
 
-version = '0.3.33'
+version = '0.3.34'
 
 setup(name='mi-instrument',
       version=version,
@@ -17,7 +17,8 @@ setup(name='mi-instrument',
       keywords=['ooici'],
       packages=find_packages(),
       package_data={
-          '': ['*.yml']
+          '': ['*.yml'],
+          'mi.platform.rsn': ['node_config_files/*.yml'],
       },
       dependency_links=[
       ],

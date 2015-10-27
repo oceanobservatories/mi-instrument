@@ -50,7 +50,7 @@ streams:
       monitor_cycle_seconds: 3
       scale_factor: 0.001
 
-  secondary_secondary_secondary_node_eng_data:
+  secondary_node_eng_data:
     variables: null
     parameters:
     - omc_parameter_name: "Ambient Temperature"
@@ -187,7 +187,7 @@ streams:
       monitor_cycle_seconds: 780.0
       scale_factor: 1
 
-  primary_secondary_secondary_node_eng_data:
+  primary_node_eng_data:
     variables: null
     parameters:
     - omc_parameter_name: channelValueCurrentSustainingLoad
