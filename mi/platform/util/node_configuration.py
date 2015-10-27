@@ -6,21 +6,20 @@
 @author  Mike Harrington
 @brief   read node configuration files
 """
-import pprint
+import yaml
+from pkg_resources import resource_string
+
+from ooi.logging import log
+from mi.platform.exceptions import NodeConfigurationFileException
+from mi.platform.util.NodeYAML import NodeYAML
+import mi.platform.rsn
 
 __author__ = 'Mike Harrington'
 __license__ = 'Apache 2.0'
 
-from ooi.logging import log
-from mi.platform.exceptions import NodeConfigurationFileException
 
-from mi.platform.util.NodeYAML import NodeYAML
+DEFAULT_STREAM_DEF_FILENAME = 'node_config_files/stream_defs.yml'
 
-import yaml
-import logging
-
-
-DEFAULT_STREAM_DEF_FILENAME = 'mi/platform/rsn/node_config_files/stream_defs.yml'
 
 class NodeConfiguration(object):
     """
@@ -50,24 +49,24 @@ class NodeConfiguration(object):
         @param nc_file - yaml file with information about the platform
         @raise NodeConfigurationException
         """
-        self._platform_id = platform_id
+        try:
+            node_config_string = resource_string(mi.platform.rsn.__name__, node_config_filename)
+            stream_config_string = resource_string(mi.platform.rsn.__name__, stream_definition_filename)
+            self._platform_id = platform_id
 
-        log.debug("%r: Open: %s", self._platform_id, node_config_filename)
+            node_config = yaml.load(node_config_string)
+            stream_definitions = yaml.load(stream_config_string)
+            self._node_yaml = NodeYAML.factory(node_config, stream_definitions)
+            self._node_yaml.validate()
 
-        with open(node_config_filename, 'r') as nc_file, open(stream_definition_filename, 'r') as sc_file:
-            try:
-                node_config = yaml.load(nc_file)
-                stream_definitions = yaml.load(sc_file)
-                self._node_yaml = NodeYAML.factory(node_config, stream_definitions)
-                self._node_yaml.validate()
-            except Exception as e:
-                import traceback
-                traceback.print_exc()
-                msg = "%s Cannot parse yaml node specific config file  : %s" % (e, node_config_filename)
-                raise NodeConfigurationFileException(msg=msg)
-            except IOError as e:
-                msg = "%s Cannot open node specific config file  : %s" % (e, node_config_filename)
-                raise NodeConfigurationFileException(msg=msg)
+        except Exception as e:
+            import traceback
+            traceback.print_exc()
+            msg = "%s Cannot parse yaml node specific config file  : %s" % (e, node_config_filename)
+            raise NodeConfigurationFileException(msg=msg)
+        except IOError as e:
+            msg = "%s Cannot open node specific config file  : %s" % (e, node_config_filename)
+            raise NodeConfigurationFileException(msg=msg)
 
     def Print(self):
         log.debug("%r  Print Config File Information for: %s\n\n", self._platform_id,
