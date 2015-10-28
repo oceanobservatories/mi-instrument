@@ -6,18 +6,11 @@
 @author  Carlos Rueda
 @brief   The main RSN OMS platform driver class.
 """
-
-__author__ = 'Carlos Rueda'
-__license__ = 'Apache 2.0'
-
 import ntplib
 import time
 from copy import deepcopy
 from functools import partial
-
 import mi.core.log
-log = mi.core.log.get_logger()
-
 from mi.core.common import BaseEnum
 from mi.core.scheduler import PolledScheduler
 from mi.platform.platform_driver import PlatformDriver
@@ -32,6 +25,12 @@ from mi.platform.rsn.oms_client_factory import CIOMSClientFactory
 from mi.platform.responses import InvalidResponse
 from mi.core.exceptions import InstrumentException
 from mi.platform.util.node_configuration import NodeConfiguration
+
+
+log = mi.core.log.get_logger()
+
+__author__ = 'Carlos Rueda'
+__license__ = 'Apache 2.0'
 
 
 class PlatformParticle(DataParticle):
@@ -109,6 +108,7 @@ class RSNPlatformDriver(PlatformDriver):
         # scheduler config is a bit redundant now, but if we ever want to
         # re-initialize a scheduler we will need it.
         self._scheduler = None
+        self._last_sample_time = {}
 
     def _filter_capabilities(self, events):
         """
@@ -130,9 +130,6 @@ class RSNPlatformDriver(PlatformDriver):
 
         @param driver_config with required 'oms_uri' entry.
         """
-
-        log.error("%r: _configure...", self._platform_id)
-
         PlatformDriver._configure(self, driver_config)
 
         self.nodeCfg = NodeConfiguration()
@@ -148,8 +145,6 @@ class RSNPlatformDriver(PlatformDriver):
 
         self._construct_resource_schema()
 
-        self._lastRcvSampleTime = {}
-
     def _build_scheduler(self):
         """
         Build a scheduler for periodic status updates
@@ -158,7 +153,7 @@ class RSNPlatformDriver(PlatformDriver):
         self._scheduler.start()
 
         def event_callback(event):
-            log.info("driver job triggered, raise event: %s" % event)
+            log.debug("driver job triggered, raise event: %s" % event)
             self._fsm.on_event(event)
 
         # Dynamically create the method and add it
@@ -173,7 +168,7 @@ class RSNPlatformDriver(PlatformDriver):
         try:
             self._scheduler.unschedule_job(self._job)
         except KeyError:
-            log.info('Failed to remove scheduled job for ACQUIRE_SAMPLE')
+            log.debug('Failed to remove scheduled job for ACQUIRE_SAMPLE')
 
         self._scheduler.shutdown()
 
@@ -244,8 +239,6 @@ class RSNPlatformDriver(PlatformDriver):
         Creates an CIOMSClient instance, does a ping to verify connection,
         and starts event dispatch.
         """
-        log.info("%r: _connect...", self._platform_id)
-
         # create CIOMSClient:
         oms_uri = self._driver_config['oms_uri']
         log.debug("%r: creating CIOMSClient instance with oms_uri=%r",
@@ -259,8 +252,6 @@ class RSNPlatformDriver(PlatformDriver):
         self._build_scheduler()  # then start calling it every X seconds
 
     def _disconnect(self, recursion=None):
-        log.info("%r: _disconnect...", self._platform_id)
-
         CIOMSClientFactory.destroy_instance(self._rsn_oms)
         self._rsn_oms = None
         log.debug("%r: CIOMSClient instance destroyed", self._platform_id)
@@ -274,51 +265,57 @@ class RSNPlatformDriver(PlatformDriver):
         return self.nodeCfg.node_meta_data
 
     def get_eng_data(self):
-        log.debug("%r: get_eng_data...", self._platform_id)
-
         ntp_time = ntplib.system_to_ntp_time(time.time())
         max_time = ntp_time - self.oms_sample_rate * 10
 
         for key, stream in self.nodeCfg.node_streams.iteritems():
             log.debug("%r Stream(%s)", self._platform_id, key)
-            if key not in self._lastRcvSampleTime:
-                self._lastRcvSampleTime[key] = max_time
+            # prevent the max lookback time getting to big if we stop getting data for some reason
+            self._last_sample_time[key] = max(self._last_sample_time.get(key, max_time), max_time)
 
-            if self._lastRcvSampleTime[key] < max_time:  # prevent the max lookback time getting to big
-                self._lastRcvSampleTime[key] = max_time  # if we stop getting data for some reason
-
-            attrs = []
             for instance in stream:
-                # add a little bit of time to the last received so we don't get one we already have again
-                attrs = [(k, self._lastRcvSampleTime[key] + 0.1) for k in stream[instance]]
+                self.get_instance_particles(key, instance, stream[instance])
 
-                if attrs:
-                    return_dict = self.get_attribute_values_from_oms(attrs)  # go get the data from the OMS
+    def group_by_timestamp(self, attr_dict):
+        return_dict = {}
+        # go through all of the returned values and get the unique timestamps. Each
+        # particle will have data for a unique timestamp
+        for attr_id, attr_vals in attr_dict.iteritems():
+            for value, timestamp in attr_vals:
+                return_dict.setdefault(timestamp, []).append((attr_id, value))
 
-                    ts_list = self.get_all_returned_timestamps(return_dict)  # get the list of all unique timestamps
+        return return_dict
 
-                    # for each timestamp create a particle and emit it
-                    for ts in sorted(ts_list):
-                        # go get the list at this timestamp
-                        onetimestamp_attrs = self.get_single_timestamp_list(stream, ts, return_dict)
-                        # scale the attrs and convert the names to ion
-                        ion_onetimestamp_attrs = self.convert_attrs_to_ion(stream, onetimestamp_attrs)
-                        pad_particle = PlatformParticle(ion_onetimestamp_attrs,
-                                                        preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
+    def get_instance_particles(self, stream_name, instance, stream_def):
+        # add a little bit of time to the last received so we don't get one we already have again
+        attrs = [(k, self._last_sample_time[stream_name] + 0.1) for k in stream_def]
 
-                        pad_particle.set_internal_timestamp(timestamp=ts)
-                        pad_particle._data_particle_type = key  # stream name
-                        json_message = pad_particle.generate()
+        if not attrs:
+            return
 
-                        event = {
-                            'type': DriverAsyncEvent.SAMPLE,
-                            'value': json_message,
-                            'time': time.time(),
-                            'instance': '%s-%s' % (self.nodeCfg.node_meta_data['reference_designator'], instance),
-                        }
+        attr_dict = self.get_attribute_values_from_oms(attrs)  # go get the data from the OMS
+        ts_attr_dict = self.group_by_timestamp(attr_dict)
 
-                        self._send_event(event)
-                        self._lastRcvSampleTime[key] = ts
+        if not ts_attr_dict:
+            return
+
+        self._last_sample_time[stream_name] = max(ts_attr_dict.keys())
+
+        for timestamp in ts_attr_dict:
+            attrs = ts_attr_dict[timestamp]
+            attrs = self.convert_attrs_to_ion(stream_def, attrs)
+            particle = PlatformParticle(attrs, preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
+            particle.set_internal_timestamp(timestamp)
+            particle._data_particle_type = stream_name
+
+            event = {
+                'type': DriverAsyncEvent.SAMPLE,
+                'value': particle.generate(),
+                'time': time.time(),
+                'instance': '%s-%s' % (self.nodeCfg.node_meta_data['reference_designator'], instance),
+            }
+
+            self._send_event(event)
 
     def get_attribute_values(self, attrs):
         """Simple wrapper method for compatibility.
@@ -327,84 +324,46 @@ class RSNPlatformDriver(PlatformDriver):
 
     def get_attribute_values_from_oms(self, attrs):
         """
+        Fetch values from the OMS
         """
-        def _verify_returned_dict(attr_dict):
-            try:
-                for key in attr_dict.iterkeys():
-                    value_list = attr_dict[key]
-                    if value_list == 'INVALID_ATTRIBUTE_ID':
-                        continue
-
-                    if not isinstance(value_list, list):
-                        raise PlatformException(msg="Error in getting values for attribute %s.  %s" % (key, value_list))
-
-                    if value_list and value_list[0][0] == "ERROR_DATA_REQUEST_TOO_FAR_IN_PAST":
-                        raise PlatformException(msg="Time requested for %s too far in the past" % key)
-            except AttributeError:
-                raise PlatformException(msg="Error returned in requesting attributes: %s" % attr_dict)
-
         if not isinstance(attrs, (list, tuple)):
-            raise PlatformException('get_attribute_values: attrs argument must be a '
-                                    'list [(attrName, from_time), ...]. Given: %s', attrs)
+            msg = 'get_attribute_values: attrs argument must be a list [(attrName, from_time), ...]. Given: %s' % attrs
+            raise PlatformException(msg)
 
         self._verify_rsn_oms('get_attribute_values_from_oms')
-
-        log.debug("get_attribute_values: attrs=%s", self._platform_id)
-        log.debug("get_attribute_values: attrs=%s", attrs)
+        response = None
 
         try:
-            response = self._rsn_oms.attr.get_platform_attribute_values(self._platform_id,
-                                                                        attrs)
+            response = self._rsn_oms.attr.get_platform_attribute_values(self._platform_id, attrs)
+            response = self._verify_platform_id_in_response(response)
+            return_dict = {}
+            for key in response:
+                value_list = response[key]
+                if value_list == 'INVALID_ATTRIBUTE_ID':
+                    continue
+
+                if not isinstance(value_list, list):
+                    raise PlatformException(msg="Error in getting values for attribute %s.  %s" % (key, value_list))
+                if value_list and value_list[0][0] == "ERROR_DATA_REQUEST_TOO_FAR_IN_PAST":
+                        raise PlatformException(msg="Time requested for %s too far in the past" % key)
+                return_dict[key] = value_list
+            return return_dict
+
         except Exception as e:
-            raise PlatformConnectionException(
-                msg="get_attribute_values_from_oms Cannot get_platform_attribute_values: %s" % str(e))
-
-        dic_plat = self._verify_platform_id_in_response(response)
-        _verify_returned_dict(dic_plat)
-
-        # reported timestamps are already in NTP. Just return the dict:
-        return dic_plat
-
-    def get_all_returned_timestamps(self, attrs):
-        ts_list = []
-
-        # go through all of the returned values and get the unique timestamps. Each
-        # particle will have data for a unique timestamp
-        for attr_id, attr_vals in attrs.iteritems():
-            if not (isinstance(attr_vals, list)):
-                log.debug("Invalid attr_vals %s attrs=%s", attr_id, attr_vals)  # in case we get an INVALID_ATTRIBUTE_ID
-            else:
-                for v, ts in attr_vals:
-                    if ts not in ts_list:
-                        ts_list.append(ts)
-
-        return ts_list
-
-    def get_single_timestamp_list(self, stream, ts_in, attrs):
-        # create a list of sample data from just the single timestamp
-        new_attrs = []  # key value list for this timestamp
-
-        for key in stream:  # assuming we will put all values in stream even if we didn't get a sample this time
-            if key in attrs:
-                for v, ts in attrs[key]:
-                    if ts == ts_in:
-                        new_attrs.append((key, v))
-                        continue
-
-        return new_attrs
+            msg = "get_attribute_values_from_oms Cannot get_platform_attribute_values: %s" % e
+            raise PlatformConnectionException(msg)
+        except AttributeError:
+            msg = "Error returned in requesting attributes: %s" % response
+            raise PlatformException(msg)
 
     def convert_attrs_to_ion(self, stream, attrs):
-        """
-        """
         attrs_return = []
 
         # convert back to ION parameter name and scale from OMS to ION
         for key, v in attrs:
             scale_factor = stream[key]['scale_factor']
-            if v is None:
-                attrs_return.append((stream[key]['ion_parameter_name'], v))
-            else:
-                attrs_return.append((stream[key]['ion_parameter_name'], v * scale_factor))
+            v = v * scale_factor if v else v
+            attrs_return.append((stream[key]['ion_parameter_name'], v))
 
         return attrs_return
 
@@ -774,8 +733,8 @@ class RSNPlatformDriver(PlatformDriver):
         """
 
         try:
-            result = self.get_eng_data()
-            return None, result
+            self.get_eng_data()
+            return None, None
 
         except PlatformConnectionException as e:
             return self._connection_lost(RSNPlatformDriverEvent.GET_ENG_DATA,
