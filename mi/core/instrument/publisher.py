@@ -56,7 +56,7 @@ class Publisher(object):
         group_dict = {}
         for event in events:
             group = event.pop('instance', None)
-            group_dict[group].setdefault(group, []).append(event)
+            group_dict.setdefault(group, []).append(event)
         return group_dict
 
     def publish(self, events, headers=None):
@@ -65,12 +65,11 @@ class Publisher(object):
 
         events = self.filter_events(events)
         groups = self.group_events(events)
-        for instance, group in groups:
+        for instance in groups:
             if instance is None:
-                self._publish(group, instance)
+                self._publish(groups[instance], instance)
             else:
-                self._publish(group, {'sensor': instance})
-        self._publish(events, headers)
+                self._publish(groups[instance], {'sensor': instance})
 
     def _publish(self, events, headers):
         raise NotImplemented
