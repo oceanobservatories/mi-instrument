@@ -19,7 +19,7 @@ __author__ = 'Carlos Rueda'
 __license__ = 'Apache 2.0'
 
 log = mi.core.log.get_logger()
-META_LOGGER = mi.core.log.get_logging_metaclass('info')
+META_LOGGER = mi.core.log.get_logging_metaclass('trace')
 
 
 class PlatformDriverState(BaseEnum):
