@@ -417,7 +417,7 @@ class RSNPlatformDriver(PlatformDriver):
     def turn_on_port(self, port_id, src):
         def _verify_response(rsp):
             try:
-                message = rsp[port_id]
+                message = rsp[str(oms_port_cntl_id)]
 
                 if not message.startswith('OK'):
                     raise PlatformException(msg="Error in turning on port %s: %s" % (port_id, message))
@@ -448,7 +448,7 @@ class RSNPlatformDriver(PlatformDriver):
     def turn_off_port(self, port_id, src):
         def _verify_response(rsp):
             try:
-                message = rsp[port_id]
+                message = rsp[str(oms_port_cntl_id)]
 
                 if not message.startswith('OK'):
                     raise PlatformException(msg="Error in turning off port %s: %s" % (port_id, message))
