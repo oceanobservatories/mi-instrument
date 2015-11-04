@@ -9,6 +9,7 @@
 import functools
 from xmlrpclib import Fault
 from xmlrpclib import ProtocolError
+from socket import error as SocketError
 import ntplib
 import time
 from copy import deepcopy
@@ -369,7 +370,7 @@ class RSNPlatformDriver(PlatformDriver):
                 return_dict[key] = value_list
             return return_dict
 
-        except (Fault, ProtocolError) as e:
+        except (Fault, ProtocolError, SocketError) as e:
             msg = "get_attribute_values_from_oms Cannot get_platform_attribute_values: %s" % e
             raise PlatformConnectionException(msg)
         except AttributeError:
@@ -416,7 +417,7 @@ class RSNPlatformDriver(PlatformDriver):
                 raise PlatformConnectionException(msg="Unexpected ping response: %r" % retval)
             return "PONG"
 
-        except (Fault, ProtocolError) as e:
+        except (Fault, ProtocolError, SocketError) as e:
             raise PlatformConnectionException(msg="Cannot ping: %s" % str(e))
 
     @verify_rsn_oms
@@ -434,7 +435,7 @@ class RSNPlatformDriver(PlatformDriver):
             self._verify_response(dic_plat, key=port_id, msg="setting overcurrent")
             return dic_plat  # note: return the dic for the platform
 
-        except (Fault, ProtocolError) as e:
+        except (Fault, ProtocolError, SocketError) as e:
             raise PlatformConnectionException(msg="Cannot set_overcurrent_limit: %s" % str(e))
 
     @verify_rsn_oms
@@ -448,7 +449,7 @@ class RSNPlatformDriver(PlatformDriver):
             self._verify_response(dic_plat, key=port_id, msg="turn on port")
             return dic_plat  # note: return the dic for the platform
 
-        except (Fault, ProtocolError) as e:
+        except (Fault, ProtocolError, SocketError) as e:
             raise PlatformConnectionException(msg="Cannot turn_on_platform_port: %s" % str(e))
 
     @verify_rsn_oms
@@ -462,7 +463,7 @@ class RSNPlatformDriver(PlatformDriver):
             self._verify_response(dic_plat, key=port_id, msg="turn off port")
             return dic_plat  # note: return the dic for the platform
 
-        except (Fault, ProtocolError) as e:
+        except (Fault, ProtocolError, SocketError) as e:
             raise PlatformConnectionException(msg="Cannot turn_off_platform_port: %s" % str(e))
 
     @verify_rsn_oms
@@ -473,7 +474,7 @@ class RSNPlatformDriver(PlatformDriver):
             self._verify_response(dic_plat, key=mission_name, msg="starting mission")
             return dic_plat  # note: return the dic for the platform
 
-        except (Fault, ProtocolError) as e:
+        except (Fault, ProtocolError, SocketError) as e:
             raise PlatformConnectionException(msg="Cannot start_profiler_mission: %s" % str(e))
 
     @verify_rsn_oms
@@ -484,7 +485,7 @@ class RSNPlatformDriver(PlatformDriver):
             self._verify_response(dic_plat, msg="stopping profiler")
             return dic_plat  # note: return the dic for the platform
 
-        except (Fault, ProtocolError) as e:
+        except (Fault, ProtocolError, SocketError) as e:
             raise PlatformConnectionException(msg="Cannot stop_profiler_mission: %s" % str(e))
 
     @verify_rsn_oms
@@ -494,7 +495,7 @@ class RSNPlatformDriver(PlatformDriver):
             dic_plat = self._verify_platform_id_in_response(response)
             return dic_plat  # note: return the dic for the platform
 
-        except (Fault, ProtocolError) as e:
+        except (Fault, ProtocolError, SocketError) as e:
             raise PlatformConnectionException(msg="Cannot get_mission_status: %s" % str(e))
 
     @verify_rsn_oms
@@ -505,7 +506,7 @@ class RSNPlatformDriver(PlatformDriver):
             dic_plat = self._verify_platform_id_in_response(response)
             return dic_plat  # note: return the dic for the platform
 
-        except (Fault, ProtocolError) as e:
+        except (Fault, ProtocolError, SocketError) as e:
             raise PlatformConnectionException(msg="Cannot get_available_missions: %s" % str(e))
 
     def _verify_and_return_oms_port(self, port_id, method_name):
@@ -539,14 +540,14 @@ class RSNPlatformDriver(PlatformDriver):
                 log.debug("listener %r was already registered", url)
                 return
 
-        except (Fault, ProtocolError) as e:
+        except (Fault, ProtocolError, SocketError) as e:
             raise PlatformConnectionException(
                 msg="%r: Cannot get registered event listeners: %s" % (self._platform_id, e))
 
         try:
             result = self._rsn_oms.event.register_event_listener(url)
             log.debug("%r: register_event_listener(%r) => %s", self._platform_id, url, result)
-        except (Fault, ProtocolError) as e:
+        except (Fault, ProtocolError, SocketError) as e:
             raise PlatformConnectionException(
                 msg="%r: Cannot register_event_listener: %s" % (self._platform_id, e))
 
@@ -559,7 +560,7 @@ class RSNPlatformDriver(PlatformDriver):
             result = self._rsn_oms.event.unregister_event_listener(url)
             log.debug("%r: unregister_event_listener(%r) => %s", self._platform_id, url, result)
 
-        except (Fault, ProtocolError) as e:
+        except (Fault, ProtocolError, SocketError) as e:
             raise PlatformConnectionException(
                 msg="%r: Cannot unregister_event_listener: %s" % (self._platform_id, e))
 
