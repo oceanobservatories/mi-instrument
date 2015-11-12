@@ -86,7 +86,7 @@ class AntelopeMetadataParticleKey(BaseEnum):
     END = 'antelope_endtime'
     RATE = 'antelope_sampling_rate'
     NSAMPS = 'antelope_num_samples'
-    FILENAME = 'antelope_filename'
+    FILENAME = 'filepath'
     UUID = 'uuid'
 
 
