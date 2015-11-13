@@ -8,6 +8,7 @@
 
 import time
 import re
+import os
 import struct
 
 from threading import Timer
@@ -15,9 +16,11 @@ from threading import Timer
 from mi.core.common import BaseEnum
 from mi.core.exceptions import InstrumentParameterException
 from mi.core.exceptions import InstrumentProtocolException
+from mi.core.exceptions import SampleException
 
 from mi.core.instrument.data_particle import DataParticle
 from mi.core.instrument.data_particle import DataParticleKey
+from mi.core.instrument.data_particle import DataParticleValue
 from mi.core.instrument.data_particle import CommonDataParticleType
 from mi.core.instrument.driver_dict import DriverDictKey
 
@@ -76,6 +79,9 @@ NAK = '\x15'
 # Minimum length of a response form the CAMDS Instrument
 MIN_RESPONSE_LENGTH = 7
 
+# Regex to extract image file path from the file name
+IMG_REGEX = '.*_(\d{4})(\d{2})(\d{2})T.*png'
+IMG_PATTERN = re.compile(IMG_REGEX, re.DOTALL)
 
 # Particle Regex's'
 CAMDS_DISK_STATUS_MATCHER = r'<\x0B:\x06:GC.+?>'
@@ -84,6 +90,9 @@ CAMDS_HEALTH_STATUS_MATCHER = r'<\x07:\x06:HS.+?>'
 CAMDS_HEALTH_STATUS_MATCHER_COM = re.compile(CAMDS_HEALTH_STATUS_MATCHER, re.DOTALL)
 CAMDS_METADATA_MATCHER = r'<\x04:\x06:(CI|SP|SR)>'
 CAMDS_METADATA_MATCHER_COM = re.compile(CAMDS_METADATA_MATCHER, re.DOTALL)
+
+CAMDS_IMAGE_FILE_MATCHER = r'New Image:(.+\.png)'
+CAMDS_IMAGE_FILE_MATCHER_COM = re.compile(CAMDS_IMAGE_FILE_MATCHER, re.DOTALL)
 
 
 def camds_failure_message(error_code):
@@ -246,6 +255,20 @@ class CamdsImageMetadata(DataParticle):
     """
     _data_particle_type = DataParticleType.CAMDS_IMAGE_METADATA
 
+    def __init__(self, raw_data,
+                 img_filename,
+                 port_timestamp=None,
+                 internal_timestamp=None,
+                 preferred_timestamp=DataParticleKey.PORT_TIMESTAMP,
+                 quality_flag=DataParticleValue.OK,
+                 new_sequence=None):
+
+        # Construct particle superclass.
+        DataParticle.__init__(self, raw_data, port_timestamp, internal_timestamp, preferred_timestamp,
+                              quality_flag, new_sequence)
+
+        self._image_filename = img_filename
+
     def _build_parsed_values(self):
         # Initialize
 
@@ -257,6 +280,19 @@ class CamdsImageMetadata(DataParticle):
 
         log.debug("Param Dict: %s" % param_dict)
 
+        match = IMG_PATTERN.match(self._image_filename)
+
+        if not match:
+            raise SampleException("No regex match for image filename: %s" % self._image_filename)
+
+        year = match.group(1)
+        month = match.group(2)
+        day = match.group(3)
+
+        image_path = os.path.join(year, month, day, self._image_filename)
+
+        result.append({DataParticleKey.VALUE_ID: "filepath",
+                       DataParticleKey.VALUE: image_path})
         result.append({DataParticleKey.VALUE_ID: "camds_pan_position",
                        DataParticleKey.VALUE: param_dict.get(Parameter.PAN_POSITION[ParameterIndex.KEY])})
         result.append({DataParticleKey.VALUE_ID: "camds_tilt_position",
@@ -822,6 +858,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
         """
 
         sieve_matchers = [CAMDS_METADATA_MATCHER_COM,
+                          CAMDS_IMAGE_FILE_MATCHER_COM,
                           CAMDS_DISK_STATUS_MATCHER_COM,
                           CAMDS_HEALTH_STATUS_MATCHER_COM]
 
@@ -2501,6 +2538,12 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
                                             timestamp)):
             log.debug("_got_chunk - successful match for CAMDS_IMAGE_METADATA")
 
+        elif (self._extract_metadata_sample(CamdsImageMetadata,
+                                            CAMDS_IMAGE_FILE_MATCHER_COM,
+                                            chunk,
+                                            timestamp)):
+            log.debug("_got_chunk - successful match for CAMDS_IMAGE_METADATA")
+
     def _extract_metadata_sample(self, particle_class, regex, line, timestamp, publish=True):
         """
         Special case for extract_sample - camds_image_metadata particle
@@ -2521,10 +2564,15 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
                 the line can be parsed for a sample. Otherwise, None.
         """
 
-        if regex.match(line):
-
+        match = regex.match(line)
+        if match:
             # special case for the CAMDS image metadata particle - need to pass in param_dict
-            particle = particle_class(self._param_dict, port_timestamp=timestamp)
+            if regex == CAMDS_METADATA_MATCHER_COM:
+                particle = particle_class(self._param_dict, port_timestamp=timestamp)
+            elif regex == CAMDS_IMAGE_FILE_MATCHER_COM:
+                # this is the image filename handed over by the port agent
+                img_filename = match.group(1)
+                particle = particle_class(self._param_dict, img_filename, port_timestamp=timestamp)
 
             parsed_sample = particle.generate()
 
