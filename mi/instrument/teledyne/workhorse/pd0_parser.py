@@ -24,6 +24,7 @@ class BlockId(BaseEnum):
     CORRELATION_DATA = 512
     ECHO_INTENSITY_DATA = 768
     PERCENT_GOOD_DATA = 1024
+    BOTTOM_TRACK = 1536
 
 
 def count_zero_bits(bitmask):
@@ -164,6 +165,8 @@ class AdcpPd0Record(object):
                 self._parse_echo(offset)
             elif block_id == BlockId.PERCENT_GOOD_DATA:
                 self._parse_percent_good(offset)
+            elif block_id == BlockId.BOTTOM_TRACK:
+                self._parse_bottom_track(offset)
             else:
                 raise SampleException('Found unhandled data type id: %d' % block_id)
 
@@ -185,9 +188,9 @@ class AdcpPd0Record(object):
             ('num_code_reps', 'B'),
             ('minimum_percentage', 'B'),
             ('error_velocity_max', 'H'),
-            ('minutes', 'B'),
-            ('seconds', 'B'),
-            ('hundredths', 'B'),
+            ('tpp_minutes', 'B'),
+            ('tpp_seconds', 'B'),
+            ('tpp_hundredths', 'B'),
             ('coord_transform', 'B'),
             ('heading_alignment', 'H'),
             ('heading_bias', 'H'),
@@ -270,6 +273,69 @@ class AdcpPd0Record(object):
 
     def _parse_percent_good(self, offset):
         self.percent_good = self._unpack_cell_data('percent_good', 'B', offset)
+
+    def _parse_bottom_track(self, offset):
+        bottom_track_format = (
+            ('id', 'H'),
+            ('pings_per_ensemble', 'H'),
+            ('delay_before_reacquire', 'H'),
+            ('correlation_mag_min', 'B'),
+            ('eval_amplitude_min', 'B'),
+            ('percent_good_minimum', 'B'),
+            ('mode', 'B'),
+            ('error_velocity_max', 'H'),
+            ('reserved', 'H'),
+            ('range_1', 'H'),
+            ('range_2', 'H'),
+            ('range_3', 'H'),
+            ('range_4', 'H'),
+            ('velocity_1', 'H'),
+            ('velocity_2', 'H'),
+            ('velocity_3', 'H'),
+            ('velocity_4', 'H'),
+            ('corr_1', 'B'),
+            ('corr_2', 'B'),
+            ('corr_3', 'B'),
+            ('corr_4', 'B'),
+            ('amp_1', 'B'),
+            ('amp_2', 'B'),
+            ('amp_3', 'B'),
+            ('amp_4', 'B'),
+            ('pcnt_1', 'B'),
+            ('pcnt_2', 'B'),
+            ('pcnt_3', 'B'),
+            ('pcnt_4', 'B'),
+            ('ref_layer_min', 'H'),
+            ('ref_layer_near', 'B'),
+            ('ref_layer_far', 'B'),
+            ('ref_velocity_1', 'H'),
+            ('ref_velocity_2', 'H'),
+            ('ref_velocity_3', 'H'),
+            ('ref_velocity_4', 'H'),
+            ('ref_corr_1', 'B'),
+            ('ref_corr_2', 'B'),
+            ('ref_corr_3', 'B'),
+            ('ref_corr_4', 'B'),
+            ('ref_amp_1', 'B'),
+            ('ref_amp_2', 'B'),
+            ('ref_amp_3', 'B'),
+            ('ref_amp_4', 'B'),
+            ('ref_pcnt_1', 'B'),
+            ('ref_pcnt_2', 'B'),
+            ('ref_pcnt_3', 'B'),
+            ('ref_pcnt_4', 'B'),
+            ('max_depth', 'H'),
+            ('rssi_1', 'B'),
+            ('rssi_2', 'B'),
+            ('rssi_3', 'B'),
+            ('rssi_4', 'B'),
+            ('gain', 'B'),
+            ('range_msb_1', 'B'),
+            ('range_msb_2', 'B'),
+            ('range_msb_3', 'B'),
+            ('range_msb_4', 'B'),
+        )
+        self.bottom_track = self._unpack_from_format('bottom_track', bottom_track_format, offset)
 
     def _parse_sysconfig(self):
         """

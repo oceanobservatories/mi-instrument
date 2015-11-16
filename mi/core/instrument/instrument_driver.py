@@ -7,16 +7,12 @@
 @brief Instrument driver classes that provide structure towards interaction
 with individual instruments in the system.
 """
-from requests import ConnectionError
-
-__author__ = 'Steve Foley'
-__license__ = 'Apache 2.0'
-
 import consulate
 import random
 import time
 
 from threading import Thread
+from requests import ConnectionError
 
 from mi.core.common import BaseEnum
 from mi.core.exceptions import TestModeException
@@ -26,7 +22,12 @@ from mi.core.exceptions import InstrumentParameterException
 from mi.core.exceptions import InstrumentConnectionException
 from mi.core.instrument.instrument_fsm import ThreadSafeFSM
 from mi.core.instrument.port_agent_client import PortAgentClient, PortAgentPacket
-from mi.core.log import get_logger, LoggerManager, get_logging_metaclass
+from mi.core.log import get_logger, get_logging_metaclass
+
+
+__author__ = 'Steve Foley'
+__license__ = 'Apache 2.0'
+
 
 log = get_logger()
 
@@ -1262,6 +1263,7 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
             log.info('_async_raise_fsm_event: event complete. bub bye thread. (%r)', args)
 
         thread = Thread(target=inner)
+        thread.daemon = True
         thread.start()
 
     def _destroy_protocol(self):

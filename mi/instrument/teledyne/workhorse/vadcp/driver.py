@@ -1,38 +1,29 @@
-from contextlib import contextmanager
 import copy
 import functools
 import time
 import re
+from contextlib import contextmanager
 
+import mi.instrument.teledyne.workhorse.particles as particles
 from mi.core.log import get_logger
-log = get_logger()
-
+from mi.instrument.teledyne.workhorse.pd0_parser import AdcpPd0Record
 from mi.core.instrument.chunker import StringChunker
-from mi.core.instrument.data_particle import RawDataParticle
 from mi.core.instrument.instrument_protocol import RE_PATTERN, DEFAULT_CMD_TIMEOUT, DEFAULT_WRITE_DELAY
 from mi.core.instrument.protocol_param_dict import ParameterDictVisibility, ProtocolParameterDict
 from mi.core.time_tools import get_timestamp_delayed
 from mi.core.util import dict_equal
 from mi.core.common import BaseEnum, InstErrorCode
-from mi.core.exceptions import InstrumentConnectionException
+from mi.core.exceptions import InstrumentConnectionException, SampleException
 from mi.core.exceptions import InstrumentParameterException
 from mi.core.exceptions import InstrumentProtocolException
 from mi.core.exceptions import InstrumentTimeoutException
 from mi.core.exceptions import InstrumentException
-from mi.core.instrument.instrument_driver import SingleConnectionInstrumentDriver
+from mi.core.instrument.instrument_driver import SingleConnectionInstrumentDriver, DriverEvent
 from mi.core.instrument.instrument_driver import DriverConnectionState
-from mi.core.instrument.instrument_driver import ResourceAgentEvent
 from mi.core.instrument.instrument_driver import DriverAsyncEvent
 from mi.core.instrument.instrument_driver import ResourceAgentState
 from mi.core.instrument.instrument_driver import DriverProtocolState
-from mi.core.instrument.port_agent_client import PortAgentClient
-
-from mi.instrument.teledyne.workhorse.particles import AdcpCompassCalibrationDataParticle
-from mi.instrument.teledyne.workhorse.particles import AdcpPd0ParsedDataParticle
-from mi.instrument.teledyne.workhorse.particles import AdcpAncillarySystemDataParticle
-from mi.instrument.teledyne.workhorse.particles import AdcpTransmitPathParticle
-from mi.instrument.teledyne.workhorse.particles import AdcpSystemConfigurationDataParticle
-
+from mi.core.instrument.port_agent_client import PortAgentClient, PortAgentPacket
 from mi.instrument.teledyne.workhorse.driver import WorkhorseParameter
 from mi.instrument.teledyne.workhorse.driver import WorkhorsePrompt
 from mi.instrument.teledyne.workhorse.driver import NEWLINE
@@ -58,6 +49,8 @@ from mi.instrument.teledyne.workhorse.driver import ADCP_TRANSMIT_PATH_REGEX_MAT
 from mi.instrument.teledyne.workhorse.driver import WorkhorseEngineeringParameter
 from mi.instrument.teledyne.workhorse.driver import TIMEOUT
 from mi.instrument.teledyne.workhorse.driver import WorkhorseScheduledJob
+
+log = get_logger()
 
 master_parameter_defaults = copy.deepcopy(parameter_defaults)
 slave_parameter_defaults = copy.deepcopy(parameter_defaults)
@@ -85,43 +78,6 @@ class SlaveProtocol(BaseEnum):
     """
     FOURBEAM = '4Beam'
     FIFTHBEAM = '5thBeam'
-
-
-class RawDataParticle5(RawDataParticle):
-    _data_particle_type = "raw_5thbeam"
-
-
-class VadcpCompassCalibrationDataParticle(AdcpCompassCalibrationDataParticle):
-    _data_particle_type = "vadcp_5thbeam_compass_calibration"
-
-
-class VadcpSystemConfigurationDataParticle(AdcpSystemConfigurationDataParticle):
-    _data_particle_type = "vadcp_4beam_system_configuration"
-    _master = True
-
-
-class VadcpPd0BeamParsedDataParticle(AdcpPd0ParsedDataParticle):
-    _data_particle_type = "vadcp_pd0_beam_parsed"
-    _master = True
-
-
-class VadcpSystemConfigurationDataParticle5(AdcpSystemConfigurationDataParticle):
-    _data_particle_type = "vadcp_5thbeam_system_configuration"
-    _slave = True
-    _offset = 6
-
-
-class VadcpAncillarySystemDataParticle(AdcpAncillarySystemDataParticle):
-    _data_particle_type = "vadcp_ancillary_system_data"
-
-
-class VadcpTransmitPathParticle(AdcpTransmitPathParticle):
-    _data_particle_type = "vadcp_transmit_path"
-
-
-class VadcpPd0SlaveDataParticle(AdcpPd0ParsedDataParticle):
-    _data_particle_type = "VADCP"
-    _slave = True
 
 
 class InstrumentDriver(SingleConnectionInstrumentDriver):
@@ -153,13 +109,7 @@ class InstrumentDriver(SingleConnectionInstrumentDriver):
 
         # for Master first
         try:
-            got_data = functools.partial(self._protocol.got_data, connection=SlaveProtocol.FOURBEAM)
-            got_raw = functools.partial(self._protocol.got_raw, connection=SlaveProtocol.FOURBEAM)
-            self._connection[SlaveProtocol.FOURBEAM].init_comms(got_data,
-                                                                got_raw,
-                                                                self._got_config,
-                                                                self._got_exception,
-                                                                self._lost_connection_callback)
+            self._connection[SlaveProtocol.FOURBEAM].init_comms()
             self._protocol.connections[SlaveProtocol.FOURBEAM] = self._connection[SlaveProtocol.FOURBEAM]
         except InstrumentConnectionException as e:
             log.error("Connection Exception Beam 1-4: %s", e)
@@ -168,13 +118,7 @@ class InstrumentDriver(SingleConnectionInstrumentDriver):
 
         # for Slave
         try:
-            got_data = functools.partial(self._protocol.got_data, connection=SlaveProtocol.FIFTHBEAM)
-            got_raw = functools.partial(self._protocol.got_raw, connection=SlaveProtocol.FIFTHBEAM)
-            self._connection[SlaveProtocol.FIFTHBEAM].init_comms(got_data,
-                                                                 got_raw,
-                                                                 self._got_config,
-                                                                 self._got_exception,
-                                                                 self._lost_connection_callback)
+            self._connection[SlaveProtocol.FIFTHBEAM].init_comms()
             self._protocol.connections[SlaveProtocol.FIFTHBEAM] = self._connection[SlaveProtocol.FIFTHBEAM]
 
         except InstrumentConnectionException as e:
@@ -192,11 +136,7 @@ class InstrumentDriver(SingleConnectionInstrumentDriver):
         for connection in self._connection.values():
             connection.stop_comms()
 
-        scheduler = self._protocol._scheduler
-        if scheduler:
-            scheduler._scheduler.shutdown()
-        scheduler = None
-        self._protocol = None
+        self._destroy_protocol()
 
         return DriverConnectionState.UNCONFIGURED, None
 
@@ -208,11 +148,7 @@ class InstrumentDriver(SingleConnectionInstrumentDriver):
         for connection in self._connection.values():
             connection.stop_comms()
 
-        scheduler = self._protocol._scheduler
-        if scheduler:
-            scheduler._scheduler.shutdown()
-        scheduler = None
-        self._protocol = None
+        self._destroy_protocol()
 
         return DriverConnectionState.UNCONFIGURED, None
 
@@ -257,13 +193,54 @@ class InstrumentDriver(SingleConnectionInstrumentDriver):
                     cmd_port = config.get('cmd_port')
 
                     if isinstance(addr, basestring) and isinstance(port, int) and len(addr) > 0:
-                        connections[name] = PortAgentClient(addr, port, cmd_port)
+                        callback = functools.partial(self._got_data, connection=name)
+                        connections[name] = PortAgentClient(addr, port, cmd_port, callback,
+                                                            self._lost_connection_callback)
                     else:
                         raise InstrumentParameterException('Invalid comms config dict in build_connections.')
 
                 except (TypeError, KeyError) as e:
                     raise InstrumentParameterException('Invalid comms config dict.. %r' % e)
         return connections
+
+    def _got_data(self, port_agent_packet, connection=None):
+        if isinstance(port_agent_packet, Exception):
+            return self._got_exception(port_agent_packet)
+
+        if isinstance(port_agent_packet, PortAgentPacket):
+            packet_type = port_agent_packet.get_header_type()
+            data = port_agent_packet.get_data()
+
+            if packet_type == PortAgentPacket.PORT_AGENT_CONFIG:
+
+                configuration = {}
+
+                for each in data.split('\n'):
+                    if each == '':
+                        continue
+
+                    key, value = each.split(None, 1)
+                    try:
+                        value = int(value)
+                    except ValueError:
+                        pass
+                    configuration[key] = value
+
+                self._driver_event(DriverAsyncEvent.DRIVER_CONFIG, configuration)
+
+            elif packet_type == PortAgentPacket.PORT_AGENT_STATUS:
+                current_state = self._connection_fsm.get_current_state()
+                if data == 'DISCONNECTED':
+                    self._pa_disconnected_count += 1
+                    self._async_raise_event(DriverEvent.PA_CONNECTION_LOST)
+                elif data == 'CONNECTED':
+                    self._pa_disconnected_count = 0
+                    if current_state == DriverConnectionState.PA_CONNECTED:
+                        self._async_raise_event(DriverEvent.CONNECT)
+
+            else:
+                if connection and self._protocol:
+                    self._protocol.got_data(port_agent_packet, connection=connection)
 
 
 class Protocol(WorkhorseProtocol):
@@ -434,6 +411,8 @@ class Protocol(WorkhorseProtocol):
 
         Also add data to the chunker and when received call got_chunk
         to publish results.
+        :param connection: connection which produced this packet
+        :param port_agent_packet: packet of data
         """
         if connection is None:
             raise InstrumentProtocolException('got_data: no connection supplied!')
@@ -464,29 +443,20 @@ class Protocol(WorkhorseProtocol):
         """
         Called by the port agent client when raw data is available, such as data
         sent by the driver to the instrument, the instrument responses,etc.
+        :param connection: connection which produced this packet
+        :param port_agent_packet: packet of data
         """
         self.publish_raw(port_agent_packet, connection)
 
     def publish_raw(self, port_agent_packet, connection=None):
-        """
-        Publish raw data
-        @param: port_agent_packet port agent packet containing raw
-        """
-        if connection == SlaveProtocol.FOURBEAM:
-            particle_class = RawDataParticle
-        else:
-            particle_class = RawDataParticle5
-        particle = particle_class(port_agent_packet.get_as_dict(),
-                                  port_timestamp=port_agent_packet.get_timestamp())
-
-        if self._driver_event:
-            self._driver_event(DriverAsyncEvent.SAMPLE, particle.generate())
+        pass
 
     def add_to_buffer(self, data, connection=None):
         """
         Add a chunk of data to the internal data buffers
         buffers implemented as lifo ring buffer
-        @param data: bytes to add to the buffer
+        :param data: bytes to add to the buffer
+        :param connection: connection which produced this packet
         """
         # Update the line and prompt buffers.
         self._linebuf[connection] += data
@@ -612,71 +582,85 @@ class Protocol(WorkhorseProtocol):
         Pass it to extract_sample with the appropriate particle
         objects and REGEXes.
         """
-        if connection == SlaveProtocol.FIFTHBEAM:
-            if self._extract_sample(VadcpCompassCalibrationDataParticle,
-                                    ADCP_COMPASS_CALIBRATION_REGEX_MATCHER,
-                                    chunk,
-                                    timestamp):
-                # if self.get_current_state() == WorkhorseProtocolState.COMMAND:
-                #     self._async_raise_fsm_event(WorkhorseProtocolEvent.RECOVER_AUTOSAMPLE)
-                return
+        if ADCP_PD0_PARSED_REGEX_MATCHER.match(chunk):
+            pd0 = AdcpPd0Record(chunk)
+            pd0.process()
+            pd0.parse_bitmapped_fields()
+            transform = pd0.coord_transform.coord_transform
 
-            if self._extract_sample(VadcpPd0SlaveDataParticle,
-                                    ADCP_PD0_PARSED_REGEX_MATCHER,
-                                    chunk,
-                                    timestamp):
-                return
+            # Only BEAM transform supported for VADCP
+            if transform != particles.Pd0CoordinateTransformType.BEAM:
+                raise SampleException('Received unsupported coordinate transform type: %s' % transform)
 
-            if self._extract_sample(VadcpSystemConfigurationDataParticle5,
-                                    ADCP_SYSTEM_CONFIGURATION_REGEX_MATCHER,
-                                    chunk,
-                                    timestamp):
-                return
+            if connection == SlaveProtocol.FOURBEAM:
+                science = particles.VadcpBeamMasterParticle(pd0, port_timestamp=timestamp).generate()
+                config = particles.AdcpPd0ConfigParticle(pd0, port_timestamp=timestamp).generate()
+                engineering = particles.AdcpPd0EngineeringParticle(pd0, port_timestamp=timestamp).generate()
+                error = particles.AdcpPd0ErrorStatusParticle(pd0, port_timestamp=timestamp).generate()
+            else:
+                science = particles.VadcpBeamSlaveParticle(pd0, port_timestamp=timestamp).generate()
+                config = particles.VadcpConfigSlaveParticle(pd0, port_timestamp=timestamp).generate()
+                engineering = particles.VadcpEngineeringSlaveParticle(pd0, port_timestamp=timestamp).generate()
+                error = particles.VadcpErrorStatusSlaveParticle(pd0, port_timestamp=timestamp).generate()
 
-            if self._extract_sample(VadcpAncillarySystemDataParticle,
-                                    ADCP_ANCILLARY_SYSTEM_DATA_REGEX_MATCHER,
-                                    chunk,
-                                    timestamp):
-                return
+            out_particles = [science]
+            for particle in [config, engineering, error]:
+                if self._changed(particle):
+                    out_particles.append(particle)
 
-            if self._extract_sample(VadcpTransmitPathParticle,
-                                    ADCP_TRANSMIT_PATH_REGEX_MATCHER,
-                                    chunk,
-                                    timestamp):
-                return
+            for particle in out_particles:
+                self._driver_event(DriverAsyncEvent.SAMPLE, particle)
 
-        elif connection == SlaveProtocol.FOURBEAM:
-            if self._extract_sample(AdcpCompassCalibrationDataParticle,
-                                    ADCP_COMPASS_CALIBRATION_REGEX_MATCHER,
-                                    chunk,
-                                    timestamp):
-                # if self.get_current_state() == WorkhorseProtocolState.COMMAND:
-                #     self._async_raise_fsm_event(WorkhorseProtocolEvent.RECOVER_AUTOSAMPLE)
-                return
+        else:
+            if connection == SlaveProtocol.FIFTHBEAM:
+                if self._extract_sample(particles.VadcpCompassCalibrationDataParticle,
+                                        ADCP_COMPASS_CALIBRATION_REGEX_MATCHER,
+                                        chunk,
+                                        timestamp):
+                    return
 
-            if self._extract_sample(VadcpPd0BeamParsedDataParticle,
-                                    ADCP_PD0_PARSED_REGEX_MATCHER,
-                                    chunk,
-                                    timestamp):
-                return
+                if self._extract_sample(particles.VadcpSystemConfigurationDataParticle,
+                                        ADCP_SYSTEM_CONFIGURATION_REGEX_MATCHER,
+                                        chunk,
+                                        timestamp):
+                    return
 
-            if self._extract_sample(VadcpSystemConfigurationDataParticle,
-                                    ADCP_SYSTEM_CONFIGURATION_REGEX_MATCHER,
-                                    chunk,
-                                    timestamp):
-                return
+                if self._extract_sample(particles.VadcpAncillarySystemDataParticle,
+                                        ADCP_ANCILLARY_SYSTEM_DATA_REGEX_MATCHER,
+                                        chunk,
+                                        timestamp):
+                    return
 
-            if self._extract_sample(AdcpAncillarySystemDataParticle,
-                                    ADCP_ANCILLARY_SYSTEM_DATA_REGEX_MATCHER,
-                                    chunk,
-                                    timestamp):
-                return
+                if self._extract_sample(particles.VadcpTransmitPathParticle,
+                                        ADCP_TRANSMIT_PATH_REGEX_MATCHER,
+                                        chunk,
+                                        timestamp):
+                    return
 
-            if self._extract_sample(AdcpTransmitPathParticle,
-                                    ADCP_TRANSMIT_PATH_REGEX_MATCHER,
-                                    chunk,
-                                    timestamp):
-                return
+            elif connection == SlaveProtocol.FOURBEAM:
+                if self._extract_sample(particles.AdcpCompassCalibrationDataParticle,
+                                        ADCP_COMPASS_CALIBRATION_REGEX_MATCHER,
+                                        chunk,
+                                        timestamp):
+                    return
+
+                if self._extract_sample(particles.AdcpSystemConfigurationDataParticle,
+                                        ADCP_SYSTEM_CONFIGURATION_REGEX_MATCHER,
+                                        chunk,
+                                        timestamp):
+                    return
+
+                if self._extract_sample(particles.AdcpAncillarySystemDataParticle,
+                                        ADCP_ANCILLARY_SYSTEM_DATA_REGEX_MATCHER,
+                                        chunk,
+                                        timestamp):
+                    return
+
+                if self._extract_sample(particles.AdcpTransmitPathParticle,
+                                        ADCP_TRANSMIT_PATH_REGEX_MATCHER,
+                                        chunk,
+                                        timestamp):
+                    return
 
     def _send_break_cmd(self, delay, connection=None):
         """
