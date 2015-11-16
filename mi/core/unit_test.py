@@ -138,9 +138,9 @@ class ParticleTestMixin(object):
         sample_dict = self.convert_data_particle_to_dict(data_particle)
         log.debug("SAMPLEDICT: %s", sample_dict)
 
-        self.assertTrue(sample_dict[DataParticleKey.STREAM_NAME], stream_name)
-        self.assertTrue(sample_dict[DataParticleKey.PKT_FORMAT_ID], DataParticleValue.JSON_DATA)
-        self.assertTrue(sample_dict[DataParticleKey.PKT_VERSION], 1)
+        self.assertEqual(sample_dict[DataParticleKey.STREAM_NAME], stream_name)
+        self.assertEqual(sample_dict[DataParticleKey.PKT_FORMAT_ID], DataParticleValue.JSON_DATA)
+        self.assertEqual(sample_dict[DataParticleKey.PKT_VERSION], 1)
         self.assertIsInstance(sample_dict[DataParticleKey.VALUES], list)
 
         self.assertTrue(sample_dict.get(DataParticleKey.PREFERRED_TIMESTAMP))

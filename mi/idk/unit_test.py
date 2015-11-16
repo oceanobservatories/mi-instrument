@@ -1276,6 +1276,7 @@ class InstrumentDriverUnitTestCase(InstrumentDriverTestCase):
 
         # Disable autoconnect
         driver._autoconnect = False
+        driver._handler_pa_connected_check = lambda: True
 
         current_state = driver.get_resource_state()
         self.assertEqual(current_state, DriverConnectionState.UNCONFIGURED)
@@ -1291,6 +1292,10 @@ class InstrumentDriverUnitTestCase(InstrumentDriverTestCase):
         # Invoke the connect method of the driver: should connect to mock
         # port agent.  Verify that the connection FSM transitions to CONNECTED,
         # (which means that the FSM should now be reporting the ProtocolState).
+        driver.connect()
+        current_state = driver.get_resource_state()
+        self.assertEqual(current_state, DriverConnectionState.PA_CONNECTED)
+
         driver.connect()
         current_state = driver.get_resource_state()
         self.assertEqual(current_state, DriverProtocolState.UNKNOWN)

@@ -8,6 +8,12 @@ Generic test Driver for ADCPS-K, ADCPS-I, ADCPT-B and ADCPT-DE
 """
 import time
 import copy
+
+import ntplib
+from mi.core.instrument.data_particle import CommonDataParticleType
+
+from mi.core.instrument.port_agent_client import PortAgentPacket
+
 from mi.core.exceptions import InstrumentCommandException
 from mi.core.time_tools import timegm_to_float
 from mi.core.log import get_logger
@@ -210,7 +216,6 @@ class ADCPTMixin(DriverTestMixin):
         WorkhorseCapability.CLOCK_SYNC: {STATES: [WorkhorseProtocolState.COMMAND]},
         WorkhorseCapability.RUN_TEST: {STATES: [WorkhorseProtocolState.COMMAND]},
         WorkhorseCapability.ACQUIRE_STATUS: {STATES: [WorkhorseProtocolState.COMMAND]},
-        WorkhorseCapability.DISCOVER: {STATES: [WorkhorseProtocolState.UNKNOWN]},
     }
 
     _calibration_data_parameters = {
@@ -265,120 +270,18 @@ class ADCPTMixin(DriverTestMixin):
     }
 
     _pd0_parameters_base = {
-        AdcpPd0ParsedKey.HEADER_ID: {'type': int, 'value': 127},
-        AdcpPd0ParsedKey.DATA_SOURCE_ID: {'type': int, 'value': 127},
-        AdcpPd0ParsedKey.FIRMWARE_VERSION: {'type': int, 'value': 50},
-        AdcpPd0ParsedKey.FIRMWARE_REVISION: {'type': int, 'value': 40},
-        AdcpPd0ParsedKey.SYSCONFIG_FREQUENCY: {'type': int, 'value': 75},
-        AdcpPd0ParsedKey.SYSCONFIG_BEAM_PATTERN: {'type': int, 'value': 1},
-        AdcpPd0ParsedKey.SYSCONFIG_SENSOR_CONFIG: {'type': int, 'value': 0},
-        AdcpPd0ParsedKey.SYSCONFIG_HEAD_ATTACHED: {'type': int, 'value': 1},
-        AdcpPd0ParsedKey.SYSCONFIG_VERTICAL_ORIENTATION: {'type': int, 'value': 1},
-        AdcpPd0ParsedKey.DATA_FLAG: {'type': int, 'value': 0},
-        AdcpPd0ParsedKey.LAG_LENGTH: {'type': int, 'value': 53},
-        AdcpPd0ParsedKey.NUM_BEAMS: {'type': int, 'value': 4},
         AdcpPd0ParsedKey.NUM_CELLS: {'type': int, 'value': 100},
-        AdcpPd0ParsedKey.PINGS_PER_ENSEMBLE: {'type': int, 'value': 1},
         AdcpPd0ParsedKey.DEPTH_CELL_LENGTH: {'type': int, 'value': 3200},
-        AdcpPd0ParsedKey.BLANK_AFTER_TRANSMIT: {'type': int, 'value': 704},
-        AdcpPd0ParsedKey.SIGNAL_PROCESSING_MODE: {'type': int, 'value': 1},
-        AdcpPd0ParsedKey.LOW_CORR_THRESHOLD: {'type': int, 'value': 64},
-        AdcpPd0ParsedKey.NUM_CODE_REPETITIONS: {'type': int, 'value': 17},
-        AdcpPd0ParsedKey.PERCENT_GOOD_MIN: {'type': int, 'value': 0},
-        AdcpPd0ParsedKey.ERROR_VEL_THRESHOLD: {'type': int, 'value': 2000},
-        AdcpPd0ParsedKey.TIME_PER_PING_MINUTES: {'type': int, 'value': 0},
-        AdcpPd0ParsedKey.TIME_PER_PING_SECONDS: {'type': float, 'value': 1.0},
-        AdcpPd0ParsedKey.COORD_TRANSFORM_TILTS: {'type': int, 'value': 0},
-        AdcpPd0ParsedKey.COORD_TRANSFORM_BEAMS: {'type': int, 'value': 0},
-        AdcpPd0ParsedKey.COORD_TRANSFORM_MAPPING: {'type': int, 'value': 0},
-        AdcpPd0ParsedKey.HEADING_ALIGNMENT: {'type': int, 'value': 0},
-        AdcpPd0ParsedKey.HEADING_BIAS: {'type': int, 'value': 0},
-        AdcpPd0ParsedKey.SENSOR_SOURCE_SPEED: {'type': int, 'value': 1},
-        AdcpPd0ParsedKey.SENSOR_SOURCE_DEPTH: {'type': int, 'value': 1},
-        AdcpPd0ParsedKey.SENSOR_SOURCE_HEADING: {'type': int, 'value': 1},
-        AdcpPd0ParsedKey.SENSOR_SOURCE_PITCH: {'type': int, 'value': 1},
-        AdcpPd0ParsedKey.SENSOR_SOURCE_ROLL: {'type': int, 'value': 1},
-        AdcpPd0ParsedKey.SENSOR_SOURCE_CONDUCTIVITY: {'type': int, 'value': 0},
-        AdcpPd0ParsedKey.SENSOR_SOURCE_TEMPERATURE: {'type': int, 'value': 1},
-        AdcpPd0ParsedKey.SENSOR_AVAILABLE_DEPTH: {'type': int, 'value': 1},
-        AdcpPd0ParsedKey.SENSOR_AVAILABLE_HEADING: {'type': int, 'value': 1},
-        AdcpPd0ParsedKey.SENSOR_AVAILABLE_PITCH: {'type': int, 'value': 1},
-        AdcpPd0ParsedKey.SENSOR_AVAILABLE_ROLL: {'type': int, 'value': 1},
-        AdcpPd0ParsedKey.SENSOR_AVAILABLE_CONDUCTIVITY: {'type': int, 'value': 0},
-        AdcpPd0ParsedKey.SENSOR_AVAILABLE_TEMPERATURE: {'type': int, 'value': 1},
         AdcpPd0ParsedKey.BIN_1_DISTANCE: {'type': int, 'value': 4075},
-        AdcpPd0ParsedKey.TRANSMIT_PULSE_LENGTH: {'type': int, 'value': 3344},
-        AdcpPd0ParsedKey.REFERENCE_LAYER_START: {'type': int, 'value': 1},
-        AdcpPd0ParsedKey.REFERENCE_LAYER_STOP: {'type': int, 'value': 5},
-        AdcpPd0ParsedKey.FALSE_TARGET_THRESHOLD: {'type': int, 'value': 50},
-        AdcpPd0ParsedKey.LOW_LATENCY_TRIGGER: {'type': int, 'value': 0},
-        AdcpPd0ParsedKey.TRANSMIT_LAG_DISTANCE: {'type': int, 'value': 198},
-        AdcpPd0ParsedKey.CPU_BOARD_SERIAL_NUMBER: {'type': str, 'value': '713015694232387714'},
-        AdcpPd0ParsedKey.SYSTEM_BANDWIDTH: {'type': int, 'value': 0},
-        AdcpPd0ParsedKey.SYSTEM_POWER: {'type': int, 'value': 255},
-        AdcpPd0ParsedKey.SERIAL_NUMBER: {'type': str, 'value': '18444'},
-        AdcpPd0ParsedKey.BEAM_ANGLE: {'type': int, 'value': 20},
         AdcpPd0ParsedKey.ENSEMBLE_NUMBER: {'type': int, 'value': 5},
-        AdcpPd0ParsedKey.ENSEMBLE_NUMBER_INCREMENT: {'type': int, 'value': 0},
-        AdcpPd0ParsedKey.BIT_RESULT_DEMOD_0: {'type': int, 'value': 0},
-        AdcpPd0ParsedKey.BIT_RESULT_DEMOD_1: {'type': int, 'value': 0},
-        AdcpPd0ParsedKey.BIT_RESULT_TIMING: {'type': int, 'value': 0},
-        AdcpPd0ParsedKey.SPEED_OF_SOUND: {'type': int, 'value': 1523},
-        AdcpPd0ParsedKey.TRANSDUCER_DEPTH: {'type': int, 'value': 0},
         AdcpPd0ParsedKey.HEADING: {'type': int, 'value': 5221},
         AdcpPd0ParsedKey.PITCH: {'type': int, 'value': -4657},
         AdcpPd0ParsedKey.ROLL: {'type': int, 'value': -4561},
         AdcpPd0ParsedKey.SALINITY: {'type': int, 'value': 35},
         AdcpPd0ParsedKey.TEMPERATURE: {'type': int, 'value': 2050},
-        AdcpPd0ParsedKey.MPT_MINUTES: {'type': int, 'value': 0},
-        AdcpPd0ParsedKey.MPT_SECONDS: {'type': float, 'value': 0.0},
-        AdcpPd0ParsedKey.HEADING_STDEV: {'type': int, 'value': 0},
-        AdcpPd0ParsedKey.PITCH_STDEV: {'type': int, 'value': 0},
-        AdcpPd0ParsedKey.ROLL_STDEV: {'type': int, 'value': 0},
-        AdcpPd0ParsedKey.ADC_TRANSMIT_CURRENT: {'type': int, 'value': 116},
-        AdcpPd0ParsedKey.ADC_TRANSMIT_VOLTAGE: {'type': int, 'value': 169},
-        AdcpPd0ParsedKey.ADC_AMBIENT_TEMP: {'type': int, 'value': 88},
-        AdcpPd0ParsedKey.ADC_PRESSURE_PLUS: {'type': int, 'value': 79},
-        AdcpPd0ParsedKey.ADC_PRESSURE_MINUS: {'type': int, 'value': 79},
-        AdcpPd0ParsedKey.ADC_ATTITUDE_TEMP: {'type': int, 'value': 0},
-        AdcpPd0ParsedKey.ADC_ATTITUDE: {'type': int, 'value': 0},
-        AdcpPd0ParsedKey.ADC_CONTAMINATION_SENSOR: {'type': int, 'value': 0},
-        AdcpPd0ParsedKey.BUS_ERROR_EXCEPTION: {'type': int, 'value': 0},
-        AdcpPd0ParsedKey.ADDRESS_ERROR_EXCEPTION: {'type': int, 'value': 0},
-        AdcpPd0ParsedKey.ILLEGAL_INSTRUCTION_EXCEPTION: {'type': int, 'value': 0},
-        AdcpPd0ParsedKey.ZERO_DIVIDE_INSTRUCTION: {'type': int, 'value': 0},
-        AdcpPd0ParsedKey.EMULATOR_EXCEPTION: {'type': int, 'value': 0},
-        AdcpPd0ParsedKey.UNASSIGNED_EXCEPTION: {'type': int, 'value': 0},
-        AdcpPd0ParsedKey.WATCHDOG_RESTART_OCCURRED: {'type': int, 'value': 0},
-        AdcpPd0ParsedKey.BATTERY_SAVER_POWER: {'type': int, 'value': 0},
-        AdcpPd0ParsedKey.PINGING: {'type': int, 'value': 0},
-        AdcpPd0ParsedKey.COLD_WAKEUP_OCCURRED: {'type': int, 'value': 0},
-        AdcpPd0ParsedKey.UNKNOWN_WAKEUP_OCCURRED: {'type': int, 'value': 0},
-        AdcpPd0ParsedKey.CLOCK_READ_ERROR: {'type': int, 'value': 0},
-        AdcpPd0ParsedKey.UNEXPECTED_ALARM: {'type': int, 'value': 0},
-        AdcpPd0ParsedKey.CLOCK_JUMP_FORWARD: {'type': int, 'value': 0},
-        AdcpPd0ParsedKey.CLOCK_JUMP_BACKWARD: {'type': int, 'value': 0},
-        AdcpPd0ParsedKey.POWER_FAIL: {'type': int, 'value': 0},
-        AdcpPd0ParsedKey.SPURIOUS_DSP_INTERRUPT: {'type': int, 'value': 0},
-        AdcpPd0ParsedKey.SPURIOUS_UART_INTERRUPT: {'type': int, 'value': 0},
-        AdcpPd0ParsedKey.SPURIOUS_CLOCK_INTERRUPT: {'type': int, 'value': 0},
-        AdcpPd0ParsedKey.LEVEL_7_INTERRUPT: {'type': int, 'value': 0},
+        AdcpPd0ParsedKey.TRANSDUCER_DEPTH: {'type': int, 'value': 0},
         AdcpPd0ParsedKey.ABSOLUTE_PRESSURE: {'type': int, 'value': 4294963793},
-        AdcpPd0ParsedKey.PRESSURE_VARIANCE: {'type': int, 'value': 0},
-        # TODO: These should be removed from the particle
-        AdcpPd0ParsedKey.NUM_BYTES: {'type': int, 'value': 2152},
-        AdcpPd0ParsedKey.NUM_DATA_TYPES: {'type': int, 'value': 6},
-        AdcpPd0ParsedKey.FIXED_LEADER_ID: {'type': int, 'value': 0},
-        AdcpPd0ParsedKey.OFFSET_DATA_TYPES: {'type': tuple, 'value': (18, 77, 142, 944, 1346, 1748)},
-        AdcpPd0ParsedKey.VARIABLE_LEADER_ID: {'type': int, 'value': 128},
-        AdcpPd0ParsedKey.ENSEMBLE_START_TIME: {'type': float, 'value': 3572371982.46},
-        AdcpPd0ParsedKey.REAL_TIME_CLOCK: {'type': tuple, 'value': (20, 13, 3, 15, 21, 33, 2, 46)},
-        AdcpPd0ParsedKey.VELOCITY_DATA_ID: {'type': int, 'value': 256},
-        AdcpPd0ParsedKey.CORRELATION_MAGNITUDE_ID: {'type': int, 'value': 512},
-        AdcpPd0ParsedKey.ECHO_INTENSITY_ID: {'type': int, 'value': 768},
-        AdcpPd0ParsedKey.PERCENT_GOOD_ID: {'type': int, 'value': 1024},
-        AdcpPd0ParsedKey.CHECKSUM: {'type': int, 'value': 8239},
-        # TODO: END
+        AdcpPd0ParsedKey.SYSCONFIG_VERTICAL_ORIENTATION: {'type': int, 'value': 1},
         AdcpPd0ParsedKey.CORRELATION_MAGNITUDE_BEAM1: {'type': list,
                                                        'value': [77, 15, 7, 7, 7, 5, 7, 7, 5, 9, 6, 10, 5, 4, 6, 5,
                                                                  4, 7, 7, 11, 6, 10, 3, 4, 4, 4, 5, 2, 4, 5, 7, 5,
@@ -444,9 +347,84 @@ class ADCPTMixin(DriverTestMixin):
                                                           0, 0, 0]},
     }
 
+    _pd0_engineering_parameters = {
+        AdcpPd0ParsedKey.TRANSMIT_PULSE_LENGTH: {'type': int, 'value': 3344},
+        AdcpPd0ParsedKey.SPEED_OF_SOUND: {'type': int, 'value': 1523},
+        AdcpPd0ParsedKey.MPT_MINUTES: {'type': int, 'value': 0},
+        AdcpPd0ParsedKey.MPT_SECONDS: {'type': int, 'value': 0},
+        AdcpPd0ParsedKey.MPT_HUNDREDTHS: {'type': int, 'value': 0},
+        AdcpPd0ParsedKey.HEADING_STDEV: {'type': int, 'value': 0},
+        AdcpPd0ParsedKey.PITCH_STDEV: {'type': int, 'value': 0},
+        AdcpPd0ParsedKey.ROLL_STDEV: {'type': int, 'value': 0},
+        AdcpPd0ParsedKey.ADC_TRANSMIT_CURRENT: {'type': int, 'value': 116},
+        AdcpPd0ParsedKey.ADC_TRANSMIT_VOLTAGE: {'type': int, 'value': 169},
+        AdcpPd0ParsedKey.ADC_AMBIENT_TEMP: {'type': int, 'value': 88},
+        AdcpPd0ParsedKey.ADC_PRESSURE_PLUS: {'type': int, 'value': 79},
+        AdcpPd0ParsedKey.ADC_PRESSURE_MINUS: {'type': int, 'value': 79},
+        AdcpPd0ParsedKey.ADC_ATTITUDE_TEMP: {'type': int, 'value': 0},
+        AdcpPd0ParsedKey.ADC_ATTITUDE: {'type': int, 'value': 0},
+        AdcpPd0ParsedKey.ADC_CONTAMINATION_SENSOR: {'type': int, 'value': 0},
+        AdcpPd0ParsedKey.PRESSURE_VARIANCE: {'type': int, 'value': 0},
+        AdcpPd0ParsedKey.BIT_RESULT: {'type': int, 'value': 0},
+        AdcpPd0ParsedKey.ERROR_STATUS_WORD: {'type': int, 'value': 0},
+    }
+
+    _pd0_config_parameters = {
+        AdcpPd0ParsedKey.FIRMWARE_VERSION: {'type': int, 'value': 50},
+        AdcpPd0ParsedKey.FIRMWARE_REVISION: {'type': int, 'value': 40},
+        AdcpPd0ParsedKey.DATA_FLAG: {'type': int, 'value': 0},
+        AdcpPd0ParsedKey.LAG_LENGTH: {'type': int, 'value': 53},
+        AdcpPd0ParsedKey.NUM_BEAMS: {'type': int, 'value': 4},
+        AdcpPd0ParsedKey.NUM_CELLS: {'type': int, 'value': 100},
+        AdcpPd0ParsedKey.PINGS_PER_ENSEMBLE: {'type': int, 'value': 1},
+        AdcpPd0ParsedKey.DEPTH_CELL_LENGTH: {'type': int, 'value': 3200},
+        AdcpPd0ParsedKey.BLANK_AFTER_TRANSMIT: {'type': int, 'value': 704},
+        AdcpPd0ParsedKey.SIGNAL_PROCESSING_MODE: {'type': int, 'value': 1},
+        AdcpPd0ParsedKey.LOW_CORR_THRESHOLD: {'type': int, 'value': 64},
+        AdcpPd0ParsedKey.NUM_CODE_REPETITIONS: {'type': int, 'value': 17},
+        AdcpPd0ParsedKey.PERCENT_GOOD_MIN: {'type': int, 'value': 0},
+        AdcpPd0ParsedKey.ERROR_VEL_THRESHOLD: {'type': int, 'value': 2000},
+        AdcpPd0ParsedKey.TIME_PER_PING_MINUTES: {'type': int, 'value': 0},
+        AdcpPd0ParsedKey.TIME_PER_PING_SECONDS: {'type': int, 'value': 1},
+        AdcpPd0ParsedKey.TIME_PER_PING_HUNDREDTHS: {'type': int, 'value': 0},
+        AdcpPd0ParsedKey.HEADING_ALIGNMENT: {'type': int, 'value': 0},
+        AdcpPd0ParsedKey.HEADING_BIAS: {'type': int, 'value': 0},
+        AdcpPd0ParsedKey.REFERENCE_LAYER_START: {'type': int, 'value': 1},
+        AdcpPd0ParsedKey.REFERENCE_LAYER_STOP: {'type': int, 'value': 5},
+        AdcpPd0ParsedKey.FALSE_TARGET_THRESHOLD: {'type': int, 'value': 50},
+        AdcpPd0ParsedKey.LOW_LATENCY_TRIGGER: {'type': int, 'value': 0},
+        AdcpPd0ParsedKey.TRANSMIT_LAG_DISTANCE: {'type': int, 'value': 198},
+        AdcpPd0ParsedKey.CPU_BOARD_SERIAL_NUMBER: {'type': str, 'value': '713015694232387714'},
+        AdcpPd0ParsedKey.SYSTEM_BANDWIDTH: {'type': int, 'value': 0},
+        AdcpPd0ParsedKey.SYSTEM_POWER: {'type': int, 'value': 255},
+        AdcpPd0ParsedKey.SERIAL_NUMBER: {'type': str, 'value': '18444'},
+        AdcpPd0ParsedKey.BEAM_ANGLE: {'type': int, 'value': 20},
+        AdcpPd0ParsedKey.SYSCONFIG_FREQUENCY: {'type': int, 'value': 75},
+        AdcpPd0ParsedKey.SYSCONFIG_BEAM_PATTERN: {'type': int, 'value': 1},
+        AdcpPd0ParsedKey.SYSCONFIG_SENSOR_CONFIG: {'type': int, 'value': 0},
+        AdcpPd0ParsedKey.SYSCONFIG_HEAD_ATTACHED: {'type': int, 'value': 1},
+        AdcpPd0ParsedKey.SYSCONFIG_VERTICAL_ORIENTATION: {'type': int, 'value': 1},
+        AdcpPd0ParsedKey.COORD_TRANSFORM_TYPE: {'type': int, 'value': 0},
+        AdcpPd0ParsedKey.COORD_TRANSFORM_TILTS: {'type': int, 'value': 0},
+        AdcpPd0ParsedKey.COORD_TRANSFORM_BEAMS: {'type': int, 'value': 0},
+        AdcpPd0ParsedKey.COORD_TRANSFORM_MAPPING: {'type': int, 'value': 0},
+        AdcpPd0ParsedKey.SENSOR_SOURCE_SPEED: {'type': int, 'value': 1},
+        AdcpPd0ParsedKey.SENSOR_SOURCE_DEPTH: {'type': int, 'value': 1},
+        AdcpPd0ParsedKey.SENSOR_SOURCE_HEADING: {'type': int, 'value': 1},
+        AdcpPd0ParsedKey.SENSOR_SOURCE_PITCH: {'type': int, 'value': 1},
+        AdcpPd0ParsedKey.SENSOR_SOURCE_ROLL: {'type': int, 'value': 1},
+        AdcpPd0ParsedKey.SENSOR_SOURCE_CONDUCTIVITY: {'type': int, 'value': 0},
+        AdcpPd0ParsedKey.SENSOR_SOURCE_TEMPERATURE: {'type': int, 'value': 1},
+        AdcpPd0ParsedKey.SENSOR_AVAILABLE_DEPTH: {'type': int, 'value': 1},
+        AdcpPd0ParsedKey.SENSOR_AVAILABLE_HEADING: {'type': int, 'value': 1},
+        AdcpPd0ParsedKey.SENSOR_AVAILABLE_PITCH: {'type': int, 'value': 1},
+        AdcpPd0ParsedKey.SENSOR_AVAILABLE_ROLL: {'type': int, 'value': 1},
+        AdcpPd0ParsedKey.SENSOR_AVAILABLE_CONDUCTIVITY: {'type': int, 'value': 0},
+        AdcpPd0ParsedKey.SENSOR_AVAILABLE_TEMPERATURE: {'type': int, 'value': 1},
+    }
+
     beam_parameters = {
         # Beam Coordinates
-        AdcpPd0ParsedKey.COORD_TRANSFORM_TYPE: {'type': int, 'value': 0},
         AdcpPd0ParsedKey.PERCENT_GOOD_BEAM1: {'type': list,
                                               'value': [100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                                                         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -532,7 +510,6 @@ class ADCPTMixin(DriverTestMixin):
 
     earth_parameters = {
         # Earth Coordinates
-        AdcpPd0ParsedKey.COORD_TRANSFORM_TYPE: {'type': int, 'value': 3},
         AdcpPd0ParsedKey.WATER_VELOCITY_EAST: beam_parameters[AdcpPd0ParsedKey.BEAM_1_VELOCITY],
         AdcpPd0ParsedKey.WATER_VELOCITY_NORTH: beam_parameters[AdcpPd0ParsedKey.BEAM_2_VELOCITY],
         AdcpPd0ParsedKey.WATER_VELOCITY_UP: beam_parameters[AdcpPd0ParsedKey.BEAM_3_VELOCITY],
@@ -545,7 +522,8 @@ class ADCPTMixin(DriverTestMixin):
 
     _pd0_parameters = dict(_pd0_parameters_base.items() + beam_parameters.items())
     _pd0_parameters_earth = dict(_pd0_parameters_base.items() + earth_parameters.items())
-    _pd0_parameters_earth[AdcpPd0ParsedKey.CHECKSUM] = {'type': int, 'value': 8263}
+    _pd0_config_parameters_earth = copy.deepcopy(_pd0_config_parameters)
+    _pd0_config_parameters_earth[AdcpPd0ParsedKey.COORD_TRANSFORM_TYPE] = {'type': int, 'value': 3}
 
     _pt2_dict = {
         AdcpAncillarySystemDataKey.ADCP_AMBIENT_CURRENT: {'type': float, 'value': 20.32},
@@ -616,6 +594,33 @@ class ADCPTMixin(DriverTestMixin):
         self.assert_data_particle_header(data_particle, WorkhorseDataParticleType.ADCP_PD0_PARSED_BEAM)
         self.assert_data_particle_parameters(data_particle, self._pd0_parameters, verify_values)
 
+    def assert_particle_pd0_engineering(self, data_particle, verify_values=False):
+        """
+        Verify an adcp ps0 data particle
+        @param data_particle: ADCP_PS0DataParticle data particle
+        @param verify_values: bool, should we verify parameter values
+        """
+        self.assert_data_particle_header(data_particle, WorkhorseDataParticleType.ADCP_PD0_ENGINEERING)
+        self.assert_data_particle_parameters(data_particle, self._pd0_engineering_parameters, verify_values)
+
+    def assert_particle_pd0_config(self, data_particle, verify_values=False):
+        """
+        Verify an adcp ps0 data particle
+        @param data_particle: ADCP_PS0DataParticle data particle
+        @param verify_values: bool, should we verify parameter values
+        """
+        self.assert_data_particle_header(data_particle, WorkhorseDataParticleType.ADCP_PD0_CONFIG)
+        self.assert_data_particle_parameters(data_particle, self._pd0_config_parameters, verify_values)
+
+    def assert_particle_pd0_config_earth(self, data_particle, verify_values=False):
+        """
+        Verify an adcp ps0 data particle
+        @param data_particle: ADCP_PS0DataParticle data particle
+        @param verify_values: bool, should we verify parameter values
+        """
+        self.assert_data_particle_header(data_particle, WorkhorseDataParticleType.ADCP_PD0_CONFIG)
+        self.assert_data_particle_parameters(data_particle, self._pd0_config_parameters_earth, verify_values)
+
     def assert_particle_pd0_data_earth(self, data_particle, verify_values=False):
         """
         Verify an adcpt ps0 data particle
@@ -642,6 +647,61 @@ class ADCPTMixin(DriverTestMixin):
         """
         self.assert_data_particle_header(data_particle, WorkhorseDataParticleType.ADCP_TRANSMIT_PATH)
         self.assert_data_particle_parameters(data_particle, self._pt4_dict, verify_values)
+
+    def assert_pd0_particles_published(self, driver, sample_data, verify_values=False):
+        """
+        Verify that we can send data through the port agent and the the correct particles
+        are generated.
+
+        Create a port agent packet, send it through got_data, then finally grab the data particle
+        from the data particle queue and verify it using the passed in assert method.
+        @param driver: instrument driver with mock port agent client
+        @param sample_data: the byte string we want to send to the driver
+        @param particle_assert_method: assert method to validate the data particle.
+        @param verify_values: Should we validate values?
+        """
+        ts = ntplib.system_to_ntp_time(time.time())
+
+        log.debug("Sample to publish: %r", sample_data)
+        # Create and populate the port agent packet.
+        port_agent_packet = PortAgentPacket()
+        port_agent_packet.attach_data(sample_data)
+        port_agent_packet.attach_timestamp(ts)
+        port_agent_packet.pack_header()
+
+        self.clear_data_particle_queue()
+
+        # Push the data into the driver
+        driver._protocol.got_data(port_agent_packet)
+
+        # Find all particles of the correct data particle types (not raw)
+        particles = []
+        streams = []
+        for p in self._data_particle_received:
+            stream_type = p.get('stream_name')
+            self.assertIsNotNone(stream_type)
+            streams.append(stream_type)
+            if stream_type != CommonDataParticleType.RAW:
+                particles.append(p)
+
+        log.debug("Non raw particles: %r ", particles)
+        self.assertGreaterEqual(len(particles), 1)
+
+        for p in particles:
+            stream_type = p.get('stream_name')
+            if stream_type == WorkhorseDataParticleType.ADCP_PD0_PARSED_BEAM:
+                self.assert_particle_pd0_data(p, verify_values)
+            elif stream_type == WorkhorseDataParticleType.ADCP_PD0_PARSED_EARTH:
+                self.assert_particle_pd0_data_earth(p, verify_values)
+            elif stream_type == WorkhorseDataParticleType.ADCP_PD0_ENGINEERING:
+                self.assert_particle_pd0_engineering(p, verify_values)
+            elif stream_type == WorkhorseDataParticleType.ADCP_PD0_CONFIG:
+                if WorkhorseDataParticleType.ADCP_PD0_PARSED_BEAM in streams:
+                    self.assert_particle_pd0_config(p, verify_values)
+                elif WorkhorseDataParticleType.ADCP_PD0_PARSED_EARTH in streams:
+                    self.assert_particle_pd0_config_earth(p, verify_values)
+            else:
+                raise AssertionError('Received invalid particle type from PD0: %r' % stream_type)
 
 
 ###############################################################################
@@ -679,16 +739,17 @@ class WorkhorseDriverUnitTest(InstrumentDriverUnitTestCase, ADCPTMixin):
 
         self.assert_particle_published(driver, RSN_CALIBRATION_RAW_DATA, self.assert_particle_compass_calibration, True)
         self.assert_particle_published(driver, RSN_PS0_RAW_DATA, self.assert_particle_system_configuration, True)
-        self.assert_particle_published(driver, RSN_SAMPLE_RAW_DATA, self.assert_particle_pd0_data, True)
-        self.assert_particle_published(driver, rsn_sample_raw_data_earth, self.assert_particle_pd0_data_earth, True)
         self.assert_particle_published(driver, PT2_RAW_DATA, self.assert_particle_pt2_data, True)
         self.assert_particle_published(driver, PT4_RAW_DATA, self.assert_particle_pt4_data, True)
+
+        self.assert_pd0_particles_published(driver, RSN_SAMPLE_RAW_DATA, True)
+        self.assert_pd0_particles_published(driver, rsn_sample_raw_data_earth, True)
 
     def test_recover_autosample(self):
         driver = self._driver_class(self._got_data_event_callback)
         self.assert_initialize_driver(driver)
 
-        self.assert_particle_published(driver, RSN_SAMPLE_RAW_DATA, self.assert_particle_pd0_data, True)
+        self.assert_pd0_particles_published(driver, RSN_SAMPLE_RAW_DATA, True)
         self.assertEqual(driver._protocol.get_current_state(), WorkhorseProtocolState.AUTOSAMPLE)
 
     def test_driver_parameters(self):

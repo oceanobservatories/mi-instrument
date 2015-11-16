@@ -12,6 +12,8 @@ import struct
 import re
 from contextlib import contextmanager
 
+from mi.instrument.teledyne.workhorse.pd0_parser import AdcpPd0Record
+
 from mi.core.log import get_logger
 
 log = get_logger()
@@ -22,7 +24,8 @@ from mi.core.instrument.protocol_param_dict import ParameterDictType
 from mi.core.instrument.chunker import StringChunker
 from mi.core.common import BaseEnum
 from mi.core.time_tools import get_timestamp_delayed
-from mi.core.exceptions import InstrumentParameterException, InstrumentTimeoutException, InstrumentException
+from mi.core.exceptions import InstrumentParameterException, InstrumentTimeoutException, InstrumentException, \
+    SampleException
 from mi.core.exceptions import InstrumentProtocolException
 from mi.core.instrument.instrument_fsm import ThreadSafeFSM
 from mi.core.instrument.instrument_protocol import CommandResponseInstrumentProtocol, InitializationType
@@ -37,8 +40,10 @@ from mi.core.driver_scheduler import TriggerType
 from mi.core.instrument.driver_dict import DriverDictKey
 from mi.core.util import dict_equal
 
-from mi.instrument.teledyne.workhorse.particles import AdcpCompassCalibrationDataParticle, AdcpPd0ParsedDataParticle, \
-    AdcpSystemConfigurationDataParticle, AdcpAncillarySystemDataParticle, AdcpTransmitPathParticle
+from mi.instrument.teledyne.workhorse.particles import AdcpCompassCalibrationDataParticle, \
+    AdcpSystemConfigurationDataParticle, AdcpAncillarySystemDataParticle, AdcpTransmitPathParticle, \
+    AdcpPd0ConfigParticle, AdcpPd0EngineeringParticle, \
+    Pd0BeamParticle, Pd0CoordinateTransformType, Pd0EarthParticle
 
 __author__ = 'Sung Ahn'
 __license__ = 'Apache 2.0'
@@ -815,6 +820,10 @@ class WorkhorseProtocol(CommandResponseInstrumentProtocol):
         self._chunker = StringChunker(self.sieve_function)
         self.initialize_scheduler()
 
+        # dictionary to store last transmitted metadata particle values
+        # so we can not send updates when nothing changed
+        self._last_values = {}
+
     def _build_param_dict(self):
         for param in parameter_regexes:
             self._param_dict.add(param,
@@ -896,16 +905,45 @@ class WorkhorseProtocol(CommandResponseInstrumentProtocol):
     # #######################################################################
     # Private helpers.
     # #######################################################################
+    def _changed(self, particle):
+        stream = particle.get('stream_name')
+        values = particle.get('values')
+        last_values = self._last_values.get(stream)
+        if values == last_values:
+            return False
+
+        self._last_values[stream] = values
+        return True
+
     def _got_chunk(self, chunk, timestamp):
         """
         The base class got_data has gotten a chunk from the chunker.
         Pass it to extract_sample with the appropriate particle
         objects and REGEXes.
         """
-        if self._extract_sample(AdcpPd0ParsedDataParticle,
-                                ADCP_PD0_PARSED_REGEX_MATCHER,
-                                chunk,
-                                timestamp):
+        if ADCP_PD0_PARSED_REGEX_MATCHER.match(chunk):
+            pd0 = AdcpPd0Record(chunk)
+            transform = pd0.coord_transform.coord_transform
+            if transform == Pd0CoordinateTransformType.BEAM:
+                science = Pd0BeamParticle(pd0, port_timestamp=timestamp).generate()
+            elif transform == Pd0CoordinateTransformType.EARTH:
+                science = Pd0EarthParticle(pd0, port_timestamp=timestamp).generate()
+            else:
+                raise SampleException('Received unknown coordinate transform type: %s' % transform)
+
+            # generate the particles
+
+            config = AdcpPd0ConfigParticle(pd0, port_timestamp=timestamp).generate()
+            engineering = AdcpPd0EngineeringParticle(pd0, port_timestamp=timestamp).generate()
+
+            out_particles = [science]
+            for particle in [config, engineering]:
+                if self._changed(particle):
+                    out_particles.append(particle)
+
+            for particle in out_particles:
+                self._driver_event(DriverAsyncEvent.SAMPLE, particle)
+
             if self.get_current_state() == WorkhorseProtocolState.COMMAND:
                 self._async_raise_fsm_event(WorkhorseProtocolEvent.RECOVER_AUTOSAMPLE)
             log.debug("_got_chunk - successful match for AdcpPd0ParsedDataParticle")
