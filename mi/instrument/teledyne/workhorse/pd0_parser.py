@@ -9,21 +9,39 @@ Release notes:
 from collections import namedtuple
 import pprint
 import struct
-from mi.core.common import BaseEnum
-from mi.core.exceptions import SampleException
 
+import sys
 
 namedtuple_store = {}
 bitmapped_namedtuple_store = {}
 
 
-class BlockId(BaseEnum):
+class PD0ParsingException(Exception):
+    pass
+
+
+class InsufficientDataException(PD0ParsingException):
+    pass
+
+
+class UnhandledBlockException(PD0ParsingException):
+    pass
+
+
+class ChecksumException(PD0ParsingException):
+    pass
+
+
+class BlockId(object):
     FIXED_DATA = 0
     VARIABLE_DATA = 128
     VELOCITY_DATA = 256
     CORRELATION_DATA = 512
     ECHO_INTENSITY_DATA = 768
     PERCENT_GOOD_DATA = 1024
+    STATUS_DATA_ID = 1280
+    BOTTOM_TRACK = 1536
+    AUV_NAV_DATA = 8192
 
 
 def count_zero_bits(bitmask):
@@ -39,8 +57,9 @@ def count_zero_bits(bitmask):
         zero_digits += 1
     return zero_digits
 
+
 class AdcpPd0Record(object):
-    def __init__(self, data):
+    def __init__(self, data, glider=False):
         self.data = data
         self.header = None
         self.offsets = None
@@ -56,6 +75,7 @@ class AdcpPd0Record(object):
         self.bit_result = None
         self.error_word = None
         self.stored_checksum = None
+        self._process(glider)
 
     def __str__(self):
         return repr(self)
@@ -74,7 +94,7 @@ class AdcpPd0Record(object):
 
     def _unpack_cell_data(self, name, format_string, offset):
         _class = namedtuple(name, ('id', 'beam1', 'beam2', 'beam3', 'beam4'))
-        data = struct.unpack_from('<H%d%s' % (self.fixed_data.number_of_cells*4, format_string), self.data, offset)
+        data = struct.unpack_from('<H%d%s' % (self.fixed_data.number_of_cells * 4, format_string), self.data, offset)
         _object = _class(data[0], [], [], [], [])
         _object.beam1[:] = data[1::4]
         _object.beam2[:] = data[2::4]
@@ -82,7 +102,8 @@ class AdcpPd0Record(object):
         _object.beam4[:] = data[4::4]
         return _object
 
-    def _unpack_bitmapped(self, name, formatter, source_data):
+    @staticmethod
+    def _unpack_bitmapped(name, formatter, source_data):
         # short circuit if we've seen this bitmap before
         short_circuit_key = (name, source_data)
         if short_circuit_key in bitmapped_namedtuple_store:
@@ -108,32 +129,30 @@ class AdcpPd0Record(object):
         bitmapped_namedtuple_store[short_circuit_key] = value
         return value
 
-    def validate(self):
+    def _validate(self):
         self._process_header()
         self._validate_checksum()
 
     def _validate_checksum(self):
         if len(self.data) < self.header.num_bytes + 2:
-            raise SampleException(
+            raise InsufficientDataException(
                 'Insufficient data in PD0 record (expected %d bytes, found %d)' %
-                (self.header.num_bytes+2, len(self.data)))
+                (self.header.num_bytes + 2, len(self.data)))
 
         calculated_checksum = sum(bytearray(self.data[:-2])) & 65535
         self.stored_checksum = struct.unpack_from('<H', self.data, self.header.num_bytes)[0]
 
         if calculated_checksum != self.stored_checksum:
-            raise SampleException('Checksum failure in PD0 data (expected %d, calculated %d' %
-                                  (self.stored_checksum, calculated_checksum))
+            raise ChecksumException('Checksum failure in PD0 data (expected %d, calculated %d' %
+                                      (self.stored_checksum, calculated_checksum))
 
-    def process(self):
-        self.validate()
+    def _process(self, glider):
+        self._validate()
         self._parse_offset_data()
-
-    def parse_bitmapped_fields(self):
         self._parse_sysconfig()
         self._parse_coord_transform()
-        self._parse_sensor_source()
-        self._parse_sensor_avail()
+        self._parse_sensor_source(glider)
+        self._parse_sensor_avail(glider)
         self._parse_bit_result()
         self._parse_error_word()
 
@@ -146,7 +165,7 @@ class AdcpPd0Record(object):
             ('num_data_types', 'B')
         )
         self.header = self._unpack_from_format('header', header_format, 0)
-        self.data = self.data[:self.header.num_bytes+2]
+        self.data = self.data[:self.header.num_bytes + 2]
 
     def _parse_offset_data(self):
         self.offsets = struct.unpack_from('<%dH' % self.header.num_data_types, self.data, 6)
@@ -164,8 +183,15 @@ class AdcpPd0Record(object):
                 self._parse_echo(offset)
             elif block_id == BlockId.PERCENT_GOOD_DATA:
                 self._parse_percent_good(offset)
+            elif block_id == BlockId.BOTTOM_TRACK:
+                self._parse_bottom_track(offset)
+            elif block_id == BlockId.AUV_NAV_DATA:
+                pass
+            elif block_id == BlockId.STATUS_DATA_ID:
+                pass
             else:
-                raise SampleException('Found unhandled data type id: %d' % block_id)
+                print >> sys.stderr, block_id
+                raise UnhandledBlockException('Found unhandled data type id: %d' % block_id)
 
     def _parse_fixed(self, offset):
         fixed_format = (
@@ -185,9 +211,9 @@ class AdcpPd0Record(object):
             ('num_code_reps', 'B'),
             ('minimum_percentage', 'B'),
             ('error_velocity_max', 'H'),
-            ('minutes', 'B'),
-            ('seconds', 'B'),
-            ('hundredths', 'B'),
+            ('tpp_minutes', 'B'),
+            ('tpp_seconds', 'B'),
+            ('tpp_hundredths', 'B'),
             ('coord_transform', 'B'),
             ('heading_alignment', 'H'),
             ('heading_bias', 'H'),
@@ -271,6 +297,69 @@ class AdcpPd0Record(object):
     def _parse_percent_good(self, offset):
         self.percent_good = self._unpack_cell_data('percent_good', 'B', offset)
 
+    def _parse_bottom_track(self, offset):
+        bottom_track_format = (
+            ('id', 'H'),
+            ('pings_per_ensemble', 'H'),
+            ('delay_before_reacquire', 'H'),
+            ('correlation_mag_min', 'B'),
+            ('eval_amplitude_min', 'B'),
+            ('percent_good_minimum', 'B'),
+            ('mode', 'B'),
+            ('error_velocity_max', 'H'),
+            ('reserved', 'I'),
+            ('range_1', 'H'),
+            ('range_2', 'H'),
+            ('range_3', 'H'),
+            ('range_4', 'H'),
+            ('velocity_1', 'h'),
+            ('velocity_2', 'h'),
+            ('velocity_3', 'h'),
+            ('velocity_4', 'h'),
+            ('corr_1', 'B'),
+            ('corr_2', 'B'),
+            ('corr_3', 'B'),
+            ('corr_4', 'B'),
+            ('amp_1', 'B'),
+            ('amp_2', 'B'),
+            ('amp_3', 'B'),
+            ('amp_4', 'B'),
+            ('pcnt_1', 'B'),
+            ('pcnt_2', 'B'),
+            ('pcnt_3', 'B'),
+            ('pcnt_4', 'B'),
+            ('ref_layer_min', 'H'),
+            ('ref_layer_near', 'H'),
+            ('ref_layer_far', 'H'),
+            ('ref_velocity_1', 'h'),
+            ('ref_velocity_2', 'h'),
+            ('ref_velocity_3', 'h'),
+            ('ref_velocity_4', 'h'),
+            ('ref_corr_1', 'B'),
+            ('ref_corr_2', 'B'),
+            ('ref_corr_3', 'B'),
+            ('ref_corr_4', 'B'),
+            ('ref_amp_1', 'B'),
+            ('ref_amp_2', 'B'),
+            ('ref_amp_3', 'B'),
+            ('ref_amp_4', 'B'),
+            ('ref_pcnt_1', 'B'),
+            ('ref_pcnt_2', 'B'),
+            ('ref_pcnt_3', 'B'),
+            ('ref_pcnt_4', 'B'),
+            ('max_depth', 'H'),
+            ('rssi_1', 'B'),
+            ('rssi_2', 'B'),
+            ('rssi_3', 'B'),
+            ('rssi_4', 'B'),
+            ('gain', 'B'),
+            ('range_msb_1', 'B'),
+            ('range_msb_2', 'B'),
+            ('range_msb_3', 'B'),
+            ('range_msb_4', 'B'),
+        )
+        self.bottom_track = self._unpack_from_format('bottom_track', bottom_track_format, offset)
+
     def _parse_sysconfig(self):
         """
         LSB
@@ -331,7 +420,7 @@ class AdcpPd0Record(object):
         self.coord_transform = self._unpack_bitmapped('coord_transform', coord_transform_format,
                                                       self.fixed_data.coord_transform)
 
-    def _parse_sensor_source(self):
+    def _parse_sensor_source(self, glider):
         """
         FIELD DESCRIPTION
          x1xxxxxx = CALCULATES EC (SPEED OF SOUND) FROM ED, ES, AND ET
@@ -341,33 +430,74 @@ class AdcpPd0Record(object):
          xxxxx1xx = USES ER FROM TRANSDUCER ROLL SENSOR
          xxxxxx1x = USES ES (SALINITY) FROM CONDUCTIVITY SENSOR
          xxxxxxx1 = USES ET FROM TRANSDUCER TEMPERATURE SENSOR
+
+         FIELD DESCRIPTION (ExplorerDVL)
+         1xxxxxxx = CALCULATES EC (SPEED OF SOUND) FROM ED, ES, AND ET
+         x1xxxxxx = USES ED FROM DEPTH SENSOR
+         xx1xxxxx = USES EH FROM TRANSDUCER HEADING SENSOR
+         xxx1xxxx = USES EP FROM TRANSDUCER PITCH SENSOR
+         xxxx1xxx = USES ER FROM TRANSDUCER ROLL SENSOR
+         xxxxx1xx = USES ES (SALINITY) FROM CONDUCTIVITY SENSOR
+         xxxxxx1x = USES ET FROM TRANSDUCER TEMPERATURE SENSOR
+         xxxxxxx1 = USES EU FROM TRANSDUCER TEMPERATURE SENSOR
         """
-        sensor_source_format = (
-            ('calculate_ec', 0b1000000, None),
-            ('depth_used', 0b100000, None),
-            ('heading_used', 0b10000, None),
-            ('pitch_used', 0b1000, None),
-            ('roll_used', 0b100, None),
-            ('conductivity_used', 0b10, None),
-            ('temperature_used', 0b1, None))
+        if glider:
+            sensor_source_format = (
+                ('calculate_ec', 0b10000000, None),
+                ('depth_used', 0b1000000, None),
+                ('heading_used', 0b100000, None),
+                ('pitch_used', 0b10000, None),
+                ('roll_used', 0b1000, None),
+                ('conductivity_used', 0b100, None),
+                ('temperature_used', 0b10, None),
+                ('temperature_eu_used', 0b1, None))
 
-        self.sensor_source = self._unpack_bitmapped('sensor_source', sensor_source_format,
-                                                    self.fixed_data.sensor_source)
+            self.sensor_source = self._unpack_bitmapped('sensor_source_glider', sensor_source_format,
+                                                        self.fixed_data.sensor_source)
 
-    def _parse_sensor_avail(self):
+        else:
+            sensor_source_format = (
+                ('calculate_ec', 0b1000000, None),
+                ('depth_used', 0b100000, None),
+                ('heading_used', 0b10000, None),
+                ('pitch_used', 0b1000, None),
+                ('roll_used', 0b100, None),
+                ('conductivity_used', 0b10, None),
+                ('temperature_used', 0b1, None))
+
+            self.sensor_source = self._unpack_bitmapped('sensor_source', sensor_source_format,
+                                                        self.fixed_data.sensor_source)
+
+    def _parse_sensor_avail(self, glider):
         """
         Fields match sensor source above
         """
-        sensor_avail_format = (
-            ('depth_avail', 0b100000, None),
-            ('heading_avail', 0b10000, None),
-            ('pitch_avail', 0b1000, None),
-            ('roll_avail', 0b100, None),
-            ('conductivity_avail', 0b10, None),
-            ('temperature_avail', 0b1, None))
+        if glider:
+            sensor_avail_format = (
+                ('speed_avail', 0b10000000, None),
+                ('depth_avail', 0b1000000, None),
+                ('heading_avail', 0b100000, None),
+                ('pitch_avail', 0b10000, None),
+                ('roll_avail', 0b1000, None),
+                ('conductivity_avail', 0b100, None),
+                ('temperature_avail', 0b10, None),
+                ('temperature_eu_avail', 0b1, None))
 
-        self.sensor_avail = self._unpack_bitmapped('sensor_avail', sensor_avail_format,
-                                                   self.fixed_data.sensor_available)
+            self.sensor_avail = self._unpack_bitmapped('sensor_avail_glider', sensor_avail_format,
+                                                       self.fixed_data.sensor_available)
+
+        else:
+            sensor_avail_format = (
+                ('speed_avail', 0b1000000, None),
+                ('depth_avail', 0b100000, None),
+                ('heading_avail', 0b10000, None),
+                ('pitch_avail', 0b1000, None),
+                ('roll_avail', 0b100, None),
+                ('conductivity_avail', 0b10, None),
+                ('temperature_avail', 0b1, None))
+
+            self.sensor_avail = self._unpack_bitmapped('sensor_avail', sensor_avail_format,
+                                                       self.fixed_data.sensor_available)
 
     def _parse_bit_result(self):
         """
@@ -459,19 +589,3 @@ class AdcpPd0Record(object):
         )
 
         self.error_word = self._unpack_bitmapped('error_word', error_word_format, self.variable_data.error_status_word)
-
-
-def main():
-    # Simple test for checking out a particle
-    # more extensive testing in driver unit tests
-    from mi.instrument.teledyne.workhorse.test.test_data import RSN_SAMPLE_RAW_DATA
-    for _ in xrange(1000):
-        record = AdcpPd0Record(RSN_SAMPLE_RAW_DATA)
-        record.validate()
-        record.process()
-        record.parse_bitmapped_fields()
-
-
-if __name__ == '__main__':
-    import cProfile
-    cProfile.run('main()', 'stats')

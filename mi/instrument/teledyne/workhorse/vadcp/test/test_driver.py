@@ -6,6 +6,8 @@
 Release notes:
 
 """
+import ntplib
+from mi.core.instrument.data_particle import CommonDataParticleType
 
 __author__ = 'Sung Ahn'
 __license__ = 'Apache 2.0'
@@ -24,7 +26,7 @@ log = get_logger()
 # core
 from mi.core.instrument.chunker import StringChunker
 from mi.core.instrument.instrument_driver import DriverConnectionState
-from mi.core.instrument.port_agent_client import PortAgentClient
+from mi.core.instrument.port_agent_client import PortAgentClient, PortAgentPacket
 from mi.core.port_agent_process import PortAgentProcess
 from mi.core.exceptions import ResourceError
 # idk
@@ -52,7 +54,7 @@ from mi.instrument.teledyne.workhorse.test.test_data import RSN_PS0_RAW_DATA
 from mi.instrument.teledyne.workhorse.test.test_data import PT2_RAW_DATA
 from mi.instrument.teledyne.workhorse.test.test_data import PT4_RAW_DATA
 # particles
-from mi.instrument.teledyne.workhorse.particles import VADCPDataParticleType
+from mi.instrument.teledyne.workhorse.particles import VADCPDataParticleType, WorkhorseDataParticleType
 from mi.instrument.teledyne.workhorse.particles import AdcpCompassCalibrationKey
 from mi.instrument.teledyne.workhorse.particles import AdcpSystemConfigurationKey
 from mi.instrument.teledyne.workhorse.particles import AdcpPd0ParsedKey
@@ -432,301 +434,211 @@ class VADCPMixin(DriverTestMixin):
     }
 
     _pd0_parameters_base = {
-        AdcpPd0ParsedKey.HEADER_ID: {'type': int, 'value': 127},
-        AdcpPd0ParsedKey.DATA_SOURCE_ID: {'type': int, 'value': 127},
-        AdcpPd0ParsedKey.NUM_BYTES: {'type': int, 'value': 26632},
-        AdcpPd0ParsedKey.NUM_DATA_TYPES: {'type': int, 'value': 6},
-        AdcpPd0ParsedKey.OFFSET_DATA_TYPES: {'type': list, 'value': [18, 77, 142, 944, 1346, 1748, 2150]},
-        AdcpPd0ParsedKey.FIXED_LEADER_ID: {'type': int, 'value': 0},
-        AdcpPd0ParsedKey.FIRMWARE_VERSION: {'type': int, 'value': 50},
-        AdcpPd0ParsedKey.FIRMWARE_REVISION: {'type': int, 'value': 40},
-        AdcpPd0ParsedKey.SYSCONFIG_FREQUENCY: {'type': int, 'value': 150},
-        AdcpPd0ParsedKey.SYSCONFIG_BEAM_PATTERN: {'type': int, 'value': 0},
-        AdcpPd0ParsedKey.SYSCONFIG_SENSOR_CONFIG: {'type': int, 'value': 1},
-        AdcpPd0ParsedKey.SYSCONFIG_HEAD_ATTACHED: {'type': int, 'value': 1},
-        AdcpPd0ParsedKey.SYSCONFIG_VERTICAL_ORIENTATION: {'type': int, 'value': 0},
-        AdcpPd0ParsedKey.DATA_FLAG: {'type': int, 'value': 0},
-        AdcpPd0ParsedKey.LAG_LENGTH: {'type': int, 'value': 53},
-        AdcpPd0ParsedKey.NUM_BEAMS: {'type': int, 'value': 4},
         AdcpPd0ParsedKey.NUM_CELLS: {'type': int, 'value': 100},
-        AdcpPd0ParsedKey.PINGS_PER_ENSEMBLE: {'type': int, 'value': 256},
-        AdcpPd0ParsedKey.DEPTH_CELL_LENGTH: {'type': int, 'value': 32780},
-        AdcpPd0ParsedKey.BLANK_AFTER_TRANSMIT: {'type': int, 'value': 49154},
-        AdcpPd0ParsedKey.SIGNAL_PROCESSING_MODE: {'type': int, 'value': 1},
-        AdcpPd0ParsedKey.LOW_CORR_THRESHOLD: {'type': int, 'value': 64},
-        AdcpPd0ParsedKey.NUM_CODE_REPETITIONS: {'type': int, 'value': 17},
-        AdcpPd0ParsedKey.PERCENT_GOOD_MIN: {'type': int, 'value': 0},
-        AdcpPd0ParsedKey.ERROR_VEL_THRESHOLD: {'type': int, 'value': 53255},
-        AdcpPd0ParsedKey.TIME_PER_PING_MINUTES: {'type': int, 'value': 0},
-        AdcpPd0ParsedKey.TIME_PER_PING_SECONDS: {'type': float, 'value': 1.0},
-        AdcpPd0ParsedKey.COORD_TRANSFORM_TYPE: {'type': int, 'value': 0},
-        AdcpPd0ParsedKey.COORD_TRANSFORM_TILTS: {'type': int, 'value': 0},
-        AdcpPd0ParsedKey.COORD_TRANSFORM_BEAMS: {'type': int, 'value': 0},
-        AdcpPd0ParsedKey.COORD_TRANSFORM_MAPPING: {'type': int, 'value': 0},
-        AdcpPd0ParsedKey.HEADING_ALIGNMENT: {'type': int, 'value': 0},
-        AdcpPd0ParsedKey.HEADING_BIAS: {'type': int, 'value': 0},
-        AdcpPd0ParsedKey.SENSOR_SOURCE_SPEED: {'type': int, 'value': 1},
-        AdcpPd0ParsedKey.SENSOR_SOURCE_DEPTH: {'type': int, 'value': 1},
-        AdcpPd0ParsedKey.SENSOR_SOURCE_HEADING: {'type': int, 'value': 1},
-        AdcpPd0ParsedKey.SENSOR_SOURCE_PITCH: {'type': int, 'value': 1},
-        AdcpPd0ParsedKey.SENSOR_SOURCE_ROLL: {'type': int, 'value': 1},
-        AdcpPd0ParsedKey.SENSOR_SOURCE_CONDUCTIVITY: {'type': int, 'value': 0},
-        AdcpPd0ParsedKey.SENSOR_SOURCE_TEMPERATURE: {'type': int, 'value': 1},
-        AdcpPd0ParsedKey.SENSOR_AVAILABLE_DEPTH: {'type': int, 'value': 1},
-        AdcpPd0ParsedKey.SENSOR_AVAILABLE_HEADING: {'type': int, 'value': 1},
-        AdcpPd0ParsedKey.SENSOR_AVAILABLE_PITCH: {'type': int, 'value': 1},
-        AdcpPd0ParsedKey.SENSOR_AVAILABLE_ROLL: {'type': int, 'value': 1},
-        AdcpPd0ParsedKey.SENSOR_AVAILABLE_CONDUCTIVITY: {'type': int, 'value': 0},
-        AdcpPd0ParsedKey.SENSOR_AVAILABLE_TEMPERATURE: {'type': int, 'value': 1},
-        AdcpPd0ParsedKey.BIN_1_DISTANCE: {'type': int, 'value': 60175},
-        AdcpPd0ParsedKey.TRANSMIT_PULSE_LENGTH: {'type': int, 'value': 4109},
-        AdcpPd0ParsedKey.REFERENCE_LAYER_START: {'type': int, 'value': 1},
-        AdcpPd0ParsedKey.REFERENCE_LAYER_STOP: {'type': int, 'value': 5},
-        AdcpPd0ParsedKey.FALSE_TARGET_THRESHOLD: {'type': int, 'value': 50},
-        AdcpPd0ParsedKey.LOW_LATENCY_TRIGGER: {'type': int, 'value': 0},
-        AdcpPd0ParsedKey.TRANSMIT_LAG_DISTANCE: {'type': int, 'value': 50688},
-        AdcpPd0ParsedKey.CPU_BOARD_SERIAL_NUMBER: {'type': str, 'value': '9367487254980977929'},
-        AdcpPd0ParsedKey.SYSTEM_BANDWIDTH: {'type': int, 'value': 0},
-        AdcpPd0ParsedKey.SYSTEM_POWER: {'type': int, 'value': 255},
-        AdcpPd0ParsedKey.SERIAL_NUMBER: {'type': str, 'value': '206045184'},
-        AdcpPd0ParsedKey.BEAM_ANGLE: {'type': int, 'value': 20},
-        AdcpPd0ParsedKey.VARIABLE_LEADER_ID: {'type': int, 'value': 128},
+        AdcpPd0ParsedKey.DEPTH_CELL_LENGTH: {'type': int, 'value': 3200},
+        AdcpPd0ParsedKey.BIN_1_DISTANCE: {'type': int, 'value': 4075},
         AdcpPd0ParsedKey.ENSEMBLE_NUMBER: {'type': int, 'value': 5},
-        AdcpPd0ParsedKey.ENSEMBLE_START_TIME: {'type': float, 'value': 3595104000},
-        AdcpPd0ParsedKey.REAL_TIME_CLOCK: {'type': list, 'value': [13, 3, 15, 21, 33, 2, 46]},
-        AdcpPd0ParsedKey.ENSEMBLE_NUMBER_INCREMENT: {'type': int, 'value': 0},
-        AdcpPd0ParsedKey.BIT_RESULT_DEMOD_0: {'type': int, 'value': 0},
-        AdcpPd0ParsedKey.BIT_RESULT_DEMOD_1: {'type': int, 'value': 0},
-        AdcpPd0ParsedKey.BIT_RESULT_TIMING: {'type': int, 'value': 0},
-        AdcpPd0ParsedKey.SPEED_OF_SOUND: {'type': int, 'value': 1523},
-        AdcpPd0ParsedKey.TRANSDUCER_DEPTH: {'type': int, 'value': 0},
         AdcpPd0ParsedKey.HEADING: {'type': int, 'value': 5221},
         AdcpPd0ParsedKey.PITCH: {'type': int, 'value': -4657},
         AdcpPd0ParsedKey.ROLL: {'type': int, 'value': -4561},
         AdcpPd0ParsedKey.SALINITY: {'type': int, 'value': 35},
         AdcpPd0ParsedKey.TEMPERATURE: {'type': int, 'value': 2050},
-        AdcpPd0ParsedKey.MPT_MINUTES: {'type': int, 'value': 0},
-        AdcpPd0ParsedKey.MPT_SECONDS: {'type': float, 'value': 0.0},
-        AdcpPd0ParsedKey.HEADING_STDEV: {'type': int, 'value': 0},
-        AdcpPd0ParsedKey.PITCH_STDEV: {'type': int, 'value': 0},
-        AdcpPd0ParsedKey.ROLL_STDEV: {'type': int, 'value': 0},
-        AdcpPd0ParsedKey.ADC_TRANSMIT_CURRENT: {'type': int, 'value': 116},
-        AdcpPd0ParsedKey.ADC_TRANSMIT_VOLTAGE: {'type': int, 'value': 169},
-        AdcpPd0ParsedKey.ADC_AMBIENT_TEMP: {'type': int, 'value': 88},
-        AdcpPd0ParsedKey.ADC_PRESSURE_PLUS: {'type': int, 'value': 79},
-        AdcpPd0ParsedKey.ADC_PRESSURE_MINUS: {'type': int, 'value': 79},
-        AdcpPd0ParsedKey.ADC_ATTITUDE_TEMP: {'type': int, 'value': 0},
-        AdcpPd0ParsedKey.ADC_ATTITUDE: {'type': int, 'value': 0},
-        AdcpPd0ParsedKey.ADC_CONTAMINATION_SENSOR: {'type': int, 'value': 0},
-        AdcpPd0ParsedKey.BUS_ERROR_EXCEPTION: {'type': int, 'value': 0},
-        AdcpPd0ParsedKey.ADDRESS_ERROR_EXCEPTION: {'type': int, 'value': 0},
-        AdcpPd0ParsedKey.ILLEGAL_INSTRUCTION_EXCEPTION: {'type': int, 'value': 0},
-        AdcpPd0ParsedKey.ZERO_DIVIDE_INSTRUCTION: {'type': int, 'value': 0},
-        AdcpPd0ParsedKey.EMULATOR_EXCEPTION: {'type': int, 'value': 0},
-        AdcpPd0ParsedKey.UNASSIGNED_EXCEPTION: {'type': int, 'value': 0},
-        AdcpPd0ParsedKey.WATCHDOG_RESTART_OCCURRED: {'type': int, 'value': 0},
-        AdcpPd0ParsedKey.BATTERY_SAVER_POWER: {'type': int, 'value': 0},
-        AdcpPd0ParsedKey.PINGING: {'type': int, 'value': 0},
-        AdcpPd0ParsedKey.COLD_WAKEUP_OCCURRED: {'type': int, 'value': 0},
-        AdcpPd0ParsedKey.UNKNOWN_WAKEUP_OCCURRED: {'type': int, 'value': 0},
-        AdcpPd0ParsedKey.CLOCK_READ_ERROR: {'type': int, 'value': 0},
-        AdcpPd0ParsedKey.UNEXPECTED_ALARM: {'type': int, 'value': 0},
-        AdcpPd0ParsedKey.CLOCK_JUMP_FORWARD: {'type': int, 'value': 0},
-        AdcpPd0ParsedKey.CLOCK_JUMP_BACKWARD: {'type': int, 'value': 0},
-        AdcpPd0ParsedKey.POWER_FAIL: {'type': int, 'value': 0},
-        AdcpPd0ParsedKey.SPURIOUS_DSP_INTERRUPT: {'type': int, 'value': 0},
-        AdcpPd0ParsedKey.SPURIOUS_UART_INTERRUPT: {'type': int, 'value': 0},
-        AdcpPd0ParsedKey.SPURIOUS_CLOCK_INTERRUPT: {'type': int, 'value': 0},
-        AdcpPd0ParsedKey.LEVEL_7_INTERRUPT: {'type': int, 'value': 0},
+        AdcpPd0ParsedKey.TRANSDUCER_DEPTH: {'type': int, 'value': 0},
         AdcpPd0ParsedKey.ABSOLUTE_PRESSURE: {'type': int, 'value': 4294963793},
-        AdcpPd0ParsedKey.PRESSURE_VARIANCE: {'type': int, 'value': 0},
-        AdcpPd0ParsedKey.VELOCITY_DATA_ID: {'type': int, 'value': 1},
-        AdcpPd0ParsedKey.CORRELATION_MAGNITUDE_ID: {'type': int, 'value': 2},
+        AdcpPd0ParsedKey.SYSCONFIG_VERTICAL_ORIENTATION: {'type': int, 'value': 1},
+
+    }
+
+    _beam_parameters = {
         AdcpPd0ParsedKey.CORRELATION_MAGNITUDE_BEAM1: {'type': list,
-                                                       'value': [19801, 1796, 1800, 1797, 1288, 1539, 1290, 1543,
-                                                                 1028, 1797, 1538, 775, 1034, 1283, 1029, 1799, 1801,
-                                                                 1545, 519, 772, 519, 1033, 1028, 1286, 521, 519,
-                                                                 1545, 1801, 522, 1286, 1030, 1032, 1542, 1035, 1283,
-                                                                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]},
+                                                       'value': [77, 15, 7, 7, 7, 5, 7, 7, 5, 9, 6, 10, 5, 4, 6, 5,
+                                                                 4, 7, 7, 11, 6, 10, 3, 4, 4, 4, 5, 2, 4, 5, 7, 5,
+                                                                 7, 4, 6, 7, 2, 4, 3, 9, 2, 4, 4, 3, 4, 6, 5, 3, 2,
+                                                                 4, 2, 3, 6, 10, 7, 5, 2, 7, 5, 6, 4, 6, 4, 3, 6, 5,
+                                                                 4, 3, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                                                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]},
         AdcpPd0ParsedKey.CORRELATION_MAGNITUDE_BEAM2: {'type': list,
-                                                       'value': [22365, 2057, 2825, 2825, 1801, 2058, 1545, 1286,
-                                                                 3079, 522, 1547, 519, 2052, 2820, 519, 1806, 1026,
-                                                                 1547, 1795, 1801, 2311, 1030, 781, 1796, 1037, 1802,
-                                                                 1035, 1798, 770, 2313, 1292, 1031, 1030, 2830, 523,
-                                                                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]},
+                                                       'value': [89, 13, 4, 4, 8, 9, 5, 11, 8, 13, 3, 11, 10, 4, 7,
+                                                                 2, 4, 7, 5, 9, 2, 14, 7, 2, 10, 4, 3, 6, 5, 10, 7,
+                                                                 6, 9, 8, 9, 5, 7, 4, 4, 8, 7, 7, 9, 7, 4, 13, 6, 4,
+                                                                 9, 4, 7, 4, 9, 10, 9, 8, 10, 4, 6, 6, 6, 2, 8, 9,
+                                                                 6, 2, 11, 5, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                                                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                                                 0, 0]},
         AdcpPd0ParsedKey.CORRELATION_MAGNITUDE_BEAM3: {'type': list,
-                                                       'value': [3853, 1796, 1289, 1803, 2317, 2571, 1028, 1282,
-                                                                 1799, 2825, 2574, 1026, 1028, 518, 1290, 1286, 1032,
-                                                                 1797, 1028, 2312, 1031, 775, 1549, 772, 1028, 772,
-                                                                 2570, 1288, 1796, 1542, 1538, 777, 1282, 773, 0, 0,
-                                                                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]},
+                                                       'value': [87, 21, 8, 16, 11, 11, 11, 5, 7, 3, 8, 7, 6, 2, 5,
+                                                                 3, 12, 13, 2, 4, 6, 6, 2, 6, 8, 6, 11, 10, 2, 12, 7,
+                                                                 13, 4, 7, 6, 7, 7, 8, 7, 6, 9, 7, 4, 6, 3, 14, 7, 4,
+                                                                 4, 9, 7, 4, 4, 6, 7, 9, 3, 8, 9, 6, 5, 5, 4, 9, 4,
+                                                                 4, 11, 9, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                                                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                                                 0]},
         AdcpPd0ParsedKey.CORRELATION_MAGNITUDE_BEAM4: {'type': list,
-                                                       'value': [5386, 4100, 2822, 1286, 774, 1799, 518, 778, 3340,
-                                                                 1031, 1546, 1545, 1547, 2566, 3077, 3334, 1801,
-                                                                 1809, 2058, 1539, 1798, 1546, 3593, 1032, 2307,
-                                                                 1025, 1545, 2316, 2055, 1546, 1292, 2312, 1035,
-                                                                 2316, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]},
-        AdcpPd0ParsedKey.ECHO_INTENSITY_ID: {'type': int, 'value': 3},
+                                                       'value': [93, 10, 9, 4, 9, 6, 9, 6, 9, 6, 10, 7, 9, 6, 6, 10,
+                                                                 7, 12, 10, 7, 11, 10, 7, 9, 4, 11, 4, 6, 7, 5, 14,
+                                                                 6, 2, 9, 11, 17, 3, 10, 9, 3, 7, 6, 6, 10, 13, 9, 4,
+                                                                 8, 13, 3, 10, 1, 11, 9, 6, 12, 2, 7, 9, 10, 12, 12,
+                                                                 7, 8, 6, 11, 14, 12, 11, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                                                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                                                 0, 0, 0, 0, 0]},
         AdcpPd0ParsedKey.ECHO_INTENSITY_BEAM1: {'type': list,
-                                                'value': [24925, 10538, 10281, 10537, 10282, 10281, 10281, 10282,
-                                                          10282, 10281, 10281, 10281, 10538, 10282, 10281, 10282,
-                                                          10281, 10537, 10281, 10281, 10281, 10281, 10281, 10281,
-                                                          10281, 10281, 10281, 10281, 10281, 10282, 10281, 10282,
-                                                          10537, 10281, 10281, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                                                          0]},
+                                                'value': [97, 47, 41, 40, 40, 40, 41, 40, 40, 40, 40, 40, 40, 40, 40,
+                                                          40, 40, 40, 40, 39, 40, 40, 40, 40, 41, 40, 40, 40, 40, 39,
+                                                          40, 40, 40, 40, 41, 39, 40, 40, 40, 40, 40, 40, 40, 40, 40,
+                                                          40, 40, 40, 40, 40, 40, 40, 40, 41, 40, 40, 40, 40, 40, 40,
+                                                          40, 40, 40, 40, 41, 40, 40, 40, 40, 0, 0, 0, 0, 0, 0, 0, 0,
+                                                          0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                                          0, 0, 0]},
         AdcpPd0ParsedKey.ECHO_INTENSITY_BEAM2: {'type': list,
-                                                'value': [29027, 12334, 12334, 12078, 12078, 11821, 12334, 12334,
-                                                          12078, 12078, 12078, 12078, 12078, 12078, 12078, 12079,
-                                                          12334, 12078, 12334, 12333, 12078, 12333, 12078, 12077,
-                                                          12078, 12078, 12078, 12334, 12077, 12078, 12078, 12078,
-                                                          12078, 12078, 12078, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                                                          0]},
+                                                'value': [93, 47, 42, 42, 41, 41, 41, 41, 42, 42, 41, 41, 41, 42, 42,
+                                                          42, 42, 41, 41, 41, 41, 42, 41, 42, 42, 42, 42, 42, 41, 41,
+                                                          42, 42, 41, 41, 41, 41, 41, 41, 41, 41, 41, 42, 41, 41, 41,
+                                                          42, 41, 41, 41, 41, 41, 41, 41, 41, 41, 42, 41, 41, 42, 41,
+                                                          41, 41, 42, 41, 41, 41, 41, 42, 41, 0, 0, 0, 0, 0, 0, 0, 0,
+                                                          0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                                          0, 0, 0]},
         AdcpPd0ParsedKey.ECHO_INTENSITY_BEAM3: {'type': list,
-                                                'value': [12079, 10282, 10281, 10281, 10282, 10281, 10282, 10282,
-                                                          10281, 10025, 10282, 10282, 10282, 10282, 10025, 10282,
-                                                          10281, 10025, 10281, 10281, 10282, 10281, 10282, 10281,
-                                                          10281, 10281, 10537, 10282, 10281, 10281, 10281, 10281,
-                                                          10281, 10282, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                                                          0]},
+                                                'value': [113, 56, 48, 48, 48, 47, 47, 47, 47, 47, 46, 48, 48, 47,
+                                                          48, 48, 47, 47, 47, 47, 47, 47, 47, 47, 47, 48, 47, 47, 47,
+                                                          48, 47, 47, 48, 48, 47, 47, 48, 47, 48, 46, 47, 48, 48, 47,
+                                                          47, 47, 47, 47, 47, 48, 47, 46, 47, 48, 48, 48, 47, 47, 47,
+                                                          47, 47, 47, 47, 46, 47, 46, 47, 47, 47, 0, 0, 0, 0, 0, 0,
+                                                          0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                                          0, 0, 0, 0, 0]},
         AdcpPd0ParsedKey.ECHO_INTENSITY_BEAM4: {'type': list,
-                                                'value': [14387, 12334, 12078, 12078, 12078, 12334, 12078, 12334,
-                                                          12078, 12078, 12077, 12077, 12334, 12078, 12334, 12078,
-                                                          12334, 12077, 12078, 11821, 12335, 12077, 12078, 12077,
-                                                          12334, 11822, 12334, 12334, 12077, 12077, 12078, 11821,
-                                                          11821, 12078, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                                                          0]},
-        AdcpPd0ParsedKey.PERCENT_GOOD_ID: {'type': int, 'value': 4},
-        AdcpPd0ParsedKey.CHECKSUM: {'type': int, 'value': 8239}
-    }
-
-    _coordinate_transformation_earth_parameters = {
-        # Earth Coordinates
-        AdcpPd0ParsedKey.WATER_VELOCITY_EAST: {'type': list,
-                                               'value': [128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128,
-                                                         128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128,
-                                                         128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128,
-                                                         128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128,
-                                                         128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128,
-                                                         128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128,
-                                                         128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128,
-                                                         128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128,
-                                                         128, 128, 128]},
-        AdcpPd0ParsedKey.WATER_VELOCITY_NORTH: {'type': list,
-                                                'value': [128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128,
-                                                          128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128,
-                                                          128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128,
-                                                          128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128,
-                                                          128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128,
-                                                          128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128,
-                                                          128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128,
-                                                          128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128,
-                                                          128, 128, 128]},
-        AdcpPd0ParsedKey.WATER_VELOCITY_UP: {'type': list,
-                                             'value': [128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128,
-                                                       128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128,
-                                                       128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128,
-                                                       128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128,
-                                                       128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128,
-                                                       128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128,
-                                                       128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128,
-                                                       128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128,
-                                                       128, 128, 128]},
-        AdcpPd0ParsedKey.ERROR_VELOCITY: {'type': list,
-                                          'value': [128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128,
-                                                    128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128,
-                                                    128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128,
-                                                    128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128,
-                                                    128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128,
-                                                    128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128,
-                                                    128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128,
-                                                    128, 128, 128, 128, 128, 128, 128, 128]},
-        AdcpPd0ParsedKey.PERCENT_GOOD_3BEAM: {'type': list,
-                                              'value': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                                                        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                                                        0, 0, 0, 0, 0, 0, 0, 0, 0]},
-        AdcpPd0ParsedKey.PERCENT_TRANSFORMS_REJECT: {'type': list,
-                                                     'value': [25600, 25600, 25600, 25600, 25600, 25600, 25600,
-                                                               25600, 25600, 25600, 25600, 25600, 25600, 25600,
-                                                               25600, 25600, 25600, 25600, 25600, 25600, 25600,
-                                                               25600, 25600, 25600, 25600, 25600, 25600, 25600,
-                                                               25600, 25600, 25600, 25600, 25600, 25600, 25600,
-                                                               25600, 25600, 25600, 25600, 25600, 25600, 25600,
-                                                               25600, 25600, 25600, 25600, 25600, 25600, 25600]},
-        AdcpPd0ParsedKey.PERCENT_BAD_BEAMS: {'type': list,
-                                             'value': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                                                       0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                                                       0, 0, 0, 0, 0, 0, 0]},
-        AdcpPd0ParsedKey.PERCENT_GOOD_4BEAM: {'type': list,
-                                              'value': [25600, 25600, 25600, 25600, 25600, 25600, 25600, 25600,
-                                                        25600, 25600, 25600, 25600, 25600, 25600, 25600, 25600,
-                                                        25600, 25600, 25600, 25600, 25600, 25600, 25600, 25600,
-                                                        25600, 25600, 25600, 25600, 25600, 25600, 25600, 25600,
-                                                        25600, 25600, 25600, 25600, 25600, 25600, 25600, 25600,
-                                                        25600, 25600, 25600, 25600, 25600, 25600, 25600, 25600,
-                                                        25600]},
-    }
-
-    # blue
-    _coordinate_transformation_beam_parameters = {
-        # Beam Coordinates
+                                                'value': [99, 51, 46, 46, 46, 46, 46, 46, 46, 46, 45, 46, 46, 46, 46,
+                                                          46, 46, 46, 46, 46, 46, 45, 46, 45, 46, 46, 46, 46, 46, 46,
+                                                          47, 46, 46, 46, 46, 45, 46, 46, 45, 45, 46, 47, 45, 45, 46,
+                                                          46, 45, 45, 46, 46, 46, 46, 46, 46, 46, 46, 45, 45, 46, 45,
+                                                          46, 46, 46, 45, 46, 45, 46, 46, 46, 0, 0, 0, 0, 0, 0, 0, 0,
+                                                          0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                                          0, 0, 0]},
         AdcpPd0ParsedKey.PERCENT_GOOD_BEAM1: {'type': list,
-                                              'value': [25700, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                              'value': [100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                                                         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                                                        0, 0, 0, 0, 0, 0, 0, 0, 0, 0]},
+                                                        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                                        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                                        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]},
         AdcpPd0ParsedKey.PERCENT_GOOD_BEAM2: {'type': list,
-                                              'value': [25700, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                              'value': [100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                                                         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                                                        0, 0, 0, 0, 0, 0, 0, 0, 0, 0]},
+                                                        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                                        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                                        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]},
         AdcpPd0ParsedKey.PERCENT_GOOD_BEAM3: {'type': list,
-                                              'value': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                              'value': [100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                                                         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                                                        0, 0, 0, 0, 0, 0, 0, 0, 0]},
+                                                        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                                        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                                        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]},
         AdcpPd0ParsedKey.PERCENT_GOOD_BEAM4: {'type': list,
-                                              'value': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                              'value': [100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                                                         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                                                        0, 0, 0, 0, 0, 0, 0, 0, 0]},
+                                                        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                                        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                                        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]},
+
         AdcpPd0ParsedKey.BEAM_1_VELOCITY: {'type': list,
-                                           'value': [4864, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128,
-                                                     128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128,
-                                                     128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128,
-                                                     128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128,
-                                                     128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128,
-                                                     128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128,
-                                                     128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128,
-                                                     128, 128, 128, 128, 128, 128, 128, 128, 128]},
+                                           'value': [19, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
+                                                     -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
+                                                     -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
+                                                     -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
+                                                     -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
+                                                     -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
+                                                     -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
+                                                     -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
+                                                     -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
+                                                     -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
+                                                     -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
+                                                     -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
+                                                     -32768, -32768, -32768, -32768]},
         AdcpPd0ParsedKey.BEAM_2_VELOCITY: {'type': list,
-                                           'value': [62719, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128,
-                                                     128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128,
-                                                     128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128,
-                                                     128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128,
-                                                     128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128,
-                                                     128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128,
-                                                     128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128,
-                                                     128, 128, 128, 128, 128, 128, 128, 128, 128]},
+                                           'value': [-12, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
+                                                     -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
+                                                     -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
+                                                     -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
+                                                     -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
+                                                     -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
+                                                     -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
+                                                     -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
+                                                     -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
+                                                     -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
+                                                     -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
+                                                     -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
+                                                     -32768, -32768, -32768, -32768]},
         AdcpPd0ParsedKey.BEAM_3_VELOCITY: {'type': list,
-                                           'value': [45824, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128,
-                                                     128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128,
-                                                     128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128,
-                                                     128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128,
-                                                     128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128,
-                                                     128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128,
-                                                     128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128,
-                                                     128, 128, 128, 128, 128, 128, 128, 128, 128]},
+                                           'value': [179, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
+                                                     -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
+                                                     -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
+                                                     -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
+                                                     -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
+                                                     -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
+                                                     -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
+                                                     -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
+                                                     -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
+                                                     -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
+                                                     -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
+                                                     -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
+                                                     -32768, -32768, -32768, -32768]},
         AdcpPd0ParsedKey.BEAM_4_VELOCITY: {'type': list,
-                                           'value': [19712, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128,
-                                                     128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128,
-                                                     128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128,
-                                                     128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128,
-                                                     128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128,
-                                                     128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128,
-                                                     128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128,
-                                                     128, 128, 128, 128, 128, 128, 128, 128, 128]},
+                                           'value': [77, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
+                                                     -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
+                                                     -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
+                                                     -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
+                                                     -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
+                                                     -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
+                                                     -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
+                                                     -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
+                                                     -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
+                                                     -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
+                                                     -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
+                                                     -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
+                                                     -32768, -32768, -32768, -32768]},
+    }
+
+    _beam_parameters_slave = {
+        AdcpPd0ParsedKey.CORRELATION_MAGNITUDE_BEAM5: {'type': list,
+                                                       'value': [77, 15, 7, 7, 7, 5, 7, 7, 5, 9, 6, 10, 5, 4, 6, 5,
+                                                                 4, 7, 7, 11, 6, 10, 3, 4, 4, 4, 5, 2, 4, 5, 7, 5,
+                                                                 7, 4, 6, 7, 2, 4, 3, 9, 2, 4, 4, 3, 4, 6, 5, 3, 2,
+                                                                 4, 2, 3, 6, 10, 7, 5, 2, 7, 5, 6, 4, 6, 4, 3, 6, 5,
+                                                                 4, 3, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                                                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]},
+        AdcpPd0ParsedKey.ECHO_INTENSITY_BEAM5: {'type': list,
+                                                'value': [97, 47, 41, 40, 40, 40, 41, 40, 40, 40, 40, 40, 40, 40, 40,
+                                                          40, 40, 40, 40, 39, 40, 40, 40, 40, 41, 40, 40, 40, 40, 39,
+                                                          40, 40, 40, 40, 41, 39, 40, 40, 40, 40, 40, 40, 40, 40, 40,
+                                                          40, 40, 40, 40, 40, 40, 40, 40, 41, 40, 40, 40, 40, 40, 40,
+                                                          40, 40, 40, 40, 41, 40, 40, 40, 40, 0, 0, 0, 0, 0, 0, 0, 0,
+                                                          0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                                          0, 0, 0]},
+        AdcpPd0ParsedKey.PERCENT_GOOD_BEAM5: {'type': list,
+                                              'value': [100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                                        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                                        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                                        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                                        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]},
+
+        AdcpPd0ParsedKey.BEAM_5_VELOCITY: {'type': list,
+                                           'value': [19, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
+                                                     -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
+                                                     -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
+                                                     -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
+                                                     -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
+                                                     -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
+                                                     -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
+                                                     -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
+                                                     -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
+                                                     -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
+                                                     -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
+                                                     -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
+                                                     -32768, -32768, -32768, -32768]},
     }
 
     _pd0_parameters = dict(_pd0_parameters_base.items() +
-                           _coordinate_transformation_beam_parameters.items())
-    _pd0_parameters_earth = dict(_pd0_parameters_base.items() +
-                                 _coordinate_transformation_earth_parameters.items())
+                           _beam_parameters.items())
+    _pd0_parameters_slave = dict(_pd0_parameters_base.items() +
+                           _beam_parameters_slave.items())
 
     _pt2_dict = {
         AdcpAncillarySystemDataKey.ADCP_AMBIENT_CURRENT: {'type': float, 'value': "20.32"},
@@ -764,67 +676,154 @@ class VADCPMixin(DriverTestMixin):
     def assert_particle_compass_calibration(self, data_particle, verify_values=False):
         """
         Verify an adcpt calibration data particle
-        @param data_particle: ADCPT_CalibrationDataParticle data particle
+        @param data_particle: data particle
         @param verify_values: bool, should we verify parameter values
         """
         self.assert_data_particle_header(data_particle, VADCPDataParticleType.ADCP_COMPASS_CALIBRATION)
         self.assert_data_particle_parameters(data_particle, self._calibration_data_parameters, verify_values)
 
-    def assert_particle_4b_system_configuration(self, data_particle, verify_values=False):
+    def assert_particle_compass_calibration_slave(self, data_particle, verify_values=False):
+        """
+        Verify an adcp calibration data particle
+        @param data_particle: data particle
+        @param verify_values: bool, should we verify parameter values
+        """
+        self.assert_data_particle_header(data_particle, VADCPDataParticleType.VADCP_COMPASS_CALIBRATION_SLAVE)
+        self.assert_data_particle_parameters(data_particle, self._calibration_data_parameters, verify_values)
+
+    def assert_particle_system_configuration_master(self, data_particle, verify_values=False):
         """
         Verify an adcpt fd data particle
-        @param data_particle: ADCPT_FDDataParticle data particle
+        @param data_particle: data particle
         @param verify_values: bool, should we verify parameter values
         """
         self.assert_data_particle_header(data_particle, VADCPDataParticleType.ADCP_SYSTEM_CONFIGURATION)
         self.assert_data_particle_parameters(data_particle, self._system_configuration_data_parameters,
                                              verify_values)
 
-    def assert_particle_5b_system_configuration(self, data_particle, verify_values=False):
+    def assert_particle_system_configuration_slave(self, data_particle, verify_values=False):
         """
         Verify an adcpt fd data particle
-        @param data_particle: ADCPT_FDDataParticle data particle
+        @param data_particle: data particle
         @param verify_values: bool, should we verify parameter values
         """
-        self.assert_data_particle_header(data_particle, VADCPDataParticleType.ADCP_SYSTEM_CONFIGURATION)
+        self.assert_data_particle_header(data_particle, VADCPDataParticleType.VADCP_SYSTEM_CONFIGURATION_SLAVE)
         self.assert_data_particle_parameters(data_particle, self._system_configuration_data_parameters_VADCP,
                                              verify_values)
 
-    def assert_particle_pd0_data(self, data_particle, verify_values=False):
+    def assert_particle_pt2_data_slave(self, data_particle, verify_values=False):
         """
-        Verify an adcpt ps0 data particle
-        @param data_particle: ADCPT_PS0DataParticle data particle
+        Verify an adcpt pt2 data particle
+        @param data_particle: data particle
+        @param verify_values: bool, should we verify parameter values
+        """
+        self.assert_data_particle_header(data_particle, VADCPDataParticleType.VADCP_ANCILLARY_SYSTEM_DATA_SLAVE)
+        self.assert_data_particle_parameters(data_particle, self._pt2_dict, verify_values)
+
+    def assert_particle_pt4_data_slave(self, data_particle, verify_values=False):
+        """
+        Verify an adcpt pt4 data particle
+        @param data_particle: data particle
+        @param verify_values: bool, should we verify parameter values
+        """
+        self.assert_data_particle_header(data_particle, VADCPDataParticleType.VADCP_TRANSMIT_PATH_SLAVE)
+        self.assert_data_particle_parameters(data_particle, self._pt4_dict, verify_values)
+
+    def assert_particle_pd0_data_master(self, data_particle, verify_values=False):
+        """
+        Verify an adcp pd0 data particle
+        @param data_particle: data particle
         @param verify_values: bool, should we verify parameter values
         """
         self.assert_data_particle_header(data_particle, VADCPDataParticleType.VADCP_PD0_BEAM_MASTER)
         self.assert_data_particle_parameters(data_particle, self._pd0_parameters, verify_values)
 
-    def assert_particle_pd0_data_earth(self, data_particle, verify_values=False):
+    def assert_particle_pd0_data_slave(self, data_particle, verify_values=False):
         """
-        Verify an adcpt ps0 data particle
-        @param data_particle: ADCPT_PS0DataParticle data particle
+        Verify an adcp pd0 data particle
+        @param data_particle: data particle
         @param verify_values: bool, should we verify parameter values
         """
-        self.assert_data_particle_header(data_particle, VADCPDataParticleType.ADCP_PD0_PARSED_EARTH)
-        self.assert_data_particle_parameters(data_particle, self._pd0_parameters_earth, verify_values)
+        self.assert_data_particle_header(data_particle, VADCPDataParticleType.VADCP_PD0_BEAM_SLAVE)
+        self.assert_data_particle_parameters(data_particle, self._pd0_parameters_slave, verify_values)
 
-    def assert_particle_pt2_data(self, data_particle, verify_values=False):
+    def assert_particle_pd0_engineering_slave(self, data_particle, verify_values=False):
         """
-        Verify an adcpt pt2 data particle
-        @param data_particle: ADCPT_PT2 DataParticle data particle
+        Verify an adcp pd0 engineering particle
+        @param data_particle: data particle
         @param verify_values: bool, should we verify parameter values
         """
-        self.assert_data_particle_header(data_particle, VADCPDataParticleType.ADCP_ANCILLARY_SYSTEM_DATA)
-        self.assert_data_particle_parameters(data_particle, self._pt2_dict, verify_values)
+        self.assert_data_particle_header(data_particle, VADCPDataParticleType.VADCP_PD0_ENGINEERING_SLAVE)
+        self.assert_data_particle_parameters(data_particle, self._pd0_engineering_parameters, verify_values)
 
-    def assert_particle_pt4_data(self, data_particle, verify_values=False):
+    def assert_particle_pd0_config_slave(self, data_particle, verify_values=False):
         """
-        Verify an adcpt pt4 data particle
-        @param data_particle: ADCPT_PT4 DataParticle data particle
+        Verify an adcp pd0 config particle
+        @param data_particle: data particle
         @param verify_values: bool, should we verify parameter values
         """
-        self.assert_data_particle_header(data_particle, VADCPDataParticleType.ADCP_TRANSMIT_PATH)
-        self.assert_data_particle_parameters(data_particle, self._pt4_dict, verify_values)
+        self.assert_data_particle_header(data_particle, VADCPDataParticleType.VADCP_PD0_CONFIG_SLAVE)
+        self.assert_data_particle_parameters(data_particle, self._pd0_config_parameters, verify_values)
+
+    def assert_vadcp_pd0_particles_published(self, driver, sample_data, verify_values=False):
+        """
+        Verify that we can send data through the port agent and the the correct particles
+        are generated.
+
+        Create a port agent packet, send it through got_data, then finally grab the data particle
+        from the data particle queue and verify it using the passed in assert method.
+        @param driver: instrument driver with mock port agent client
+        @param sample_data: the byte string we want to send to the driver
+        @param particle_assert_method: assert method to validate the data particle.
+        @param verify_values: Should we validate values?
+        """
+        ts = ntplib.system_to_ntp_time(time.time())
+
+        log.debug("Sample to publish: %r", sample_data)
+        # Create and populate the port agent packet.
+        port_agent_packet = PortAgentPacket()
+        port_agent_packet.attach_data(sample_data)
+        port_agent_packet.attach_timestamp(ts)
+        port_agent_packet.pack_header()
+
+        self.clear_data_particle_queue()
+
+        # Push the data into the driver
+        driver._protocol.got_data(port_agent_packet)
+
+        # Find all particles of the correct data particle types (not raw)
+        particles = []
+        streams = []
+        for p in self._data_particle_received:
+            stream_type = p.get('stream_name')
+            self.assertIsNotNone(stream_type)
+            streams.append(stream_type)
+            if stream_type != CommonDataParticleType.RAW:
+                particles.append(p)
+
+        log.debug("Non raw particles: %r ", particles)
+        self.assertGreaterEqual(len(particles), 1)
+
+        for p in particles:
+            stream_type = p.get('stream_name')
+            if VADCPDataParticleType.VADCP_PD0_BEAM_MASTER in streams:
+                if stream_type == VADCPDataParticleType.VADCP_PD0_BEAM_MASTER:
+                    self.assert_particle_pd0_data_master(p, verify_values)
+                elif stream_type == WorkhorseDataParticleType.ADCP_PD0_ENGINEERING:
+                    self.assert_particle_pd0_engineering(p, verify_values)
+                elif stream_type == WorkhorseDataParticleType.ADCP_PD0_CONFIG:
+                    self.assert_particle_pd0_config(p, verify_values)
+                else:
+                    raise AssertionError('Received invalid particle type from PD0: %r' % stream_type)
+            else:
+                if stream_type == VADCPDataParticleType.VADCP_PD0_BEAM_SLAVE:
+                    self.assert_particle_pd0_data_slave(p, verify_values)
+                elif stream_type == VADCPDataParticleType.VADCP_PD0_ENGINEERING_SLAVE:
+                    self.assert_particle_pd0_engineering_slave(p, verify_values)
+                elif stream_type == VADCPDataParticleType.VADCP_PD0_CONFIG_SLAVE:
+                    self.assert_particle_pd0_config_slave(p, verify_values)
+                else:
+                    raise AssertionError('Received invalid particle type from PD0: %r' % stream_type)
 
 
 ###############################################################################
@@ -904,26 +903,25 @@ class VadcpDriverUnitTest(WorkhorseDriverUnitTest, VADCPMixin):
         got_data = driver._protocol.got_data
         driver._protocol.got_data = functools.partial(got_data, connection=SlaveProtocol.FOURBEAM)
 
-        self.assert_raw_particle_published(driver, True)
-
         # Start validating data particles
         self.assert_particle_published(driver, RSN_CALIBRATION_RAW_DATA, self.assert_particle_compass_calibration, True)
-        self.assert_particle_published(driver, RSN_PS0_RAW_DATA, self.assert_particle_4b_system_configuration, True)
-        self.assert_particle_published(driver, RSN_SAMPLE_RAW_DATA, self.assert_particle_pd0_data, True)
+        self.assert_particle_published(driver, RSN_PS0_RAW_DATA, self.assert_particle_system_configuration_master, True)
         self.assert_particle_published(driver, PT2_RAW_DATA, self.assert_particle_pt2_data, True)
         self.assert_particle_published(driver, PT4_RAW_DATA, self.assert_particle_pt4_data, True)
+
+        self.assert_vadcp_pd0_particles_published(driver, RSN_SAMPLE_RAW_DATA, True)
 
         driver._protocol.got_data = functools.partial(got_data, connection=SlaveProtocol.FIFTHBEAM)
 
-        self.assert_raw_particle_published(driver, True)
-
         # Start validating data particles
-        self.assert_particle_published(driver, RSN_CALIBRATION_RAW_DATA, self.assert_particle_compass_calibration, True)
-        self.assert_particle_published(driver, VADCP_SLAVE_PS0_RAW_DATA, self.assert_particle_5b_system_configuration,
-                                       True)
-        self.assert_particle_published(driver, RSN_SAMPLE_RAW_DATA, self.assert_particle_pd0_data, True)
-        self.assert_particle_published(driver, PT2_RAW_DATA, self.assert_particle_pt2_data, True)
-        self.assert_particle_published(driver, PT4_RAW_DATA, self.assert_particle_pt4_data, True)
+        self.assert_particle_published(driver, RSN_CALIBRATION_RAW_DATA,
+                                       self.assert_particle_compass_calibration_slave, True)
+        self.assert_particle_published(driver, VADCP_SLAVE_PS0_RAW_DATA,
+                                       self.assert_particle_system_configuration_slave, True)
+        self.assert_particle_published(driver, PT2_RAW_DATA, self.assert_particle_pt2_data_slave, True)
+        self.assert_particle_published(driver, PT4_RAW_DATA, self.assert_particle_pt4_data_slave, True)
+
+        self.assert_vadcp_pd0_particles_published(driver, RSN_SAMPLE_RAW_DATA, True)
 
     def test_driver_parameters(self):
         """
@@ -1080,26 +1078,17 @@ class VadcpDriverIntegrationTest(WorkhorseDriverIntegrationTest, VADCPMixin):
             }
         return config
 
-    def assert_VADCP_TRANSMIT_data(self, data_particle, verify_values=False):
-        """
-        Verify an adcpt pT4 data particle
-        @param data_particle: ADCPT_PT4DataParticle data particle
-        @param verify_values: bool, should we verify parameter values
-        """
-        self.assert_data_particle_header(data_particle, VADCPDataParticleType.VADCP_TRANSMIT_PATH)
-        self.assert_data_particle_parameters(data_particle, self._pt4_dict, verify_values)
-
     def assert_VADCP_ANCILLARY_data(self, data_particle, verify_values=False):
         """
         Verify an adcpt PT2 data particle
         @param data_particle: ADCPT_PT2DataParticle data particle
         @param verify_values: bool, should we verify parameter values
         """
-        self.assert_data_particle_header(data_particle, VADCPDataParticleType.VADCP_ANCILLARY_SYSTEM_DATA)
+        self.assert_data_particle_header(data_particle, VADCPDataParticleType.VADCP_ANCILLARY_SYSTEM_DATA_SLAVE)
         self.assert_data_particle_parameters(data_particle, self._pt2_dict, verify_values)
 
     def assert_VADCP_Calibration(self, data_particle, verify_values=False):
-        self.assert_data_particle_header(data_particle, VADCPDataParticleType.VADCP_COMPASS_CALIBRATION)
+        self.assert_data_particle_header(data_particle, VADCPDataParticleType.VADCP_COMPASS_CALIBRATION_SLAVE)
         self.assert_data_particle_parameters(data_particle, self._calibration_data_parameters_VADCP, verify_values)
 
     def assert_particle_system_configuration_5th(self, data_particle, verify_values=False):
@@ -1108,7 +1097,7 @@ class VadcpDriverIntegrationTest(WorkhorseDriverIntegrationTest, VADCPMixin):
         @param data_particle: ADCPT_FDDataParticle data particle
         @param verify_values: bool, should we verify parameter values
         """
-        self.assert_data_particle_header(data_particle, VADCPDataParticleType.VADCP_5THBEAM_SYSTEM_CONFIGURATION)
+        self.assert_data_particle_header(data_particle, VADCPDataParticleType.VADCP_SYSTEM_CONFIGURATION_SLAVE)
         self.assert_data_particle_parameters(data_particle, self._system_configuration_data_parameters_VADCP,
                                              verify_values)
 
@@ -1116,7 +1105,7 @@ class VadcpDriverIntegrationTest(WorkhorseDriverIntegrationTest, VADCPMixin):
         """
         Overridden to verify additional data particles for VADCP
         """
-        self.assert_async_particle_generation(VADCPDataParticleType.VADCP_4BEAM_SYSTEM_CONFIGURATION,
+        self.assert_async_particle_generation(VADCPDataParticleType.ADCP_SYSTEM_CONFIGURATION,
                                               self.assert_particle_system_configuration, timeout=60)
         self.assert_async_particle_generation(VADCPDataParticleType.ADCP_COMPASS_CALIBRATION,
                                               self.assert_particle_compass_calibration, timeout=10)
@@ -1125,13 +1114,13 @@ class VadcpDriverIntegrationTest(WorkhorseDriverIntegrationTest, VADCPMixin):
         self.assert_async_particle_generation(VADCPDataParticleType.ADCP_TRANSMIT_PATH,
                                               self.assert_particle_pt4_data, timeout=10)
 
-        self.assert_async_particle_generation(VADCPDataParticleType.VADCP_5THBEAM_SYSTEM_CONFIGURATION,
+        self.assert_async_particle_generation(VADCPDataParticleType.VADCP_SYSTEM_CONFIGURATION_SLAVE,
                                               self.assert_particle_system_configuration_5th, timeout=10)
-        self.assert_async_particle_generation(VADCPDataParticleType.VADCP_COMPASS_CALIBRATION,
+        self.assert_async_particle_generation(VADCPDataParticleType.VADCP_COMPASS_CALIBRATION_SLAVE,
                                               self.assert_VADCP_Calibration, timeout=10)
-        self.assert_async_particle_generation(VADCPDataParticleType.VADCP_ANCILLARY_SYSTEM_DATA,
+        self.assert_async_particle_generation(VADCPDataParticleType.VADCP_ANCILLARY_SYSTEM_DATA_SLAVE,
                                               self.assert_VADCP_ANCILLARY_data, timeout=10)
-        self.assert_async_particle_generation(VADCPDataParticleType.VADCP_TRANSMIT_PATH,
+        self.assert_async_particle_generation(VADCPDataParticleType.VADCP_TRANSMIT_PATH_SLAVE,
                                               self.assert_particle_pt4_data, timeout=10)
 
     # Overwritten method
