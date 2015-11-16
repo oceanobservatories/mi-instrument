@@ -7,6 +7,7 @@ Release notes:
 
 initial release
 """
+import csv
 import json
 import urllib
 from mi.core.instrument.instrument_driver import DriverAsyncEvent
@@ -36,7 +37,7 @@ def extract_param(param, query):
 
 class Publisher(object):
     def __init__(self, allowed):
-        self.allowed = None
+        self.allowed = allowed
 
     def jsonify(self, events):
         try:
@@ -124,6 +125,9 @@ class Publisher(object):
         elif result.scheme == 'count':
             return CountPublisher(allowed)
 
+        elif result.scheme == 'csv':
+            return CsvPublisher(allowed)
+
 
 class QpidPublisher(Publisher):
     def __init__(self, url, queue, headers, allowed, username='guest', password='guest'):
@@ -202,3 +206,41 @@ class CountPublisher(Publisher):
         count = len(events)
         self.total += count
         log.info('Publish %d events (%d total)', count, self.total)
+
+
+class CsvPublisher(Publisher):
+    def __init__(self, allowed):
+        super(CsvPublisher, self).__init__(allowed)
+        self.writers = {}
+
+    def _extract(self, particle):
+        values = particle.pop('values', [])
+        val_dict = {}
+        for value in values:
+            val_id = value.get('value_id')
+            val_val = value.get('value')
+            val_dict[val_id] = val_val
+        return val_dict
+
+    def _register(self, stream, particle):
+        keys = sorted(particle)
+        filehandle = open('%s.csv' % stream, 'wb')
+        self.writers[stream] = csv.DictWriter(filehandle, fieldnames=keys)
+        self.writers[stream].writeheader()
+
+    def _write(self, stream, particle):
+        self.writers[stream].writerow(particle)
+
+    def _publish(self, events, headers):
+        for event in events:
+            # csv publisher only applicable to particles
+            if event.get('type') == 'DRIVER_ASYNC_EVENT_SAMPLE':
+                particle = event.get('value', {})
+                stream = particle.get('stream_name')
+                if stream:
+                    particle = self._extract(particle)
+                    if stream not in self.writers:
+                        self._register(stream, particle)
+
+                    self._write(stream, particle)
+

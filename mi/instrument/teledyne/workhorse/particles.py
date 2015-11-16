@@ -3,16 +3,12 @@ import time
 from datetime import datetime
 
 from mi.core.log import get_logger
-
-log = get_logger()
-
 from mi.core.common import BaseEnum
-from mi.core.exceptions import SampleException
 from mi.core.time_tools import timegm_to_float
 from mi.core.instrument.data_particle import CommonDataParticleType, DataParticle, DataParticleKey
-from mi.instrument.teledyne.workhorse.pd0_parser import AdcpPd0Record
 
 NEWLINE = '\r\n'
+log = get_logger()
 
 
 class WorkhorseDataParticleType(BaseEnum):
@@ -20,8 +16,11 @@ class WorkhorseDataParticleType(BaseEnum):
     Stream types of data particles
     """
     RAW = CommonDataParticleType.RAW
-    ADCP_PD0_PARSED_BEAM = 'adcp_pd0_beam_parsed'
-    ADCP_PD0_PARSED_EARTH = 'adcp_pd0_earth_parsed'
+    ADCP_PD0_PARSED_BEAM = 'adcp_velocity_beam'
+    ADCP_PD0_PARSED_EARTH = 'adcp_velocity_earth'
+    ADCP_PD0_ENGINEERING = 'adcp_engineering'
+    ADCP_PD0_CONFIG = 'adcp_config'
+    ADCP_PD0_ERROR_STATUS = 'adcp_error_status'
     ADCP_SYSTEM_CONFIGURATION = 'adcp_system_configuration'
     ADCP_COMPASS_CALIBRATION = 'adcp_compass_calibration'
     ADCP_ANCILLARY_SYSTEM_DATA = "adcp_ancillary_system_data"
@@ -32,15 +31,15 @@ class VADCPDataParticleType(WorkhorseDataParticleType):
     """
     VADCP Stream types of data particles
     """
-    VADCP_PD0_BEAM_MASTER = 'vadcp_pd0_beam_parsed'
-    VADCP_PD0_EARTH_MASTER = 'vadcp_pd0_earth_parsed'
-    VADCP_4BEAM_SYSTEM_CONFIGURATION = "vadcp_4beam_system_configuration"
-    VADCP_5THBEAM_SYSTEM_CONFIGURATION = "vadcp_5thbeam_system_configuration"
-    VADCP_ANCILLARY_SYSTEM_DATA = "vadcp_ancillary_system_data"
-    VADCP_TRANSMIT_PATH = "vadcp_transmit_path"
-    VADCP_PD0_BEAM_SLAVE = 'vadcp_5thbeam_pd0_beam_parsed'
-    VADCP_PD0_EARTH_SLAVE = 'vadcp_5thbeam_pd0_earth_parsed'
-    VADCP_COMPASS_CALIBRATION = 'vadcp_5thbeam_compass_calibration'
+    VADCP_PD0_BEAM_MASTER = 'vadcp_velocity_beam'
+    VADCP_PD0_BEAM_SLAVE = 'vadcp_velocity_beam_5'
+    VADCP_PD0_ENGINEERING_SLAVE = 'adcp_engineering_5'
+    VADCP_PD0_CONFIG_SLAVE = 'adcp_config_5'
+    VADCP_PD0_ERROR_STATUS_SLAVE = 'adcp_error_status_5'
+    VADCP_SYSTEM_CONFIGURATION_SLAVE = "adcp_system_configuration_5"
+    VADCP_ANCILLARY_SYSTEM_DATA_SLAVE = "adcp_ancillary_system_data_5"
+    VADCP_TRANSMIT_PATH_SLAVE = "adcp_transmit_path_5"
+    VADCP_COMPASS_CALIBRATION_SLAVE = 'adcp_compass_calibration_5'
 
 
 class AdcpPd0ParsedKey(BaseEnum):
@@ -74,6 +73,7 @@ class AdcpPd0ParsedKey(BaseEnum):
     ERROR_VEL_THRESHOLD = "error_vel_threshold"
     TIME_PER_PING_MINUTES = "time_per_ping_minutes"
     TIME_PER_PING_SECONDS = "time_per_ping_seconds"
+    TIME_PER_PING_HUNDREDTHS = "time_per_ping_hundredths"
     COORD_TRANSFORM_TYPE = "coord_transform_type"
     COORD_TRANSFORM_TILTS = "coord_transform_tilts"
     COORD_TRANSFORM_BEAMS = "coord_transform_beams"
@@ -124,6 +124,7 @@ class AdcpPd0ParsedKey(BaseEnum):
     TEMPERATURE = "temperature"
     MPT_MINUTES = "mpt_minutes"
     MPT_SECONDS = "mpt_seconds"
+    MPT_HUNDREDTHS = "mpt_hundredths"
     HEADING_STDEV = "heading_stdev"
     PITCH_STDEV = "pitch_stdev"
     ROLL_STDEV = "roll_stdev"
@@ -158,10 +159,11 @@ class AdcpPd0ParsedKey(BaseEnum):
     ABSOLUTE_PRESSURE = "pressure"
     PRESSURE_VARIANCE = "pressure_variance"
     VELOCITY_DATA_ID = "velocity_data_id"
-    BEAM_1_VELOCITY = "beam_1_velocity"
-    BEAM_2_VELOCITY = "beam_2_velocity"
-    BEAM_3_VELOCITY = "beam_3_velocity"
-    BEAM_4_VELOCITY = "beam_4_velocity"
+    BEAM_1_VELOCITY = "velocity_beam_1"
+    BEAM_2_VELOCITY = "velocity_beam_2"
+    BEAM_3_VELOCITY = "velocity_beam_3"
+    BEAM_4_VELOCITY = "velocity_beam_4"
+    BEAM_5_VELOCITY = "velocity_beam_5"
     WATER_VELOCITY_EAST = "water_velocity_east"
     WATER_VELOCITY_NORTH = "water_velocity_north"
     WATER_VELOCITY_UP = "water_velocity_up"
@@ -171,15 +173,18 @@ class AdcpPd0ParsedKey(BaseEnum):
     CORRELATION_MAGNITUDE_BEAM2 = "correlation_magnitude_beam2"
     CORRELATION_MAGNITUDE_BEAM3 = "correlation_magnitude_beam3"
     CORRELATION_MAGNITUDE_BEAM4 = "correlation_magnitude_beam4"
+    CORRELATION_MAGNITUDE_BEAM5 = "correlation_magnitude_beam5"
     ECHO_INTENSITY_ID = "echo_intensity_id"
     ECHO_INTENSITY_BEAM1 = "echo_intensity_beam1"
     ECHO_INTENSITY_BEAM2 = "echo_intensity_beam2"
     ECHO_INTENSITY_BEAM3 = "echo_intensity_beam3"
     ECHO_INTENSITY_BEAM4 = "echo_intensity_beam4"
+    ECHO_INTENSITY_BEAM5 = "echo_intensity_beam5"
     PERCENT_GOOD_BEAM1 = "percent_good_beam1"
     PERCENT_GOOD_BEAM2 = "percent_good_beam2"
     PERCENT_GOOD_BEAM3 = "percent_good_beam3"
     PERCENT_GOOD_BEAM4 = "percent_good_beam4"
+    PERCENT_GOOD_BEAM5 = "percent_good_beam5"
     PERCENT_GOOD_ID = "percent_good_id"
     PERCENT_GOOD_3BEAM = "percent_good_3beam"
     PERCENT_TRANSFORMS_REJECT = "percent_transforms_reject"
@@ -193,26 +198,12 @@ class Pd0CoordinateTransformType(BaseEnum):
     EARTH = 3
 
 
-# The data particle type will be overwritten based on coordinate (Earth/Beam)
-class AdcpPd0ParsedDataParticle(DataParticle):
-    """
-    ADCP PD0 data particle
-    @throw SampleException if when break happens
-    """
-    _data_particle_type = None
-    _slave = False
-    _master = False
+class Pd0DataParticle(DataParticle):
     ntp_epoch = datetime(1900, 1, 1)
 
-    def _build_parsed_values(self):
-        """
-        Parse the base portion of the particle
-        """
-        record = AdcpPd0Record(self.raw_data)
-        record.process()
-        record.parse_bitmapped_fields()
-
-        tpp_float_seconds = float(record.fixed_data.seconds + (record.fixed_data.hundredths / 100))
+    def __init__(self, *args, **kwargs):
+        super(Pd0DataParticle, self).__init__(*args, **kwargs)
+        record = self.raw_data
         dts = datetime(record.variable_data.rtc_y2k_century * 100 + record.variable_data.rtc_y2k_year,
                        record.variable_data.rtc_y2k_month,
                        record.variable_data.rtc_y2k_day,
@@ -220,72 +211,181 @@ class AdcpPd0ParsedDataParticle(DataParticle):
                        record.variable_data.rtc_y2k_minute,
                        record.variable_data.rtc_y2k_seconds)
 
-        mpt_seconds = float(record.variable_data.mpt_seconds + (record.variable_data.mpt_hundredths / 100.0))
         rtc_time = (dts - self.ntp_epoch).total_seconds() + record.variable_data.rtc_y2k_hundredths / 100.0
         self.set_internal_timestamp(rtc_time)
 
-        ensemble_time = rtc_time
 
-        fields = [(AdcpPd0ParsedKey.ENSEMBLE_START_TIME, ensemble_time),
-                  (AdcpPd0ParsedKey.CHECKSUM, record.stored_checksum),
-                  (AdcpPd0ParsedKey.OFFSET_DATA_TYPES, record.offsets),
-                  (AdcpPd0ParsedKey.REAL_TIME_CLOCK, (record.variable_data.rtc_y2k_century,
-                                                      record.variable_data.rtc_y2k_year,
-                                                      record.variable_data.rtc_y2k_month,
-                                                      record.variable_data.rtc_y2k_day,
-                                                      record.variable_data.rtc_y2k_hour,
-                                                      record.variable_data.rtc_y2k_minute,
-                                                      record.variable_data.rtc_y2k_seconds,
-                                                      record.variable_data.rtc_y2k_hundredths))]
+class Pd0VelocityParticle(Pd0DataParticle):
+    def _build_scalar_values(self):
+        record = self.raw_data
+        ensemble_number = (record.variable_data.ensemble_roll_over << 16) + record.variable_data.ensemble_number
+        fields = [
+            # FIXED LEADER
+            (AdcpPd0ParsedKey.NUM_CELLS, record.fixed_data.number_of_cells),
+            (AdcpPd0ParsedKey.DEPTH_CELL_LENGTH, record.fixed_data.depth_cell_length),
+            (AdcpPd0ParsedKey.BIN_1_DISTANCE, record.fixed_data.bin_1_distance),
+            # VARIABLE LEADER
+            (AdcpPd0ParsedKey.ENSEMBLE_NUMBER, ensemble_number),
+            (AdcpPd0ParsedKey.HEADING, record.variable_data.heading),
+            (AdcpPd0ParsedKey.PITCH, record.variable_data.pitch),
+            (AdcpPd0ParsedKey.ROLL, record.variable_data.roll),
+            (AdcpPd0ParsedKey.SALINITY, record.variable_data.salinity),
+            (AdcpPd0ParsedKey.TEMPERATURE, record.variable_data.temperature),
+            (AdcpPd0ParsedKey.TRANSDUCER_DEPTH, record.variable_data.depth_of_transducer),
+            (AdcpPd0ParsedKey.ABSOLUTE_PRESSURE, record.variable_data.pressure),
+            # SYSCONFIG BITMAP
+            (AdcpPd0ParsedKey.SYSCONFIG_VERTICAL_ORIENTATION, record.sysconfig.beam_facing)]
 
-        if record.coord_transform.coord_transform == Pd0CoordinateTransformType.BEAM:
-            self._data_particle_type = WorkhorseDataParticleType.ADCP_PD0_PARSED_BEAM
-            if self._slave:
-                self._data_particle_type = VADCPDataParticleType.VADCP_PD0_BEAM_SLAVE
-            elif self._master:
-                self._data_particle_type = VADCPDataParticleType.VADCP_PD0_BEAM_MASTER
+        return fields
 
-            fields.extend([
-                (AdcpPd0ParsedKey.VELOCITY_DATA_ID, record.velocities.id),
-                (AdcpPd0ParsedKey.BEAM_1_VELOCITY, record.velocities.beam1),
-                (AdcpPd0ParsedKey.BEAM_2_VELOCITY, record.velocities.beam2),
-                (AdcpPd0ParsedKey.BEAM_3_VELOCITY, record.velocities.beam3),
-                (AdcpPd0ParsedKey.BEAM_4_VELOCITY, record.velocities.beam4),
-                (AdcpPd0ParsedKey.PERCENT_GOOD_ID, record.percent_good.id),
-                (AdcpPd0ParsedKey.PERCENT_GOOD_BEAM1, record.percent_good.beam1),
-                (AdcpPd0ParsedKey.PERCENT_GOOD_BEAM2, record.percent_good.beam2),
-                (AdcpPd0ParsedKey.PERCENT_GOOD_BEAM3, record.percent_good.beam3),
-                (AdcpPd0ParsedKey.PERCENT_GOOD_BEAM4, record.percent_good.beam4)])
+    def _build_base_values(self):
+        """
+        Parse the base portion of the particle
+        """
+        record = self.raw_data
+        fields = self._build_scalar_values()
+        fields.extend([
+            # CORRELATION MAGNITUDES
+            (AdcpPd0ParsedKey.CORRELATION_MAGNITUDE_BEAM1, record.correlation_magnitudes.beam1),
+            (AdcpPd0ParsedKey.CORRELATION_MAGNITUDE_BEAM2, record.correlation_magnitudes.beam2),
+            (AdcpPd0ParsedKey.CORRELATION_MAGNITUDE_BEAM3, record.correlation_magnitudes.beam3),
+            (AdcpPd0ParsedKey.CORRELATION_MAGNITUDE_BEAM4, record.correlation_magnitudes.beam4),
+            # ECHO INTENSITIES
+            (AdcpPd0ParsedKey.ECHO_INTENSITY_BEAM1, record.echo_intensity.beam1),
+            (AdcpPd0ParsedKey.ECHO_INTENSITY_BEAM2, record.echo_intensity.beam2),
+            (AdcpPd0ParsedKey.ECHO_INTENSITY_BEAM3, record.echo_intensity.beam3),
+            (AdcpPd0ParsedKey.ECHO_INTENSITY_BEAM4, record.echo_intensity.beam4)])
 
-        elif record.coord_transform.coord_transform == Pd0CoordinateTransformType.EARTH:
-            self._data_particle_type = WorkhorseDataParticleType.ADCP_PD0_PARSED_EARTH
-            if self._slave:
-                self._data_particle_type = VADCPDataParticleType.VADCP_PD0_EARTH_SLAVE
-            elif self._master:
-                self._data_particle_type = VADCPDataParticleType.VADCP_PD0_EARTH_MASTER
+        return fields
 
-            fields.extend([
-                (AdcpPd0ParsedKey.VELOCITY_DATA_ID, record.velocities.id),
-                (AdcpPd0ParsedKey.PERCENT_GOOD_ID, record.percent_good.id),
-                (AdcpPd0ParsedKey.WATER_VELOCITY_EAST, record.velocities.beam1),
-                (AdcpPd0ParsedKey.WATER_VELOCITY_NORTH, record.velocities.beam2),
-                (AdcpPd0ParsedKey.WATER_VELOCITY_UP, record.velocities.beam3),
-                (AdcpPd0ParsedKey.ERROR_VELOCITY, record.velocities.beam4),
-                (AdcpPd0ParsedKey.PERCENT_GOOD_3BEAM, record.percent_good.beam1),
-                (AdcpPd0ParsedKey.PERCENT_TRANSFORMS_REJECT, record.percent_good.beam2),
-                (AdcpPd0ParsedKey.PERCENT_BAD_BEAMS, record.percent_good.beam3),
-                (AdcpPd0ParsedKey.PERCENT_GOOD_4BEAM, record.percent_good.beam4)])
 
-        else:
-            raise SampleException("coord_transform_type not coded for; %d" % record.coord_transform.coord_transform)
+class Pd0BeamParticle(Pd0VelocityParticle):
+    """
+    ADCP PD0 data particle
+    @throw SampleException if when break happens
+    """
+    _data_particle_type = WorkhorseDataParticleType.ADCP_PD0_PARSED_BEAM
+
+    def _build_parsed_values(self):
+        """
+        Parse the base portion of the particle
+        """
+        record = self.raw_data
+        fields = self._build_base_values()
 
         fields.extend([
+            # BEAM VELOCITIES
+            (AdcpPd0ParsedKey.BEAM_1_VELOCITY, record.velocities.beam1),
+            (AdcpPd0ParsedKey.BEAM_2_VELOCITY, record.velocities.beam2),
+            (AdcpPd0ParsedKey.BEAM_3_VELOCITY, record.velocities.beam3),
+            (AdcpPd0ParsedKey.BEAM_4_VELOCITY, record.velocities.beam4),
+            (AdcpPd0ParsedKey.PERCENT_GOOD_BEAM1, record.percent_good.beam1),
+            (AdcpPd0ParsedKey.PERCENT_GOOD_BEAM2, record.percent_good.beam2),
+            (AdcpPd0ParsedKey.PERCENT_GOOD_BEAM3, record.percent_good.beam3),
+            (AdcpPd0ParsedKey.PERCENT_GOOD_BEAM4, record.percent_good.beam4)])
+
+        return [{DataParticleKey.VALUE_ID: key, DataParticleKey.VALUE: value} for key, value in fields]
+
+
+class Pd0EarthParticle(Pd0VelocityParticle):
+    """
+    ADCP PD0 data particle
+    @throw SampleException if when break happens
+    """
+    _data_particle_type = WorkhorseDataParticleType.ADCP_PD0_PARSED_EARTH
+
+    def _build_parsed_values(self):
+        """
+        Parse the base portion of the particle
+        """
+        record = self.raw_data
+        fields = self._build_base_values()
+
+        fields.extend([
+            # EARTH VELOCITIES
+            (AdcpPd0ParsedKey.WATER_VELOCITY_EAST, record.velocities.beam1),
+            (AdcpPd0ParsedKey.WATER_VELOCITY_NORTH, record.velocities.beam2),
+            (AdcpPd0ParsedKey.WATER_VELOCITY_UP, record.velocities.beam3),
+            (AdcpPd0ParsedKey.ERROR_VELOCITY, record.velocities.beam4),
+            (AdcpPd0ParsedKey.PERCENT_GOOD_3BEAM, record.percent_good.beam1),
+            (AdcpPd0ParsedKey.PERCENT_TRANSFORMS_REJECT, record.percent_good.beam2),
+            (AdcpPd0ParsedKey.PERCENT_BAD_BEAMS, record.percent_good.beam3),
+            (AdcpPd0ParsedKey.PERCENT_GOOD_4BEAM, record.percent_good.beam4)])
+
+        return [{DataParticleKey.VALUE_ID: key, DataParticleKey.VALUE: value} for key, value in fields]
+
+
+class VadcpBeamSlaveParticle(Pd0VelocityParticle):
+    _data_particle_type = VADCPDataParticleType.VADCP_PD0_BEAM_SLAVE
+
+    def _build_parsed_values(self):
+        """
+        Parse the base portion of the particle
+        """
+        record = self.raw_data
+        fields = self._build_scalar_values()
+
+        fields.extend([
+            # BEAM VELOCITIES
+            (AdcpPd0ParsedKey.CORRELATION_MAGNITUDE_BEAM5, record.correlation_magnitudes.beam1),
+            (AdcpPd0ParsedKey.ECHO_INTENSITY_BEAM5, record.echo_intensity.beam1),
+            (AdcpPd0ParsedKey.BEAM_5_VELOCITY, record.velocities.beam1),
+            (AdcpPd0ParsedKey.PERCENT_GOOD_BEAM5, record.percent_good.beam1)])
+
+        return [{DataParticleKey.VALUE_ID: key, DataParticleKey.VALUE: value} for key, value in fields]
+
+class AdcpPd0EngineeringParticle(Pd0DataParticle):
+    """
+    ADCP PD0 data particle
+    @throw SampleException if when break happens
+    """
+    _data_particle_type = WorkhorseDataParticleType.ADCP_PD0_ENGINEERING
+
+    def _build_parsed_values(self):
+        """
+        Parse the base portion of the particle
+        """
+        record = self.raw_data
+
+        fields = [
             # FIXED LEADER
-            (AdcpPd0ParsedKey.HEADER_ID, record.header.id),
-            (AdcpPd0ParsedKey.DATA_SOURCE_ID, record.header.data_source),
-            (AdcpPd0ParsedKey.NUM_BYTES, record.header.num_bytes),
-            (AdcpPd0ParsedKey.NUM_DATA_TYPES, record.header.num_data_types),
-            (AdcpPd0ParsedKey.FIXED_LEADER_ID, record.fixed_data.id),
+            (AdcpPd0ParsedKey.TRANSMIT_PULSE_LENGTH, record.fixed_data.transmit_pulse_length),
+            # VARIABLE LEADER
+            (AdcpPd0ParsedKey.SPEED_OF_SOUND, record.variable_data.speed_of_sound),
+            (AdcpPd0ParsedKey.MPT_MINUTES, record.variable_data.mpt_minutes),
+            (AdcpPd0ParsedKey.MPT_SECONDS, record.variable_data.mpt_seconds),
+            (AdcpPd0ParsedKey.MPT_HUNDREDTHS, record.variable_data.mpt_hundredths),
+            (AdcpPd0ParsedKey.HEADING_STDEV, record.variable_data.heading_standard_deviation),
+            (AdcpPd0ParsedKey.PITCH_STDEV, record.variable_data.pitch_standard_deviation),
+            (AdcpPd0ParsedKey.ROLL_STDEV, record.variable_data.roll_standard_deviation),
+            (AdcpPd0ParsedKey.ADC_TRANSMIT_CURRENT, record.variable_data.transmit_current),
+            (AdcpPd0ParsedKey.ADC_TRANSMIT_VOLTAGE, record.variable_data.transmit_voltage),
+            (AdcpPd0ParsedKey.ADC_AMBIENT_TEMP, record.variable_data.ambient_temperature),
+            (AdcpPd0ParsedKey.ADC_PRESSURE_PLUS, record.variable_data.pressure_positive),
+            (AdcpPd0ParsedKey.ADC_PRESSURE_MINUS, record.variable_data.pressure_negative),
+            (AdcpPd0ParsedKey.ADC_ATTITUDE_TEMP, record.variable_data.attitude_temperature),
+            (AdcpPd0ParsedKey.ADC_ATTITUDE, record.variable_data.attitude),
+            (AdcpPd0ParsedKey.ADC_CONTAMINATION_SENSOR, record.variable_data.contamination_sensor),
+            (AdcpPd0ParsedKey.PRESSURE_VARIANCE, record.variable_data.pressure_variance)]
+
+        return [{DataParticleKey.VALUE_ID: key, DataParticleKey.VALUE: value} for key, value in fields]
+
+
+class AdcpPd0ConfigParticle(Pd0DataParticle):
+    """
+    ADCP PD0 data particle
+    @throw SampleException if when break happens
+    """
+    _data_particle_type = WorkhorseDataParticleType.ADCP_PD0_CONFIG
+
+    def _build_parsed_values(self):
+        """
+        Parse the base portion of the particle
+        """
+        record = self.raw_data
+
+        fields = [
+            # FIXED LEADER
             (AdcpPd0ParsedKey.FIRMWARE_VERSION, record.fixed_data.cpu_firmware_version),
             (AdcpPd0ParsedKey.FIRMWARE_REVISION, record.fixed_data.cpu_firmware_revision),
             (AdcpPd0ParsedKey.DATA_FLAG, record.fixed_data.simulation_data_flag),
@@ -300,11 +400,11 @@ class AdcpPd0ParsedDataParticle(DataParticle):
             (AdcpPd0ParsedKey.NUM_CODE_REPETITIONS, record.fixed_data.num_code_reps),
             (AdcpPd0ParsedKey.PERCENT_GOOD_MIN, record.fixed_data.minimum_percentage),
             (AdcpPd0ParsedKey.ERROR_VEL_THRESHOLD, record.fixed_data.error_velocity_max),
-            (AdcpPd0ParsedKey.TIME_PER_PING_MINUTES, record.fixed_data.minutes),
+            (AdcpPd0ParsedKey.TIME_PER_PING_MINUTES, record.fixed_data.tpp_minutes),
+            (AdcpPd0ParsedKey.TIME_PER_PING_SECONDS, record.fixed_data.tpp_seconds),
+            (AdcpPd0ParsedKey.TIME_PER_PING_HUNDREDTHS, record.fixed_data.tpp_hundredths),
             (AdcpPd0ParsedKey.HEADING_ALIGNMENT, record.fixed_data.heading_alignment),
             (AdcpPd0ParsedKey.HEADING_BIAS, record.fixed_data.heading_bias),
-            (AdcpPd0ParsedKey.BIN_1_DISTANCE, record.fixed_data.bin_1_distance),
-            (AdcpPd0ParsedKey.TRANSMIT_PULSE_LENGTH, record.fixed_data.transmit_pulse_length),
             (AdcpPd0ParsedKey.REFERENCE_LAYER_START, record.fixed_data.starting_depth_cell),
             (AdcpPd0ParsedKey.REFERENCE_LAYER_STOP, record.fixed_data.ending_depth_cell),
             (AdcpPd0ParsedKey.FALSE_TARGET_THRESHOLD, record.fixed_data.false_target_threshold),
@@ -315,31 +415,6 @@ class AdcpPd0ParsedDataParticle(DataParticle):
             (AdcpPd0ParsedKey.SYSTEM_POWER, record.fixed_data.system_power),
             (AdcpPd0ParsedKey.SERIAL_NUMBER, str(record.fixed_data.serial_number)),
             (AdcpPd0ParsedKey.BEAM_ANGLE, record.fixed_data.beam_angle),
-            # VARIABLE LEADER
-            (AdcpPd0ParsedKey.VARIABLE_LEADER_ID, record.variable_data.id),
-            (AdcpPd0ParsedKey.ENSEMBLE_NUMBER, record.variable_data.ensemble_number),
-            (AdcpPd0ParsedKey.ENSEMBLE_NUMBER_INCREMENT, record.variable_data.ensemble_roll_over),
-            (AdcpPd0ParsedKey.SPEED_OF_SOUND, record.variable_data.speed_of_sound),
-            (AdcpPd0ParsedKey.TRANSDUCER_DEPTH, record.variable_data.depth_of_transducer),
-            (AdcpPd0ParsedKey.HEADING, record.variable_data.heading),
-            (AdcpPd0ParsedKey.PITCH, record.variable_data.pitch),
-            (AdcpPd0ParsedKey.ROLL, record.variable_data.roll),
-            (AdcpPd0ParsedKey.SALINITY, record.variable_data.salinity),
-            (AdcpPd0ParsedKey.TEMPERATURE, record.variable_data.temperature),
-            (AdcpPd0ParsedKey.MPT_MINUTES, record.variable_data.mpt_minutes),
-            (AdcpPd0ParsedKey.HEADING_STDEV, record.variable_data.heading_standard_deviation),
-            (AdcpPd0ParsedKey.PITCH_STDEV, record.variable_data.pitch_standard_deviation),
-            (AdcpPd0ParsedKey.ROLL_STDEV, record.variable_data.roll_standard_deviation),
-            (AdcpPd0ParsedKey.ADC_TRANSMIT_CURRENT, record.variable_data.transmit_current),
-            (AdcpPd0ParsedKey.ADC_TRANSMIT_VOLTAGE, record.variable_data.transmit_voltage),
-            (AdcpPd0ParsedKey.ADC_AMBIENT_TEMP, record.variable_data.ambient_temperature),
-            (AdcpPd0ParsedKey.ADC_PRESSURE_PLUS, record.variable_data.pressure_positive),
-            (AdcpPd0ParsedKey.ADC_PRESSURE_MINUS, record.variable_data.pressure_negative),
-            (AdcpPd0ParsedKey.ADC_ATTITUDE_TEMP, record.variable_data.attitude_temperature),
-            (AdcpPd0ParsedKey.ADC_ATTITUDE, record.variable_data.attitude),
-            (AdcpPd0ParsedKey.ADC_CONTAMINATION_SENSOR, record.variable_data.contamination_sensor),
-            (AdcpPd0ParsedKey.ABSOLUTE_PRESSURE, record.variable_data.pressure),
-            (AdcpPd0ParsedKey.PRESSURE_VARIANCE, record.variable_data.pressure_variance),
             # SYSCONFIG BITMAP
             (AdcpPd0ParsedKey.SYSCONFIG_FREQUENCY, record.sysconfig.frequency),
             (AdcpPd0ParsedKey.SYSCONFIG_BEAM_PATTERN, record.sysconfig.beam_pattern),
@@ -365,7 +440,25 @@ class AdcpPd0ParsedDataParticle(DataParticle):
             (AdcpPd0ParsedKey.SENSOR_AVAILABLE_PITCH, record.sensor_avail.pitch_avail),
             (AdcpPd0ParsedKey.SENSOR_AVAILABLE_ROLL, record.sensor_avail.roll_avail),
             (AdcpPd0ParsedKey.SENSOR_AVAILABLE_CONDUCTIVITY, record.sensor_avail.conductivity_avail),
-            (AdcpPd0ParsedKey.SENSOR_AVAILABLE_TEMPERATURE, record.sensor_avail.temperature_avail),
+            (AdcpPd0ParsedKey.SENSOR_AVAILABLE_TEMPERATURE, record.sensor_avail.temperature_avail)]
+
+        return [{DataParticleKey.VALUE_ID: key, DataParticleKey.VALUE: value} for key, value in fields]
+
+
+class AdcpPd0ErrorStatusParticle(Pd0DataParticle):
+    """
+    ADCP PD0 data particle
+    @throw SampleException if when break happens
+    """
+    _data_particle_type = WorkhorseDataParticleType.ADCP_PD0_ERROR_STATUS
+
+    def _build_parsed_values(self):
+        """
+        Parse the base portion of the particle
+        """
+        record = self.raw_data
+
+        fields = [
             # BIT RESULT BITMAP
             (AdcpPd0ParsedKey.BIT_RESULT_DEMOD_0, record.bit_result.demod0_error),
             (AdcpPd0ParsedKey.BIT_RESULT_DEMOD_1, record.bit_result.demod1_error),
@@ -390,22 +483,7 @@ class AdcpPd0ParsedDataParticle(DataParticle):
             (AdcpPd0ParsedKey.SPURIOUS_DSP_INTERRUPT, record.error_word.spurious_dsp),
             (AdcpPd0ParsedKey.SPURIOUS_UART_INTERRUPT, record.error_word.spurious_uart),
             (AdcpPd0ParsedKey.SPURIOUS_CLOCK_INTERRUPT, record.error_word.spurious_clock),
-            (AdcpPd0ParsedKey.LEVEL_7_INTERRUPT, record.error_word.level_7_interrupt),
-            # COMPUTED VALUES
-            (AdcpPd0ParsedKey.TIME_PER_PING_SECONDS, tpp_float_seconds),
-            (AdcpPd0ParsedKey.MPT_SECONDS, mpt_seconds),
-            # CORRELATION MAGNITUDES
-            (AdcpPd0ParsedKey.CORRELATION_MAGNITUDE_ID, record.correlation_magnitudes.id),
-            (AdcpPd0ParsedKey.CORRELATION_MAGNITUDE_BEAM1, record.correlation_magnitudes.beam1),
-            (AdcpPd0ParsedKey.CORRELATION_MAGNITUDE_BEAM2, record.correlation_magnitudes.beam2),
-            (AdcpPd0ParsedKey.CORRELATION_MAGNITUDE_BEAM3, record.correlation_magnitudes.beam3),
-            (AdcpPd0ParsedKey.CORRELATION_MAGNITUDE_BEAM4, record.correlation_magnitudes.beam4),
-            # ECHO INTENSITIES
-            (AdcpPd0ParsedKey.ECHO_INTENSITY_ID, record.echo_intensity.id),
-            (AdcpPd0ParsedKey.ECHO_INTENSITY_BEAM1, record.echo_intensity.beam1),
-            (AdcpPd0ParsedKey.ECHO_INTENSITY_BEAM2, record.echo_intensity.beam2),
-            (AdcpPd0ParsedKey.ECHO_INTENSITY_BEAM3, record.echo_intensity.beam3),
-            (AdcpPd0ParsedKey.ECHO_INTENSITY_BEAM4, record.echo_intensity.beam4)])
+            (AdcpPd0ParsedKey.LEVEL_7_INTERRUPT, record.error_word.level_7_interrupt)]
 
         return [{DataParticleKey.VALUE_ID: key, DataParticleKey.VALUE: value} for key, value in fields]
 
@@ -706,3 +784,35 @@ class AdcpTransmitPathParticle(DataParticle):
                            DataParticleKey.VALUE: value})
 
         return result
+
+
+class VadcpBeamMasterParticle(Pd0BeamParticle):
+    _data_particle_type = VADCPDataParticleType.VADCP_PD0_BEAM_MASTER
+
+
+class VadcpEngineeringSlaveParticle(AdcpPd0EngineeringParticle):
+    _data_particle_type = VADCPDataParticleType.VADCP_PD0_ENGINEERING_SLAVE
+
+
+class VadcpConfigSlaveParticle(AdcpPd0ConfigParticle):
+    _data_particle_type = VADCPDataParticleType.VADCP_PD0_CONFIG_SLAVE
+
+
+class VadcpErrorStatusSlaveParticle(AdcpPd0ErrorStatusParticle):
+    _data_particle_type = VADCPDataParticleType.VADCP_PD0_ERROR_STATUS_SLAVE
+
+
+class VadcpSystemConfigurationDataParticle(AdcpSystemConfigurationDataParticle):
+    _data_particle_type = VADCPDataParticleType.VADCP_SYSTEM_CONFIGURATION_SLAVE
+
+
+class VadcpAncillarySystemDataParticle(AdcpAncillarySystemDataParticle):
+    _data_particle_type = VADCPDataParticleType.VADCP_ANCILLARY_SYSTEM_DATA_SLAVE
+
+
+class VadcpTransmitPathParticle(AdcpTransmitPathParticle):
+    _data_particle_type = VADCPDataParticleType.VADCP_TRANSMIT_PATH_SLAVE
+
+
+class VadcpCompassCalibrationDataParticle(AdcpCompassCalibrationDataParticle):
+    _data_particle_type = VADCPDataParticleType.VADCP_COMPASS_CALIBRATION_SLAVE

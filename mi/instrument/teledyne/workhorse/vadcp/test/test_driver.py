@@ -6,6 +6,8 @@
 Release notes:
 
 """
+import ntplib
+from mi.core.instrument.data_particle import CommonDataParticleType
 
 __author__ = 'Sung Ahn'
 __license__ = 'Apache 2.0'
@@ -24,7 +26,7 @@ log = get_logger()
 # core
 from mi.core.instrument.chunker import StringChunker
 from mi.core.instrument.instrument_driver import DriverConnectionState
-from mi.core.instrument.port_agent_client import PortAgentClient
+from mi.core.instrument.port_agent_client import PortAgentClient, PortAgentPacket
 from mi.core.port_agent_process import PortAgentProcess
 from mi.core.exceptions import ResourceError
 # idk
@@ -52,7 +54,7 @@ from mi.instrument.teledyne.workhorse.test.test_data import RSN_PS0_RAW_DATA
 from mi.instrument.teledyne.workhorse.test.test_data import PT2_RAW_DATA
 from mi.instrument.teledyne.workhorse.test.test_data import PT4_RAW_DATA
 # particles
-from mi.instrument.teledyne.workhorse.particles import VADCPDataParticleType
+from mi.instrument.teledyne.workhorse.particles import VADCPDataParticleType, WorkhorseDataParticleType
 from mi.instrument.teledyne.workhorse.particles import AdcpCompassCalibrationKey
 from mi.instrument.teledyne.workhorse.particles import AdcpSystemConfigurationKey
 from mi.instrument.teledyne.workhorse.particles import AdcpPd0ParsedKey
@@ -770,7 +772,16 @@ class VADCPMixin(DriverTestMixin):
         self.assert_data_particle_header(data_particle, VADCPDataParticleType.ADCP_COMPASS_CALIBRATION)
         self.assert_data_particle_parameters(data_particle, self._calibration_data_parameters, verify_values)
 
-    def assert_particle_4b_system_configuration(self, data_particle, verify_values=False):
+    def assert_particle_compass_calibration_slave(self, data_particle, verify_values=False):
+        """
+        Verify an adcp calibration data particle
+        @param data_particle: ADCPT_CalibrationDataParticle data particle
+        @param verify_values: bool, should we verify parameter values
+        """
+        self.assert_data_particle_header(data_particle, VADCPDataParticleType.VADCP_COMPASS_CALIBRATION_SLAVE)
+        self.assert_data_particle_parameters(data_particle, self._calibration_data_parameters, verify_values)
+
+    def assert_particle_system_configuration_master(self, data_particle, verify_values=False):
         """
         Verify an adcpt fd data particle
         @param data_particle: ADCPT_FDDataParticle data particle
@@ -780,51 +791,142 @@ class VADCPMixin(DriverTestMixin):
         self.assert_data_particle_parameters(data_particle, self._system_configuration_data_parameters,
                                              verify_values)
 
-    def assert_particle_5b_system_configuration(self, data_particle, verify_values=False):
+    def assert_particle_system_configuration_slave(self, data_particle, verify_values=False):
         """
         Verify an adcpt fd data particle
         @param data_particle: ADCPT_FDDataParticle data particle
         @param verify_values: bool, should we verify parameter values
         """
-        self.assert_data_particle_header(data_particle, VADCPDataParticleType.ADCP_SYSTEM_CONFIGURATION)
+        self.assert_data_particle_header(data_particle, VADCPDataParticleType.VADCP_SYSTEM_CONFIGURATION_SLAVE)
         self.assert_data_particle_parameters(data_particle, self._system_configuration_data_parameters_VADCP,
                                              verify_values)
 
-    def assert_particle_pd0_data(self, data_particle, verify_values=False):
-        """
-        Verify an adcpt ps0 data particle
-        @param data_particle: ADCPT_PS0DataParticle data particle
-        @param verify_values: bool, should we verify parameter values
-        """
-        self.assert_data_particle_header(data_particle, VADCPDataParticleType.VADCP_PD0_BEAM_MASTER)
-        self.assert_data_particle_parameters(data_particle, self._pd0_parameters, verify_values)
-
-    def assert_particle_pd0_data_earth(self, data_particle, verify_values=False):
-        """
-        Verify an adcpt ps0 data particle
-        @param data_particle: ADCPT_PS0DataParticle data particle
-        @param verify_values: bool, should we verify parameter values
-        """
-        self.assert_data_particle_header(data_particle, VADCPDataParticleType.ADCP_PD0_PARSED_EARTH)
-        self.assert_data_particle_parameters(data_particle, self._pd0_parameters_earth, verify_values)
-
-    def assert_particle_pt2_data(self, data_particle, verify_values=False):
+    def assert_particle_pt2_data_slave(self, data_particle, verify_values=False):
         """
         Verify an adcpt pt2 data particle
         @param data_particle: ADCPT_PT2 DataParticle data particle
         @param verify_values: bool, should we verify parameter values
         """
-        self.assert_data_particle_header(data_particle, VADCPDataParticleType.ADCP_ANCILLARY_SYSTEM_DATA)
+        self.assert_data_particle_header(data_particle, VADCPDataParticleType.VADCP_ANCILLARY_SYSTEM_DATA_SLAVE)
         self.assert_data_particle_parameters(data_particle, self._pt2_dict, verify_values)
 
-    def assert_particle_pt4_data(self, data_particle, verify_values=False):
+    def assert_particle_pt4_data_slave(self, data_particle, verify_values=False):
         """
         Verify an adcpt pt4 data particle
         @param data_particle: ADCPT_PT4 DataParticle data particle
         @param verify_values: bool, should we verify parameter values
         """
-        self.assert_data_particle_header(data_particle, VADCPDataParticleType.ADCP_TRANSMIT_PATH)
+        self.assert_data_particle_header(data_particle, VADCPDataParticleType.VADCP_TRANSMIT_PATH_SLAVE)
         self.assert_data_particle_parameters(data_particle, self._pt4_dict, verify_values)
+
+    def assert_particle_pd0_data_master(self, data_particle, verify_values=False):
+        """
+        Verify an adcp ps0 data particle
+        @param data_particle: ADCP_PS0DataParticle data particle
+        @param verify_values: bool, should we verify parameter values
+        """
+        self.assert_data_particle_header(data_particle, VADCPDataParticleType.VADCP_PD0_BEAM_MASTER)
+        self.assert_data_particle_parameters(data_particle, self._pd0_parameters, verify_values)
+
+    def assert_particle_pd0_data_slave(self, data_particle, verify_values=False):
+        """
+        Verify an adcp ps0 data particle
+        @param data_particle: ADCP_PS0DataParticle data particle
+        @param verify_values: bool, should we verify parameter values
+        """
+        self.assert_data_particle_header(data_particle, VADCPDataParticleType.VADCP_PD0_BEAM_SLAVE)
+        self.assert_data_particle_parameters(data_particle, self._pd0_parameters, verify_values)
+
+    def assert_particle_pd0_engineering_slave(self, data_particle, verify_values=False):
+        """
+        Verify an adcp ps0 data particle
+        @param data_particle: ADCP_PS0DataParticle data particle
+        @param verify_values: bool, should we verify parameter values
+        """
+        self.assert_data_particle_header(data_particle, VADCPDataParticleType.VADCP_PD0_ENGINEERING_SLAVE)
+        self.assert_data_particle_parameters(data_particle, self._pd0_engineering_parameters, verify_values)
+
+    def assert_particle_pd0_config_slave(self, data_particle, verify_values=False):
+        """
+        Verify an adcp ps0 data particle
+        @param data_particle: ADCP_PS0DataParticle data particle
+        @param verify_values: bool, should we verify parameter values
+        """
+        self.assert_data_particle_header(data_particle, VADCPDataParticleType.VADCP_PD0_CONFIG_SLAVE)
+        self.assert_data_particle_parameters(data_particle, self._pd0_config_parameters, verify_values)
+
+    def assert_particle_pd0_error_status_slave(self, data_particle, verify_values=False):
+        """
+        Verify an adcp ps0 data particle
+        @param data_particle: ADCP_PS0DataParticle data particle
+        @param verify_values: bool, should we verify parameter values
+        """
+        self.assert_data_particle_header(data_particle, VADCPDataParticleType.VADCP_PD0_ERROR_STATUS_SLAVE)
+        self.assert_data_particle_parameters(data_particle, self._pd0_error_status_parameters, verify_values)
+
+    def assert_vadcp_pd0_particles_published(self, driver, sample_data, verify_values=False):
+        """
+        Verify that we can send data through the port agent and the the correct particles
+        are generated.
+
+        Create a port agent packet, send it through got_data, then finally grab the data particle
+        from the data particle queue and verify it using the passed in assert method.
+        @param driver: instrument driver with mock port agent client
+        @param sample_data: the byte string we want to send to the driver
+        @param particle_assert_method: assert method to validate the data particle.
+        @param verify_values: Should we validate values?
+        """
+        ts = ntplib.system_to_ntp_time(time.time())
+
+        log.debug("Sample to publish: %r", sample_data)
+        # Create and populate the port agent packet.
+        port_agent_packet = PortAgentPacket()
+        port_agent_packet.attach_data(sample_data)
+        port_agent_packet.attach_timestamp(ts)
+        port_agent_packet.pack_header()
+
+        self.clear_data_particle_queue()
+
+        # Push the data into the driver
+        driver._protocol.got_data(port_agent_packet)
+
+        # Find all particles of the correct data particle types (not raw)
+        particles = []
+        streams = []
+        for p in self._data_particle_received:
+            stream_type = p.get('stream_name')
+            self.assertIsNotNone(stream_type)
+            streams.append(stream_type)
+            if stream_type != CommonDataParticleType.RAW:
+                particles.append(p)
+
+        log.debug("Non raw particles: %r ", particles)
+        self.assertGreaterEqual(len(particles), 1)
+
+        for p in particles:
+            stream_type = p.get('stream_name')
+            if VADCPDataParticleType.VADCP_PD0_BEAM_MASTER in streams:
+                if stream_type == VADCPDataParticleType.VADCP_PD0_BEAM_MASTER:
+                    self.assert_particle_pd0_data_master(p, verify_values)
+                elif stream_type == WorkhorseDataParticleType.ADCP_PD0_ENGINEERING:
+                    self.assert_particle_pd0_engineering(p, verify_values)
+                elif stream_type == WorkhorseDataParticleType.ADCP_PD0_CONFIG:
+                    self.assert_particle_pd0_config(p, verify_values)
+                elif stream_type == WorkhorseDataParticleType.ADCP_PD0_ERROR_STATUS:
+                    self.assert_particle_pd0_error_status(p, verify_values)
+                else:
+                    raise AssertionError('Received invalid particle type from PD0: %r' % stream_type)
+            else:
+                if stream_type == VADCPDataParticleType.VADCP_PD0_BEAM_SLAVE:
+                    self.assert_particle_pd0_data_slave(p, verify_values)
+                elif stream_type == VADCPDataParticleType.VADCP_PD0_ENGINEERING_SLAVE:
+                    self.assert_particle_pd0_engineering_slave(p, verify_values)
+                elif stream_type == VADCPDataParticleType.VADCP_PD0_CONFIG_SLAVE:
+                    self.assert_particle_pd0_config_slave(p, verify_values)
+                elif stream_type == VADCPDataParticleType.VADCP_PD0_ERROR_STATUS_SLAVE:
+                    self.assert_particle_pd0_error_status_slave(p, verify_values)
+                else:
+                    raise AssertionError('Received invalid particle type from PD0: %r' % stream_type)
 
 
 ###############################################################################
@@ -904,26 +1006,25 @@ class VadcpDriverUnitTest(WorkhorseDriverUnitTest, VADCPMixin):
         got_data = driver._protocol.got_data
         driver._protocol.got_data = functools.partial(got_data, connection=SlaveProtocol.FOURBEAM)
 
-        self.assert_raw_particle_published(driver, True)
-
         # Start validating data particles
         self.assert_particle_published(driver, RSN_CALIBRATION_RAW_DATA, self.assert_particle_compass_calibration, True)
-        self.assert_particle_published(driver, RSN_PS0_RAW_DATA, self.assert_particle_4b_system_configuration, True)
-        self.assert_particle_published(driver, RSN_SAMPLE_RAW_DATA, self.assert_particle_pd0_data, True)
+        self.assert_particle_published(driver, RSN_PS0_RAW_DATA, self.assert_particle_system_configuration_master, True)
         self.assert_particle_published(driver, PT2_RAW_DATA, self.assert_particle_pt2_data, True)
         self.assert_particle_published(driver, PT4_RAW_DATA, self.assert_particle_pt4_data, True)
+
+        self.assert_vadcp_pd0_particles_published(driver, RSN_SAMPLE_RAW_DATA, True)
 
         driver._protocol.got_data = functools.partial(got_data, connection=SlaveProtocol.FIFTHBEAM)
 
-        self.assert_raw_particle_published(driver, True)
-
         # Start validating data particles
-        self.assert_particle_published(driver, RSN_CALIBRATION_RAW_DATA, self.assert_particle_compass_calibration, True)
-        self.assert_particle_published(driver, VADCP_SLAVE_PS0_RAW_DATA, self.assert_particle_5b_system_configuration,
-                                       True)
-        self.assert_particle_published(driver, RSN_SAMPLE_RAW_DATA, self.assert_particle_pd0_data, True)
-        self.assert_particle_published(driver, PT2_RAW_DATA, self.assert_particle_pt2_data, True)
-        self.assert_particle_published(driver, PT4_RAW_DATA, self.assert_particle_pt4_data, True)
+        self.assert_particle_published(driver, RSN_CALIBRATION_RAW_DATA,
+                                       self.assert_particle_compass_calibration_slave, True)
+        self.assert_particle_published(driver, VADCP_SLAVE_PS0_RAW_DATA,
+                                       self.assert_particle_system_configuration_slave, True)
+        self.assert_particle_published(driver, PT2_RAW_DATA, self.assert_particle_pt2_data_slave, True)
+        self.assert_particle_published(driver, PT4_RAW_DATA, self.assert_particle_pt4_data_slave, True)
+
+        self.assert_vadcp_pd0_particles_published(driver, RSN_SAMPLE_RAW_DATA, True)
 
     def test_driver_parameters(self):
         """
@@ -1080,26 +1181,17 @@ class VadcpDriverIntegrationTest(WorkhorseDriverIntegrationTest, VADCPMixin):
             }
         return config
 
-    def assert_VADCP_TRANSMIT_data(self, data_particle, verify_values=False):
-        """
-        Verify an adcpt pT4 data particle
-        @param data_particle: ADCPT_PT4DataParticle data particle
-        @param verify_values: bool, should we verify parameter values
-        """
-        self.assert_data_particle_header(data_particle, VADCPDataParticleType.VADCP_TRANSMIT_PATH)
-        self.assert_data_particle_parameters(data_particle, self._pt4_dict, verify_values)
-
     def assert_VADCP_ANCILLARY_data(self, data_particle, verify_values=False):
         """
         Verify an adcpt PT2 data particle
         @param data_particle: ADCPT_PT2DataParticle data particle
         @param verify_values: bool, should we verify parameter values
         """
-        self.assert_data_particle_header(data_particle, VADCPDataParticleType.VADCP_ANCILLARY_SYSTEM_DATA)
+        self.assert_data_particle_header(data_particle, VADCPDataParticleType.VADCP_ANCILLARY_SYSTEM_DATA_SLAVE)
         self.assert_data_particle_parameters(data_particle, self._pt2_dict, verify_values)
 
     def assert_VADCP_Calibration(self, data_particle, verify_values=False):
-        self.assert_data_particle_header(data_particle, VADCPDataParticleType.VADCP_COMPASS_CALIBRATION)
+        self.assert_data_particle_header(data_particle, VADCPDataParticleType.VADCP_COMPASS_CALIBRATION_SLAVE)
         self.assert_data_particle_parameters(data_particle, self._calibration_data_parameters_VADCP, verify_values)
 
     def assert_particle_system_configuration_5th(self, data_particle, verify_values=False):
@@ -1108,7 +1200,7 @@ class VadcpDriverIntegrationTest(WorkhorseDriverIntegrationTest, VADCPMixin):
         @param data_particle: ADCPT_FDDataParticle data particle
         @param verify_values: bool, should we verify parameter values
         """
-        self.assert_data_particle_header(data_particle, VADCPDataParticleType.VADCP_5THBEAM_SYSTEM_CONFIGURATION)
+        self.assert_data_particle_header(data_particle, VADCPDataParticleType.VADCP_SYSTEM_CONFIGURATION_SLAVE)
         self.assert_data_particle_parameters(data_particle, self._system_configuration_data_parameters_VADCP,
                                              verify_values)
 
@@ -1116,7 +1208,7 @@ class VadcpDriverIntegrationTest(WorkhorseDriverIntegrationTest, VADCPMixin):
         """
         Overridden to verify additional data particles for VADCP
         """
-        self.assert_async_particle_generation(VADCPDataParticleType.VADCP_4BEAM_SYSTEM_CONFIGURATION,
+        self.assert_async_particle_generation(VADCPDataParticleType.ADCP_SYSTEM_CONFIGURATION,
                                               self.assert_particle_system_configuration, timeout=60)
         self.assert_async_particle_generation(VADCPDataParticleType.ADCP_COMPASS_CALIBRATION,
                                               self.assert_particle_compass_calibration, timeout=10)
@@ -1125,13 +1217,13 @@ class VadcpDriverIntegrationTest(WorkhorseDriverIntegrationTest, VADCPMixin):
         self.assert_async_particle_generation(VADCPDataParticleType.ADCP_TRANSMIT_PATH,
                                               self.assert_particle_pt4_data, timeout=10)
 
-        self.assert_async_particle_generation(VADCPDataParticleType.VADCP_5THBEAM_SYSTEM_CONFIGURATION,
+        self.assert_async_particle_generation(VADCPDataParticleType.VADCP_SYSTEM_CONFIGURATION_SLAVE,
                                               self.assert_particle_system_configuration_5th, timeout=10)
-        self.assert_async_particle_generation(VADCPDataParticleType.VADCP_COMPASS_CALIBRATION,
+        self.assert_async_particle_generation(VADCPDataParticleType.VADCP_COMPASS_CALIBRATION_SLAVE,
                                               self.assert_VADCP_Calibration, timeout=10)
-        self.assert_async_particle_generation(VADCPDataParticleType.VADCP_ANCILLARY_SYSTEM_DATA,
+        self.assert_async_particle_generation(VADCPDataParticleType.VADCP_ANCILLARY_SYSTEM_DATA_SLAVE,
                                               self.assert_VADCP_ANCILLARY_data, timeout=10)
-        self.assert_async_particle_generation(VADCPDataParticleType.VADCP_TRANSMIT_PATH,
+        self.assert_async_particle_generation(VADCPDataParticleType.VADCP_TRANSMIT_PATH_SLAVE,
                                               self.assert_particle_pt4_data, timeout=10)
 
     # Overwritten method
