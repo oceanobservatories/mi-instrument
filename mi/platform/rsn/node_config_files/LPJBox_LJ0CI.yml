@@ -6,6 +6,7 @@ node_meta_data:
   oms_sample_rate: 5
   reference_designator: RS01BEN1-LJ0CI
   serial_number: N/A
+  read_only_mode: False
 
 node_streams:
   secondary_node_port_eng_data:

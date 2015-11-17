@@ -4,8 +4,9 @@ node_meta_data:
   node_id_name: SN0024-MJ01B
   node_type: MPJBox
   oms_sample_rate: 60
-  reference_designator: MJ01B
+  reference_designator: RS01SUM1-MJ01B
   serial_number: SN0024
+  read_only_mode: True
 
 node_streams:
   secondary_node_port_eng_data:

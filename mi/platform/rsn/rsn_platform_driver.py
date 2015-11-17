@@ -193,6 +193,9 @@ class RSNPlatformDriver(PlatformDriver):
 
         self.oms_sample_rate = self.nodeCfg.node_meta_data['oms_sample_rate']
 
+        self.read_only_mode = self.nodeCfg.node_meta_data['read_only_mode']
+        log.info("READ ONLY MODE: %s" % self.read_only_mode)
+
         self.nodeCfg.Print()
 
         self._construct_resource_schema()
@@ -592,6 +595,10 @@ class RSNPlatformDriver(PlatformDriver):
 
         @return  result of the execution
         """
+
+        if self.read_only_mode:
+            raise  PlatformException("Command %s not executed: Platform in READ ONLY mode." % cmd)
+
         return self._fsm.on_event(cmd, *args, **kwargs)
 
     def _handler_connected_start_profiler_mission(self, *args, **kwargs):
