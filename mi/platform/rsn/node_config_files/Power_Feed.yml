@@ -7,6 +7,7 @@ node_meta_data:
   node_type: PFE
   oms_sample_rate: 300
   serial_number: N/A
+  read_only_mode: True
 
 node_streams:
   shore_station_power_feed_equipment_eng_data:

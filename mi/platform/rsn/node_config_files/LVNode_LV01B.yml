@@ -4,8 +4,9 @@ node_meta_data:
   node_id_name: SN0044-LV01B
   node_type: LVNode
   oms_sample_rate: 60
-  reference_designator: LV01B
+  reference_designator: RS01SUM1-LV01B
   serial_number: SN0044
+  read_only_mode: True
 
 node_streams:
   secondary_node_port_eng_data:

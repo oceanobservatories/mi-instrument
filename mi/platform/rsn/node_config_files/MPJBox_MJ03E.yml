@@ -4,8 +4,9 @@ node_meta_data:
   node_id_name: SN0030-MJ03E
   node_type: MPJBox
   oms_sample_rate: 60
-  reference_designator: MJ03E
+  reference_designator: RS03ECAL-MJ03E
   serial_number: SN0030
+  read_only_mode: True
 
 node_streams:
   secondary_node_port_eng_data:
