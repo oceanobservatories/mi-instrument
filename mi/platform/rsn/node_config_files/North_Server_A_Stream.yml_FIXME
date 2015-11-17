@@ -4,6 +4,7 @@ node_meta_data:
     location: Shore Station
     node_type: Shore Station
     reference_designator: na    
+    read_only_mode: True
 port_info:
 node_streams:
     facilities:

@@ -4,8 +4,9 @@ node_meta_data:
   node_id_name: SN0004-LJ01B
   node_type: LPJBox
   oms_sample_rate: 60
-  reference_designator: LJ01B
+  reference_designator: RS01SUM1-LJ01B
   serial_number: SN0004
+  read_only_mode: True
 
 node_streams:
   secondary_node_port_eng_data:

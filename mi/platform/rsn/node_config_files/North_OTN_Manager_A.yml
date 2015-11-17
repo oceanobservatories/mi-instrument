@@ -4,6 +4,7 @@ node_meta_data:
   node_id_name: North OTN Manager A
   oms_sample_rate: 300
   reference_designator: North OTN Manager A
+  read_only_mode: True
 
 node_streams:
   shore_station_optical_transport_network_seaside_port_data:

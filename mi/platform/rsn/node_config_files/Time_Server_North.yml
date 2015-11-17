@@ -4,6 +4,7 @@ node_meta_data:
   node_id_name: Time Server North
   oms_sample_rate: 300
   reference_designator: Time Server North
+  read_only_mode: True
 
 node_streams:
   shore_station_time_server_eng_data:
