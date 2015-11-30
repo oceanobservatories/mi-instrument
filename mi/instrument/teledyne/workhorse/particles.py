@@ -59,6 +59,8 @@ class AdcpPd0ParsedKey(BaseEnum):
     SYSCONFIG_SENSOR_CONFIG = "sysconfig_sensor_config"
     SYSCONFIG_HEAD_ATTACHED = "sysconfig_head_attached"
     SYSCONFIG_VERTICAL_ORIENTATION = "sysconfig_vertical_orientation"
+    SYSCONFIG_BEAM_ANGLE = "sysconfig_beam_angle"
+    SYSCONFIG_BEAM_CONFIG = "sysconfig_beam_config"
     DATA_FLAG = "data_flag"
     LAG_LENGTH = "lag_length"
     NUM_BEAMS = "num_beams"
@@ -88,6 +90,7 @@ class AdcpPd0ParsedKey(BaseEnum):
     SENSOR_SOURCE_ROLL = "sensor_source_roll"
     SENSOR_SOURCE_CONDUCTIVITY = "sensor_source_conductivity"
     SENSOR_SOURCE_TEMPERATURE = "sensor_source_temperature"
+    SENSOR_AVAILABLE_SPEED = "sensor_available_speed"
     SENSOR_AVAILABLE_DEPTH = "sensor_available_depth"
     SENSOR_AVAILABLE_HEADING = "sensor_available_heading"
     SENSOR_AVAILABLE_PITCH = "sensor_available_pitch"
@@ -138,11 +141,11 @@ class AdcpPd0ParsedKey(BaseEnum):
     ABSOLUTE_PRESSURE = "pressure"
     PRESSURE_VARIANCE = "pressure_variance"
     VELOCITY_DATA_ID = "velocity_data_id"
-    BEAM_1_VELOCITY = "velocity_beam_1"
-    BEAM_2_VELOCITY = "velocity_beam_2"
-    BEAM_3_VELOCITY = "velocity_beam_3"
-    BEAM_4_VELOCITY = "velocity_beam_4"
-    BEAM_5_VELOCITY = "velocity_beam_5"
+    BEAM_1_VELOCITY = "velocity_beam1"
+    BEAM_2_VELOCITY = "velocity_beam2"
+    BEAM_3_VELOCITY = "velocity_beam3"
+    BEAM_4_VELOCITY = "velocity_beam4"
+    BEAM_5_VELOCITY = "velocity_beam5"
     WATER_VELOCITY_EAST = "water_velocity_east"
     WATER_VELOCITY_NORTH = "water_velocity_north"
     WATER_VELOCITY_UP = "water_velocity_up"
@@ -404,6 +407,8 @@ class AdcpPd0ConfigParticle(Pd0DataParticle):
             (AdcpPd0ParsedKey.SYSCONFIG_SENSOR_CONFIG, record.sysconfig.sensor_config),
             (AdcpPd0ParsedKey.SYSCONFIG_HEAD_ATTACHED, record.sysconfig.xdcr_head_attached),
             (AdcpPd0ParsedKey.SYSCONFIG_VERTICAL_ORIENTATION, record.sysconfig.beam_facing),
+            (AdcpPd0ParsedKey.SYSCONFIG_BEAM_ANGLE, record.sysconfig.beam_angle),
+            (AdcpPd0ParsedKey.SYSCONFIG_BEAM_CONFIG, record.sysconfig.janus_config),
             # COORD TRANSFORM BITMAP
             (AdcpPd0ParsedKey.COORD_TRANSFORM_TYPE, record.coord_transform.coord_transform),
             (AdcpPd0ParsedKey.COORD_TRANSFORM_TILTS, record.coord_transform.tilts_used),
@@ -418,6 +423,7 @@ class AdcpPd0ConfigParticle(Pd0DataParticle):
             (AdcpPd0ParsedKey.SENSOR_SOURCE_CONDUCTIVITY, record.sensor_source.conductivity_used),
             (AdcpPd0ParsedKey.SENSOR_SOURCE_TEMPERATURE, record.sensor_source.temperature_used),
             # SENSOR AVAIL BITMAP
+            (AdcpPd0ParsedKey.SENSOR_AVAILABLE_SPEED, record.sensor_avail.speed_avail),
             (AdcpPd0ParsedKey.SENSOR_AVAILABLE_DEPTH, record.sensor_avail.depth_avail),
             (AdcpPd0ParsedKey.SENSOR_AVAILABLE_HEADING, record.sensor_avail.heading_avail),
             (AdcpPd0ParsedKey.SENSOR_AVAILABLE_PITCH, record.sensor_avail.pitch_avail),
