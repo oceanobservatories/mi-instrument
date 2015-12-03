@@ -1,11 +1,11 @@
 node_meta_data:
   description: Winch Controller Axial Base
   location: Axial Base
-  node_id_name: SN0122-SC03A
+  node_id_name: SN0125-SC03A
   node_type: WinchController
-  oms_sample_rate: 60
-  reference_designator: SC03A
-  serial_number: SN0122
+  oms_sample_rate: 5
+  reference_designator: RS03AXPS-SC03A
+  serial_number: SN0125
   read_only_mode: True
 
 node_streams:

@@ -2,23 +2,23 @@ node_meta_data:
   description: Node 3B OOB.PT A
   location: Shore Station
   node_id_name: Node 3B OOB.PT A
-  oms_sample_rate: 300
-  reference_designator: Node 3B OOB.PT A
+  oms_sample_rate: 10
+  reference_designator: RS01SHDR-PN01B
   read_only_mode: True
 
 node_streams:
   primary_node_out_of_band_port_data:
-    - name: PN3B_PRI
+    - name: PN3B-PRI
       port_name: PrimaryEgress
-    - name: PN3B_SP1
+    - name: PN3B-SP1
       port_name: SciencePort1
-    - name: PN3B_SP2
+    - name: PN3B-SP2
       port_name: SciencePort2
-    - name: PN3B_SP3
+    - name: PN3B-SP3
       port_name: SciencePort3
-    - name: PN3B_SP4
+    - name: PN3B-SP4
       port_name: SciencePort4
-    - name: PN3B_SP5
+    - name: PN3B-SP5
       port_name: SciencePort5
-    - name: PN3B_SP6
+    - name: PN3B-SP6
       port_name: SciencePort6

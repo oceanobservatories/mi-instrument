@@ -3,7 +3,7 @@ node_meta_data:
   location: AXVM
   node_id_name: SN0046-LV03A
   node_type: LVNode
-  oms_sample_rate: 60
+  oms_sample_rate: 5
   reference_designator: RS03AXPS-LV03A
   serial_number: SN0046
   read_only_mode: True
