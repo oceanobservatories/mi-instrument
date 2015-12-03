@@ -3,7 +3,7 @@ node_meta_data:
   location: CCAL
   node_id_name: SN0031-MJ03F
   node_type: MPJBox
-  oms_sample_rate: 60
+  oms_sample_rate: 5
   reference_designator: RS03CCAL-MJ03F
   serial_number: SN0031
   read_only_mode: True

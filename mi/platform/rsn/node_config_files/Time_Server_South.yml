@@ -3,7 +3,7 @@ node_meta_data:
   location: Shore Station
   node_id_name: Time Server South
   oms_sample_rate: 3
-  reference_designator: Time Server South
+  reference_designator: SSRSPACC-TS00S
   read_only_mode: True
 
 node_streams:

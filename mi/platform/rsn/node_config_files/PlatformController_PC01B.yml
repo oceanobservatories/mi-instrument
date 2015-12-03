@@ -1,36 +1,39 @@
 node_meta_data:
-  description: MPJbox Endurance
-  location: Endurance Shelf
-  node_id_name: SN0025-MJ01C
-  node_type: MPJBox
+  description: Platform Controller
+  location: N/A
+  node_id_name: SN0105-PC01B
+  node_type: PlatformController
   oms_sample_rate: 5
-  reference_designator: CE02SHBP-MJ01C
-  serial_number: SN0025
+  reference_designator: RS01OSBP-PC01B
+  serial_number: SN0105
   read_only_mode: True
 
 node_streams:
   secondary_node_port_eng_data:
+    - port_type: Expansion
+      port_num: 0
+      name: 02-EP1
     - port_type: Instrument
       port_num: 0
-      name: 05-IP1
+      name: 04A-IP1
     - port_type: Instrument
       port_num: 1
-      name: 06-IP2
+      name: 04B-IP2
     - port_type: Instrument
       port_num: 2
-      name: 07-IP3
+      name: 04D-IP4
     - port_type: Instrument
       port_num: 3
-      name: 08-IP4
+      name: 5-IP8
   secondary_node_eng_data:
     - name: 00-ENG
 
 port_info:
-  J05-IP1:
+  J04A-IP1:
     port_oms_port_cntl_id: 0
-  J06-IP2:
+  J04B-IP2:
     port_oms_port_cntl_id: 1
-  J07-IP3:
+  J04D-IP4:
     port_oms_port_cntl_id: 2
-  J08-IP4:
+  J5-IP8:
     port_oms_port_cntl_id: 3

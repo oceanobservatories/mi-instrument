@@ -2,17 +2,17 @@ node_meta_data:
   description: UPS A
   location: Shore Station
   node_id_name: UPS A
-  oms_sample_rate: 300
-  reference_designator: UPS A
+  oms_sample_rate: 10
+  reference_designator: SSRSPACC-UPS0A
   read_only_mode: True
 
 node_streams:
   shore_station_ups_line_eng_data:
   - name: LINE1
-    linenum: 1
+    line_num: 1
   - name: LINE2
-    linenum: 2
+    line_num: 2
   - name: LINE3
-    linenum: 3
+    line_num: 3
   shore_station_ups_status:
   - name: STATUS
