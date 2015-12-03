@@ -51,7 +51,7 @@ class PacketLogUnitTest(TestCase):
         PacketLog.base_dir = './antelope_data'
         log.create(*header_values)
 
-        self.assertEqual(log.absname, './antelope_data/antelope/refdes/1970/01/01/'
+        self.assertEqual(log.absname, './antelope_data/refdes/1970/01/01/'
                                       'OO.AXAS1.XX.EHE.1970-01-01T00:00:01.000000.mseed')
 
     def test_log_add_packet(self):

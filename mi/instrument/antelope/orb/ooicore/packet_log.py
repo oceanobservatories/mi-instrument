@@ -155,12 +155,12 @@ class PacketLog(object):
             year = str(packet_start_time.year)
             month = '%02d' % packet_start_time.month
             day = '%02d' % packet_start_time.day
-            self._relpath = os.path.join('antelope', self.header.refdes, year, month, day)
+            self._relpath = os.path.join(year, month, day)
         return self._relpath
 
     @property
     def abspath(self):
-        return os.path.join(self.base_dir, self.relpath)
+        return os.path.join(self.base_dir, self.header.refdes, self.relpath)
 
     @property
     def relname(self):
@@ -168,7 +168,7 @@ class PacketLog(object):
 
     @property
     def absname(self):
-        return os.path.join(self.base_dir, self.relname)
+        return os.path.join(self.base_dir, self.header.refdes, self.relname)
 
     def add_packet(self, packet):
         if self.header.starttime > packet['time'] or packet['time'] >= self.header.maxtime:
