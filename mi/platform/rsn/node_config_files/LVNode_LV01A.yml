@@ -3,7 +3,7 @@ node_meta_data:
   location: SBVM
   node_id_name: SN0043-LV01A
   node_type: LVNode
-  oms_sample_rate: 60
+  oms_sample_rate: 5
   reference_designator: RS01SBPS-LV01A
   serial_number: SN0043
   read_only_mode: True

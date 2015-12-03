@@ -2,8 +2,8 @@ node_meta_data:
   description: Time Server North
   location: Shore Station
   node_id_name: Time Server North
-  oms_sample_rate: 300
-  reference_designator: Time Server North
+  oms_sample_rate: 10
+  reference_designator: SSRSPACC-TS00N
   read_only_mode: True
 
 node_streams:

@@ -371,7 +371,7 @@ streams:
       monitor_cycle_seconds: 300.0
       scale_factor: 1
 
-  shore_station_optical_transport_network_seaside_port_data:
+  shore_station_otn_sea_side_port_data:
     variables:
     - interface_num
     parameters:
@@ -412,7 +412,7 @@ streams:
       monitor_cycle_seconds: 600.0
       scale_factor: 1
 
-  shore_station_optical_transport_network_shoreside_port_data:
+  shore_station_otn_shore_side_port_data:
     variables:
     - interface_num
     parameters:
@@ -559,7 +559,7 @@ streams:
     - omc_parameter_name: Shallow Profiler Winch Control Cable Out
       ion_parameter_name: sp_wc_cable_out
       monitor_cycle_seconds: 3
-      scale_factor: 1
+      scale_factor: 0.001
     - omc_parameter_name: Shallow Profiler Winch Control Is Bottom Layer
       ion_parameter_name: sp_wc_is_bottom_layer
       monitor_cycle_seconds: 3
@@ -670,7 +670,7 @@ streams:
       monitor_cycle_seconds: 660.0
       scale_factor: 1
 
-  shore_station_shore_station_ups_status:
+  shore_station_ups_status:
     variables: null
     parameters:
     - omc_parameter_name: sysUpTime

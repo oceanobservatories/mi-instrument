@@ -3,7 +3,7 @@ node_meta_data:
   location: ECAL
   node_id_name: SN0030-MJ03E
   node_type: MPJBox
-  oms_sample_rate: 60
+  oms_sample_rate: 5
   reference_designator: RS03ECAL-MJ03E
   serial_number: SN0030
   read_only_mode: True
