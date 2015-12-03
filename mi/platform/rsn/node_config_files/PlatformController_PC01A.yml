@@ -1,51 +1,59 @@
 node_meta_data:
-  description: Shelf BEP
-  location: SHBP
-  node_id_name: SN0009-LJ01D
-  node_type: LPJBox
+  description: Platform Controller
+  location: N/A
+  node_id_name: SN0104-PC01A
+  node_type: PlatformController
   oms_sample_rate: 5
-  reference_designator: CE02SHBP-LJ01D
-  serial_number: SN0009
+  reference_designator: RS01SBPS-PC01A
+  serial_number: SN0104
   read_only_mode: True
 
 node_streams:
   secondary_node_port_eng_data:
+    - port_type: Expansion
+      port_num: 0
+      name: 02-EP1
     - port_type: Instrument
       port_num: 0
-      name: 05-IP1
+      name: 04A-IP1
     - port_type: Instrument
       port_num: 1
-      name: 06-IP2
+      name: 04B-IP2
     - port_type: Instrument
       port_num: 2
-      name: 07-IP3
+      name: 04C-IP3
     - port_type: Instrument
       port_num: 3
-      name: 08-IP4
+      name: 08-IP8
     - port_type: Instrument
       port_num: 4
-      name: 09-IP5
+      name: 05-IP9
     - port_type: Instrument
       port_num: 5
-      name: 10-IP6
+      name: 06-IP10
     - port_type: Instrument
       port_num: 6
-      name: 11-IP7
+      name: 06-IP11
+    - port_type: Instrument
+      port_num: 7
+      name: 07-IP12
   secondary_node_eng_data:
     - name: 00-ENG
 
 port_info:
-  J05-IP1:
+  J04A-IP1:
     port_oms_port_cntl_id: 0
-  J06-IP2:
+  J04B-IP2:
     port_oms_port_cntl_id: 1
-  J07-IP3:
+  J04C-IP3:
     port_oms_port_cntl_id: 2
-  J08-IP4:
+  J08-IP8:
     port_oms_port_cntl_id: 3
-  J09-IP5:
+  J05-IP9:
     port_oms_port_cntl_id: 4
-  J10-IP6:
+  J06-IP10:
     port_oms_port_cntl_id: 5
-  J11-IP7:
+  J06-IP11:
     port_oms_port_cntl_id: 6
+  J07-IP12:
+    port_oms_port_cntl_id: 7

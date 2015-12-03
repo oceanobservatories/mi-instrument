@@ -3,7 +3,7 @@ node_meta_data:
   location: SUM2
   node_id_name: SN0024-MJ01B
   node_type: MPJBox
-  oms_sample_rate: 60
+  oms_sample_rate: 5
   reference_designator: RS01SUM1-MJ01B
   serial_number: SN0024
   read_only_mode: True

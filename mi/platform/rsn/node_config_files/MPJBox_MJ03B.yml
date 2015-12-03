@@ -3,7 +3,7 @@ node_meta_data:
   location: ASHS
   node_id_name: SN0033-MJ03B
   node_type: MPJBox
-  oms_sample_rate: 60
+  oms_sample_rate: 5
   reference_designator: RS03ASHS-MJ03B
   serial_number: SN0033
   read_only_mode: True
