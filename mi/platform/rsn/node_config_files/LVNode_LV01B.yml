@@ -3,7 +3,7 @@ node_meta_data:
   location: Hydrate Summit
   node_id_name: SN0044-LV01B
   node_type: LVNode
-  oms_sample_rate: 60
+  oms_sample_rate: 5
   reference_designator: RS01SUM1-LV01B
   serial_number: SN0044
   read_only_mode: True

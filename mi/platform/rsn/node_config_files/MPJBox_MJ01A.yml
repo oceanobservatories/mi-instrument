@@ -3,7 +3,7 @@ node_meta_data:
   location: Slope Base (SLBS)
   node_id_name: SN0026-MJ01A
   node_type: MPJBox
-  oms_sample_rate: 60
+  oms_sample_rate: 5
   reference_designator: RS01SLBS-MJ01A
   serial_number: SN0026
   read_only_mode: True

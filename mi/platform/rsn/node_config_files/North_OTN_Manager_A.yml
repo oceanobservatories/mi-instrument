@@ -2,39 +2,39 @@ node_meta_data:
   description: North OTN Manager A
   location: Shore Station
   node_id_name: North OTN Manager A
-  oms_sample_rate: 300
-  reference_designator: North OTN Manager A
+  oms_sample_rate: 10
+  reference_designator: SSRSPACC-OTNNA
   read_only_mode: True
 
 node_streams:
-  shore_station_optical_transport_network_seaside_port_data:
-  - name: 01_SEA
+  shore_station_otn_sea_side_port_data:
+  - name: 01-SEA
     interface_num: 1
-  - name: 02_SEA
+  - name: 02-SEA
     interface_num: 2
-  - name: 03_SEA
+  - name: 03-SEA
     interface_num: 3
-  - name: 04_SEA
+  - name: 04-SEA
     interface_num: 4
-  - name: 05_SEA
+  - name: 05-SEA
     interface_num: 5
-  - name: 06_SEA
+  - name: 06-SEA
     interface_num: 6
-  - name: 07_SEA
+  - name: 07-SEA
     interface_num: 7
 
-  shore_station_optical_transport_network_shoreside_port_data:
-  - name: 01_SHORE
+  shore_station_otn_shore_side_port_data:
+  - name: 01-SHORE
     interface_num: 1
-  - name: 02_SHORE
+  - name: 02-SHORE
     interface_num: 2
-  - name: 03_SHORE
+  - name: 03-SHORE
     interface_num: 3
-  - name: 04_SHORE
+  - name: 04-SHORE
     interface_num: 4
-  - name: 05_SHORE
+  - name: 05-SHORE
     interface_num: 5
-  - name: 06_SHORE
+  - name: 06-SHORE
     interface_num: 6
-  - name: 07_SHORE
+  - name: 07-SHORE
     interface_num: 7

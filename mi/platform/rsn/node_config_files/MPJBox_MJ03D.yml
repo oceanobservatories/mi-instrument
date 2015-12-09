@@ -3,7 +3,7 @@ node_meta_data:
   location: INT2
   node_id_name: SN0029-MJ03D
   node_type: MPJBox
-  oms_sample_rate: 60
+  oms_sample_rate: 5
   reference_designator: RS03INT2-MJ03D
   serial_number: SN0029
   read_only_mode: True

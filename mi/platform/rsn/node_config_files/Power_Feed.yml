@@ -1,14 +1,14 @@
 node_meta_data:
-  description: pfe
+  description: Power Feed
   location: Shore Station
-  node_id_name: pfe
-  reference_designator: pfe
+  node_id_name: Power Feed
+  reference_designator: SSRSPACC-PFE00
   nms_source: 0
   node_type: PFE
-  oms_sample_rate: 300
+  oms_sample_rate: 10
   serial_number: N/A
   read_only_mode: True
 
 node_streams:
   shore_station_power_feed_equipment_eng_data:
-  - name: STATUS
+  - name: 00-STATUS
