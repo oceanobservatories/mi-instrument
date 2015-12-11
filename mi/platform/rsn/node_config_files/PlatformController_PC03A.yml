@@ -23,19 +23,19 @@ node_streams:
       port_num: 2
       name: 04C-IP3
     - port_type: Instrument
-      port_num: 3
+      port_num: 7
       name: 08-IP8
     - port_type: Instrument
-      port_num: 4
+      port_num: 8
       name: 05-IP9
     - port_type: Instrument
-      port_num: 5
+      port_num: 9
       name: 06-IP10
     - port_type: Instrument
-      port_num: 6
+      port_num: 10
       name: 06-IP11
     - port_type: Instrument
-      port_num: 7
+      port_num: 11
       name: 07-IP12
   secondary_node_eng_data:
     - name: 00-ENG
@@ -48,12 +48,12 @@ port_info:
   J04C-IP3:
     port_oms_port_cntl_id: 2
   J08-IP8:
-    port_oms_port_cntl_id: 3
-  J05-IP9:
-    port_oms_port_cntl_id: 4
-  J06-IP10:
-    port_oms_port_cntl_id: 5
-  J06-IP11:
-    port_oms_port_cntl_id: 6
-  J07-IP12:
     port_oms_port_cntl_id: 7
+  J05-IP9:
+    port_oms_port_cntl_id: 8
+  J06-IP10:
+    port_oms_port_cntl_id: 9
+  J06-IP11:
+    port_oms_port_cntl_id: 10
+  J07-IP12:
+    port_oms_port_cntl_id: 11

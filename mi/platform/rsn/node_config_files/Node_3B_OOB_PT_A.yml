@@ -1,9 +1,9 @@
 node_meta_data:
   description: Node 3B OOB.PT A
-  location: Shore Station
+  location: Axial Caldera
   node_id_name: Node 3B OOB.PT A
   oms_sample_rate: 10
-  reference_designator: RS01SHDR-PN01B
+  reference_designator: RS03AXSM-PN03B
   read_only_mode: True
 
 node_streams:

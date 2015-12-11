@@ -1,0 +1,40 @@
+node_meta_data:
+  description: South OTN Manager A
+  location: Shore Station
+  node_id_name: South OTN Manager A
+  oms_sample_rate: 10
+  reference_designator: SSRSPACC-OTNSA
+  read_only_mode: True
+
+node_streams:
+  shore_station_otn_sea_side_port_data:
+  - name: 01-SEA
+    interface_num: 1
+  - name: 02-SEA
+    interface_num: 2
+  - name: 03-SEA
+    interface_num: 3
+  - name: 04-SEA
+    interface_num: 4
+  - name: 05-SEA
+    interface_num: 5
+  - name: 06-SEA
+    interface_num: 6
+  - name: 07-SEA
+    interface_num: 7
+
+  shore_station_otn_shore_side_port_data:
+  - name: 01-SHORE
+    interface_num: 1
+  - name: 02-SHORE
+    interface_num: 2
+  - name: 03-SHORE
+    interface_num: 3
+  - name: 04-SHORE
+    interface_num: 4
+  - name: 05-SHORE
+    interface_num: 5
+  - name: 06-SHORE
+    interface_num: 6
+  - name: 07-SHORE
+    interface_num: 7
