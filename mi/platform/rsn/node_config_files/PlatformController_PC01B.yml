@@ -20,11 +20,11 @@ node_streams:
       port_num: 1
       name: 04B-IP2
     - port_type: Instrument
-      port_num: 2
+      port_num: 3
       name: 04D-IP4
     - port_type: Instrument
-      port_num: 3
-      name: 5-IP8
+      port_num: 7
+      name: 05-IP8
   secondary_node_eng_data:
     - name: 00-ENG
 
@@ -34,6 +34,6 @@ port_info:
   J04B-IP2:
     port_oms_port_cntl_id: 1
   J04D-IP4:
-    port_oms_port_cntl_id: 2
-  J5-IP8:
     port_oms_port_cntl_id: 3
+  J5-IP8:
+    port_oms_port_cntl_id: 7

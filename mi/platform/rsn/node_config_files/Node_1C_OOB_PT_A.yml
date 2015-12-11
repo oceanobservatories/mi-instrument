@@ -1,18 +1,18 @@
 node_meta_data:
-  description: Node 3A OOB.PT A
-  location: Axial Base
-  node_id_name: Node 3A OOB.PT A
+  description: Node 1C OOB.PT A
+  location: Endurance Off Shore
+  node_id_name: Node 1C OOB.PT A
   oms_sample_rate: 10
-  reference_designator: RS03AXBS-PN03A
+  reference_designator: RS01OSBP-PN01C
   read_only_mode: True
 
 node_streams:
   primary_node_out_of_band_port_data:
-    - name: PN3A-PRI
+    - name: PN1C-PRI
       port_name: PrimaryEgress
-    - name: PN3A-SP1
+    - name: PN1C-SP1
       port_name: SciencePort1
-    - name: PN3A-SP2
+    - name: PN1C-SP2
       port_name: SciencePort2
-    - name: PN3A-SP3
+    - name: PN1C-SP3
       port_name: SciencePort3

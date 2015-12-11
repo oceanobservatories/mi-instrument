@@ -1,0 +1,12 @@
+node_meta_data:
+  description: Deep Profiler Dock 1A
+  location: Slope Base
+  node_id_name: SN0202-PD01A
+  oms_sample_rate: 10
+  reference_designator: RS01SLBS-PD01A
+  serial_number: SN0202
+  read_only_mode: True
+
+node_streams:
+  deep_profiler_dock_eng_data:
+    - name: 00-ENG

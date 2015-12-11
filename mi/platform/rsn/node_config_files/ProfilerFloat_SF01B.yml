@@ -14,28 +14,28 @@ node_streams:
       port_num: 0
       name: 02A-IP1
     - port_type: Instrument
-      port_num: 1
+      port_num: 2
       name: 02D-IP3
     - port_type: Instrument
-      port_num: 2
+      port_num: 6
       name: 03A-IP7
     - port_type: Instrument
-      port_num: 3
+      port_num: 7
       name: 03B-IP8
     - port_type: Instrument
-      port_num: 4
+      port_num: 8
       name: 03C-IP9
     - port_type: Instrument
-      port_num: 5
+      port_num: 9
       name: 03-IP10
     - port_type: Instrument
-      port_num: 6
+      port_num: 11
       name: 04A-IP12
     - port_type: Instrument
-      port_num: 7
+      port_num: 12
       name: 04B-IP13
     - port_type: Instrument
-      port_num: 8
+      port_num: 14
       name: 04F-IP15
   secondary_node_eng_data:
     - name: 00-ENG
@@ -44,18 +44,18 @@ port_info:
   J02A-IP1:
     port_oms_port_cntl_id: 0
   J02D-IP3:
-    port_oms_port_cntl_id: 1
-  J03A-IP7:
     port_oms_port_cntl_id: 2
-  J03B-IP8:
-    port_oms_port_cntl_id: 3
-  J03C-IP9:
-    port_oms_port_cntl_id: 4
-  J03-IP10:
-    port_oms_port_cntl_id: 5
-  J04A-IP12:
+  J03A-IP7:
     port_oms_port_cntl_id: 6
-  J04B-IP13:
+  J03B-IP8:
     port_oms_port_cntl_id: 7
-  J04F-IP15:
+  J03C-IP9:
     port_oms_port_cntl_id: 8
+  J03-IP10:
+    port_oms_port_cntl_id: 9
+  J04A-IP12:
+    port_oms_port_cntl_id: 11
+  J04B-IP13:
+    port_oms_port_cntl_id: 12
+  J04F-IP15:
+    port_oms_port_cntl_id: 14

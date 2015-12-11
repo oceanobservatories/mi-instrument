@@ -1,0 +1,12 @@
+node_meta_data:
+  description: Node 1B LVPS
+  location: Southern Hydrate
+  node_id_name: Node 1B LVPS
+  oms_sample_rate: 10
+  reference_designator: RS01SHDR-PN01B
+  read_only_mode: True
+
+node_streams:
+  primary_node_eng_data:
+    - name: PN1B-LVPS
+

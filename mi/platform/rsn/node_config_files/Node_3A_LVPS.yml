@@ -1,0 +1,12 @@
+node_meta_data:
+  description: Node 3A LVPS
+  location: Axial Base
+  node_id_name: Node 3A LVPS
+  oms_sample_rate: 10
+  reference_designator: RS03AXBS-PN03A
+  read_only_mode: True
+
+node_streams:
+  primary_node_eng_data:
+    - name: PN3A-LVPS
+
