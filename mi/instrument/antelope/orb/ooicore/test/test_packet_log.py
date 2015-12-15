@@ -33,8 +33,9 @@ class PacketLogUnitTest(TestCase):
 
         self.assertEqual(header.time, '1970-01-01T00:00:01.000000')
         self.assertEqual(header.delta, 1.0 / header_values.rate)
-        self.assertEqual(header.name, 'OO.AXAS1.XX.EHE')
+        self.assertEqual(header.name, 'OO-AXAS1-XX-EHE')
         self.assertEqual(header.endtime, header.starttime)
+        self.assertEqual(header.fname, 'OO-AXAS1-XX-EHE-1970-01-01T00:00:01.000000.mseed')
 
         # add some samples, verify the endtime advances
         header.num_samples = 200
@@ -52,7 +53,7 @@ class PacketLogUnitTest(TestCase):
         log.create(*header_values)
 
         self.assertEqual(log.absname, './antelope_data/refdes/1970/01/01/'
-                                      'OO.AXAS1.XX.EHE.1970-01-01T00:00:01.000000.mseed')
+                                      'OO-AXAS1-XX-EHE-1970-01-01T00:00:01.000000.mseed')
 
     def test_log_add_packet(self):
         packet_log = PacketLog()

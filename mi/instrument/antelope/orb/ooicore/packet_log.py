@@ -74,11 +74,11 @@ class PacketLogHeader(object):
 
     @property
     def name(self):
-        return '%s.%s.%s.%s' % (self.net, self.station, self.location, self.channel)
+        return '-'.join((self.net, self.station, self.location, self.channel))
 
     @property
     def fname(self):
-        return '%s.%s.mseed' % (self.name, self.time)
+        return '%s-%s.mseed' % (self.name, self.time)
 
     @property
     def stats(self):
@@ -164,7 +164,7 @@ class PacketLog(object):
 
     @property
     def relname(self):
-        return os.path.join(self.relpath, self.header.name + '.' + self.header.time + '.mseed')
+        return os.path.join(self.relpath, self.header.fname)
 
     @property
     def absname(self):
