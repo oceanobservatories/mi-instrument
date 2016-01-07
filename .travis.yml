@@ -1,13 +1,23 @@
 language: python
 python:
   - "2.7"
-# command to install dependencies
+notifications:
+  slack: ooi-dev:e6WpBt9NHHw1YJjRKuYHkhYr
+
+# Setup anaconda
+before_install:
+  - wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
+  - chmod +x miniconda.sh
+  - ./miniconda.sh -b
+  - export PATH=/home/travis/miniconda/bin:$PATH
+  - conda update --yes conda
+
+# Install packages
 install:
-  - "pip install cython"
+  - conda install --yes python=$TRAVIS_PYTHON_VERSION numpy scipy matplotlib nose cython pyzmq
   - "pip install git+http://github.com/oceanobservatories/ooi_port_agent"
   - "pip install -r requirements.txt"
+
 # command to run tests
 script: nosetests -a UNIT
 
-notifications:
-  slack: ooi-dev:e6WpBt9NHHw1YJjRKuYHkhYr
