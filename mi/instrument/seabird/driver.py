@@ -7,6 +7,7 @@ Release notes:
 
 None.
 """
+import datetime
 
 __author__ = 'Roger Unwin'
 __license__ = 'Apache 2.0'
@@ -38,7 +39,7 @@ from mi.core.time_tools import get_timestamp_delayed
 NEWLINE = '\r\n'
 ESCAPE = "\x1b"
 
-SBE_EPOCH = 946713600 # Unix time for SBE epoch 2000-01-01 00:00:00
+SBE_EPOCH = (datetime.date(2000, 1, 1) - datetime.date(1970, 1, 1)).total_seconds()
 
 # default timeout.
 TIMEOUT = 20
@@ -190,12 +191,12 @@ class SeaBirdParticle(DataParticle):
         if raise_exception_if_none_found and len(children) == 0:
             raise SampleException("_extract_xml_element_value: No value for %s in input data: [%s]" % (tag, self.raw_data))
         return children[0].nodeValue
-    
+
     def _get_xml_parameter(self, xml_element, parameter_name, data_type=float):
         return {DataParticleKey.VALUE_ID: parameter_name,
                 DataParticleKey.VALUE: data_type(self._extract_xml_element_value(xml_element,
                                                                             self._map_param_to_xml_tag(parameter_name)))}
-        
+
     ########################################################################
     # Static helpers.
     ########################################################################

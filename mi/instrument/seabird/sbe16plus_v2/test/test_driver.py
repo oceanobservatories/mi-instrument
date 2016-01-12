@@ -433,16 +433,16 @@ class Sbe16plusUnitTestCase(InstrumentDriverUnitTestCase, SeaBird16plusMixin):
         """
         Verify the sbetime2unixtime method works as expected.
         """
-        value = time.localtime(Sbe16plusBaseParticle.sbetime2unixtime(0))
+        value = time.gmtime(Sbe16plusBaseParticle.sbetime2unixtime(0))
         self.assertEqual("2000-01-01 00:00:00", time.strftime("%Y-%m-%d %H:%M:%S", value))
 
-        value = time.localtime(Sbe16plusBaseParticle.sbetime2unixtime(5))
+        value = time.gmtime(Sbe16plusBaseParticle.sbetime2unixtime(5))
         self.assertEqual("2000-01-01 00:00:05", time.strftime("%Y-%m-%d %H:%M:%S", value))
 
-        value = time.localtime(Sbe16plusBaseParticle.sbetime2unixtime(604800))
+        value = time.gmtime(Sbe16plusBaseParticle.sbetime2unixtime(604800))
         self.assertEqual("2000-01-08 00:00:00", time.strftime("%Y-%m-%d %H:%M:%S", value))
 
-        value = time.localtime(Sbe16plusBaseParticle.sbetime2unixtime(-1))
+        value = time.gmtime(Sbe16plusBaseParticle.sbetime2unixtime(-1))
         self.assertEqual("1999-12-31 23:59:59", time.strftime("%Y-%m-%d %H:%M:%S", value))
 
     def test_base_driver_enums(self):

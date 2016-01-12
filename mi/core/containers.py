@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import json
 
 __author__ = 'Adam R. Smith, Michael Meisinger'
 
@@ -7,7 +8,6 @@ import collections
 import datetime
 import string
 import time
-import simplejson
 import base64
 import uuid
 import os
@@ -369,7 +369,7 @@ def ion_object_encoder(obj):
     return obj.__dict__
 
 def make_json(data):
-    result = simplejson.dumps(data, default=ion_object_encoder, indent=2)
+    result = json.dumps(data, default=ion_object_encoder, indent=2)
     return result
 
 

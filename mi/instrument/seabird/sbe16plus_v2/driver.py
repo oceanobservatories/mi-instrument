@@ -1,10 +1,10 @@
 """
 @package mi.instrument.seabird.sbe26plus_v2.driver
 @file mi/instrument/seabird/sbe16plus_v2/driver.py
-@author David Everett 
+@author David Everett
 @brief Driver base class for sbe16plus V2 CTD instrument.
 """
-
+import datetime
 
 __author__ = 'David Everett'
 __license__ = 'Apache 2.0'
@@ -43,7 +43,7 @@ from mi.core.time_tools import get_timestamp_delayed
 
 WAKEUP_TIMEOUT = 3
 NEWLINE = '\r\n'
-SBE_EPOCH = 946713600  # Unix time for SBE epoch 2000-01-01 00:00:00
+SBE_EPOCH = (datetime.date(2000, 1, 1) - datetime.date(1970, 1, 1)).total_seconds()
 TIMEOUT = 20
 DEFAULT_ENCODER_KEY = '__default__'
 
@@ -470,7 +470,7 @@ class SBE16DataParticle(Sbe16plusBaseParticle):
         """
         Take something in the autosample/TS format and split it into
         C, T, and D values (with appropriate tags)
-        
+
         @throws SampleException If there is a problem with sample creation
         """
         match = SBE16DataParticle.regex_compiled().match(self.raw_data)
@@ -478,7 +478,7 @@ class SBE16DataParticle(Sbe16plusBaseParticle):
         if not match:
             raise SampleException("No regex match of parsed sample data: [%s]" %
                                   self.raw_data)
-            
+
         try:
             temperature = self.hex2value(match.group(1))
             conductivity = self.hex2value(match.group(2))
@@ -490,7 +490,7 @@ class SBE16DataParticle(Sbe16plusBaseParticle):
         except ValueError:
             raise SampleException("ValueError while converting data: [%s]" %
                                   self.raw_data)
-        
+
         result = [{DataParticleKey.VALUE_ID: SBE16DataParticleKey.TEMP,
                    DataParticleKey.VALUE: temperature},
                   {DataParticleKey.VALUE_ID: SBE16DataParticleKey.CONDUCTIVITY,
@@ -501,7 +501,7 @@ class SBE16DataParticle(Sbe16plusBaseParticle):
                    DataParticleKey.VALUE: pressure_temp},
                   {DataParticleKey.VALUE_ID: SBE16DataParticleKey.TIME,
                     DataParticleKey.VALUE: elapse_time}]
-        
+
         return result
 
 
@@ -608,11 +608,11 @@ class SBE16StatusParticle(Sbe16plusBaseParticle):
         """
         Take something in the autosample/TS format and split it into
         C, T, and D values (with appropriate tags)
-        
+
         @throws SampleException If there is a problem with sample creation
         """
         match = SBE16StatusParticle.regex_compiled().match(self.raw_data)
-        
+
         if not match:
             raise SampleException("No regex match of parsed status data: [%s]" %
                                   self.raw_data)
@@ -980,7 +980,7 @@ class SBE16Protocol(CommandResponseInstrumentProtocol):
         @param driver_event Driver process event callback.
         """
         CommandResponseInstrumentProtocol.__init__(self, prompts, newline, driver_event)
-        
+
         # Build SBE16 protocol state machine.
         self._protocol_fsm = InstrumentFSM(ProtocolState, ProtocolEvent, ProtocolEvent.ENTER, ProtocolEvent.EXIT)
 
@@ -1046,9 +1046,9 @@ class SBE16Protocol(CommandResponseInstrumentProtocol):
         self._add_response_handler(Command.GET_CC, self._parse_status_response)
         self._add_response_handler(Command.GET_EC, self._parse_status_response)
 
-        # State state machine in UNKNOWN state. 
+        # State state machine in UNKNOWN state.
         self._protocol_fsm.start(ProtocolState.UNKNOWN)
-        
+
         self._chunker = StringChunker(self.sieve_function)
 
         self._add_scheduler_event(ScheduledJob.ACQUIRE_STATUS, ProtocolEvent.ACQUIRE_STATUS)
@@ -1184,7 +1184,7 @@ class SBE16Protocol(CommandResponseInstrumentProtocol):
         # Raise if no parameter provided, or not a dict.
         try:
             params = args[0]
-            
+
         except IndexError:
             raise InstrumentParameterException('Set command requires a parameter dict.')
 
@@ -1195,7 +1195,7 @@ class SBE16Protocol(CommandResponseInstrumentProtocol):
             startup = args[1]
         except IndexError:
             pass
-        
+
         self._set_params(params, startup)
 
         return None, None
@@ -1256,7 +1256,7 @@ class SBE16Protocol(CommandResponseInstrumentProtocol):
         @throws InstrumentProtocolException if command could not be built or misunderstood.
         """
         self._start_logging(*args, **kwargs)
-        
+
         return ProtocolState.AUTOSAMPLE, (ResourceAgentState.STREAMING, None)
 
     def _handler_command_start_direct(self):
@@ -1267,7 +1267,7 @@ class SBE16Protocol(CommandResponseInstrumentProtocol):
 
     def _handler_command_clock_sync_clock(self, *args, **kwargs):
         """
-        sync clock close to a second edge 
+        sync clock close to a second edge
         @retval (next_state, result) tuple, (None, None) if successful.
         @throws InstrumentTimeoutException if device cannot be woken for command.
         @throws InstrumentProtocolException if command could not be built or misunderstood.
@@ -1355,7 +1355,7 @@ class SBE16Protocol(CommandResponseInstrumentProtocol):
         self._do_cmd_resp(Command.RESET_EC, timeout=TIMEOUT)
 
         return None, (None, ''.join(result))
-        
+
     ########################################################################
     # Common handlers.
     ########################################################################
@@ -1443,7 +1443,7 @@ class SBE16Protocol(CommandResponseInstrumentProtocol):
         Send a newline to attempt to wake the SBE16 device.
         """
         self._connection.send(NEWLINE)
-                
+
     def _update_params(self, *args, **kwargs):
         """
         Update the parameter dictionary. Wake the device then issue
@@ -1498,7 +1498,7 @@ class SBE16Protocol(CommandResponseInstrumentProtocol):
 
         except KeyError:
             raise InstrumentParameterException('Unknown driver parameter %s' % param)
-            
+
         return set_cmd
 
     def _find_error(self, response):
@@ -1534,10 +1534,10 @@ class SBE16Protocol(CommandResponseInstrumentProtocol):
         """
         Parse handler for status commands.
         @param response command response string.
-        @param prompt prompt following command response.        
+        @param prompt prompt following command response.
         @throws InstrumentProtocolException if command misunderstood.
         """
-        if prompt not in [Prompt.COMMAND, Prompt.EXECUTED]: 
+        if prompt not in [Prompt.COMMAND, Prompt.EXECUTED]:
             raise InstrumentProtocolException('Command not recognized: %s.' % response)
 
         for line in response.split(NEWLINE):
@@ -1893,7 +1893,7 @@ class SBE16Protocol(CommandResponseInstrumentProtocol):
         @retval A yes/no string formatted for sbe16 set operations.
         @throws InstrumentParameterException if value not a bool.
         """
-        
+
         if not isinstance(v,bool):
             raise InstrumentParameterException('Value %s is not a bool.' % str(v))
         if v:
