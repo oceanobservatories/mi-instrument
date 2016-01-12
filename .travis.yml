@@ -14,7 +14,7 @@ before_install:
 
 # Install packages
 install:
-  - conda install --yes python=$TRAVIS_PYTHON_VERSION numpy scipy matplotlib nose cython pyzmq gevent mock
+  - conda install --yes python=$TRAVIS_PYTHON_VERSION numpy scipy matplotlib nose cython pyzmq gevent mock psycopg2 twisted sqlalchemy
   - "pip install git+http://github.com/oceanobservatories/ooi_port_agent"
   - "pip install -r requirements.txt"
 

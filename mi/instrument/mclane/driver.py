@@ -307,12 +307,12 @@ class McLaneSampleDataParticle(DataParticle):
 
     def _build_parsed_values(self):
         match = McLaneSampleDataParticle.regex_compiled().match(self.raw_data)
+        if not match:
+            raise SampleException("RASFL_SampleDataParticle: No regex match of parsed sample data: [%s]", self.raw_data)
+
         timestamp = datetime.datetime.strptime(match.group('time'), '%m%d%y %H%M%S')
         timestamp = (timestamp - datetime.datetime(1900, 1, 1)).total_seconds()
         self.set_internal_timestamp(timestamp)
-
-        if not match:
-            raise SampleException("RASFL_SampleDataParticle: No regex match of parsed sample data: [%s]", self.raw_data)
 
         result = [
             {DataParticleKey.VALUE_ID: McLaneSampleDataParticleKey.PORT,

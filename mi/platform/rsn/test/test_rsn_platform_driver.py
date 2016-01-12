@@ -6,6 +6,7 @@
 @author  Carlos Rueda
 @brief   Some basic and direct tests to RSNPlatformDriver.
 """
+from mi.core.unit_test import MiUnitTestCase
 
 __author__ = 'Carlos Rueda'
 __license__ = 'Apache 2.0'
@@ -22,11 +23,8 @@ from mi.platform.rsn.oms_client_factory import CIOMSClientFactory
 
 from mi.platform.rsn.rsn_platform_driver import RSNPlatformDriver
 
-from mi.core.unit_test import IonIntegrationTestCase
-
 from nose.plugins.attrib import attr
 
-from gevent import sleep
 import os
 import ntplib
 import time
@@ -50,7 +48,7 @@ DVR_CONFIG = {
 
 
 @attr('INT', group='sa')
-class TestRsnPlatformDriver(IonIntegrationTestCase, HelperTestMixin):
+class TestRsnPlatformDriver(MiUnitTestCase, HelperTestMixin):
 
     testPlatform = None
 

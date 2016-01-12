@@ -148,6 +148,7 @@ class UtilMixin(DriverTestMixin):
 
     _driver_capabilities = {
         # capabilities defined in the IOS
+        Capability.DISCOVER: {STATES: [ProtocolState.UNKNOWN]},
         Capability.ACQUIRE_SAMPLE: {STATES: [ProtocolState.COMMAND, ProtocolState.AUTOSAMPLE]},
         Capability.START_AUTOSAMPLE: {STATES: [ProtocolState.COMMAND]},
         Capability.STOP_AUTOSAMPLE: {STATES: [ProtocolState.AUTOSAMPLE]},
@@ -195,7 +196,7 @@ class UtilMixin(DriverTestMixin):
 
     ###
     # Data Particle Parameters
-    ### 
+    ###
     _sample_parameters = {
         D1000TemperatureDataParticleKey.TEMP1: {'type': float, 'value': 19.16},
         D1000TemperatureDataParticleKey.TEMP2: {'type': float, 'value': 19.17},
@@ -239,7 +240,7 @@ class UtilMixin(DriverTestMixin):
 
     ###
     # Data Particle Parameters Methods
-    ### 
+    ###
     def assert_data_particle_sample(self, data_particle, verify_values=False):
         """
         Verify a sample data particle

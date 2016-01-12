@@ -14,9 +14,6 @@ I only did the minimal changes needed to at least avoid errors but all tests
 are skipped.
 """
 
-__author__ = 'Carlos Rueda'
-__license__ = 'Apache 2.0'
-
 import logging
 import unittest
 from mi.core.unit_test import MiUnitTest
@@ -24,15 +21,16 @@ from nose.plugins.attrib import attr
 from mock import Mock
 from mi.core.common import BaseEnum
 from mi.core.common import InstErrorCode
-#from ion.services.mi.common import DriverAnnouncement
 from mi.core.exceptions import InstrumentParameterException
 from mi.core.instrument.instrument_protocol import InstrumentProtocol
-from mi.core.instrument.instrument_driver import DriverState
 from mi.core.instrument.instrument_driver import InstrumentDriver
-#from ion.services.mi.instrument_driver import DriverChannel
 from mi.core.instrument.instrument_driver import DriverState, DriverConnectionState
 
-import mi.core.mi_logger
+
+__author__ = 'Carlos Rueda'
+__license__ = 'Apache 2.0'
+
+
 mi_logger = logging.getLogger('mi_logger')
 
 

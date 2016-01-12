@@ -400,7 +400,8 @@ class DriverUnitTest(InstrumentDriverUnitTestCase, TRHPHMixinSub):
                                        ProtocolEvent.SCHEDULED_ACQUIRE_STATUS],
 
             ProtocolState.DIRECT_ACCESS: [ProtocolEvent.STOP_DIRECT,
-                                          ProtocolEvent.EXECUTE_DIRECT],
+                                          ProtocolEvent.EXECUTE_DIRECT,
+                                          ProtocolEvent.SCHEDULED_ACQUIRE_STATUS],
 
             ProtocolState.UNKNOWN: [ProtocolEvent.DISCOVER]
         }

@@ -336,11 +336,11 @@ class BotptTestMixinSub(DriverTestMixin):
                              particles.IrisSampleParticleKey, self.iris_sample_parameters_02, verify_values)
 
     def assert_particle_heat_sample_01(self, data_particle, verify_values=False):
-        self.assert_particle(data_particle, particles.DataParticleType.IRIS_SAMPLE,
+        self.assert_particle(data_particle, particles.DataParticleType.HEAT_SAMPLE,
                              particles.HeatSampleParticleKey, self.heat_sample_parameters_01, verify_values)
 
     def assert_particle_heat_sample_02(self, data_particle, verify_values=False):
-        self.assert_particle(data_particle, particles.DataParticleType.IRIS_SAMPLE,
+        self.assert_particle(data_particle, particles.DataParticleType.HEAT_SAMPLE,
                              particles.HeatSampleParticleKey, self.heat_sample_parameters_02, verify_values)
 
     def assert_particle_botpt_status(self, data_particle, verify_values=False):

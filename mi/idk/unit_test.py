@@ -1440,9 +1440,9 @@ class InstrumentDriverUnitTestCase(InstrumentDriverTestCase):
             reported_capabilities = sorted(driver._protocol._protocol_fsm.get_events(current_state=True))
             expected_capabilities = sorted(capability_list)
 
-            log.debug("Current Driver State: %s", state)
-            log.debug("Expected Capabilities: %s", expected_capabilities)
-            log.debug("Reported Capabilities: %s", reported_capabilities)
+            log.error("Current Driver State: %s", state)
+            log.error("Expected Capabilities: %s", expected_capabilities)
+            log.error("Reported Capabilities: %s", reported_capabilities)
 
             self.assertEqual(reported_capabilities, expected_capabilities)
 
