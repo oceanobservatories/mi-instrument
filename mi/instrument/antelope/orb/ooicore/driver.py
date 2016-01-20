@@ -438,7 +438,7 @@ class Protocol(InstrumentProtocol):
 
     def _get_bin(self, packet):
         rate_map = {
-            1: 86400 * 7,   # 1 week
+            1: 86400,       # 1 day
             8: 86400,       # 1 day
             40: 86400,      # 1 day
             200: 86400,     # 1 day

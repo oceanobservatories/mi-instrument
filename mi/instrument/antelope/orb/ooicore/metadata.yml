@@ -1,0 +1,8 @@
+driver_metadata:
+  author: Pete Cable
+  driver_make: antelope
+  driver_model: orb
+  driver_name: ooicore
+  email: petercable@gmail.com
+  release_notes: 'initial version'
+  version: 1.0.0
