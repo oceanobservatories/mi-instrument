@@ -11,6 +11,7 @@ Release notes:
 Initial development
 """
 import datetime
+import time
 
 __author__ = 'Rachel Manoni'
 __license__ = 'Apache 2.0'
@@ -68,6 +69,8 @@ TIMEOUT = 30
 # Instrument class flort
 FLORT_CLASS = 'flort'
 
+STATUS_TIMEOUT = 10
+SAMPLE_TIMEOUT = 10
 
 ###
 #    Driver Constant Definitions
@@ -734,6 +737,19 @@ class Protocol(CommandResponseInstrumentProtocol):
 
         return return_list
 
+    def wait_for_particle(self, particle_class, timeout):
+        """
+        Wait for a particle to get generated within the specified timeout.
+        Return a list of particles
+        """
+        while time.time() < timeout:
+            if particle_class in self._particle_dict:
+                particle = self._particle_dict.pop(particle_class)
+                return [particle]
+            time.sleep(1)
+
+        return []
+
     def _filter_capabilities(self, events):
         """
         Return a list of currently available capabilities.
@@ -906,6 +922,9 @@ class Protocol(CommandResponseInstrumentProtocol):
         """
         Get one sample from the instrument
         """
+
+        timeout = time.time() + SAMPLE_TIMEOUT
+
         if self.__instrument_class__ == FLORT_CLASS:
             resp_regex = FLORT_SAMPLE_REGEX_MATCHER
         else:
@@ -914,7 +933,14 @@ class Protocol(CommandResponseInstrumentProtocol):
         result = self._do_cmd_resp(InstrumentCommand.INTERRUPT_INSTRUMENT, *args, timeout=TIMEOUT,
                                    response_regex=MNU_REGEX_MATCHER)
 
-        return None, (None, result)
+        if self.__instrument_class__ == FLORT_CLASS:
+            sample_particle_class = DataParticleType.FLORTD_SAMPLE
+        else:
+            sample_particle_class = DataParticleType.FLORDD_SAMPLE
+
+        particles = self.wait_for_particle(sample_particle_class, timeout)
+
+        return None, (None, particles)
 
     def _handler_command_start_autosample(self, *args, **kwargs):
         """
@@ -931,8 +957,19 @@ class Protocol(CommandResponseInstrumentProtocol):
         """
         Run the $mnu Command (print menu)
         """
+
+        timeout = time.time() + STATUS_TIMEOUT
+
         result = self._do_cmd_resp(InstrumentCommand.PRINT_MENU, timeout=TIMEOUT, response_regex=MNU_REGEX_MATCHER)
-        return None, (None, result)
+
+        if self.__instrument_class__ == FLORT_CLASS:
+            status_particle_class = DataParticleType.FLORTD_MNU
+        else:
+            status_particle_class = DataParticleType.FLORDD_MNU
+
+        particles = self.wait_for_particle(status_particle_class, timeout)
+
+        return None, (None, particles)
 
     def _handler_command_run_wiper(self, *args, **kwargs):
         """
@@ -1070,6 +1107,8 @@ class Protocol(CommandResponseInstrumentProtocol):
         Get one sample from the instrument
         """
 
+        timeout = time.time() + STATUS_TIMEOUT
+
         # put instrument into command mode to send command $run to collect status
         self._do_cmd_resp(InstrumentCommand.INTERRUPT_INSTRUMENT, timeout=TIMEOUT, response_regex=MNU_REGEX_MATCHER)
 
@@ -1081,7 +1120,14 @@ class Protocol(CommandResponseInstrumentProtocol):
             resp_regex = FLORD_SAMPLE_REGEX_MATCHER
         result = self._do_cmd_resp(InstrumentCommand.RUN_SETTINGS, timeout=TIMEOUT, response_regex=resp_regex)
 
-        return None, (None, result)
+        if self.__instrument_class__ == FLORT_CLASS:
+            status_particle_class = DataParticleType.FLORTD_MNU
+        else:
+            status_particle_class = DataParticleType.FLORDD_MNU
+
+        particles = self.wait_for_particle(status_particle_class, timeout)
+
+        return None, (None, particles)
 
     def _handler_autosample_clock_sync(self, *args, **kwargs):
         """
@@ -1319,13 +1365,14 @@ class Protocol(CommandResponseInstrumentProtocol):
         """
         Populate the command dictionary with commands
         """
-        self._cmd_dict.add(Capability.RUN_WIPER, display_name="Run Wiper")
-        self._cmd_dict.add(Capability.CLOCK_SYNC, display_name='Synchronize Clock')
-        self._cmd_dict.add(Capability.ACQUIRE_SAMPLE, display_name='Acquire Sample')
-        self._cmd_dict.add(Capability.START_AUTOSAMPLE, display_name='Start Autosample')
-        self._cmd_dict.add(Capability.STOP_AUTOSAMPLE, display_name='Stop Autosample')
-        self._cmd_dict.add(Capability.ACQUIRE_STATUS, display_name='Acquire Status')
-        self._cmd_dict.add(Capability.DISCOVER, display_name='Discover')
+
+        self._cmd_dict.add(Capability.RUN_WIPER, timeout=5, display_name="Run Wiper")
+        self._cmd_dict.add(Capability.CLOCK_SYNC, timeout=5, display_name='Synchronize Clock')
+        self._cmd_dict.add(Capability.ACQUIRE_SAMPLE, timeout=SAMPLE_TIMEOUT, display_name='Acquire Sample')
+        self._cmd_dict.add(Capability.START_AUTOSAMPLE, timeout=5, display_name='Start Autosample')
+        self._cmd_dict.add(Capability.STOP_AUTOSAMPLE, timeout=5, display_name='Stop Autosample')
+        self._cmd_dict.add(Capability.ACQUIRE_STATUS, timeout=STATUS_TIMEOUT, display_name='Acquire Status')
+        self._cmd_dict.add(Capability.DISCOVER, timeout=10, display_name='Discover')
 
     def _build_param_dict(self):
         """
