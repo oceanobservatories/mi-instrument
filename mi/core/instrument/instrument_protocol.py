@@ -87,6 +87,9 @@ class InstrumentProtocol(object):
         self._cmd_dict = ProtocolCommandDict()
         self._driver_dict = DriverDict()
 
+        # Dictionary to store recently generated particles
+        self._particle_dict = {}
+
         # The spot to stash a configuration before going into direct access mode
         self._pre_direct_access_config = None
 
@@ -258,10 +261,14 @@ class InstrumentProtocol(object):
         @todo Figure out how the agent wants the results for a single poll
             and return them that way from here
         """
+
         if regex.match(line):
 
             particle = particle_class(line, port_timestamp=timestamp)
             parsed_sample = particle.generate()
+
+            # Add an entry to the particle dictionary, with the particle class as the key
+            self._particle_dict[particle_class.data_particle_type()] = parsed_sample
 
             if publish and self._driver_event:
                 self._driver_event(DriverAsyncEvent.SAMPLE, parsed_sample)
