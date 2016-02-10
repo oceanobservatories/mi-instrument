@@ -268,7 +268,7 @@ class InstrumentProtocol(object):
             parsed_sample = particle.generate()
 
             # Add an entry to the particle dictionary, with the particle class as the key
-            self._particle_dict[particle_class.data_particle_type()] = parsed_sample
+            self._particle_dict[particle.data_particle_type()] = parsed_sample
 
             if publish and self._driver_event:
                 self._driver_event(DriverAsyncEvent.SAMPLE, parsed_sample)

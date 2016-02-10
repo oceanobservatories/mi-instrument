@@ -744,10 +744,12 @@ class Protocol(CommandResponseInstrumentProtocol):
         """
         while time.time() < timeout:
             if particle_class in self._particle_dict:
+                log.debug("Particle found for %s" % particle_class)
                 particle = self._particle_dict.pop(particle_class)
                 return [particle]
             time.sleep(1)
 
+        log.debug("Timeout Expired, no Particles found!")
         return []
 
     def _filter_capabilities(self, events):
@@ -957,7 +959,6 @@ class Protocol(CommandResponseInstrumentProtocol):
         """
         Run the $mnu Command (print menu)
         """
-
         timeout = time.time() + STATUS_TIMEOUT
 
         result = self._do_cmd_resp(InstrumentCommand.PRINT_MENU, timeout=TIMEOUT, response_regex=MNU_REGEX_MATCHER)
