@@ -79,6 +79,7 @@ COMMAND_PATTERN = 'Command Console'
 RESET_DELAY = 6
 EOLN = "\r\n"
 RETRY = 3
+STATUS_TIMEOUT = 30
 VALID_MAXRATES = (0, 0.125, 0.25, 0.5, 1, 2, 4, 8, 10, 12)
 
 
@@ -779,6 +780,8 @@ class SatlanticOCR507InstrumentProtocol(CommandResponseInstrumentProtocol):
 
         @return next state (next agent state, result)
         """
+        timeout = time.time() + STATUS_TIMEOUT
+
         next_state = None
         next_agent_state = None
         result = None
@@ -786,7 +789,9 @@ class SatlanticOCR507InstrumentProtocol(CommandResponseInstrumentProtocol):
         self._do_cmd_resp(Command.ID)
         self._do_cmd_resp(Command.SHOW_ALL)
 
-        return next_state, (next_agent_state, result)
+        particles = self.wait_for_particles([DataParticleType.CONFIG], timeout)
+
+        return next_state, (next_agent_state, particles)
 
     ########################################################################
     # Autosample handlers.

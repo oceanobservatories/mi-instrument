@@ -79,6 +79,7 @@ INTERVAL_TIME_REGEX = r"([0-9][0-9]:[0-9][0-9]:[0-9][0-9])"
 VALID_MAXRATES = (0, 0.125, 0.5, 1, 2, 4, 8, 10, 12)
 EOLN = "\r\n"
 
+TIMEOUT = 15
 
 class ParameterUnits(BaseEnum):
     TIME_INTERVAL = 'HH:MM:SS'
@@ -887,8 +888,13 @@ class SatlanticPARInstrumentProtocol(CommandResponseInstrumentProtocol):
         Handle PARProtocolEvent.ACQUIRE_SAMPLE
         @retval return (next state, result)
         """
+        timeout = time.time() + TIMEOUT
+
         self._get_poll()
-        return None, (None, None)
+
+        particles = self.wait_for_particles([DataParticleType.PARSED], timeout)
+
+        return None, (None, particles)
 
     def _handler_acquire_status(self):
         """
@@ -898,9 +904,13 @@ class SatlanticPARInstrumentProtocol(CommandResponseInstrumentProtocol):
         and combined through the got_chunk function.
         @retval return (next state, result)
         """
+        timeout = time.time() + TIMEOUT
+
         self._do_cmd_resp(Command.GET, "all", expected_prompt=Prompt.COMMAND)
 
-        return None, (None, None)
+        particles = self.wait_for_particles([DataParticleType.CONFIG], timeout)
+
+        return None, (None, particles)
 
     ########################################################################
     # Direct access handlers.
