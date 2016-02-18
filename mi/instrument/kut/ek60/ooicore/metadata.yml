@@ -5,4 +5,4 @@ driver_metadata:
   driver_name: ooicore
   email: rhan1498@gmail.com
   release_notes: This Driver supports the Kongsberg UnderWater Technology's EK60 Instrument.
-  version: 0.0.2
+  version: 0.0.3

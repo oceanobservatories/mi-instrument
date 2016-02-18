@@ -1931,6 +1931,8 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
         """
         Acquire status
         """
+        timeout = time.time() + TIMEOUT
+
         next_state = None
 
         kwargs['timeout'] = 2
@@ -1948,7 +1950,10 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
 
         log.debug("ACQUIRE_STATUS: Executed HEALTH_REQUEST")
 
-        return next_state, (None, None)
+        particles = self.wait_for_particles([DataParticleType.CAMDS_DISK_STATUS,
+                                             DataParticleType.CAMDS_HEALTH_STATUS], timeout)
+
+        return next_state, (None, particles)
 
     def _handler_command_lamp_on(self, *args, **kwargs):
         """

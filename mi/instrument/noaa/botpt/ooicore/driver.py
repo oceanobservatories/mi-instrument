@@ -60,6 +60,7 @@ NANO_RATE_RESPONSE = '*0001TH'
 
 MAX_BUFFER_SIZE = 2 ** 16
 
+STATUS_TIMEOUT = 30
 
 class ScheduledJob(BaseEnum):
     """
@@ -395,6 +396,9 @@ class Protocol(CommandResponseInstrumentProtocol):
             else:
                 particle = particle_class(line, port_timestamp=timestamp)
             parsed_sample = particle.generate()
+
+            # Add an entry to the particle dictionary, with the particle class as the key
+            self._particle_dict[particle.data_particle_type()] = parsed_sample
 
             if publish and self._driver_event:
                 self._driver_event(DriverAsyncEvent.SAMPLE, parsed_sample)
@@ -938,6 +942,8 @@ class Protocol(CommandResponseInstrumentProtocol):
         messages with embedded messages from the other parts of the instrument.
         @return next_state, (next_agent_state, result)
         """
+        timeout = time.time() + STATUS_TIMEOUT
+
         ts = ntplib.system_to_ntp_time(time.time())
         parts = []
 
@@ -959,9 +965,11 @@ class Protocol(CommandResponseInstrumentProtocol):
             # acquiring status stops NANO output, restart it
             self._do_cmd_resp(InstrumentCommand.NANO_ON, expected_prompt=NANO_STRING)
 
+        data_particles = self.wait_for_particles([particles.DataParticleType.BOTPT_STATUS], timeout)
+
         if not sample:
             raise InstrumentProtocolException('Failed to generate status particle')
-        return None, (None, sample)
+        return None, (None, data_particles)
 
     def _handler_time_sync(self, *args, **kwargs):
         """
