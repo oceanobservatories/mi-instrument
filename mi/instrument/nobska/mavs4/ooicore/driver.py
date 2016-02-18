@@ -75,6 +75,7 @@ DISABLED = 'Disabled'
 
 # default timeout.
 INSTRUMENT_TIMEOUT = 5
+STATUS_TIMEOUT = 20
 
 common_matches = {
     'float': r'[-+]?\d*\.?\d+',
@@ -1340,8 +1341,13 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
         """
         Get device status
         """
+        timeout = time.time() + STATUS_TIMEOUT
+
         self._generate_status_event()
-        return None, (None, None)
+
+        particles = self.wait_for_particles([DataParticleType.STATUS], timeout)
+
+        return None, (None, particles)
 
     ########################################################################
     # Autosample handlers.
