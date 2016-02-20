@@ -611,6 +611,19 @@ class SBE16NOProtocol(SBE19Protocol):
 
         return None, (None, ''.join(result))
 
+    def _handler_command_acquire_sample(self, *args, **kwargs):
+        """
+        Acquire sample from SBE16.
+        @retval next_state, (next_agent_state, result) tuple
+        """
+        timeout = time.time() + TIMEOUT
+
+        self._do_cmd_resp(Command.TS, *args, **kwargs)
+
+        particles = self.wait_for_particles(DataParticleType.CTD_PARSED, timeout)
+
+        return None, (None, particles)
+
     def _handler_autosample_acquire_status(self, *args, **kwargs):
         """
         Get device status

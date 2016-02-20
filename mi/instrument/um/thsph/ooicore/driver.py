@@ -14,6 +14,7 @@ __author__ = 'Richard Han'
 __license__ = 'Apache 2.0'
 
 import re
+import time
 
 from mi.core.exceptions import InstrumentException
 from mi.core.driver_scheduler import DriverSchedulerConfigKey, TriggerType
@@ -475,13 +476,16 @@ class THSPHProtocol(CommandResponseInstrumentProtocol):
         """
         Get device status
         """
+        timeout = time.time() + TIMEOUT
+
         next_state = None
         next_agent_state = None
-        result = None
 
         self._do_cmd_no_resp(Command.GET_SAMPLE, timeout=TIMEOUT)
 
-        return next_state, (next_agent_state, result)
+        particles = self.wait_for_particles(DataParticleType.THSPH_PARSED, timeout)
+
+        return next_state, (next_agent_state, particles)
 
     def _handler_command_enter(self, *args, **kwargs):
 
