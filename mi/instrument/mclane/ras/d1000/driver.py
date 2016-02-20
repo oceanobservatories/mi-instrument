@@ -14,6 +14,7 @@ __license__ = 'Apache 2.0'
 
 import re
 import math
+import time
 
 from mi.core.log import get_logger
 
@@ -65,6 +66,7 @@ DEFAULT_SAMPLE_RATE = 15  # sample periodicity in seconds
 MIN_SAMPLE_RATE = 1  # in seconds
 MAX_SAMPLE_RATE = 3600  # in seconds (1 hour)
 
+SAMPLE_TIMEOUT = 10
 
 def checksum(data):
     """
@@ -971,10 +973,14 @@ class Protocol(CommandResponseInstrumentProtocol):
         """
         Poll the three temperature probes for current temperature readings.
         """
+        timeout = time.time() + SAMPLE_TIMEOUT
+
         for i in self._units:
             self._do_command(Command.READ, i)
 
-        return None, (None, None)
+        particles = self.wait_for_particles([DataParticleType.D1000_PARSED], timeout)
+
+        return None, (None, particles)
 
     def _handler_autosample_stop(self, *args, **kwargs):
         """
