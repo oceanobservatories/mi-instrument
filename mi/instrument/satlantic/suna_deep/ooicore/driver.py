@@ -11,6 +11,7 @@ __author__ = 'Rachel Manoni'
 __license__ = 'Apache 2.0'
 
 import re
+import time
 import datetime
 
 from mi.core.common import BaseEnum, Units, Prefixes
@@ -1379,6 +1380,8 @@ class Protocol(CommandResponseInstrumentProtocol):
         """
         Start acquire sample
         """
+        timeout = time.time() + TIMEOUT
+
         self._do_cmd_no_resp(InstrumentCommand.EXIT)
         self._do_cmd_resp(InstrumentCommand.MEASURE, 1, expected_prompt=[Prompt.POLLED, Prompt.COMMAND],
                           timeout=POLL_TIMEOUT)
@@ -1389,12 +1392,16 @@ class Protocol(CommandResponseInstrumentProtocol):
         if ret_prompt == Prompt.POLLED:
             self._send_dollar()
 
-        return None, (None, None)
+        particles = self.wait_for_particles([DataParticleType.SUNA_SAMPLE], timeout)
+
+        return None, (None, particles)
 
     def _handler_command_acquire_status(self):
         """
         Start acquire status
         """
+        timeout = time.time() + TIMEOUT
+
         status_output = self._do_cmd_resp(InstrumentCommand.STATUS, expected_prompt=[Prompt.OK])
         self._do_cmd_no_resp(InstrumentCommand.GET_CAL_FILE)
 
@@ -1405,7 +1412,9 @@ class Protocol(CommandResponseInstrumentProtocol):
         if new_config != old_config:
             self._driver_event(DriverAsyncEvent.CONFIG_CHANGE)
 
-        return None, (None, None)
+        particles = self.wait_for_particles([DataParticleType.SUNA_STATUS], timeout)
+
+        return None, (None, particles)
 
     def _handler_command_start_direct(self):
         """

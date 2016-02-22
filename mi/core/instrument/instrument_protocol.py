@@ -1130,6 +1130,31 @@ class CommandResponseInstrumentProtocol(InstrumentProtocol):
         if self._driver_event:
             self._driver_event(DriverAsyncEvent.SAMPLE, particle.generate())
 
+    def wait_for_particles(self, particle_classes, timeout):
+        """
+        Wait for a set of particles to get generated within the specified timeout.
+        Return a list of particles
+        @param particle_classes: a list of data particle classes
+        @param timeout: timeout for particle generation
+        """
+        particles = []
+
+        while time.time() < timeout:
+
+            for particle_class in particle_classes:
+                if particle_class in self._particle_dict:
+                    log.debug("Particle found for %s" % particle_class)
+                    particle = self._particle_dict.pop(particle_class)
+                    particles.append(particle)
+
+            if len(particles) == len(particle_classes):
+                return particles
+
+            time.sleep(1)
+
+        log.debug("Timeout Expired, no Particles found!")
+        return particles
+
     def add_to_buffer(self, data):
         """
         Add a chunk of data to the internal data buffers

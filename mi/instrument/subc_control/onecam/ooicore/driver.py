@@ -10,6 +10,7 @@ __license__ = 'Apache 2.0'
 
 import re
 import json
+import time
 
 from mi.core.instrument.driver_dict import DriverDictKey
 from mi.core.instrument.protocol_param_dict import ParameterDictType
@@ -1283,6 +1284,7 @@ class CAMHDProtocol(CommandResponseInstrumentProtocol):
         """
         Acquire status
         """
+        timeout = time.time() + TIMEOUT
 
         next_state = None
 
@@ -1291,7 +1293,9 @@ class CAMHDProtocol(CommandResponseInstrumentProtocol):
         if resp.startswith('ERROR'):
             log.error("Unable to Acquire Status. In response to ADREAD command, Instrument returned: %s" % resp)
 
-        return next_state, (None, None)
+        particles = self.wait_for_particles([DataParticleType.ADREAD_STATUS], timeout)
+
+        return next_state, (None, particles)
 
     def _handler_command_start_streaming(self, **kwargs):
         """

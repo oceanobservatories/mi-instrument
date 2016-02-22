@@ -737,21 +737,6 @@ class Protocol(CommandResponseInstrumentProtocol):
 
         return return_list
 
-    def wait_for_particle(self, particle_class, timeout):
-        """
-        Wait for a particle to get generated within the specified timeout.
-        Return a list of particles
-        """
-        while time.time() < timeout:
-            if particle_class in self._particle_dict:
-                log.debug("Particle found for %s" % particle_class)
-                particle = self._particle_dict.pop(particle_class)
-                return [particle]
-            time.sleep(1)
-
-        log.debug("Timeout Expired, no Particles found!")
-        return []
-
     def _filter_capabilities(self, events):
         """
         Return a list of currently available capabilities.
@@ -940,7 +925,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         else:
             sample_particle_class = DataParticleType.FLORDD_SAMPLE
 
-        particles = self.wait_for_particle(sample_particle_class, timeout)
+        particles = self.wait_for_particles([sample_particle_class], timeout)
 
         return None, (None, particles)
 
@@ -968,7 +953,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         else:
             status_particle_class = DataParticleType.FLORDD_MNU
 
-        particles = self.wait_for_particle(status_particle_class, timeout)
+        particles = self.wait_for_particles([status_particle_class], timeout)
 
         return None, (None, particles)
 
@@ -1126,7 +1111,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         else:
             status_particle_class = DataParticleType.FLORDD_MNU
 
-        particles = self.wait_for_particle(status_particle_class, timeout)
+        particles = self.wait_for_particles([status_particle_class], timeout)
 
         return None, (None, particles)
 

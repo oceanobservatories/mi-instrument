@@ -16,6 +16,7 @@ import json
 import tempfile
 import urllib2
 import yaml
+import time
 
 from mi.core.common import BaseEnum
 from mi.core.exceptions import InstrumentParameterException, InstrumentException, SampleException
@@ -47,6 +48,8 @@ DEFAULT_PORT = "80"
 
 USER_NAME = "ooi"
 PASSWORD = "994ef22"
+
+STATUS_TIMEOUT = 10
 
 DEFAULT_CONFIG = {
     'file_prefix':    "Driver DEFAULT CONFIG_PREFIX",
@@ -869,6 +872,8 @@ class Protocol(CommandResponseInstrumentProtocol):
         Acquire status from the instrument
         @retval next_state, (next_resource_state, result) tuple
         """
+        timeout = time.time() + STATUS_TIMEOUT
+
         host = self._param_dict.get_config_value(Parameter.FTP_IP_ADDRESS)
         port = self._param_dict.get_config_value(Parameter.FTP_PORT)
         response = self._url_request(host, port, '/status.json')
@@ -876,11 +881,17 @@ class Protocol(CommandResponseInstrumentProtocol):
         if response:
             log.debug("_handler_command_acquire_status: response from status = %r", response)
             particle = ZPLSCStatusParticle(response, port_timestamp=self._param_dict.get_current_timestamp())
-            self._driver_event(DriverAsyncEvent.SAMPLE, particle.generate())
+
+            parsed_sample = particle.generate()
+            self._particle_dict[particle.data_particle_type()] = parsed_sample
+
+            self._driver_event(DriverAsyncEvent.SAMPLE, parsed_sample)
         else:
             log.error("_handler_command_acquire_status: Failed to acquire status from instrument.")
 
-        return None, (None, None)
+        particles = self.wait_for_particles([DataParticleType.ZPLSC_STATUS], timeout)
+
+        return None, (None, particles)
 
     ########################################################################
     # Autosample handlers
