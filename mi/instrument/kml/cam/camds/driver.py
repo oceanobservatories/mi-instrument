@@ -1925,7 +1925,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
         # Camera needs time to recover after taking a snapshot
         self._do_recover(CAMERA_RECOVERY_TIME)
 
-        return next_state, (None, None)
+        return next_state, (None, [])
 
     def _handler_command_acquire_status(self, *args, **kwargs):
         """
@@ -2251,7 +2251,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
         # Camera needs time to recover after taking a snapshot
         self._do_recover(CAMERA_RECOVERY_TIME)
 
-        return next_state, (None, None)
+        return next_state, (None, [])
 
     def _handler_autosample_start_capture(self, *args, **kwargs):
         """
