@@ -1909,8 +1909,6 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
         """
         Acquire Sample
         """
-        next_state = None
-
         kwargs['timeout'] = 30
 
         # Before taking a snapshot, update parameters
@@ -1925,7 +1923,9 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
         # Camera needs time to recover after taking a snapshot
         self._do_recover(CAMERA_RECOVERY_TIME)
 
-        return next_state, (None, None)
+        next_state = ProtocolState.RECOVERY
+
+        return next_state, (None, [])
 
     def _handler_command_acquire_status(self, *args, **kwargs):
         """
@@ -2232,8 +2232,6 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
         """
         Acquire Sample
         """
-        next_state = None
-
         kwargs['timeout'] = 30
 
         # First, go to the user defined preset position
@@ -2251,7 +2249,9 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
         # Camera needs time to recover after taking a snapshot
         self._do_recover(CAMERA_RECOVERY_TIME)
 
-        return next_state, (None, None)
+        next_state = ProtocolState.RECOVERY
+
+        return next_state, (None, [])
 
     def _handler_autosample_start_capture(self, *args, **kwargs):
         """
