@@ -49,7 +49,7 @@ from mi.core.instrument.data_particle import DataParticle, DataParticleKey, Data
 ####################################################################
 
 # ex SATPAR4278190306,55713.85,2206748544,234
-SAMPLE_PATTERN = r'SATPAR(?P<sernum>\d{4,10}),(?P<timer>\d{1,7}\.\d\d),(?P<counts>\d{10}),(?P<checksum>\d{1,3})\r\n'
+SAMPLE_PATTERN = r'SATPAR(?P<sernum>\d{4,10}),(?P<timer>\d{4,10}\.\d\d),(?P<counts>\d{10}),(?P<checksum>\d{1,3})\r\n'
 SAMPLE_REGEX = re.compile(SAMPLE_PATTERN)
 
 HEADER_PATTERN = r'Satlantic Digital PAR Sensor\r\nCopyright \(C\) 2003, Satlantic Inc. All rights reserved.\r\n' \
@@ -1135,6 +1135,8 @@ class SatlanticPARInstrumentProtocol(CommandResponseInstrumentProtocol):
 
             particle = particle_class(serial_num, firmware, instrument, line, port_timestamp=timestamp)
             parsed_sample = particle.generate()
+
+            self._particle_dict[particle.data_particle_type()] = parsed_sample
 
             if publish and self._driver_event:
                 self._driver_event(DriverAsyncEvent.SAMPLE, parsed_sample)
