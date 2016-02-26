@@ -88,9 +88,6 @@ CAMDS_DISK_STATUS_MATCHER = r'<\x0B:\x06:GC.+?>'
 CAMDS_DISK_STATUS_MATCHER_COM = re.compile(CAMDS_DISK_STATUS_MATCHER, re.DOTALL)
 CAMDS_HEALTH_STATUS_MATCHER = r'<\x07:\x06:HS.+?>'
 CAMDS_HEALTH_STATUS_MATCHER_COM = re.compile(CAMDS_HEALTH_STATUS_MATCHER, re.DOTALL)
-CAMDS_METADATA_MATCHER = r'<\x04:\x06:(CI|SP|SR)>'
-CAMDS_METADATA_MATCHER_COM = re.compile(CAMDS_METADATA_MATCHER, re.DOTALL)
-
 CAMDS_IMAGE_FILE_MATCHER = r'New Image:(.+\.png)'
 CAMDS_IMAGE_FILE_MATCHER_COM = re.compile(CAMDS_IMAGE_FILE_MATCHER, re.DOTALL)
 
@@ -857,8 +854,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
         The chunks are all the same type.
         """
 
-        sieve_matchers = [CAMDS_METADATA_MATCHER_COM,
-                          CAMDS_IMAGE_FILE_MATCHER_COM,
+        sieve_matchers = [CAMDS_IMAGE_FILE_MATCHER_COM,
                           CAMDS_DISK_STATUS_MATCHER_COM,
                           CAMDS_HEALTH_STATUS_MATCHER_COM]
 
@@ -1909,8 +1905,6 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
         """
         Acquire Sample
         """
-        next_state = None
-
         kwargs['timeout'] = 30
 
         # Before taking a snapshot, update parameters
@@ -1925,7 +1919,9 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
         # Camera needs time to recover after taking a snapshot
         self._do_recover(CAMERA_RECOVERY_TIME)
 
-        return next_state, (None, None)
+        next_state = ProtocolState.RECOVERY
+
+        return next_state, (None, [])
 
     def _handler_command_acquire_status(self, *args, **kwargs):
         """
@@ -2232,8 +2228,6 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
         """
         Acquire Sample
         """
-        next_state = None
-
         kwargs['timeout'] = 30
 
         # First, go to the user defined preset position
@@ -2251,7 +2245,9 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
         # Camera needs time to recover after taking a snapshot
         self._do_recover(CAMERA_RECOVERY_TIME)
 
-        return next_state, (None, None)
+        next_state = ProtocolState.RECOVERY
+
+        return next_state, (None, [])
 
     def _handler_autosample_start_capture(self, *args, **kwargs):
         """
@@ -2538,12 +2534,6 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
             log.debug("_got_chunk - successful match for CAMDS_HEALTH_STATUS")
 
         elif (self._extract_metadata_sample(CamdsImageMetadata,
-                                            CAMDS_METADATA_MATCHER_COM,
-                                            chunk,
-                                            timestamp)):
-            log.debug("_got_chunk - successful match for CAMDS_IMAGE_METADATA")
-
-        elif (self._extract_metadata_sample(CamdsImageMetadata,
                                             CAMDS_IMAGE_FILE_MATCHER_COM,
                                             chunk,
                                             timestamp)):
@@ -2572,9 +2562,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
         match = regex.match(line)
         if match:
             # special case for the CAMDS image metadata particle - need to pass in param_dict
-            if regex == CAMDS_METADATA_MATCHER_COM:
-                particle = particle_class(self._param_dict, port_timestamp=timestamp)
-            elif regex == CAMDS_IMAGE_FILE_MATCHER_COM:
+            if regex == CAMDS_IMAGE_FILE_MATCHER_COM:
                 # this is the image filename handed over by the port agent
                 img_filename = match.group(1)
                 particle = particle_class(self._param_dict, img_filename, port_timestamp=timestamp)
