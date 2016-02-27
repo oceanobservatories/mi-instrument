@@ -409,6 +409,7 @@ class ProtocolParameterDict(InstrumentDict):
             set_timeout=10,
             display_name=None,
             description=None,
+            range=None,
             type=None,
             units=None,
             regex_flags=0,
