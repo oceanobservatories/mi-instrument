@@ -1069,8 +1069,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
         """
         Discover current state; can be COMMAND or AUTOSAMPLE.  If the
         instrument is sleeping consider that to be in command state.
-        @retval (next_state, result), (ProtocolStates.COMMAND or
-        ProtocolStates.AUTOSAMPLE, None) if successful.
+        @retval next_state, next_state
         """
 
         # try to get root menu prompt from the device using timeout if passed.
@@ -1085,9 +1084,8 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
         else:
             # got root menu prompt, so device is in command mode           
             next_state = ProtocolStates.COMMAND
-            result = ResourceAgentState.IDLE
 
-        return next_state, result
+        return next_state, next_state
 
     ########################################################################
     # State Command handlers.
@@ -1308,12 +1306,12 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                                    timeout=20,
                                    **kwargs)
 
-        return ProtocolStates.AUTOSAMPLE, (ResourceAgentState.STREAMING, None)
+        return ProtocolStates.AUTOSAMPLE, (ProtocolStates.AUTOSAMPLE, None)
 
     def _handler_command_start_direct(self):
         """
         """
-        return ProtocolStates.DIRECT_ACCESS, (ResourceAgentState.DIRECT_ACCESS, None)
+        return ProtocolStates.DIRECT_ACCESS, (ProtocolStates.DIRECT_ACCESS, None)
 
     def _clock_sync(self):
         """
@@ -1387,7 +1385,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
         if not got_root_prompt:
             raise InstrumentTimeoutException()
 
-        return ProtocolStates.COMMAND, (ResourceAgentState.COMMAND, None)
+        return ProtocolStates.COMMAND, (ProtocolStates.COMMAND, None)
 
     def _handler_autosample_clock_sync(self, *args, **kwargs):
         """
@@ -1429,7 +1427,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
         """
         @throw InstrumentProtocolException on invalid command
         """
-        return ProtocolStates.COMMAND, (ResourceAgentState.COMMAND, None)
+        return ProtocolStates.COMMAND, (ProtocolStates.COMMAND, None)
 
     ########################################################################
     # Private helpers.

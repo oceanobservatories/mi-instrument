@@ -405,7 +405,8 @@ class Protocol(CommandResponseInstrumentProtocol):
         """
         Discover current state; can only be AUTOSAMPLE (instrument has no actual command mode).
         """
-        return ProtocolState.AUTOSAMPLE, ResourceAgentState.STREAMING
+        next_state = ProtocolState.AUTOSAMPLE
+        return next_state, next_state
 
     ########################################################################
     # Autosample handlers.

@@ -815,33 +815,26 @@ class Protocol(MenuInstrumentProtocol):
         is probably autosampling upon entry to this handler.  However, it is possible that it has
         been interrupted and is in the menu system.  
         """
-        next_state = None
-        next_agent_state = None
-
-        log.debug("_handler_unknown_discover")
-
         try:
             logging_state = self._go_to_root_menu()
-        except InstrumentTimeoutException:
-            log.error("ISUS driver timed out in _go_to_root_menu()")
-            raise InstrumentStateException('Unknown state: Instrument timed out going to root menu.')
-        else:
+
             if logging_state == AUTOSAMPLE_MODE:
                 next_state = State.AUTOSAMPLE
-                next_agent_state = ResourceAgentState.STREAMING
             elif logging_state == COMMAND_MODE:
                 next_state = State.COMMAND
-                next_agent_state = ResourceAgentState.IDLE
             else:
                 errorString = 'Unknown state based go_to_root_menu() response: ' + str(logging_state)
                 log.error(errorString)
                 raise InstrumentStateException(errorString)
-        
-        return (next_state, next_agent_state)
+        except InstrumentTimeoutException:
+            log.error("ISUS driver timed out in _go_to_root_menu()")
+            raise InstrumentStateException('Unknown state: Instrument timed out going to root menu.')
+
+        return next_state, next_state
 
     def _handler_continuous_menu(self, *args, **kwargs):
-        """Handle a menu command event from continuous mode operations.
-        
+        """
+        Handle a menu command event from continuous mode operations.
         """
         next_state = None
         result = None
@@ -952,14 +945,12 @@ class Protocol(MenuInstrumentProtocol):
     def _handler_command_acquire_sample(self, *args, **kwargs):
         """
         Acquire sample from ISUSv3.
-        @retval (next_state, (next_agent_state, result)) tuple, (None, sample dict).        
+        @retval (next_state, (next_state, result)) tuple, (None, sample dict).
         @throws InstrumentTimeoutException if device cannot be woken for command.
         @throws InstrumentProtocolException if command could not be built or misunderstood.
         @throws SampleException if a sample could not be extracted from result.
         """
         next_state = None
-        next_agent_state = None
-        result = None
 
         """
         Can't go to root menu here; the only way this handler will work is if the ISUS is deployed
@@ -967,7 +958,7 @@ class Protocol(MenuInstrumentProtocol):
         """
         result = self._do_cmd_resp(Command.TS, *args, **kwargs)
         
-        return (next_state, (next_agent_state, result))
+        return (next_state, (next_state, result))
 
     def _handler_command_start_autosample(self, *args, **kwargs):
         """Handle a start autosample command event from root menu.
@@ -975,8 +966,6 @@ class Protocol(MenuInstrumentProtocol):
         """
         delay = 1
         timeout = 25
-        next_state = None
-        next_agent_state = None
         result = None
         
         #
@@ -1009,23 +998,19 @@ class Protocol(MenuInstrumentProtocol):
         log.debug("ISUS now in autosample")
 
         next_state = State.AUTOSAMPLE        
-        next_agent_state = ResourceAgentState.STREAMING
-        
-        return (next_state, (next_agent_state, result))
+
+        return next_state, (next_state, result)
 
     def _handler_autosample_stop_autosample(self, *args, **kwargs):
         """
         Stop autosample and switch back to command mode.
-        @retval (next_state, result) tuple, (ProtocolState.COMMAND,
-        (next_agent_state, None) if successful.
+        @retval next_state, (next_state, result)
         @throws InstrumentTimeoutException if device cannot be woken for command.
         @throws InstrumentProtocolException if command misunderstood or
         incorrect prompt received.
         """
         delay = 1
         timeout = 10
-        next_state = None
-        next_agent_state = None
         result = None
         
         starttime = time.time()
@@ -1072,11 +1057,9 @@ class Protocol(MenuInstrumentProtocol):
         log.info("ISUS autosample stopped")
 
         next_state = State.COMMAND        
-        next_agent_state = ResourceAgentState.COMMAND
-        
-        return (next_state, (next_agent_state, result))
 
-                
+        return next_state, (next_state, result)
+
     def _handler_root_menu_enter(self, *args, **kwargs):
         """Entry event for the command state
         """
@@ -1094,7 +1077,7 @@ class Protocol(MenuInstrumentProtocol):
         
         # handler logic goes here
         
-        return (next_state, result)
+        return next_state, result
         
     def _handler_root_setup(self, *args, **kwargs):
         """Handle a setup menu command event from root menu.
@@ -1105,7 +1088,7 @@ class Protocol(MenuInstrumentProtocol):
         
         # handler logic goes here
         
-        return (next_state, result)
+        return next_state, result
         
     def _handler_root_file(self, *args, **kwargs):
         """Handle a file menu command event from root menu.

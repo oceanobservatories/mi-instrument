@@ -339,7 +339,7 @@ class Protocol(InstrumentProtocol):
                     self._driver_event(DriverAsyncEvent.ERROR, ex)
                     self._logs = {}
                     self._filled_logs = []
-                    return ProtocolState.WRITE_ERROR, (ResourceAgentState.STOPPED, None)
+                    return ProtocolState.WRITE_ERROR, (ProtocolState.WRITE_ERROR, None)
 
                 particles.append(AntelopeMetadataParticle(_log, preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP))
 
@@ -351,7 +351,7 @@ class Protocol(InstrumentProtocol):
                     self._driver_event(DriverAsyncEvent.ERROR, ex)
                     self._logs = {}
                     self._filled_logs = []
-                    return ProtocolState.WRITE_ERROR, (ResourceAgentState.STOPPED, None)
+                    return ProtocolState.WRITE_ERROR, (ProtocolState.WRITE_ERROR, None)
 
                 particles.append(AntelopeMetadataParticle(_log, preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP))
                 _log.data = []
@@ -365,7 +365,7 @@ class Protocol(InstrumentProtocol):
 
         if last_flush:
             self.stop_scheduled_job(ScheduledJob.FLUSH)
-            return ProtocolState.COMMAND, (ResourceAgentState.COMMAND, None)
+            return ProtocolState.COMMAND, (ProtocolState.COMMAND, None)
 
         return None, (None, None)
 
@@ -505,9 +505,9 @@ class Protocol(InstrumentProtocol):
     def _handler_unknown_discover(self, *args, **kwargs):
         """
         Discover current state; always COMMAND.
-        @return protocol_state, agent_state
+        @return protocol_state, protocol_state
         """
-        return ProtocolState.COMMAND, ResourceAgentState.IDLE
+        return ProtocolState.COMMAND, ProtocolState.COMMAND
 
     ########################################################################
     # COMMAND handlers.
@@ -533,7 +533,7 @@ class Protocol(InstrumentProtocol):
     def _handler_command_start_autosample(self, *args, **kwargs):
         """
         Switch into autosample mode.
-        @return next_state, (next_agent_state, result) if successful.
+        @return next_state, (next_state, result) if successful.
         """
         result = None
 
@@ -545,7 +545,7 @@ class Protocol(InstrumentProtocol):
         next_state = ProtocolState.AUTOSAMPLE
         next_agent_state = ResourceAgentState.STREAMING
 
-        return next_state, (next_agent_state, result)
+        return next_state, (next_state, result)
 
     ######################################################
     # AUTOSAMPLE handlers
@@ -567,7 +567,7 @@ class Protocol(InstrumentProtocol):
     def _handler_autosample_stop_autosample(self, *args, **kwargs):
         """
         Stop autosample and switch back to command mode.
-        @return  next_state, (next_agent_state, result) if successful.
+        @return  next_state, (next_state, result) if successful.
         """
         self._orbstop()
 
@@ -575,7 +575,7 @@ class Protocol(InstrumentProtocol):
         next_state = ProtocolState.STOPPING
         next_agent_state = None
 
-        return next_state, (next_agent_state, result)
+        return next_state, (next_state, result)
 
     ######################################################
     # STOPPING handlers
@@ -618,6 +618,6 @@ class Protocol(InstrumentProtocol):
     def _handler_clear_write_error(self, *args, **kwargs):
         """
         Clear the WRITE_ERROR state by transitioning to the COMMAND state.
-        @return next_state, (next_agent_state, result)
+        @return next_state, (next_state, result)
         """
-        return ProtocolState.COMMAND, (ResourceAgentState.COMMAND, None)
+        return ProtocolState.COMMAND, (ProtocolState.COMMAND, None)

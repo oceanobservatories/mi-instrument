@@ -999,30 +999,23 @@ class CAMHDProtocol(CommandResponseInstrumentProtocol):
     def _handler_unknown_discover(self, *args, **kwargs):
         """
         Discover current state; can be COMMAND or AUTOSAMPLE.
-        @return protocol_state, agent_state if successful
+        @return protocol_state, protocol_state
         """
-        protocol_state, agent_state = self._discover()
-
-        log.debug("_handler_unknown_discover: Protocol state is %s" % protocol_state)
-
-        if protocol_state == ProtocolState.COMMAND:
-            agent_state = ResourceAgentState.IDLE
-
-        return protocol_state, agent_state
+        return self._discover()
 
     def _discover(self):
         """
         Discover current state; can be COMMAND or AUTOSAMPLE or UNKNOWN.
-        @return (next_protocol_state, next_agent_state)
+        @return (next_protocol_state, next_protocol_state)
         """
 
         log.debug("trying to discover state...")
 
         if self._scheduler_callback is not None:
             if self._scheduler_callback.get(ScheduledJob.SAMPLE):
-                return ProtocolState.AUTOSAMPLE, ResourceAgentState.STREAMING
+                return ProtocolState.AUTOSAMPLE, ProtocolState.AUTOSAMPLE
 
-        return ProtocolState.COMMAND, ResourceAgentState.COMMAND
+        return ProtocolState.COMMAND, ProtocolState.COMMAND
 
     ########################################################################
     # Command handlers.
@@ -1295,7 +1288,7 @@ class CAMHDProtocol(CommandResponseInstrumentProtocol):
 
         particles = self.wait_for_particles([DataParticleType.ADREAD_STATUS], timeout)
 
-        return next_state, (None, particles)
+        return next_state, (next_state, particles)
 
     def _handler_command_start_streaming(self, **kwargs):
         """
@@ -1306,7 +1299,7 @@ class CAMHDProtocol(CommandResponseInstrumentProtocol):
 
         self._handler_start_streaming(**kwargs)
 
-        return next_state, (None, None)
+        return next_state, (next_state, None)
 
     def _handler_start_streaming(self, **kwargs):
         """
@@ -1333,7 +1326,7 @@ class CAMHDProtocol(CommandResponseInstrumentProtocol):
         if resp.startswith('ERROR'):
             log.warn("Unable to Stop Streaming. In response to STOP command, Instrument returned: %s" % resp)
 
-        return next_state, (None, None)
+        return next_state, (next_state, None)
 
     def _handler_command_get_status_streaming(self):
         """
@@ -1357,13 +1350,12 @@ class CAMHDProtocol(CommandResponseInstrumentProtocol):
         result = None
 
         next_state = ProtocolState.DIRECT_ACCESS
-        next_agent_state = ResourceAgentState.DIRECT_ACCESS
-        return next_state, (next_agent_state, result)
+        return next_state, (next_state, result)
 
     def _handler_command_start_autosample(self, *args, **kwargs):
         """
         Switch into autosample mode.
-        @return next_state, (next_agent_state, result) if successful.
+        @return next_state, (next_state, result) if successful.
         """
         result = None
 
@@ -1378,9 +1370,8 @@ class CAMHDProtocol(CommandResponseInstrumentProtocol):
         self.start_scheduled_job(Parameter.SAMPLE_INTERVAL, ScheduledJob.SAMPLE, ProtocolEvent.ACQUIRE_SAMPLE)
 
         next_state = ProtocolState.AUTOSAMPLE
-        next_agent_state = ResourceAgentState.STREAMING
 
-        return next_state, (next_agent_state, result)
+        return next_state, (next_state, result)
 
     ########################################################################
     # Autosample handlers.
@@ -1434,7 +1425,7 @@ class CAMHDProtocol(CommandResponseInstrumentProtocol):
         # populated from the param dict
         self._do_cmd_resp(Command.SET, Parameter.ZOOM_LEVEL, response_regex=CAMERA_RESPONSE_PATTERN)
 
-        return next_state, (None, None)
+        return next_state, (next_state, None)
 
     def _handler_autosample_stop_streaming(self):
         """
@@ -1452,18 +1443,17 @@ class CAMHDProtocol(CommandResponseInstrumentProtocol):
         if resp.startswith('ERROR'):
             log.warn("Unable to Stop Streaming. In response to STOP command, Instrument returned: %s" % resp)
 
-        return next_state, (None, None)
+        return next_state, (next_state, None)
 
     def _handler_autosample_stop_autosample(self, *args, **kwargs):
         """
         Stop autosample and switch back to command mode.
-        @return  next_state, (next_agent_state, result) if successful.
+        @return  next_state, (next_state, result) if successful.
         incorrect prompt received.
         """
         result = None
 
         next_state = ProtocolState.COMMAND
-        next_agent_state = ResourceAgentState.COMMAND
 
         # If currently streaming, send STOP to instrument
         if self._streaming:
@@ -1471,7 +1461,7 @@ class CAMHDProtocol(CommandResponseInstrumentProtocol):
 
         self.stop_scheduled_job(ScheduledJob.SAMPLE)
 
-        return next_state, (next_agent_state, result)
+        return next_state, (next_state, result)
 
     ########################################################################
     # Direct access handlers.
@@ -1498,20 +1488,19 @@ class CAMHDProtocol(CommandResponseInstrumentProtocol):
         """
         next_state = None
         result = None
-        next_agent_state = None
 
         self._do_cmd_direct(data)
 
         # add sent command to list for 'echo' filtering in callback
         self._sent_cmds.append(data)
 
-        return (next_state, (next_agent_state, result))
+        return (next_state, (next_state, result))
 
     def _handler_direct_access_stop_direct(self):
         """
         Stop Direct Access
         """
         result = None
-        (next_state, next_agent_state) = self._discover()
+        next_state, _ = self._discover()
 
-        return next_state, (next_agent_state, result)
+        return next_state, (next_state, result)

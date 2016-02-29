@@ -487,7 +487,7 @@ class Pco2wProtocol(SamiProtocol):
         next_agent_state = ResourceAgentState.BUSY
         result = None
 
-        return (next_state, (next_agent_state, result))
+        return next_state, (next_state, result)
 
     def _handler_command_deionized_water_flush_100ml(self):
         """
@@ -498,7 +498,7 @@ class Pco2wProtocol(SamiProtocol):
         next_agent_state = ResourceAgentState.BUSY
         result = None
 
-        return (next_state, (next_agent_state, result))
+        return next_state, (next_state, result)
 
     def _handler_command_reagent_flush_100ml(self):
         """
@@ -509,7 +509,7 @@ class Pco2wProtocol(SamiProtocol):
         next_agent_state = ResourceAgentState.BUSY
         result = None
 
-        return (next_state, (next_agent_state, result))
+        return next_state, (next_state, result)
 
     def _handler_command_deionized_water_flush(self):
         """
@@ -520,7 +520,7 @@ class Pco2wProtocol(SamiProtocol):
         next_agent_state = ResourceAgentState.BUSY
         result = None
 
-        return (next_state, (next_agent_state, result))
+        return next_state, (next_state, result)
 
     ########################################################################
     # Autosample handlers.
@@ -535,7 +535,7 @@ class Pco2wProtocol(SamiProtocol):
         next_agent_state = ResourceAgentState.BUSY
         result = None
 
-        return (next_state, (next_agent_state, result))
+        return next_state, (next_state, result)
 
     ########################################################################
     # Take Blank Sample handler used in sample states

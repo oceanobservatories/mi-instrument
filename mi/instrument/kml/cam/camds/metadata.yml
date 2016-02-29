@@ -5,4 +5,4 @@ driver_metadata:
   driver_name: camds
   email: locateSung@gmail.com
   release_notes: Driver for Kongsberg CAMDS
-  version: 0.0.4
+  version: 0.0.5

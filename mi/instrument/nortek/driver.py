@@ -1347,7 +1347,7 @@ class NortekInstrumentProtocol(CommandResponseInstrumentProtocol):
     def _handler_unknown_discover(self, *args, **kwargs):
         """
         Discover current state of instrument; can be COMMAND or AUTOSAMPLE.
-        @retval (next_state, next_agent_state)
+        @retval (next_state, next_state)
         """
         ret_mode = self._protocol_fsm.on_event(ProtocolEvent.READ_MODE)
         prompt = ret_mode[1]
@@ -1376,7 +1376,7 @@ class NortekInstrumentProtocol(CommandResponseInstrumentProtocol):
 
         log.debug('_handler_unknown_discover: state=%s', next_state)
 
-        return next_state, next_agent_state
+        return next_state, next_state
 
     def _handler_unknown_exit(self, *args, **kwargs):
         """
@@ -1481,13 +1481,13 @@ class NortekInstrumentProtocol(CommandResponseInstrumentProtocol):
     def _handler_command_start_autosample(self, *args, **kwargs):
         """
         Switch into autosample mode
-        @retval (next_state, next_resource_state, result) tuple
+        @retval (next_state, next_state, result) tuple
         """
         result = self._do_cmd_resp(InstrumentCmds.START_MEASUREMENT_WITHOUT_RECORDER, timeout=SAMPLE_TIMEOUT, *args, **kwargs)
-        return ProtocolState.AUTOSAMPLE, (ResourceAgentState.STREAMING, result)
+        return ProtocolState.AUTOSAMPLE, (ProtocolState.AUTOSAMPLE, result)
 
     def _handler_command_start_direct(self):
-        return ProtocolState.DIRECT_ACCESS, (ResourceAgentState.DIRECT_ACCESS, None)
+        return ProtocolState.DIRECT_ACCESS, (ProtocolState.DIRECT_ACCESS, None)
 
     def _handler_command_read_mode(self):
         """
@@ -1521,7 +1521,7 @@ class NortekInstrumentProtocol(CommandResponseInstrumentProtocol):
             # if there is no response, catch timeout exception and issue 'II' command instead
             result = self._do_cmd_resp(InstrumentCmds.CMD_WHAT_MODE, response_regex=MODE_DATA_REGEX)
 
-        return next_state, (next_agent_state, result)
+        return next_state, (next_state, result)
 
     def _clock_sync(self, *args, **kwargs):
         """
@@ -1596,7 +1596,7 @@ class NortekInstrumentProtocol(CommandResponseInstrumentProtocol):
             next_state = ProtocolState.AUTOSAMPLE
             next_agent_state = ResourceAgentState.STREAMING
         finally:
-            return next_state, (next_agent_state, result)
+            return next_state, (next_state, result)
 
     def _handler_autosample_enter(self, *args, **kwargs):
         """
@@ -1740,7 +1740,7 @@ class NortekInstrumentProtocol(CommandResponseInstrumentProtocol):
             #go back into autosample mode
             self._do_cmd_resp(InstrumentCmds.START_MEASUREMENT_WITHOUT_RECORDER, timeout=SAMPLE_TIMEOUT)
 
-        return next_state, (next_agent_state, None)
+        return next_state, (next_state, None)
 
     ########################################################################
     # Common handlers.

@@ -696,18 +696,19 @@ class SatlanticOCR507InstrumentProtocol(CommandResponseInstrumentProtocol):
         @retval (next_state, result), (SatlanticProtocolState.COMMAND, ResourceAgentState.IDLE or
         SatlanticProtocolState.AUTOSAMPLE, ResourceAgentState.STREAMING) if successful.
         """
-        try:
-            invalidCommandResponse = self._do_cmd_resp(Command.INVALID, timeout=3,
-                                                       expected_prompt=Prompt.INVALID_COMMAND)
-        except InstrumentTimeoutException as ex:
-            invalidCommandResponse = None  # The instrument is not in COMMAND: it must be polled or AUTOSAMPLE
+        next_state = SatlanticProtocolState.COMMAND
 
-        log.debug("_handler_unknown_discover: returned: %s", invalidCommandResponse)
-        if invalidCommandResponse:
-            return SatlanticProtocolState.COMMAND, ResourceAgentState.IDLE
-        # Put the instrument back into full autosample
-        self._do_cmd_no_resp(Command.SWITCH_TO_AUTOSAMPLE)
-        return SatlanticProtocolState.AUTOSAMPLE, ResourceAgentState.STREAMING
+        try:
+            response = self._do_cmd_resp(Command.INVALID, timeout=3, expected_prompt=Prompt.INVALID_COMMAND)
+        except InstrumentTimeoutException as ex:
+            response = None  # The instrument is not in COMMAND: it must be polled or AUTOSAMPLE
+
+        if response is None:
+            # Put the instrument back into full autosample
+            self._do_cmd_no_resp(Command.SWITCH_TO_AUTOSAMPLE)
+            next_state = SatlanticProtocolState.AUTOSAMPLE
+
+        return next_state, next_state
 
     ########################################################################
     # Command handlers.
@@ -749,7 +750,7 @@ class SatlanticOCR507InstrumentProtocol(CommandResponseInstrumentProtocol):
         """
         Handle getting an start autosample event when in command mode
         @param params List of the parameters to pass to the state
-        @return next state (next agent state, result)
+        @return next state (next state, result)
         """
         result = None
 
@@ -759,39 +760,33 @@ class SatlanticOCR507InstrumentProtocol(CommandResponseInstrumentProtocol):
         self._do_cmd_resp(Command.SWITCH_TO_AUTOSAMPLE, response_regex=SAMPLE_REGEX, timeout=30)
 
         next_state = SatlanticProtocolState.AUTOSAMPLE
-        next_agent_state = ResourceAgentState.STREAMING
 
-        return next_state, (next_agent_state, result)
+        return next_state, (next_state, result)
 
     def _handler_command_start_direct(self):
-        """
-        """
         result = None
 
         next_state = SatlanticProtocolState.DIRECT_ACCESS
-        next_agent_state = ResourceAgentState.DIRECT_ACCESS
 
         log.debug("_handler_command_start_direct: entering DA mode")
-        return next_state, (next_agent_state, result)
+        return next_state, (next_state, result)
 
     def _handler_command_acquire_status(self, *args, **kwargs):
         """
         Handle SatlanticProtocolState.COMMAND SatlanticProtocolEvent.ACQUIRE_STATUS
 
-        @return next state (next agent state, result)
+        @return next state (next state, result)
         """
         timeout = time.time() + STATUS_TIMEOUT
 
         next_state = None
-        next_agent_state = None
-        result = None
 
         self._do_cmd_resp(Command.ID)
         self._do_cmd_resp(Command.SHOW_ALL)
 
         particles = self.wait_for_particles([DataParticleType.CONFIG], timeout)
 
-        return next_state, (next_agent_state, particles)
+        return next_state, (next_state, particles)
 
     ########################################################################
     # Autosample handlers.
@@ -831,22 +826,20 @@ class SatlanticOCR507InstrumentProtocol(CommandResponseInstrumentProtocol):
         @retval return (next state, result)
         @throw InstrumentProtocolException For hardware error
         """
-        next_state = None
         result = None
 
         try:
             self._send_break()
             next_state = SatlanticProtocolState.COMMAND
-            next_agent_state = ResourceAgentState.COMMAND
         except InstrumentException:
             # Before raising an error, check if the instrument is already in Command state
-            next_state, next_agent_state = self._handler_unknown_discover()
+            next_state, _ = self._handler_unknown_discover()
 
             if next_state != SatlanticProtocolState.COMMAND:
                 raise InstrumentProtocolException(error_code=InstErrorCode.HARDWARE_ERROR,
                                                   msg="Could not break from autosample!")
 
-        return next_state, (next_agent_state, result)
+        return next_state, (next_state, result)
 
     ########################################################################
     # Direct access handlers.
@@ -871,34 +864,23 @@ class SatlanticOCR507InstrumentProtocol(CommandResponseInstrumentProtocol):
         self._do_cmd(cmd)
 
     def _handler_direct_access_execute_direct(self, data):
-        """
-        """
         next_state = None
         result = None
-        next_agent_state = None
 
         self._do_cmd_direct(data)
 
         # add sent command to list for 'echo' filtering in callback
         self._sent_cmds.append(data)
 
-        return next_state, (next_agent_state, result)
+        return next_state, (next_state, result)
 
     def _handler_direct_access_stop_direct(self):
-        """
-        """
-        next_state, next_agent_state = self._handler_unknown_discover()
-        if next_state == DriverProtocolState.COMMAND:
-            next_agent_state = ResourceAgentState.COMMAND
-
-        return next_state, (next_agent_state, None)
+        return self._handler_unknown_discover()
 
     ###################################################################
     # Builders
     ###################################################################
     def _build_default_command(self, *args):
-        """
-        """
         return " ".join(str(x) for x in args)
 
     ##################################################################

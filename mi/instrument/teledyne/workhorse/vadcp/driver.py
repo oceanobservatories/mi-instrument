@@ -828,14 +828,14 @@ class Protocol(WorkhorseProtocol):
     def _discover(self, connection=None):
         """
         Discover current state; can be COMMAND or AUTOSAMPLE or UNKNOWN.
-        @return (next_protocol_state, next_agent_state)
+        @return (next_protocol_state, next_protocol_state)
         @throws InstrumentTimeoutException if the device cannot be woken.
         @throws InstrumentStateException if the device response does not correspond to
         an expected state.
         """
         states = set()
-        command = (WorkhorseProtocolState.COMMAND, ResourceAgentState.COMMAND)
-        auto = (WorkhorseProtocolState.AUTOSAMPLE, ResourceAgentState.STREAMING)
+        command = WorkhorseProtocolState.COMMAND
+        auto = WorkhorseProtocolState.AUTOSAMPLE
         for connection in self.connections:
             try:
                 self._wakeup(3, connection=connection)
@@ -845,11 +845,12 @@ class Protocol(WorkhorseProtocol):
 
         if len(states) == 1:
             # states match, return this state
-            return states.pop()
+            state = states.pop()
+            return state, state
 
         # states don't match
         self._stop_logging()
-        return command
+        return command, command
 
     def _run_test(self, *args, **kwargs):
         kwargs['timeout'] = 30
@@ -876,7 +877,7 @@ class Protocol(WorkhorseProtocol):
     def _handler_command_acquire_status(self, *args, **kwargs):
         """
         execute a get status
-        @return next_state, (next_agent_state, result) if successful.
+        @return next_state, (next_state, result) if successful.
         @throws InstrumentProtocolException from _do_cmd_resp.
         """
         a = super(Protocol, self)._handler_command_acquire_status(connection=SlaveProtocol.FOURBEAM)
@@ -894,9 +895,8 @@ class Protocol(WorkhorseProtocol):
     def _handler_direct_access_execute_direct(self, data):
         next_state = None
         result = None
-        next_agent_state = None
         self._do_cmd_direct(data)
 
         # add sent command to list for 'echo' filtering in callback
         self._sent_cmds.append(data)
-        return next_state, (next_agent_state, result)
+        return next_state, (next_state, result)
