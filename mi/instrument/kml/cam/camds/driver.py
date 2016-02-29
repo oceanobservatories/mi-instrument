@@ -1747,16 +1747,13 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
     def _handler_unknown_discover(self, *args, **kwargs):
         """
         Discover current state; can be COMMAND or AUTOSAMPLE.
-        @return protocol_state, agent_state if successful
+        @return protocol_state, protocol_state if successful
         """
         protocol_state, agent_state = self._discover()
 
         log.debug("_handler_unknown_discover: Protocol state is %s" % protocol_state)
 
-        if protocol_state == ProtocolState.COMMAND:
-            agent_state = ResourceAgentState.IDLE
-
-        return protocol_state, agent_state
+        return protocol_state, protocol_state
 
     def stop_scheduled_job(self, schedule_job):
         """
@@ -1774,6 +1771,10 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
     def start_scheduled_job(self, param, schedule_job, protocol_event):
         """
         Add a scheduled job
+        :param param:
+        :param schedule_job:
+        :param protocol_event:
+        :type param: object
         """
         self.stop_scheduled_job(schedule_job)
 
@@ -1866,7 +1867,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
 
         next_state = ProtocolState.DIRECT_ACCESS
         next_agent_state = ResourceAgentState.DIRECT_ACCESS
-        return next_state, (next_agent_state, result)
+        return next_state, (next_state, result)
 
     def _handler_command_start_recovery(self, *args, **kwargs):
 
@@ -1876,12 +1877,12 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
         next_state = ProtocolState.RECOVERY
 
         next_agent_state = ResourceAgentState.BUSY
-        return next_state, (next_agent_state, result)
+        return next_state, (next_state, result)
 
     def _handler_command_start_autosample(self, *args, **kwargs):
         """
         Switch into autosample mode.
-        @return next_state, (next_agent_state, result) if successful.
+        @return next_state, (next_state, result) if successful.
         """
         result = None
         kwargs['timeout'] = 30
@@ -1903,7 +1904,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
         next_state = ProtocolState.AUTOSAMPLE
         next_agent_state = ResourceAgentState.STREAMING
 
-        return next_state, (next_agent_state, result)
+        return next_state, (next_state, result)
 
     def _handler_command_acquire_sample(self, *args, **kwargs):
         """
@@ -1925,7 +1926,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
         # Camera needs time to recover after taking a snapshot
         self._do_recover(CAMERA_RECOVERY_TIME)
 
-        return next_state, (None, None)
+        return next_state, (next_state, None)
 
     def _handler_command_acquire_status(self, *args, **kwargs):
         """
@@ -1953,7 +1954,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
         particles = self.wait_for_particles([DataParticleType.CAMDS_DISK_STATUS,
                                              DataParticleType.CAMDS_HEALTH_STATUS], timeout)
 
-        return next_state, (None, particles)
+        return next_state, (next_state, particles)
 
     def _handler_command_lamp_on(self, *args, **kwargs):
         """
@@ -1965,7 +1966,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
 
         self._do_cmd_resp(InstrumentCmds.LAMP_ON, *args, **kwargs)
 
-        return next_state, (None, None)
+        return next_state, (next_state, None)
 
     def _handler_command_lamp_off(self, *args, **kwargs):
         """
@@ -1977,7 +1978,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
 
         self._do_cmd_resp(InstrumentCmds.LAMP_OFF, *args, **kwargs)
 
-        return next_state, (None, None)
+        return next_state, (next_state, None)
 
     def _handler_command_laser(self, command, light, *args, **kwargs):
 
@@ -1990,7 +1991,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
 
         self._do_cmd_resp(command, light, **kwargs)
 
-        return next_state, (None, None)
+        return next_state, (next_state, None)
 
     def _handler_command_laser1_on(self, *args, **kwargs):
         """
@@ -2048,7 +2049,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
 
         self._do_cmd_resp(InstrumentCmds.SET_PRESET, preset_number, *args, **kwargs)
 
-        return next_state, (None, None)
+        return next_state, (next_state, None)
 
     def _handler_command_start_capture(self, *args, **kwargs):
         """
@@ -2117,21 +2118,21 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
 
         self._do_cmd_resp(InstrumentCmds.GO_TO_PRESET, preset_number, *args, **kwargs)
 
-        return next_state, (None, None)
+        return next_state, (next_state, None)
 
     def _discover(self):
         """
         Discover current state; can be COMMAND or AUTOSAMPLE or UNKNOWN.
-        @return (next_protocol_state, next_agent_state)
+        @return (next_protocol_state, next_state)
         """
 
         log.debug("trying to discover state...")
 
         if self._scheduler_callback is not None:
             if self._scheduler_callback.get(ScheduledJob.SAMPLE):
-                return ProtocolState.AUTOSAMPLE, ResourceAgentState.STREAMING
+                return ProtocolState.AUTOSAMPLE, ProtocolState.AUTOSAMPLE
 
-        return ProtocolState.COMMAND, ResourceAgentState.COMMAND
+        return ProtocolState.COMMAND, ProtocolState.COMMAND
 
     def _calculate_recovery_time(self):
         """
@@ -2198,16 +2199,16 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
         # add sent command to list for 'echo' filtering in callback
         self._sent_cmds.append(data)
 
-        return next_state, (next_agent_state, result)
+        return next_state, (next_state, result)
 
     def _handler_direct_access_stop_direct(self):
         """
-        @reval next_state, (next_agent_state, result)
+        @reval next_state, (next_state, result)
         """
         result = None
         (next_state, next_agent_state) = self._discover()
 
-        return next_state, (next_agent_state, result)
+        return next_state, (next_state, result)
 
     ################################################################################
     # Autosample state handlers
@@ -2251,7 +2252,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
         # Camera needs time to recover after taking a snapshot
         self._do_recover(CAMERA_RECOVERY_TIME)
 
-        return next_state, (None, None)
+        return next_state, (next_state, None)
 
     def _handler_autosample_start_capture(self, *args, **kwargs):
         """
@@ -2271,7 +2272,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
     def _handler_autosample_stop_autosample(self, *args, **kwargs):
         """
         Stop autosample and switch back to command mode.
-        @return  next_state, (next_agent_state, result) if successful.
+        @return  next_state, (next_state, result) if successful.
         incorrect prompt received.
         """
         result = None
@@ -2281,7 +2282,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
 
         self.stop_scheduled_job(ScheduledJob.SAMPLE)
 
-        return next_state, (next_agent_state, result)
+        return next_state, (next_state, result)
 
     def _handler_recovery_enter(self, *args, **kwargs):
         """
@@ -2316,7 +2317,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
 
         self._async_agent_state_change(next_agent_state)
 
-        return next_state, (next_agent_state, None)
+        return next_state, (next_state, None)
 
     def _recovery_timer_expired(self, *args, **kwargs):
         """
@@ -2572,12 +2573,16 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
         match = regex.match(line)
         if match:
             # special case for the CAMDS image metadata particle - need to pass in param_dict
+            particle = None
             if regex == CAMDS_METADATA_MATCHER_COM:
                 particle = particle_class(self._param_dict, port_timestamp=timestamp)
             elif regex == CAMDS_IMAGE_FILE_MATCHER_COM:
                 # this is the image filename handed over by the port agent
                 img_filename = match.group(1)
                 particle = particle_class(self._param_dict, img_filename, port_timestamp=timestamp)
+
+            if particle is None:
+                return
 
             parsed_sample = particle.generate()
 

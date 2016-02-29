@@ -817,8 +817,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         Discover current state
         @retval (next_state, result)
         """
-        next_state = None
-        next_agent_state = None
+        next_state = DriverProtocolState.COMMAND
 
         try:
             # Listen to data stream to determine the current state
@@ -833,19 +832,14 @@ class Protocol(CommandResponseInstrumentProtocol):
 
             if sample_regex.search(response):
                 next_state = DriverProtocolState.AUTOSAMPLE
-                next_agent_state = ResourceAgentState.STREAMING
-            else:
-                next_state = DriverProtocolState.COMMAND
-                next_agent_state = ResourceAgentState.IDLE
 
         except InstrumentTimeoutException:
             # if an exception is caught, the response timed out looking for a SAMPLE in the buffer
-            # if there are no samples in the buffer, than we are likely in command mode
+            # if there are no samples in the buffer, then we are likely in command mode
             next_state = DriverProtocolState.COMMAND
-            next_agent_state = ResourceAgentState.IDLE
 
         finally:
-            return next_state, next_agent_state
+            return next_state, next_state
 
     ########################################################################
     # Command handlers.
@@ -938,7 +932,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         else:
             resp_regex = FLORD_SAMPLE_REGEX_MATCHER
         result = self._do_cmd_resp(InstrumentCommand.RUN_SETTINGS, timeout=TIMEOUT, response_regex=resp_regex)
-        return ProtocolState.AUTOSAMPLE, (ResourceAgentState.STREAMING, result)
+        return ProtocolState.AUTOSAMPLE, (ProtocolState.AUTOSAMPLE, result)
 
     def _handler_command_acquire_status(self, *args, **kwargs):
         """
@@ -1068,7 +1062,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         result = self._do_cmd_resp(InstrumentCommand.INTERRUPT_INSTRUMENT, *args, timeout=TIMEOUT,
                                    response_regex=MNU_REGEX_MATCHER)
 
-        return ProtocolState.COMMAND, (ResourceAgentState.COMMAND, result)
+        return ProtocolState.COMMAND, (ProtocolState.COMMAND, result)
 
     def _handler_autosample_run_wiper(self, *args, **kwargs):
         """
@@ -1174,17 +1168,13 @@ class Protocol(CommandResponseInstrumentProtocol):
         """
 
         # discover the state to go to next
-        next_state, next_agent_state = self._handler_unknown_discover()
-        if next_state == DriverProtocolState.COMMAND:
-            next_agent_state = ResourceAgentState.COMMAND
-
-        return next_state, (next_agent_state, None)
+        return self._handler_unknown_discover()
 
     def _handler_command_start_direct(self):
         """
         Start direct access
         """
-        return ProtocolState.DIRECT_ACCESS, (ResourceAgentState.DIRECT_ACCESS, None)
+        return ProtocolState.DIRECT_ACCESS, (ProtocolState.DIRECT_ACCESS, None)
 
     ########################################################################
     # Private helpers.

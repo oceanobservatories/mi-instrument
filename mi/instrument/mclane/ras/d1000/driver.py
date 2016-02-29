@@ -863,14 +863,14 @@ class Protocol(CommandResponseInstrumentProtocol):
     def _handler_unknown_discover(self, *args, **kwargs):
         """
         Discover current state
-        @retval (next_state, current state), (ProtocolState.COMMAND, None) if successful.
+        @retval next_state, next_state
         """
 
         # force to command mode, this instrument has no autosample mode
         next_state = ProtocolState.COMMAND
         result = ResourceAgentState.COMMAND
 
-        return ProtocolState.COMMAND, ResourceAgentState.IDLE
+        return ProtocolState.COMMAND, ProtocolState.COMMAND
 
     ########################################################################
     # Event handlers for COMMAND state.
@@ -921,18 +921,17 @@ class Protocol(CommandResponseInstrumentProtocol):
         self._set_params(input_params, startup)
 
         return None, None
-        # return None, (None, None)
 
     def _handler_command_autosample(self, *args, **kwargs):
         """
         Begin autosample.
         """
-        return ProtocolState.AUTOSAMPLE, (ResourceAgentState.STREAMING, None)
+        return ProtocolState.AUTOSAMPLE, (ProtocolState.AUTOSAMPLE, None)
 
     def _handler_command_start_direct(self, *args, **kwargs):
         """
         """
-        return ProtocolState.DIRECT_ACCESS, (ResourceAgentState.DIRECT_ACCESS, None)
+        return ProtocolState.DIRECT_ACCESS, (ProtocolState.DIRECT_ACCESS, None)
 
     ########################################################################
     # Event handlers for AUTOSAMPLE state.
@@ -986,7 +985,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         """
         Terminate autosampling
         """
-        return ProtocolState.COMMAND, (ResourceAgentState.COMMAND, None)
+        return ProtocolState.COMMAND, (ProtocolState.COMMAND, None)
 
     ########################################################################
     # Direct access handlers.
@@ -1017,8 +1016,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         next_state = ProtocolState.COMMAND
         next_agent_state = ResourceAgentState.COMMAND
 
-        # return next_state, (next_agent_state, result)
-        return ProtocolState.COMMAND, (ResourceAgentState.COMMAND, None)
+        return ProtocolState.COMMAND, (ProtocolState.COMMAND, None)
 
 
 class PlaybackProtocol(Protocol):

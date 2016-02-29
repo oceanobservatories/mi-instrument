@@ -644,7 +644,7 @@ class SatlanticPARInstrumentProtocol(CommandResponseInstrumentProtocol):
     def _handler_unknown_discover(self):
         """
         Discover current state; can be COMMAND or AUTOSAMPLE.
-        @retval (next_state, result), (PARProtocolState.COMMAND or PARProtocolState.AUTOSAMPLE, None).
+        @retval next_state, next_state
         """
         try:
             probe_resp = self._do_cmd_resp(Command.SAMPLE, timeout=2,
@@ -655,11 +655,13 @@ class SatlanticPARInstrumentProtocol(CommandResponseInstrumentProtocol):
 
         log.trace("_handler_unknown_discover: returned: %s", probe_resp)
         if probe_resp == PARProtocolError.INVALID_COMMAND:
-            return PARProtocolState.COMMAND, ResourceAgentState.IDLE
+            next_state = PARProtocolState.COMMAND
         else:
             # Put the instrument into full autosample in case it isn't already (could be in polled mode)
             self._do_cmd_resp(Command.SWITCH_TO_AUTOSAMPLE, expected_prompt=Prompt.SAMPLES, timeout=15)
-            return PARProtocolState.AUTOSAMPLE, ResourceAgentState.STREAMING
+            next_state = PARProtocolState.AUTOSAMPLE
+
+        return next_state, next_state
 
     ########################################################################
     # Command handlers.

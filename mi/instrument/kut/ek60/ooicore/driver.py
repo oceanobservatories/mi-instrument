@@ -7,9 +7,6 @@ Release notes:
 This Driver supports the Kongsberg UnderWater Technology's EK60 Instrument.
 """
 
-__author__ = 'Richard Han & Craig Risien'
-__license__ = 'Apache 2.0'
-
 
 import ftplib
 import json
@@ -28,7 +25,6 @@ from mi.core.instrument.instrument_driver import DriverEvent
 from mi.core.instrument.instrument_driver import DriverAsyncEvent
 from mi.core.instrument.instrument_driver import DriverProtocolState
 from mi.core.instrument.instrument_driver import DriverParameter
-from mi.core.instrument.instrument_driver import ResourceAgentState
 from mi.core.instrument.instrument_fsm import ThreadSafeFSM
 from mi.core.instrument.instrument_protocol import CommandResponseInstrumentProtocol
 from mi.core.instrument.protocol_param_dict import ParameterDictType
@@ -36,6 +32,9 @@ from mi.core.instrument.protocol_param_dict import ParameterDictType
 from mi.core.log import get_logger
 from mi.core.log import get_logging_metaclass
 log = get_logger()
+
+__author__ = 'Richard Han & Craig Risien'
+__license__ = 'Apache 2.0'
 
 
 # newline.
@@ -620,7 +619,7 @@ class Protocol(CommandResponseInstrumentProtocol):
     def _handler_unknown_discover(self, *args, **kwargs):
         """
         Discover current state
-        @retval (next_state, next_agent_state)
+        @retval (next_state, next_state)
         """
         # Try to get the status to check if the instrument is alive
         host = self._param_dict.get_config_value(Parameter.FTP_IP_ADDRESS)
@@ -632,7 +631,7 @@ class Protocol(CommandResponseInstrumentProtocol):
             log.error(error_msg)
             raise InstrumentConnectionException(error_msg)
 
-        return ProtocolState.COMMAND, ResourceAgentState.IDLE
+        return ProtocolState.COMMAND, ProtocolState.COMMAND
 
     ########################################################################
     # Command handlers.
@@ -842,7 +841,7 @@ class Protocol(CommandResponseInstrumentProtocol):
     def _handler_command_autosample(self, *args, **kwargs):
         """
         Start autosample mode
-        @retval next_state, (next_resource_state, result) tuple
+        @retval next_state, (next_state, result) tuple
         """
         # FTP the driver schedule file to the instrument server
         self._ftp_schedule_file()
@@ -865,12 +864,12 @@ class Protocol(CommandResponseInstrumentProtocol):
         if res.get('result') != 'OK':
             raise InstrumentException('_handler_command_autosample: Start Schedule File Error.')
 
-        return ProtocolState.AUTOSAMPLE, (ResourceAgentState.STREAMING, None)
+        return ProtocolState.AUTOSAMPLE, (ProtocolState.AUTOSAMPLE, None)
 
     def _handler_command_acquire_status(self, *args, **kwargs):
         """
         Acquire status from the instrument
-        @retval next_state, (next_resource_state, result) tuple
+        @retval next_state, (next_state, result) tuple
         """
         timeout = time.time() + STATUS_TIMEOUT
 
@@ -905,7 +904,7 @@ class Protocol(CommandResponseInstrumentProtocol):
     def _handler_autosample_stop(self):
         """
         Stop autosample mode
-        @retval next_state, (next_resource_state, result) tuple
+        @retval next_state, (next_state, result) tuple
         """
         host = self._param_dict.get_config_value(Parameter.FTP_IP_ADDRESS)
         port = self._param_dict.get_config_value(Parameter.FTP_PORT)
@@ -913,4 +912,4 @@ class Protocol(CommandResponseInstrumentProtocol):
         res = self._url_request(host, port, '/stop_schedule', data={})
         log.debug("handler_autosample_stop: stop schedule returns %r", res)
 
-        return ProtocolState.COMMAND, (ResourceAgentState.COMMAND, None)
+        return ProtocolState.COMMAND, (ProtocolState.COMMAND, None)

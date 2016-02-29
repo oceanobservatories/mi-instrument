@@ -614,7 +614,7 @@ class SBE16NOProtocol(SBE19Protocol):
     def _handler_command_acquire_sample(self, *args, **kwargs):
         """
         Acquire sample from SBE16.
-        @retval next_state, (next_agent_state, result) tuple
+        @retval next_state, (next_state, result) tuple
         """
         timeout = time.time() + TIMEOUT
 

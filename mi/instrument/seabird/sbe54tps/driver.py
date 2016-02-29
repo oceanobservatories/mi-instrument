@@ -1033,7 +1033,8 @@ class Protocol(SeaBirdProtocol):
         """
         Discover current state; always AUTOSAMPLE.
         """
-        return ProtocolState.AUTOSAMPLE, ResourceAgentState.STREAMING
+        next_state = ProtocolState.AUTOSAMPLE
+        return next_state, next_state
 
     def _handler_unknown_exit(self, *args, **kwargs):
         """
@@ -1049,12 +1050,11 @@ class Protocol(SeaBirdProtocol):
         Run all Get?? commands.  Concat command results and return
         @param args:
         @param kwargs:
-        @return:
+        @return: next_state, (next_state, result)
         """
         timeout = kwargs.get('timeout', TIMEOUT)
 
         next_state = None
-        next_agent_state = None
         result1 = self._do_cmd_resp(InstrumentCmds.GET_CONFIGURATION_DATA, timeout=timeout)
         result2 = self._do_cmd_resp(InstrumentCmds.GET_STATUS_DATA, timeout=timeout)
         result3 = self._do_cmd_resp(InstrumentCmds.GET_EVENT_COUNTER_DATA, timeout=timeout)
@@ -1062,20 +1062,20 @@ class Protocol(SeaBirdProtocol):
 
         result = result1 + result2 + result3 + result4
 
-        return next_state, (next_agent_state, result)
+        return next_state, (next_state, result)
 
     def _handler_command_start_direct(self, *args, **kwargs):
-        return ProtocolState.DIRECT_ACCESS, (ResourceAgentState.DIRECT_ACCESS, None)
+        return ProtocolState.DIRECT_ACCESS, (ProtocolState.DIRECT_ACCESS, None)
 
     def _handler_command_recover_autosample(self, *args, **kwargs):
         """
         Reenter autosample mode.  Used when our data handler detects
         as data sample.
-        @retval (next_state, result) tuple, (None, sample dict).
+        @retval next_state, (next_state, result)
         """
         self._async_agent_state_change(ResourceAgentState.STREAMING)
 
-        return ProtocolState.AUTOSAMPLE, ResourceAgentState.STREAMING
+        return ProtocolState.AUTOSAMPLE, ProtocolState.AUTOSAMPLE
 
     def _handler_command_exit(self, *args, **kwargs):
         """
@@ -1098,8 +1098,7 @@ class Protocol(SeaBirdProtocol):
 
         next_state = ProtocolState.OSCILLATOR
 
-        next_agent_state = ResourceAgentState.BUSY
-        return next_state, (next_agent_state, result)
+        return next_state, (next_state, result)
 
     def _handler_oscillator_enter(self, *args, **kwargs):
         """
@@ -1123,7 +1122,7 @@ class Protocol(SeaBirdProtocol):
         except InstrumentException as e:
             log.error("Exception occurred when trying to acquire Reference Oscillator Sample: %s" % e)
 
-        return ProtocolState.COMMAND, (ResourceAgentState.COMMAND, result)
+        return ProtocolState.COMMAND, (ProtocolState.COMMAND, result)
 
     def _handler_oscillator_exit(self, *args, **kwargs):
         """
@@ -1134,7 +1133,7 @@ class Protocol(SeaBirdProtocol):
     def _handler_command_clock_sync(self, *args, **kwargs):
         """
         execute a clock sync on the leading edge of a second change
-        @retval (next_state, result) tuple, (None, (None, )) if successful.
+        @retval next_state, (next_state, result)
         @throws InstrumentTimeoutException if device cannot be woken for command.
         @throws InstrumentProtocolException if command could not be built or misunderstood.
         """
@@ -1145,8 +1144,7 @@ class Protocol(SeaBirdProtocol):
     def _handler_command_start_autosample(self, *args, **kwargs):
         """
         Switch into autosample mode.
-        @retval (next_state, result) tuple, (ProtocolState.AUTOSAMPLE,
-        None) if successful.
+        @retval next_state, (next_state, result)
         @throws InstrumentTimeoutException if device cannot be woken for command.
         @throws InstrumentProtocolException if command could not be built or misunderstood.
         """
@@ -1158,7 +1156,7 @@ class Protocol(SeaBirdProtocol):
         # Issue start command and switch to autosample if successful.
         self._do_cmd_no_resp(InstrumentCmds.START_LOGGING, *args, **kwargs)
 
-        return ProtocolState.AUTOSAMPLE, (ResourceAgentState.STREAMING, None)
+        return ProtocolState.AUTOSAMPLE, (ProtocolState.AUTOSAMPLE, None)
 
     ########################################################################
     # Autosample handlers.
@@ -1194,7 +1192,7 @@ class Protocol(SeaBirdProtocol):
         Run all status commands.  Concat command results and return
         @param args:
         @param kwargs:
-        @return:
+        @return: next state, (next state, result)
         """
 
         try:
@@ -1221,7 +1219,7 @@ class Protocol(SeaBirdProtocol):
         """
         self._do_cmd_resp(InstrumentCmds.STOP_LOGGING, *args, **kwargs)
 
-        return ProtocolState.COMMAND, (ResourceAgentState.COMMAND, None)
+        return ProtocolState.COMMAND, (ProtocolState.COMMAND, None)
 
     def _handler_autosample_exit(self, *args, **kwargs):
         """

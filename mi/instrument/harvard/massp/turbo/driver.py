@@ -738,7 +738,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         for command in [InstrumentCommand.PUMP_STATION, InstrumentCommand.MOTOR_PUMP]:
             self._send_command_with_retry(command, value=FALSE)
 
-        return ProtocolState.SPINNING_DOWN, (ResourceAgentState.BUSY, None)
+        return ProtocolState.SPINNING_DOWN, (ProtocolState.SPINNING_DOWN, None)
 
     ########################################################################
     # Unknown handlers.
@@ -747,9 +747,9 @@ class Protocol(CommandResponseInstrumentProtocol):
     def _handler_unknown_discover(self, *args, **kwargs):
         """
         Discover current state.  This instrument always discovers to COMMAND
-        @returns: next_state, next_agent_state
+        @returns: next_state, next_state
         """
-        return ProtocolState.COMMAND, ResourceAgentState.IDLE
+        return ProtocolState.COMMAND, ProtocolState.COMMAND
 
     ########################################################################
     # Command handlers.
@@ -794,20 +794,20 @@ class Protocol(CommandResponseInstrumentProtocol):
     def _handler_command_start_direct(self):
         """
         Start direct access
-        @returns: next_state, (next_agent_state, result)
+        @returns: next_state, (next_state, result)
         """
-        return ProtocolState.DIRECT_ACCESS, (ResourceAgentState.DIRECT_ACCESS, None)
+        return ProtocolState.DIRECT_ACCESS, (ProtocolState.DIRECT_ACCESS, None)
 
     def _handler_command_start_turbo(self):
         """
         Start the turbo, periodic status scheduler
-        @returns: next_state, (next_agent_state, result)
+        @returns: next_state, (next_state, result)
         """
         for command in [InstrumentCommand.PUMP_STATION, InstrumentCommand.MOTOR_PUMP]:
             self._send_command_with_retry(command, value=TRUE)
         # start the acquire_status scheduler
         self._build_scheduler()
-        return ProtocolState.SPINNING_UP, (ResourceAgentState.BUSY, None)
+        return ProtocolState.SPINNING_UP, (ProtocolState.SPINNING_UP, None)
 
     ########################################################################
     # Direct access handlers.
@@ -825,7 +825,7 @@ class Protocol(CommandResponseInstrumentProtocol):
     def _handler_direct_access_execute_direct(self, data):
         """
         Forward a direct access command to the instrument
-        @returns: next_state, (next_agent_state, result)
+        @returns: next_state, (next_state, result)
         """
         self._do_cmd_direct(data)
 
@@ -837,9 +837,9 @@ class Protocol(CommandResponseInstrumentProtocol):
     def _handler_direct_access_stop_direct(self):
         """
         Stop direct access, return to COMMAND
-        @returns: next_state, (next_agent_state, result)
+        @returns: next_state, (next_state, result)
         """
-        return ProtocolState.COMMAND, (ResourceAgentState.COMMAND, None)
+        return ProtocolState.COMMAND, (ProtocolState.COMMAND, None)
 
     ########################################################################
     # Spinning up/down handlers.
@@ -848,17 +848,17 @@ class Protocol(CommandResponseInstrumentProtocol):
     def _handler_spinning_up_at_speed(self):
         """
         Instrument has reached operating speed, transition states.
-        @returns: next_state, next_agent_state
+        @returns: next_state, next_state
         """
-        return ProtocolState.AT_SPEED, ResourceAgentState.BUSY
+        return ProtocolState.AT_SPEED, ProtocolState.AT_SPEED
 
     def _handler_spinning_down_stopped(self):
         """
         Instrument has spun down, transition states.
-        @returns: next_state, next_agent_state
+        @returns: next_state, next_state
         """
         self._async_agent_state_change(ResourceAgentState.COMMAND)
-        return ProtocolState.COMMAND, ResourceAgentState.COMMAND
+        return ProtocolState.COMMAND, ProtocolState.COMMAND
 
     ########################################################################
     # Error handlers.
@@ -867,15 +867,15 @@ class Protocol(CommandResponseInstrumentProtocol):
     def _handler_error(self, *args, **kwargs):
         """
         Error detected, go to the ERROR state.
-        @returns: next_state, (next_agent_state, result)
+        @returns: next_state, (next_state, result)
         """
-        return ProtocolState.ERROR, (ResourceAgentState.COMMAND, None)
+        return ProtocolState.ERROR, (ProtocolState.ERROR, None)
 
     def _handler_clear(self, *args, **kwargs):
         """
         User requests error state be cleared, go to COMMAND.
-        @returns: next_state, (next_agent_state, result)
+        @returns: next_state, (next_state, result)
         """
         self._param_dict.set_value(Parameter.ERROR_REASON, '')
         self._driver_event(DriverAsyncEvent.CONFIG_CHANGE)
-        return ProtocolState.COMMAND, (ResourceAgentState.COMMAND, None)
+        return ProtocolState.COMMAND, (ProtocolState.COMMAND, None)

@@ -799,9 +799,9 @@ class Protocol(CommandResponseInstrumentProtocol):
     def _handler_unknown_discover(self, *args, **kwargs):
         """
         Process discover event
-        @return next_state, next_agent_state
+        @return next_state, next_state
         """
-        return ProtocolState.COMMAND, ResourceAgentState.IDLE
+        return ProtocolState.COMMAND, ProtocolState.COMMAND
 
     ########################################################################
     # Autosample handlers.
@@ -817,9 +817,9 @@ class Protocol(CommandResponseInstrumentProtocol):
     def _handler_autosample_stop_autosample(self, *args, **kwargs):
         """
         Stop autosample
-        @return next_state, (next_agent_state, result)
+        @return next_state, (next_state, result)
         """
-        return ProtocolState.COMMAND, (ResourceAgentState.COMMAND, None)
+        return ProtocolState.COMMAND, (ProtocolState.COMMAND, None)
 
     ########################################################################
     # Command handlers.
@@ -840,7 +840,6 @@ class Protocol(CommandResponseInstrumentProtocol):
     def _handler_command_get(self, *args, **kwargs):
         """
         Process GET event
-        @return next_state, result
         """
         return self._handler_get(*args, **kwargs)
 
@@ -872,19 +871,19 @@ class Protocol(CommandResponseInstrumentProtocol):
     def _handler_command_start_direct(self):
         """
         Start direct access
-        @return next_state, (next_agent_state, result)
+        @return next_state, (next_state, result)
         """
-        return ProtocolState.DIRECT_ACCESS, (ResourceAgentState.DIRECT_ACCESS, None)
+        return ProtocolState.DIRECT_ACCESS, (ProtocolState.DIRECT_ACCESS, None)
 
     def _handler_command_start_autosample(self):
         """
         Start autosample
-        @return next_state, (next_agent_state, result)
+        @return next_state, (next_state, result)
         """
         self._do_cmd_resp(InstrumentCommand.LILY_ON, expected_prompt=Prompt.LILY_ON)
         self._do_cmd_resp(InstrumentCommand.NANO_ON, expected_prompt=NANO_STRING)
         self._do_cmd_resp(InstrumentCommand.IRIS_ON, expected_prompt=Prompt.IRIS_ON)
-        return ProtocolState.AUTOSAMPLE, (ResourceAgentState.STREAMING, None)
+        return ProtocolState.AUTOSAMPLE, (ProtocolState.AUTOSAMPLE, None)
 
     ########################################################################
     # Direct access handlers.
@@ -902,7 +901,7 @@ class Protocol(CommandResponseInstrumentProtocol):
     def _handler_direct_access_execute_direct(self, data):
         """
         Execute direct access command
-        @return next_state, (next_agent_state, result)
+        @return next_state, (next_state, result)
         """
         self._do_cmd_direct(data)
         self._sent_cmds.append(data)
@@ -911,13 +910,13 @@ class Protocol(CommandResponseInstrumentProtocol):
     def _handler_direct_access_stop_direct(self):
         """
         Stop direct access
-        @return next_state, (next_agent_state, result)
+        @return next_state, (next_state, result)
         """
         next_state, next_agent_state = self._handler_unknown_discover()
         if next_state == DriverProtocolState.COMMAND:
             next_agent_state = ResourceAgentState.COMMAND
 
-        return next_state, (next_agent_state, None)
+        return next_state, (next_state, None)
 
     ########################################################################
     # Generic handlers.
@@ -940,7 +939,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         """
         We generate these particles here to avoid the chunker.  This allows us to process status
         messages with embedded messages from the other parts of the instrument.
-        @return next_state, (next_agent_state, result)
+        @return next_state, (next_state, result)
         """
         timeout = time.time() + STATUS_TIMEOUT
 
@@ -974,7 +973,7 @@ class Protocol(CommandResponseInstrumentProtocol):
     def _handler_time_sync(self, *args, **kwargs):
         """
         Syncing time starts autosample...
-        @return next_state, (next_agent_state, result)
+        @return next_state, (next_state, result)
         """
         self._do_cmd_resp(InstrumentCommand.NANO_SET_TIME, expected_prompt=NANO_STRING)
         if self.get_current_state() == ProtocolState.COMMAND:
@@ -984,7 +983,7 @@ class Protocol(CommandResponseInstrumentProtocol):
     def _handler_start_leveling(self):
         """
         Send the start leveling command
-        @return next_state, (next_agent_state, result)
+        @return next_state, (next_state, result)
         """
         if not self._param_dict.get(Parameter.LILY_LEVELING):
             self._schedule_leveling_timeout()
@@ -996,7 +995,7 @@ class Protocol(CommandResponseInstrumentProtocol):
     def _handler_stop_leveling(self):
         """
         Send the stop leveling command
-        @return next_state, (next_agent_state, result)
+        @return next_state, (next_state, result)
         """
         if self._param_dict.get(Parameter.LILY_LEVELING):
             self._remove_leveling_timeout()
@@ -1025,7 +1024,7 @@ class Protocol(CommandResponseInstrumentProtocol):
     def _handler_start_heater(self, *args, **kwargs):
         """
         Turn the heater on for Parameter.HEAT_DURATION hours
-        @return next_state, (next_agent_state, result)
+        @return next_state, (next_state, result)
         """
         if not self._param_dict.get(Parameter.HEATER_ON):
             self._do_cmd_resp(InstrumentCommand.HEAT,
@@ -1043,7 +1042,7 @@ class Protocol(CommandResponseInstrumentProtocol):
     def _handler_stop_heater(self, *args, **kwargs):
         """
         Turn the heater on for Parameter.HEAT_DURATION hours
-        @return next_state, (next_agent_state, result)
+        @return next_state, (next_state, result)
         """
         if self._param_dict.get(Parameter.HEATER_ON):
             self._do_cmd_resp(InstrumentCommand.HEAT,

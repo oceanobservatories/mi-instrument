@@ -2061,12 +2061,13 @@ class Protocol(CommandResponseInstrumentProtocol):
         pass
 
     def _handler_unknown_discover(self):
+        next_state = ProtocolState.COMMAND
         # any existing mission needs to be stopped. If one is not already running, no harm in sending the stop.
         self._do_cmd_no_resp(Command.MISSION_STOP)
         # delay so the instrument doesn't overwrite the next response
         time.sleep(2)
 
-        return ProtocolState.COMMAND, ResourceAgentState.IDLE
+        return next_state, next_state
 
     ########################################################################
     # Command handlers.
@@ -2187,7 +2188,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         except InstrumentTimeoutException as e:
             log.warning('Unable to terminate mission cleanly: %r', e.message)
 
-        return ProtocolState.COMMAND, (ResourceAgentState.COMMAND, None)
+        return ProtocolState.COMMAND, (ProtocolState.COMMAND, None)
 
     def _handler_autosample_exit(self, *args, **kwargs):
         # no special cleanup required
@@ -2211,7 +2212,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         return None, (None, None)
 
     def _handler_direct_access_stop_direct(self):
-        return ProtocolState.COMMAND, (ResourceAgentState.COMMAND, None)
+        return ProtocolState.COMMAND, (ProtocolState.COMMAND, None)
 
     def _handler_direct_access_exit(self):
         pass
