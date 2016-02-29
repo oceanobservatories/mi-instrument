@@ -825,7 +825,7 @@ class Protocol(InstrumentProtocol):
     def _handler_stop_generic(self, *args, **kwargs):
         """
         Generic stop method to return to COMMAND (via POLL if appropriate)
-        @return next_state, (next_agent_state, None)
+        @return next_state, (next_state, None)
         """
         self._delete_scheduler()
 
@@ -841,7 +841,7 @@ class Protocol(InstrumentProtocol):
 
         # notify the agent we have changed states
         self._async_agent_state_change(next_agent_state)
-        return next_state, (next_agent_state, None)
+        return next_state, (next_state, None)
 
     ########################################################################
     # Unknown handlers.
@@ -850,7 +850,7 @@ class Protocol(InstrumentProtocol):
     def _handler_unknown_discover(self, *args, **kwargs):
         """
         Discover current state
-        @return (next_state, next_agent_state)
+        @return (next_state, next_state)
         """
         result = self._send_event_to_all(ProtocolEvent.DISCOVER)
         log.debug('_handler_unknown_discover -- send DISCOVER to all: %r', result)
@@ -864,8 +864,8 @@ class Protocol(InstrumentProtocol):
                 break
             time.sleep(1)
         if not success:
-            return ProtocolState.ERROR, ResourceAgentState.IDLE
-        return ProtocolState.COMMAND, ResourceAgentState.IDLE
+            return ProtocolState.ERROR, ProtocolState.ERROR
+        return ProtocolState.COMMAND, ProtocolState.COMMAND
 
     ########################################################################
     # Command handlers.
@@ -924,56 +924,56 @@ class Protocol(InstrumentProtocol):
     def _handler_command_start_direct(self):
         """
         Start direct access
-        @return next_state, (next_agent_state, result)
+        @return next_state, (next_state, result)
         """
-        return ProtocolState.DIRECT_ACCESS, (ResourceAgentState.DIRECT_ACCESS, None)
+        return ProtocolState.DIRECT_ACCESS, (ProtocolState.DIRECT_ACCESS, None)
 
     def _handler_command_start_autosample(self):
         """
         Move my FSM to autosample and start the sample sequence by sending START1 to the MCU.
         Create the scheduler to automatically start the next sample sequence
-        @return next_state, (next_agent_state, result)
+        @return next_state, (next_state, result)
         """
         self._send_event_to_slave(MCU, mcu.Capability.START1)
         self._build_scheduler()
-        return ProtocolState.AUTOSAMPLE, (ResourceAgentState.STREAMING, None)
+        return ProtocolState.AUTOSAMPLE, (ProtocolState.AUTOSAMPLE, None)
 
     def _handler_command_start_poll(self):
         """
         Move my FSM to poll and start the sample sequence by sending START1 to the MCU
-        @return next_state, (next_agent_state, result)
+        @return next_state, (next_state, result)
         """
         self._send_event_to_slave(MCU, mcu.Capability.START1)
-        return ProtocolState.POLL, (ResourceAgentState.BUSY, None)
+        return ProtocolState.POLL, (ProtocolState.POLL, None)
 
     def _handler_command_start_calibrate(self):
         """
         Move my FSM to calibrate and start the calibrate sequence by sending START1 to the MCU
-        @return next_state, (next_agent_state, result)
+        @return next_state, (next_state, result)
         """
         self._send_event_to_slave(MCU, mcu.Capability.START1)
-        return ProtocolState.CALIBRATE, (ResourceAgentState.BUSY, None)
+        return ProtocolState.CALIBRATE, (ProtocolState.CALIBRATE, None)
 
     def _handler_command_start_nafion_regen(self):
         """
         Move my FSM to NAFION_REGEN and send NAFION_REGEN to the MCU
-        @return next_state, (next_agent_state, result)
+        @return next_state, (next_state, result)
         """
         self._send_event_to_slave(MCU, mcu.Capability.NAFREG)
-        return ProtocolState.REGEN, (ResourceAgentState.BUSY, None)
+        return ProtocolState.REGEN, (ProtocolState.REGEN, None)
 
     def _handler_command_start_ion_regen(self):
         """
         Move my FSM to ION_REGEN and send ION_REGEN to the MCU
-        @return next_state, (next_agent_state, result)
+        @return next_state, (next_state, result)
         """
         self._send_event_to_slave(MCU, mcu.Capability.IONREG)
-        return ProtocolState.REGEN, (ResourceAgentState.BUSY, None)
+        return ProtocolState.REGEN, (ProtocolState.REGEN, None)
 
     def _handler_command_poweroff(self):
         """
         Send POWEROFF to the MCU
-        @return next_state, (next_agent_state, result)
+        @return next_state, (next_state, result)
         """
         self._send_event_to_slave(MCU, mcu.Capability.POWEROFF)
         return None, (None, None)
@@ -981,9 +981,9 @@ class Protocol(InstrumentProtocol):
     def _handler_command_start_manual(self):
         """
         Move FSM to MANUAL OVERRIDE state
-        @return next_state, (next_agent_state, result)
+        @return next_state, (next_state, result)
         """
-        return ProtocolState.MANUAL_OVERRIDE, (ResourceAgentState.COMMAND, None)
+        return ProtocolState.MANUAL_OVERRIDE, (ProtocolState.MANUAL_OVERRIDE, None)
 
     ########################################################################
     # Error handlers.
@@ -991,14 +991,14 @@ class Protocol(InstrumentProtocol):
 
     def _handler_error(self):
         """
-        @return next_state, next_agent_state
+        @return next_state, next_state
         """
-        return ProtocolState.ERROR, ResourceAgentState.BUSY
+        return ProtocolState.ERROR, ProtocolState.ERROR
 
     def _handler_error_clear(self):
         """
         Send the CLEAR event to any slave protocol in the error state and return this driver to COMMAND
-        @return next_state, (next_agent_state, result)
+        @return next_state, (next_state, result)
         """
         for protocol in self._slave_protocols:
             state = protocol.get_current_state()
@@ -1006,7 +1006,7 @@ class Protocol(InstrumentProtocol):
                 # do this synchronously, to allow each slave protocol to complete the CLEAR action
                 # before transitioning states.
                 protocol._protocol_fsm.on_event(ProtocolEvent.CLEAR)
-        return ProtocolState.COMMAND, (ResourceAgentState.COMMAND, None)
+        return ProtocolState.COMMAND, (ProtocolState.COMMAND, None)
 
     ########################################################################
     # Autosample handlers.
@@ -1061,7 +1061,7 @@ class Protocol(InstrumentProtocol):
         """
         Execute a direct access command.  For MASSP, this means passing the actual command to the
         correct slave protocol.  This is handled by _send_massp_direct_access.
-        @return next_state, (next_agent_state, result)
+        @return next_state, (next_state, result)
         """
         self._send_massp_direct_access(data)
 
@@ -1072,10 +1072,10 @@ class Protocol(InstrumentProtocol):
 
     def _handler_direct_access_stop_direct(self):
         """
-        @return next_state, (next_agent_state, result)
+        @return next_state, (next_state, result)
         """
         self._send_event_to_all(ProtocolEvent.STOP_DIRECT)
-        return ProtocolState.COMMAND, (ResourceAgentState.COMMAND, None)
+        return ProtocolState.COMMAND, (ProtocolState.COMMAND, None)
 
     ########################################################################
     # Regen handlers.
@@ -1084,18 +1084,18 @@ class Protocol(InstrumentProtocol):
     def _handler_stop_regen(self):
         """
         Abort the current regeneration sequence, return to COMMAND
-        @return next_state, (next_agent_state, result)
+        @return next_state, (next_state, result)
         """
         self._send_event_to_slave(MCU, mcu.Capability.STANDBY)
-        return ProtocolState.COMMAND, (ResourceAgentState.COMMAND, None)
+        return ProtocolState.COMMAND, (ProtocolState.COMMAND, None)
 
     def _handler_regen_complete(self):
         """
         Regeneration sequence is complete, return to COMMAND
-        @return next_state, (next_agent_state, result)
+        @return next_state, (next_state, result)
         """
         self._async_agent_state_change(ResourceAgentState.COMMAND)
-        return ProtocolState.COMMAND, (ResourceAgentState.COMMAND, None)
+        return ProtocolState.COMMAND, (ProtocolState.COMMAND, None)
 
     def _handler_manual_override_stop(self):
         """
@@ -1113,12 +1113,12 @@ class Protocol(InstrumentProtocol):
         if mcu_state != mcu.ProtocolState.COMMAND:
             self._slave_protocols[MCU]._protocol_fsm.on_event(mcu.Capability.STANDBY)
 
-        return ProtocolState.COMMAND, (ResourceAgentState.COMMAND, None)
+        return ProtocolState.COMMAND, (ProtocolState.COMMAND, None)
 
     def _handler_manual_get_slave_states(self):
         """
         Get the slave states and return them to the user
-        @return: next_state, (next_agent_state, result)
+        @return: next_state, (next_state, result)
         """
         mcu_state, turbo_state, rga_state = self._get_slave_states()
         return None, (None, {MCU: mcu_state, RGA: rga_state, TURBO: turbo_state})

@@ -837,7 +837,7 @@ class Protocol(MenuInstrumentProtocol):
                 log.error(errorString)
                 raise InstrumentStateException(errorString)
         
-        return (next_state, next_agent_state)
+        return (next_state, next_state)
 
     def _handler_continuous_menu(self, *args, **kwargs):
         """Handle a menu command event from continuous mode operations.
@@ -967,7 +967,7 @@ class Protocol(MenuInstrumentProtocol):
         """
         result = self._do_cmd_resp(Command.TS, *args, **kwargs)
         
-        return (next_state, (next_agent_state, result))
+        return (next_state, (next_state, result))
 
     def _handler_command_start_autosample(self, *args, **kwargs):
         """Handle a start autosample command event from root menu.
@@ -1011,7 +1011,7 @@ class Protocol(MenuInstrumentProtocol):
         next_state = State.AUTOSAMPLE        
         next_agent_state = ResourceAgentState.STREAMING
         
-        return (next_state, (next_agent_state, result))
+        return (next_state, (next_state, result))
 
     def _handler_autosample_stop_autosample(self, *args, **kwargs):
         """
@@ -1074,7 +1074,7 @@ class Protocol(MenuInstrumentProtocol):
         next_state = State.COMMAND        
         next_agent_state = ResourceAgentState.COMMAND
         
-        return (next_state, (next_agent_state, result))
+        return (next_state, (next_state, result))
 
                 
     def _handler_root_menu_enter(self, *args, **kwargs):

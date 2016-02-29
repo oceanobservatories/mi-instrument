@@ -670,16 +670,15 @@ class Protocol(MenuInstrumentProtocol):
     def _handler_discover(self, *args, **kwargs):
         """
         Discover current state by going to the root menu
-        @retval (next_state, next_agent_state)
+        @retval next_state, result
         """
 
         # Try to break in case we are in auto sample
         self._send_break()
 
         next_state = ProtocolState.COMMAND
-        next_agent_state = ResourceAgentState.IDLE
 
-        return next_state, next_agent_state
+        return next_state, None
 
     ########################################################################
     # Command handlers.
@@ -867,14 +866,13 @@ class Protocol(MenuInstrumentProtocol):
         self._do_cmd_no_resp(Command.START_AUTOSAMPLE)
 
         next_state = ProtocolState.AUTOSAMPLE
-        next_agent_state = ResourceAgentState.STREAMING
 
-        return next_state, (next_agent_state, result)
+        return next_state, (next_state, result)
 
     def _handler_command_acquire_status(self, *args, **kwargs):
         """
         Acquire Instrument Status
-        @retval return (next state, (next_agent_state, result))
+        @retval next state, (next_state, result)
         """
 
         self._navigate(SubMenu.MAIN)
@@ -884,14 +882,13 @@ class Protocol(MenuInstrumentProtocol):
 
     def _handler_command_start_direct(self):
         """
-        @retval return (next state, (next_agent_state, result))
+        @retval next state, (next_state, result)
         """
 
         result = None
         next_state = ProtocolState.DIRECT_ACCESS
-        next_agent_state = ResourceAgentState.DIRECT_ACCESS
 
-        return next_state, (next_agent_state, result)
+        return next_state, (next_state, result)
 
     ########################################################################
     # Direct access handlers.
@@ -916,22 +913,20 @@ class Protocol(MenuInstrumentProtocol):
     def _handler_direct_access_execute_direct(self, data):
         """
         @param data to be sent in direct access
-        @retval return (next state, next_agent_state)
+        @retval next state, result
         """
         next_state = None
-        next_agent_state = None
 
         self._do_cmd_direct(data)
 
         # add sent command to list for 'echo' filtering in callback
         self._sent_cmds.append(data)
 
-        return next_state, next_agent_state
+        return next_state, None
 
     def _handler_direct_access_scheduled_acquire_status(self, data):
         """
         @param data to be sent in direct access
-        @retval return (next state, next_agent_state)
         """
         # method does nothing.
         # i.e. Ignore running ACQUIRE_STATUS commands while in direct access
@@ -939,13 +934,12 @@ class Protocol(MenuInstrumentProtocol):
     def _handler_direct_access_stop_direct(self):
         """
         @throw InstrumentProtocolException on invalid command
-        @retval return (next state, (next_agent_state, result))
+        @retval next state, (next_state, result)
         """
 
         next_state = ProtocolState.COMMAND
-        next_agent_state = ResourceAgentState.COMMAND
 
-        return next_state, (next_agent_state, None)
+        return next_state, (next_state, None)
 
     ########################################################################
     # Autosample handlers
@@ -994,7 +988,7 @@ class Protocol(MenuInstrumentProtocol):
     def _handler_autosample_acquire_status(self, *args, **kwargs):
         """
         Acquire instrument's status in autosample state
-        @retval return (next state, (next_agent_state, result))
+        @retval return (next state, (next_state, result))
         """
 
         # Break out of auto sample mode by sending control S to the instrument
@@ -1014,17 +1008,15 @@ class Protocol(MenuInstrumentProtocol):
     def _handler_autosample_stop(self):
         """
         Stop autosample mode
-        @retval return (next state, (next_agent_state, result))
+        @retval return (next state, (next_state, result))
         """
         next_state = None
-        next_agent_state = None
         result = None
 
         if self._send_break():
             next_state = ProtocolState.COMMAND
-            next_agent_state = ResourceAgentState.COMMAND
 
-        return next_state, (next_agent_state, result)
+        return next_state, (next_state, result)
 
     ########################################################################
     # Command builders

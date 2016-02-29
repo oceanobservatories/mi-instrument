@@ -950,7 +950,7 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
         next_agent_state = None
         result = None
 
-        return next_state, (next_agent_state, result)
+        return next_state, (next_state, result)
 
     ########################################################################
     # Common instrument command state handlers
@@ -988,7 +988,7 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
 
         self._async_agent_state_change(next_agent_state)
 
-        return next_state, next_agent_state
+        return next_state, next_state
 
     def _execution_success_to_autosample_state(self, *args, **kwargs):
         """
@@ -1002,7 +1002,7 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
 
         self._async_agent_state_change(next_agent_state)
 
-        return next_state, next_agent_state
+        return next_state, next_state
 
     def _execution_timeout_to_command_state(self, *args, **kwargs):
         """
@@ -1018,7 +1018,7 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
 
         self._async_agent_state_change(next_agent_state)
 
-        return next_state, next_agent_state
+        return next_state, next_state
 
     def _execution_timeout_to_autosample_state(self, *args, **kwargs):
         """
@@ -1035,7 +1035,7 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
 
         self._async_agent_state_change(next_agent_state)
 
-        return next_state, next_agent_state
+        return next_state, next_state
 
     ########################################################################
     # Acquire status handler.
@@ -1067,7 +1067,7 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
 
             log.error('SamiProtocol._handler_command_acquire_status(): InstrumentTimeoutException')
 
-        return next_state, (next_agent_state, result)
+        return next_state, (next_state, result)
 
     ########################################################################
     # Unknown handlers.
@@ -1094,7 +1094,7 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
         """
         next_state, next_agent_state = self._discover()
 
-        return next_state, next_agent_state
+        return next_state, next_state
 
     ########################################################################
     # Waiting handlers.
@@ -1134,7 +1134,7 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
             if next_state == SamiProtocolState.COMMAND:
                 log.debug("_handler_waiting_discover: discover succeeded")
                 log.debug("_handler_waiting_discover: next agent state: %s", next_agent_state)
-                return next_state, (next_agent_state, result)
+                return next_state, (next_state, result)
             else:
                 log.debug("_handler_waiting_discover: discover failed, attempt %d of 6", count)
                 count += 1
@@ -1142,7 +1142,7 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
 
         log.debug("_handler_waiting_discover: discover failed")
         log.debug("_handler_waiting_discover: next agent state: %s", ResourceAgentState.ACTIVE_UNKNOWN)
-        return SamiProtocolState.UNKNOWN, (ResourceAgentState.ACTIVE_UNKNOWN, result)
+        return SamiProtocolState.UNKNOWN, (SamiProtocolState.UNKNOWN, result)
 
     ########################################################################
     # Command handlers.
@@ -1232,7 +1232,7 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
         next_state = SamiProtocolState.DIRECT_ACCESS
         next_agent_state = ResourceAgentState.DIRECT_ACCESS
         result = None
-        return next_state, (next_agent_state, result)
+        return next_state, (next_state, result)
 
     def _handler_command_acquire_sample(self):
         """
@@ -1243,7 +1243,7 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
         next_agent_state = ResourceAgentState.BUSY
         result = None
 
-        return next_state, (next_agent_state, result)
+        return next_state, (next_state, result)
 
     def _handler_command_start_autosample(self):
         """
@@ -1271,7 +1271,7 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
         next_agent_state = ResourceAgentState.STREAMING
         result = None
 
-        return next_state, (next_agent_state, result)
+        return next_state, (next_state, result)
 
     def _handler_command_reagent_flush(self):
         """
@@ -1282,7 +1282,7 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
         next_agent_state = ResourceAgentState.BUSY
         result = None
 
-        return next_state, (next_agent_state, result)
+        return next_state, (next_state, result)
 
     ########################################################################
     # Direct access handlers.
@@ -1317,7 +1317,7 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
         # add sent command to list for 'echo' filtering in callback
         self._sent_cmds.append(data)
 
-        return next_state, (next_agent_state, result)
+        return next_state, (next_state, result)
 
     def _handler_direct_access_stop_direct(self):
         """
@@ -1326,7 +1326,7 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
 
         next_state, next_agent_state = self._discover()
 
-        return next_state, (next_agent_state, result)
+        return next_state, (next_state, result)
 
     ########################################################################
     # Autosample handlers.
@@ -1375,7 +1375,7 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
         next_agent_state = ResourceAgentState.COMMAND
         result = None
 
-        return next_state, (next_agent_state, result)
+        return next_state, (next_state, result)
 
     def _handler_autosample_acquire_sample(self, *args, **kwargs):
         """
@@ -1386,7 +1386,7 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
         next_agent_state = ResourceAgentState.BUSY
         result = None
 
-        return next_state, (next_agent_state, result)
+        return next_state, (next_state, result)
 
     ########################################################################
     # Generic Take Sample handler used in polled and autosample states

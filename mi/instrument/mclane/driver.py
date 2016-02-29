@@ -654,7 +654,7 @@ class McLaneProtocol(CommandResponseInstrumentProtocol):
 
     def _handler_all_failure(self, *args, **kwargs):
         log.error('Instrument failure detected. Entering recovery mode.')
-        return ProtocolState.RECOVERY, ResourceAgentState.BUSY
+        return ProtocolState.RECOVERY, ProtocolState.RECOVERY
 
     ########################################################################
     # Unknown handlers.
@@ -676,7 +676,7 @@ class McLaneProtocol(CommandResponseInstrumentProtocol):
         """
 
         # force to command mode, this instrument has no autosample mode
-        return ProtocolState.COMMAND, ResourceAgentState.IDLE
+        return ProtocolState.COMMAND, ProtocolState.COMMAND
 
     ########################################################################
     # Flush
@@ -705,7 +705,7 @@ class McLaneProtocol(CommandResponseInstrumentProtocol):
         log.debug('--- djm --- Flushing home port')
         self._do_cmd_flush()
 
-        return None, (ResourceAgentState.BUSY, None)
+        return None, (None, None)
 
     def _handler_flush_pump_status(self, *args, **kwargs):
         """
@@ -731,7 +731,7 @@ class McLaneProtocol(CommandResponseInstrumentProtocol):
                 next_agent_state = ResourceAgentState.BUSY
         # elif pump_status == 'Status':
 
-        return next_state, next_agent_state
+        return next_state, next_state
 
     def _handler_flush_clear(self, *args, **kwargs):
         """
@@ -740,7 +740,7 @@ class McLaneProtocol(CommandResponseInstrumentProtocol):
         """
         log.debug('--- djm --- handling clear request during flush')
         if self._second_attempt:
-            return ProtocolState.RECOVERY, ResourceAgentState.BUSY
+            return ProtocolState.RECOVERY, ProtocolState.RECOVERY
 
         self._second_attempt = True
         self._do_cmd_clear()
@@ -776,7 +776,7 @@ class McLaneProtocol(CommandResponseInstrumentProtocol):
         else:
             self._do_cmd_fill()
 
-        return next_state, (next_agent_state, result)
+        return next_state, (next_state, result)
 
     def _handler_fill_pump_status(self, *args, **kwargs):
         """
@@ -796,7 +796,7 @@ class McLaneProtocol(CommandResponseInstrumentProtocol):
             # if pump_status == 'Status':
             # TODO - check for bag rupture (> 93% flow rate near end of sample collect- RAS only)
 
-        return next_state, next_agent_state
+        return next_state, next_state
 
     ########################################################################
     # Clear
@@ -840,7 +840,7 @@ class McLaneProtocol(CommandResponseInstrumentProtocol):
                 next_state = ProtocolState.COMMAND
                 next_agent_state = ResourceAgentState.COMMAND
         # if Status, nothing to do
-        return next_state, next_agent_state
+        return next_state, nest_state
 
     def _handler_clear_flush(self, *args, **kwargs):
         """
@@ -848,7 +848,7 @@ class McLaneProtocol(CommandResponseInstrumentProtocol):
         """
         log.info('Attempting to flush main port during clear')
         if self._second_attempt:
-            return ProtocolState.RECOVERY, ResourceAgentState.BUSY
+            return ProtocolState.RECOVERY, ProtocolState.RECOVERY
 
         self._second_attempt = True
         self._do_cmd_flush()
@@ -929,7 +929,7 @@ class McLaneProtocol(CommandResponseInstrumentProtocol):
         next_state = ProtocolState.DIRECT_ACCESS
         next_agent_state = ResourceAgentState.DIRECT_ACCESS
 
-        return next_state, (next_agent_state, result)
+        return next_state, (next_state, result)
 
     ########################################################################
     # Recovery handlers.
@@ -964,7 +964,7 @@ class McLaneProtocol(CommandResponseInstrumentProtocol):
         return None, None
 
     def _handler_direct_access_stop_direct(self, *args, **kwargs):
-        return ProtocolState.COMMAND, (ResourceAgentState.COMMAND, None)
+        return ProtocolState.COMMAND, (ProtocolState.COMMAND, None)
 
     ########################################################################
     # general handlers.
@@ -1013,7 +1013,7 @@ class McLaneProtocol(CommandResponseInstrumentProtocol):
 
     def _handler_command_acquire(self, *args, **kwargs):
         self._handler_sync_clock()
-        return ProtocolState.FLUSH, ResourceAgentState.BUSY
+        return ProtocolState.FLUSH, ProtocolState.FLUSH
 
     # def _handler_command_status(self, *args, **kwargs):
     #     # get the following:
@@ -1022,10 +1022,10 @@ class McLaneProtocol(CommandResponseInstrumentProtocol):
     #     # - BATTERY
     #     # - CODES (termination codes)
     #     # - COPYRIGHT (termination codes)
-    #     return None, ResourceAgentState.COMMAND
+    #     return None, None
 
     def _handler_command_clear(self, *args, **kwargs):
-        return ProtocolState.CLEAR, ResourceAgentState.BUSY
+        return ProtocolState.CLEAR, ProtocolState.CLEAR
 
     ########################################################################
     # Private helpers.
@@ -1206,50 +1206,3 @@ class McLaneProtocol(CommandResponseInstrumentProtocol):
 
         log.debug("_update_params:")
 
-        # def _parse_battery_response(self, response, prompt):
-        #     """
-        #     Parse handler for battery command.
-        #     @param response command response string.
-        #     @param prompt prompt following command response.
-        #     @throws InstrumentProtocolException if battery command misunderstood.
-        #     """
-        #     log.debug("_parse_battery_response: response=%s, prompt=%s", response, prompt)
-        #     if prompt == Prompt.UNRECOGNIZED_COMMAND:
-        #         raise InstrumentProtocolException('battery command not recognized: %s.' % response)
-        #
-        #     if not self._param_dict.update(response):
-        #         raise InstrumentProtocolException('battery command not parsed: %s.' % response)
-        #
-        #     return
-        #
-        # def _parse_clock_response(self, response, prompt):
-        #     """
-        #     Parse handler for clock command.
-        #     @param response command response string.
-        #     @param prompt prompt following command response.
-        #     @throws InstrumentProtocolException if clock command misunderstood.
-        #     @retval the joined string from the regular expression match
-        #     """
-        #     # extract current time from response
-        #     log.debug('--- djm --- parse_clock_response: response: %r', response)
-        #     ras_time_string = ' '.join(response.split()[:2])
-        #     time_format = "%m/%d/%y %H:%M:%S"
-        #     ras_time = time.strptime(ras_time_string, time_format)
-        #     ras_time = list(ras_time)
-        #     ras_time[-1] = 0  # tm_isdst field set to 0 - using GMT, no DST
-        #
-        #     return tuple(ras_time)
-        #
-        # def _parse_port_response(self, response, prompt):
-        #     """
-        #     Parse handler for port command.
-        #     @param response command response string.
-        #     @param prompt prompt following command response.
-        #     @throws InstrumentProtocolException if port command misunderstood.
-        #     @retval the joined string from the regular expression match
-        #     """
-        #     # extract current port from response
-        #     log.debug('--- djm --- parse_port_response: response: %r', response)
-        #     port = int(response)
-        #
-        #     return port

@@ -1,6 +1,7 @@
 .idea
 *.pyc
 *.pyo
+*.swp
 mi-drivers*log*
 .installed.cfg
 bin

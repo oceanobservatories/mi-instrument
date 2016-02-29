@@ -1360,7 +1360,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         if ret_prompt == Prompt.POLLED:
             self._send_dollar()
 
-        return ProtocolState.COMMAND, ResourceAgentState.IDLE
+        return ProtocolState.COMMAND, ProtocolState.COMMAND
 
     ########################################################################
     # Command handlers.
@@ -1420,7 +1420,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         """
         Start direct access
         """
-        return ProtocolState.DIRECT_ACCESS, (ResourceAgentState.DIRECT_ACCESS, None)
+        return ProtocolState.DIRECT_ACCESS, (ProtocolState.DIRECT_ACCESS, None)
 
     def _handler_command_start_autosample(self):
         """
@@ -1429,7 +1429,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         self._do_cmd_no_resp(InstrumentCommand.SET, Parameter.OPERATION_MODE, InstrumentCommandArgs.CONTINUOUS)
         self._do_cmd_no_resp(InstrumentCommand.EXIT)
 
-        return ProtocolState.AUTOSAMPLE, (ResourceAgentState.STREAMING, None)
+        return ProtocolState.AUTOSAMPLE, (ProtocolState.AUTOSAMPLE, None)
 
     def _handler_command_get(self, *args, **kwargs):
         """
@@ -1511,7 +1511,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         self._do_cmd_no_resp(InstrumentCommand.EXIT)
         self._do_cmd_no_resp(InstrumentCommand.SLEEP)
 
-        return ProtocolState.UNKNOWN, (None, None)
+        return ProtocolState.UNKNOWN, (ProtocolState.UNKNOWN, None)
 
     def _handler_command_clock_sync(self, *args, **kwargs):
         """
@@ -1552,7 +1552,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         Stopping DA, restore the DA parameters to their previous value
         """
         self._init_params()
-        return ProtocolState.COMMAND, (ResourceAgentState.COMMAND, None)
+        return ProtocolState.COMMAND, (ProtocolState.COMMAND, None)
 
     ########################################################################
     # Poll handlers.
@@ -1629,7 +1629,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         self._wakeup(20)
         self._do_cmd_no_resp(InstrumentCommand.CMD_LINE)
 
-        return ProtocolState.COMMAND, (ResourceAgentState.COMMAND, None)
+        return ProtocolState.COMMAND, (ProtocolState.COMMAND, None)
 
     ########################################################################
     # Build handlers
