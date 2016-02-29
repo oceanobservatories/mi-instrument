@@ -876,7 +876,7 @@ class Protocol(WorkhorseProtocol):
     def _handler_command_acquire_status(self, *args, **kwargs):
         """
         execute a get status
-        @return next_state, (next_agent_state, result) if successful.
+        @return next_state, (next_state, result) if successful.
         @throws InstrumentProtocolException from _do_cmd_resp.
         """
         a = super(Protocol, self)._handler_command_acquire_status(connection=SlaveProtocol.FOURBEAM)
@@ -899,4 +899,4 @@ class Protocol(WorkhorseProtocol):
 
         # add sent command to list for 'echo' filtering in callback
         self._sent_cmds.append(data)
-        return next_state, (next_agent_state, result)
+        return next_state, (next_state, result)

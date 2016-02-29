@@ -432,7 +432,7 @@ class SeaBirdProtocol(CommandResponseInstrumentProtocol):
             next_agent_state = ResourceAgentState.COMMAND
 
         log.debug("_handler_unknown_discover. result start: %s" % next_state)
-        return next_state, next_agent_state
+        return next_state, next_state
 
     def _sync_clock(self, command, date_time_param, timeout=TIMEOUT, delay=1, time_format="%d %b %Y %H:%M:%S"):
         """

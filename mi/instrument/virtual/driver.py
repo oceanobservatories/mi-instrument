@@ -531,10 +531,10 @@ class Protocol(CommandResponseInstrumentProtocol):
     def _handler_autosample_stop_autosample(self, *args, **kwargs):
         """
         Stop autosample
-        @return next_state, (next_agent_state, result)
+        @return next_state, (next_state, result)
         """
         self._delete_all_schedulers()
-        return ProtocolState.COMMAND, (ResourceAgentState.COMMAND, None)
+        return ProtocolState.COMMAND, (ProtocolState.COMMAND, None)
 
     ########################################################################
     # Command handlers.
@@ -550,7 +550,6 @@ class Protocol(CommandResponseInstrumentProtocol):
     def _handler_command_get(self, *args, **kwargs):
         """
         Process GET event
-        @return next_state, result
         """
         return self._handler_get(*args, **kwargs)
 
@@ -558,7 +557,6 @@ class Protocol(CommandResponseInstrumentProtocol):
         """
         Perform a set command.
         @param args[0] parameter : value dict.
-        @return (next_state, result)
         @throws InstrumentParameterException
         """
         return self._set_params(*args, **kwargs)
@@ -566,9 +564,9 @@ class Protocol(CommandResponseInstrumentProtocol):
     def _handler_command_start_autosample(self):
         """
         Start autosample
-        @return next_state, (next_agent_state, result)
+        @return next_state, (next_state, result)
         """
-        return ProtocolState.AUTOSAMPLE, (ResourceAgentState.STREAMING, None)
+        return ProtocolState.AUTOSAMPLE, (ProtocolState.AUTOSAMPLE, None)
 
     ########################################################################
     # Generic handlers.

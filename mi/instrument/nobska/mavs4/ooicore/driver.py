@@ -1308,12 +1308,12 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                                    timeout=20,
                                    **kwargs)
 
-        return ProtocolStates.AUTOSAMPLE, (ResourceAgentState.STREAMING, None)
+        return ProtocolStates.AUTOSAMPLE, (ProtocolStates.AUTOSAMPLE, None)
 
     def _handler_command_start_direct(self):
         """
         """
-        return ProtocolStates.DIRECT_ACCESS, (ResourceAgentState.DIRECT_ACCESS, None)
+        return ProtocolStates.DIRECT_ACCESS, (ProtocolStates.DIRECT_ACCESS, None)
 
     def _clock_sync(self):
         """
@@ -1387,7 +1387,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
         if not got_root_prompt:
             raise InstrumentTimeoutException()
 
-        return ProtocolStates.COMMAND, (ResourceAgentState.COMMAND, None)
+        return ProtocolStates.COMMAND, (ProtocolStates.COMMAND, None)
 
     def _handler_autosample_clock_sync(self, *args, **kwargs):
         """
@@ -1429,7 +1429,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
         """
         @throw InstrumentProtocolException on invalid command
         """
-        return ProtocolStates.COMMAND, (ResourceAgentState.COMMAND, None)
+        return ProtocolStates.COMMAND, (ProtocolStates.COMMAND, None)
 
     ########################################################################
     # Private helpers.

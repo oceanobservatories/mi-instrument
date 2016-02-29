@@ -612,7 +612,7 @@ class Protocol(SamiProtocol):
         next_agent_state = ResourceAgentState.BUSY
         result = None
 
-        return next_state, (next_agent_state, result)
+        return next_state, (next_state, result)
 
     def _handler_command_reagent_flush_50ml(self):
         """
@@ -623,7 +623,7 @@ class Protocol(SamiProtocol):
         next_agent_state = ResourceAgentState.BUSY
         result = None
 
-        return next_state, (next_agent_state, result)
+        return next_state, (next_state, result)
 
     def _handler_command_seawater_flush(self):
         """
@@ -634,7 +634,7 @@ class Protocol(SamiProtocol):
         next_agent_state = ResourceAgentState.BUSY
         result = None
 
-        return next_state, (next_agent_state, result)
+        return next_state, (next_state, result)
 
     ########################################################################
     # Seawater flush 2750 ml handlers.

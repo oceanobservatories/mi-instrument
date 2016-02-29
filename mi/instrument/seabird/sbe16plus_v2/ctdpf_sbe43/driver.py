@@ -204,7 +204,6 @@ class SBE43StatusParticle(Sbe16plusBaseParticle):
     def resp_regex():
         pattern = r'(<StatusData.*?</StatusData>)'
         return pattern
-
     @staticmethod
     def resp_regex_compiled():
         return re.compile(SBE43StatusParticle.resp_regex(), re.DOTALL)

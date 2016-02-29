@@ -8,16 +8,12 @@ Release notes:
 initial version
 """
 
-__author__ = 'Bill Bollenbacher'
-__license__ = 'Apache 2.0'
-
 import re
 import time
-import string
-import json
-import time
 
-from mi.core.log import get_logger ; log = get_logger()
+from mi.core.log import get_logger
+
+log = get_logger()
 
 from mi.core.common import BaseEnum
 from mi.core.exceptions import SampleException, \
@@ -27,7 +23,6 @@ from mi.core.time_tools import get_timestamp_delayed
 from mi.core.instrument.instrument_protocol import CommandResponseInstrumentProtocol
 from mi.core.instrument.instrument_fsm import ThreadSafeFSM
 from mi.core.instrument.chunker import StringChunker
-from mi.core.instrument.instrument_driver import DriverConnectionState
 
 from mi.core.driver_scheduler import DriverSchedulerConfigKey
 from mi.core.driver_scheduler import TriggerType
@@ -49,6 +44,9 @@ from mi.core.instrument.driver_dict import DriverDictKey
 from mi.core.instrument.protocol_param_dict import ProtocolParameterDict, \
                                                    ParameterDictType, \
                                                    ParameterDictVisibility
+
+__author__ = 'Bill Bollenbacher'
+__license__ = 'Apache 2.0'
 
 # newline.
 NEWLINE = '\r\n'
@@ -557,7 +555,7 @@ class Protocol(CommandResponseInstrumentProtocol):
     def _handler_unknown_discover(self, *args, **kwargs):
         """
         Discover current state; can only be COMMAND (instrument has no actual AUTOSAMPLE mode).
-        @retval (next_state, result), (ProtocolState.COMMAND, None) if successful.
+        @retval next_state, next_state
         """
 
         (protocol_state, agent_state) = self._discover()
@@ -568,7 +566,7 @@ class Protocol(CommandResponseInstrumentProtocol):
             agent_state = ResourceAgentState.IDLE
 
         log.debug("_handler_unknown_discover: state = %s", protocol_state)
-        return (protocol_state, agent_state)
+        return protocol_state, protocol_state
 
     ########################################################################
     # Clock Sync handlers.
@@ -629,7 +627,7 @@ class Protocol(CommandResponseInstrumentProtocol):
 
         next_state = None
         result = None
-        return (next_state, result)
+        return next_state, result
 
     def _handler_command_start_direct(self, *args, **kwargs):
         """
@@ -638,7 +636,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         next_state = ProtocolState.DIRECT_ACCESS
         next_agent_state = ResourceAgentState.DIRECT_ACCESS
 
-        return (next_state, (next_agent_state, result))
+        return next_state, (next_state, result)
 
     def _handler_command_start_autosample(self, *args, **kwargs):
         """
@@ -649,7 +647,7 @@ class Protocol(CommandResponseInstrumentProtocol):
 
         self._start_logging()
 
-        return (next_state, (next_agent_state, result))
+        return next_state, (next_state, result)
 
     def _handler_command_sync_clock(self, *args, **kwargs):
         """
@@ -702,7 +700,7 @@ class Protocol(CommandResponseInstrumentProtocol):
 
         self._stop_logging()
 
-        return (next_state, (next_agent_state, result))
+        return next_state, (next_state, result)
 
     def _handler_autosample_sync_clock(self, *args, **kwargs):
         """
@@ -743,14 +741,14 @@ class Protocol(CommandResponseInstrumentProtocol):
 
         self._do_cmd_direct(data)
                         
-        return (next_state, result)
+        return next_state, result
 
     def _handler_direct_access_stop_direct(self):
         result = None
 
         (next_state, next_agent_state) = self._discover()
 
-        return (next_state, (next_agent_state, result))
+        return next_state, (next_state, result)
 
     ########################################################################
     # general handlers.
@@ -770,7 +768,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         result = self._do_cmd_resp(Command.FS, expected_prompt=Prompt.FS)
         log.debug("FLASH RESULT: %s", result)
 
-        return (next_state, (next_agent_state, result))
+        return next_state, (next_state, result)
 
     def _handler_acquire_sample(self, *args, **kwargs):
         """
@@ -785,7 +783,7 @@ class Protocol(CommandResponseInstrumentProtocol):
 
         result = self._do_cmd_resp(Command.D, *args, **kwargs)
 
-        return (next_state, (next_agent_state, result))
+        return next_state, (next_state, result)
 
     def _handler_acquire_status(self, *args, **kwargs):
         """
@@ -801,7 +799,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         log.debug( "Logging status: %s", self._is_logging())
         result = self._do_cmd_resp(Command.STAT, expected_prompt=[Prompt.STOPPED, Prompt.GO])
 
-        return (next_state, (next_agent_state, result))
+        return next_state, (next_state, result)
 
     ########################################################################
     # Private helpers.
@@ -831,7 +829,7 @@ class Protocol(CommandResponseInstrumentProtocol):
             protocol_state = ProtocolState.UNKNOWN
             agent_state = ResourceAgentState.ACTIVE_UNKNOWN
 
-        return (protocol_state, agent_state)
+        return protocol_state, protocol_state
 
     def _start_logging(self):
         """

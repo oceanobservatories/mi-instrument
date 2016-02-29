@@ -5,5 +5,5 @@ driver_metadata:
   driver_name: pco2b 
   email: cwingard@coas.oregonstate.edu
   release_notes: removed OBE pco2w_b_data_record
-  version: 0.1.5
+  version: 0.1.6
 
