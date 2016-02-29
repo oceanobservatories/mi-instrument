@@ -840,7 +840,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
     def _handler_command_start_autosample(self, *args, **kwargs):
         """
         Switch into autosample mode.
-        @retval (next_state, result) tuple, (ProtocolStates.AUTOSAMPLE,
+        @retval next_state, (next_state, result)
         None) if successful.
         @throws InstrumentTimeoutException if device cannot be woken for command.
         @throws InstrumentProtocolException if command could not be built or misunderstood.
@@ -850,11 +850,11 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
         self._reset_instrument()
         self._start_sampling()
 
-        return ProtocolStates.AUTOSAMPLE, (ResourceAgentState.STREAMING, None)
+        return ProtocolStates.AUTOSAMPLE, (ProtocolStates.AUTOSAMPLE, None)
 
     def _handler_command_start_direct(self):
 
-        return ProtocolStates.DIRECT_ACCESS, (ResourceAgentState.DIRECT_ACCESS, None)
+        return ProtocolStates.DIRECT_ACCESS, (ProtocolStates.DIRECT_ACCESS, None)
 
     ########################################################################
     # Autosample handlers.
@@ -880,8 +880,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
     def _handler_autosample_stop_autosample(self, *args, **kwargs):
         """
         Stop autosample and switch back to command mode.
-        @retval (next_state, result) tuple, (ProtocolStates.COMMAND,
-        None) if successful.
+        @retval next_state, (next_state, result)
         @throws InstrumentTimeoutException if device cannot be woken for command.
         @throws InstrumentProtocolException if command misunderstood or
         incorrect prompt received.
@@ -890,7 +889,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
         # this call will return if reset is successful or raise an exception otherwise
         self._reset_instrument()
 
-        return ProtocolStates.COMMAND, (ResourceAgentState.COMMAND, None)
+        return ProtocolStates.COMMAND, (ProtocolStates.COMMAND, None)
 
     ########################################################################
     # Direct access handlers.
@@ -917,7 +916,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
         return None, None
 
     def _handler_direct_access_stop_direct(self):
-        return ProtocolStates.COMMAND, (ResourceAgentState.COMMAND, None)
+        return ProtocolStates.COMMAND, (ProtocolStates.COMMAND, None)
 
     ########################################################################
     # general handlers.
@@ -925,7 +924,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
     def _handler_clock_sync(self, *args, **kwargs):
         """
         sync clock close to a second edge
-        @retval (next_state, result) tuple, (None, None) if successful.
+        @retval next_state, (next_state, result)
         @throws InstrumentTimeoutException if device cannot be woken for command.
         @throws InstrumentProtocolException if command could not be built or misunderstood.
         """
@@ -950,7 +949,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
                 self._start_sampling()
             except InstrumentCommandException:
                 log.error('Unable to go back to sampling, changing state to COMMAND')
-                return ProtocolStates.COMMAND, (ResourceAgentState.COMMAND, None)
+                return ProtocolStates.COMMAND, (ProtocolStates.COMMAND, None)
 
         return None, (None, None)
 

@@ -385,16 +385,14 @@ class DriverUnitTest(InstrumentDriverUnitTestCase, FlordDriverTestMixinSub):
         #COMMAND state
         protocol._linebuf = SAMPLE_MNU_RESPONSE
         protocol._promptbuf = SAMPLE_MNU_RESPONSE
-        next_state, next_agent_state = protocol._handler_unknown_discover()
+        next_state, result = protocol._handler_unknown_discover()
         self.assertEqual(next_state, DriverProtocolState.COMMAND)
-        self.assertEqual(next_agent_state, ResourceAgentState.IDLE)
 
         #AUTOSAMPLE state
         protocol._linebuf = SAMPLE_SAMPLE_RESPONSE
         protocol._promptbuf = SAMPLE_SAMPLE_RESPONSE
-        next_state, next_agent_state = protocol._handler_unknown_discover()
+        next_state, result = protocol._handler_unknown_discover()
         self.assertEqual(next_state, DriverProtocolState.AUTOSAMPLE)
-        self.assertEqual(next_agent_state, ResourceAgentState.STREAMING)
 
     def test_create_commands(self):
         """

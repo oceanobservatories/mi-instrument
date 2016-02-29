@@ -2187,7 +2187,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         except InstrumentTimeoutException as e:
             log.warning('Unable to terminate mission cleanly: %r', e.message)
 
-        return ProtocolState.COMMAND, (ResourceAgentState.COMMAND, None)
+        return ProtocolState.COMMAND, (ProtocolState.COMMAND, None)
 
     def _handler_autosample_exit(self, *args, **kwargs):
         # no special cleanup required
@@ -2211,7 +2211,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         return None, (None, None)
 
     def _handler_direct_access_stop_direct(self):
-        return ProtocolState.COMMAND, (ResourceAgentState.COMMAND, None)
+        return ProtocolState.COMMAND, (ProtocolState.COMMAND, None)
 
     def _handler_direct_access_exit(self):
         pass

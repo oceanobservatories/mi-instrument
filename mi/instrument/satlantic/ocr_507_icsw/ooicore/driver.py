@@ -704,10 +704,10 @@ class SatlanticOCR507InstrumentProtocol(CommandResponseInstrumentProtocol):
 
         log.debug("_handler_unknown_discover: returned: %s", invalidCommandResponse)
         if invalidCommandResponse:
-            return SatlanticProtocolState.COMMAND, ResourceAgentState.IDLE
+            return SatlanticProtocolState.COMMAND, SatlanticProtocolState
         # Put the instrument back into full autosample
         self._do_cmd_no_resp(Command.SWITCH_TO_AUTOSAMPLE)
-        return SatlanticProtocolState.AUTOSAMPLE, ResourceAgentState.STREAMING
+        return SatlanticProtocolState.AUTOSAMPLE, SatlanticProtocolState.AUTOSAMPLE
 
     ########################################################################
     # Command handlers.
@@ -749,7 +749,7 @@ class SatlanticOCR507InstrumentProtocol(CommandResponseInstrumentProtocol):
         """
         Handle getting an start autosample event when in command mode
         @param params List of the parameters to pass to the state
-        @return next state (next agent state, result)
+        @return next state (next state, result)
         """
         result = None
 
@@ -761,7 +761,7 @@ class SatlanticOCR507InstrumentProtocol(CommandResponseInstrumentProtocol):
         next_state = SatlanticProtocolState.AUTOSAMPLE
         next_agent_state = ResourceAgentState.STREAMING
 
-        return next_state, (next_agent_state, result)
+        return next_state, (next_state, result)
 
     def _handler_command_start_direct(self):
         """
@@ -772,13 +772,13 @@ class SatlanticOCR507InstrumentProtocol(CommandResponseInstrumentProtocol):
         next_agent_state = ResourceAgentState.DIRECT_ACCESS
 
         log.debug("_handler_command_start_direct: entering DA mode")
-        return next_state, (next_agent_state, result)
+        return next_state, (next_state, result)
 
     def _handler_command_acquire_status(self, *args, **kwargs):
         """
         Handle SatlanticProtocolState.COMMAND SatlanticProtocolEvent.ACQUIRE_STATUS
 
-        @return next state (next agent state, result)
+        @return next state (next state, result)
         """
         timeout = time.time() + STATUS_TIMEOUT
 
@@ -791,7 +791,7 @@ class SatlanticOCR507InstrumentProtocol(CommandResponseInstrumentProtocol):
 
         particles = self.wait_for_particles([DataParticleType.CONFIG], timeout)
 
-        return next_state, (next_agent_state, particles)
+        return next_state, (next_state, particles)
 
     ########################################################################
     # Autosample handlers.
@@ -846,7 +846,7 @@ class SatlanticOCR507InstrumentProtocol(CommandResponseInstrumentProtocol):
                 raise InstrumentProtocolException(error_code=InstErrorCode.HARDWARE_ERROR,
                                                   msg="Could not break from autosample!")
 
-        return next_state, (next_agent_state, result)
+        return next_state, (next_state, result)
 
     ########################################################################
     # Direct access handlers.
@@ -882,7 +882,7 @@ class SatlanticOCR507InstrumentProtocol(CommandResponseInstrumentProtocol):
         # add sent command to list for 'echo' filtering in callback
         self._sent_cmds.append(data)
 
-        return next_state, (next_agent_state, result)
+        return next_state, (next_state, result)
 
     def _handler_direct_access_stop_direct(self):
         """
@@ -891,7 +891,7 @@ class SatlanticOCR507InstrumentProtocol(CommandResponseInstrumentProtocol):
         if next_state == DriverProtocolState.COMMAND:
             next_agent_state = ResourceAgentState.COMMAND
 
-        return next_state, (next_agent_state, None)
+        return next_state, (next_state, None)
 
     ###################################################################
     # Builders

@@ -5,4 +5,4 @@ driver_metadata:
   driver_path: rsn
   email: wfrench@ucsd.edu
   release_notes: initial MI release
-  version: 0.0.1
+  version: 0.0.2

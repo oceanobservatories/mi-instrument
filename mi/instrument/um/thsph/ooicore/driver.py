@@ -10,9 +10,6 @@ Vent Chemistry Instrument  Driver
 
 """
 
-__author__ = 'Richard Han'
-__license__ = 'Apache 2.0'
-
 import re
 import time
 
@@ -21,11 +18,7 @@ from mi.core.driver_scheduler import DriverSchedulerConfigKey, TriggerType
 from mi.core.exceptions import SampleException, InstrumentProtocolException, InstrumentParameterException
 from mi.core.instrument.driver_dict import DriverDictKey
 from mi.core.instrument.protocol_param_dict import ParameterDictType, ParameterDictVisibility
-
 from mi.core.log import get_logger, get_logging_metaclass
-
-log = get_logger()
-
 from mi.core.common import BaseEnum, Units
 from mi.core.instrument.instrument_protocol import CommandResponseInstrumentProtocol
 from mi.core.instrument.instrument_fsm import InstrumentFSM
@@ -34,11 +27,15 @@ from mi.core.instrument.instrument_driver import DriverEvent
 from mi.core.instrument.instrument_driver import DriverAsyncEvent
 from mi.core.instrument.instrument_driver import DriverProtocolState
 from mi.core.instrument.instrument_driver import DriverParameter
-from mi.core.instrument.instrument_driver import ResourceAgentState
 from mi.core.instrument.data_particle import DataParticle
 from mi.core.instrument.data_particle import DataParticleKey
 from mi.core.instrument.data_particle import CommonDataParticleType
 from mi.core.instrument.chunker import StringChunker
+
+__author__ = 'Richard Han'
+__license__ = 'Apache 2.0'
+
+log = get_logger()
 
 ###
 #    Driver Constant Definitions
@@ -465,9 +462,8 @@ class THSPHProtocol(CommandResponseInstrumentProtocol):
         @retval (next_state, result).
         """
         next_state = ProtocolState.COMMAND
-        next_agent_state = ResourceAgentState.IDLE
 
-        return next_state, next_agent_state
+        return next_state, None
 
     ########################################################################
     # Command State handlers.
@@ -479,13 +475,12 @@ class THSPHProtocol(CommandResponseInstrumentProtocol):
         timeout = time.time() + TIMEOUT
 
         next_state = None
-        next_agent_state = None
 
         self._do_cmd_no_resp(Command.GET_SAMPLE, timeout=TIMEOUT)
 
         particles = self.wait_for_particles(DataParticleType.THSPH_PARSED, timeout)
 
-        return next_state, (next_agent_state, particles)
+        return next_state, (next_state, particles)
 
     def _handler_command_enter(self, *args, **kwargs):
 
@@ -591,15 +586,14 @@ class THSPHProtocol(CommandResponseInstrumentProtocol):
         result = None
 
         next_state = ProtocolState.AUTOSAMPLE
-        next_agent_state = ResourceAgentState.STREAMING
 
-        return next_state, (next_agent_state, result)
+        return next_state, (next_state, result)
 
     def _handler_command_start_direct(self):
         """
         Start direct access
         """
-        return ProtocolState.DIRECT_ACCESS, (ResourceAgentState.DIRECT_ACCESS, None)
+        return ProtocolState.DIRECT_ACCESS, (ProtocolState.DIRECT_ACCESS, None)
 
     #######################################################################
     # Autosample State handlers.
@@ -657,10 +651,9 @@ class THSPHProtocol(CommandResponseInstrumentProtocol):
         """
 
         next_state = None
-        next_agent_state = None
         result = None
 
-        return next_state, (next_agent_state, result)
+        return next_state, (next_state, result)
 
     def _handler_autosample_stop_autosample(self, *args, **kwargs):
         """
@@ -672,8 +665,7 @@ class THSPHProtocol(CommandResponseInstrumentProtocol):
         self._remove_scheduler(ScheduledJob.AUTO_SAMPLE)
 
         next_state = ProtocolState.COMMAND
-        next_agent_state = ResourceAgentState.COMMAND
-        return next_state, (next_agent_state, result)
+        return next_state, (next_state, result)
 
     ########################################################################
     # Direct access handlers.
@@ -698,14 +690,13 @@ class THSPHProtocol(CommandResponseInstrumentProtocol):
         """
         next_state = None
         result = None
-        next_agent_state = None
 
         self._do_cmd_direct(data)
 
         # add sent command to list for 'echo' filtering in callback
         self._sent_cmds.append(data)
 
-        return next_state, (next_agent_state, result)
+        return next_state, (next_state, result)
 
     def _handler_direct_access_stop_direct(self):
         """
@@ -714,9 +705,8 @@ class THSPHProtocol(CommandResponseInstrumentProtocol):
         result = None
 
         next_state = ProtocolState.COMMAND
-        next_agent_state = ResourceAgentState.COMMAND
 
-        return next_state, (next_agent_state, result)
+        return next_state, (next_state, result)
 
     def _build_simple_command(self, cmd, *args):
         """
