@@ -53,6 +53,7 @@ class ParameterDictKey(BaseEnum):
     DIRECT_ACCESS = "direct_access"
     DISPLAY_NAME = "display_name"
     DESCRIPTION = "description"
+    RANGE = "range"
     VALUE = "value"
     TYPE = "type"
     DEFAULT = "default"
@@ -81,6 +82,7 @@ class ParameterDescription(object):
                  set_timeout=10,
                  display_name=None,
                  description=None,
+                 range=None,
                  type=None,
                  units=None,
                  value_description=None):
@@ -99,7 +101,8 @@ class ParameterDescription(object):
         self.set_timeout = set_timeout
         self.display_name = display_name
         self.description = description
-        if ParameterDictType.has(type) or type == None:
+        self.range = range
+        if ParameterDictType.has(type) or type is None:
             self.type = type
         else:
             raise InstrumentParameterException("Invalid type specified!")
@@ -132,10 +135,10 @@ class ParameterValue(object):
         @raises InstrumentParameterExpirationException when a parameter is
         too old to work with. Original value is in exception.
         """
-        if(baseline_timestamp == None):
+        if(baseline_timestamp is None):
             baseline_timestamp = ntplib.system_to_ntp_time(time.time())
 
-        if (self.expiration != None) and  baseline_timestamp > (self.timestamp + self.expiration):
+        if (self.expiration is not None) and  baseline_timestamp > (self.timestamp + self.expiration):
             raise InstrumentParameterExpirationException("Value for %s expired!" % self.name, self.value)
         else:
             return self.value
@@ -161,6 +164,7 @@ class Parameter(object):
                  set_timeout=10,
                  display_name=None,
                  description=None,
+                 range=None,
                  type=None,
                  units=None,
                  value_description=None):
@@ -189,6 +193,7 @@ class Parameter(object):
                                                 set_timeout=set_timeout,
                                                 display_name=display_name,
                                                 description=description,
+                                                range=range,
                                                 type=type,
                                                 units=units,
                                                 value_description=value_description)
@@ -236,6 +241,7 @@ class RegexParameter(Parameter):
                  set_timeout=10,
                  display_name=None,
                  description=None,
+                 range=None,
                  type=None,
                  units=None,
                  value_description=None):
@@ -274,6 +280,7 @@ class RegexParameter(Parameter):
                            set_timeout=set_timeout,
                            display_name=display_name,
                            description=description,
+                           range=range,
                            type=type,
                            units=units,
                            value_description=value_description)
@@ -441,6 +448,7 @@ class ProtocolParameterDict(InstrumentDict):
         @param display_name The string to use for displaying the parameter
         or a prompt for the parameter value
         @param description The description of what the parameter is
+        @param range The range of acceptable values
         @param type The type of the parameter (int, float, etc.) Should be a
         ParameterDictType object
         @param regex_flags Flags that should be passed to the regex in this
@@ -469,6 +477,7 @@ class ProtocolParameterDict(InstrumentDict):
                              set_timeout=set_timeout,
                              display_name=display_name,
                              description=description,
+                             range=range,
                              type=type,
                              regex_flags=regex_flags,
                              units=units,
@@ -521,12 +530,12 @@ class ProtocolParameterDict(InstrumentDict):
         @raises KeyError if the name is invalid.
         """
         result = self.get_init_value(name)
-        if result != None:
+        if result is not None:
             log.trace("Got init value for %s: %s", name, result)
             return result
 
         result = self.get_default_value(name)
-        if result != None:
+        if result is not None:
             log.trace("Got default value for %s: %s", name, result)
             return result
 
@@ -716,7 +725,7 @@ class ProtocolParameterDict(InstrumentDict):
             params = [target_params]
         elif(target_params and isinstance(target_params, list)):
             params = target_params
-        elif(target_params == None):
+        elif(target_params is None):
             params = self._param_dict.keys()
         else:
             raise InstrumentParameterException("invalid target_params, must be name or list")
@@ -763,7 +772,7 @@ class ProtocolParameterDict(InstrumentDict):
         if not self._param_dict[name].value:
             raise InstrumentParameterException("No value present for %s!" % name)
 
-        if val == None:
+        if val is None:
             current_value = self._param_dict[name].value.get_value()
         else:
             current_value = val
@@ -862,32 +871,33 @@ class ProtocolParameterDict(InstrumentDict):
         for param_key in self._param_dict.keys():
             param_struct = {}
             value_struct = {}
-            if self._param_dict[param_key] != None:
+            if self._param_dict[param_key] is not None:
                 param_obj = self._param_dict[param_key].description
             # Description objects
-            if param_obj.get_timeout != None:
+            if param_obj.get_timeout is not None:
                 param_struct[ParameterDictKey.GET_TIMEOUT] = param_obj.get_timeout
-            if param_obj.set_timeout != None:
+            if param_obj.set_timeout is not None:
                 param_struct[ParameterDictKey.SET_TIMEOUT] = param_obj.set_timeout
-            if param_obj.visibility != None:
+            if param_obj.visibility is not None:
                 param_struct[ParameterDictKey.VISIBILITY] = param_obj.visibility
-            if param_obj.startup_param != None:
+            if param_obj.startup_param is not None:
                 param_struct[ParameterDictKey.STARTUP] = param_obj.startup_param
-            if param_obj.direct_access != None:
+            if param_obj.direct_access is not None:
                 param_struct[ParameterDictKey.DIRECT_ACCESS] = param_obj.direct_access
-            if param_obj.display_name != None:
+            if param_obj.display_name is not None:
                 param_struct[ParameterDictKey.DISPLAY_NAME] = param_obj.display_name
-            if param_obj.description != None:
+            if param_obj.description is not None:
                 param_struct[ParameterDictKey.DESCRIPTION] = param_obj.description
+            param_struct[ParameterDictKey.RANGE] = param_obj.range
 
             # Value objects
-            if param_obj.type != None:
+            if param_obj.type is not None:
                 value_struct[ParameterDictKey.TYPE] = param_obj.type
-            if param_obj.default_value != None:
+            if param_obj.default_value is not None:
                 value_struct[ParameterDictKey.DEFAULT] = param_obj.default_value
-            if param_obj.units != None:
+            if param_obj.units is not None:
                 value_struct[ParameterDictKey.UNITS] = param_obj.units
-            if param_obj.description != None:
+            if param_obj.description is not None:
                 value_struct[ParameterDictKey.DESCRIPTION] = param_obj.value_description
 
             param_struct[ParameterDictKey.VALUE] = value_struct
