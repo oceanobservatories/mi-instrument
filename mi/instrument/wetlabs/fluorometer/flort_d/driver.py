@@ -1402,6 +1402,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name="Measurements per Reported Value",
                              description='Number of measurements for each reported value: (1 - 255)',
+                             range=(1, 255),
                              default_value=1,
                              startup_param=True,
                              direct_access=True)
@@ -1415,6 +1416,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                              visibility=ParameterDictVisibility.IMMUTABLE,
                              display_name="Measurements per Packet",
                              description='Number of individual measurements in each packet. 0 is continuous operation.',
+                             range=(0, 65535),
                              default_value=0,
                              startup_param=True,
                              direct_access=True)
@@ -1428,6 +1430,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                              visibility=ParameterDictVisibility.READ_ONLY,
                              display_name="Measurement 1 Dark Count",
                              description='Dark count value for 700nm scatter: (0 - 65535)',
+                             range=(0, 65535),
                              default_value=None,
                              units=ParameterUnit.COUNTS,
                              startup_param=False,
@@ -1442,6 +1445,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                              visibility=ParameterDictVisibility.READ_ONLY,
                              display_name="Measurement 2 Dark Count",
                              description='Dark count value for chlorophyll concentration: (0 - 65535)',
+                             range=(0, 65535),
                              default_value=None,
                              units=ParameterUnit.COUNTS,
                              startup_param=False,
@@ -1456,6 +1460,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                              visibility=ParameterDictVisibility.READ_ONLY,
                              display_name="Measurement 3 Dark Count",
                              description='Dark count value for CDOM concentration: (0 - 65535)',
+                             range=(0, 65535),
                              default_value=None,
                              units=ParameterUnit.COUNTS,
                              startup_param=False,
@@ -1512,6 +1517,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                              visibility=ParameterDictVisibility.IMMUTABLE,
                              display_name="Predefined Output Sequence",
                              description='Indicates which pre-defined output sequences to use when outputting data: (0 - 3)',
+                             range=(0, 3),
                              default_value=0,
                              startup_param=True,
                              direct_access=True)
@@ -1525,6 +1531,9 @@ class Protocol(CommandResponseInstrumentProtocol):
                              visibility=ParameterDictVisibility.READ_ONLY,
                              display_name="Baud Rate",
                              description='Baud rate for instrument communications: (2400 to 230400)',
+                             range={2400: '2400', 4800: '4800', 9600: '9600', 14400: '14400', 19200: '19200',
+                                    19201: '19201', 28800: '28800', 38400: '38400', 57600: '57600', 115200: '115200',
+                                    230400: '230400'},
                              default_value=None,
                              startup_param=False,
                              direct_access=False)
@@ -1538,6 +1547,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                              visibility=ParameterDictVisibility.IMMUTABLE,
                              display_name="Packets per Set",
                              description='Number of packets in a set (0 - 65535). 0 results in the stored configuration repeating continuously.',
+                             range=(0, 65535),
                              default_value=0,
                              startup_param=True,
                              direct_access=True)
@@ -1551,6 +1561,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                              visibility=ParameterDictVisibility.IMMUTABLE,
                              display_name="Recording Mode",
                              description='Enables (1) or disables (0) data recording to internal memory.',
+                             range={0: 'disable', 1: 'enable'},
                              default_value=0,
                              startup_param=True,
                              direct_access=True)
@@ -1564,6 +1575,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                              visibility=ParameterDictVisibility.IMMUTABLE,
                              display_name="Manual Mode",
                              description='Enables (1) or disables (0) manual start time.',
+                             range={0: 'disable', 1: 'enable'},
                              default_value=0,
                              startup_param=True,
                              direct_access=True)
@@ -1633,6 +1645,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                              visibility=ParameterDictVisibility.READ_ONLY,
                              display_name="Internal Memory Size",
                              description='Amount of internal memory.',
+                             range=(0, (1 << 16)-1),
                              units=Units.BYTE,
                              default_value=None,
                              startup_param=False,
