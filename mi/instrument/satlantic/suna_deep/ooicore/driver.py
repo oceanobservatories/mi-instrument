@@ -886,8 +886,8 @@ class Protocol(CommandResponseInstrumentProtocol):
         """
         Populate the command dictionary with commands
         """
-        self._cmd_dict.add(Capability.ACQUIRE_SAMPLE, display_name='Acquire Sample')
-        self._cmd_dict.add(Capability.ACQUIRE_STATUS, display_name='Acquire Status')
+        self._cmd_dict.add(Capability.ACQUIRE_SAMPLE, timeout=20, display_name='Acquire Sample')
+        self._cmd_dict.add(Capability.ACQUIRE_STATUS, timeout=15, display_name='Acquire Status')
         self._cmd_dict.add(Capability.MEASURE_N, display_name='Acquire N Light Samples')
         self._cmd_dict.add(Capability.MEASURE_0, display_name='Acquire Dark Sample')
         self._cmd_dict.add(Capability.TIMED_N, display_name='Acquire Light Samples (N seconds)')
@@ -1604,10 +1604,12 @@ class Protocol(CommandResponseInstrumentProtocol):
         """
         Get a sample from the SUNA
         """
+        timeout = time.time() + TIMEOUT
         self._start_poll()
         self._do_cmd_resp(InstrumentCommand.MEASURE, 1, expected_prompt=Prompt.POLLED, timeout=POLL_TIMEOUT)
         self._stop_poll()
-        return None, (None, None)
+        particles = self.wait_for_particles([DataParticleType.SUNA_SAMPLE], timeout)
+        return None, (None, particles)
 
     def _handler_poll_measure_n(self):
         """
