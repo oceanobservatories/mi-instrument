@@ -487,7 +487,7 @@ parameter_descriptions = {
     WorkhorseParameter.INSTRUMENT_ID: "Identification of the ADCP: (0 - 255)",
     WorkhorseParameter.HEADING_ALIGNMENT: "Correction for physical misalignment between Beam 3 and the heading reference: (-17999 to 18000)",
     WorkhorseParameter.HEADING_BIAS: "Correction for electrical/magnetic bias between heading value and heading reference: (-17999 to 18000)",
-    WorkhorseParameter.SPEED_OF_SOUND: 'Speed of sound value used for ADCP data processing.',
+    WorkhorseParameter.SPEED_OF_SOUND: 'Speed of sound value used for ADCP data processing: (1400 - 1600)',
     WorkhorseParameter.TRANSDUCER_DEPTH: 'Measurement from sea level to transducer faces: (0 - 65535)',
     WorkhorseParameter.PITCH: 'Pitch/tilt 1 angle: (-6000 - 6000)',
     WorkhorseParameter.ROLL: 'Roll/tilt 2 angle: (-6000 - 6000)',
@@ -503,7 +503,7 @@ parameter_descriptions = {
     WorkhorseParameter.BLANK_AFTER_TRANSMIT: 'Moves location of first depth cell away from transducer head: (0 - 9999)',
     WorkhorseParameter.NUMBER_OF_DEPTH_CELLS: 'Number of depth cells over which the ADCP collects data: (1 - 255)',
     WorkhorseParameter.PINGS_PER_ENSEMBLE: 'Number of pings to average in each data ensemble: (0 - 16384)',
-    WorkhorseParameter.DEPTH_CELL_SIZE: 'Volume of water for one measurement cell.',
+    WorkhorseParameter.DEPTH_CELL_SIZE: 'Volume of water for one measurement cell: (40 - 3200)',
     WorkhorseParameter.TRANSMIT_LENGTH: 'Transmit length different from the depth cell length: (0 - 3200)',
     WorkhorseParameter.AMBIGUITY_VELOCITY: 'Radial ambiguity velocity: (2 - 700)',
 
@@ -512,6 +512,44 @@ parameter_descriptions = {
     WorkhorseParameter.RDS3_MODE_SEL: 'RDS3 Mode: (0:Off | 1:RDS3 master | 2:RDS3 slave | 3: NEMO)',
     WorkhorseParameter.SLAVE_TIMEOUT: 'Wait time to hear a synch pulse before slave proceeds: (0 - 10800)',
     WorkhorseParameter.SYNCH_DELAY: 'Wait time after sending a pulse: (0 - 65535)'
+}
+
+parameter_ranges = {
+    WorkhorseParameter.BANNER: {True: 'true', False: 'false'},
+    WorkhorseParameter.SLEEP_ENABLE: {True: 'true', False: 'false'},
+    WorkhorseParameter.SAVE_NVRAM_TO_RECORDER: {True: 'true', False: 'false'},
+    WorkhorseParameter.POLLED_MODE: {True: 'true', False: 'false'},
+    WorkhorseParameter.XMIT_POWER: (1, 255),
+    WorkhorseParameter.LATENCY_TRIGGER: {True: 'true', False: 'false'},
+    WorkhorseParameter.BANDWIDTH_CONTROL: {0: 'Wide', 1: 'Narrow'},
+    WorkhorseParameter.CLIP_DATA_PAST_BOTTOM: {True: 'true', False: 'false'},
+    WorkhorseParameter.RECEIVER_GAIN_SELECT: {0: 'reduce receiver gain by 40 dB', 1: 'normal receiver gain'},
+    WorkhorseParameter.SAMPLE_AMBIENT_SOUND: {True: 'true', False: 'false'},
+    WorkhorseParameter.PING_WEIGHT: {0: 'Box', 1: 'Triangle'},
+    WorkhorseParameter.INSTRUMENT_ID: (0, 255),
+    WorkhorseParameter.HEADING_ALIGNMENT: (-17999, 18000),
+    WorkhorseParameter.HEADING_BIAS: (-17999, 18000),
+    WorkhorseParameter.SPEED_OF_SOUND: (1400, 1600),
+    WorkhorseParameter.TRANSDUCER_DEPTH: (0, 65535),
+    WorkhorseParameter.PITCH: (-6000, 6000),
+    WorkhorseParameter.ROLL: (-6000, 6000),
+    WorkhorseParameter.SALINITY: (0, 40),
+    WorkhorseParameter.DATA_STREAM_SELECTION: (0, 18),
+    WorkhorseParameter.ENSEMBLE_PER_BURST: (0, 65535),
+    WorkhorseParameter.FALSE_TARGET_THRESHOLD: (0, 255),
+    WorkhorseParameter.CORRELATION_THRESHOLD: (0, 255),
+    WorkhorseParameter.ERROR_VELOCITY_THRESHOLD: (0, 9999),
+    WorkhorseParameter.BLANK_AFTER_TRANSMIT: (0, 9999),
+    WorkhorseParameter.NUMBER_OF_DEPTH_CELLS: (1, 255),
+    WorkhorseParameter.PINGS_PER_ENSEMBLE: (0, 16384),
+    WorkhorseParameter.DEPTH_CELL_SIZE: (40, 3200),
+    WorkhorseParameter.TRANSMIT_LENGTH: (0, 3200),
+    WorkhorseParameter.AMBIGUITY_VELOCITY: (2, 700),
+
+    #VADCP Params
+    WorkhorseParameter.RDS3_MODE_SEL: {0: 'Off', 1: 'RDS3 master', 2: 'RDS3 slave', 3: 'NEMO'},
+    WorkhorseParameter.SLAVE_TIMEOUT: (0, 10800),
+    WorkhorseParameter.SYNCH_DELAY: (0, 65535)
 }
 
 parameter_units = {

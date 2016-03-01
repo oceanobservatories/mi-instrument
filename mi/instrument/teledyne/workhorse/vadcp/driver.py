@@ -21,7 +21,6 @@ from mi.core.exceptions import InstrumentException
 from mi.core.instrument.instrument_driver import SingleConnectionInstrumentDriver, DriverEvent
 from mi.core.instrument.instrument_driver import DriverConnectionState
 from mi.core.instrument.instrument_driver import DriverAsyncEvent
-from mi.core.instrument.instrument_driver import ResourceAgentState
 from mi.core.instrument.instrument_driver import DriverProtocolState
 from mi.core.instrument.port_agent_client import PortAgentClient, PortAgentPacket
 from mi.instrument.teledyne.workhorse.driver import WorkhorseParameter
@@ -34,6 +33,7 @@ from mi.instrument.teledyne.workhorse.driver import parameter_defaults
 from mi.instrument.teledyne.workhorse.driver import parameter_types
 from mi.instrument.teledyne.workhorse.driver import parameter_names
 from mi.instrument.teledyne.workhorse.driver import parameter_descriptions
+from mi.instrument.teledyne.workhorse.driver import parameter_ranges
 from mi.instrument.teledyne.workhorse.driver import parameter_startup
 from mi.instrument.teledyne.workhorse.driver import parameter_direct
 from mi.instrument.teledyne.workhorse.driver import parameter_visibility
@@ -536,6 +536,7 @@ class Protocol(WorkhorseProtocol):
                                  type=parameter_types.get(param),
                                  display_name=parameter_names.get(param),
                                  value_description=parameter_descriptions.get(param),
+                                 range=parameter_ranges.get(param),
                                  startup_param=parameter_startup.get(param, False),
                                  direct_access=parameter_direct.get(param, False),
                                  visibility=parameter_visibility.get(param, ParameterDictVisibility.READ_WRITE),
@@ -553,6 +554,7 @@ class Protocol(WorkhorseProtocol):
                                  type=parameter_types.get(param),
                                  display_name=parameter_names.get(param),
                                  value_description=parameter_descriptions.get(param),
+                                 range=parameter_ranges.get(param),
                                  startup_param=parameter_startup.get(param, False),
                                  direct_access=parameter_direct.get(param, False),
                                  visibility=parameter_visibility.get(param, ParameterDictVisibility.READ_WRITE),
