@@ -1215,6 +1215,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
                              self._float_to_string,
                              type=ParameterDictType.FLOAT,
                              display_name="Battery Voltage",
+                             #IOS does not specify range
                              description="Battery voltage of the instrument.",
                              units=Units.VOLT,
                              visibility=ParameterDictVisibility.READ_ONLY,
@@ -1227,6 +1228,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
                              default_value=1,          # 1 = True
                              type=ParameterDictType.INT,
                              display_name="Power Always On",
+                             range={1:'True', 0:'False'},
                              description="Enable instrument sleeping between samples: (1:True | 0:False)",
                              startup_param=True,
                              direct_access=False,
@@ -1241,6 +1243,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
                              default_value=0,          # 0 = False
                              type=ParameterDictType.INT,
                              display_name="6Hz Profiling Mode",
+                             range={1:'True', 0:'False'},
                              description="Enable profiling mode: (1:True | 0:False)",
                              startup_param=True,
                              direct_access=False,
@@ -1257,6 +1260,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
                              direct_access=True,
                              type=ParameterDictType.INT,
                              display_name="Output Includes Serial Number",
+                             range={1:'True', 0:'False'},
                              description="Enable serial number in output: (1:True | 0:False)",
                              visibility=ParameterDictVisibility.IMMUTABLE,
                              submenu_read=InstrumentCmds.GET_ADVANCED_FUNCTIONS,
@@ -1271,6 +1275,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
                              direct_access=True,
                              type=ParameterDictType.INT,
                              display_name="Output Includes Battery Voltage",
+                             range={1:'True', 0:'False'},
                              description="Enable battery voltage in output: (1:True | 0:False)",
                              visibility=ParameterDictVisibility.IMMUTABLE,
                              submenu_read=InstrumentCmds.GET_ADVANCED_FUNCTIONS,
@@ -1285,6 +1290,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
                              direct_access=False,
                              type=ParameterDictType.INT,
                              display_name="Sampling LED",
+                             range={1:'True', 0:'False'},
                              description="Enable sampling LED: (1:True | 0:False)",
                              visibility=ParameterDictVisibility.IMMUTABLE,
                              submenu_read=InstrumentCmds.GET_ADVANCED_FUNCTIONS,
@@ -1299,6 +1305,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
                              direct_access=True,
                              type=ParameterDictType.INT,
                              display_name="Engineering Units Output",
+                             range={1:'True', 0:'False'},
                              description="Enable engineering units in output: (1:True | 0:False)",
                              visibility=ParameterDictVisibility.IMMUTABLE,
                              submenu_read=InstrumentCmds.GET_ADVANCED_FUNCTIONS,
@@ -1313,6 +1320,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
                              direct_access=False,
                              type=ParameterDictType.INT,
                              display_name="Auto Run",
+                             range={1:'True', 0:'False'},
                              description="Enable instrument to restart in sampling mode after power cycle: (1:True | 0:False)",
                              visibility=ParameterDictVisibility.IMMUTABLE,
                              submenu_read=InstrumentCmds.GET_ADVANCED_FUNCTIONS,
@@ -1327,6 +1335,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
                              direct_access=False,
                              type=ParameterDictType.INT,
                              display_name="Inhibit Data Storage",
+                             range={1:'True', 0:'False'},
                              description="Disable data storage on instrument: (1:True | 0:False)",
                              submenu_read=InstrumentCmds.GET_ADVANCED_FUNCTIONS,
                              submenu_write=InstrumentCmds.SET_ADVANCED_FUNCTIONS)
@@ -1335,8 +1344,10 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
                              r'(\w{64})CAL\r\n',
                              lambda match : self._convert_calibration(match.group(1)),
                              str,
+                             # Why is each individual CC a list? IOS has a single list parameter
                              type=ParameterDictType.LIST,
                              display_name="Calibration Coefficients Channel 1",
+                             # Do we need to specify ranges for Calibration coefficients (float32)
                              description="Current calibrations for channel 1.",
                              visibility=ParameterDictVisibility.READ_ONLY,
                              submenu_read=InstrumentCmds.GET_CHANNEL_CALIBRATION)
