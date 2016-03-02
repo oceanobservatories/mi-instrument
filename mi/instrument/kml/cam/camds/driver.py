@@ -1025,6 +1025,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
                              type=ParameterDictType.STRING,
                              display_name=Parameter.WHEN_DISK_IS_FULL[ParameterIndex.DISPLAY_NAME],
                              value_description=Parameter.WHEN_DISK_IS_FULL[ParameterIndex.DESCRIPTION],
+                             range={1: 'Overwrite Oldest Image', 2: 'Prevent Capture'},
                              startup_param=False,
                              direct_access=True,
                              visibility=ParameterDictVisibility.READ_ONLY)
@@ -1036,6 +1037,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
                              type=ParameterDictType.STRING,
                              display_name=Parameter.CAMERA_MODE[ParameterIndex.DISPLAY_NAME],
                              value_description=Parameter.CAMERA_MODE[ParameterIndex.DESCRIPTION],
+                             range={0: 'None', 0x9: 'Stream', 0xA: 'Framing', 0xB: 'Focus'},
                              startup_param=True,
                              direct_access=True,
                              default_value=Parameter.CAMERA_MODE[ParameterIndex.D_DEFAULT])
@@ -1047,6 +1049,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
                              type=ParameterDictType.STRING,
                              display_name=Parameter.FRAME_RATE[ParameterIndex.DISPLAY_NAME],
                              value_description=Parameter.FRAME_RATE[ParameterIndex.DESCRIPTION],
+                             range=(1, 30),
                              startup_param=True,
                              direct_access=True,
                              default_value=Parameter.FRAME_RATE[ParameterIndex.D_DEFAULT])
@@ -1058,6 +1061,8 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
                              type=ParameterDictType.STRING,
                              display_name=Parameter.IMAGE_RESOLUTION[ParameterIndex.DISPLAY_NAME],
                              value_description=Parameter.IMAGE_RESOLUTION[ParameterIndex.DESCRIPTION],
+                             range={1: 'Full Resolution', 2: 'Half Resolution', 4: 'Quarter Resolution',
+                                    8: 'Eighth Resolution'},
                              direct_access=True,
                              startup_param=True,
                              default_value=Parameter.IMAGE_RESOLUTION[ParameterIndex.D_DEFAULT])
@@ -1069,6 +1074,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
                              type=ParameterDictType.STRING,
                              display_name=Parameter.COMPRESSION_RATIO[ParameterIndex.DISPLAY_NAME],
                              value_description=Parameter.COMPRESSION_RATIO[ParameterIndex.DESCRIPTION],
+                             range=(1, 100),
                              startup_param=True,
                              direct_access=True,
                              default_value=Parameter.COMPRESSION_RATIO[ParameterIndex.D_DEFAULT])
@@ -1080,6 +1086,9 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
                              type=ParameterDictType.STRING,
                              display_name=Parameter.SHUTTER_SPEED[ParameterIndex.DISPLAY_NAME],
                              value_description=Parameter.SHUTTER_SPEED[ParameterIndex.DESCRIPTION],
+                             # should be cleaned up
+                             # byte 1 is base, byte 2 is exponent (max of 6,000,000 microseconds)
+                             range=(0, 65535),
                              startup_param=False,
                              direct_access=False)
 
@@ -1090,6 +1099,8 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
                              type=ParameterDictType.STRING,
                              display_name=Parameter.CAMERA_GAIN[ParameterIndex.DISPLAY_NAME],
                              value_description=Parameter.CAMERA_GAIN[ParameterIndex.DESCRIPTION],
+                             # range is 1 to 32 & 255 (auto)
+                             range=(1, 255),
                              startup_param=False,
                              direct_access=False)
 
@@ -1100,6 +1111,10 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
                              type=ParameterDictType.STRING,
                              display_name=Parameter.LAMP_BRIGHTNESS[ParameterIndex.DISPLAY_NAME],
                              value_description=Parameter.LAMP_BRIGHTNESS[ParameterIndex.DESCRIPTION],
+                             # should be two parts -
+                             #  lamp control {1: 'Lamp1', 2: 'Lamp2', 3: 'Both'}
+                             #  lamp brightness (0, 0x64)
+                             range=(0, 65535),
                              startup_param=False,
                              direct_access=False)
 
@@ -1110,9 +1125,11 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
                              type=ParameterDictType.STRING,
                              display_name=Parameter.FOCUS_SPEED[ParameterIndex.DISPLAY_NAME],
                              value_description=Parameter.FOCUS_SPEED[ParameterIndex.DESCRIPTION],
+                             range=(0, 0xf),
                              startup_param=False,
                              direct_access=False)
 
+# cannot find a match to this in the IOS
         self._param_dict.add(Parameter.FOCUS_POSITION[ParameterIndex.KEY],
                              r'NOT USED',
                              None,
@@ -1120,6 +1137,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
                              type=ParameterDictType.STRING,
                              display_name=Parameter.FOCUS_POSITION[ParameterIndex.DISPLAY_NAME],
                              value_description=Parameter.FOCUS_POSITION[ParameterIndex.DESCRIPTION],
+                             range=(0, 0xC8),
                              startup_param=False,
                              direct_access=False)
 
@@ -1130,6 +1148,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
                              type=ParameterDictType.STRING,
                              display_name=Parameter.ZOOM_SPEED[ParameterIndex.DISPLAY_NAME],
                              value_description=Parameter.ZOOM_SPEED[ParameterIndex.DESCRIPTION],
+                             range=(0, 0xf),
                              direct_access=False,
                              startup_param=False)
 
@@ -1140,6 +1159,8 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
                              type=ParameterDictType.STRING,
                              display_name=Parameter.IRIS_POSITION[ParameterIndex.DISPLAY_NAME],
                              value_description=Parameter.IRIS_POSITION[ParameterIndex.DESCRIPTION],
+                             # 0 is fully closed, 15 is fully open
+                             range=(0, 0xf),
                              startup_param=False,
                              direct_access=False)
 
@@ -1150,6 +1171,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
                              type=ParameterDictType.STRING,
                              display_name=Parameter.ZOOM_POSITION[ParameterIndex.DISPLAY_NAME],
                              value_description=Parameter.ZOOM_POSITION[ParameterIndex.DESCRIPTION],
+                             range=(0, 0xC8),
                              startup_param=False,
                              direct_access=False)
 
@@ -1160,6 +1182,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
                              type=ParameterDictType.STRING,
                              display_name=Parameter.PAN_SPEED[ParameterIndex.DISPLAY_NAME],
                              value_description=Parameter.PAN_SPEED[ParameterIndex.DESCRIPTION],
+                             range=(0, 0x64),
                              startup_param=False,
                              direct_access=False)
 
@@ -1170,6 +1193,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
                              type=ParameterDictType.STRING,
                              display_name=Parameter.TILT_SPEED[ParameterIndex.DISPLAY_NAME],
                              value_description=Parameter.TILT_SPEED[ParameterIndex.DESCRIPTION],
+                             range=(0, 0x64),
                              startup_param=False,
                              direct_access=False)
 
@@ -1180,6 +1204,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
                              type=ParameterDictType.STRING,
                              display_name=Parameter.SOFT_END_STOPS[ParameterIndex.DISPLAY_NAME],
                              value_description=Parameter.SOFT_END_STOPS[ParameterIndex.DESCRIPTION],
+                             range={0: 'Disable', 1: 'Enable'},
                              startup_param=False,
                              direct_access=False)
 
@@ -1190,6 +1215,8 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
                              type=ParameterDictType.STRING,  # meta data
                              display_name=Parameter.PAN_POSITION[ParameterIndex.DISPLAY_NAME],
                              value_description=Parameter.PAN_POSITION[ParameterIndex.DESCRIPTION],
+                             # should be numeric, not a string
+                             #  range=(0, 360)
                              startup_param=False,
                              direct_access=False)
 
@@ -1200,6 +1227,8 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
                              type=ParameterDictType.STRING,
                              display_name=Parameter.TILT_POSITION[ParameterIndex.DISPLAY_NAME],
                              value_description=Parameter.TILT_POSITION[ParameterIndex.DESCRIPTION],
+                             # should be numeric, not a string
+                             #  range=(0, 360)
                              startup_param=False,
                              direct_access=False)
 
@@ -1232,6 +1261,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
                              type=ParameterDictType.STRING,
                              display_name=Parameter.VIDEO_FORWARDING[ParameterIndex.DISPLAY_NAME],
                              value_description=Parameter.VIDEO_FORWARDING[ParameterIndex.DESCRIPTION],
+                             range={'Y': 'Yes', 'N': 'No'},
                              startup_param=False,
                              direct_access=False,
                              default_value=Parameter.VIDEO_FORWARDING[ParameterIndex.D_DEFAULT])
