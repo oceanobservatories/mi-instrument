@@ -912,6 +912,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                              type=ParameterDictType.STRING,
                              startup_param=True,
                              direct_access=True,
+                             default_value='Polled',
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name="Operation Mode",
                              range={'Continuous':'Continuous', 'Polled':'Polled'},
@@ -924,6 +925,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                              type=ParameterDictType.STRING,
                              startup_param=True,
                              direct_access=True,
+                             default_value='Samples',
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name="Operation Control",
                              range={'Samples':'Samples', 'Duration':'Duration'},
@@ -936,6 +938,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                              type=ParameterDictType.INT,
                              startup_param=True,
                              direct_access=True,
+                             default_value=5,
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name="Light Samples",
                              range=(1, 65535),
@@ -948,6 +951,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                              type=ParameterDictType.INT,
                              startup_param=True,
                              direct_access=True,
+                             default_value=1,
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name="Dark Samples",
                              range=(1, 65535),
@@ -960,6 +964,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                              type=ParameterDictType.INT,
                              startup_param=True,
                              direct_access=True,
+                             default_value=10,
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name="Light Duration",
                              range=(1, 65535),
@@ -973,6 +978,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                              type=ParameterDictType.INT,
                              startup_param=True,
                              direct_access=True,
+                             default_value=5,
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name="Dark Duration",
                              range=(1, 65535),
@@ -1290,7 +1296,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name="Integration Time Factor",
                              range=(1, 20),
-                             description="Factor used in integration time adjustment: (1, 20)",
+                             description="Factor used in integration time adjustment: (1 - 20)",
                              units=Units.SECOND)
 
         self._param_dict.add(Parameter.INTEG_TIME_STEP,
@@ -1304,7 +1310,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name="Integration Time Step",
                              range=(1, 20),
-                             description="Time step used in integration time adjustment: (1, 20)",
+                             description="Time step used in integration time adjustment: (1 - 20)",
                              units=Units.SECOND)
 
         self._param_dict.add(Parameter.INTEG_TIME_MAX,
@@ -1318,7 +1324,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name="Integration Time Max",
                              range=(1, 20),
-                             description="Maximum integration time factor: (1, 20)",
+                             description="Maximum integration time factor: (1 - 20)",
                              units=Units.SECOND)
 
         #DRIVER PARAMETERS
@@ -1329,6 +1335,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                              type=ParameterDictType.INT,
                              startup_param=True,
                              direct_access=False,
+                             default_value=2,
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name="Number of Light Samples",
                              range=(1, 40),
@@ -1341,6 +1348,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                              type=ParameterDictType.INT,
                              startup_param=True,
                              direct_access=False,
+                             default_value=30,
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name="Time to Take Light Sample",
                              range=(0, 30),
