@@ -33,7 +33,6 @@ from mi.core.instrument.instrument_driver import DriverEvent
 from mi.core.instrument.instrument_driver import DriverAsyncEvent
 from mi.core.instrument.instrument_driver import DriverProtocolState
 from mi.core.instrument.instrument_driver import DriverParameter
-from mi.core.instrument.instrument_driver import ResourceAgentState
 from mi.core.instrument.instrument_driver import DriverConfigKey
 from mi.core.driver_scheduler import DriverSchedulerConfigKey
 from mi.core.driver_scheduler import TriggerType
@@ -43,7 +42,7 @@ from mi.core.util import dict_equal
 from mi.instrument.teledyne.workhorse.particles import AdcpCompassCalibrationDataParticle, \
     AdcpSystemConfigurationDataParticle, AdcpAncillarySystemDataParticle, AdcpTransmitPathParticle, \
     AdcpPd0ConfigParticle, AdcpPd0EngineeringParticle, \
-    Pd0BeamParticle, Pd0CoordinateTransformType, Pd0EarthParticle
+    Pd0BeamParticle, Pd0CoordinateTransformType, Pd0EarthParticle, WorkhorseDataParticleType
 
 __author__ = 'Sung Ahn'
 __license__ = 'Apache 2.0'
@@ -1303,14 +1302,19 @@ class WorkhorseProtocol(CommandResponseInstrumentProtocol):
         @return next_state, next_state, result) if successful.
         @throws InstrumentProtocolException from _do_cmd_resp.
         """
-
         next_state = None
-        result = [
-            self._do_cmd_resp(WorkhorseInstrumentCmds.GET_SYSTEM_CONFIGURATION, *args, **kwargs),
-            self._do_cmd_resp(WorkhorseInstrumentCmds.OUTPUT_CALIBRATION_DATA, *args, **kwargs),
-            self._do_cmd_resp(WorkhorseInstrumentCmds.OUTPUT_PT2, *args, **kwargs),
-            self._do_cmd_resp(WorkhorseInstrumentCmds.OUTPUT_PT4, *args, **kwargs)
-        ]
+
+        self._do_cmd_resp(WorkhorseInstrumentCmds.GET_SYSTEM_CONFIGURATION, *args, **kwargs),
+        self._do_cmd_resp(WorkhorseInstrumentCmds.OUTPUT_CALIBRATION_DATA, *args, **kwargs),
+        self._do_cmd_resp(WorkhorseInstrumentCmds.OUTPUT_PT2, *args, **kwargs),
+        self._do_cmd_resp(WorkhorseInstrumentCmds.OUTPUT_PT4, *args, **kwargs)
+
+        result = self.wait_for_particles([WorkhorseDataParticleType.ADCP_SYSTEM_CONFIGURATION,
+                                          WorkhorseDataParticleType.ADCP_COMPASS_CALIBRATION,
+                                          WorkhorseDataParticleType.ADCP_ANCILLARY_SYSTEM_DATA,
+                                          WorkhorseDataParticleType.ADCP_TRANSMIT_PATH],
+                                         time.time() + 1)
+
         return next_state, (next_state, result)
 
     def _handler_command_start_direct(self, *args, **kwargs):
