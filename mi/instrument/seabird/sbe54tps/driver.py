@@ -1055,12 +1055,15 @@ class Protocol(SeaBirdProtocol):
         timeout = kwargs.get('timeout', TIMEOUT)
 
         next_state = None
-        result1 = self._do_cmd_resp(InstrumentCmds.GET_CONFIGURATION_DATA, timeout=timeout)
-        result2 = self._do_cmd_resp(InstrumentCmds.GET_STATUS_DATA, timeout=timeout)
-        result3 = self._do_cmd_resp(InstrumentCmds.GET_EVENT_COUNTER_DATA, timeout=timeout)
-        result4 = self._do_cmd_resp(InstrumentCmds.GET_HARDWARE_DATA, timeout=timeout)
+        self._do_cmd_resp(InstrumentCmds.GET_CONFIGURATION_DATA, timeout=timeout)
+        self._do_cmd_resp(InstrumentCmds.GET_STATUS_DATA, timeout=timeout)
+        self._do_cmd_resp(InstrumentCmds.GET_EVENT_COUNTER_DATA, timeout=timeout)
+        self._do_cmd_resp(InstrumentCmds.GET_HARDWARE_DATA, timeout=timeout)
 
-        result = result1 + result2 + result3 + result4
+        result = self.wait_for_particles([DataParticleType.PREST_CONFIGURATION_DATA,
+                                          DataParticleType.PREST_DEVICE_STATUS,
+                                          DataParticleType.PREST_EVENT_COUNTER,
+                                          DataParticleType.PREST_HARDWARE_DATA], timeout=TIMEOUT)
 
         return next_state, (next_state, result)
 
@@ -1200,12 +1203,15 @@ class Protocol(SeaBirdProtocol):
             self._stop_logging()
 
             timeout = kwargs.get('timeout', TIMEOUT)
-            result1 = self._do_cmd_resp(InstrumentCmds.GET_CONFIGURATION_DATA, timeout=timeout)
-            result2 = self._do_cmd_resp(InstrumentCmds.GET_STATUS_DATA, timeout=timeout)
-            result3 = self._do_cmd_resp(InstrumentCmds.GET_EVENT_COUNTER_DATA, timeout=timeout)
-            result4 = self._do_cmd_resp(InstrumentCmds.GET_HARDWARE_DATA, timeout=timeout)
+            self._do_cmd_resp(InstrumentCmds.GET_CONFIGURATION_DATA, timeout=timeout)
+            self._do_cmd_resp(InstrumentCmds.GET_STATUS_DATA, timeout=timeout)
+            self._do_cmd_resp(InstrumentCmds.GET_EVENT_COUNTER_DATA, timeout=timeout)
+            self._do_cmd_resp(InstrumentCmds.GET_HARDWARE_DATA, timeout=timeout)
 
-            result = result1 + result2 + result3 + result4
+            result = self.wait_for_particles([DataParticleType.PREST_CONFIGURATION_DATA,
+                                          DataParticleType.PREST_DEVICE_STATUS,
+                                          DataParticleType.PREST_EVENT_COUNTER,
+                                          DataParticleType.PREST_HARDWARE_DATA], timeout=TIMEOUT)
 
         finally:
             # Switch back to streaming
