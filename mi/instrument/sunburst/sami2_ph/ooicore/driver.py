@@ -59,6 +59,7 @@ from mi.instrument.sunburst.driver import SAMI_PUMP_DURATION_UNITS
 ###
 #    Driver Constant Definitions
 ###
+UINT8 = (0, 255)
 
 # PHSEN sample timeout
 PHSEN_SAMPLE_TIMEOUT = 240
@@ -879,6 +880,7 @@ class Protocol(SamiProtocol):
                              default_value=0x02,
                              visibility=ParameterDictVisibility.READ_ONLY,
                              display_name='Mode Bits',
+                             range=UINT8
                              description='Switch bits for sample scheduling.')
 
         # PCO2 0x04, PHSEN 0x0A
@@ -891,6 +893,7 @@ class Protocol(SamiProtocol):
                              default_value=0x0A,
                              visibility=ParameterDictVisibility.READ_ONLY,
                              display_name='Sami Driver Version',
+                             range={0x0A: 'PHSEN', 0x04: 'PC02'},
                              description='SAMI driver version: (0A = PHSEN | 04 = PCO2)')
 
         self._param_dict.add(Parameter.DEVICE1_SAMPLE_INTERVAL, configuration_string_regex,
@@ -936,6 +939,7 @@ class Protocol(SamiProtocol):
                              default_value=0x01,
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name='Number of Samples Averaged',
+                             range=UINT8,
                              description='Number of readings to be averaged.')
 
         self._param_dict.add(Parameter.NUMBER_FLUSHES, configuration_string_regex,
@@ -947,6 +951,7 @@ class Protocol(SamiProtocol):
                              default_value=0x37,
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name='Number of Flushes',
+                             range=UINT8,
                              description='')
 
         self._param_dict.add(Parameter.PUMP_ON_FLUSH, configuration_string_regex,
@@ -958,6 +963,7 @@ class Protocol(SamiProtocol):
                              default_value=0x04,
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name='Pump On Flush',
+                             range=UINT8,
                              description='How long to flush when the pump is on.',
                              units='16 ' + Units.HERTZ)
 
@@ -970,6 +976,7 @@ class Protocol(SamiProtocol):
                              default_value=0x20,
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name='Pump Off Flush',
+                             range=UINT8,
                              description='How long to flush when the pump is off.',
                              units='16 ' + Units.HERTZ)
 
@@ -982,6 +989,7 @@ class Protocol(SamiProtocol):
                              default_value=0x01,
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name='Number of Reagent Pumps',
+                             range=UINT8,
                              description='')
 
         self._param_dict.add(Parameter.VALVE_DELAY, configuration_string_regex,
@@ -993,6 +1001,7 @@ class Protocol(SamiProtocol):
                              default_value=0x08,
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name='Valve Delay',
+                             range=UINT8,
                              description='How long to delay opening valve.',
                              units='16 ' + Units.HERTZ)
 
@@ -1005,6 +1014,7 @@ class Protocol(SamiProtocol):
                              default_value=0x08,
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name='Pump On Ind',
+                             range=UINT8,
                              description='Turn pump on and restore after time interval.',
                              units='16 ' + Units.HERTZ)
 
@@ -1017,6 +1027,7 @@ class Protocol(SamiProtocol):
                              default_value=0x10,
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name='P/V Off Ind',
+                             range=UINT8,
                              description='Turn pump valve off and restore after time interval.',
                              units='16 ' + Units.HERTZ)
 
@@ -1029,6 +1040,7 @@ class Protocol(SamiProtocol):
                              default_value=0x04,
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name='Number of Blanks',
+                             range=(1, 63),
                              description='Number of blanks: (1 - 63)')
 
         self._param_dict.add(Parameter.PUMP_MEASURE_T, configuration_string_regex,
@@ -1040,6 +1052,7 @@ class Protocol(SamiProtocol):
                              default_value=0x08,
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name='Pump Measure T',
+                             range=UINT8,
                              description='',
                              units='16 ' + Units.HERTZ)
 
@@ -1052,6 +1065,7 @@ class Protocol(SamiProtocol):
                              default_value=0x10,
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name='Pump Off to Measure',
+                             range=UINT8,
                              description='Time from turning pump off to start measuring.',
                              units='16 ' + Units.HERTZ)
 
@@ -1064,6 +1078,7 @@ class Protocol(SamiProtocol):
                              default_value=0x08,
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name='Measure to Pump On',
+                             range=UINT8,
                              description='Time from measurement taken to turning pump on.',
                              units='16 ' + Units.HERTZ)
 
@@ -1076,6 +1091,7 @@ class Protocol(SamiProtocol):
                              default_value=0x17,
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name='Number of Measurements',
+                             range=(0, 26),
                              description='Number of measurements: (0 - 26)')
 
         self._param_dict.add(Parameter.SALINITY_DELAY, configuration_string_regex,
@@ -1087,6 +1103,7 @@ class Protocol(SamiProtocol):
                              default_value=0x00,
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name='Salinity Delay',
+                             range=UINT8,
                              description='',
                              units='16 ' + Units.HERTZ)
 
@@ -1099,6 +1116,7 @@ class Protocol(SamiProtocol):
                              default_value=0x1,
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name='Seawater 2750ml and Reagent 50ml Flush Cycles',
+                             range=(0, (1 << 32)-1),
                              description='Number of pump cycles for either pumping seawater or reagent.')
 
         self._param_dict.add(Parameter.REAGENT_FLUSH_DURATION, r'Reagent flush duration = ([0-9]+)',
@@ -1110,6 +1128,7 @@ class Protocol(SamiProtocol):
                              default_value=0x4,
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name='Reagent Flush Duration',
+                             range=UINT8,
                              description='Set duration of reagent flush: (0 - 255)',
                              units='8 ' + Units.HERTZ)
 
@@ -1122,6 +1141,7 @@ class Protocol(SamiProtocol):
                              default_value=0x2,
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name='Seawater Flush Duration',
+                             range=UINT8,
                              description='Set duration of seawater flush: (0 - 255)',
                              units='8 ' + Units.HERTZ)
 
