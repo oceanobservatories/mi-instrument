@@ -879,6 +879,7 @@ class Protocol(SamiProtocol):
                              default_value=0x02,
                              visibility=ParameterDictVisibility.READ_ONLY,
                              display_name='Mode Bits',
+                             range=(0, 255),
                              description='Switch bits for sample scheduling.')
 
         # PCO2 0x04, PHSEN 0x0A
@@ -891,6 +892,7 @@ class Protocol(SamiProtocol):
                              default_value=0x0A,
                              visibility=ParameterDictVisibility.READ_ONLY,
                              display_name='Sami Driver Version',
+                             range={0x0A: 'PHSEN', 0x04: 'PC02'},
                              description='SAMI driver version: (0A = PHSEN | 04 = PCO2)')
 
         self._param_dict.add(Parameter.DEVICE1_SAMPLE_INTERVAL, configuration_string_regex,
@@ -902,6 +904,7 @@ class Protocol(SamiProtocol):
                              default_value=0x000000,
                              visibility=ParameterDictVisibility.READ_ONLY,
                              display_name='Device 1 Sample Interval',
+                             # range not specified in IOS
                              description='',
                              units=Units.SECOND)
 
@@ -914,6 +917,7 @@ class Protocol(SamiProtocol):
                              default_value=0x00,
                              visibility=ParameterDictVisibility.READ_ONLY,
                              display_name='Device 1 Driver Version',
+                             # range not specified in IOS
                              description='')
 
         self._param_dict.add(Parameter.DEVICE1_PARAMS_POINTER, configuration_string_regex,
@@ -925,6 +929,7 @@ class Protocol(SamiProtocol):
                              default_value=0x00,
                              visibility=ParameterDictVisibility.READ_ONLY,
                              display_name='Device 1 Parameter Pointer',
+                             # range not specified in IOS
                              description='Pointer to device 1 parameters (offset from position 76).')
 
         self._param_dict.add(Parameter.NUMBER_SAMPLES_AVERAGED, configuration_string_regex,
@@ -936,6 +941,7 @@ class Protocol(SamiProtocol):
                              default_value=0x01,
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name='Number of Samples Averaged',
+                             # range not specified in IOS
                              description='Number of readings to be averaged.')
 
         self._param_dict.add(Parameter.NUMBER_FLUSHES, configuration_string_regex,
@@ -947,6 +953,7 @@ class Protocol(SamiProtocol):
                              default_value=0x37,
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name='Number of Flushes',
+                             # range not specified in IOS
                              description='')
 
         self._param_dict.add(Parameter.PUMP_ON_FLUSH, configuration_string_regex,
@@ -958,6 +965,7 @@ class Protocol(SamiProtocol):
                              default_value=0x04,
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name='Pump On Flush',
+                             # range not specified in IOS
                              description='How long to flush when the pump is on.',
                              units='16 ' + Units.HERTZ)
 
@@ -970,6 +978,7 @@ class Protocol(SamiProtocol):
                              default_value=0x20,
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name='Pump Off Flush',
+                             # range not specified in IOS
                              description='How long to flush when the pump is off.',
                              units='16 ' + Units.HERTZ)
 
@@ -982,6 +991,7 @@ class Protocol(SamiProtocol):
                              default_value=0x01,
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name='Number of Reagent Pumps',
+                             # range not specified in IOS
                              description='')
 
         self._param_dict.add(Parameter.VALVE_DELAY, configuration_string_regex,
@@ -993,6 +1003,7 @@ class Protocol(SamiProtocol):
                              default_value=0x08,
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name='Valve Delay',
+                             # range not specified in IOS
                              description='How long to delay opening valve.',
                              units='16 ' + Units.HERTZ)
 
@@ -1005,6 +1016,7 @@ class Protocol(SamiProtocol):
                              default_value=0x08,
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name='Pump On Ind',
+                             # range not specified in IOS
                              description='Turn pump on and restore after time interval.',
                              units='16 ' + Units.HERTZ)
 
@@ -1017,6 +1029,7 @@ class Protocol(SamiProtocol):
                              default_value=0x10,
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name='P/V Off Ind',
+                             # range not specified in IOS
                              description='Turn pump valve off and restore after time interval.',
                              units='16 ' + Units.HERTZ)
 
@@ -1029,6 +1042,7 @@ class Protocol(SamiProtocol):
                              default_value=0x04,
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name='Number of Blanks',
+                             range=(1, 63),
                              description='Number of blanks: (1 - 63)')
 
         self._param_dict.add(Parameter.PUMP_MEASURE_T, configuration_string_regex,
@@ -1040,6 +1054,7 @@ class Protocol(SamiProtocol):
                              default_value=0x08,
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name='Pump Measure T',
+                             # range not specified in IOS
                              description='',
                              units='16 ' + Units.HERTZ)
 
@@ -1052,6 +1067,7 @@ class Protocol(SamiProtocol):
                              default_value=0x10,
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name='Pump Off to Measure',
+                             # range not specified in IOS
                              description='Time from turning pump off to start measuring.',
                              units='16 ' + Units.HERTZ)
 
@@ -1064,6 +1080,7 @@ class Protocol(SamiProtocol):
                              default_value=0x08,
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name='Measure to Pump On',
+                             # range not specified in IOS
                              description='Time from measurement taken to turning pump on.',
                              units='16 ' + Units.HERTZ)
 
@@ -1076,6 +1093,7 @@ class Protocol(SamiProtocol):
                              default_value=0x17,
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name='Number of Measurements',
+                             range=(0, 26),
                              description='Number of measurements: (0 - 26)')
 
         self._param_dict.add(Parameter.SALINITY_DELAY, configuration_string_regex,
@@ -1087,6 +1105,7 @@ class Protocol(SamiProtocol):
                              default_value=0x00,
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name='Salinity Delay',
+                             # range not specified in IOS
                              description='',
                              units='16 ' + Units.HERTZ)
 
@@ -1099,6 +1118,7 @@ class Protocol(SamiProtocol):
                              default_value=0x1,
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name='Seawater 2750ml and Reagent 50ml Flush Cycles',
+                             # range not specified in IOS
                              description='Number of pump cycles for either pumping seawater or reagent.')
 
         self._param_dict.add(Parameter.REAGENT_FLUSH_DURATION, r'Reagent flush duration = ([0-9]+)',
@@ -1110,6 +1130,7 @@ class Protocol(SamiProtocol):
                              default_value=0x4,
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name='Reagent Flush Duration',
+                             range=(0, 255),
                              description='Set duration of reagent flush: (0 - 255)',
                              units='8 ' + Units.HERTZ)
 
@@ -1122,6 +1143,7 @@ class Protocol(SamiProtocol):
                              default_value=0x2,
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name='Seawater Flush Duration',
+                             range=(0, 255),
                              description='Set duration of seawater flush: (0 - 255)',
                              units='8 ' + Units.HERTZ)
 
