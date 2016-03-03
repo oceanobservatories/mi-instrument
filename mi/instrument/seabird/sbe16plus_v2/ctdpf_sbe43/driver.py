@@ -49,6 +49,8 @@ MAX_PUMP_DELAY = 600
 MIN_AVG_SAMPLES = 1
 MAX_AVG_SAMPLES = 32767
 
+INT16 = (0, (1 << 16)-1)
+
 
 class Parameter(CommonParameter):
     """
@@ -842,6 +844,7 @@ class SBE43Protocol(SBE16Protocol):
                              self._true_false_to_string,
                              type=ParameterDictType.BOOL,
                              display_name="SBE63 Attached",
+                             range={True: 'True', False: 'False'},
                              description="Enable SBE63: (true | false)",
                              startup_param=True,
                              direct_access=True,
@@ -853,6 +856,7 @@ class SBE43Protocol(SBE16Protocol):
                              str,
                              type=ParameterDictType.INT,
                              display_name="Scans to Average",
+                             range=INT16,
                              description="Number of samples to average",
                              startup_param=True,
                              direct_access=False,
@@ -864,6 +868,7 @@ class SBE43Protocol(SBE16Protocol):
                              str,
                              type=ParameterDictType.INT,
                              display_name="Minimum Conductivity Frequency",
+                             range=INT16,
                              description="Minimum conductivity frequency to enable pump turn-on.",
                              startup_param=True,
                              direct_access=False,
@@ -876,6 +881,7 @@ class SBE43Protocol(SBE16Protocol):
                              str,
                              type=ParameterDictType.INT,
                              display_name="Pump Delay",
+                             range=INT16,
                              description="Time to wait after minimum conductivity frequency is reached before turning pump on.",
                              startup_param=True,
                              direct_access=False,
@@ -888,6 +894,7 @@ class SBE43Protocol(SBE16Protocol):
                              self._true_false_to_string,
                              type=ParameterDictType.BOOL,
                              display_name="Auto Run",
+                             range={True: 'True', False: 'False'},
                              description="Enable automatic logging when power is applied: (true | false).",
                              startup_param=True,
                              direct_access=True,
@@ -899,6 +906,7 @@ class SBE43Protocol(SBE16Protocol):
                              self._true_false_to_string,
                              type=ParameterDictType.BOOL,
                              display_name="Ignore Switch",
+                             range={True: 'True', False: 'False'},
                              description="Disable magnetic switch position for starting or stopping logging: (true | false)",
                              startup_param=True,
                              direct_access=True,
@@ -910,6 +918,7 @@ class SBE43Protocol(SBE16Protocol):
                              str,
                              type=ParameterDictType.INT,
                              display_name="Pressure Sensor Type",
+                             range={1: 'Strain Gauge', 3: 'Quartz with Temp Comp'},
                              startup_param=True,
                              direct_access=True,
                              default_value=1,
@@ -922,6 +931,7 @@ class SBE43Protocol(SBE16Protocol):
                              self._true_false_to_string,
                              type=ParameterDictType.BOOL,
                              display_name="Optode Attached",
+                             range={True: 'True', False: 'False'},
                              description="Enable optode: (true | false)",
                              startup_param=True,
                              direct_access=True,
@@ -933,6 +943,7 @@ class SBE43Protocol(SBE16Protocol):
                              self._true_false_to_string,
                              type=ParameterDictType.BOOL,
                              display_name="Volt 1",
+                             range={True: 'True', False: 'False'},
                              description="Enable external voltage 1: (true | false)",
                              startup_param=True,
                              direct_access=True,
