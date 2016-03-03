@@ -25,5 +25,7 @@ before_script:
   - psql -c 'grant all privileges on database metadata to awips;' -U postgres
 
 # command to run tests
-script: nosetests -a UNIT
+script:
+  - nosetests -a UNIT_ANTELOPE
+  - nosetests -a UNIT
 

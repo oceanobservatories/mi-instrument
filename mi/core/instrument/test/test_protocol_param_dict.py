@@ -6,10 +6,6 @@
 @author Steve Foley
 @brief Test cases for the base protocol parameter dictionary module
 """
-
-__author__ = 'Steve Foley'
-__license__ = 'Apache 2.0'
-
 import json
 import re
 
@@ -24,6 +20,7 @@ from mi.core.instrument.protocol_param_dict import ParameterDictType
 from mi.core.instrument.protocol_param_dict import ParameterDictKey
 from mi.core.instrument.protocol_param_dict import Parameter, FunctionParameter, RegexParameter
 
+
 @attr('UNIT', group='mi')
 class TestUnitProtocolParameterDict(TestUnitStringsDict):
     """
@@ -35,88 +32,88 @@ class TestUnitProtocolParameterDict(TestUnitStringsDict):
     __test__ = True
 
     @staticmethod
-    def pick_byte2(input):
+    def pick_byte2(input_val):
         """ Get the 2nd byte as an example of something tricky and
         arbitrary"""
-        val = int(input) >> 8
-        val = val & 255
+        val = int(input_val) >> 8
+        val &= 255
         return val
-    
+
     def setUp(self):
         self.param_dict = ProtocolParameterDict()
-                
+
         self.param_dict.add("foo", r'.*foo=(\d+).*',
-                             lambda match : int(match.group(1)),
-                             lambda x : str(x),
-                             direct_access=True,
-                             startup_param=True,
-                             default_value=10,
-                             visibility=ParameterDictVisibility.READ_WRITE)
+                            lambda match: int(match.group(1)),
+                            lambda x: str(x),
+                            direct_access=True,
+                            startup_param=True,
+                            default_value=10,
+                            visibility=ParameterDictVisibility.READ_WRITE)
         self.param_dict.add("bar", r'.*bar=(\d+).*',
-                             lambda match : int(match.group(1)),
-                             lambda x : str(x),
-                             direct_access=False,
-                             startup_param=True,
-                             default_value=15,
-                             visibility=ParameterDictVisibility.READ_WRITE)
+                            lambda match: int(match.group(1)),
+                            lambda x: str(x),
+                            direct_access=False,
+                            startup_param=True,
+                            default_value=15,
+                            visibility=ParameterDictVisibility.READ_WRITE)
         self.param_dict.add("baz", r'.*baz=(\d+).*',
-                             lambda match : int(match.group(1)),
-                             lambda x : str(x),
-                             direct_access=True,
-                             default_value=20,
-                             visibility=ParameterDictVisibility.DIRECT_ACCESS,
-                             get_timeout=30,
-                             set_timeout=40,
-                             display_name="Baz",
-                             description="The baz parameter",
-                             type=ParameterDictType.INT,
-                             units="nano-bazers",
-                             value_description="Should be an integer between 2 and 2000")
+                            lambda match: int(match.group(1)),
+                            lambda x: str(x),
+                            direct_access=True,
+                            default_value=20,
+                            visibility=ParameterDictVisibility.DIRECT_ACCESS,
+                            get_timeout=30,
+                            set_timeout=40,
+                            display_name="Baz",
+                            description="The baz parameter",
+                            type=ParameterDictType.INT,
+                            units="nano-bazers",
+                            value_description="Should be an integer between 2 and 2000")
         self.param_dict.add("bat", r'.*bat=(\d+).*',
-                             lambda match : int(match.group(1)),
-                             lambda x : str(x),
-                             startup_param=False,
-                             default_value=20,
-                             visibility=ParameterDictVisibility.READ_ONLY,
-                             get_timeout=10,
-                             set_timeout=20,
-                             display_name="Bat",
-                             description="The bat parameter",
-                             type=ParameterDictType.INT,
-                             units="nano-batbit",
-                             value_description="Should be an integer between 1 and 1000")
+                            lambda match: int(match.group(1)),
+                            lambda x: str(x),
+                            startup_param=False,
+                            default_value=20,
+                            visibility=ParameterDictVisibility.READ_ONLY,
+                            get_timeout=10,
+                            set_timeout=20,
+                            display_name="Bat",
+                            description="The bat parameter",
+                            type=ParameterDictType.INT,
+                            units="nano-batbit",
+                            value_description="Should be an integer between 1 and 1000")
         self.param_dict.add("qux", r'.*qux=(\d+).*',
-                            lambda match : int(match.group(1)),
-                            lambda x : str(x),
+                            lambda match: int(match.group(1)),
+                            lambda x: str(x),
                             startup_param=False,
                             visibility=ParameterDictVisibility.READ_ONLY)
         self.param_dict.add("pho", r'.*qux=(\d+).*',
-                            lambda match : int(match.group(1)),
-                            lambda x : str(x),
+                            lambda match: int(match.group(1)),
+                            lambda x: str(x),
                             startup_param=False,
                             visibility=ParameterDictVisibility.IMMUTABLE)
         self.param_dict.add("dil", r'.*qux=(\d+).*',
-                             lambda match : int(match.group(1)),
-                             lambda x : str(x),
-                             startup_param=False,
-                             visibility=ParameterDictVisibility.IMMUTABLE)
+                            lambda match: int(match.group(1)),
+                            lambda x: str(x),
+                            startup_param=False,
+                            visibility=ParameterDictVisibility.IMMUTABLE)
         self.param_dict.add("qut", r'.*qut=(\d+).*',
-                             lambda match : int(match.group(1)),
-                             lambda x : str(x),
-                             direct_access=True,
-                             default_value=[10, 100],
-                             visibility=ParameterDictVisibility.DIRECT_ACCESS,
-                             expiration=1,
-                             get_timeout=10,
-                             set_timeout=20,
-                             display_name="Qut",
-                             description="The qut list parameter",
-                             type=ParameterDictType.LIST,
-                             units="nano-qutters",
-                             value_description="Should be a 2-10 element list of integers between 2 and 2000")
-        
+                            lambda match: int(match.group(1)),
+                            lambda x: str(x),
+                            direct_access=True,
+                            default_value=[10, 100],
+                            visibility=ParameterDictVisibility.DIRECT_ACCESS,
+                            expiration=1,
+                            get_timeout=10,
+                            set_timeout=20,
+                            display_name="Qut",
+                            description="The qut list parameter",
+                            type=ParameterDictType.LIST,
+                            units="nano-qutters",
+                            value_description="Should be a 2-10 element list of integers between 2 and 2000")
+
         self.target_schema = {
-            "bar":  {
+            "bar": {
                 "direct_access": False,
                 "get_timeout": 10,
                 "set_timeout": 10,
@@ -124,7 +121,8 @@ class TestUnitProtocolParameterDict(TestUnitStringsDict):
                 "value": {
                     "default": 15
                 },
-                "visibility": "READ_WRITE"
+                "visibility": "READ_WRITE",
+                "range": None,
             },
             "bat": {
                 "description": "The bat parameter",
@@ -139,7 +137,8 @@ class TestUnitProtocolParameterDict(TestUnitStringsDict):
                     "type": "int",
                     "units": "nano-batbit"
                 },
-                "visibility": "READ_ONLY"
+                "visibility": "READ_ONLY",
+                "range": None,
             },
             "baz": {
                 "description": "The baz parameter",
@@ -154,7 +153,8 @@ class TestUnitProtocolParameterDict(TestUnitStringsDict):
                     "type": "int",
                     "units": "nano-bazers"
                 },
-                "visibility": "DIRECT_ACCESS"
+                "visibility": "DIRECT_ACCESS",
+                "range": None,
             },
             "dil": {
                 "direct_access": False,
@@ -162,7 +162,8 @@ class TestUnitProtocolParameterDict(TestUnitStringsDict):
                 "set_timeout": 10,
                 "startup": False,
                 "value": {},
-                "visibility": "IMMUTABLE"
+                "visibility": "IMMUTABLE",
+                "range": None,
             },
             "foo": {
                 "direct_access": True,
@@ -172,7 +173,8 @@ class TestUnitProtocolParameterDict(TestUnitStringsDict):
                 "value": {
                     "default": 10
                 },
-                "visibility": "READ_WRITE"
+                "visibility": "READ_WRITE",
+                "range": None,
             },
             "pho": {
                 "direct_access": False,
@@ -180,7 +182,8 @@ class TestUnitProtocolParameterDict(TestUnitStringsDict):
                 "set_timeout": 10,
                 "startup": False,
                 "value": {},
-                "visibility": "IMMUTABLE"
+                "visibility": "IMMUTABLE",
+                "range": None,
             },
             "qut": {
                 "description": "The qut list parameter",
@@ -198,7 +201,8 @@ class TestUnitProtocolParameterDict(TestUnitStringsDict):
                     "type": "list",
                     "units": "nano-qutters"
                 },
-                "visibility": "DIRECT_ACCESS"
+                "visibility": "DIRECT_ACCESS",
+                "range": None,
             },
             "qux": {
                 "direct_access": False,
@@ -206,7 +210,8 @@ class TestUnitProtocolParameterDict(TestUnitStringsDict):
                 "set_timeout": 10,
                 "startup": False,
                 "value": {},
-                "visibility": "READ_ONLY"
+                "visibility": "READ_ONLY",
+                "range": None,
             }
         }
 
@@ -223,10 +228,10 @@ class TestUnitProtocolParameterDict(TestUnitStringsDict):
             description: "ExtraFileDesc",
             units: "ExtraFileUnits",
             value_description: "ExtraFileValueDesc",
-            type: "ExtraFileType"    
+            type: "ExtraFileType"
             }
           }
-          
+
         commands: {
           dummy: stuff
           }
@@ -242,7 +247,7 @@ class TestUnitProtocolParameterDict(TestUnitStringsDict):
         self.assert_("foo" in result)
         self.assert_("baz" in result)
         self.assert_("qut" in result)
-        
+
     def test_get_startup_list(self):
         """
         Test to see we can get a list of direct access parameters
@@ -252,7 +257,7 @@ class TestUnitProtocolParameterDict(TestUnitStringsDict):
         self.assertEquals(len(result), 2)
         self.assert_("foo" in result)
         self.assert_("bar" in result)
-        
+
     def test_set_default(self):
         """
         Test setting a default value
@@ -265,9 +270,9 @@ class TestUnitProtocolParameterDict(TestUnitStringsDict):
         self.assertEquals(self.param_dict.get("foo"), 1000)
         self.param_dict.set_default("foo")
         self.assertEquals(self.param_dict.get("foo"), 10)
-        
+
         self.assertRaises(ValueError, self.param_dict.set_default, "qux")
-        
+
     def test_update_many(self):
         """
         Test updating of multiple variables from the same input
@@ -304,13 +309,13 @@ bar=200, baz=300
 
         # Now let's only have it update 1 parameter with a name
         sample_input = "foo=200, bar=300"
-        self.assertTrue(self.param_dict.update(sample_input, target_params = "foo"))
+        self.assertTrue(self.param_dict.update(sample_input, target_params="foo"))
         self.assertEquals(self.param_dict.get("foo"), 200)
         self.assertEquals(self.param_dict.get("bar"), 200)
 
         # Now let's only have it update 1 parameter using a list
         sample_input = "foo=300, bar=400"
-        self.assertTrue(self.param_dict.update(sample_input, target_params = ["foo"]))
+        self.assertTrue(self.param_dict.update(sample_input, target_params=["foo"]))
         self.assertEquals(self.param_dict.get("foo"), 300)
         self.assertEquals(self.param_dict.get("bar"), 200)
 
@@ -334,43 +339,43 @@ bar=200, baz=300
         lst = self.param_dict.get_visibility_list(ParameterDictVisibility.IMMUTABLE)
         lst.sort()
         self.assertEquals(lst, ["dil", "pho"])
-        
+
     def test_function_values(self):
         """
         Make sure we can add and update values with functions instead of patterns
         """
 
         self.param_dict.add_parameter(
-            FunctionParameter("fn_foo",
-                              self.pick_byte2,
-                              lambda x : str(x),
-                              direct_access=True,
-                              startup_param=True,
-                              value=1,
-                              visibility=ParameterDictVisibility.READ_WRITE)
-            )
+                FunctionParameter("fn_foo",
+                                  self.pick_byte2,
+                                  lambda x: str(x),
+                                  direct_access=True,
+                                  startup_param=True,
+                                  value=1,
+                                  visibility=ParameterDictVisibility.READ_WRITE)
+        )
         self.param_dict.add_parameter(
-            FunctionParameter("fn_bar",
-                              lambda x : bool(x&2), # bit map example
-                              lambda x : str(x),
-                              direct_access=True,
-                              startup_param=True,
-                              value=False,
-                              visibility=ParameterDictVisibility.READ_WRITE)
-            )
-        
+                FunctionParameter("fn_bar",
+                                  lambda x: bool(x & 2),  # bit map example
+                                  lambda x: str(x),
+                                  direct_access=True,
+                                  startup_param=True,
+                                  value=False,
+                                  visibility=ParameterDictVisibility.READ_WRITE)
+        )
+
         # check defaults just to be safe
         val = self.param_dict.get("fn_foo")
         self.assertEqual(val, 1)
         val = self.param_dict.get("fn_bar")
         self.assertEqual(val, False)
-        
-        result = self.param_dict.update(1005) # just change first in list
+
+        self.param_dict.update(1005)  # just change first in list
         val = self.param_dict.get("fn_foo")
         self.assertEqual(val, 3)
         val = self.param_dict.get("fn_bar")
         self.assertEqual(val, False)
-        
+
         # fn_bar does not get updated here
         result = self.param_dict.update_many(1205)
         self.assertEqual(result['fn_foo'], True)
@@ -379,53 +384,53 @@ bar=200, baz=300
         self.assertEqual(val, 4)
         val = self.param_dict.get("fn_bar")
         self.assertEqual(val, False)
-        
+
         # both are updated now
         result = self.param_dict.update_many(6)
         self.assertEqual(result['fn_foo'], True)
         self.assertEqual(result['fn_bar'], True)
         self.assertEqual(len(result), 2)
-        
+
         val = self.param_dict.get("fn_foo")
         self.assertEqual(val, 0)
         val = self.param_dict.get("fn_bar")
         self.assertEqual(val, True)
-        
+
     def test_mixed_pdv_types(self):
         """ Verify we can add different types of PDVs in one container """
         self.param_dict.add_parameter(
-            FunctionParameter("fn_foo",
-                              self.pick_byte2,
-                              lambda x : str(x),
-                              direct_access=True,
-                              startup_param=True,
-                              value=1,
-                              visibility=ParameterDictVisibility.READ_WRITE)
-            )
+                FunctionParameter("fn_foo",
+                                  self.pick_byte2,
+                                  lambda x: str(x),
+                                  direct_access=True,
+                                  startup_param=True,
+                                  value=1,
+                                  visibility=ParameterDictVisibility.READ_WRITE)
+        )
         self.param_dict.add_parameter(
-            RegexParameter("foo", r'.*foo=(\d+).*',
-                           lambda match : int(match.group(1)),
-                           lambda x : str(x),
-                           direct_access=True,
-                           startup_param=True,
-                           value=10,
-                           visibility=ParameterDictVisibility.READ_WRITE)
-            )
+                RegexParameter("foo", r'.*foo=(\d+).*',
+                               lambda match: int(match.group(1)),
+                               lambda x: str(x),
+                               direct_access=True,
+                               startup_param=True,
+                               value=10,
+                               visibility=ParameterDictVisibility.READ_WRITE)
+        )
         self.param_dict.add("bar", r'.*bar=(\d+).*',
-                             lambda match : int(match.group(1)),
-                             lambda x : str(x),
-                             direct_access=False,
-                             startup_param=True,
-                             value=15,
-                             visibility=ParameterDictVisibility.READ_WRITE)
-        
+                            lambda match: int(match.group(1)),
+                            lambda x: str(x),
+                            direct_access=False,
+                            startup_param=True,
+                            value=15,
+                            visibility=ParameterDictVisibility.READ_WRITE)
+
         self.assertEqual(self.param_dict.get("fn_foo"), 1)
         self.assertEqual(self.param_dict.get("foo"), 10)
         self.assertEqual(self.param_dict.get("bar"), 15)
-        
+
     def test_base_update(self):
         pdv = Parameter("foo",
-                        lambda x : str(x),
+                        lambda x: str(x),
                         value=12)
         self.assertEqual(pdv.get_value(), 12)
         result = pdv.update(1)
@@ -436,12 +441,12 @@ bar=200, baz=300
         result = pdv.update("foo=1")
         self.assertEqual(result, True)
         self.assertEqual(pdv.get_value(), "foo=1")
-        
+
     def test_regex_val(self):
         pdv = RegexParameter("foo",
                              r'.*foo=(\d+).*',
-                             lambda match : int(match.group(1)),
-                             lambda x : str(x),
+                             lambda match: int(match.group(1)),
+                             lambda x: str(x),
                              value=12)
         self.assertEqual(pdv.get_value(), 12)
         result = pdv.update(1)
@@ -450,25 +455,25 @@ bar=200, baz=300
         result = pdv.update("foo=1")
         self.assertEqual(result, True)
         self.assertEqual(pdv.get_value(), 1)
-        
+
     def test_function_val(self):
         pdv = FunctionParameter("foo",
                                 self.pick_byte2,
-                                lambda x : str(x),
+                                lambda x: str(x),
                                 value=12)
         self.assertEqual(pdv.get_value(), 12)
         self.assertRaises(TypeError, pdv.update(1))
         result = pdv.update("1205")
         self.assertEqual(pdv.get_value(), 4)
         self.assertEqual(result, True)
-        
+
     def test_set_init_value(self):
         result = self.param_dict.get("foo")
-        self.assertEqual(result, None)        
+        self.assertEqual(result, None)
         self.param_dict.set_init_value("foo", 42)
         result = self.param_dict.get_init_value("foo")
         self.assertEqual(result, 42)
-        
+
     def test_schema_generation(self):
         self.maxDiff = None
         result = self.param_dict.generate_dict()
@@ -507,19 +512,19 @@ bar=200, baz=300
                           self.param_dict.get_direct_access_list)
         self.assertRaises(InstrumentParameterException,
                           self.param_dict.is_startup_param, "foo")
-    
+
     def test_set(self):
         """
         Test a simple set of the parameter. Make sure the right values get
         called and the correct exceptions are raised.
         """
         new_param = FunctionParameter("foo",
-                        self.pick_byte2,
-                        lambda x : str(x),
-                        direct_access=True,
-                        startup_param=True,
-                        value=1000,
-                        visibility=ParameterDictVisibility.READ_WRITE)
+                                      self.pick_byte2,
+                                      lambda x: str(x),
+                                      direct_access=True,
+                                      startup_param=True,
+                                      value=1000,
+                                      visibility=ParameterDictVisibility.READ_WRITE)
         self.assertEquals(new_param.get_value(), 1000)
         self.assertEquals(self.param_dict.get("foo"), None)
         # overwrites existing param
@@ -527,24 +532,24 @@ bar=200, baz=300
         self.assertEquals(self.param_dict.get("foo"), 1000)
         self.param_dict.set_value("foo", 2000)
         self.assertEquals(self.param_dict.get("foo"), 2000)
-        
+
     def test_invalid_type(self):
         self.assertRaises(InstrumentParameterException,
                           FunctionParameter,
-                              "fn_bar",
-                              lambda x : bool(x&2), # bit map example
-                              lambda x : str(x),
-                              direct_access=True,
-                              startup_param=True,
-                              value=False,
-                              type = "bad_type",
-                              visibility=ParameterDictVisibility.READ_WRITE)
+                          "fn_bar",
+                          lambda x: bool(x & 2),  # bit map example
+                          lambda x: str(x),
+                          direct_access=True,
+                          startup_param=True,
+                          value=False,
+                          type="bad_type",
+                          visibility=ParameterDictVisibility.READ_WRITE)
 
     def test_get(self):
         """
         test getting values with expiration
         """
-        #from mi.core.exceptions import InstrumentParameterExpirationException
+        # from mi.core.exceptions import InstrumentParameterExpirationException
         pd = ProtocolParameterDict()
 
         # No expiration, should work just fine
@@ -586,44 +591,44 @@ bar=200, baz=300
         # Fail because data is expired (simulated three seconds from now)
         with self.assertRaises(InstrumentParameterExpirationException):
             pd.get('lateexp', futuretime)
-    
+
     def test_regex_flags(self):
         pdv = RegexParameter("foo",
                              r'.+foo=(\d+).+',
-                             lambda match : int(match.group(1)),
-                             lambda x : str(x),
+                             lambda match: int(match.group(1)),
+                             lambda x: str(x),
                              regex_flags=re.DOTALL,
                              value=12)
         # Assert something good with dotall update()
         self.assertTrue(pdv)
         pdv.update("\n\nfoo=1212\n\n")
         self.assertEqual(pdv.get_value(), 1212)
-        
+
         # negative test with no regex_flags
         pdv = RegexParameter("foo",
                              r'.+foo=(\d+).+',
-                             lambda match : int(match.group(1)),
-                             lambda x : str(x),
+                             lambda match: int(match.group(1)),
+                             lambda x: str(x),
                              value=12)
         # Assert something good with dotall update()
         self.assertTrue(pdv)
         pdv.update("\n\nfoo=1212\n\n")
         self.assertEqual(pdv.get_value(), 12)
-        
+
         self.assertRaises(TypeError,
                           RegexParameter,
                           "foo",
                           r'.*foo=(\d+).*',
-                          lambda match : int(match.group(1)),
-                          lambda x : str(x),
+                          lambda match: int(match.group(1)),
+                          lambda x: str(x),
                           regex_flags="bad flag",
                           value=12)
-            
+
     def test_format_current(self):
         self.param_dict.add("test_format", r'.*foo=(\d+).*',
-                             lambda match : int(match.group(1)),
-                             lambda x : x+5,
-                             value=10)
+                            lambda match: int(match.group(1)),
+                            lambda x: x + 5,
+                            value=10)
         self.assertEqual(self.param_dict.format("test_format", 20), 25)
         self.assertEqual(self.param_dict.format("test_format"), 15)
         self.assertRaises(KeyError,
@@ -638,7 +643,7 @@ bar=200, baz=300
         self.assertEqual(new_dict["qut"][ParameterDictKey.VALUE][ParameterDictKey.DESCRIPTION], "QutFileValueDesc")
         self.assertEqual(new_dict["qut"][ParameterDictKey.VALUE][ParameterDictKey.TYPE], "QutFileType")
         # Should come from hard code
-        #self.assertEqual(new_dict["qut"][ParameterDictKey.DISPLAY_NAME], "QutFileName") 
+        # self.assertEqual(new_dict["qut"][ParameterDictKey.DISPLAY_NAME], "QutFileName")
 
         # from base hard code
         new_dict = self.param_dict.generate_dict()
@@ -651,5 +656,5 @@ bar=200, baz=300
         self.assertEqual(new_dict["baz"][ParameterDictKey.VALUE][ParameterDictKey.TYPE],
                          ParameterDictType.INT)
         self.assertEqual(new_dict["baz"][ParameterDictKey.DISPLAY_NAME], "Baz")
-        
+
         self.assertTrue('extra_param' not in new_dict)
