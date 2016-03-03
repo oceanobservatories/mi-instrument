@@ -255,7 +255,7 @@ class CommandHandler(threading.Thread):
                 msg = json.loads(request)
                 log.info('received message: %r', msg)
                 reply = self.cmd_driver(msg)
-                sock.send_multipart([address, '', json.dumps(reply)])
+                sock.send_multipart([address, '', json.dumps(reply, ensure_ascii=False)])
                 # sock.send_json(reply)
             except zmq.ContextTerminated:
                 log.info('ZMQ Context terminated, exiting worker thread')
