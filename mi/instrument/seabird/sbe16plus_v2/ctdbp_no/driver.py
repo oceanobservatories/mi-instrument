@@ -725,6 +725,7 @@ class SBE16NOProtocol(SBE19Protocol):
                              str,
                              type=ParameterDictType.INT,
                              display_name="Pressure Sensor Type",
+                             range={1: 'Strain gauge', 3: 'Quartz with temp comp'},
                              startup_param=True,
                              direct_access=True,
                              default_value=3,
