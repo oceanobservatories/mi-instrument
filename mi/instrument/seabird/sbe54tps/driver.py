@@ -1006,7 +1006,7 @@ class Protocol(SeaBirdProtocol):
         """
         Populate the command dictionary with command.
         """
-        self._cmd_dict.add(Capability.ACQUIRE_STATUS, display_name="Acquire Status")
+        self._cmd_dict.add(Capability.ACQUIRE_STATUS, timeout=TIMEOUT, display_name="Acquire Status")
         self._cmd_dict.add(Capability.CLOCK_SYNC, display_name="Synchronize Clock")
         self._cmd_dict.add(Capability.SAMPLE_REFERENCE_OSCILLATOR, display_name="Sample Reference Oscillator")
         self._cmd_dict.add(Capability.START_AUTOSAMPLE, display_name="Start Autosample")
@@ -1053,14 +1053,19 @@ class Protocol(SeaBirdProtocol):
         @return: next_state, (next_state, result)
         """
         timeout = kwargs.get('timeout', TIMEOUT)
+        particle_timeout = time.time() + TIMEOUT
 
         next_state = None
-        result1 = self._do_cmd_resp(InstrumentCmds.GET_CONFIGURATION_DATA, timeout=timeout)
-        result2 = self._do_cmd_resp(InstrumentCmds.GET_STATUS_DATA, timeout=timeout)
-        result3 = self._do_cmd_resp(InstrumentCmds.GET_EVENT_COUNTER_DATA, timeout=timeout)
-        result4 = self._do_cmd_resp(InstrumentCmds.GET_HARDWARE_DATA, timeout=timeout)
+        self._do_cmd_resp(InstrumentCmds.GET_CONFIGURATION_DATA, timeout=timeout)
+        self._do_cmd_resp(InstrumentCmds.GET_STATUS_DATA, timeout=timeout)
+        self._do_cmd_resp(InstrumentCmds.GET_EVENT_COUNTER_DATA, timeout=timeout)
+        self._do_cmd_resp(InstrumentCmds.GET_HARDWARE_DATA, timeout=timeout)
 
-        result = result1 + result2 + result3 + result4
+        result = self.wait_for_particles([DataParticleType.PREST_CONFIGURATION_DATA,
+                                          DataParticleType.PREST_DEVICE_STATUS,
+                                          DataParticleType.PREST_EVENT_COUNTER,
+                                          DataParticleType.PREST_HARDWARE_DATA],
+                                         timeout=particle_timeout)
 
         return next_state, (next_state, result)
 
@@ -1195,17 +1200,22 @@ class Protocol(SeaBirdProtocol):
         @return: next state, (next state, result)
         """
 
+        particle_timeout = time.time() + TIMEOUT
+
         try:
             # Switch to command mode
             self._stop_logging()
 
             timeout = kwargs.get('timeout', TIMEOUT)
-            result1 = self._do_cmd_resp(InstrumentCmds.GET_CONFIGURATION_DATA, timeout=timeout)
-            result2 = self._do_cmd_resp(InstrumentCmds.GET_STATUS_DATA, timeout=timeout)
-            result3 = self._do_cmd_resp(InstrumentCmds.GET_EVENT_COUNTER_DATA, timeout=timeout)
-            result4 = self._do_cmd_resp(InstrumentCmds.GET_HARDWARE_DATA, timeout=timeout)
+            self._do_cmd_resp(InstrumentCmds.GET_CONFIGURATION_DATA, timeout=timeout)
+            self._do_cmd_resp(InstrumentCmds.GET_STATUS_DATA, timeout=timeout)
+            self._do_cmd_resp(InstrumentCmds.GET_EVENT_COUNTER_DATA, timeout=timeout)
+            self._do_cmd_resp(InstrumentCmds.GET_HARDWARE_DATA, timeout=timeout)
 
-            result = result1 + result2 + result3 + result4
+            result = self.wait_for_particles([DataParticleType.PREST_CONFIGURATION_DATA,
+                                          DataParticleType.PREST_DEVICE_STATUS,
+                                          DataParticleType.PREST_EVENT_COUNTER,
+                                          DataParticleType.PREST_HARDWARE_DATA], timeout=particle_timeout)
 
         finally:
             # Switch back to streaming
