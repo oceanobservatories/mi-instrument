@@ -13,7 +13,6 @@ __license__ = 'Apache 2.0'
 
 
 import time
-import calendar
 import re
 import ntplib
 import struct
@@ -25,7 +24,6 @@ from mi.core.instrument.instrument_driver import DriverParameter
 
 from mi.core.instrument.instrument_protocol import CommandResponseInstrumentProtocol, InitializationType
 from mi.core.instrument.instrument_driver import SingleConnectionInstrumentDriver
-from mi.core.instrument.instrument_driver import DriverConnectionState
 from mi.core.instrument.instrument_fsm import InstrumentFSM
 from mi.core.instrument.instrument_driver import DriverProtocolState
 from mi.core.instrument.instrument_driver import DriverEvent
@@ -38,7 +36,6 @@ from mi.core.instrument.protocol_param_dict import ParameterDictVisibility
 from mi.core.instrument.protocol_param_dict import ProtocolParameterDict
 from mi.core.instrument.chunker import StringChunker
 from mi.core.instrument.data_particle import DataParticle, DataParticleKey, CommonDataParticleType
-from mi.core.instrument.instrument_driver import ResourceAgentState
 
 from mi.core.log import get_logger, get_logging_metaclass
 log = get_logger()
@@ -965,14 +962,15 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
             status_params[name] = self._param_dict.get(name)
             log.debug("Add parameter %s: %r", name, status_params[name])
 
-        # Create status data particle, but pass in a reference to the dictionary just created as first parameter instead of the 'line'.
-        # The status data particle class will use the 'raw_data' variable as a reference to a dictionary object to get
-        # access to parameter values (see the Mavs4EngineeringDataParticle class).
+        # Create status data particle, but pass in a reference to the dictionary just created as first parameter
+        # instead of the 'line'. The status data particle class will use the 'raw_data' variable as a reference to a
+        # dictionary object to get access to parameter values (see the Mavs4EngineeringDataParticle class).
         particle = XR_420EngineeringDataParticle(status_params, preferred_timestamp=DataParticleKey.DRIVER_TIMESTAMP)
         status = particle.generate()
 
         self._driver_event(DriverAsyncEvent.SAMPLE, status)
-        return None, (None, None)
+
+        return None, (None, [status])
 
     ########################################################################
     # Private helpers.
