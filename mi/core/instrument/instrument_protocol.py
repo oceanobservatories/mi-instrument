@@ -382,6 +382,7 @@ class InstrumentProtocol(object):
         @param event: event to raise when the scheduler is triggered
         @raise KeyError if we try to add a job twice
         """
+
         # Create a callback for the scheduler to raise an event
         def event_callback(self, event):
             log.info("driver job triggered, raise event: %s" % event)
@@ -1130,7 +1131,7 @@ class CommandResponseInstrumentProtocol(InstrumentProtocol):
         if self._driver_event:
             self._driver_event(DriverAsyncEvent.SAMPLE, particle.generate())
 
-    def wait_for_particles(self, particle_classes, timeout):
+    def wait_for_particles(self, particle_classes, timeout=0):
         """
         Wait for a set of particles to get generated within the specified timeout.
         Return a list of particles
@@ -1139,20 +1140,24 @@ class CommandResponseInstrumentProtocol(InstrumentProtocol):
         """
         particles = []
 
-        while time.time() < timeout:
+        while True:
 
-            for particle_class in particle_classes:
+            for particle_class in particle_classes[:]:
                 if particle_class in self._particle_dict:
                     log.debug("Particle found for %s" % particle_class)
                     particle = self._particle_dict.pop(particle_class)
+                    particle_classes.remove(particle_class)
                     particles.append(particle)
 
-            if len(particles) == len(particle_classes):
+            if not particle_classes:
                 return particles
 
-            time.sleep(1)
+            if time.time() > timeout:
+                break
 
-        log.debug("Timeout Expired, no Particles found!")
+            time.sleep(0.1)
+
+        log.debug("Timeout expired - unable to find all requested particles.")
         return particles
 
     def add_to_buffer(self, data):
