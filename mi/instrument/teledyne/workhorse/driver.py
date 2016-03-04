@@ -1312,8 +1312,7 @@ class WorkhorseProtocol(CommandResponseInstrumentProtocol):
         result = self.wait_for_particles([WorkhorseDataParticleType.ADCP_SYSTEM_CONFIGURATION,
                                           WorkhorseDataParticleType.ADCP_COMPASS_CALIBRATION,
                                           WorkhorseDataParticleType.ADCP_ANCILLARY_SYSTEM_DATA,
-                                          WorkhorseDataParticleType.ADCP_TRANSMIT_PATH],
-                                         time.time() + 1)
+                                          WorkhorseDataParticleType.ADCP_TRANSMIT_PATH])
 
         return next_state, (next_state, result)
 
