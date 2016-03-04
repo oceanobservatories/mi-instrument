@@ -1867,6 +1867,7 @@ class NortekInstrumentProtocol(CommandResponseInstrumentProtocol):
                              display_name="Coordinate System",
                              description='Coordinate System (0:ENU | 1:XYZ | 2:Beam)',
                              default_value=2,
+                             range={0:'ENU', 1:'XYZ', 2:'Beam'},
                              startup_param=True,
                              direct_access=True)
         self._param_dict.add(Parameter.NUMBER_BINS,
@@ -1916,6 +1917,7 @@ class NortekInstrumentProtocol(CommandResponseInstrumentProtocol):
                              display_name="Wrap Mode",
                              description='Recorder wrap mode (0:no wrap | 1:wrap when full)',
                              default_value=0,
+                             range={0:'No wrap', 1:'Wrap when full'},
                              startup_param=True,
                              direct_access=True)
         self._param_dict.add(Parameter.CLOCK_DEPLOY,
@@ -1997,6 +1999,7 @@ class NortekInstrumentProtocol(CommandResponseInstrumentProtocol):
                              lambda string: string,
                              regex_flags=re.DOTALL,
                              type=ParameterDictType.STRING,
+                             range=(-4,40),
                              visibility=ParameterDictVisibility.READ_ONLY,
                              display_name="Velocity Adj Table",
                              description="Scaling factors to account for the speed of sound variation as a function of "
