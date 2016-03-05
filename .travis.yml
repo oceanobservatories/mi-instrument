@@ -26,6 +26,5 @@ before_script:
 
 # command to run tests
 script:
-#  - nosetests -a UNIT_ANTELOPE
-  - nosetests -a UNIT
+  - nosetests -a UNIT -e antelope
 

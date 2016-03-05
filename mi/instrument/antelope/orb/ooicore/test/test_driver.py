@@ -203,7 +203,7 @@ class AntelopeTestMixinSub(DriverTestMixin):
 #   driver process.                                                           #
 ###############################################################################
 # noinspection PyProtectedMember,PyUnusedLocal,PyUnresolvedReferences
-@attr('UNIT_ANTELOPE', group='mi')
+@attr('UNIT', group='mi')
 class DriverUnitTest(InstrumentDriverUnitTestCase, AntelopeTestMixinSub):
     def setUp(self):
         InstrumentDriverUnitTestCase.setUp(self)

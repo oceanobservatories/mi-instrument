@@ -23,7 +23,7 @@ late_packet_values = PacketTuple('OO', 'XX', 'AXAS1', 'EHE', 100.0, 200.0, 1.0, 
 overlapping_packet_values = PacketTuple('OO', 'XX', 'AXAS1', 'EHE', 99.90, 200.0, 1.0, 0.0, 200, [5] * 200)
 
 
-@attr('UNIT_ANTELOPE', group='mi')
+@attr('UNIT', group='mi')
 class PacketLogUnitTest(TestCase):
     def test_header_create(self):
         header = PacketLogHeader(*header_values)
