@@ -607,6 +607,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                              type=ParameterDictType.INT,
                              startup_param=True,
                              display_name='Data Telegram Interval in Sample',
+                             range=(1, 30000),
                              units=Prefixes.MILLI + Units.SECOND,
                              description='The interval between successive MCU data telegrams' +
                                          ' while in the SAMPLE/CAL state: (1 - 30000)')
@@ -617,6 +618,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                              type=ParameterDictType.INT,
                              startup_param=True,
                              display_name='Sample Cycle Time',
+                             range=(1, 99),
                              units=Units.MINUTE,
                              description='The length of each portion of the sample cycle: (1 - 99)')
         self._param_dict.add(Parameter.ONE_MINUTE,
@@ -628,6 +630,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                              startup_param=True,
                              default_value=60000,
                              display_name='Length of One Minute',
+                             range=(1-99999),
                              units=Prefixes.MILLI + Units.SECOND,
                              description='MCU timing constant representing the number of seconds per minute: (1 - 99999)')
         self._param_dict.add(Parameter.ERROR_REASON,

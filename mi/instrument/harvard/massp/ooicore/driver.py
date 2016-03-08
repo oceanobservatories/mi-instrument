@@ -506,6 +506,7 @@ class Protocol(InstrumentProtocol):
                              type=ParameterDictType.INT,
                              display_name='Autosample Interval',
                              description='Interval between sample starts during autosample state',
+                             range=(7200, 86400),
                              units=Units.SECOND)
 
     def _build_command_dict(self):
