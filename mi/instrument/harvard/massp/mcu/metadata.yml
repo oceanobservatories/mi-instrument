@@ -5,4 +5,4 @@ driver_metadata:
   driver_name: mcu
   email: petercable@gmail.com
   release_notes: MCU Driver for the MASSP in-situ mass spectrometer
-  version: 0.0.2
+  version: 0.0.3

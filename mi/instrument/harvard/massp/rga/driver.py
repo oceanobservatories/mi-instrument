@@ -177,11 +177,14 @@ class ParameterConstraints(BaseEnum):
     IE = (int, 0, 1)
     VF = (int, 0, 150)
     FL = (float, 0, 3.5)
+    FL_ACTUAL = (float, 0, 3.5)
     NF = (int, 0, 7)
     SA = (int, 10, 25)
     MI = (int, 1, 200)
     MF = (int, 1, 200)
     HV = (int, 0, 2490)
+    AP = (int, 0, (1 << 16)-1)
+    ER = (int, 0, (1 << 8)-1)
 
 
 class Prompt(BaseEnum):
