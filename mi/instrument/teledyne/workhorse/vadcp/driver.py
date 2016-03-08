@@ -552,7 +552,7 @@ class Protocol(WorkhorseProtocol):
                                  parameter_extractors.get(param),
                                  parameter_formatters.get(param),
                                  type=parameter_types.get(param),
-                                 display_name=parameter_names.get(param),
+                                 display_name=parameter_names.get(param) + ' (5th beam)',
                                  value_description=parameter_descriptions.get(param),
                                  range=parameter_ranges.get(param),
                                  startup_param=parameter_startup.get(param, False),
