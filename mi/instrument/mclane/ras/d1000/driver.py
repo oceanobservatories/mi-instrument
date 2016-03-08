@@ -708,6 +708,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                              type=ParameterDictType.INT,
                              startup_param=True,
                              display_name='D1000 Sample Periodicity',
+                             range=(1, 3600),
                              description='Periodicity of D1000 temperature sample in autosample mode: (1-3600)',
                              default_value=DEFAULT_SAMPLE_RATE,
                              units=Units.SECOND,
@@ -716,99 +717,125 @@ class Protocol(CommandResponseInstrumentProtocol):
                               int,
                               type=ParameterDictType.INT,
                               display_name='Base Channel Address',
-                              description='Hex value of ASCII character to ID unit, e.g. 31 is the ASCII code for 1: (30-31, 41-5A, 61-7A)',
+                              description='Hex value of ASCII character to ID unit, e.g. 31 is the ASCII code for 1:'
+                                          ' (30-31, 41-5A, 61-7A)',
+                              range=(0x30, 0x7A),
                               default_value=0x31)
         self._add_setup_param(Parameter.LINEFEED,
                               bool,
                               type=ParameterDictType.BOOL,
                               display_name='Line Feed Flag',
-                              description='Enable D1000 to generate a linefeed before and after each response: (true | false)',
+                              range={'True': True, 'False': False},
+                              description='Enable D1000 to generate a linefeed before and after each response:'
+                                          ' (true | false)',
                               default_value=False)
         self._add_setup_param(Parameter.PARITY_TYPE,
                               bool,
                               type=ParameterDictType.BOOL,
                               display_name='Parity Type',
+                              range={'Odd': True, 'Even': False},
                               description='Sets the parity: (true:odd | false:even)',
                               default_value=False)
         self._add_setup_param(Parameter.PARITY_ENABLE,
                               bool,
                               type=ParameterDictType.BOOL,
                               display_name='Parity Flag',
-                              description='Enable use of parity bit, a parity error will be issued if detected: (true | false)',
+                              range={'True': True, 'False': False},
+                              description='Enable use of parity bit, a parity error will be issued if detected:'
+                                          ' (true | false)',
                               default_value=False)
         self._add_setup_param(Parameter.EXTENDED_ADDRESSING,
                               bool,
                               type=ParameterDictType.BOOL,
                               display_name='Extended Addressing',
+                              range={'True': True, 'False': False},
                               description='Enable extended addressing: (true | false)',
                               default_value=False)
         self._add_setup_param(Parameter.BAUD_RATE,
                               int,
                               type=ParameterDictType.INT,
                               display_name='Baud Rate',
-                              description='Using ethernet interface in deployed configuration: (300, 600, 1200, 2400, 4800, 9600, 19200, 38400, 57600)',
+                              range={'38400': 0, '19200': 1, '9600': 2, '4800': 3, '2400': 4, '1200': 5, '600': 6,
+                                     '300': 7, '57600': 8},
+                              description='Using ethernet interface in deployed configuration: (300, 600, '
+                                          '1200, 2400, 4800, 9600, 19200, 38400, 57600)',
                               default_value=9600,
                               units=Units.BAUD)
         self._add_setup_param(Parameter.ALARM_ENABLE,
                               bool,
                               type=ParameterDictType.BOOL,
                               display_name='Enable Alarms',
-                              description='Enable alarms to be controlled by the Digital Output (DO) command: (true | false)',
+                              range={'True': True, 'False': False},
+                              description='Enable alarms to be controlled by the Digital Output (DO) command:'
+                                          ' (true | false)',
                               default_value=False)
         self._add_setup_param(Parameter.LOW_ALARM_LATCH,
                               bool,
                               type=ParameterDictType.BOOL,
                               display_name='Low Alarm Latching',
+                              range={'True': True, 'False': False},
                               description='Enable changing the alarm to latching mode: (true | false)',
                               default_value=False)
         self._add_setup_param(Parameter.HIGH_ALARM_LATCH,
                               bool,
                               type=ParameterDictType.BOOL,
                               display_name='High Alarm Latching',
+                              range={'True': True, 'False': False},
                               description='Enable changing the alarm to latching mode: (true | false)',
                               default_value=False)
         self._add_setup_param(Parameter.RTD_4_WIRE,
                               bool,
                               type=ParameterDictType.BOOL,
                               display_name='4 Wire RTD Flag',
-                              description='Represents a physical configuration of the instrument, disabling may cause data to be misaligned: (true | false)',
+                              range={'True': True, 'False': False},
+                              description='Represents a physical configuration of the instrument, '
+                                          'disabling may cause data to be misaligned: (true | false)',
                               default_value=True)
         self._add_setup_param(Parameter.TEMP_UNITS,
                               bool,
                               type=ParameterDictType.BOOL,
                               display_name='Fahrenheit Flag',
+                              range={'Fahrenheit': True, 'Celsius': False},
                               description='Flag to control the temperature format: (true:Fahrenheit | false:Celsius)',
                               default_value=False)
         self._add_setup_param(Parameter.ECHO,
                               bool,
                               type=ParameterDictType.BOOL,
                               display_name='Daisy Chain',
+                              range={'True': True, 'False': False},
                               description='If not set, only 1 out of 3 D1000s will process commands: (true | false)',
                               default_value=True)
         self._add_setup_param(Parameter.COMMUNICATION_DELAY,
                               int,
                               type=ParameterDictType.INT,
                               display_name='Communication Delay',
+                              range=(0, 3),
                               description='The number of delays to add when processing commands: (0-3)',
                               default_value=0)
         self._add_setup_param(Parameter.PRECISION,
                               int,
                               type=ParameterDictType.INT,
                               display_name='Precision',
-                              description='Number of digits the instrument should output for temperature query: (4-7)',
+                              range={'4 digits': 0, '5 digits': 1, '6 digits': 2, '7 digits': 3},
+                              description='Number of digits the instrument should output for temperature query: '
+                                          '(0=4-3=7)',
                               default_value=6)
         self._add_setup_param(Parameter.LARGE_SIGNAL_FILTER_C,
                               float,
                               type=ParameterDictType.FLOAT,
                               display_name='Large Signal Filter Constant',
-                              description='Time to reach 63% of its final value: (0.0, 0.25, 0.5, 1.0, 2.0, 4.0, 8.0, 16.0)',
+                              range={'0': 0, '.25': 1, '.5': 2, '1': 3, '2': 4, '4': 5, '8': 6, '16': 7},
+                              description='Time to reach 63% of its final value: '
+                                          '(0 = 0.0, 1 = 0.25, 2 = 0.5, 3 = 1.0, 4 = 2.0, 5 = 4.0, 6 = 8.0, 7 = 16.0)',
                               default_value=0.0,
                               units=Units.SECOND)
         self._add_setup_param(Parameter.SMALL_SIGNAL_FILTER_C,
                               float,
                               type=ParameterDictType.FLOAT,
                               display_name='Small Signal Filter Constant',
-                              description='Smaller filter constant, should be larger than large filter constant: (0.0, 0.25, 0.5, 1.0, 2.0, 4.0, 8.0, 16.0)',
+                              range={'0': 0, '.25': 1, '.5': 2, '1': 3, '2': 4, '4': 5, '8': 6, '16': 7},
+                              description='Smaller filter constant, should be larger than large filter constant: '
+                                          '(0 = 0.0, 1 = 0.25, 2 = 0.5, 3 = 1.0, 4 = 2.0, 5 = 4.0, 6 = 8.0, 7 = 16.0)',
                               default_value=0.50,
                               units=Units.SECOND)
 
