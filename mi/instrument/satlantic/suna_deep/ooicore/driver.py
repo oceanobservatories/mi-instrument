@@ -295,7 +295,7 @@ class Parameter(DriverParameter):
     TEMP_COMPENSATION = "tempcomp"
     FIT_WAVELENGTH_LOW = "wfit_low"     # read/get only
     FIT_WAVELENGTH_HIGH = "wfit_hgh"    # read/get only
-    #FIT_WAVELENGTH_BOTH = "wfitboth"    # set only DO NOT USE, COMBINE LOW/HIGH FOR EASIER OPERATOR USE
+    FIT_WAVELENGTH_BOTH = "wfitboth"    # set only DO NOT USE, COMBINE LOW/HIGH FOR EASIER OPERATOR USE
     CONCENTRATIONS_IN_FIT = "fitconcs"
     BASELINE_ORDER = "bl_order"
     DARK_CORRECTION_METHOD = "drkcormt"
@@ -1713,10 +1713,12 @@ class Protocol(CommandResponseInstrumentProtocol):
         if not Parameter.has(param):
             raise InstrumentParameterException("%s is not a parameter" % param)
 
-        if param is Parameter.FIT_WAVELENGTH_HIGH:
-            value = self._param_dict.get(Parameter.FIT_WAVELENGTH_LOW) + ',' + value
-        if param is Parameter.FIT_WAVELENGTH_LOW:
-            value = value + ',' + self._param_dict.get(Parameter.FIT_WAVELENGTH_HIGH)
+        if param == Parameter.FIT_WAVELENGTH_HIGH:
+            param = Parameter.FIT_WAVELENGTH_BOTH
+            value = self._param_dict.format(Parameter.FIT_WAVELENGTH_LOW) + ',' + value
+        if param == Parameter.FIT_WAVELENGTH_LOW:
+            param = Parameter.FIT_WAVELENGTH_BOTH
+            value = value + ',' + self._param_dict.format(Parameter.FIT_WAVELENGTH_HIGH)
 
         return "%s %s %s%s" % (InstrumentCommand.SET, param, value, NEWLINE)
 
