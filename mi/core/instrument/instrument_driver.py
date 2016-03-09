@@ -572,12 +572,6 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
         """
         # Forward event and argument to the connection FSM.
         result = self._connection_fsm.on_event(DriverEvent.CONNECT, *args, **kwargs)
-        init_config = {}
-        if len(args) > 0 and isinstance(args[0], dict):
-            init_config = args[0]
-
-        self.set_init_params(init_config)
-        return result
 
     def disconnect(self, *args, **kwargs):
         """
@@ -954,6 +948,10 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
             log.error("Instrument Driver returning to unconfigured state.")
             next_state = DriverConnectionState.UNCONFIGURED
 
+        init_config = {}
+        if len(args) > 0 and isinstance(args[0], dict):
+            init_config = args[0]
+        self.set_init_params(init_config)
         return next_state, result
 
     ########################################################################
