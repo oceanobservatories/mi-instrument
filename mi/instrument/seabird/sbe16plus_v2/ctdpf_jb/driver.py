@@ -46,6 +46,7 @@ MAX_PUMP_DELAY = 600
 MIN_AVG_SAMPLES = 1
 MAX_AVG_SAMPLES = 32767
 
+INT16 = (0, (1 << 16)-1)
 
 class OptodeCommands(Command):
     SEND_OPTODE = 'sendOptode'
@@ -1342,7 +1343,8 @@ class SBE19Protocol(SBE16Protocol):
                              str,
                              type=ParameterDictType.INT,
                              display_name="Scans to Average",
-                             description="Number of samples to average",
+                             description="Number of samples to average (must be even)",
+                             range=INT16,
                              startup_param=True,
                              direct_access=False,
                              default_value=4,
@@ -1353,6 +1355,7 @@ class SBE19Protocol(SBE16Protocol):
                              str,
                              type=ParameterDictType.INT,
                              display_name="Minimum Conductivity Frequency",
+                             range=INT16,
                              description="Minimum conductivity frequency to enable pump turn-on.",
                              startup_param=True,
                              direct_access=False,
@@ -1365,6 +1368,7 @@ class SBE19Protocol(SBE16Protocol):
                              str,
                              type=ParameterDictType.INT,
                              display_name="Pump Delay",
+                             range=INT16,
                              description="Time to wait after minimum conductivity frequency is reached before turning pump on.",
                              startup_param=True,
                              direct_access=False,
@@ -1378,6 +1382,7 @@ class SBE19Protocol(SBE16Protocol):
                              type=ParameterDictType.BOOL,
                              display_name="Auto Run",
                              description="Enable automatic logging when power is applied: (true | false).",
+                             range={True: 'True', False: 'False'},
                              startup_param=True,
                              direct_access=True,
                              default_value=False,
@@ -1389,6 +1394,7 @@ class SBE19Protocol(SBE16Protocol):
                              type=ParameterDictType.BOOL,
                              display_name="Ignore Switch",
                              description="Disable magnetic switch position for starting or stopping logging: (true | false)",
+                             range={True: 'True', False: 'False'},
                              startup_param=True,
                              direct_access=True,
                              default_value=True,
@@ -1400,6 +1406,7 @@ class SBE19Protocol(SBE16Protocol):
                              type=ParameterDictType.BOOL,
                              display_name="Optode Attached",
                              description="Enable optode: (true | false)",
+                             range={True: 'True', False: 'False'},
                              startup_param=True,
                              direct_access=True,
                              default_value=True,
@@ -1411,6 +1418,7 @@ class SBE19Protocol(SBE16Protocol):
                              type=ParameterDictType.BOOL,
                              display_name="Volt 1",
                              description="Enable external voltage 1: (true | false)",
+                             range={True: 'True', False: 'False'},
                              startup_param=True,
                              direct_access=True,
                              default_value=True,
@@ -1425,6 +1433,7 @@ class SBE19Protocol(SBE16Protocol):
                              str,
                              type=ParameterDictType.INT,
                              display_name="Pressure Sensor Type",
+                             range={1: 'Strain Gauge', 3: 'Quartz with Temp Comp'},
                              startup_param=True,
                              direct_access=True,
                              default_value=1,
