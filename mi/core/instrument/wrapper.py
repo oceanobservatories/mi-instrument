@@ -7,6 +7,7 @@
 
 Usage:
     run_driver <module> <driver_class> <refdes> <event_url> <particle_url>
+    run_driver <module> <driver_class> <refdes> <event_url> <particle_url> <config_file>
 
 Options:
     -h, --help          Show this screen.
@@ -21,6 +22,8 @@ import signal
 import threading
 import time
 import traceback
+
+import yaml
 import zmq
 
 from docopt import docopt
@@ -344,7 +347,7 @@ class DriverWrapper(object):
     worker_url = "inproc://workers"
     num_workers = 5
 
-    def __init__(self, driver_module, driver_class, refdes, event_url, particle_url):
+    def __init__(self, driver_module, driver_class, refdes, event_url, particle_url, init_params):
         """
         @param driver_module The python module containing the driver code.
         @param driver_class The python driver class.
@@ -359,6 +362,7 @@ class DriverWrapper(object):
         self.messaging_started = False
         self.int_time = 0
         self.port = None
+        self.init_params = init_params
 
         self.evt_thread = None
         self.load_balancer = None
@@ -375,6 +379,7 @@ class DriverWrapper(object):
         module = importlib.import_module(self.driver_module)
         driver_class = getattr(module, self.driver_class)
         self.driver = driver_class(self.send_event, self.refdes)
+        self.driver.set_init_params(self.init_params)
         log.info('Imported and created driver from module: %r class: %r driver: %r refdes: %r',
                  module, driver_class, self.driver, self.refdes)
         return True
@@ -519,8 +524,14 @@ def main():
     particle_url = options['<particle_url>']
     klass = options.get('<driver_class>')
     refdes = options['<refdes>']
+    config_file = options['<config_file>']
 
-    wrapper = DriverWrapper(module, klass, refdes, event_url, particle_url)
+    if config_file is not None:
+        init_params = yaml.load(open(config_file))
+    else:
+        init_params = {}
+
+    wrapper = DriverWrapper(module, klass, refdes, event_url, particle_url, init_params)
     wrapper.run()
 
 if __name__ == '__main__':
