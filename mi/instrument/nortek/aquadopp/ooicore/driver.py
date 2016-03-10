@@ -22,7 +22,10 @@ from mi.core.common import BaseEnum, Units
 from mi.core.instrument.data_particle import DataParticle, DataParticleKey, DataParticleValue
 
 from mi.instrument.nortek.driver import NortekInstrumentProtocol, InstrumentPrompts, NortekProtocolParameterDict, \
-    validate_checksum
+    InstrumentCmds, validate_checksum
+from mi.instrument.nortek.driver import CLOCK_DATA_REGEX, HARDWARE_CONFIG_DATA_REGEX, ID_BATTERY_DATA_REGEX, \
+    HEAD_CONFIG_DATA_REGEX, USER_CONFIG_DATA_REGEX
+
 from mi.instrument.nortek.driver import Parameter, NortekInstrumentDriver, NEWLINE
 from mi.instrument.nortek.driver import NortekHardwareConfigDataParticle, NortekHeadConfigDataParticle, NortekUserConfigDataParticle\
     , NortekEngBatteryDataParticle, NortekEngIdDataParticle, NortekEngClockDataParticle
@@ -240,6 +243,34 @@ class Protocol(NortekInstrumentProtocol):
         """
         self._extract_sample(AquadoppDwVelocityDataParticle, VELOCITY_DATA_REGEX, structure, timestamp)
         self._got_chunk_base(structure, timestamp)
+
+    def _handler_command_acquire_status(self, *args, **kwargs):
+        """
+        High level command for the operator to get all of the status from the instrument:
+        Battery voltage, clock, hw configuration, head configuration, user configuration, and identification string
+        """
+
+        #ID + BV    Call these commands at the same time, so their responses are combined (non-unique regex workaround)
+        # Issue read id, battery voltage, & clock commands all at the same time (non-unique REGEX workaround).
+        self._do_cmd_resp(InstrumentCmds.READ_ID + InstrumentCmds.READ_BATTERY_VOLTAGE,
+                          response_regex=ID_BATTERY_DATA_REGEX, timeout=30)
+
+        #RC
+        self._do_cmd_resp(InstrumentCmds.READ_REAL_TIME_CLOCK, response_regex=CLOCK_DATA_REGEX)
+
+        #GP
+        self._do_cmd_resp(InstrumentCmds.READ_HW_CONFIGURATION, response_regex=HARDWARE_CONFIG_DATA_REGEX)
+
+        #GH
+        self._do_cmd_resp(InstrumentCmds.READ_HEAD_CONFIGURATION, response_regex=HEAD_CONFIG_DATA_REGEX)
+
+        #GC
+        self._do_cmd_resp(InstrumentCmds.READ_USER_CONFIGURATION, response_regex=USER_CONFIG_DATA_REGEX)
+
+        result = self.wait_for_particles([NortekDataParticleType.CLOCK, NortekDataParticleType.HARDWARE_CONFIG,
+                                         NortekDataParticleType.HEAD_CONFIG, NortekDataParticleType.USER_CONFIG])
+
+        return None, (None, result)
 
     def _build_param_dict(self):
         """
