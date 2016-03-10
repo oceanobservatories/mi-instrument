@@ -489,6 +489,7 @@ class Protocol(NortekInstrumentProtocol):
                              visibility=ParameterDictVisibility.IMMUTABLE,
                              display_name="Blanking Distance",
                              description="Minimum sensing range of the sensor.",
+                             range=(1, 65535),
                              default_value=16,
                              units=Units.COUNTS,
                              startup_param=True,
@@ -555,6 +556,7 @@ class Protocol(NortekInstrumentProtocol):
                              display_name="Average Interval",
                              description="Interval for continuous sampling.",
                              default_value=64,
+                             range=(1,65535),
                              units=Units.SECOND,
                              startup_param=True,
                              direct_access=True)
@@ -569,6 +571,7 @@ class Protocol(NortekInstrumentProtocol):
                              description="Interval for single measurements.",
                              units=Units.SECOND,
                              default_value=600,
+                             range=(0,65535),
                              startup_param=True,
                              direct_access=True)
         self._param_dict.add(Parameter.DIAGNOSTIC_INTERVAL,
