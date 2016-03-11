@@ -49,6 +49,7 @@ from mi.instrument.teledyne.workhorse.driver import ADCP_TRANSMIT_PATH_REGEX_MAT
 from mi.instrument.teledyne.workhorse.driver import WorkhorseEngineeringParameter
 from mi.instrument.teledyne.workhorse.driver import TIMEOUT
 from mi.instrument.teledyne.workhorse.driver import WorkhorseScheduledJob
+from mi.instrument.teledyne.workhorse.particles import VADCPDataParticleType, WorkhorseDataParticleType
 
 log = get_logger()
 
@@ -882,9 +883,19 @@ class Protocol(WorkhorseProtocol):
         @return next_state, (next_state, result) if successful.
         @throws InstrumentProtocolException from _do_cmd_resp.
         """
-        a = super(Protocol, self)._handler_command_acquire_status(connection=SlaveProtocol.FOURBEAM)
-        b = super(Protocol, self)._handler_command_acquire_status(connection=SlaveProtocol.FIFTHBEAM)
-        return None, (None, a[1][1] + b[1][1])
+        super(Protocol, self)._do_acquire_status(connection=SlaveProtocol.FOURBEAM)
+        super(Protocol, self)._do_acquire_status(connection=SlaveProtocol.FIFTHBEAM)
+
+        result = self.wait_for_particles([VADCPDataParticleType.VADCP_SYSTEM_CONFIGURATION_SLAVE,
+                                          VADCPDataParticleType.VADCP_COMPASS_CALIBRATION_SLAVE,
+                                          VADCPDataParticleType.VADCP_ANCILLARY_SYSTEM_DATA_SLAVE,
+                                          VADCPDataParticleType.VADCP_TRANSMIT_PATH_SLAVE,
+                                          WorkhorseDataParticleType.ADCP_SYSTEM_CONFIGURATION,
+                                          WorkhorseDataParticleType.ADCP_COMPASS_CALIBRATION,
+                                          WorkhorseDataParticleType.ADCP_ANCILLARY_SYSTEM_DATA,
+                                          WorkhorseDataParticleType.ADCP_TRANSMIT_PATH])
+
+        return None, (None, result)
 
     def _handler_command_recover_autosample(self):
         log.info('PD0 sample detected in COMMAND, not allowed in VADCP. Sending break')
