@@ -934,7 +934,7 @@ class WorkhorseProtocol(CommandResponseInstrumentProtocol):
                            display_name="Synchronize Clock")
         self._cmd_dict.add(WorkhorseCapability.RUN_TEST,
                            display_name="Run Test 200")
-        self._cmd_dict.add(WorkhorseCapability.ACQUIRE_STATUS,
+        self._cmd_dict.add(WorkhorseCapability.ACQUIRE_STATUS, timeout=30,
                            display_name="Acquire Status")
         self._cmd_dict.add(WorkhorseCapability.DISCOVER,
                            display_name="Discover State")
@@ -1335,6 +1335,13 @@ class WorkhorseProtocol(CommandResponseInstrumentProtocol):
         self._sync_clock(WorkhorseInstrumentCmds.SET, WorkhorseParameter.TIME, timeout)
         return next_state, (next_state, result)
 
+    def _do_acquire_status(self, *args, **kwargs):
+
+        self._do_cmd_resp(WorkhorseInstrumentCmds.GET_SYSTEM_CONFIGURATION, *args, **kwargs),
+        self._do_cmd_resp(WorkhorseInstrumentCmds.OUTPUT_CALIBRATION_DATA, *args, **kwargs),
+        self._do_cmd_resp(WorkhorseInstrumentCmds.OUTPUT_PT2, *args, **kwargs),
+        self._do_cmd_resp(WorkhorseInstrumentCmds.OUTPUT_PT4, *args, **kwargs)
+
     def _handler_command_acquire_status(self, *args, **kwargs):
         """
         execute a get status
@@ -1343,10 +1350,7 @@ class WorkhorseProtocol(CommandResponseInstrumentProtocol):
         """
         next_state = None
 
-        self._do_cmd_resp(WorkhorseInstrumentCmds.GET_SYSTEM_CONFIGURATION, *args, **kwargs),
-        self._do_cmd_resp(WorkhorseInstrumentCmds.OUTPUT_CALIBRATION_DATA, *args, **kwargs),
-        self._do_cmd_resp(WorkhorseInstrumentCmds.OUTPUT_PT2, *args, **kwargs),
-        self._do_cmd_resp(WorkhorseInstrumentCmds.OUTPUT_PT4, *args, **kwargs)
+        self._do_acquire_status(*args, **kwargs)
 
         result = self.wait_for_particles([WorkhorseDataParticleType.ADCP_SYSTEM_CONFIGURATION,
                                           WorkhorseDataParticleType.ADCP_COMPASS_CALIBRATION,
