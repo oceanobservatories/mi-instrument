@@ -538,7 +538,8 @@ class DriverTestMixinSub(DriverTestMixin):
 
             ProtocolState.DIRECT_ACCESS: [ProtocolEvent.STOP_DIRECT,
                                           ProtocolEvent.EXECUTE_DIRECT,
-                                          ProtocolEvent.READ_MODE]
+                                          ProtocolEvent.READ_MODE],
+            ProtocolState.ACQUIRING_SAMPLE: [ProtocolEvent.GET_SAMPLE]
         }
 
     def assert_particle_battery(self, data_particle, verify_values=False):

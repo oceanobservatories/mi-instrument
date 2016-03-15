@@ -200,6 +200,7 @@ class ProtocolState(BaseEnum):
     COMMAND = DriverProtocolState.COMMAND
     AUTOSAMPLE = DriverProtocolState.AUTOSAMPLE
     DIRECT_ACCESS = DriverProtocolState.DIRECT_ACCESS
+    ACQUIRING_SAMPLE = 'DRIVER_STATE_ACQUIRING_SAMPLE'
 
 
 class ProtocolEvent(BaseEnum):
@@ -222,6 +223,7 @@ class ProtocolEvent(BaseEnum):
     CLOCK_SYNC = DriverEvent.CLOCK_SYNC
     SCHEDULED_CLOCK_SYNC = DriverEvent.SCHEDULED_CLOCK_SYNC
     RESET = DriverEvent.RESET
+    GET_SAMPLE = 'DRIVER_EVENT_GET_SAMPLE'
 
     # instrument specific events
     SET_CONFIGURATION = "PROTOCOL_EVENT_CMD_SET_CONFIGURATION"
@@ -1098,6 +1100,11 @@ class NortekInstrumentProtocol(CommandResponseInstrumentProtocol):
                 (ProtocolEvent.SCHEDULED_CLOCK_SYNC, self._handler_autosample_clock_sync),
                 (ProtocolEvent.SCHEDULED_ACQUIRE_STATUS, self._handler_autosample_acquire_status)
             ],
+            ProtocolState.ACQUIRING_SAMPLE: [
+                (ProtocolEvent.ENTER, self._handler_acquiring_sample_enter),
+                (ProtocolEvent.GET_SAMPLE, self._handler_acquiring_sample_do),
+                (ProtocolEvent.EXIT, self._handler_acquiring_sample_exit)
+            ],
             ProtocolState.DIRECT_ACCESS: [
                 (ProtocolEvent.ENTER, self._handler_direct_access_enter),
                 (ProtocolEvent.STOP_DIRECT, self._handler_direct_access_stop_direct),
@@ -1423,10 +1430,9 @@ class NortekInstrumentProtocol(CommandResponseInstrumentProtocol):
         """
         Command the instrument to acquire sample data. Instrument will enter Power Down mode when finished
         """
-        self._do_cmd_resp(InstrumentCmds.ACQUIRE_DATA, expected_prompt=self.velocity_sync_bytes,
-                                   timeout=SAMPLE_TIMEOUT)
+        next_state = ProtocolState.ACQUIRING_SAMPLE
 
-        return None, (None, None)
+        return next_state, (next_state, [])
 
     def _handler_autosample_acquire_status(self, *args, **kwargs):
         """
@@ -1483,7 +1489,8 @@ class NortekInstrumentProtocol(CommandResponseInstrumentProtocol):
         Switch into autosample mode
         @retval (next_state, next_state, result) tuple
         """
-        result = self._do_cmd_resp(InstrumentCmds.START_MEASUREMENT_WITHOUT_RECORDER, timeout=SAMPLE_TIMEOUT, *args, **kwargs)
+        result = self._do_cmd_resp(InstrumentCmds.START_MEASUREMENT_WITHOUT_RECORDER, timeout=SAMPLE_TIMEOUT, *args,
+                                   **kwargs)
         return ProtocolState.AUTOSAMPLE, (ProtocolState.AUTOSAMPLE, result)
 
     def _handler_command_start_direct(self):
@@ -1687,6 +1694,33 @@ class NortekInstrumentProtocol(CommandResponseInstrumentProtocol):
             self._add_scheduler_event(schedule_job, protocol_event)
         except KeyError:
             log.debug("scheduler already exists for '%s'", schedule_job)
+    ########################################################################
+    #  Acquiring Sample handlers.
+    ########################################################################
+
+    def _handler_acquiring_sample_enter(self):
+        """
+        enter the acquiring sample state and
+        :return: new state (new state, particles)
+        """
+
+        self._async_raise_fsm_event(ProtocolEvent.GET_SAMPLE)
+
+    def _handler_acquiring_sample_do(self):
+        """
+        tell the instrument to acquire data, then
+        return back to the command state
+        """
+
+        self._do_cmd_resp(InstrumentCmds.ACQUIRE_DATA, expected_prompt=self.velocity_sync_bytes, timeout=SAMPLE_TIMEOUT)
+
+        next_state = ProtocolState.COMMAND
+        return next_state, (next_state, None)
+
+    def _handler_acquiring_sample_exit(self):
+        """
+        exit acquiring_sample
+        """
 
     ########################################################################
     # Direct access handlers.
