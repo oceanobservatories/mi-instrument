@@ -399,7 +399,7 @@ class SatlanticPARInstrumentProtocol(CommandResponseInstrumentProtocol):
                              init_value=4,
                              display_name='Max Rate',
                              description='Maximum sampling rate (0 (Auto) | 0.125 | 0.5 | 1 | 2 | 4 | 8 | 10 | 12)',
-                             range={0: 'Auto', 0.125: '0.125', 0.5: '0.5', 1: '1', 2: '2', 4: '4', 8: '8', 10: '10',
+                             range={'Auto': 0, 0.125: '0.125', 0.5: '0.5', 1: '1', 2: '2', 4: '4', 8: '8', 10: '10',
                                     12: '12'},
                              type=ParameterDictType.FLOAT,
                              units=Units.HERTZ,
