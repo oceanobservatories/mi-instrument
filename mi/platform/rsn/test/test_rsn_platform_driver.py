@@ -147,7 +147,7 @@ class TestRsnPlatformDriver(MiUnitTestCase, HelperTestMixin):
 
     def test_get_mission_status(self):
         response = self._plat_driver.get_mission_status()
-        self.assertIsInstance(response, str)
+        self.assertIsInstance(response, basestring)
 
     def test_start_profiler_mission(self):
         missions = self._plat_driver.get_available_missions()

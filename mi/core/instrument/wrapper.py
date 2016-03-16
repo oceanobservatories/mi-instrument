@@ -71,21 +71,20 @@ INTERRUPT_REPEAT_INTERVAL = 3
 COMMAND_SEM = threading.BoundedSemaphore(1)
 
 
-def deunicode(msg):
-    if isinstance(msg, list):
-        return [deunicode(x) for x in msg]
-    if isinstance(msg, dict):
-        return {k: deunicode(v) for k, v in msg.iteritems()}
-    if isinstance(msg, unicode):
-        return str(msg)
-    else:
-        return msg
-
-
 def encode_exception(exception):
     if not isinstance(exception, InstrumentException):
         exception = UnexpectedError("%s('%s')" % (exception.__class__.__name__, exception.message))
     return exception.get_triple()
+
+
+def _decode(data):
+    if isinstance(data, (list, tuple)):
+        return [_decode(x) for x in data]
+    if isinstance(data, dict):
+        return {_decode(k): _decode(v) for k, v in data.iteritems()}
+    if isinstance(data, basestring):
+        return data.decode('utf-8', 'ignore')
+    return data
 
 
 def build_event(event_type, value, command=None, args=None, kwargs=None):
@@ -231,10 +230,6 @@ class CommandHandler(threading.Thread):
         This method should NEVER throw an exception, as this will break the event loop
         """
         log.debug('executing command: %s', msg)
-        # some parts of the driver call isinstance(<var>, str)
-        # so we need to convert unicode values back to ascii
-        msg = deunicode(msg)
-
         command = msg.get(EventKeys.COMMAND, '')
         args = msg.get(EventKeys.ARGS, ())
         kwargs = msg.get(EventKeys.KWARGS, {})
@@ -257,9 +252,8 @@ class CommandHandler(threading.Thread):
                 address, _, request = sock.recv_multipart()
                 msg = json.loads(request)
                 log.info('received message: %r', msg)
-                reply = self.cmd_driver(msg)
-                sock.send_multipart([address, '', json.dumps(reply, ensure_ascii=False)])
-                # sock.send_json(reply)
+                reply = _decode(self.cmd_driver(msg))
+                sock.send_multipart([address, '', json.dumps(reply)])
             except zmq.ContextTerminated:
                 log.info('ZMQ Context terminated, exiting worker thread')
                 break

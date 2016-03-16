@@ -67,7 +67,7 @@ class _LoggingConfiguration(object):
             return # no config = no-op
         if isinstance(configuration, dict):
             self._add_dictionary_configuration(configuration, initial)
-        elif isinstance(configuration, str):
+        elif isinstance(configuration, basestring):
             # is a configuration file or resource -- try both
             contents = self._read_file(configuration) or self._read_resource(configuration)
             if not contents:

@@ -1177,7 +1177,7 @@ class ISUS3QualTestCase(InstrumentDriverQualificationTestCase):
             #print "--->> DHE: " + x['value_id'] + " value: " + str(x['value'])
             if x['value_id'] in ['frame_type', 'serial_num']:
                 #print "--->> DHE: " + x['value_id'] + " is of type: " + str((x['value']).__class__.__name__)
-                self.assertTrue(isinstance(x['value'], str))
+                self.assertTrue(isinstance(x['value'], basestring))
             elif x['value_id'] in [
                     'date',
                     'ch001',

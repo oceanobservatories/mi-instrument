@@ -921,7 +921,7 @@ class Sbe16plusIntegrationTestCase(InstrumentDriverIntegrationTestCase, SeaBird1
         self.assert_initialize_driver()
         metadata = self.driver_client.cmd_dvr('get_config_metadata')
         log.debug("Metadata: %s", metadata)
-        self.assertTrue(isinstance(metadata, str))
+        self.assertTrue(isinstance(metadata, basestring))
 
 ###############################################################################
 #                            QUALIFICATION TESTS                              #

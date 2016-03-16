@@ -1595,7 +1595,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
 
                 val = '%03d' % val
 
-            elif isinstance(val, str) or isinstance(val, unicode):
+            elif isinstance(val, basestring):
                 val = ''.join(chr(int(x)) for x in val.split(':'))
 
             else:

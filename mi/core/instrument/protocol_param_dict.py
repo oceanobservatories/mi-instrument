@@ -135,7 +135,7 @@ class ParameterValue(object):
         @raises InstrumentParameterExpirationException when a parameter is
         too old to work with. Original value is in exception.
         """
-        if(baseline_timestamp is None):
+        if baseline_timestamp is None:
             baseline_timestamp = ntplib.system_to_ntp_time(time.time())
 
         if (self.expiration is not None) and  baseline_timestamp > (self.timestamp + self.expiration):
@@ -295,7 +295,7 @@ class RegexParameter(Parameter):
         @param input A string possibly containing the parameter value.
         @retval True if an update was successful, False otherwise.
         """
-        if not (isinstance(input, str)):
+        if not (isinstance(input, basestring)):
             match = self.regex.search(str(input))
         else:
             match = self.regex.search(input)
@@ -721,11 +721,11 @@ class ProtocolParameterDict(InstrumentDict):
         log.debug("update input: %s", input)
         found = False
 
-        if(target_params and isinstance(target_params, str)):
+        if target_params and isinstance(target_params, basestring):
             params = [target_params]
-        elif(target_params and isinstance(target_params, list)):
+        elif target_params and isinstance(target_params, list):
             params = target_params
-        elif(target_params is None):
+        elif target_params is None:
             params = self._param_dict.keys()
         else:
             raise InstrumentParameterException("invalid target_params, must be name or list")
@@ -755,7 +755,7 @@ class ProtocolParameterDict(InstrumentDict):
         """
         config = {}
         for (key, val) in self._param_dict.iteritems():
-            if(self.is_settable_param(key)):
+            if self.is_settable_param(key):
                config[key] = val.get_value()
         return config
 
@@ -934,7 +934,7 @@ class ProtocolParameterDict(InstrumentDict):
                 for (name, value) in param_value.items():
                     if param_name not in self._param_dict:
                         continue
-                    if (name == ParameterDictKey.DESCRIPTION):
+                    if name == ParameterDictKey.DESCRIPTION:
                         self._param_dict[param_name].description.description = value
                     if name == ParameterDictKey.DISPLAY_NAME:
                         self._param_dict[param_name].description.display_name = value

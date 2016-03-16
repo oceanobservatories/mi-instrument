@@ -430,7 +430,7 @@ class Mavs4SampleDataParticleKey(BaseEnum):
 
 class Mavs4SampleDataParticle(DataParticle):
     """
-    Class for parsing sample data into a data particle structure for the MAVS-4 sensor. 
+    Class for parsing sample data into a data particle structure for the MAVS-4 sensor.
     """
     _data_particle_type = DataParticleType.SAMPLE
 
@@ -819,7 +819,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
         self._protocol_fsm.add_handler(ProtocolStates.DIRECT_ACCESS, ProtocolEvent.STOP_DIRECT,
                                        self._handler_direct_access_stop_direct)
 
-        # Set state machine in UNKNOWN state. 
+        # Set state machine in UNKNOWN state.
         self._protocol_fsm.start(ProtocolStates.UNKNOWN)
 
         self._build_command_handlers()
@@ -864,7 +864,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
         """
         The base class got_data has gotten a structure from the chunker.
         Pass it to extract_sample with the appropriate particle objects and
-        REGEXes. 
+        REGEXes.
         """
         log.debug("_got_chunk: detected structure = <%s>", structure)
         self._extract_sample(Mavs4SampleDataParticle, SAMPLE_DATA_REGEX,
@@ -890,7 +890,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
         if expected_prompt is None:
             prompt_list = self._prompts.list()
         else:
-            if isinstance(expected_prompt, str):
+            if isinstance(expected_prompt, basestring):
                 prompt_list = [expected_prompt]
             else:
                 prompt_list = expected_prompt
@@ -910,7 +910,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
     def _navigate_and_execute(self, cmd, **kwargs):
         """
         Navigate to a sub-menu and execute a list of commands instead of just
-        one command as in the base class.  
+        one command as in the base class.
         @param cmds The list of commands to execute.
         @param expected_prompt optional kwarg passed through to do_cmd_resp.
         @param timeout=timeout optional wakeup and command timeout.
@@ -951,7 +951,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
             timeout = directions.get_timeout()
             self._do_cmd_resp(command, expected_prompt=response, timeout=timeout, **kwargs)
 
-        # restore timeout and expected_prompt for the execution of the actual command 
+        # restore timeout and expected_prompt for the execution of the actual command
         kwargs['timeout'] = cmd_timeout
         kwargs['expected_prompt'] = cmd_expected_prompt
         command = cmd
@@ -962,7 +962,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
 
     def _do_cmd_resp(self, cmd, *args, **kwargs):
         """
-        Perform a command-response on the device. 
+        Perform a command-response on the device.
         Send commands a character at a time to spoon feed instrument so it
         doesn't drop characters!
         @param cmd The command to execute.
@@ -1016,7 +1016,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
         Write a float value to string formatted for "generic" set operations.
         Subclasses should overload this as needed for instrument-specific
         formatting.
-        
+
         @param v A float val.
         @retval a float string formatted for "generic" set operations.
         @throws InstrumentParameterException if value is not a float.
@@ -1082,7 +1082,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
             # with the instrument
             raise InstrumentStateException('Unknown state.')
         else:
-            # got root menu prompt, so device is in command mode           
+            # got root menu prompt, so device is in command mode
             next_state = ProtocolStates.COMMAND
 
         return next_state, next_state
@@ -1174,7 +1174,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
         the measurement/samples, measurement frequency, and sample period.
         It also includes a check for validity of the burst and query mode
         relationship.
-        
+
         @param params A dict of parameter names and values
         @retval A list of keys to set. Must have these values in the correct
         order to not hose things later.
@@ -1329,7 +1329,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
 
     def _handler_command_clock_sync(self, *args, **kwargs):
         """
-        sync clock close to a second edge 
+        sync clock close to a second edge
         @retval (next_state, result) tuple, (None, None) if successful.
         """
         self._clock_sync()
@@ -1356,7 +1356,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
         Enter autosample state.
         """
         # Tell driver superclass to send a state change event.
-        # Superclass will query the state.        
+        # Superclass will query the state.
         self._driver_event(DriverAsyncEvent.STATE_CHANGE)
 
     def _handler_autosample_exit(self, *args, **kwargs):
@@ -1406,7 +1406,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
         Enter direct access state.
         """
         # Tell driver superclass to send a state change event.
-        # Superclass will query the state.                
+        # Superclass will query the state.
         self._driver_event(DriverAsyncEvent.STATE_CHANGE)
 
         self._sent_cmds = []
@@ -2237,7 +2237,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            units=Prefixes.MILLI + Units.VOLT))
 
     def _build_command_handlers(self):
-        # these build handlers will be called by the base class during the navigate_and_execute sequence.        
+        # these build handlers will be called by the base class during the navigate_and_execute sequence.
         self._add_build_handler(InstrumentCmds.TILT_OFFSETS, self._build_simple_command)
         self._add_build_handler(InstrumentCmds.TILT_OFFSETS_SET, self._build_simple_command)
         self._add_build_handler(InstrumentCmds.COMPASS_SCALE_FACTORS, self._build_simple_command)
@@ -2324,11 +2324,11 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
 
     def _build_enter_auxiliary_command(self, **kwargs):
         """
-        Build handler for auxiliary enter command 
+        Build handler for auxiliary enter command
         @retval list with:
             The command to be sent to the device
             The response expected from the device
-            The next command to be sent to device 
+            The next command to be sent to device
         """
         name = kwargs.get('name', None)
         if name is None:
@@ -2342,11 +2342,11 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
 
     def _build_set_auxiliary_command(self, **kwargs):
         """
-        Build handler for auxiliary set command 
+        Build handler for auxiliary set command
         @retval list with:
             The command to be sent to the device
             The response expected from the device
-            The next command to be sent to device 
+            The next command to be sent to device
         """
         name = kwargs.get('name', None)
         if name is None:
@@ -2358,11 +2358,11 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
 
     def _build_enter_solid_state_tilt_command(self, **kwargs):
         """
-        Build handler for solid state tilt enter command 
+        Build handler for solid state tilt enter command
         @retval list with:
             The command to be sent to the device
             The response expected from the device
-            The next command to be sent to device 
+            The next command to be sent to device
         """
         name = kwargs.get('name', None)
         if name is None:
@@ -2381,11 +2381,11 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
 
     def _build_enter_thermistor_command(self, **kwargs):
         """
-        Build handler for thermistor enter command 
+        Build handler for thermistor enter command
         @retval list with:
             The command to be sent to the device
             The response expected from the device
-            The next command to be sent to device 
+            The next command to be sent to device
         """
         name = kwargs.get('name', None)
         if name is None:
@@ -2405,11 +2405,11 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
 
     def _build_enter_warm_up_interval_command(self, **kwargs):
         """
-        Build handler for warm up interval enter command 
+        Build handler for warm up interval enter command
         @retval list with:
             The command to be sent to the device
             The response expected from the device
-            The next command to be sent to device 
+            The next command to be sent to device
         """
         name = kwargs.get('name', None)
         if name is None:
@@ -2423,11 +2423,11 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
 
     def _build_enter_log_display_acoustic_axis_velocities_command(self, **kwargs):
         """
-        Build handler for log display acoustic axis velocities enter command 
+        Build handler for log display acoustic axis velocities enter command
         @retval list with:
             The command to be sent to the device
             The response expected from the device
-            The next command to be sent to device (set to None to indicate there isn't one for the NO cmd) 
+            The next command to be sent to device (set to None to indicate there isn't one for the NO cmd)
         """
         cmd = self._param_dict.get(InstrumentParameters.LOG_DISPLAY_ACOUSTIC_AXIS_VELOCITIES)
         log.debug("_build_enter_log_display_acoustic_axis_velocities_command: cmd=%s", cmd)
@@ -2449,7 +2449,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
 
     def _build_simple_sub_parameter_enter_command(self, **kwargs):
         """
-        Build handler for simple sub parameter enter command 
+        Build handler for simple sub parameter enter command
         String cmd constructed by param dict formatting function.
         @retval list with:
             The command to be sent to the device
@@ -2470,11 +2470,11 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
 
     def _build_enter_monitor_command(self, **kwargs):
         """
-        Build handler for monitor enter command 
+        Build handler for monitor enter command
         @retval list with:
             The command to be sent to the device
             The response expected from the device
-            The next command to be sent to device 
+            The next command to be sent to device
         """
         name = kwargs.get('name', None)
         if name is None:
@@ -2490,7 +2490,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
 
     def _build_enter_velocity_frame_command(self, **kwargs):
         """
-        Build handler for velocity frame enter command 
+        Build handler for velocity frame enter command
         @retval list with:
             The command to be sent to the device
             The response expected from the device
@@ -2511,11 +2511,11 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
 
     def _build_set_note_command(self, **kwargs):
         """
-        Build handler for note set command 
+        Build handler for note set command
         @retval list with:
             The command to be sent to the device
             The response expected from the device
-            The next command to be sent to device 
+            The next command to be sent to device
         """
         name = kwargs.get('name', None)
         if name is None:
@@ -2526,7 +2526,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
 
     def _build_simple_enter_command(self, **kwargs):
         """
-        Build handler for simple enter command 
+        Build handler for simple enter command
         String cmd constructed by param dict formatting function.
         @retval list with:
             The command to be sent to the device
@@ -2550,7 +2550,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
 
     def _build_simple_command(self, **kwargs):
         """
-        Build handler for simple set command 
+        Build handler for simple set command
         @retval list with:
             The command to be sent to the device
             The response expected from the device
@@ -2726,11 +2726,11 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
 
     def _get_prompt(self, timeout=8, delay=4):
         """
-        _wakeup is replaced by this method for this instrument to search for 
-        prompt strings at other than just the end of the line.  There is no 
+        _wakeup is replaced by this method for this instrument to search for
+        prompt strings at other than just the end of the line.  There is no
         'wakeup' for this instrument when it is in 'deployed' mode,
         so the best that can be done is to see if it responds or not.
-        
+
         Clear buffers and send some CRs to the instrument
         @param timeout The timeout to wake the device.
         @param delay The time to wait between consecutive wakeups.

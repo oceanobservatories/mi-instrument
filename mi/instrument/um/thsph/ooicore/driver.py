@@ -198,7 +198,7 @@ class THSPHParticle(DataParticle):
         Chanel 1 High Input Impedance Electrode, Chanel 2 High Input
         Impedance Electrode, H2 Electrode, S2 Electrode, Type E Thermocouple 1,
         Type E Thermocouple 2, Reference Thermistor, Board Thermistor
-        
+
         @throws SampleException If there is a problem with sample creation
         """
         match = THSPHParticle.regex_compiled().match(self.raw_data)
@@ -246,7 +246,7 @@ class THSPHParticle(DataParticle):
         @param hex_value: string to convert
         @return: int of the converted value
         """
-        if not isinstance(hex_value, str):
+        if not isinstance(hex_value, basestring):
             raise InstrumentParameterException("hex value not a string")
 
         value = int(hex_value, 16)

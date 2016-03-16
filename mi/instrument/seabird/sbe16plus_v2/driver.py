@@ -367,7 +367,7 @@ class Sbe16plusBaseParticle(DataParticle):
         @param divisor: conversion value
         @return: int or float of the converted value
         """
-        if not isinstance(hex_value, str):
+        if not isinstance(hex_value, basestring):
             raise InstrumentParameterException("hex value not a string")
 
         if divisor is not None and divisor == 0:
@@ -385,7 +385,7 @@ class Sbe16plusBaseParticle(DataParticle):
         @param value: string to convert
         @return: bool
         """
-        if not (isinstance(value, str) or isinstance(value, unicode)):
+        if not isinstance(value, basestring):
             raise InstrumentParameterException("value not a string")
 
         if value.lower() == 'no':

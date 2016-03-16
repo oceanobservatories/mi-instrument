@@ -72,7 +72,7 @@ class ParticleTestMixin(object):
         """
         if isinstance(data_particle, DataParticle):
             sample_dict = data_particle.generate_dict()
-        elif isinstance(data_particle, str):
+        elif isinstance(data_particle, basestring):
             sample_dict = json.loads(data_particle)
         elif isinstance(data_particle, dict):
             sample_dict = data_particle

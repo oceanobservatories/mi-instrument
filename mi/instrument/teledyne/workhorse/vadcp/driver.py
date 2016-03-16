@@ -285,7 +285,7 @@ class Protocol(WorkhorseProtocol):
         if expected_prompt is None:
             prompt_list = self._get_prompts()
         else:
-            if isinstance(expected_prompt, str):
+            if isinstance(expected_prompt, basestring):
                 prompt_list = [expected_prompt]
             else:
                 prompt_list = expected_prompt

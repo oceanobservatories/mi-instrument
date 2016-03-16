@@ -594,7 +594,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
         if expected_prompt is None:
             prompt_list = self._prompts.list()
         else:
-            if isinstance(expected_prompt, str):
+            if isinstance(expected_prompt, basestring):
                 prompt_list = [expected_prompt]
             else:
                 prompt_list = expected_prompt

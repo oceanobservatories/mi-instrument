@@ -35,7 +35,7 @@ class CommandDictKey(BaseEnum):
     ARGUMENTS = "arguments"
     COMMANDS = "commands"
     RETURN = "return"
-        
+
 class CommandArgument(object):
     """
     An object handling the description of the generally static description of
@@ -72,7 +72,7 @@ class CommandArgument(object):
         self.display_name = display_name
         self.description = description
         self.value_description = value_description
-    
+
     def generate_dict(self):
         """
         Create a dict object for this argument that can be JSONified. The
@@ -82,14 +82,14 @@ class CommandArgument(object):
         """
         value_dict = {}
         return_dict = {}
-        
+
         if self.required != None:
             return_dict[CommandDictKey.REQUIRED] = self.required
         if self.display_name != None:
             return_dict[CommandDictKey.DISPLAY_NAME] = self.display_name
         if self.description != None:
             return_dict[CommandDictKey.DESCRIPTION] = self.description
-        
+
         # value array
         if self.units != None:
             value_dict[CommandDictKey.UNITS] = self.units
@@ -97,10 +97,10 @@ class CommandArgument(object):
             value_dict[CommandDictKey.TYPE] = self.type
         if self.value_description != None:
             value_dict[CommandDictKey.DESCRIPTION] = self.value_description
-        
+
         return_dict[CommandDictKey.VALUE] = value_dict
         return return_dict
-        
+
 class Command(object):
     """
     An object handling the descriptive (and largely staticly defined in code)
@@ -115,7 +115,7 @@ class Command(object):
                  return_units=None,
                  return_description=None,
                  arguments=[]):
-                
+
         """
         Create a Command
         @param name The command name.
@@ -150,20 +150,20 @@ class Command(object):
                 raise InstrumentParameterException("Argument for command %s, argument %s not valid format"
                                                    % (name, arg))
             self.arguments[arg.name] = arg
-        
+
     def generate_dict(self):
         """
         Generate the dictionary structure that describes the complete command.
         It should be able to generate JSON as the intent is to include this in
         the grand schema of the command dictionary before JSON is generated.
-        
+
         @retval A JSON-izable Python dict that describes the command, its return
         values, and its arguments
         """
         args_dict = {}
         retval_dict = {}
         return_dict = {}
-        
+
         if self.timeout != None:
             return_dict[CommandDictKey.TIMEOUT] = self.timeout
         if self.display_name != None:
@@ -178,16 +178,16 @@ class Command(object):
             retval_dict[CommandDictKey.UNITS] = self.return_units
         if self.return_description != None:
             retval_dict[CommandDictKey.DESCRIPTION] = self.return_description
-        
+
         # fill in the arguments
         for arg in self.arguments.values():
-            args_dict[arg.name] = arg.generate_dict()        
-        
+            args_dict[arg.name] = arg.generate_dict()
+
         return_dict[CommandDictKey.ARGUMENTS] = args_dict
         return_dict[CommandDictKey.RETURN] = retval_dict
-        
+
         return return_dict
-    
+
 class ProtocolCommandDict(InstrumentDict):
     """
     Protocol parameter dictionary. Manages, matches and formats device
@@ -195,10 +195,10 @@ class ProtocolCommandDict(InstrumentDict):
     """
     def __init__(self):
         """
-        Constructor.        
+        Constructor.
         """
         self._cmd_dict = {}
-        
+
     def add(self,
             name,
             timeout=10,
@@ -222,7 +222,7 @@ class ProtocolCommandDict(InstrumentDict):
         @param return_description The description of the command's return value
         @param arguments A list of CommandArgument structures that describe the
         command that is being added
-        """      
+        """
         val = Command(name,
                       timeout=timeout,
                       display_name=display_name,
@@ -242,11 +242,11 @@ class ProtocolCommandDict(InstrumentDict):
         if not isinstance(command, Command):
             raise InstrumentParameterException("Invalid command structure!")
 
-        if not isinstance(command.name, str):
+        if not isinstance(command.name, basestring):
             raise InstrumentParameterException("Invalid command structure!")
 
         self._cmd_dict[command.name] = command
-        
+
     def get_command(self, name):
         """
         Get the command by name.
@@ -256,12 +256,12 @@ class ProtocolCommandDict(InstrumentDict):
         """
         if name == None:
             return None
-        
+
         if name not in self._cmd_dict.keys():
             return None
-        
+
         return self._cmd_dict[name]
-        
+
     def generate_dict(self):
         """
         Generate a JSONifiable metadata dict that describes the parameters.
@@ -270,21 +270,21 @@ class ProtocolCommandDict(InstrumentDict):
         schema.
         """
         return_struct = {}
-        
+
         for cmd in self._cmd_dict.keys():
             return_struct[cmd] = self._cmd_dict[cmd].generate_dict()
-        
-        return return_struct            
-        
+
+        return return_struct
+
     def load_strings(self, devel_path=None, filename=None):
         """
         Load the metadata for a parameter set. starting by looking at the default
         path in the egg and filesystem first, overriding what might have been
         hard coded. If a system filename is given look there. If parameter
         strings cannot be found, return False and carry on with hard coded values.
-    
+
         @param devel_path The path where the file can be found during development.
-        This is likely in the mi/instrument/make/model/flavor/resource directory.    
+        This is likely in the mi/instrument/make/model/flavor/resource directory.
         @param filename The filename of the custom file to load, including as full a path
         as desired (complete path recommended)
         @retval True if something could be loaded, False otherwise
@@ -295,8 +295,8 @@ class ProtocolCommandDict(InstrumentDict):
         except IOError as e:
             log.warning("Encountered IOError: %s", e)
             return False
-            
-        # Fill the fields           
+
+        # Fill the fields
         if metadata:
             log.debug("Found command metadata, loading dictionary")
 
@@ -307,7 +307,7 @@ class ProtocolCommandDict(InstrumentDict):
                     continue
                 if cmd_name not in self._cmd_dict:
                     continue
-                
+
                 if CommandDictKey.DESCRIPTION in cmd_value:
                     self._cmd_dict[cmd_name].description = \
                         cmd_value[CommandDictKey.DESCRIPTION]
@@ -318,27 +318,27 @@ class ProtocolCommandDict(InstrumentDict):
                 if CommandDictKey.RETURN in cmd_value:
                     if CommandDictKey.TYPE in cmd_value[CommandDictKey.RETURN]:
                         self._cmd_dict[cmd_name].return_type = \
-                            cmd_value[CommandDictKey.RETURN][CommandDictKey.TYPE]                 
+                            cmd_value[CommandDictKey.RETURN][CommandDictKey.TYPE]
                     if CommandDictKey.UNITS in cmd_value[CommandDictKey.RETURN]:
                         self._cmd_dict[cmd_name].return_units = \
                             cmd_value[CommandDictKey.RETURN][CommandDictKey.UNITS]
                     if CommandDictKey.DESCRIPTION in cmd_value[CommandDictKey.RETURN]:
                         self._cmd_dict[cmd_name].return_description = \
                             cmd_value[CommandDictKey.RETURN][CommandDictKey.DESCRIPTION]
-                    
+
                 if CommandDictKey.ARGUMENTS in cmd_value:
                     for (arg_name, arg_value) in cmd_value[CommandDictKey.ARGUMENTS].items():
                         if not isinstance(arg_value, dict):
                             continue
                         if arg_name not in self._cmd_dict[cmd_name].arguments:
                             continue
-                        
+
                         if (CommandDictKey.DESCRIPTION in arg_value):
                             self._cmd_dict[cmd_name].arguments[arg_name].description = \
-                                arg_value[CommandDictKey.DESCRIPTION]                 
+                                arg_value[CommandDictKey.DESCRIPTION]
                         if (CommandDictKey.DISPLAY_NAME in arg_value):
                             self._cmd_dict[cmd_name].arguments[arg_name].display_name = \
-                                arg_value[CommandDictKey.DISPLAY_NAME]                 
+                                arg_value[CommandDictKey.DISPLAY_NAME]
                         if (CommandDictKey.VALUE in arg_value):
                             if (CommandDictKey.DESCRIPTION in arg_value[CommandDictKey.VALUE]):
                                 self._cmd_dict[cmd_name].arguments[arg_name].value_description = \
@@ -350,5 +350,5 @@ class ProtocolCommandDict(InstrumentDict):
                                 self._cmd_dict[cmd_name].arguments[arg_name].units = \
                                     arg_value[CommandDictKey.VALUE][CommandDictKey.UNITS]
             return True
-    
+
         return False # no metadata!

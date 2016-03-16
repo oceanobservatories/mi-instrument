@@ -1230,7 +1230,7 @@ class CAMHDProtocol(CommandResponseInstrumentProtocol):
                         raise InstrumentParameterException('The desired value for %s must be an integer'
                                                            ' between -6 and 6: %s' % (key, val))
                 elif key == Parameter.LASERS_STATE:
-                    if not isinstance(val, str) or val not in['on', 'off']:
+                    if val not in['on', 'off']:
                         raise InstrumentParameterException('The desired value for %s must be on/off'
                                                            ': %s' % (key, val))
 

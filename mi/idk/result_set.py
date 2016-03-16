@@ -298,7 +298,7 @@ class ResultSet(object):
             errors.append("particle_timestamp expected, but not defined in particle")
 
         elif particle_timestamp:
-            if isinstance(expected_time, str):
+            if isinstance(expected_time, basestring):
                 expected = self._string_to_ntp_date_time(expected_time)
             else:
                 # if not a string, timestamp should alread be in ntp
@@ -418,7 +418,7 @@ class ResultSet(object):
         @throws InstrumentParameterException if datestr cannot be formatted to
         a date.
         """
-        if not isinstance(datestr, str):
+        if not isinstance(datestr, basestring):
             raise IOError('Value %s is not a string.' % str(datestr))
         if not DATE_MATCHER.match(datestr):
             raise ValueError("date string not in ISO8601 format YYYY-MM-DDTHH:MM:SS.SSSSZ")
