@@ -6,34 +6,32 @@
 with the Satlantic OCR507 ICSW w/ Midrange Bioshutter
 """
 
-import time
-import re
 import struct
+import time
 
-from mi.core.instrument.chunker import StringChunker
-from mi.core.instrument.driver_dict import DriverDictKey
-from mi.core.instrument.instrument_protocol import CommandResponseInstrumentProtocol, RE_PATTERN, DEFAULT_CMD_TIMEOUT, \
-    InitializationType
-from mi.core.instrument.protocol_param_dict import ParameterDictType, ParameterDictVisibility
+import re
 
 from mi.core.common import BaseEnum, Units
-from mi.core.instrument.instrument_driver import SingleConnectionInstrumentDriver, DriverProtocolState, DriverEvent, \
-    DriverAsyncEvent, ResourceAgentState
-from mi.core.instrument.instrument_driver import DriverParameter
-from mi.core.instrument.data_particle import CommonDataParticleType, DataParticleValue
 from mi.core.common import InstErrorCode
-from mi.core.instrument.instrument_fsm import ThreadSafeFSM
-from mi.core.exceptions import SampleException, InstrumentParameterException, InstrumentProtocolException, \
-    InstrumentException, InstrumentTimeoutException, InstrumentCommandException
+from mi.core.exceptions import (SampleException, InstrumentParameterException, InstrumentProtocolException,
+                                InstrumentException, InstrumentTimeoutException, InstrumentCommandException)
+from mi.core.instrument.chunker import StringChunker
+from mi.core.instrument.data_particle import CommonDataParticleType, DataParticleValue
 from mi.core.instrument.data_particle import DataParticle, DataParticleKey
+from mi.core.instrument.driver_dict import DriverDictKey
+from mi.core.instrument.instrument_driver import DriverParameter
+from mi.core.instrument.instrument_driver import (SingleConnectionInstrumentDriver, DriverProtocolState,
+                                                  DriverEvent, DriverAsyncEvent)
+from mi.core.instrument.instrument_fsm import ThreadSafeFSM
+from mi.core.instrument.instrument_protocol import (CommandResponseInstrumentProtocol, RE_PATTERN,
+                                                    DEFAULT_CMD_TIMEOUT, InitializationType)
+from mi.core.instrument.protocol_param_dict import ParameterDictType, ParameterDictVisibility
 from mi.core.log import get_logger, get_logging_metaclass
-
 
 __author__ = 'Godfrey Duke'
 __license__ = 'Apache 2.0'
 
 log = get_logger()
-
 
 # ###################################################################
 # Module-wide values
@@ -453,7 +451,8 @@ class SatlanticOCR507InstrumentProtocol(CommandResponseInstrumentProtocol):
                              lambda sVal: '%s' % sVal,
                              type=ParameterDictType.STRING,
                              display_name="Maximum Frame Rate",
-                             range={0: 'auto', 0.125: '0.125', 0.25: '0.25', 0.5: '0.5', 1: '1', 2: '2', 4: '4',
+                             # TODO determine why UI won't let us use 'Auto' as a label for 0
+                             range={0: '0', 0.125: '0.125', 0.25: '0.25', 0.5: '0.5', 1: '1', 2: '2', 4: '4',
                                     8: '8', 10: '10', 12: '12'},
                              units=Units.HERTZ,
                              description="Frame rate: (0=auto | 0.125 | 0.25 | 0.5 | 1 | 2 | 4 | 8 | 10 | 12)",
@@ -535,8 +534,6 @@ class SatlanticOCR507InstrumentProtocol(CommandResponseInstrumentProtocol):
     def sieve_function(raw_data):
         """ The method that splits samples
         """
-        log.debug("Raw Data: %r, len: %d", raw_data, len(raw_data))
-        log.debug(SAMPLE_REGEX.pattern)
         matchers = [SAMPLE_REGEX, CONFIG_REGEX]
         return_list = []
 
@@ -663,14 +660,14 @@ class SatlanticOCR507InstrumentProtocol(CommandResponseInstrumentProtocol):
                     (expected_prompt is not None or
                          (response_regex is not None)) \
                     and cmd_line not in self._linebuf:
-                log.debug('_do_cmd_resp: Send command: %s failed %s attempt, result = %r', cmd, retry_num, result)
+                log.debug('_do_cmd_resp: Send command: %r failed %d attempt, result = %r', cmd, retry_num, result)
                 if retry_num >= retry_count:
-                    raise InstrumentCommandException('_do_cmd_resp: Failed %s attempts sending command: %s' %
+                    raise InstrumentCommandException('_do_cmd_resp: Failed %d attempts sending command: %r' %
                                                      (retry_count, cmd))
             else:
                 break
 
-        log.debug('_do_cmd_resp: Sent command: %s, %s reattempts, expected_prompt=%s, result=%r.',
+        log.debug('_do_cmd_resp: Sent command: %r, %d reattempts, expected_prompt=%r, result=%r.',
                   cmd_line, retry_num, expected_prompt, result)
 
         resp_handler = self._response_handlers.get((self.get_current_state(), cmd), None) or \
@@ -713,7 +710,7 @@ class SatlanticOCR507InstrumentProtocol(CommandResponseInstrumentProtocol):
             self._do_cmd_no_resp(Command.SWITCH_TO_AUTOSAMPLE)
             next_state = SatlanticProtocolState.AUTOSAMPLE
 
-        return next_state, next_state
+        return next_state, (next_state, [])
 
     ########################################################################
     # Command handlers.
@@ -1044,9 +1041,9 @@ class SatlanticOCR507InstrumentProtocol(CommandResponseInstrumentProtocol):
         # wait a sample period,
         current_maxrate = self._param_dict.get_config()[Parameter.MAX_RATE]
         if current_maxrate is None:
-            current_maxrate = 0.125     # During startup, assume the slowest sample rate
+            current_maxrate = 0.125  # During startup, assume the slowest sample rate
         elif current_maxrate <= 0 or current_maxrate > 8:
-            current_maxrate = 8         # Effective current maxrate, despite the instrument accepting higher values
+            current_maxrate = 8  # Effective current maxrate, despite the instrument accepting higher values
         time_between_samples = (1.0 / current_maxrate) + 1
         time.sleep(time_between_samples)
         end_time = self._last_data_timestamp

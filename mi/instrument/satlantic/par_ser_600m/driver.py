@@ -501,7 +501,6 @@ class SatlanticPARInstrumentProtocol(CommandResponseInstrumentProtocol):
         cmd_line = self._build_default_command(cmd, *args)
 
         # Send command.
-        log.debug('_do_cmd: %s, length=%s' % (repr(cmd_line), len(cmd_line)))
         if len(cmd_line) == 1:
             self._connection.send(cmd_line)
         else:
@@ -540,7 +539,7 @@ class SatlanticPARInstrumentProtocol(CommandResponseInstrumentProtocol):
                     while True:
                         time.sleep(0.1)
                         if time.time() > starttime + 2:
-                            log.debug("Sending eoln again.")
+                            log.trace("Sending eoln again.")
                             self._connection.send(EOLN)
                             starttime = time.time()
                         if resend_check_value in self._promptbuf:
@@ -614,14 +613,14 @@ class SatlanticPARInstrumentProtocol(CommandResponseInstrumentProtocol):
                 (response_regex is not None))\
                     and not result.startswith(cmd_line):
                     # and cmd_line not in result:
-                log.debug("_do_cmd_resp: Send command: %s failed %s attempt, result = %s.", cmd, retry_num, result)
+                log.debug("_do_cmd_resp: Send command: %r failed %r attempt, result = %r.", cmd, retry_num, result)
                 if retry_num >= retry_count:
-                    raise InstrumentCommandException('_do_cmd_resp: Failed %s attempts sending command: %s' %
+                    raise InstrumentCommandException('_do_cmd_resp: Failed %d attempts sending command: %r' %
                                                      (retry_count, cmd))
             else:
                 break
 
-        log.debug("_do_cmd_resp: Sent command: %s, %s reattempts, expected_prompt=%s, result=%s.",
+        log.debug("_do_cmd_resp: Sent command: %r, %d reattempts, expected_prompt=%r, result=%r.",
                   cmd_line, retry_num, expected_prompt, result)
 
         resp_handler = self._response_handlers.get((self.get_current_state(), cmd), None) or \
@@ -655,7 +654,6 @@ class SatlanticPARInstrumentProtocol(CommandResponseInstrumentProtocol):
             self._do_cmd_resp(Command.SWITCH_TO_AUTOSAMPLE, expected_prompt=Prompt.SAMPLES, timeout=15)
             return PARProtocolState.AUTOSAMPLE, ResourceAgentState.STREAMING
 
-        log.trace("_handler_unknown_discover: returned: %s", probe_resp)
         if probe_resp == PARProtocolError.INVALID_COMMAND:
             next_state = PARProtocolState.COMMAND
         else:
@@ -663,7 +661,7 @@ class SatlanticPARInstrumentProtocol(CommandResponseInstrumentProtocol):
             self._do_cmd_resp(Command.SWITCH_TO_AUTOSAMPLE, expected_prompt=Prompt.SAMPLES, timeout=15)
             next_state = PARProtocolState.AUTOSAMPLE
 
-        return next_state, next_state
+        return next_state, (next_state, [])
 
     ########################################################################
     # Command handlers.
@@ -744,13 +742,13 @@ class SatlanticPARInstrumentProtocol(CommandResponseInstrumentProtocol):
             self._setup_scheduler_config()
 
         new_config = self._param_dict.get_all()
-        log.debug("Updated parameter dict: old_config = %s, new_config = %s", old_config, new_config)
+        log.debug("Updated parameter dict: old_config = %r, new_config = %r", old_config, new_config)
         if new_config != old_config:
             self._driver_event(DriverAsyncEvent.CONFIG_CHANGE)
 
         for name in params.keys():
             if self._param_dict.format(name, params[name]) != self._param_dict.format(name):
-                raise InstrumentParameterException('Failed to update parameter: %s' % name)
+                raise InstrumentParameterException('Failed to update parameter: %r' % name)
 
     def _handle_scheduling_params_changed(self):
         """
