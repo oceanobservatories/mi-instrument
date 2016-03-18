@@ -841,9 +841,11 @@ class Protocol(CommandResponseInstrumentProtocol):
     def _handler_unknown_discover(self, *args, **kwargs):
         """
         Discover current state
-        @return (next_state, next_state)
+        @return next_state, (next_state, result)
         """
-        return ProtocolState.COMMAND, ProtocolState.COMMAND
+        next_state = ProtocolState.COMMAND
+        result = []
+        return next_state, (next_state, result)
 
     ########################################################################
     # Command handlers.
@@ -865,16 +867,18 @@ class Protocol(CommandResponseInstrumentProtocol):
     def _handler_command_start_direct(self):
         """
         Start direct access
-        @return next_state, (next_state, None)
         """
-        return ProtocolState.DIRECT_ACCESS, (ProtocolState.DIRECT_ACCESS, None)
+        next_state = ProtocolState.DIRECT_ACCESS
+        result = []
+        return next_state, (next_state, result)
 
     def _handler_command_start_scan(self):
         """
         Start a scan
-        @return next_state, (next_state, None)
         """
-        return ProtocolState.SCAN, (ProtocolState.SCAN, None)
+        next_state = ProtocolState.SCAN
+        result = []
+        return next_state, (next_state, result)
 
     ########################################################################
     # Direct access handlers.
@@ -892,20 +896,22 @@ class Protocol(CommandResponseInstrumentProtocol):
     def _handler_direct_access_execute_direct(self, data):
         """
         Forward direct access commands to the instrument.
-        @return next_state, (next_state, None)
         """
+        next_state = None
+        result = []
         self._do_cmd_direct(data)
 
         # add sent command to list for 'echo' filtering in callback
         self._sent_cmds.append(data)
-        return None, (None, None)
+        return next_state, (next_state, result)
 
     def _handler_direct_access_stop_direct(self):
         """
         Stop direct access, return to COMMAND.
-        @return next_state, (next_state, None)
         """
-        return ProtocolState.COMMAND, (ProtocolState.COMMAND, None)
+        next_state = ProtocolState.COMMAND
+        result = []
+        return next_state, (next_state, result)
 
     ########################################################################
     # Scan handlers
@@ -982,8 +988,9 @@ class Protocol(CommandResponseInstrumentProtocol):
     def _handler_scan_take_scan(self, *args, **kwargs):
         """
         place a sentinel value in the chunker, then perform one analog scan from the RGA
-        @return next_state, (next_state, None)
         """
+        next_state = None
+        result = []
         # empty the chunker
         self._chunker.clean()
         # place sentinel value in chunker
@@ -993,12 +1000,11 @@ class Protocol(CommandResponseInstrumentProtocol):
             log.error('FAILED scan detected, in_scan sentinel set to TRUE')
         self.in_scan = True
         self._do_cmd_no_resp(InstrumentCommand.ANALOG_SCAN, 1)
-        return None, (None, None)
+        return next_state, (next_state, result)
 
     def _handler_scan_timeout(self, *args, **kwargs):
         """
         Handle scan timeout
-        @return next_state, (next_state, None)
         """
         # timeout, clear the instrument buffers
         self._do_cmd_resp(InstrumentCommand.INITIALIZE, 0)
@@ -1009,18 +1015,20 @@ class Protocol(CommandResponseInstrumentProtocol):
     def _handler_scan_stop_scan(self, *args, **kwargs):
         """
         Stop scanning, go to COMMAND.
-        @return next_state, (next_state, None)
         """
+        next_state = ProtocolState.COMMAND
+        result = []
         self._stop_instrument()
-        return ProtocolState.COMMAND, (ProtocolState.COMMAND, None)
+        return next_state, (next_state, result)
 
     def _handler_scan_error(self, *args, **kwargs):
         """
         Stop scanning, go to ERROR.
-        @return next_state, (next_state, None)
         """
+        next_state = ProtocolState.ERROR
+        result = []
         self._stop_instrument()
-        return ProtocolState.ERROR, (ProtocolState.ERROR, None)
+        return next_state, (next_state, result)
 
     ########################################################################
     # Error handlers
@@ -1029,11 +1037,12 @@ class Protocol(CommandResponseInstrumentProtocol):
     def _handler_error_clear(self):
         """
         Leave the error state, return to COMMAND.
-        @return next_state, (next_state, None)
         """
+        next_state = ProtocolState.COMMAND
+        result = []
         self._param_dict.set_value(Parameter.ERROR_REASON, '')
         self._driver_event(DriverAsyncEvent.CONFIG_CHANGE)
-        return ProtocolState.COMMAND, (ProtocolState.COMMAND, None)
+        return next_state, (next_state, result)
 
     ########################################################################
     # Generic handlers

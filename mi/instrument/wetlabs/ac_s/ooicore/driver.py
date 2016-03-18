@@ -7,9 +7,6 @@ Release notes:
 
 initial version
 """
-__author__ = 'Rachel Manoni'
-__license__ = 'Apache 2.0'
-
 from _ctypes import sizeof
 from collections import OrderedDict
 from ctypes import BigEndianStructure, c_ushort, c_uint, c_ubyte
@@ -20,8 +17,6 @@ import os
 import re
 
 from mi.core.log import get_logger
-log = get_logger()
-
 from mi.core.common import BaseEnum
 from mi.core.exceptions import SampleException
 from mi.core.instrument.instrument_protocol import CommandResponseInstrumentProtocol
@@ -31,12 +26,16 @@ from mi.core.instrument.instrument_driver import DriverEvent
 from mi.core.instrument.instrument_driver import DriverAsyncEvent
 from mi.core.instrument.instrument_driver import DriverProtocolState
 from mi.core.instrument.instrument_driver import DriverParameter
-from mi.core.instrument.instrument_driver import ResourceAgentState
 from mi.core.instrument.data_particle import DataParticle
 from mi.core.instrument.data_particle import DataParticleKey
 from mi.core.instrument.data_particle import CommonDataParticleType
 from mi.core.instrument.chunker import StringChunker
 from mi.core.instrument.driver_dict import DriverDictKey
+
+__author__ = 'Rachel Manoni'
+__license__ = 'Apache 2.0'
+
+log = get_logger()
 
 NEWLINE = '\n'
 
@@ -44,7 +43,7 @@ INDEX_OF_PACKET_RECORD_LENGTH = 4
 INDEX_OF_START_OF_SCAN_DATA = 32
 SIZE_OF_PACKET_RECORD_LENGTH = 2
 SIZE_OF_SCAN_DATA_SIGNAL_COUNTS = 2
-SIZE_OF_CHECKSUM_PLUS_PAD = 3   # three bytes for 2 byte checksum and 1 byte pad
+SIZE_OF_CHECKSUM_PLUS_PAD = 3  # three bytes for 2 byte checksum and 1 byte pad
 
 PACKET_REGISTRATION_PATTERN = '\xff\x00\xff\x00'
 PACKET_REGISTRATION_REGEX = re.compile(PACKET_REGISTRATION_PATTERN)
@@ -171,11 +170,10 @@ class OptaaSampleDataParticle(DataParticle):
         # for playback, we want to obtain the elapsed run time prior to generating
         # the particle, so we'll go ahead and parse the header on object creation
         self.header = OptaaSampleHeader.from_string(self.raw_data)
-        self.data = struct.unpack_from('>%dH' % (self.header.num_wavelengths*4), self.raw_data, sizeof(self.header))
+        self.data = struct.unpack_from('>%dH' % (self.header.num_wavelengths * 4), self.raw_data, sizeof(self.header))
         self.elapsed = (self.header.time_high << 16) + self.header.time_low
 
     def _build_parsed_values(self):
-
         cref = self.data[::4]
         aref = self.data[1::4]
         csig = self.data[2::4]
@@ -205,7 +203,7 @@ class OptaaSampleDataParticle(DataParticle):
             self._encode_value(key.A_REFERENCE_COUNTS, aref, list),
             self._encode_value(key.C_SIGNAL_COUNTS, csig, list),
             self._encode_value(key.A_SIGNAL_COUNTS, asig, list),
-            ]
+        ]
 
         log.debug("raw data = %r", self.raw_data)
         log.debug('parsed particle = %r', result)
@@ -243,10 +241,10 @@ class OptaaStatusDataParticle(DataParticle):
         # find the date/time string and remove enclosing parens
         m = re.search(DATE_REGEX, data_stream)
         if m is not None:
-                p = m.group()
-                date_of_version = p[1:-1]
+            p = m.group()
+            date_of_version = p[1:-1]
         else:
-                date_of_version = 'None found'
+            date_of_version = 'None found'
 
         persistor = re.search(PERSISTOR_REGEX, data_stream)
         if persistor is not None:
@@ -262,7 +260,7 @@ class OptaaStatusDataParticle(DataParticle):
         result = [{DataParticleKey.VALUE_ID: OptaaStatusDataParticleKey.FIRMWARE_VERSION,
                    DataParticleKey.VALUE: str(version)},
                   {DataParticleKey.VALUE_ID: OptaaStatusDataParticleKey.FIRMWARE_DATE,
-                  DataParticleKey.VALUE: date_of_version},
+                   DataParticleKey.VALUE: date_of_version},
                   {DataParticleKey.VALUE_ID: OptaaStatusDataParticleKey.PERSISTOR_CF_SERIAL_NUMBER,
                    DataParticleKey.VALUE: str(persistor_sn)},
                   {DataParticleKey.VALUE_ID: OptaaStatusDataParticleKey.PERSISTOR_CF_BIOS_VERSION,
@@ -313,6 +311,7 @@ class Protocol(CommandResponseInstrumentProtocol):
     Instrument protocol class
     Subclasses CommandResponseInstrumentProtocol
     """
+
     def __init__(self, prompts, newline, driver_event):
         """
         Protocol constructor.
@@ -342,6 +341,7 @@ class Protocol(CommandResponseInstrumentProtocol):
     def sieve_function(raw_data):
         """
         The method that splits samples and status
+        :param raw_data: raw data from instrument
         """
         raw_data_len = len(raw_data)
         return_list = []
@@ -356,13 +356,13 @@ class Protocol(CommandResponseInstrumentProtocol):
         for match in PACKET_REGISTRATION_REGEX.finditer(raw_data):
             # make sure I have at least 6 bytes (packet registration plus 2 bytes for record length)
             start = match.start()
-            if (start+6) <= raw_data_len:
-                packet_length = struct.unpack_from('>H', raw_data, start+4)[0]
+            if (start + 6) <= raw_data_len:
+                packet_length = struct.unpack_from('>H', raw_data, start + 4)[0]
                 # make sure we have enough data to construct a whole packet
-                if (start+packet_length+SIZE_OF_CHECKSUM_PLUS_PAD) <= raw_data_len:
+                if (start + packet_length + SIZE_OF_CHECKSUM_PLUS_PAD) <= raw_data_len:
                     # validate the checksum, if valid add to the return list
-                    checksum = struct.unpack_from('>H', raw_data, start+packet_length)[0]
-                    calulated_checksum = sum(bytearray(raw_data[start:start+packet_length])) & 0xffff
+                    checksum = struct.unpack_from('>H', raw_data, start + packet_length)[0]
+                    calulated_checksum = sum(bytearray(raw_data[start:start + packet_length])) & 0xffff
                     if checksum == calulated_checksum:
                         return_list.append((match.start(), match.start() + packet_length + SIZE_OF_CHECKSUM_PLUS_PAD))
 
@@ -406,7 +406,8 @@ class Protocol(CommandResponseInstrumentProtocol):
         Discover current state; can only be AUTOSAMPLE (instrument has no actual command mode).
         """
         next_state = ProtocolState.AUTOSAMPLE
-        return next_state, next_state
+        result = []
+        return next_state, (next_state, result)
 
     ########################################################################
     # Autosample handlers.

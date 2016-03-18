@@ -10,17 +10,10 @@ Release notes:
     and PHSEN instrument classes.
 """
 
-__author__ = 'Christopher Wingard & Kevin Stiemke'
-__license__ = 'Apache 2.0'
-
 import re
 
 from mi.core.log import get_logger
-
-log = get_logger()
-
 from mi.core.exceptions import SampleException
-
 from mi.core.common import Units
 
 from mi.core.instrument.data_particle import DataParticle
@@ -47,6 +40,11 @@ from mi.instrument.sunburst.sami2_pco2.driver import PCO2W_SAMPLE_REGEX_MATCHER_
 from mi.instrument.sunburst.sami2_pco2.driver import Pco2wSamiSampleDataParticle, Pco2wSamiSampleCalibrationDataParticle
 from mi.instrument.sunburst.sami2_pco2.driver import Pco2wInstrumentCommand
 from mi.core.instrument.instrument_fsm import ThreadSafeFSM
+
+__author__ = 'Christopher Wingard & Kevin Stiemke'
+__license__ = 'Apache 2.0'
+
+log = get_logger()
 
 ###
 #    Driver Constant Definitions

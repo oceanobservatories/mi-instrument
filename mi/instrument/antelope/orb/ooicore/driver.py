@@ -507,7 +507,9 @@ class Protocol(InstrumentProtocol):
         Discover current state; always COMMAND.
         @return protocol_state, protocol_state
         """
-        return ProtocolState.COMMAND, ProtocolState.COMMAND
+        next_state = ProtocolState.COMMAND
+        result = []
+        return next_state, (next_state, result)
 
     ########################################################################
     # COMMAND handlers.
@@ -535,7 +537,7 @@ class Protocol(InstrumentProtocol):
         Switch into autosample mode.
         @return next_state, (next_state, result) if successful.
         """
-        result = None
+        result = []
 
         # Ensure the current logs are clear to prevent residual data from being flushed.
         self._logs = {}
@@ -571,7 +573,7 @@ class Protocol(InstrumentProtocol):
         """
         self._orbstop()
 
-        result = None
+        result = []
         next_state = ProtocolState.STOPPING
         next_agent_state = None
 
@@ -620,4 +622,6 @@ class Protocol(InstrumentProtocol):
         Clear the WRITE_ERROR state by transitioning to the COMMAND state.
         @return next_state, (next_state, result)
         """
-        return ProtocolState.COMMAND, (ProtocolState.COMMAND, None)
+        next_state = ProtocolState.COMMAND
+        result = []
+        return next_state, (next_state, result)

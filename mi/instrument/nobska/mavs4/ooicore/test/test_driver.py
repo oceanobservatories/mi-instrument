@@ -523,12 +523,7 @@ class Testmavs4_UNIT(InstrumentDriverUnitTestCase, Mavs4Mixin):
         driver = mavs4InstrumentDriver(self._got_data_event_callback)
         self.assert_initialize_driver(driver, ProtocolStates.COMMAND)
 
-        expected_parameters = []
-        for key in self._driver_parameters.keys():
-            #if self._driver_parameters[key][ParameterTestConfigKey.READONLY] == False:
-            expected_parameters.append(key)
-        expected_parameters.sort()
-
+        expected_parameters = sorted(self._driver_parameters)
         reported_parameters = sorted(driver.get_resource(InstrumentParameters.ALL))
 
         log.debug("Reported Parameters: %s", reported_parameters)

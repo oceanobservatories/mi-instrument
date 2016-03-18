@@ -106,6 +106,9 @@ class InstrumentDriver(SingleConnectionInstrumentDriver):
         @return (next_state, result) tuple, (DriverConnectionState.CONNECTED, None) if successful.
         @raises InstrumentConnectionException if the attempt to connect failed.
         """
+        next_state = DriverConnectionState.CONNECTED
+        result = None
+
         self._build_protocol()
 
         # for Master first
@@ -127,19 +130,22 @@ class InstrumentDriver(SingleConnectionInstrumentDriver):
             log.error("Instrument Driver remaining in disconnected state.")
             raise
 
-        return DriverConnectionState.CONNECTED, None
+        return next_state, (next_state, result)
 
     def _handler_connected_disconnect(self, *args, **kwargs):
         """
         Disconnect to the device via port agent / logger and destroy the protocol FSM.
         @return (next_state, result) tuple, (DriverConnectionState.UNCONFIGURED, None) if successful.
         """
+        next_state = DriverConnectionState.UNCONFIGURED
+        result = None
+
         for connection in self._connection.values():
             connection.stop_comms()
 
         self._destroy_protocol()
 
-        return DriverConnectionState.UNCONFIGURED, None
+        return next_state, (next_state, result)
 
     def _handler_connected_connection_lost(self, *args, **kwargs):
         """
@@ -831,14 +837,16 @@ class Protocol(WorkhorseProtocol):
     def _discover(self, connection=None):
         """
         Discover current state; can be COMMAND or AUTOSAMPLE or UNKNOWN.
-        @return (next_protocol_state, next_protocol_state)
         @throws InstrumentTimeoutException if the device cannot be woken.
         @throws InstrumentStateException if the device response does not correspond to
         an expected state.
         """
         states = set()
+        result = []
         command = WorkhorseProtocolState.COMMAND
         auto = WorkhorseProtocolState.AUTOSAMPLE
+        protocol_state = command
+
         for connection in self.connections:
             try:
                 self._wakeup(3, connection=connection)
@@ -848,12 +856,11 @@ class Protocol(WorkhorseProtocol):
 
         if len(states) == 1:
             # states match, return this state
-            state = states.pop()
-            return state, state
+            protocol_state = states.pop()
 
         # states don't match
         self._stop_logging()
-        return command, command
+        return protocol_state
 
     def _run_test(self, *args, **kwargs):
         kwargs['timeout'] = 30
@@ -883,6 +890,7 @@ class Protocol(WorkhorseProtocol):
         @return next_state, (next_state, result) if successful.
         @throws InstrumentProtocolException from _do_cmd_resp.
         """
+        next_state = None
         super(Protocol, self)._do_acquire_status(connection=SlaveProtocol.FOURBEAM)
         super(Protocol, self)._do_acquire_status(connection=SlaveProtocol.FIFTHBEAM)
 
@@ -895,7 +903,7 @@ class Protocol(WorkhorseProtocol):
                                           WorkhorseDataParticleType.ADCP_ANCILLARY_SYSTEM_DATA,
                                           WorkhorseDataParticleType.ADCP_TRANSMIT_PATH])
 
-        return None, (None, result)
+        return next_state, (next_state, result)
 
     def _handler_command_recover_autosample(self):
         log.info('PD0 sample detected in COMMAND, not allowed in VADCP. Sending break')
@@ -907,7 +915,7 @@ class Protocol(WorkhorseProtocol):
 
     def _handler_direct_access_execute_direct(self, data):
         next_state = None
-        result = None
+        result = []
         self._do_cmd_direct(data)
 
         # add sent command to list for 'echo' filtering in callback

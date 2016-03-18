@@ -7,16 +7,11 @@ Release notes:
 
 SBE Driver
 """
-__author__ = 'Tapana Gupta'
-__license__ = 'Apache 2.0'
 
 import re
 import time
 
 from mi.core.log import get_logger
-
-log = get_logger()
-
 from mi.core.common import BaseEnum, Units
 from mi.core.instrument.instrument_protocol import CommandResponseInstrumentProtocol
 from mi.core.instrument.data_particle import DataParticleKey
@@ -37,10 +32,14 @@ from mi.instrument.seabird.sbe16plus_v2.ctdpf_jb.driver import ProtocolState
 from mi.instrument.seabird.sbe16plus_v2.ctdpf_jb.driver import SBE19ConfigurationParticle
 from mi.instrument.seabird.sbe16plus_v2.ctdpf_jb.driver import SBE19CalibrationParticle
 
-from mi.instrument.seabird.sbe16plus_v2.driver import Prompt, SBE16InstrumentDriver, SBE16Protocol, ConfirmedParameter, \
-    CommonParameter
-from mi.instrument.seabird.sbe16plus_v2.driver import Sbe16plusBaseParticle, NEWLINE, TIMEOUT, WAKEUP_TIMEOUT, Command, \
+from mi.instrument.seabird.sbe16plus_v2.driver import Prompt, SBE16InstrumentDriver, SBE16Protocol, \
+    ConfirmedParameter, CommonParameter, Sbe16plusBaseParticle, NEWLINE, TIMEOUT, WAKEUP_TIMEOUT, Command, \
     ProtocolEvent, Capability
+
+__author__ = 'Tapana Gupta'
+__license__ = 'Apache 2.0'
+
+log = get_logger()
 
 
 # Driver constants
@@ -206,6 +205,7 @@ class SBE43StatusParticle(Sbe16plusBaseParticle):
     def resp_regex():
         pattern = r'(<StatusData.*?</StatusData>)'
         return pattern
+
     @staticmethod
     def resp_regex_compiled():
         return re.compile(SBE43StatusParticle.resp_regex(), re.DOTALL)
@@ -662,6 +662,7 @@ class SBE43Protocol(SBE16Protocol):
         """
         Get device status
         """
+        next_state = None
         result = []
 
         result.append(self._do_cmd_resp(Command.GET_SD, response_regex=SBE43StatusParticle.regex_compiled(),
@@ -682,25 +683,27 @@ class SBE43Protocol(SBE16Protocol):
         # Reset the event counter right after getEC
         self._do_cmd_resp(Command.RESET_EC, timeout=TIMEOUT)
 
-        return None, (None, ''.join(result))
+        return next_state, (next_state, ''.join(result))
 
     def _handler_command_acquire_sample(self, *args, **kwargs):
         """
         Acquire sample from SBE16.
         @retval next_state, (next_state, result) tuple
         """
+        next_state = None
         timeout = time.time() + TIMEOUT
 
         self._do_cmd_resp(Command.TS, *args, **kwargs)
 
         particles = self.wait_for_particles(DataParticleType.CTD_PARSED, timeout)
 
-        return None, (None, particles)
+        return next_state, (next_state, particles)
 
     def _handler_autosample_acquire_status(self, *args, **kwargs):
         """
         Get device status in autosample mode
         """
+        next_state = None
         result = []
 
         # When in autosample this command requires two wake-ups to get to the right prompt
@@ -725,7 +728,7 @@ class SBE43Protocol(SBE16Protocol):
         # Reset the event counter right after getEC
         self._do_cmd_no_resp(Command.RESET_EC)
 
-        return None, (None, ''.join(result))
+        return next_state, (next_state, ''.join(result))
 
     ########################################################################
     # response handlers.

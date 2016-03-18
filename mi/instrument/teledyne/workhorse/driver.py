@@ -12,12 +12,7 @@ import struct
 import re
 from contextlib import contextmanager
 
-from mi.instrument.teledyne.workhorse.pd0_parser import AdcpPd0Record
-
 from mi.core.log import get_logger
-
-log = get_logger()
-
 from mi.core.common import Units, Prefixes
 from mi.core.instrument.protocol_param_dict import ParameterDictVisibility
 from mi.core.instrument.protocol_param_dict import ParameterDictType
@@ -39,13 +34,16 @@ from mi.core.driver_scheduler import TriggerType
 from mi.core.instrument.driver_dict import DriverDictKey
 from mi.core.util import dict_equal
 
-from mi.instrument.teledyne.workhorse.particles import AdcpCompassCalibrationDataParticle, \
-    AdcpSystemConfigurationDataParticle, AdcpAncillarySystemDataParticle, AdcpTransmitPathParticle, \
-    AdcpPd0ConfigParticle, AdcpPd0EngineeringParticle, \
+from mi.instrument.teledyne.workhorse.pd0_parser import AdcpPd0Record
+from mi.instrument.teledyne.workhorse.particles import \
+    AdcpCompassCalibrationDataParticle, AdcpSystemConfigurationDataParticle, AdcpAncillarySystemDataParticle, \
+    AdcpTransmitPathParticle, AdcpPd0ConfigParticle, AdcpPd0EngineeringParticle, \
     Pd0BeamParticle, Pd0CoordinateTransformType, Pd0EarthParticle, WorkhorseDataParticleType
 
 __author__ = 'Sung Ahn'
 __license__ = 'Apache 2.0'
+
+log = get_logger()
 
 # default timeout.
 TIMEOUT = 20
@@ -1202,16 +1200,20 @@ class WorkhorseProtocol(CommandResponseInstrumentProtocol):
     def _discover(self):
         """
         Discover current state; can be COMMAND or AUTOSAMPLE or UNKNOWN.
-        @return (next_protocol_state, next_protocol_state)
         @throws InstrumentTimeoutException if the device cannot be woken.
         @throws InstrumentStateException if the device response does not correspond to
         an expected state.
         """
+        next_state = None
+
         try:
             self._wakeup(3)
-            return WorkhorseProtocolState.COMMAND, WorkhorseProtocolState.COMMAND
+            next_state = WorkhorseProtocolState.COMMAND
         except InstrumentTimeoutException:
-            return WorkhorseProtocolState.AUTOSAMPLE, WorkhorseProtocolState.AUTOSAMPLE
+            # TODO - should verify that a particle is being received (e.g. wait_for_particle for 1 sec, otherwise throw exception
+            next_state = WorkhorseProtocolState.AUTOSAMPLE
+
+        return next_state
 
     def _run_test(self, *args, **kwargs):
         kwargs['timeout'] = 30
@@ -1245,16 +1247,20 @@ class WorkhorseProtocol(CommandResponseInstrumentProtocol):
     def _handler_unknown_discover(self, *args, **kwargs):
         """
         Discover current state; can be COMMAND or AUTOSAMPLE.
-        @return protocol_state, protocol_state
         """
-        return self._discover()
+        next_state = self._discover()
+        result = []
+
+        return next_state, (next_state, result)
 
     ########################################################################
     # COMMAND handlers.
     ########################################################################
 
     def _handler_command_run_test_200(self, *args, **kwargs):
-        return None, (None, self._run_test(*args, **kwargs))
+        next_state = None
+        result = self._run_test(*args, **kwargs)
+        return next_state, (next_state, [result])
 
     def _handler_command_enter(self, *args, **kwargs):
         """
@@ -1279,32 +1285,32 @@ class WorkhorseProtocol(CommandResponseInstrumentProtocol):
     def _handler_command_start_autosample(self, *args, **kwargs):
         """
         Switch into autosample mode.
-        @return next_state, (next_state, result) if successful.
         """
-        result = None
+        next_state = WorkhorseProtocolState.AUTOSAMPLE
+        result = []
+
         # Issue start command and switch to autosample if successful.
         try:
             self._sync_clock(WorkhorseInstrumentCmds.SET, WorkhorseParameter.TIME)
             self._start_logging()
 
-            next_state = WorkhorseProtocolState.AUTOSAMPLE
-
-            return next_state, (next_state, result)
         except InstrumentException:
             self._stop_logging()
             raise
+
+        return next_state, (next_state, result)
 
     def _handler_command_set(self, *args, **kwargs):
         """
         Perform a set command.
         @param args[0] parameter : params dict.
-        @return (next_state, result) tuple, (None, None).
         @throws InstrumentParameterException if missing set parameters, if set parameters not ALL and
         not a dict, or if parameter can't be properly formatted.
         @throws InstrumentTimeoutException if device cannot be woken for set command.
         @throws InstrumentProtocolException if set command could not be built or misunderstood.
         """
         next_state = None
+        result = []
         startup = False
 
         try:
@@ -1321,22 +1327,20 @@ class WorkhorseProtocol(CommandResponseInstrumentProtocol):
             raise InstrumentParameterException('Set parameters not a dict.')
 
         self._set_params(params, startup)
-        return next_state, None
+        return next_state, result
 
     def _handler_command_clock_sync(self, *args, **kwargs):
         """
         execute a clock sync on the leading edge of a second change
-        @return next_state, (next_state, result) if successful.
         """
         next_state = None
-        result = None
+        result = []
 
         timeout = kwargs.get('timeout', TIMEOUT)
         self._sync_clock(WorkhorseInstrumentCmds.SET, WorkhorseParameter.TIME, timeout)
         return next_state, (next_state, result)
 
     def _do_acquire_status(self, *args, **kwargs):
-
         self._do_cmd_resp(WorkhorseInstrumentCmds.GET_SYSTEM_CONFIGURATION, *args, **kwargs),
         self._do_cmd_resp(WorkhorseInstrumentCmds.OUTPUT_CALIBRATION_DATA, *args, **kwargs),
         self._do_cmd_resp(WorkhorseInstrumentCmds.OUTPUT_PT2, *args, **kwargs),
@@ -1360,14 +1364,14 @@ class WorkhorseProtocol(CommandResponseInstrumentProtocol):
         return next_state, (next_state, result)
 
     def _handler_command_start_direct(self, *args, **kwargs):
-        result = None
-
         next_state = WorkhorseProtocolState.DIRECT_ACCESS
+        result = []
         return next_state, (next_state, result)
 
     def _handler_command_recover_autosample(self):
-        log.info('PD0 sample detected in COMMAND, returning to AUTOSAMPLE')
-        return WorkhorseProtocolState.AUTOSAMPLE, (WorkhorseProtocolState.AUTOSAMPLE, None)
+        next_state = WorkhorseProtocolState.AUTOSAMPLE
+        result = []
+        return next_state, (next_state, result)
 
     ######################################################
     # AUTOSAMPLE handlers
@@ -1392,14 +1396,11 @@ class WorkhorseProtocol(CommandResponseInstrumentProtocol):
     def _handler_autosample_stop_autosample(self, *args, **kwargs):
         """
         Stop autosample and switch back to command mode.
-        @return  next_state, (next_state, result) if successful.
         incorrect prompt received.
         """
-        result = None
-        self._stop_logging()
-
         next_state = WorkhorseProtocolState.COMMAND
-
+        result = []
+        self._stop_logging()
         return next_state, (next_state, result)
 
     def _handler_autosample_clock_sync(self, *args, **kwargs):
@@ -1409,12 +1410,11 @@ class WorkhorseProtocol(CommandResponseInstrumentProtocol):
         into command mode, do the clock sync, then switch back.  If an
         exception is thrown we will try to get ourselves back into
         streaming and then raise that exception.
-        @return (next_state, (next_state, result) if successful.
         @throws InstrumentTimeoutException if device cannot be woken for command.
         @throws InstrumentProtocolException if command could not be built or misunderstood.
         """
         next_state = None
-        result = None
+        result = []
 
         with self._pause_logging():
             self._handler_command_clock_sync()
@@ -1424,12 +1424,10 @@ class WorkhorseProtocol(CommandResponseInstrumentProtocol):
     def _handler_autosample_acquire_status(self, *args, **kwargs):
         """
         execute a get status on the leading edge of a second change
-        @return next_state, (next_state, result) if successful.
         @throws InstrumentProtocolException from _do_cmd_resp
         """
-
         next_state = None
-        result = None
+        result = []
 
         with self._pause_logging():
             self._handler_command_acquire_status(*args, **kwargs)
@@ -1458,7 +1456,7 @@ class WorkhorseProtocol(CommandResponseInstrumentProtocol):
 
     def _handler_direct_access_execute_direct(self, data):
         next_state = None
-        result = None
+        result = []
         self._do_cmd_direct(data)
 
         # add sent command to list for 'echo' filtering in callback
@@ -1466,11 +1464,8 @@ class WorkhorseProtocol(CommandResponseInstrumentProtocol):
         return next_state, (next_state, result)
 
     def _handler_direct_access_stop_direct(self):
-        """
-        @reval next_state, (next_state, result)
-        """
-        result = None
         next_state = WorkhorseProtocolState.COMMAND
+        result = []
         return next_state, (next_state, result)
 
     ########################################################################

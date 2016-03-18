@@ -10,11 +10,8 @@ Release notes:
 
 initial release
 """
+
 import struct
-
-__author__ = 'Bill Bollenbacher'
-__license__ = 'Apache 2.0'
-
 import time
 import re
 
@@ -40,8 +37,10 @@ from mi.core.instrument.protocol_param_dict import ProtocolParameterDict
 from mi.core.instrument.protocol_param_dict import RegexParameter
 from mi.core.instrument.chunker import StringChunker
 from mi.core.instrument.data_particle import DataParticle, DataParticleKey, CommonDataParticleType, DataParticleValue
-from mi.core.instrument.instrument_driver import ResourceAgentState
 from mi.core.log import get_logger, get_logging_metaclass
+
+__author__ = 'Bill Bollenbacher'
+__license__ = 'Apache 2.0'
 
 
 log = get_logger()
@@ -588,26 +587,16 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
     # interaction is complete). Commands that decide how to construct the
     # command or any of these values dynamically have there own build handlers
     # and are not in this table.
-    Command_Response = {InstrumentCmds.SET_TIME:
-                            [InstrumentPrompts.SET_TIME, None, None],
-                        InstrumentCmds.ENTER_TIME:
-                            [InstrumentPrompts.SET_TIME, None, None],
-                        InstrumentCmds.ENTER_NOTE:
-                            [InstrumentPrompts.DEPLOY_MENU, None, None],
-                        InstrumentCmds.SET_VELOCITY_FRAME:
-                            [InstrumentPrompts.VELOCITY_FRAME,
-                             InstrumentCmds.ENTER_VELOCITY_FRAME,
-                             None],
-                        InstrumentCmds.ENTER_VELOCITY_FRAME:
-                            [InstrumentPrompts.DEPLOY_MENU, None, None],
-                        InstrumentCmds.SET_MONITOR:
-                            [InstrumentPrompts.MONITOR,
-                             InstrumentCmds.ENTER_MONITOR,
-                             None],
-                        InstrumentCmds.ENTER_LOG_DISPLAY_TIME:
-                            [InstrumentPrompts.LOG_DISPLAY,
-                             InstrumentCmds.ENTER_LOG_DISPLAY_FRACTIONAL_SECOND,
-                             InstrumentParameters.LOG_DISPLAY_TIME],
+    Command_Response = {InstrumentCmds.SET_TIME: [InstrumentPrompts.SET_TIME, None, None],
+                        InstrumentCmds.ENTER_TIME: [InstrumentPrompts.SET_TIME, None, None],
+                        InstrumentCmds.ENTER_NOTE: [InstrumentPrompts.DEPLOY_MENU, None, None],
+                        InstrumentCmds.SET_VELOCITY_FRAME: [InstrumentPrompts.VELOCITY_FRAME,
+                                                            InstrumentCmds.ENTER_VELOCITY_FRAME, None],
+                        InstrumentCmds.ENTER_VELOCITY_FRAME: [InstrumentPrompts.DEPLOY_MENU, None, None],
+                        InstrumentCmds.SET_MONITOR: [InstrumentPrompts.MONITOR, InstrumentCmds.ENTER_MONITOR, None],
+                        InstrumentCmds.ENTER_LOG_DISPLAY_TIME: [InstrumentPrompts.LOG_DISPLAY,
+                                                                InstrumentCmds.ENTER_LOG_DISPLAY_FRACTIONAL_SECOND,
+                                                                InstrumentParameters.LOG_DISPLAY_TIME],
                         InstrumentCmds.ENTER_LOG_DISPLAY_FRACTIONAL_SECOND:
                             [InstrumentPrompts.LOG_DISPLAY,
                              InstrumentCmds.ENTER_LOG_DISPLAY_ACOUSTIC_AXIS_VELOCITIES,
@@ -761,21 +750,21 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
         self.eoln = INSTRUMENT_NEWLINE
 
         # create short alias for Directions class
-        Directions = MenuInstrumentProtocol.MenuTree.Directions
+        directions = MenuInstrumentProtocol.MenuTree.Directions
 
         # create MenuTree object for navigating to sub-menus
         menu = MenuInstrumentProtocol.MenuTree({
             SubMenues.ROOT: [],
-            SubMenues.SET_TIME: [Directions(InstrumentCmds.SET_TIME,
+            SubMenues.SET_TIME: [directions(InstrumentCmds.SET_TIME,
                                             InstrumentPrompts.SET_TIME)],
-            SubMenues.DEPLOY: [Directions(InstrumentCmds.DEPLOY_MENU,
+            SubMenues.DEPLOY: [directions(InstrumentCmds.DEPLOY_MENU,
                                           InstrumentPrompts.DEPLOY_MENU,
                                           20)],
-            SubMenues.CONFIGURATION: [Directions(InstrumentCmds.SYSTEM_CONFIGURATION_MENU,
+            SubMenues.CONFIGURATION: [directions(InstrumentCmds.SYSTEM_CONFIGURATION_MENU,
                                                  InstrumentPrompts.SYSTEM_CONFIGURATION_PASSWORD),
-                                      Directions(InstrumentCmds.SYSTEM_CONFIGURATION_PASSWORD,
+                                      directions(InstrumentCmds.SYSTEM_CONFIGURATION_PASSWORD,
                                                  InstrumentPrompts.SYSTEM_CONFIGURATION_MENU)],
-            SubMenues.CALIBRATION: [Directions(InstrumentCmds.CALIBRATION_MENU,
+            SubMenues.CALIBRATION: [directions(InstrumentCmds.CALIBRATION_MENU,
                                                InstrumentPrompts.CALIBRATION_MENU)],
         })
 
@@ -1069,8 +1058,9 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
         """
         Discover current state; can be COMMAND or AUTOSAMPLE.  If the
         instrument is sleeping consider that to be in command state.
-        @retval next_state, next_state
         """
+        next_state = ProtocolStates.COMMAND
+        result = []
 
         # try to get root menu prompt from the device using timeout if passed.
         # NOTE: this driver always tries to put instrument into command mode
@@ -1081,11 +1071,9 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
             # didn't get root menu prompt, so indicate that there is trouble
             # with the instrument
             raise InstrumentStateException('Unknown state.')
-        else:
-            # got root menu prompt, so device is in command mode
-            next_state = ProtocolStates.COMMAND
+        # got root menu prompt, so device is in command mode
 
-        return next_state, next_state
+        return next_state, (next_state, result)
 
     ########################################################################
     # State Command handlers.
@@ -1281,18 +1269,19 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
         @param args[0] parameter : value dict configuration
         @param kwargs['startup'] startup boolean: True if we are starting up,
             false otherwise
-        @retval (next_state, result) tuple, (None, None).
         """
+        next_state = None
         result = self._set_params(*args, **kwargs)
 
-        return None, result
+        return next_state, (next_state, result)
 
     def _handler_command_get(self, *args, **kwargs):
         """
         Get device parameters from the parameter dict.
         @param args[0] list of parameters to retrieve, or DriverParameter.ALL.
         """
-        return self._handler_get(*args, **kwargs)
+        next_state, result = self._handler_get(*args, **kwargs)
+        return next_state, result
 
     def _handler_command_start_autosample(self, *args, **kwargs):
         """
@@ -1300,18 +1289,18 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
         @retval (next_state, result) tuple, (ProtocolStates.AUTOSAMPLE,
         None) if successful.
         """
+        next_state = ProtocolStates.AUTOSAMPLE
+        result = self._navigate_and_execute(InstrumentCmds.DEPLOY_GO, dest_submenu=SubMenues.DEPLOY, timeout=20,
+                                            **kwargs)
 
-        self._navigate_and_execute(InstrumentCmds.DEPLOY_GO,
-                                   dest_submenu=SubMenues.DEPLOY,
-                                   timeout=20,
-                                   **kwargs)
-
-        return ProtocolStates.AUTOSAMPLE, (ProtocolStates.AUTOSAMPLE, None)
+        return next_state, (next_state, result)
 
     def _handler_command_start_direct(self):
         """
         """
-        return ProtocolStates.DIRECT_ACCESS, (ProtocolStates.DIRECT_ACCESS, None)
+        next_state = ProtocolStates.DIRECT_ACCESS
+        result = []
+        return next_state, (next_state, result)
 
     def _clock_sync(self):
         """
@@ -1321,31 +1310,31 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
         log.trace("_clock_sync: time set to %s" % str_time)
         dest_submenu = self._param_dict.get_menu_path_write(InstrumentParameters.SYS_CLOCK)
         command = self._param_dict.get_submenu_write(InstrumentParameters.SYS_CLOCK)
-        self._navigate_and_execute(command,
-                                   name=InstrumentParameters.SYS_CLOCK,
-                                   value=str_time,
-                                   dest_submenu=dest_submenu,
-                                   timeout=5)
+        return self._navigate_and_execute(command, name=InstrumentParameters.SYS_CLOCK, value=str_time,
+                                          dest_submenu=dest_submenu, timeout=5)
 
     def _handler_command_clock_sync(self, *args, **kwargs):
         """
         sync clock close to a second edge
         @retval (next_state, result) tuple, (None, None) if successful.
         """
-        self._clock_sync()
-        return None, (None, None)
+        next_state = None
+        result = self._clock_sync()
+        return next_state, (next_state, result)
 
     def _handler_command_acquire_status(self, *args, **kwargs):
         """
         Get device status
         """
+        next_state = None
+
         timeout = time.time() + STATUS_TIMEOUT
 
         self._generate_status_event()
 
         particles = self.wait_for_particles([DataParticleType.STATUS], timeout)
 
-        return None, (None, particles)
+        return next_state, (next_state, particles)
 
     ########################################################################
     # Autosample handlers.
@@ -1368,9 +1357,10 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
     def _handler_autosample_stop_autosample(self, *args, **kwargs):
         """
         Stop autosample and switch back to command mode.
-        @retval (next_state, result) tuple, (ProtocolStates.COMMAND,
-        None) if successful.
+        :retval: next_state, (next_state, result)
         """
+        next_state = ProtocolStates.COMMAND
+        result = []
 
         # Issue stop command and switch to command if successful.
         got_root_prompt = False
@@ -1385,17 +1375,17 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
         if not got_root_prompt:
             raise InstrumentTimeoutException()
 
-        return ProtocolStates.COMMAND, (ProtocolStates.COMMAND, None)
+        return next_state, (next_state, result)
 
     def _handler_autosample_clock_sync(self, *args, **kwargs):
         """
         Execute a clock sync from autosample mode.
-        @retval (next_state, result) tuple, (ProtocolState.AUTOSAMPLE,
-        None) if successful.
+        :retval: next_state, (next_state, result)
         """
-        self._clock_sync()
+        next_state = None
+        result = self._clock_sync()
 
-        return None, (None, None)
+        return next_state, (next_state, result)
 
     ########################################################################
     # Direct access handlers.
@@ -1420,14 +1410,18 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
     def _handler_direct_access_execute_direct(self, data):
         """
         """
+        next_state = None
+        result = []
         self._do_cmd_direct(data)
-        return None, None
+        return next_state, (next_state, result)
 
     def _handler_direct_access_stop_direct(self):
         """
         @throw InstrumentProtocolException on invalid command
         """
-        return ProtocolStates.COMMAND, (ProtocolStates.COMMAND, None)
+        next_state = ProtocolStates.COMMAND
+        result = []
+        return next_state, (next_state, result)
 
     ########################################################################
     # Private helpers.
