@@ -7,9 +7,6 @@ Release notes:
 
 initial version
 """
-__author__ = 'Rachel Manoni'
-__license__ = 'Apache 2.0'
-
 from _ctypes import sizeof
 from collections import OrderedDict
 from ctypes import BigEndianStructure, c_ushort, c_uint, c_ubyte
@@ -20,8 +17,6 @@ import os
 import re
 
 from mi.core.log import get_logger
-log = get_logger()
-
 from mi.core.common import BaseEnum
 from mi.core.exceptions import SampleException
 from mi.core.instrument.instrument_protocol import CommandResponseInstrumentProtocol
@@ -31,12 +26,16 @@ from mi.core.instrument.instrument_driver import DriverEvent
 from mi.core.instrument.instrument_driver import DriverAsyncEvent
 from mi.core.instrument.instrument_driver import DriverProtocolState
 from mi.core.instrument.instrument_driver import DriverParameter
-from mi.core.instrument.instrument_driver import ResourceAgentState
 from mi.core.instrument.data_particle import DataParticle
 from mi.core.instrument.data_particle import DataParticleKey
 from mi.core.instrument.data_particle import CommonDataParticleType
 from mi.core.instrument.chunker import StringChunker
 from mi.core.instrument.driver_dict import DriverDictKey
+
+__author__ = 'Rachel Manoni'
+__license__ = 'Apache 2.0'
+
+log = get_logger()
 
 NEWLINE = '\n'
 
@@ -406,7 +405,8 @@ class Protocol(CommandResponseInstrumentProtocol):
         Discover current state; can only be AUTOSAMPLE (instrument has no actual command mode).
         """
         next_state = ProtocolState.AUTOSAMPLE
-        return next_state, next_state
+        result = None
+        return next_state, (next_state, result)
 
     ########################################################################
     # Autosample handlers.

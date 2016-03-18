@@ -12,12 +12,7 @@ import struct
 import re
 from contextlib import contextmanager
 
-from mi.instrument.teledyne.workhorse.pd0_parser import AdcpPd0Record
-
 from mi.core.log import get_logger
-
-log = get_logger()
-
 from mi.core.common import Units, Prefixes
 from mi.core.instrument.protocol_param_dict import ParameterDictVisibility
 from mi.core.instrument.protocol_param_dict import ParameterDictType
@@ -39,13 +34,16 @@ from mi.core.driver_scheduler import TriggerType
 from mi.core.instrument.driver_dict import DriverDictKey
 from mi.core.util import dict_equal
 
-from mi.instrument.teledyne.workhorse.particles import AdcpCompassCalibrationDataParticle, \
-    AdcpSystemConfigurationDataParticle, AdcpAncillarySystemDataParticle, AdcpTransmitPathParticle, \
-    AdcpPd0ConfigParticle, AdcpPd0EngineeringParticle, \
+from mi.instrument.teledyne.workhorse.pd0_parser import AdcpPd0Record
+from mi.instrument.teledyne.workhorse.particles import \
+    AdcpCompassCalibrationDataParticle, AdcpSystemConfigurationDataParticle, AdcpAncillarySystemDataParticle, \
+    AdcpTransmitPathParticle, AdcpPd0ConfigParticle, AdcpPd0EngineeringParticle, \
     Pd0BeamParticle, Pd0CoordinateTransformType, Pd0EarthParticle, WorkhorseDataParticleType
 
 __author__ = 'Sung Ahn'
 __license__ = 'Apache 2.0'
+
+log = get_logger()
 
 # default timeout.
 TIMEOUT = 20
@@ -1254,7 +1252,9 @@ class WorkhorseProtocol(CommandResponseInstrumentProtocol):
     ########################################################################
 
     def _handler_command_run_test_200(self, *args, **kwargs):
-        return None, (None, self._run_test(*args, **kwargs))
+        next_state = None
+        result = self._run_test(*args, **kwargs)
+        return next_state, (next_state, result)
 
     def _handler_command_enter(self, *args, **kwargs):
         """
@@ -1281,18 +1281,19 @@ class WorkhorseProtocol(CommandResponseInstrumentProtocol):
         Switch into autosample mode.
         @return next_state, (next_state, result) if successful.
         """
+        next_state = WorkhorseProtocolState.AUTOSAMPLE
         result = None
+
         # Issue start command and switch to autosample if successful.
         try:
             self._sync_clock(WorkhorseInstrumentCmds.SET, WorkhorseParameter.TIME)
             self._start_logging()
 
-            next_state = WorkhorseProtocolState.AUTOSAMPLE
-
-            return next_state, (next_state, result)
         except InstrumentException:
             self._stop_logging()
             raise
+
+        return next_state, (next_state, result)
 
     def _handler_command_set(self, *args, **kwargs):
         """
@@ -1305,6 +1306,7 @@ class WorkhorseProtocol(CommandResponseInstrumentProtocol):
         @throws InstrumentProtocolException if set command could not be built or misunderstood.
         """
         next_state = None
+        result = None
         startup = False
 
         try:
@@ -1321,7 +1323,7 @@ class WorkhorseProtocol(CommandResponseInstrumentProtocol):
             raise InstrumentParameterException('Set parameters not a dict.')
 
         self._set_params(params, startup)
-        return next_state, None
+        return next_state, (next_state, None)
 
     def _handler_command_clock_sync(self, *args, **kwargs):
         """
@@ -1360,14 +1362,14 @@ class WorkhorseProtocol(CommandResponseInstrumentProtocol):
         return next_state, (next_state, result)
 
     def _handler_command_start_direct(self, *args, **kwargs):
-        result = None
-
         next_state = WorkhorseProtocolState.DIRECT_ACCESS
+        result = None
         return next_state, (next_state, result)
 
     def _handler_command_recover_autosample(self):
-        log.info('PD0 sample detected in COMMAND, returning to AUTOSAMPLE')
-        return WorkhorseProtocolState.AUTOSAMPLE, (WorkhorseProtocolState.AUTOSAMPLE, None)
+        next_state = WorkhorseProtocolState.AUTOSAMPLE
+        result = None
+        return next_state, (next_state, result)
 
     ######################################################
     # AUTOSAMPLE handlers

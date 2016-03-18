@@ -847,9 +847,9 @@ class Protocol(CommandResponseInstrumentProtocol):
     def _handler_unknown_discover(self, *args, **kwargs):
         """
         Discover current state
-        @return_value (next_state, result)
+        @return_value next_state, (next_state, result)
         """
-        return ProtocolState.COMMAND, ProtocolState.COMMAND
+        return ProtocolState.COMMAND, (ProtocolState.COMMAND, [])
 
     ########################################################################
     # Command handlers.

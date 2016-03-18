@@ -11,14 +11,14 @@ Release notes:
 Initial development
 """
 
-__author__ = 'Richard Han'
-__license__ = 'Apache 2.0'
-
 from mi.core.instrument.instrument_driver import SingleConnectionInstrumentDriver
 from mi.instrument.wetlabs.fluorometer.flort_d.driver import Parameter
 from mi.instrument.wetlabs.fluorometer.flort_d.driver import Prompt
 from mi.instrument.wetlabs.fluorometer.flort_d.driver import NEWLINE
 from mi.instrument.wetlabs.fluorometer.flort_d.driver import Protocol
+
+__author__ = 'Richard Han'
+__license__ = 'Apache 2.0'
 
 # Flord Instrument class
 FLORD_CLASS = 'flord'

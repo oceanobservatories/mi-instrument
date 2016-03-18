@@ -106,6 +106,9 @@ class InstrumentDriver(SingleConnectionInstrumentDriver):
         @return (next_state, result) tuple, (DriverConnectionState.CONNECTED, None) if successful.
         @raises InstrumentConnectionException if the attempt to connect failed.
         """
+        next_state = DriverConnectionState.CONNECTED
+        result = None
+
         self._build_protocol()
 
         # for Master first
@@ -127,19 +130,22 @@ class InstrumentDriver(SingleConnectionInstrumentDriver):
             log.error("Instrument Driver remaining in disconnected state.")
             raise
 
-        return DriverConnectionState.CONNECTED, None
+        return next_state, (next_state, result)
 
     def _handler_connected_disconnect(self, *args, **kwargs):
         """
         Disconnect to the device via port agent / logger and destroy the protocol FSM.
         @return (next_state, result) tuple, (DriverConnectionState.UNCONFIGURED, None) if successful.
         """
+        next_state = DriverConnectionState.UNCONFIGURED
+        result = None
+
         for connection in self._connection.values():
             connection.stop_comms()
 
         self._destroy_protocol()
 
-        return DriverConnectionState.UNCONFIGURED, None
+        return next_state, (next_state, result)
 
     def _handler_connected_connection_lost(self, *args, **kwargs):
         """
@@ -883,6 +889,7 @@ class Protocol(WorkhorseProtocol):
         @return next_state, (next_state, result) if successful.
         @throws InstrumentProtocolException from _do_cmd_resp.
         """
+        next_state = None
         super(Protocol, self)._do_acquire_status(connection=SlaveProtocol.FOURBEAM)
         super(Protocol, self)._do_acquire_status(connection=SlaveProtocol.FIFTHBEAM)
 
@@ -895,7 +902,7 @@ class Protocol(WorkhorseProtocol):
                                           WorkhorseDataParticleType.ADCP_ANCILLARY_SYSTEM_DATA,
                                           WorkhorseDataParticleType.ADCP_TRANSMIT_PATH])
 
-        return None, (None, result)
+        return next_state, (next_state, result)
 
     def _handler_command_recover_autosample(self):
         log.info('PD0 sample detected in COMMAND, not allowed in VADCP. Sending break')

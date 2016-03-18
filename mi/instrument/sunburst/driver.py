@@ -15,23 +15,13 @@ Release notes:
     Center
 """
 
-__author__ = 'Chris Wingard, Stuart Pearce & Kevin Stiemke'
-__license__ = 'Apache 2.0'
-
 import re
 import time
 import datetime
 
 from mi.core.log import get_logger
-
-
-log = get_logger()
-
 from mi.core.exceptions import InstrumentTimeoutException
-
-from mi.core.driver_scheduler import \
-    DriverSchedulerConfigKey, \
-    TriggerType
+from mi.core.driver_scheduler import DriverSchedulerConfigKey, TriggerType
 
 from mi.core.util import dict_equal
 from mi.core.common import BaseEnum, Units
@@ -46,7 +36,6 @@ from mi.core.instrument.instrument_driver import DriverParameter
 from mi.core.instrument.instrument_driver import ResourceAgentState
 from mi.core.instrument.instrument_driver import DriverConfigKey
 from mi.core.instrument.instrument_protocol import CommandResponseInstrumentProtocol
-from mi.core.instrument.instrument_protocol import InitializationType
 from mi.core.instrument.driver_dict import DriverDictKey
 from mi.core.instrument.protocol_param_dict import ParameterDictType
 from mi.core.instrument.protocol_param_dict import ParameterDictVisibility
@@ -58,6 +47,11 @@ from mi.core.exceptions import InstrumentProtocolException
 from mi.core.exceptions import InstrumentParameterException
 from mi.core.exceptions import NotImplementedException
 from mi.core.exceptions import SampleException
+
+__author__ = 'Chris Wingard, Stuart Pearce & Kevin Stiemke'
+__license__ = 'Apache 2.0'
+
+log = get_logger()
 
 ###
 #    Driver Constant Definitions
@@ -771,7 +765,7 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
         # commands sent sent to device to be filtered in responses for telnet DA
         self._sent_cmds = []
 
-        #self._startup = True
+        # self._startup = True
 
         self._queued_commands = QueuedCommands()
 
@@ -980,7 +974,7 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
         """
         Successfully received a sample from SAMI
         """
-
+        result = None
         log.debug('SamiProtocol._execution_success_to_command_states: %s', self.get_current_state())
 
         next_state = SamiProtocolState.COMMAND
@@ -988,54 +982,45 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
 
         self._async_agent_state_change(next_agent_state)
 
-        return next_state, next_state
+        return next_state, (next_state, result)
 
     def _execution_success_to_autosample_state(self, *args, **kwargs):
         """
         Successfully received a sample from SAMI
         """
-
+        result = None
         log.debug('SamiProtocol._execution_success_to_autosample_state: %s', self.get_current_state())
 
         next_state = SamiProtocolState.AUTOSAMPLE
-        next_agent_state = ResourceAgentState.STREAMING
 
-        self._async_agent_state_change(next_agent_state)
-
-        return next_state, next_state
+        return next_state, (next_state, result)
 
     def _execution_timeout_to_command_state(self, *args, **kwargs):
         """
         Sample timeout occurred.
         """
-
+        result = None
         log.error('SamiProtocol._execution_timeout_to_command_state(): %s: Timeout occurred', self.get_current_state())
 
         self._driver_event(DriverAsyncEvent.ERROR, InstrumentTimeoutException("in %s" % self.get_current_state()))
 
         next_state = SamiProtocolState.COMMAND
-        next_agent_state = ResourceAgentState.COMMAND
 
-        self._async_agent_state_change(next_agent_state)
-
-        return next_state, next_state
+        return next_state, (next_state, result)
 
     def _execution_timeout_to_autosample_state(self, *args, **kwargs):
         """
         Sample timeout occurred.
         """
-
+        result = None
         log.error('SamiProtocol._execution_timeout_to_autosample_state(): %s: Timeout occurred',
                   self.get_current_state())
 
         self._driver_event(DriverAsyncEvent.ERROR, InstrumentTimeoutException("in %s" % self.get_current_state()))
 
         next_state = SamiProtocolState.AUTOSAMPLE
-        next_agent_state = ResourceAgentState.STREAMING
 
-        self._async_agent_state_change(next_agent_state)
-
-        return next_state, next_state
+        return next_state, (next_state, result)
 
     ########################################################################
     # Acquire status handler.
@@ -1090,9 +1075,10 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
     def _handler_unknown_discover(self, *args, **kwargs):
         """
         Discover current state; can be UNKNOWN, COMMAND or REGULAR_SAMPLE
-        @retval (next_state, result)
+        @retval next_state, (next_state, result)
         """
-        return self._discover()
+        next_state, (_, result) = self._discover()
+        return next_state, (next_state, result)
 
     ########################################################################
     # Waiting handlers.
@@ -1120,8 +1106,8 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
         Discover current state; can be UNKNOWN or COMMAND
         @retval (next_state, result)
         """
-
         # Exit states can be either COMMAND or back to UNKNOWN.
+        next_state = SamiProtocolState.UNKNOWN
         result = None
 
         # try to discover our state
@@ -1140,7 +1126,7 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
 
         log.debug("_handler_waiting_discover: discover failed")
         log.debug("_handler_waiting_discover: next agent state: %s", ResourceAgentState.ACTIVE_UNKNOWN)
-        return SamiProtocolState.UNKNOWN, (SamiProtocolState.UNKNOWN, result)
+        return next_state, (next_state, result)
 
     ########################################################################
     # Command handlers.
@@ -1171,7 +1157,7 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
         result = None
 
         self._init_params()
-        return next_state, result
+        return next_state, (next_state, result)
 
     def _handler_command_exit(self, *args, **kwargs):
         """
@@ -1182,7 +1168,9 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
         """
         Get parameter
         """
-        return self._handler_get(*args, **kwargs)
+        next_state, result = self._handler_get(*args, **kwargs)
+        # TODO - change signature to match others - return next_state, (next_state, result)
+        return next_state, result
 
     def _handler_command_set(self, *args, **kwargs):
         """
@@ -1193,7 +1181,6 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
         @throws InstrumentParameterException if missing set parameters, if set parameters not ALL and
         not a dict, or if parameter can't be properly formatted.
         """
-
         next_state = None
         result = None
         startup = False
@@ -1220,15 +1207,13 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
 
         self._set_params(params, startup)
 
-        return next_state, result
+        return next_state, (next_state, result)
 
     def _handler_command_start_direct(self):
         """
         Start direct access
         """
-
         next_state = SamiProtocolState.DIRECT_ACCESS
-        next_agent_state = ResourceAgentState.DIRECT_ACCESS
         result = None
         return next_state, (next_state, result)
 
@@ -1236,9 +1221,7 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
         """
         Acquire a sample
         """
-
         next_state = SamiProtocolState.POLLED_SAMPLE
-        next_agent_state = ResourceAgentState.BUSY
         result = None
 
         return next_state, (next_state, result)
@@ -1266,7 +1249,6 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
         self._queued_commands.sample = SamiProtocolEvent.ACQUIRE_SAMPLE
 
         next_state = SamiProtocolState.AUTOSAMPLE
-        next_agent_state = ResourceAgentState.STREAMING
         result = None
 
         return next_state, (next_state, result)
@@ -1275,9 +1257,7 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
         """
         Flush with reagent
         """
-
         next_state = SamiProtocolState.REAGENT_FLUSH
-        next_agent_state = ResourceAgentState.BUSY
         result = None
 
         return next_state, (next_state, result)
@@ -1303,12 +1283,8 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
         """
 
     def _handler_direct_access_execute_direct(self, data):
-        """
-        """
-
         next_state = None
         result = None
-        next_agent_state = None
 
         self._do_cmd_direct(data)
 
@@ -1318,8 +1294,6 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
         return next_state, (next_state, result)
 
     def _handler_direct_access_stop_direct(self):
-        """
-        """
         result = None
 
         next_state, next_agent_state = self._discover()
@@ -1365,12 +1339,10 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
         """
         Stop autosample
         """
-
         # Cannot do in exit because we could be transitioning to the scheduled sample state
         self._remove_scheduler(SamiScheduledJob.AUTO_SAMPLE)
 
         next_state = SamiProtocolState.COMMAND
-        next_agent_state = ResourceAgentState.COMMAND
         result = None
 
         return next_state, (next_state, result)
@@ -1379,9 +1351,7 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
         """
         While in autosample mode, poll for samples using the scheduler
         """
-
         next_state = SamiProtocolState.SCHEDULED_SAMPLE
-        next_agent_state = ResourceAgentState.BUSY
         result = None
 
         return next_state, (next_state, result)
@@ -1394,8 +1364,7 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
         """
         Acquire sample
         """
-
-        log.debug('SamiProtocol._handler_take_sample(): %s', self.get_current_state())
+        next_state = result = None
 
         try:
             self._take_regular_sample()
@@ -1405,7 +1374,7 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
             log.error('SamiProtocol._handler_take_sample(): TIMEOUT')
             self._async_raise_fsm_event(SamiProtocolEvent.TIMEOUT)
 
-        return None, None
+        return next_state, (next_state, result)
 
     ########################################################################
     # Reagent flush handlers.
@@ -1589,6 +1558,7 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
         Discover current state; can be UNKNOWN, COMMAND or DISCOVER
         @retval (next_state, result)
         """
+        result = None
 
         # Clear command queue
         self._queued_commands.reset()
@@ -1620,7 +1590,7 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
 
             next_state = SamiProtocolState.COMMAND
 
-        return next_state, next_state
+        return next_state, (next_state, result)
 
     def _set_params(self, *args, **kwargs):
         """

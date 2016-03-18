@@ -863,14 +863,14 @@ class Protocol(CommandResponseInstrumentProtocol):
     def _handler_unknown_discover(self, *args, **kwargs):
         """
         Discover current state
-        @retval next_state, next_state
+        @retval next_state, (next_state, result)
         """
 
         # force to command mode, this instrument has no autosample mode
         next_state = ProtocolState.COMMAND
-        result = ResourceAgentState.COMMAND
+        result = None
 
-        return ProtocolState.COMMAND, ProtocolState.COMMAND
+        return next_state, (next_state, result)
 
     ########################################################################
     # Event handlers for COMMAND state.
