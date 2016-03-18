@@ -772,7 +772,7 @@ class InstrumentProtocol(object):
         except IndexError:
             raise InstrumentParameterException('Parameter required, none specified')
 
-        if isinstance(param_list, basestring):
+        if isinstance(param_list, str):
             param_list = [param_list]
         elif not isinstance(param_list, (list, tuple)):
             raise InstrumentParameterException("Expected a list, tuple or a string")
@@ -884,7 +884,7 @@ class CommandResponseInstrumentProtocol(InstrumentProtocol):
         if expected_prompt is None:
             prompt_list = self._get_prompts()
         else:
-            if isinstance(expected_prompt, basestring):
+            if isinstance(expected_prompt, str):
                 prompt_list = [expected_prompt]
             else:
                 prompt_list = expected_prompt
@@ -930,7 +930,7 @@ class CommandResponseInstrumentProtocol(InstrumentProtocol):
         if expected_prompt is None:
             prompt_list = self._get_prompts()
         else:
-            if isinstance(expected_prompt, basestring):
+            if isinstance(expected_prompt, str):
                 prompt_list = [expected_prompt]
             else:
                 prompt_list = expected_prompt

@@ -13,17 +13,10 @@ Release notes:
     SAMI2 operating structure.
 """
 
-__author__ = 'Stuart Pearce & Kevin Stiemke'
-__license__ = 'Apache 2.0'
-
 import re
 import time
 
 from mi.core.log import get_logger
-
-
-log = get_logger()
-
 from mi.core.exceptions import SampleException
 from mi.core.exceptions import InstrumentTimeoutException
 
@@ -32,9 +25,9 @@ from mi.core.instrument.chunker import StringChunker
 from mi.core.instrument.data_particle import DataParticle
 from mi.core.instrument.data_particle import DataParticleKey
 from mi.core.instrument.instrument_fsm import ThreadSafeFSM
-from mi.core.instrument.instrument_driver import ResourceAgentState
 from mi.core.instrument.protocol_param_dict import ParameterDictType
 from mi.core.instrument.protocol_param_dict import ParameterDictVisibility
+
 from mi.instrument.sunburst.driver import Prompt, SamiBatteryVoltageDataParticle, SamiThermistorVoltageDataParticle
 from mi.instrument.sunburst.driver import SamiDataParticleType
 from mi.instrument.sunburst.driver import SamiParameter
@@ -45,7 +38,6 @@ from mi.instrument.sunburst.driver import SamiInstrumentDriver
 from mi.instrument.sunburst.driver import SamiProtocol
 from mi.instrument.sunburst.driver import SAMI_ERROR_REGEX_MATCHER
 from mi.instrument.sunburst.driver import SAMI_REGULAR_STATUS_REGEX_MATCHER
-
 from mi.instrument.sunburst.driver import SAMI_NEWLINE
 from mi.instrument.sunburst.driver import SamiScheduledJob
 from mi.instrument.sunburst.driver import SamiProtocolState
@@ -55,6 +47,11 @@ from mi.instrument.sunburst.driver import SAMI_PUMP_TIMEOUT_OFFSET
 from mi.instrument.sunburst.driver import SAMI_NEW_LINE_REGEX_MATCHER
 from mi.instrument.sunburst.driver import SAMI_DEFAULT_TIMEOUT
 from mi.instrument.sunburst.driver import SAMI_PUMP_DURATION_UNITS
+
+__author__ = 'Stuart Pearce & Kevin Stiemke'
+__license__ = 'Apache 2.0'
+
+log = get_logger()
 
 ###
 #    Driver Constant Definitions
@@ -618,7 +615,6 @@ class Protocol(SamiProtocol):
         """
         Flush with reagent
         """
-
         next_state = ProtocolState.REAGENT_FLUSH_50ML
         result = None
 
@@ -628,7 +624,6 @@ class Protocol(SamiProtocol):
         """
         Flush with seawater
         """
-
         next_state = ProtocolState.SEAWATER_FLUSH
         result = None
 
@@ -642,6 +637,7 @@ class Protocol(SamiProtocol):
         """
         Execute pump command, sleep to make sure it completes and make sure pump is off
         """
+        next_state = result = None
 
         try:
 
@@ -671,7 +667,7 @@ class Protocol(SamiProtocol):
             log.error('Protocol._handler_seawater_flush_execute_2750ml(): TIMEOUT')
             self._async_raise_fsm_event(ProtocolEvent.TIMEOUT)
 
-        return None, None
+        return next_state, (next_state, result)
 
     ########################################################################
     # Reagent flush 100 ml handlers.
@@ -681,6 +677,7 @@ class Protocol(SamiProtocol):
         """
         Execute pump command, sleep to make sure it completes and make sure pump is off
         """
+        next_state = result = None
 
         try:
 
@@ -719,7 +716,7 @@ class Protocol(SamiProtocol):
             log.error('Protocol._handler_reagent_flush_enter_50ml(): TIMEOUT')
             self._async_raise_fsm_event(ProtocolEvent.TIMEOUT)
 
-        return None, None
+        return next_state, (next_state, result)
 
     ########################################################################
     # Seawater flush ml handlers.
@@ -729,6 +726,7 @@ class Protocol(SamiProtocol):
         """
         Execute pump command, sleep to make sure it completes and make sure pump is off
         """
+        next_state = result = None
 
         try:
 
@@ -756,7 +754,7 @@ class Protocol(SamiProtocol):
             log.error('Protocol._handler_seawater_flush_execute(): TIMEOUT')
             self._async_raise_fsm_event(ProtocolEvent.TIMEOUT)
 
-        return None, None
+        return next_state, (next_state, result)
 
     ########################################################################
     # Reagent flush handlers.
@@ -766,9 +764,9 @@ class Protocol(SamiProtocol):
         """
         Execute pump command, sleep to make sure it completes and make sure pump is off
         """
+        next_state = result = None
 
         try:
-
             param = Parameter.REAGENT_FLUSH_DURATION
             flush_duration = self._param_dict.get(param)
             flush_duration_str = self._param_dict.format(param, flush_duration)
@@ -793,7 +791,7 @@ class Protocol(SamiProtocol):
             log.error('SamiProtocol._handler_reagent_flush_execute(): TIMEOUT')
             self._async_raise_fsm_event(SamiProtocolEvent.TIMEOUT)
 
-        return None, None
+        return next_state, (next_state, result)
 
     def _filter_capabilities(self, events):
         """

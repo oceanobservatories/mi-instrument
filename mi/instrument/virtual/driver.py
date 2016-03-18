@@ -1,4 +1,3 @@
-
 """
 @package mi.instrument.noaa.ooicore.driver
 @file marine-integrations/mi/instrument/noaa/ooicore/driver.py
@@ -6,13 +5,13 @@
 @brief virtual driver, generates simulated particle data
 Release notes:
 """
+
 from collections import namedtuple
 import functools
 import random
 import sqlite3
 import string
 import time
-
 import ntplib
 
 from mi.core.common import BaseEnum
@@ -23,14 +22,12 @@ from mi.core.instrument.instrument_protocol import CommandResponseInstrumentProt
 from mi.core.instrument.instrument_driver import DriverEvent, DriverConfigKey
 from mi.core.instrument.instrument_driver import SingleConnectionInstrumentDriver
 from mi.core.instrument.instrument_driver import DriverAsyncEvent
-from mi.core.instrument.instrument_driver import ResourceAgentState
 from mi.core.instrument.instrument_driver import DriverProtocolState
 from mi.core.instrument.instrument_driver import DriverConnectionState
 from mi.core.exceptions import InstrumentParameterException, SampleException
 from mi.core.instrument.driver_dict import DriverDictKey
 from mi.core.instrument.protocol_param_dict import ProtocolParameterDict
 import mi.core.log
-
 
 __author__ = 'Pete Cable'
 __license__ = 'Apache 2.0'
@@ -123,65 +120,65 @@ class VirtualParticle(DataParticle):
     _parameters = None
     _streams = None
     _ignore = 'PD7,PD10,PD11,PD12,PD16,PD863'.split(',')
-    INT8_MIN = -2**7
-    INT8_MAX = 2**7 - 1
-    INT8_RANDOM = [ INT8_MIN,
-                    random.randint(INT8_MIN, INT8_MAX),
-                    random.randint(INT8_MIN, INT8_MAX),
-                    random.randint(INT8_MIN, INT8_MAX),
-                    INT8_MAX ]
+    INT8_MIN = -2 ** 7
+    INT8_MAX = 2 ** 7 - 1
+    INT8_RANDOM = [INT8_MIN,
+                   random.randint(INT8_MIN, INT8_MAX),
+                   random.randint(INT8_MIN, INT8_MAX),
+                   random.randint(INT8_MIN, INT8_MAX),
+                   INT8_MAX]
 
-    UINT8_MAX = 2**8 - 1
-    UINT8_RANDOM = [ 0,
-                     random.randint(0, UINT8_MAX),
-                     random.randint(0, UINT8_MAX),
-                     random.randint(0, UINT8_MAX),
-                     UINT8_MAX ]
+    UINT8_MAX = 2 ** 8 - 1
+    UINT8_RANDOM = [0,
+                    random.randint(0, UINT8_MAX),
+                    random.randint(0, UINT8_MAX),
+                    random.randint(0, UINT8_MAX),
+                    UINT8_MAX]
 
-    INT16_MIN = -2**15
-    INT16_MAX = 2**15 - 1
-    INT16_RANDOM = [ INT16_MIN,
-                     random.randint(INT16_MIN, INT16_MAX),
-                     random.randint(INT16_MIN, INT16_MAX),
-                     random.randint(INT16_MIN, INT16_MAX),
-                     INT16_MAX ]
+    INT16_MIN = -2 ** 15
+    INT16_MAX = 2 ** 15 - 1
+    INT16_RANDOM = [INT16_MIN,
+                    random.randint(INT16_MIN, INT16_MAX),
+                    random.randint(INT16_MIN, INT16_MAX),
+                    random.randint(INT16_MIN, INT16_MAX),
+                    INT16_MAX]
 
-    UINT16_MAX = 2**16 - 1
-    UINT16_RANDOM = [ 0,
-                      random.randint(0, UINT16_MAX),
-                      random.randint(0, UINT16_MAX),
-                      random.randint(0, UINT16_MAX),
-                      UINT16_MAX ]
+    UINT16_MAX = 2 ** 16 - 1
+    UINT16_RANDOM = [0,
+                     random.randint(0, UINT16_MAX),
+                     random.randint(0, UINT16_MAX),
+                     random.randint(0, UINT16_MAX),
+                     UINT16_MAX]
 
-    INT32_MIN = -2**31
-    INT32_MAX = 2**31 - 1
-    INT32_RANDOM = [ INT32_MIN,
-                     random.randint(INT32_MIN, INT32_MAX),
-                     random.randint(INT32_MIN, INT32_MAX),
-                     random.randint(INT32_MIN, INT32_MAX),
-                     INT32_MAX ]
+    INT32_MIN = -2 ** 31
+    INT32_MAX = 2 ** 31 - 1
+    INT32_RANDOM = [INT32_MIN,
+                    random.randint(INT32_MIN, INT32_MAX),
+                    random.randint(INT32_MIN, INT32_MAX),
+                    random.randint(INT32_MIN, INT32_MAX),
+                    INT32_MAX]
 
-    UINT32_MAX = 2**32 - 1
-    UINT32_RANDOM = [ 0,
-                      random.randint(0, UINT32_MAX),
-                      random.randint(0, UINT32_MAX),
-                      random.randint(0, UINT32_MAX),
-                      UINT32_MAX ]
+    UINT32_MAX = 2 ** 32 - 1
+    UINT32_RANDOM = [0,
+                     random.randint(0, UINT32_MAX),
+                     random.randint(0, UINT32_MAX),
+                     random.randint(0, UINT32_MAX),
+                     UINT32_MAX]
 
-    INT64_MIN = -2**63
-    INT64_MAX = 2**63 - 1
-    INT64_RANDOM = [ INT64_MIN,
-                     random.randint(INT64_MIN, INT64_MAX),
-                     random.randint(INT64_MIN, INT64_MAX),
-                     random.randint(INT64_MIN, INT64_MAX),
-                     INT64_MAX ]
+    INT64_MIN = -2 ** 63
+    INT64_MAX = 2 ** 63 - 1
+    INT64_RANDOM = [INT64_MIN,
+                    random.randint(INT64_MIN, INT64_MAX),
+                    random.randint(INT64_MIN, INT64_MAX),
+                    random.randint(INT64_MIN, INT64_MAX),
+                    INT64_MAX]
 
-    UINT64_MAX = 2**64 - 1
-    UINT64_RANDOM = [ 0,
-                      random.randint(0, UINT64_MAX),
-                      random.randint(0, UINT64_MAX),
-                      random.randint(0, UINT64_MAX),
-                      UINT64_MAX ]
+    UINT64_MAX = 2 ** 64 - 1
+    UINT64_RANDOM = [0,
+                     random.randint(0, UINT64_MAX),
+                     random.randint(0, UINT64_MAX),
+                     random.randint(0, UINT64_MAX),
+                     UINT64_MAX]
 
     FLOAT_RANDOM = [random.random() for _ in xrange(5)]
 
@@ -201,7 +198,7 @@ class VirtualParticle(DataParticle):
         if self._parameters is None or self._streams is None:
             self._load_streams()
 
-        if not self.raw_data in self._streams:
+        if self.raw_data not in self._streams:
             raise SampleException('Unknown stream %r' % self.raw_data)
 
         self._data_particle_type = self.raw_data
@@ -243,7 +240,7 @@ class VirtualParticle(DataParticle):
             else:
                 log.debug('Unhandled parameter value encoding: %s', p)
             if val is not None:
-                if 'array' in p.parameter_type and not p.value_encoding in ['str', 'string']:
+                if 'array' in p.parameter_type and p.value_encoding not in ['str', 'string']:
                     val = [val] * 2
                 values.append({'value_id': p.name, 'value': val})
 
@@ -294,7 +291,7 @@ class InstrumentDriver(SingleConnectionInstrumentDriver):
         self._connection = PortAgentClientStub()
         next_state = DriverConnectionState.DISCONNECTED
 
-        return next_state, result
+        return next_state, (next_state, result)
 
     ########################################################################
     # Disconnected handlers.
@@ -324,8 +321,9 @@ class InstrumentDriver(SingleConnectionInstrumentDriver):
         self._build_protocol()
         self._protocol._connection = self._connection
         next_state = DriverConnectionState.CONNECTED
+        result = None
 
-        return next_state, None
+        return next_state, (next_state, result)
 
 
 ###########################################################################
@@ -485,8 +483,6 @@ class Protocol(CommandResponseInstrumentProtocol):
             self._param_dict.add(param, '', None, None)
             self._param_dict.set_value(param, params[param])
 
-        return None, None
-
     def set_init_params(self, config):
         if not isinstance(config, dict):
             raise InstrumentParameterException("Invalid init config format")
@@ -512,7 +508,9 @@ class Protocol(CommandResponseInstrumentProtocol):
         Process discover event
         @return next_state, next_agent_state
         """
-        return ProtocolState.COMMAND, ResourceAgentState.IDLE
+        next_state = ProtocolState.COMMAND
+        result = None
+        return next_state, (next_state, result)
 
     ########################################################################
     # Autosample handlers.
@@ -533,8 +531,10 @@ class Protocol(CommandResponseInstrumentProtocol):
         Stop autosample
         @return next_state, (next_state, result)
         """
+        next_state = ProtocolState.COMMAND
+        result = None
         self._delete_all_schedulers()
-        return ProtocolState.COMMAND, (ProtocolState.COMMAND, None)
+        return next_state, (next_state, result)
 
     ########################################################################
     # Command handlers.
@@ -559,14 +559,18 @@ class Protocol(CommandResponseInstrumentProtocol):
         @param args[0] parameter : value dict.
         @throws InstrumentParameterException
         """
-        return self._set_params(*args, **kwargs)
+        next_state = result = None
+        self._set_params(*args, **kwargs)
+        return next_state, (next_state, result)
 
     def _handler_command_start_autosample(self):
         """
         Start autosample
         @return next_state, (next_state, result)
         """
-        return ProtocolState.AUTOSAMPLE, (ProtocolState.AUTOSAMPLE, None)
+        next_state = ProtocolState.AUTOSAMPLE
+        result = None
+        return next_state, (next_state, result)
 
     ########################################################################
     # Generic handlers.

@@ -3,10 +3,7 @@
 @file marine-integrations/mi/instrument/subc_control/onecam/ooicore/driver.py
 @author Tapana Gupta
 @brief Driver for the CAMHD instrument
-
 """
-__author__ = 'Tapana Gupta'
-__license__ = 'Apache 2.0'
 
 import re
 import json
@@ -16,8 +13,6 @@ from mi.core.instrument.driver_dict import DriverDictKey
 from mi.core.instrument.protocol_param_dict import ParameterDictType
 
 from mi.core.log import get_logger
-log = get_logger()
-
 from mi.core.common import BaseEnum, Units
 from mi.core.exceptions import InstrumentProtocolException
 from mi.core.exceptions import InstrumentParameterException
@@ -30,7 +25,6 @@ from mi.core.instrument.instrument_driver import DriverEvent
 from mi.core.instrument.instrument_driver import DriverAsyncEvent
 from mi.core.instrument.instrument_driver import DriverProtocolState
 from mi.core.instrument.instrument_driver import DriverParameter
-from mi.core.instrument.instrument_driver import ResourceAgentState
 from mi.core.instrument.protocol_param_dict import ParameterDictVisibility
 from mi.core.instrument.data_particle import DataParticle
 from mi.core.instrument.data_particle import DataParticleKey
@@ -38,6 +32,11 @@ from mi.core.instrument.data_particle import CommonDataParticleType
 from mi.core.instrument.chunker import StringChunker
 from mi.core.driver_scheduler import DriverSchedulerConfigKey
 from mi.core.driver_scheduler import TriggerType
+
+__author__ = 'Tapana Gupta'
+__license__ = 'Apache 2.0'
+
+log = get_logger()
 
 # newline.
 NEWLINE = '\n'
@@ -88,6 +87,7 @@ CAMHD_STATUS_REGEX = r'(ADVAL)(.*)' + NEWLINE
 CAMHD_STATUS_MATCHER = re.compile(CAMHD_STATUS_REGEX, re.DOTALL)
 
 ADREAD_DATA_POSITION = 2
+
 
 class DataParticleType(BaseEnum):
     """
@@ -151,7 +151,7 @@ class Command(BaseEnum):
     SET = 'set'
     START = 'START'
     STOP = 'STOP'
-    LOOKAT= 'LOOKAT'
+    LOOKAT = 'LOOKAT'
     LIGHTS = 'LIGHTS'
     CAMERA = 'CAMERA'
     ADREAD = 'ADREAD'
@@ -362,8 +362,7 @@ class CAMHDProtocol(CommandResponseInstrumentProtocol):
         CommandResponseInstrumentProtocol.__init__(self, prompts, newline, driver_event)
 
         # Build protocol state machine.
-        self._protocol_fsm = ThreadSafeFSM(ProtocolState, ProtocolEvent,
-                            ProtocolEvent.ENTER, ProtocolEvent.EXIT)
+        self._protocol_fsm = ThreadSafeFSM(ProtocolState, ProtocolEvent, ProtocolEvent.ENTER, ProtocolEvent.EXIT)
 
         # keep track of whether the camera is streaming video
         self._streaming = False
@@ -458,6 +457,7 @@ class CAMHDProtocol(CommandResponseInstrumentProtocol):
     def sieve_function(raw_data):
         """
         Chunker sieve method to help the chunker identify chunks.
+        :param raw_data: raw instrument data
         @returns a list of chunks identified, if any.
         The chunks are all the same type.
         """
@@ -555,11 +555,11 @@ class CAMHDProtocol(CommandResponseInstrumentProtocol):
         and value formatting function for set commands.
         """
 
-        #TODO: leave this regex here for now - we've only tested against a simulator
+        # TODO: leave this regex here for now - we've only tested against a simulator
         # the real instrument might give us floats, then we'll need this
-        #FLOAT_REGEX = r'((?:[+-]?[0-9]|[1-9][0-9])+\.[0-9]+)'
+        # FLOAT_REGEX = r'((?:[+-]?[0-9]|[1-9][0-9])+\.[0-9]+)'
 
-        INT_REGEX = r'([+-]?[0-9]+)'
+        int_regex = r'([+-]?[0-9]+)'
 
         # Add parameter handlers to parameter dict.
         self._param_dict.add(Parameter.ENDPOINT,
@@ -575,7 +575,7 @@ class CAMHDProtocol(CommandResponseInstrumentProtocol):
                              visibility=ParameterDictVisibility.READ_ONLY)
 
         self._param_dict.add(Parameter.PAN_POSITION,
-                             r'"pan": ' + INT_REGEX,
+                             r'"pan": ' + int_regex,
                              lambda match: float(match.group(1)),
                              str,
                              type=ParameterDictType.FLOAT,
@@ -588,7 +588,7 @@ class CAMHDProtocol(CommandResponseInstrumentProtocol):
                              visibility=ParameterDictVisibility.READ_WRITE)
 
         self._param_dict.add(Parameter.TILT_POSITION,
-                             r'"tilt": ' + INT_REGEX,
+                             r'"tilt": ' + int_regex,
                              lambda match: float(match.group(1)),
                              str,
                              type=ParameterDictType.FLOAT,
@@ -614,7 +614,7 @@ class CAMHDProtocol(CommandResponseInstrumentProtocol):
                              visibility=ParameterDictVisibility.READ_WRITE)
 
         self._param_dict.add(Parameter.HEADING,
-                             r'"heading": ' + INT_REGEX,
+                             r'"heading": ' + int_regex,
                              lambda match: float(match.group(1)),
                              str,
                              type=ParameterDictType.FLOAT,
@@ -627,7 +627,7 @@ class CAMHDProtocol(CommandResponseInstrumentProtocol):
                              visibility=ParameterDictVisibility.READ_ONLY)
 
         self._param_dict.add(Parameter.PITCH,
-                             r'"pitch": ' + INT_REGEX,
+                             r'"pitch": ' + int_regex,
                              lambda match: float(match.group(1)),
                              str,
                              type=ParameterDictType.FLOAT,
@@ -667,7 +667,7 @@ class CAMHDProtocol(CommandResponseInstrumentProtocol):
                              visibility=ParameterDictVisibility.READ_WRITE)
 
         self._param_dict.add(Parameter.ZOOM_LEVEL,
-                             r'"zoom": ' + INT_REGEX,
+                             r'"zoom": ' + int_regex,
                              lambda match: int(match.group(1)),
                              str,
                              type=ParameterDictType.INT,
@@ -1008,14 +1008,14 @@ class CAMHDProtocol(CommandResponseInstrumentProtocol):
         Discover current state; can be COMMAND or AUTOSAMPLE or UNKNOWN.
         @return (next_protocol_state, next_protocol_state)
         """
-
-        log.debug("trying to discover state...")
+        next_state = ProtocolState.COMMAND
+        result = None
 
         if self._scheduler_callback is not None:
             if self._scheduler_callback.get(ScheduledJob.SAMPLE):
                 return ProtocolState.AUTOSAMPLE, ProtocolState.AUTOSAMPLE
 
-        return ProtocolState.COMMAND, ProtocolState.COMMAND
+        return next_state, (next_state, result)
 
     ########################################################################
     # Command handlers.
@@ -1024,6 +1024,9 @@ class CAMHDProtocol(CommandResponseInstrumentProtocol):
     def start_scheduled_job(self, param, schedule_job, protocol_event):
         """
         Add a scheduled job
+        :param param: if set to 'Auto_Capture_Duration', use the configured duration
+        :param schedule_job: currently scheduled job identifier
+        :param protocol_event: protocol event to use for new job
         """
         self.stop_scheduled_job(schedule_job)
 
@@ -1061,6 +1064,7 @@ class CAMHDProtocol(CommandResponseInstrumentProtocol):
     def get_interval_seconds(self, param):
         """
         Helper to get Interval in seconds from a string time value
+        :param param: interval in HH:MM:SS format
         """
         (hours, minutes, seconds) = (int(val) for val in self._param_dict.get(param).split(':'))
         return hours * 3600 + minutes * 60 + seconds
@@ -1068,7 +1072,7 @@ class CAMHDProtocol(CommandResponseInstrumentProtocol):
     def stop_scheduled_job(self, schedule_job):
         """
         Remove the scheduled job
-        @param schedule_job scheduling job.
+        :param schedule_job: scheduling job
         """
         log.debug("Attempting to remove the scheduler")
         if self._scheduler is not None:
@@ -1087,9 +1091,7 @@ class CAMHDProtocol(CommandResponseInstrumentProtocol):
 
         # Update parameters - get values from Instrument
         # No startup parameters to apply here, simply get Instrument values
-        log.debug("_handler_command_enter: Entering command state")
-
-        #stop streaming, just to make sure we get a fresh start
+        # stop streaming, just to make sure we get a fresh start
         self._handler_command_stop_streaming()
 
         self._update_params()
@@ -1108,8 +1110,6 @@ class CAMHDProtocol(CommandResponseInstrumentProtocol):
                                      ScheduledJob.ACQUIRE_STATUS,
                                      ProtocolEvent.ACQUIRE_STATUS)
 
-        log.debug("_handler_command_enter: Entered command state")
-
     def _handler_command_exit(self, *args, **kwargs):
         """
         Exit command state.
@@ -1123,7 +1123,9 @@ class CAMHDProtocol(CommandResponseInstrumentProtocol):
         @param args[0] list of parameters to retrieve, or DriverParameter.ALL.
         @retval returns (next_state, result) where result is a dict {}.
         """
-        return self._handler_get(*args, **kwargs)
+        next_state, result = self._handler_get(*args, **kwargs)
+        # TODO - match return signature for other handlers - return next_state (next_state, result)
+        return next_state, result
 
     def _handler_command_set(self, *args, **kwargs):
 
@@ -1165,7 +1167,7 @@ class CAMHDProtocol(CommandResponseInstrumentProtocol):
 
         result = self._set_params(params)
 
-        return next_state, result
+        return next_state, (next_state, result)
 
     def _set_params(self, *args, **kwargs):
         """
@@ -1195,12 +1197,12 @@ class CAMHDProtocol(CommandResponseInstrumentProtocol):
         # we send the lookat only once, but with the user provided values for both pan and tilt.
         for key, val in params.iteritems():
 
-            #These are driver specific parameters. They are not set on the instrument.
+            # These are driver specific parameters. They are not set on the instrument.
             if key in [Parameter.SAMPLE_INTERVAL, Parameter.STATUS_INTERVAL, Parameter.AUTO_CAPTURE_DURATION]:
                 filtered_params.pop(key)
             else:
 
-                #First, start streaming, if we aren't already. We need to be streaming
+                # First, start streaming, if we aren't already. We need to be streaming
                 # to set Instrument Parameters
                 if not self._streaming:
                     self._handler_start_streaming(**kwargs)
@@ -1294,12 +1296,12 @@ class CAMHDProtocol(CommandResponseInstrumentProtocol):
         """
         Start streaming video in command mode.
         """
-
         next_state = None
+        result = None
 
         self._handler_start_streaming(**kwargs)
 
-        return next_state, (next_state, None)
+        return next_state, (next_state, result)
 
     def _handler_start_streaming(self, **kwargs):
         """
@@ -1317,7 +1319,6 @@ class CAMHDProtocol(CommandResponseInstrumentProtocol):
         """
         Stop streaming video.
         """
-
         next_state = None
 
         # Send command to instrument to stop streaming
@@ -1326,7 +1327,7 @@ class CAMHDProtocol(CommandResponseInstrumentProtocol):
         if resp.startswith('ERROR'):
             log.warn("Unable to Stop Streaming. In response to STOP command, Instrument returned: %s" % resp)
 
-        return next_state, (next_state, None)
+        return next_state, (next_state, resp)
 
     def _handler_command_get_status_streaming(self):
         """
@@ -1408,7 +1409,7 @@ class CAMHDProtocol(CommandResponseInstrumentProtocol):
         else:
             log.error("Capturing Duration set to 0: Not Performing Capture.")
 
-        #First, start streaming
+        # First, start streaming
         self._handler_start_streaming(**kwargs)
 
         # Set pan/tilt, lights, camera to user defined position
@@ -1423,15 +1424,14 @@ class CAMHDProtocol(CommandResponseInstrumentProtocol):
 
         # This sends the 'CAMERA' command to the instrument with user set values for Zoom/Lasers state
         # populated from the param dict
-        self._do_cmd_resp(Command.SET, Parameter.ZOOM_LEVEL, response_regex=CAMERA_RESPONSE_PATTERN)
+        resp = self._do_cmd_resp(Command.SET, Parameter.ZOOM_LEVEL, response_regex=CAMERA_RESPONSE_PATTERN)
 
-        return next_state, (next_state, None)
+        return next_state, (next_state, resp)
 
     def _handler_autosample_stop_streaming(self):
         """
         Stop streaming video.
         """
-
         # Remove the job that was scheduled to stop streaming
         self._remove_scheduler(ScheduledJob.STOP_CAPTURE)
 
@@ -1443,7 +1443,7 @@ class CAMHDProtocol(CommandResponseInstrumentProtocol):
         if resp.startswith('ERROR'):
             log.warn("Unable to Stop Streaming. In response to STOP command, Instrument returned: %s" % resp)
 
-        return next_state, (next_state, None)
+        return next_state, (next_state, resp)
 
     def _handler_autosample_stop_autosample(self, *args, **kwargs):
         """
@@ -1452,7 +1452,6 @@ class CAMHDProtocol(CommandResponseInstrumentProtocol):
         incorrect prompt received.
         """
         result = None
-
         next_state = ProtocolState.COMMAND
 
         # If currently streaming, send STOP to instrument
@@ -1494,7 +1493,7 @@ class CAMHDProtocol(CommandResponseInstrumentProtocol):
         # add sent command to list for 'echo' filtering in callback
         self._sent_cmds.append(data)
 
-        return (next_state, (next_state, result))
+        return next_state, (next_state, result)
 
     def _handler_direct_access_stop_direct(self):
         """

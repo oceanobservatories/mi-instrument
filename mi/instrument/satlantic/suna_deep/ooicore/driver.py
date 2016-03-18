@@ -7,16 +7,12 @@ Release notes:
 
 initial_rev
 """
-__author__ = 'Rachel Manoni'
-__license__ = 'Apache 2.0'
-
 import re
 import time
 import datetime
 
 from mi.core.common import BaseEnum, Units, Prefixes
 from mi.core.log import get_logger, get_logging_metaclass
-log = get_logger()
 
 from mi.core.instrument.instrument_protocol import CommandResponseInstrumentProtocol, InitializationType
 from mi.core.instrument.instrument_fsm import InstrumentFSM
@@ -25,7 +21,6 @@ from mi.core.instrument.instrument_driver import DriverEvent
 from mi.core.instrument.instrument_driver import DriverAsyncEvent
 from mi.core.instrument.instrument_driver import DriverProtocolState
 from mi.core.instrument.instrument_driver import DriverParameter
-from mi.core.instrument.instrument_driver import ResourceAgentState
 from mi.core.instrument.data_particle import DataParticle
 from mi.core.instrument.data_particle import DataParticleKey
 from mi.core.instrument.data_particle import CommonDataParticleType
@@ -37,8 +32,14 @@ from mi.core.exceptions import SampleException
 from mi.core.exceptions import InstrumentProtocolException
 from mi.core.exceptions import InstrumentParameterException
 from mi.core.exceptions import InstrumentException
-
 from mi.core.time_tools import get_timestamp_delayed
+
+log = get_logger()
+
+
+__author__ = 'Rachel Manoni'
+__license__ = 'Apache 2.0'
+
 
 # newline.
 NEWLINE = '\r\n'
@@ -1380,6 +1381,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         """
         Generic exit handler, do nothing
         """
+        pass
 
     def _handler_generic_enter(self, *args, **kwargs):
         """
@@ -1394,16 +1396,19 @@ class Protocol(CommandResponseInstrumentProtocol):
         """
         Discover current state
         Always starts in command state
-        @retval next_state, result
+        @retval next_state, (next_state, result)
         """
+        next_state = ProtocolState.COMMAND
+        result = None
+
         self._wakeup(20)
         ret_prompt = self._send_dollar()
 
-        #came from autosampling/polling, need to resend '$' one more time to get it into command mode
+        # came from autosampling/polling, need to resend '$' one more time to get it into command mode
         if ret_prompt == Prompt.POLLED:
             self._send_dollar()
 
-        return ProtocolState.COMMAND, ProtocolState.COMMAND
+        return next_state, (next_state, result)
 
     ########################################################################
     # Command handlers.
@@ -1423,6 +1428,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         """
         Start acquire sample
         """
+        next_state = None
         timeout = time.time() + TIMEOUT
 
         self._do_cmd_no_resp(InstrumentCommand.EXIT)
@@ -1431,18 +1437,19 @@ class Protocol(CommandResponseInstrumentProtocol):
 
         ret_prompt = self._send_dollar()
 
-        #came from autosampling/polling, need to resend '$' one more time to get it into command mode
+        # came from autosampling/polling, need to resend '$' one more time to get it into command mode
         if ret_prompt == Prompt.POLLED:
             self._send_dollar()
 
         particles = self.wait_for_particles([DataParticleType.SUNA_SAMPLE], timeout)
 
-        return None, (None, particles)
+        return next_state, (next_state, particles)
 
     def _handler_command_acquire_status(self):
         """
         Start acquire status
         """
+        next_state = None
         timeout = time.time() + TIMEOUT
 
         status_output = self._do_cmd_resp(InstrumentCommand.STATUS, expected_prompt=[Prompt.OK])
@@ -1457,36 +1464,44 @@ class Protocol(CommandResponseInstrumentProtocol):
 
         particles = self.wait_for_particles([DataParticleType.SUNA_STATUS], timeout)
 
-        return None, (None, particles)
+        return next_state, (next_state, particles)
 
     def _handler_command_start_direct(self):
         """
         Start direct access
         """
-        return ProtocolState.DIRECT_ACCESS, (ProtocolState.DIRECT_ACCESS, None)
+        next_state = ProtocolState.DIRECT_ACCESS
+        result = None
+        return next_state, (next_state, result)
 
     def _handler_command_start_autosample(self):
         """
         Start autosampling
         """
+        next_state = ProtocolState.AUTOSAMPLE
+        result = None
+
         self._do_cmd_no_resp(InstrumentCommand.SET, Parameter.OPERATION_MODE, InstrumentCommandArgs.CONTINUOUS)
+        # TODO - check to see if delay is required between sending commands
         self._do_cmd_no_resp(InstrumentCommand.EXIT)
 
-        return ProtocolState.AUTOSAMPLE, (ProtocolState.AUTOSAMPLE, None)
+        return next_state, (next_state, result)
 
     def _handler_command_get(self, *args, **kwargs):
         """
         Get parameter(s)
         @param params List of parameters to get
         """
-        return self._handler_get(*args, **kwargs)
+        next_state, result = self._handler_get(*args, **kwargs)
+        return next_state, (next_state, result)
 
     def _handler_command_set(self, params, *args):
         """
         Set parameter
         """
+        next_state = result = None
         self._set_params(params, *args)
-        return None, None
+        return next_state, (next_state, result)
 
     def _set_params(self, *args, **kwargs):
         """
@@ -1544,30 +1559,37 @@ class Protocol(CommandResponseInstrumentProtocol):
         """
         Test the instrument state
         """
+        next_state = None
+        result = None
         self._do_cmd_no_resp(InstrumentCommand.SELFTEST)
-        return None, (None, None)
+        return next_state, (next_state, result)
 
     def _handler_command_exit(self):
         """
         Exit the command state
         """
+        next_state = ProtocolState.UNKNOWN
+        result = None
+
         self._do_cmd_no_resp(InstrumentCommand.EXIT)
+        # TODO - check to see if a delay is necessary between the no-response commands (usually is)
         self._do_cmd_no_resp(InstrumentCommand.SLEEP)
 
-        return ProtocolState.UNKNOWN, (ProtocolState.UNKNOWN, None)
+        return next_state, (next_state, result)
 
     def _handler_command_clock_sync(self, *args, **kwargs):
         """
         Sync clock close to a second edge
         set clock YYYY/MM/DD hh:mm:ss
         """
+        next_state = None
         str_time = get_timestamp_delayed("%Y/%m/%d %H:%M:%S")
         log.debug('syncing clock to: %s', str_time)
 
-        self._do_cmd_resp(InstrumentCommand.SET_CLOCK, str_time, timeout=TIMEOUT,
-                          expected_prompt=[Prompt.OK, Prompt.ERROR])
+        result = self._do_cmd_resp(InstrumentCommand.SET_CLOCK, str_time, timeout=TIMEOUT,
+                                   expected_prompt=[Prompt.OK, Prompt.ERROR])
 
-        return None, (None, None)
+        return next_state, (next_state, result)
 
     ########################################################################
     # Direct access handlers.
@@ -1583,19 +1605,22 @@ class Protocol(CommandResponseInstrumentProtocol):
         """
         Send commands from operator directly to the instrument
         """
-        self._do_cmd_direct(data)
+        next_state = None
+        result = self._do_cmd_direct(data)
 
         # add sent command to list for 'echo' filtering in callback
         self._sent_cmds.append(data)
 
-        return None, (None, None)
+        return next_state, (next_state, result)
 
     def _handler_direct_access_stop_direct(self):
         """
         Stopping DA, restore the DA parameters to their previous value
         """
+        next_state = ProtocolState.COMMAND
+        result = None
         self._init_params()
-        return ProtocolState.COMMAND, (ProtocolState.COMMAND, None)
+        return next_state, (next_state, result)
 
     ########################################################################
     # Poll handlers.
@@ -1612,41 +1637,45 @@ class Protocol(CommandResponseInstrumentProtocol):
         """
         Get a sample from the SUNA
         """
+        next_state = None
         timeout = time.time() + TIMEOUT
         self._start_poll()
         self._do_cmd_resp(InstrumentCommand.MEASURE, 1, expected_prompt=Prompt.POLLED, timeout=POLL_TIMEOUT)
         self._stop_poll()
         particles = self.wait_for_particles([DataParticleType.SUNA_SAMPLE], timeout)
-        return None, (None, particles)
+        return next_state, (next_state, particles)
 
     def _handler_poll_measure_n(self):
         """
         Measure N Light Samples
         """
+        next_state = None
         self._start_poll()
-        self._do_cmd_resp(InstrumentCommand.MEASURE, self._param_dict.get(Parameter.NUM_LIGHT_SAMPLES),
+        result = self._do_cmd_resp(InstrumentCommand.MEASURE, self._param_dict.get(Parameter.NUM_LIGHT_SAMPLES),
                           expected_prompt=Prompt.POLLED, timeout=POLL_TIMEOUT)
         self._stop_poll()
-        return None, (None, None)
+        return next_state, (next_state, result)
 
     def _handler_poll_measure_0(self):
         """
         Measure 0 Dark Sample
         """
+        next_state = None
         self._start_poll()
-        self._do_cmd_resp(InstrumentCommand.MEASURE, 0, expected_prompt=Prompt.POLLED, timeout=POLL_TIMEOUT)
+        result = self._do_cmd_resp(InstrumentCommand.MEASURE, 0, expected_prompt=Prompt.POLLED, timeout=POLL_TIMEOUT)
         self._stop_poll()
-        return None, (None, None)
+        return next_state, (next_state, result)
 
     def _handler_poll_timed_n(self):
         """
         Timed Sampling for N time
         """
+        next_state = None
         self._start_poll()
-        self._do_cmd_resp(InstrumentCommand.TIMED, self._param_dict.get(Parameter.TIME_LIGHT_SAMPLE),
-                          expected_prompt=Prompt.POLLED, timeout=POLL_TIMEOUT)
+        result = self._do_cmd_resp(InstrumentCommand.TIMED, self._param_dict.get(Parameter.TIME_LIGHT_SAMPLE),
+                                   expected_prompt=Prompt.POLLED, timeout=POLL_TIMEOUT)
         self._stop_poll()
-        return None, (None, None)
+        return next_state, (next_state, result)
 
     def _stop_poll(self):
         """
@@ -1656,7 +1685,7 @@ class Protocol(CommandResponseInstrumentProtocol):
             self._wakeup(20)        # if device is already awake and in polled mode this won't do anything
             ret_prompt = self._send_dollar()
 
-            #came from autosampling/polling, need to resend '$' one more time to get it into command mode
+            # came from autosampling/polling, need to resend '$' one more time to get it into command mode
             if ret_prompt == Prompt.POLLED:
                 self._send_dollar()
 
@@ -1670,11 +1699,12 @@ class Protocol(CommandResponseInstrumentProtocol):
         """
         Exit the autosample state
         """
+        next_state = ProtocolState.COMMAND
         self._do_cmd_no_resp(InstrumentCommand.CMD_LINE)
         self._wakeup(20)
-        self._do_cmd_no_resp(InstrumentCommand.CMD_LINE)
+        result = self._do_cmd_no_resp(InstrumentCommand.CMD_LINE)
 
-        return ProtocolState.COMMAND, (ProtocolState.COMMAND, None)
+        return next_state, (next_state, result)
 
     ########################################################################
     # Build handlers

@@ -619,8 +619,11 @@ class Protocol(CommandResponseInstrumentProtocol):
     def _handler_unknown_discover(self, *args, **kwargs):
         """
         Discover current state
-        @retval (next_state, next_state)
+        @retval next_state, (next_state, result)
         """
+        next_state = ProtocolState.COMMAND
+        result = None
+
         # Try to get the status to check if the instrument is alive
         host = self._param_dict.get_config_value(Parameter.FTP_IP_ADDRESS)
         port = self._param_dict.get_config_value(Parameter.FTP_PORT)
@@ -631,7 +634,7 @@ class Protocol(CommandResponseInstrumentProtocol):
             log.error(error_msg)
             raise InstrumentConnectionException(error_msg)
 
-        return ProtocolState.COMMAND, ProtocolState.COMMAND
+        return next_state, (next_state, result)
 
     ########################################################################
     # Command handlers.
