@@ -728,9 +728,11 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
     def _handler_unknown_discover(self, *args, **kwargs):
         """
         Discover current state; can be COMMAND or AUTOSAMPLE.
-        @retval next_state, next_state
         @raise InstrumentProtocolException if we fail to discover our state
         """
+        next_state = ProtocolStates.COMMAND
+        result = []
+
         try:
             self._wakeup()
         except InstrumentTimeoutException:
@@ -747,12 +749,10 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
                           Status.TEMPORARILY_SUSPENDED_SAMPLING,
                           Status.HIGH_SPEED_PROFILING_MODE]:
                 next_state = ProtocolStates.AUTOSAMPLE
-            else:
-                next_state = ProtocolStates.COMMAND
         else:
             raise InstrumentProtocolException('Failed to discover instrument state. prompt mismatch.')
 
-        return next_state, next_state
+        return next_state, (next_state, result)
 
     ########################################################################
     # State Command handlers.
@@ -780,12 +780,14 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
         """
         Perform a set command.
         @param args[0] parameter : value dict.
-        @retval None, None
         """
+        next_state = None
+        result = []
+
         self._verify_not_readonly(*args, **kwargs)
         self._set_params(*args, **kwargs)
 
-        return None, None
+        return next_state, (next_state, result)
 
     def _set_params(self, *args, **kwargs):
 
@@ -835,21 +837,22 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
     def _handler_command_start_autosample(self, *args, **kwargs):
         """
         Switch into autosample mode.
-        @retval next_state, (next_state, result)
-        None) if successful.
         @throws InstrumentTimeoutException if device cannot be woken for command.
         @throws InstrumentProtocolException if command could not be built or misunderstood.
         """
+        next_state = ProtocolStates.AUTOSAMPLE
+        result = []
 
         # these calls will return if reset is successful or raise an exception otherwise
         self._reset_instrument()
         self._start_sampling()
 
-        return ProtocolStates.AUTOSAMPLE, (ProtocolStates.AUTOSAMPLE, None)
+        return next_state, (next_state, result)
 
     def _handler_command_start_direct(self):
-
-        return ProtocolStates.DIRECT_ACCESS, (ProtocolStates.DIRECT_ACCESS, None)
+        next_state = ProtocolStates.DIRECT_ACCESS
+        result = []
+        return next_state, (next_state, result)
 
     ########################################################################
     # Autosample handlers.
@@ -875,16 +878,17 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
     def _handler_autosample_stop_autosample(self, *args, **kwargs):
         """
         Stop autosample and switch back to command mode.
-        @retval next_state, (next_state, result)
         @throws InstrumentTimeoutException if device cannot be woken for command.
         @throws InstrumentProtocolException if command misunderstood or
         incorrect prompt received.
         """
+        next_state = ProtocolStates.COMMAND
+        result = []
 
         # this call will return if reset is successful or raise an exception otherwise
         self._reset_instrument()
 
-        return ProtocolStates.COMMAND, (ProtocolStates.COMMAND, None)
+        return next_state, (next_state, result)
 
     ########################################################################
     # Direct access handlers.
@@ -906,12 +910,17 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
         pass
 
     def _handler_direct_access_execute_direct(self, data):
+        next_state = None
+        result = []
+
         self._do_cmd_direct(data)
 
-        return None, None
+        return next_state, (next_state, result)
 
     def _handler_direct_access_stop_direct(self):
-        return ProtocolStates.COMMAND, (ProtocolStates.COMMAND, None)
+        next_state = ProtocolStates.COMMAND
+        result = []
+        return next_state, (next_state, result)
 
     ########################################################################
     # general handlers.
@@ -919,10 +928,12 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
     def _handler_clock_sync(self, *args, **kwargs):
         """
         sync clock close to a second edge
-        @retval next_state, (next_state, result)
         @throws InstrumentTimeoutException if device cannot be woken for command.
         @throws InstrumentProtocolException if command could not be built or misunderstood.
         """
+        next_state = None
+        result = []
+
         if self.get_current_state() == ProtocolStates.AUTOSAMPLE:
             try:
                 self._reset_instrument()
@@ -946,12 +957,13 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
                 log.error('Unable to go back to sampling, changing state to COMMAND')
                 return ProtocolStates.COMMAND, (ProtocolStates.COMMAND, None)
 
-        return None, (None, None)
+        return next_state, (next_state, result)
 
     def _handler_acquire_status(self, *args, **kwargs):
         """
         Get device status
         """
+        next_state = None
         # update battery voltage value
         command = self._param_dict.get_submenu_read(InstrumentParameters.BATTERY_VOLTAGE)
         self._do_cmd_resp(command, name=InstrumentParameters.BATTERY_VOLTAGE)
@@ -970,7 +982,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
 
         self._driver_event(DriverAsyncEvent.SAMPLE, status)
 
-        return None, (None, [status])
+        return next_state, (next_state, [status])
 
     ########################################################################
     # Private helpers.

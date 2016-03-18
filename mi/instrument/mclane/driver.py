@@ -8,17 +8,10 @@ Release notes:
 initial version
 """
 import datetime
-
-__author__ = 'Dan Mergens'
-__license__ = 'Apache 2.0'
-
 import re
 import time
 
 from mi.core.log import get_logger
-
-log = get_logger()
-
 from mi.core.common import BaseEnum
 from mi.core.util import dict_equal
 from mi.core.exceptions import SampleException, \
@@ -30,15 +23,14 @@ from mi.core.instrument.instrument_protocol import \
     CommandResponseInstrumentProtocol, \
     RE_PATTERN, \
     DEFAULT_CMD_TIMEOUT
+
 from mi.core.instrument.instrument_fsm import ThreadSafeFSM
 from mi.core.instrument.chunker import StringChunker
-
 from mi.core.instrument.instrument_driver import \
     DriverEvent, \
     DriverAsyncEvent, \
     DriverProtocolState, \
-    DriverParameter, \
-    ResourceAgentState
+    DriverParameter
 
 from mi.core.instrument.data_particle import \
     DataParticle, \
@@ -46,11 +38,15 @@ from mi.core.instrument.data_particle import \
     CommonDataParticleType
 
 from mi.core.instrument.driver_dict import DriverDictKey
-
 from mi.core.instrument.protocol_param_dict import ProtocolParameterDict, \
     ParameterDictType, \
     ParameterDictVisibility
 
+__author__ = 'Dan Mergens'
+__license__ = 'Apache 2.0'
+
+
+log = get_logger()
 
 NEWLINE = '\r\n'
 CONTROL_C = '\x03'
@@ -450,6 +446,7 @@ class McLaneProtocol(CommandResponseInstrumentProtocol):
     def sieve_function(raw_data):
         """
         The method that splits samples and status
+        :param raw_data: raw instrument data
         """
         matchers = []
         return_list = []
@@ -587,11 +584,8 @@ class McLaneProtocol(CommandResponseInstrumentProtocol):
         @retval True if successful, False if unable to return home
         """
         func = '_do_cmd_home'
-        log.debug('--- djm --- command home')
         port = int(self._do_cmd_resp(McLaneCommand.PORT, response_regex=McLaneResponse.PORT)[0])
-        log.debug('--- djm --- at port: %d', port)
         if port != 0:
-            log.debug('--- djm --- going home')
             self._do_cmd_resp(McLaneCommand.HOME, response_regex=McLaneResponse.HOME, timeout=Timeout.HOME)
             port = int(self._do_cmd_resp(McLaneCommand.PORT, response_regex=McLaneResponse.PORT)[0])
             if port != 0:
@@ -611,22 +605,17 @@ class McLaneProtocol(CommandResponseInstrumentProtocol):
 
         if not self._do_cmd_home():
             self._async_raise_fsm_event(ProtocolEvent.INSTRUMENT_FAILURE)
-        log.debug('--- djm --- flushing home port, %d %d %d',
-                  flush_volume, flush_flowrate, flush_flowrate)
         self._do_cmd_no_resp(McLaneCommand.FORWARD, flush_volume, flush_flowrate, flush_minflow)
 
     def _do_cmd_fill(self, *args, **kwargs):
         """
         Fill the sample at the next available port
         """
-        log.debug('--- djm --- collecting sample in port %d', self.next_port)
         fill_volume = self._param_dict.get(Parameter.FILL_VOLUME)
         fill_flowrate = self._param_dict.get(Parameter.FILL_FLOWRATE)
         fill_minflow = self._param_dict.get(Parameter.FILL_MINFLOW)
 
-        log.debug('--- djm --- collecting sample in port %d', self.next_port)
         reply = self._do_cmd_resp(McLaneCommand.PORT, self.next_port, response_regex=McLaneResponse.PORT)
-        log.debug('--- djm --- port returned:\n%r', reply)
 
         self.next_port += 1  # succeed or fail, we can't use this port again
         # TODO - commit next_port to the agent for persistent data store
@@ -642,8 +631,6 @@ class McLaneProtocol(CommandResponseInstrumentProtocol):
         clear_flowrate = self._param_dict.get(Parameter.CLEAR_FLOWRATE)
         clear_minflow = self._param_dict.get(Parameter.CLEAR_MINFLOW)
 
-        log.debug('--- djm --- clearing home port, %d %d %d',
-                  clear_volume, clear_flowrate, clear_minflow)
         self._do_cmd_no_resp(McLaneCommand.REVERSE, clear_volume, clear_flowrate, clear_minflow)
 
     ########################################################################
@@ -653,8 +640,11 @@ class McLaneProtocol(CommandResponseInstrumentProtocol):
         pass
 
     def _handler_all_failure(self, *args, **kwargs):
+        next_state = ProtocolState.RECOVERY
+        result = []
+
         log.error('Instrument failure detected. Entering recovery mode.')
-        return ProtocolState.RECOVERY, ProtocolState.RECOVERY
+        return next_state, (next_state, result)
 
     ########################################################################
     # Unknown handlers.
@@ -674,9 +664,11 @@ class McLaneProtocol(CommandResponseInstrumentProtocol):
         Discover current state; can only be COMMAND (instrument has no AUTOSAMPLE mode).
         @retval next_state, next_state
         """
+        next_state = ProtocolState.COMMAND
+        result = []
 
         # force to command mode, this instrument has no autosample mode
-        return ProtocolState.COMMAND, ProtocolState.COMMAND
+        return next_state, (next_state, result)
 
     ########################################################################
     # Flush
@@ -685,7 +677,6 @@ class McLaneProtocol(CommandResponseInstrumentProtocol):
         """
         Enter the flush state. Trigger FLUSH event.
         """
-        log.debug('--- djm --- entering FLUSH state')
         self._second_attempt = False
         self._driver_event(DriverAsyncEvent.STATE_CHANGE)
         self._async_raise_fsm_event(ProtocolEvent.FLUSH)
@@ -695,17 +686,16 @@ class McLaneProtocol(CommandResponseInstrumentProtocol):
         Begin flushing the home port. Subsequent flushing will be monitored and sent to the flush_pump_status
         handler.
         """
-        log.debug('--- djm --- in FLUSH state')
-        next_state = ProtocolState.FILL
-        next_agent_state = ResourceAgentState.BUSY
+        next_state = None
+        result = []
+
         # 2. Set to home port
         # 3. flush intake (home port)
         # 4. wait 30 seconds
         # 1. Get next available port (if no available port, bail)
-        log.debug('--- djm --- Flushing home port')
         self._do_cmd_flush()
 
-        return None, (None, None)
+        return next_state, (next_state, result)
 
     def _handler_flush_pump_status(self, *args, **kwargs):
         """
@@ -718,34 +708,32 @@ class McLaneProtocol(CommandResponseInstrumentProtocol):
         code = int(match.group('code'))
 
         next_state = None
-        next_agent_state = None
+        result = []
 
-        log.debug('--- djm --- received pump status: pump status: %s, code: %d', pump_status, code)
         if pump_status == 'Result':
-            log.debug('--- djm --- flush completed - %s', TerminationCodes[code])
             if code == TerminationCodeEnum.SUDDEN_FLOW_OBSTRUCTION:
                 log.info('Encountered obstruction during flush, attempting to clear')
                 self._async_raise_fsm_event(ProtocolEvent.CLEAR)
             else:
                 next_state = ProtocolState.FILL
-                next_agent_state = ResourceAgentState.BUSY
-        # elif pump_status == 'Status':
 
-        return next_state, next_state
+        return next_state, (next_state, result)
 
     def _handler_flush_clear(self, *args, **kwargs):
         """
         Attempt to clear home port after stoppage has occurred during flush.
         This is only performed once. On the second stoppage, the driver will enter recovery mode.
         """
-        log.debug('--- djm --- handling clear request during flush')
+        next_state = None
+        result = []
+
         if self._second_attempt:
-            return ProtocolState.RECOVERY, ProtocolState.RECOVERY
+            next_state = ProtocolState.RECOVERY
+        else:
+            self._second_attempt = True
+            self._do_cmd_clear()
 
-        self._second_attempt = True
-        self._do_cmd_clear()
-
-        return None, None
+        return next_state, (next_state, result)
 
     ########################################################################
     # Fill
@@ -762,8 +750,7 @@ class McLaneProtocol(CommandResponseInstrumentProtocol):
         Send the fill command and process the first response
         """
         next_state = None
-        next_agent_state = None
-        result = None
+        result = []
 
         log.debug('Entering PHIL PHIL')
         # 5. switch to collection port (next available)
@@ -772,7 +759,6 @@ class McLaneProtocol(CommandResponseInstrumentProtocol):
         if self.next_port > NUM_PORTS:
             log.error('Unable to collect RAS sample - %d containers full', NUM_PORTS)
             next_state = ProtocolState.COMMAND
-            next_agent_state = ResourceAgentState.COMMAND
         else:
             self._do_cmd_fill()
 
@@ -783,7 +769,7 @@ class McLaneProtocol(CommandResponseInstrumentProtocol):
         Process pump status updates during filter collection.
         """
         next_state = None
-        next_agent_state = None
+        result = []
 
         match = args[0]
         pump_status = match.group('status')
@@ -792,11 +778,14 @@ class McLaneProtocol(CommandResponseInstrumentProtocol):
         if pump_status == 'Result':
             if code != TerminationCodeEnum.VOLUME_REACHED:
                 next_state = ProtocolState.RECOVERY
-            next_state = ProtocolState.CLEAR  # all done
+                result = 'unable to fill - possible obstruction - will attempt to clear'
+            else:
+                next_state = ProtocolState.CLEAR  # all done
+                result = 'volume reached'
             # if pump_status == 'Status':
             # TODO - check for bag rupture (> 93% flow rate near end of sample collect- RAS only)
 
-        return next_state, next_state
+        return next_state, (next_state, result)
 
     ########################################################################
     # Clear
@@ -813,19 +802,21 @@ class McLaneProtocol(CommandResponseInstrumentProtocol):
         """
         Send the clear command. If there is an obstruction trigger a FLUSH, otherwise place driver in RECOVERY mode.
         """
-        log.debug('--- djm --- clearing home port')
+        next_state = None
+        result = []
 
         # 8. return to home port
         # 9. reverse flush 75 ml to pump water from exhaust line through intake line
         self._do_cmd_clear()
-        return None, None
+
+        return next_state, (next_state, result)
 
     def _handler_clear_pump_status(self, *args, **kwargs):
         """
         Parse pump status during clear action.
         """
         next_state = None
-        next_agent_state = None
+        result = []
 
         match = args[0]
         pump_status = match.group('status')
@@ -833,26 +824,32 @@ class McLaneProtocol(CommandResponseInstrumentProtocol):
 
         if pump_status == 'Result':
             if code != TerminationCodeEnum.VOLUME_REACHED:
-                log.error('Encountered obstruction during clear. Attempting flush...')
+                result = 'Encountered obstruction during clear. Attempting flush...'
+                log.error(result)
                 self._async_raise_fsm_event(ProtocolEvent.FLUSH)
             else:
-                log.debug('--- djm --- clear complete')
                 next_state = ProtocolState.COMMAND
-                next_agent_state = ResourceAgentState.COMMAND
+                result = 'clear successful'
         # if Status, nothing to do
-        return next_state, nest_state
+        return next_state, (next_state, result)
 
     def _handler_clear_flush(self, *args, **kwargs):
         """
         Attempt to recover from failed attempt to clear by flushing home port. Only try once.
         """
+        next_state = None
+        result = []
+
         log.info('Attempting to flush main port during clear')
         if self._second_attempt:
-            return ProtocolState.RECOVERY, ProtocolState.RECOVERY
+            next_state = ProtocolState.RECOVERY
+            result = 'unable to flush main port during clear'
+        else:
+            self._second_attempt = True
+            self._do_cmd_flush()
+            result = 'attempting to flush main port a second time'
 
-        self._second_attempt = True
-        self._do_cmd_flush()
-        return None, None
+        return next_state, (next_state, result)
 
     ########################################################################
     # Command handlers.
@@ -875,15 +872,17 @@ class McLaneProtocol(CommandResponseInstrumentProtocol):
         """
         Setup initial parameters.
         """
-        self._init_params()
+        next_state = None
+        result = self._init_params()
 
-        return None, None
+        return next_state, (next_state, result)
 
     def _handler_command_set(self, *args, **kwargs):
         """
         Set instrument parameters
         """
-        log.debug('handler command set called')
+        next_state = None
+        result = []
         startup = False
 
         try:
@@ -901,33 +900,14 @@ class McLaneProtocol(CommandResponseInstrumentProtocol):
 
         self._set_params(params, startup)
 
-        return None, None
-
-        # changed = False
-        # for key, value in params.items():
-        #     log.info('Command:set - setting parameter %s to %s', key, value)
-        #     if not Parameter.has(key):
-        #         raise InstrumentProtocolException('Attempt to set undefined parameter: %s', key)
-        #     old_value = self._param_dict.get(key)
-        #     if old_value != value:
-        #         changed = True
-        #         self._param_dict.set_value(key, value)
-        #
-        # if changed:
-        #     self._driver_event(DriverAsyncEvent.CONFIG_CHANGE)
-        #
-        # next_state = None
-        # result = None
-        # return next_state, result
+        return next_state, (next_state, result)
 
     def _handler_command_start_direct(self, *args, **kwargs):
         """
         Start direct access.
         """
-        log.debug('--- djm --- entered _handler_command_start_direct with args: %s', args)
-        result = None
         next_state = ProtocolState.DIRECT_ACCESS
-        next_agent_state = ResourceAgentState.DIRECT_ACCESS
+        result = []
 
         return next_state, (next_state, result)
 
@@ -941,7 +921,6 @@ class McLaneProtocol(CommandResponseInstrumentProtocol):
         Error recovery mode. The instrument failed to respond to a command and now requires the user to perform
         diagnostics and correct before proceeding.
         """
-        log.debug('--- djm --- entered recovery mode')
         self._driver_event(DriverAsyncEvent.STATE_CHANGE)
 
     ########################################################################
@@ -959,12 +938,16 @@ class McLaneProtocol(CommandResponseInstrumentProtocol):
         self._sent_cmds = []
 
     def _handler_direct_access_execute_direct(self, data):
-        self._do_cmd_direct(data)
+        next_state = None
+        result = self._do_cmd_direct(data)
 
-        return None, None
+        return next_state, (next_state, result)
 
     def _handler_direct_access_stop_direct(self, *args, **kwargs):
-        return ProtocolState.COMMAND, (ProtocolState.COMMAND, None)
+        next_state = ProtocolState.COMMAND
+        result = []
+
+        return next_state, (next_state, result)
 
     ########################################################################
     # general handlers.
@@ -979,9 +962,10 @@ class McLaneProtocol(CommandResponseInstrumentProtocol):
         Formatting:
         http://docs.python.org/library/time.html#time.strftime
 
-        @param fmt: strftime() format string
-        @return: formatted date string
-        @raise ValueError if format is None
+        :param fmt: strftime() format string
+        :param delay: optional time to wait before getting timestamp
+        :return: formatted date string
+        :raise ValueError if format is None
         """
         if not fmt:
             raise ValueError
@@ -1012,8 +996,10 @@ class McLaneProtocol(CommandResponseInstrumentProtocol):
         return None, (None, {'time': ras_time})
 
     def _handler_command_acquire(self, *args, **kwargs):
+        next_state = ProtocolState.FLUSH
+        result = []
         self._handler_sync_clock()
-        return ProtocolState.FLUSH, ProtocolState.FLUSH
+        return next_state, (next_state, result)
 
     # def _handler_command_status(self, *args, **kwargs):
     #     # get the following:
@@ -1025,7 +1011,9 @@ class McLaneProtocol(CommandResponseInstrumentProtocol):
     #     return None, None
 
     def _handler_command_clear(self, *args, **kwargs):
-        return ProtocolState.CLEAR, ProtocolState.CLEAR
+        next_state = ProtocolState.CLEAR
+        result = []
+        return next_state, (next_state, result)
 
     ########################################################################
     # Private helpers.
@@ -1110,8 +1098,7 @@ class McLaneProtocol(CommandResponseInstrumentProtocol):
                              None,
                              self._int_to_string,
                              type=ParameterDictType.INT,
-                             # default_value=150,
-                             default_value=10,  # djm - fast test value
+                             default_value=150,
                              units='mL',
                              startup_param=True,
                              display_name="flush_volume",
@@ -1141,8 +1128,7 @@ class McLaneProtocol(CommandResponseInstrumentProtocol):
                              None,
                              self._int_to_string,
                              type=ParameterDictType.INT,
-                             # default_value=4000,
-                             default_value=10,  # djm - fast test value
+                             default_value=4000,
                              units='mL',
                              startup_param=True,
                              display_name="fill_volume",
@@ -1172,8 +1158,7 @@ class McLaneProtocol(CommandResponseInstrumentProtocol):
                              None,
                              self._int_to_string,
                              type=ParameterDictType.INT,
-                             # default_value=100,
-                             default_value=10,  # djm - fast test value
+                             default_value=100,
                              units='mL',
                              startup_param=True,
                              display_name="clear_volume",
@@ -1203,6 +1188,3 @@ class McLaneProtocol(CommandResponseInstrumentProtocol):
         """
         Update the parameter dictionary.
         """
-
-        log.debug("_update_params:")
-

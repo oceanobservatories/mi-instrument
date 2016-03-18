@@ -7,15 +7,9 @@ Release notes:
 
 """
 
-
-__author__ = 'Roger Unwin'
-__license__ = 'Apache 2.0'
-
 import re
 import time
 from mi.core.log import get_logger
-
-log = get_logger()
 
 from mi.core.util import dict_equal
 
@@ -32,18 +26,22 @@ from mi.core.instrument.instrument_driver import ResourceAgentState
 from mi.core.instrument.protocol_param_dict import ParameterDictVisibility
 from mi.core.instrument.protocol_param_dict import ParameterDictType
 from mi.core.instrument.driver_dict import DriverDictKey
+from mi.core.instrument.data_particle import DataParticle, DataParticleKey, CommonDataParticleType
+from mi.core.instrument.chunker import StringChunker
 
 from mi.core.exceptions import InstrumentParameterException
 from mi.core.exceptions import InstrumentProtocolException
 from mi.core.exceptions import InstrumentException
 
-from mi.core.instrument.data_particle import DataParticle, DataParticleKey, CommonDataParticleType
-from mi.core.instrument.chunker import StringChunker
-
 from mi.instrument.seabird.driver import SeaBirdInstrumentDriver
 from mi.instrument.seabird.driver import SeaBirdProtocol
 from mi.instrument.seabird.driver import NEWLINE
 from mi.instrument.seabird.driver import TIMEOUT
+
+__author__ = 'Roger Unwin'
+__license__ = 'Apache 2.0'
+
+log = get_logger()
 
 
 GENERIC_PROMPT = r"S>"
@@ -1034,7 +1032,8 @@ class Protocol(SeaBirdProtocol):
         Discover current state; always AUTOSAMPLE.
         """
         next_state = ProtocolState.AUTOSAMPLE
-        return next_state, next_state
+        result = []
+        return next_state, (next_state, result)
 
     def _handler_unknown_exit(self, *args, **kwargs):
         """
@@ -1068,7 +1067,7 @@ class Protocol(SeaBirdProtocol):
         return next_state, (next_state, result)
 
     def _handler_command_start_direct(self, *args, **kwargs):
-        return ProtocolState.DIRECT_ACCESS, (ProtocolState.DIRECT_ACCESS, None)
+        return ProtocolState.DIRECT_ACCESS, (ProtocolState.DIRECT_ACCESS, [])
 
     def _handler_command_recover_autosample(self, *args, **kwargs):
         """
@@ -1076,9 +1075,11 @@ class Protocol(SeaBirdProtocol):
         as data sample.
         @retval next_state, (next_state, result)
         """
+        next_state = ProtocolState.AUTOSAMPLE
+        result = []
         self._async_agent_state_change(ResourceAgentState.STREAMING)
 
-        return ProtocolState.AUTOSAMPLE, ProtocolState.AUTOSAMPLE
+        return next_state, (next_state, result)
 
     def _handler_command_exit(self, *args, **kwargs):
         """
@@ -1087,20 +1088,19 @@ class Protocol(SeaBirdProtocol):
         pass
 
     def _handler_command_test_eeprom(self, *args, **kwargs):
-
+        next_state = None
         kwargs['expected_prompt'] = GENERIC_PROMPT
         kwargs['timeout'] = LONG_TIMEOUT
         result = self._do_cmd_resp(InstrumentCmds.TEST_EEPROM, *args, **kwargs)
 
-        return None, (None, result)
+        return next_state, (next_state, [result])
 
     def _handler_command_sample_ref_osc(self, *args, **kwargs):
-
-        #Transition to a separate state to allow the instrument enough time to acquire a sample
-        result = None
-
+        """
+        Transition to a separate state to allow the instrument enough time to acquire a sample
+        """
         next_state = ProtocolState.OSCILLATOR
-
+        result = []
         return next_state, (next_state, result)
 
     def _handler_oscillator_enter(self, *args, **kwargs):
@@ -1136,13 +1136,12 @@ class Protocol(SeaBirdProtocol):
     def _handler_command_clock_sync(self, *args, **kwargs):
         """
         execute a clock sync on the leading edge of a second change
-        @retval next_state, (next_state, result)
         @throws InstrumentTimeoutException if device cannot be woken for command.
         @throws InstrumentProtocolException if command could not be built or misunderstood.
         """
+        next_state = None
         result = self._do_cmd_resp(InstrumentCmds.SET, Parameter.TIME, get_timestamp_delayed("%Y-%m-%dT%H:%M:%S"), **kwargs)
-
-        return None, (None, result)
+        return next_state, (next_state, [result])
 
     def _handler_command_start_autosample(self, *args, **kwargs):
         """
@@ -1151,6 +1150,9 @@ class Protocol(SeaBirdProtocol):
         @throws InstrumentTimeoutException if device cannot be woken for command.
         @throws InstrumentProtocolException if command could not be built or misunderstood.
         """
+        next_state = ProtocolState.AUTOSAMPLE
+        result = []
+
         kwargs['expected_prompt'] = Prompt.COMMAND
         kwargs['timeout'] = 30
         log.info("SYNCING TIME WITH SENSOR")
@@ -1159,7 +1161,7 @@ class Protocol(SeaBirdProtocol):
         # Issue start command and switch to autosample if successful.
         self._do_cmd_no_resp(InstrumentCmds.START_LOGGING, *args, **kwargs)
 
-        return ProtocolState.AUTOSAMPLE, (ProtocolState.AUTOSAMPLE, None)
+        return next_state, (next_state, result)
 
     ########################################################################
     # Autosample handlers.
@@ -1171,11 +1173,10 @@ class Protocol(SeaBirdProtocol):
         into command mode, do the clock sync, then switch back.  If an
         exception is thrown we will try to get ourselves back into
         streaming and then raise that exception.
-        @retval (next_state, result) tuple, (ProtocolState.AUTOSAMPLE,
-        None) if successful.
         @throws InstrumentTimeoutException if device cannot be woken for command.
         @throws InstrumentProtocolException if command could not be built or misunderstood.
         """
+        next_state = None
 
         try:
             # Switch to command mode,
@@ -1188,15 +1189,16 @@ class Protocol(SeaBirdProtocol):
             # Switch back to streaming
             self._start_logging()
 
-        return None, (None, result)
+        return next_state, (next_state, result)
 
     def _handler_autosample_acquire_status(self, *args, **kwargs):
         """
         Run all status commands.  Concat command results and return
         @param args:
         @param kwargs:
-        @return: next state, (next state, result)
         """
+        next_state = None
+
         try:
             # Switch to command mode
             self._stop_logging()
@@ -1216,15 +1218,17 @@ class Protocol(SeaBirdProtocol):
             # Switch back to streaming
             self._start_logging()
 
-        return None, (None, result)
+        return next_state, (next_state, result)
 
     def _handler_autosample_stop_autosample(self, *args, **kwargs):
         """
         Stop autosample and switch back to command mode.
         """
+        next_state = ProtocolState.COMMAND
+        result = []
         self._do_cmd_resp(InstrumentCmds.STOP_LOGGING, *args, **kwargs)
 
-        return ProtocolState.COMMAND, (ProtocolState.COMMAND, None)
+        return next_state, (next_state, result)
 
     def _handler_autosample_exit(self, *args, **kwargs):
         """
@@ -1243,18 +1247,20 @@ class Protocol(SeaBirdProtocol):
         self._sent_cmds = []
 
     def _handler_direct_access_execute_direct(self, data):
+        next_state = None
+        result = []
+
         self._do_cmd_direct(data)
 
         # add sent command to list for 'echo' filtering in callback
         self._sent_cmds.append(data)
 
-        return None, (None, None)
+        return next_state, (next_state, result)
 
     def _handler_direct_access_stop_direct(self):
-        """
-        @throw InstrumentProtocolException on invalid command
-        """
-        return ProtocolState.AUTOSAMPLE, (ResourceAgentState.STREAMING, None)
+        next_state = ProtocolState.AUTOSAMPLE
+        result = []
+        return next_state, (next_state, result)
 
     def _handler_direct_access_exit(self, *args, **kwargs):
         """

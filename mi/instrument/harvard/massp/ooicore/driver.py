@@ -170,7 +170,7 @@ class InstrumentDriver(SingleConnectionInstrumentDriver):
         Driver constructor.
         @param evt_callback Driver process event callback.
         """
-        #Construct superclass.
+        # Construct superclass.
         SingleConnectionInstrumentDriver.__init__(self, evt_callback, refdes)
         self._slave_protocols = {}
 
@@ -623,8 +623,8 @@ class Protocol(InstrumentProtocol):
         @param events: Events to be filtered
         @return: list of events which are also capabilities
         """
-        return [x for x in events if Capability.has(x) or mcu.Capability.has(x)
-                or turbo.Capability.has(x) or rga.Capability.has(x)]
+        return [x for x in events if Capability.has(x) or mcu.Capability.has(x) or turbo.Capability.has(x) or
+                rga.Capability.has(x)]
 
     def _get_slave_states(self):
         """
@@ -699,7 +699,7 @@ class Protocol(InstrumentProtocol):
             if len(split_key) == 1:
                 raise InstrumentParameterException('Missing target in MASSP parameter: %s' % key)
             target = split_key[0]
-            if not target in self._slave_protocols:
+            if target not in self._slave_protocols:
                 # this is a master driver parameter, set it here
                 if key in self._param_dict.get_keys():
                     log.debug("Setting value for %s to %s", key, params[key])
@@ -732,7 +732,7 @@ class Protocol(InstrumentProtocol):
         config = config.get(DriverConfigKey.PARAMETERS, {})
         for key in config:
             target, _ = key.split('_', 1)
-            if not target in self._slave_protocols:
+            if target not in self._slave_protocols:
                 # master driver parameter
                 log.debug("Setting init value for %s to %s", key, config[key])
                 self._param_dict.set_init_value(key, config[key])
@@ -827,21 +827,18 @@ class Protocol(InstrumentProtocol):
         Generic stop method to return to COMMAND (via POLL if appropriate)
         @return next_state, (next_state, None)
         """
-        self._delete_scheduler()
-
         next_state = ProtocolState.COMMAND
-        next_agent_state = ResourceAgentState.COMMAND
+        result = []
+
+        self._delete_scheduler()
 
         # check if we are in autosample AND currently taking a sample, if so, move to POLL
         # otherwise go back to COMMAND.
         if self.get_current_state() == ProtocolState.AUTOSAMPLE:
             if self._get_slave_states() != (ProtocolState.COMMAND, ProtocolState.COMMAND, ProtocolState.COMMAND):
                 next_state = ProtocolState.POLL
-                next_agent_state = ResourceAgentState.BUSY
 
-        # notify the agent we have changed states
-        self._async_agent_state_change(next_agent_state)
-        return next_state, (next_state, None)
+        return next_state, (next_state, result)
 
     ########################################################################
     # Unknown handlers.
@@ -850,8 +847,9 @@ class Protocol(InstrumentProtocol):
     def _handler_unknown_discover(self, *args, **kwargs):
         """
         Discover current state
-        @return next_state, result
+        @return next_state, (next_state, result)
         """
+        next_state = ProtocolState.COMMAND
         result = self._send_event_to_all(ProtocolEvent.DISCOVER)
         log.debug('_handler_unknown_discover -- send DISCOVER to all: %r', result)
         target_state = (ProtocolState.COMMAND, ProtocolState.COMMAND, ProtocolState.COMMAND)
@@ -864,8 +862,8 @@ class Protocol(InstrumentProtocol):
                 break
             time.sleep(1)
         if not success:
-            return ProtocolState.ERROR, ProtocolState.ERROR
-        return ProtocolState.COMMAND, ProtocolState.COMMAND
+            next_state = ProtocolState.ERROR
+        return next_state, (next_state, result)
 
     ########################################################################
     # Command handlers.
@@ -918,95 +916,105 @@ class Protocol(InstrumentProtocol):
         Set parameter, just pass through to _set_params, which knows how to set the params
         in the slave protocols.
         """
+        next_state = None
+        result = []
         self._set_params(*args, **kwargs)
-        return None, None
+        return next_state, (next_state, result)
 
     def _handler_command_start_direct(self):
         """
         Start direct access
-        @return next_state, (next_state, result)
         """
-        return ProtocolState.DIRECT_ACCESS, (ProtocolState.DIRECT_ACCESS, None)
+        next_state = ProtocolState.DIRECT_ACCESS
+        result = []
+        return next_state, (next_state, result)
 
     def _handler_command_start_autosample(self):
         """
         Move my FSM to autosample and start the sample sequence by sending START1 to the MCU.
         Create the scheduler to automatically start the next sample sequence
-        @return next_state, (next_state, result)
         """
+        next_state = ProtocolState.AUTOSAMPLE
+        result = []
         self._send_event_to_slave(MCU, mcu.Capability.START1)
         self._build_scheduler()
-        return ProtocolState.AUTOSAMPLE, (ProtocolState.AUTOSAMPLE, None)
+        return next_state, (next_state, result)
 
     def _handler_command_start_poll(self):
         """
         Move my FSM to poll and start the sample sequence by sending START1 to the MCU
-        @return next_state, (next_state, result)
         """
+        next_state = ProtocolState.POLL
+        result = []
         self._send_event_to_slave(MCU, mcu.Capability.START1)
-        return ProtocolState.POLL, (ProtocolState.POLL, None)
+        return next_state, (next_state, result)
 
     def _handler_command_start_calibrate(self):
         """
         Move my FSM to calibrate and start the calibrate sequence by sending START1 to the MCU
-        @return next_state, (next_state, result)
         """
+        next_state = ProtocolState.CALIBRATE
+        result = []
         self._send_event_to_slave(MCU, mcu.Capability.START1)
-        return ProtocolState.CALIBRATE, (ProtocolState.CALIBRATE, None)
+        return next_state, (next_state, result)
 
     def _handler_command_start_nafion_regen(self):
         """
         Move my FSM to NAFION_REGEN and send NAFION_REGEN to the MCU
-        @return next_state, (next_state, result)
         """
+        next_state = ProtocolState.REGEN
+        result = []
         self._send_event_to_slave(MCU, mcu.Capability.NAFREG)
-        return ProtocolState.REGEN, (ProtocolState.REGEN, None)
+        return next_state, (next_state, result)
 
     def _handler_command_start_ion_regen(self):
         """
         Move my FSM to ION_REGEN and send ION_REGEN to the MCU
-        @return next_state, (next_state, result)
         """
+        next_state = ProtocolState.REGEN
+        result = []
         self._send_event_to_slave(MCU, mcu.Capability.IONREG)
-        return ProtocolState.REGEN, (ProtocolState.REGEN, None)
+        return next_state, (next_state, result)
 
     def _handler_command_poweroff(self):
         """
         Send POWEROFF to the MCU
-        @return next_state, (next_state, result)
         """
+        next_state = None
+        result = []
         self._send_event_to_slave(MCU, mcu.Capability.POWEROFF)
-        return None, (None, None)
+        return next_state, (next_state, result)
 
     def _handler_command_start_manual(self):
         """
         Move FSM to MANUAL OVERRIDE state
-        @return next_state, (next_state, result)
         """
-        return ProtocolState.MANUAL_OVERRIDE, (ProtocolState.MANUAL_OVERRIDE, None)
+        next_state = ProtocolState.MANUAL_OVERRIDE
+        result = []
+        return next_state, (next_state, result)
 
     ########################################################################
     # Error handlers.
     ########################################################################
 
     def _handler_error(self):
-        """
-        @return next_state, next_state
-        """
-        return ProtocolState.ERROR, ProtocolState.ERROR
+        next_state = ProtocolState.ERROR
+        result = []
+        return next_state, (next_state, result)
 
     def _handler_error_clear(self):
         """
         Send the CLEAR event to any slave protocol in the error state and return this driver to COMMAND
-        @return next_state, (next_state, result)
         """
+        next_state = ProtocolState.COMMAND
+        result = []
         for protocol in self._slave_protocols:
             state = protocol.get_current_state()
             if state == MASSP_STATE_ERROR:
                 # do this synchronously, to allow each slave protocol to complete the CLEAR action
                 # before transitioning states.
                 protocol._protocol_fsm.on_event(ProtocolEvent.CLEAR)
-        return ProtocolState.COMMAND, (ProtocolState.COMMAND, None)
+        return next_state, (next_state, result)
 
     ########################################################################
     # Autosample handlers.
@@ -1015,16 +1023,17 @@ class Protocol(InstrumentProtocol):
     def _handler_autosample_acquire_sample(self):
         """
         Fire off a sample sequence while in the autosample state.
-        @return None, None
         @throws InstrumentProtocolException
         """
+        next_state = None
+        result = []
         slave_states = self._get_slave_states()
         # verify the MCU is not already in a sequence
         if slave_states[0] == ProtocolState.COMMAND:
             result = self._send_event_to_slave(MCU, mcu.Capability.START1)
         else:
             raise InstrumentProtocolException("Attempted to acquire sample while sampling")
-        return None, None
+        return next_state, (next_state, result)
 
     ########################################################################
     # Direct access handlers.
@@ -1061,21 +1070,19 @@ class Protocol(InstrumentProtocol):
         """
         Execute a direct access command.  For MASSP, this means passing the actual command to the
         correct slave protocol.  This is handled by _send_massp_direct_access.
-        @return next_state, (next_state, result)
         """
         self._send_massp_direct_access(data)
 
         # add sent command to list for 'echo' filtering in callback
         self._sent_cmds.append(data)
 
-        return None, (None, None)
+        return None, (None, [])
 
     def _handler_direct_access_stop_direct(self):
-        """
-        @return next_state, (next_state, result)
-        """
+        next_state = ProtocolState.COMMAND
+        result = []
         self._send_event_to_all(ProtocolEvent.STOP_DIRECT)
-        return ProtocolState.COMMAND, (ProtocolState.COMMAND, None)
+        return next_state, (next_state, result)
 
     ########################################################################
     # Regen handlers.
@@ -1084,23 +1091,27 @@ class Protocol(InstrumentProtocol):
     def _handler_stop_regen(self):
         """
         Abort the current regeneration sequence, return to COMMAND
-        @return next_state, (next_state, result)
         """
+        next_state = ProtocolState.COMMAND
+        result = []
         self._send_event_to_slave(MCU, mcu.Capability.STANDBY)
-        return ProtocolState.COMMAND, (ProtocolState.COMMAND, None)
+        return next_state, (next_state, result)
 
     def _handler_regen_complete(self):
         """
         Regeneration sequence is complete, return to COMMAND
-        @return next_state, (next_state, result)
         """
+        next_state = ProtocolState.COMMAND
+        result = []
         self._async_agent_state_change(ResourceAgentState.COMMAND)
-        return ProtocolState.COMMAND, (ProtocolState.COMMAND, None)
+        return next_state, (next_state, result)
 
     def _handler_manual_override_stop(self):
         """
         Exit manual override.  Attempt to bring the slave drivers back to COMMAND.
         """
+        next_state = ProtocolState.COMMAND
+        result = []
         mcu_state, turbo_state, rga_state = self._get_slave_states()
         if rga_state == rga.ProtocolState.SCAN:
             self._slave_protocols[RGA]._protocol_fsm.on_event(rga.Capability.STOP_SCAN)
@@ -1113,7 +1124,7 @@ class Protocol(InstrumentProtocol):
         if mcu_state != mcu.ProtocolState.COMMAND:
             self._slave_protocols[MCU]._protocol_fsm.on_event(mcu.Capability.STANDBY)
 
-        return ProtocolState.COMMAND, (ProtocolState.COMMAND, None)
+        return next_state, (next_state, result)
 
     def _handler_manual_get_slave_states(self):
         """

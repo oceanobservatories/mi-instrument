@@ -1215,26 +1215,18 @@ class Protocol(SeaBirdProtocol):
         @throws InstrumentStateException if the device response does not correspond to
         an expected state.
         """
-
+        result = []
         timeout = kwargs.get('timeout', TIMEOUT)
-
-        next_state = None
-        result = None
-
-        current_state = self._protocol_fsm.get_current_state()
-
         logging = self._is_logging(timeout=timeout)
 
-        if logging == True:
+        if logging is True:
             next_state = ProtocolState.AUTOSAMPLE
-            result = ResourceAgentState.STREAMING
-        elif logging == False:
+        elif logging is False:
             next_state = ProtocolState.COMMAND
-            result = ResourceAgentState.IDLE
         else:
             raise InstrumentStateException('Discover state failed.')
 
-        return next_state, result
+        return next_state, (next_state, result)
 
     def _handler_unknown_exit(self, *args, **kwargs):
         """
@@ -1253,8 +1245,6 @@ class Protocol(SeaBirdProtocol):
         @throws InstrumentProtocolException if the update commands and not recognized.
         """
         # Command device to update parameters and send a config change event.
-
-        log.debug("*** IN _handler_command_enter(), updating params")
         self._update_params()
 
         # Tell driver superclass to send a state change event.
@@ -1264,60 +1254,50 @@ class Protocol(SeaBirdProtocol):
     def _handler_command_acquire_sample(self, *args, **kwargs):
         """
         Acquire sample from SBE26 Plus.
-        @retval (next_state, result) tuple, (None, sample dict).
         @throws InstrumentTimeoutException if device cannot be woken for command.
         @throws InstrumentProtocolException if command could not be built or misunderstood.
         @throws SampleException if a sample could not be extracted from result.
         """
-
         next_state = None
-        next_agent_state = None
-        result = None
 
         kwargs['timeout'] = 45  # samples can take a long time
 
         result = self._do_cmd_resp(InstrumentCmds.TAKE_SAMPLE, *args, **kwargs)
 
-        return next_state, (next_state, result)
+        return next_state, (next_state, [result])
 
     def _handler_command_acquire_status(self, *args, **kwargs):
         """
         @param args:
         @param kwargs:
-        @return:
         """
         next_state = None
-        next_agent_state = None
         kwargs['timeout'] = 30
         result = self._do_cmd_resp(InstrumentCmds.DISPLAY_STATUS, *args, **kwargs)
 
-        return next_state, (next_state, result)
+        return next_state, (next_state, [result])
 
     def _handler_command_acquire_configuration(self, *args, **kwargs):
         """
         @param args:
         @param kwargs:
-        @return:
         """
         next_state = None
-        next_agent_state = None
         kwargs['timeout'] = 30
         result = self._do_cmd_resp(InstrumentCmds.DISPLAY_CALIBRATION, *args, **kwargs)
 
-        return next_state, (next_state, result)
+        return next_state, (next_state, [result])
 
     def _handler_command_send_last_sample(self, *args, **kwargs):
         """
         @param args:
         @param kwargs:
-        @return:
         """
         next_state = None
-        next_agent_state = None
         kwargs['timeout'] = 30
         result = self._do_cmd_resp(InstrumentCmds.SEND_LAST_SAMPLE, *args, **kwargs)
 
-        return next_state, (next_state, result)
+        return next_state, (next_state, [result])
 
     def _handler_command_exit(self, *args, **kwargs):
         """
@@ -1332,14 +1312,11 @@ class Protocol(SeaBirdProtocol):
         into command mode, do the clock sync, then switch back.  If an
         exception is thrown we will try to get ourselves back into
         streaming and then raise that exception.
-        @retval (next_state, result) tuple, (ProtocolState.AUTOSAMPLE,
-        None) if successful.
         @throws InstrumentTimeoutException if device cannot be woken for command.
         @throws InstrumentProtocolException if command could not be built or misunderstood.
         """
         next_state = None
-        next_agent_state = None
-        result = None
+        result = []
         error = None
 
         try:
@@ -1373,11 +1350,10 @@ class Protocol(SeaBirdProtocol):
         """
 
         next_state = None
-        next_agent_state = None
-        result = None
+        result = []
 
         timeout = kwargs.get('timeout', TIMEOUT)
-        self._sync_clock(InstrumentCmds.SET_TIME, Parameter.DS_DEVICE_DATE_TIME, TIMEOUT)
+        self._sync_clock(InstrumentCmds.SET_TIME, Parameter.DS_DEVICE_DATE_TIME, timeout)
 
         return next_state, (next_state, result)
 

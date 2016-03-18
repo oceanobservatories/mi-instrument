@@ -863,14 +863,14 @@ class Protocol(CommandResponseInstrumentProtocol):
     def _handler_unknown_discover(self, *args, **kwargs):
         """
         Discover current state
-        @retval next_state, next_state
+        @retval next_state, (next_state, result)
         """
 
         # force to command mode, this instrument has no autosample mode
         next_state = ProtocolState.COMMAND
-        result = ResourceAgentState.COMMAND
+        result = []
 
-        return ProtocolState.COMMAND, ProtocolState.COMMAND
+        return next_state, (next_state, result)
 
     ########################################################################
     # Event handlers for COMMAND state.
@@ -929,9 +929,9 @@ class Protocol(CommandResponseInstrumentProtocol):
         return ProtocolState.AUTOSAMPLE, (ProtocolState.AUTOSAMPLE, None)
 
     def _handler_command_start_direct(self, *args, **kwargs):
-        """
-        """
-        return ProtocolState.DIRECT_ACCESS, (ProtocolState.DIRECT_ACCESS, None)
+        next_state = ProtocolState.DIRECT_ACCESS
+        result = []
+        return next_state, (next_state, result)
 
     ########################################################################
     # Event handlers for AUTOSAMPLE state.
@@ -972,6 +972,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         """
         Poll the three temperature probes for current temperature readings.
         """
+        next_state = None
         timeout = time.time() + SAMPLE_TIMEOUT
 
         for i in self._units:
@@ -979,13 +980,15 @@ class Protocol(CommandResponseInstrumentProtocol):
 
         particles = self.wait_for_particles([DataParticleType.D1000_PARSED], timeout)
 
-        return None, (None, particles)
+        return next_state, (next_state, particles)
 
     def _handler_autosample_stop(self, *args, **kwargs):
         """
         Terminate autosampling
         """
-        return ProtocolState.COMMAND, (ProtocolState.COMMAND, None)
+        next_state = ProtocolState.COMMAND
+        result = []
+        return next_state, (next_state, result)
 
     ########################################################################
     # Direct access handlers.
@@ -1009,14 +1012,13 @@ class Protocol(CommandResponseInstrumentProtocol):
     def _handler_direct_access_execute_direct(self, data):
         self._do_cmd_direct(data)
 
-        return None, (None, None)
+        return None, (None, [])
 
     def _handler_direct_access_stop_direct(self, *args, **kwargs):
-        result = None
         next_state = ProtocolState.COMMAND
-        next_agent_state = ResourceAgentState.COMMAND
+        result = []
 
-        return ProtocolState.COMMAND, (ProtocolState.COMMAND, None)
+        return next_state, (next_state, result)
 
 
 class PlaybackProtocol(Protocol):

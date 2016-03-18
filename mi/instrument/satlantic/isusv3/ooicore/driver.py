@@ -663,8 +663,6 @@ class Protocol(MenuInstrumentProtocol):
         ##### Setup the state machine
         self._protocol_fsm = InstrumentFSM(State, Event, Event.ENTER, Event.EXIT)
         
-        self._protocol_fsm.add_handler(State.UNKNOWN, Event.INITIALIZE,
-                              self._handler_initialize) 
         self._protocol_fsm.add_handler(State.UNKNOWN, Event.DISCOVER,
                               self._handler_unknown_discover) 
         self._protocol_fsm.add_handler(State.CONTINUOUS_MODE, Event.MENU_CMD,
@@ -793,28 +791,13 @@ class Protocol(MenuInstrumentProtocol):
     ################
     # State handlers
     ################
-    def _handler_initialize(self, *args, **kwargs):
-        """Handle transition from UNCONFIGURED state to a known one.
-        
-        This method determines what state the device is in or gets it to a
-        known state so that the instrument and protocol are in sync.
-        @param params Parameters to pass to the state
-        @retval return (next state, result)
-        @todo fix this to only do break when connected
-        """
-        next_state = None
-        result = None
-        
-        # handler logic goes here
-        
-        return (next_state, result)
-        
     def _handler_unknown_discover(self, *args, **kwargs):
         """
         As of now, the IOS states that the ISUS should be in continuous mode.  That means that it
         is probably autosampling upon entry to this handler.  However, it is possible that it has
         been interrupted and is in the menu system.  
         """
+        result = []
         try:
             logging_state = self._go_to_root_menu()
 
@@ -830,47 +813,46 @@ class Protocol(MenuInstrumentProtocol):
             log.error("ISUS driver timed out in _go_to_root_menu()")
             raise InstrumentStateException('Unknown state: Instrument timed out going to root menu.')
 
-        return next_state, next_state
+        return next_state, (next_state, result)
 
     def _handler_continuous_menu(self, *args, **kwargs):
         """
         Handle a menu command event from continuous mode operations.
         """
         next_state = None
-        result = None
+        result = []
         
         # handler logic goes here
         
-        return (next_state, result)
+        return next_state, (next_state, result)
         
     def _handler_continuous_go(self, *args, **kwargs):
         """Handle a go command event from continuous mode operations.
         
         """
         next_state = None
-        result = None
+        result = []
         
         # handler logic goes here
         
-        return (next_state, result)
+        return next_state, (next_state, result)
         
     def _handler_continuous_stop(self, *args, **kwargs):
         """Handle a stop command event from continuous mode operations.
         
         """
         next_state = None
-        result = None
+        result = []
         
         # handler logic goes here
         
-        return (next_state, result)
+        return next_state, (next_state, result)
                 
     def _handler_command_get(self, *args, **kwargs):
         """Handle a config menu command event from root menu.
         
         """
         next_state = None
-        result = None
 
         # Retrieve the required parameter, raise if not present.
         try:
@@ -897,7 +879,7 @@ class Protocol(MenuInstrumentProtocol):
                     raise InstrumentParameterException(('%s is not a valid parameter.' % key))
 
 
-        return (next_state, result)
+        return next_state, (next_state, result)
         
     def _handler_command_set(self, *args, **kwargs):
         """
@@ -911,7 +893,7 @@ class Protocol(MenuInstrumentProtocol):
         """
 
         next_state = None
-        result = None
+        result = []
 
         # Retrieve required parameter.
         # Raise if no parameter provided, or not a dict.
@@ -935,11 +917,11 @@ class Protocol(MenuInstrumentProtocol):
             #
             for (key, val) in params.iteritems():
                 dest_submenu = self._param_dict.get_menu_path_write(key)
-                command = self._param_dict.get_submenu_write(key)
+                _ = self._param_dict.get_submenu_write(key)
                 self._navigate_and_execute(None, value=val, dest_submenu=dest_submenu, timeout=5)
             self._update_params()
 
-        return (next_state, result)
+        return next_state, (next_state, result)
 
 
     def _handler_command_acquire_sample(self, *args, **kwargs):
@@ -956,9 +938,9 @@ class Protocol(MenuInstrumentProtocol):
         Can't go to root menu here; the only way this handler will work is if the ISUS is deployed
         in TRIGGERED mode.
         """
-        result = self._do_cmd_resp(Command.TS, *args, **kwargs)
+        result = [self._do_cmd_resp(Command.TS, *args, **kwargs)]
         
-        return (next_state, (next_state, result))
+        return next_state, (next_state, result)
 
     def _handler_command_start_autosample(self, *args, **kwargs):
         """Handle a start autosample command event from root menu.
@@ -966,7 +948,7 @@ class Protocol(MenuInstrumentProtocol):
         """
         delay = 1
         timeout = 25
-        result = None
+        result = []
         
         #
         # DHE: We need to either put the instrument into continuous mode or triggered mode.  If
@@ -1004,15 +986,15 @@ class Protocol(MenuInstrumentProtocol):
     def _handler_autosample_stop_autosample(self, *args, **kwargs):
         """
         Stop autosample and switch back to command mode.
-        @retval next_state, (next_state, result)
         @throws InstrumentTimeoutException if device cannot be woken for command.
         @throws InstrumentProtocolException if command misunderstood or
         incorrect prompt received.
         """
+        next_state = State.COMMAND
+        result = []
         delay = 1
         timeout = 10
-        result = None
-        
+
         starttime = time.time()
 
         # Clear the prompt buffer.
@@ -1054,10 +1036,6 @@ class Protocol(MenuInstrumentProtocol):
                 log.error("ISUS driver timed outawaiting ROOT_MENU prompt stop_autosample")
                 raise InstrumentTimeoutException()
 
-        log.info("ISUS autosample stopped")
-
-        next_state = State.COMMAND        
-
         return next_state, (next_state, result)
 
     def _handler_root_menu_enter(self, *args, **kwargs):
@@ -1073,33 +1051,33 @@ class Protocol(MenuInstrumentProtocol):
         
         """
         next_state = None
-        result = None
+        result = []
         
         # handler logic goes here
         
-        return next_state, result
+        return next_state, (next_state, result)
         
     def _handler_root_setup(self, *args, **kwargs):
         """Handle a setup menu command event from root menu.
         
         """
         next_state = None
-        result = None
+        result = []
         
         # handler logic goes here
         
-        return next_state, result
+        return next_state, (next_state, result)
         
     def _handler_root_file(self, *args, **kwargs):
         """Handle a file menu command event from root menu.
         
         """
         next_state = None
-        result = None
+        result = []
         
         # handler logic goes here
         
-        return (next_state, result)
+        return next_state, (next_state, result)
 
     # @todo ...carry on with the rest of the menu system handlers and what they actually do...
     # include handling of MODIFY prompts properly
@@ -1443,7 +1421,6 @@ class Protocol(MenuInstrumentProtocol):
                              visibility=ParameterDictVisibility.READ_WRITE,
                              menu_path_read=[[Event.CONFIG_MENU, Prompt.CONFIG_MENU]],
                              submenu_read=[Event.SHOW_CONFIG, Prompt.CONFIG_MENU],
-                             #menu_path_write=[[Event.CONFIG_MENU, Prompt.CONFIG_MENU]],
                              menu_path_write=SubMenues.DEPLOYMENT_COUNTER_MENU,
                              submenu_write=[Event.DEPLOYMENT_COUNTER, Event.YES])
 
@@ -1453,163 +1430,6 @@ class Protocol(MenuInstrumentProtocol):
                              self._opmode_to_string,
                              visibility=ParameterDictVisibility.READ_WRITE,
                              menu_path_read=SubMenues.DEPLOYMENT_MODE_MENU,
-                             #menu_path_read=[[Event.SETUP_MENU,
-                             #                Event.DEPLOYMENT_SETUP_MENU]],
                              submenu_read=[Event.OPERATIONAL_MODE, Prompt.SETUP_DEPLOY_MENU],
                              menu_path_write=SubMenues.DEPLOYMENT_MODE_MENU,
                              submenu_write=[Event.OPERATIONAL_MODE, Event.YES])
-
-
-        """
-        DHE COMMENTED OUT
-        This was Steve's original way
-        self._param_dict.add(Parameter.BAUDRATE,
-                             r'Baudrate:\s+(\d+) bps',
-                             lambda match : int(match.group(1)),
-                             self._int_to_string,
-                             visibility=ParameterDictVisibility.READ_WRITE,
-                             menu_path_read=[Event.CONFIG_MENU,
-                                             Event.SHOW_CONFIG],
-                             menu_path_write=[Event.CONFIG_MENU,
-                                             Event.BAUD_RATE,
-                                             Event.YES])
-        self._param_dict.add(Parameter.DEPLOYMENT_COUNTER,
-                             r'Deployment Cntr:\s+(\d+)',
-                             lambda match : int(match.group(1)),
-                             self._int_to_string,
-                             visibility=ParameterDictVisibility.READ_WRITE,
-                             menu_path_read=[Event.CONFIG_MENU,
-                                             Event.SHOW_CONFIG],
-                             menu_path_write=[Event.CONFIG_MENU,
-                                              Event.DEPLOYMENT_COUNTER,
-                                              Event.YES])
-        self._param_dict.add(Parameter.STATUS_MESSAGES,
-                             r'StatusMessages = (ENABLED|DISABLED)',
-                             lambda match : int(match.group(1)),
-                             self._enable_disable_to_bool,
-                             visibility=ParameterDictVisibility.READ_WRITE,
-                             menu_path_read=[Event.SETUP_MENU,
-                                             Event.OUTPUT_SETUP_MENU,
-                                             Event.STATUS_MESSAGES],
-                             menu_path_write=[Event.SETUP_MENU,
-                                              Event.OUTPUT_SETUP_MENU,
-                                              Event.STATUS_MESSAGES,
-                                              Event.YES])
-        self._param_dict.add(Parameter.LOGGING_FRAME_MODE,
-                             r'FrameLogging = (NONE|FULL_ASCII|FULL_BINARY|CONCENTRATION)',
-                             lambda match : int(match.group(1)),
-                             self._frametype_to_int,
-                             visibility=ParameterDictVisibility.READ_WRITE,
-                             menu_path_read=[Event.SETUP_MENU,
-                                             Event.OUTPUT_SETUP_MENU,
-                                             Event.LOGGING_FRAME_MODE],
-                             menu_path_write=[Event.SETUP_MENU,
-                                              Event.OUTPUT_SETUP_MENU,
-                                              Event.LOGGING_FRAME_MODE,
-                                              Event.YES])
-        self._param_dict.add(Parameter.TRANSFER_FRAME_MODE,
-                             r'FrameTransfer = (NONE|FULL_ASCII|FULL_BINARY|CONCENTRATION)',
-                             lambda match : int(match.group(1)),
-                             self._frametype_to_int,
-                             visibility=ParameterDictVisibility.READ_WRITE,
-                             menu_path_read=[Event.SETUP_MENU,
-                                             Event.OUTPUT_SETUP_MENU,
-                                             Event.TRANSFER_FRAME_MODE],
-                             menu_path_write=[Event.SETUP_MENU,
-                                              Event.OUTPUT_SETUP_MENU,
-                                              Event.TRANSFER_FRAME_MODE,
-                                              Event.YES])
-        self._param_dict.add(Parameter.DAILY_LOG_TOGGLE,
-                             r'SchFile = (DAILY|EACHEVENT)',
-                             lambda match : int(match.group(1)),
-                             self._logtoggle_to_int,
-                             visibility=ParameterDictVisibility.READ_WRITE,
-                             menu_path_read=[Event.SETUP_MENU,
-                                             Event.OUTPUT_SETUP_MENU,
-                                             Event.DAILY_LOG_TOGGLE],
-                             menu_path_write=[Event.SETUP_MENU,
-                                              Event.OUTPUT_SETUP_MENU,
-                                              Event.DAILY_LOG_TOGGLE,
-                                              Event.YES])    
-        self._param_dict.add(Parameter.NITRATE_DAC_RANGE_MIN,
-                             r'NO3DacMin = ([-+]?\d*\.?\d+)',
-                             lambda match : int(match.group(1)),
-                             self._float_to_string,
-                             visibility=ParameterDictVisibility.READ_WRITE,
-                             menu_path_read=[Event.SETUP_MENU,
-                                             Event.OUTPUT_SETUP_MENU,
-                                             Event.NITRATE_DAC_RANGE],
-                             menu_path_write=[Event.SETUP_MENU,
-                                              Event.OUTPUT_SETUP_MENU,
-                                              Event.NITRATE_DAC_RANGE,
-                                              Event.YES])
-        self._param_dict.add(Parameter.NITRATE_DAC_RANGE_MAX,
-                             r'NO3DacMax = (\d*\.?\d+)',
-                             lambda match : int(match.group(1)),
-                             self._float_to_string,
-                             visibility=ParameterDictVisibility.READ_WRITE,
-                             menu_path_read=[Event.SETUP_MENU,
-                                             Event.OUTPUT_SETUP_MENU,
-                                             Event.NITRATE_DAC_RANGE,
-                                             Event.NO],
-                             menu_path_write=[Event.SETUP_MENU,
-                                              Event.OUTPUT_SETUP_MENU,
-                                              Event.NITRATE_DAC_RANGE,
-                                              Event.NO,
-                                              Event.YES])
-        self._param_dict.add(Parameter.AUX_DAC_RANGE_MIN,
-                             r'AuxDacMin = ([-+]?\d*\.?\d+)',
-                             lambda match : int(match.group(1)),
-                             self._float_to_string,
-                             visibility=ParameterDictVisibility.READ_WRITE,
-                             menu_path_read=[Event.SETUP_MENU,
-                                             Event.OUTPUT_SETUP_MENU,
-                                             Event.AUX_DAC_RANGE],
-                             menu_path_write=[Event.SETUP_MENU,
-                                              Event.OUTPUT_SETUP_MENU,
-                                              Event.AUX_DAC_RANGE,
-                                              Event.YES])
-        self._param_dict.add(Parameter.AUX_DAC_RANGE_MAX,
-                             r'AuxDacMax = (\d*\.?\d+)',
-                             lambda match : int(match.group(1)),
-                             self._float_to_string,
-                             visibility=ParameterDictVisibility.READ_WRITE,
-                             menu_path_read=[Event.SETUP_MENU,
-                                             Event.OUTPUT_SETUP_MENU,
-                                             Event.AUX_DAC_RANGE,
-                                             Event.NO],
-                             menu_path_write=[Event.SETUP_MENU,
-                                              Event.OUTPUT_SETUP_MENU,
-                                              Event.AUX_DAC_RANGE,
-                                              Event.NO,
-                                              Event.YES])
-        self._param_dict.add(Parameter.DEPLOYMENT_MODE,
-                             r'OpMode = (SCHEDULED|CONTINUOUS|FIXEDTIME|FIXEDTIMEISUS|BENCHTOP|TRIGGERED)',
-                             lambda match : int(match.group(1)),
-                             self._opmode_to_string,
-                             visibility=ParameterDictVisibility.READ_WRITE,
-                             menu_path_read=[Event.SETUP_MENU,
-                                             Event.DEPLOYMENT_SETUP_MENU,
-                                             Event.OPERATIONAL_MODE],
-                             menu_path_write=[Event.SETUP_MENU,
-                                              Event.DEPLOYMENT_SETUP_MENU,
-                                              Event.OPERATIONAL_MODE,
-                                              Event.YES])
-        self._param_dict.add(Parameter.INITIAL_DELAY,
-                             r'ContModeDelay = (\d+)',
-                             lambda match : int(match.group(1)),
-                             self._int_to_string,
-                             visibility=ParameterDictVisibility.READ_WRITE,
-                             menu_path_read=[Event.SETUP_MENU,
-                                             Event.DEPLOYMENT_SETUP_MENU,
-                                             Event.INITIAL_DELAY],
-                             menu_path_write=[Event.SETUP_MENU,
-                                              Event.DEPLOYMENT_SETUP_MENU,
-                                              Event.INITIAL_DELAY,
-                                              Event.YES])
-
-        """
-
-
-    
-    

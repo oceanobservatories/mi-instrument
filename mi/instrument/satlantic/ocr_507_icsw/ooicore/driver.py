@@ -699,6 +699,7 @@ class SatlanticOCR507InstrumentProtocol(CommandResponseInstrumentProtocol):
         SatlanticProtocolState.AUTOSAMPLE, ResourceAgentState.STREAMING) if successful.
         """
         next_state = SatlanticProtocolState.COMMAND
+        result = []
 
         try:
             response = self._do_cmd_resp(Command.INVALID, timeout=3, expected_prompt=Prompt.INVALID_COMMAND)
@@ -710,7 +711,7 @@ class SatlanticOCR507InstrumentProtocol(CommandResponseInstrumentProtocol):
             self._do_cmd_no_resp(Command.SWITCH_TO_AUTOSAMPLE)
             next_state = SatlanticProtocolState.AUTOSAMPLE
 
-        return next_state, (next_state, [])
+        return next_state, (next_state, result)
 
     ########################################################################
     # Command handlers.
@@ -720,7 +721,6 @@ class SatlanticOCR507InstrumentProtocol(CommandResponseInstrumentProtocol):
         """
         Enter command state.
         """
-
         if self._init_type != InitializationType.NONE:
             self._update_params()
 
@@ -737,7 +737,8 @@ class SatlanticOCR507InstrumentProtocol(CommandResponseInstrumentProtocol):
         @param params List of the parameters to pass to the state
         @retval return (next state, result)
         """
-        return self._handler_get(*args, **kwargs)
+        next_state, result = self._handler_get(*args, **kwargs)
+        return next_state, result
 
     def _handler_command_set(self, *args, **kwargs):
         """Handle setting data from command mode
@@ -745,8 +746,9 @@ class SatlanticOCR507InstrumentProtocol(CommandResponseInstrumentProtocol):
         @param params Dict of the parameters and values to pass to the state
         @return (next state, result)
         """
-        self._set_params(*args, **kwargs)
-        return None, None
+        next_state = None
+        result = self._set_params(*args, **kwargs)
+        return next_state, result
 
     def _handler_command_start_autosample(self, params=None, *args, **kwargs):
         """
@@ -754,7 +756,7 @@ class SatlanticOCR507InstrumentProtocol(CommandResponseInstrumentProtocol):
         @param params List of the parameters to pass to the state
         @return next state (next state, result)
         """
-        result = None
+        result = []
 
         self._do_cmd_resp(Command.EXIT, response_regex=SAMPLE_REGEX, timeout=30)
         time.sleep(0.115)
@@ -766,11 +768,9 @@ class SatlanticOCR507InstrumentProtocol(CommandResponseInstrumentProtocol):
         return next_state, (next_state, result)
 
     def _handler_command_start_direct(self):
-        result = None
-
         next_state = SatlanticProtocolState.DIRECT_ACCESS
+        result = []
 
-        log.debug("_handler_command_start_direct: entering DA mode")
         return next_state, (next_state, result)
 
     def _handler_command_acquire_status(self, *args, **kwargs):
@@ -803,7 +803,7 @@ class SatlanticOCR507InstrumentProtocol(CommandResponseInstrumentProtocol):
         @throw InstrumentProtocolException For hardware error
         """
         next_state = None
-        result = None
+        result = []
 
         # Command device to update parameters only on initialization.
         if self._init_type != InitializationType.NONE:
@@ -819,7 +819,7 @@ class SatlanticOCR507InstrumentProtocol(CommandResponseInstrumentProtocol):
                                               msg="Not in the correct mode!")
 
         self._driver_event(DriverAsyncEvent.STATE_CHANGE)
-        return next_state, result
+        return next_state, (next_state, result)
 
     def _handler_autosample_stop_autosample(self, *args, **kwargs):
         """Handle SatlanticProtocolState.AUTOSAMPLE stop
@@ -828,7 +828,7 @@ class SatlanticOCR507InstrumentProtocol(CommandResponseInstrumentProtocol):
         @retval return (next state, result)
         @throw InstrumentProtocolException For hardware error
         """
-        result = None
+        result = []
 
         try:
             self._send_break()
@@ -867,7 +867,7 @@ class SatlanticOCR507InstrumentProtocol(CommandResponseInstrumentProtocol):
 
     def _handler_direct_access_execute_direct(self, data):
         next_state = None
-        result = None
+        result = []
 
         self._do_cmd_direct(data)
 

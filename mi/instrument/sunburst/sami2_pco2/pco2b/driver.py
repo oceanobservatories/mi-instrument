@@ -10,17 +10,10 @@ Release notes:
     and PHSEN instrument classes.
 """
 
-__author__ = 'Christopher Wingard & Kevin Stiemke'
-__license__ = 'Apache 2.0'
-
 import re
 import time
 
 from mi.core.log import get_logger
-
-
-log = get_logger()
-
 from mi.core.exceptions import SampleException
 from mi.core.exceptions import InstrumentTimeoutException
 
@@ -49,7 +42,11 @@ from mi.instrument.sunburst.sami2_pco2.driver import PCO2W_SAMPLE_REGEX_MATCHER_
 from mi.instrument.sunburst.sami2_pco2.driver import Pco2wSamiSampleDataParticle, Pco2wSamiSampleCalibrationDataParticle
 from mi.instrument.sunburst.sami2_pco2.driver import Pco2wInstrumentCommand
 from mi.core.instrument.instrument_fsm import ThreadSafeFSM
-from mi.core.instrument.instrument_driver import ResourceAgentState
+
+__author__ = 'Christopher Wingard & Kevin Stiemke'
+__license__ = 'Apache 2.0'
+
+log = get_logger()
 
 ###
 #    Driver Constant Definitions
@@ -502,9 +499,8 @@ class Protocol(Pco2wProtocol):
         """
         Run external pump
         """
-
         next_state = ProtocolState.RUN_EXTERNAL_PUMP
-        result = None
+        result = []
 
         return next_state, (next_state, result)
 
@@ -516,9 +512,10 @@ class Protocol(Pco2wProtocol):
         """
         Execute run external pump (dev1) command
         """
+        next_state = None
+        result = []
 
         try:
-
             self._take_dev1_sample()
 
             log.debug('Protocol._handler_run_external_pump_execute(): SUCCESS')
@@ -531,7 +528,7 @@ class Protocol(Pco2wProtocol):
 
             self._async_raise_fsm_event(ProtocolEvent.TIMEOUT)
 
-        return None, None
+        return next_state, (next_state, result)
 
     ########################################################################
     # Response handlers.
@@ -541,12 +538,12 @@ class Protocol(Pco2wProtocol):
         """
         Parse response to take dev1 sample from instrument
         """
+        pass
 
     def _take_dev1_sample(self):
         """
         Run external pump and wait for dev1 sample
         """
-
         log.debug('Protocol._take_dev1_sample(): Take Dev1 Sample START')
 
         start_time = time.time()

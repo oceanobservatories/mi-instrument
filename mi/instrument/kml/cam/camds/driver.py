@@ -1772,13 +1772,9 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
     def _handler_unknown_discover(self, *args, **kwargs):
         """
         Discover current state; can be COMMAND or AUTOSAMPLE.
-        @return protocol_state, protocol_state if successful
         """
-        protocol_state, agent_state = self._discover()
-
-        log.debug("_handler_unknown_discover: Protocol state is %s" % protocol_state)
-
-        return protocol_state, protocol_state
+        next_state, (_, result) = self._discover()
+        return next_state, (next_state, result)
 
     def stop_scheduled_job(self, schedule_job):
         """
@@ -1888,20 +1884,13 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
         self.stop_scheduled_job(ScheduledJob.VIDEO_FORWARDING)
 
     def _handler_command_start_direct(self, *args, **kwargs):
-        result = None
-
         next_state = ProtocolState.DIRECT_ACCESS
-        next_agent_state = ResourceAgentState.DIRECT_ACCESS
+        result = []
         return next_state, (next_state, result)
 
     def _handler_command_start_recovery(self, *args, **kwargs):
-
-        log.debug("Inside _handler_command_start_recovery")
-        result = None
-
         next_state = ProtocolState.RECOVERY
-
-        next_agent_state = ResourceAgentState.BUSY
+        result = []
         return next_state, (next_state, result)
 
     def _handler_command_start_autosample(self, *args, **kwargs):
@@ -1909,7 +1898,8 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
         Switch into autosample mode.
         @return next_state, (next_state, result) if successful.
         """
-        result = None
+        next_state = ProtocolState.AUTOSAMPLE
+        result = []
         kwargs['timeout'] = 30
 
         # first stop scheduled sampling
@@ -1926,16 +1916,14 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
             self.start_scheduled_job(Parameter.SAMPLE_INTERVAL[ParameterIndex.KEY], ScheduledJob.SAMPLE,
                                      ProtocolEvent.EXECUTE_AUTO_CAPTURE)
 
-        next_state = ProtocolState.AUTOSAMPLE
-        next_agent_state = ResourceAgentState.STREAMING
-
         return next_state, (next_state, result)
 
     def _handler_command_acquire_sample(self, *args, **kwargs):
         """
         Acquire Sample
         """
-        next_state = None
+        next_state = ProtocolState.RECOVERY
+        result = []
 
         kwargs['timeout'] = 30
 
@@ -1951,9 +1939,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
         # Camera needs time to recover after taking a snapshot
         self._do_recover(CAMERA_RECOVERY_TIME)
 
-        next_state = ProtocolState.RECOVERY
-
-        return next_state, (next_state, [])
+        return next_state, (next_state, result)
 
     def _handler_command_acquire_status(self, *args, **kwargs):
         """
@@ -1988,24 +1974,26 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
         Turn the instrument lamp on
         """
         next_state = None
+        result = []
 
         kwargs['timeout'] = 30
 
         self._do_cmd_resp(InstrumentCmds.LAMP_ON, *args, **kwargs)
 
-        return next_state, (next_state, None)
+        return next_state, (next_state, result)
 
     def _handler_command_lamp_off(self, *args, **kwargs):
         """
         Turn the instrument lamp off
         """
         next_state = None
+        result = []
 
         kwargs['timeout'] = 30
 
         self._do_cmd_resp(InstrumentCmds.LAMP_OFF, *args, **kwargs)
 
-        return next_state, (next_state, None)
+        return next_state, (next_state, result)
 
     def _handler_command_laser(self, command, light, *args, **kwargs):
 
@@ -2013,12 +2001,13 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
         Command the laser
         """
         next_state = None
+        result = []
 
         kwargs['timeout'] = 2
 
         self._do_cmd_resp(command, light, **kwargs)
 
-        return next_state, (next_state, None)
+        return next_state, (next_state, result)
 
     def _handler_command_laser1_on(self, *args, **kwargs):
         """
@@ -2061,11 +2050,11 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
         Set preset position
         """
         next_state = None
+        result = []
 
         kwargs['timeout'] = 2
 
         pd = self._param_dict.get_all()
-        result = []
 
         # set default preset position
         preset_number = DEFAULT_USER_PRESET_POSITION
@@ -2076,7 +2065,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
 
         self._do_cmd_resp(InstrumentCmds.SET_PRESET, preset_number, *args, **kwargs)
 
-        return next_state, (next_state, None)
+        return next_state, (next_state, result)
 
     def _handler_command_start_capture(self, *args, **kwargs):
         """
@@ -2128,6 +2117,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
         Go to the preset position
         """
         next_state = None
+        result = []
 
         kwargs['timeout'] = 2
 
@@ -2145,21 +2135,23 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
 
         self._do_cmd_resp(InstrumentCmds.GO_TO_PRESET, preset_number, *args, **kwargs)
 
-        return next_state, (next_state, None)
+        return next_state, (next_state, result)
 
     def _discover(self):
         """
         Discover current state; can be COMMAND or AUTOSAMPLE or UNKNOWN.
-        @return (next_protocol_state, next_state)
+        @return next_state, (next_state, result)
         """
+        next_state = ProtocolState.COMMAND
+        result = []
 
         log.debug("trying to discover state...")
 
         if self._scheduler_callback is not None:
             if self._scheduler_callback.get(ScheduledJob.SAMPLE):
-                return ProtocolState.AUTOSAMPLE, ProtocolState.AUTOSAMPLE
+                next_state = ProtocolState.AUTOSAMPLE
 
-        return ProtocolState.COMMAND, ProtocolState.COMMAND
+        return next_state, (next_state, result)
 
     def _calculate_recovery_time(self):
         """
@@ -2219,8 +2211,8 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
 
     def _handler_direct_access_execute_direct(self, data):
         next_state = None
-        result = None
-        next_agent_state = None
+        result = []
+
         self._do_cmd_direct(data)
 
         # add sent command to list for 'echo' filtering in callback
@@ -2232,8 +2224,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
         """
         @reval next_state, (next_state, result)
         """
-        result = None
-        (next_state, next_agent_state) = self._discover()
+        next_state, (_, result) = self._discover()
 
         return next_state, (next_state, result)
 
@@ -2260,7 +2251,8 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
         """
         Acquire Sample
         """
-        next_state = None
+        next_state = ProtocolState.RECOVERY
+        result = []
 
         kwargs['timeout'] = 30
 
@@ -2279,9 +2271,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
         # Camera needs time to recover after taking a snapshot
         self._do_recover(CAMERA_RECOVERY_TIME)
 
-        next_state = ProtocolState.RECOVERY
-
-        return next_state, (next_state, [])
+        return next_state, (next_state, result)
 
     def _handler_autosample_start_capture(self, *args, **kwargs):
         """
@@ -2304,10 +2294,8 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
         @return  next_state, (next_state, result) if successful.
         incorrect prompt received.
         """
-        result = None
-
         next_state = ProtocolState.COMMAND
-        next_agent_state = ResourceAgentState.COMMAND
+        result = []
 
         self.stop_scheduled_job(ScheduledJob.SAMPLE)
 
@@ -2332,6 +2320,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
         Protocol method to transition back to the previous state once recovery is complete
         """
         next_state = args[0]
+        result = []
 
         log.debug("Recovery complete, returning to %s" % next_state)
 
@@ -2346,7 +2335,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
 
         self._async_agent_state_change(next_agent_state)
 
-        return next_state, (next_state, None)
+        return next_state, (next_state, result)
 
     def _recovery_timer_expired(self, *args, **kwargs):
         """

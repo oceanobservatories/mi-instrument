@@ -8,15 +8,10 @@ Release notes:
 SBE Driver
 """
 
-__author__ = 'Tapana Gupta'
-__license__ = 'Apache 2.0'
-
 import re
 import time
 
 from mi.core.log import get_logger
-log = get_logger()
-
 from mi.core.common import BaseEnum
 from mi.core.common import Units
 from mi.core.instrument.instrument_protocol import CommandResponseInstrumentProtocol
@@ -24,6 +19,8 @@ from mi.core.instrument.data_particle import DataParticleKey
 from mi.core.instrument.instrument_fsm import InstrumentFSM
 from mi.core.instrument.data_particle import CommonDataParticleType
 from mi.core.instrument.chunker import StringChunker
+from mi.core.instrument.protocol_param_dict import ParameterDictVisibility
+from mi.core.instrument.protocol_param_dict import ParameterDictType
 
 from mi.core.exceptions import InstrumentProtocolException
 from mi.core.exceptions import InstrumentParameterException
@@ -31,14 +28,16 @@ from mi.core.exceptions import SampleException
 
 from xml.dom.minidom import parseString
 
-from mi.core.instrument.protocol_param_dict import ParameterDictVisibility
-from mi.core.instrument.protocol_param_dict import ParameterDictType
-
-from mi.instrument.seabird.sbe16plus_v2.driver import SBE16Protocol, SBE16InstrumentDriver, Sbe16plusBaseParticle, NEWLINE, \
+from mi.instrument.seabird.sbe16plus_v2.driver import \
+    SBE16Protocol, SBE16InstrumentDriver, Sbe16plusBaseParticle, NEWLINE, \
     DEFAULT_ENCODER_KEY, TIMEOUT, WAKEUP_TIMEOUT, ScheduledJob, Command, ProtocolState, ProtocolEvent, \
-    ConfirmedParameter, CommonParameter
-from mi.instrument.seabird.sbe16plus_v2.driver import Prompt
+    ConfirmedParameter, CommonParameter, Prompt
 
+
+__author__ = 'Tapana Gupta'
+__license__ = 'Apache 2.0'
+
+log = get_logger()
 
 # Driver constants
 MIN_PUMP_DELAY = 0
@@ -47,6 +46,7 @@ MIN_AVG_SAMPLES = 1
 MAX_AVG_SAMPLES = 32767
 
 INT16 = (0, (1 << 16)-1)
+
 
 class OptodeCommands(Command):
     SEND_OPTODE = 'sendOptode'
@@ -1121,6 +1121,7 @@ class SBE19Protocol(SBE16Protocol):
         """
         Get device status
         """
+        next_state = None
         result = []
 
         result.append(self._do_cmd_resp(Command.GET_SD, response_regex=SBE19StatusParticle.regex_compiled(),
@@ -1138,11 +1139,11 @@ class SBE19Protocol(SBE16Protocol):
         result.append(self._do_cmd_resp(Command.GET_EC, timeout=TIMEOUT))
         log.debug("_handler_command_acquire_status: GetEC Response: %s", result)
 
-        #Reset the event counter right after getEC
+        # Reset the event counter right after getEC
         self._do_cmd_resp(Command.RESET_EC, timeout=TIMEOUT)
 
-        #Now send commands to the Optode to get its status
-        #Stop the optode first, need to send the command twice
+        # Now send commands to the Optode to get its status
+        # Stop the optode first, need to send the command twice
         stop_command = "stop"
         start_command = "start"
         self._do_cmd_resp(OptodeCommands.SEND_OPTODE, stop_command, timeout=TIMEOUT)
@@ -1150,35 +1151,37 @@ class SBE19Protocol(SBE16Protocol):
         self._do_cmd_resp(OptodeCommands.SEND_OPTODE, stop_command, timeout=TIMEOUT)
         time.sleep(3)
 
-        #Send all the 'sendoptode=' commands one by one
+        # Send all the 'sendoptode=' commands one by one
         optode_commands = SendOptodeCommand.list()
         for command in optode_commands:
             log.debug("Sending optode command: %s" % command)
             result.append(self._do_cmd_resp(OptodeCommands.SEND_OPTODE, command, timeout=TIMEOUT))
             log.debug("_handler_command_acquire_status: SendOptode Response: %s", result)
 
-        #restart the optode
+        # restart the optode
         self._do_cmd_resp(OptodeCommands.SEND_OPTODE, start_command, timeout=TIMEOUT)
 
-        return None, (None, ''.join(result))
+        return next_state, (next_state, ''.join(result))
 
     def _handler_command_acquire_sample(self, *args, **kwargs):
         """
         Acquire sample from SBE16.
         @retval next_state, (next_state, result) tuple
         """
+        next_state = None
         timeout = time.time() + TIMEOUT
 
         self._do_cmd_resp(Command.TS, *args, **kwargs)
 
         particles = self.wait_for_particles(DataParticleType.CTD_PARSED, timeout)
 
-        return None, (None, particles)
+        return next_state, (next_state, particles)
 
     def _handler_autosample_acquire_status(self, *args, **kwargs):
         """
         Get device status
         """
+        next_state = None
         result = []
 
         # When in autosample this command requires two wakeups to get to the right prompt
@@ -1200,10 +1203,10 @@ class SBE19Protocol(SBE16Protocol):
         result.append(self._do_cmd_resp(Command.GET_EC, timeout=TIMEOUT))
         log.debug("_handler_autosample_acquire_status: GetEC Response: %s", result)
 
-        #Reset the event counter right after getEC
+        # Reset the event counter right after getEC
         self._do_cmd_no_resp(Command.RESET_EC)
 
-        return None, (None, ''.join(result))
+        return next_state, (next_state, ''.join(result))
 
     def _build_send_optode_command(self, cmd, command):
         """

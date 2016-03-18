@@ -8,9 +8,6 @@ This supports the UW BARS instrument from the Marv Tilley lab
 
 """
 
-__author__ = 'Steve Foley'
-__license__ = 'Apache 2.0'
-
 import re
 import time
 
@@ -40,6 +37,9 @@ from mi.core.instrument.protocol_param_dict import ProtocolParameterDict, Parame
 
 from mi.core.log import get_logger
 from mi.core.log import get_logging_metaclass
+
+__author__ = 'Steve Foley'
+__license__ = 'Apache 2.0'
 
 common_matches = {
     'float': r'-?\d*\.?\d+',
@@ -662,7 +662,6 @@ class Protocol(MenuInstrumentProtocol):
         """
         Enter unknown state.
         """
-
         # Tell driver superclass to send a state change event.
         # Superclass will query the state.
         self._driver_event(DriverAsyncEvent.STATE_CHANGE)
@@ -670,15 +669,14 @@ class Protocol(MenuInstrumentProtocol):
     def _handler_discover(self, *args, **kwargs):
         """
         Discover current state by going to the root menu
-        @retval next_state, result
         """
-
         # Try to break in case we are in auto sample
+        next_state = ProtocolState.COMMAND
+        result = []
+
         self._send_break()
 
-        next_state = ProtocolState.COMMAND
-
-        return next_state, next_state
+        return next_state, (next_state, result)
 
     ########################################################################
     # Command handlers.
@@ -700,8 +698,6 @@ class Protocol(MenuInstrumentProtocol):
         """
         Get parameters while in the command state.
         @param params List of the parameters to pass to the state
-        @retval returns (next_state, result) where result is a dict {}. No
-            agent state changes happening with Get, so no next_agent_state
         @throw InstrumentParameterException for invalid parameter
         """
         next_state = None
@@ -838,7 +834,7 @@ class Protocol(MenuInstrumentProtocol):
         @throw InstrumentParameterException For invalid parameter
         """
         next_state = None
-        result = None
+        result = []
 
         # Retrieve required parameter.
         # Raise if no parameter provided, or not a dict.
@@ -859,34 +855,29 @@ class Protocol(MenuInstrumentProtocol):
         """
         Start autosample mode
         """
-
-        result = None
+        next_state = ProtocolState.AUTOSAMPLE
+        result = []
 
         self._navigate(SubMenu.MAIN)
         self._do_cmd_no_resp(Command.START_AUTOSAMPLE)
-
-        next_state = ProtocolState.AUTOSAMPLE
 
         return next_state, (next_state, result)
 
     def _handler_command_acquire_status(self, *args, **kwargs):
         """
         Acquire Instrument Status
-        @retval next state, (next_state, result)
         """
+        next_state = None
+        result = []
 
         self._navigate(SubMenu.MAIN)
         self._do_cmd_no_resp(Command.SHOW_STATUS)
 
-        return None, (None, None)
+        return next_state, (next_state, result)
 
     def _handler_command_start_direct(self):
-        """
-        @retval next state, (next_state, result)
-        """
-
-        result = None
         next_state = ProtocolState.DIRECT_ACCESS
+        result = []
 
         return next_state, (next_state, result)
 
@@ -913,16 +904,16 @@ class Protocol(MenuInstrumentProtocol):
     def _handler_direct_access_execute_direct(self, data):
         """
         @param data to be sent in direct access
-        @retval next state, result
         """
         next_state = None
+        result = []
 
         self._do_cmd_direct(data)
 
         # add sent command to list for 'echo' filtering in callback
         self._sent_cmds.append(data)
 
-        return next_state, None
+        return next_state, (next_state, result)
 
     def _handler_direct_access_scheduled_acquire_status(self, data):
         """
@@ -934,12 +925,11 @@ class Protocol(MenuInstrumentProtocol):
     def _handler_direct_access_stop_direct(self):
         """
         @throw InstrumentProtocolException on invalid command
-        @retval next state, (next_state, result)
         """
-
         next_state = ProtocolState.COMMAND
+        result = []
 
-        return next_state, (next_state, None)
+        return next_state, (next_state, result)
 
     ########################################################################
     # Autosample handlers
@@ -988,8 +978,9 @@ class Protocol(MenuInstrumentProtocol):
     def _handler_autosample_acquire_status(self, *args, **kwargs):
         """
         Acquire instrument's status in autosample state
-        @retval return (next state, (next_state, result))
         """
+        next_state = None
+        result = []
 
         # Break out of auto sample mode by sending control S to the instrument
         self._send_break()
@@ -1003,15 +994,14 @@ class Protocol(MenuInstrumentProtocol):
         self._navigate(SubMenu.MAIN)
         self._do_cmd_no_resp(Command.START_AUTOSAMPLE)
 
-        return None, (None, None)
+        return next_state, (next_state, result)
 
     def _handler_autosample_stop(self):
         """
         Stop autosample mode
-        @retval return (next state, (next_state, result))
         """
         next_state = None
-        result = None
+        result = []
 
         if self._send_break():
             next_state = ProtocolState.COMMAND

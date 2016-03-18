@@ -10,17 +10,12 @@ nitty-gritty interaction with individual instruments in the system.
 @todo Figure out what gets thrown on errors
 """
 
-__author__ = 'Steve Foley'
-__license__ = 'Apache 2.0'
-
 import time
 import re
 from functools import partial
 from threading import Thread
 
 from mi.core.log import get_logger, get_logging_metaclass
-
-log = get_logger()
 
 from mi.core.instrument.protocol_param_dict import ParameterDictVisibility
 from mi.core.common import BaseEnum, InstErrorCode
@@ -43,6 +38,12 @@ from mi.core.exceptions import InstrumentProtocolException
 from mi.core.exceptions import InstrumentParameterException
 from mi.core.exceptions import NotImplementedException
 from mi.core.exceptions import InstrumentParameterExpirationException
+
+__author__ = 'Steve Foley'
+__license__ = 'Apache 2.0'
+
+log = get_logger()
+
 
 MAX_BUFFER_SIZE = 32768
 DEFAULT_CMD_TIMEOUT = 20
@@ -165,8 +166,7 @@ class InstrumentProtocol(object):
         Initialize parameters based on initialization type.  If we actually
         do some initialization (either startup or DA) after we are done
         set the init type to None so we don't initialize again.
-        @raises InstrumentProtocolException if the init_type isn't set or it
-                                            is unknown
+        @raises InstrumentProtocolException if the init_type isn't set or it is unknown
         """
         if self._init_type == InitializationType.STARTUP:
             log.debug("_init_params: Apply Startup Config")
@@ -187,8 +187,7 @@ class InstrumentProtocol(object):
 
     def got_data(self, port_agent_packet):
         """
-        Called by the instrument connection when data is available.
-         Defined in subclasses.
+        Called by the instrument connection when data is available. Defined in subclasses.
         """
         raise NotImplementedException()
 
@@ -1088,8 +1087,9 @@ class CommandResponseInstrumentProtocol(InstrumentProtocol):
         Called by the instrument connection when data is available.
         Append line and prompt buffers.
 
-        Also add data to the chunker and when received call got_chunk
-        to publish results.
+        Also add data to the chunker and when received call got_chunk to publish results.
+
+        :param port_agent_packet: raw data from instrument
         """
         data_length = port_agent_packet.get_data_length()
         data = port_agent_packet.get_data()
@@ -1117,13 +1117,16 @@ class CommandResponseInstrumentProtocol(InstrumentProtocol):
         """
         Called by the port agent client when raw data is available, such as data
         sent by the driver to the instrument, the instrument responses,etc.
+
+        :param port_agent_packet: raw data from instrument
         """
         self.publish_raw(port_agent_packet)
 
     def publish_raw(self, port_agent_packet):
         """
         Publish raw data
-        @param: port_agent_packet port agent packet containing raw
+
+        :param port_agent_packet: raw data from instrument
         """
         particle = RawDataParticle(port_agent_packet.get_as_dict(),
                                    port_timestamp=port_agent_packet.get_timestamp())
@@ -1480,5 +1483,7 @@ class MenuInstrumentProtocol(CommandResponseInstrumentProtocol):
         Called by the instrument connection when data is available.
         Append line and prompt buffers. Extended by device specific
         subclasses.
+
+        :param data: data to process
         """
         CommandResponseInstrumentProtocol.got_data(self, data)

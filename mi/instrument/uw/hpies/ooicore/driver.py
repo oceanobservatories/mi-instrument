@@ -8,9 +8,6 @@ Release notes:
 initial_rev
 """
 
-__author__ = 'Dan Mergens'
-__license__ = 'Apache 2.0'
-
 import time
 import re
 import tempfile
@@ -30,13 +27,13 @@ from mi.core.common import BaseEnum, Units
 from mi.core.instrument.instrument_protocol import CommandResponseInstrumentProtocol
 from mi.core.instrument.instrument_fsm import ThreadSafeFSM
 from mi.core.instrument.instrument_driver import \
-    SingleConnectionInstrumentDriver, DriverEvent, DriverAsyncEvent, DriverProtocolState, DriverParameter, \
-    ResourceAgentState
+    SingleConnectionInstrumentDriver, DriverEvent, DriverAsyncEvent, DriverProtocolState, DriverParameter
 from mi.core.instrument.data_particle import CommonDataParticleType, DataParticleKey, DataParticle, DataParticleValue
 from mi.core.instrument.chunker import StringChunker
 from mi.instrument.uw.hpies.crclib import crc3kerm
 
-
+__author__ = 'Dan Mergens'
+__license__ = 'Apache 2.0'
 
 # newline.
 NEWLINE = '\r\n'
@@ -111,6 +108,7 @@ def valid_response(resp):
 def stm_command(s, *args):
     """
     Create fully qualified STM command (add prefix and postfix the CRC).
+    :param s: command string
     """
     return build_command('1', s, *args)
 
@@ -118,6 +116,7 @@ def stm_command(s, *args):
 def hef_command(s, *args):
     """
     Create fully qualified HEF command (add prefix and postfix the CRC).
+    :param s: command string
     """
     return build_command('3', s, *args)
 
@@ -125,6 +124,7 @@ def hef_command(s, *args):
 def ies_command(s, *args):
     """
     Create fully qualified IES command (add prefix and postfix the CRC).
+    :param s: command string
     """
     return build_command('4', s, *args)
 
@@ -859,9 +859,9 @@ class IESDataParticle(HPIESDataParticle):
         Parse data sample for individual values (statistics)
         @throws SampleException If there is a problem with sample creation
         """
-        #Sample Data:
-        #5_AUX,1398880200,04,999999,999999,999999,999999,0010848,021697,022030,04000005.252,1B05,1398966715*c69e
-        #4_AUX,1439251200,04,390262,390286,390213,390484,2954625,001426,001420,04000018.093,4851\r\r\n*46cc
+        # Sample Data:
+        # 5_AUX,1398880200,04,999999,999999,999999,999999,0010848,021697,022030,04000005.252,1B05,1398966715*c69e
+        # 4_AUX,1439251200,04,390262,390286,390213,390484,2954625,001426,001420,04000018.093,4851\r\r\n*46cc
 
         results = [
                 self._encode_value(IESDataParticleKey.DATA_VALID, self.check_crc(), int),
@@ -877,7 +877,7 @@ class IESDataParticle(HPIESDataParticle):
                 self._encode_value(IESDataParticleKey.BLILEY_FREQUENCY, self.match.group('bliley_freq'), float),
         ]
 
-        #the 5_AUX type contains an stm_timestamp value.
+        # the 5_AUX type contains an stm_timestamp value.
         if self.match.group(1) == '5':
             results.append(self._encode_value(IESDataParticleKey.STM_TIMESTAMP, self.match.group('stm_timestamp'), int),)
 
@@ -2085,11 +2085,11 @@ class Protocol(CommandResponseInstrumentProtocol):
     def _handler_unknown_discover(self):
         next_state = ProtocolState.COMMAND
         # any existing mission needs to be stopped. If one is not already running, no harm in sending the stop.
-        self._do_cmd_no_resp(Command.MISSION_STOP)
+        result = self._do_cmd_no_resp(Command.MISSION_STOP)
         # delay so the instrument doesn't overwrite the next response
         time.sleep(2)
 
-        return next_state, next_state
+        return next_state, (next_state, [result])
 
     ########################################################################
     # Command handlers.
@@ -2139,7 +2139,9 @@ class Protocol(CommandResponseInstrumentProtocol):
         @raise InstrumentParameterExpirationException If we fail to update a parameter
         on the second pass this exception will be raised on expired data
         """
-        return self._handler_get(*args, **kwargs)
+        next_state, result = self._handler_get(*args, **kwargs)
+        # TODO change to match other handler return signatures - return next_state, (next_state, result)
+        return next_state, result
 
     def _handler_command_set(self, *args):
         """
@@ -2152,6 +2154,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         @throws InstrumentTimeoutException if device cannot be woken for set command.
         @throws InstrumentProtocolException if set command could not be built or misunderstood.
         """
+        next_state = result = None
         startup = False
 
         try:
@@ -2171,13 +2174,17 @@ class Protocol(CommandResponseInstrumentProtocol):
         # Raise if the command not understood.
         self._set_params(params, startup)
 
-        return None, None
+        return next_state, result
 
     def _handler_command_start_autosample(self):
-        return ProtocolState.AUTOSAMPLE, (ResourceAgentState.STREAMING, None)
+        next_state = ProtocolState.AUTOSAMPLE
+        result = []
+        return next_state, (next_state, result)
 
     def _handler_command_start_direct(self):
-        return ProtocolState.DIRECT_ACCESS, (ResourceAgentState.DIRECT_ACCESS, None)
+        next_state = ProtocolState.DIRECT_ACCESS
+        result = []
+        return next_state, (next_state, result)
 
     def _handler_command_exit(self, *args, **kwargs):
         pass
@@ -2202,6 +2209,9 @@ class Protocol(CommandResponseInstrumentProtocol):
         """
         Process command to stop auto-sampling. Return to command state.
         """
+        next_state = ProtocolState.COMMAND
+        result = []
+
         try:
             self._do_cmd_resp(Command.MISSION_STOP, expected_prompt=Prompt.DEFAULT, timeout=Timeout.MISSION_STOP)
             self._do_cmd_resp(Command.ACQUISITION_STOP, expected_prompt=Prompt.DEFAULT,
@@ -2210,7 +2220,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         except InstrumentTimeoutException as e:
             log.warning('Unable to terminate mission cleanly: %r', e.message)
 
-        return ProtocolState.COMMAND, (ProtocolState.COMMAND, None)
+        return next_state, (next_state, result)
 
     def _handler_autosample_exit(self, *args, **kwargs):
         # no special cleanup required
@@ -2226,15 +2236,19 @@ class Protocol(CommandResponseInstrumentProtocol):
         self._sent_cmds = []
 
     def _handler_direct_access_execute_direct(self, data):
+        next_state = None
+        result = []
         self._do_cmd_direct(data)
 
         # add sent command to list for 'echo' filtering in callback
         self._sent_cmds.append(data)
 
-        return None, (None, None)
+        return next_state, (next_state, result)
 
     def _handler_direct_access_stop_direct(self):
-        return ProtocolState.COMMAND, (ProtocolState.COMMAND, None)
+        next_state = ProtocolState.COMMAND
+        result = []
+        return next_state, (next_state, result)
 
     def _handler_direct_access_exit(self):
         pass

@@ -619,8 +619,11 @@ class Protocol(CommandResponseInstrumentProtocol):
     def _handler_unknown_discover(self, *args, **kwargs):
         """
         Discover current state
-        @retval (next_state, next_state)
+        @retval next_state, (next_state, result)
         """
+        next_state = ProtocolState.COMMAND
+        result = []
+
         # Try to get the status to check if the instrument is alive
         host = self._param_dict.get_config_value(Parameter.FTP_IP_ADDRESS)
         port = self._param_dict.get_config_value(Parameter.FTP_PORT)
@@ -631,7 +634,7 @@ class Protocol(CommandResponseInstrumentProtocol):
             log.error(error_msg)
             raise InstrumentConnectionException(error_msg)
 
-        return ProtocolState.COMMAND, ProtocolState.COMMAND
+        return next_state, (next_state, result)
 
     ########################################################################
     # Command handlers.
@@ -841,8 +844,10 @@ class Protocol(CommandResponseInstrumentProtocol):
     def _handler_command_autosample(self, *args, **kwargs):
         """
         Start autosample mode
-        @retval next_state, (next_state, result) tuple
         """
+        next_state = ProtocolState.AUTOSAMPLE
+        result = []
+
         # FTP the driver schedule file to the instrument server
         self._ftp_schedule_file()
 
@@ -864,13 +869,13 @@ class Protocol(CommandResponseInstrumentProtocol):
         if res.get('result') != 'OK':
             raise InstrumentException('_handler_command_autosample: Start Schedule File Error.')
 
-        return ProtocolState.AUTOSAMPLE, (ProtocolState.AUTOSAMPLE, None)
+        return next_state, (next_state, result)
 
     def _handler_command_acquire_status(self, *args, **kwargs):
         """
         Acquire status from the instrument
-        @retval next_state, (next_state, result) tuple
         """
+        next_state = None
         timeout = time.time() + STATUS_TIMEOUT
 
         host = self._param_dict.get_config_value(Parameter.FTP_IP_ADDRESS)
@@ -890,7 +895,7 @@ class Protocol(CommandResponseInstrumentProtocol):
 
         particles = self.wait_for_particles([DataParticleType.ZPLSC_STATUS], timeout)
 
-        return None, (None, particles)
+        return next_state, (next_state, particles)
 
     ########################################################################
     # Autosample handlers
@@ -904,12 +909,14 @@ class Protocol(CommandResponseInstrumentProtocol):
     def _handler_autosample_stop(self):
         """
         Stop autosample mode
-        @retval next_state, (next_state, result) tuple
         """
+        next_state = ProtocolState.COMMAND
+        result = []
+
         host = self._param_dict.get_config_value(Parameter.FTP_IP_ADDRESS)
         port = self._param_dict.get_config_value(Parameter.FTP_PORT)
         log.debug("_handler_autosample_stop: stop the current schedule file")
         res = self._url_request(host, port, '/stop_schedule', data={})
         log.debug("handler_autosample_stop: stop schedule returns %r", res)
 
-        return ProtocolState.COMMAND, (ProtocolState.COMMAND, None)
+        return next_state, (next_state, result)
