@@ -5,4 +5,4 @@ driver_metadata:
   driver_name: ooicore
   email: petercable@gmail.com
   release_notes: Driver for the RSN-BOTPT instrument (v.6)
-  version: 0.3.7
+  version: 0.3.6

@@ -682,6 +682,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         @returns: next_state, (next_agent_state, result)
         @throws InstrumentStateException
         """
+        next_state = None
         responses = {}
 
         # query the turbo for the speed/temp/current values
@@ -728,17 +729,18 @@ class Protocol(CommandResponseInstrumentProtocol):
             if responses[InstrumentCommand.ROTATION_SPEED_ACTUAL] <= self._param_dict.get(Parameter.MIN_SPEED):
                 self._async_raise_fsm_event(ProtocolEvent.STOPPED)
 
-        return None, (None, responses)
+        return next_state, (next_state, responses)
 
     def _handler_stop_turbo(self):
         """
         Stop the turbo
-        @returns: next_state, (next_agent_state, result)
         """
+        next_state = ProtocolState.SPINNING_DOWN
+        result = []
         for command in [InstrumentCommand.PUMP_STATION, InstrumentCommand.MOTOR_PUMP]:
             self._send_command_with_retry(command, value=FALSE)
 
-        return ProtocolState.SPINNING_DOWN, (ProtocolState.SPINNING_DOWN, None)
+        return next_state, (next_state, result)
 
     ########################################################################
     # Unknown handlers.
@@ -747,9 +749,10 @@ class Protocol(CommandResponseInstrumentProtocol):
     def _handler_unknown_discover(self, *args, **kwargs):
         """
         Discover current state.  This instrument always discovers to COMMAND
-        @returns: next_state, next_state
         """
-        return ProtocolState.COMMAND, ProtocolState.COMMAND
+        next_state = ProtocolState.COMMAND
+        result = []
+        return next_state, (next_state, result)
 
     ########################################################################
     # Command handlers.
@@ -776,14 +779,12 @@ class Protocol(CommandResponseInstrumentProtocol):
     def _handler_command_get(self, *args, **kwargs):
         """
         Get parameter
-        @returns: next_state, result
         """
         return self._handler_get(*args, **kwargs)
 
     def _handler_command_set(self, *args, **kwargs):
         """
         Set parameter
-        @returns: next_state, result
         """
         next_state = None
         result = None
@@ -794,20 +795,22 @@ class Protocol(CommandResponseInstrumentProtocol):
     def _handler_command_start_direct(self):
         """
         Start direct access
-        @returns: next_state, (next_state, result)
         """
-        return ProtocolState.DIRECT_ACCESS, (ProtocolState.DIRECT_ACCESS, None)
+        next_state = ProtocolState.DIRECT_ACCESS
+        result = []
+        return next_state, (next_state, result)
 
     def _handler_command_start_turbo(self):
         """
         Start the turbo, periodic status scheduler
-        @returns: next_state, (next_state, result)
         """
+        next_state = ProtocolState.SPINNING_UP
+        result = []
         for command in [InstrumentCommand.PUMP_STATION, InstrumentCommand.MOTOR_PUMP]:
             self._send_command_with_retry(command, value=TRUE)
         # start the acquire_status scheduler
         self._build_scheduler()
-        return ProtocolState.SPINNING_UP, (ProtocolState.SPINNING_UP, None)
+        return next_state, (next_state, result)
 
     ########################################################################
     # Direct access handlers.
@@ -825,21 +828,23 @@ class Protocol(CommandResponseInstrumentProtocol):
     def _handler_direct_access_execute_direct(self, data):
         """
         Forward a direct access command to the instrument
-        @returns: next_state, (next_state, result)
         """
+        next_state = None
+        result = []
         self._do_cmd_direct(data)
 
         # add sent command to list for 'echo' filtering in callback
         self._sent_cmds.append(data)
 
-        return None, (None, None)
+        return next_state, (next_state, result)
 
     def _handler_direct_access_stop_direct(self):
         """
         Stop direct access, return to COMMAND
-        @returns: next_state, (next_state, result)
         """
-        return ProtocolState.COMMAND, (ProtocolState.COMMAND, None)
+        next_state = ProtocolState.COMMAND
+        result = []
+        return next_state, (next_state, result)
 
     ########################################################################
     # Spinning up/down handlers.
@@ -848,17 +853,19 @@ class Protocol(CommandResponseInstrumentProtocol):
     def _handler_spinning_up_at_speed(self):
         """
         Instrument has reached operating speed, transition states.
-        @returns: next_state, next_state
         """
-        return ProtocolState.AT_SPEED, ProtocolState.AT_SPEED
+        next_state = ProtocolState.AT_SPEED
+        result = []
+        return next_state, (next_state, result)
 
     def _handler_spinning_down_stopped(self):
         """
         Instrument has spun down, transition states.
-        @returns: next_state, next_state
         """
+        next_state = ProtocolState.COMMAND
+        result = []
         self._async_agent_state_change(ResourceAgentState.COMMAND)
-        return ProtocolState.COMMAND, ProtocolState.COMMAND
+        return next_state, (next_state, result)
 
     ########################################################################
     # Error handlers.
@@ -867,15 +874,18 @@ class Protocol(CommandResponseInstrumentProtocol):
     def _handler_error(self, *args, **kwargs):
         """
         Error detected, go to the ERROR state.
-        @returns: next_state, (next_state, result)
         """
-        return ProtocolState.ERROR, (ProtocolState.ERROR, None)
+        next_state = ProtocolState.ERROR
+        result = []
+        return next_state, (next_state, result)
 
     def _handler_clear(self, *args, **kwargs):
         """
         User requests error state be cleared, go to COMMAND.
         @returns: next_state, (next_state, result)
         """
+        next_state = ProtocolState.COMMAND
+        result = []
         self._param_dict.set_value(Parameter.ERROR_REASON, '')
         self._driver_event(DriverAsyncEvent.CONFIG_CHANGE)
-        return ProtocolState.COMMAND, (ProtocolState.COMMAND, None)
+        return next_state, (next_state, result)

@@ -6,41 +6,38 @@ Release notes:
 
 Driver for Aquadopp DW
 """
-__author__ = 'Rachel Manoni, Ronald Ronquillo'
-__license__ = 'Apache 2.0'
-
 import re
 from collections import namedtuple
 import struct
 from datetime import datetime
 
 from mi.core.log import get_logger
-log = get_logger()
-
 from mi.core.exceptions import SampleException
 from mi.core.common import BaseEnum, Units
 from mi.core.instrument.data_particle import DataParticle, DataParticleKey, DataParticleValue
 
 from mi.instrument.nortek.driver import NortekInstrumentProtocol, InstrumentPrompts, NortekProtocolParameterDict, \
-    InstrumentCmds, validate_checksum
-from mi.instrument.nortek.driver import CLOCK_DATA_REGEX, HARDWARE_CONFIG_DATA_REGEX, ID_BATTERY_DATA_REGEX, \
-    HEAD_CONFIG_DATA_REGEX, USER_CONFIG_DATA_REGEX
-
-from mi.instrument.nortek.driver import Parameter, NortekInstrumentDriver, NEWLINE
-from mi.instrument.nortek.driver import NortekHardwareConfigDataParticle, NortekHeadConfigDataParticle, NortekUserConfigDataParticle\
-    , NortekEngBatteryDataParticle, NortekEngIdDataParticle, NortekEngClockDataParticle
+    InstrumentCmds, validate_checksum, CLOCK_DATA_REGEX, HARDWARE_CONFIG_DATA_REGEX, ID_BATTERY_DATA_REGEX, \
+    HEAD_CONFIG_DATA_REGEX, USER_CONFIG_DATA_REGEX, Parameter, NortekInstrumentDriver, NEWLINE, \
+    NortekHardwareConfigDataParticle, NortekHeadConfigDataParticle, NortekUserConfigDataParticle, \
+    NortekEngBatteryDataParticle, NortekEngIdDataParticle, NortekEngClockDataParticle
 
 from mi.core.instrument.protocol_param_dict import ParameterDictVisibility
 from mi.core.instrument.protocol_param_dict import ParameterDictType
 
+__author__ = 'Rachel Manoni, Ronald Ronquillo'
+__license__ = 'Apache 2.0'
+
+log = get_logger()
 VELOCITY_DATA_LEN = 42
 VELOCITY_DATA_SYNC_BYTES = '\xa5\x01\x15\x00'
 
 VELOCITY_DATA_PATTERN = r'%s.{38}' % VELOCITY_DATA_SYNC_BYTES
 VELOCITY_DATA_REGEX = re.compile(VELOCITY_DATA_PATTERN, re.DOTALL)
 
-
 namedtuple_store = {}
+
+
 def unpack_from_format(name, unpack_format, data):
     format_string = ''.join([item[1] for item in unpack_format])
     fields = [item[0] for item in unpack_format]
@@ -249,28 +246,29 @@ class Protocol(NortekInstrumentProtocol):
         High level command for the operator to get all of the status from the instrument:
         Battery voltage, clock, hw configuration, head configuration, user configuration, and identification string
         """
+        next_state = None
 
-        #ID + BV    Call these commands at the same time, so their responses are combined (non-unique regex workaround)
+        # ID + BV    Call these commands at the same time, so their responses are combined (non-unique regex workaround)
         # Issue read id, battery voltage, & clock commands all at the same time (non-unique REGEX workaround).
         self._do_cmd_resp(InstrumentCmds.READ_ID + InstrumentCmds.READ_BATTERY_VOLTAGE,
                           response_regex=ID_BATTERY_DATA_REGEX, timeout=30)
 
-        #RC
+        # RC
         self._do_cmd_resp(InstrumentCmds.READ_REAL_TIME_CLOCK, response_regex=CLOCK_DATA_REGEX)
 
-        #GP
+        # GP
         self._do_cmd_resp(InstrumentCmds.READ_HW_CONFIGURATION, response_regex=HARDWARE_CONFIG_DATA_REGEX)
 
-        #GH
+        # GH
         self._do_cmd_resp(InstrumentCmds.READ_HEAD_CONFIGURATION, response_regex=HEAD_CONFIG_DATA_REGEX)
 
-        #GC
+        # GC
         self._do_cmd_resp(InstrumentCmds.READ_USER_CONFIGURATION, response_regex=USER_CONFIG_DATA_REGEX)
 
-        result = self.wait_for_particles([NortekDataParticleType.CLOCK, NortekDataParticleType.HARDWARE_CONFIG,
-                                         NortekDataParticleType.HEAD_CONFIG, NortekDataParticleType.USER_CONFIG])
+        particles = self.wait_for_particles([NortekDataParticleType.CLOCK, NortekDataParticleType.HARDWARE_CONFIG,
+                                             NortekDataParticleType.HEAD_CONFIG, NortekDataParticleType.USER_CONFIG])
 
-        return None, (None, result)
+        return next_state, (next_state, particles)
 
     def _build_param_dict(self):
         """

@@ -1,8 +1,8 @@
 driver_metadata:
-  version: 0.0.7
   author: Rachel Manoni
   driver_model: ac_s
   driver_make: wetlabs
   driver_name: ooicore
   release_notes: clean up
   email: rachel.manoni@gmail.com
+  version: 0.0.8

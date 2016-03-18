@@ -5,4 +5,4 @@ driver_metadata:
   driver_name: ooicore
   email: godfrey.duke@gmail.com
   release_notes: OCR507 ICSW w/ Midrange Bioshutter
-  version: 0.0.7
+  version: 0.0.8

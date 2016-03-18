@@ -7,15 +7,9 @@ Release notes:
 
 initial version
 """
-__author__ = 'Bill Bollenbacher & Dan Mergens'
-__license__ = 'Apache 2.0'
-
 import re
 
 from mi.core.log import get_logger
-
-log = get_logger()
-
 from mi.core.common import Prefixes, Units
 from mi.core.instrument.instrument_driver import SingleConnectionInstrumentDriver
 
@@ -36,7 +30,10 @@ from mi.instrument.mclane.driver import \
     McLaneProtocol, \
     ProtocolState
 
-from mi.instrument.mclane.ras.rasfl.rasfl_persistent_store import RasflPersistentStoreDict # TODO: Use this to add data persistence
+__author__ = 'Bill Bollenbacher & Dan Mergens'
+__license__ = 'Apache 2.0'
+
+log = get_logger()
 
 NUM_PORTS = 48  # number of collection bags
 

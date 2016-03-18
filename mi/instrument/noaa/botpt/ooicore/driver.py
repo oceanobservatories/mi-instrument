@@ -62,6 +62,7 @@ MAX_BUFFER_SIZE = 2 ** 16
 
 STATUS_TIMEOUT = 30
 
+
 class ScheduledJob(BaseEnum):
     """
     Instrument scheduled jobs
@@ -808,9 +809,12 @@ class Protocol(CommandResponseInstrumentProtocol):
     def _handler_unknown_discover(self, *args, **kwargs):
         """
         Process discover event
-        @return next_state, next_state
+        @return next_state, (next_state, result)
         """
-        return ProtocolState.COMMAND, ProtocolState.COMMAND
+        next_state = ProtocolState.COMMAND
+        result = []
+
+        return next_state, (next_state, result)
 
     ########################################################################
     # Autosample handlers.
@@ -828,7 +832,9 @@ class Protocol(CommandResponseInstrumentProtocol):
         Stop autosample
         @return next_state, (next_state, result)
         """
-        return ProtocolState.COMMAND, (ProtocolState.COMMAND, None)
+        next_state = ProtocolState.COMMAND
+        result = []
+        return next_state, (next_state, result)
 
     ########################################################################
     # Command handlers.
@@ -856,11 +862,11 @@ class Protocol(CommandResponseInstrumentProtocol):
         """
         Perform a set command.
         @param args[0] parameter : value dict.
-        @return (next_state, result)
+        @return next_state, (next_state, result)
         @throws InstrumentParameterException
         """
         next_state = None
-        result = None
+        result = []
         startup = False
 
         if len(args) < 1:
@@ -882,17 +888,21 @@ class Protocol(CommandResponseInstrumentProtocol):
         Start direct access
         @return next_state, (next_state, result)
         """
-        return ProtocolState.DIRECT_ACCESS, (ProtocolState.DIRECT_ACCESS, None)
+        next_state = ProtocolState.DIRECT_ACCESS
+        result = []
+        return next_state, (next_state, result)
 
     def _handler_command_start_autosample(self):
         """
         Start autosample
         @return next_state, (next_state, result)
         """
+        next_state = ProtocolState.AUTOSAMPLE
+        result = []
         self._do_cmd_resp(InstrumentCommand.LILY_ON, expected_prompt=Prompt.LILY_ON)
         self._do_cmd_resp(InstrumentCommand.NANO_ON, expected_prompt=NANO_STRING)
         self._do_cmd_resp(InstrumentCommand.IRIS_ON, expected_prompt=Prompt.IRIS_ON)
-        return ProtocolState.AUTOSAMPLE, (ProtocolState.AUTOSAMPLE, None)
+        return next_state, (next_state, result)
 
     ########################################################################
     # Direct access handlers.
@@ -912,20 +922,22 @@ class Protocol(CommandResponseInstrumentProtocol):
         Execute direct access command
         @return next_state, (next_state, result)
         """
+        next_state = None
+        result = []
         self._do_cmd_direct(data)
         self._sent_cmds.append(data)
-        return None, (None, None)
+        return next_state, (next_state, result)
 
     def _handler_direct_access_stop_direct(self):
         """
         Stop direct access
         @return next_state, (next_state, result)
         """
-        next_state, next_agent_state = self._handler_unknown_discover()
+        next_state, (_, result) = self._handler_unknown_discover()
         if next_state == DriverProtocolState.COMMAND:
             next_agent_state = ResourceAgentState.COMMAND
 
-        return next_state, (next_state, None)
+        return next_state, (next_state, result)
 
     ########################################################################
     # Generic handlers.
@@ -950,6 +962,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         messages with embedded messages from the other parts of the instrument.
         @return next_state, (next_state, result)
         """
+        next_state = None
         timeout = time.time() + STATUS_TIMEOUT
 
         ts = ntplib.system_to_ntp_time(time.time())
@@ -977,39 +990,46 @@ class Protocol(CommandResponseInstrumentProtocol):
 
         if not sample:
             raise InstrumentProtocolException('Failed to generate status particle')
-        return None, (None, data_particles)
+        return next_state, (next_state, data_particles)
 
     def _handler_time_sync(self, *args, **kwargs):
         """
         Syncing time starts autosample...
         @return next_state, (next_state, result)
         """
-        self._do_cmd_resp(InstrumentCommand.NANO_SET_TIME, expected_prompt=NANO_STRING)
+        next_state = None
+        result = self._do_cmd_resp(InstrumentCommand.NANO_SET_TIME, expected_prompt=NANO_STRING)
         if self.get_current_state() == ProtocolState.COMMAND:
             self._do_cmd_no_resp(InstrumentCommand.NANO_OFF)
-        return None, (None, None)
+        return next_state, (next_state, result)
 
     def _handler_start_leveling(self):
         """
         Send the start leveling command
         @return next_state, (next_state, result)
         """
+        next_state = None
+        result = None
         if not self._param_dict.get(Parameter.LILY_LEVELING):
             self._schedule_leveling_timeout()
-            self._do_cmd_resp(InstrumentCommand.LILY_START_LEVELING, expected_prompt=Prompt.LILY_START_LEVELING)
+            result = self._do_cmd_resp(InstrumentCommand.LILY_START_LEVELING,
+                                       expected_prompt=Prompt.LILY_START_LEVELING)
             self._param_dict.set_value(Parameter.LILY_LEVELING, True)
             self._driver_event(DriverAsyncEvent.CONFIG_CHANGE)
-        return None, (None, None)
+        return next_state, (next_state, result)
 
     def _handler_stop_leveling(self):
         """
         Send the stop leveling command
         @return next_state, (next_state, result)
         """
+        next_state = None
+        result = []
         if self._param_dict.get(Parameter.LILY_LEVELING):
             self._remove_leveling_timeout()
 
-            self._do_cmd_resp(InstrumentCommand.LILY_STOP_LEVELING, expected_prompt=Prompt.LILY_STOP_LEVELING)
+            next_state = self._do_cmd_resp(InstrumentCommand.LILY_STOP_LEVELING,
+                                           expected_prompt=Prompt.LILY_STOP_LEVELING)
             self._param_dict.set_value(Parameter.LILY_LEVELING, False)
 
             if self.get_current_state() == ProtocolState.AUTOSAMPLE:
@@ -1017,7 +1037,7 @@ class Protocol(CommandResponseInstrumentProtocol):
 
             self._driver_event(DriverAsyncEvent.CONFIG_CHANGE)
 
-        return None, (None, None)
+        return next_state, (next_state, result)
 
     def _handler_leveling_timeout(self):
         """
@@ -1035,10 +1055,12 @@ class Protocol(CommandResponseInstrumentProtocol):
         Turn the heater on for Parameter.HEAT_DURATION hours
         @return next_state, (next_state, result)
         """
+        next_state = None
+        result = 'heater is already on'
         if not self._param_dict.get(Parameter.HEATER_ON):
-            self._do_cmd_resp(InstrumentCommand.HEAT,
-                              self._param_dict.get(Parameter.HEAT_DURATION),
-                              response_regex=RegexResponse.HEAT)
+            result = self._do_cmd_resp(InstrumentCommand.HEAT,
+                                       self._param_dict.get(Parameter.HEAT_DURATION),
+                                       response_regex=RegexResponse.HEAT)
             self._param_dict.set_value(Parameter.HEATER_ON, True)
 
             # Want to disable auto leveling when the heater is on
@@ -1046,13 +1068,15 @@ class Protocol(CommandResponseInstrumentProtocol):
 
             self._schedule_heater_timeout()
             self._driver_event(DriverAsyncEvent.CONFIG_CHANGE)
-        return None, (None, None)
+        return next_state, (next_state, result)
 
     def _handler_stop_heater(self, *args, **kwargs):
         """
         Turn the heater on for Parameter.HEAT_DURATION hours
         @return next_state, (next_state, result)
         """
+        next_state = None
+        result = 'heater was not on - no need to stop'
         if self._param_dict.get(Parameter.HEATER_ON):
             self._do_cmd_resp(InstrumentCommand.HEAT,
                               0,
@@ -1060,15 +1084,17 @@ class Protocol(CommandResponseInstrumentProtocol):
             self._param_dict.set_value(Parameter.HEATER_ON, False)
             self._remove_heater_timeout()
             self._driver_event(DriverAsyncEvent.CONFIG_CHANGE)
-        return None, (None, None)
+        return next_state, (next_state, result)
 
     def _handler_heater_timeout(self):
         """
         Heater should be finished.  Set HEATER_ON to false.
         """
+        next_state = None
+        result = 'heater timeout reached'
         self._param_dict.set_value(Parameter.HEATER_ON, False)
         self._driver_event(DriverAsyncEvent.CONFIG_CHANGE)
-        return None, None
+        return next_state, (next_state, result)
 
 
 def create_playback_protocol(callback):

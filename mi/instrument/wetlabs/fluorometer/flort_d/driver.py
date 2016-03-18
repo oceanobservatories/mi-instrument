@@ -10,28 +10,21 @@ Release notes:
 
 Initial development
 """
+
 import datetime
 import time
-
-__author__ = 'Rachel Manoni'
-__license__ = 'Apache 2.0'
 
 import re
 
 from mi.core.log import get_logger
-log = get_logger()
-
 from mi.core.common import BaseEnum, Units
-
 from mi.core.util import dict_equal
-
 from mi.core.exceptions import SampleException
 from mi.core.exceptions import InstrumentParameterException
 from mi.core.exceptions import InstrumentTimeoutException
 from mi.core.exceptions import InstrumentCommandException
 
 from mi.core.instrument.instrument_protocol import CommandResponseInstrumentProtocol, InitializationType
-
 from mi.core.instrument.instrument_fsm import InstrumentFSM
 
 from mi.core.instrument.instrument_driver import SingleConnectionInstrumentDriver
@@ -39,26 +32,25 @@ from mi.core.instrument.instrument_driver import DriverEvent
 from mi.core.instrument.instrument_driver import DriverAsyncEvent
 from mi.core.instrument.instrument_driver import DriverProtocolState
 from mi.core.instrument.instrument_driver import DriverParameter
-from mi.core.instrument.instrument_driver import ResourceAgentState
 from mi.core.instrument.instrument_driver import DriverConfigKey
 
 from mi.core.instrument.data_particle import DataParticle
 from mi.core.instrument.data_particle import DataParticleKey
 from mi.core.instrument.data_particle import CommonDataParticleType
-
 from mi.core.instrument.chunker import StringChunker
-
 from mi.core.instrument.protocol_param_dict import ParameterDictVisibility
 from mi.core.instrument.protocol_param_dict import ParameterDictType
-
 from mi.core.instrument.driver_dict import DriverDictKey
 
 from mi.core.driver_scheduler import DriverSchedulerConfigKey
 from mi.core.driver_scheduler import TriggerType
-
 from mi.core.time_tools import get_timestamp_delayed
-
 from mi.core.log import get_logging_metaclass
+
+__author__ = 'Rachel Manoni'
+__license__ = 'Apache 2.0'
+
+log = get_logger()
 
 # newline.
 NEWLINE = '\r\n'
@@ -75,6 +67,8 @@ SAMPLE_TIMEOUT = 10
 ###
 #    Driver Constant Definitions
 ###
+
+
 class ParameterUnit(BaseEnum):
     COUNTS = 'counts'
     TIME_INTERVAL = 'HH:MM:SS'
@@ -230,6 +224,7 @@ FLORD_SAMPLE_REGEX_MATCHER = re.compile(FLORD_SAMPLE_REGEX)
 
 FLORT_SAMPLE_REGEX = r"(\d+/\d+/\d+\s+\d+:\d+:\d+(\s+-?\d+){7}\r\n)"
 FLORT_SAMPLE_REGEX_MATCHER = re.compile(FLORT_SAMPLE_REGEX)
+
 
 class FlordDMNU_ParticleKey(BaseEnum):
     SERIAL_NUM = "serial_number"
@@ -493,10 +488,14 @@ class FlordDSample_Particle(DataParticle):
             {DataParticleKey.VALUE_ID: FlortDSample_ParticleKey.wave_chl, DataParticleKey.VALUE: wave_chl},
             {DataParticleKey.VALUE_ID: FlortDSample_ParticleKey.raw_sig_chl, DataParticleKey.VALUE: raw_sig_chl},
             {DataParticleKey.VALUE_ID: FlortDSample_ParticleKey.raw_temp, DataParticleKey.VALUE: raw_temp},
-            {DataParticleKey.VALUE_ID: FlortDSample_ParticleKey.SIG_1_OFFSET, DataParticleKey.VALUE: FlortDSample_Particle.sig_1_offset},
-            {DataParticleKey.VALUE_ID: FlortDSample_ParticleKey.SIG_1_SCALE_FACTOR, DataParticleKey.VALUE: FlortDSample_Particle.sig_1_scale},
-            {DataParticleKey.VALUE_ID: FlortDSample_ParticleKey.SIG_2_OFFSET, DataParticleKey.VALUE: FlortDSample_Particle.sig_2_offset},
-            {DataParticleKey.VALUE_ID: FlortDSample_ParticleKey.SIG_2_SCALE_FACTOR, DataParticleKey.VALUE: FlortDSample_Particle.sig_2_scale}]
+            {DataParticleKey.VALUE_ID: FlortDSample_ParticleKey.SIG_1_OFFSET,
+             DataParticleKey.VALUE: FlortDSample_Particle.sig_1_offset},
+            {DataParticleKey.VALUE_ID: FlortDSample_ParticleKey.SIG_1_SCALE_FACTOR,
+             DataParticleKey.VALUE: FlortDSample_Particle.sig_1_scale},
+            {DataParticleKey.VALUE_ID: FlortDSample_ParticleKey.SIG_2_OFFSET,
+             DataParticleKey.VALUE: FlortDSample_Particle.sig_2_offset},
+            {DataParticleKey.VALUE_ID: FlortDSample_ParticleKey.SIG_2_SCALE_FACTOR,
+             DataParticleKey.VALUE: FlortDSample_Particle.sig_2_scale}]
 
         log.debug('parsed particle = %r', result)
         return result
@@ -589,12 +588,18 @@ class FlortDSample_Particle(DataParticle):
             {DataParticleKey.VALUE_ID: FlortDSample_ParticleKey.wave_cdom, DataParticleKey.VALUE: wave_cdom},
             {DataParticleKey.VALUE_ID: FlortDSample_ParticleKey.raw_sig_cdom, DataParticleKey.VALUE: raw_sig_cdom},
             {DataParticleKey.VALUE_ID: FlortDSample_ParticleKey.raw_temp, DataParticleKey.VALUE: raw_temp},
-            {DataParticleKey.VALUE_ID: FlortDSample_ParticleKey.SIG_1_OFFSET, DataParticleKey.VALUE: FlortDSample_Particle.sig_1_offset},
-            {DataParticleKey.VALUE_ID: FlortDSample_ParticleKey.SIG_1_SCALE_FACTOR, DataParticleKey.VALUE: FlortDSample_Particle.sig_1_scale},
-            {DataParticleKey.VALUE_ID: FlortDSample_ParticleKey.SIG_2_OFFSET, DataParticleKey.VALUE: FlortDSample_Particle.sig_2_offset},
-            {DataParticleKey.VALUE_ID: FlortDSample_ParticleKey.SIG_2_SCALE_FACTOR, DataParticleKey.VALUE: FlortDSample_Particle.sig_2_scale},
-            {DataParticleKey.VALUE_ID: FlortDSample_ParticleKey.SIG_3_OFFSET, DataParticleKey.VALUE: FlortDSample_Particle.sig_3_offset},
-            {DataParticleKey.VALUE_ID: FlortDSample_ParticleKey.SIG_3_SCALE_FACTOR, DataParticleKey.VALUE: FlortDSample_Particle.sig_3_scale}]
+            {DataParticleKey.VALUE_ID: FlortDSample_ParticleKey.SIG_1_OFFSET,
+             DataParticleKey.VALUE: FlortDSample_Particle.sig_1_offset},
+            {DataParticleKey.VALUE_ID: FlortDSample_ParticleKey.SIG_1_SCALE_FACTOR,
+             DataParticleKey.VALUE: FlortDSample_Particle.sig_1_scale},
+            {DataParticleKey.VALUE_ID: FlortDSample_ParticleKey.SIG_2_OFFSET,
+             DataParticleKey.VALUE: FlortDSample_Particle.sig_2_offset},
+            {DataParticleKey.VALUE_ID: FlortDSample_ParticleKey.SIG_2_SCALE_FACTOR,
+             DataParticleKey.VALUE: FlortDSample_Particle.sig_2_scale},
+            {DataParticleKey.VALUE_ID: FlortDSample_ParticleKey.SIG_3_OFFSET,
+             DataParticleKey.VALUE: FlortDSample_Particle.sig_3_offset},
+            {DataParticleKey.VALUE_ID: FlortDSample_ParticleKey.SIG_3_SCALE_FACTOR,
+             DataParticleKey.VALUE: FlortDSample_Particle.sig_3_scale}]
 
         log.debug('parsed particle = %r', result)
         return result
@@ -663,29 +668,42 @@ class Protocol(CommandResponseInstrumentProtocol):
 
         self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.ENTER, self._handler_command_enter)
         self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.EXIT, self._handler_command_exit)
-        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.START_DIRECT, self._handler_command_start_direct)
+        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.START_DIRECT,
+                                       self._handler_command_start_direct)
         self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.GET, self._handler_command_get)
         self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.SET, self._handler_command_set)
-        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.START_AUTOSAMPLE, self._handler_command_start_autosample)
-        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.ACQUIRE_STATUS, self._handler_command_acquire_status)
+        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.START_AUTOSAMPLE,
+                                       self._handler_command_start_autosample)
+        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.ACQUIRE_STATUS,
+                                       self._handler_command_acquire_status)
         self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.RUN_WIPER, self._handler_command_run_wiper)
-        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.CLOCK_SYNC, self._handler_command_clock_sync)
-        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.ACQUIRE_SAMPLE, self._handler_command_acquire_sample)
+        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.CLOCK_SYNC,
+                                       self._handler_command_clock_sync)
+        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.ACQUIRE_SAMPLE,
+                                       self._handler_command_acquire_sample)
 
         self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.ENTER, self._handler_autosample_enter)
         self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.EXIT, self._handler_autosample_exit)
-        self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.STOP_AUTOSAMPLE, self._handler_autosample_stop_autosample)
-        self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.RUN_WIPER_SCHEDULED, self._handler_autosample_run_wiper)
-        self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.SCHEDULED_CLOCK_SYNC, self._handler_autosample_clock_sync)
-        self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.SCHEDULED_ACQUIRE_STATUS, self._handler_autosample_acquire_status)
+        self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.STOP_AUTOSAMPLE,
+                                       self._handler_autosample_stop_autosample)
+        self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.RUN_WIPER_SCHEDULED,
+                                       self._handler_autosample_run_wiper)
+        self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.SCHEDULED_CLOCK_SYNC,
+                                       self._handler_autosample_clock_sync)
+        self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.SCHEDULED_ACQUIRE_STATUS,
+                                       self._handler_autosample_acquire_status)
         # GET is only used for configuring the driver when it discovers that it is in AUTOSAMPLE
         # will not be shown on the State Diagram
         self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.GET, self._handler_command_get)
 
-        self._protocol_fsm.add_handler(ProtocolState.DIRECT_ACCESS, ProtocolEvent.ENTER, self._handler_direct_access_enter)
-        self._protocol_fsm.add_handler(ProtocolState.DIRECT_ACCESS, ProtocolEvent.EXIT, self._handler_direct_access_exit)
-        self._protocol_fsm.add_handler(ProtocolState.DIRECT_ACCESS, ProtocolEvent.STOP_DIRECT, self._handler_direct_access_stop_direct)
-        self._protocol_fsm.add_handler(ProtocolState.DIRECT_ACCESS, ProtocolEvent.EXECUTE_DIRECT, self._handler_direct_access_execute_direct)
+        self._protocol_fsm.add_handler(ProtocolState.DIRECT_ACCESS, ProtocolEvent.ENTER,
+                                       self._handler_direct_access_enter)
+        self._protocol_fsm.add_handler(ProtocolState.DIRECT_ACCESS, ProtocolEvent.EXIT,
+                                       self._handler_direct_access_exit)
+        self._protocol_fsm.add_handler(ProtocolState.DIRECT_ACCESS, ProtocolEvent.STOP_DIRECT,
+                                       self._handler_direct_access_stop_direct)
+        self._protocol_fsm.add_handler(ProtocolState.DIRECT_ACCESS, ProtocolEvent.EXECUTE_DIRECT,
+                                       self._handler_direct_access_execute_direct)
 
         # Construct the parameter dictionary containing device parameters,
         # current parameter values, and set formatting functions.
@@ -815,9 +833,9 @@ class Protocol(CommandResponseInstrumentProtocol):
     def _handler_unknown_discover(self, *args, **kwargs):
         """
         Discover current state
-        @retval (next_state, result)
         """
         next_state = DriverProtocolState.COMMAND
+        response = []
 
         try:
             # Listen to data stream to determine the current state
@@ -839,7 +857,7 @@ class Protocol(CommandResponseInstrumentProtocol):
             next_state = DriverProtocolState.COMMAND
 
         finally:
-            return next_state, next_state
+            return next_state, (next_state, [response])
 
     ########################################################################
     # Command handlers.
@@ -851,9 +869,11 @@ class Protocol(CommandResponseInstrumentProtocol):
         @throws InstrumentProtocolException if the update commands and not recognized.
         """
         if self._init_type != InitializationType.NONE:
-            response = self._do_cmd_resp(InstrumentCommand.PRINT_MENU, timeout=TIMEOUT, response_regex=MNU_REGEX_MATCHER)
+            response = self._do_cmd_resp(InstrumentCommand.PRINT_MENU, timeout=TIMEOUT,
+                                         response_regex=MNU_REGEX_MATCHER)
             self._param_dict.update(response)
-            response = self._do_cmd_resp(InstrumentCommand.PRINT_METADATA, timeout=TIMEOUT, response_regex=MET_REGEX_MATCHER)
+            response = self._do_cmd_resp(InstrumentCommand.PRINT_METADATA, timeout=TIMEOUT,
+                                         response_regex=MET_REGEX_MATCHER)
             self._param_dict.update(response)
 
         self._init_params()
@@ -864,12 +884,17 @@ class Protocol(CommandResponseInstrumentProtocol):
         """
         Get commands
         """
-        return self._handler_get(*args, **kwargs)
+        next_state, result = self._handler_get(*args, **kwargs)
+        # TODO match the return signature of other handlers - next_state, (next_state, result)
+        return next_state, result
 
     def _handler_command_set(self, *args, **kwargs):
         """
         Set commands
         """
+        next_state = None
+        result = []
+
         try:
             params = args[0]
             log.debug('Params = %s', params)
@@ -891,7 +916,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         else:
             self._set_params(params, startup)
 
-        return None, None
+        return next_state, result
 
     def _handler_command_exit(self, *args, **kwargs):
         """
@@ -903,7 +928,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         """
         Get one sample from the instrument
         """
-
+        next_state = None
         timeout = time.time() + SAMPLE_TIMEOUT
 
         if self.__instrument_class__ == FLORT_CLASS:
@@ -911,8 +936,8 @@ class Protocol(CommandResponseInstrumentProtocol):
         else:
             resp_regex = FLORD_SAMPLE_REGEX_MATCHER
         self._do_cmd_resp(InstrumentCommand.RUN_SETTINGS, timeout=TIMEOUT, response_regex=resp_regex)
-        result = self._do_cmd_resp(InstrumentCommand.INTERRUPT_INSTRUMENT, *args, timeout=TIMEOUT,
-                                   response_regex=MNU_REGEX_MATCHER)
+        self._do_cmd_resp(InstrumentCommand.INTERRUPT_INSTRUMENT, *args, timeout=TIMEOUT,
+                          response_regex=MNU_REGEX_MATCHER)
 
         if self.__instrument_class__ == FLORT_CLASS:
             sample_particle_class = DataParticleType.FLORTD_SAMPLE
@@ -921,26 +946,28 @@ class Protocol(CommandResponseInstrumentProtocol):
 
         particles = self.wait_for_particles([sample_particle_class], timeout)
 
-        return None, (None, particles)
+        return next_state, (next_state, particles)
 
     def _handler_command_start_autosample(self, *args, **kwargs):
         """
         Switch into autosample mode. ($run)
         """
+        next_state = ProtocolState.AUTOSAMPLE
         if self.__instrument_class__ == FLORT_CLASS:
             resp_regex = FLORT_SAMPLE_REGEX_MATCHER
         else:
             resp_regex = FLORD_SAMPLE_REGEX_MATCHER
         result = self._do_cmd_resp(InstrumentCommand.RUN_SETTINGS, timeout=TIMEOUT, response_regex=resp_regex)
-        return ProtocolState.AUTOSAMPLE, (ProtocolState.AUTOSAMPLE, result)
+        return next_state, (next_state, [result])
 
     def _handler_command_acquire_status(self, *args, **kwargs):
         """
         Run the $mnu Command (print menu)
         """
+        next_state = None
         timeout = time.time() + STATUS_TIMEOUT
 
-        result = self._do_cmd_resp(InstrumentCommand.PRINT_MENU, timeout=TIMEOUT, response_regex=MNU_REGEX_MATCHER)
+        self._do_cmd_resp(InstrumentCommand.PRINT_MENU, timeout=TIMEOUT, response_regex=MNU_REGEX_MATCHER)
 
         if self.__instrument_class__ == FLORT_CLASS:
             status_particle_class = DataParticleType.FLORTD_MNU
@@ -949,21 +976,24 @@ class Protocol(CommandResponseInstrumentProtocol):
 
         particles = self.wait_for_particles([status_particle_class], timeout)
 
-        return None, (None, particles)
+        return next_state, (next_state, particles)
 
     def _handler_command_run_wiper(self, *args, **kwargs):
         """
         Issue the run wiper command ($mvs)
         """
+        next_state = None
         result = self._do_cmd_resp(InstrumentCommand.RUN_WIPER, *args, timeout=TIMEOUT, response_regex=RUN_REGEX_MATCHER)
-        return None, (None, result)
+        return next_state, (next_state, [result])
 
     def _handler_command_clock_sync(self, *args, **kwargs):
         """
         Synchronize the clock
         """
+        next_state = None
+        result = []
         self._sync_clock()
-        return None, (None, None)
+        return next_state, (next_state, result)
 
     ########################################################################
     # Autosample handlers.
@@ -1017,10 +1047,12 @@ class Protocol(CommandResponseInstrumentProtocol):
                                    response_regex=MNU_REGEX_MATCHER)
 
         if self._init_type != InitializationType.NONE:
-            response = self._do_cmd_resp(InstrumentCommand.PRINT_MENU, timeout=TIMEOUT, response_regex=MNU_REGEX_MATCHER)
+            response = self._do_cmd_resp(InstrumentCommand.PRINT_MENU, timeout=TIMEOUT,
+                                         response_regex=MNU_REGEX_MATCHER)
             self._param_dict.update(response)
             # get the metadata once from the instrument
-            response = self._do_cmd_resp(InstrumentCommand.PRINT_METADATA, timeout=TIMEOUT, response_regex=MET_REGEX_MATCHER)
+            response = self._do_cmd_resp(InstrumentCommand.PRINT_METADATA, timeout=TIMEOUT,
+                                         response_regex=MET_REGEX_MATCHER)
             self._param_dict.update(response)
 
         self._init_params()
@@ -1035,15 +1067,19 @@ class Protocol(CommandResponseInstrumentProtocol):
         # Start scheduling for running the wiper and syncing the clock
         log.debug("Configuring the scheduler to run wiper %s", self._param_dict.get(Parameter.RUN_WIPER_INTERVAL))
         if self._param_dict.get(Parameter.RUN_WIPER_INTERVAL) != '00:00:00':
-            self.start_scheduled_job(Parameter.RUN_WIPER_INTERVAL, ScheduledJob.RUN_WIPER, ProtocolEvent.RUN_WIPER_SCHEDULED)
+            self.start_scheduled_job(Parameter.RUN_WIPER_INTERVAL, ScheduledJob.RUN_WIPER,
+                                     ProtocolEvent.RUN_WIPER_SCHEDULED)
 
         log.debug("Configuring the scheduler to sync clock %s", self._param_dict.get(Parameter.RUN_CLOCK_SYNC_INTERVAL))
         if self._param_dict.get(Parameter.RUN_CLOCK_SYNC_INTERVAL) != '00:00:00':
-            self.start_scheduled_job(Parameter.RUN_CLOCK_SYNC_INTERVAL, ScheduledJob.CLOCK_SYNC, ProtocolEvent.SCHEDULED_CLOCK_SYNC)
+            self.start_scheduled_job(Parameter.RUN_CLOCK_SYNC_INTERVAL, ScheduledJob.CLOCK_SYNC,
+                                     ProtocolEvent.SCHEDULED_CLOCK_SYNC)
 
-        log.debug("Configuring the scheduler to acquire status %s", self._param_dict.get(Parameter.RUN_ACQUIRE_STATUS_INTERVAL))
+        log.debug("Configuring the scheduler to acquire status %s", self._param_dict.get(
+            Parameter.RUN_ACQUIRE_STATUS_INTERVAL))
         if self._param_dict.get(Parameter.RUN_ACQUIRE_STATUS_INTERVAL) != '00:00:00':
-            self.start_scheduled_job(Parameter.RUN_ACQUIRE_STATUS_INTERVAL, ScheduledJob.ACQUIRE_STATUS, ProtocolEvent.SCHEDULED_ACQUIRE_STATUS)
+            self.start_scheduled_job(Parameter.RUN_ACQUIRE_STATUS_INTERVAL, ScheduledJob.ACQUIRE_STATUS,
+                                     ProtocolEvent.SCHEDULED_ACQUIRE_STATUS)
 
     def _handler_autosample_stop_autosample(self, *args, **kwargs):
         """
@@ -1052,6 +1088,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         @throws InstrumentTimeoutException if device cannot be woken for command.
         @throws InstrumentProtocolException if command misunderstood or incorrect prompt received.
         """
+        next_state = ProtocolState.COMMAND
 
         # Stop scheduled run of wiper, clock sync, & acquire status
         self.stop_scheduled_job(ScheduledJob.RUN_WIPER)
@@ -1062,16 +1099,18 @@ class Protocol(CommandResponseInstrumentProtocol):
         result = self._do_cmd_resp(InstrumentCommand.INTERRUPT_INSTRUMENT, *args, timeout=TIMEOUT,
                                    response_regex=MNU_REGEX_MATCHER)
 
-        return ProtocolState.COMMAND, (ProtocolState.COMMAND, result)
+        return next_state, (next_state, [result])
 
     def _handler_autosample_run_wiper(self, *args, **kwargs):
         """
         Runs the wiper.  Puts the instrument into command mode, sends the command. If wiper is run successfully,
         put instrument back into autosample mode.
         """
+        next_state = None
 
         # put instrument into command mode to send run wiper command ($mvs)
-        self._do_cmd_resp(InstrumentCommand.INTERRUPT_INSTRUMENT, *args, timeout=TIMEOUT, response_regex=MNU_REGEX_MATCHER)
+        self._do_cmd_resp(InstrumentCommand.INTERRUPT_INSTRUMENT, *args, timeout=TIMEOUT,
+                          response_regex=MNU_REGEX_MATCHER)
         self._do_cmd_resp(InstrumentCommand.RUN_WIPER, *args, timeout=TIMEOUT, response_regex=RUN_REGEX_MATCHER)
 
         if self.__instrument_class__ == FLORT_CLASS:
@@ -1080,13 +1119,13 @@ class Protocol(CommandResponseInstrumentProtocol):
             resp_regex = FLORD_SAMPLE_REGEX_MATCHER
 
         result = self._do_cmd_resp(InstrumentCommand.RUN_SETTINGS, timeout=TIMEOUT, response_regex=resp_regex)
-        return None, (None, result)
+        return next_state, (next_state, [result])
 
     def _handler_autosample_acquire_status(self, *args, **kwargs):
         """
         Get one sample from the instrument
         """
-
+        next_state = None
         timeout = time.time() + STATUS_TIMEOUT
 
         # put instrument into command mode to send command $run to collect status
@@ -1098,7 +1137,7 @@ class Protocol(CommandResponseInstrumentProtocol):
             resp_regex = FLORT_SAMPLE_REGEX_MATCHER
         else:
             resp_regex = FLORD_SAMPLE_REGEX_MATCHER
-        result = self._do_cmd_resp(InstrumentCommand.RUN_SETTINGS, timeout=TIMEOUT, response_regex=resp_regex)
+        self._do_cmd_resp(InstrumentCommand.RUN_SETTINGS, timeout=TIMEOUT, response_regex=resp_regex)
 
         if self.__instrument_class__ == FLORT_CLASS:
             status_particle_class = DataParticleType.FLORTD_MNU
@@ -1107,13 +1146,14 @@ class Protocol(CommandResponseInstrumentProtocol):
 
         particles = self.wait_for_particles([status_particle_class], timeout)
 
-        return None, (None, particles)
+        return next_state, (next_state, particles)
 
     def _handler_autosample_clock_sync(self, *args, **kwargs):
         """
         Syncs the clock.  Puts the instrument in command mode, synchronizes the clock, then puts the instrument
         back into autosample mode.
         """
+        next_state = None
         self._do_cmd_resp(InstrumentCommand.INTERRUPT_INSTRUMENT, timeout=TIMEOUT, response_regex=MNU_REGEX_MATCHER)
         self._sync_clock()
 
@@ -1122,7 +1162,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         else:
             resp_regex = FLORD_SAMPLE_REGEX_MATCHER
         result = self._do_cmd_resp(InstrumentCommand.RUN_SETTINGS, timeout=TIMEOUT, response_regex=resp_regex)
-        return None, (None, result)
+        return next_state, (next_state, [result])
 
     def _handler_autosample_exit(self, *args, **kwargs):
         """
@@ -1152,13 +1192,15 @@ class Protocol(CommandResponseInstrumentProtocol):
         """
         Execute Direct Access command(s)
         """
+        next_state = None
+        result = []
 
         self._do_cmd_direct(data)
 
         # add sent command to list for 'echo' filtering in callback
         self._sent_cmds.append(data)
 
-        return None, None
+        return next_state, (next_state, result)
 
     def _handler_direct_access_stop_direct(self):
         """
@@ -1166,15 +1208,17 @@ class Protocol(CommandResponseInstrumentProtocol):
         state before starting Direct Access.
         @throw InstrumentProtocolException on invalid command
         """
-
-        # discover the state to go to next
-        return self._handler_unknown_discover()
+        # update current state in case the direct access commands modified it
+        next_state, (_, result) = self._handler_unknown_discover()
+        return next_state, (next_state, result)
 
     def _handler_command_start_direct(self):
         """
         Start direct access
         """
-        return ProtocolState.DIRECT_ACCESS, (ProtocolState.DIRECT_ACCESS, None)
+        next_state = ProtocolState.DIRECT_ACCESS
+        result = []
+        return next_state, (next_state, result)
 
     ########################################################################
     # Private helpers.

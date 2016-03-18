@@ -6,29 +6,23 @@
 """
 import datetime
 
-__author__ = 'David Everett'
-__license__ = 'Apache 2.0'
-
 import time
 import re
 
 from mi.core.log import get_logger, get_logging_metaclass
-
-log = get_logger()
-
 from mi.core.common import BaseEnum, Units
 from mi.core.util import dict_equal
-from mi.core.instrument.protocol_param_dict import ParameterDictType
 from mi.core.instrument.instrument_fsm import InstrumentFSM
-from mi.core.instrument.instrument_driver import DriverParameter
 from mi.core.instrument.data_particle import CommonDataParticleType
 from mi.core.instrument.chunker import StringChunker
 from mi.core.instrument.driver_dict import DriverDictKey
 from mi.core.instrument.instrument_protocol import CommandResponseInstrumentProtocol, InitializationType
-from mi.core.instrument.instrument_driver import SingleConnectionInstrumentDriver
 from mi.core.instrument.data_particle import DataParticle
 from mi.core.instrument.data_particle import DataParticleKey
 from mi.core.instrument.protocol_param_dict import ParameterDictVisibility
+from mi.core.instrument.protocol_param_dict import ParameterDictType
+from mi.core.instrument.instrument_driver import SingleConnectionInstrumentDriver
+from mi.core.instrument.instrument_driver import DriverParameter
 from mi.core.instrument.instrument_driver import DriverProtocolState
 from mi.core.instrument.instrument_driver import ResourceAgentState
 from mi.core.instrument.instrument_driver import DriverAsyncEvent
@@ -40,6 +34,11 @@ from mi.core.exceptions import NotImplementedException
 from mi.core.exceptions import SampleException
 from xml.dom.minidom import parseString
 from mi.core.time_tools import get_timestamp_delayed
+
+__author__ = 'David Everett'
+__license__ = 'Apache 2.0'
+
+log = get_logger()
 
 WAKEUP_TIMEOUT = 3
 NEWLINE = '\r\n'
@@ -1124,10 +1123,12 @@ class SBE16Protocol(CommandResponseInstrumentProtocol):
     def _handler_unknown_discover(self, *args, **kwargs):
         """
         Discover current state; can be COMMAND or AUTOSAMPLE.
-        @retval (next_state, next_agent_state), COMMAND or AUTOSAMPLE
+        @retval next_state, (next_state, result) - COMMAND or AUTOSAMPLE
         @throws InstrumentProtocolException if the device response does not correspond to
         an expected state.
         """
+        next_state = ProtocolState.COMMAND
+        result = []
 
         # check for a sample particle
         self._sampling = False
@@ -1137,9 +1138,9 @@ class SBE16Protocol(CommandResponseInstrumentProtocol):
             time.sleep(.1)
 
         if self._sampling:
-            return ProtocolState.AUTOSAMPLE, ProtocolState.AUTOSAMPLE
+            next_state = ProtocolState.AUTOSAMPLE
 
-        return ProtocolState.COMMAND, ProtocolState.COMMAND
+        return next_state, (next_state, result)
 
     ########################################################################
     # Command handlers.
@@ -1161,6 +1162,7 @@ class SBE16Protocol(CommandResponseInstrumentProtocol):
         """
         Get device status
         """
+        next_state = None
         result = []
 
         result.append(self._do_cmd_resp(Command.GET_SD, timeout=TIMEOUT))
@@ -1177,7 +1179,7 @@ class SBE16Protocol(CommandResponseInstrumentProtocol):
         # Reset the event counter right after getEC
         self._do_cmd_resp(Command.RESET_EC, timeout=TIMEOUT)
 
-        return None, (None, ''.join(result))
+        return next_state, (next_state, ''.join(result))
 
     def _handler_command_set(self, *args, **kwargs):
         """
@@ -1251,10 +1253,10 @@ class SBE16Protocol(CommandResponseInstrumentProtocol):
     def _handler_command_acquire_sample(self, *args, **kwargs):
         """
         Acquire sample from SBE16.
-        @retval next_state, (next_state, result) tuple
         """
+        next_state = None
         result = self._do_cmd_resp(Command.TS, *args, **kwargs)
-        return None, (None, result)
+        return next_state, (next_state, result)
 
     def _handler_command_start_autosample(self, *args, **kwargs):
         """
@@ -1265,13 +1267,13 @@ class SBE16Protocol(CommandResponseInstrumentProtocol):
         """
         self._start_logging(*args, **kwargs)
 
-        return ProtocolState.AUTOSAMPLE, (ProtocolState.AUTOSAMPLE, None)
+        return ProtocolState.AUTOSAMPLE, (ProtocolState.AUTOSAMPLE, [])
 
     def _handler_command_start_direct(self):
         """
         Start direct access
         """
-        return ProtocolState.DIRECT_ACCESS, (ProtocolState.DIRECT_ACCESS, None)
+        return ProtocolState.DIRECT_ACCESS, (ProtocolState.DIRECT_ACCESS, [])
 
     def _handler_command_clock_sync_clock(self, *args, **kwargs):
         """
@@ -1283,7 +1285,7 @@ class SBE16Protocol(CommandResponseInstrumentProtocol):
         self._wakeup(timeout=TIMEOUT)
         self._sync_clock(Command.SET, Parameter.DATE_TIME, TIMEOUT, time_format='%m%d%Y%H%M%S')
 
-        return None, (None, None)
+        return None, (None, [])
 
     ########################################################################
     # Autosample handlers.
@@ -1310,7 +1312,7 @@ class SBE16Protocol(CommandResponseInstrumentProtocol):
             # Switch back to streaming
             self._start_logging(*args, **kwargs)
 
-        return None, (None, None)
+        return None, (None, [])
 
     def _handler_autosample_enter(self, *args, **kwargs):
         """
@@ -1334,7 +1336,7 @@ class SBE16Protocol(CommandResponseInstrumentProtocol):
         """
         self._stop_logging(*args, **kwargs)
 
-        return ProtocolState.COMMAND, (ProtocolState.COMMAND, None)
+        return ProtocolState.COMMAND, (ProtocolState.COMMAND, [])
 
     def _handler_autosample_acquire_status(self, *args, **kwargs):
         """
@@ -1345,6 +1347,7 @@ class SBE16Protocol(CommandResponseInstrumentProtocol):
         self._wakeup(timeout=WAKEUP_TIMEOUT, delay=0.3)
         self._wakeup(timeout=WAKEUP_TIMEOUT, delay=0.3)
 
+        next_state = None
         result = []
 
         result.append(self._do_cmd_resp(Command.GET_SD, timeout=TIMEOUT))
@@ -1361,7 +1364,7 @@ class SBE16Protocol(CommandResponseInstrumentProtocol):
         # Reset the event counter right after getEC
         self._do_cmd_resp(Command.RESET_EC, timeout=TIMEOUT)
 
-        return None, (None, ''.join(result))
+        return next_state, (next_state, ''.join(result))
 
     ########################################################################
     # Common handlers.
@@ -1410,7 +1413,7 @@ class SBE16Protocol(CommandResponseInstrumentProtocol):
         # add sent command to list for 'echo' filtering in callback
         self._sent_cmds.append(data)
 
-        return None, (None, None)
+        return None, (None, [])
 
     def _handler_direct_access_stop_direct(self):
         """
@@ -1420,7 +1423,7 @@ class SBE16Protocol(CommandResponseInstrumentProtocol):
         if next_state == DriverProtocolState.COMMAND:
             next_agent_state = ResourceAgentState.COMMAND
 
-        return next_state, (next_state, None)
+        return next_state, (next_state, [])
 
     ########################################################################
     # Private helpers.
