@@ -1124,10 +1124,12 @@ class SBE16Protocol(CommandResponseInstrumentProtocol):
     def _handler_unknown_discover(self, *args, **kwargs):
         """
         Discover current state; can be COMMAND or AUTOSAMPLE.
-        @retval (next_state, next_agent_state), COMMAND or AUTOSAMPLE
+        @retval next_state, (next_state, result) - COMMAND or AUTOSAMPLE
         @throws InstrumentProtocolException if the device response does not correspond to
         an expected state.
         """
+        next_state = ProtocolState.COMMAND
+        result = None
 
         # check for a sample particle
         self._sampling = False
@@ -1137,9 +1139,9 @@ class SBE16Protocol(CommandResponseInstrumentProtocol):
             time.sleep(.1)
 
         if self._sampling:
-            return ProtocolState.AUTOSAMPLE, ProtocolState.AUTOSAMPLE
+            next_state = ProtocolState.AUTOSAMPLE
 
-        return ProtocolState.COMMAND, ProtocolState.COMMAND
+        return next_state, (next_state, result)
 
     ########################################################################
     # Command handlers.

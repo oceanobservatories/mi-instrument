@@ -10,17 +10,8 @@ Release notes:
     and PHSEN instrument classes.
 """
 
-__author__ = 'Kevin Stiemke'
-__license__ = 'Apache 2.0'
-
-import re
-import time
 
 from mi.core.log import get_logger
-
-
-log = get_logger()
-
 from mi.core.exceptions import SampleException
 from mi.core.exceptions import InstrumentTimeoutException
 
@@ -29,9 +20,9 @@ from mi.core.instrument.data_particle import DataParticle
 from mi.core.instrument.data_particle import DataParticleKey
 from mi.core.instrument.protocol_param_dict import ParameterDictType
 from mi.core.instrument.protocol_param_dict import ParameterDictVisibility
+from mi.core.instrument.instrument_driver import ResourceAgentState
 from mi.instrument.sunburst.driver import SamiDataParticleType
 from mi.instrument.sunburst.driver import SamiParameter
-from mi.core.instrument.instrument_driver import ResourceAgentState
 from mi.instrument.sunburst.driver import SamiInstrumentCommand
 from mi.instrument.sunburst.driver import SamiConfigDataParticleKey
 from mi.instrument.sunburst.driver import SamiInstrumentDriver
@@ -43,6 +34,11 @@ from mi.instrument.sunburst.driver import SamiProtocolEvent
 from mi.instrument.sunburst.driver import SamiCapability
 from mi.instrument.sunburst.driver import SAMI_PUMP_TIMEOUT_OFFSET
 from mi.instrument.sunburst.driver import SAMI_PUMP_DURATION_UNITS
+
+import re
+import time
+
+log = get_logger()
 
 ###
 #    Driver Constant Definitions
@@ -484,7 +480,6 @@ class Pco2wProtocol(SamiProtocol):
         """
 
         next_state = Pco2wProtocolState.POLLED_BLANK_SAMPLE
-        next_agent_state = ResourceAgentState.BUSY
         result = None
 
         return next_state, (next_state, result)
@@ -495,7 +490,6 @@ class Pco2wProtocol(SamiProtocol):
         """
 
         next_state = Pco2wProtocolState.DEIONIZED_WATER_FLUSH_100ML
-        next_agent_state = ResourceAgentState.BUSY
         result = None
 
         return next_state, (next_state, result)
@@ -506,7 +500,6 @@ class Pco2wProtocol(SamiProtocol):
         """
 
         next_state = Pco2wProtocolState.REAGENT_FLUSH_100ML
-        next_agent_state = ResourceAgentState.BUSY
         result = None
 
         return next_state, (next_state, result)
@@ -517,7 +510,6 @@ class Pco2wProtocol(SamiProtocol):
         """
 
         next_state = Pco2wProtocolState.DEIONIZED_WATER_FLUSH
-        next_agent_state = ResourceAgentState.BUSY
         result = None
 
         return next_state, (next_state, result)
@@ -532,7 +524,6 @@ class Pco2wProtocol(SamiProtocol):
         """
 
         next_state = Pco2wProtocolState.SCHEDULED_BLANK_SAMPLE
-        next_agent_state = ResourceAgentState.BUSY
         result = None
 
         return next_state, (next_state, result)
@@ -545,9 +536,7 @@ class Pco2wProtocol(SamiProtocol):
         """
         Acquire the instrument's status
         """
-
-        log.debug('Pco2wProtocol._handler_take_blank_sample() ENTER')
-        log.debug('Pco2wProtocol._handler_take_blank_sample(): CURRENT_STATE == %s', self.get_current_state())
+        next_state = result = None
 
         try:
             self._take_blank_sample()
@@ -557,9 +546,7 @@ class Pco2wProtocol(SamiProtocol):
             log.error('Pco2wProtocol._handler_take_blank_sample(): TIMEOUT')
             self._async_raise_fsm_event(Pco2wProtocolEvent.TIMEOUT)
 
-        log.debug('Pco2wProtocol._handler_take_blank_sample() EXIT')
-
-        return None, None
+        return next_state, (next_state, result)
 
     ########################################################################
     # Deionized water flush 100 ml handlers.
@@ -569,6 +556,7 @@ class Pco2wProtocol(SamiProtocol):
         """
         Execute pump command, sleep to make sure it completes and make sure pump is off
         """
+        next_state = result = None
 
         try:
 
@@ -599,7 +587,7 @@ class Pco2wProtocol(SamiProtocol):
             log.error('Pco2wProtocol._handler_deionized_water_flush_execute_100ml(): TIMEOUT')
             self._async_raise_fsm_event(Pco2wProtocolEvent.TIMEOUT)
 
-        return None, None
+        return next_state, (next_state, result)
 
     ########################################################################
     # Reagent flush 100 ml handlers.
@@ -609,6 +597,7 @@ class Pco2wProtocol(SamiProtocol):
         """
         Execute pump command, sleep to make sure it completes and make sure pump is off
         """
+        next_state = result = None
 
         try:
 
@@ -639,7 +628,7 @@ class Pco2wProtocol(SamiProtocol):
             log.error('Pco2wProtocol._handler_reagent_flush_execute_100ml(): TIMEOUT')
             self._async_raise_fsm_event(Pco2wProtocolEvent.TIMEOUT)
 
-        return None, None
+        return next_state, (next_state, result)
 
     ########################################################################
     # Deionized water flush handlers.
@@ -649,6 +638,7 @@ class Pco2wProtocol(SamiProtocol):
         """
         Execute pump command, sleep to make sure it completes and make sure pump is off
         """
+        next_state = result = None
 
         try:
 
@@ -678,7 +668,7 @@ class Pco2wProtocol(SamiProtocol):
             log.error('Pco2wProtocol._handler_deionized_water_flush_execute(): TIMEOUT')
             self._async_raise_fsm_event(Pco2wProtocolEvent.TIMEOUT)
 
-        return None, None
+        return next_state, (next_state, result)
 
     ########################################################################
     # Reagent flush handlers.
@@ -688,6 +678,8 @@ class Pco2wProtocol(SamiProtocol):
         """
         Execute pump command, sleep to make sure it completes and make sure pump is off
         """
+        next_state = None
+        result = None
 
         try:
             param = SamiParameter.REAGENT_FLUSH_DURATION
@@ -715,7 +707,7 @@ class Pco2wProtocol(SamiProtocol):
             log.error('SamiProtocol._handler_reagent_flush_execute(): TIMEOUT')
             self._async_raise_fsm_event(Pco2wProtocolEvent.TIMEOUT)
 
-        return None, None
+        return next_state, (next_state, result)
 
     ########################################################################
     # Response handlers.

@@ -2150,16 +2150,18 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
     def _discover(self):
         """
         Discover current state; can be COMMAND or AUTOSAMPLE or UNKNOWN.
-        @return (next_protocol_state, next_state)
+        @return next_state, (next_state, result)
         """
+        next_state = ProtocolState.COMMAND
+        result = None
 
         log.debug("trying to discover state...")
 
         if self._scheduler_callback is not None:
             if self._scheduler_callback.get(ScheduledJob.SAMPLE):
-                return ProtocolState.AUTOSAMPLE, ProtocolState.AUTOSAMPLE
+                next_state = ProtocolState.AUTOSAMPLE
 
-        return ProtocolState.COMMAND, ProtocolState.COMMAND
+        return next_state, (next_state, result)
 
     def _calculate_recovery_time(self):
         """

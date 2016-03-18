@@ -20,6 +20,7 @@ import time
 import base64
 
 from mi.core.log import get_logger, get_logging_metaclass
+
 log = get_logger()
 
 from mi.core.instrument.instrument_fsm import InstrumentFSM
@@ -67,7 +68,7 @@ SAMPLE_TIMEOUT = 70
 CHECK_SUM_SEED = 0xb58c
 
 HW_CONFIG_LEN = 48
-HW_CONFIG_SYNC_BYTES   = '\xa5\x05\x18\x00'
+HW_CONFIG_SYNC_BYTES = '\xa5\x05\x18\x00'
 HARDWARE_CONFIG_DATA_PATTERN = r'(%s)(.{44})(\x06\x06)' % HW_CONFIG_SYNC_BYTES
 HARDWARE_CONFIG_DATA_REGEX = re.compile(HARDWARE_CONFIG_DATA_PATTERN, re.DOTALL)
 
@@ -118,7 +119,7 @@ class ParameterConstraint(BaseEnum):
     average_interval = (int, 1, 65535)
     cell_size = (int, 1, 65535)
     blanking_distance = (int, 1, 65535)
-    coordinate_system = (int, 0, 2) #enum 0, 1, 2
+    coordinate_system = (int, 0, 2)  # enum 0, 1, 2
     measurement_interval = (int, 0, 65535)
 
 
@@ -152,33 +153,33 @@ class InstrumentPrompts(BaseEnum):
     """
     Device prompts.
     """
-    AWAKE_NACKS   = '\x15\x15\x15\x15\x15\x15'
-    COMMAND_MODE  = 'Command mode'
-    CONFIRMATION  = 'Confirm:'
-    Z_ACK         = '\x06\x06'  # attach a 'Z' to the front of these two items to force them to the end of the list
-    Z_NACK        = '\x15\x15'  # so the other responses will have priority to be detected if they are present
+    AWAKE_NACKS = '\x15\x15\x15\x15\x15\x15'
+    COMMAND_MODE = 'Command mode'
+    CONFIRMATION = 'Confirm:'
+    Z_ACK = '\x06\x06'  # attach a 'Z' to the front of these two items to force them to the end of the list
+    Z_NACK = '\x15\x15'  # so the other responses will have priority to be detected if they are present
 
 
 class InstrumentCmds(BaseEnum):
     """
     List of instrument commands
     """
-    CONFIGURE_INSTRUMENT               = 'CC'        # sets the user configuration
-    SOFT_BREAK_FIRST_HALF              = '@@@@@@'
-    SOFT_BREAK_SECOND_HALF             = 'K1W%!Q'
-    AUTOSAMPLE_BREAK                   = '@'
-    READ_REAL_TIME_CLOCK               = 'RC'
-    SET_REAL_TIME_CLOCK                = 'SC'
-    CMD_WHAT_MODE                      = 'II'        # to determine the mode of the instrument
-    READ_USER_CONFIGURATION            = 'GC'
-    READ_HW_CONFIGURATION              = 'GP'
-    READ_HEAD_CONFIGURATION            = 'GH'
-    READ_BATTERY_VOLTAGE               = 'BV'
-    READ_ID                            = 'ID'
+    CONFIGURE_INSTRUMENT = 'CC'  # sets the user configuration
+    SOFT_BREAK_FIRST_HALF = '@@@@@@'
+    SOFT_BREAK_SECOND_HALF = 'K1W%!Q'
+    AUTOSAMPLE_BREAK = '@'
+    READ_REAL_TIME_CLOCK = 'RC'
+    SET_REAL_TIME_CLOCK = 'SC'
+    CMD_WHAT_MODE = 'II'  # to determine the mode of the instrument
+    READ_USER_CONFIGURATION = 'GC'
+    READ_HW_CONFIGURATION = 'GP'
+    READ_HEAD_CONFIGURATION = 'GH'
+    READ_BATTERY_VOLTAGE = 'BV'
+    READ_ID = 'ID'
     START_MEASUREMENT_WITHOUT_RECORDER = 'ST'
-    ACQUIRE_DATA                       = 'AD'
-    CONFIRMATION                       = 'MC'        # confirm a break request
-    SAMPLE_WHAT_MODE                   = 'I'
+    ACQUIRE_DATA = 'AD'
+    CONFIRMATION = 'MC'  # confirm a break request
+    SAMPLE_WHAT_MODE = 'I'
 
 
 class InstrumentModes(BaseEnum):
@@ -186,10 +187,10 @@ class InstrumentModes(BaseEnum):
     List of possible modes the instrument can be in
     """
     FIRMWARE_UPGRADE = '\x00\x00\x06\x06'
-    MEASUREMENT      = '\x01\x00\x06\x06'
-    COMMAND          = '\x02\x00\x06\x06'
-    DATA_RETRIEVAL   = '\x04\x00\x06\x06'
-    CONFIRMATION     = '\x05\x00\x06\x06'
+    MEASUREMENT = '\x01\x00\x06\x06'
+    COMMAND = '\x02\x00\x06\x06'
+    DATA_RETRIEVAL = '\x04\x00\x06\x06'
+    CONFIRMATION = '\x05\x00\x06\x06'
 
 
 class ProtocolState(BaseEnum):
@@ -262,48 +263,48 @@ def validate_checksum(str_struct, raw_data, offset=-2):
 
 
 def _check_configuration(input_bytes, sync, length):
-        """
+    """
         Perform a check on the configuration:
         1. Correct length
         2. Contains ACK bytes
         3. Correct sync byte
         4. Correct checksum
         """
-        if len(input_bytes) != length + 2:
-            log.debug('_check_configuration: wrong length, expected length %d != %d' % (length + 2, len(input_bytes)))
-            return False
+    if len(input_bytes) != length + 2:
+        log.debug('_check_configuration: wrong length, expected length %d != %d' % (length + 2, len(input_bytes)))
+        return False
 
-        # check for ACK bytes
-        if input_bytes[length:length + 2] != InstrumentPrompts.Z_ACK:
-            log.debug('_check_configuration: ACK bytes in error %s != %s',
-                      input_bytes[length:length + 2].encode('hex'),
-                      InstrumentPrompts.Z_ACK.encode('hex'))
-            return False
+    # check for ACK bytes
+    if input_bytes[length:length + 2] != InstrumentPrompts.Z_ACK:
+        log.debug('_check_configuration: ACK bytes in error %s != %s',
+                  input_bytes[length:length + 2].encode('hex'),
+                  InstrumentPrompts.Z_ACK.encode('hex'))
+        return False
 
-        # check the sync bytes
-        if input_bytes[0:4] != sync:
-            log.debug('_check_configuration: sync bytes in error %s != %s',
-                      input_bytes[0:4], sync)
-            return False
+    # check the sync bytes
+    if input_bytes[0:4] != sync:
+        log.debug('_check_configuration: sync bytes in error %s != %s',
+                  input_bytes[0:4], sync)
+        return False
 
-        # check checksum
-        calculated_checksum = CHECK_SUM_SEED
-        if length is None:
-            length = len(input_bytes)
+    # check checksum
+    calculated_checksum = CHECK_SUM_SEED
+    if length is None:
+        length = len(input_bytes)
 
-        for word_index in range(0, length - 2, 2):
-            word_value = NortekProtocolParameterDict.convert_word_to_int(input_bytes[word_index:word_index + 2])
-            calculated_checksum = (calculated_checksum + word_value) % 0x10000
+    for word_index in range(0, length - 2, 2):
+        word_value = NortekProtocolParameterDict.convert_word_to_int(input_bytes[word_index:word_index + 2])
+        calculated_checksum = (calculated_checksum + word_value) % 0x10000
 
-        # calculate checksum
-        log.debug('_check_configuration: user c_c = %s', calculated_checksum)
-        sent_checksum = NortekProtocolParameterDict.convert_word_to_int(input_bytes[length - 2:length])
-        if sent_checksum != calculated_checksum:
-            log.debug('_check_configuration: user checksum in error %s != %s',
-                      calculated_checksum, sent_checksum)
-            return False
+    # calculate checksum
+    log.debug('_check_configuration: user c_c = %s', calculated_checksum)
+    sent_checksum = NortekProtocolParameterDict.convert_word_to_int(input_bytes[length - 2:length])
+    if sent_checksum != calculated_checksum:
+        log.debug('_check_configuration: user checksum in error %s != %s',
+                  calculated_checksum, sent_checksum)
+        return False
 
-        return True
+    return True
 
 
 class NortekHardwareConfigDataParticleKey(BaseEnum):
@@ -355,15 +356,24 @@ class NortekHardwareConfigDataParticle(DataParticle):
             log.error('Error creating particle hardware config, raw data: %r', self.raw_data)
             raise SampleException
 
-        result = [{DataParticleKey.VALUE_ID: NortekHardwareConfigDataParticleKey.SERIAL_NUM, DataParticleKey.VALUE: serial_num},
-                  {DataParticleKey.VALUE_ID: NortekHardwareConfigDataParticleKey.RECORDER_INSTALLED, DataParticleKey.VALUE: recorder_installed},
-                  {DataParticleKey.VALUE_ID: NortekHardwareConfigDataParticleKey.COMPASS_INSTALLED, DataParticleKey.VALUE: compass_installed},
-                  {DataParticleKey.VALUE_ID: NortekHardwareConfigDataParticleKey.BOARD_FREQUENCY, DataParticleKey.VALUE: board_frequency},
-                  {DataParticleKey.VALUE_ID: NortekHardwareConfigDataParticleKey.PIC_VERSION, DataParticleKey.VALUE: pic_version},
-                  {DataParticleKey.VALUE_ID: NortekHardwareConfigDataParticleKey.HW_REVISION, DataParticleKey.VALUE: hw_revision},
-                  {DataParticleKey.VALUE_ID: NortekHardwareConfigDataParticleKey.RECORDER_SIZE, DataParticleKey.VALUE: recorder_size},
-                  {DataParticleKey.VALUE_ID: NortekHardwareConfigDataParticleKey.VELOCITY_RANGE, DataParticleKey.VALUE: velocity_range},
-                  {DataParticleKey.VALUE_ID: NortekHardwareConfigDataParticleKey.FW_VERSION, DataParticleKey.VALUE: fw_version}]
+        result = [{DataParticleKey.VALUE_ID: NortekHardwareConfigDataParticleKey.SERIAL_NUM,
+                   DataParticleKey.VALUE: serial_num},
+                  {DataParticleKey.VALUE_ID: NortekHardwareConfigDataParticleKey.RECORDER_INSTALLED,
+                   DataParticleKey.VALUE: recorder_installed},
+                  {DataParticleKey.VALUE_ID: NortekHardwareConfigDataParticleKey.COMPASS_INSTALLED,
+                   DataParticleKey.VALUE: compass_installed},
+                  {DataParticleKey.VALUE_ID: NortekHardwareConfigDataParticleKey.BOARD_FREQUENCY,
+                   DataParticleKey.VALUE: board_frequency},
+                  {DataParticleKey.VALUE_ID: NortekHardwareConfigDataParticleKey.PIC_VERSION,
+                   DataParticleKey.VALUE: pic_version},
+                  {DataParticleKey.VALUE_ID: NortekHardwareConfigDataParticleKey.HW_REVISION,
+                   DataParticleKey.VALUE: hw_revision},
+                  {DataParticleKey.VALUE_ID: NortekHardwareConfigDataParticleKey.RECORDER_SIZE,
+                   DataParticleKey.VALUE: recorder_size},
+                  {DataParticleKey.VALUE_ID: NortekHardwareConfigDataParticleKey.VELOCITY_RANGE,
+                   DataParticleKey.VALUE: velocity_range},
+                  {DataParticleKey.VALUE_ID: NortekHardwareConfigDataParticleKey.FW_VERSION,
+                   DataParticleKey.VALUE: fw_version}]
 
         log.debug('NortekHardwareConfigDataParticle: particle=%r', result)
         return result
@@ -400,7 +410,8 @@ class NortekHeadConfigDataParticle(DataParticle):
         """
         try:
             unpack_string = '<4s2s2H12s176s22sHh2s'
-            sync, config, head_freq, head_type, head_serial, system_data, _, num_beams, cksum, _ = struct.unpack(unpack_string, self.raw_data)
+            sync, config, head_freq, head_type, head_serial, system_data, _, num_beams, cksum, _ = struct.unpack(
+                unpack_string, self.raw_data)
 
             if not validate_checksum('<111H', self.raw_data, -4):
                 log.warn("Failed checksum in %s from instrument (%r)", self._data_particle_type, self.raw_data)
@@ -419,15 +430,24 @@ class NortekHeadConfigDataParticle(DataParticle):
             log.error('Error creating particle head config, raw data: %r', self.raw_data)
             raise SampleException
 
-        result = [{DataParticleKey.VALUE_ID: NortekHeadConfigDataParticleKey.PRESSURE_SENSOR, DataParticleKey.VALUE: pressure_sensor},
-                  {DataParticleKey.VALUE_ID: NortekHeadConfigDataParticleKey.MAG_SENSOR, DataParticleKey.VALUE: mag_sensor},
-                  {DataParticleKey.VALUE_ID: NortekHeadConfigDataParticleKey.TILT_SENSOR, DataParticleKey.VALUE: tilt_sensor},
-                  {DataParticleKey.VALUE_ID: NortekHeadConfigDataParticleKey.TILT_SENSOR_MOUNT, DataParticleKey.VALUE: tilt_mount},
-                  {DataParticleKey.VALUE_ID: NortekHeadConfigDataParticleKey.HEAD_FREQ, DataParticleKey.VALUE: head_freq},
-                  {DataParticleKey.VALUE_ID: NortekHeadConfigDataParticleKey.HEAD_TYPE, DataParticleKey.VALUE: head_type},
-                  {DataParticleKey.VALUE_ID: NortekHeadConfigDataParticleKey.HEAD_SERIAL, DataParticleKey.VALUE: head_serial},
-                  {DataParticleKey.VALUE_ID: NortekHeadConfigDataParticleKey.SYSTEM_DATA, DataParticleKey.VALUE: system_data, DataParticleKey.BINARY: True},
-                  {DataParticleKey.VALUE_ID: NortekHeadConfigDataParticleKey.NUM_BEAMS, DataParticleKey.VALUE: num_beams}]
+        result = [{DataParticleKey.VALUE_ID: NortekHeadConfigDataParticleKey.PRESSURE_SENSOR,
+                   DataParticleKey.VALUE: pressure_sensor},
+                  {DataParticleKey.VALUE_ID: NortekHeadConfigDataParticleKey.MAG_SENSOR,
+                   DataParticleKey.VALUE: mag_sensor},
+                  {DataParticleKey.VALUE_ID: NortekHeadConfigDataParticleKey.TILT_SENSOR,
+                   DataParticleKey.VALUE: tilt_sensor},
+                  {DataParticleKey.VALUE_ID: NortekHeadConfigDataParticleKey.TILT_SENSOR_MOUNT,
+                   DataParticleKey.VALUE: tilt_mount},
+                  {DataParticleKey.VALUE_ID: NortekHeadConfigDataParticleKey.HEAD_FREQ,
+                   DataParticleKey.VALUE: head_freq},
+                  {DataParticleKey.VALUE_ID: NortekHeadConfigDataParticleKey.HEAD_TYPE,
+                   DataParticleKey.VALUE: head_type},
+                  {DataParticleKey.VALUE_ID: NortekHeadConfigDataParticleKey.HEAD_SERIAL,
+                   DataParticleKey.VALUE: head_serial},
+                  {DataParticleKey.VALUE_ID: NortekHeadConfigDataParticleKey.SYSTEM_DATA,
+                   DataParticleKey.VALUE: system_data, DataParticleKey.BINARY: True},
+                  {DataParticleKey.VALUE_ID: NortekHeadConfigDataParticleKey.NUM_BEAMS,
+                   DataParticleKey.VALUE: num_beams}]
 
         log.debug('NortekHeadConfigDataParticle: particle=%r', result)
         return result
@@ -508,11 +528,11 @@ class Parameter(DriverParameter):
     """
     # user configuration
     TRANSMIT_PULSE_LENGTH = NortekUserConfigDataParticleKey.TX_LENGTH
-    BLANKING_DISTANCE = NortekUserConfigDataParticleKey.BLANK_DIST                          # T2
-    RECEIVE_LENGTH = NortekUserConfigDataParticleKey.RX_LENGTH                              # T3
-    TIME_BETWEEN_PINGS = NortekUserConfigDataParticleKey.TIME_BETWEEN_PINGS                 # T4
-    TIME_BETWEEN_BURST_SEQUENCES = NortekUserConfigDataParticleKey.TIME_BETWEEN_BURSTS      # T5
-    NUMBER_PINGS = NortekUserConfigDataParticleKey.NUM_PINGS                        # number of beam sequences per burst
+    BLANKING_DISTANCE = NortekUserConfigDataParticleKey.BLANK_DIST  # T2
+    RECEIVE_LENGTH = NortekUserConfigDataParticleKey.RX_LENGTH  # T3
+    TIME_BETWEEN_PINGS = NortekUserConfigDataParticleKey.TIME_BETWEEN_PINGS  # T4
+    TIME_BETWEEN_BURST_SEQUENCES = NortekUserConfigDataParticleKey.TIME_BETWEEN_BURSTS  # T5
+    NUMBER_PINGS = NortekUserConfigDataParticleKey.NUM_PINGS  # number of beam sequences per burst
     AVG_INTERVAL = NortekUserConfigDataParticleKey.AVG_INTERVAL
     USER_NUMBER_BEAMS = NortekUserConfigDataParticleKey.NUM_BEAMS
     TIMING_CONTROL_REGISTER = NortekUserConfigDataParticleKey.TCR
@@ -582,16 +602,17 @@ class NortekUserConfigDataParticle(DataParticle):
 
         try:
             unpack_string = '<4s8H2s2s6s5H6sH6sI2s4H2s2H2s180s180s2s5H4sH2s2H2sH30s16sH2s'
-            sync, tx_length, blank_dist, rx_length, time_bw_pings, time_bw_bursts, num_pings, avg_interval, num_beams,\
-                tcr, pcr, _, compass_update_rate, coordinate_system, num_cells, cell_size, measurement_interval,\
-                deployment_name, wrap_mode, deploy_start_time, diag_interval, mode, sound_speed_adjust, num_diag_samples,\
-                num_beams_cell, num_pings_diag, mode_test, analog_input_addr, sw_ver, _, velocity_adj_factor,\
-                file_comments, wave_mode, percent_wave_cell_pos, wave_tx_pulse, fix_wave_blank_dist, wave_cell_size,\
-                num_diag_per_wave, _, num_sample_burst, _, analog_scale_factor, correlation_thrs, _, tx_pulse_len_2nd,\
-                _, filter_constants, cksum, _ = struct.unpack(unpack_string, self.raw_data)
+            sync, tx_length, blank_dist, rx_length, time_bw_pings, time_bw_bursts, num_pings, avg_interval, num_beams, \
+            tcr, pcr, _, compass_update_rate, coordinate_system, num_cells, cell_size, measurement_interval, \
+            deployment_name, wrap_mode, deploy_start_time, diag_interval, mode, sound_speed_adjust, num_diag_samples, \
+            num_beams_cell, num_pings_diag, mode_test, analog_input_addr, sw_ver, _, velocity_adj_factor, \
+            file_comments, wave_mode, percent_wave_cell_pos, wave_tx_pulse, fix_wave_blank_dist, wave_cell_size, \
+            num_diag_per_wave, _, num_sample_burst, _, analog_scale_factor, correlation_thrs, _, tx_pulse_len_2nd, \
+            _, filter_constants, cksum, _ = struct.unpack(unpack_string, self.raw_data)
 
             if not validate_checksum('<255H', self.raw_data, -4):
-                log.warn("Failed checksum in %s from instrument (%r) %r", self._data_particle_type, self.raw_data, cksum)
+                log.warn("Failed checksum in %s from instrument (%r) %r", self._data_particle_type, self.raw_data,
+                         cksum)
                 self.contents[DataParticleKey.QUALITY_FLAG] = DataParticleValue.CHECKSUM_FAILED
 
             tcr = NortekProtocolParameterDict.convert_bytes_to_bit_field(tcr)
@@ -638,63 +659,105 @@ class NortekUserConfigDataParticle(DataParticle):
             log.error('Error creating particle user config, raw data: %r', self.raw_data)
             raise SampleException(e)
 
-        result = [{DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.TX_LENGTH, DataParticleKey.VALUE: tx_length},
-                  {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.BLANK_DIST, DataParticleKey.VALUE: blank_dist},
-                  {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.RX_LENGTH, DataParticleKey.VALUE: rx_length},
-                  {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.TIME_BETWEEN_PINGS, DataParticleKey.VALUE: time_bw_pings},
-                  {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.TIME_BETWEEN_BURSTS, DataParticleKey.VALUE: time_bw_bursts},
-                  {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.NUM_PINGS, DataParticleKey.VALUE: num_pings},
-                  {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.AVG_INTERVAL, DataParticleKey.VALUE: avg_interval},
-                  {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.NUM_BEAMS, DataParticleKey.VALUE: num_beams},
-                  {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.PROFILE_TYPE, DataParticleKey.VALUE: profiler_type},
-                  {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.MODE_TYPE, DataParticleKey.VALUE: mode_type},
-                  {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.POWER_TCM1, DataParticleKey.VALUE: power_tcm1},
-                  {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.POWER_TCM2, DataParticleKey.VALUE: power_tcm2},
-                  {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.SYNC_OUT_POSITION, DataParticleKey.VALUE: sync_out_position},
-                  {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.SAMPLE_ON_SYNC, DataParticleKey.VALUE: sample_on_sync},
-                  {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.START_ON_SYNC, DataParticleKey.VALUE: start_on_sync},
-                  {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.POWER_PCR1, DataParticleKey.VALUE: power_pcr1},
-                  {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.POWER_PCR2, DataParticleKey.VALUE: power_pcr2},
-                  {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.COMPASS_UPDATE_RATE, DataParticleKey.VALUE: compass_update_rate},
-                  {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.COORDINATE_SYSTEM, DataParticleKey.VALUE: coordinate_system},
-                  {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.NUM_CELLS, DataParticleKey.VALUE: num_cells},
-                  {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.CELL_SIZE, DataParticleKey.VALUE: cell_size},
-                  {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.MEASUREMENT_INTERVAL, DataParticleKey.VALUE: measurement_interval},
-                  {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.DEPLOYMENT_NAME, DataParticleKey.VALUE: deployment_name},
-                  {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.WRAP_MODE, DataParticleKey.VALUE: wrap_mode},
-                  {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.DEPLOY_START_TIME, DataParticleKey.VALUE: deploy_start_time},
-                  {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.DIAG_INTERVAL, DataParticleKey.VALUE: diag_interval},
-                  {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.USE_SPEC_SOUND_SPEED, DataParticleKey.VALUE: use_spec_sound_speed},
-                  {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.DIAG_MODE_ON, DataParticleKey.VALUE: diag_mode_on},
-                  {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.ANALOG_OUTPUT_ON, DataParticleKey.VALUE: analog_output_on},
-                  {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.OUTPUT_FORMAT, DataParticleKey.VALUE: output_format},
-                  {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.SCALING, DataParticleKey.VALUE: scaling},
-                  {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.SERIAL_OUT_ON, DataParticleKey.VALUE: serial_out_on},
-                  {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.STAGE_ON, DataParticleKey.VALUE: stage_on},
-                  {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.ANALOG_POWER_OUTPUT, DataParticleKey.VALUE: analog_power_output},
-                  {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.SOUND_SPEED_ADJUST, DataParticleKey.VALUE: sound_speed_adjust},
-                  {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.NUM_DIAG_SAMPLES, DataParticleKey.VALUE: num_diag_samples},
-                  {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.NUM_BEAMS_PER_CELL, DataParticleKey.VALUE: num_beams_cell},
-                  {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.NUM_PINGS_DIAG, DataParticleKey.VALUE: num_pings_diag},
-                  {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.USE_DSP_FILTER, DataParticleKey.VALUE: use_dsp_filter},
-                  {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.FILTER_DATA_OUTPUT, DataParticleKey.VALUE: filter_data_output},
-                  {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.ANALOG_INPUT_ADDR, DataParticleKey.VALUE: analog_input_addr},
-                  {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.SW_VER, DataParticleKey.VALUE: sw_ver},
-                  {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.VELOCITY_ADJ_FACTOR, DataParticleKey.VALUE: velocity_adj_factor},
-                  {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.FILE_COMMENTS, DataParticleKey.VALUE: file_comments},
-                  {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.WAVE_DATA_RATE, DataParticleKey.VALUE: wave_data_rate},
-                  {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.WAVE_CELL_POS, DataParticleKey.VALUE: wave_cell_pos},
-                  {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.DYNAMIC_POS_TYPE, DataParticleKey.VALUE: dynamic_pos_type},
-                  {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.PERCENT_WAVE_CELL_POS, DataParticleKey.VALUE: percent_wave_cell_pos},
-                  {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.WAVE_TX_PULSE, DataParticleKey.VALUE: wave_tx_pulse},
-                  {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.FIX_WAVE_BLANK_DIST, DataParticleKey.VALUE: fix_wave_blank_dist},
-                  {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.WAVE_CELL_SIZE, DataParticleKey.VALUE: wave_cell_size},
-                  {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.NUM_DIAG_PER_WAVE, DataParticleKey.VALUE: num_diag_samples},
-                  {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.NUM_SAMPLE_PER_BURST, DataParticleKey.VALUE: num_sample_burst},
-                  {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.ANALOG_SCALE_FACTOR, DataParticleKey.VALUE: analog_scale_factor},
-                  {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.CORRELATION_THRS, DataParticleKey.VALUE: correlation_thrs},
-                  {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.TX_PULSE_LEN_2ND, DataParticleKey.VALUE: tx_pulse_len_2nd},
-                  {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.FILTER_CONSTANTS, DataParticleKey.VALUE: filter_constants}]
+        result = [
+            {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.TX_LENGTH, DataParticleKey.VALUE: tx_length},
+            {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.BLANK_DIST, DataParticleKey.VALUE: blank_dist},
+            {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.RX_LENGTH, DataParticleKey.VALUE: rx_length},
+            {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.TIME_BETWEEN_PINGS,
+             DataParticleKey.VALUE: time_bw_pings},
+            {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.TIME_BETWEEN_BURSTS,
+             DataParticleKey.VALUE: time_bw_bursts},
+            {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.NUM_PINGS, DataParticleKey.VALUE: num_pings},
+            {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.AVG_INTERVAL,
+             DataParticleKey.VALUE: avg_interval},
+            {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.NUM_BEAMS, DataParticleKey.VALUE: num_beams},
+            {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.PROFILE_TYPE,
+             DataParticleKey.VALUE: profiler_type},
+            {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.MODE_TYPE, DataParticleKey.VALUE: mode_type},
+            {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.POWER_TCM1, DataParticleKey.VALUE: power_tcm1},
+            {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.POWER_TCM2, DataParticleKey.VALUE: power_tcm2},
+            {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.SYNC_OUT_POSITION,
+             DataParticleKey.VALUE: sync_out_position},
+            {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.SAMPLE_ON_SYNC,
+             DataParticleKey.VALUE: sample_on_sync},
+            {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.START_ON_SYNC,
+             DataParticleKey.VALUE: start_on_sync},
+            {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.POWER_PCR1, DataParticleKey.VALUE: power_pcr1},
+            {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.POWER_PCR2, DataParticleKey.VALUE: power_pcr2},
+            {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.COMPASS_UPDATE_RATE,
+             DataParticleKey.VALUE: compass_update_rate},
+            {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.COORDINATE_SYSTEM,
+             DataParticleKey.VALUE: coordinate_system},
+            {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.NUM_CELLS, DataParticleKey.VALUE: num_cells},
+            {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.CELL_SIZE, DataParticleKey.VALUE: cell_size},
+            {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.MEASUREMENT_INTERVAL,
+             DataParticleKey.VALUE: measurement_interval},
+            {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.DEPLOYMENT_NAME,
+             DataParticleKey.VALUE: deployment_name},
+            {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.WRAP_MODE, DataParticleKey.VALUE: wrap_mode},
+            {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.DEPLOY_START_TIME,
+             DataParticleKey.VALUE: deploy_start_time},
+            {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.DIAG_INTERVAL,
+             DataParticleKey.VALUE: diag_interval},
+            {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.USE_SPEC_SOUND_SPEED,
+             DataParticleKey.VALUE: use_spec_sound_speed},
+            {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.DIAG_MODE_ON,
+             DataParticleKey.VALUE: diag_mode_on},
+            {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.ANALOG_OUTPUT_ON,
+             DataParticleKey.VALUE: analog_output_on},
+            {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.OUTPUT_FORMAT,
+             DataParticleKey.VALUE: output_format},
+            {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.SCALING, DataParticleKey.VALUE: scaling},
+            {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.SERIAL_OUT_ON,
+             DataParticleKey.VALUE: serial_out_on},
+            {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.STAGE_ON, DataParticleKey.VALUE: stage_on},
+            {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.ANALOG_POWER_OUTPUT,
+             DataParticleKey.VALUE: analog_power_output},
+            {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.SOUND_SPEED_ADJUST,
+             DataParticleKey.VALUE: sound_speed_adjust},
+            {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.NUM_DIAG_SAMPLES,
+             DataParticleKey.VALUE: num_diag_samples},
+            {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.NUM_BEAMS_PER_CELL,
+             DataParticleKey.VALUE: num_beams_cell},
+            {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.NUM_PINGS_DIAG,
+             DataParticleKey.VALUE: num_pings_diag},
+            {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.USE_DSP_FILTER,
+             DataParticleKey.VALUE: use_dsp_filter},
+            {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.FILTER_DATA_OUTPUT,
+             DataParticleKey.VALUE: filter_data_output},
+            {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.ANALOG_INPUT_ADDR,
+             DataParticleKey.VALUE: analog_input_addr},
+            {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.SW_VER, DataParticleKey.VALUE: sw_ver},
+            {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.VELOCITY_ADJ_FACTOR,
+             DataParticleKey.VALUE: velocity_adj_factor},
+            {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.FILE_COMMENTS,
+             DataParticleKey.VALUE: file_comments},
+            {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.WAVE_DATA_RATE,
+             DataParticleKey.VALUE: wave_data_rate},
+            {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.WAVE_CELL_POS,
+             DataParticleKey.VALUE: wave_cell_pos},
+            {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.DYNAMIC_POS_TYPE,
+             DataParticleKey.VALUE: dynamic_pos_type},
+            {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.PERCENT_WAVE_CELL_POS,
+             DataParticleKey.VALUE: percent_wave_cell_pos},
+            {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.WAVE_TX_PULSE,
+             DataParticleKey.VALUE: wave_tx_pulse},
+            {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.FIX_WAVE_BLANK_DIST,
+             DataParticleKey.VALUE: fix_wave_blank_dist},
+            {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.WAVE_CELL_SIZE,
+             DataParticleKey.VALUE: wave_cell_size},
+            {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.NUM_DIAG_PER_WAVE,
+             DataParticleKey.VALUE: num_diag_samples},
+            {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.NUM_SAMPLE_PER_BURST,
+             DataParticleKey.VALUE: num_sample_burst},
+            {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.ANALOG_SCALE_FACTOR,
+             DataParticleKey.VALUE: analog_scale_factor},
+            {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.CORRELATION_THRS,
+             DataParticleKey.VALUE: correlation_thrs},
+            {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.TX_PULSE_LEN_2ND,
+             DataParticleKey.VALUE: tx_pulse_len_2nd},
+            {DataParticleKey.VALUE_ID: NortekUserConfigDataParticleKey.FILTER_CONSTANTS,
+             DataParticleKey.VALUE: filter_constants}]
 
         log.debug('NortekUserConfigDataParticle: particle=%r', result)
         return result
@@ -762,7 +825,8 @@ class NortekEngBatteryDataParticle(DataParticle):
         """
         match = BATTERY_DATA_REGEX.search(self.raw_data)
         if not match:
-            raise SampleException("NortekEngBatteryDataParticle: No regex match of parsed sample data: [%r]" % self.raw_data)
+            raise SampleException(
+                "NortekEngBatteryDataParticle: No regex match of parsed sample data: [%r]" % self.raw_data)
 
         # Calculate value
         battery_voltage = NortekProtocolParameterDict.convert_word_to_int(match.group(1))
@@ -812,7 +876,6 @@ class NortekEngIdDataParticle(DataParticle):
 # Param dictionary helpers
 ###############################################################################
 class NortekProtocolParameterDict(ProtocolParameterDict):
-
     def get_config(self):
         """
         Retrieve the configuration (all key values not ending in 'Spare').
@@ -832,12 +895,14 @@ class NortekProtocolParameterDict(ProtocolParameterDict):
         retval = False
 
         if name not in self._param_dict:
-            raise InstrumentParameterException('Unable to set parameter %s to %s: parameter %s not an dictionary' % (name, value, name))
+            raise InstrumentParameterException(
+                'Unable to set parameter %s to %s: parameter %s not an dictionary' % (name, value, name))
 
         if ((self._param_dict[name].value.f_format == NortekProtocolParameterDict.word_to_string) or
                 (self._param_dict[name].value.f_format == NortekProtocolParameterDict.double_word_to_string)):
             if not isinstance(value, int):
-                raise InstrumentParameterException('Unable to set parameter %s to %s: value not an integer' % (name, value))
+                raise InstrumentParameterException(
+                    'Unable to set parameter %s to %s: value not an integer' % (name, value))
         elif self._param_dict[name].value.f_format == NortekProtocolParameterDict.convert_datetime_to_words:
             if not isinstance(value, list):
                 raise InstrumentParameterException('Unable to set parameter %s to %s: value not a list' % (name, value))
@@ -970,6 +1035,7 @@ class NortekProtocolParameterDict(ProtocolParameterDict):
         """
         ba = bytearray(bytes_in)
         return str(ba).split('\x00', 1)[0]
+
 
 ###############################################################################
 # Driver
@@ -1257,7 +1323,7 @@ class NortekInstrumentProtocol(CommandResponseInstrumentProtocol):
                 if name in constraints:
                     var_type, minimum, maximum = constraints[name]
                     constraint_string = 'Parameter: %s Value: %s Type: %s Minimum: %s Maximum: %s' % \
-                                    (name, value, var_type, minimum, maximum)
+                                        (name, value, var_type, minimum, maximum)
                     log.debug('SET CONSTRAINT: %s', constraint_string)
                     try:
                         var_type(value)
@@ -1285,13 +1351,17 @@ class NortekInstrumentProtocol(CommandResponseInstrumentProtocol):
         if set_params:
             output = self._create_set_output(self._param_dict)
 
-            prompt, result = super(NortekInstrumentProtocol, self)._do_cmd_resp(InstrumentCmds.CONFIGURE_INSTRUMENT, output, timeout=TIMEOUT,
-                                      expected_prompt=[InstrumentPrompts.Z_ACK, InstrumentPrompts.Z_NACK])
+            prompt, result = super(NortekInstrumentProtocol, self)._do_cmd_resp(InstrumentCmds.CONFIGURE_INSTRUMENT,
+                                                                                output, timeout=TIMEOUT,
+                                                                                expected_prompt=[
+                                                                                    InstrumentPrompts.Z_ACK,
+                                                                                    InstrumentPrompts.Z_NACK])
 
             log.debug('_set_params: prompt=%r', prompt)
             if prompt == InstrumentPrompts.Z_NACK:
                 self._update_params()
-                raise InstrumentParameterException("NortekInstrumentProtocol._set_params(): Invalid configuration file! ")
+                raise InstrumentParameterException(
+                    "NortekInstrumentProtocol._set_params(): Invalid configuration file! ")
 
             self._update_params()
 
@@ -1354,36 +1424,32 @@ class NortekInstrumentProtocol(CommandResponseInstrumentProtocol):
     def _handler_unknown_discover(self, *args, **kwargs):
         """
         Discover current state of instrument; can be COMMAND or AUTOSAMPLE.
-        @retval (next_state, next_state)
+        @retval next_state (next_state, result)
         """
         ret_mode = self._protocol_fsm.on_event(ProtocolEvent.READ_MODE)
         prompt = ret_mode[1]
 
         if prompt == 0:
-            log.debug('_handler_unknown_discover: FIRMWARE_UPGRADE')
+            log.info('FIRMWARE_UPGRADE in progress')
             raise InstrumentStateException('Firmware upgrade state.')
         elif prompt == 1:
-            log.debug('_handler_unknown_discover: MEASUREMENT_MODE')
+            result = 'MEASUREMENT_MODE'
             next_state = ProtocolState.AUTOSAMPLE
-            next_agent_state = ResourceAgentState.STREAMING
         elif prompt == 2:
-            log.debug('_handler_unknown_discover: COMMAND_MODE')
+            result = 'COMMAND_MODE'
             next_state = ProtocolState.COMMAND
-            next_agent_state = ResourceAgentState.IDLE
         elif prompt == 4:
-            log.debug('_handler_unknown_discover: DATA_RETRIEVAL_MODE')
+            result = 'DATA_RETRIEVAL_MODE'
             next_state = ProtocolState.AUTOSAMPLE
-            next_agent_state = ResourceAgentState.STREAMING
         elif prompt == 5:
-            log.debug('_handler_unknown_discover: CONFIRMATION_MODE')
+            result = 'CONFIRMATION_MODE'
             next_state = ProtocolState.AUTOSAMPLE
-            next_agent_state = ResourceAgentState.STREAMING
         else:
             raise InstrumentStateException('Unknown state: %s' % ret_mode[1])
 
-        log.debug('_handler_unknown_discover: state=%s', next_state)
+        log.debug('_handler_unknown_discover: %s, next state=%s', result, next_state)
 
-        return next_state, next_state
+        return next_state, (next_state, result)
 
     def _handler_unknown_exit(self, *args, **kwargs):
         """
@@ -1405,14 +1471,18 @@ class NortekInstrumentProtocol(CommandResponseInstrumentProtocol):
         self._init_params()
 
         if self._param_dict.get(EngineeringParameter.CLOCK_SYNC_INTERVAL) is not None:
-            log.debug("Configuring the scheduler to sync clock %s", self._param_dict.get(EngineeringParameter.CLOCK_SYNC_INTERVAL))
+            log.debug("Configuring the scheduler to sync clock %s",
+                      self._param_dict.get(EngineeringParameter.CLOCK_SYNC_INTERVAL))
             if self._param_dict.get(EngineeringParameter.CLOCK_SYNC_INTERVAL) != '00:00:00':
-                self.start_scheduled_job(EngineeringParameter.CLOCK_SYNC_INTERVAL, ScheduledJob.CLOCK_SYNC, ProtocolEvent.CLOCK_SYNC)
+                self.start_scheduled_job(EngineeringParameter.CLOCK_SYNC_INTERVAL, ScheduledJob.CLOCK_SYNC,
+                                         ProtocolEvent.CLOCK_SYNC)
 
         if self._param_dict.get(EngineeringParameter.ACQUIRE_STATUS_INTERVAL) is not None:
-            log.debug("Configuring the scheduler to acquire status %s", self._param_dict.get(EngineeringParameter.ACQUIRE_STATUS_INTERVAL))
+            log.debug("Configuring the scheduler to acquire status %s",
+                      self._param_dict.get(EngineeringParameter.ACQUIRE_STATUS_INTERVAL))
             if self._param_dict.get(EngineeringParameter.ACQUIRE_STATUS_INTERVAL) != '00:00:00':
-                self.start_scheduled_job(EngineeringParameter.ACQUIRE_STATUS_INTERVAL, ScheduledJob.ACQUIRE_STATUS, ProtocolEvent.ACQUIRE_STATUS)
+                self.start_scheduled_job(EngineeringParameter.ACQUIRE_STATUS_INTERVAL, ScheduledJob.ACQUIRE_STATUS,
+                                         ProtocolEvent.ACQUIRE_STATUS)
 
         # Tell driver superclass to send a state change event.
         # Superclass will query the state.
@@ -1431,14 +1501,17 @@ class NortekInstrumentProtocol(CommandResponseInstrumentProtocol):
         Command the instrument to acquire sample data. Instrument will enter Power Down mode when finished
         """
         next_state = ProtocolState.ACQUIRING_SAMPLE
+        particles = []
 
-        return next_state, (next_state, [])
+        return next_state, (next_state, particles)
 
     def _handler_autosample_acquire_status(self, *args, **kwargs):
         """
         High level command for the operator to get all of the status from the instrument from autosample state:
         Battery voltage, clock, hw configuration, head configuration, user configuration, and identification string
         """
+        next_state = None
+        particles = []  # TODO - need to wait for particles and return list to UI
 
         # break out of measurement mode in order to issue the status related commands
         self._handler_autosample_stop_autosample()
@@ -1446,78 +1519,88 @@ class NortekInstrumentProtocol(CommandResponseInstrumentProtocol):
         # return to measurement mode
         self._handler_command_start_autosample()
 
-        return None, (None, None)
+        return next_state, (next_state, particles)
 
     def _handler_command_acquire_status(self, *args, **kwargs):
         """
         High level command for the operator to get all of the status from the instrument:
         Battery voltage, clock, hw configuration, head configuration, user configuration, and identification string
         """
+        next_state = None
 
-        #ID + BV    Call these commands at the same time, so their responses are combined (non-unique regex workaround)
+        # ID + BV    Call these commands at the same time, so their responses are combined (non-unique regex workaround)
         # Issue read id, battery voltage, & clock commands all at the same time (non-unique REGEX workaround).
         self._do_cmd_resp(InstrumentCmds.READ_ID + InstrumentCmds.READ_BATTERY_VOLTAGE,
                           response_regex=ID_BATTERY_DATA_REGEX, timeout=30)
 
-        #RC
+        # RC
         self._do_cmd_resp(InstrumentCmds.READ_REAL_TIME_CLOCK, response_regex=CLOCK_DATA_REGEX)
 
-        #GP
+        # GP
         self._do_cmd_resp(InstrumentCmds.READ_HW_CONFIGURATION, response_regex=HARDWARE_CONFIG_DATA_REGEX)
 
-        #GH
+        # GH
         self._do_cmd_resp(InstrumentCmds.READ_HEAD_CONFIGURATION, response_regex=HEAD_CONFIG_DATA_REGEX)
 
-        #GC
+        # GC
         self._do_cmd_resp(InstrumentCmds.READ_USER_CONFIGURATION, response_regex=USER_CONFIG_DATA_REGEX)
 
-        return None, (None, None)
+        result = self.wait_for_particles([NortekDataParticleType.CLOCK, NortekDataParticleType.HARDWARE_CONFIG,
+                                          NortekDataParticleType.HEAD_CONFIG, NortekDataParticleType.USER_CONFIG])
+
+        return next_state, (next_state, result)
 
     def _handler_command_set(self, *args, **kwargs):
         """
         Perform a set command.
         @param args[0] parameter : value dict.
-        @retval None, None
+        @retval next_state, (next_state, result)
         """
+        next_state = None
+        result = None
         self._verify_not_readonly(*args, **kwargs)
         self._set_params(*args, **kwargs)
 
-        return None, None
+        return next_state, (next_state, result)
 
     def _handler_command_start_autosample(self, *args, **kwargs):
         """
         Switch into autosample mode
         @retval (next_state, next_state, result) tuple
         """
+        next_state = ProtocolState.AUTOSAMPLE
         result = self._do_cmd_resp(InstrumentCmds.START_MEASUREMENT_WITHOUT_RECORDER, timeout=SAMPLE_TIMEOUT, *args,
                                    **kwargs)
-        return ProtocolState.AUTOSAMPLE, (ProtocolState.AUTOSAMPLE, result)
+        return next_state, (next_state, result)
 
     def _handler_command_start_direct(self):
-        return ProtocolState.DIRECT_ACCESS, (ProtocolState.DIRECT_ACCESS, None)
+        next_state = ProtocolState.DIRECT_ACCESS
+        result = None
+        return next_state, (next_state, result)
 
     def _handler_command_read_mode(self):
         """
         Issue read mode command.
         """
+        next_state = None
         result = self._do_cmd_resp(InstrumentCmds.CMD_WHAT_MODE)
-        return None, (None, result)
+        return next_state, (next_state, result)
 
     def _handler_autosample_read_mode(self):
         """
         Issue read mode command.
         """
+        next_state = None
         self._connection.send(InstrumentCmds.AUTOSAMPLE_BREAK)
         time.sleep(.1)
         result = self._do_cmd_resp(InstrumentCmds.SAMPLE_WHAT_MODE)
-        return None, (None, result)
+        return next_state, (next_state, result)
 
     def _handler_unknown_read_mode(self):
         """
         Issue read mode command.
         """
         next_state = None
-        next_agent_state = None
 
         try:
             self._connection.send(InstrumentCmds.AUTOSAMPLE_BREAK)
@@ -1541,8 +1624,8 @@ class NortekInstrumentProtocol(CommandResponseInstrumentProtocol):
             byte_time += chr(int('0x' + v, base=16))
         values = str_time.split()
         log.debug("_clock_sync: time set to %s:m %s:s %s:d %s:h %s:y %s:M (%s)",
-                 values[0], values[1], values[2], values[3], values[4], values[5],
-                 byte_time.encode('hex'))
+                  values[0], values[1], values[2], values[3], values[4], values[5],
+                  byte_time.encode('hex'))
         self._do_cmd_resp(InstrumentCmds.SET_REAL_TIME_CLOCK, byte_time, **kwargs)
 
         response = self._do_cmd_resp(InstrumentCmds.READ_REAL_TIME_CLOCK, *args, **kwargs)
@@ -1579,8 +1662,9 @@ class NortekInstrumentProtocol(CommandResponseInstrumentProtocol):
         @throws InstrumentTimeoutException if device cannot be woken for command.
         @throws InstrumentProtocolException if command could not be built or misunderstood.
         """
+        next_state = None
         result = self._clock_sync()
-        return None, (None, result)
+        return next_state, (next_state, result)
 
     ########################################################################
     # Autosample handlers.
@@ -1592,16 +1676,13 @@ class NortekInstrumentProtocol(CommandResponseInstrumentProtocol):
         """
 
         next_state = None
-        next_agent_state = None
         result = None
         try:
             self._protocol_fsm._on_event(ProtocolEvent.STOP_AUTOSAMPLE)
             next_state = ProtocolState.COMMAND
-            next_agent_state = ResourceAgentState.COMMAND
             self._clock_sync()
             self._protocol_fsm._on_event(ProtocolEvent.START_AUTOSAMPLE)
             next_state = ProtocolState.AUTOSAMPLE
-            next_agent_state = ResourceAgentState.STREAMING
         finally:
             return next_state, (next_state, result)
 
@@ -1613,17 +1694,22 @@ class NortekInstrumentProtocol(CommandResponseInstrumentProtocol):
             self._handler_autosample_stop_autosample()
             self._update_params()
             self._init_params()
-            self._do_cmd_resp(InstrumentCmds.START_MEASUREMENT_WITHOUT_RECORDER, timeout=SAMPLE_TIMEOUT, *args, **kwargs)
+            self._do_cmd_resp(InstrumentCmds.START_MEASUREMENT_WITHOUT_RECORDER, timeout=SAMPLE_TIMEOUT, *args,
+                              **kwargs)
 
         if self._param_dict.get(EngineeringParameter.CLOCK_SYNC_INTERVAL) is not None:
-            log.debug("Configuring the scheduler to sync clock %s", self._param_dict.get(EngineeringParameter.CLOCK_SYNC_INTERVAL))
+            log.debug("Configuring the scheduler to sync clock %s",
+                      self._param_dict.get(EngineeringParameter.CLOCK_SYNC_INTERVAL))
             if self._param_dict.get(EngineeringParameter.CLOCK_SYNC_INTERVAL) != '00:00:00':
-                self.start_scheduled_job(EngineeringParameter.CLOCK_SYNC_INTERVAL, ScheduledJob.CLOCK_SYNC, ProtocolEvent.CLOCK_SYNC)
+                self.start_scheduled_job(EngineeringParameter.CLOCK_SYNC_INTERVAL, ScheduledJob.CLOCK_SYNC,
+                                         ProtocolEvent.CLOCK_SYNC)
 
         if self._param_dict.get(EngineeringParameter.CLOCK_SYNC_INTERVAL) is not None:
-            log.debug("Configuring the scheduler to acquire status %s", self._param_dict.get(EngineeringParameter.ACQUIRE_STATUS_INTERVAL))
+            log.debug("Configuring the scheduler to acquire status %s",
+                      self._param_dict.get(EngineeringParameter.ACQUIRE_STATUS_INTERVAL))
             if self._param_dict.get(EngineeringParameter.ACQUIRE_STATUS_INTERVAL) != '00:00:00':
-                self.start_scheduled_job(EngineeringParameter.ACQUIRE_STATUS_INTERVAL, ScheduledJob.ACQUIRE_STATUS, ProtocolEvent.ACQUIRE_STATUS)
+                self.start_scheduled_job(EngineeringParameter.ACQUIRE_STATUS_INTERVAL, ScheduledJob.ACQUIRE_STATUS,
+                                         ProtocolEvent.ACQUIRE_STATUS)
 
         self._driver_event(DriverAsyncEvent.STATE_CHANGE)
 
@@ -1641,23 +1727,26 @@ class NortekInstrumentProtocol(CommandResponseInstrumentProtocol):
         @retval ProtocolState.COMMAND, (ResourceAgentState.COMMAND, None) if successful.
         @throws InstrumentProtocolException if command misunderstood or incorrect prompt received.
         """
+        next_state = ProtocolState.COMMAND
+        result = None
         self._connection.send(InstrumentCmds.SOFT_BREAK_FIRST_HALF)
         time.sleep(.1)
-        ret_prompt = self._do_cmd_resp(InstrumentCmds.SOFT_BREAK_SECOND_HALF,
-                                       expected_prompt=[InstrumentPrompts.CONFIRMATION, InstrumentPrompts.COMMAND_MODE],
-                                       *args, **kwargs)
+        result = self._do_cmd_resp(InstrumentCmds.SOFT_BREAK_SECOND_HALF,
+                                   expected_prompt=[InstrumentPrompts.CONFIRMATION, InstrumentPrompts.COMMAND_MODE],
+                                   *args, **kwargs)
 
-        log.debug('_handler_autosample_stop_autosample, ret_prompt: %s', ret_prompt)
+        log.debug('_handler_autosample_stop_autosample, ret_prompt: %s', result)
 
-        if ret_prompt == InstrumentPrompts.CONFIRMATION:
+        if result == InstrumentPrompts.CONFIRMATION:
             # Issue the confirmation command.
-            self._do_cmd_resp(InstrumentCmds.CONFIRMATION, *args, **kwargs)
+            result = self._do_cmd_resp(InstrumentCmds.CONFIRMATION, *args, **kwargs)
 
-        return ProtocolState.COMMAND, (ResourceAgentState.COMMAND, None)
+        return next_state, (next_state, result)
 
     def stop_scheduled_job(self, schedule_job):
         """
         Remove the scheduled job
+        :param schedule_job: job to be removed
         """
         log.debug("Attempting to remove the scheduler")
         if self._scheduler is not None:
@@ -1677,7 +1766,7 @@ class NortekInstrumentProtocol(CommandResponseInstrumentProtocol):
         seconds = interval[2]
         log.debug("Setting scheduled interval to: %s %s %s", hours, minutes, seconds)
 
-        config = {DriverConfigKey.SCHEDULER: {
+        _ = {DriverConfigKey.SCHEDULER: {
             schedule_job: {
                 DriverSchedulerConfigKey.TRIGGER: {
                     DriverSchedulerConfigKey.TRIGGER_TYPE: TriggerType.INTERVAL,
@@ -1694,6 +1783,7 @@ class NortekInstrumentProtocol(CommandResponseInstrumentProtocol):
             self._add_scheduler_event(schedule_job, protocol_event)
         except KeyError:
             log.debug("scheduler already exists for '%s'", schedule_job)
+
     ########################################################################
     #  Acquiring Sample handlers.
     ########################################################################
@@ -1711,11 +1801,9 @@ class NortekInstrumentProtocol(CommandResponseInstrumentProtocol):
         tell the instrument to acquire data, then
         return back to the command state
         """
-
-        self._do_cmd_resp(InstrumentCmds.ACQUIRE_DATA, expected_prompt=self.velocity_sync_bytes, timeout=SAMPLE_TIMEOUT)
-
+        result = self._do_cmd_resp(InstrumentCmds.ACQUIRE_DATA, expected_prompt=self.velocity_sync_bytes, timeout=SAMPLE_TIMEOUT)
         next_state = ProtocolState.COMMAND
-        return next_state, (next_state, None)
+        return next_state, (next_state, result)
 
     def _handler_acquiring_sample_exit(self):
         """
@@ -1750,31 +1838,29 @@ class NortekInstrumentProtocol(CommandResponseInstrumentProtocol):
         # add sent command to list for 'echo' filtering in callback
         self._sent_cmds.append(data)
 
-        return next_state, result
+        return next_state, (next_state, result)
 
     def _handler_direct_access_stop_direct(self, *args, **kwargs):
         """
         Stop Direct Access, and put the driver into a healthy state by reverting itself back to the previous
         state before stopping Direct Access.
         """
-        #discover the state to go to next
-        next_state, next_agent_state = self._handler_unknown_discover()
-        if next_state == DriverProtocolState.COMMAND:
-            next_agent_state = ResourceAgentState.COMMAND
+        # discover the state to go to next
+        next_state, (_, result) = self._handler_unknown_discover()
 
         if next_state == DriverProtocolState.AUTOSAMPLE:
-            #go into command mode in order to set parameters
+            # go into command mode in order to set parameters
             self._handler_autosample_stop_autosample()
 
-        #restore parameters
+        # restore parameters
         log.debug("da_param_restore = %s,", self._param_dict.get_direct_access_list())
         self._init_params()
 
         if next_state == DriverProtocolState.AUTOSAMPLE:
-            #go back into autosample mode
-            self._do_cmd_resp(InstrumentCmds.START_MEASUREMENT_WITHOUT_RECORDER, timeout=SAMPLE_TIMEOUT)
+            # go back into autosample mode
+            result = self._do_cmd_resp(InstrumentCmds.START_MEASUREMENT_WITHOUT_RECORDER, timeout=SAMPLE_TIMEOUT)
 
-        return next_state, (next_state, None)
+        return next_state, (next_state, result)
 
     ########################################################################
     # Common handlers.
@@ -1813,6 +1899,7 @@ class NortekInstrumentProtocol(CommandResponseInstrumentProtocol):
                     raise InstrumentParameterException(('%s is not a valid parameter.' % key))
 
         return next_state, result
+        # return next_state, (next_state, result)
 
     def _build_driver_dict(self):
         """
@@ -1901,7 +1988,7 @@ class NortekInstrumentProtocol(CommandResponseInstrumentProtocol):
                              display_name="Coordinate System",
                              description='Coordinate System (0:ENU | 1:XYZ | 2:Beam)',
                              default_value=2,
-                             range={0:'ENU', 1:'XYZ', 2:'Beam'},
+                             range={0: 'ENU', 1: 'XYZ', 2: 'Beam'},
                              startup_param=True,
                              direct_access=True)
         self._param_dict.add(Parameter.NUMBER_BINS,
@@ -1951,7 +2038,7 @@ class NortekInstrumentProtocol(CommandResponseInstrumentProtocol):
                              display_name="Wrap Mode",
                              description='Recorder wrap mode (0:no wrap | 1:wrap when full)',
                              default_value=0,
-                             range={0:'No Wrap', 1:'Wrap when Full'},
+                             range={0: 'No Wrap', 1: 'Wrap when Full'},
                              startup_param=True,
                              direct_access=True)
         self._param_dict.add(Parameter.CLOCK_DEPLOY,
@@ -2033,7 +2120,7 @@ class NortekInstrumentProtocol(CommandResponseInstrumentProtocol):
                              lambda string: string,
                              regex_flags=re.DOTALL,
                              type=ParameterDictType.STRING,
-                             range=(-4,40),
+                             range=(-4, 40),
                              visibility=ParameterDictVisibility.READ_ONLY,
                              display_name="Velocity Adj Table",
                              description="Scaling factors to account for the speed of sound variation as a function of "
@@ -2124,7 +2211,7 @@ class NortekInstrumentProtocol(CommandResponseInstrumentProtocol):
         dump = []
         for byte_index in xrange(0, len(input_config)):
             if byte_index % 0x10 == 0:
-                dump.append('\n')   # no linefeed on first line
+                dump.append('\n')  # no linefeed on first line
                 dump.append('{:03x}  '.format(byte_index))
             dump.append('{:02x} '.format(ord(input_config[byte_index])))
         return "".join(dump)
@@ -2156,7 +2243,8 @@ class NortekInstrumentProtocol(CommandResponseInstrumentProtocol):
                 output.append(base64.b64decode(parameters.format(param)))
             elif param in [Parameter.A1_1_SPARE, Parameter.B0_1_SPARE, Parameter.B1_1_SPARE, Parameter.USER_1_SPARE,
                            Parameter.A1_2_SPARE, Parameter.B0_2_SPARE, Parameter.USER_2_SPARE, Parameter.USER_3_SPARE,
-                           Parameter.WAVE_MEASUREMENT_MODE, Parameter.WAVE_TRANSMIT_PULSE, Parameter.WAVE_BLANKING_DISTANCE,
+                           Parameter.WAVE_MEASUREMENT_MODE, Parameter.WAVE_TRANSMIT_PULSE,
+                           Parameter.WAVE_BLANKING_DISTANCE,
                            Parameter.WAVE_CELL_SIZE, Parameter.NUMBER_DIAG_SAMPLES, Parameter.DYN_PERCENTAGE_POSITION]:
                 output.append('\x00'.ljust(2, "\x00"))
             elif param == Parameter.USER_4_SPARE:
@@ -2170,7 +2258,7 @@ class NortekInstrumentProtocol(CommandResponseInstrumentProtocol):
         checksum = CHECK_SUM_SEED
         output = "".join(output)
         for word_index in range(0, len(output), 2):
-            word_value = NortekProtocolParameterDict.convert_word_to_int(output[word_index:word_index+2])
+            word_value = NortekProtocolParameterDict.convert_word_to_int(output[word_index:word_index + 2])
             checksum = (checksum + word_value) % 0x10000
         log.debug('_create_set_output: user checksum = %r', checksum)
 
@@ -2201,9 +2289,9 @@ class NortekInstrumentProtocol(CommandResponseInstrumentProtocol):
         key = self.velocity_sync_bytes
         start = response.find(key)
         if start != -1:
-            log.debug("_parse_acquire_data_response: response=%r", response[start:start+len(key)])
+            log.debug("_parse_acquire_data_response: response=%r", response[start:start + len(key)])
             self._handler_autosample_stop_autosample()
-            return response[start:start+len(key)]
+            return response[start:start + len(key)]
 
         log.error("_parse_acquire_data_response: Bad acquire data response from instrument (%r)", response)
         raise InstrumentProtocolException("Invalid acquire data response. (%r)" % response)
@@ -2237,8 +2325,8 @@ class NortekInstrumentProtocol(CommandResponseInstrumentProtocol):
         for search_prompt in (InstrumentPrompts.CONFIRMATION, InstrumentPrompts.COMMAND_MODE):
             start = response.find(search_prompt)
             if start != -1:
-                log.debug("_parse_second_break_response: response=%r", response[start:start+len(search_prompt)])
-                return response[start:start+len(search_prompt)]
+                log.debug("_parse_second_break_response: response=%r", response[start:start + len(search_prompt)])
+                return response[start:start + len(search_prompt)]
 
         log.error("_parse_second_break_response: Bad second break response from instrument (%r)", response)
         raise InstrumentProtocolException("Invalid second break response. (%r)" % response)

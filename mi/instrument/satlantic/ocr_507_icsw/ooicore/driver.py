@@ -737,7 +737,8 @@ class SatlanticOCR507InstrumentProtocol(CommandResponseInstrumentProtocol):
         @param params List of the parameters to pass to the state
         @retval return (next state, result)
         """
-        return self._handler_get(*args, **kwargs)
+        next_state, result = self._handler_get(*args, **kwargs)
+        return next_state, (next_state, result)
 
     def _handler_command_set(self, *args, **kwargs):
         """Handle setting data from command mode
@@ -745,8 +746,9 @@ class SatlanticOCR507InstrumentProtocol(CommandResponseInstrumentProtocol):
         @param params Dict of the parameters and values to pass to the state
         @return (next state, result)
         """
-        self._set_params(*args, **kwargs)
-        return None, None
+        next_state = None
+        result = self._set_params(*args, **kwargs)
+        return next_state, (next_state, result)
 
     def _handler_command_start_autosample(self, params=None, *args, **kwargs):
         """

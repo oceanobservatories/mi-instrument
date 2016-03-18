@@ -645,23 +645,26 @@ class SatlanticPARInstrumentProtocol(CommandResponseInstrumentProtocol):
     def _handler_unknown_discover(self):
         """
         Discover current state; can be COMMAND or AUTOSAMPLE.
-        @retval next_state, next_state
+        @retval next_state, (next_state, result)
         """
+        next_state = None
+        result = None
         try:
             probe_resp = self._do_cmd_resp(Command.SAMPLE, timeout=2,
                                            expected_prompt=[Prompt.SAMPLES, PARProtocolError.INVALID_COMMAND])
         except InstrumentTimeoutException:
             self._do_cmd_resp(Command.SWITCH_TO_AUTOSAMPLE, expected_prompt=Prompt.SAMPLES, timeout=15)
-            return PARProtocolState.AUTOSAMPLE, ResourceAgentState.STREAMING
+            next_state = PARProtocolState.AUTOSAMPLE
+            return next_state, (next_state, result)
 
         if probe_resp == PARProtocolError.INVALID_COMMAND:
             next_state = PARProtocolState.COMMAND
         else:
             # Put the instrument into full autosample in case it isn't already (could be in polled mode)
-            self._do_cmd_resp(Command.SWITCH_TO_AUTOSAMPLE, expected_prompt=Prompt.SAMPLES, timeout=15)
+            result = self._do_cmd_resp(Command.SWITCH_TO_AUTOSAMPLE, expected_prompt=Prompt.SAMPLES, timeout=15)
             next_state = PARProtocolState.AUTOSAMPLE
 
-        return next_state, (next_state, [])
+        return next_state, (next_state, result)
 
     ########################################################################
     # Command handlers.
@@ -805,23 +808,28 @@ class SatlanticPARInstrumentProtocol(CommandResponseInstrumentProtocol):
         @param params Dict of the parameters and values to pass to the state
         @retval return (next state, result)
         """
+        next_state = None
+        result = None
         self._set_params(*args, **kwargs)
-        return None, None
+        return next_state, (next_state, result)
 
     def _handler_command_start_autosample(self):
         """
         Handle getting a start autosample event when in command mode
         @retval return (next state, result)
         """
+        next_state = PARProtocolState.AUTOSAMPLE
+        result = None
         self._do_cmd_resp(Command.EXIT, expected_prompt=Prompt.SAMPLES, timeout=15)
         time.sleep(0.115)
         self._do_cmd_resp(Command.SWITCH_TO_AUTOSAMPLE, expected_prompt=Prompt.SAMPLES, timeout=15)
-        return PARProtocolState.AUTOSAMPLE, (ResourceAgentState.STREAMING, None)
+        return next_state, (next_state, result)
 
     def _handler_command_start_direct(self):
-        """
-        """
-        return PARProtocolState.DIRECT_ACCESS, (ResourceAgentState.DIRECT_ACCESS, None)
+        next_state = PARProtocolState.DIRECT_ACCESS
+        result = None
+
+        return next_state, (next_state, result)
 
     ########################################################################
     # Autosample handlers.
@@ -831,15 +839,17 @@ class SatlanticPARInstrumentProtocol(CommandResponseInstrumentProtocol):
         Handle PARProtocolState.AUTOSAMPLE PARProtocolEvent.ENTER
         @retval return (next state, result)
         """
+        next_state = None
+        result = None
         if self._init_type != InitializationType.NONE:
-            self._handler_autosample_stop_autosample()
+            next_state, (_, result) = self._handler_autosample_stop_autosample()
             self._update_params()
-            self._handler_command_start_autosample()
+            next_state, (_, result) = self._handler_command_start_autosample()
 
         self._init_params()
 
         self._driver_event(DriverAsyncEvent.STATE_CHANGE)
-        return None, None
+        return next_state, (next_state, result)
 
     def _handler_autosample_stop_autosample(self):
         """
@@ -847,31 +857,33 @@ class SatlanticPARInstrumentProtocol(CommandResponseInstrumentProtocol):
         @retval return (next state, result)
         @throw InstrumentProtocolException For hardware error
         """
+        next_state = PARProtocolState.COMMAND
         try:
             self._send_break()
+            result = 'autosample break successful, returning to command mode'
         except InstrumentException, e:
             log.debug("_handler_autosample_stop_autosample error: %s", e)
             raise InstrumentProtocolException(error_code=InstErrorCode.HARDWARE_ERROR,
                                               msg="Couldn't break from autosample!")
 
-        return PARProtocolState.COMMAND, (ResourceAgentState.COMMAND, None)
+        return next_state, (next_state, result)
 
     def _handler_autosample_acquire_status(self):
         """
         High level command for the operator to get the status from the instrument in autosample state
         """
         try:
-            self._handler_autosample_stop_autosample()
-            self._handler_acquire_status()
-            self._handler_command_start_autosample()
+            next_state, (_, result) = self._handler_autosample_stop_autosample()
+            next_state, (_, result) = self._handler_acquire_status()
+            next_state, (_, result) = self._handler_command_start_autosample()
 
         # Since this is registered only for autosample mode, make sure this ends w/ instrument in autosample mode
         except InstrumentTimeoutException:
-            next_state, next_agent_state = self._handler_unknown_discover()
+            next_state, (_, result) = self._handler_unknown_discover()
             if next_state != DriverProtocolState.AUTOSAMPLE:
-                self._handler_command_start_autosample()
+                next_state, (_, result) = self._handler_command_start_autosample()
 
-        return None, (None, None)
+        return next_state, (next_state, result)
 
     ########################################################################
     # Poll handlers.
@@ -890,13 +902,14 @@ class SatlanticPARInstrumentProtocol(CommandResponseInstrumentProtocol):
         Handle PARProtocolEvent.ACQUIRE_SAMPLE
         @retval return (next state, result)
         """
+        next_state = None
         timeout = time.time() + TIMEOUT
 
         self._get_poll()
 
         particles = self.wait_for_particles([DataParticleType.PARSED], timeout)
 
-        return None, (None, particles)
+        return next_state, (next_state, particles)
 
     def _handler_acquire_status(self):
         """
@@ -906,13 +919,14 @@ class SatlanticPARInstrumentProtocol(CommandResponseInstrumentProtocol):
         and combined through the got_chunk function.
         @retval return (next state, result)
         """
+        next_state = None
         timeout = time.time() + TIMEOUT
 
         self._do_cmd_resp(Command.GET, "all", expected_prompt=Prompt.COMMAND)
 
         particles = self.wait_for_particles([DataParticleType.CONFIG], timeout)
 
-        return None, (None, particles)
+        return next_state, (next_state, particles)
 
     ########################################################################
     # Direct access handlers.
@@ -943,20 +957,18 @@ class SatlanticPARInstrumentProtocol(CommandResponseInstrumentProtocol):
         """
         Execute Direct Access command(s)
         """
+        next_state = None
         self._do_cmd_direct(data)
         # add sent command to list for 'echo' filtering in callback
-        self._sent_cmds.append(data)
-        return None, (None, None)
+        result = self._sent_cmds.append(data)
+        return next_state, (next_state, result)
 
     def _handler_direct_access_stop_direct(self):
         """
         Stop Direct Access, and put the driver into a healthy state
         """
-        next_state, next_agent_state = self._handler_unknown_discover()
-        if next_state == DriverProtocolState.COMMAND:
-            next_agent_state = ResourceAgentState.COMMAND
-
-        return next_state, (next_agent_state, None)
+        next_state, (_, result) = self._handler_unknown_discover()
+        return next_state, (next_state, result)
 
     ###################################################################
     # Builders

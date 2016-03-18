@@ -5,16 +5,10 @@
 @brief Driver class for sbe16plus V2 CTD instrument.
 """
 
-
-__author__ = 'Tapana Gupta'
-__license__ = 'Apache 2.0'
-
 import re
 import time
 
 from mi.core.log import get_logger
-log = get_logger()
-
 from mi.core.common import BaseEnum
 
 from mi.core.instrument.data_particle import DataParticleKey
@@ -35,10 +29,16 @@ from mi.instrument.seabird.sbe16plus_v2.ctdpf_jb.driver import SBE19StatusPartic
 from mi.instrument.seabird.sbe16plus_v2.ctdpf_jb.driver import SBE19ConfigurationParticle
 from mi.instrument.seabird.sbe16plus_v2.ctdpf_jb.driver import OptodeSettingsParticle
 
-from mi.instrument.seabird.sbe16plus_v2.driver import Prompt, SBE16InstrumentDriver, Sbe16plusBaseParticle, \
-    WAKEUP_TIMEOUT, NEWLINE, TIMEOUT
+from mi.instrument.seabird.sbe16plus_v2.driver import \
+    Prompt, SBE16InstrumentDriver, Sbe16plusBaseParticle, WAKEUP_TIMEOUT, NEWLINE, TIMEOUT
 from mi.core.instrument.protocol_param_dict import ParameterDictType, ParameterDictVisibility
 
+
+__author__ = 'Tapana Gupta'
+__license__ = 'Apache 2.0'
+
+
+log = get_logger()
 
 class DataParticleType(BaseEnum):
     RAW = CommonDataParticleType.RAW
@@ -570,6 +570,7 @@ class SBE16NOProtocol(SBE19Protocol):
         """
         Get device status
         """
+        next_state = None
         result = []
 
         result.append(self._do_cmd_resp(Command.GET_SD, response_regex=SBE16NOStatusParticle.regex_compiled(),
@@ -587,11 +588,11 @@ class SBE16NOProtocol(SBE19Protocol):
         result.append(self._do_cmd_resp(Command.GET_EC, timeout=TIMEOUT))
         log.debug("_handler_command_acquire_status: GetEC Response: %s", result)
 
-        #Reset the event counter right after getEC
+        # Reset the event counter right after getEC
         self._do_cmd_resp(Command.RESET_EC, timeout=TIMEOUT)
 
-        #Now send commands to the Optode to get its status
-        #Stop the optode first, need to send the command twice
+        # Now send commands to the Optode to get its status
+        # Stop the optode first, need to send the command twice
         stop_command = "stop"
         start_command = "start"
         self._do_cmd_resp(OptodeCommands.SEND_OPTODE, stop_command, timeout=TIMEOUT)
@@ -599,35 +600,37 @@ class SBE16NOProtocol(SBE19Protocol):
         self._do_cmd_resp(OptodeCommands.SEND_OPTODE, stop_command, timeout=TIMEOUT)
         time.sleep(3)
 
-        #Send all the 'sendoptode=' commands one by one
+        # Send all the 'sendoptode=' commands one by one
         optode_commands = SendOptodeCommand.list()
         for command in optode_commands:
             log.debug("Sending optode command: %s" % command)
             result.append(self._do_cmd_resp(OptodeCommands.SEND_OPTODE, command, timeout=TIMEOUT))
             log.debug("_handler_command_acquire_status: SendOptode Response: %s", result)
 
-        #restart the optode
+        # restart the optode
         self._do_cmd_resp(OptodeCommands.SEND_OPTODE, start_command, timeout=TIMEOUT)
 
-        return None, (None, ''.join(result))
+        return next_state, (next_state, ''.join(result))
 
     def _handler_command_acquire_sample(self, *args, **kwargs):
         """
         Acquire sample from SBE16.
         @retval next_state, (next_state, result) tuple
         """
+        next_state = None
         timeout = time.time() + TIMEOUT
 
         self._do_cmd_resp(Command.TS, *args, **kwargs)
 
         particles = self.wait_for_particles(DataParticleType.CTD_PARSED, timeout)
 
-        return None, (None, particles)
+        return next_state, (next_state, particles)
 
     def _handler_autosample_acquire_status(self, *args, **kwargs):
         """
         Get device status
         """
+        next_state = None
         result = []
 
         # When in autosample this command requires two wakeups to get to the right prompt
@@ -649,10 +652,10 @@ class SBE16NOProtocol(SBE19Protocol):
         result.append(self._do_cmd_resp(Command.GET_EC, timeout=TIMEOUT))
         log.debug("_handler_autosample_acquire_status: GetEC Response: %s", result)
 
-        #Reset the event counter right after getEC
+        # Reset the event counter right after getEC
         self._do_cmd_no_resp(Command.RESET_EC)
 
-        return None, (None, ''.join(result))
+        return next_state, (next_state, ''.join(result))
 
     ########################################################################
     # response handlers.

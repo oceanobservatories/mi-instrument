@@ -10,28 +10,21 @@ Release notes:
 
 Initial development
 """
+
 import datetime
 import time
-
-__author__ = 'Rachel Manoni'
-__license__ = 'Apache 2.0'
 
 import re
 
 from mi.core.log import get_logger
-log = get_logger()
-
 from mi.core.common import BaseEnum, Units
-
 from mi.core.util import dict_equal
-
 from mi.core.exceptions import SampleException
 from mi.core.exceptions import InstrumentParameterException
 from mi.core.exceptions import InstrumentTimeoutException
 from mi.core.exceptions import InstrumentCommandException
 
 from mi.core.instrument.instrument_protocol import CommandResponseInstrumentProtocol, InitializationType
-
 from mi.core.instrument.instrument_fsm import InstrumentFSM
 
 from mi.core.instrument.instrument_driver import SingleConnectionInstrumentDriver
@@ -39,26 +32,25 @@ from mi.core.instrument.instrument_driver import DriverEvent
 from mi.core.instrument.instrument_driver import DriverAsyncEvent
 from mi.core.instrument.instrument_driver import DriverProtocolState
 from mi.core.instrument.instrument_driver import DriverParameter
-from mi.core.instrument.instrument_driver import ResourceAgentState
 from mi.core.instrument.instrument_driver import DriverConfigKey
 
 from mi.core.instrument.data_particle import DataParticle
 from mi.core.instrument.data_particle import DataParticleKey
 from mi.core.instrument.data_particle import CommonDataParticleType
-
 from mi.core.instrument.chunker import StringChunker
-
 from mi.core.instrument.protocol_param_dict import ParameterDictVisibility
 from mi.core.instrument.protocol_param_dict import ParameterDictType
-
 from mi.core.instrument.driver_dict import DriverDictKey
 
 from mi.core.driver_scheduler import DriverSchedulerConfigKey
 from mi.core.driver_scheduler import TriggerType
-
 from mi.core.time_tools import get_timestamp_delayed
-
 from mi.core.log import get_logging_metaclass
+
+__author__ = 'Rachel Manoni'
+__license__ = 'Apache 2.0'
+
+log = get_logger()
 
 # newline.
 NEWLINE = '\r\n'
@@ -75,6 +67,8 @@ SAMPLE_TIMEOUT = 10
 ###
 #    Driver Constant Definitions
 ###
+
+
 class ParameterUnit(BaseEnum):
     COUNTS = 'counts'
     TIME_INTERVAL = 'HH:MM:SS'
@@ -818,6 +812,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         @retval (next_state, result)
         """
         next_state = DriverProtocolState.COMMAND
+        result = None
 
         try:
             # Listen to data stream to determine the current state
@@ -828,7 +823,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                 res_regex = FLORD_SAMPLE_REGEX_MATCHER
                 sample_regex = FlordDSample_Particle.regex_compiled()
 
-            response = self._get_response(timeout=TIMEOUT, response_regex=res_regex)[0]
+            result = self._get_response(timeout=TIMEOUT, response_regex=res_regex)[0]
 
             if sample_regex.search(response):
                 next_state = DriverProtocolState.AUTOSAMPLE
@@ -839,7 +834,7 @@ class Protocol(CommandResponseInstrumentProtocol):
             next_state = DriverProtocolState.COMMAND
 
         finally:
-            return next_state, next_state
+            return next_state, (next_state, result)
 
     ########################################################################
     # Command handlers.
@@ -864,7 +859,9 @@ class Protocol(CommandResponseInstrumentProtocol):
         """
         Get commands
         """
-        return self._handler_get(*args, **kwargs)
+        next_state, result = self._handler_get(*args, **kwargs)
+        # TODO match the return signature of other handlers - next_state, (next_state, result)
+        return next_state, result
 
     def _handler_command_set(self, *args, **kwargs):
         """
@@ -911,8 +908,8 @@ class Protocol(CommandResponseInstrumentProtocol):
         else:
             resp_regex = FLORD_SAMPLE_REGEX_MATCHER
         self._do_cmd_resp(InstrumentCommand.RUN_SETTINGS, timeout=TIMEOUT, response_regex=resp_regex)
-        result = self._do_cmd_resp(InstrumentCommand.INTERRUPT_INSTRUMENT, *args, timeout=TIMEOUT,
-                                   response_regex=MNU_REGEX_MATCHER)
+        self._do_cmd_resp(InstrumentCommand.INTERRUPT_INSTRUMENT, *args, timeout=TIMEOUT,
+                          response_regex=MNU_REGEX_MATCHER)
 
         if self.__instrument_class__ == FLORT_CLASS:
             sample_particle_class = DataParticleType.FLORTD_SAMPLE
@@ -921,26 +918,28 @@ class Protocol(CommandResponseInstrumentProtocol):
 
         particles = self.wait_for_particles([sample_particle_class], timeout)
 
-        return None, (None, particles)
+        return next_state, (next_state, particles)
 
     def _handler_command_start_autosample(self, *args, **kwargs):
         """
         Switch into autosample mode. ($run)
         """
+        next_state = ProtocolState.AUTOSAMPLE
         if self.__instrument_class__ == FLORT_CLASS:
             resp_regex = FLORT_SAMPLE_REGEX_MATCHER
         else:
             resp_regex = FLORD_SAMPLE_REGEX_MATCHER
         result = self._do_cmd_resp(InstrumentCommand.RUN_SETTINGS, timeout=TIMEOUT, response_regex=resp_regex)
-        return ProtocolState.AUTOSAMPLE, (ProtocolState.AUTOSAMPLE, result)
+        return next_state, (next_state, result)
 
     def _handler_command_acquire_status(self, *args, **kwargs):
         """
         Run the $mnu Command (print menu)
         """
+        next_state = None
         timeout = time.time() + STATUS_TIMEOUT
 
-        result = self._do_cmd_resp(InstrumentCommand.PRINT_MENU, timeout=TIMEOUT, response_regex=MNU_REGEX_MATCHER)
+        self._do_cmd_resp(InstrumentCommand.PRINT_MENU, timeout=TIMEOUT, response_regex=MNU_REGEX_MATCHER)
 
         if self.__instrument_class__ == FLORT_CLASS:
             status_particle_class = DataParticleType.FLORTD_MNU
@@ -949,21 +948,23 @@ class Protocol(CommandResponseInstrumentProtocol):
 
         particles = self.wait_for_particles([status_particle_class], timeout)
 
-        return None, (None, particles)
+        return next_state, (next_state, particles)
 
     def _handler_command_run_wiper(self, *args, **kwargs):
         """
         Issue the run wiper command ($mvs)
         """
+        next_state = result = None
         result = self._do_cmd_resp(InstrumentCommand.RUN_WIPER, *args, timeout=TIMEOUT, response_regex=RUN_REGEX_MATCHER)
-        return None, (None, result)
+        return next_state, (next_state, result)
 
     def _handler_command_clock_sync(self, *args, **kwargs):
         """
         Synchronize the clock
         """
+        next_state = result = None
         self._sync_clock()
-        return None, (None, None)
+        return next_state, (next_state, result)
 
     ########################################################################
     # Autosample handlers.
@@ -1052,6 +1053,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         @throws InstrumentTimeoutException if device cannot be woken for command.
         @throws InstrumentProtocolException if command misunderstood or incorrect prompt received.
         """
+        next_state = ProtocolState.COMMAND
 
         # Stop scheduled run of wiper, clock sync, & acquire status
         self.stop_scheduled_job(ScheduledJob.RUN_WIPER)
@@ -1062,13 +1064,14 @@ class Protocol(CommandResponseInstrumentProtocol):
         result = self._do_cmd_resp(InstrumentCommand.INTERRUPT_INSTRUMENT, *args, timeout=TIMEOUT,
                                    response_regex=MNU_REGEX_MATCHER)
 
-        return ProtocolState.COMMAND, (ProtocolState.COMMAND, result)
+        return next_state, (next_state, result)
 
     def _handler_autosample_run_wiper(self, *args, **kwargs):
         """
         Runs the wiper.  Puts the instrument into command mode, sends the command. If wiper is run successfully,
         put instrument back into autosample mode.
         """
+        next_state = None
 
         # put instrument into command mode to send run wiper command ($mvs)
         self._do_cmd_resp(InstrumentCommand.INTERRUPT_INSTRUMENT, *args, timeout=TIMEOUT, response_regex=MNU_REGEX_MATCHER)
@@ -1080,13 +1083,13 @@ class Protocol(CommandResponseInstrumentProtocol):
             resp_regex = FLORD_SAMPLE_REGEX_MATCHER
 
         result = self._do_cmd_resp(InstrumentCommand.RUN_SETTINGS, timeout=TIMEOUT, response_regex=resp_regex)
-        return None, (None, result)
+        return next_state, (next_state, result)
 
     def _handler_autosample_acquire_status(self, *args, **kwargs):
         """
         Get one sample from the instrument
         """
-
+        next_state = None
         timeout = time.time() + STATUS_TIMEOUT
 
         # put instrument into command mode to send command $run to collect status
@@ -1098,7 +1101,7 @@ class Protocol(CommandResponseInstrumentProtocol):
             resp_regex = FLORT_SAMPLE_REGEX_MATCHER
         else:
             resp_regex = FLORD_SAMPLE_REGEX_MATCHER
-        result = self._do_cmd_resp(InstrumentCommand.RUN_SETTINGS, timeout=TIMEOUT, response_regex=resp_regex)
+        self._do_cmd_resp(InstrumentCommand.RUN_SETTINGS, timeout=TIMEOUT, response_regex=resp_regex)
 
         if self.__instrument_class__ == FLORT_CLASS:
             status_particle_class = DataParticleType.FLORTD_MNU
@@ -1107,13 +1110,14 @@ class Protocol(CommandResponseInstrumentProtocol):
 
         particles = self.wait_for_particles([status_particle_class], timeout)
 
-        return None, (None, particles)
+        return next_state, (next_state, particles)
 
     def _handler_autosample_clock_sync(self, *args, **kwargs):
         """
         Syncs the clock.  Puts the instrument in command mode, synchronizes the clock, then puts the instrument
         back into autosample mode.
         """
+        next_state = None
         self._do_cmd_resp(InstrumentCommand.INTERRUPT_INSTRUMENT, timeout=TIMEOUT, response_regex=MNU_REGEX_MATCHER)
         self._sync_clock()
 
@@ -1122,7 +1126,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         else:
             resp_regex = FLORD_SAMPLE_REGEX_MATCHER
         result = self._do_cmd_resp(InstrumentCommand.RUN_SETTINGS, timeout=TIMEOUT, response_regex=resp_regex)
-        return None, (None, result)
+        return next_state, (next_state, result)
 
     def _handler_autosample_exit(self, *args, **kwargs):
         """
@@ -1152,13 +1156,14 @@ class Protocol(CommandResponseInstrumentProtocol):
         """
         Execute Direct Access command(s)
         """
+        next_state = result = None
 
         self._do_cmd_direct(data)
 
         # add sent command to list for 'echo' filtering in callback
         self._sent_cmds.append(data)
 
-        return None, None
+        return next_state, (next_state, result)
 
     def _handler_direct_access_stop_direct(self):
         """
@@ -1166,15 +1171,17 @@ class Protocol(CommandResponseInstrumentProtocol):
         state before starting Direct Access.
         @throw InstrumentProtocolException on invalid command
         """
-
-        # discover the state to go to next
-        return self._handler_unknown_discover()
+        # update current state in case the direct access commands modified it
+        next_state, (_, result) = self._handler_unknown_discover()
+        return next_state, (next_state, result)
 
     def _handler_command_start_direct(self):
         """
         Start direct access
         """
-        return ProtocolState.DIRECT_ACCESS, (ProtocolState.DIRECT_ACCESS, None)
+        next_state = ProtocolState.DIRECT_ACCESS
+        result = None
+        return next_state, (next_state, result)
 
     ########################################################################
     # Private helpers.
