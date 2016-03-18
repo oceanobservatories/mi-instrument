@@ -331,8 +331,9 @@ class SeaBirdProtocol(CommandResponseInstrumentProtocol):
         """
         initialize parameters
         """
+        next_state = result = None
         self._init_params()
-        return None, None
+        return next_state, (next_state, result)
 
     def _handler_autosample_init_params(self, *args, **kwargs):
         """
@@ -340,6 +341,8 @@ class SeaBirdProtocol(CommandResponseInstrumentProtocol):
         put the instrument into command mode, apply the changes
         then put it back.
         """
+        next_state = None
+        result = None
         if self._init_type != InitializationType.NONE:
 
             try:
@@ -352,7 +355,7 @@ class SeaBirdProtocol(CommandResponseInstrumentProtocol):
                     log.debug("SBE is logging again")
                     self._start_logging()
 
-        return None, None
+        return next_state, (next_state, result)
 
     def _handler_command_get(self, *args, **kwargs):
         """
@@ -367,7 +370,9 @@ class SeaBirdProtocol(CommandResponseInstrumentProtocol):
         @raise InstrumentParameterExpirationException If we fail to update a parameter
         on the second pass this exception will be raised on expired data
         """
-        return self._handler_get(*args, **kwargs)
+        next_state, result = self._handler_get(*args, **kwargs)
+        # TODO - match all other return signatures - return next_state, (next_state, result)
+        return next_state, result
 
     def _handler_command_set(self, *args, **kwargs):
         """
@@ -380,6 +385,8 @@ class SeaBirdProtocol(CommandResponseInstrumentProtocol):
         @throws InstrumentTimeoutException if device cannot be woken for set command.
         @throws InstrumentProtocolException if set command could not be built or misunderstood.
         """
+        next_state = None
+        result = None
         startup = False
 
         try:
@@ -400,7 +407,7 @@ class SeaBirdProtocol(CommandResponseInstrumentProtocol):
         else:
             self._set_params(params, startup)
 
-        return None, None
+        return next_state, (next_state, result)
 
     ########################################################################
     # Private helpers.
@@ -421,18 +428,14 @@ class SeaBirdProtocol(CommandResponseInstrumentProtocol):
 
         if logging is None:
             next_state = DriverProtocolState.UNKNOWN
-            next_agent_state = ResourceAgentState.ACTIVE_UNKNOWN
 
         elif logging:
             next_state = DriverProtocolState.AUTOSAMPLE
-            next_agent_state = ResourceAgentState.STREAMING
 
         else:
             next_state = DriverProtocolState.COMMAND
-            next_agent_state = ResourceAgentState.COMMAND
 
-        log.debug("_handler_unknown_discover. result start: %s" % next_state)
-        return next_state, next_state
+        return next_state, (next_state, logging)
 
     def _sync_clock(self, command, date_time_param, timeout=TIMEOUT, delay=1, time_format="%d %b %Y %H:%M:%S"):
         """

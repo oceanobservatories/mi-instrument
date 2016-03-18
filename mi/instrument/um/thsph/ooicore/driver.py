@@ -6,8 +6,6 @@
 Release notes:
 
 Vent Chemistry Instrument  Driver
-
-
 """
 
 import re
@@ -462,8 +460,9 @@ class THSPHProtocol(CommandResponseInstrumentProtocol):
         @retval (next_state, result).
         """
         next_state = ProtocolState.COMMAND
+        result = None
 
-        return next_state, next_state
+        return next_state, (next_state, result)
 
     ########################################################################
     # Command State handlers.
@@ -502,7 +501,9 @@ class THSPHProtocol(CommandResponseInstrumentProtocol):
         ensure that all data will be fresh.  Nobody likes stale data!
         @param args[0] list of parameters to retrieve, or DriverParameter.ALL.
         """
-        return self._handler_get(*args, **kwargs)
+        next_state, result = self._handler_get(*args, **kwargs)
+        # TODO - update return signature to match other handlers - next_state, (next_state, result)
+        return next_state, result
 
     def _handler_command_set(self, *args, **kwargs):
         """
@@ -540,7 +541,7 @@ class THSPHProtocol(CommandResponseInstrumentProtocol):
         if old_config != new_config:
             self._driver_event(DriverAsyncEvent.CONFIG_CHANGE)
 
-        return next_state, result
+        return next_state, (next_state, result)
 
     def _set_params(self, *args, **kwargs):
         """
@@ -582,17 +583,17 @@ class THSPHProtocol(CommandResponseInstrumentProtocol):
         @throws InstrumentTimeoutException if device cannot be woken for command.
         @throws InstrumentProtocolException if command could not be built or misunderstood.
         """
-        result = None
-
         next_state = ProtocolState.AUTOSAMPLE
-
+        result = None
         return next_state, (next_state, result)
 
     def _handler_command_start_direct(self):
         """
         Start direct access
         """
-        return ProtocolState.DIRECT_ACCESS, (ProtocolState.DIRECT_ACCESS, None)
+        next_state = ProtocolState.DIRECT_ACCESS
+        result = None
+        return next_state, (next_state, result)
 
     #######################################################################
     # Autosample State handlers.
@@ -605,6 +606,7 @@ class THSPHProtocol(CommandResponseInstrumentProtocol):
         instrument for data.
         @retval next_state, (next_state, result)
         """
+        next_state = result = None
 
         self._init_params()
 
@@ -617,7 +619,7 @@ class THSPHProtocol(CommandResponseInstrumentProtocol):
         # Superclass will query the state.
         self._driver_event(DriverAsyncEvent.STATE_CHANGE)
 
-        return None, (None, None)
+        return next_state, (next_state, result)
 
     def _setup_autosample_config(self):
         """
@@ -648,7 +650,6 @@ class THSPHProtocol(CommandResponseInstrumentProtocol):
         """
         Exit auto sample state. Remove the auto sample task
         """
-
         next_state = None
         result = None
 
@@ -658,12 +659,12 @@ class THSPHProtocol(CommandResponseInstrumentProtocol):
         """
         Remove the auto sample task. Exit Auto sample state
         """
+        next_state = ProtocolState.COMMAND
         result = None
 
         # Stop the Auto Poll scheduling
         self._remove_scheduler(ScheduledJob.AUTO_SAMPLE)
 
-        next_state = ProtocolState.COMMAND
         return next_state, (next_state, result)
 
     ########################################################################
@@ -701,9 +702,8 @@ class THSPHProtocol(CommandResponseInstrumentProtocol):
         """
         @throw InstrumentProtocolException on invalid command
         """
-        result = None
-
         next_state = ProtocolState.COMMAND
+        result = None
 
         return next_state, (next_state, result)
 

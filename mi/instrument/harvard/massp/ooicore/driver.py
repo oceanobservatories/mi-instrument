@@ -850,8 +850,9 @@ class Protocol(InstrumentProtocol):
     def _handler_unknown_discover(self, *args, **kwargs):
         """
         Discover current state
-        @return next_state, result
+        @return next_state, (next_state, result)
         """
+        next_state = ProtocolState.COMMAND
         result = self._send_event_to_all(ProtocolEvent.DISCOVER)
         log.debug('_handler_unknown_discover -- send DISCOVER to all: %r', result)
         target_state = (ProtocolState.COMMAND, ProtocolState.COMMAND, ProtocolState.COMMAND)
@@ -864,8 +865,8 @@ class Protocol(InstrumentProtocol):
                 break
             time.sleep(1)
         if not success:
-            return ProtocolState.ERROR, ProtocolState.ERROR
-        return ProtocolState.COMMAND, ProtocolState.COMMAND
+            next_state = ProtocolState.ERROR
+        return next_state, (next_state, result)
 
     ########################################################################
     # Command handlers.

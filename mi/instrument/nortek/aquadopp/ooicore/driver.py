@@ -249,6 +249,7 @@ class Protocol(NortekInstrumentProtocol):
         High level command for the operator to get all of the status from the instrument:
         Battery voltage, clock, hw configuration, head configuration, user configuration, and identification string
         """
+        next_state = None
 
         #ID + BV    Call these commands at the same time, so their responses are combined (non-unique regex workaround)
         # Issue read id, battery voltage, & clock commands all at the same time (non-unique REGEX workaround).
@@ -267,10 +268,10 @@ class Protocol(NortekInstrumentProtocol):
         #GC
         self._do_cmd_resp(InstrumentCmds.READ_USER_CONFIGURATION, response_regex=USER_CONFIG_DATA_REGEX)
 
-        result = self.wait_for_particles([NortekDataParticleType.CLOCK, NortekDataParticleType.HARDWARE_CONFIG,
+        particles = self.wait_for_particles([NortekDataParticleType.CLOCK, NortekDataParticleType.HARDWARE_CONFIG,
                                          NortekDataParticleType.HEAD_CONFIG, NortekDataParticleType.USER_CONFIG])
 
-        return None, (None, result)
+        return next_state, (next_state, particles)
 
     def _build_param_dict(self):
         """
