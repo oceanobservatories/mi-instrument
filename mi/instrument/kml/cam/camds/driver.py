@@ -1773,6 +1773,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
         """
         Discover current state; can be COMMAND or AUTOSAMPLE.
         """
+        result = []
         next_state = self._discover()
         return next_state, (next_state, result)
 
@@ -2088,10 +2089,14 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
         else:
             log.error("Capturing Duration set to 0: Not Performing Capture.")
 
+        return next_state, (next_state, None)
+
     def _handler_command_stop_capture(self, *args, **kwargs):
         """
         Stop Auto capture
         """
+        next_state = None
+
         kwargs['timeout'] = 2
 
         self.stop_scheduled_job(ScheduledJob.STOP_CAPTURE)
@@ -2100,6 +2105,8 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
 
         # Camera needs time to recover after capturing images
         self._do_recover(self._calculate_recovery_time())
+
+        return next_state, (next_state, None)
 
     def _handler_command_stop_forward(self, *args, **kwargs):
         """
