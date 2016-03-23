@@ -1150,14 +1150,14 @@ class Protocol(CommandResponseInstrumentProtocol):
         self._param_dict.add(Parameter.SKIP_SLEEP_AT_START,
                              r'SKPSLEEP\s(\S*)',
                              lambda match: True if match.group(1) == InstrumentCommandArgs.ON else False,
-                             lambda x: InstrumentCommandArgs.ON if x else InstrumentCommandArgs.OFF,
+                             lambda x: InstrumentCommandArgs.ON if self._is_true(x) else InstrumentCommandArgs.OFF,
                              type=ParameterDictType.BOOL,
                              startup_param=True,
                              direct_access=True,
                              default_value=True,
                              visibility=ParameterDictVisibility.IMMUTABLE,
                              display_name="Skip Sleep at Start",
-                             range={True: 'true', False: 'false'},
+                             range={True: 'True', False: 'False'},
                              description='Disable sleep at start: (true | false)')
 
         self._param_dict.add(Parameter.COUNTDOWN,
@@ -1304,14 +1304,14 @@ class Protocol(CommandResponseInstrumentProtocol):
         self._param_dict.add(Parameter.TEMP_COMPENSATION,
                              r'TEMPCOMP\s(\S*)',
                              lambda match: True if match.group(1) == InstrumentCommandArgs.ON else False,
-                             lambda x: InstrumentCommandArgs.ON if x else InstrumentCommandArgs.OFF,
+                             lambda x: InstrumentCommandArgs.ON if self._is_true(x) else InstrumentCommandArgs.OFF,
                              type=ParameterDictType.BOOL,
                              startup_param=True,
                              direct_access=True,
                              default_value=False,
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name="Temperature Compensation",
-                             range={True: 'true', False: 'false'},
+                             range={True: 'True', False: 'False'},
                              description="Enable temperature compensation: (true | false)")
 
         self._param_dict.add(Parameter.FIT_WAVELENGTH_LOW,
@@ -1384,27 +1384,27 @@ class Protocol(CommandResponseInstrumentProtocol):
         self._param_dict.add(Parameter.SALINITY_FITTING,
                              r'SALINFIT\s(\S*)',
                              lambda match: True if match.group(1) == InstrumentCommandArgs.ON else False,
-                             lambda x: InstrumentCommandArgs.ON if x else InstrumentCommandArgs.OFF,
+                             lambda x: InstrumentCommandArgs.ON if self._is_true(x) else InstrumentCommandArgs.OFF,
                              type=ParameterDictType.BOOL,
                              startup_param=True,
                              direct_access=True,
                              default_value=True,
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name="Salinity Fitting",
-                             range={True: 'true', False: 'false'},
+                             range={True: 'True', False: 'False'},
                              description="Enable salinity matching: (true | false)")
 
         self._param_dict.add(Parameter.BROMIDE_TRACING,
                              r'BRMTRACE\s(\S*)',
                              lambda match: True if match.group(1) == InstrumentCommandArgs.ON else False,
-                             lambda x: InstrumentCommandArgs.ON if x else InstrumentCommandArgs.OFF,
+                             lambda x: InstrumentCommandArgs.ON if self._is_true(x) else InstrumentCommandArgs.OFF,
                              type=ParameterDictType.BOOL,
                              startup_param=True,
                              direct_access=True,
                              default_value=False,
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name="Bromide Tracing",
-                             range={True: 'true', False: 'false'},
+                             range={True: 'True', False: 'False'},
                              description="Enable bromide tracing: (true | false)")
 
         self._param_dict.add(Parameter.ABSORBANCE_CUTOFF,
@@ -1423,14 +1423,14 @@ class Protocol(CommandResponseInstrumentProtocol):
         self._param_dict.add(Parameter.INTEG_TIME_ADJUSTMENT,
                              r'INTPRADJ\s(\S*)',
                              lambda match: True if match.group(1) == InstrumentCommandArgs.ON else False,
-                             lambda x: InstrumentCommandArgs.ON if x else InstrumentCommandArgs.OFF,
+                             lambda x: InstrumentCommandArgs.ON if self._is_true(x) else InstrumentCommandArgs.OFF,
                              type=ParameterDictType.BOOL,
                              startup_param=True,
                              direct_access=True,
                              default_value=True,
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name="Integration Time Adjustment",
-                             range={True: 'true', False: 'false'},
+                             range={True: 'True', False: 'False'},
                              description="Enable integration time adjustment: (true | false)")
 
         self._param_dict.add(Parameter.INTEG_TIME_FACTOR,
@@ -1997,6 +1997,13 @@ class Protocol(CommandResponseInstrumentProtocol):
         ret_prompt = self._do_cmd_resp(InstrumentCommand.CMD_LINE, timeout=TIMEOUT,
                                        expected_prompt=[Prompt.COMMAND, Prompt.POLLED])
         return ret_prompt
+
+
+    def _is_true(self, x):
+        if isinstance(x, basestring):
+            return x.lower() == 'true'
+
+        return x
 
 
 def create_playback_protocol(callback):
