@@ -13,25 +13,13 @@ USAGE:
        $ bin/test_driver -q [-t testname]
 """
 
-__author__ = 'Tapana Gupta'
-__license__ = 'Apache 2.0'
-
-import gevent
-
 from mock import Mock
 from nose.plugins.attrib import attr
-
 from mi.core.log import get_logger
-log = get_logger()
 
 from mi.idk.unit_test import InstrumentDriverTestCase
 from mi.idk.unit_test import InstrumentDriverUnitTestCase
-
-from mi.idk.unit_test import DriverTestMixin
 from mi.idk.unit_test import ParameterTestConfigKey
-from mi.idk.unit_test import AgentCapabilityType
-
-from mi.core.time_tools import get_timestamp_delayed
 
 from mi.core.instrument.chunker import StringChunker
 
@@ -54,7 +42,7 @@ from mi.instrument.wetlabs.fluorometer.flort_d.driver import FlordMenuParticleKe
 from mi.instrument.wetlabs.fluorometer.flort_d.driver import FlordSampleParticleKey
 from mi.instrument.wetlabs.fluorometer.flort_d.driver import NEWLINE
 
-from mi.core.instrument.instrument_driver import DriverProtocolState, DriverConfigKey, ResourceAgentState
+from mi.core.instrument.instrument_driver import DriverProtocolState, DriverConfigKey
 
 # SAMPLE DATA FOR TESTING
 from mi.instrument.wetlabs.fluorometer.flord_d.test.sample_data import SAMPLE_MNU_RESPONSE
@@ -62,6 +50,11 @@ from mi.instrument.wetlabs.fluorometer.flord_d.test.sample_data import SAMPLE_SA
 from mi.instrument.wetlabs.fluorometer.flord_d.test.sample_data import SAMPLE_MET_RESPONSE
 
 from mi.core.exceptions import InstrumentCommandException, SampleException
+
+__author__ = 'Tapana Gupta'
+__license__ = 'Apache 2.0'
+
+log = get_logger()
 
 ###
 #   Driver parameters for the tests
@@ -79,6 +72,7 @@ InstrumentDriverTestCase.initialize(
                                      Parameter.RUN_CLOCK_SYNC_INTERVAL: '00:10:00',
                                      Parameter.RUN_ACQUIRE_STATUS_INTERVAL: '00:10:00'}}
 )
+
 
 #################################### RULES ####################################
 #                                                                             #
@@ -112,7 +106,7 @@ class FlordDriverTestMixinSub(DriverTestMixinSub):
     Mixin class used for storing data particle constance and common data assertion methods.
     """
 
-    #Create some short names for the parameter test config
+    # Create some short names for the parameter test config
     TYPE = ParameterTestConfigKey.TYPE
     READONLY = ParameterTestConfigKey.READONLY
     STARTUP = ParameterTestConfigKey.STARTUP
@@ -290,22 +284,22 @@ class DriverUnitTest(InstrumentDriverUnitTestCase, FlordDriverTestMixinSub):
         also be defined in the protocol FSM.
         """
         capabilities = {
-            ProtocolState.UNKNOWN:      [ProtocolEvent.DISCOVER],
+            ProtocolState.UNKNOWN: [ProtocolEvent.DISCOVER],
 
-            ProtocolState.COMMAND:      [ProtocolEvent.GET,
-                                         ProtocolEvent.SET,
-                                         ProtocolEvent.START_DIRECT,
-                                         ProtocolEvent.START_AUTOSAMPLE,
-                                         ProtocolEvent.ACQUIRE_STATUS,
-                                         ProtocolEvent.RUN_WIPER,
-                                         ProtocolEvent.ACQUIRE_SAMPLE,
-                                         ProtocolEvent.CLOCK_SYNC],
+            ProtocolState.COMMAND: [ProtocolEvent.GET,
+                                    ProtocolEvent.SET,
+                                    ProtocolEvent.START_DIRECT,
+                                    ProtocolEvent.START_AUTOSAMPLE,
+                                    ProtocolEvent.ACQUIRE_STATUS,
+                                    ProtocolEvent.RUN_WIPER,
+                                    ProtocolEvent.ACQUIRE_SAMPLE,
+                                    ProtocolEvent.CLOCK_SYNC],
 
-            ProtocolState.AUTOSAMPLE:   [ProtocolEvent.STOP_AUTOSAMPLE,
-                                         ProtocolEvent.RUN_WIPER_SCHEDULED,
-                                         ProtocolEvent.SCHEDULED_CLOCK_SYNC,
-                                         ProtocolEvent.SCHEDULED_ACQUIRE_STATUS,
-                                         ProtocolEvent.GET],
+            ProtocolState.AUTOSAMPLE: [ProtocolEvent.STOP_AUTOSAMPLE,
+                                       ProtocolEvent.RUN_WIPER_SCHEDULED,
+                                       ProtocolEvent.SCHEDULED_CLOCK_SYNC,
+                                       ProtocolEvent.SCHEDULED_ACQUIRE_STATUS,
+                                       ProtocolEvent.GET],
 
             ProtocolState.DIRECT_ACCESS: [ProtocolEvent.STOP_DIRECT,
                                           ProtocolEvent.EXECUTE_DIRECT]
@@ -323,10 +317,10 @@ class DriverUnitTest(InstrumentDriverUnitTestCase, FlordDriverTestMixinSub):
         mock_callback = Mock()
         protocol = FlordProtocol(Prompt, NEWLINE, mock_callback)
 
-        #test response with no errors
+        # test response with no errors
         protocol._parse_command_response(SAMPLE_MNU_RESPONSE, None)
 
-        #test response with 'unrecognized command'
+        # test response with 'unrecognized command'
         response = False
         try:
             protocol._parse_command_response('unrecognized command', None)
@@ -335,7 +329,7 @@ class DriverUnitTest(InstrumentDriverUnitTestCase, FlordDriverTestMixinSub):
         finally:
             self.assertTrue(response)
 
-        #test correct response with error
+        # test correct response with error
         response = False
         try:
             protocol._parse_command_response(SAMPLE_MET_RESPONSE + NEWLINE + 'unrecognized command', None)
@@ -354,10 +348,10 @@ class DriverUnitTest(InstrumentDriverUnitTestCase, FlordDriverTestMixinSub):
         mock_callback = Mock()
         protocol = FlordProtocol(Prompt, NEWLINE, mock_callback)
 
-        #test response with no errors
+        # test response with no errors
         protocol._parse_run_wiper_response('mvs 1', None)
 
-        #test response with 'unrecognized command'
+        # test response with 'unrecognized command'
         response = False
         try:
             protocol._parse_run_wiper_response('unrecognized command', None)
@@ -366,7 +360,7 @@ class DriverUnitTest(InstrumentDriverUnitTestCase, FlordDriverTestMixinSub):
         finally:
             self.assertTrue(response)
 
-        #test response with error
+        # test response with error
         response = False
         try:
             protocol._parse_run_wiper_response("mvs 0" + NEWLINE, None)
@@ -382,15 +376,13 @@ class DriverUnitTest(InstrumentDriverUnitTestCase, FlordDriverTestMixinSub):
         mock_callback = Mock()
         protocol = FlordProtocol(Prompt, NEWLINE, mock_callback)
 
-        #COMMAND state
-        protocol._linebuf = SAMPLE_MNU_RESPONSE
-        protocol._promptbuf = SAMPLE_MNU_RESPONSE
+        # COMMAND state
+        protocol._particle_dict = {}
         next_state, result = protocol._handler_unknown_discover()
         self.assertEqual(next_state, DriverProtocolState.COMMAND)
 
-        #AUTOSAMPLE state
-        protocol._linebuf = SAMPLE_SAMPLE_RESPONSE
-        protocol._promptbuf = SAMPLE_SAMPLE_RESPONSE
+        # AUTOSAMPLE state
+        protocol._particle_dict = {DataParticleType.FLORDD_SAMPLE: None}
         next_state, result = protocol._handler_unknown_discover()
         self.assertEqual(next_state, DriverProtocolState.AUTOSAMPLE)
 
@@ -401,24 +393,24 @@ class DriverUnitTest(InstrumentDriverUnitTestCase, FlordDriverTestMixinSub):
         2. simple command with no parameters
         3. command with parameter
         """
-        #create the operator commands
+        # create the operator commands
         mock_callback = Mock()
         protocol = FlordProtocol(Prompt, NEWLINE, mock_callback)
 
-        #!!!!!
+        # !!!!!
         cmd = protocol._build_no_eol_command('!!!!!')
         self.assertEqual(cmd, '!!!!!')
-        #$met
+        # $met
         cmd = protocol._build_simple_command('$met')
         self.assertEqual(cmd, '$met' + NEWLINE)
-        #$mnu
+        # $mnu
         cmd = protocol._build_simple_command('$mnu')
         self.assertEqual(cmd, '$mnu' + NEWLINE)
-        #$run
+        # $run
         cmd = protocol._build_simple_command('$run')
         self.assertEqual(cmd, '$run' + NEWLINE)
 
-        #parameters
+        # parameters
         cmd = protocol._build_single_parameter_command('$ave', Parameter.MEASUREMENTS_PER_REPORTED, 14)
         self.assertEqual(cmd, '$ave 14' + NEWLINE)
         cmd = protocol._build_single_parameter_command('$m2d', Parameter.MEASUREMENT_2_DARK_COUNT, 34)
@@ -429,5 +421,3 @@ class DriverUnitTest(InstrumentDriverUnitTestCase, FlordDriverTestMixinSub):
         self.assertEqual(cmd, '$dat 041014' + NEWLINE)
         cmd = protocol._build_single_parameter_command('$clk', Parameter.TIME, '010034')
         self.assertEqual(cmd, '$clk 010034' + NEWLINE)
-
-

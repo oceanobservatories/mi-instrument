@@ -13,16 +13,11 @@ USAGE:
        $ bin/test_driver -q [-t testname]
 """
 
-__author__ = 'Art Teranishi'
-__license__ = 'Apache 2.0'
-
-import gevent
-
+import time
 from mock import Mock
 from nose.plugins.attrib import attr
 
 from mi.core.log import get_logger
-log = get_logger()
 
 from mi.idk.unit_test import InstrumentDriverTestCase
 from mi.idk.unit_test import InstrumentDriverUnitTestCase
@@ -46,7 +41,6 @@ from mi.instrument.wetlabs.fluorometer.flort_d.driver import Capability
 from mi.instrument.wetlabs.fluorometer.flort_d.driver import Parameter
 from mi.instrument.wetlabs.fluorometer.flort_d.driver import Protocol
 from mi.instrument.wetlabs.fluorometer.flort_d.driver import Prompt
-
 from mi.instrument.wetlabs.fluorometer.flort_d.driver import FlortMenuParticleKey
 from mi.instrument.wetlabs.fluorometer.flort_d.driver import FlortSampleParticleKey
 from mi.instrument.wetlabs.fluorometer.flort_d.driver import MNU_REGEX
@@ -61,6 +55,11 @@ from mi.instrument.wetlabs.fluorometer.flort_d.test.sample_data import SAMPLE_SA
 from mi.instrument.wetlabs.fluorometer.flort_d.test.sample_data import SAMPLE_MET_RESPONSE
 
 from mi.core.exceptions import InstrumentCommandException, SampleException, InstrumentParameterException
+
+__author__ = 'Art Teranishi'
+__license__ = 'Apache 2.0'
+
+log = get_logger()
 
 ###
 #   Driver parameters for the tests
@@ -78,6 +77,7 @@ InstrumentDriverTestCase.initialize(
                                      Parameter.RUN_CLOCK_SYNC_INTERVAL: '00:10:00',
                                      Parameter.RUN_ACQUIRE_STATUS_INTERVAL: '00:10:00'}}
 )
+
 
 #################################### RULES ####################################
 #                                                                             #
@@ -110,7 +110,7 @@ class DriverTestMixinSub(DriverTestMixin):
     """
     Mixin class used for storing data particle constance and common data assertion methods.
     """
-    #Create some short names for the parameter test config
+    # Create some short names for the parameter test config
     TYPE = ParameterTestConfigKey.TYPE
     READONLY = ParameterTestConfigKey.READONLY
     STARTUP = ParameterTestConfigKey.STARTUP
@@ -127,29 +127,44 @@ class DriverTestMixinSub(DriverTestMixin):
     ###
     _driver_parameters = {
         # Parameters defined in the IOS
-        Parameter.SERIAL_NUM: {TYPE: str, READONLY: True, DA: False, STARTUP: False, DEFAULT: None, VALUE: 'Ser 123.123.12'},
-        Parameter.FIRMWARE_VERSION: {TYPE: str, READONLY: True, DA: False, STARTUP: False, DEFAULT: None, VALUE: 'Ber 16.02'},
-        Parameter.MEASUREMENTS_PER_REPORTED: {TYPE: int, READONLY: False, DA: False, STARTUP: False, DEFAULT: None, VALUE: 18},
-        Parameter.MEASUREMENT_1_DARK_COUNT: {TYPE: int, READONLY: True, DA: False, STARTUP: False, DEFAULT: None, VALUE: 51},
-        Parameter.MEASUREMENT_1_SLOPE: {TYPE: float, READONLY: True, DA: False, STARTUP: False, DEFAULT: None, VALUE: 1.814},
-        Parameter.MEASUREMENT_2_DARK_COUNT: {TYPE: int, READONLY: True, DA: False, STARTUP: False, DEFAULT: None, VALUE: 67},
-        Parameter.MEASUREMENT_2_SLOPE: {TYPE: float, READONLY: True, DA: False, STARTUP: False, DEFAULT: None, VALUE: .0345},
-        Parameter.MEASUREMENT_3_DARK_COUNT: {TYPE: int, READONLY: True, DA: False, STARTUP: False, DEFAULT: None, VALUE: 49},
-        Parameter.MEASUREMENT_3_SLOPE: {TYPE: float, READONLY: True, DA: False, STARTUP: False, DEFAULT: None, VALUE: 9.1234},
-        Parameter.MEASUREMENTS_PER_PACKET: {TYPE: int, READONLY: True, DA: True, STARTUP: True, DEFAULT: None, VALUE: 7},
+        Parameter.SERIAL_NUM: {TYPE: str, READONLY: True, DA: False, STARTUP: False, DEFAULT: None,
+                               VALUE: 'Ser 123.123.12'},
+        Parameter.FIRMWARE_VERSION: {TYPE: str, READONLY: True, DA: False, STARTUP: False, DEFAULT: None,
+                                     VALUE: 'Ber 16.02'},
+        Parameter.MEASUREMENTS_PER_REPORTED: {TYPE: int, READONLY: False, DA: False, STARTUP: False, DEFAULT: None,
+                                              VALUE: 18},
+        Parameter.MEASUREMENT_1_DARK_COUNT: {TYPE: int, READONLY: True, DA: False, STARTUP: False, DEFAULT: None,
+                                             VALUE: 51},
+        Parameter.MEASUREMENT_1_SLOPE: {TYPE: float, READONLY: True, DA: False, STARTUP: False, DEFAULT: None,
+                                        VALUE: 1.814},
+        Parameter.MEASUREMENT_2_DARK_COUNT: {TYPE: int, READONLY: True, DA: False, STARTUP: False, DEFAULT: None,
+                                             VALUE: 67},
+        Parameter.MEASUREMENT_2_SLOPE: {TYPE: float, READONLY: True, DA: False, STARTUP: False, DEFAULT: None,
+                                        VALUE: .0345},
+        Parameter.MEASUREMENT_3_DARK_COUNT: {TYPE: int, READONLY: True, DA: False, STARTUP: False, DEFAULT: None,
+                                             VALUE: 49},
+        Parameter.MEASUREMENT_3_SLOPE: {TYPE: float, READONLY: True, DA: False, STARTUP: False, DEFAULT: None,
+                                        VALUE: 9.1234},
+        Parameter.MEASUREMENTS_PER_PACKET: {TYPE: int, READONLY: True, DA: True, STARTUP: True, DEFAULT: None,
+                                            VALUE: 7},
         Parameter.PACKETS_PER_SET: {TYPE: int, READONLY: True, DA: True, STARTUP: True, DEFAULT: 0, VALUE: 0},
         Parameter.PREDEFINED_OUTPUT_SEQ: {TYPE: int, READONLY: True, DA: True, STARTUP: True, DEFAULT: 0, VALUE: 0},
         Parameter.BAUD_RATE: {TYPE: int, READONLY: True, DA: False, STARTUP: False, DEFAULT: 1, VALUE: 1},
         Parameter.RECORDING_MODE: {TYPE: int, READONLY: True, DA: True, STARTUP: True, DEFAULT: 1, VALUE: 1},
         Parameter.DATE: {TYPE: str, READONLY: True, DA: False, STARTUP: False, DEFAULT: None, VALUE: '01/01/01'},
         Parameter.TIME: {TYPE: str, READONLY: True, DA: False, STARTUP: False, DEFAULT: None, VALUE: '12:00:03'},
-        Parameter.SAMPLING_INTERVAL: {TYPE: str, READONLY: True, DA: False, STARTUP: False, DEFAULT: None, VALUE: '00:05:00'},
+        Parameter.SAMPLING_INTERVAL: {TYPE: str, READONLY: True, DA: False, STARTUP: False, DEFAULT: None,
+                                      VALUE: '00:05:00'},
         Parameter.MANUAL_MODE: {TYPE: int, READONLY: True, DA: False, STARTUP: False, DEFAULT: 0, VALUE: 0},
-        Parameter.MANUAL_START_TIME: {TYPE: str, READONLY: True, DA: False, STARTUP: False, DEFAULT: None, VALUE: '17:00:00'},
+        Parameter.MANUAL_START_TIME: {TYPE: str, READONLY: True, DA: False, STARTUP: False, DEFAULT: None,
+                                      VALUE: '17:00:00'},
         Parameter.INTERNAL_MEMORY: {TYPE: int, READONLY: True, DA: False, STARTUP: False, DEFAULT: None, VALUE: 4095},
-        Parameter.RUN_WIPER_INTERVAL: {TYPE: str, READONLY: True, DA: False, STARTUP: True, DEFAULT: '00:00:00', VALUE: '00:01:00'},
-        Parameter.RUN_CLOCK_SYNC_INTERVAL: {TYPE: str, READONLY: True, DA: False, STARTUP: True, DEFAULT: '00:00:00', VALUE: '12:00:00'},
-        Parameter.RUN_ACQUIRE_STATUS_INTERVAL: {TYPE: str, READONLY: True, DA: False, STARTUP: True, DEFAULT: '00:00:00', VALUE: '12:00:00'}
+        Parameter.RUN_WIPER_INTERVAL: {TYPE: str, READONLY: True, DA: False, STARTUP: True, DEFAULT: '00:00:00',
+                                       VALUE: '00:01:00'},
+        Parameter.RUN_CLOCK_SYNC_INTERVAL: {TYPE: str, READONLY: True, DA: False, STARTUP: True, DEFAULT: '00:00:00',
+                                            VALUE: '12:00:00'},
+        Parameter.RUN_ACQUIRE_STATUS_INTERVAL: {TYPE: str, READONLY: True, DA: False, STARTUP: True,
+                                                DEFAULT: '00:00:00', VALUE: '12:00:00'}
     }
 
     _driver_capabilities = {
@@ -335,22 +350,22 @@ class DriverUnitTest(InstrumentDriverUnitTestCase, DriverTestMixinSub):
         also be defined in the protocol FSM.
         """
         capabilities = {
-            ProtocolState.UNKNOWN:      [ProtocolEvent.DISCOVER],
+            ProtocolState.UNKNOWN: [ProtocolEvent.DISCOVER],
 
-            ProtocolState.COMMAND:      [ProtocolEvent.GET,
-                                         ProtocolEvent.SET,
-                                         ProtocolEvent.START_DIRECT,
-                                         ProtocolEvent.START_AUTOSAMPLE,
-                                         ProtocolEvent.ACQUIRE_STATUS,
-                                         ProtocolEvent.RUN_WIPER,
-                                         ProtocolEvent.ACQUIRE_SAMPLE,
-                                         ProtocolEvent.CLOCK_SYNC],
+            ProtocolState.COMMAND: [ProtocolEvent.GET,
+                                    ProtocolEvent.SET,
+                                    ProtocolEvent.START_DIRECT,
+                                    ProtocolEvent.START_AUTOSAMPLE,
+                                    ProtocolEvent.ACQUIRE_STATUS,
+                                    ProtocolEvent.RUN_WIPER,
+                                    ProtocolEvent.ACQUIRE_SAMPLE,
+                                    ProtocolEvent.CLOCK_SYNC],
 
-            ProtocolState.AUTOSAMPLE:   [ProtocolEvent.STOP_AUTOSAMPLE,
-                                         ProtocolEvent.RUN_WIPER_SCHEDULED,
-                                         ProtocolEvent.SCHEDULED_CLOCK_SYNC,
-                                         ProtocolEvent.SCHEDULED_ACQUIRE_STATUS,
-                                         ProtocolEvent.GET],
+            ProtocolState.AUTOSAMPLE: [ProtocolEvent.STOP_AUTOSAMPLE,
+                                       ProtocolEvent.RUN_WIPER_SCHEDULED,
+                                       ProtocolEvent.SCHEDULED_CLOCK_SYNC,
+                                       ProtocolEvent.SCHEDULED_ACQUIRE_STATUS,
+                                       ProtocolEvent.GET],
 
             ProtocolState.DIRECT_ACCESS: [ProtocolEvent.STOP_DIRECT,
                                           ProtocolEvent.EXECUTE_DIRECT]
@@ -368,10 +383,10 @@ class DriverUnitTest(InstrumentDriverUnitTestCase, DriverTestMixinSub):
         mock_callback = Mock()
         protocol = Protocol(Prompt, NEWLINE, mock_callback)
 
-        #test response with no errors
+        # test response with no errors
         protocol._parse_command_response(SAMPLE_MNU_RESPONSE, None)
 
-        #test response with 'unrecognized command'
+        # test response with 'unrecognized command'
         response = False
         try:
             protocol._parse_command_response('unrecognized command', None)
@@ -380,7 +395,7 @@ class DriverUnitTest(InstrumentDriverUnitTestCase, DriverTestMixinSub):
         finally:
             self.assertTrue(response)
 
-        #test correct response with error
+        # test correct response with error
         response = False
         try:
             protocol._parse_command_response(SAMPLE_MET_RESPONSE + NEWLINE + 'unrecognized command', None)
@@ -399,10 +414,10 @@ class DriverUnitTest(InstrumentDriverUnitTestCase, DriverTestMixinSub):
         mock_callback = Mock()
         protocol = Protocol(Prompt, NEWLINE, mock_callback)
 
-        #test response with no errors
+        # test response with no errors
         protocol._parse_run_wiper_response('mvs 1', None)
 
-        #test response with 'unrecognized command'
+        # test response with 'unrecognized command'
         response = False
         try:
             protocol._parse_run_wiper_response('unrecognized command', None)
@@ -411,7 +426,7 @@ class DriverUnitTest(InstrumentDriverUnitTestCase, DriverTestMixinSub):
         finally:
             self.assertTrue(response)
 
-        #test response with error
+        # test response with error
         response = False
         try:
             protocol._parse_run_wiper_response("mvs 0" + NEWLINE, None)
@@ -427,15 +442,13 @@ class DriverUnitTest(InstrumentDriverUnitTestCase, DriverTestMixinSub):
         mock_callback = Mock()
         protocol = Protocol(Prompt, NEWLINE, mock_callback)
 
-        #COMMAND state
-        protocol._linebuf = SAMPLE_MNU_RESPONSE
-        protocol._promptbuf = SAMPLE_MNU_RESPONSE
+        # COMMAND state
+        protocol._particle_dict = {}
         next_state, result = protocol._handler_unknown_discover()
         self.assertEqual(next_state, DriverProtocolState.COMMAND)
 
-        #AUTOSAMPLE state
-        protocol._linebuf = SAMPLE_SAMPLE_RESPONSE
-        protocol._promptbuf = SAMPLE_SAMPLE_RESPONSE
+        # AUTOSAMPLE state
+        protocol._particle_dict = {DataParticleType.FLORTD_SAMPLE: None}
         next_state, result = protocol._handler_unknown_discover()
         self.assertEqual(next_state, DriverProtocolState.AUTOSAMPLE)
 
@@ -446,24 +459,24 @@ class DriverUnitTest(InstrumentDriverUnitTestCase, DriverTestMixinSub):
         2. simple command with no parameters
         3. command with parameter
         """
-        #create the operator commands
+        # create the operator commands
         mock_callback = Mock()
         protocol = Protocol(Prompt, NEWLINE, mock_callback)
 
-        #!!!!!
+        # !!!!!
         cmd = protocol._build_no_eol_command('!!!!!')
         self.assertEqual(cmd, '!!!!!')
-        #$met
+        # $met
         cmd = protocol._build_simple_command('$met')
         self.assertEqual(cmd, '$met' + NEWLINE)
-        #$mnu
+        # $mnu
         cmd = protocol._build_simple_command('$mnu')
         self.assertEqual(cmd, '$mnu' + NEWLINE)
-        #$run
+        # $run
         cmd = protocol._build_simple_command('$run')
         self.assertEqual(cmd, '$run' + NEWLINE)
 
-        #parameters
+        # parameters
         cmd = protocol._build_single_parameter_command('$ave', Parameter.MEASUREMENTS_PER_REPORTED, 14)
         self.assertEqual(cmd, '$ave 14' + NEWLINE)
         cmd = protocol._build_single_parameter_command('$m2d', Parameter.MEASUREMENT_2_DARK_COUNT, 34)
@@ -484,13 +497,13 @@ class DriverUnitTest(InstrumentDriverUnitTestCase, DriverTestMixinSub):
         mock_callback = Mock()
         protocol = Protocol(Prompt, NEWLINE, mock_callback)
 
-        #VALID
+        # VALID
         strval = protocol._int_to_string_inrange(30)
         self.assertEqual(strval, '30')
         strval = protocol._int_to_string_inrange(255)
         self.assertEqual(strval, '255')
 
-        #INVALID: throws exception
+        # INVALID: throws exception
 
 
         with self.assertRaises(InstrumentParameterException):
@@ -501,7 +514,6 @@ class DriverUnitTest(InstrumentDriverUnitTestCase, DriverTestMixinSub):
 
         with self.assertRaises(InstrumentParameterException):
             protocol._int_to_string_inrange(355)
-
 
 
 ###############################################################################
@@ -522,17 +534,17 @@ class DriverIntegrationTest(InstrumentDriverIntegrationTestCase, DriverTestMixin
         """
         self.assert_initialize_driver(ProtocolState.COMMAND)
 
-        #test commands, now that we are in command mode
-        #$mnu
+        # test commands, now that we are in command mode
+        # $mnu
         self.assert_driver_command(ProtocolEvent.ACQUIRE_STATUS, regex=MNU_REGEX)
 
-        #$run - testing putting instrument into autosample
+        # $run - testing putting instrument into autosample
         self.assert_driver_command(ProtocolEvent.START_AUTOSAMPLE, state=ProtocolState.AUTOSAMPLE, delay=1)
-        #!!!!! - testing put instrument into command mode
+        # !!!!! - testing put instrument into command mode
         self.assert_driver_command(ProtocolEvent.STOP_AUTOSAMPLE, state=ProtocolState.COMMAND, regex=MNU_REGEX)
-        #$mvs - test running wiper
+        # $mvs - test running wiper
         self.assert_driver_command(ProtocolEvent.RUN_WIPER, state=ProtocolState.COMMAND, regex=RUN_REGEX)
-        #test syncing clock
+        # test syncing clock
         self.assert_driver_command(ProtocolEvent.CLOCK_SYNC, state=ProtocolState.COMMAND)
 
         ####
@@ -570,13 +582,13 @@ class DriverIntegrationTest(InstrumentDriverIntegrationTestCase, DriverTestMixin
         """
         self.assert_initialize_driver(ProtocolState.COMMAND)
 
-        #test read/write parameter
+        # test read/write parameter
         self.assert_set(Parameter.MEASUREMENTS_PER_REPORTED, 20)
 
-        #test setting immutable parameters when startup
-        #NOTE: this does not use the startup config because setting a combination of parameters from their default
-        #values will cause the instrument to no longer break out of autosample mode.  This is a safe way to test
-        #setting startup params without the risk of going into autosample mode.
+        # test setting immutable parameters when startup
+        # NOTE: this does not use the startup config because setting a combination of parameters from their default
+        # values will cause the instrument to no longer break out of autosample mode.  This is a safe way to test
+        # setting startup params without the risk of going into autosample mode.
         self.assert_set(Parameter.MEASUREMENTS_PER_PACKET, 18, startup=True, no_get=True)
         self.assert_get(Parameter.MEASUREMENTS_PER_PACKET, 18)
 
@@ -601,7 +613,7 @@ class DriverIntegrationTest(InstrumentDriverIntegrationTestCase, DriverTestMixin
         self.assert_set(Parameter.RUN_ACQUIRE_STATUS_INTERVAL, '00:00:30', startup=True, no_get=True)
         self.assert_get(Parameter.RUN_ACQUIRE_STATUS_INTERVAL, '00:00:30')
 
-        #test read only parameter (includes immutable, when not startup)- should not be set, value should not change
+        # test read only parameter (includes immutable, when not startup)- should not be set, value should not change
         self.assert_set_exception(Parameter.SERIAL_NUM, '12.123.1234')
         self.assert_set_exception(Parameter.FIRMWARE_VERSION, 'VER123')
         self.assert_set_exception(Parameter.MEASUREMENTS_PER_PACKET, 16)
@@ -720,7 +732,7 @@ class DriverQualificationTest(InstrumentDriverQualificationTestCase, DriverTestM
         for i in range(1, 2, 3):
             self.tcp_client.send_data(NEWLINE)
             log.debug("Sending a little keep alive communication, sleeping for 15 seconds")
-            gevent.sleep(15)
+            time.sleep(15)
 
         self.assert_state_change(ResourceAgentState.COMMAND, ProtocolState.COMMAND, 45)
 
@@ -737,7 +749,7 @@ class DriverQualificationTest(InstrumentDriverQualificationTestCase, DriverTestM
         self.tcp_client.expect("mvs 1")
         log.debug("DA autosample started")
 
-        #Assert if stopping DA while autosampling, discover will put driver into Autosample state
+        # Assert if stopping DA while autosampling, discover will put driver into Autosample state
         self.assert_direct_access_stop_telnet()
         self.assert_state_change(ResourceAgentState.STREAMING, ProtocolState.AUTOSAMPLE, timeout=10)
 
@@ -757,10 +769,10 @@ class DriverQualificationTest(InstrumentDriverQualificationTestCase, DriverTestM
         """
         self.assert_enter_command_mode()
 
-        #read/write
+        # read/write
         self.assert_set_parameter(Parameter.MEASUREMENTS_PER_REPORTED, 20, verify=True)
 
-        #read only
+        # read only
         self.assert_get_parameter(Parameter.MEASUREMENTS_PER_PACKET, 0)
         self.assert_get_parameter(Parameter.PREDEFINED_OUTPUT_SEQ, 0)
         self.assert_get_parameter(Parameter.PACKETS_PER_SET, 0)
@@ -770,21 +782,21 @@ class DriverQualificationTest(InstrumentDriverQualificationTestCase, DriverTestM
         self.assert_get_parameter(Parameter.RUN_CLOCK_SYNC_INTERVAL, "00:10:00")
         self.assert_get_parameter(Parameter.RUN_ACQUIRE_STATUS_INTERVAL, "00:10:00")
 
-        #NOTE: these parameters have no default values and cannot be tested
-        #self.assert_get_parameter(Parameter.MEASUREMENT_1_DARK_COUNT, 10)
-        #self.assert_get_parameter(Parameter.MEASUREMENT_2_DARK_COUNT, 20)
-        #self.assert_get_parameter(Parameter.MEASUREMENT_3_DARK_COUNT, 30)
-        #self.assert_get_parameter(Parameter.MEASUREMENT_1_SLOPE, 12.00)
-        #self.assert_get_parameter(Parameter.MEASUREMENT_2_SLOPE, 13.00)
-        #self.assert_get_parameter(Parameter.MEASUREMENT_3_SLOPE, 14.00)
-        #self.assert_get_parameter(Parameter.SERIAL_NUM, '12.123.1234')
-        #self.assert_get_parameter(Parameter.FIRMWARE_VERSION, 'VER123')
-        #self.assert_get_parameter(Parameter.SAMPLING_INTERVAL, "003000")
-        #self.assert_get_parameter(Parameter.DATE, get_timestamp_delayed("%m/%d/%y"))
-        #self.assert_get_parameter(Parameter.TIME, get_timestamp_delayed("%H:%M:%S"))
-        #self.assert_get_parameter(Parameter.MANUAL_START_TIME, "15:10:45")
-        #self.assert_get_parameter(Parameter.INTERNAL_MEMORY, 512)
-        #self.assert_get_parameter(Parameter.BAUD_RATE, 2422)
+        # NOTE: these parameters have no default values and cannot be tested
+        # self.assert_get_parameter(Parameter.MEASUREMENT_1_DARK_COUNT, 10)
+        # self.assert_get_parameter(Parameter.MEASUREMENT_2_DARK_COUNT, 20)
+        # self.assert_get_parameter(Parameter.MEASUREMENT_3_DARK_COUNT, 30)
+        # self.assert_get_parameter(Parameter.MEASUREMENT_1_SLOPE, 12.00)
+        # self.assert_get_parameter(Parameter.MEASUREMENT_2_SLOPE, 13.00)
+        # self.assert_get_parameter(Parameter.MEASUREMENT_3_SLOPE, 14.00)
+        # self.assert_get_parameter(Parameter.SERIAL_NUM, '12.123.1234')
+        # self.assert_get_parameter(Parameter.FIRMWARE_VERSION, 'VER123')
+        # self.assert_get_parameter(Parameter.SAMPLING_INTERVAL, "003000")
+        # self.assert_get_parameter(Parameter.DATE, get_timestamp_delayed("%m/%d/%y"))
+        # self.assert_get_parameter(Parameter.TIME, get_timestamp_delayed("%H:%M:%S"))
+        # self.assert_get_parameter(Parameter.MANUAL_START_TIME, "15:10:45")
+        # self.assert_get_parameter(Parameter.INTERNAL_MEMORY, 512)
+        # self.assert_get_parameter(Parameter.BAUD_RATE, 2422)
 
     def test_get_capabilities(self):
         """
