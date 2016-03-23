@@ -40,7 +40,7 @@ from mi.instrument.wetlabs.fluorometer.flort_d.test.test_driver import DriverTes
 from mi.instrument.wetlabs.fluorometer.flord_d.driver import InstrumentDriver
 from mi.instrument.wetlabs.fluorometer.flord_d.driver import FlordProtocol
 
-from mi.instrument.wetlabs.fluorometer.flort_d.driver import FlordDMNU_Particle, FlordDSample_Particle
+from mi.instrument.wetlabs.fluorometer.flort_d.driver import FlordMenuParticle, FlordSampleParticle
 from mi.instrument.wetlabs.fluorometer.flort_d.driver import DataParticleType
 from mi.instrument.wetlabs.fluorometer.flort_d.driver import InstrumentCommand
 from mi.instrument.wetlabs.fluorometer.flort_d.driver import ProtocolState
@@ -50,8 +50,8 @@ from mi.instrument.wetlabs.fluorometer.flort_d.driver import Parameter
 
 from mi.instrument.wetlabs.fluorometer.flort_d.driver import Prompt
 
-from mi.instrument.wetlabs.fluorometer.flort_d.driver import FlordDMNU_ParticleKey
-from mi.instrument.wetlabs.fluorometer.flort_d.driver import FlordDSample_ParticleKey
+from mi.instrument.wetlabs.fluorometer.flort_d.driver import FlordMenuParticleKey
+from mi.instrument.wetlabs.fluorometer.flort_d.driver import FlordSampleParticleKey
 from mi.instrument.wetlabs.fluorometer.flort_d.driver import NEWLINE
 
 from mi.core.instrument.instrument_driver import DriverProtocolState, DriverConfigKey, ResourceAgentState
@@ -124,38 +124,38 @@ class FlordDriverTestMixinSub(DriverTestMixinSub):
     _Driver = InstrumentDriver
 
     _flordD_mnu_parameters = {
-        FlordDMNU_ParticleKey.SERIAL_NUM: {TYPE: unicode, VALUE: 'BBFL2W-993', REQUIRED: True},
-        FlordDMNU_ParticleKey.FIRMWARE_VER: {TYPE: unicode, VALUE: 'Triplet5.20', REQUIRED: True},
-        FlordDMNU_ParticleKey.AVE: {TYPE: int, VALUE: 1, REQUIRED: True},
-        FlordDMNU_ParticleKey.PKT: {TYPE: int, VALUE: 0, REQUIRED: True},
-        FlordDMNU_ParticleKey.M1D: {TYPE: int, VALUE: 0, REQUIRED: True},
-        FlordDMNU_ParticleKey.M2D: {TYPE: int, VALUE: 0, REQUIRED: True},
-        FlordDMNU_ParticleKey.M1S: {TYPE: float, VALUE: 1.000E+00, REQUIRED: True},
-        FlordDMNU_ParticleKey.M2S: {TYPE: float, VALUE: 1.000E+00, REQUIRED: True},
-        FlordDMNU_ParticleKey.SEQ: {TYPE: int, VALUE: 0, REQUIRED: True},
-        FlordDMNU_ParticleKey.RAT: {TYPE: int, VALUE: 19200, REQUIRED: True},
-        FlordDMNU_ParticleKey.SET: {TYPE: int, VALUE: 0, REQUIRED: True},
-        FlordDMNU_ParticleKey.REC: {TYPE: int, VALUE: 1, REQUIRED: True},
-        FlordDMNU_ParticleKey.MAN: {TYPE: int, VALUE: 0, REQUIRED: True},
-        FlordDMNU_ParticleKey.INT: {TYPE: unicode, VALUE: '00:00:10', REQUIRED: True},
-        FlordDMNU_ParticleKey.DAT: {TYPE: unicode, VALUE: '07/11/13', REQUIRED: True},
-        FlordDMNU_ParticleKey.CLK: {TYPE: unicode, VALUE: '12:48:34', REQUIRED: True},
-        FlordDMNU_ParticleKey.MST: {TYPE: unicode, VALUE: '12:48:31', REQUIRED: True},
-        FlordDMNU_ParticleKey.MEM: {TYPE: int, VALUE: 4095, REQUIRED: True}
+        FlordMenuParticleKey.SERIAL_NUM: {TYPE: unicode, VALUE: 'BBFL2W-993', REQUIRED: True},
+        FlordMenuParticleKey.FIRMWARE_VER: {TYPE: unicode, VALUE: 'Triplet5.20', REQUIRED: True},
+        FlordMenuParticleKey.AVE: {TYPE: int, VALUE: 1, REQUIRED: True},
+        FlordMenuParticleKey.PKT: {TYPE: int, VALUE: 0, REQUIRED: True},
+        FlordMenuParticleKey.M1D: {TYPE: int, VALUE: 0, REQUIRED: True},
+        FlordMenuParticleKey.M2D: {TYPE: int, VALUE: 0, REQUIRED: True},
+        FlordMenuParticleKey.M1S: {TYPE: float, VALUE: 1.000E+00, REQUIRED: True},
+        FlordMenuParticleKey.M2S: {TYPE: float, VALUE: 1.000E+00, REQUIRED: True},
+        FlordMenuParticleKey.SEQ: {TYPE: int, VALUE: 0, REQUIRED: True},
+        FlordMenuParticleKey.RAT: {TYPE: int, VALUE: 19200, REQUIRED: True},
+        FlordMenuParticleKey.SET: {TYPE: int, VALUE: 0, REQUIRED: True},
+        FlordMenuParticleKey.REC: {TYPE: int, VALUE: 1, REQUIRED: True},
+        FlordMenuParticleKey.MAN: {TYPE: int, VALUE: 0, REQUIRED: True},
+        FlordMenuParticleKey.INT: {TYPE: unicode, VALUE: '00:00:10', REQUIRED: True},
+        FlordMenuParticleKey.DAT: {TYPE: unicode, VALUE: '07/11/13', REQUIRED: True},
+        FlordMenuParticleKey.CLK: {TYPE: unicode, VALUE: '12:48:34', REQUIRED: True},
+        FlordMenuParticleKey.MST: {TYPE: unicode, VALUE: '12:48:31', REQUIRED: True},
+        FlordMenuParticleKey.MEM: {TYPE: int, VALUE: 4095, REQUIRED: True}
     }
 
     _flordD_sample_parameters = {
-        FlordDSample_ParticleKey.date_string: {TYPE: unicode, VALUE: '07/16/13', REQUIRED: True},
-        FlordDSample_ParticleKey.time_string: {TYPE: unicode, VALUE: '09:33:06', REQUIRED: True},
-        FlordDSample_ParticleKey.wave_beta: {TYPE: int, VALUE: 700, REQUIRED: True},
-        FlordDSample_ParticleKey.raw_sig_beta: {TYPE: int, VALUE: 4130, REQUIRED: True},
-        FlordDSample_ParticleKey.wave_chl: {TYPE: int, VALUE: 695, REQUIRED: True},
-        FlordDSample_ParticleKey.raw_sig_chl: {TYPE: int, VALUE: 1018, REQUIRED: True},
-        FlordDSample_ParticleKey.raw_temp: {TYPE: int, VALUE: 525, REQUIRED: True},
-        FlordDSample_ParticleKey.SIG_1_OFFSET: {TYPE: float, VALUE: 0, REQUIRED: True},
-        FlordDSample_ParticleKey.SIG_2_OFFSET: {TYPE: float, VALUE: 0, REQUIRED: True},
-        FlordDSample_ParticleKey.SIG_1_SCALE_FACTOR: {TYPE: int, VALUE: 0, REQUIRED: True},
-        FlordDSample_ParticleKey.SIG_2_SCALE_FACTOR: {TYPE: int, VALUE: 0, REQUIRED: True}
+        FlordSampleParticleKey.date_string: {TYPE: unicode, VALUE: '07/16/13', REQUIRED: True},
+        FlordSampleParticleKey.time_string: {TYPE: unicode, VALUE: '09:33:06', REQUIRED: True},
+        FlordSampleParticleKey.wave_beta: {TYPE: int, VALUE: 700, REQUIRED: True},
+        FlordSampleParticleKey.raw_sig_beta: {TYPE: int, VALUE: 4130, REQUIRED: True},
+        FlordSampleParticleKey.wave_chl: {TYPE: int, VALUE: 695, REQUIRED: True},
+        FlordSampleParticleKey.raw_sig_chl: {TYPE: int, VALUE: 1018, REQUIRED: True},
+        FlordSampleParticleKey.raw_temp: {TYPE: int, VALUE: 525, REQUIRED: True},
+        FlordSampleParticleKey.SIG_1_OFFSET: {TYPE: float, VALUE: 0, REQUIRED: True},
+        FlordSampleParticleKey.SIG_2_OFFSET: {TYPE: float, VALUE: 0, REQUIRED: True},
+        FlordSampleParticleKey.SIG_1_SCALE_FACTOR: {TYPE: int, VALUE: 0, REQUIRED: True},
+        FlordSampleParticleKey.SIG_2_SCALE_FACTOR: {TYPE: int, VALUE: 0, REQUIRED: True}
     }
 
     # #
@@ -167,7 +167,7 @@ class FlordDriverTestMixinSub(DriverTestMixinSub):
         @param data_particle:  FlortDMNU_ParticleKey data particle
         @param verify_values:  bool, should we verify parameter values
         """
-        self.assert_data_particle_keys(FlordDMNU_ParticleKey, self._flordD_mnu_parameters)
+        self.assert_data_particle_keys(FlordMenuParticleKey, self._flordD_mnu_parameters)
         self.assert_data_particle_header(data_particle, DataParticleType.FLORDD_MNU)
         self.assert_data_particle_parameters(data_particle, self._flordD_mnu_parameters, verify_values)
 
@@ -177,7 +177,7 @@ class FlordDriverTestMixinSub(DriverTestMixinSub):
         @param data_particle:  FlortDSample_ParticleKey data particle
         @param verify_values:  bool, should we verify parameter values
         """
-        self.assert_data_particle_keys(FlordDSample_ParticleKey, self._flordD_sample_parameters)
+        self.assert_data_particle_keys(FlordSampleParticleKey, self._flordD_sample_parameters)
         self.assert_data_particle_header(data_particle, DataParticleType.FLORDD_SAMPLE)
         self.assert_data_particle_parameters(data_particle, self._flordD_sample_parameters, verify_values)
 
@@ -244,11 +244,11 @@ class DriverUnitTest(InstrumentDriverUnitTestCase, FlordDriverTestMixinSub):
         self.assert_chunker_combined_sample(chunker, SAMPLE_SAMPLE_RESPONSE)
 
     def test_corrupt_data_sample(self):
-        particle = FlordDMNU_Particle(SAMPLE_MNU_RESPONSE.replace('Ave 1', 'Ave foo'))
+        particle = FlordMenuParticle(SAMPLE_MNU_RESPONSE.replace('Ave 1', 'Ave foo'))
         with self.assertRaises(SampleException):
             particle.generate()
 
-        particle = FlordDSample_Particle(SAMPLE_SAMPLE_RESPONSE.replace('700', 'foo'))
+        particle = FlordSampleParticle(SAMPLE_SAMPLE_RESPONSE.replace('700', 'foo'))
         with self.assertRaises(SampleException):
             particle.generate()
 
