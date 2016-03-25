@@ -46,6 +46,7 @@ log = get_logger()
 
 GENERIC_PROMPT = r"S>"
 LONG_TIMEOUT = 200
+MAX_SAMPLE_RATE = 240
 
 
 class ScheduledJob(BaseEnum):
@@ -1415,6 +1416,25 @@ class Protocol(SeaBirdProtocol):
         self._do_cmd_resp(InstrumentCmds.STOP_LOGGING)
         return True
 
+    def _is_logging(self, *args, **kwargs):
+        """
+        Wake up the instrument and inspect the prompt to determine if we
+        are in streaming
+        @param: timeout - Command timeout
+        @return: True - instrument logging, False - not logging,
+                 None - unknown logging state
+        @raise: InstrumentProtocolException if we can't identify the prompt
+        """
+        sample_rate = self._param_dict.get(Parameter.SAMPLE_PERIOD)
+        if not sample_rate:
+            sample_rate = MAX_SAMPLE_RATE
+
+        particles = self.wait_for_particles([DataParticleType.PREST_REAL_TIME], time.time()+sample_rate+1)
+        if not particles:
+            return None
+
+        return True
+
     @staticmethod
     def _bool_to_int_string(v):
         # return a string of 1 or 0 to indicate true/false
@@ -1445,7 +1465,7 @@ class Protocol(SeaBirdProtocol):
                              self._int_to_string,
                              type=ParameterDictType.INT,
                              display_name="Sample Period",
-                             range=(1, 240),
+                             range=(1, MAX_SAMPLE_RATE),
                              description="Duration of each pressure measurement (1-240).",
                              units=Units.SECOND,
                              default_value=15,
