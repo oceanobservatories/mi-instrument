@@ -4,9 +4,5 @@ driver_metadata:
   driver_model: sbe54tps
   driver_name: ooicore
   email: roger.unwin
-  release_notes: '10.180.80.170:2101 Instrument
-
-    10.180.80.170:2102 Digi
-
-    Done'
-  version: 0.1.9
+  release_notes: PREST seabird driver
+  version: 0.1.10

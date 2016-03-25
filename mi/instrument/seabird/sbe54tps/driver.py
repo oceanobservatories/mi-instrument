@@ -46,6 +46,7 @@ log = get_logger()
 
 GENERIC_PROMPT = r"S>"
 LONG_TIMEOUT = 200
+MAX_SAMPLE_DURATION = 240
 
 
 class ScheduledJob(BaseEnum):
@@ -1029,10 +1030,14 @@ class Protocol(SeaBirdProtocol):
 
     def _handler_unknown_discover(self, *args, **kwargs):
         """
-        Discover current state; always AUTOSAMPLE.
+        Discover current state
         """
-        next_state = ProtocolState.AUTOSAMPLE
+        next_state = self._discover()
         result = []
+
+        if next_state is ProtocolState.UNKNOWN:
+            result = 'Failure to connect to instrument'
+
         return next_state, (next_state, result)
 
     def _handler_unknown_exit(self, *args, **kwargs):
@@ -1400,6 +1405,23 @@ class Protocol(SeaBirdProtocol):
     ########################################################################
     # Private helpers.
     ########################################################################
+    def _discover(self):
+        """
+        Determine instrument state. PREST is always sampling, so if we haven't received a particle within the last
+        max sample period, then we've lost connection to the instrument.
+        """
+        state = DriverProtocolState.AUTOSAMPLE
+
+        sample_period = self._param_dict.get(Parameter.SAMPLE_PERIOD)
+        if not sample_period:
+            sample_period = MAX_SAMPLE_DURATION
+
+        particles = self.wait_for_particles([DataParticleType.PREST_REAL_TIME], time.time()+sample_period+1)
+        if not particles:
+            state = DriverProtocolState.UNKNOWN
+
+        return state
+
     def _start_logging(self, timeout=TIMEOUT):
         """
         Command the instrument to start logging
@@ -1413,6 +1435,13 @@ class Protocol(SeaBirdProtocol):
     def _stop_logging(self):
 
         self._do_cmd_resp(InstrumentCmds.STOP_LOGGING)
+        return True
+
+    def _is_logging(self, *args, **kwargs):
+        """
+        Determine if we are in autosample
+        @return: True - PREST is always in a logging state or will return to logging after inactivity
+        """
         return True
 
     @staticmethod
@@ -1445,7 +1474,7 @@ class Protocol(SeaBirdProtocol):
                              self._int_to_string,
                              type=ParameterDictType.INT,
                              display_name="Sample Period",
-                             range=(1, 240),
+                             range=(1, MAX_SAMPLE_DURATION),
                              description="Duration of each pressure measurement (1-240).",
                              units=Units.SECOND,
                              default_value=15,
