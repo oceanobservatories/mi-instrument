@@ -5,4 +5,4 @@ driver_metadata:
   driver_name: ooicore
   email: sfoley@ucsd.edu
   release_notes: Satlantic PAR OOI Core driver
-  version: 0.0.7
+  version: 0.0.8
