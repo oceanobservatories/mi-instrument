@@ -28,6 +28,7 @@ from mi.core.instrument.instrument_driver import ResourceAgentState
 from mi.core.instrument.instrument_driver import DriverAsyncEvent
 from mi.core.instrument.instrument_driver import DriverEvent
 
+from mi.core.exceptions import InstrumentTimeoutException
 from mi.core.exceptions import InstrumentProtocolException
 from mi.core.exceptions import InstrumentParameterException
 from mi.core.exceptions import NotImplementedException
@@ -1127,7 +1128,7 @@ class SBE16Protocol(CommandResponseInstrumentProtocol):
         @throws InstrumentProtocolException if the device response does not correspond to
         an expected state.
         """
-        next_state = ProtocolState.COMMAND
+        next_state = None
         result = []
 
         # check for a sample particle
@@ -1135,10 +1136,18 @@ class SBE16Protocol(CommandResponseInstrumentProtocol):
         timeout = 2
         end_time = time.time() + timeout
         while time.time() < end_time:
+            if self._sampling:
+                next_state = ProtocolState.AUTOSAMPLE
+                break
             time.sleep(.1)
 
-        if self._sampling:
-            next_state = ProtocolState.AUTOSAMPLE
+        if next_state is not ProtocolState.AUTOSAMPLE:
+            try:
+                self._wakeup(WAKEUP_TIMEOUT)
+                next_state = ProtocolState.COMMAND
+            except InstrumentTimeoutException:
+                next_state = ProtocolState.UNKNOWN
+                result = 'Failure to communicate with the instrument'
 
         return next_state, (next_state, result)
 
