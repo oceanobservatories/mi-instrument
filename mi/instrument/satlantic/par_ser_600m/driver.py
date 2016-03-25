@@ -457,7 +457,7 @@ class SatlanticPARInstrumentProtocol(CommandResponseInstrumentProtocol):
         self._cmd_dict.add(PARCapability.ACQUIRE_SAMPLE, display_name='Acquire Sample')
         self._cmd_dict.add(PARCapability.ACQUIRE_STATUS, display_name='Acquire Status')
         self._cmd_dict.add(PARCapability.START_AUTOSAMPLE, display_name='Start Autosample')
-        self._cmd_dict.add(PARCapability.STOP_AUTOSAMPLE, display_name='Stop Autosample')
+        self._cmd_dict.add(PARCapability.STOP_AUTOSAMPLE, display_name='Stop Autosample', timeout=20)
         self._cmd_dict.add(PARCapability.DISCOVER, display_name='Discover', timeout=30)
 
     def _build_driver_dict(self):
