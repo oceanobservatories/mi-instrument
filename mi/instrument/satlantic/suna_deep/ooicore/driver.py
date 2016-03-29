@@ -31,7 +31,6 @@ from mi.core.instrument.protocol_param_dict import ParameterDictType
 from mi.core.exceptions import SampleException
 from mi.core.exceptions import InstrumentProtocolException
 from mi.core.exceptions import InstrumentParameterException
-from mi.core.exceptions import InstrumentException
 from mi.core.time_tools import get_timestamp_delayed
 
 log = get_logger()
@@ -332,7 +331,7 @@ class Prompt(BaseEnum):
     """
     Device I/O prompts..
     """
-    COMMAND = "SUNA>"
+    COMMAND_LINE = "SUNA>"
     POLLED = "CMD?"
     OK = '$Ok'
     ERROR = '$Error:'
@@ -957,12 +956,9 @@ class Protocol(CommandResponseInstrumentProtocol):
         self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.TEST, self._handler_command_test)
         self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.CLOCK_SYNC,
                                        self._handler_command_clock_sync)
-        # POLL Commands in the COMMAND State
-        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.ACQUIRE_SAMPLE,
-                                       self._handler_poll_acquire_sample)
-        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.MEASURE_N, self._handler_poll_measure_n)
-        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.MEASURE_0, self._handler_poll_measure_0)
-        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.TIMED_N, self._handler_poll_timed_n)
+        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.MEASURE_0, self._handler_command_measure_0)
+        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.MEASURE_N, self._handler_command_measure_n)
+        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.TIMED_N, self._handler_command_timed_n)
 
         # DIRECT ACCESS State
         self._protocol_fsm.add_handler(ProtocolState.DIRECT_ACCESS, ProtocolEvent.ENTER,
@@ -1034,16 +1030,16 @@ class Protocol(CommandResponseInstrumentProtocol):
         """
         Populate the command dictionary with commands
         """
-        self._cmd_dict.add(Capability.ACQUIRE_SAMPLE, timeout=20, display_name='Acquire Sample')
+        self._cmd_dict.add(Capability.ACQUIRE_SAMPLE, timeout=15, display_name='Acquire Sample')
         self._cmd_dict.add(Capability.ACQUIRE_STATUS, timeout=15, display_name='Acquire Status')
-        self._cmd_dict.add(Capability.MEASURE_N, display_name='Acquire N Light Samples')
-        self._cmd_dict.add(Capability.MEASURE_0, display_name='Acquire Dark Sample')
-        self._cmd_dict.add(Capability.TIMED_N, display_name='Acquire Light Samples (N seconds)')
+        self._cmd_dict.add(Capability.MEASURE_N, timeout=25, display_name='Acquire N Light Samples')
+        self._cmd_dict.add(Capability.MEASURE_0, timeout=15, display_name='Acquire Dark Sample')
+        self._cmd_dict.add(Capability.TIMED_N, timeout=25, display_name='Acquire Light Samples (N seconds)')
         self._cmd_dict.add(Capability.TEST, display_name='Execute Test')
         self._cmd_dict.add(Capability.START_AUTOSAMPLE, display_name='Start Autosample')
         self._cmd_dict.add(Capability.STOP_AUTOSAMPLE, display_name='Stop Autosample')
-        self._cmd_dict.add(Capability.CLOCK_SYNC, display_name='Synchronize Clock')
-        self._cmd_dict.add(Capability.DISCOVER, display_name='Discover')
+        self._cmd_dict.add(Capability.CLOCK_SYNC, timeout=20, display_name='Synchronize Clock')
+        self._cmd_dict.add(Capability.DISCOVER, timeout=25, display_name='Discover')
 
     def _build_param_dict(self):
         """
@@ -1285,7 +1281,8 @@ class Protocol(CommandResponseInstrumentProtocol):
                              range={'Full_ASCII': 'Full_ASCII', 'Full_Binary': 'Full_Binary',
                                     'Reduced_Binary': 'Reduced_Binary', 'Concentration': 'Concentration', 'APF': 'APF',
                                     'MBARI': 'MBARI', 'None': 'None'},
-                             description="Type: (Full_ASCII | Full_Binary | Reduced_Binary | Concentration | APF | MBARI | None)")
+                             description="Type: (Full_ASCII | Full_Binary | Reduced_Binary"
+                                         " | Concentration | APF | MBARI | None)")
 
         self._param_dict.add(Parameter.OUTPUT_DARK_FRAME,
                              r'OUTDRKFR\s(\S*)',
@@ -1548,12 +1545,10 @@ class Protocol(CommandResponseInstrumentProtocol):
         next_state = ProtocolState.COMMAND
         result = []
 
-        self._wakeup(20)
-        ret_prompt = self._send_dollar()
-
-        # came from autosampling/polling, need to resend '$' one more time to get it into command mode
-        if ret_prompt == Prompt.POLLED:
-            self._send_dollar()
+        # Set instrument mode to polled
+        self._bring_up_command_line()
+        self._do_cmd_resp(InstrumentCommand.SET, Parameter.OPERATION_MODE, InstrumentCommandArgs.POLLED,
+                          expected_prompt=[Prompt.OK, Prompt.ERROR])
 
         return next_state, (next_state, result)
 
@@ -1573,23 +1568,15 @@ class Protocol(CommandResponseInstrumentProtocol):
 
     def _handler_command_acquire_sample(self):
         """
-        Start acquire sample
+        Get a sample from the SUNA
         """
         next_state = None
         timeout = time.time() + TIMEOUT
 
+        # exit command-line to CMD? prompt (does nothing if already at CMD? prompt)
         self._do_cmd_no_resp(InstrumentCommand.EXIT)
-        self._do_cmd_resp(InstrumentCommand.MEASURE, 1, expected_prompt=[Prompt.POLLED, Prompt.COMMAND],
-                          timeout=POLL_TIMEOUT)
-
-        ret_prompt = self._send_dollar()
-
-        # came from autosampling/polling, need to resend '$' one more time to get it into command mode
-        if ret_prompt == Prompt.POLLED:
-            self._send_dollar()
-
+        self._do_cmd_resp(InstrumentCommand.MEASURE, 1, expected_prompt=Prompt.POLLED, timeout=POLL_TIMEOUT)
         particles = self.wait_for_particles([DataParticleType.SUNA_SAMPLE], timeout)
-
         return next_state, (next_state, particles)
 
     def _handler_command_acquire_status(self):
@@ -1599,7 +1586,8 @@ class Protocol(CommandResponseInstrumentProtocol):
         next_state = None
         timeout = time.time() + TIMEOUT
 
-        status_output = self._do_cmd_resp(InstrumentCommand.STATUS, expected_prompt=[Prompt.OK])
+        self._bring_up_command_line()
+        status_output = self._do_cmd_resp(InstrumentCommand.STATUS, expected_prompt=[Prompt.OK, Prompt.ERROR])
         self._do_cmd_no_resp(InstrumentCommand.GET_CAL_FILE)
 
         old_config = self._param_dict.get_config()
@@ -1628,8 +1616,9 @@ class Protocol(CommandResponseInstrumentProtocol):
         next_state = ProtocolState.AUTOSAMPLE
         result = []
 
-        self._do_cmd_no_resp(InstrumentCommand.SET, Parameter.OPERATION_MODE, InstrumentCommandArgs.CONTINUOUS)
-        # TODO - check to see if delay is required between sending commands
+        self._bring_up_command_line()
+        self._do_cmd_resp(InstrumentCommand.SET, Parameter.OPERATION_MODE, InstrumentCommandArgs.CONTINUOUS,
+                          expected_prompt=[Prompt.OK, Prompt.ERROR])
         self._do_cmd_no_resp(InstrumentCommand.EXIT)
 
         return next_state, (next_state, result)
@@ -1646,7 +1635,8 @@ class Protocol(CommandResponseInstrumentProtocol):
         """
         Set parameter
         """
-        next_state = result = None
+        next_state = None
+        result = None
         self._set_params(params, *args)
         return next_state, (next_state, result)
 
@@ -1668,6 +1658,9 @@ class Protocol(CommandResponseInstrumentProtocol):
 
         old_config = self._param_dict.get_config()
         log.debug("OLD CONFIG: %s", self._param_dict.get_config())
+
+        # Make sure we are in the command line
+        self._bring_up_command_line()
 
         for (key, val) in params.iteritems():
             log.debug("KEY = %s VALUE = %s", key, val)
@@ -1693,7 +1686,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                     self._do_cmd_resp(InstrumentCommand.SET, key, str_val, timeout=TIMEOUT,
                                       expected_prompt=[Prompt.OK, Prompt.ERROR])
 
-        status_output = self._do_cmd_resp(InstrumentCommand.STATUS, expected_prompt=[Prompt.OK])
+        status_output = self._do_cmd_resp(InstrumentCommand.STATUS, expected_prompt=[Prompt.OK, Prompt.ERROR])
         self._param_dict.update(status_output)
 
         new_config = self._param_dict.get_config()
@@ -1708,20 +1701,9 @@ class Protocol(CommandResponseInstrumentProtocol):
         """
         next_state = None
         result = []
+
+        self._bring_up_command_line()
         self._do_cmd_no_resp(InstrumentCommand.SELFTEST)
-        return next_state, (next_state, result)
-
-    def _handler_command_exit(self):
-        """
-        Exit the command state
-        """
-        next_state = ProtocolState.UNKNOWN
-        result = []
-
-        self._do_cmd_no_resp(InstrumentCommand.EXIT)
-        # TODO - check to see if a delay is necessary between the no-response commands (usually is)
-        self._do_cmd_no_resp(InstrumentCommand.SLEEP)
-
         return next_state, (next_state, result)
 
     def _handler_command_clock_sync(self, *args, **kwargs):
@@ -1733,6 +1715,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         str_time = get_timestamp_delayed("%Y/%m/%d %H:%M:%S")
         log.debug('syncing clock to: %s', str_time)
 
+        self._bring_up_command_line()
         result = self._do_cmd_resp(InstrumentCommand.SET_CLOCK, str_time, timeout=TIMEOUT,
                                    expected_prompt=[Prompt.OK, Prompt.ERROR])
 
@@ -1770,74 +1753,45 @@ class Protocol(CommandResponseInstrumentProtocol):
         return next_state, (next_state, result)
 
     ########################################################################
-    # Poll handlers.
+    # Measurement commands
     ########################################################################
-    def _start_poll(self):
-        """
-        Start polling
-        """
-        self._do_cmd_resp(InstrumentCommand.SET, Parameter.OPERATION_MODE, InstrumentCommandArgs.POLLED,
-                          expected_prompt=[Prompt.OK, Prompt.ERROR, Prompt.POLLED])
-        self._do_cmd_resp(InstrumentCommand.EXIT, expected_prompt=Prompt.POLLED)
-
-    def _handler_poll_acquire_sample(self):
-        """
-        Get a sample from the SUNA
-        """
-        next_state = None
-        timeout = time.time() + TIMEOUT
-        self._start_poll()
-        self._do_cmd_resp(InstrumentCommand.MEASURE, 1, expected_prompt=Prompt.POLLED, timeout=POLL_TIMEOUT)
-        self._stop_poll()
-        particles = self.wait_for_particles([DataParticleType.SUNA_SAMPLE], timeout)
-        return next_state, (next_state, particles)
-
-    def _handler_poll_measure_n(self):
+    def _handler_command_measure_n(self):
         """
         Measure N Light Samples
         """
         next_state = None
-        self._start_poll()
+
+        # exit command-line to CMD? prompt (does nothing if already at CMD? prompt)
+        self._do_cmd_no_resp(InstrumentCommand.EXIT)
         result = self._do_cmd_resp(InstrumentCommand.MEASURE, self._param_dict.get(Parameter.NUM_LIGHT_SAMPLES),
                                    expected_prompt=Prompt.POLLED, timeout=POLL_TIMEOUT)
-        self._stop_poll()
+
         return next_state, (next_state, [result])
 
-    def _handler_poll_measure_0(self):
+    def _handler_command_measure_0(self):
         """
         Measure 0 Dark Sample
         """
         next_state = None
-        self._start_poll()
+
+        # exit command-line to CMD? prompt (does nothing if already at CMD? prompt)
+        self._do_cmd_no_resp(InstrumentCommand.EXIT)
         result = self._do_cmd_resp(InstrumentCommand.MEASURE, 0, expected_prompt=Prompt.POLLED, timeout=POLL_TIMEOUT)
-        self._stop_poll()
+
         return next_state, (next_state, [result])
 
-    def _handler_poll_timed_n(self):
+    def _handler_command_timed_n(self):
         """
         Timed Sampling for N time
         """
         next_state = None
-        self._start_poll()
+
+        # exit command-line to CMD? prompt (does nothing if already at CMD? prompt)
+        self._do_cmd_no_resp(InstrumentCommand.EXIT)
         result = self._do_cmd_resp(InstrumentCommand.TIMED, self._param_dict.get(Parameter.TIME_LIGHT_SAMPLE),
                                    expected_prompt=Prompt.POLLED, timeout=POLL_TIMEOUT)
-        self._stop_poll()
+
         return next_state, (next_state, [result])
-
-    def _stop_poll(self):
-        """
-        Exit the poll state
-        """
-        try:
-            self._wakeup(20)  # if device is already awake and in polled mode this won't do anything
-            ret_prompt = self._send_dollar()
-
-            # came from autosampling/polling, need to resend '$' one more time to get it into command mode
-            if ret_prompt == Prompt.POLLED:
-                self._send_dollar()
-
-        except InstrumentException:
-            raise InstrumentProtocolException("Could not interrupt hardware!")
 
     ########################################################################
     # Autosample handlers.
@@ -1847,9 +1801,11 @@ class Protocol(CommandResponseInstrumentProtocol):
         Exit the autosample state
         """
         next_state = ProtocolState.COMMAND
-        self._do_cmd_no_resp(InstrumentCommand.CMD_LINE)
-        self._wakeup(20)
-        result = self._do_cmd_no_resp(InstrumentCommand.CMD_LINE)
+
+        # Set instrument mode to polled
+        self._bring_up_command_line()
+        result = self._do_cmd_resp(InstrumentCommand.SET, Parameter.OPERATION_MODE, InstrumentCommandArgs.POLLED,
+                          expected_prompt=[Prompt.OK, Prompt.ERROR])
 
         return next_state, (next_state, [result])
 
@@ -1939,7 +1895,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         @param prompt The prompt received from the instrument
         @retval return The response as is, None is there is no response
         """
-        for search_prompt in (Prompt.POLLED, Prompt.COMMAND):
+        for search_prompt in (Prompt.POLLED, Prompt.COMMAND_LINE):
             start = response.find(search_prompt)
             if start != -1:
                 log.debug("_parse_cmd_line_response: response=%r", response[start:start + len(search_prompt)])
@@ -1954,34 +1910,14 @@ class Protocol(CommandResponseInstrumentProtocol):
         Update the parameter dictionary by getting new values from the instrument. The response
         is saved to the param dictionary.
         """
-
-        status_output = self._do_cmd_resp(InstrumentCommand.STATUS, expected_prompt=[Prompt.OK])
+        self._bring_up_command_line()
+        status_output = self._do_cmd_resp(InstrumentCommand.STATUS, expected_prompt=[Prompt.OK, Prompt.ERROR])
         old_config = self._param_dict.get_config()
         self._param_dict.update(status_output)
         new_config = self._param_dict.get_config()
 
         if new_config != old_config:
             self._driver_event(DriverAsyncEvent.CONFIG_CHANGE)
-
-    def _get_from_instrument(self, param):
-        """
-        Instruct the instrument to get a parameter value from the instrument
-        @param param: name of the parameter
-        @return: value read from the instrument.  None otherwise.
-        @raise: InstrumentProtocolException when fail to get a response from the instrument
-        """
-        for attempt in xrange(RETRY):
-            # try up to RETRY times
-            try:
-                val = self._do_cmd_resp(InstrumentCommand.GET, param,
-                                        timeout=TIMEOUT,
-                                        response_regex=OK_GET_REGEX)
-                return val
-            except InstrumentProtocolException:
-                pass  # GET failed, so retry again
-        else:
-            # retries exhausted, so raise exception
-            raise InstrumentProtocolException('Unable to GET parameter %s from instrument' % param)
 
     def _send_wakeup(self):
         """
@@ -1990,20 +1926,23 @@ class Protocol(CommandResponseInstrumentProtocol):
         """
         self._connection.send(NEWLINE)
 
-    def _send_dollar(self):
-        """
-        Send a blind $ command to the device
-        """
-        ret_prompt = self._do_cmd_resp(InstrumentCommand.CMD_LINE, timeout=TIMEOUT,
-                                       expected_prompt=[Prompt.COMMAND, Prompt.POLLED])
-        return ret_prompt
-
-
-    def _is_true(self, x):
+    @staticmethod
+    def _is_true(x):
         if isinstance(x, basestring):
             return x.lower() == 'true'
 
         return x
+
+    def _bring_up_command_line(self):
+        """
+        Get to the command line, that is SUNA> prompt for entering commands
+        """
+        ret_prompt = self._do_cmd_resp(InstrumentCommand.CMD_LINE, timeout=TIMEOUT,
+                                       expected_prompt=[Prompt.COMMAND_LINE, Prompt.POLLED, Prompt.ERROR])
+        # Send a second time if necessary
+        if ret_prompt == Prompt.POLLED:
+            ret_prompt = self._do_cmd_resp(InstrumentCommand.CMD_LINE, timeout=TIMEOUT,
+                                           expected_prompt=[Prompt.COMMAND_LINE, Prompt.ERROR])
 
 
 def create_playback_protocol(callback):
