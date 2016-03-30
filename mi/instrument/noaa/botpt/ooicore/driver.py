@@ -468,7 +468,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                 'type': _int,
                 'display_name': 'LILY Leveling Timeout',
                 'description': 'Leveling timeout: (1-32767)',
-                'range': (1, 32767),
+                'range': (60, 6000),
                 'units': Units.SECOND,
                 'visibility': rw,
                 'startup_param': True,
