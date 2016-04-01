@@ -680,7 +680,6 @@ class Capability(BaseEnum):
     ACQUIRE_SAMPLE = ProtocolEvent.ACQUIRE_SAMPLE
 
     EXECUTE_AUTO_CAPTURE = ProtocolEvent.EXECUTE_AUTO_CAPTURE
-    STOP_CAPTURE = ProtocolEvent.STOP_CAPTURE
 
     LASER_1_ON = ProtocolEvent.LASER_1_ON
     LASER_2_ON = ProtocolEvent.LASER_2_ON
@@ -1369,10 +1368,6 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
                            timeout=DEFAULT_DICT_TIMEOUT,
                            display_name="Laser On",
                            description="Turn on the all laser")
-        self._cmd_dict.add(Capability.STOP_CAPTURE,
-                           timeout=DEFAULT_DICT_TIMEOUT,
-                           display_name="Stop Capture",
-                           description="Stop Capture")
         self._cmd_dict.add(Capability.DISCOVER, display_name='Discover')
 
     def _build_driver_dict(self):
@@ -1773,6 +1768,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
         """
         Discover current state; can be COMMAND or AUTOSAMPLE.
         """
+        result = []
         next_state = self._discover()
         return next_state, (next_state, result)
 
