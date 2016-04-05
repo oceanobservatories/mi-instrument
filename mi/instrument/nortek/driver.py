@@ -1986,7 +1986,7 @@ class NortekInstrumentProtocol(CommandResponseInstrumentProtocol):
                              display_name="Coordinate System",
                              description='Coordinate System (0:ENU | 1:XYZ | 2:Beam)',
                              default_value=2,
-                             range={0: 'ENU', 1: 'XYZ', 2: 'Beam'},
+                             range={'ENU': 0, 'XYZ': 1, 'Beam': 2},
                              startup_param=True,
                              direct_access=True)
         self._param_dict.add(Parameter.NUMBER_BINS,
@@ -2036,7 +2036,7 @@ class NortekInstrumentProtocol(CommandResponseInstrumentProtocol):
                              display_name="Wrap Mode",
                              description='Recorder wrap mode (0:no wrap | 1:wrap when full)',
                              default_value=0,
-                             range={0: 'No Wrap', 1: 'Wrap when Full'},
+                             range={'No Wrap': 0, 'Wrap when Full': 1},
                              startup_param=True,
                              direct_access=True)
         self._param_dict.add(Parameter.CLOCK_DEPLOY,
