@@ -885,7 +885,7 @@ class Protocol(SamiProtocol):
                              default_value=0x0A,
                              visibility=ParameterDictVisibility.READ_ONLY,
                              display_name='Sami Driver Version',
-                             range={0x0A: 'PHSEN', 0x04: 'PC02'},
+                             range={'PHSEN':0x0A, 'PC02': 0x04},
                              description='SAMI driver version: (0A = PHSEN | 04 = PCO2)')
 
         self._param_dict.add(Parameter.DEVICE1_SAMPLE_INTERVAL, configuration_string_regex,

@@ -1024,7 +1024,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
                              type=ParameterDictType.STRING,
                              display_name=Parameter.WHEN_DISK_IS_FULL[ParameterIndex.DISPLAY_NAME],
                              value_description=Parameter.WHEN_DISK_IS_FULL[ParameterIndex.DESCRIPTION],
-                             range={1: 'Overwrite Oldest Image', 2: 'Prevent Capture'},
+                             range={'Overwrite Oldest Image': 1, 'Prevent Capture': 2},
                              startup_param=False,
                              direct_access=True,
                              visibility=ParameterDictVisibility.READ_ONLY)
@@ -1036,7 +1036,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
                              type=ParameterDictType.STRING,
                              display_name=Parameter.CAMERA_MODE[ParameterIndex.DISPLAY_NAME],
                              value_description=Parameter.CAMERA_MODE[ParameterIndex.DESCRIPTION],
-                             range={0: 'None', 0x9: 'Stream', 0xA: 'Framing', 0xB: 'Focus'},
+                             range={'None': 0, 'Stream': 0x9, 'Framing': 0xA, 'Focus': 0xB},
                              startup_param=True,
                              direct_access=True,
                              default_value=Parameter.CAMERA_MODE[ParameterIndex.D_DEFAULT])
@@ -1060,8 +1060,8 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
                              type=ParameterDictType.STRING,
                              display_name=Parameter.IMAGE_RESOLUTION[ParameterIndex.DISPLAY_NAME],
                              value_description=Parameter.IMAGE_RESOLUTION[ParameterIndex.DESCRIPTION],
-                             range={1: 'Full Resolution', 2: 'Half Resolution', 4: 'Quarter Resolution',
-                                    8: 'Eighth Resolution'},
+                             range={'Full Resolution': 1, 'Half Resolution': 2, 'Quarter Resolution': 4,
+                                    'Eighth Resolution': 8},
                              direct_access=True,
                              startup_param=True,
                              default_value=Parameter.IMAGE_RESOLUTION[ParameterIndex.D_DEFAULT])
@@ -1202,7 +1202,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
                              type=ParameterDictType.STRING,
                              display_name=Parameter.SOFT_END_STOPS[ParameterIndex.DISPLAY_NAME],
                              value_description=Parameter.SOFT_END_STOPS[ParameterIndex.DESCRIPTION],
-                             range={0: 'Disable', 1: 'Enable'},
+                             range={'Disable': 0, 'Enable': 1},
                              startup_param=False,
                              direct_access=False)
 
@@ -1259,7 +1259,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
                              type=ParameterDictType.STRING,
                              display_name=Parameter.VIDEO_FORWARDING[ParameterIndex.DISPLAY_NAME],
                              value_description=Parameter.VIDEO_FORWARDING[ParameterIndex.DESCRIPTION],
-                             range={'Y': 'Yes', 'N': 'No'},
+                             range={'Yes': 'Y', 'No': 'N'},
                              startup_param=False,
                              direct_access=False,
                              default_value=Parameter.VIDEO_FORWARDING[ParameterIndex.D_DEFAULT])
