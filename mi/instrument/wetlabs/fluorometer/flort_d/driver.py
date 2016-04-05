@@ -1569,9 +1569,9 @@ class Protocol(CommandResponseInstrumentProtocol):
                              visibility=ParameterDictVisibility.READ_ONLY,
                              display_name="Baud Rate",
                              description='Baud rate for instrument communications: (2400 to 230400)',
-                             range={2400: '2400', 4800: '4800', 9600: '9600', 14400: '14400', 19200: '19200',
-                                    19201: '19201', 28800: '28800', 38400: '38400', 57600: '57600', 115200: '115200',
-                                    230400: '230400'},
+                             range={'2400': 2400, '4800': 4800, '9600': 9600, '14400': 14400, '19200': 19200,
+                                    '19201': 19201, '28800': 28800, '38400': 38400, '57600': 57600, '115200': 115200,
+                                    '230400': 230400},
                              default_value=None,
                              startup_param=False,
                              direct_access=False)
@@ -1599,7 +1599,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                              visibility=ParameterDictVisibility.IMMUTABLE,
                              display_name="Recording Mode",
                              description='Enables (1) or disables (0) data recording to internal memory.',
-                             range={0: 'disable', 1: 'enable'},
+                             range={'Disable': 0, 'Enable': 1},
                              default_value=0,
                              startup_param=True,
                              direct_access=True)
@@ -1613,7 +1613,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                              visibility=ParameterDictVisibility.IMMUTABLE,
                              display_name="Manual Mode",
                              description='Enables (1) or disables (0) manual start time.',
-                             range={0: 'disable', 1: 'enable'},
+                             range={'Disable': 0, 'Enable': 1},
                              default_value=0,
                              startup_param=True,
                              direct_access=True)

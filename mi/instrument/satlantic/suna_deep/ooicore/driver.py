@@ -1153,7 +1153,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                              default_value=True,
                              visibility=ParameterDictVisibility.IMMUTABLE,
                              display_name="Skip Sleep at Start",
-                             range={True: 'True', False: 'False'},
+                             range={'True': True, 'False': False},
                              description='Disable sleep at start: (true | false)')
 
         self._param_dict.add(Parameter.COUNTDOWN,
@@ -1308,7 +1308,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                              default_value=False,
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name="Temperature Compensation",
-                             range={True: 'True', False: 'False'},
+                             range={'True': True, 'False': False},
                              description="Enable temperature compensation: (true | false)")
 
         self._param_dict.add(Parameter.FIT_WAVELENGTH_LOW,
@@ -1362,8 +1362,8 @@ class Protocol(CommandResponseInstrumentProtocol):
                              value=1,
                              visibility=ParameterDictVisibility.READ_ONLY,
                              display_name="Baseline Order",
-                             range={1: 'Linear', 2: 'Quadratic'},
-                             description="Function type to use: (1=Linear | 2=Quadratic")
+                             range={'Linear': 1, 'Quadratic': 2},
+                             description="Function type to use: (Linear | Quadratic")
 
         self._param_dict.add(Parameter.DARK_CORRECTION_METHOD,
                              r'DRKCORMT\s(\S*)',
@@ -1388,7 +1388,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                              default_value=True,
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name="Salinity Fitting",
-                             range={True: 'True', False: 'False'},
+                             range={'True': True, 'False': False},
                              description="Enable salinity matching: (true | false)")
 
         self._param_dict.add(Parameter.BROMIDE_TRACING,
@@ -1401,7 +1401,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                              default_value=False,
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name="Bromide Tracing",
-                             range={True: 'True', False: 'False'},
+                             range={'True': True, 'False': False},
                              description="Enable bromide tracing: (true | false)")
 
         self._param_dict.add(Parameter.ABSORBANCE_CUTOFF,
@@ -1427,7 +1427,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                              default_value=True,
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name="Integration Time Adjustment",
-                             range={True: 'True', False: 'False'},
+                             range={'True': True, 'False': False},
                              description="Enable integration time adjustment: (true | false)")
 
         self._param_dict.add(Parameter.INTEG_TIME_FACTOR,
