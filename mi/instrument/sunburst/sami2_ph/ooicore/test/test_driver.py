@@ -415,6 +415,7 @@ class DriverUnitTest(SamiUnitTest, DriverTestMixinSub):
                                       'PROTOCOL_EVENT_SUCCESS',
                                       'PROTOCOL_EVENT_TIMEOUT',
                                       'DRIVER_EVENT_ACQUIRE_STATUS'],
+        ProtocolState.ACQUIRING_STATUS: ['PROTOCOL_EVENT_ACQUIRE_STATUS_GET'],
         ProtocolState.AUTOSAMPLE: ['DRIVER_EVENT_ACQUIRE_SAMPLE',
                                    'DRIVER_EVENT_STOP_AUTOSAMPLE',
                                    'DRIVER_EVENT_ACQUIRE_STATUS'],
