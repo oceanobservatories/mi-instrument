@@ -1955,14 +1955,14 @@ class Protocol(CommandResponseInstrumentProtocol):
                        middle of a countdown.
         """
 
+        # If direct flag is set then first send a $ without waiting for a prompt.
         if (direct):
             self._connection.send(InstrumentCommand.CMD_LINE)
-            return
 
-        # If not direct then use the usual command mechanism
+        # Send a $ and look for a proper prompt
         ret_prompt = self._do_cmd_resp(InstrumentCommand.CMD_LINE, timeout=TIMEOUT,
                                        expected_prompt=[Prompt.COMMAND_LINE, Prompt.POLLED, Prompt.ERROR])
-        # Send a second time if necessary
+        # Send another $ if necessary
         if ret_prompt == Prompt.POLLED:
             ret_prompt = self._do_cmd_resp(InstrumentCommand.CMD_LINE, timeout=TIMEOUT,
                                            expected_prompt=[Prompt.COMMAND_LINE, Prompt.ERROR])
