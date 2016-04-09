@@ -1540,11 +1540,11 @@ class Protocol(CommandResponseInstrumentProtocol):
         """
         Discover current instrument mode and set state accordingly
         If mode is not polled or continuous then set to polled
-        @retval next_state, (next_state, result)
+        @return next_state, (next_state, result)
         """
         result = []
 
-        self._bring_up_command_line(True)
+        self._bring_up_command_line()
         mode = self._do_cmd_resp(InstrumentCommand.GET, Parameter.OPERATION_MODE, response_regex=OK_GET_REGEX)
         log.debug('Upon discover instrument mode is %s', mode)
 
@@ -1655,7 +1655,7 @@ class Protocol(CommandResponseInstrumentProtocol):
 
     def _set_params(self, *args, **kwargs):
         """
-        Used to set the parameters when startup config is set by _init_params call
+        Used to set the parameters including when startup config is set by _init_params call
         """
 
         try:
@@ -1672,33 +1672,60 @@ class Protocol(CommandResponseInstrumentProtocol):
         old_config = self._param_dict.get_config()
         log.debug("OLD CONFIG: %s", self._param_dict.get_config())
 
-        # Make sure we are in the command line
+        # Make sure we are in the command line before sending commands
         self._bring_up_command_line()
 
-        for (key, val) in params.iteritems():
-            log.debug("KEY = %s VALUE = %s", key, val)
-            # check for driver parameters
-            if key in [Parameter.NUM_LIGHT_SAMPLES, Parameter.TIME_LIGHT_SAMPLE]:
-                if key == Parameter.NUM_LIGHT_SAMPLES:
-                    if key >= MIN_LIGHT_SAMPLE or key <= MAX_LIGHT_SAMPLE:
-                        self._param_dict.set_value(key, params[key])
-                    else:
-                        raise InstrumentParameterException('Parameter value is outside constraints!')
+        # Special case for FIT_WAVELENGTH_HIGH and FIT_WAVELENGTH_LOW:
+        # They must be set together
+        if Parameter.FIT_WAVELENGTH_HIGH in params or Parameter.FIT_WAVELENGTH_LOW in params:
+            current_high = self._param_dict.get(Parameter.FIT_WAVELENGTH_HIGH)
+            current_low = self._param_dict.get(Parameter.FIT_WAVELENGTH_LOW)
+            new_high = params.get(Parameter.FIT_WAVELENGTH_HIGH, current_high)
+            new_low = params.get(Parameter.FIT_WAVELENGTH_LOW, current_low)
 
-                if key == Parameter.TIME_LIGHT_SAMPLE:
-                    if key >= MIN_TIME_SAMPLE or key <= MAX_TIME_SAMPLE:
-                        self._param_dict.set_value(key, params[key])
-                    else:
-                        raise InstrumentParameterException('Parameter value is outside constraints!')
+            # Format before comparing
+            current_high = self._format_value(Parameter.FIT_WAVELENGTH_HIGH, current_high)
+            current_low = self._format_value(Parameter.FIT_WAVELENGTH_LOW, current_low)
+            new_high = self._format_value(Parameter.FIT_WAVELENGTH_HIGH, new_high)
+            new_low = self._format_value(Parameter.FIT_WAVELENGTH_LOW, new_low)
+
+            if current_high != new_high or current_low != new_low:
+                value = new_low + ',' + new_high
+                self._do_cmd_resp(InstrumentCommand.SET, Parameter.FIT_WAVELENGTH_BOTH, value, timeout=TIMEOUT,
+                                  expected_prompt=[Prompt.OK, Prompt.ERROR])
+
+        # Handle parameters that are for the driver, not the instrument
+        if Parameter.NUM_LIGHT_SAMPLES in params:
+            val = params[Parameter.NUM_LIGHT_SAMPLES]
+            if val >= MIN_LIGHT_SAMPLE or val <= MAX_LIGHT_SAMPLE:
+                self._param_dict.set_value(Parameter.NUM_LIGHT_SAMPLES, val)
             else:
-                try:
-                    str_val = self._param_dict.format(key, params[key])
-                except KeyError:
-                    raise InstrumentParameterException('Could not format param %s' % key)
-                if str_val != self._param_dict.format(key, self._param_dict.get(key)):
-                    self._do_cmd_resp(InstrumentCommand.SET, key, str_val, timeout=TIMEOUT,
-                                      expected_prompt=[Prompt.OK, Prompt.ERROR])
+                raise InstrumentParameterException('Parameter value is outside constraints!')
 
+        if Parameter.TIME_LIGHT_SAMPLE in params:
+            val = params[Parameter.TIME_LIGHT_SAMPLE]
+            if val >= MIN_TIME_SAMPLE or val <= MAX_TIME_SAMPLE:
+                self._param_dict.set_value(Parameter.TIME_LIGHT_SAMPLE, val)
+            else:
+                raise InstrumentParameterException('Parameter value is outside constraints!')
+
+        # Handle the rest of the normal instrument parameters
+        skip_these = (Parameter.FIT_WAVELENGTH_HIGH, Parameter.FIT_WAVELENGTH_LOW, Parameter.NUM_LIGHT_SAMPLES,
+                      Parameter.TIME_LIGHT_SAMPLE)
+        for (key, val) in params.iteritems():
+            if key in skip_these:
+                continue
+
+            log.debug("KEY = %s VALUE = %s", key, val)
+
+            # Format before comparing
+            new_val = self._format_value(key, val)
+            current_val = self._format_value(key, self._param_dict.get(key))
+            if current_val != new_val:
+                self._do_cmd_resp(InstrumentCommand.SET, key, new_val, timeout=TIMEOUT,
+                                  expected_prompt=[Prompt.OK, Prompt.ERROR])
+
+        # Collect the current settings from the instrument
         status_output = self._do_cmd_resp(InstrumentCommand.STATUS, expected_prompt=[Prompt.OK, Prompt.ERROR])
         self._param_dict.update(status_output)
 
@@ -1816,7 +1843,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         next_state = ProtocolState.COMMAND
 
         # Set instrument mode to polled
-        self._bring_up_command_line(True)
+        self._bring_up_command_line()
         result = self._do_cmd_resp(InstrumentCommand.SET, Parameter.OPERATION_MODE, InstrumentCommandArgs.POLLED,
                           expected_prompt=[Prompt.OK, Prompt.ERROR])
 
@@ -1946,26 +1973,46 @@ class Protocol(CommandResponseInstrumentProtocol):
 
         return x
 
-    def _bring_up_command_line(self, direct=False):
+    def _bring_up_command_line(self):
         """
         Get to the command line, that is SUNA> prompt for entering commands
-
-        @param direct: Instructs the driver to send the COMMAND_LINE str
-                       directly. Use True if the instrument may be in the
-                       middle of a countdown.
         """
+        self._simple_send(InstrumentCommand.CMD_LINE, expected_prompt=[Prompt.COMMAND_LINE])
 
-        # If direct flag is set then first send a $ without waiting for a prompt.
-        if (direct):
-            self._connection.send(InstrumentCommand.CMD_LINE)
+    def _simple_send(self, cmd, timeout=TIMEOUT, expected_prompt=None):
+        """
+        Sends a command and waits up to timeout seconds (default TIMEOUT) for one
+        of the prompts in expected_prompt.
+        If no prompt is specified then all prompts in Prompt are considered.
+        If a prompt is found it is returned, otherwise a timeout exception
+        is thrown.
+        This method differs from _do_cmd_resp() in that it does not invoke a
+        command handler, a response handler, or _wakeup().
+        @param cmd: string to send to instrument
+        @param timeout: time to look for expected prompts
+        @param expected_prompt: returns when one of these strings is found
+        @return: the prompt found
+        @raise: InstrumentTimeoutException on timeout
+        """
+        self._linebuf = ''
+        self._promptbuf = ''
+        self._send_wakeup()
+        self._connection.send(cmd + NEWLINE)
+        return self._get_response(timeout, expected_prompt)
 
-        # Send a $ and look for a proper prompt
-        ret_prompt = self._do_cmd_resp(InstrumentCommand.CMD_LINE, timeout=TIMEOUT,
-                                       expected_prompt=[Prompt.COMMAND_LINE, Prompt.POLLED, Prompt.ERROR])
-        # Send another $ if necessary
-        if ret_prompt == Prompt.POLLED:
-            ret_prompt = self._do_cmd_resp(InstrumentCommand.CMD_LINE, timeout=TIMEOUT,
-                                           expected_prompt=[Prompt.COMMAND_LINE, Prompt.ERROR])
+    def _format_value(self, param, value):
+        """
+        @param param: Parameter in _param_dict to use for formatting
+        @param value: value to be formatted
+        @return: A string formatted using _param_dict.format()
+        @raise: InstrumentParameterException if the parameter name is invalid.
+        """
+        try:
+            formatted_value = self._param_dict.format(param, value)
+        except KeyError:
+            raise InstrumentParameterException('Could not format param %s' % param)
+
+        return formatted_value
 
 
 def create_playback_protocol(callback):
