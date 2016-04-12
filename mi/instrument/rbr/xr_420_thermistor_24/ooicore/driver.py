@@ -24,7 +24,7 @@ from mi.core.instrument.instrument_driver import DriverParameter
 
 from mi.core.instrument.instrument_protocol import CommandResponseInstrumentProtocol, InitializationType
 from mi.core.instrument.instrument_driver import SingleConnectionInstrumentDriver
-from mi.core.instrument.instrument_fsm import InstrumentFSM
+from mi.core.instrument.instrument_fsm import ThreadSafeFSM
 from mi.core.instrument.instrument_driver import DriverProtocolState
 from mi.core.instrument.instrument_driver import DriverEvent
 from mi.core.instrument.instrument_driver import DriverAsyncEvent
@@ -501,7 +501,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
 
         CommandResponseInstrumentProtocol.__init__(self, prompts, newline, driver_event)
 
-        self._protocol_fsm = InstrumentFSM(ProtocolStates,
+        self._protocol_fsm = ThreadSafeFSM(ProtocolStates,
                                            ProtocolEvent,
                                            ProtocolEvent.ENTER,
                                            ProtocolEvent.EXIT)
@@ -1132,7 +1132,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
         self._cmd_dict.add(Capability.CLOCK_SYNC, display_name='Synchronize Clock')
         self._cmd_dict.add(Capability.START_AUTOSAMPLE, display_name="Start Autosample")
         self._cmd_dict.add(Capability.STOP_AUTOSAMPLE, display_name="Stop Autosample")
-        self._cmd_dict.add(Capability.DISCOVER, display_name='Discover')
+        self._cmd_dict.add(Capability.DISCOVER, display_name='Discover', timeout=20)
 
 
     def _build_param_dict(self):
