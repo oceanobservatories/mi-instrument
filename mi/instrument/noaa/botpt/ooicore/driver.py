@@ -412,7 +412,23 @@ class Protocol(CommandResponseInstrumentProtocol):
         @param events: list of events to be filtered
         @return: list of filtered events
         """
-        return [x for x in events if Capability.has(x)]
+        heating = self._param_dict.get(Parameter.HEATER_ON)
+        leveling = self._param_dict.get(Parameter.LILY_LEVELING)
+
+        capabilities = []
+        for x in events:
+            if Capability.has(x):
+                log.error('DJM - event: %s heating - %s, leveling - %s', x, heating, leveling)
+                if x is Capability.START_HEATER and heating:
+                    continue
+                if x is Capability.STOP_HEATER and not heating:
+                    continue
+                if x is Capability.START_LEVELING and leveling:
+                    continue
+                if x is Capability.STOP_LEVELING and not leveling:
+                    continue
+                capabilities.append(x)
+        return capabilities
 
     def _build_command_dict(self):
         """
