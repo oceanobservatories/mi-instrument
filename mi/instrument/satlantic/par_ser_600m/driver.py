@@ -34,7 +34,7 @@ from mi.core.instrument.protocol_cmd_dict import ProtocolCommandDict
 from mi.core.instrument.instrument_protocol import DEFAULT_CMD_TIMEOUT, RE_PATTERN
 
 from mi.core.common import InstErrorCode
-from mi.core.instrument.instrument_fsm import InstrumentFSM
+from mi.core.instrument.instrument_fsm import ThreadSafeFSM
 
 from mi.core.exceptions import InstrumentCommandException, InstrumentException, InstrumentTimeoutException
 from mi.core.exceptions import InstrumentParameterException, InstrumentProtocolException, SampleException
@@ -357,7 +357,7 @@ class SatlanticPARInstrumentProtocol(CommandResponseInstrumentProtocol):
     def __init__(self, callback=None):
         CommandResponseInstrumentProtocol.__init__(self, Prompt, EOLN, callback)
 
-        self._protocol_fsm = InstrumentFSM(PARProtocolState, PARProtocolEvent, PARProtocolEvent.ENTER, PARProtocolEvent.EXIT)
+        self._protocol_fsm = ThreadSafeFSM(PARProtocolState, PARProtocolEvent, PARProtocolEvent.ENTER, PARProtocolEvent.EXIT)
 
         self._protocol_fsm.add_handler(PARProtocolState.UNKNOWN, PARProtocolEvent.ENTER, self._handler_unknown_enter)
         self._protocol_fsm.add_handler(PARProtocolState.UNKNOWN, PARProtocolEvent.DISCOVER, self._handler_unknown_discover)
@@ -711,6 +711,15 @@ class SatlanticPARInstrumentProtocol(CommandResponseInstrumentProtocol):
 
         self._verify_not_readonly(params, startup)
 
+        if Parameter.ACQUIRE_STATUS_INTERVAL in params:
+
+            old_val = self._param_dict.format(Parameter.ACQUIRE_STATUS_INTERVAL)
+            new_val = self._param_dict.format(Parameter.ACQUIRE_STATUS_INTERVAL,
+                                              params[Parameter.ACQUIRE_STATUS_INTERVAL])
+            if old_val != new_val:
+                self._setup_scheduler_config(new_val)
+                self._param_dict.set_value(Parameter.ACQUIRE_STATUS_INTERVAL, new_val)
+
         for name, value in params.iteritems():
 
             old_val = self._param_dict.format(name)
@@ -726,9 +735,7 @@ class SatlanticPARInstrumentProtocol(CommandResponseInstrumentProtocol):
                     if self._do_cmd_resp(Command.SET, name, new_val, expected_prompt=Prompt.COMMAND):
                         instrument_params_changed = True
             elif name == Parameter.ACQUIRE_STATUS_INTERVAL:
-                if old_val != new_val:
-                    self._param_dict.set_value(name, new_val)
-                    scheduling_interval_changed = True
+                pass
             elif name in [Parameter.FIRMWARE, Parameter.INSTRUMENT, Parameter.SERIAL]:
                 self._param_dict.set_value(name, new_val)
             else:
@@ -737,9 +744,6 @@ class SatlanticPARInstrumentProtocol(CommandResponseInstrumentProtocol):
         if instrument_params_changed:
             self._do_cmd_resp(Command.SAVE, expected_prompt=Prompt.COMMAND)
             self._update_params()
-
-        if scheduling_interval_changed and not startup:
-            self._setup_scheduler_config()
 
         new_config = self._param_dict.get_all()
         log.debug("Updated parameter dict: old_config = %r, new_config = %r", old_config, new_config)
@@ -750,21 +754,21 @@ class SatlanticPARInstrumentProtocol(CommandResponseInstrumentProtocol):
             if self._param_dict.format(name, params[name]) != self._param_dict.format(name):
                 raise InstrumentParameterException('Failed to update parameter: %r' % name)
 
-    def _handle_scheduling_params_changed(self):
-        """
-        Required actions when scheduling parameters change
-        """
-        self._setup_scheduler_config()
-
-    def _setup_scheduler_config(self):
+    def _setup_scheduler_config(self, event_value):
         """
         Set up auto scheduler configuration.
         """
-        interval = self._param_dict.format(Parameter.ACQUIRE_STATUS_INTERVAL).split(':')
-        hours = int(interval[0])
-        minutes = int(interval[1])
-        seconds = int(interval[2])
-        log.debug("Setting scheduled interval to: %s %s %s", hours, minutes, seconds)
+        try:
+            #log.debug("\n\nthe event value is: %s\n\n", event_value)
+            interval = event_value.split(':')
+            #log.debug("\n\nthe interval value is: %d\n\n", int(interval[0]))
+            hours = int(interval[0])
+            minutes = int(interval[1])
+            seconds = int(interval[2])
+            log.debug("Setting scheduled interval to: %s %s %s", hours, minutes, seconds)
+        except(KeyError, ValueError):
+            log.debug("\n invalid value for acquire status interval: %s \n", ValueError)
+            raise InstrumentParameterException('invalid value for Acquire Status Interval: ' + interval)
 
         if DriverConfigKey.SCHEDULER in self._startup_config:
             self._startup_config[DriverConfigKey.SCHEDULER][ScheduledJob.ACQUIRE_STATUS] = {
