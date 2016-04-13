@@ -1,5 +1,5 @@
 ===========================================================
-Ocean Observatories Initiative Cyberinfrastructure (OOI CI)
+Ocean Observatories Initiative Cyber Infrastructure (OOI CI)
 Integrated Observatory Network (ION) - OOINet
 
 Marine Integration source code repository.
@@ -8,15 +8,15 @@ Marine Integration source code repository.
 See LICENSE.txt for license.
 ===========================================================
 
-This is the repository that containes implemention for all marine integrations
+This is the repository that contains the implemention for all marine integrations
 including drivers and transforms.
 
-Marine integration packages are inteded to be developed and released 
-independantly of other ION releases.  
+Marine integration packages are intended to be developed and released
+independently of other ION releases.
 
 To develop drivers you must install ION and the Instrument Development Kit.  
 
-INSTALL prequisite software for COI-services
+INSTALL prerequisite software for COI-services
 ============================================
 - homebrew
     /usr/bin/ruby <(curl -fsSkL raw.github.com/mxcl/homebrew/go)
@@ -153,4 +153,44 @@ bin/idk_rebase:
 
 bin/da_server:
    Start the direct access server
+
+Table of Contents
+=================
+Source code is organized in directories by instrument vendor. The following is
+a listing of currently deployed instruments by make.
+
+Instrument	  location
+----------------------------------------------
+ADCP          teledyne.workhorse.adcp
+ADCPS         teledyne.workhorse.adcp
+BOTPT         noaa.botpt.ooicore
+CAMDS         kml.cam.camds
+CAMHD         subc_control.onecam.ooicore
+CTDBP-NO      seabird.sbe16plus_v2.ctdbp_no
+CTDPF-Optode  seabird.sbe16plus_v2.ctdpf_jb
+CTDPF-SBE43   seabird.sbe16plus_v2.ctdpf_sbe43
+D1000         mclane.ras.d1000
+FLOR          wetlabs.fluorometer.flort_d
+HPIES         uw.hpies.ooicore
+MASSP         harvard.massp.mcu
+NUTNR         satlantic.suna_deep.ooicore
+OPTAA         wetlabs.ac_s.ooicore
+PARAD         satlantic.par_ser_600m
+PCO2W-A       sunburst.sami2_pco2.pco2a
+PCO2W-B       sunburst.sami2_pco2.pco2b
+PHSEN         sunburst.sami2_ph.ooicore
+PPSDN         mclane.ras.ppsdn
+PREST         seabird.sbe54tps
+RASFL         mclane.ras.rasfl
+SPKIR         satlantic.ocr_507_icsw.ooicore
+THSPH         um.thsph.ooicore
+TMPSF         rbr.xr_420_thermistor_24.ooicore
+TRHPH         uw.bars.ooicore
+VADCP         teledyne.workhorse.vadcp
+VEL3D-B       nobska.mavs4.ooicore
+VEL3D_B       nobska.mavs4.ooicore
+VEL3D-C       nortek.vector.ooicore
+VEL3D_C       nortek.vector.ooicore
+VELPT         nortek.aquadopp.ooicore
+ZPLSC         kut.ek60.ooicore
 

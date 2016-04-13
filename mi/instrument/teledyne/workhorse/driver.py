@@ -493,8 +493,7 @@ parameter_descriptions = {
     WorkhorseParameter.SENSOR_SOURCE: 'Firmware switches to use data from manual settings or from an associated sensor. See manual for usage.',
     WorkhorseParameter.DATA_STREAM_SELECTION: 'Type of ensemble output data structure: (0 - 18)',
     WorkhorseParameter.ENSEMBLE_PER_BURST: 'Number of ensembles per burst: (0 - 65535)',
-    WorkhorseParameter.FALSE_TARGET_THRESHOLD:
-        'False target threshold and starting bin (000-255,000-255)',
+    WorkhorseParameter.FALSE_TARGET_THRESHOLD: 'False target threshold and starting bin (000-255,000-255)',
     WorkhorseParameter.CORRELATION_THRESHOLD: 'Minimum threshold of water-track data that must meet correlation criteria: (0 - 255)',
     WorkhorseParameter.SERIAL_OUT_FW_SWITCHES: 'Firmware switches for data types collected by the ADCP. See manual for usage.',
     WorkhorseParameter.ERROR_VELOCITY_THRESHOLD: 'Maximum error velocity for good water-current data: (0 - 5000)',
@@ -513,17 +512,17 @@ parameter_descriptions = {
 }
 
 parameter_ranges = {
-    WorkhorseParameter.BANNER: {True: 'true', False: 'false'},
-    WorkhorseParameter.SLEEP_ENABLE: {1: 'true', 0: 'false'},
-    WorkhorseParameter.SAVE_NVRAM_TO_RECORDER: {True: 'true', False: 'false'},
-    WorkhorseParameter.POLLED_MODE: {True: 'true', False: 'false'},
+    WorkhorseParameter.BANNER: {'True': True, 'False': False},
+    WorkhorseParameter.SLEEP_ENABLE: {'True': 1, 'False': 0},
+    WorkhorseParameter.SAVE_NVRAM_TO_RECORDER: {'True': True, 'False': False},
+    WorkhorseParameter.POLLED_MODE: {'True': True, 'False': False},
     WorkhorseParameter.XMIT_POWER: (0, 255),
-    WorkhorseParameter.LATENCY_TRIGGER: {True: 'true', False: 'false'},
-    WorkhorseParameter.BANDWIDTH_CONTROL: {0: 'Wide', 1: 'Narrow'},
-    WorkhorseParameter.CLIP_DATA_PAST_BOTTOM: {True: 'true', False: 'false'},
-    WorkhorseParameter.RECEIVER_GAIN_SELECT: {0: 'reduce receiver gain by 40 dB', 1: 'normal receiver gain'},
-    WorkhorseParameter.SAMPLE_AMBIENT_SOUND: {True: 'true', False: 'false'},
-    WorkhorseParameter.PING_WEIGHT: {0: 'Box', 1: 'Triangle'},
+    WorkhorseParameter.LATENCY_TRIGGER: {'True': True, 'False': False},
+    WorkhorseParameter.BANDWIDTH_CONTROL: {'Wide': 0, 'Narrow': 1},
+    WorkhorseParameter.CLIP_DATA_PAST_BOTTOM: {'True': True, 'False': False},
+    WorkhorseParameter.RECEIVER_GAIN_SELECT: {'-40 dB Receiver Gain': 0, 'Normal': 1},
+    WorkhorseParameter.SAMPLE_AMBIENT_SOUND: {'True': True, 'False': False},
+    WorkhorseParameter.PING_WEIGHT: {'Box': 0, 'Triangle': 1},
     WorkhorseParameter.INSTRUMENT_ID: (0, 255),
     WorkhorseParameter.HEADING_ALIGNMENT: (-17999, 18000),
     WorkhorseParameter.HEADING_BIAS: (-17999, 18000),
@@ -544,7 +543,7 @@ parameter_ranges = {
     WorkhorseParameter.AMBIGUITY_VELOCITY: (2, 480),
 
     #VADCP Params
-    WorkhorseParameter.RDS3_MODE_SEL: {0: 'Off', 1: 'RDS3 master', 2: 'RDS3 slave', 3: 'NEMO'},
+    WorkhorseParameter.RDS3_MODE_SEL: {'Off': 0, 'RDS3 master': 1, 'RDS3 slave': 2, 'NEMO': 3},
     WorkhorseParameter.SLAVE_TIMEOUT: (0, 10800),
     WorkhorseParameter.SYNCH_DELAY: (0, 65535)
 }
