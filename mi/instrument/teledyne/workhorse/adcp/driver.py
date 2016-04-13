@@ -1,6 +1,7 @@
 from mi.core.instrument.instrument_driver import SingleConnectionInstrumentDriver
-from mi.core.log import get_logging_metaclass
 from mi.instrument.teledyne.workhorse.driver import WorkhorseProtocol, WorkhorsePrompt, NEWLINE
+# do not remove, facilitates playback
+from mi.instrument.teledyne.workhorse.driver import create_playback_protocol
 
 
 class InstrumentDriver(SingleConnectionInstrumentDriver):
