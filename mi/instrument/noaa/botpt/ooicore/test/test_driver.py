@@ -695,6 +695,11 @@ class DriverUnitTest(InstrumentDriverUnitTestCase, BotptTestMixinSub):
         driver_capabilities = Capability.list()
         test_capabilities = Capability.list()
 
+        # BOTPT adds/removes heating/leveling capabilities dynamically
+        # we need to remove the STOP capabilities for this test
+        driver_capabilities.remove(Capability.STOP_HEATER)
+        driver_capabilities.remove(Capability.STOP_LEVELING)
+
         # Add a bogus capability that will be filtered out.
         test_capabilities.append("BOGUS_CAPABILITY")
 

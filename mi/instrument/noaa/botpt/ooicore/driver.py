@@ -418,7 +418,6 @@ class Protocol(CommandResponseInstrumentProtocol):
         capabilities = []
         for x in events:
             if Capability.has(x):
-                log.error('DJM - event: %s heating - %s, leveling - %s', x, heating, leveling)
                 if x is Capability.START_HEATER and heating:
                     continue
                 if x is Capability.STOP_HEATER and not heating:
