@@ -518,6 +518,7 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
 
         self._paconfig = {}
         self._pre_da_config = {}
+        self._paconfig = {}
         self._startup_config = {}
 
         # Idempotency flag for lost connections.
@@ -665,6 +666,19 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
         if protocol:
             log.debug("Getting metadata from protocol...")
             return self._protocol.get_config_metadata_dict()
+
+    def get_direct_config(self):
+        """
+        Note - must override if instrument driver has more than one instrument configuration.
+        :return: list of dictionaries containing direct access configuration and commands
+        """
+        config = {}
+        if self._protocol:
+            config = self._protocol._get_direct_config()
+            config['ip'] = self._paconfig.get('host')
+            config['data'] = self._paconfig.get('port', {}).get('da')
+            config['sniffer'] = self._paconfig.get('port', {}).get('sniff')
+        return [config]
 
     def restore_direct_access_params(self, config):
         """
@@ -1035,6 +1049,11 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
         @retval (next_state, result) tuple, (None, protocol result).
         """
         next_state = None
+        if event == DriverEvent.START_DIRECT:
+            return self._handler_connected_start_direct_event(event, *args, **kwargs)
+        elif event == DriverEvent.STOP_DIRECT:
+            return self._handler_connected_stop_direct_event(event, *args, **kwargs)
+
         result = self._protocol._protocol_fsm.on_event(event, *args, **kwargs)
         return next_state, result
 
@@ -1054,7 +1073,7 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
         self._protocol.enable_da_initialization()
         log.debug("starting DA.  Storing DA parameters for restore: %s", self._pre_da_config)
 
-        result = self._protocol._protocol_fsm.on_event(event, *args, **kwargs)
+        result = self._protocol._protocol_fsm.on_event(event, self._paconfig, *args, **kwargs)
         return next_state, result
 
     def _handler_connected_stop_direct_event(self, event, *args, **kwargs):

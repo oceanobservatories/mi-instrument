@@ -21,7 +21,6 @@ from mi.core.common import BaseEnum, Units
 from mi.core.util import dict_equal
 from mi.core.exceptions import SampleException
 from mi.core.exceptions import InstrumentParameterException
-from mi.core.exceptions import InstrumentTimeoutException
 from mi.core.exceptions import InstrumentCommandException
 
 from mi.core.instrument.instrument_protocol import CommandResponseInstrumentProtocol, InitializationType
@@ -737,6 +736,22 @@ class Protocol(CommandResponseInstrumentProtocol):
         self._protocol_fsm.start(ProtocolState.UNKNOWN)
         self.initialize_scheduler()
 
+        self._direct_commands = {
+            # 'Wake Up': NEWLINE, this instrument doesn't have a wakeup, but we'll want it for the others
+            'Interrupt': InstrumentCommand.INTERRUPT_INSTRUMENT,
+            'Print Metadata': InstrumentCommand.PRINT_METADATA + NEWLINE,
+            'Print Menu': InstrumentCommand.PRINT_MENU + NEWLINE,
+            'Run Settings': InstrumentCommand.RUN_SETTINGS + NEWLINE,
+            'Run Wiper': InstrumentCommand.RUN_WIPER + NEWLINE,
+            'Restore Factory Defaults': '$rfd' + NEWLINE,
+            'Restore Settings': '$rls' + NEWLINE,
+            'Save Settings': '$sto' + NEWLINE,
+            'Read Data': '$get' + NEWLINE,
+            'Set>': InstrumentCommand.SET + ' ',
+            'Set Clock>': '$clk ',
+            'Set Date>': '$date ' + NEWLINE,
+        }
+
     @staticmethod
     def sieve_function(raw_data):
         """
@@ -1214,13 +1229,24 @@ class Protocol(CommandResponseInstrumentProtocol):
         next_state, (_, result) = self._handler_unknown_discover()
         return next_state, (next_state, result)
 
-    @staticmethod
-    def _handler_command_start_direct():
+    def _get_direct_config(self, paconfig):
+        ip = paconfig.get('host', 'uft20')  # TODO remove default
+        port = paconfig.get('ports', {}).get('da')
+        sniff = paconfig.get('ports', {}).get('sniff')
+
+        if not all((ip, port, sniff)):
+            raise InstrumentParameterException('Missing configuration for direct access (%r, %r)' % (ip, port))
+
+        result = {'FLOR': {'ip': ip, 'data': port, 'sniffer': sniff, 'character_delay': 0, 'eol': NEWLINE,
+                           'input_dict': self._direct_commands}}
+
+    def _handler_command_start_direct(self, paconfig):
         """
         Start direct access
         """
         next_state = ProtocolState.DIRECT_ACCESS
-        result = []
+        result = self._get_direct_config(paconfig)
+
         return next_state, (next_state, result)
 
     ########################################################################
