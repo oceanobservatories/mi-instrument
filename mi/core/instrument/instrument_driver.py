@@ -516,8 +516,9 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
             for event, handler in handlers[state]:
                 self._connection_fsm.add_handler(state, event, handler)
 
-        self._paconfig = {}
+        self._port_agent_config = {}
         self._pre_da_config = {}
+        self._port_agent_config = {}
         self._startup_config = {}
 
         # Idempotency flag for lost connections.
@@ -665,6 +666,19 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
         if protocol:
             log.debug("Getting metadata from protocol...")
             return self._protocol.get_config_metadata_dict()
+
+    def get_direct_config(self):
+        """
+        Note - must override if instrument driver has more than one instrument configuration.
+        :return: list of dictionaries containing direct access configuration and commands
+        """
+        config = {}
+        if self._protocol:
+            config = self._protocol._get_direct_config()
+            config['ip'] = self._port_agent_config.get('host')
+            config['data'] = self._port_agent_config.get('port', {}).get('da')
+            config['sniffer'] = self._port_agent_config.get('port', {}).get('sniff')
+        return [config]
 
     def restore_direct_access_params(self, config):
         """
@@ -1035,6 +1049,11 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
         @retval (next_state, result) tuple, (None, protocol result).
         """
         next_state = None
+        if event == DriverEvent.START_DIRECT:
+            return self._handler_connected_start_direct_event(event, *args, **kwargs)
+        elif event == DriverEvent.STOP_DIRECT:
+            return self._handler_connected_stop_direct_event(event, *args, **kwargs)
+
         result = self._protocol._protocol_fsm.on_event(event, *args, **kwargs)
         return next_state, result
 
@@ -1165,7 +1184,7 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
             if packet_type == PortAgentPacket.PORT_AGENT_CONFIG:
                 try:
                     paconfig = json.loads(data)
-                    self._paconfig = paconfig
+                    self._port_agent_config = paconfig
                     self._driver_event(DriverAsyncEvent.DRIVER_CONFIG, paconfig)
                 except ValueError as e:
                     log.exception('Unable to parse port agent config: %r %r', data, e)
