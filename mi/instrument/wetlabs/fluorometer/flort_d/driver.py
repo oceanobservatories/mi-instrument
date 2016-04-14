@@ -1214,13 +1214,23 @@ class Protocol(CommandResponseInstrumentProtocol):
         next_state, (_, result) = self._handler_unknown_discover()
         return next_state, (next_state, result)
 
-    @staticmethod
-    def _handler_command_start_direct():
+    def _handler_command_start_direct(self):
         """
         Start direct access
         """
         next_state = ProtocolState.DIRECT_ACCESS
-        result = []
+        ip = self.get_startup_config()
+        command_dict = {
+            # 'Wakeup': NEWLINE, this instrument doesn't have a wakeup, but we'll want it for the others
+            'Interrupt': InstrumentCommand.INTERRUPT_INSTRUMENT,
+            'Print Metadata': InstrumentCommand.PRINT_METADATA,
+            'Print Menu': InstrumentCommand.PRINT_MENU,
+            'Run Settings': InstrumentCommand.RUN_SETTINGS,
+            'Run Wiper': InstrumentCommand.RUN_WIPER,
+            'Set': InstrumentCommand.SET,
+            'Newline': NEWLINE
+        }
+        result = {'ip': self.get_startup_config('IP'), 'port': self.get_config('PORT'), command_dict}
         return next_state, (next_state, result)
 
     ########################################################################
