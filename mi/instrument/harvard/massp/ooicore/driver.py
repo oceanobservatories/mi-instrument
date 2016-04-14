@@ -188,7 +188,7 @@ class InstrumentDriver(SingleConnectionInstrumentDriver):
                 if packet_type == PortAgentPacket.PORT_AGENT_CONFIG:
                     try:
                         paconfig = json.loads(data)
-                        self._paconfig[name] = paconfig
+                        self._port_agent_config[name] = paconfig
                         self._driver_event(DriverAsyncEvent.DRIVER_CONFIG, paconfig)
                     except ValueError as e:
                         log.exception('Unable to parse port agent config: %r %r', data, e)

@@ -206,6 +206,7 @@ class CommandHandler(threading.Thread):
                 'state': self.driver.get_resource_state(),
                 'metadata': self.driver.get_config_metadata(),
                 'parameters': self.driver.get_cached_config(),
+                'direct_config': self.driver.get_direct_config(),
                 'init_params': self.driver.get_init_params()}
 
     def _send_command(self, command, *args, **kwargs):

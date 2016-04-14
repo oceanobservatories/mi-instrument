@@ -111,6 +111,9 @@ class InstrumentProtocol(object):
         self._build_handlers = {}
         self._newline = None
         self._chunker = None
+        self._direct_commands = {}
+        self._character_delay = 0.0
+        self._display_name = 'instrument'
 
     ########################################################################
     # Common handlers
@@ -576,6 +579,14 @@ class InstrumentProtocol(object):
             a higher level.
         """
         return self._pre_direct_access_config
+
+    def get_direct_config(self):
+        """
+        Gets the port agent's direct access configuration and instrument specific direct access commands.
+        :return: dictionary
+        """
+        return {'title': self._display_name, 'character_delay': self._character_delay, 'eol': self._newline,
+                'input_dict': self._direct_commands}
 
     def get_startup_config(self):
         """
