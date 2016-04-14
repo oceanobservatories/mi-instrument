@@ -21,7 +21,6 @@ from mi.core.common import BaseEnum, Units
 from mi.core.util import dict_equal
 from mi.core.exceptions import SampleException
 from mi.core.exceptions import InstrumentParameterException
-from mi.core.exceptions import InstrumentTimeoutException
 from mi.core.exceptions import InstrumentCommandException
 
 from mi.core.instrument.instrument_protocol import CommandResponseInstrumentProtocol, InitializationType
@@ -736,6 +735,24 @@ class Protocol(CommandResponseInstrumentProtocol):
         # State state machine in UNKNOWN state.
         self._protocol_fsm.start(ProtocolState.UNKNOWN)
         self.initialize_scheduler()
+
+        self._display_name = 'FLOR'
+
+        self._direct_commands = {
+            # 'Wake Up': NEWLINE, this instrument doesn't have a wakeup, but we'll want it for the others
+            'Interrupt': InstrumentCommand.INTERRUPT_INSTRUMENT,
+            'Print Metadata': InstrumentCommand.PRINT_METADATA + NEWLINE,
+            'Print Menu': InstrumentCommand.PRINT_MENU + NEWLINE,
+            'Run Settings': InstrumentCommand.RUN_SETTINGS + NEWLINE,
+            'Run Wiper': InstrumentCommand.RUN_WIPER + NEWLINE,
+            'Restore Factory Defaults': '$rfd' + NEWLINE,
+            'Restore Settings': '$rls' + NEWLINE,
+            'Save Settings': '$sto' + NEWLINE,
+            'Read Data': '$get' + NEWLINE,
+            'Set>': InstrumentCommand.SET + ' ',
+            'Set Clock>': '$clk ',
+            'Set Date>': '$date ' + NEWLINE,
+        }
 
     @staticmethod
     def sieve_function(raw_data):
