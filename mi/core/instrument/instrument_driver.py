@@ -7,6 +7,8 @@
 @brief Instrument driver classes that provide structure towards interaction
 with individual instruments in the system.
 """
+import json
+
 import consulate
 import random
 import time
@@ -520,6 +522,7 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
                 self._connection_fsm.add_handler(state, event, handler)
 
         self._pre_da_config = {}
+        self._paconfig = {}
         self._startup_config = {}
 
         # Idempotency flag for lost connections.
@@ -1061,6 +1064,11 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
         @retval (next_state, result) tuple, (None, protocol result).
         """
         next_state = None
+        if event == DriverEvent.START_DIRECT:
+            return self._handler_connected_start_direct_event(event, *args, **kwargs)
+        elif event == DriverEvent.STOP_DIRECT:
+            return self._handler_connected_stop_direct_event(event, *args, **kwargs)
+
         result = self._protocol._protocol_fsm.on_event(event, *args, **kwargs)
         return next_state, result
 
@@ -1080,7 +1088,7 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
         self._protocol.enable_da_initialization()
         log.debug("starting DA.  Storing DA parameters for restore: %s", self._pre_da_config)
 
-        result = self._protocol._protocol_fsm.on_event(event, *args, **kwargs)
+        result = self._protocol._protocol_fsm.on_event(event, self._paconfig, *args, **kwargs)
         return next_state, result
 
     def _handler_connected_stop_direct_event(self, event, *args, **kwargs):
@@ -1189,21 +1197,12 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
             data = port_agent_packet.get_data()
 
             if packet_type == PortAgentPacket.PORT_AGENT_CONFIG:
-
-                configuration = {}
-
-                for each in data.split('\n'):
-                    if each == '':
-                        continue
-
-                    key, value = each.split(None, 1)
-                    try:
-                        value = int(value)
-                    except ValueError:
-                        pass
-                    configuration[key] = value
-
-                self._driver_event(DriverAsyncEvent.DRIVER_CONFIG, configuration)
+                try:
+                    paconfig = json.loads(data)
+                    self._paconfig = paconfig
+                    self._driver_event(DriverAsyncEvent.DRIVER_CONFIG, paconfig)
+                except ValueError as e:
+                    log.exception('Unable to parse port agent config: %r %r', data, e)
 
             elif packet_type == PortAgentPacket.PORT_AGENT_STATUS:
                 current_state = self._connection_fsm.get_current_state()

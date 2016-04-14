@@ -21,7 +21,6 @@ from mi.core.common import BaseEnum, Units
 from mi.core.util import dict_equal
 from mi.core.exceptions import SampleException
 from mi.core.exceptions import InstrumentParameterException
-from mi.core.exceptions import InstrumentTimeoutException
 from mi.core.exceptions import InstrumentCommandException
 
 from mi.core.instrument.instrument_protocol import CommandResponseInstrumentProtocol, InitializationType
@@ -1214,13 +1213,29 @@ class Protocol(CommandResponseInstrumentProtocol):
         next_state, (_, result) = self._handler_unknown_discover()
         return next_state, (next_state, result)
 
-    @staticmethod
-    def _handler_command_start_direct():
+    def _handler_command_start_direct(self, paconfig):
         """
         Start direct access
         """
         next_state = ProtocolState.DIRECT_ACCESS
-        result = []
+        ip = paconfig.get('host', 'uft20')  # TODO remove default
+        port = paconfig.get('ports', {}).get('da')
+        sniff = paconfig.get('ports', {}).get('sniff')
+
+        if not all((ip, port, sniff)):
+            raise InstrumentParameterException('Missing configuration for direct access (%r, %r)' % (ip, port))
+
+        command_dict = {
+            # 'Wakeup': NEWLINE, this instrument doesn't have a wakeup, but we'll want it for the others
+            'Interrupt': InstrumentCommand.INTERRUPT_INSTRUMENT,
+            'Print Metadata': InstrumentCommand.PRINT_METADATA,
+            'Print Menu': InstrumentCommand.PRINT_MENU,
+            'Run Settings': InstrumentCommand.RUN_SETTINGS,
+            'Run Wiper': InstrumentCommand.RUN_WIPER,
+            'Set': InstrumentCommand.SET,
+            'Newline': NEWLINE
+        }
+        result = [{'ip': ip, 'data': port, 'sniff': sniff, 'input_dict': command_dict}]
         return next_state, (next_state, result)
 
     ########################################################################
