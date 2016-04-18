@@ -723,7 +723,7 @@ class SatlanticPARInstrumentProtocol(CommandResponseInstrumentProtocol):
                     self._setup_scheduler_config(new_val)
                     self._param_dict.set_value(Parameter.ACQUIRE_STATUS_INTERVAL, new_val)
                 else:
-                    raise InstrumentParameterException
+                    raise InstrumentParameterException("invalid time string parameter for acquire status interval")
 
         for name, value in params.iteritems():
 
@@ -769,9 +769,9 @@ class SatlanticPARInstrumentProtocol(CommandResponseInstrumentProtocol):
             minutes = int(interval[1])
             seconds = int(interval[2])
             log.debug("Setting scheduled interval to: %s %s %s", hours, minutes, seconds)
-        except(KeyError, ValueError):
-            log.debug("\n invalid value for acquire status interval: %s \n", ValueError)
-            raise InstrumentParameterException('invalid value for Acquire Status Interval: ' + interval)
+        except(KeyError, ValueError) as e:
+            log.debug("invalid value for acquire status interval: %r", e)
+            raise InstrumentParameterException('invalid value for Acquire Status Interval: ' + event_value)
 
         if DriverConfigKey.SCHEDULER in self._startup_config:
             self._startup_config[DriverConfigKey.SCHEDULER][ScheduledJob.ACQUIRE_STATUS] = {
