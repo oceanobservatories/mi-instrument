@@ -15,7 +15,7 @@ from mi.core.common import BaseEnum, Units, Prefixes
 from mi.core.log import get_logger, get_logging_metaclass
 
 from mi.core.instrument.instrument_protocol import CommandResponseInstrumentProtocol, InitializationType
-from mi.core.instrument.instrument_fsm import InstrumentFSM
+from mi.core.instrument.instrument_fsm import ThreadSafeFSM
 from mi.core.instrument.instrument_driver import SingleConnectionInstrumentDriver
 from mi.core.instrument.instrument_driver import DriverEvent
 from mi.core.instrument.instrument_driver import DriverAsyncEvent
@@ -933,7 +933,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         # Set attributes
         self._newline = NEWLINE
 
-        self._protocol_fsm = InstrumentFSM(ProtocolState, ProtocolEvent, ProtocolEvent.ENTER, ProtocolEvent.EXIT)
+        self._protocol_fsm = ThreadSafeFSM(ProtocolState, ProtocolEvent, ProtocolEvent.ENTER, ProtocolEvent.EXIT)
 
         # Add event handlers for protocol state machine.
         self._protocol_fsm.add_handler(ProtocolState.UNKNOWN, ProtocolEvent.ENTER, self._handler_generic_enter)

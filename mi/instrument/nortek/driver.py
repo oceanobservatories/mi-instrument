@@ -23,7 +23,7 @@ from mi.core.log import get_logger, get_logging_metaclass
 
 log = get_logger()
 
-from mi.core.instrument.instrument_fsm import InstrumentFSM
+from mi.core.instrument.instrument_fsm import ThreadSafeFSM
 from mi.core.instrument.chunker import StringChunker
 from mi.core.instrument.data_particle import DataParticle, DataParticleKey, DataParticleValue
 from mi.core.instrument.data_particle import CommonDataParticleType
@@ -1132,7 +1132,7 @@ class NortekInstrumentProtocol(CommandResponseInstrumentProtocol):
         """
         CommandResponseInstrumentProtocol.__init__(self, prompts, newline, driver_event)
 
-        self._protocol_fsm = InstrumentFSM(ProtocolState,
+        self._protocol_fsm = ThreadSafeFSM(ProtocolState,
                                            ProtocolEvent,
                                            ProtocolEvent.ENTER,
                                            ProtocolEvent.EXIT)

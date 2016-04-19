@@ -44,7 +44,7 @@ from mi.core.exceptions import InstrumentTimeoutException
 from mi.core.exceptions import InstrumentStateException
 from mi.core.exceptions import SampleException
 
-from mi.core.instrument.instrument_fsm import InstrumentFSM
+from mi.core.instrument.instrument_fsm import ThreadSafeFSM
 from mi.core.instrument.protocol_param_dict import ParameterDictVisibility
 
 from mi.core.log import get_logger
@@ -661,7 +661,7 @@ class Protocol(MenuInstrumentProtocol):
         self.eoln = EOLN
         
         ##### Setup the state machine
-        self._protocol_fsm = InstrumentFSM(State, Event, Event.ENTER, Event.EXIT)
+        self._protocol_fsm = ThreadSafeFSM(State, Event, Event.ENTER, Event.EXIT)
         
         self._protocol_fsm.add_handler(State.UNKNOWN, Event.DISCOVER,
                               self._handler_unknown_discover) 

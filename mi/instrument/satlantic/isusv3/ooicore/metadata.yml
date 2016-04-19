@@ -5,4 +5,4 @@ driver_metadata:
   driver_name: ooicore
   email: sfoley@ucsd.edu
   release_notes: Satlantic MBARI-ISUSv3 Nutrient sampler
-  version: 0.1
+  version: 0.2

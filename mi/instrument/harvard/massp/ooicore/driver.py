@@ -30,7 +30,7 @@ from mi.core.instrument.instrument_driver import ConfigMetadataKey
 from mi.core.common import BaseEnum, Units
 from mi.core.exceptions import InstrumentParameterException, InstrumentProtocolException
 from mi.core.exceptions import InstrumentConnectionException
-from mi.core.instrument.instrument_fsm import InstrumentFSM
+from mi.core.instrument.instrument_fsm import ThreadSafeFSM
 from mi.instrument.harvard.massp.common import MASSP_STATE_ERROR, MASSP_CLEAR_ERROR
 import mi.instrument.harvard.massp.mcu.driver as mcu
 import mi.instrument.harvard.massp.rga.driver as rga
@@ -366,7 +366,7 @@ class Protocol(InstrumentProtocol):
         InstrumentProtocol.__init__(self, driver_event)
 
         # Build protocol state machine.
-        self._protocol_fsm = InstrumentFSM(ProtocolState, ProtocolEvent,
+        self._protocol_fsm = ThreadSafeFSM(ProtocolState, ProtocolEvent,
                                            ProtocolEvent.ENTER, ProtocolEvent.EXIT)
 
         # Add event handlers for protocol state machine.
