@@ -346,19 +346,8 @@ class Parameter(DriverParameter):
     Byte 4 to end = Server name in ASCII with \0 end of string
 
     """
-    NTP_SETTING = ('NT', '<\x03:GN:>', 1, None, '\x00\x00157.237.237.104\x00', 'NTP Setting',
-                   'interval(in second), NTP port, NTP Server name', 'NTP_SETTING', 255)
-
-    """
-    set <\x04:FL:\x00>
-    variable number of bytes representing \0 terminated ASCII string.
-    (\0 only) indicates files are saved in the default location on the camera
-
-    get <\x03:CL:>
-    Byte1 to end = Network location as an ASCII string with \0 end of string. Send only \0 character to set default
-    """
-    NETWORK_DRIVE_LOCATION = ('FL', '<\x03:CL:>', 1, None, '\x00',
-                              'Network Drive Location', '\x00 for local default location', 'NETWORK_DRIVE_LOCATION', 0)
+    NTP_SETTING = ('NT', '<\x03:GN:>', 4, None, '\x00\x00157.237.237.104\x00', 'NTP Setting',
+                   'NTP server connection data.', 'NTP_SETTING', None)
 
     """
     set <\x04:RM:\x01>
@@ -372,7 +361,7 @@ class Parameter(DriverParameter):
     0x2 = return NAK (or stop capture) when disk is full.
     """
     WHEN_DISK_IS_FULL = ('RM', '<\x03:GM:>', 1, 1, '\x01', 'When Disk Is Full',
-                         '1 = Replace oldest image on the disk, 2 = return ERROR when disk is full',
+                         'How to handle full disk (1 = Replace oldest, 2 = return ERROR when full).',
                          'WHEN_DISK_IS_FULL', 1)
 
     """
@@ -395,7 +384,7 @@ class Parameter(DriverParameter):
     """
 
     CAMERA_MODE = ('SV', '<\x03:GV:>', 1, 1, '\x09', 'Camera Mode',
-                   '0 = None (off), 9 = Stream, 10 = Framing, 11 = Focus', 'CAMERA_MODE', 9)
+                   'Capture mode of the camera.', 'CAMERA_MODE', None)
 
     """
     set <\x04:FR:\x1E>
@@ -406,7 +395,7 @@ class Parameter(DriverParameter):
     GR + 1 Byte with value between 1 and 30.
     If the requested frame rate cannot be achieved, the maximum rate will be used.
     """
-    FRAME_RATE = ('FR', '<\x03:GR:>', 1, 1, '\x1E', 'Frame Rate', 'From 1 to 30 frames in second', 'FRAME_RATE', 30)
+    FRAME_RATE = ('FR', '<\x03:GR:>', 1, 1, '\x1E', 'Frame Rate', 'Capture rate in frames per second (1-30).', 'FRAME_RATE', None)
 
     """
     set <\x04:SD:\x01>
@@ -419,7 +408,7 @@ class Parameter(DriverParameter):
     GD + 1 Byte with a dividing value of 0x1, 0x2, 0x4 and 0x8.
     """
     IMAGE_RESOLUTION = ('SD', '<\x03:GD:>', 1, 1, '\x01',
-                        'Image Resolution', '1 = Full resolution, 2 = half Full resolution', 'IMAGE_RESOLUTION', 1)
+                        'Image Resolution', 'Resolution of streamed images.', 'IMAGE_RESOLUTION', None)
 
     """
     set <\x04:CD:\x64>
@@ -432,25 +421,7 @@ class Parameter(DriverParameter):
     GI + 1 Byte with value between 0x01 and 0x64. (decimal 1 - 100) 0x64 = Minimum data loss 0x01 = Maximum data loss
     """
     COMPRESSION_RATIO = ('CD', '<\x03:GI:>', 1, 1, '\x64', 'Compression Ratio',
-                         '100 = Minimum data loss, 1 = Maximum data loss', 'COMPRESSION_RATIO', 100)
-
-    """
-    set <\x05:ET:\xFF\xFF>
-    2 bytes.
-    Byte1 = Value (starting value)
-    Byte2 = Exponent (Number of zeros to add)
-    Default is 0xFF 0xFF (auto shutter mode) : set <0x05:ET:0xFF0xFF>
-
-    get <0x03:EG:>
-    EG + 2 bytes
-    Byte1 = Value (starting value)
-    Byte2 = Multiplier (Number of zeros to add)
-    e.g.. If Byte1 = 25 and byte2 = 3 then exposure time will be 25000 Max value allowed is 60000000 microseconds
-    (if both bytes are set to 0xFF, the camera is in auto shutter mode)
-    """
-    SHUTTER_SPEED = ('ET', '<\x03:EG:>', 1, 2, '\xFF\xFF', 'Shutter Speed',
-                     'Byte1 = Value (starting value), Byte2 = Exponent (Number of zeros to add)', 'SHUTTER_SPEED',
-                     None)
+                         'Compression ratio of streamed images (1-100).', 'COMPRESSION_RATIO', None)
 
     """
     get <\x04:GS:\xFF>
@@ -462,7 +433,7 @@ class Parameter(DriverParameter):
     GG + 1 byte
     Value 0x01 to 0x20 for a static value and 0xFF for auto GAIN
     """
-    CAMERA_GAIN = ('GS', '<\x03:GG:>', 1, 1, '\xFF', 'Camera Gain', 'From 1 to 32 and 255 sets auto gain',
+    CAMERA_GAIN = ('GS', '<\x03:GG:>', 1, 1, '\xFF', 'Camera Gain', 'Gain of the camera (1-32 | 255 auto).',
                    'CAMERA_GAIN', None)
 
     """
@@ -477,31 +448,7 @@ class Parameter(DriverParameter):
     2nd byte for lamp 2. For each lamp, MSB indicates On/Off
     """
     LAMP_BRIGHTNESS = ('BF', '<\x03:PF:>', 1, 2, '\x03\x32', 'Lamp Brightness',
-                       'Byte 1 is lamp to control: 1 = Lamp1, 2 = Lamp2, 3 = Both Lamps, '
-                       'Byte 2 is brightness between 0 and 100', 'LAMP_BRIGHTNESS', None)
-
-    """
-    Set <\x04:FX:\x00>
-    Set focus speed
-    1 byte between 0x00 and 0x0F
-    Default is 0x00 : set <\x04:FX:\x00>
-
-    No get focus speed
-    ???set <0x03:FP:>
-    ???FP + 1 byte between \x00 and \xC8
-    """
-    FOCUS_SPEED = ('FX', None, 1, 1, '\x00', 'Focus Speed', 'between 0 and 15', 'FOCUS_SPEED', 0)
-
-    """
-    set <\x04:ZX:\x00>
-    Set zoom speed.
-    1 byte between 0x00 and 0x0F
-    Default is 0x00 : set <\x04:ZX:\x00>
-
-    ???get <0x03:ZP:>
-    ???ZP + 1 byte between 0x00 and 0xC8
-    """
-    ZOOM_SPEED = ('ZX', None, 1, 1, '\x00', 'Zoom Speed', 'between 0 and 15', 'ZOOM_SPEED', 0)
+                       'Brightness control for lamps (0-100).', 'LAMP_BRIGHTNESS', None)
 
     """
     Set <\x04:IG:\x08>
@@ -512,7 +459,7 @@ class Parameter(DriverParameter):
     IP + 1 byte between 0x00
     get <0x03:IP>
     """
-    IRIS_POSITION = ('IG', '<\x03:IP:>', 1, 1, '\x08', 'Iris Position', 'between 0 and 15', 'IRIS_POSITION', None)
+    IRIS_POSITION = ('IG', '<\x03:IP:>', 1, 1, '\x08', 'Iris Position', 'Position of iris (0-15).', 'IRIS_POSITION', None)
 
     """
     Zoom Position
@@ -523,39 +470,7 @@ class Parameter(DriverParameter):
     ZP + 1 byte between 0x00 and 0xC8
     get <0x03:ZP:>
     """
-    ZOOM_POSITION = ('ZG', '<\x03:ZP:>', 1, 1, '\x64', 'Zoom Position', 'between 0 and 200', 'ZOOM_POSITION', None)
-
-    """
-    Pan Speed
-    1 byte between 0x00 and 0x64
-    Default is 0x32 : set <0x04:DS:0x32>
-    """
-    PAN_SPEED = ('DS', None, None, None, '\x32', 'Pan Speed', 'between 0 and 100', 'PAN_SPEED', None)
-
-    """
-    Set tilt speed
-    1 byte between 0x00 and 0x64
-    Default is 0x32 : <0x04:TA:0x32>
-    """
-    TILT_SPEED = ('TA', None, None, None, '\x32', 'TILT Speed', 'between 0 and 100', 'TILT_SPEED', None)
-
-    """
-    Enable or disable the soft end stops of the pan and tilt device
-    1 byte:0x00 = Disable 0x01 = Enable
-    Default is 0x01 : <0x04:ES:0x01>
-
-    get <0x03:AS:>
-    AS + 7 bytes
-    Byte1 = Tilt Position hundreds
-    Byte2 = Tilt Position tens
-    Byte3 = Tilt Position units
-    Byte4 = Pan Position hundreds
-    Byte5 = Pan Position tens Byte6 = Pan Position units
-    Byte7 = End stops enable (0x1 = enabled, 0x0 = disabled)
-    Bytes 1 to 6 are ASCII characters between 0x30 and 0x39
-    """
-    SOFT_END_STOPS = ('ES', '<\x03:AS:>', 7, 1, '\x01', 'Soft End Stops', '0 = Disable, 1 = Enable',
-                      'SOFT_END_STOPS', None)
+    ZOOM_POSITION = ('ZG', '<\x03:ZP:>', 1, 1, '\x64', 'Zoom Position', 'Position of zoom (0-200).', 'ZOOM_POSITION', None)
 
     """
     3 Bytes representing a three letter string containing the required pan location.
@@ -576,7 +491,7 @@ class Parameter(DriverParameter):
     Bytes 1 to 6 are ASCII characters between 0x30 and 0x39
     """
     PAN_POSITION = ('PP', '<\x03:AS:>', 4, 3, '\x30\x37\x35', 'Pan Position',
-                    'Byte1 = Hundreds of degrees, Byte2 = Tens of degrees, Byte 3 = Units of degrees',
+                    'Position to pan to (0-360).',
                     'PAN_POSITION', None)
 
     """
@@ -598,7 +513,7 @@ class Parameter(DriverParameter):
     Bytes 1 to 6 are ASCII characters between 0x30 and 0x39
     """
     TILT_POSITION = ('TP', '<\x03:AS:>', 1, 3, '\x30\x37\x35', 'Tilt Position',
-                     'Byte1 = Hundreds of degrees, Byte2 = Tens of degrees, Byte 3 = Units of degrees',
+                     'Position to tilt to (0-360).',
                      'TILT_POSITION', None)
 
     """
@@ -607,19 +522,19 @@ class Parameter(DriverParameter):
 
     get <\x03:FP:>
     """
-    FOCUS_POSITION = ('FG', '<\x03:FP:>', 1, 1, '\x64', 'Focus Position', 'between 0 and 200', 'FOCUS_POSITION', None)
+    FOCUS_POSITION = ('FG', '<\x03:FP:>', 1, 1, '\x64', 'Focus Position', 'Position of focus (0-200).', 'FOCUS_POSITION', None)
 
     # Engineering parameters for the scheduled commands
     SAMPLE_INTERVAL = (None, None, None, None, '00:30:00', 'Sample Interval',
-                       'hh:mm:ss', 'SAMPLE_INTERVAL', '00:30:00')
+                       'Time to wait between time-lapsed samples (hh:mm:ss).', 'SAMPLE_INTERVAL', '00:30:00')
     ACQUIRE_STATUS_INTERVAL = (None, None, None, None, '00:00:00', 'Acquire Status Interval',
-                               'hh:mm:ss', 'ACQUIRE_STATUS_INTERVAL', '00:00:00')
+                               'Time to wait between acquiring status (hh:mm:ss).', 'ACQUIRE_STATUS_INTERVAL', '00:00:00')
     VIDEO_FORWARDING = (None, None, None, None, False, 'Video Forwarding Flag',
-                        'True - Turn on Video, False - Turn off video', 'VIDEO_FORWARDING', False)
+                        'Enable/Disable streaming live video.', 'VIDEO_FORWARDING', False)
     VIDEO_FORWARDING_TIMEOUT = (None, None, None, None, '01:00:00', 'video forwarding timeout',
-                                'hh:mm:ss', 'VIDEO_FORWARDING_TIMEOUT', '01:00:00')
-    PRESET_NUMBER = (None, None, None, None, 1, 'Preset number', 'preset number (1- 15)', 'PRESET_NUMBER', 1)
-    AUTO_CAPTURE_DURATION = (None, None, None, None, '00:00:03', 'Auto Capture Duration', 'hh:mm:ss, 1 to 5 Seconds',
+                                'Length of time to stream live video (hh:mm:ss).', 'VIDEO_FORWARDING_TIMEOUT', '01:00:00')
+    PRESET_NUMBER = (None, None, None, None, 1, 'Preset number', 'Preset number to go to (1- 15)', 'PRESET_NUMBER', 1)
+    AUTO_CAPTURE_DURATION = (None, None, None, None, '00:00:03', 'Auto Capture Duration', 'How long to run auto capture mode (00:00:00 - 00:00:15).',
                              'AUTO_CAPTURE_DURATION', '00:00:03')
 
 
@@ -845,6 +760,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
         # filtered in responses for telnet DA
         self._sent_cmds = []
 
+
     @staticmethod
     def sieve_function(raw_data):
         """
@@ -1001,29 +917,18 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
                              str,
                              type=ParameterDictType.STRING,
                              display_name=Parameter.NTP_SETTING[ParameterIndex.DISPLAY_NAME],
-                             value_description=Parameter.NTP_SETTING[ParameterIndex.DESCRIPTION],
+                             description=Parameter.NTP_SETTING[ParameterIndex.DESCRIPTION],
                              startup_param=False,
                              direct_access=True,
                              visibility=ParameterDictVisibility.READ_ONLY)
 
-        self._param_dict.add(Parameter.NETWORK_DRIVE_LOCATION[ParameterIndex.KEY],
-                             r'NOT USED',
-                             None,
-                             str,
-                             type=ParameterDictType.STRING,
-                             display_name=Parameter.NETWORK_DRIVE_LOCATION[ParameterIndex.DISPLAY_NAME],
-                             value_description=Parameter.NETWORK_DRIVE_LOCATION[ParameterIndex.DESCRIPTION],
-                             startup_param=True,
-                             direct_access=False,
-                             default_value=Parameter.NETWORK_DRIVE_LOCATION[ParameterIndex.D_DEFAULT])
-
         self._param_dict.add(Parameter.WHEN_DISK_IS_FULL[ParameterIndex.KEY],
                              r'NOT USED',
                              None,
-                             str,
-                             type=ParameterDictType.STRING,
+                             int,
+                             type=ParameterDictType.INT,
                              display_name=Parameter.WHEN_DISK_IS_FULL[ParameterIndex.DISPLAY_NAME],
-                             value_description=Parameter.WHEN_DISK_IS_FULL[ParameterIndex.DESCRIPTION],
+                             description=Parameter.WHEN_DISK_IS_FULL[ParameterIndex.DESCRIPTION],
                              range={'Overwrite Oldest Image': 1, 'Prevent Capture': 2},
                              startup_param=False,
                              direct_access=True,
@@ -1032,10 +937,10 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
         self._param_dict.add(Parameter.CAMERA_MODE[ParameterIndex.KEY],
                              r'NOT USED',
                              None,
-                             str,
-                             type=ParameterDictType.STRING,
+                             int,
+                             type=ParameterDictType.INT,
                              display_name=Parameter.CAMERA_MODE[ParameterIndex.DISPLAY_NAME],
-                             value_description=Parameter.CAMERA_MODE[ParameterIndex.DESCRIPTION],
+                             description=Parameter.CAMERA_MODE[ParameterIndex.DESCRIPTION],
                              range={'None': 0, 'Stream': 0x9, 'Framing': 0xA, 'Focus': 0xB},
                              startup_param=True,
                              direct_access=True,
@@ -1044,10 +949,10 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
         self._param_dict.add(Parameter.FRAME_RATE[ParameterIndex.KEY],
                              r'NOT USED',
                              None,
-                             str,
-                             type=ParameterDictType.STRING,
+                             int,
+                             type=ParameterDictType.INT,
                              display_name=Parameter.FRAME_RATE[ParameterIndex.DISPLAY_NAME],
-                             value_description=Parameter.FRAME_RATE[ParameterIndex.DESCRIPTION],
+                             description=Parameter.FRAME_RATE[ParameterIndex.DESCRIPTION],
                              range=(1, 30),
                              startup_param=True,
                              direct_access=True,
@@ -1056,10 +961,10 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
         self._param_dict.add(Parameter.IMAGE_RESOLUTION[ParameterIndex.KEY],
                              r'NOT USED',
                              None,
-                             str,
-                             type=ParameterDictType.STRING,
+                             int,
+                             type=ParameterDictType.INT,
                              display_name=Parameter.IMAGE_RESOLUTION[ParameterIndex.DISPLAY_NAME],
-                             value_description=Parameter.IMAGE_RESOLUTION[ParameterIndex.DESCRIPTION],
+                             description=Parameter.IMAGE_RESOLUTION[ParameterIndex.DESCRIPTION],
                              range={'Full Resolution': 1, 'Half Resolution': 2, 'Quarter Resolution': 4,
                                     'Eighth Resolution': 8},
                              direct_access=True,
@@ -1069,166 +974,95 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
         self._param_dict.add(Parameter.COMPRESSION_RATIO[ParameterIndex.KEY],
                              r'NOT USED',
                              None,
-                             str,
-                             type=ParameterDictType.STRING,
+                             int,
+                             type=ParameterDictType.INT,
                              display_name=Parameter.COMPRESSION_RATIO[ParameterIndex.DISPLAY_NAME],
-                             value_description=Parameter.COMPRESSION_RATIO[ParameterIndex.DESCRIPTION],
+                             description=Parameter.COMPRESSION_RATIO[ParameterIndex.DESCRIPTION],
                              range=(1, 100),
                              startup_param=True,
                              direct_access=True,
                              default_value=Parameter.COMPRESSION_RATIO[ParameterIndex.D_DEFAULT])
 
-        self._param_dict.add(Parameter.SHUTTER_SPEED[ParameterIndex.KEY],
-                             r'NOT USED',
-                             None,
-                             str,
-                             type=ParameterDictType.STRING,
-                             display_name=Parameter.SHUTTER_SPEED[ParameterIndex.DISPLAY_NAME],
-                             value_description=Parameter.SHUTTER_SPEED[ParameterIndex.DESCRIPTION],
-                             # should be cleaned up
-                             # byte 1 is base, byte 2 is exponent (max of 6,000,000 microseconds)
-                             range=(0, 65535),
-                             startup_param=False,
-                             direct_access=False)
-
         self._param_dict.add(Parameter.CAMERA_GAIN[ParameterIndex.KEY],
                              r'NOT USED',
                              None,
                              int,
-                             type=ParameterDictType.STRING,
+                             type=ParameterDictType.INT,
                              display_name=Parameter.CAMERA_GAIN[ParameterIndex.DISPLAY_NAME],
-                             value_description=Parameter.CAMERA_GAIN[ParameterIndex.DESCRIPTION],
-                             # range is 1 to 32 & 255 (auto)
-                             range=(1, 255),
+                             description=Parameter.CAMERA_GAIN[ParameterIndex.DESCRIPTION],
+                             # range is 1 to 32 & 255 (auto). However, the value sometimes comes back as zero from the
+                             # instrument
+                             range=(0, 255),
                              startup_param=False,
                              direct_access=False)
 
         self._param_dict.add(Parameter.LAMP_BRIGHTNESS[ParameterIndex.KEY],
                              r'NOT USED',
                              None,
-                             str,
-                             type=ParameterDictType.STRING,
+                             int,
+                             type=ParameterDictType.INT,
                              display_name=Parameter.LAMP_BRIGHTNESS[ParameterIndex.DISPLAY_NAME],
-                             value_description=Parameter.LAMP_BRIGHTNESS[ParameterIndex.DESCRIPTION],
-                             # should be two parts -
-                             #  lamp control {1: 'Lamp1', 2: 'Lamp2', 3: 'Both'}
-                             #  lamp brightness (0, 0x64)
-                             range=(0, 65535),
-                             startup_param=False,
-                             direct_access=False)
-
-        self._param_dict.add(Parameter.FOCUS_SPEED[ParameterIndex.KEY],
-                             r'NOT USED',
-                             None,
-                             str,
-                             type=ParameterDictType.STRING,
-                             display_name=Parameter.FOCUS_SPEED[ParameterIndex.DISPLAY_NAME],
-                             value_description=Parameter.FOCUS_SPEED[ParameterIndex.DESCRIPTION],
-                             range=(0, 0xf),
+                             description=Parameter.LAMP_BRIGHTNESS[ParameterIndex.DESCRIPTION],
+                             range=(0, 100),
                              startup_param=False,
                              direct_access=False)
 
         self._param_dict.add(Parameter.FOCUS_POSITION[ParameterIndex.KEY],
                              r'NOT USED',
                              None,
-                             str,
-                             type=ParameterDictType.STRING,
+                             int,
+                             type=ParameterDictType.INT,
                              display_name=Parameter.FOCUS_POSITION[ParameterIndex.DISPLAY_NAME],
-                             value_description=Parameter.FOCUS_POSITION[ParameterIndex.DESCRIPTION],
-                             range=(0, 0xC8),
+                             description=Parameter.FOCUS_POSITION[ParameterIndex.DESCRIPTION],
+                             range=(0, 200),
                              startup_param=False,
                              direct_access=False)
-
-        self._param_dict.add(Parameter.ZOOM_SPEED[ParameterIndex.KEY],
-                             r'NOT USED',
-                             None,
-                             str,
-                             type=ParameterDictType.STRING,
-                             display_name=Parameter.ZOOM_SPEED[ParameterIndex.DISPLAY_NAME],
-                             value_description=Parameter.ZOOM_SPEED[ParameterIndex.DESCRIPTION],
-                             range=(0, 0xf),
-                             direct_access=False,
-                             startup_param=False)
 
         self._param_dict.add(Parameter.IRIS_POSITION[ParameterIndex.KEY],
                              r'NOT USED',
                              None,
-                             str,
-                             type=ParameterDictType.STRING,
+                             int,
+                             type=ParameterDictType.INT,
                              display_name=Parameter.IRIS_POSITION[ParameterIndex.DISPLAY_NAME],
-                             value_description=Parameter.IRIS_POSITION[ParameterIndex.DESCRIPTION],
-                             # 0 is fully closed, 15 is fully open
-                             range=(0, 0xf),
+                             description=Parameter.IRIS_POSITION[ParameterIndex.DESCRIPTION],
+                             range=(0, 15),
                              startup_param=False,
                              direct_access=False)
 
         self._param_dict.add(Parameter.ZOOM_POSITION[ParameterIndex.KEY],
                              r'NOT USED',
                              None,
-                             str,
-                             type=ParameterDictType.STRING,
+                             int,
+                             type=ParameterDictType.INT,
                              display_name=Parameter.ZOOM_POSITION[ParameterIndex.DISPLAY_NAME],
-                             value_description=Parameter.ZOOM_POSITION[ParameterIndex.DESCRIPTION],
-                             range=(0, 0xC8),
-                             startup_param=False,
-                             direct_access=False)
-
-        self._param_dict.add(Parameter.PAN_SPEED[ParameterIndex.KEY],
-                             r'NOT USED',
-                             None,
-                             str,
-                             type=ParameterDictType.STRING,
-                             display_name=Parameter.PAN_SPEED[ParameterIndex.DISPLAY_NAME],
-                             value_description=Parameter.PAN_SPEED[ParameterIndex.DESCRIPTION],
-                             range=(0, 0x64),
-                             startup_param=False,
-                             direct_access=False)
-
-        self._param_dict.add(Parameter.TILT_SPEED[ParameterIndex.KEY],
-                             r'NOT USED',
-                             lambda match: bool(int(match.group(1))),
-                             str,
-                             type=ParameterDictType.STRING,
-                             display_name=Parameter.TILT_SPEED[ParameterIndex.DISPLAY_NAME],
-                             value_description=Parameter.TILT_SPEED[ParameterIndex.DESCRIPTION],
-                             range=(0, 0x64),
-                             startup_param=False,
-                             direct_access=False)
-
-        self._param_dict.add(Parameter.SOFT_END_STOPS[ParameterIndex.KEY],
-                             r'NOT USED',
-                             None,
-                             str,
-                             type=ParameterDictType.STRING,
-                             display_name=Parameter.SOFT_END_STOPS[ParameterIndex.DISPLAY_NAME],
-                             value_description=Parameter.SOFT_END_STOPS[ParameterIndex.DESCRIPTION],
-                             range={'Disable': 0, 'Enable': 1},
+                             description=Parameter.ZOOM_POSITION[ParameterIndex.DESCRIPTION],
+                             range=(0, 200),
                              startup_param=False,
                              direct_access=False)
 
         self._param_dict.add(Parameter.PAN_POSITION[ParameterIndex.KEY],
                              r'NOT USED',
                              None,
-                             str,
-                             type=ParameterDictType.STRING,  # meta data
+                             int,
+                             type=ParameterDictType.INT,
                              display_name=Parameter.PAN_POSITION[ParameterIndex.DISPLAY_NAME],
-                             value_description=Parameter.PAN_POSITION[ParameterIndex.DESCRIPTION],
-                             # should be numeric, not a string
-                             #  range=(0, 360)
+                             description=Parameter.PAN_POSITION[ParameterIndex.DESCRIPTION],
+                             range=(0, 360),
                              startup_param=False,
-                             direct_access=False)
+                             direct_access=False,
+                             visibility=ParameterDictVisibility.READ_ONLY)
 
         self._param_dict.add(Parameter.TILT_POSITION[ParameterIndex.KEY],
                              r'NOT USED',
                              None,
-                             str,
-                             type=ParameterDictType.STRING,
+                             int,
+                             type=ParameterDictType.INT,
                              display_name=Parameter.TILT_POSITION[ParameterIndex.DISPLAY_NAME],
-                             value_description=Parameter.TILT_POSITION[ParameterIndex.DESCRIPTION],
-                             # should be numeric, not a string
-                             #  range=(0, 360)
+                             description=Parameter.TILT_POSITION[ParameterIndex.DESCRIPTION],
+                             range=(0, 360),
                              startup_param=False,
-                             direct_access=False)
+                             direct_access=False,
+                             visibility=ParameterDictVisibility.READ_ONLY)
 
         self._param_dict.add(Parameter.SAMPLE_INTERVAL[ParameterIndex.KEY],
                              r'NOT USED',
@@ -1236,7 +1070,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
                              str,
                              type=ParameterDictType.STRING,
                              display_name=Parameter.SAMPLE_INTERVAL[ParameterIndex.DISPLAY_NAME],
-                             value_description=Parameter.SAMPLE_INTERVAL[ParameterIndex.DESCRIPTION],
+                             description=Parameter.SAMPLE_INTERVAL[ParameterIndex.DESCRIPTION],
                              startup_param=False,
                              direct_access=False,
                              default_value=Parameter.SAMPLE_INTERVAL[ParameterIndex.D_DEFAULT])
@@ -1247,7 +1081,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
                              str,
                              type=ParameterDictType.STRING,
                              display_name=Parameter.ACQUIRE_STATUS_INTERVAL[ParameterIndex.DISPLAY_NAME],
-                             value_description=Parameter.ACQUIRE_STATUS_INTERVAL[ParameterIndex.DESCRIPTION],
+                             description=Parameter.ACQUIRE_STATUS_INTERVAL[ParameterIndex.DESCRIPTION],
                              startup_param=False,
                              direct_access=False,
                              default_value=Parameter.ACQUIRE_STATUS_INTERVAL[ParameterIndex.D_DEFAULT])
@@ -1258,7 +1092,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
                              str,
                              type=ParameterDictType.STRING,
                              display_name=Parameter.VIDEO_FORWARDING[ParameterIndex.DISPLAY_NAME],
-                             value_description=Parameter.VIDEO_FORWARDING[ParameterIndex.DESCRIPTION],
+                             description=Parameter.VIDEO_FORWARDING[ParameterIndex.DESCRIPTION],
                              range={'Yes': 'Y', 'No': 'N'},
                              startup_param=False,
                              direct_access=False,
@@ -1270,7 +1104,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
                              str,
                              type=ParameterDictType.STRING,
                              display_name=Parameter.VIDEO_FORWARDING_TIMEOUT[ParameterIndex.DISPLAY_NAME],
-                             value_description=Parameter.VIDEO_FORWARDING_TIMEOUT[ParameterIndex.DESCRIPTION],
+                             description=Parameter.VIDEO_FORWARDING_TIMEOUT[ParameterIndex.DESCRIPTION],
                              startup_param=False,
                              direct_access=False,
                              default_value=Parameter.VIDEO_FORWARDING_TIMEOUT[ParameterIndex.D_DEFAULT])
@@ -1278,10 +1112,10 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
         self._param_dict.add(Parameter.PRESET_NUMBER[ParameterIndex.KEY],
                              r'NOT USED',
                              None,
-                             str,
-                             type=ParameterDictType.STRING,
+                             int,
+                             type=ParameterDictType.INT,
                              display_name=Parameter.PRESET_NUMBER[ParameterIndex.DISPLAY_NAME],
-                             value_description=Parameter.PRESET_NUMBER[ParameterIndex.DESCRIPTION],
+                             description=Parameter.PRESET_NUMBER[ParameterIndex.DESCRIPTION],
                              startup_param=False,
                              direct_access=False,
                              default_value=Parameter.PRESET_NUMBER[ParameterIndex.D_DEFAULT])
@@ -1292,7 +1126,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
                              str,
                              type=ParameterDictType.STRING,
                              display_name=Parameter.AUTO_CAPTURE_DURATION[ParameterIndex.DISPLAY_NAME],
-                             value_description=Parameter.AUTO_CAPTURE_DURATION[ParameterIndex.DESCRIPTION],
+                             description=Parameter.AUTO_CAPTURE_DURATION[ParameterIndex.DESCRIPTION],
                              startup_param=False,
                              direct_access=False,
                              default_value=Parameter.AUTO_CAPTURE_DURATION[ParameterIndex.D_DEFAULT])
@@ -1395,21 +1229,13 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
 
         for param in params:
 
+            # These are engineering params
             if param[ParameterIndex.KEY] not in [Parameter.SAMPLE_INTERVAL[ParameterIndex.KEY],
                                                  Parameter.VIDEO_FORWARDING_TIMEOUT[ParameterIndex.KEY],
                                                  Parameter.ACQUIRE_STATUS_INTERVAL[ParameterIndex.KEY],
                                                  Parameter.AUTO_CAPTURE_DURATION[ParameterIndex.KEY],
                                                  Parameter.VIDEO_FORWARDING[ParameterIndex.KEY],
                                                  Parameter.PRESET_NUMBER[ParameterIndex.KEY],
-                                                 Parameter.NTP_SETTING[ParameterIndex.KEY],
-                                                 Parameter.WHEN_DISK_IS_FULL[ParameterIndex.KEY],
-                                                 Parameter.FOCUS_SPEED[ParameterIndex.KEY],
-                                                 Parameter.PAN_SPEED[ParameterIndex.KEY],
-                                                 Parameter.TILT_SPEED[ParameterIndex.KEY],
-                                                 Parameter.ZOOM_SPEED[ParameterIndex.KEY],
-
-                                                 # No response from instrument, busy response to subsequent commands
-                                                 Parameter.SHUTTER_SPEED[ParameterIndex.KEY],
                                                  'ALL']:
 
                 if param in ['DRIVER_PARAMETER_ALL']:
@@ -1474,7 +1300,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
 
     def _set_params(self, *args, **kwargs):
         """
-        Issue commands to the instrument to set various parameters
+        Issue commands to the instrument to set various parameters. The UI values are set in the _update_params call
         """
 
         # Retrieve required parameter.
@@ -1506,8 +1332,13 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
                 # The instrument needs extra time to process these commands
                 if key in [Parameter.CAMERA_MODE[ParameterIndex.KEY],
                            Parameter.IMAGE_RESOLUTION[ParameterIndex.KEY]]:
-                    log.debug("Just set Camera parameters, sleeping for 15 seconds")
+                    log.debug("Just set Camera parameters, sleeping for 25 seconds")
                     time.sleep(25)
+                elif key in [Parameter.IRIS_POSITION[ParameterIndex.KEY],
+                             Parameter.FOCUS_POSITION[ParameterIndex.KEY],
+                             Parameter.ZOOM_POSITION[ParameterIndex.KEY]]:
+                    log.debug("Just set Camera parameters, sleeping for 10 seconds")
+                    time.sleep(10)
 
         self._update_params()
 
@@ -1524,8 +1355,6 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
 
         for param in startup_params:
 
-            # These are the only params we get back from the instrument. The param_dict doesn't
-            # have values for other params
             if param in [Parameter.CAMERA_MODE[ParameterIndex.KEY],
                          Parameter.CAMERA_GAIN[ParameterIndex.KEY],
                          Parameter.COMPRESSION_RATIO[ParameterIndex.KEY],
@@ -1534,10 +1363,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
                          Parameter.IMAGE_RESOLUTION[ParameterIndex.KEY],
                          Parameter.IRIS_POSITION[ParameterIndex.KEY],
                          Parameter.LAMP_BRIGHTNESS[ParameterIndex.KEY],
-                         Parameter.NETWORK_DRIVE_LOCATION[ParameterIndex.KEY],
                          Parameter.PAN_POSITION[ParameterIndex.KEY],
-                         Parameter.SHUTTER_SPEED[ParameterIndex.KEY],
-                         Parameter.SOFT_END_STOPS[ParameterIndex.KEY],
                          Parameter.TILT_POSITION[ParameterIndex.KEY],
                          Parameter.ZOOM_POSITION[ParameterIndex.KEY],
                          ]:
@@ -1562,7 +1388,6 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
         @return The get command to be sent to the device.
         """
         param_tuple = param
-        self.get_param = param[ParameterIndex.KEY]
         self.get_param_dict = param
 
         return param_tuple[ParameterIndex.GET]
@@ -1579,22 +1404,27 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
         """
         self.get_param = param
 
+        log.debug("Building set command for %r with value %r" % (param, val))
+
         try:
 
-            if param in [Parameter.PAN_POSITION[ParameterIndex.KEY],
-                         Parameter.TILT_POSITION[ParameterIndex.KEY]]:
-
-                if not isinstance(val, int) or val > 999:
-                    raise Exception('The desired value for %s must be an integer less than 999: %s'
-                                    % (param, val))
-
-                val = '%03d' % val
-
-            elif isinstance(val, basestring):
+            if isinstance(val, basestring):
                 val = ''.join(chr(int(x)) for x in val.split(':'))
 
             else:
-                val = chr(val)
+                if param == Parameter.LAMP_BRIGHTNESS[ParameterIndex.KEY]:
+                    # Set both lamps to an equal value by setting first byte to \x03 which indicates to the instrument
+                    # to apply the given value to both lamps
+                    val = ''.join( (chr(3), chr(val)) )
+                elif param == Parameter.CAMERA_GAIN[ParameterIndex.KEY]:
+                    # CAMERA_GAIN must be an integer between 1 and 32, or equal to 255 (auto gain)
+                    if val == 255 or (0 < val < 33):
+                        val = chr(val)
+                    else:
+                        raise InstrumentParameterException('The desired value for %s must be an integer less '
+                                                    'either equal to 255 or between 1 and 32: %s' % (param, val))
+                else:
+                    val = chr(val)
 
             if param == Parameter.NTP_SETTING[ParameterIndex.KEY]:
                 val = val + Parameter.NTP_SETTING[ParameterIndex.DEFAULT_DATA]
@@ -1603,9 +1433,11 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
             param_tuple = getattr(Parameter, param)
 
             set_cmd = '<%s:%s:%s>' % (chr(data_size), param_tuple[ParameterIndex.SET], val)
+            log.debug("Set command: %r" % set_cmd)
 
         except KeyError:
-            raise Exception('Unknown driver parameter. %s' % param)
+                raise InstrumentParameterException('Unknown driver parameter. %s' % param)
+
 
         return set_cmd
 
@@ -1662,43 +1494,29 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
             raise InstrumentProtocolException(
                 'Protocol._parse_set_response : Get command not recognized. Response is ' + response)
 
-        log.debug("GET RESPONSE : Response for %r is: %s" % (self.get_param, response_stripped))
+        log.debug("GET RESPONSE : Response for %r is: %s" % (self.get_param_dict[ParameterIndex.KEY], response_stripped))
 
         # parse out parameter value first
-
-        if self.get_param[ParameterIndex.GET] is None:
+        if self.get_param_dict[ParameterIndex.GET] is None:
             # No response data to process
             return
 
-        if self.get_param[ParameterIndex.LENGTH] is None:
-            # Not fixed size of the response data
-            # get the size of the responding data
+        if self.get_param_dict[ParameterIndex.LENGTH] is None:
+            # There is no guaranteed field size, so substring from the start index to (length-2)
+            # Examples are NTP_SETTING
             log.debug("GET RESPONSE : get Length is None")
             raw_value = response_stripped[self.get_param_dict[ParameterIndex.Start] + start_index: -2]
-
             log.debug("GET RESPONSE : response raw : %r", raw_value)
-
-            if self.get_param[ParameterIndex.KEY] == Parameter.NTP_SETTING[ParameterIndex.KEY]:
-                self._param_dict.update(ord(raw_value[0]), target_params=self.get_param)
-            if self.get_param[ParameterIndex.KEY] == Parameter.NETWORK_DRIVE_LOCATION[ParameterIndex.KEY]:
-                self._param_dict.update(raw_value.trim(), target_params=self.get_param)
+            self._param_dict.set_value(self.get_param_dict[ParameterIndex.KEY], raw_value.strip())
 
         else:
-
-            # The input data is ended with '\x00'
-            if self.get_param_dict[ParameterIndex.LENGTH] is None:
-                raw_value = response_stripped[self.get_param_dict[ParameterIndex.Start] + start_index: -1]
-
-            else:
-                param_start = self.get_param_dict[ParameterIndex.Start]
-                start = param_start + start_index
-                stop = start + self.get_param_dict[ParameterIndex.LENGTH]
-                raw_value = response_stripped[start:stop]
+            start = self.get_param_dict[ParameterIndex.Start] + start_index
+            stop = start + self.get_param_dict[ParameterIndex.LENGTH]
+            raw_value = response_stripped[start:stop]
 
             if len(raw_value) == 1:
-
-                log.debug("About to update Parameter %s in param_dict to %s" %
-                          (self.get_param_dict[ParameterIndex.KEY], ord(raw_value)))
+                # Returned value is a one byte value that need to be converted to a numerical value
+                log.debug("About to update Parameter %s in param_dict to %s" % (self.get_param_dict[ParameterIndex.KEY], ord(raw_value)))
                 self._param_dict.set_value(self.get_param_dict[ParameterIndex.KEY], ord(raw_value))
 
             else:
@@ -1711,23 +1529,51 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
                     self._param_dict.set_value(self.get_param_dict[ParameterIndex.KEY], int(raw_value))
 
                 elif self.get_param_dict[ParameterIndex.KEY] in [Parameter.LAMP_BRIGHTNESS[ParameterIndex.KEY]]:
-                    if len(raw_value) == 2:
-                        lamp1_brightness = ord(raw_value[0])
-                        lamp2_brightness = ord(raw_value[1])
-                        brightness = (lamp1_brightness + lamp2_brightness) / 2
-                        param_val = '3:' + str(brightness)
-                        log.debug("About to update Parameter %s in param_dict to %s" %
-                                  (self.get_param_dict[ParameterIndex.KEY], param_val))
-                        self._param_dict.set_value(self.get_param_dict[ParameterIndex.KEY], param_val)
 
-                elif self.get_param_dict[ParameterIndex.KEY] in [Parameter.SHUTTER_SPEED[ParameterIndex.KEY]]:
-                    if len(raw_value) == 2:
-                        first = ord(raw_value[0])
-                        multiplier = ord(raw_value[1])
-                        param_val = '' + str(first) + ':' + str(multiplier)
-                        log.debug("About to update Parameter %s in param_dict to %s" %
-                                  (self.get_param_dict[ParameterIndex.KEY], param_val))
-                        self._param_dict.set_value(self.get_param_dict[ParameterIndex.KEY], param_val)
+                    total_value = 0
+                    for curr_value in raw_value:
+                        # There should be two bytes, which contain the brightness value of each lamp respectively,
+                        # indicating the brightness of each lamp
+
+                        curr_value = ord(curr_value)
+
+                        if curr_value > 127:
+                            # If the received lamp brightness value is greater than 127, then that means that the
+                            # most significant bit of the value is "1" (128), which indicates that the lamps are
+                            # turned on. If it's less than 128, then the lamps are turned off and the brightness
+                            # level can be retrieved without any extra work
+
+                            # Convert the received lamp brightness value to binary
+                            bin_val = bin(curr_value)
+
+                            if len(bin_val) == 10:
+                                # A valid lamp_brightness value received from the instrument, with lamps turned on
+                                # and a brightness value between 0 and 100, should have a binary string length of 10
+                                # (most significant bit will be a "1"). Trim the first three characters ('0b1') of
+                                # the binary string, and use the last 7 least significant bits to get the actual
+                                # brightness value.
+                                curr_value = int( bin_val[3:] , 2)
+                            else:
+                                # Received an invalid number; probably a number too large for any proper value for
+                                # the lamp brightness param. Should never happen, but...
+                                raise InstrumentParameterException("Received an invalid Lamp Brightness value"
+                                                                   "from the instrument: %r" % curr_value)
+
+                        elif curr_value < 0:
+                            # This should never happen, but...
+                            raise InstrumentParameterException("Received an invalid Lamp Brightness value"
+                                                                   "from the instrument: %r" % curr_value)
+
+                        total_value += curr_value
+
+                    log.debug("lamp brightness total_value: %r" % total_value)
+                    brightness = (total_value/2)
+
+                    param_val = str(brightness)
+                    log.debug("About to update Parameter %s in param_dict to %s" %
+                              (self.get_param_dict[ParameterIndex.KEY], param_val))
+                    self._param_dict.set_value(self.get_param_dict[ParameterIndex.KEY], param_val)
+
 
         new_param_value = self._param_dict.get(self.get_param_dict[ParameterIndex.KEY])
         log.debug("Param Dict Value for %s was set to %s" % (self.get_param_dict[ParameterIndex.KEY], new_param_value))
@@ -2382,7 +2228,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
 
         # Handle engineering parameters
         if Parameter.SAMPLE_INTERVAL[ParameterIndex.KEY] in params:
-            if (params[Parameter.SAMPLE_INTERVAL] != self._param_dict.get(
+            if (params[Parameter.SAMPLE_INTERVAL[ParameterIndex.KEY]] != self._param_dict.get(
                     Parameter.SAMPLE_INTERVAL[ParameterIndex.KEY])):
                 self._param_dict.set_value(Parameter.SAMPLE_INTERVAL[ParameterIndex.KEY],
                                            params[Parameter.SAMPLE_INTERVAL[ParameterIndex.KEY]])

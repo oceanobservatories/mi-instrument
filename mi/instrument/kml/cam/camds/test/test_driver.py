@@ -63,30 +63,22 @@ InstrumentDriverTestCase.initialize(
             Parameter.CAMERA_MODE[ParameterIndex.KEY]: Parameter.CAMERA_MODE[ParameterIndex.DEFAULT_DATA],
             Parameter.COMPRESSION_RATIO[ParameterIndex.KEY]: Parameter.COMPRESSION_RATIO[ParameterIndex.DEFAULT_DATA],
             Parameter.FOCUS_POSITION[ParameterIndex.KEY]: Parameter.FOCUS_POSITION[ParameterIndex.DEFAULT_DATA],
-            Parameter.FOCUS_SPEED[ParameterIndex.KEY]: Parameter.FOCUS_SPEED[ParameterIndex.DEFAULT_DATA],
             Parameter.FRAME_RATE[ParameterIndex.KEY]: Parameter.FRAME_RATE[ParameterIndex.DEFAULT_DATA],
             Parameter.IMAGE_RESOLUTION[ParameterIndex.KEY]: Parameter.IMAGE_RESOLUTION[ParameterIndex.DEFAULT_DATA],
             Parameter.IRIS_POSITION[ParameterIndex.KEY]: Parameter.IRIS_POSITION[ParameterIndex.DEFAULT_DATA],
 
             Parameter.LAMP_BRIGHTNESS[ParameterIndex.KEY]: Parameter.LAMP_BRIGHTNESS[ParameterIndex.DEFAULT_DATA],
-            Parameter.NETWORK_DRIVE_LOCATION[ParameterIndex.KEY]: Parameter.NETWORK_DRIVE_LOCATION[
-                ParameterIndex.DEFAULT_DATA],
             Parameter.NTP_SETTING[ParameterIndex.KEY]: Parameter.NTP_SETTING[ParameterIndex.DEFAULT_DATA],
             Parameter.PAN_POSITION[ParameterIndex.KEY]: Parameter.PAN_POSITION[ParameterIndex.DEFAULT_DATA],
-            Parameter.PAN_SPEED[ParameterIndex.KEY]: Parameter.PAN_SPEED[ParameterIndex.DEFAULT_DATA],
             Parameter.PRESET_NUMBER[ParameterIndex.KEY]: Parameter.PRESET_NUMBER[ParameterIndex.DEFAULT_DATA],
             Parameter.SAMPLE_INTERVAL[ParameterIndex.KEY]: Parameter.SAMPLE_INTERVAL[ParameterIndex.DEFAULT_DATA],
-            Parameter.SHUTTER_SPEED[ParameterIndex.KEY]: Parameter.SHUTTER_SPEED[ParameterIndex.DEFAULT_DATA],
-            Parameter.SOFT_END_STOPS[ParameterIndex.KEY]: Parameter.SOFT_END_STOPS[ParameterIndex.DEFAULT_DATA],
             Parameter.TILT_POSITION[ParameterIndex.KEY]: Parameter.TILT_POSITION[ParameterIndex.DEFAULT_DATA],
-            Parameter.TILT_SPEED[ParameterIndex.KEY]: Parameter.TILT_SPEED[ParameterIndex.DEFAULT_DATA],
 
             Parameter.VIDEO_FORWARDING[ParameterIndex.KEY]: Parameter.VIDEO_FORWARDING[ParameterIndex.DEFAULT_DATA],
             Parameter.VIDEO_FORWARDING_TIMEOUT[ParameterIndex.KEY]: Parameter.VIDEO_FORWARDING_TIMEOUT[
                 ParameterIndex.DEFAULT_DATA],
             Parameter.WHEN_DISK_IS_FULL[ParameterIndex.KEY]: Parameter.WHEN_DISK_IS_FULL[ParameterIndex.DEFAULT_DATA],
-            Parameter.ZOOM_POSITION[ParameterIndex.KEY]: Parameter.ZOOM_POSITION[ParameterIndex.DEFAULT_DATA],
-            Parameter.ZOOM_SPEED[ParameterIndex.KEY]: Parameter.ZOOM_SPEED[ParameterIndex.DEFAULT_DATA]
+            Parameter.ZOOM_POSITION[ParameterIndex.KEY]: Parameter.ZOOM_POSITION[ParameterIndex.DEFAULT_DATA]
         },
         DriverStartupConfigKey.SCHEDULER: {
             ScheduledJob.VIDEO_FORWARDING: {},
@@ -144,87 +136,59 @@ class CAMDSMixin(DriverTestMixin):
     _driver_parameters = {
 
         Parameter.CAMERA_GAIN[ParameterIndex.KEY]:
-            {TYPE: str, READONLY: False, DA: False, STARTUP: False,
-             DEFAULT: Parameter.CAMERA_GAIN[ParameterIndex.D_DEFAULT],
+            {TYPE: int, READONLY: False, DA: False, STARTUP: False,
+             DEFAULT: None,
              VALUE: Parameter.CAMERA_GAIN[ParameterIndex.D_DEFAULT]},
         Parameter.CAMERA_MODE[ParameterIndex.KEY]:
-            {TYPE: str, READONLY: False, DA: True, STARTUP: True,
+            {TYPE: int, READONLY: False, DA: True, STARTUP: True,
              DEFAULT: Parameter.CAMERA_MODE[ParameterIndex.D_DEFAULT],
              VALUE: Parameter.CAMERA_MODE[ParameterIndex.D_DEFAULT]},
         Parameter.COMPRESSION_RATIO[ParameterIndex.KEY]:
-            {TYPE: str, READONLY: False, DA: True, STARTUP: True,
+            {TYPE: int, READONLY: False, DA: True, STARTUP: True,
              DEFAULT: Parameter.COMPRESSION_RATIO[ParameterIndex.D_DEFAULT],
              VALUE: Parameter.COMPRESSION_RATIO[ParameterIndex.D_DEFAULT]},
         Parameter.FOCUS_POSITION[ParameterIndex.KEY]:
-            {TYPE: str, READONLY: False, DA: False, STARTUP: False,
+            {TYPE: int, READONLY: False, DA: False, STARTUP: False,
              DEFAULT: Parameter.FOCUS_POSITION[ParameterIndex.D_DEFAULT],
              VALUE: Parameter.FOCUS_POSITION[ParameterIndex.D_DEFAULT]},
-        Parameter.FOCUS_SPEED[ParameterIndex.KEY]:
-            {TYPE: str, READONLY: False, DA: False, STARTUP: False,
-             DEFAULT: Parameter.FOCUS_SPEED[ParameterIndex.D_DEFAULT],
-             VALUE: Parameter.FOCUS_SPEED[ParameterIndex.D_DEFAULT]},
         Parameter.FRAME_RATE[ParameterIndex.KEY]:
-            {TYPE: str, READONLY: False, DA: True, STARTUP: True,
+            {TYPE: int, READONLY: False, DA: True, STARTUP: True,
              DEFAULT: Parameter.FRAME_RATE[ParameterIndex.D_DEFAULT],
              VALUE: Parameter.FRAME_RATE[ParameterIndex.D_DEFAULT]},
         Parameter.IMAGE_RESOLUTION[ParameterIndex.KEY]:
-            {TYPE: str, READONLY: False, DA: True, STARTUP: True,
+            {TYPE: int, READONLY: False, DA: True, STARTUP: True,
              DEFAULT: Parameter.IMAGE_RESOLUTION[ParameterIndex.D_DEFAULT],
              VALUE: Parameter.IMAGE_RESOLUTION[ParameterIndex.D_DEFAULT]},
         Parameter.IRIS_POSITION[ParameterIndex.KEY]:
-            {TYPE: str, READONLY: False, DA: False, STARTUP: False,
-             DEFAULT: Parameter.IRIS_POSITION[ParameterIndex.D_DEFAULT],
+            {TYPE: int, READONLY: False, DA: False, STARTUP: False,
+             DEFAULT: None,
              VALUE: Parameter.IRIS_POSITION[ParameterIndex.D_DEFAULT]},
         Parameter.LAMP_BRIGHTNESS[ParameterIndex.KEY]:
-            {TYPE: str, READONLY: False, DA: False, STARTUP: False,
-             DEFAULT: Parameter.LAMP_BRIGHTNESS[ParameterIndex.D_DEFAULT],
+            {TYPE: int, READONLY: False, DA: False, STARTUP: False,
+             DEFAULT: None,
              VALUE: Parameter.LAMP_BRIGHTNESS[ParameterIndex.D_DEFAULT]},
-        Parameter.NETWORK_DRIVE_LOCATION[ParameterIndex.KEY]:
-            {TYPE: str, READONLY: False, DA: False, STARTUP: True,
-             DEFAULT: Parameter.NETWORK_DRIVE_LOCATION[ParameterIndex.D_DEFAULT],
-             VALUE: Parameter.NETWORK_DRIVE_LOCATION[ParameterIndex.D_DEFAULT]},
         Parameter.NTP_SETTING[ParameterIndex.KEY]:
             {TYPE: str, READONLY: True, DA: True, STARTUP: False,
              DEFAULT: None, VALUE: None},
         Parameter.PAN_POSITION[ParameterIndex.KEY]:
-            {TYPE: str, READONLY: False, DA: False, STARTUP: False,
-             DEFAULT: Parameter.PAN_POSITION[ParameterIndex.D_DEFAULT],
+            {TYPE: int, READONLY: True, DA: False, STARTUP: False,
+             DEFAULT: None,
              VALUE: Parameter.PAN_POSITION[ParameterIndex.D_DEFAULT]},
-        Parameter.PAN_SPEED[ParameterIndex.KEY]:
-            {TYPE: str, READONLY: False, DA: False, STARTUP: False,
-             DEFAULT: Parameter.PAN_SPEED[ParameterIndex.D_DEFAULT],
-             VALUE: Parameter.PAN_SPEED[ParameterIndex.D_DEFAULT]},
-        Parameter.SHUTTER_SPEED[ParameterIndex.KEY]:
-            {TYPE: str, READONLY: False, DA: False, STARTUP: False,
-             DEFAULT: Parameter.SHUTTER_SPEED[ParameterIndex.D_DEFAULT],
-             VALUE: Parameter.SHUTTER_SPEED[ParameterIndex.D_DEFAULT]},
-        Parameter.SOFT_END_STOPS[ParameterIndex.KEY]:
-            {TYPE: str, READONLY: False, DA: False, STARTUP: False,
-             DEFAULT: Parameter.SOFT_END_STOPS[ParameterIndex.D_DEFAULT],
-             VALUE: Parameter.SOFT_END_STOPS[ParameterIndex.D_DEFAULT]},
         Parameter.TILT_POSITION[ParameterIndex.KEY]:
-            {TYPE: str, READONLY: False, DA: False, STARTUP: False,
-             DEFAULT: Parameter.TILT_POSITION[ParameterIndex.D_DEFAULT],
+            {TYPE: int, READONLY: True, DA: False, STARTUP: False,
+             DEFAULT: None,
              VALUE: Parameter.TILT_POSITION[ParameterIndex.D_DEFAULT]},
-        Parameter.TILT_SPEED[ParameterIndex.KEY]:
-            {TYPE: str, READONLY: False, DA: False, STARTUP: False,
-             DEFAULT: Parameter.TILT_SPEED[ParameterIndex.D_DEFAULT],
-             VALUE: Parameter.TILT_SPEED[ParameterIndex.D_DEFAULT]},
         Parameter.WHEN_DISK_IS_FULL[ParameterIndex.KEY]:
-            {TYPE: str, READONLY: True, DA: True, STARTUP: False,
+            {TYPE: int, READONLY: True, DA: True, STARTUP: False,
              DEFAULT: None, VALUE: None},
         Parameter.ZOOM_POSITION[ParameterIndex.KEY]:
-            {TYPE: str, READONLY: False, DA: False, STARTUP: False,
-             DEFAULT: Parameter.ZOOM_POSITION[ParameterIndex.D_DEFAULT],
+            {TYPE: int, READONLY: False, DA: False, STARTUP: False,
+             DEFAULT: None,
              VALUE: Parameter.ZOOM_POSITION[ParameterIndex.D_DEFAULT]},
-        Parameter.ZOOM_SPEED[ParameterIndex.KEY]:
-            {TYPE: str, READONLY: False, DA: False, STARTUP: False,
-             DEFAULT: Parameter.ZOOM_SPEED[ParameterIndex.D_DEFAULT],
-             VALUE: Parameter.ZOOM_SPEED[ParameterIndex.D_DEFAULT]},
 
         # Engineering parameters
         Parameter.PRESET_NUMBER[ParameterIndex.KEY]:
-            {TYPE: str, READONLY: False, DA: False, STARTUP: False,
+            {TYPE: int, READONLY: False, DA: False, STARTUP: False,
              DEFAULT: Parameter.PRESET_NUMBER[ParameterIndex.DEFAULT_DATA],
              VALUE: Parameter.PRESET_NUMBER[ParameterIndex.D_DEFAULT]},
         Parameter.ACQUIRE_STATUS_INTERVAL[ParameterIndex.KEY]:
@@ -459,15 +423,6 @@ class DriverUnitTest(InstrumentDriverUnitTestCase, CAMDSMixin):
             (Parameter.IMAGE_RESOLUTION, 32, '<\x04:SD:\x20>'),
             (Parameter.IMAGE_RESOLUTION, 64, '<\x04:SD:\x40>'),
             (Parameter.IMAGE_RESOLUTION, 100, '<\x04:SD:\x64>'),
-            (Parameter.PAN_SPEED, 1, '<\x04:DS:\x01>'),
-            (Parameter.PAN_SPEED, 2, '<\x04:DS:\x02>'),
-            (Parameter.PAN_SPEED, 4, '<\x04:DS:\x04>'),
-            (Parameter.PAN_SPEED, 8, '<\x04:DS:\x08>'),
-            (Parameter.PAN_SPEED, 16, '<\x04:DS:\x10>'),
-            (Parameter.PAN_SPEED, 32, '<\x04:DS:\x20>'),
-            (Parameter.PAN_SPEED, 50, '<\x04:DS:\x32>'),
-            (Parameter.PAN_SPEED, 64, '<\x04:DS:\x40>'),
-            (Parameter.PAN_SPEED, 100, '<\x04:DS:\x64>'),
             (Parameter.COMPRESSION_RATIO, 1, '<\x04:CD:\x01>'),
             (Parameter.COMPRESSION_RATIO, 2, '<\x04:CD:\x02>'),
             (Parameter.COMPRESSION_RATIO, 4, '<\x04:CD:\x04>'),
@@ -479,30 +434,10 @@ class DriverUnitTest(InstrumentDriverUnitTestCase, CAMDSMixin):
             (Parameter.FOCUS_POSITION, 0, '<\x04:FG:\x00>'),
             (Parameter.FOCUS_POSITION, 100, '<\x04:FG:\x64>'),
             (Parameter.FOCUS_POSITION, 200, '<\x04:FG:\xc8>'),
-            (Parameter.PAN_POSITION, 0, '<\x06:PP:000>'),
-            (Parameter.PAN_POSITION, 45, '<\x06:PP:045>'),
-            (Parameter.PAN_POSITION, 90, '<\x06:PP:090>'),
-            (Parameter.SHUTTER_SPEED, '25:3', '<\x05:ET:\x19\x03>'),
-            (Parameter.SHUTTER_SPEED, '6:7', '<\x05:ET:\x06\x07>'),
-            (Parameter.SHUTTER_SPEED, '255:255', '<\x05:ET:\xff\xff>'),
-            (Parameter.TILT_POSITION, 0, '<\x06:TP:000>'),
-            (Parameter.TILT_POSITION, 45, '<\x06:TP:045>'),
-            (Parameter.TILT_POSITION, 90, '<\x06:TP:090>'),
-            (Parameter.TILT_SPEED, 0, '<\x04:TA:\x00>'),
-            (Parameter.TILT_SPEED, 50, '<\x04:TA:\x32>'),
-            (Parameter.TILT_SPEED, 100, '<\x04:TA:\x64>'),
-            (Parameter.ZOOM_SPEED, 0, '<\x04:ZX:\x00>'),
-            (Parameter.FOCUS_SPEED, 0, '<\x04:FX:\x00>'),
-            (Parameter.ZOOM_POSITION, 100, '<\x04:ZG:d>'),
-            (Parameter.PAN_SPEED, 50, '<\x04:DS:2>'),
-            (Parameter.PAN_POSITION, 90, '<\x06:PP:090>'),
             (Parameter.CAMERA_MODE, 9, '<\x04:SV:\t>'),
-            (Parameter.TILT_SPEED, 50, '<\x04:TA:2>'),
             (Parameter.IRIS_POSITION, 8, '<\x04:IG:\x08>'),
-            (Parameter.SOFT_END_STOPS, 1, '<\x04:ES:\x01>'),
             (Parameter.FOCUS_POSITION, 100, '<\x04:FG:d>'),
             (Parameter.COMPRESSION_RATIO, 100, '<\x04:CD:d>'),
-            (Parameter.NETWORK_DRIVE_LOCATION, 0, '<\x04:FL:\x00>'),
             (Parameter.LAMP_BRIGHTNESS, '3:50', '<\x05:BF:\x032>'),
 
         ]
@@ -525,20 +460,23 @@ class DriverUnitTest(InstrumentDriverUnitTestCase, CAMDSMixin):
 
         try:
 
-            if param in [Parameter.PAN_POSITION[ParameterIndex.KEY],
-                         Parameter.TILT_POSITION[ParameterIndex.KEY]]:
-
-                if not isinstance(val, int) or val > 999:
-                    raise Exception('The desired value for %s must be an integer less than 999: %s'
-                                    % (param, val))
-
-                val = '%03d' % val
-
-            elif isinstance(val, basestring):
+            if isinstance(val, basestring):
                 val = ''.join(chr(int(x)) for x in val.split(':'))
 
             else:
-                val = chr(val)
+                if param == Parameter.LAMP_BRIGHTNESS[ParameterIndex.KEY]:
+                    # Set both lamps to an equal value by setting first byte to \x03 which indicates to the instrument
+                    # to apply the given value to both lamps
+                    val = ''.join( (chr(3), chr(val)) )
+                elif param == Parameter.CAMERA_GAIN[ParameterIndex.KEY]:
+                    # CAMERA_GAIN must be an integer between 1 and 32, or equal to 255 (auto gain)
+                    if val == 255 or (0 < val < 33):
+                        val = chr(val)
+                    else:
+                        raise Exception('The desired value for %s must be an integer less '
+                                                    'either equal to 255 or between 1 and 32: %s' % (param, val))
+                else:
+                    val = chr(val)
 
             if param == Parameter.NTP_SETTING[ParameterIndex.KEY]:
                 val = val + Parameter.NTP_SETTING[ParameterIndex.DEFAULT_DATA]
@@ -547,9 +485,11 @@ class DriverUnitTest(InstrumentDriverUnitTestCase, CAMDSMixin):
             param_tuple = getattr(Parameter, param)
 
             set_cmd = '<%s:%s:%s>' % (chr(data_size), param_tuple[ParameterIndex.SET], val)
+            log.debug("Set command: %r" % set_cmd)
 
         except KeyError:
-            raise Exception('Unknown driver parameter. %s' % param)
+                raise Exception('Unknown driver parameter. %s' % param)
+
 
         return set_cmd
 
@@ -668,13 +608,10 @@ class DriverIntegrationTest(InstrumentDriverIntegrationTestCase, CAMDSMixin):
             Parameter.CAMERA_MODE: 9,
             Parameter.FRAME_RATE: 30,
             Parameter.IMAGE_RESOLUTION: 1,
-            Parameter.PAN_SPEED: 50,
             Parameter.COMPRESSION_RATIO: 100,
             Parameter.FOCUS_POSITION: 100,
             Parameter.PAN_POSITION: 90,
-            Parameter.SHUTTER_SPEED: '255:255',
-            Parameter.TILT_POSITION: 90,
-            Parameter.TILT_SPEED: 50,
+            Parameter.TILT_POSITION: 90
         }
         self.assert_set_bulk(params)
 
