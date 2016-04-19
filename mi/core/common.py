@@ -240,6 +240,7 @@ class Units(BaseEnum):
     FOOT_PER_MINUTE = 'ft/min'
     FOOT_PER_SECOND = 'ft/s'
     FOOT_POUND_FORCE = 'ft · lbf'
+    FRAMES_PER_SECOND = 'fr/s'
     FREQUENCY_MODULATION = 'FM'
     GALLON = 'gal'
     GALLON_PER_MINUTE = 'gal/min'
