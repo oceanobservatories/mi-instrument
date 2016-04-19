@@ -209,7 +209,7 @@ class VADCPMixin(DriverTestMixin):
                                                  VALUE: '11110'},
         WorkhorseParameter.SAVE_NVRAM_TO_RECORDER: {TYPE: bool, READONLY: True, DA: True, STARTUP: True, DEFAULT: True,
                                                     VALUE: True},
-        WorkhorseParameter.TIME: {TYPE: str, READONLY: False, DA: False, STARTUP: False, DEFAULT: False},
+        WorkhorseParameter.TIME: {TYPE: str, READONLY: True, DA: False, STARTUP: False, DEFAULT: False},
         WorkhorseParameter.SERIAL_OUT_FW_SWITCHES: {TYPE: str, READONLY: True, DA: True, STARTUP: True,
                                                     DEFAULT: '111100000',
                                                     VALUE: '111100000'},
@@ -299,7 +299,7 @@ class VADCPMixin(DriverTestMixin):
                                                  VALUE: '11110'},
         WorkhorseParameter.SAVE_NVRAM_TO_RECORDER: {TYPE: bool, READONLY: True, DA: True, STARTUP: True, DEFAULT: True,
                                                     VALUE: True},
-        WorkhorseParameter.TIME: {TYPE: str, READONLY: False, DA: False, STARTUP: False, DEFAULT: False},
+        WorkhorseParameter.TIME: {TYPE: str, READONLY: True, DA: False, STARTUP: False, DEFAULT: False},
         WorkhorseParameter.SERIAL_OUT_FW_SWITCHES: {TYPE: str, READONLY: True, DA: True, STARTUP: True,
                                                     DEFAULT: '111100000',
                                                     VALUE: '111100000'},
@@ -371,7 +371,7 @@ class VADCPMixin(DriverTestMixin):
                                                 VALUE: '001'},
         WorkhorseParameter.RDS3_MODE_SEL: {TYPE: int, READONLY: True, DA: True, STARTUP: True, DEFAULT: 2, VALUE: 2},
         WorkhorseParameter.SLAVE_TIMEOUT: {TYPE: int, READONLY: True, DA: True, STARTUP: True, DEFAULT: 0, VALUE: 0},
-        WorkhorseParameter.SYNCH_DELAY: {TYPE: int, READONLY: True, DA: True, STARTUP: True, DEFAULT: 100, VALUE: 100},
+        WorkhorseParameter.SYNCH_DELAY: {TYPE: int, READONLY: True, DA: True, STARTUP: True, DEFAULT: 0, VALUE: 0},
     }
 
     for key in _driver_parameters_slave.keys():

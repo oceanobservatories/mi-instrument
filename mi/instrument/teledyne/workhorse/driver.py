@@ -688,6 +688,7 @@ parameter_visibility = {
     WorkhorseParameter.DATA_STREAM_SELECTION: ParameterDictVisibility.IMMUTABLE,
     WorkhorseParameter.ENSEMBLE_PER_BURST: ParameterDictVisibility.IMMUTABLE,
     WorkhorseParameter.TIME_OF_FIRST_PING: ParameterDictVisibility.READ_ONLY,
+    WorkhorseParameter.TIME: ParameterDictVisibility.READ_ONLY,
     WorkhorseParameter.BUFFERED_OUTPUT_PERIOD: ParameterDictVisibility.IMMUTABLE,
     WorkhorseParameter.SERIAL_OUT_FW_SWITCHES: ParameterDictVisibility.IMMUTABLE,
     WorkhorseParameter.SAMPLE_AMBIENT_SOUND: ParameterDictVisibility.IMMUTABLE,

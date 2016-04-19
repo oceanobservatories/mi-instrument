@@ -162,7 +162,7 @@ class ADCPTMixin(DriverTestMixin):
         WP.SERIAL_DATA_OUT: {TYPE: str, READONLY: True, DA: True, STARTUP: True, DEFAULT: '000 000 000', VALUE: '000 000 000'},
         WP.SERIAL_FLOW_CONTROL: {TYPE: str, READONLY: True, DA: True, STARTUP: True, DEFAULT: '11110', VALUE: '11110'},
         WP.SAVE_NVRAM_TO_RECORDER: {TYPE: bool, READONLY: True, DA: True, STARTUP: True, DEFAULT: True, VALUE: True},
-        WP.TIME: {TYPE: str, READONLY: False, DA: False, STARTUP: False, DEFAULT: False},
+        WP.TIME: {TYPE: str, READONLY: True, DA: False, STARTUP: False, DEFAULT: False},
         WP.SERIAL_OUT_FW_SWITCHES: {TYPE: str, READONLY: True, DA: True, STARTUP: True, DEFAULT: '111100000', VALUE: '111100000'},
         WP.BANNER: {TYPE: bool, READONLY: True, DA: True, STARTUP: True, DEFAULT: False, VALUE: False},
         WP.INSTRUMENT_ID: {TYPE: int, READONLY: True, DA: True, STARTUP: True, DEFAULT: 0, VALUE: 0},
