@@ -66,7 +66,7 @@ master_parameter_defaults[WorkhorseParameter.TIME_PER_PING] = '00:01.00'
 
 slave_parameter_defaults[WorkhorseParameter.TRANSDUCER_DEPTH] = 2000
 slave_parameter_defaults[WorkhorseParameter.RDS3_MODE_SEL] = 2
-slave_parameter_defaults[WorkhorseParameter.SYNCH_DELAY] = 100
+slave_parameter_defaults[WorkhorseParameter.SYNCH_DELAY] = 0
 slave_parameter_defaults[WorkhorseParameter.BLANK_AFTER_TRANSMIT] = 83
 slave_parameter_defaults[WorkhorseParameter.NUMBER_OF_DEPTH_CELLS] = 220
 slave_parameter_defaults[WorkhorseParameter.DEPTH_CELL_SIZE] = 94
