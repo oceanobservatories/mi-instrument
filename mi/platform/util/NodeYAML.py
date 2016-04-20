@@ -1,8 +1,9 @@
 import copy
-from collections import MutableMapping
+from collections import MutableMapping, namedtuple
 
 from mi.platform.exceptions import NodeConfigurationFileException, StreamConfigurationFileException
 
+ATTR = 'attribute'
 OMC_NAME = 'omc_parameter_name'
 ION_NAME = 'ion_parameter_name'
 SCALE = 'scale_factor'
@@ -10,6 +11,9 @@ MON_SEC = 'monitor_cycle_seconds'
 NULL_CONFIG = {'node_meta_data': {},
                'node_streams': {},
                'node_port_info': {}, }
+
+
+RealizedParameter = namedtuple('RealizedParameter', [ATTR, ION_NAME, SCALE, MON_SEC])
 
 
 class NodeYAML(object):
@@ -23,10 +27,15 @@ class NodeYAML(object):
             return NoPortNodeYAML(node_config, stream_definitions)
 
     def __init__(self, node_config, stream_definitions):
-        self._stream_definitions = Streams(stream_definitions)
-        self._stream_definitions.validate()
+        if stream_definitions:
+            self._stream_definitions = Streams(stream_definitions)
+            self._stream_definitions.validate()
+            self._node_streams = self._create_streams(node_config["node_streams"])
+        else:
+            self._stream_definitions = None
+            self._node_streams = None
+            
         self._node_meta_data = node_config["node_meta_data"]
-        self._node_streams = self._create_streams(node_config["node_streams"])
         self._node_port_info = None
 
     @property
@@ -112,7 +121,7 @@ class ParameterException(Exception):
     pass
 
 
-class StreamParameter(object):
+class ParameterDefinition(object):
     def __init__(self, parameter_dict):
         self.omc_parameter_name = parameter_dict.get(OMC_NAME)
         self.ion_parameter_name = parameter_dict.get(ION_NAME)
@@ -137,7 +146,7 @@ class StreamParameter(object):
         for k, v in var_map.iteritems():
             name = name.replace('{%s}' % k, str(v))
 
-        return name, {ION_NAME: self.ion_parameter_name, SCALE: self.scale_factor, MON_SEC: self.monitor_cycle_seconds}
+        return name, RealizedParameter(name, self.ion_parameter_name, self.scale_factor, self.monitor_cycle_seconds)
 
 
 class StreamConfig(object):
@@ -145,7 +154,7 @@ class StreamConfig(object):
         self.variables = stream_definition.get('variables', None)
         if self.variables is None:
             self.variables = []
-        self.parameters = [StreamParameter(p) for p in stream_definition.get('parameters')]
+        self.parameters = [ParameterDefinition(p) for p in stream_definition.get('parameters')]
 
     def get_parameters(self, var_map):
         for variable in self.variables:

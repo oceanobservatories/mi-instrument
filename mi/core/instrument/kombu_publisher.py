@@ -16,8 +16,8 @@ from ooi.logging import log
 
 
 class KombuPublisher(Publisher):
-    def __init__(self, url, queue, headers, allowed, username='guest', password='guest'):
-        super(KombuPublisher, self).__init__(allowed)
+    def __init__(self, url, queue, headers, allowed, username='guest', password='guest', **kwargs):
+        super(KombuPublisher, self).__init__(allowed, **kwargs)
         self._url = url
         self.queue = queue
         self.headers = headers
