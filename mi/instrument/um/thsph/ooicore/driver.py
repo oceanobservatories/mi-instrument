@@ -479,7 +479,7 @@ class THSPHProtocol(CommandResponseInstrumentProtocol):
 
         self._do_cmd_no_resp(Command.GET_SAMPLE, timeout=TIMEOUT)
 
-        particles = self.wait_for_particles(DataParticleType.THSPH_PARSED, timeout)
+        particles = self.wait_for_particles([DataParticleType.THSPH_PARSED], timeout)
 
         return next_state, (next_state, particles)
 
