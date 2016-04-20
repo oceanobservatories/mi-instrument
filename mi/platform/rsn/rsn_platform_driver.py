@@ -7,28 +7,22 @@
 @brief   The main RSN OMS platform driver class.
 """
 import functools
+from copy import deepcopy
+from socket import error as SocketError
 from xmlrpclib import Fault
 from xmlrpclib import ProtocolError
-from socket import error as SocketError
-import ntplib
-import time
-from copy import deepcopy
-from functools import partial
+
 import mi.core.log
 from mi.core.common import BaseEnum
-from mi.core.scheduler import PolledScheduler
-from mi.platform.platform_driver import PlatformDriver
-from mi.core.instrument.data_particle import DataParticle, DataParticleKey
-from mi.core.instrument.instrument_driver import DriverAsyncEvent
-from mi.platform.platform_driver import PlatformDriverState
-from mi.platform.platform_driver import PlatformDriverEvent
-from mi.platform.exceptions import PlatformException
-from mi.platform.exceptions import PlatformDriverException
 from mi.platform.exceptions import PlatformConnectionException
-from mi.platform.rsn.oms_client_factory import CIOMSClientFactory
+from mi.platform.exceptions import PlatformDriverException
+from mi.platform.exceptions import PlatformException
+from mi.platform.platform_driver import PlatformDriver
+from mi.platform.platform_driver import PlatformDriverEvent
+from mi.platform.platform_driver import PlatformDriverState
 from mi.platform.responses import InvalidResponse
+from mi.platform.rsn.oms_client_factory import CIOMSClientFactory
 from mi.platform.util.node_configuration import NodeConfiguration
-
 
 log = mi.core.log.get_logger()
 
@@ -36,34 +30,10 @@ __author__ = 'Carlos Rueda'
 __license__ = 'Apache 2.0'
 
 
-class PlatformParticle(DataParticle):
-    """
-    The contents of the parameter dictionary, published at the start of a scan
-    """
-
-    def _build_parsed_values(self):
-        return [{DataParticleKey.VALUE_ID: a, DataParticleKey.VALUE: b} for a, b in self.raw_data]
-
-
-class ScheduledJob(BaseEnum):
-    """
-    Instrument scheduled jobs
-    """
-    ACQUIRE_SAMPLE = 'pad_sample_timer_event'
-
-
-class RSNPlatformDriverState(PlatformDriverState):
-    """
-    We simply inherit the states from the superclass
-    """
-    pass
-
-
 class RSNPlatformDriverEvent(PlatformDriverEvent):
     """
     The ones for superclass plus a few others for the CONNECTED state.
     """
-    GET_ENG_DATA = 'RSN_PLATFORM_DRIVER_GET_ENG_DATA'
     TURN_ON_PORT = 'RSN_PLATFORM_DRIVER_TURN_ON_PORT'
     TURN_OFF_PORT = 'RSN_PLATFORM_DRIVER_TURN_OFF_PORT'
     SET_PORT_OVER_CURRENT_LIMITS = 'RSN_PLATFORM_DRIVER_SET_PORT_OVER_CURRENT_LIMITS'
@@ -74,7 +44,6 @@ class RSNPlatformDriverEvent(PlatformDriverEvent):
 
 
 class RSNPlatformDriverCapability(BaseEnum):
-    GET_ENG_DATA = RSNPlatformDriverEvent.GET_ENG_DATA
     TURN_ON_PORT = RSNPlatformDriverEvent.TURN_ON_PORT
     TURN_OFF_PORT = RSNPlatformDriverEvent.TURN_OFF_PORT
     SET_PORT_OVER_CURRENT_LIMITS = RSNPlatformDriverEvent.SET_PORT_OVER_CURRENT_LIMITS
@@ -111,19 +80,6 @@ class RSNPlatformDriver(PlatformDriver):
 
         # CIOMSClient instance created by connect() and destroyed by disconnect():
         self._rsn_oms = None
-
-        # URL for the event listener registration/unregistration (based on
-        # web server launched by ServiceGatewayService, since that's the
-        # service in charge of receiving/relaying the OMS events).
-        # NOTE: (as proposed long ago), this kind of functionality should
-        # actually be provided by some component more in charge of the RSN
-        # platform netwokr as a whole -- as opposed to platform-specific).
-        self.listener_url = None
-
-        # scheduler config is a bit redundant now, but if we ever want to
-        # re-initialize a scheduler we will need it.
-        self._scheduler = None
-        self._last_sample_time = {}
 
     ################
     # Static methods
@@ -184,48 +140,18 @@ class RSNPlatformDriver(PlatformDriver):
         """
         PlatformDriver._configure(self, driver_config)
 
-        self.nodeCfg = NodeConfiguration()
+        self.node_config = NodeConfiguration(driver_config['driver_config_file']['node_cfg_file'])
 
-        self._platform_id = driver_config['node_id']
-        self.nodeCfg.openNode(self._platform_id, driver_config['driver_config_file']['node_cfg_file'])
+        self._platform_id = self.node_config.platform_id
 
-        self.nms_source = self.nodeCfg.node_meta_data['nms_source']
+        self.nms_source = self.node_config.node_meta_data['nms_source']
 
-        self.oms_sample_rate = self.nodeCfg.node_meta_data['oms_sample_rate']
+        self.oms_sample_rate = self.node_config.node_meta_data['oms_sample_rate']
 
-        self.read_only_mode = self.nodeCfg.node_meta_data['read_only_mode']
+        self.read_only_mode = self.node_config.node_meta_data['read_only_mode']
         log.info("READ ONLY MODE: %s" % self.read_only_mode)
 
-        self.nodeCfg.Print()
-
         self._construct_resource_schema()
-
-    def _build_scheduler(self):
-        """
-        Build a scheduler for periodic status updates
-        """
-        self._scheduler = PolledScheduler()
-        self._scheduler.start()
-
-        def event_callback(event):
-            log.debug("driver job triggered, raise event: %s" % event)
-            self._fsm.on_event(event)
-
-        # Dynamically create the method and add it
-        method = partial(event_callback, RSNPlatformDriverEvent.GET_ENG_DATA)
-
-        self._job = self._scheduler.add_interval_job(method, seconds=self.oms_sample_rate)
-
-    def _delete_scheduler(self):
-        """
-        Remove the autosample schedule.
-        """
-        try:
-            self._scheduler.unschedule_job(self._job)
-        except KeyError:
-            log.debug('Failed to remove scheduled job for ACQUIRE_SAMPLE')
-
-        self._scheduler.shutdown()
 
     def _construct_resource_schema(self):
         """
@@ -280,105 +206,16 @@ class RSNPlatformDriver(PlatformDriver):
 
         # ping to verify connection:
         self._ping()
-        self._build_scheduler()  # then start calling it every X seconds
 
     def _disconnect(self, recursion=None):
         CIOMSClientFactory.destroy_instance(self._rsn_oms)
         self._rsn_oms = None
         log.debug("%r: CIOMSClient instance destroyed", self._platform_id)
 
-        self._delete_scheduler()
-        self._scheduler = None
-
     def get_metadata(self):
         """
         """
-        return self.nodeCfg.node_meta_data
-
-    def get_eng_data(self):
-        ntp_time = ntplib.system_to_ntp_time(time.time())
-        max_time = ntp_time - self.oms_sample_rate * 10
-
-        for key, stream in self.nodeCfg.node_streams.iteritems():
-            log.debug("%r Stream(%s)", self._platform_id, key)
-            # prevent the max lookback time getting to big if we stop getting data for some reason
-            self._last_sample_time[key] = max(self._last_sample_time.get(key, max_time), max_time)
-
-            for instance in stream:
-                self.get_instance_particles(key, instance, stream[instance])
-
-    def get_instance_particles(self, stream_name, instance, stream_def):
-        # add a little bit of time to the last received so we don't get one we already have again
-        attrs = [(k, self._last_sample_time[stream_name] + 0.1) for k in stream_def]
-
-        if not attrs:
-            return
-
-        attr_dict = self.get_attribute_values_from_oms(attrs)  # go get the data from the OMS
-        ts_attr_dict = self.group_by_timestamp(attr_dict)
-
-        if not ts_attr_dict:
-            return
-
-        self._last_sample_time[stream_name] = max(ts_attr_dict.keys())
-
-        for timestamp in ts_attr_dict:
-            attrs = ts_attr_dict[timestamp]
-            attrs = self.convert_attrs_to_ion(stream_def, attrs)
-            particle = PlatformParticle(attrs, preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
-            particle.set_internal_timestamp(timestamp)
-            particle._data_particle_type = stream_name
-
-            event = {
-                'type': DriverAsyncEvent.SAMPLE,
-                'value': particle.generate(),
-                'time': time.time(),
-                'instance': '%s-%s' % (self.nodeCfg.node_meta_data['reference_designator'], instance),
-            }
-
-            self._send_event(event)
-
-    def get_attribute_values(self, attrs):
-        """
-        Simple wrapper method for compatibility.
-        :param attrs:
-        """
-        return self.get_attribute_values_from_oms(attrs)
-
-    @verify_rsn_oms
-    def get_attribute_values_from_oms(self, attrs):
-        """
-        Fetch values from the OMS
-        :param attrs:
-        """
-        if not isinstance(attrs, (list, tuple)):
-            msg = 'get_attribute_values: attrs argument must be a list [(attrName, from_time), ...]. Given: %s' % attrs
-            raise PlatformException(msg)
-
-        response = None
-
-        try:
-            response = self._rsn_oms.attr.get_platform_attribute_values(self._platform_id, attrs)
-            response = self._verify_platform_id_in_response(response)
-            return_dict = {}
-            for key in response:
-                value_list = response[key]
-                if value_list == 'INVALID_ATTRIBUTE_ID':
-                    continue
-
-                if not isinstance(value_list, list):
-                    raise PlatformException(msg="Error in getting values for attribute %s.  %s" % (key, value_list))
-                if value_list and value_list[0][0] == "ERROR_DATA_REQUEST_TOO_FAR_IN_PAST":
-                        raise PlatformException(msg="Time requested for %s too far in the past" % key)
-                return_dict[key] = value_list
-            return return_dict
-
-        except (Fault, ProtocolError, SocketError) as e:
-            msg = "get_attribute_values_from_oms Cannot get_platform_attribute_values: %s" % e
-            raise PlatformConnectionException(msg)
-        except AttributeError:
-            msg = "Error returned in requesting attributes: %s" % response
-            raise PlatformException(msg)
+        return self.node_config.node_meta_data
 
     def _verify_platform_id_in_response(self, response):
         """
@@ -513,10 +350,10 @@ class RSNPlatformDriver(PlatformDriver):
             raise PlatformConnectionException(msg="Cannot get_available_missions: %s" % str(e))
 
     def _verify_and_return_oms_port(self, port_id, method_name):
-        if port_id not in self.nodeCfg.node_port_info:
+        if port_id not in self.node_config.node_port_info:
             raise PlatformConnectionException("Cannot %s: Invalid Port ID" % method_name)
 
-        return self.nodeCfg.node_port_info[port_id]['port_oms_port_cntl_id']
+        return self.node_config.node_port_info[port_id]['port_oms_port_cntl_id']
 
     def _convert_port_id_from_oms_to_ci(self, port_id, oms_port_cntl_id, response):
         """
@@ -661,18 +498,6 @@ class RSNPlatformDriver(PlatformDriver):
             return self._connection_lost(RSNPlatformDriverEvent.GET_AVAILABLE_MISSIONS,
                                          args, kwargs, e)
 
-    def _handler_connected_get_eng_data(self, *args, **kwargs):
-        """
-        """
-
-        try:
-            self.get_eng_data()
-            return None, None
-
-        except PlatformConnectionException as e:
-            return self._connection_lost(RSNPlatformDriverEvent.GET_ENG_DATA,
-                                         args, kwargs, e)
-
     def _handler_connected_set_port_over_current_limits(self, *args, **kwargs):
         """
         """
@@ -743,7 +568,7 @@ class RSNPlatformDriver(PlatformDriver):
     ##############################################################
 
     def _construct_fsm(self,
-                       states=RSNPlatformDriverState,
+                       states=PlatformDriverState,
                        events=RSNPlatformDriverEvent,
                        enter_event=RSNPlatformDriverEvent.ENTER,
                        exit_event=RSNPlatformDriverEvent.EXIT):
@@ -767,7 +592,3 @@ class RSNPlatformDriver(PlatformDriver):
                               self._handler_connected_get_mission_status)
         self._fsm.add_handler(PlatformDriverState.CONNECTED, RSNPlatformDriverEvent.GET_AVAILABLE_MISSIONS,
                               self._handler_connected_get_available_missions)
-        self._fsm.add_handler(PlatformDriverState.CONNECTED, RSNPlatformDriverEvent.GET_ENG_DATA,
-                              self._handler_connected_get_eng_data)
-        self._fsm.add_handler(PlatformDriverState.CONNECTED, ScheduledJob.ACQUIRE_SAMPLE,
-                              self._handler_connected_get_eng_data)
