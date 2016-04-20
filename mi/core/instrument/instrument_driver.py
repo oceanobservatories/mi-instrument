@@ -7,6 +7,8 @@
 @brief Instrument driver classes that provide structure towards interaction
 with individual instruments in the system.
 """
+import json
+
 import consulate
 import random
 import time
@@ -37,8 +39,6 @@ STARTING_RECONNECT_INTERVAL = .5
 MAXIMUM_RECONNECT_INTERVAL = 256
 MAXIMUM_CONSUL_QUERIES = 5
 MAXIMUM_BACKOFF = 5  # seconds
-PA_CHECK_INTERVAL = 10
-PA_DISCONNECTED_MAX = 5  # after this many DISCONNECTED messages from the port agent, reset the protocol
 
 
 class AutoDiscoverFailure(Exception):
@@ -149,7 +149,7 @@ class DriverConnectionState(BaseEnum):
     UNCONFIGURED = 'DRIVER_STATE_UNCONFIGURED'
     DISCONNECTED = 'DRIVER_STATE_DISCONNECTED'
     CONNECTED = 'DRIVER_STATE_CONNECTED'
-    PA_CONNECTED = 'DRIVER_STATE_PA_CONNECTED'
+    INST_DISCONNECTED = 'DRIVER_STATE_INSTRUMENT_DISCONNECTED'
 
 
 class DriverEvent(BaseEnum):
@@ -190,7 +190,6 @@ class DriverEvent(BaseEnum):
     INIT_PARAMS = 'DRIVER_EVENT_INIT_PARAMS'
     GAP_RECOVERY = 'DRIVER_EVENT_GAP_RECOVERY'
     GAP_RECOVERY_COMPLETE = 'DRIVER_EVENT_GAP_RECOVERY_COMPLETE'
-    CHECK_PA = 'DRIVER_EVENT_CHECK_PA'
 
 
 class DriverAsyncEvent(BaseEnum):
@@ -490,13 +489,12 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
                 (DriverEvent.CONFIGURE, self._handler_disconnected_configure),
                 (DriverEvent.CONNECT, self._handler_disconnected_connect),
             ],
-            DriverConnectionState.PA_CONNECTED: [
-                (DriverEvent.ENTER, self._handler_pa_connected_enter),
-                (DriverEvent.EXIT, self._handler_pa_connected_exit),
-                (DriverEvent.CHECK_PA, self._handler_pa_connected_check),
-                (DriverEvent.CONNECT, self._handler_pa_connected_connect),
+            DriverConnectionState.INST_DISCONNECTED: [
+                (DriverEvent.ENTER, self._handler_inst_disconnected_enter),
+                (DriverEvent.EXIT, self._handler_inst_disconnected_exit),
+                (DriverEvent.CONNECT, self._handler_inst_disconnected_connect),
                 (DriverEvent.CONNECTION_LOST, self._handler_connected_connection_lost),
-                (DriverEvent.PA_CONNECTION_LOST, self._handler_pa_connected_pa_connection_lost),
+                (DriverEvent.PA_CONNECTION_LOST, self._handler_inst_disconnected_pa_connection_lost),
             ],
             DriverConnectionState.CONNECTED: [
                 (DriverEvent.ENTER, self._handler_connected_enter),
@@ -511,7 +509,6 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
                 (DriverEvent.FORCE_STATE, self._handler_connected_protocol_event),
                 (DriverEvent.START_DIRECT, self._handler_connected_start_direct_event),
                 (DriverEvent.STOP_DIRECT, self._handler_connected_stop_direct_event),
-                (DriverEvent.CHECK_PA, self._handler_pa_connected_check),
             ],
         }
 
@@ -519,6 +516,7 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
             for event, handler in handlers[state]:
                 self._connection_fsm.add_handler(state, event, handler)
 
+        self._paconfig = {}
         self._pre_da_config = {}
         self._startup_config = {}
 
@@ -532,9 +530,6 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
         self._autoconnect = True
         self._reconnect_interval = STARTING_RECONNECT_INTERVAL
         self._max_reconnect_interval = MAXIMUM_RECONNECT_INTERVAL
-        self._pa_check_interval = PA_CHECK_INTERVAL
-        self._pa_max_disconnected = PA_DISCONNECTED_MAX
-        self._pa_disconnected_count = 0
 
         # Start state machine.
         self._connection_fsm.start(DriverConnectionState.UNCONFIGURED)
@@ -667,14 +662,9 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
         log.debug("Getting metadata from driver...")
         protocol = self._protocol
 
-        # Because the config requires information from the protocol param dict
-        # we temporarily instantiate a protocol object to get at the static
-        # information.
-        if not protocol:
-            self._build_protocol()
-
-        log.debug("Getting metadata from protocol...")
-        return self._protocol.get_config_metadata_dict()
+        if protocol:
+            log.debug("Getting metadata from protocol...")
+            return self._protocol.get_config_metadata_dict()
 
     def restore_direct_access_params(self, config):
         """
@@ -938,11 +928,10 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
         @raises InstrumentConnectionException if the attempt to connect failed.
         """
         result = None
-        self._build_protocol()
+
         try:
             self._connection.init_comms()
-            self._protocol._connection = self._connection
-            next_state = DriverConnectionState.PA_CONNECTED
+            next_state = DriverConnectionState.INST_DISCONNECTED
         except InstrumentConnectionException as e:
             log.error("Connection Exception: %s", e)
             log.error("Instrument Driver returning to unconfigured state.")
@@ -952,13 +941,14 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
         if len(args) > 0 and isinstance(args[0], dict):
             init_config = args[0]
         self.set_init_params(init_config)
+
         return next_state, result
 
     ########################################################################
     # PA Connected handlers.
     ########################################################################
 
-    def _handler_pa_connected_enter(self, *args, **kwargs):
+    def _handler_inst_disconnected_enter(self, *args, **kwargs):
         """
         Enter connected state.
         """
@@ -968,37 +958,20 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
 
         # Send state change event to agent.
         self._driver_event(DriverAsyncEvent.STATE_CHANGE)
+        self._connection.send_get_state()
 
-        self._async_raise_event(DriverEvent.CHECK_PA)
-
-    def _handler_pa_connected_exit(self, *args, **kwargs):
+    def _handler_inst_disconnected_exit(self, *args, **kwargs):
         """
         Exit connected state.
         """
         pass
 
-    def _handler_pa_connected_check(self, *args, **kwargs):
-        """
-        Periodically probe the port agent for the current connection state
-        :param args:
-        :param kwargs:
-        :return:
-        """
-        self._connection.send_get_state()
-        self._async_raise_event(DriverEvent.CHECK_PA, event_delay=self._pa_check_interval)
-        return None, None
-
-    def _handler_pa_connected_connect(self, *args, **kwargs):
+    def _handler_inst_disconnected_connect(self, *args, **kwargs):
+        self._build_protocol()
+        self._protocol._connection = self._connection
         return DriverConnectionState.CONNECTED, None
 
-    def _handler_pa_connected_pa_connection_lost(self, *args, **kwargs):
-        # check if we need to reset the protocol
-        if self._protocol and self._protocol.get_current_state() != DriverProtocolState.UNKNOWN:
-            if self._pa_disconnected_count > self._pa_max_disconnected:
-                self._destroy_protocol()
-                self._build_protocol()
-                self._protocol._connection = self._connection
-
+    def _handler_inst_disconnected_pa_connection_lost(self, *args, **kwargs):
         return None, None
 
     ########################################################################
@@ -1051,7 +1024,9 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
         return DriverConnectionState.UNCONFIGURED, None
 
     def _handler_connected_pa_connection_lost(self, *args, **kwargs):
-        return DriverConnectionState.PA_CONNECTED, None
+        self._destroy_protocol()
+
+        return DriverConnectionState.INST_DISCONNECTED, None
 
     def _handler_connected_protocol_event(self, event, *args, **kwargs):
         """
@@ -1189,30 +1164,20 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
             data = port_agent_packet.get_data()
 
             if packet_type == PortAgentPacket.PORT_AGENT_CONFIG:
-
-                configuration = {}
-
-                for each in data.split('\n'):
-                    if each == '':
-                        continue
-
-                    key, value = each.split(None, 1)
-                    try:
-                        value = int(value)
-                    except ValueError:
-                        pass
-                    configuration[key] = value
-
-                self._driver_event(DriverAsyncEvent.DRIVER_CONFIG, configuration)
+                try:
+                    paconfig = json.loads(data)
+                    self._paconfig = paconfig
+                    self._driver_event(DriverAsyncEvent.DRIVER_CONFIG, paconfig)
+                except ValueError as e:
+                    log.exception('Unable to parse port agent config: %r %r', data, e)
 
             elif packet_type == PortAgentPacket.PORT_AGENT_STATUS:
+                log.debug('Received PORT AGENT STATUS: %r', data)
                 current_state = self._connection_fsm.get_current_state()
                 if data == 'DISCONNECTED':
-                    self._pa_disconnected_count += 1
                     self._async_raise_event(DriverEvent.PA_CONNECTION_LOST)
                 elif data == 'CONNECTED':
-                    self._pa_disconnected_count = 0
-                    if current_state == DriverConnectionState.PA_CONNECTED:
+                    if current_state == DriverConnectionState.INST_DISCONNECTED:
                         self._async_raise_event(DriverEvent.CONNECT)
 
             else:
@@ -1221,7 +1186,7 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
 
     def _lost_connection_callback(self):
         """
-        A callback invoked by the port agent client when it looses
+        A callback invoked by the port agent client when it loses
         connectivity to the port agent.
         """
 
