@@ -34,12 +34,12 @@ from mi.core.instrument.instrument_driver import DriverAsyncEvent
 from mi.core.instrument.publisher import Publisher
 
 from mi.core.log import get_logger, get_logging_metaclass
+
 log = get_logger()
 
 META_LOGGER = get_logging_metaclass('trace')
 PUBLISH_INTERVAL = 5
 MAX_NUM_EVENTS = 1000
-
 
 __author__ = 'Peter Cable'
 __license__ = 'Apache 2.0'
@@ -63,9 +63,9 @@ class EventKeys(BaseEnum):
     ARGS = 'args'
     KWARGS = 'kwargs'
 
+
 # max seconds between interrupts before killing driver
 INTERRUPT_REPEAT_INTERVAL = 3
-
 
 # semaphore to prevent multiple simultaneous commands into the driver
 COMMAND_SEM = threading.BoundedSemaphore(1)
@@ -279,6 +279,7 @@ class LoadBalancer(object):
     send 'READY' upon initialization and subsequent "requests" will be
     the results from the previous command.
     """
+
     def __init__(self, wrapper, num_workers, worker_url='inproc://workers'):
         self.wrapper = wrapper
         self.num_workers = num_workers
@@ -359,11 +360,14 @@ class DriverWrapper(object):
         self.port = None
         self.init_params = init_params
 
-        self.evt_thread = None
         self.load_balancer = None
         self.status_thread = None
-        self.stop_evt_thread = True
+        self.running = False
         self.particle_count = 0
+
+        headers = {'sensor': self.refdes, 'deliveryType': 'streamed'}
+        self.event_publisher = Publisher.from_url(self.event_url, headers)
+        self.particle_publisher = Publisher.from_url(self.particle_url, headers)
 
     def construct_driver(self):
         """
@@ -385,6 +389,21 @@ class DriverWrapper(object):
         """
         self.events.put(evt)
 
+        if isinstance(evt[EventKeys.VALUE], Exception):
+            evt[EventKeys.VALUE] = encode_exception(evt[EventKeys.VALUE])
+
+        if evt[EventKeys.TYPE] == DriverAsyncEvent.ERROR:
+            log.error(evt)
+
+        if evt[EventKeys.TYPE] == DriverAsyncEvent.SAMPLE:
+            if evt[EventKeys.VALUE].get('stream_name') == 'raw':
+                # don't publish raw
+                return
+
+            self.particle_publisher.enqueue(evt)
+        else:
+            self.event_publisher.enqueue(evt)
+
     def run(self):
         """
         Process entry point. Construct driver and start messaging loops.
@@ -395,24 +414,18 @@ class DriverWrapper(object):
 
         # noinspection PyUnusedLocal
         def shand(signum, frame):
-            now = time.time()
-            if now - self.int_time < INTERRUPT_REPEAT_INTERVAL:
-                self.stop_messaging()
-            else:
-                self.int_time = now
-                log.info(
-                    'mi/core/instrument/driver_process.py DRIVER GOT SIGINT and is ignoring it...')
+            self.stop_messaging()
 
         signal.signal(signal.SIGINT, shand)
 
         if self.driver is not None or self.construct_driver():
-            self.start_messaging()
-            while self.messaging_started:
+            self.start_threads()
+            while self.running:
                 time.sleep(1)
 
         os._exit(0)
 
-    def start_messaging(self):
+    def start_threads(self):
         """
         Initialize and start messaging resources for the driver, blocking
         until messaging terminates. This ZMQ implementation starts and
@@ -420,9 +433,10 @@ class DriverWrapper(object):
         on REP and PUB sockets, respectively. Terminate loops and close
         sockets when stop flag is set in driver process.
         """
-        self.evt_thread = threading.Thread(target=self.send_evt_msg)
-        self.evt_thread.start()
-        self.messaging_started = True
+        self.running = True
+
+        self.event_publisher.start()
+        self.particle_publisher.start()
 
         self.load_balancer = LoadBalancer(self, self.num_workers)
         self.port = self.load_balancer.port
@@ -433,82 +447,25 @@ class DriverWrapper(object):
 
         self.load_balancer.run()
 
-        self.events.put(build_event(DriverAsyncEvent.DRIVER_CONFIG,
-                                    'started on port %d' % self.port))
+        self.event_publisher.enqueue(build_event(DriverAsyncEvent.DRIVER_CONFIG,
+                                                 'started on port %d' % self.port))
 
     def stop_messaging(self):
         """
         Close messaging resource for the driver. Set flags to cause
         command and event threads to close sockets and conclude.
         """
-        self.stop_evt_thread = True
-        self.messaging_started = False
+        self.event_publisher.stop()
+        self.particle_publisher.stop()
+
         if self.status_thread:
             self.status_thread.running = False
         if self.load_balancer:
             self.load_balancer.running = False
 
+        self.running = False
+
         zmq.Context.instance().term()
-
-    def send_evt_msg(self):
-        """
-        Await events on the driver process event queue and publish them
-        on a ZMQ PUB socket to the driver process client.
-        """
-        self.stop_evt_thread = False
-        headers = {'sensor': self.refdes, 'deliveryType': 'streamed'}
-        event_publisher = Publisher.from_url(self.event_url, headers)
-        particle_publisher = Publisher.from_url(self.particle_url, headers)
-
-        events = []
-        particles = []
-
-        while not self.stop_evt_thread:
-            try:
-                # TODO: should events be a deque?
-                # TODO: should we fire this with a timer instead of a loop?
-                evt = self.events.get_nowait()
-
-                if isinstance(evt[EventKeys.VALUE], Exception):
-                    evt[EventKeys.VALUE] = encode_exception(evt[EventKeys.VALUE])
-
-                if evt[EventKeys.TYPE] == DriverAsyncEvent.ERROR:
-                    log.error(evt)
-
-                if evt[EventKeys.TYPE] == DriverAsyncEvent.SAMPLE:
-                    if evt[EventKeys.VALUE].get('stream_name') == 'raw':
-                        # don't publish raw
-                        continue
-                    particles.append(evt)
-                else:
-                    events.append(evt)
-
-                if len(particles) >= MAX_NUM_EVENTS:
-                    particle_publisher.publish(particles)
-                    particles = []
-
-                if len(events) >= MAX_NUM_EVENTS:
-                    event_publisher.publish(events)
-                    events = []
-
-            except Queue.Empty:
-                if particles:
-                    particle_publisher.publish(particles)
-                    particles = []
-
-                if events:
-                    event_publisher.publish(events)
-                    events = []
-
-                time.sleep(PUBLISH_INTERVAL)
-
-            except KeyboardInterrupt:
-                raise
-
-            # log all other exceptions
-            except Exception as e:
-                log.exception('Exception in event publishing loop: %r', e)
-
 
 
 def main():
@@ -528,6 +485,7 @@ def main():
 
     wrapper = DriverWrapper(module, klass, refdes, event_url, particle_url, init_params)
     wrapper.run()
+
 
 if __name__ == '__main__':
     main()

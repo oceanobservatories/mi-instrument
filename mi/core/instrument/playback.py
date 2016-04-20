@@ -131,8 +131,6 @@ class PlaybackWrapper(object):
         headers = {'sensor': refdes, 'deliveryType': 'streamed'}
         self.event_publisher = Publisher.from_url(event_url, headers)
         self.particle_publisher = Publisher.from_url(particle_url, headers, allowed)
-        self.events = []
-        self.particles = []
 
         self.protocol = self.construct_protocol(module)
         self.reader = reader_klass(files, self.got_data)
@@ -142,7 +140,7 @@ class PlaybackWrapper(object):
             if filename is not None:
                 if hasattr(self.protocol, 'got_filename'):
                     self.protocol.got_filename(filename)
-            if index % 100 == 0:
+            if index % 1000 == 0:
                 self.publish()
         self.publish()
         if hasattr(self.particle_publisher, 'write'):
@@ -173,14 +171,8 @@ class PlaybackWrapper(object):
         sys.exit(1)
 
     def publish(self):
-        if self.events:
-            self.event_publisher.publish(self.events)
-            self.events = []
-        if self.particles:
-            self.filter_bad_time_particles()
-            if self.particles:
-                self.particle_publisher.publish(self.particles)
-                self.particles = []
+        self.event_publisher.publish()
+        self.particle_publisher.publish()
 
     def filter_bad_time_particles(self):
         """
@@ -219,9 +211,9 @@ class PlaybackWrapper(object):
         if event[EventKeys.TYPE] == DriverAsyncEvent.SAMPLE:
             if event[EventKeys.VALUE].get('stream_name') != 'raw':
                 # don't publish raw
-                self.particles.append(event)
+                self.particle_publisher.enqueue(event)
         else:
-            self.events.append(event)
+            self.event_publisher.enqueue(event)
 
 
 class DatalogReader(object):
