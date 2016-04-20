@@ -9,12 +9,13 @@ Driver for the MASSP in-situ mass spectrometer
 """
 
 import functools
+import json
 import time
 
 import mi.core.log
 from mi.core.driver_scheduler import DriverSchedulerConfigKey, TriggerType
 from mi.core.instrument.driver_dict import DriverDictKey
-from mi.core.instrument.port_agent_client import PortAgentClient
+from mi.core.instrument.port_agent_client import PortAgentClient, PortAgentPacket
 from mi.core.instrument.protocol_param_dict import ParameterDictType
 from mi.core.instrument.instrument_protocol import InstrumentProtocol
 from mi.core.instrument.instrument_driver import SingleConnectionInstrumentDriver
@@ -173,24 +174,53 @@ class InstrumentDriver(SingleConnectionInstrumentDriver):
         # Construct superclass.
         SingleConnectionInstrumentDriver.__init__(self, evt_callback, refdes)
         self._slave_protocols = {}
+        self._slave_connection_status = {MCU: 0, RGA: 0, TURBO: 0}
 
-    def _massp_got_config(self, name, port_agent_packet):
-        data = port_agent_packet.get_data()
+    def _massp_got_data(self, name):
+        def _got_data(port_agent_packet):
+            if isinstance(port_agent_packet, Exception):
+                return self._got_exception(port_agent_packet)
 
-        configuration = {'name': name}
+            if isinstance(port_agent_packet, PortAgentPacket):
+                packet_type = port_agent_packet.get_header_type()
+                data = port_agent_packet.get_data()
 
-        for each in data.split('\n'):
-            if each == '':
-                continue
+                if packet_type == PortAgentPacket.PORT_AGENT_CONFIG:
+                    try:
+                        paconfig = json.loads(data)
+                        self._paconfig[name] = paconfig
+                        self._driver_event(DriverAsyncEvent.DRIVER_CONFIG, paconfig)
+                    except ValueError as e:
+                        log.exception('Unable to parse port agent config: %r %r', data, e)
 
-            key, value = each.split(None, 1)
-            try:
-                value = int(value)
-            except ValueError:
-                pass
-            configuration[key] = value
+                elif packet_type == PortAgentPacket.PORT_AGENT_STATUS:
+                    log.debug('Received PORT AGENT STATUS: %r', data)
+                    current_state = self._connection_fsm.get_current_state()
+                    if data == 'DISCONNECTED':
+                        self._slave_connection_status[name] = 0
+                        self._async_raise_event(DriverEvent.PA_CONNECTION_LOST)
+                    elif data == 'CONNECTED':
+                        self._slave_connection_status[name] = 1
+                        if all(self._slave_connection_status.values()):
+                            if current_state == DriverConnectionState.INST_DISCONNECTED:
+                                self._async_raise_event(DriverEvent.CONNECT)
 
-        self._driver_event(DriverAsyncEvent.DRIVER_CONFIG, configuration)
+                else:
+                    protocol = self._slave_protocols.get(name)
+                    if protocol:
+                        protocol.got_data(port_agent_packet)
+        return _got_data
+
+    ########################################################################
+    # Instrument Disconnected handlers.
+    ########################################################################
+
+    def _handler_inst_disconnected_connect(self, *args, **kwargs):
+        self._build_protocol()
+        for name, connection in self._connection.items():
+            self._slave_protocols[name]._connection = connection
+
+        return DriverConnectionState.CONNECTED, None
 
     ########################################################################
     # Disconnected handlers.
@@ -203,15 +233,9 @@ class InstrumentDriver(SingleConnectionInstrumentDriver):
         @return (next_state, result) tuple, (DriverConnectionState.CONNECTED, None) if successful.
         @raises InstrumentConnectionException if the attempt to connect failed.
         """
-        self._build_protocol()
         try:
-            for name, connection in self._connection.items():
-                connection.init_comms(self._slave_protocols[name].got_data,
-                                      self._slave_protocols[name].got_raw,
-                                      functools.partial(self._massp_got_config, name),
-                                      self._got_exception,
-                                      self._lost_connection_callback)
-                self._slave_protocols[name]._connection = connection
+            for connection in self._connection.values():
+                connection.init_comms()
             next_state = DriverConnectionState.CONNECTED
         except InstrumentConnectionException as e:
             log.error("Connection Exception: %s", e)
@@ -232,13 +256,7 @@ class InstrumentDriver(SingleConnectionInstrumentDriver):
         for connection in self._connection.values():
             connection.stop_comms()
 
-        scheduler = self._protocol._scheduler
-        if scheduler:
-            scheduler._scheduler.shutdown()
-        scheduler = None
-
-        self._protocol = None
-        self._slave_protocols = {}
+        self._destroy_protocol()
 
         return DriverConnectionState.UNCONFIGURED, None
 
@@ -250,13 +268,7 @@ class InstrumentDriver(SingleConnectionInstrumentDriver):
         for connection in self._connection.values():
             connection.stop_comms()
 
-        scheduler = self._protocol._scheduler
-        if scheduler:
-            scheduler._scheduler.shutdown()
-        scheduler = None
-
-        self._protocol = None
-        self._slave_protocols = {}
+        self._destroy_protocol()
 
         # Send async agent state change event.
         log.info("_handler_connected_connection_lost: sending LOST_CONNECTION "
@@ -313,13 +325,22 @@ class InstrumentDriver(SingleConnectionInstrumentDriver):
                     cmd_port = config.get('cmd_port')
 
                     if isinstance(addr, basestring) and isinstance(port, int) and len(addr) > 0:
-                        connections[name] = PortAgentClient(addr, port, cmd_port)
+                        connections[name] = PortAgentClient(addr, port, cmd_port,
+                                                            self._massp_got_data(name), self._lost_connection_callback)
                     else:
                         raise InstrumentParameterException('Invalid comms config dict.')
 
                 except (TypeError, KeyError):
                     raise InstrumentParameterException('Invalid comms config dict.')
         return connections
+
+    def _destroy_protocol(self):
+        if self._protocol:
+            scheduler = self._protocol._scheduler
+            if scheduler:
+                scheduler._scheduler.shutdown()
+            self._protocol = None
+            self._slave_protocols = {}
 
     ########################################################################
     # Protocol builder.

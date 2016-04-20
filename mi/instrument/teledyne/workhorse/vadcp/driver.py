@@ -1,5 +1,6 @@
 import copy
 import functools
+import json
 import time
 import re
 from contextlib import contextmanager
@@ -99,6 +100,12 @@ class InstrumentDriver(SingleConnectionInstrumentDriver):
         self._protocol = Protocol(WorkhorsePrompt, NEWLINE, self._driver_event,
                                   connections=[SlaveProtocol.FOURBEAM, SlaveProtocol.FIFTHBEAM])
 
+    def _handler_inst_disconnected_connect(self, *args, **kwargs):
+        self._build_protocol()
+        self._protocol.connections[SlaveProtocol.FOURBEAM] = self._connection[SlaveProtocol.FOURBEAM]
+        self._protocol.connections[SlaveProtocol.FIFTHBEAM] = self._connection[SlaveProtocol.FIFTHBEAM]
+        return DriverConnectionState.CONNECTED, None
+
     def _handler_disconnected_connect(self, *args, **kwargs):
         """
         Establish communications with the device via port agent / logger and
@@ -109,12 +116,10 @@ class InstrumentDriver(SingleConnectionInstrumentDriver):
         next_state = DriverConnectionState.CONNECTED
         result = None
 
-        self._build_protocol()
-
         # for Master first
         try:
             self._connection[SlaveProtocol.FOURBEAM].init_comms()
-            self._protocol.connections[SlaveProtocol.FOURBEAM] = self._connection[SlaveProtocol.FOURBEAM]
+
         except InstrumentConnectionException as e:
             log.error("Connection Exception Beam 1-4: %s", e)
             log.error("Instrument Driver remaining in disconnected state.")
@@ -123,7 +128,6 @@ class InstrumentDriver(SingleConnectionInstrumentDriver):
         # for Slave
         try:
             self._connection[SlaveProtocol.FIFTHBEAM].init_comms()
-            self._protocol.connections[SlaveProtocol.FIFTHBEAM] = self._connection[SlaveProtocol.FIFTHBEAM]
 
         except InstrumentConnectionException as e:
             log.error("Connection Exception Beam 5: %s", e)
@@ -219,30 +223,19 @@ class InstrumentDriver(SingleConnectionInstrumentDriver):
             data = port_agent_packet.get_data()
 
             if packet_type == PortAgentPacket.PORT_AGENT_CONFIG:
-
-                configuration = {}
-
-                for each in data.split('\n'):
-                    if each == '':
-                        continue
-
-                    key, value = each.split(None, 1)
-                    try:
-                        value = int(value)
-                    except ValueError:
-                        pass
-                    configuration[key] = value
-
-                self._driver_event(DriverAsyncEvent.DRIVER_CONFIG, configuration)
+                try:
+                    paconfig = json.loads(data)
+                    self._paconfig[connection] = paconfig
+                    self._driver_event(DriverAsyncEvent.DRIVER_CONFIG, paconfig)
+                except ValueError as e:
+                    log.exception('Unable to parse port agent config: %r %r', data, e)
 
             elif packet_type == PortAgentPacket.PORT_AGENT_STATUS:
                 current_state = self._connection_fsm.get_current_state()
                 if data == 'DISCONNECTED':
-                    self._pa_disconnected_count += 1
                     self._async_raise_event(DriverEvent.PA_CONNECTION_LOST)
                 elif data == 'CONNECTED':
-                    self._pa_disconnected_count = 0
-                    if current_state == DriverConnectionState.PA_CONNECTED:
+                    if current_state == DriverConnectionState.INST_DISCONNECTED:
                         self._async_raise_event(DriverEvent.CONNECT)
 
             else:

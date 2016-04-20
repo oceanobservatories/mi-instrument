@@ -28,8 +28,8 @@ handlers:
     level: TRACE
     ### end of BOILERPLATE -- change logfile location and size below:
     filename: mi-drivers.log
-    maxBytes: 10240000
-    backupCount: 3
+    maxBytes: 100000000
+    backupCount: 5
 
 ### default for all loggers not otherwise specified
 root:
