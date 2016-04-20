@@ -21,7 +21,7 @@ from mi.core.instrument.data_particle import DataParticle, DataParticleKey, Comm
 from mi.core.instrument.driver_dict import DriverDictKey
 from mi.core.instrument.chunker import StringChunker
 
-from mi.core.instrument.instrument_fsm import InstrumentFSM
+from mi.core.instrument.instrument_fsm import ThreadSafeFSM
 from mi.core.instrument.instrument_driver import SingleConnectionInstrumentDriver
 from mi.core.instrument.instrument_driver import DriverEvent
 from mi.core.instrument.instrument_driver import DriverAsyncEvent
@@ -521,7 +521,7 @@ class Protocol(MenuInstrumentProtocol):
         MenuInstrumentProtocol.__init__(self, menu, prompts, newline, driver_event)
 
         # Build protocol state machine.
-        self._protocol_fsm = InstrumentFSM(ProtocolState, ProtocolEvent,
+        self._protocol_fsm = ThreadSafeFSM(ProtocolState, ProtocolEvent,
                                            ProtocolEvent.ENTER, ProtocolEvent.EXIT)
 
         # Add event handlers for protocol state machine.

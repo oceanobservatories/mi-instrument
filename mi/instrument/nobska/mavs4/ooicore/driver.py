@@ -23,7 +23,7 @@ from mi.core.instrument.driver_dict import DriverDict, DriverDictKey
 from mi.core.instrument.instrument_protocol import MenuInstrumentProtocol
 from mi.core.instrument.instrument_driver import DriverParameter
 from mi.core.instrument.instrument_driver import SingleConnectionInstrumentDriver
-from mi.core.instrument.instrument_fsm import InstrumentFSM
+from mi.core.instrument.instrument_fsm import ThreadSafeFSM
 from mi.core.instrument.instrument_driver import DriverProtocolState
 from mi.core.instrument.instrument_driver import DriverEvent
 from mi.core.instrument.instrument_driver import DriverAsyncEvent
@@ -770,7 +770,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
 
         MenuInstrumentProtocol.__init__(self, menu, prompts, newline, driver_event)
 
-        self._protocol_fsm = InstrumentFSM(ProtocolStates,
+        self._protocol_fsm = ThreadSafeFSM(ProtocolStates,
                                            ProtocolEvent,
                                            ProtocolEvent.ENTER,
                                            ProtocolEvent.EXIT)

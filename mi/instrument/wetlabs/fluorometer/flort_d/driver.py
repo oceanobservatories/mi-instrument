@@ -25,7 +25,7 @@ from mi.core.exceptions import InstrumentTimeoutException
 from mi.core.exceptions import InstrumentCommandException
 
 from mi.core.instrument.instrument_protocol import CommandResponseInstrumentProtocol, InitializationType
-from mi.core.instrument.instrument_fsm import InstrumentFSM
+from mi.core.instrument.instrument_fsm import ThreadSafeFSM
 
 from mi.core.instrument.instrument_driver import SingleConnectionInstrumentDriver
 from mi.core.instrument.instrument_driver import DriverEvent
@@ -659,7 +659,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         CommandResponseInstrumentProtocol.__init__(self, prompts, newline, driver_event)
 
         # Build protocol state machine.
-        self._protocol_fsm = InstrumentFSM(ProtocolState, ProtocolEvent,
+        self._protocol_fsm = ThreadSafeFSM(ProtocolState, ProtocolEvent,
                                            ProtocolEvent.ENTER, ProtocolEvent.EXIT)
 
         # Add event handlers for protocol state machine.

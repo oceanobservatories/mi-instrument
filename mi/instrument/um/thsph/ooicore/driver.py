@@ -19,7 +19,7 @@ from mi.core.instrument.protocol_param_dict import ParameterDictType, ParameterD
 from mi.core.log import get_logger, get_logging_metaclass
 from mi.core.common import BaseEnum, Units
 from mi.core.instrument.instrument_protocol import CommandResponseInstrumentProtocol
-from mi.core.instrument.instrument_fsm import InstrumentFSM
+from mi.core.instrument.instrument_fsm import ThreadSafeFSM
 from mi.core.instrument.instrument_driver import SingleConnectionInstrumentDriver, DriverConfigKey
 from mi.core.instrument.instrument_driver import DriverEvent
 from mi.core.instrument.instrument_driver import DriverAsyncEvent
@@ -306,7 +306,7 @@ class THSPHProtocol(CommandResponseInstrumentProtocol):
         CommandResponseInstrumentProtocol.__init__(self, prompts, newline, driver_event)
 
         # Build protocol state machine.
-        self._protocol_fsm = InstrumentFSM(ProtocolState, ProtocolEvent,
+        self._protocol_fsm = ThreadSafeFSM(ProtocolState, ProtocolEvent,
                                            ProtocolEvent.ENTER, ProtocolEvent.EXIT)
 
         # Add event handlers for protocol state machine.
