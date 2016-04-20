@@ -17,8 +17,8 @@ from ooi.logging import log
 
 
 class QpidPublisher(Publisher):
-    def __init__(self, url, queue, headers, allowed, username='guest', password='guest'):
-        super(QpidPublisher, self).__init__(allowed)
+    def __init__(self, url, queue, headers, allowed, username='guest', password='guest', **kwargs):
+        super(QpidPublisher, self).__init__(allowed, **kwargs)
         self.connection = qm.Connection(url, reconnect=True, username=username, password=password)
         self.queue = queue
         self.session = None
