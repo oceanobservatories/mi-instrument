@@ -11,3 +11,7 @@ qpid-python
 psycopg2
 tqdm
 obspy
+pandas
+xarray
+kombu
+librabbitmq
