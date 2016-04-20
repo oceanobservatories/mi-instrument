@@ -35,8 +35,8 @@ class CountPublisher(Publisher):
 
 
 class FilePublisher(Publisher):
-    def __init__(self, allowed):
-        super(FilePublisher, self).__init__(allowed)
+    def __init__(self, *args, **kwargs):
+        super(FilePublisher, self).__init__(*args, **kwargs)
         self.samples = {}
 
     @staticmethod

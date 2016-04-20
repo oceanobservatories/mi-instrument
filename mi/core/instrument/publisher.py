@@ -42,6 +42,7 @@ class Publisher(object):
         self._max_events = max_events if max_events else self.DEFAULT_MAX_EVENTS
         self._publish_interval = publish_interval if publish_interval else self.DEFAULT_PUBLISH_INTERVAL
         self._running = False
+        log.info('Publisher: max_events: %d publish_interval: %d', self._max_events, self._publish_interval)
 
     def _run(self):
         self._running = True
@@ -121,7 +122,7 @@ class Publisher(object):
         return events
 
     @staticmethod
-    def from_url(url, headers=None, allowed=None):
+    def from_url(url, headers=None, allowed=None, **kwargs):
         if headers is None:
             headers = {}
 
@@ -148,27 +149,27 @@ class Publisher(object):
             publisher = KombuPublisher
 
         elif result.scheme == 'log':
-            return LogPublisher(allowed)
+            return LogPublisher(allowed, **kwargs)
 
         elif result.scheme == 'count':
-            return CountPublisher(allowed)
+            return CountPublisher(allowed, **kwargs)
 
         elif result.scheme == 'csv':
             from file_publisher import CsvPublisher
-            return CsvPublisher(allowed)
+            return CsvPublisher(allowed, **kwargs)
 
         elif result.scheme == 'pandas':
             from file_publisher import PandasPublisher
-            return PandasPublisher(allowed)
+            return PandasPublisher(allowed, **kwargs)
 
         elif result.scheme == 'xarray':
             from file_publisher import XarrayPublisher
-            return XarrayPublisher(allowed)
+            return XarrayPublisher(allowed, **kwargs)
 
         if publisher:
             if queue is None:
                 raise Exception('No queue provided!')
-            return publisher(url, queue, headers, allowed, username, password)
+            return publisher(url, queue, headers, allowed, username, password, **kwargs)
 
 
 class LogPublisher(Publisher):
@@ -179,8 +180,8 @@ class LogPublisher(Publisher):
 
 
 class CountPublisher(Publisher):
-    def __init__(self, allowed):
-        super(CountPublisher, self).__init__(allowed)
+    def __init__(self, *args, **kwargs):
+        super(CountPublisher, self).__init__(*args, **kwargs)
         self.total = 0
 
     def _publish(self, events, headers):
