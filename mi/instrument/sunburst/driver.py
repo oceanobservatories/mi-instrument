@@ -35,7 +35,7 @@ from mi.core.instrument.instrument_driver import DriverProtocolState
 from mi.core.instrument.instrument_driver import DriverParameter
 from mi.core.instrument.instrument_driver import ResourceAgentState
 from mi.core.instrument.instrument_driver import DriverConfigKey
-from mi.core.instrument.instrument_protocol import CommandResponseInstrumentProtocol
+from mi.core.instrument.instrument_protocol import CommandResponseInstrumentProtocol, InitializationType
 from mi.core.instrument.driver_dict import DriverDictKey
 from mi.core.instrument.protocol_param_dict import ParameterDictType
 from mi.core.instrument.protocol_param_dict import ParameterDictVisibility
@@ -576,10 +576,10 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
         # Add event handlers for protocol state machine
         self._protocol_fsm.add_handler(
             SamiProtocolState.UNKNOWN, SamiProtocolEvent.ENTER,
-            self._handler_unknown_enter)
+            self._handler_generic_enter)
         self._protocol_fsm.add_handler(
             SamiProtocolState.UNKNOWN, SamiProtocolEvent.EXIT,
-            self._handler_unknown_exit)
+            self._handler_generic_exit)
         self._protocol_fsm.add_handler(
             SamiProtocolState.UNKNOWN, SamiProtocolEvent.DISCOVER,
             self._handler_unknown_discover)
@@ -589,17 +589,17 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
             self._handler_waiting_enter)
         self._protocol_fsm.add_handler(
             SamiProtocolState.WAITING, SamiProtocolEvent.EXIT,
-            self._handler_waiting_exit)
+            self._handler_generic_exit)
         self._protocol_fsm.add_handler(
-            SamiProtocolState.WAITING, SamiProtocolEvent.DISCOVER,
-            self._handler_waiting_discover)
+            SamiProtocolState.WAITING, SamiProtocolEvent.GET,
+            self._handler_waiting_get)
 
         self._protocol_fsm.add_handler(
             SamiProtocolState.COMMAND, SamiProtocolEvent.ENTER,
             self._handler_command_enter)
         self._protocol_fsm.add_handler(
             SamiProtocolState.COMMAND, SamiProtocolEvent.EXIT,
-            self._handler_command_exit)
+            self._handler_generic_exit)
         self._protocol_fsm.add_handler(
             SamiProtocolState.COMMAND, SamiProtocolEvent.GET,
             self._handler_command_get)
@@ -630,14 +630,14 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
             self._handler_acquiring_status_get)
         self._protocol_fsm.add_handler(
             SamiProtocolState.ACQUIRING_STATUS, SamiProtocolEvent.EXIT,
-            self._handler_acquiring_status_exit)
+            self._handler_generic_exit)
 
         self._protocol_fsm.add_handler(
             SamiProtocolState.DIRECT_ACCESS, SamiProtocolEvent.ENTER,
             self._handler_direct_access_enter)
         self._protocol_fsm.add_handler(
             SamiProtocolState.DIRECT_ACCESS, SamiProtocolEvent.EXIT,
-            self._handler_direct_access_exit)
+            self._handler_generic_exit)
         self._protocol_fsm.add_handler(
             SamiProtocolState.DIRECT_ACCESS, SamiProtocolEvent.STOP_DIRECT,
             self._handler_direct_access_stop_direct)
@@ -650,7 +650,7 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
             self._handler_autosample_enter)
         self._protocol_fsm.add_handler(
             SamiProtocolState.AUTOSAMPLE, SamiProtocolEvent.EXIT,
-            self._handler_autosample_exit)
+            self._handler_generic_exit)
         self._protocol_fsm.add_handler(
             SamiProtocolState.AUTOSAMPLE, SamiProtocolEvent.STOP_AUTOSAMPLE,
             self._handler_autosample_stop)
@@ -1072,36 +1072,30 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
 
         return next_state, (next_state, result)
 
-    def _handler_acquiring_status_exit(self, *args, **kwargs):
-        """
-        exit state
-        """
-        pass
-
     ########################################################################
     # Unknown handlers.
     ########################################################################
 
-    def _handler_unknown_enter(self, *args, **kwargs):
-        """
-        Enter unknown state.
-        """
-        # Tell driver superclass to send a state change event.
-        # Superclass will query the state.
-        self._driver_event(DriverAsyncEvent.STATE_CHANGE)
-
-    def _handler_unknown_exit(self, *args, **kwargs):
-        """
-        Exit unknown state.
-        """
-        pass
-
     def _handler_unknown_discover(self, *args, **kwargs):
         """
-        Discover current state; can be UNKNOWN, COMMAND or REGULAR_SAMPLE
+        Discover current state; can be booting or command
         @retval next_state, (next_state, result)
         """
-        next_state = self._discover()
+
+        self._queued_commands.reset()
+
+        # Stop status and check for boot prompt
+        try:
+            response = self._do_cmd_resp(SamiInstrumentCommand.SAMI_STOP_STATUS,
+                                         timeout=2,
+                                         expected_prompt=[Prompt.BOOT_PROMPT])
+            log.debug('SamiProtocol._discover: boot prompt present = %s, entering WAITING state', response)
+            next_state = SamiProtocolState.WAITING
+            self._do_cmd_direct(SamiInstrumentCommand.SAMI_ESCAPE_BOOT + SAMI_NEWLINE)
+        except InstrumentTimeoutException:
+            log.debug('SamiProtocol._discover: boot prompt did not occur, move to COMMAND state')
+            next_state = SamiProtocolState.COMMAND
+
         result = []
         return next_state, (next_state, result)
 
@@ -1111,45 +1105,35 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
 
     def _handler_waiting_enter(self, *args, **kwargs):
         """
-        Enter discover state.
+        Asynchronously wait until boot is complete
         """
-        # Tell driver superclass to send a state change event.
-        # Superclass will query the state.
+        self._async_raise_fsm_event(SamiProtocolEvent.GET)
 
-        self._driver_event(DriverAsyncEvent.STATE_CHANGE)
-
-        # Test to determine what state we truly are in, command or unknown.
-        self._protocol_fsm.on_event(SamiProtocolEvent.DISCOVER)
-
-    def _handler_waiting_exit(self, *args, **kwargs):
+    def _handler_waiting_get(self, *args, **kwargs):
         """
-        Exit discover state.
+        Attempts to retrieve status until instrument responds or we timeout
+        next_state can be either COMMAND or back to UNKNOWN.
+        @retval next_state, (next_state, result)
         """
-
-    def _handler_waiting_discover(self, *args, **kwargs):
-        """
-        Discover current state; can be UNKNOWN or COMMAND
-        @retval (next_state, result)
-        """
-        # Exit states can be either COMMAND or back to UNKNOWN.
         next_state = SamiProtocolState.UNKNOWN
-        result = None
+        result = []
 
         # try to discover our state
         count = 1
         while count <= SAMI_DISCOVERY_RETRY_COUNT:
-            log.debug("_handler_waiting_discover: starting discover")
-            next_state = self._discover()
-            if next_state == SamiProtocolState.COMMAND:
-                log.debug("_handler_waiting_discover: discover succeeded")
-                return next_state, (next_state, result)
-            else:
-                log.debug("_handler_waiting_discover: discover failed, attempt %d of 6", count)
+            log.debug("_handler_waiting_get: getting status")
+            try:
+                self._do_cmd_resp(SamiInstrumentCommand.SAMI_GET_STATUS,
+                                  timeout=SAMI_DEFAULT_TIMEOUT,
+                                  response_regex=SAMI_REGULAR_STATUS_REGEX_MATCHER)
+                next_state = SamiProtocolState.COMMAND
+                break
+            except InstrumentTimeoutException:
+                log.debug("_handler_waiting_get: get status failed attempt %d of %d", count, SAMI_DISCOVERY_RETRY_COUNT)
                 count += 1
                 time.sleep(SAMI_DISCOVERY_RETRY_DELAY)
 
-        log.debug("_handler_waiting_discover: discover failed")
-        log.debug("_handler_waiting_discover: next agent state: %s", ResourceAgentState.ACTIVE_UNKNOWN)
+        log.debug("_handler_waiting_get: next agent state: %s", next_state)
         return next_state, (next_state, result)
 
     ########################################################################
@@ -1161,8 +1145,10 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
         Enter command state.
         """
 
-        # Tell driver superclass to send a state change event.
-        # Superclass will query the state.
+        if self._init_type != InitializationType.NONE:
+            self._update_params()
+
+        self._init_params()
         self._driver_event(DriverAsyncEvent.STATE_CHANGE)
 
         # Execute acquire status if queued
@@ -1182,18 +1168,12 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
         self._init_params()
         return next_state, (next_state, result)
 
-    def _handler_command_exit(self, *args, **kwargs):
-        """
-        Exit command state.
-        """
-
     def _handler_command_get(self, *args, **kwargs):
         """
         Get parameter
         """
         next_state, result = self._handler_get(*args, **kwargs)
-        # TODO - change signature to match others - return next_state, (next_state, result)
-        return next_state, result
+        return next_state, (next_state, result)
 
     def _handler_command_set(self, *args, **kwargs):
         """
@@ -1230,7 +1210,7 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
 
         self._set_params(params, startup)
 
-        return next_state, result
+        return next_state, (next_state, result)
 
     def _handler_command_start_direct(self):
         """
@@ -1300,11 +1280,6 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
 
         self._sent_cmds = []
 
-    def _handler_direct_access_exit(self, *args, **kwargs):
-        """
-        Exit direct access state.
-        """
-
     def _handler_direct_access_execute_direct(self, data):
         next_state = None
         result = []
@@ -1350,11 +1325,6 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
             log.debug('SamiProtocol._handler_autosample_enter: Raising queued command event: %s', command)
             self._async_agent_state_change(ResourceAgentState.BUSY)
             self._async_raise_fsm_event(command)
-
-    def _handler_autosample_exit(self, *args, **kwargs):
-        """
-        Exit autosample state
-        """
 
     def _handler_autosample_stop(self, *args, **kwargs):
         """
@@ -1408,6 +1378,22 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
         """
         raise NotImplementedException()
 
+    ########################################################################
+    # Generic enter/exit handlers
+    ########################################################################
+    def _handler_generic_exit(self, *args, **kwargs):
+        """
+        Generic exit handler, do nothing
+        """
+        pass
+
+    def _handler_generic_enter(self, *args, **kwargs):
+        """
+        Generic enter handler, raise STATE CHANGE
+        """
+        self._driver_event(DriverAsyncEvent.STATE_CHANGE)
+
+
     ####################################################################
     # Build Command & Parameter dictionary
     ####################################################################
@@ -1421,7 +1407,7 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
         self._cmd_dict.add(SamiCapability.START_AUTOSAMPLE, display_name="Start Autosample")
         self._cmd_dict.add(SamiCapability.STOP_AUTOSAMPLE, display_name="Stop Autosample")
         self._cmd_dict.add(SamiCapability.REAGENT_FLUSH, display_name="Reagent Flush")
-        self._cmd_dict.add(SamiCapability.DISCOVER, display_name='Discover')
+        self._cmd_dict.add(SamiCapability.DISCOVER, timeout=25, display_name='Discover')
 
     def _build_driver_dict(self):
         """
@@ -1570,41 +1556,6 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
             for name in param_config:
                 log.debug("Setting init value for %s to %s", name, param_config[name])
                 self._param_dict.set_init_value(name, param_config[name])
-
-    def _discover(self):
-        """
-        Discover current state; can be UNKNOWN, COMMAND or DISCOVER
-        @retval (next_state, result)
-        """
-        # Clear command queue
-        self._queued_commands.reset()
-
-        # Stop status and check for boot prompt
-        try:
-            response = self._do_cmd_resp(SamiInstrumentCommand.SAMI_STOP_STATUS,
-                                         timeout=2,
-                                         expected_prompt=Prompt.BOOT_PROMPT)
-            log.debug('SamiProtocol._discover: boot prompt present = %s', response)
-            self._do_cmd_direct(SamiInstrumentCommand.SAMI_ESCAPE_BOOT + SAMI_NEWLINE)
-        except InstrumentTimeoutException:
-            log.debug('SamiProtocol._discover: boot prompt did not occur.')
-
-        try:
-            log.debug('SamiProtocol._discover: update and init params BEGIN')
-            self._update_params()
-            self._init_params()
-            log.debug('SamiProtocol._discover: update and init params END')
-
-        except (InstrumentTimeoutException, InstrumentProtocolException) as e:
-
-            log.error('SamiProtocol._discover: Exception[%s] - retry in WAITING state', e)
-            next_state = SamiProtocolState.WAITING
-
-        else:
-            log.debug('SamiProtocol._discover: Move to command state')
-            next_state = SamiProtocolState.COMMAND
-
-        return next_state
 
     def _set_params(self, *args, **kwargs):
         """
