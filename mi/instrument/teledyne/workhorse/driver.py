@@ -936,7 +936,7 @@ class WorkhorseProtocol(CommandResponseInstrumentProtocol):
                            display_name="Acquire Status")
         self._cmd_dict.add(WorkhorseCapability.DISCOVER,
                            display_name="Discover State")
-        self._cmd_dict.add(WorkhorseCapability.DISCOVER, display_name='Discover')
+        self._cmd_dict.add(WorkhorseCapability.DISCOVER, display_name='Discover', timeout=30)
 
     # #######################################################################
     # Private helpers.

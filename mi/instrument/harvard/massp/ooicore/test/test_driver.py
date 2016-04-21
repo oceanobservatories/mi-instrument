@@ -301,6 +301,10 @@ class DriverUnitTest(InstrumentDriverUnitTestCase, DriverTestMixinSub):
         # (which means that the FSM should now be reporting the ProtocolState).
         driver.connect()
         current_state = driver.get_resource_state()
+        self.assertEqual(current_state, DriverConnectionState.INST_DISCONNECTED)
+
+        driver.connect()
+        current_state = driver.get_resource_state()
         self.assertEqual(current_state, DriverProtocolState.UNKNOWN)
 
         # add a send side effect for each port agent
