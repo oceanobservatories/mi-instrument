@@ -113,26 +113,23 @@ class InstrumentDriver(SingleConnectionInstrumentDriver):
         @return (next_state, result) tuple, (DriverConnectionState.CONNECTED, None) if successful.
         @raises InstrumentConnectionException if the attempt to connect failed.
         """
-        next_state = DriverConnectionState.CONNECTED
+        next_state = DriverConnectionState.INST_DISCONNECTED
         result = None
 
         # for Master first
         try:
             self._connection[SlaveProtocol.FOURBEAM].init_comms()
-
-        except InstrumentConnectionException as e:
-            log.error("Connection Exception Beam 1-4: %s", e)
-            log.error("Instrument Driver remaining in disconnected state.")
-            raise
-
-        # for Slave
-        try:
             self._connection[SlaveProtocol.FIFTHBEAM].init_comms()
 
         except InstrumentConnectionException as e:
-            log.error("Connection Exception Beam 5: %s", e)
-            log.error("Instrument Driver remaining in disconnected state.")
-            raise
+            log.error("Connection Exception: %s", e)
+            log.error("Instrument Driver returning to unconfigured state.")
+            next_state = DriverConnectionState.UNCONFIGURED
+
+        init_config = {}
+        if len(args) > 0 and isinstance(args[0], dict):
+            init_config = args[0]
+        self.set_init_params(init_config)
 
         return next_state, (next_state, result)
 

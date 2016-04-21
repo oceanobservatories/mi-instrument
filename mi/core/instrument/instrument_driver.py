@@ -726,7 +726,7 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
         @raises NotImplementedException if not implemented by subclass.
         """
         connection_state = self._connection_fsm.get_current_state()
-        if connection_state == DriverConnectionState.CONNECTED:
+        if self._protocol:
             return self._protocol.get_current_state()
         else:
             return connection_state
