@@ -61,7 +61,7 @@ elif 'mi.instrument.nortek.vector' in sys.modules.keys():
 
 # from interface.objects import AgentCommand
 
-from mi.instrument.nortek.driver import InstrumentPrompts, Parameter, ProtocolState, ProtocolEvent, InstrumentCmds, \
+from mi.instrument.nortek.driver import InstrumentPrompts, Parameter, ProtocolState, ProtocolEvent, InstrumentCommands, \
     Capability, NEWLINE
 
 
@@ -626,7 +626,7 @@ class NortekUnitTest(InstrumentDriverUnitTestCase, DriverTestMixinSub):
         self.assert_enum_has_no_duplicates(ProtocolState())
         self.assert_enum_has_no_duplicates(ProtocolEvent())
         self.assert_enum_has_no_duplicates(Parameter())
-        self.assert_enum_has_no_duplicates(InstrumentCmds())
+        self.assert_enum_has_no_duplicates(InstrumentCommands())
         self.assert_enum_has_no_duplicates(InstrumentPrompts())
 
         # Test capabilities for duplicates, them verify that capabilities is a subset of protocol events

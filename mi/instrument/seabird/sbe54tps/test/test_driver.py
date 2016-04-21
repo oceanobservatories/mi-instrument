@@ -36,7 +36,7 @@ from mi.instrument.seabird.sbe54tps.driver import ProtocolEvent
 from mi.instrument.seabird.sbe54tps.driver import Capability
 from mi.instrument.seabird.sbe54tps.driver import Prompt
 from mi.instrument.seabird.sbe54tps.driver import Protocol
-from mi.instrument.seabird.sbe54tps.driver import InstrumentCmds
+from mi.instrument.seabird.sbe54tps.driver import InstrumentCommands
 from mi.instrument.seabird.sbe54tps.driver import SBE54tpsStatusDataParticleKey
 from mi.instrument.seabird.sbe54tps.driver import SBE54tpsEventCounterDataParticleKey
 from mi.instrument.seabird.sbe54tps.driver import SBE54tpsSampleDataParticleKey
@@ -303,7 +303,7 @@ class SeaBird54PlusUnitTest(SeaBirdUnitTest, SeaBird54tpsMixin):
         """
         self.assert_enum_has_no_duplicates(ScheduledJob())
         self.assert_enum_has_no_duplicates(DataParticleType())
-        self.assert_enum_has_no_duplicates(InstrumentCmds())
+        self.assert_enum_has_no_duplicates(InstrumentCommands())
         self.assert_enum_has_no_duplicates(ProtocolState())
         self.assert_enum_has_no_duplicates(ProtocolEvent())
         self.assert_enum_has_no_duplicates(Parameter())
@@ -837,7 +837,7 @@ class SeaBird54PlusQualificationTest(SeaBirdQualificationTest, SeaBird54tpsMixin
         # go into direct access, and muck up a setting.
         self.assert_direct_access_start_telnet(timeout=600)
 
-        self.tcp_client.send_data("%s%s" % (InstrumentCmds.START_LOGGING, NEWLINE))
+        self.tcp_client.send_data("%s%s" % (InstrumentCommands.START_LOGGING, NEWLINE))
         self.tcp_client.expect("S>")
 
         self.assert_sample_async(self.assert_particle_real_time, DataParticleType.PREST_REAL_TIME, 15)
