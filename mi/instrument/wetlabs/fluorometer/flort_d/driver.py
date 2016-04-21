@@ -751,7 +751,7 @@ class Protocol(CommandResponseInstrumentProtocol):
             'Read Data': '$get' + NEWLINE,
             'Set>': InstrumentCommand.SET + ' ',
             'Set Clock>': '$clk ',
-            'Set Date>': '$date ' + NEWLINE,
+            'Set Date>': '$date ',
         }
 
     @staticmethod

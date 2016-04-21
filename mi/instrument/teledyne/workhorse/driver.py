@@ -859,6 +859,19 @@ class WorkhorseProtocol(CommandResponseInstrumentProtocol):
         # so we can not send updates when nothing changed
         self._last_values = {}
 
+        self._display_name = 'VADCP'
+        self._direct_commands = {
+            'Wake Up': NEWLINE,
+            'Get?': WorkhorseInstrumentCmds.GET,
+            'Set>': WorkhorseInstrumentCmds.SET,
+            'System Configuration': WorkhorseInstrumentCmds.GET_SYSTEM_CONFIGURATION + NEWLINE,
+            'Calibration': WorkhorseInstrumentCmds.OUTPUT_CALIBRATION_DATA + NEWLINE,
+            'PT2': WorkhorseInstrumentCmds.OUTPUT_PT2 + NEWLINE,
+            'PT4': WorkhorseInstrumentCmds.OUTPUT_PT4 + NEWLINE,
+            'Test 200': WorkhorseInstrumentCmds.RUN_TEST_200 + NEWLINE,
+            'Start Logging': WorkhorseInstrumentCmds.START_LOGGING + NEWLINE,
+        }
+
     def _build_param_dict(self):
         for param in parameter_regexes:
             self._param_dict.add(param,

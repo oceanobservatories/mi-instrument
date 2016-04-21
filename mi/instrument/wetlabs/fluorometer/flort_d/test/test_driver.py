@@ -14,6 +14,7 @@ USAGE:
 """
 
 import time
+
 from mock import Mock
 from nose.plugins.attrib import attr
 
