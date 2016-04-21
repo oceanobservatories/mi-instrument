@@ -1949,6 +1949,7 @@ class NortekInstrumentProtocol(CommandResponseInstrumentProtocol):
                              type=ParameterDictType.INT,
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name="Timing Control Register",
+                             range=(1, 65535),
                              description="See manual for usage.",
                              direct_access=True,
                              default_value=130)

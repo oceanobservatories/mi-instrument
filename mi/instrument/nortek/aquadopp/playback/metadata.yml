@@ -5,4 +5,4 @@ driver_metadata:
   driver_name: playback
   email: petercable@gmail.com
   release_notes: Driver for ASCII-mode playback Aquadopp DW
-  version: '0.0.3'
+  version: '0.0.4'

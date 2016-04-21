@@ -5,4 +5,4 @@ driver_metadata:
   driver_name: ooicore
   email: wcbollenbacher@ucsd.edu
   release_notes: Driver for Aquadopp DW
-  version: 1.1.11
+  version: 1.1.12
