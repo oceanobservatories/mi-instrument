@@ -157,7 +157,7 @@ class ParameterConstraint(BaseEnum):
     AUTO_RELEVEL = (bool, None, None)
 
 
-class InstrumentCommand(BaseEnum):
+class InstrumentCommands(BaseEnum):
     """
     Instrument Commands
     """
@@ -178,6 +178,29 @@ class InstrumentCommand(BaseEnum):
     IRIS_DUMP2 = IRIS_STRING + IRIS_COMMAND + '-DUMP2'  # outputs current extended settings
     HEAT = HEAT_STRING  # turns the heater on; HEAT,<number of hours>
     SYST_DUMP1 = SYST_STRING + '1'
+
+
+class InstrumentCommandNames(BaseEnum):
+    """
+    Instrument Commands
+    """
+    LILY_ON = 'Lily On'
+    LILY_OFF = 'Lily Off'
+    LILY_DUMP1 = 'Lily Settings'
+    LILY_DUMP2 = 'Lily Extended Settings'
+    LILY_START_LEVELING = 'Start Leveling'
+    LILY_STOP_LEVELING = 'Stop Leveling'
+    NANO_ON = 'Nano On'
+    NANO_OFF = 'Nano Off'
+    NANO_DUMP1 = 'Nano Settings'
+    NANO_SET_TIME = 'Set Time>'
+    NANO_SET_RATE = 'Set Rate>'
+    IRIS_ON = 'Iris On'
+    IRIS_OFF = 'Iris Off'
+    IRIS_DUMP1 = 'Iris Settings'
+    IRIS_DUMP2 = 'Iris Extended Settings'
+    HEAT = 'Heater On>'
+    SYST_DUMP1 = 'System Settings'
 
 
 class Prompt(BaseEnum):
@@ -307,14 +330,14 @@ class Protocol(CommandResponseInstrumentProtocol):
         self._build_driver_dict()
 
         # Add build handlers for device commands.
-        for command in InstrumentCommand.list():
-            if command in [InstrumentCommand.NANO_SET_RATE, InstrumentCommand.HEAT]:
+        for command in InstrumentCommands.list():
+            if command in [InstrumentCommands.NANO_SET_RATE, InstrumentCommands.HEAT]:
                 self._add_build_handler(command, self._build_command_with_value)
             else:
                 self._add_build_handler(command, self._build_simple_command)
 
         # # Add response handlers for device commands.
-        for command in InstrumentCommand.list():
+        for command in InstrumentCommands.list():
             self._add_response_handler(command, self._generic_response_handler)
 
         # Start state machine in UNKNOWN state.
@@ -333,6 +356,19 @@ class Protocol(CommandResponseInstrumentProtocol):
         self.initialize_scheduler()
         self._add_scheduler_event(ScheduledJob.ACQUIRE_STATUS, ProtocolEvent.ACQUIRE_STATUS)
         self._add_scheduler_event(ScheduledJob.NANO_TIME_SYNC, ProtocolEvent.NANO_TIME_SYNC)
+
+        self._direct_commands['Wakeup'] = NEWLINE
+        self._direct_commands['Newline'] = NEWLINE
+        command_dict = InstrumentCommands.dict()
+        label_dict = InstrumentCommandNames.dict()
+        for key in command_dict:
+            label = label_dict.get(key)
+            command = command_dict[key]
+            builder = self._build_handlers.get(command, None)
+            if builder in [self._build_simple_command]:
+                command = builder(command)
+                self._direct_commands[label] = command
+
 
     @staticmethod
     def sieve_function(raw_data):
@@ -611,14 +647,14 @@ class Protocol(CommandResponseInstrumentProtocol):
             log.debug('Config change: %r %r', old_config, new_config)
             if old_config[Parameter.OUTPUT_RATE] is not None:
                 if int(old_config[Parameter.OUTPUT_RATE]) != int(new_config[Parameter.OUTPUT_RATE]):
-                    self._do_cmd_no_resp(InstrumentCommand.NANO_SET_RATE, int(new_config[Parameter.OUTPUT_RATE]))
+                    self._do_cmd_no_resp(InstrumentCommands.NANO_SET_RATE, int(new_config[Parameter.OUTPUT_RATE]))
             self._driver_event(DriverAsyncEvent.CONFIG_CHANGE)
 
     def _update_params(self, *args, **kwargs):
         """
         Update the param dictionary based on instrument response
         """
-        result, _ = self._do_cmd_resp(InstrumentCommand.NANO_DUMP1,
+        result, _ = self._do_cmd_resp(InstrumentCommands.NANO_DUMP1,
                                       response_regex=particles.NanoStatusParticle.regex_compiled())
         rate = int(re.search(r'NANO,\*TH:(\d+)', result).group(1))
         self._param_dict.set_value(Parameter.OUTPUT_RATE, rate)
@@ -721,10 +757,10 @@ class Protocol(CommandResponseInstrumentProtocol):
         Stop autosample, leveling if in progress.
         """
         self.leveling = False
-        self._do_cmd_no_resp(InstrumentCommand.NANO_OFF)
-        self._do_cmd_resp(InstrumentCommand.LILY_STOP_LEVELING, expected_prompt=Prompt.LILY_STOP_LEVELING)
-        self._do_cmd_resp(InstrumentCommand.LILY_OFF, expected_prompt=Prompt.LILY_OFF)
-        self._do_cmd_resp(InstrumentCommand.IRIS_OFF, expected_prompt=Prompt.IRIS_OFF)
+        self._do_cmd_no_resp(InstrumentCommands.NANO_OFF)
+        self._do_cmd_resp(InstrumentCommands.LILY_STOP_LEVELING, expected_prompt=Prompt.LILY_STOP_LEVELING)
+        self._do_cmd_resp(InstrumentCommands.LILY_OFF, expected_prompt=Prompt.LILY_OFF)
+        self._do_cmd_resp(InstrumentCommands.IRIS_OFF, expected_prompt=Prompt.IRIS_OFF)
 
     def _generic_response_handler(self, resp, prompt):
         """
@@ -914,9 +950,9 @@ class Protocol(CommandResponseInstrumentProtocol):
         """
         next_state = ProtocolState.AUTOSAMPLE
         result = []
-        self._do_cmd_resp(InstrumentCommand.LILY_ON, expected_prompt=Prompt.LILY_ON)
-        self._do_cmd_resp(InstrumentCommand.NANO_ON, expected_prompt=NANO_STRING)
-        self._do_cmd_resp(InstrumentCommand.IRIS_ON, expected_prompt=Prompt.IRIS_ON)
+        self._do_cmd_resp(InstrumentCommands.LILY_ON, expected_prompt=Prompt.LILY_ON)
+        self._do_cmd_resp(InstrumentCommands.NANO_ON, expected_prompt=NANO_STRING)
+        self._do_cmd_resp(InstrumentCommands.IRIS_ON, expected_prompt=Prompt.IRIS_ON)
         return next_state, (next_state, result)
 
     ########################################################################
@@ -984,12 +1020,12 @@ class Protocol(CommandResponseInstrumentProtocol):
         parts = []
 
         for command, particle_class in [
-            (InstrumentCommand.SYST_DUMP1, particles.SystStatusParticle),
-            (InstrumentCommand.LILY_DUMP1, particles.LilyStatusParticle1),
-            (InstrumentCommand.LILY_DUMP2, particles.LilyStatusParticle2),
-            (InstrumentCommand.IRIS_DUMP1, particles.IrisStatusParticle1),
-            (InstrumentCommand.IRIS_DUMP2, particles.IrisStatusParticle2),
-            (InstrumentCommand.NANO_DUMP1, particles.NanoStatusParticle),
+            (InstrumentCommands.SYST_DUMP1, particles.SystStatusParticle),
+            (InstrumentCommands.LILY_DUMP1, particles.LilyStatusParticle1),
+            (InstrumentCommands.LILY_DUMP2, particles.LilyStatusParticle2),
+            (InstrumentCommands.IRIS_DUMP1, particles.IrisStatusParticle1),
+            (InstrumentCommands.IRIS_DUMP2, particles.IrisStatusParticle2),
+            (InstrumentCommands.NANO_DUMP1, particles.NanoStatusParticle),
         ]:
             result, _ = self._do_cmd_resp(command, response_regex=particle_class.regex_compiled())
             parts.append(result)
@@ -999,7 +1035,7 @@ class Protocol(CommandResponseInstrumentProtocol):
 
         if self.get_current_state() == ProtocolState.AUTOSAMPLE:
             # acquiring status stops NANO output, restart it
-            self._do_cmd_resp(InstrumentCommand.NANO_ON, expected_prompt=NANO_STRING)
+            self._do_cmd_resp(InstrumentCommands.NANO_ON, expected_prompt=NANO_STRING)
 
         data_particles = self.wait_for_particles([particles.DataParticleType.BOTPT_STATUS], timeout)
 
@@ -1013,9 +1049,9 @@ class Protocol(CommandResponseInstrumentProtocol):
         @return next_state, (next_state, result)
         """
         next_state = None
-        result = self._do_cmd_resp(InstrumentCommand.NANO_SET_TIME, expected_prompt=NANO_STRING)
+        result = self._do_cmd_resp(InstrumentCommands.NANO_SET_TIME, expected_prompt=NANO_STRING)
         if self.get_current_state() == ProtocolState.COMMAND:
-            self._do_cmd_no_resp(InstrumentCommand.NANO_OFF)
+            self._do_cmd_no_resp(InstrumentCommands.NANO_OFF)
         return next_state, (next_state, result)
 
     def _handler_start_leveling(self):
@@ -1027,7 +1063,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         result = None
         if not self._param_dict.get(Parameter.LILY_LEVELING):
             self._schedule_leveling_timeout()
-            result = self._do_cmd_resp(InstrumentCommand.LILY_START_LEVELING,
+            result = self._do_cmd_resp(InstrumentCommands.LILY_START_LEVELING,
                                        expected_prompt=Prompt.LILY_START_LEVELING)
             self._param_dict.set_value(Parameter.LILY_LEVELING, True)
             self._driver_event(DriverAsyncEvent.CONFIG_CHANGE)
@@ -1043,12 +1079,12 @@ class Protocol(CommandResponseInstrumentProtocol):
         if self._param_dict.get(Parameter.LILY_LEVELING):
             self._remove_leveling_timeout()
 
-            next_state = self._do_cmd_resp(InstrumentCommand.LILY_STOP_LEVELING,
+            next_state = self._do_cmd_resp(InstrumentCommands.LILY_STOP_LEVELING,
                                            expected_prompt=Prompt.LILY_STOP_LEVELING)
             self._param_dict.set_value(Parameter.LILY_LEVELING, False)
 
             if self.get_current_state() == ProtocolState.AUTOSAMPLE:
-                self._do_cmd_resp(InstrumentCommand.LILY_ON, expected_prompt=Prompt.LILY_ON)
+                self._do_cmd_resp(InstrumentCommands.LILY_ON, expected_prompt=Prompt.LILY_ON)
 
             self._driver_event(DriverAsyncEvent.CONFIG_CHANGE)
 
@@ -1073,7 +1109,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         next_state = None
         result = 'heater is already on'
         if not self._param_dict.get(Parameter.HEATER_ON):
-            result = self._do_cmd_resp(InstrumentCommand.HEAT,
+            result = self._do_cmd_resp(InstrumentCommands.HEAT,
                                        self._param_dict.get(Parameter.HEAT_DURATION),
                                        response_regex=RegexResponse.HEAT)
             self._param_dict.set_value(Parameter.HEATER_ON, True)
@@ -1093,7 +1129,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         next_state = None
         result = 'heater was not on - no need to stop'
         if self._param_dict.get(Parameter.HEATER_ON):
-            self._do_cmd_resp(InstrumentCommand.HEAT,
+            self._do_cmd_resp(InstrumentCommands.HEAT,
                               0,
                               response_regex=RegexResponse.HEAT)
             self._param_dict.set_value(Parameter.HEATER_ON, False)

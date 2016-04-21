@@ -30,7 +30,7 @@ from mi.instrument.wetlabs.fluorometer.flord_d.driver import FlordProtocol
 
 from mi.instrument.wetlabs.fluorometer.flort_d.driver import FlordMenuParticle, FlordSampleParticle
 from mi.instrument.wetlabs.fluorometer.flort_d.driver import DataParticleType
-from mi.instrument.wetlabs.fluorometer.flort_d.driver import InstrumentCommand
+from mi.instrument.wetlabs.fluorometer.flort_d.driver import InstrumentCommands
 from mi.instrument.wetlabs.fluorometer.flort_d.driver import ProtocolState
 from mi.instrument.wetlabs.fluorometer.flort_d.driver import ProtocolEvent
 from mi.instrument.wetlabs.fluorometer.flort_d.driver import Capability
@@ -203,7 +203,7 @@ class DriverUnitTest(InstrumentDriverUnitTestCase, FlordDriverTestMixinSub):
         self.assert_enum_has_no_duplicates(ProtocolState())
         self.assert_enum_has_no_duplicates(ProtocolEvent())
         self.assert_enum_has_no_duplicates(Parameter())
-        self.assert_enum_has_no_duplicates(InstrumentCommand())
+        self.assert_enum_has_no_duplicates(InstrumentCommands())
 
         # Test capabilities for duplicates, them verify that capabilities is a subset of protocol events
         self.assert_enum_has_no_duplicates(Capability())
