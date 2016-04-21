@@ -868,7 +868,11 @@ class VadcpDriverUnitTest(WorkhorseDriverUnitTest, VADCPMixin):
 
         # Invoke the connect method of the driver: should connect to mock
         # port agent.  Verify that the connection FSM transitions to CONNECTED,
-        # (which means that the FSM should now be reporting the WorkhorseProtocolState).
+        # (which means that the FSM should now be reporting the ProtocolState).
+        driver.connect()
+        current_state = driver.get_resource_state()
+        self.assertEqual(current_state, DriverConnectionState.INST_DISCONNECTED)
+
         driver.connect()
         current_state = driver.get_resource_state()
         self.assertEqual(current_state, WorkhorseProtocolState.UNKNOWN)
@@ -992,7 +996,7 @@ class VadcpDriverUnitTest(WorkhorseDriverUnitTest, VADCPMixin):
         Iterate through available capabilities, and verify that they can pass successfully through the filter.
         Test silly made up capabilities to verify they are blocked by filter.
         """
-        my_event_callback = Mock(spec="UNKNOWN WHAT SHOULD GO HERE FOR evt_callback")
+        my_event_callback = Mock()
         protocol = Protocol(WorkhorsePrompt, NEWLINE, my_event_callback, [])
         driver_capabilities = WorkhorseCapability().list()
         test_capabilities = WorkhorseCapability().list()
