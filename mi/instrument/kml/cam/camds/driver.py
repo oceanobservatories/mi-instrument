@@ -617,7 +617,7 @@ class ProtocolState(DriverProtocolState):
     DIRECT_ACCESS = DriverProtocolState.DIRECT_ACCESS
 
 
-class InstrumentCmds(BaseEnum):
+class InstrumentCommands(BaseEnum):
     """
     Device specific commands
     Represents the commands the driver implements and the string that
@@ -667,6 +667,55 @@ class InstrumentCmds(BaseEnum):
 
     GET = 'get'
     SET = 'set'
+
+
+class InstrumentCommandNames(BaseEnum):
+    """
+    Display Names for each command - to be used in Direct Access for button labels
+    """
+    START_CAPTURE = 'Start Capture'
+    STOP_CAPTURE = 'Stop Capture'
+
+    TAKE_SNAPSHOT = 'Take Snapshot'
+
+    START_FOCUS_NEAR = 'Start Focus Near'
+    START_FOCUS_FAR = 'Start Focus Far'
+    STOP_FOCUS = 'Stop Focus'
+
+    START_ZOOM_OUT = 'Start Zoom Out'
+    START_ZOOM_IN = 'Start Zoom In'
+    STOP_ZOOM = 'Stop Zoom'
+
+    INCREASE_IRIS = 'Increase Iris'
+    DECREASE_IRIS = 'Decreate Iris'
+
+    START_PAN_LEFT = 'Start Pan Left'
+    START_PAN_RIGHT = 'Start Pan Right'
+    STOP_PAN = 'Stop Pan'
+
+    START_TILT_UP = 'Start Tilt Up'
+    START_TILT_DOWN = 'Start Tilt Up'
+    STOP_TILT = 'Stop Tilt'
+
+    GO_TO_PRESET = 'Goto Preset>'
+
+    TILE_UP_SOFT = 'Tile Up'
+    TILE_DOWN_SOFT = 'Tile Down'
+    PAN_LEFT_SOFT = 'Pan Left'
+    PAN_RIGHT_SOFT = 'Pan Right'
+    SET_PRESET = 'Set Preset'
+
+    LAMP_ON = 'Lamp On'
+    LAMP_OFF = 'Lamp Off'
+
+    LASERS_ON = 'Lasers On'
+    LASERS_OFF = 'Lasers Off'
+
+    GET_DISK_USAGE = 'Get Disk Usage'
+    HEALTH_REQUEST = 'Health'
+
+    GET = 'Get>'
+    SET = 'Set>'
 
 
 ###############################################################################
@@ -741,6 +790,18 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
         # filtered in responses for telnet DA
         self._sent_cmds = []
 
+        self._direct_commands['Newline'] = self._newline
+        command_dict = InstrumentCommands.dict()
+        label_dict = InstrumentCommandNames.dict()
+        for key in command_dict:
+            label = label_dict.get(key)
+            command = command_dict[key]
+            builder = self._build_handlers.get(command, None)
+            if builder in [self._build_simple_command, self.build_status_command]:
+                command = builder(command)
+                self._direct_commands[label] = command
+            if builder is self.build_laser_command:
+                command = '<\x04:%s:' % command
 
     @staticmethod
     def sieve_function(raw_data):
@@ -1195,7 +1256,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
                 if param in ['DRIVER_PARAMETER_ALL']:
                     continue
 
-                result = self._do_cmd_resp(InstrumentCmds.GET, param, **kwargs)
+                result = self._do_cmd_resp(InstrumentCommands.GET, param, **kwargs)
                 results += result + NEWLINE
 
         new_config = self._param_dict.get_config()
@@ -1234,7 +1295,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
                                                  Parameter.CAMERA_GAIN[ParameterIndex.KEY],
                                                  Parameter.IMAGE_RESOLUTION[ParameterIndex.KEY],
                                                  Parameter.LAMP_BRIGHTNESS[ParameterIndex.KEY]]:
-                    result = self._do_cmd_resp(InstrumentCmds.GET, param)
+                    result = self._do_cmd_resp(InstrumentCommands.GET, param)
                     results += result + NEWLINE
 
             new_config = self._param_dict.get_config()
@@ -1305,7 +1366,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
                            Parameter.NTP_SETTING[ParameterIndex.KEY],
                            Parameter.WHEN_DISK_IS_FULL[ParameterIndex.KEY]]:
 
-                result = self._do_cmd_resp(InstrumentCmds.SET, key, val, **kwargs)
+                result = self._do_cmd_resp(InstrumentCommands.SET, key, val, **kwargs)
                 time.sleep(2)
 
                 # The instrument needs extra time to process these commands
@@ -1745,7 +1806,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
 
         log.debug("Acquire Sample: about to take a snapshot")
 
-        self._do_cmd_resp(InstrumentCmds.TAKE_SNAPSHOT, *args, **kwargs)
+        self._do_cmd_resp(InstrumentCommands.TAKE_SNAPSHOT, *args, **kwargs)
 
         log.debug("Acquire Sample: Captured snapshot!")
 
@@ -1769,11 +1830,11 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
         #  HEALTH_REQUEST  = 'HS'
 
         log.debug("ACQUIRE_STATUS: executing status commands...")
-        self._do_cmd_resp(InstrumentCmds.GET_DISK_USAGE, *args, **kwargs)
+        self._do_cmd_resp(InstrumentCommands.GET_DISK_USAGE, *args, **kwargs)
 
         log.debug("ACQUIRE_STATUS: Executed GET_DISK_USAGE")
 
-        self._do_cmd_resp(InstrumentCmds.HEALTH_REQUEST, *args, **kwargs)
+        self._do_cmd_resp(InstrumentCommands.HEALTH_REQUEST, *args, **kwargs)
 
         log.debug("ACQUIRE_STATUS: Executed HEALTH_REQUEST")
 
@@ -1791,7 +1852,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
 
         kwargs['timeout'] = 30
 
-        self._do_cmd_resp(InstrumentCmds.LAMP_ON, *args, **kwargs)
+        self._do_cmd_resp(InstrumentCommands.LAMP_ON, *args, **kwargs)
 
         return next_state, (next_state, result)
 
@@ -1804,7 +1865,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
 
         kwargs['timeout'] = 30
 
-        self._do_cmd_resp(InstrumentCmds.LAMP_OFF, *args, **kwargs)
+        self._do_cmd_resp(InstrumentCommands.LAMP_OFF, *args, **kwargs)
 
         return next_state, (next_state, result)
 
@@ -1817,7 +1878,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
 
         kwargs['timeout'] = 2
 
-        self._do_cmd_resp(InstrumentCmds.LASERS_ON, '\x03', **kwargs)
+        self._do_cmd_resp(InstrumentCommands.LASERS_ON, '\x03', **kwargs)
 
         return next_state, (next_state, result)
 
@@ -1830,7 +1891,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
 
         kwargs['timeout'] = 2
 
-        self._do_cmd_resp(InstrumentCmds.LASERS_OFF, '\x03', **kwargs)
+        self._do_cmd_resp(InstrumentCommands.LASERS_OFF, '\x03', **kwargs)
 
         return next_state, (next_state, result)
 
@@ -1852,7 +1913,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
             if key == Parameter.PRESET_NUMBER[ParameterIndex.KEY]:
                 preset_number = value
 
-        self._do_cmd_resp(InstrumentCmds.SET_PRESET, preset_number, *args, **kwargs)
+        self._do_cmd_resp(InstrumentCommands.SET_PRESET, preset_number, *args, **kwargs)
 
         return next_state, (next_state, result)
 
@@ -1877,7 +1938,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
             self.start_scheduled_job(Parameter.AUTO_CAPTURE_DURATION[ParameterIndex.KEY],
                                      ScheduledJob.STOP_CAPTURE,
                                      ProtocolEvent.STOP_CAPTURE)
-            self._do_cmd_resp(InstrumentCmds.START_CAPTURE, *args, **kwargs)
+            self._do_cmd_resp(InstrumentCommands.START_CAPTURE, *args, **kwargs)
         else:
             log.error("Capturing Duration %s out of range: Not Performing Capture." % capturing_duration)
 
@@ -1894,7 +1955,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
 
         self.stop_scheduled_job(ScheduledJob.STOP_CAPTURE)
 
-        self._do_cmd_resp(InstrumentCmds.STOP_CAPTURE, *args, **kwargs)
+        self._do_cmd_resp(InstrumentCommands.STOP_CAPTURE, *args, **kwargs)
 
         # Camera needs time to recover after capturing images
         self._do_recover(self._calculate_recovery_time())
@@ -1933,7 +1994,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
 
         log.debug("Commanding camera to go to preset position %s " % preset_number)
 
-        self._do_cmd_resp(InstrumentCmds.GO_TO_PRESET, preset_number, *args, **kwargs)
+        self._do_cmd_resp(InstrumentCommands.GO_TO_PRESET, preset_number, *args, **kwargs)
 
         return next_state, (next_state, result)
 
@@ -2062,7 +2123,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
 
         log.debug("Acquire Sample: about to take a snapshot")
 
-        self._do_cmd_resp(InstrumentCmds.TAKE_SNAPSHOT, *args, **kwargs)
+        self._do_cmd_resp(InstrumentCommands.TAKE_SNAPSHOT, *args, **kwargs)
 
         log.debug("Acquire Sample: Captured snapshot!")
 
@@ -2126,7 +2187,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
         if next_state == ProtocolState.AUTOSAMPLE:
             # return camera back to default position
             log.debug("time to return camera to default position")
-            self._do_cmd_resp(InstrumentCmds.GO_TO_PRESET, DEFAULT_PRESET_POSITION, **kwargs)
+            self._do_cmd_resp(InstrumentCommands.GO_TO_PRESET, DEFAULT_PRESET_POSITION, **kwargs)
             next_agent_state = ResourceAgentState.STREAMING
         else:
             next_agent_state = ResourceAgentState.COMMAND
@@ -2248,92 +2309,92 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
         Add build handlers for device commands.
         """
 
-        self._add_build_handler(InstrumentCmds.SET, self._build_set_command)
-        self._add_build_handler(InstrumentCmds.GET, self._build_get_command)
+        self._add_build_handler(InstrumentCommands.SET, self._build_set_command)
+        self._add_build_handler(InstrumentCommands.GET, self._build_get_command)
 
-        self._add_build_handler(InstrumentCmds.START_CAPTURE, self.build_simple_command)
-        self._add_build_handler(InstrumentCmds.STOP_CAPTURE, self.build_simple_command)
+        self._add_build_handler(InstrumentCommands.START_CAPTURE, self.build_simple_command)
+        self._add_build_handler(InstrumentCommands.STOP_CAPTURE, self.build_simple_command)
 
-        self._add_build_handler(InstrumentCmds.TAKE_SNAPSHOT, self.build_simple_command)
+        self._add_build_handler(InstrumentCommands.TAKE_SNAPSHOT, self.build_simple_command)
 
-        self._add_build_handler(InstrumentCmds.START_FOCUS_NEAR, self.build_simple_command)
-        self._add_build_handler(InstrumentCmds.START_FOCUS_FAR, self.build_simple_command)
-        self._add_build_handler(InstrumentCmds.STOP_FOCUS, self.build_simple_command)
+        self._add_build_handler(InstrumentCommands.START_FOCUS_NEAR, self.build_simple_command)
+        self._add_build_handler(InstrumentCommands.START_FOCUS_FAR, self.build_simple_command)
+        self._add_build_handler(InstrumentCommands.STOP_FOCUS, self.build_simple_command)
 
-        self._add_build_handler(InstrumentCmds.START_ZOOM_OUT, self.build_simple_command)
-        self._add_build_handler(InstrumentCmds.START_ZOOM_IN, self.build_simple_command)
-        self._add_build_handler(InstrumentCmds.STOP_ZOOM, self.build_simple_command)
+        self._add_build_handler(InstrumentCommands.START_ZOOM_OUT, self.build_simple_command)
+        self._add_build_handler(InstrumentCommands.START_ZOOM_IN, self.build_simple_command)
+        self._add_build_handler(InstrumentCommands.STOP_ZOOM, self.build_simple_command)
 
-        self._add_build_handler(InstrumentCmds.INCREASE_IRIS, self.build_simple_command)
-        self._add_build_handler(InstrumentCmds.DECREASE_IRIS, self.build_simple_command)
+        self._add_build_handler(InstrumentCommands.INCREASE_IRIS, self.build_simple_command)
+        self._add_build_handler(InstrumentCommands.DECREASE_IRIS, self.build_simple_command)
 
-        self._add_build_handler(InstrumentCmds.GO_TO_PRESET, self.build_preset_command)
-        self._add_build_handler(InstrumentCmds.SET_PRESET, self.build_preset_command)
+        self._add_build_handler(InstrumentCommands.GO_TO_PRESET, self.build_preset_command)
+        self._add_build_handler(InstrumentCommands.SET_PRESET, self.build_preset_command)
 
-        self._add_build_handler(InstrumentCmds.START_PAN_LEFT, self.build_simple_command)
-        self._add_build_handler(InstrumentCmds.START_PAN_RIGHT, self.build_simple_command)
-        self._add_build_handler(InstrumentCmds.STOP_PAN, self.build_simple_command)
+        self._add_build_handler(InstrumentCommands.START_PAN_LEFT, self.build_simple_command)
+        self._add_build_handler(InstrumentCommands.START_PAN_RIGHT, self.build_simple_command)
+        self._add_build_handler(InstrumentCommands.STOP_PAN, self.build_simple_command)
 
-        self._add_build_handler(InstrumentCmds.START_TILT_UP, self.build_simple_command)
-        self._add_build_handler(InstrumentCmds.START_TILT_DOWN, self.build_simple_command)
-        self._add_build_handler(InstrumentCmds.STOP_TILT, self.build_simple_command)
+        self._add_build_handler(InstrumentCommands.START_TILT_UP, self.build_simple_command)
+        self._add_build_handler(InstrumentCommands.START_TILT_DOWN, self.build_simple_command)
+        self._add_build_handler(InstrumentCommands.STOP_TILT, self.build_simple_command)
 
-        self._add_build_handler(InstrumentCmds.TILE_UP_SOFT, self.build_simple_command)
-        self._add_build_handler(InstrumentCmds.TILE_DOWN_SOFT, self.build_simple_command)
+        self._add_build_handler(InstrumentCommands.TILE_UP_SOFT, self.build_simple_command)
+        self._add_build_handler(InstrumentCommands.TILE_DOWN_SOFT, self.build_simple_command)
 
-        self._add_build_handler(InstrumentCmds.PAN_LEFT_SOFT, self.build_simple_command)
-        self._add_build_handler(InstrumentCmds.PAN_RIGHT_SOFT, self.build_simple_command)
+        self._add_build_handler(InstrumentCommands.PAN_LEFT_SOFT, self.build_simple_command)
+        self._add_build_handler(InstrumentCommands.PAN_RIGHT_SOFT, self.build_simple_command)
 
-        self._add_build_handler(InstrumentCmds.LAMP_ON, self.build_simple_command)
-        self._add_build_handler(InstrumentCmds.LAMP_OFF, self.build_simple_command)
+        self._add_build_handler(InstrumentCommands.LAMP_ON, self.build_simple_command)
+        self._add_build_handler(InstrumentCommands.LAMP_OFF, self.build_simple_command)
 
-        self._add_build_handler(InstrumentCmds.LASERS_ON, self.build_laser_command)
-        self._add_build_handler(InstrumentCmds.LASERS_OFF, self.build_laser_command)
+        self._add_build_handler(InstrumentCommands.LASERS_ON, self.build_laser_command)
+        self._add_build_handler(InstrumentCommands.LASERS_OFF, self.build_laser_command)
 
-        self._add_build_handler(InstrumentCmds.GET_DISK_USAGE, self.build_status_command)
-        self._add_build_handler(InstrumentCmds.HEALTH_REQUEST, self.build_status_command)
+        self._add_build_handler(InstrumentCommands.GET_DISK_USAGE, self.build_status_command)
+        self._add_build_handler(InstrumentCommands.HEALTH_REQUEST, self.build_status_command)
 
     def add_response_handlers(self):
         """
         Add response_handlers
         """
         # add response_handlers
-        self._add_response_handler(InstrumentCmds.SET, self._parse_set_response)
-        self._add_response_handler(InstrumentCmds.GET, self._parse_get_response)
+        self._add_response_handler(InstrumentCommands.SET, self._parse_set_response)
+        self._add_response_handler(InstrumentCommands.GET, self._parse_get_response)
 
-        self._add_response_handler(InstrumentCmds.SET_PRESET, self._parse_simple_response)
-        self._add_response_handler(InstrumentCmds.GO_TO_PRESET, self._parse_simple_response)
-        self._add_response_handler(InstrumentCmds.LAMP_OFF, self._parse_simple_response)
-        self._add_response_handler(InstrumentCmds.LAMP_ON, self._parse_simple_response)
-        self._add_response_handler(InstrumentCmds.LASERS_OFF, self._parse_simple_response)
-        self._add_response_handler(InstrumentCmds.LASERS_ON, self._parse_simple_response)
-        self._add_response_handler(InstrumentCmds.PAN_LEFT_SOFT, self._parse_simple_response)
-        self._add_response_handler(InstrumentCmds.PAN_RIGHT_SOFT, self._parse_simple_response)
-        self._add_response_handler(InstrumentCmds.DECREASE_IRIS, self._parse_simple_response)
-        self._add_response_handler(InstrumentCmds.START_CAPTURE, self._parse_simple_response)
-        self._add_response_handler(InstrumentCmds.START_FOCUS_FAR, self._parse_simple_response)
-        self._add_response_handler(InstrumentCmds.START_FOCUS_NEAR, self._parse_simple_response)
-        self._add_response_handler(InstrumentCmds.START_PAN_RIGHT, self._parse_simple_response)
-        self._add_response_handler(InstrumentCmds.START_PAN_LEFT, self._parse_simple_response)
-        self._add_response_handler(InstrumentCmds.START_TILT_DOWN, self._parse_simple_response)
-        self._add_response_handler(InstrumentCmds.START_TILT_UP, self._parse_simple_response)
-        self._add_response_handler(InstrumentCmds.TILE_UP_SOFT, self._parse_simple_response)
-        self._add_response_handler(InstrumentCmds.TILE_DOWN_SOFT, self._parse_simple_response)
-
-        # Generate data particle
-        self._add_response_handler(InstrumentCmds.GET_DISK_USAGE, self._parse_simple_response)
+        self._add_response_handler(InstrumentCommands.SET_PRESET, self._parse_simple_response)
+        self._add_response_handler(InstrumentCommands.GO_TO_PRESET, self._parse_simple_response)
+        self._add_response_handler(InstrumentCommands.LAMP_OFF, self._parse_simple_response)
+        self._add_response_handler(InstrumentCommands.LAMP_ON, self._parse_simple_response)
+        self._add_response_handler(InstrumentCommands.LASERS_OFF, self._parse_simple_response)
+        self._add_response_handler(InstrumentCommands.LASERS_ON, self._parse_simple_response)
+        self._add_response_handler(InstrumentCommands.PAN_LEFT_SOFT, self._parse_simple_response)
+        self._add_response_handler(InstrumentCommands.PAN_RIGHT_SOFT, self._parse_simple_response)
+        self._add_response_handler(InstrumentCommands.DECREASE_IRIS, self._parse_simple_response)
+        self._add_response_handler(InstrumentCommands.START_CAPTURE, self._parse_simple_response)
+        self._add_response_handler(InstrumentCommands.START_FOCUS_FAR, self._parse_simple_response)
+        self._add_response_handler(InstrumentCommands.START_FOCUS_NEAR, self._parse_simple_response)
+        self._add_response_handler(InstrumentCommands.START_PAN_RIGHT, self._parse_simple_response)
+        self._add_response_handler(InstrumentCommands.START_PAN_LEFT, self._parse_simple_response)
+        self._add_response_handler(InstrumentCommands.START_TILT_DOWN, self._parse_simple_response)
+        self._add_response_handler(InstrumentCommands.START_TILT_UP, self._parse_simple_response)
+        self._add_response_handler(InstrumentCommands.TILE_UP_SOFT, self._parse_simple_response)
+        self._add_response_handler(InstrumentCommands.TILE_DOWN_SOFT, self._parse_simple_response)
 
         # Generate data particle
-        self._add_response_handler(InstrumentCmds.HEALTH_REQUEST, self._parse_simple_response)
-        self._add_response_handler(InstrumentCmds.START_ZOOM_IN, self._parse_simple_response)
-        self._add_response_handler(InstrumentCmds.START_ZOOM_OUT, self._parse_simple_response)
-        self._add_response_handler(InstrumentCmds.INCREASE_IRIS, self._parse_simple_response)
-        self._add_response_handler(InstrumentCmds.TAKE_SNAPSHOT, self._parse_simple_response)
-        self._add_response_handler(InstrumentCmds.STOP_ZOOM, self._parse_simple_response)
-        self._add_response_handler(InstrumentCmds.STOP_CAPTURE, self._parse_simple_response)
-        self._add_response_handler(InstrumentCmds.STOP_FOCUS, self._parse_simple_response)
-        self._add_response_handler(InstrumentCmds.STOP_PAN, self._parse_simple_response)
-        self._add_response_handler(InstrumentCmds.STOP_TILT, self._parse_simple_response)
+        self._add_response_handler(InstrumentCommands.GET_DISK_USAGE, self._parse_simple_response)
+
+        # Generate data particle
+        self._add_response_handler(InstrumentCommands.HEALTH_REQUEST, self._parse_simple_response)
+        self._add_response_handler(InstrumentCommands.START_ZOOM_IN, self._parse_simple_response)
+        self._add_response_handler(InstrumentCommands.START_ZOOM_OUT, self._parse_simple_response)
+        self._add_response_handler(InstrumentCommands.INCREASE_IRIS, self._parse_simple_response)
+        self._add_response_handler(InstrumentCommands.TAKE_SNAPSHOT, self._parse_simple_response)
+        self._add_response_handler(InstrumentCommands.STOP_ZOOM, self._parse_simple_response)
+        self._add_response_handler(InstrumentCommands.STOP_CAPTURE, self._parse_simple_response)
+        self._add_response_handler(InstrumentCommands.STOP_FOCUS, self._parse_simple_response)
+        self._add_response_handler(InstrumentCommands.STOP_PAN, self._parse_simple_response)
+        self._add_response_handler(InstrumentCommands.STOP_TILT, self._parse_simple_response)
 
     def _got_chunk(self, chunk, timestamp):
         """

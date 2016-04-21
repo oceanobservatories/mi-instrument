@@ -188,10 +188,9 @@ class Prompt(BaseEnum):
     """
 
 
-class InstrumentCommand(BaseEnum):
+class InstrumentCommands(BaseEnum):
     """
     Commands sent to the instrument
-
     """
     # Instrument command strings
     INTERRUPT_INSTRUMENT = "!!!!!"
@@ -201,6 +200,20 @@ class InstrumentCommand(BaseEnum):
     RUN_WIPER = "$mvs"
     # placeholder for all parameters
     SET = 'set'
+
+
+class InstrumentCommandNames(BaseEnum):
+    """
+    Commands sent to the instrument
+    """
+    # Instrument command strings
+    INTERRUPT_INSTRUMENT = 'Interrupt'
+    PRINT_METADATA = 'Print Metadata'
+    PRINT_MENU = 'Print Menu'
+    RUN_SETTINGS = 'Run Settings'
+    RUN_WIPER = 'Run Wiper'
+    # placeholder for all parameters
+    SET = 'Set>'
 
 
 ###############################################################################
@@ -712,21 +725,21 @@ class Protocol(CommandResponseInstrumentProtocol):
         self._build_driver_dict()
 
         # Add build handlers for device commands.
-        self._add_build_handler(InstrumentCommand.INTERRUPT_INSTRUMENT, self._build_no_eol_command)
-        self._add_build_handler(InstrumentCommand.SET, self._build_single_parameter_command)
-        self._add_build_handler(InstrumentCommand.RUN_SETTINGS, self._build_simple_command)
-        self._add_build_handler(InstrumentCommand.PRINT_METADATA, self._build_simple_command)
-        self._add_build_handler(InstrumentCommand.PRINT_MENU, self._build_simple_command)
-        self._add_build_handler(InstrumentCommand.RUN_WIPER, self._build_simple_command)
+        self._add_build_handler(InstrumentCommands.INTERRUPT_INSTRUMENT, self._build_no_eol_command)
+        self._add_build_handler(InstrumentCommands.SET, self._build_single_parameter_command)
+        self._add_build_handler(InstrumentCommands.RUN_SETTINGS, self._build_simple_command)
+        self._add_build_handler(InstrumentCommands.PRINT_METADATA, self._build_simple_command)
+        self._add_build_handler(InstrumentCommands.PRINT_MENU, self._build_simple_command)
+        self._add_build_handler(InstrumentCommands.RUN_WIPER, self._build_simple_command)
 
         # all commands return a 'unrecognized command' if not recognized by the instrument
-        self._add_response_handler(InstrumentCommand.INTERRUPT_INSTRUMENT, self._parse_command_response)
+        self._add_response_handler(InstrumentCommands.INTERRUPT_INSTRUMENT, self._parse_command_response)
 
-        self._add_response_handler(InstrumentCommand.SET, self._parse_command_response)
-        self._add_response_handler(InstrumentCommand.RUN_SETTINGS, self._parse_command_response)
-        self._add_response_handler(InstrumentCommand.PRINT_METADATA, self._parse_metadata_response)
-        self._add_response_handler(InstrumentCommand.PRINT_MENU, self._parse_command_response)
-        self._add_response_handler(InstrumentCommand.RUN_WIPER, self._parse_run_wiper_response)
+        self._add_response_handler(InstrumentCommands.SET, self._parse_command_response)
+        self._add_response_handler(InstrumentCommands.RUN_SETTINGS, self._parse_command_response)
+        self._add_response_handler(InstrumentCommands.PRINT_METADATA, self._parse_metadata_response)
+        self._add_response_handler(InstrumentCommands.PRINT_MENU, self._parse_command_response)
+        self._add_response_handler(InstrumentCommands.RUN_WIPER, self._parse_run_wiper_response)
 
         # commands sent to device to be filtered in responses for telnet DA
         self._sent_cmds = []
@@ -739,20 +752,26 @@ class Protocol(CommandResponseInstrumentProtocol):
         self._display_name = 'FLOR'
 
         self._direct_commands = {
-            # 'Wake Up': NEWLINE, this instrument doesn't have a wakeup, but we'll want it for the others
-            'Interrupt': InstrumentCommand.INTERRUPT_INSTRUMENT,
-            'Print Metadata': InstrumentCommand.PRINT_METADATA + NEWLINE,
-            'Print Menu': InstrumentCommand.PRINT_MENU + NEWLINE,
-            'Run Settings': InstrumentCommand.RUN_SETTINGS + NEWLINE,
-            'Run Wiper': InstrumentCommand.RUN_WIPER + NEWLINE,
+            'Newline': NEWLINE,
             'Restore Factory Defaults': '$rfd' + NEWLINE,
             'Restore Settings': '$rls' + NEWLINE,
             'Save Settings': '$sto' + NEWLINE,
             'Read Data': '$get' + NEWLINE,
-            'Set>': InstrumentCommand.SET + ' ',
             'Set Clock>': '$clk ',
-            'Set Date>': '$date ' + NEWLINE,
+            'Set Date>': '$date ',
         }
+
+        command_dict = InstrumentCommands.dict()
+        label_dict = InstrumentCommandNames.dict()
+        for key in command_dict:
+            label = label_dict.get(key)
+            command = command_dict[key]
+            builder = self._build_handlers.get(command, None)
+            if builder in [self._build_simple_command, self._build_no_eol_command]:
+                command = builder(command)
+                self._direct_commands[label] = command
+            elif builder is self._build_single_parameter_command:
+                command += ' '
 
     @staticmethod
     def sieve_function(raw_data):
@@ -880,10 +899,10 @@ class Protocol(CommandResponseInstrumentProtocol):
         @throws InstrumentProtocolException if the update commands and not recognized.
         """
         if self._init_type != InitializationType.NONE:
-            response = self._do_cmd_resp(InstrumentCommand.PRINT_MENU, timeout=TIMEOUT,
+            response = self._do_cmd_resp(InstrumentCommands.PRINT_MENU, timeout=TIMEOUT,
                                          response_regex=MNU_REGEX_MATCHER)
             self._param_dict.update(response)
-            response = self._do_cmd_resp(InstrumentCommand.PRINT_METADATA, timeout=TIMEOUT,
+            response = self._do_cmd_resp(InstrumentCommands.PRINT_METADATA, timeout=TIMEOUT,
                                          response_regex=MET_REGEX_MATCHER)
             self._param_dict.update(response)
 
@@ -947,8 +966,8 @@ class Protocol(CommandResponseInstrumentProtocol):
             resp_regex = FLORT_SAMPLE_REGEX_MATCHER
         else:
             resp_regex = FLORD_SAMPLE_REGEX_MATCHER
-        self._do_cmd_resp(InstrumentCommand.RUN_SETTINGS, timeout=TIMEOUT, response_regex=resp_regex)
-        self._do_cmd_resp(InstrumentCommand.INTERRUPT_INSTRUMENT, *args, timeout=TIMEOUT,
+        self._do_cmd_resp(InstrumentCommands.RUN_SETTINGS, timeout=TIMEOUT, response_regex=resp_regex)
+        self._do_cmd_resp(InstrumentCommands.INTERRUPT_INSTRUMENT, *args, timeout=TIMEOUT,
                           response_regex=MNU_REGEX_MATCHER)
 
         if self.__instrument_class__ == FLORT_CLASS:
@@ -969,7 +988,7 @@ class Protocol(CommandResponseInstrumentProtocol):
             resp_regex = FLORT_SAMPLE_REGEX_MATCHER
         else:
             resp_regex = FLORD_SAMPLE_REGEX_MATCHER
-        result = self._do_cmd_resp(InstrumentCommand.RUN_SETTINGS, timeout=TIMEOUT, response_regex=resp_regex)
+        result = self._do_cmd_resp(InstrumentCommands.RUN_SETTINGS, timeout=TIMEOUT, response_regex=resp_regex)
         return next_state, (next_state, [result])
 
     def _handler_command_acquire_status(self, *args, **kwargs):
@@ -979,7 +998,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         next_state = None
         timeout = time.time() + STATUS_TIMEOUT
 
-        self._do_cmd_resp(InstrumentCommand.PRINT_MENU, timeout=TIMEOUT, response_regex=MNU_REGEX_MATCHER)
+        self._do_cmd_resp(InstrumentCommands.PRINT_MENU, timeout=TIMEOUT, response_regex=MNU_REGEX_MATCHER)
 
         if self.__instrument_class__ == FLORT_CLASS:
             status_particle_class = DataParticleType.FLORTD_MNU
@@ -995,7 +1014,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         Issue the run wiper command ($mvs)
         """
         next_state = None
-        result = self._do_cmd_resp(InstrumentCommand.RUN_WIPER, *args, timeout=TIMEOUT,
+        result = self._do_cmd_resp(InstrumentCommands.RUN_WIPER, *args, timeout=TIMEOUT,
                                    response_regex=RUN_REGEX_MATCHER)
         return next_state, (next_state, [result])
 
@@ -1060,15 +1079,15 @@ class Protocol(CommandResponseInstrumentProtocol):
         # Superclass will query the state.
         self._driver_event(DriverAsyncEvent.STATE_CHANGE)
 
-        self._do_cmd_resp(InstrumentCommand.INTERRUPT_INSTRUMENT, *args, timeout=TIMEOUT,
+        self._do_cmd_resp(InstrumentCommands.INTERRUPT_INSTRUMENT, *args, timeout=TIMEOUT,
                           response_regex=MNU_REGEX_MATCHER)
 
         if self._init_type != InitializationType.NONE:
-            response = self._do_cmd_resp(InstrumentCommand.PRINT_MENU, timeout=TIMEOUT,
+            response = self._do_cmd_resp(InstrumentCommands.PRINT_MENU, timeout=TIMEOUT,
                                          response_regex=MNU_REGEX_MATCHER)
             self._param_dict.update(response)
             # get the metadata once from the instrument
-            response = self._do_cmd_resp(InstrumentCommand.PRINT_METADATA, timeout=TIMEOUT,
+            response = self._do_cmd_resp(InstrumentCommands.PRINT_METADATA, timeout=TIMEOUT,
                                          response_regex=MET_REGEX_MATCHER)
             self._param_dict.update(response)
 
@@ -1078,7 +1097,7 @@ class Protocol(CommandResponseInstrumentProtocol):
             resp_regex = FLORT_SAMPLE_REGEX_MATCHER
         else:
             resp_regex = FLORD_SAMPLE_REGEX_MATCHER
-        self._do_cmd_resp(InstrumentCommand.RUN_SETTINGS, *args, timeout=TIMEOUT,
+        self._do_cmd_resp(InstrumentCommands.RUN_SETTINGS, *args, timeout=TIMEOUT,
                           response_regex=resp_regex)
 
         # Start scheduling for running the wiper and syncing the clock
@@ -1113,7 +1132,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         self.stop_scheduled_job(ScheduledJob.ACQUIRE_STATUS)
 
         # Issue the stop command.
-        result = self._do_cmd_resp(InstrumentCommand.INTERRUPT_INSTRUMENT, *args, timeout=TIMEOUT,
+        result = self._do_cmd_resp(InstrumentCommands.INTERRUPT_INSTRUMENT, *args, timeout=TIMEOUT,
                                    response_regex=MNU_REGEX_MATCHER)
 
         return next_state, (next_state, [result])
@@ -1126,16 +1145,16 @@ class Protocol(CommandResponseInstrumentProtocol):
         next_state = None
 
         # put instrument into command mode to send run wiper command ($mvs)
-        self._do_cmd_resp(InstrumentCommand.INTERRUPT_INSTRUMENT, *args, timeout=TIMEOUT,
+        self._do_cmd_resp(InstrumentCommands.INTERRUPT_INSTRUMENT, *args, timeout=TIMEOUT,
                           response_regex=MNU_REGEX_MATCHER)
-        self._do_cmd_resp(InstrumentCommand.RUN_WIPER, *args, timeout=TIMEOUT, response_regex=RUN_REGEX_MATCHER)
+        self._do_cmd_resp(InstrumentCommands.RUN_WIPER, *args, timeout=TIMEOUT, response_regex=RUN_REGEX_MATCHER)
 
         if self.__instrument_class__ == FLORT_CLASS:
             resp_regex = FLORT_SAMPLE_REGEX_MATCHER
         else:
             resp_regex = FLORD_SAMPLE_REGEX_MATCHER
 
-        result = self._do_cmd_resp(InstrumentCommand.RUN_SETTINGS, timeout=TIMEOUT, response_regex=resp_regex)
+        result = self._do_cmd_resp(InstrumentCommands.RUN_SETTINGS, timeout=TIMEOUT, response_regex=resp_regex)
         return next_state, (next_state, [result])
 
     def _handler_autosample_acquire_status(self, *args, **kwargs):
@@ -1146,15 +1165,15 @@ class Protocol(CommandResponseInstrumentProtocol):
         timeout = time.time() + STATUS_TIMEOUT
 
         # put instrument into command mode to send command $run to collect status
-        self._do_cmd_resp(InstrumentCommand.INTERRUPT_INSTRUMENT, timeout=TIMEOUT, response_regex=MNU_REGEX_MATCHER)
+        self._do_cmd_resp(InstrumentCommands.INTERRUPT_INSTRUMENT, timeout=TIMEOUT, response_regex=MNU_REGEX_MATCHER)
 
-        self._do_cmd_no_resp(InstrumentCommand.RUN_SETTINGS, timeout=TIMEOUT, response_regex=MNU_REGEX_MATCHER)
+        self._do_cmd_no_resp(InstrumentCommands.RUN_SETTINGS, timeout=TIMEOUT, response_regex=MNU_REGEX_MATCHER)
 
         if self.__instrument_class__ == FLORT_CLASS:
             resp_regex = FLORT_SAMPLE_REGEX_MATCHER
         else:
             resp_regex = FLORD_SAMPLE_REGEX_MATCHER
-        self._do_cmd_resp(InstrumentCommand.RUN_SETTINGS, timeout=TIMEOUT, response_regex=resp_regex)
+        self._do_cmd_resp(InstrumentCommands.RUN_SETTINGS, timeout=TIMEOUT, response_regex=resp_regex)
 
         if self.__instrument_class__ == FLORT_CLASS:
             status_particle_class = DataParticleType.FLORTD_MNU
@@ -1171,14 +1190,14 @@ class Protocol(CommandResponseInstrumentProtocol):
         back into autosample mode.
         """
         next_state = None
-        self._do_cmd_resp(InstrumentCommand.INTERRUPT_INSTRUMENT, timeout=TIMEOUT, response_regex=MNU_REGEX_MATCHER)
+        self._do_cmd_resp(InstrumentCommands.INTERRUPT_INSTRUMENT, timeout=TIMEOUT, response_regex=MNU_REGEX_MATCHER)
         self._sync_clock()
 
         if self.__instrument_class__ == FLORT_CLASS:
             resp_regex = FLORT_SAMPLE_REGEX_MATCHER
         else:
             resp_regex = FLORD_SAMPLE_REGEX_MATCHER
-        result = self._do_cmd_resp(InstrumentCommand.RUN_SETTINGS, timeout=TIMEOUT, response_regex=resp_regex)
+        result = self._do_cmd_resp(InstrumentCommands.RUN_SETTINGS, timeout=TIMEOUT, response_regex=resp_regex)
         return next_state, (next_state, [result])
 
     @staticmethod
@@ -1273,7 +1292,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                         self._param_dict.set_value(key, val)
                     # else perform regular command
                     else:
-                        response = self._do_cmd_resp(InstrumentCommand.SET, key, val, response_regex=MNU_REGEX_MATCHER)
+                        response = self._do_cmd_resp(InstrumentCommands.SET, key, val, response_regex=MNU_REGEX_MATCHER)
                         self._param_dict.update(response)
 
         # Get new param dict config. If it differs from the old config,
@@ -1365,9 +1384,9 @@ class Protocol(CommandResponseInstrumentProtocol):
         clock_val = str_val[1]
 
         log.debug("Setting the clock to %s %s", clock_val, date_val)
-        self._do_cmd_resp(InstrumentCommand.SET, Parameter.TIME, clock_val, timeout=TIMEOUT,
+        self._do_cmd_resp(InstrumentCommands.SET, Parameter.TIME, clock_val, timeout=TIMEOUT,
                           response_regex=MNU_REGEX_MATCHER)
-        self._do_cmd_resp(InstrumentCommand.SET, Parameter.DATE, date_val, timout=TIMEOUT,
+        self._do_cmd_resp(InstrumentCommands.SET, Parameter.DATE, date_val, timout=TIMEOUT,
                           response_regex=MNU_REGEX_MATCHER)
 
     @staticmethod

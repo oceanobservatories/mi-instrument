@@ -111,7 +111,7 @@ class ScheduledJob(BaseEnum):
 ####################################################################
 # Static enumerations for this class
 ####################################################################
-class Command(BaseEnum):
+class Commands(BaseEnum):
     SAVE = 'save'
     EXIT = 'exit'
     GET = 'show'
@@ -127,6 +127,17 @@ class Command(BaseEnum):
     #
     # RESET = '\x12'  #CTRL-R
     # EXIT_AND_RESET = 'exit!'
+
+
+class CommandNames(BaseEnum):
+    SAVE = 'Save'
+    EXIT = 'Exit'
+    GET = 'Show>'
+    SET = 'Set>'
+    BREAK = 'Interrupt'
+    SWITCH_TO_POLL = 'Polling Mode'
+    SWITCH_TO_AUTOSAMPLE = 'Autosample'
+    SAMPLE = 'Sample'
 
 
 class PARProtocolState(BaseEnum):
@@ -381,9 +392,9 @@ class SatlanticPARInstrumentProtocol(CommandResponseInstrumentProtocol):
 
         self._protocol_fsm.start(PARProtocolState.UNKNOWN)
 
-        self._add_response_handler(Command.GET, self._parse_get_response)
-        self._add_response_handler(Command.SET, self._parse_set_response)
-        self._add_response_handler(Command.SAMPLE, self._parse_response)
+        self._add_response_handler(Commands.GET, self._parse_get_response)
+        self._add_response_handler(Commands.SET, self._parse_set_response)
+        self._add_response_handler(Commands.SAMPLE, self._parse_response)
 
         # Construct the parameter dictionary containing device parameters,
         # current parameter values, and set formatting functions.
@@ -448,6 +459,15 @@ class SatlanticPARInstrumentProtocol(CommandResponseInstrumentProtocol):
                              startup_param=True)
 
         self._chunker = StringChunker(SatlanticPARInstrumentProtocol.sieve_function)
+
+        command_dict = Commands.dict()
+        label_dict = CommandNames.dict()
+        for key in command_dict:
+            label = label_dict.get(key)
+            command = command_dict[key]
+            if command in [CommandNames.SET, CommandNames.GET]:
+                command += ' '
+            self._direct_commands[label] = command
 
     def _build_cmd_dict(self):
         """
@@ -648,10 +668,10 @@ class SatlanticPARInstrumentProtocol(CommandResponseInstrumentProtocol):
         """
         result = []
         try:
-            probe_resp = self._do_cmd_resp(Command.SAMPLE, timeout=2,
+            probe_resp = self._do_cmd_resp(Commands.SAMPLE, timeout=2,
                                            expected_prompt=[Prompt.SAMPLES, PARProtocolError.INVALID_COMMAND])
         except InstrumentTimeoutException:
-            self._do_cmd_resp(Command.SWITCH_TO_AUTOSAMPLE, expected_prompt=Prompt.SAMPLES, timeout=15)
+            self._do_cmd_resp(Commands.SWITCH_TO_AUTOSAMPLE, expected_prompt=Prompt.SAMPLES, timeout=15)
             next_state = PARProtocolState.AUTOSAMPLE
             return next_state, (next_state, result)
 
@@ -659,7 +679,7 @@ class SatlanticPARInstrumentProtocol(CommandResponseInstrumentProtocol):
             next_state = PARProtocolState.COMMAND
         else:
             # Put the instrument into full autosample in case it isn't already (could be in polled mode)
-            result = self._do_cmd_resp(Command.SWITCH_TO_AUTOSAMPLE, expected_prompt=Prompt.SAMPLES, timeout=15)
+            result = self._do_cmd_resp(Commands.SWITCH_TO_AUTOSAMPLE, expected_prompt=Prompt.SAMPLES, timeout=15)
             next_state = PARProtocolState.AUTOSAMPLE
 
         return next_state, (next_state, result)
@@ -682,7 +702,7 @@ class SatlanticPARInstrumentProtocol(CommandResponseInstrumentProtocol):
         """
         Fetch the parameters from the device, and update the param dict.
         """
-        max_rate_response = self._do_cmd_resp(Command.GET, Parameter.MAXRATE, expected_prompt=Prompt.COMMAND)
+        max_rate_response = self._do_cmd_resp(Commands.GET, Parameter.MAXRATE, expected_prompt=Prompt.COMMAND)
         self._param_dict.update(max_rate_response)
 
     def _set_params(self, params, startup=False, *args, **kwargs):
@@ -737,7 +757,7 @@ class SatlanticPARInstrumentProtocol(CommandResponseInstrumentProtocol):
                     raise InstrumentParameterException("Maxrate %s out of range" % value)
 
                 if old_val != new_val:
-                    if self._do_cmd_resp(Command.SET, name, new_val, expected_prompt=Prompt.COMMAND):
+                    if self._do_cmd_resp(Commands.SET, name, new_val, expected_prompt=Prompt.COMMAND):
                         instrument_params_changed = True
             elif name == Parameter.ACQUIRE_STATUS_INTERVAL:
                 pass
@@ -747,7 +767,7 @@ class SatlanticPARInstrumentProtocol(CommandResponseInstrumentProtocol):
                 raise InstrumentParameterException("Parameter not in dictionary: %s" % name)
 
         if instrument_params_changed:
-            self._do_cmd_resp(Command.SAVE, expected_prompt=Prompt.COMMAND)
+            self._do_cmd_resp(Commands.SAVE, expected_prompt=Prompt.COMMAND)
             self._update_params()
 
         new_config = self._param_dict.get_all()
@@ -823,9 +843,9 @@ class SatlanticPARInstrumentProtocol(CommandResponseInstrumentProtocol):
         next_state = PARProtocolState.AUTOSAMPLE
         result = []
 
-        self._do_cmd_resp(Command.EXIT, expected_prompt=Prompt.SAMPLES, timeout=15)
+        self._do_cmd_resp(Commands.EXIT, expected_prompt=Prompt.SAMPLES, timeout=15)
         time.sleep(0.115)
-        self._do_cmd_resp(Command.SWITCH_TO_AUTOSAMPLE, expected_prompt=Prompt.SAMPLES, timeout=15)
+        self._do_cmd_resp(Commands.SWITCH_TO_AUTOSAMPLE, expected_prompt=Prompt.SAMPLES, timeout=15)
 
         return next_state, (next_state, result)
 
@@ -892,13 +912,13 @@ class SatlanticPARInstrumentProtocol(CommandResponseInstrumentProtocol):
     # Poll handlers.
     ########################################################################
     def _get_poll(self):
-        self._do_cmd_resp(Command.EXIT, expected_prompt=Prompt.SAMPLES, timeout=15)
+        self._do_cmd_resp(Commands.EXIT, expected_prompt=Prompt.SAMPLES, timeout=15)
         # switch to poll
         time.sleep(0.115)
-        self._connection.send(Command.SWITCH_TO_POLL)
+        self._connection.send(Commands.SWITCH_TO_POLL)
         # return to command mode
         time.sleep(0.115)
-        self._do_cmd_resp(Command.BREAK, response_regex=COMMAND_REGEX, timeout=5)
+        self._do_cmd_resp(Commands.BREAK, response_regex=COMMAND_REGEX, timeout=5)
 
     def _handler_poll_acquire_sample(self):
         """
@@ -925,7 +945,7 @@ class SatlanticPARInstrumentProtocol(CommandResponseInstrumentProtocol):
         next_state = None
         timeout = time.time() + TIMEOUT
 
-        self._do_cmd_resp(Command.GET, "all", expected_prompt=Prompt.COMMAND)
+        self._do_cmd_resp(Commands.GET, "all", expected_prompt=Prompt.COMMAND)
 
         particles = self.wait_for_particles([DataParticleType.CONFIG], timeout)
 
@@ -1065,11 +1085,11 @@ class SatlanticPARInstrumentProtocol(CommandResponseInstrumentProtocol):
         while True:
             if send_flag:
                 if current_maxrate < 8:
-                    self._connection.send(Command.SWITCH_TO_POLL)
+                    self._connection.send(Commands.SWITCH_TO_POLL)
                 else:
                     # Send a burst of stop auto poll commands for high maxrates
                     for _ in xrange(25):    # 25 x 0.15 seconds = 3.75 seconds
-                        self._connection.send(Command.SWITCH_TO_POLL)
+                        self._connection.send(Commands.SWITCH_TO_POLL)
                         time.sleep(.15)
                 send_flag = False
             time.sleep(0.1)
@@ -1095,14 +1115,14 @@ class SatlanticPARInstrumentProtocol(CommandResponseInstrumentProtocol):
         send break every 0.3 seconds until the Command Console banner
         """
         self._promptbuf = ""
-        self._connection.send(Command.BREAK)
+        self._connection.send(Commands.BREAK)
         starttime = time.time()
         resendtime = time.time()
         while True:
             time.sleep(0.1)
             if time.time() > resendtime + 0.3:
                 log.debug("Sending break again.")
-                self._connection.send(Command.BREAK)
+                self._connection.send(Commands.BREAK)
                 resendtime = time.time()
 
             if COMMAND_PATTERN in self._promptbuf:

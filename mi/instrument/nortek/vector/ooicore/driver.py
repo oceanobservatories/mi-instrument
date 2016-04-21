@@ -27,7 +27,7 @@ from mi.core.instrument.protocol_param_dict import ParameterDictVisibility
 from mi.core.instrument.protocol_param_dict import ParameterDictType
 from mi.core.instrument.data_particle import DataParticle, DataParticleKey, DataParticleValue
 
-from mi.instrument.nortek.driver import NortekDataParticleType, Parameter, InstrumentCmds, \
+from mi.instrument.nortek.driver import NortekDataParticleType, Parameter, InstrumentCommands, \
     USER_CONFIG_DATA_REGEX, validate_checksum, NORTEK_COMMON_REGEXES
 from mi.instrument.nortek.driver import NortekInstrumentDriver
 from mi.instrument.nortek.driver import NortekInstrumentProtocol
@@ -402,7 +402,7 @@ class Protocol(NortekInstrumentProtocol):
         Update the parameter dictionary. Issue the read config command. The response
         needs to be saved to param dictionary.
         """
-        ret_config = self._do_cmd_resp(InstrumentCmds.READ_USER_CONFIGURATION, response_regex=USER_CONFIG_DATA_REGEX)
+        ret_config = self._do_cmd_resp(InstrumentCommands.READ_USER_CONFIGURATION, response_regex=USER_CONFIG_DATA_REGEX)
         self._param_dict.update(ret_config)
 
         self.spare_param_values[Parameter.A1_1_SPARE] = ret_config[24:26]
