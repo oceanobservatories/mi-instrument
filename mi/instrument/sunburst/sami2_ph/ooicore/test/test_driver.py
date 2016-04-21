@@ -388,7 +388,7 @@ class DriverTestMixinSub(SamiMixin):
 class DriverUnitTest(SamiUnitTest, DriverTestMixinSub):
     capabilities_test_dict = {
         ProtocolState.UNKNOWN: ['DRIVER_EVENT_DISCOVER'],
-        ProtocolState.WAITING: ['DRIVER_EVENT_DISCOVER'],
+        ProtocolState.WAITING: ['DRIVER_EVENT_GET'],
         ProtocolState.COMMAND: ['DRIVER_EVENT_GET',
                                 'DRIVER_EVENT_SET',
                                 'DRIVER_EVENT_START_DIRECT',
