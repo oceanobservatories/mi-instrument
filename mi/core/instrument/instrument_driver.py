@@ -385,6 +385,7 @@ class InstrumentDriver(object):
         if event_type == DriverAsyncEvent.STATE_CHANGE:
             state = self.get_resource_state()
             event['value'] = state
+            log.info('STATE CHANGE: %r', event)
             self._send_event(event)
 
         elif event_type == DriverAsyncEvent.CONFIG_CHANGE:
@@ -1191,7 +1192,8 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
                 log.debug('Received PORT AGENT STATUS: %r', data)
                 current_state = self._connection_fsm.get_current_state()
                 if data == 'DISCONNECTED':
-                    self._async_raise_event(DriverEvent.PA_CONNECTION_LOST)
+                    if current_state == DriverConnectionState.CONNECTED:
+                        self._async_raise_event(DriverEvent.PA_CONNECTION_LOST)
                 elif data == 'CONNECTED':
                     if current_state == DriverConnectionState.INST_DISCONNECTED:
                         self._async_raise_event(DriverEvent.CONNECT)
