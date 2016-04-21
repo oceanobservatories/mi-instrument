@@ -673,10 +673,10 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
         """
         config = {}
         if self._protocol:
-            config = self._protocol._get_direct_config()
-            config['ip'] = self._port_agent_config.get('host')
-            config['data'] = self._port_agent_config.get('port', {}).get('da')
-            config['sniffer'] = self._port_agent_config.get('port', {}).get('sniff')
+            config = self._protocol.get_direct_config()
+            config['ip'] = self._port_agent_config.get('host', 'uft20')
+            config['data'] = self._port_agent_config.get('ports', {}).get('da')
+            config['sniffer'] = self._port_agent_config.get('ports', {}).get('sniff')
         return [config]
 
     def restore_direct_access_params(self, config):
