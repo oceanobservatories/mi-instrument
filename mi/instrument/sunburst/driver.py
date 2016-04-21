@@ -262,7 +262,7 @@ class Prompt(BaseEnum):
     BOOT_PROMPT = '7.7Boot>'
 
 
-class SamiInstrumentCommand(BaseEnum):
+class SamiInstrumentCommands(BaseEnum):
     """
     Base SAMI instrument command strings. Subclass and extend these with device
     specific commands in subclass 'InstrumentCommand'.
@@ -287,6 +287,33 @@ class SamiInstrumentCommand(BaseEnum):
     SAMI_ESCAPE_BOOT = 'u'
 
     SAMI_PUMP_OFF = 'P'
+
+
+class SamiInstrumentCommandNames(BaseEnum):
+    """
+    Base SAMI instrument command strings. Subclass and extend these with device
+    specific commands in subclass 'InstrumentCommand'.
+
+    This applies to the PCO2 where an additional ACQUIRE_SAMPLE
+    command is required for device 1, the external pump.
+    """
+
+    SAMI_GET_STATUS = 'Get Status'
+    SAMI_START_STATUS = 'Start Status'
+    SAMI_STOP_STATUS = 'Stop Status'
+    SAMI_GET_CONFIG = 'Get Config'
+    SAMI_SET_CONFIG = 'Set Config'
+    SAMI_ERASE_ALL = 'Erase All'
+    SAMI_GET_BATTERY_VOLTAGE = 'Battery Voltage'
+    SAMI_GET_THERMISTOR_VOLTAGE = 'Thermistor Voltage'
+
+    SAMI_START = 'Start'
+    SAMI_STOP = 'Stop'
+
+    SAMI_ACQUIRE_SAMPLE = 'Acquire Sample'
+    SAMI_ESCAPE_BOOT = 'Escape'
+
+    SAMI_PUMP_OFF = 'Pump Off'
 
 
 ###############################################################################
@@ -699,35 +726,35 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
         self._engineering_parameters.append(SamiParameter.REAGENT_FLUSH_DURATION)
 
         # Add build handlers for device commands.
-        self._add_build_handler(SamiInstrumentCommand.SAMI_GET_STATUS, self._build_simple_command)
-        self._add_build_handler(SamiInstrumentCommand.SAMI_START_STATUS, self._build_simple_command)
-        self._add_build_handler(SamiInstrumentCommand.SAMI_STOP_STATUS, self._build_simple_command)
+        self._add_build_handler(SamiInstrumentCommands.SAMI_GET_STATUS, self._build_simple_command)
+        self._add_build_handler(SamiInstrumentCommands.SAMI_START_STATUS, self._build_simple_command)
+        self._add_build_handler(SamiInstrumentCommands.SAMI_STOP_STATUS, self._build_simple_command)
 
-        self._add_build_handler(SamiInstrumentCommand.SAMI_GET_CONFIG, self._build_simple_command)
-        self._add_build_handler(SamiInstrumentCommand.SAMI_SET_CONFIG, self._build_simple_command)
+        self._add_build_handler(SamiInstrumentCommands.SAMI_GET_CONFIG, self._build_simple_command)
+        self._add_build_handler(SamiInstrumentCommands.SAMI_SET_CONFIG, self._build_simple_command)
 
-        self._add_build_handler(SamiInstrumentCommand.SAMI_GET_BATTERY_VOLTAGE, self._build_simple_command)
-        self._add_build_handler(SamiInstrumentCommand.SAMI_GET_THERMISTOR_VOLTAGE, self._build_simple_command)
+        self._add_build_handler(SamiInstrumentCommands.SAMI_GET_BATTERY_VOLTAGE, self._build_simple_command)
+        self._add_build_handler(SamiInstrumentCommands.SAMI_GET_THERMISTOR_VOLTAGE, self._build_simple_command)
 
-        self._add_build_handler(SamiInstrumentCommand.SAMI_ERASE_ALL, self._build_simple_command)
-        self._add_build_handler(SamiInstrumentCommand.SAMI_START, self._build_simple_command)
-        self._add_build_handler(SamiInstrumentCommand.SAMI_STOP, self._build_simple_command)
-        self._add_build_handler(SamiInstrumentCommand.SAMI_ACQUIRE_SAMPLE, self._build_simple_command)
-        self._add_build_handler(SamiInstrumentCommand.SAMI_ESCAPE_BOOT, self._build_simple_command)
-        self._add_build_handler(SamiInstrumentCommand.SAMI_PUMP_OFF, self._build_simple_command)
+        self._add_build_handler(SamiInstrumentCommands.SAMI_ERASE_ALL, self._build_simple_command)
+        self._add_build_handler(SamiInstrumentCommands.SAMI_START, self._build_simple_command)
+        self._add_build_handler(SamiInstrumentCommands.SAMI_STOP, self._build_simple_command)
+        self._add_build_handler(SamiInstrumentCommands.SAMI_ACQUIRE_SAMPLE, self._build_simple_command)
+        self._add_build_handler(SamiInstrumentCommands.SAMI_ESCAPE_BOOT, self._build_simple_command)
+        self._add_build_handler(SamiInstrumentCommands.SAMI_PUMP_OFF, self._build_simple_command)
 
         # Add response handlers for device commands.
-        self._add_response_handler(SamiInstrumentCommand.SAMI_GET_STATUS, self._parse_response_get_status)
-        self._add_response_handler(SamiInstrumentCommand.SAMI_STOP_STATUS, self._parse_response_stop_status)
-        self._add_response_handler(SamiInstrumentCommand.SAMI_GET_CONFIG, self._parse_response_get_config)
-        self._add_response_handler(SamiInstrumentCommand.SAMI_SET_CONFIG, self._parse_response_newline)
-        self._add_response_handler(SamiInstrumentCommand.SAMI_GET_BATTERY_VOLTAGE,
+        self._add_response_handler(SamiInstrumentCommands.SAMI_GET_STATUS, self._parse_response_get_status)
+        self._add_response_handler(SamiInstrumentCommands.SAMI_STOP_STATUS, self._parse_response_stop_status)
+        self._add_response_handler(SamiInstrumentCommands.SAMI_GET_CONFIG, self._parse_response_get_config)
+        self._add_response_handler(SamiInstrumentCommands.SAMI_SET_CONFIG, self._parse_response_newline)
+        self._add_response_handler(SamiInstrumentCommands.SAMI_GET_BATTERY_VOLTAGE,
                                    self._parse_response_get_battery_voltage)
-        self._add_response_handler(SamiInstrumentCommand.SAMI_GET_THERMISTOR_VOLTAGE,
+        self._add_response_handler(SamiInstrumentCommands.SAMI_GET_THERMISTOR_VOLTAGE,
                                    self._parse_response_get_thermistor_voltage)
-        self._add_response_handler(SamiInstrumentCommand.SAMI_ERASE_ALL, self._parse_response_erase_all)
-        self._add_response_handler(SamiInstrumentCommand.SAMI_ACQUIRE_SAMPLE, self._parse_response_sample_sami)
-        self._add_response_handler(SamiInstrumentCommand.SAMI_PUMP_OFF, self._parse_response_newline)
+        self._add_response_handler(SamiInstrumentCommands.SAMI_ERASE_ALL, self._parse_response_erase_all)
+        self._add_response_handler(SamiInstrumentCommands.SAMI_ACQUIRE_SAMPLE, self._parse_response_sample_sami)
+        self._add_response_handler(SamiInstrumentCommands.SAMI_PUMP_OFF, self._parse_response_newline)
 
         # Add sample handlers.
 
@@ -743,6 +770,15 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
         self._add_scheduler_event(SamiScheduledJob.ACQUIRE_STATUS, SamiProtocolEvent.ACQUIRE_STATUS)
 
         # continue __init__ in the sub-class in the specific driver
+
+        command_dict = SamiInstrumentCommands.dict()
+        label_dict = SamiInstrumentCommandNames.dict()
+        for key in command_dict:
+            label = label_dict.get(key)
+            command = command_dict[key]
+            builder = self._build_handlers.get(command, None)
+            if builder in [self._build_simple_command]:
+                self._direct_commands[label] = command
 
     def _setup_scheduler_config(self):
         """
@@ -892,7 +928,7 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
                 time.sleep(delay)
 
         # Make sure pump is off
-        self._do_cmd_resp_no_wakeup(SamiInstrumentCommand.SAMI_PUMP_OFF, timeout=SAMI_DEFAULT_TIMEOUT,
+        self._do_cmd_resp_no_wakeup(SamiInstrumentCommands.SAMI_PUMP_OFF, timeout=SAMI_DEFAULT_TIMEOUT,
                                     response_regex=SAMI_NEW_LINE_REGEX_MATCHER)
 
     ########################################################################
@@ -970,16 +1006,16 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
         next_state = None
 
         try:
-            self._do_cmd_resp(SamiInstrumentCommand.SAMI_GET_STATUS,
+            self._do_cmd_resp(SamiInstrumentCommands.SAMI_GET_STATUS,
                               timeout=SAMI_DEFAULT_TIMEOUT,
                               response_regex=SAMI_REGULAR_STATUS_REGEX_MATCHER)
-            self._do_cmd_resp(SamiInstrumentCommand.SAMI_GET_BATTERY_VOLTAGE,
+            self._do_cmd_resp(SamiInstrumentCommands.SAMI_GET_BATTERY_VOLTAGE,
                               timeout=SAMI_DEFAULT_TIMEOUT,
                               response_regex=BATTERY_VOLTAGE_REGEX_MATCHER)
-            self._do_cmd_resp(SamiInstrumentCommand.SAMI_GET_THERMISTOR_VOLTAGE,
+            self._do_cmd_resp(SamiInstrumentCommands.SAMI_GET_THERMISTOR_VOLTAGE,
                               timeout=SAMI_DEFAULT_TIMEOUT,
                               response_regex=SAMI_THERMISTOR_VOLTAGE_REGEX_MATCHER)
-            self._do_cmd_resp(SamiInstrumentCommand.SAMI_GET_CONFIG,
+            self._do_cmd_resp(SamiInstrumentCommands.SAMI_GET_CONFIG,
                               timeout=SAMI_DEFAULT_TIMEOUT,
                               response_regex=self._get_configuration_string_regex_matcher())
 
@@ -1004,12 +1040,12 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
 
         # Stop status and check for boot prompt
         try:
-            response = self._do_cmd_resp(SamiInstrumentCommand.SAMI_STOP_STATUS,
+            response = self._do_cmd_resp(SamiInstrumentCommands.SAMI_STOP_STATUS,
                                          timeout=2,
                                          expected_prompt=[Prompt.BOOT_PROMPT])
             log.debug('SamiProtocol._discover: boot prompt present = %s, entering WAITING state', response)
             next_state = SamiProtocolState.WAITING
-            self._do_cmd_direct(SamiInstrumentCommand.SAMI_ESCAPE_BOOT + SAMI_NEWLINE)
+            self._do_cmd_direct(SamiInstrumentCommands.SAMI_ESCAPE_BOOT + SAMI_NEWLINE)
         except InstrumentTimeoutException:
             log.debug('SamiProtocol._discover: boot prompt did not occur, move to COMMAND state')
             next_state = SamiProtocolState.COMMAND
@@ -1041,7 +1077,7 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
         while count <= SAMI_DISCOVERY_RETRY_COUNT:
             log.debug("_handler_waiting_get: getting status")
             try:
-                self._do_cmd_resp(SamiInstrumentCommand.SAMI_GET_STATUS,
+                self._do_cmd_resp(SamiInstrumentCommands.SAMI_GET_STATUS,
                                   timeout=SAMI_DEFAULT_TIMEOUT,
                                   response_regex=SAMI_REGULAR_STATUS_REGEX_MATCHER)
                 next_state = SamiProtocolState.COMMAND
@@ -1493,7 +1529,7 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
 
         configuration_string_regex = self._get_configuration_string_regex_matcher()
 
-        instrument_configuration_string = self._do_cmd_resp(SamiInstrumentCommand.SAMI_GET_CONFIG,
+        instrument_configuration_string = self._do_cmd_resp(SamiInstrumentCommands.SAMI_GET_CONFIG,
                                                             timeout=SAMI_DEFAULT_TIMEOUT,
                                                             response_regex=configuration_string_regex)
 
@@ -1519,7 +1555,7 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
         # Make sure automatic-status updates are off. This will stop the
         # broadcast of information while we are trying to get/set data.
         log.debug('SamiProtocol._set_configuration: STOP_STATUS_PERIODIC')
-        self._do_cmd_no_resp(SamiInstrumentCommand.SAMI_STOP_STATUS)
+        self._do_cmd_no_resp(SamiInstrumentCommands.SAMI_STOP_STATUS)
 
         # Set response timeout to 10 seconds. Should be immediate if
         # communications are enabled and the instrument is not sampling.
@@ -1530,36 +1566,36 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
 
         # Acquire the current instrument status
         log.debug('SamiProtocol._set_configuration: GET_STATUS')
-        status = self._do_cmd_resp(SamiInstrumentCommand.SAMI_GET_STATUS,
+        status = self._do_cmd_resp(SamiInstrumentCommands.SAMI_GET_STATUS,
                                    timeout=SAMI_DEFAULT_TIMEOUT,
                                    response_regex=SAMI_REGULAR_STATUS_REGEX_MATCHER)
         log.debug('SamiProtocol._set_configuration: status = %s', status)
 
         log.debug('SamiProtocol._set_configuration: ERASE_ALL')
         # Erase memory before setting configuration
-        self._do_cmd_direct(SamiInstrumentCommand.SAMI_ERASE_ALL + SAMI_NEWLINE)
+        self._do_cmd_direct(SamiInstrumentCommands.SAMI_ERASE_ALL + SAMI_NEWLINE)
 
         log.debug('SamiProtocol._set_configuration: SET_CONFIG')
-        self._do_cmd_resp(SamiInstrumentCommand.SAMI_SET_CONFIG, timeout=SAMI_DEFAULT_TIMEOUT,
+        self._do_cmd_resp(SamiInstrumentCommands.SAMI_SET_CONFIG, timeout=SAMI_DEFAULT_TIMEOUT,
                           response_regex=SAMI_NEW_LINE_REGEX_MATCHER)
         # Important: Need to do right after to prevent bricking
         self._do_cmd_direct(configuration_string + SAMI_CONFIG_TERMINATOR + SAMI_NEWLINE)
 
         # Stop auto status again, it is restarted after setting the configuration data
         log.debug('SamiProtocol._set_configuration: STOP_STATUS_PERIODIC again')
-        self._do_cmd_no_resp(SamiInstrumentCommand.SAMI_STOP_STATUS)
+        self._do_cmd_no_resp(SamiInstrumentCommands.SAMI_STOP_STATUS)
 
         # Verify configuration and update parameter dictionary if it is set correctly
         self._verify_and_update_configuration(configuration_string)
 
         # Send status, don't need to send configuration, it's sent in _verify_and_update_configuration()
-        self._do_cmd_resp(SamiInstrumentCommand.SAMI_GET_STATUS,
+        self._do_cmd_resp(SamiInstrumentCommands.SAMI_GET_STATUS,
                           timeout=SAMI_DEFAULT_TIMEOUT,
                           response_regex=SAMI_REGULAR_STATUS_REGEX_MATCHER)
-        self._do_cmd_resp(SamiInstrumentCommand.SAMI_GET_BATTERY_VOLTAGE,
+        self._do_cmd_resp(SamiInstrumentCommands.SAMI_GET_BATTERY_VOLTAGE,
                           timeout=SAMI_DEFAULT_TIMEOUT,
                           response_regex=BATTERY_VOLTAGE_REGEX_MATCHER)
-        self._do_cmd_resp(SamiInstrumentCommand.SAMI_GET_THERMISTOR_VOLTAGE,
+        self._do_cmd_resp(SamiInstrumentCommands.SAMI_GET_THERMISTOR_VOLTAGE,
                           timeout=SAMI_DEFAULT_TIMEOUT,
                           response_regex=SAMI_THERMISTOR_VOLTAGE_REGEX_MATCHER)
 
@@ -1694,7 +1730,7 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
 
         configuration_string_regex = self._get_configuration_string_regex_matcher()
 
-        instrument_configuration_string = self._do_cmd_resp(SamiInstrumentCommand.SAMI_GET_CONFIG,
+        instrument_configuration_string = self._do_cmd_resp(SamiInstrumentCommands.SAMI_GET_CONFIG,
                                                             timeout=SAMI_DEFAULT_TIMEOUT,
                                                             response_regex=configuration_string_regex)
 
@@ -1736,7 +1772,7 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
         start_time = time.time()
 
         # An exception is raised if timeout is hit.
-        self._do_cmd_resp(SamiInstrumentCommand.SAMI_ACQUIRE_SAMPLE,
+        self._do_cmd_resp(SamiInstrumentCommands.SAMI_ACQUIRE_SAMPLE,
                           timeout=self._get_sample_timeout(),
                           response_regex=self._get_sample_regex())
 

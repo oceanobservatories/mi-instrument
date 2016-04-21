@@ -43,7 +43,7 @@ from mi.instrument.teledyne.workhorse.driver import WorkhorseProtocolState
 from mi.instrument.teledyne.workhorse.driver import WorkhorseProtocolEvent
 from mi.instrument.teledyne.workhorse.driver import WorkhorsePrompt
 from mi.instrument.teledyne.workhorse.driver import WorkhorseParameter
-from mi.instrument.teledyne.workhorse.driver import WorkhorseInstrumentCmds
+from mi.instrument.teledyne.workhorse.driver import WorkhorseInstrumentCommands
 from mi.instrument.teledyne.workhorse.driver import NEWLINE
 from mi.instrument.teledyne.workhorse.test.test_driver import WorkhorseDriverUnitTest
 from mi.instrument.teledyne.workhorse.test.test_driver import WorkhorseDriverIntegrationTest
@@ -949,7 +949,7 @@ class VadcpDriverUnitTest(WorkhorseDriverUnitTest, VADCPMixin):
         do a little extra validation for the Capabilities
         """
 
-        self.assert_enum_has_no_duplicates(WorkhorseInstrumentCmds)
+        self.assert_enum_has_no_duplicates(WorkhorseInstrumentCommands)
         self.assert_enum_has_no_duplicates(WorkhorseProtocolState)
         self.assert_enum_has_no_duplicates(WorkhorseProtocolEvent)
         self.assert_enum_has_no_duplicates(WorkhorseParameter)

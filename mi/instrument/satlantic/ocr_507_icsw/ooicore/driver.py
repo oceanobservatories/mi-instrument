@@ -75,7 +75,7 @@ init_pattern = r'Press <Ctrl\+C> for command console. \r\nInitializing system. P
 init_regex = re.compile(init_pattern)
 COMMAND_PATTERN = 'Command Console'
 RESET_DELAY = 6
-EOLN = "\r\n"
+NEWLINE = '\r\n'
 RETRY = 3
 STATUS_TIMEOUT = 30
 VALID_MAXRATES = (0, 0.125, 0.25, 0.5, 1, 2, 4, 8, 10, 12)
@@ -97,7 +97,7 @@ class SatlanticSpecificDriverEvents(BaseEnum):
 ####################################################################
 
 
-class Command(BaseEnum):
+class Commands(BaseEnum):
     SAVE = 'save'
     EXIT = 'exit'
     EXIT_AND_RESET = 'exit!'
@@ -110,6 +110,20 @@ class Command(BaseEnum):
     ID = 'id'
     SHOW_ALL = 'show all'
     INVALID = 'foo'
+
+
+class CommandNames(BaseEnum):
+    SAVE = 'Save'
+    EXIT = 'Exit'
+    EXIT_AND_RESET = 'Exit/Reset'
+    GET = 'Show'
+    SET = 'Set>'
+    RESET = 'Reset'  # CTRL-R
+    BREAK = 'Break'  # CTRL-C
+    SWITCH_TO_AUTOSAMPLE = 'Autosample'  # CTRL-A
+    SAMPLE = 'Sample'  # CR
+    ID = 'ID'
+    SHOW_ALL = 'Show All'
 
 
 class SatlanticProtocolState(BaseEnum):
@@ -404,7 +418,7 @@ class SatlanticOCR507InstrumentProtocol(CommandResponseInstrumentProtocol):
     _config_particle_regex = CONFIG_REGEX
 
     def __init__(self, callback=None):
-        CommandResponseInstrumentProtocol.__init__(self, Prompt, EOLN, callback)
+        CommandResponseInstrumentProtocol.__init__(self, Prompt, NEWLINE, callback)
 
         self._last_data_timestamp = None
 
@@ -440,10 +454,10 @@ class SatlanticOCR507InstrumentProtocol(CommandResponseInstrumentProtocol):
 
         self._protocol_fsm.start(SatlanticProtocolState.UNKNOWN)
 
-        self._add_response_handler(Command.GET, self._parse_get_response)
-        self._add_response_handler(Command.SHOW_ALL, self._parse_getAll_response)
-        self._add_response_handler(Command.SET, self._parse_set_response)
-        self._add_response_handler(Command.INVALID, self._parse_invalid_response)
+        self._add_response_handler(Commands.GET, self._parse_get_response)
+        self._add_response_handler(Commands.SHOW_ALL, self._parse_getAll_response)
+        self._add_response_handler(Commands.SET, self._parse_set_response)
+        self._add_response_handler(Commands.INVALID, self._parse_invalid_response)
 
         self._param_dict.add(Parameter.MAX_RATE,
                              r"Maximum\ Frame\ Rate:\ (\S+).*?\s*",
@@ -507,6 +521,18 @@ class SatlanticOCR507InstrumentProtocol(CommandResponseInstrumentProtocol):
 
         self._chunker = StringChunker(self.sieve_function)
 
+        self._character_delay = 0.0015
+
+        self._direct_commands['Newline'] = self._newline
+        command_dict = Commands.dict()
+        label_dict = CommandNames.dict()
+        for key in label_dict:
+            label = label_dict.get(key)
+            command = command_dict[key]
+            if command in [CommandNames.SET, CommandNames.GET]:
+                command += ' '
+            self._direct_commands[label] = command
+
     def _filter_capabilities(self, events):
         """
         Filters capabilities
@@ -562,15 +588,15 @@ class SatlanticOCR507InstrumentProtocol(CommandResponseInstrumentProtocol):
                 starttime = time.time()
                 self._connection.send(char)
                 while len(self._promptbuf) == 0 or char not in self._promptbuf[-1]:
-                    time.sleep(0.0015)
+                    time.sleep(self._character_delay)
                     if time.time() > starttime + 3:
                         break
 
             time.sleep(0.115)
             starttime = time.time()
-            self._connection.send(EOLN)
-            while EOLN not in self._promptbuf[len(cmd_line):len(cmd_line) + 2]:
-                time.sleep(0.0015)
+            self._connection.send(NEWLINE)
+            while NEWLINE not in self._promptbuf[len(cmd_line):len(cmd_line) + 2]:
+                time.sleep(self._character_delay)
                 if time.time() > starttime + 3:
                     break
 
@@ -589,7 +615,7 @@ class SatlanticOCR507InstrumentProtocol(CommandResponseInstrumentProtocol):
                     time.sleep(0.1)
                     if time.time() > starttime + 2:
                         log.debug("Sending eoln again.")
-                        self._connection.send(EOLN)
+                        self._connection.send(NEWLINE)
                         starttime = time.time()
                     if resend_check_value in self._promptbuf:
                         break
@@ -701,13 +727,13 @@ class SatlanticOCR507InstrumentProtocol(CommandResponseInstrumentProtocol):
         result = []
 
         try:
-            response = self._do_cmd_resp(Command.INVALID, timeout=3, expected_prompt=Prompt.INVALID_COMMAND)
+            response = self._do_cmd_resp(Commands.INVALID, timeout=3, expected_prompt=Prompt.INVALID_COMMAND)
         except InstrumentTimeoutException as ex:
             response = None  # The instrument is not in COMMAND: it must be polled or AUTOSAMPLE
 
         if response is None:
             # Put the instrument back into full autosample
-            self._do_cmd_no_resp(Command.SWITCH_TO_AUTOSAMPLE)
+            self._do_cmd_no_resp(Commands.SWITCH_TO_AUTOSAMPLE)
             next_state = SatlanticProtocolState.AUTOSAMPLE
 
         return next_state, (next_state, result)
@@ -757,10 +783,10 @@ class SatlanticOCR507InstrumentProtocol(CommandResponseInstrumentProtocol):
         """
         result = []
 
-        self._do_cmd_resp(Command.EXIT, response_regex=SAMPLE_REGEX, timeout=30)
+        self._do_cmd_resp(Commands.EXIT, response_regex=SAMPLE_REGEX, timeout=30)
         time.sleep(0.115)
         # Ensure the instrument is free running sampling mode.
-        self._do_cmd_resp(Command.SWITCH_TO_AUTOSAMPLE, response_regex=SAMPLE_REGEX, timeout=30)
+        self._do_cmd_resp(Commands.SWITCH_TO_AUTOSAMPLE, response_regex=SAMPLE_REGEX, timeout=30)
 
         next_state = SatlanticProtocolState.AUTOSAMPLE
 
@@ -782,8 +808,8 @@ class SatlanticOCR507InstrumentProtocol(CommandResponseInstrumentProtocol):
 
         next_state = None
 
-        self._do_cmd_resp(Command.ID)
-        self._do_cmd_resp(Command.SHOW_ALL)
+        self._do_cmd_resp(Commands.ID)
+        self._do_cmd_resp(Commands.SHOW_ALL)
 
         particles = self.wait_for_particles([DataParticleType.CONFIG], timeout)
 
@@ -809,9 +835,9 @@ class SatlanticOCR507InstrumentProtocol(CommandResponseInstrumentProtocol):
             self._send_break()
             self._update_params()
             self._init_params()
-            self._do_cmd_resp(Command.EXIT, response_regex=SAMPLE_REGEX, timeout=30)
+            self._do_cmd_resp(Commands.EXIT, response_regex=SAMPLE_REGEX, timeout=30)
             time.sleep(0.115)
-            self._do_cmd_resp(Command.SWITCH_TO_AUTOSAMPLE, response_regex=SAMPLE_REGEX, timeout=30)
+            self._do_cmd_resp(Commands.SWITCH_TO_AUTOSAMPLE, response_regex=SAMPLE_REGEX, timeout=30)
 
         if not self._confirm_autosample_mode:
             raise InstrumentProtocolException(error_code=InstErrorCode.HARDWARE_ERROR,
@@ -966,7 +992,7 @@ class SatlanticOCR507InstrumentProtocol(CommandResponseInstrumentProtocol):
                 break
             # Check for existence in dict (send only on change)
             if self._param_dict.get(key) is None or val != self._param_dict.format(key):
-                if not self._do_cmd_resp(Command.SET, key, val):
+                if not self._do_cmd_resp(Commands.SET, key, val):
                     exception = InstrumentCommandException('Error setting: %s = %s' % (key, val))
                     break
                 self._param_dict.set_value(key, params[key])
@@ -978,7 +1004,7 @@ class SatlanticOCR507InstrumentProtocol(CommandResponseInstrumentProtocol):
         new_config = self._param_dict.get_config()
         log.debug("new_config: %s == old_config: %s", new_config, old_config)
         if old_config != new_config:
-            self._do_cmd_resp(Command.SAVE, expected_prompt=Prompt.COMMAND)
+            self._do_cmd_resp(Commands.SAVE, expected_prompt=Prompt.COMMAND)
             log.debug("configuration has changed.  Send driver event")
             self._driver_event(DriverAsyncEvent.CONFIG_CHANGE)
 
@@ -992,7 +1018,7 @@ class SatlanticOCR507InstrumentProtocol(CommandResponseInstrumentProtocol):
         @param args Unused
         @param kwargs Takes timeout value
         """
-        return self._do_cmd_resp(Command.SHOW_ALL)
+        return self._do_cmd_resp(Commands.SHOW_ALL)
 
     def _send_break(self):
         """
@@ -1000,13 +1026,13 @@ class SatlanticOCR507InstrumentProtocol(CommandResponseInstrumentProtocol):
         @throws InstrumentTimeoutException if not Command Console banner not received within 5 seconds.
         """
         self._promptbuf = ""
-        self._connection.send(Command.BREAK)
+        self._connection.send(Commands.BREAK)
         starttime = time.time()
         resendtime = time.time()
         while True:
             if time.time() > resendtime + 0.3:
                 log.debug("Sending break again.")
-                self._connection.send(Command.BREAK)
+                self._connection.send(Commands.BREAK)
                 resendtime = time.time()
 
             if COMMAND_PATTERN in self._promptbuf:

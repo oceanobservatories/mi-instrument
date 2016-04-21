@@ -21,7 +21,7 @@ from mi.core.instrument.protocol_param_dict import ParameterDictType
 from mi.core.instrument.protocol_param_dict import ParameterDictVisibility
 from mi.instrument.sunburst.driver import SamiDataParticleType
 from mi.instrument.sunburst.driver import SamiParameter
-from mi.instrument.sunburst.driver import SamiInstrumentCommand
+from mi.instrument.sunburst.driver import SamiInstrumentCommands
 from mi.instrument.sunburst.driver import SamiConfigDataParticleKey
 from mi.instrument.sunburst.driver import SamiInstrumentDriver
 from mi.instrument.sunburst.driver import SamiProtocol
@@ -176,7 +176,7 @@ class Pco2wParameter(SamiParameter):
     DEIONIZED_WATER_FLUSH_DURATION = 'deionized_water_flush_duration'
 
 
-class Pco2wInstrumentCommand(SamiInstrumentCommand):
+class Pco2wInstrumentCommand(SamiInstrumentCommands):
     """
     Extend base class with instrument specific functionality.
     """

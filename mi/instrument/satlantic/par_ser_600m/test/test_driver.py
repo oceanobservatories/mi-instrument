@@ -34,7 +34,7 @@ from mi.core.exceptions import InstrumentCommandException, InstrumentParameterEx
 from mi.idk.unit_test import InstrumentDriverUnitTestCase, InstrumentDriverIntegrationTestCase
 from mi.idk.unit_test import InstrumentDriverQualificationTestCase, AgentCapabilityType
 
-from mi.instrument.satlantic.par_ser_600m.driver import Command, DataParticleType, SatlanticPARInstrumentProtocol
+from mi.instrument.satlantic.par_ser_600m.driver import Commands, DataParticleType, SatlanticPARInstrumentProtocol
 from mi.instrument.satlantic.par_ser_600m.driver import PARProtocolState, PARProtocolEvent, PARCapability, Parameter
 from mi.instrument.satlantic.par_ser_600m.driver import ScheduledJob, EOLN, Prompt, SatlanticPARConfigParticle
 from mi.instrument.satlantic.par_ser_600m.driver import SatlanticPARDataParticle
@@ -204,7 +204,7 @@ class SatlanticParProtocolUnitTest(InstrumentDriverUnitTestCase, PARMixin):
         Verify that all driver enumeration has no duplicate values that might cause confusion.  Also
         do a little extra validation for the Capabilities
         """
-        self.assert_enum_has_no_duplicates(Command())
+        self.assert_enum_has_no_duplicates(Commands())
         self.assert_enum_has_no_duplicates(ScheduledJob())
         self.assert_enum_has_no_duplicates(DataParticleType())
         self.assert_enum_has_no_duplicates(PARProtocolState())

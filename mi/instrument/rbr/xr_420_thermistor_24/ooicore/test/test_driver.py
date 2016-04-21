@@ -64,7 +64,7 @@ from mi.instrument.rbr.xr_420_thermistor_24.ooicore.driver import ProtocolStates
 from mi.instrument.rbr.xr_420_thermistor_24.ooicore.driver import ProtocolEvent
 from mi.instrument.rbr.xr_420_thermistor_24.ooicore.driver import InstrumentProtocol
 from mi.instrument.rbr.xr_420_thermistor_24.ooicore.driver import InstrumentParameters
-from mi.instrument.rbr.xr_420_thermistor_24.ooicore.driver import InstrumentCmds
+from mi.instrument.rbr.xr_420_thermistor_24.ooicore.driver import InstrumentCommands
 from mi.instrument.rbr.xr_420_thermistor_24.ooicore.driver import Capability
 from mi.instrument.rbr.xr_420_thermistor_24.ooicore.driver import ScheduledJob
 from mi.instrument.rbr.xr_420_thermistor_24.ooicore.driver import InstrumentResponses
@@ -73,7 +73,7 @@ from mi.instrument.rbr.xr_420_thermistor_24.ooicore.driver import AdvancedFuncti
 from mi.instrument.rbr.xr_420_thermistor_24.ooicore.driver import XR_420EngineeringDataParticleKey
 from mi.instrument.rbr.xr_420_thermistor_24.ooicore.driver import XR_420SampleDataParticleKey
 from mi.instrument.rbr.xr_420_thermistor_24.ooicore.driver import XR_420SampleDataParticle
-from mi.instrument.rbr.xr_420_thermistor_24.ooicore.driver import INSTRUMENT_NEWLINE
+from mi.instrument.rbr.xr_420_thermistor_24.ooicore.driver import NEWLINE
 
 from mi.idk.unit_test import InstrumentDriverTestCase
 from mi.idk.unit_test import InstrumentDriverUnitTestCase
@@ -400,7 +400,7 @@ class TestUNIT(InstrumentDriverUnitTestCase, UtilMixin):
         self.assert_enum_has_no_duplicates(ScheduledJob())
         self.assert_enum_has_no_duplicates(DataParticleType())
         self.assert_enum_has_no_duplicates(InstrumentResponses())
-        self.assert_enum_has_no_duplicates(InstrumentCmds())
+        self.assert_enum_has_no_duplicates(InstrumentCommands())
         self.assert_enum_has_no_duplicates(ProtocolStates())
         self.assert_enum_has_no_duplicates(ProtocolEvent())
         self.assert_enum_has_no_duplicates(InstrumentParameters())
@@ -482,7 +482,7 @@ class TestUNIT(InstrumentDriverUnitTestCase, UtilMixin):
         Test silly made up capabilities to verify they are blocked by filter.
         """
         my_event_callback = Mock(spec="UNKNOWN WHAT SHOULD GO HERE FOR evt_callback")
-        protocol = InstrumentProtocol(InstrumentResponses, INSTRUMENT_NEWLINE, my_event_callback)
+        protocol = InstrumentProtocol(InstrumentResponses, NEWLINE, my_event_callback)
         driver_capabilities = Capability().list()
         test_capabilities = Capability().list()
 

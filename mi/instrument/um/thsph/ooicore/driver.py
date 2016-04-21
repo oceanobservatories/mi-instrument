@@ -361,6 +361,14 @@ class THSPHProtocol(CommandResponseInstrumentProtocol):
         # Set Get Sample Command and Communication Test Command for Series A as default
         self._get_sample_cmd = self.GET_SAMPLE_SERIES_A
 
+        self._direct_commands['Newline'] = self._newline
+        self._direct_commands['Test A'] = 'aP*' + self._newline
+        self._direct_commands['Test B'] = 'bP*' + self._newline
+        self._direct_commands['Test C'] = 'cP*' + self._newline
+        self._direct_commands['Sample A'] = self.GET_SAMPLE_SERIES_A + self._newline
+        self._direct_commands['Sample B'] = self.GET_SAMPLE_SERIES_B + self._newline
+        self._direct_commands['Sample C'] = self.GET_SAMPLE_SERIES_C + self._newline
+
     @staticmethod
     def sieve_function(raw_data):
         """

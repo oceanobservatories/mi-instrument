@@ -343,7 +343,7 @@ OK_GET = r'.*\r\n\$Ok ([\w.]+)\s+'
 OK_GET_REGEX = re.compile(OK_GET, re.DOTALL)
 
 
-class InstrumentCommand(BaseEnum):
+class InstrumentCommands(BaseEnum):
     """
     Instrument command strings
     """
@@ -363,6 +363,28 @@ class InstrumentCommand(BaseEnum):
     # Command Line Commands
     GET = "get"  # takes param that indicates which field to get
     SET = "set"  # takes params that indicate which field to set and what value to set it to
+
+
+class InstrumentCommandNames(BaseEnum):
+    """
+    Instrument command strings
+    """
+    # Status and Maintenance
+    CMD_LINE = 'Command Line'
+    SET_CLOCK = 'Set Clock>'
+    EXIT = 'Exit'
+    SELFTEST = 'Self Test'
+    STATUS = 'Get Config'
+    GET_CAL_FILE = 'Get Calibration'
+
+    # Polled Mode
+    MEASURE = 'Sample # Frames>'
+    TIMED = 'Sample for Duration>'
+    SLEEP = 'Sleep'
+
+    # Command Line Commands
+    GET = 'Get>'
+    SET = 'Set>'
 
 
 class InstrumentCommandArgs(BaseEnum):
@@ -979,24 +1001,24 @@ class Protocol(CommandResponseInstrumentProtocol):
         self._protocol_fsm.start(ProtocolState.UNKNOWN)
 
         # Add build handlers for device commands.
-        self._add_build_handler(InstrumentCommand.GET, self._build_get_command)
-        self._add_build_handler(InstrumentCommand.SET, self._build_set_command)
-        self._add_build_handler(InstrumentCommand.CMD_LINE, self._build_simple_command)
-        self._add_build_handler(InstrumentCommand.SLEEP, self._build_simple_command)
-        self._add_build_handler(InstrumentCommand.EXIT, self._build_simple_command)
-        self._add_build_handler(InstrumentCommand.STATUS, self._build_simple_command)
-        self._add_build_handler(InstrumentCommand.MEASURE, self._build_measure_command)
-        self._add_build_handler(InstrumentCommand.TIMED, self._build_timed_command)
-        self._add_build_handler(InstrumentCommand.SELFTEST, self._build_simple_command)
-        self._add_build_handler(InstrumentCommand.SET_CLOCK, self._build_clock_command)
-        self._add_build_handler(InstrumentCommand.GET_CAL_FILE, self._build_simple_command)
+        self._add_build_handler(InstrumentCommands.GET, self._build_get_command)
+        self._add_build_handler(InstrumentCommands.SET, self._build_set_command)
+        self._add_build_handler(InstrumentCommands.CMD_LINE, self._build_simple_command)
+        self._add_build_handler(InstrumentCommands.SLEEP, self._build_simple_command)
+        self._add_build_handler(InstrumentCommands.EXIT, self._build_simple_command)
+        self._add_build_handler(InstrumentCommands.STATUS, self._build_simple_command)
+        self._add_build_handler(InstrumentCommands.MEASURE, self._build_measure_command)
+        self._add_build_handler(InstrumentCommands.TIMED, self._build_timed_command)
+        self._add_build_handler(InstrumentCommands.SELFTEST, self._build_simple_command)
+        self._add_build_handler(InstrumentCommands.SET_CLOCK, self._build_clock_command)
+        self._add_build_handler(InstrumentCommands.GET_CAL_FILE, self._build_simple_command)
 
         # Add response handlers for device commands.
-        self._add_response_handler(InstrumentCommand.GET, self._parse_generic_response)
-        self._add_response_handler(InstrumentCommand.SET, self._parse_generic_response)
-        self._add_response_handler(InstrumentCommand.SET_CLOCK, self._parse_generic_response)
-        self._add_response_handler(InstrumentCommand.STATUS, self._parse_generic_response)
-        self._add_response_handler(InstrumentCommand.CMD_LINE, self._parse_cmd_line_response)
+        self._add_response_handler(InstrumentCommands.GET, self._parse_generic_response)
+        self._add_response_handler(InstrumentCommands.SET, self._parse_generic_response)
+        self._add_response_handler(InstrumentCommands.SET_CLOCK, self._parse_generic_response)
+        self._add_response_handler(InstrumentCommands.STATUS, self._parse_generic_response)
+        self._add_response_handler(InstrumentCommands.CMD_LINE, self._parse_cmd_line_response)
 
         # Construct the parameter dictionary containing device parameters,
         # current parameter values, and set formatting functions.
@@ -1007,6 +1029,21 @@ class Protocol(CommandResponseInstrumentProtocol):
         self._sent_cmds = []
 
         self._chunker = StringChunker(Protocol.sieve_function)
+
+        self._direct_commands['Wakeup'] = NEWLINE
+        command_dict = InstrumentCommands.dict()
+        label_dict = InstrumentCommandNames.dict()
+        for key in command_dict:
+            label = label_dict.get(key)
+            command = command_dict[key]
+            builder = self._build_handlers.get(command, None)
+            if builder is self._build_simple_command:
+                command = builder(command)
+                self._direct_commands[label] = command
+            elif builder in [self._build_get_command, self._build_set_command, self._build_clock_command,
+                             self._build_timed_command, self._build_measure_command]:
+                command += ' '
+
 
     @staticmethod
     def sieve_function(raw_data):
@@ -1545,7 +1582,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         result = []
 
         self._bring_up_command_line()
-        mode = self._do_cmd_resp(InstrumentCommand.GET, Parameter.OPERATION_MODE, response_regex=OK_GET_REGEX)
+        mode = self._do_cmd_resp(InstrumentCommands.GET, Parameter.OPERATION_MODE, response_regex=OK_GET_REGEX)
         log.debug('Upon discover instrument mode is %s', mode)
 
         if mode == InstrumentCommandArgs.POLLED:
@@ -1555,12 +1592,12 @@ class Protocol(CommandResponseInstrumentProtocol):
         elif mode == InstrumentCommandArgs.CONTINUOUS:
             # Instrument is in AUTOSAMPLE state. Send Exit command to resume collecting data
             next_state = ProtocolState.AUTOSAMPLE
-            self._do_cmd_no_resp(InstrumentCommand.EXIT)
+            self._do_cmd_no_resp(InstrumentCommands.EXIT)
 
         else:
             # Instrument is in unused state. Set to COMMAND state
             next_state = ProtocolState.COMMAND
-            self._do_cmd_resp(InstrumentCommand.SET, Parameter.OPERATION_MODE, InstrumentCommandArgs.POLLED,
+            self._do_cmd_resp(InstrumentCommands.SET, Parameter.OPERATION_MODE, InstrumentCommandArgs.POLLED,
                               expected_prompt=[Prompt.OK, Prompt.ERROR])
 
         return next_state, (next_state, result)
@@ -1587,8 +1624,8 @@ class Protocol(CommandResponseInstrumentProtocol):
         timeout = time.time() + TIMEOUT
 
         # exit command-line to CMD? prompt (does nothing if already at CMD? prompt)
-        self._do_cmd_no_resp(InstrumentCommand.EXIT)
-        self._do_cmd_resp(InstrumentCommand.MEASURE, 1, expected_prompt=Prompt.POLLED, timeout=POLL_TIMEOUT)
+        self._do_cmd_no_resp(InstrumentCommands.EXIT)
+        self._do_cmd_resp(InstrumentCommands.MEASURE, 1, expected_prompt=Prompt.POLLED, timeout=POLL_TIMEOUT)
         particles = self.wait_for_particles([DataParticleType.SUNA_SAMPLE], timeout)
         return next_state, (next_state, particles)
 
@@ -1600,8 +1637,8 @@ class Protocol(CommandResponseInstrumentProtocol):
         timeout = time.time() + TIMEOUT
 
         self._bring_up_command_line()
-        status_output = self._do_cmd_resp(InstrumentCommand.STATUS, expected_prompt=[Prompt.OK, Prompt.ERROR])
-        self._do_cmd_no_resp(InstrumentCommand.GET_CAL_FILE)
+        status_output = self._do_cmd_resp(InstrumentCommands.STATUS, expected_prompt=[Prompt.OK, Prompt.ERROR])
+        self._do_cmd_no_resp(InstrumentCommands.GET_CAL_FILE)
 
         old_config = self._param_dict.get_config()
         self._param_dict.update(status_output)
@@ -1630,9 +1667,9 @@ class Protocol(CommandResponseInstrumentProtocol):
         result = []
 
         self._bring_up_command_line()
-        self._do_cmd_resp(InstrumentCommand.SET, Parameter.OPERATION_MODE, InstrumentCommandArgs.CONTINUOUS,
+        self._do_cmd_resp(InstrumentCommands.SET, Parameter.OPERATION_MODE, InstrumentCommandArgs.CONTINUOUS,
                           expected_prompt=[Prompt.OK, Prompt.ERROR])
-        self._do_cmd_no_resp(InstrumentCommand.EXIT)
+        self._do_cmd_no_resp(InstrumentCommands.EXIT)
 
         return next_state, (next_state, result)
 
@@ -1691,7 +1728,7 @@ class Protocol(CommandResponseInstrumentProtocol):
 
             if current_high != new_high or current_low != new_low:
                 value = new_low + ',' + new_high
-                self._do_cmd_resp(InstrumentCommand.SET, Parameter.FIT_WAVELENGTH_BOTH, value, timeout=TIMEOUT,
+                self._do_cmd_resp(InstrumentCommands.SET, Parameter.FIT_WAVELENGTH_BOTH, value, timeout=TIMEOUT,
                                   expected_prompt=[Prompt.OK, Prompt.ERROR])
 
         # Handle parameters that are for the driver, not the instrument
@@ -1722,11 +1759,11 @@ class Protocol(CommandResponseInstrumentProtocol):
             new_val = self._format_value(key, val)
             current_val = self._format_value(key, self._param_dict.get(key))
             if current_val != new_val:
-                self._do_cmd_resp(InstrumentCommand.SET, key, new_val, timeout=TIMEOUT,
+                self._do_cmd_resp(InstrumentCommands.SET, key, new_val, timeout=TIMEOUT,
                                   expected_prompt=[Prompt.OK, Prompt.ERROR])
 
         # Collect the current settings from the instrument
-        status_output = self._do_cmd_resp(InstrumentCommand.STATUS, expected_prompt=[Prompt.OK, Prompt.ERROR])
+        status_output = self._do_cmd_resp(InstrumentCommands.STATUS, expected_prompt=[Prompt.OK, Prompt.ERROR])
         self._param_dict.update(status_output)
 
         new_config = self._param_dict.get_config()
@@ -1743,7 +1780,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         result = []
 
         self._bring_up_command_line()
-        self._do_cmd_no_resp(InstrumentCommand.SELFTEST)
+        self._do_cmd_no_resp(InstrumentCommands.SELFTEST)
         return next_state, (next_state, result)
 
     def _handler_command_clock_sync(self, *args, **kwargs):
@@ -1756,7 +1793,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         log.debug('syncing clock to: %s', str_time)
 
         self._bring_up_command_line()
-        result = self._do_cmd_resp(InstrumentCommand.SET_CLOCK, str_time, timeout=TIMEOUT,
+        result = self._do_cmd_resp(InstrumentCommands.SET_CLOCK, str_time, timeout=TIMEOUT,
                                    expected_prompt=[Prompt.OK, Prompt.ERROR])
 
         return next_state, (next_state, [result])
@@ -1802,8 +1839,8 @@ class Protocol(CommandResponseInstrumentProtocol):
         next_state = None
 
         # exit command-line to CMD? prompt (does nothing if already at CMD? prompt)
-        self._do_cmd_no_resp(InstrumentCommand.EXIT)
-        result = self._do_cmd_resp(InstrumentCommand.MEASURE, self._param_dict.get(Parameter.NUM_LIGHT_SAMPLES),
+        self._do_cmd_no_resp(InstrumentCommands.EXIT)
+        result = self._do_cmd_resp(InstrumentCommands.MEASURE, self._param_dict.get(Parameter.NUM_LIGHT_SAMPLES),
                                    expected_prompt=Prompt.POLLED, timeout=POLL_TIMEOUT)
 
         return next_state, (next_state, [result])
@@ -1815,8 +1852,8 @@ class Protocol(CommandResponseInstrumentProtocol):
         next_state = None
 
         # exit command-line to CMD? prompt (does nothing if already at CMD? prompt)
-        self._do_cmd_no_resp(InstrumentCommand.EXIT)
-        result = self._do_cmd_resp(InstrumentCommand.MEASURE, 0, expected_prompt=Prompt.POLLED, timeout=POLL_TIMEOUT)
+        self._do_cmd_no_resp(InstrumentCommands.EXIT)
+        result = self._do_cmd_resp(InstrumentCommands.MEASURE, 0, expected_prompt=Prompt.POLLED, timeout=POLL_TIMEOUT)
 
         return next_state, (next_state, [result])
 
@@ -1827,8 +1864,8 @@ class Protocol(CommandResponseInstrumentProtocol):
         next_state = None
 
         # exit command-line to CMD? prompt (does nothing if already at CMD? prompt)
-        self._do_cmd_no_resp(InstrumentCommand.EXIT)
-        result = self._do_cmd_resp(InstrumentCommand.TIMED, self._param_dict.get(Parameter.TIME_LIGHT_SAMPLE),
+        self._do_cmd_no_resp(InstrumentCommands.EXIT)
+        result = self._do_cmd_resp(InstrumentCommands.TIMED, self._param_dict.get(Parameter.TIME_LIGHT_SAMPLE),
                                    expected_prompt=Prompt.POLLED, timeout=POLL_TIMEOUT)
 
         return next_state, (next_state, [result])
@@ -1844,8 +1881,8 @@ class Protocol(CommandResponseInstrumentProtocol):
 
         # Set instrument mode to polled
         self._bring_up_command_line()
-        result = self._do_cmd_resp(InstrumentCommand.SET, Parameter.OPERATION_MODE, InstrumentCommandArgs.POLLED,
-                          expected_prompt=[Prompt.OK, Prompt.ERROR])
+        result = self._do_cmd_resp(InstrumentCommands.SET, Parameter.OPERATION_MODE, InstrumentCommandArgs.POLLED,
+                                   expected_prompt=[Prompt.OK, Prompt.ERROR])
 
         return next_state, (next_state, [result])
 
@@ -1860,7 +1897,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         @param value string containing the date/time to set
         @retval Returns string ready for sending to instrument
         """
-        return "%s %s%s" % (InstrumentCommand.SET_CLOCK, value, NEWLINE)
+        return "%s %s%s" % (InstrumentCommands.SET_CLOCK, value, NEWLINE)
 
     def _build_get_command(self, cmd, param):
         """
@@ -1872,7 +1909,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         """
         if not Parameter.has(param):
             raise InstrumentParameterException("%s is not a parameter" % param)
-        return "%s %s%s" % (InstrumentCommand.GET, param, NEWLINE)
+        return "%s %s%s" % (InstrumentCommands.GET, param, NEWLINE)
 
     def _build_set_command(self, cmd, param, value):
         """
@@ -1893,7 +1930,7 @@ class Protocol(CommandResponseInstrumentProtocol):
             param = Parameter.FIT_WAVELENGTH_BOTH
             value = value + ',' + self._param_dict.format(Parameter.FIT_WAVELENGTH_HIGH)
 
-        return "%s %s %s%s" % (InstrumentCommand.SET, param, value, NEWLINE)
+        return "%s %s %s%s" % (InstrumentCommands.SET, param, value, NEWLINE)
 
     def _build_measure_command(self, cmd, samples):
         """
@@ -1905,7 +1942,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         """
         if samples < 0:
             raise InstrumentParameterException("Sample count cannot be less than 0: (%s)" % samples)
-        return "%s %s%s" % (InstrumentCommand.MEASURE, samples, NEWLINE)
+        return "%s %s%s" % (InstrumentCommands.MEASURE, samples, NEWLINE)
 
     def _build_timed_command(self, cmd, time_amount):
         """
@@ -1917,7 +1954,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         """
         if time_amount < 0:
             raise InstrumentParameterException("Time to sample cannot be less than 0: " % time_amount)
-        return "%s %s%s" % (InstrumentCommand.TIMED, time_amount, NEWLINE)
+        return "%s %s%s" % (InstrumentCommands.TIMED, time_amount, NEWLINE)
 
     ########################################################################
     # Response handlers
@@ -1951,7 +1988,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         is saved to the param dictionary.
         """
         self._bring_up_command_line()
-        status_output = self._do_cmd_resp(InstrumentCommand.STATUS, expected_prompt=[Prompt.OK, Prompt.ERROR])
+        status_output = self._do_cmd_resp(InstrumentCommands.STATUS, expected_prompt=[Prompt.OK, Prompt.ERROR])
         old_config = self._param_dict.get_config()
         self._param_dict.update(status_output)
         new_config = self._param_dict.get_config()
@@ -1977,7 +2014,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         """
         Get to the command line, that is SUNA> prompt for entering commands
         """
-        self._simple_send(InstrumentCommand.CMD_LINE, expected_prompt=[Prompt.COMMAND_LINE])
+        self._simple_send(InstrumentCommands.CMD_LINE, expected_prompt=[Prompt.COMMAND_LINE])
 
     def _simple_send(self, cmd, timeout=TIMEOUT, expected_prompt=None):
         """

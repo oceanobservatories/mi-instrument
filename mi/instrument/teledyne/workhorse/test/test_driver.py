@@ -48,7 +48,7 @@ from mi.instrument.teledyne.workhorse.driver import WorkhorseProtocolEvent
 from mi.instrument.teledyne.workhorse.driver import NEWLINE
 from mi.instrument.teledyne.workhorse.driver import WorkhorseScheduledJob
 from mi.instrument.teledyne.workhorse.driver import WorkhorseCapability
-from mi.instrument.teledyne.workhorse.driver import WorkhorseInstrumentCmds
+from mi.instrument.teledyne.workhorse.driver import WorkhorseInstrumentCommands
 from mi.instrument.teledyne.workhorse.driver import WorkhorseProtocol
 from mi.instrument.teledyne.workhorse.driver import WorkhorseProtocolState
 from mi.instrument.teledyne.workhorse.particles import WorkhorseDataParticleType
@@ -808,7 +808,7 @@ class WorkhorseDriverUnitTest(InstrumentDriverUnitTestCase, ADCPTMixin):
         do a little extra validation for the Capabilities
         """
 
-        self.assert_enum_has_no_duplicates(WorkhorseInstrumentCmds())
+        self.assert_enum_has_no_duplicates(WorkhorseInstrumentCommands())
         self.assert_enum_has_no_duplicates(WorkhorseProtocolState())
         self.assert_enum_has_no_duplicates(WorkhorseProtocolEvent())
         self.assert_enum_has_no_duplicates(WorkhorseParameter())

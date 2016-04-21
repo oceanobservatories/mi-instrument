@@ -40,7 +40,7 @@ from mi.instrument.noaa.botpt.ooicore.driver import InstrumentDriver
 from mi.instrument.noaa.botpt.ooicore.driver import Protocol
 from mi.instrument.noaa.botpt.ooicore.driver import ParameterConstraint
 from mi.instrument.noaa.botpt.ooicore.driver import Capability
-from mi.instrument.noaa.botpt.ooicore.driver import InstrumentCommand
+from mi.instrument.noaa.botpt.ooicore.driver import InstrumentCommands
 from mi.instrument.noaa.botpt.ooicore.driver import NEWLINE
 import mi.instrument.noaa.botpt.ooicore.test.test_samples as samples
 
@@ -978,7 +978,7 @@ class DriverQualificationTest(InstrumentDriverQualificationTestCase, BotptTestMi
         """
         self.assert_direct_access_start_telnet()
         self.assertTrue(self.tcp_client)
-        self.tcp_client.send_data(InstrumentCommand.LILY_DUMP1 + samples.NEWLINE)
+        self.tcp_client.send_data(InstrumentCommands.LILY_DUMP1 + samples.NEWLINE)
         result = self.tcp_client.expect('-DUMP-SETTINGS')
         self.assertTrue(result, msg='Failed to receive expected response in direct access mode.')
         self.assert_direct_access_stop_telnet()

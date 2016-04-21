@@ -33,7 +33,7 @@ from mi.idk.unit_test import DriverStartupConfigKey
 from mi.instrument.kml.cam.camds.driver import Parameter, ParameterIndex
 from mi.instrument.kml.cam.camds.driver import CAMDSPrompt, InstrumentDriver, CAMDSProtocol
 from mi.instrument.kml.cam.camds.driver import ScheduledJob
-from mi.instrument.kml.cam.camds.driver import InstrumentCmds, ProtocolState, ProtocolEvent, Capability
+from mi.instrument.kml.cam.camds.driver import InstrumentCommands, ProtocolState, ProtocolEvent, Capability
 
 from mi.idk.unit_test import InstrumentDriverTestCase, ParameterTestConfigKey
 
@@ -349,7 +349,7 @@ class DriverUnitTest(InstrumentDriverUnitTestCase, CAMDSMixin):
         do a little extra validation for the Capabilities
         """
 
-        self.assert_enum_has_no_duplicates(InstrumentCmds())
+        self.assert_enum_has_no_duplicates(InstrumentCommands())
         self.assert_enum_has_no_duplicates(ProtocolState())
         self.assert_enum_has_no_duplicates(ProtocolEvent())
         self.assert_enum_has_no_duplicates(Parameter())
@@ -697,7 +697,7 @@ class DriverIntegrationTest(InstrumentDriverIntegrationTestCase, CAMDSMixin):
         self.assert_initialize_driver()
         self.assert_current_state(ProtocolState.COMMAND)
         self.assert_set(Parameter.AUTO_CAPTURE_DURATION, 2)
-        self.assert_driver_command(InstrumentCmds.START_CAPTURE)
+        self.assert_driver_command(InstrumentCommands.START_CAPTURE)
         time.sleep(1)
         self.assert_acquire_sample()
         time.sleep(2)
