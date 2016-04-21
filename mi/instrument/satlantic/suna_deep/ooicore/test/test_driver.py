@@ -46,7 +46,7 @@ from mi.instrument.satlantic.suna_deep.ooicore.driver import InstrumentDriver, S
     SUNATestDataParticle, InstrumentCommandArgs, SUNASampleDataParticleKey, SUNAStatusDataParticleKey, \
     SUNATestDataParticleKey
 from mi.instrument.satlantic.suna_deep.ooicore.driver import DataParticleType
-from mi.instrument.satlantic.suna_deep.ooicore.driver import InstrumentCommand
+from mi.instrument.satlantic.suna_deep.ooicore.driver import InstrumentCommands
 from mi.instrument.satlantic.suna_deep.ooicore.driver import ProtocolState
 from mi.instrument.satlantic.suna_deep.ooicore.driver import ProtocolEvent
 from mi.instrument.satlantic.suna_deep.ooicore.driver import Capability
@@ -512,7 +512,7 @@ class DriverUnitTest(InstrumentDriverUnitTestCase, DriverTestMixinSub):
         self.assert_enum_has_no_duplicates(ProtocolState())
         self.assert_enum_has_no_duplicates(ProtocolEvent())
         self.assert_enum_has_no_duplicates(Parameter())
-        self.assert_enum_has_no_duplicates(InstrumentCommand())
+        self.assert_enum_has_no_duplicates(InstrumentCommands())
 
         # Test capabilities for duplicates, them verify that capabilities is a subset of protocol events
         self.assert_enum_has_no_duplicates(Capability())

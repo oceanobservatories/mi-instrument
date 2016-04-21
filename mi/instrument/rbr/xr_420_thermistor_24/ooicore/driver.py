@@ -8,10 +8,6 @@ Release notes:
 initial release
 """
 
-__author__ = 'Bill Bollenbacher'
-__license__ = 'Apache 2.0'
-
-
 import time
 import re
 import ntplib
@@ -38,6 +34,11 @@ from mi.core.instrument.chunker import StringChunker
 from mi.core.instrument.data_particle import DataParticle, DataParticleKey, CommonDataParticleType
 
 from mi.core.log import get_logger, get_logging_metaclass
+
+__author__ = 'Bill Bollenbacher'
+__license__ = 'Apache 2.0'
+
+
 log = get_logger()
 
 SAMPLE_DATA_PATTERN = (r'TIM (\d+)' +           # timestamp
@@ -83,7 +84,7 @@ class DataParticleType(BaseEnum):
     ENGINEERING = 'tmpsf_engineering'
 
 
-INSTRUMENT_NEWLINE = '\r\n'
+NEWLINE = '\r\n'
 WRITE_DELAY = 0
 
 # default timeout.
@@ -108,7 +109,30 @@ class InstrumentResponses(BaseEnum):
     START_SAMPLING = 'Logger started in mode '
 
 
-class InstrumentCmds(BaseEnum):
+class Commands(BaseEnum):
+    GET_IDENTIFICATION = 'A'
+    GET_LOGGER_DATE_AND_TIME = 'B'
+    GET_SAMPLE_INTERVAL = 'C'
+    GET_START_DATE_AND_TIME = 'D'
+    GET_END_DATE_AND_TIME = 'E'
+    GET_STATUS = 'T'
+    GET_CHANNEL_CALIBRATION = 'Z'
+    GET_BATTERY_VOLTAGE = '!D'
+    SET_LOGGER_DATE_AND_TIME = 'J'
+    SET_SAMPLE_INTERVAL = 'K'
+    SET_START_DATE_AND_TIME = 'L'
+    SET_END_DATE_AND_TIME = 'M'
+    TAKE_SAMPLE_IMMEDIATELY = 'F'
+    RESET_SAMPLING_ERASE_FLASH = 'N'
+    START_SAMPLING = 'P'
+    STOP_SAMPLING = '!9'
+    SUSPEND_SAMPLING = '!S'
+    RESUME_SAMPLING = '!R'
+    SET_ADVANCED_FUNCTIONS = '!1'
+    GET_ADVANCED_FUNCTIONS = '!2'
+
+
+class CommandNames(BaseEnum):
     GET_IDENTIFICATION = 'A'
     GET_LOGGER_DATE_AND_TIME = 'B'
     GET_SAMPLE_INTERVAL = 'C'
@@ -273,7 +297,7 @@ class InstrumentDriver(SingleConnectionInstrumentDriver):
         """
         Construct the driver protocol state machine.
         """
-        self._protocol = InstrumentProtocol(InstrumentResponses, INSTRUMENT_NEWLINE, self._driver_event)
+        self._protocol = InstrumentProtocol(InstrumentResponses, NEWLINE, self._driver_event)
 
 
 ###############################################################################
@@ -496,7 +520,6 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
         """
         self.write_delay = WRITE_DELAY
         self._last_data_timestamp = None
-        self.eoln = INSTRUMENT_NEWLINE
         self.advanced_functions_bits = AdvancedFunctionsBits.dict()
 
         CommandResponseInstrumentProtocol.__init__(self, prompts, newline, driver_event)
@@ -545,6 +568,11 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
         self._chunker = StringChunker(InstrumentProtocol.chunker_sieve_function)
 
         self.initialize_scheduler()
+
+        # TMPSF uses a menu driven API
+        self._direct_commands = {
+            'Newline': self._newline
+        }
 
     @staticmethod
     def chunker_sieve_function(raw_data):
@@ -687,8 +715,8 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
 
         while True:
             # Send 'get status' command.
-            log.debug('_wakeup: sending <%r>' % InstrumentCmds.GET_STATUS)
-            self._connection.send(InstrumentCmds.GET_STATUS)
+            log.debug('_wakeup: sending <%r>' % Commands.GET_STATUS)
+            self._connection.send(Commands.GET_STATUS)
             # Grab send time for response timeout.
             send_time = time.time()
 
@@ -999,7 +1027,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
     def _start_sampling(self):
 
         # now start sampling
-        status_response = self._do_cmd_resp(InstrumentCmds.START_SAMPLING)
+        status_response = self._do_cmd_resp(Commands.START_SAMPLING)
         log.debug('_start_sampling: status=%s', status_response)
         status_as_int = int(status_response, 16)
         if status_as_int not in [Status.ENABLED_SAMPLING_NOT_STARTED, Status.STARTED_SAMPLING]:
@@ -1019,12 +1047,12 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
             log.debug('_reset_instrument: sending <%r>' % ENABLING_SEQUENCE)
             self._connection.send(ENABLING_SEQUENCE)
             time.sleep(1)
-            log.debug('_reset_instrument: sending <%r>' % InstrumentCmds.RESET_SAMPLING_ERASE_FLASH)
-            self._connection.send(InstrumentCmds.RESET_SAMPLING_ERASE_FLASH)
+            log.debug('_reset_instrument: sending <%r>' % Commands.RESET_SAMPLING_ERASE_FLASH)
+            self._connection.send(Commands.RESET_SAMPLING_ERASE_FLASH)
             starttime = time.time()
             # Erasing flash memory and resetting sampling mode
             while True:
-                self._do_cmd_resp(InstrumentCmds.GET_STATUS)
+                self._do_cmd_resp(Commands.GET_STATUS)
                 status_as_int = int(self._param_dict.get(InstrumentParameters.STATUS), 16)
                 log.debug('_reset_instrument: status=%x', status_as_int)
                 if status_as_int == Status.NOT_ENABLED_FOR_SAMPLING:
@@ -1152,7 +1180,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
                              display_name="Logger Status",
                              description="Current logging status of the instrument.",
                              visibility=ParameterDictVisibility.READ_ONLY,
-                             submenu_read=InstrumentCmds.GET_STATUS)
+                             submenu_read=Commands.GET_STATUS)
 
         self._param_dict.add(InstrumentParameters.IDENTIFICATION,
                              r'(RBR XR-420 .*)\r\n',
@@ -1162,7 +1190,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
                              display_name="Identification",
                              description="Instrument identification.",
                              visibility=ParameterDictVisibility.READ_ONLY,
-                             submenu_read=InstrumentCmds.GET_IDENTIFICATION)
+                             submenu_read=Commands.GET_IDENTIFICATION)
 
         self._param_dict.add(InstrumentParameters.LOGGER_DATE_AND_TIME,
                              r'(\d{12})CTD\r\n',
@@ -1173,21 +1201,21 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
                              description="Timestamp of last get/set time.",
                              units="D M Y H:M:S",
                              visibility=ParameterDictVisibility.READ_ONLY,
-                             submenu_read=InstrumentCmds.GET_LOGGER_DATE_AND_TIME,
-                             submenu_write=InstrumentCmds.SET_LOGGER_DATE_AND_TIME)
+                             submenu_read=Commands.GET_LOGGER_DATE_AND_TIME,
+                             submenu_write=Commands.SET_LOGGER_DATE_AND_TIME)
 
         self._param_dict.add(InstrumentParameters.SAMPLE_INTERVAL,
                              r'(\d{6})CSP\r\n',
                              lambda match : self._convert_xr_420_time(match.group(1)),
                              str,
                              startup_param=True,
-                             default_value='00:00:12',             # 12 seconds
+                             default_value='00:00:12',  # 12 seconds
                              type=ParameterDictType.STRING,
                              display_name="Sample Interval",
                              description="Sampling interval between samples taken.",
                              units="HH:MM:SS",
-                             submenu_read=InstrumentCmds.GET_SAMPLE_INTERVAL,
-                             submenu_write=InstrumentCmds.SET_SAMPLE_INTERVAL)
+                             submenu_read=Commands.GET_SAMPLE_INTERVAL,
+                             submenu_write=Commands.SET_SAMPLE_INTERVAL)
 
         self._param_dict.add(InstrumentParameters.START_DATE_AND_TIME,
                              r'(\d{12})CST\r\n',
@@ -1201,8 +1229,8 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
                              description="Date/time at which the logger starts sampling.",
                              units="D M Y H:M:S",
                              visibility=ParameterDictVisibility.IMMUTABLE,
-                             submenu_read=InstrumentCmds.GET_START_DATE_AND_TIME,
-                             submenu_write=InstrumentCmds.SET_START_DATE_AND_TIME)
+                             submenu_read=Commands.GET_START_DATE_AND_TIME,
+                             submenu_write=Commands.SET_START_DATE_AND_TIME)
 
         self._param_dict.add(InstrumentParameters.END_DATE_AND_TIME,
                              r'(\d{12})CET\r\n',
@@ -1216,8 +1244,8 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
                              description="Date/time at which the logger stops sampling.",
                              units="D M Y H:M:S",
                              visibility=ParameterDictVisibility.IMMUTABLE,
-                             submenu_read=InstrumentCmds.GET_END_DATE_AND_TIME,
-                             submenu_write=InstrumentCmds.SET_END_DATE_AND_TIME)
+                             submenu_read=Commands.GET_END_DATE_AND_TIME,
+                             submenu_write=Commands.SET_END_DATE_AND_TIME)
 
         self._param_dict.add(InstrumentParameters.BATTERY_VOLTAGE,
                              r'(\w{2})BAT\r\n',
@@ -1228,28 +1256,28 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
                              description="Battery voltage of the instrument.",
                              units=Units.VOLT,
                              visibility=ParameterDictVisibility.READ_ONLY,
-                             submenu_read=InstrumentCmds.GET_BATTERY_VOLTAGE)
+                             submenu_read=Commands.GET_BATTERY_VOLTAGE)
 
         self._param_dict.add(InstrumentParameters.POWER_ALWAYS_ON,
                              r'$^',
                              lambda value : self._check_bit_value(value),
                              None,
-                             default_value=1,          # 1 = True
+                             default_value=1,  # 1 = True
                              type=ParameterDictType.INT,
                              display_name="Power Always On",
                              range={'True': 1, 'False': 0},
                              description="Enable instrument sleeping between samples: (1:True | 0:False)",
                              startup_param=True,
                              direct_access=False,
-                             submenu_read=InstrumentCmds.GET_ADVANCED_FUNCTIONS,
-                             submenu_write=InstrumentCmds.SET_ADVANCED_FUNCTIONS)
+                             submenu_read=Commands.GET_ADVANCED_FUNCTIONS,
+                             submenu_write=Commands.SET_ADVANCED_FUNCTIONS)
 
         # Not available using this logger
         self._param_dict.add(InstrumentParameters.SIX_HZ_PROFILING_MODE,
                              r'$^',
                              lambda value : self._check_bit_value(value),
                              None,
-                             default_value=0,          # 0 = False
+                             default_value=0,  # 0 = False
                              type=ParameterDictType.INT,
                              display_name="6Hz Profiling Mode",
                              range={'True': 1, 'False': 0},
@@ -1257,14 +1285,14 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
                              startup_param=True,
                              direct_access=False,
                              visibility=ParameterDictVisibility.IMMUTABLE,
-                             submenu_read=InstrumentCmds.GET_ADVANCED_FUNCTIONS,
-                             submenu_write=InstrumentCmds.SET_ADVANCED_FUNCTIONS)
+                             submenu_read=Commands.GET_ADVANCED_FUNCTIONS,
+                             submenu_write=Commands.SET_ADVANCED_FUNCTIONS)
 
         self._param_dict.add(InstrumentParameters.OUTPUT_INCLUDES_SERIAL_NUMBER,
                              r'$^',
                              lambda value : self._check_bit_value(value),
                              None,
-                             default_value=1,          # 1 = True
+                             default_value=1,  # 1 = True
                              startup_param=True,
                              direct_access=True,
                              type=ParameterDictType.INT,
@@ -1272,14 +1300,14 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
                              range={'True': 1, 'False': 0},
                              description="Enable serial number in output: (1:True | 0:False)",
                              visibility=ParameterDictVisibility.IMMUTABLE,
-                             submenu_read=InstrumentCmds.GET_ADVANCED_FUNCTIONS,
-                             submenu_write=InstrumentCmds.SET_ADVANCED_FUNCTIONS)
+                             submenu_read=Commands.GET_ADVANCED_FUNCTIONS,
+                             submenu_write=Commands.SET_ADVANCED_FUNCTIONS)
 
         self._param_dict.add(InstrumentParameters.OUTPUT_INCLUDES_BATTERY_VOLTAGE,
                              r'$^',
                              lambda value : self._check_bit_value(value),
                              None,
-                             default_value=1,          # 1 = True
+                             default_value=1,  # 1 = True
                              startup_param=True,
                              direct_access=True,
                              type=ParameterDictType.INT,
@@ -1287,14 +1315,14 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
                              range={'True': 1, 'False': 0},
                              description="Enable battery voltage in output: (1:True | 0:False)",
                              visibility=ParameterDictVisibility.IMMUTABLE,
-                             submenu_read=InstrumentCmds.GET_ADVANCED_FUNCTIONS,
-                             submenu_write=InstrumentCmds.SET_ADVANCED_FUNCTIONS)
+                             submenu_read=Commands.GET_ADVANCED_FUNCTIONS,
+                             submenu_write=Commands.SET_ADVANCED_FUNCTIONS)
 
         self._param_dict.add(InstrumentParameters.SAMPLING_LED,
                              r'$^',
                              lambda value : self._check_bit_value(value),
                              None,
-                             default_value=0,          # 0 = False
+                             default_value=0,  # 0 = False
                              startup_param=True,
                              direct_access=False,
                              type=ParameterDictType.INT,
@@ -1302,14 +1330,14 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
                              range={'True': 1, 'False': 0},
                              description="Enable sampling LED: (1:True | 0:False)",
                              visibility=ParameterDictVisibility.IMMUTABLE,
-                             submenu_read=InstrumentCmds.GET_ADVANCED_FUNCTIONS,
-                             submenu_write=InstrumentCmds.SET_ADVANCED_FUNCTIONS)
+                             submenu_read=Commands.GET_ADVANCED_FUNCTIONS,
+                             submenu_write=Commands.SET_ADVANCED_FUNCTIONS)
 
         self._param_dict.add(InstrumentParameters.ENGINEERING_UNITS_OUTPUT,
                              r'$^',
                              lambda value : self._check_bit_value(value),
                              None,
-                             default_value=1,          # 1 = True
+                             default_value=1,  # 1 = True
                              startup_param=True,
                              direct_access=True,
                              type=ParameterDictType.INT,
@@ -1317,14 +1345,14 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
                              range={'True': 1, 'False': 0},
                              description="Enable engineering units in output: (1:True | 0:False)",
                              visibility=ParameterDictVisibility.IMMUTABLE,
-                             submenu_read=InstrumentCmds.GET_ADVANCED_FUNCTIONS,
-                             submenu_write=InstrumentCmds.SET_ADVANCED_FUNCTIONS)
+                             submenu_read=Commands.GET_ADVANCED_FUNCTIONS,
+                             submenu_write=Commands.SET_ADVANCED_FUNCTIONS)
 
         self._param_dict.add(InstrumentParameters.AUTO_RUN,
                              r'$^',
                              lambda value : self._check_bit_value(value),
                              None,
-                             default_value=1,          # 1 = True
+                             default_value=1,  # 1 = True
                              startup_param=True,
                              direct_access=False,
                              type=ParameterDictType.INT,
@@ -1332,22 +1360,22 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
                              range={'True': 1, 'False': 0},
                              description="Enable instrument to restart in sampling mode after power cycle: (1:True | 0:False)",
                              visibility=ParameterDictVisibility.IMMUTABLE,
-                             submenu_read=InstrumentCmds.GET_ADVANCED_FUNCTIONS,
-                             submenu_write=InstrumentCmds.SET_ADVANCED_FUNCTIONS)
+                             submenu_read=Commands.GET_ADVANCED_FUNCTIONS,
+                             submenu_write=Commands.SET_ADVANCED_FUNCTIONS)
 
         self._param_dict.add(InstrumentParameters.INHIBIT_DATA_STORAGE,
                              r'$^',
                              lambda value : self._check_bit_value(value),
                              None,
-                             default_value=1,          # 1 = True
+                             default_value=1,  # 1 = True
                              startup_param=True,
                              direct_access=False,
                              type=ParameterDictType.INT,
                              display_name="Inhibit Data Storage",
                              range={'True': 1, 'False': 0},
                              description="Disable data storage on instrument: (1:True | 0:False)",
-                             submenu_read=InstrumentCmds.GET_ADVANCED_FUNCTIONS,
-                             submenu_write=InstrumentCmds.SET_ADVANCED_FUNCTIONS)
+                             submenu_read=Commands.GET_ADVANCED_FUNCTIONS,
+                             submenu_write=Commands.SET_ADVANCED_FUNCTIONS)
 
         self._param_dict.add(InstrumentParameters.CALIBRATION_COEFFICIENTS_CHANNEL_1,
                              r'(\w{64})CAL\r\n',
@@ -1358,7 +1386,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
                              display_name="Calibration Coefficients Channel 1",
                              description="Current calibrations for channel 1.",
                              visibility=ParameterDictVisibility.READ_ONLY,
-                             submenu_read=InstrumentCmds.GET_CHANNEL_CALIBRATION)
+                             submenu_read=Commands.GET_CHANNEL_CALIBRATION)
 
         self._param_dict.add(InstrumentParameters.CALIBRATION_COEFFICIENTS_CHANNEL_2,
                              r'(\w{64})CAL\r\n',
@@ -1368,7 +1396,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
                              display_name="Calibration Coefficients Channel 2",
                              description="Current calibrations for channel 2.",
                              visibility=ParameterDictVisibility.READ_ONLY,
-                             submenu_read=InstrumentCmds.GET_CHANNEL_CALIBRATION)
+                             submenu_read=Commands.GET_CHANNEL_CALIBRATION)
 
         self._param_dict.add(InstrumentParameters.CALIBRATION_COEFFICIENTS_CHANNEL_3,
                              r'(\w{64})CAL\r\n',
@@ -1378,7 +1406,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
                              display_name="Calibration Coefficients Channel 3",
                              description="Current calibrations for channel 3.",
                              visibility=ParameterDictVisibility.READ_ONLY,
-                             submenu_read=InstrumentCmds.GET_CHANNEL_CALIBRATION)
+                             submenu_read=Commands.GET_CHANNEL_CALIBRATION)
 
         self._param_dict.add(InstrumentParameters.CALIBRATION_COEFFICIENTS_CHANNEL_4,
                              r'(\w{64})CAL\r\n',
@@ -1388,7 +1416,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
                              display_name="Calibration Coefficients Channel 4",
                              description="Current calibrations for channel 4.",
                              visibility=ParameterDictVisibility.READ_ONLY,
-                             submenu_read=InstrumentCmds.GET_CHANNEL_CALIBRATION)
+                             submenu_read=Commands.GET_CHANNEL_CALIBRATION)
 
         self._param_dict.add(InstrumentParameters.CALIBRATION_COEFFICIENTS_CHANNEL_5,
                              r'(\w{64})CAL\r\n',
@@ -1398,7 +1426,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
                              display_name="Calibration Coefficients Channel 5",
                              description="Current calibrations for channel 5.",
                              visibility=ParameterDictVisibility.READ_ONLY,
-                             submenu_read=InstrumentCmds.GET_CHANNEL_CALIBRATION)
+                             submenu_read=Commands.GET_CHANNEL_CALIBRATION)
 
         self._param_dict.add(InstrumentParameters.CALIBRATION_COEFFICIENTS_CHANNEL_6,
                              r'(\w{64})CAL\r\n',
@@ -1408,7 +1436,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
                              display_name="Calibration Coefficients Channel 6",
                              description="Current calibrations for channel 6.",
                              visibility=ParameterDictVisibility.READ_ONLY,
-                             submenu_read=InstrumentCmds.GET_CHANNEL_CALIBRATION)
+                             submenu_read=Commands.GET_CHANNEL_CALIBRATION)
 
         self._param_dict.add(InstrumentParameters.CALIBRATION_COEFFICIENTS_CHANNEL_7,
                              r'(\w{64})CAL\r\n',
@@ -1418,7 +1446,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
                              display_name="Calibration Coefficients Channel 7",
                              description="Current calibrations for channel 7.",
                              visibility=ParameterDictVisibility.READ_ONLY,
-                             submenu_read=InstrumentCmds.GET_CHANNEL_CALIBRATION)
+                             submenu_read=Commands.GET_CHANNEL_CALIBRATION)
 
         self._param_dict.add(InstrumentParameters.CALIBRATION_COEFFICIENTS_CHANNEL_8,
                              r'(\w{64})CAL\r\n',
@@ -1428,7 +1456,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
                              display_name="Calibration Coefficients Channel 8",
                              description="Current calibrations for channel 8.",
                              visibility=ParameterDictVisibility.READ_ONLY,
-                             submenu_read=InstrumentCmds.GET_CHANNEL_CALIBRATION)
+                             submenu_read=Commands.GET_CHANNEL_CALIBRATION)
 
         self._param_dict.add(InstrumentParameters.CALIBRATION_COEFFICIENTS_CHANNEL_9,
                              r'(\w{64})CAL\r\n',
@@ -1438,7 +1466,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
                              display_name="Calibration Coefficients Channel 9",
                              description="Current calibrations for channel 9.",
                              visibility=ParameterDictVisibility.READ_ONLY,
-                             submenu_read=InstrumentCmds.GET_CHANNEL_CALIBRATION)
+                             submenu_read=Commands.GET_CHANNEL_CALIBRATION)
 
         self._param_dict.add(InstrumentParameters.CALIBRATION_COEFFICIENTS_CHANNEL_10,
                              r'(\w{64})CAL\r\n',
@@ -1448,7 +1476,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
                              display_name="Calibration Coefficients Channel 10",
                              description="Current calibrations for channel 10.",
                              visibility=ParameterDictVisibility.READ_ONLY,
-                             submenu_read=InstrumentCmds.GET_CHANNEL_CALIBRATION)
+                             submenu_read=Commands.GET_CHANNEL_CALIBRATION)
 
         self._param_dict.add(InstrumentParameters.CALIBRATION_COEFFICIENTS_CHANNEL_11,
                              r'(\w{64})CAL\r\n',
@@ -1458,7 +1486,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
                              display_name="Calibration Coefficients Channel 11",
                              description="Current calibrations for channel 11.",
                              visibility=ParameterDictVisibility.READ_ONLY,
-                             submenu_read=InstrumentCmds.GET_CHANNEL_CALIBRATION)
+                             submenu_read=Commands.GET_CHANNEL_CALIBRATION)
 
         self._param_dict.add(InstrumentParameters.CALIBRATION_COEFFICIENTS_CHANNEL_12,
                              r'(\w{64})CAL\r\n',
@@ -1468,7 +1496,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
                              display_name="Calibration Coefficients Channel 12",
                              description="Current calibrations for channel 12.",
                              visibility=ParameterDictVisibility.READ_ONLY,
-                             submenu_read=InstrumentCmds.GET_CHANNEL_CALIBRATION)
+                             submenu_read=Commands.GET_CHANNEL_CALIBRATION)
 
         self._param_dict.add(InstrumentParameters.CALIBRATION_COEFFICIENTS_CHANNEL_13,
                              r'(\w{64})CAL\r\n',
@@ -1478,7 +1506,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
                              display_name="Calibration Coefficients Channel 13",
                              description="Current calibrations for channel 13.",
                              visibility=ParameterDictVisibility.READ_ONLY,
-                             submenu_read=InstrumentCmds.GET_CHANNEL_CALIBRATION)
+                             submenu_read=Commands.GET_CHANNEL_CALIBRATION)
 
         self._param_dict.add(InstrumentParameters.CALIBRATION_COEFFICIENTS_CHANNEL_14,
                              r'(\w{64})CAL\r\n',
@@ -1488,7 +1516,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
                              display_name="Calibration Coefficients Channel 14",
                              description="Current calibrations for channel 14.",
                              visibility=ParameterDictVisibility.READ_ONLY,
-                             submenu_read=InstrumentCmds.GET_CHANNEL_CALIBRATION)
+                             submenu_read=Commands.GET_CHANNEL_CALIBRATION)
 
         self._param_dict.add(InstrumentParameters.CALIBRATION_COEFFICIENTS_CHANNEL_15,
                              r'(\w{64})CAL\r\n',
@@ -1498,7 +1526,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
                              display_name="Calibration Coefficients Channel 15",
                              description="Current calibrations for channel 15.",
                              visibility=ParameterDictVisibility.READ_ONLY,
-                             submenu_read=InstrumentCmds.GET_CHANNEL_CALIBRATION)
+                             submenu_read=Commands.GET_CHANNEL_CALIBRATION)
 
         self._param_dict.add(InstrumentParameters.CALIBRATION_COEFFICIENTS_CHANNEL_16,
                              r'(\w{64})CAL\r\n',
@@ -1508,7 +1536,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
                              display_name="Calibration Coefficients Channel 16",
                              description="Current calibrations for channel 16.",
                              visibility=ParameterDictVisibility.READ_ONLY,
-                             submenu_read=InstrumentCmds.GET_CHANNEL_CALIBRATION)
+                             submenu_read=Commands.GET_CHANNEL_CALIBRATION)
 
         self._param_dict.add(InstrumentParameters.CALIBRATION_COEFFICIENTS_CHANNEL_17,
                              r'(\w{64})CAL\r\n',
@@ -1518,7 +1546,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
                              display_name="Calibration Coefficients Channel 17",
                              description="Current calibrations for channel 17.",
                              visibility=ParameterDictVisibility.READ_ONLY,
-                             submenu_read=InstrumentCmds.GET_CHANNEL_CALIBRATION)
+                             submenu_read=Commands.GET_CHANNEL_CALIBRATION)
 
         self._param_dict.add(InstrumentParameters.CALIBRATION_COEFFICIENTS_CHANNEL_18,
                              r'(\w{64})CAL\r\n',
@@ -1528,7 +1556,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
                              display_name="Calibration Coefficients Channel 18",
                              description="Current calibrations for channel 18.",
                              visibility=ParameterDictVisibility.READ_ONLY,
-                             submenu_read=InstrumentCmds.GET_CHANNEL_CALIBRATION)
+                             submenu_read=Commands.GET_CHANNEL_CALIBRATION)
 
         self._param_dict.add(InstrumentParameters.CALIBRATION_COEFFICIENTS_CHANNEL_19,
                              r'(\w{64})CAL\r\n',
@@ -1538,7 +1566,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
                              display_name="Calibration Coefficients Channel 19",
                              description="Current calibrations for channel 19.",
                              visibility=ParameterDictVisibility.READ_ONLY,
-                             submenu_read=InstrumentCmds.GET_CHANNEL_CALIBRATION)
+                             submenu_read=Commands.GET_CHANNEL_CALIBRATION)
 
         self._param_dict.add(InstrumentParameters.CALIBRATION_COEFFICIENTS_CHANNEL_20,
                              r'(\w{64})CAL\r\n',
@@ -1548,7 +1576,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
                              display_name="Calibration Coefficients Channel 20",
                              description="Current calibrations for channel 20.",
                              visibility=ParameterDictVisibility.READ_ONLY,
-                             submenu_read=InstrumentCmds.GET_CHANNEL_CALIBRATION)
+                             submenu_read=Commands.GET_CHANNEL_CALIBRATION)
 
         self._param_dict.add(InstrumentParameters.CALIBRATION_COEFFICIENTS_CHANNEL_21,
                              r'(\w{64})CAL\r\n',
@@ -1558,7 +1586,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
                              display_name="Calibration Coefficients Channel 21",
                              description="Current calibrations for channel 21.",
                              visibility=ParameterDictVisibility.READ_ONLY,
-                             submenu_read=InstrumentCmds.GET_CHANNEL_CALIBRATION)
+                             submenu_read=Commands.GET_CHANNEL_CALIBRATION)
 
         self._param_dict.add(InstrumentParameters.CALIBRATION_COEFFICIENTS_CHANNEL_22,
                              r'(\w{64})CAL\r\n',
@@ -1568,7 +1596,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
                              display_name="Calibration Coefficients Channel 22",
                              description="Current calibrations for channel 22.",
                              visibility=ParameterDictVisibility.READ_ONLY,
-                             submenu_read=InstrumentCmds.GET_CHANNEL_CALIBRATION)
+                             submenu_read=Commands.GET_CHANNEL_CALIBRATION)
 
         self._param_dict.add(InstrumentParameters.CALIBRATION_COEFFICIENTS_CHANNEL_23,
                              r'(\w{64})CAL\r\n',
@@ -1578,7 +1606,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
                              display_name="Calibration Coefficients Channel 23",
                              description="Current calibrations for channel 23.",
                              visibility=ParameterDictVisibility.READ_ONLY,
-                             submenu_read=InstrumentCmds.GET_CHANNEL_CALIBRATION)
+                             submenu_read=Commands.GET_CHANNEL_CALIBRATION)
 
         self._param_dict.add(InstrumentParameters.CALIBRATION_COEFFICIENTS_CHANNEL_24,
                              r'(\w{64})CAL\r\n',
@@ -1588,40 +1616,42 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
                              display_name="Calibration Coefficients Channel 24",
                              description="Current calibrations for channel 24.",
                              visibility=ParameterDictVisibility.READ_ONLY,
-                             submenu_read=InstrumentCmds.GET_CHANNEL_CALIBRATION)
+                             submenu_read=Commands.GET_CHANNEL_CALIBRATION)
 
     def _build_command_handlers(self):
 
         # Add build handlers for device get commands.
-        self._add_build_handler(InstrumentCmds.GET_STATUS, self._build_get_status_command)
-        self._add_build_handler(InstrumentCmds.GET_IDENTIFICATION, self._build_get_identification_command)
-        self._add_build_handler(InstrumentCmds.GET_LOGGER_DATE_AND_TIME, self._build_get_logger_date_and_time_command)
-        self._add_build_handler(InstrumentCmds.GET_SAMPLE_INTERVAL, self._build_get_sample_interval_command)
-        self._add_build_handler(InstrumentCmds.GET_START_DATE_AND_TIME, self._build_get_start_date_and_time_command)
-        self._add_build_handler(InstrumentCmds.GET_END_DATE_AND_TIME, self._build_get_end_date_and_time_command)
-        self._add_build_handler(InstrumentCmds.GET_BATTERY_VOLTAGE, self._build_get_battery_voltage_command)
-        self._add_build_handler(InstrumentCmds.GET_CHANNEL_CALIBRATION, self._build_get_channel_calibration_command)
-        self._add_build_handler(InstrumentCmds.GET_ADVANCED_FUNCTIONS, self._build_get_advanced_functions_command)
-        self._add_build_handler(InstrumentCmds.START_SAMPLING, self._build_start_sampling_command)
+        # TODO - these can all be consolidated into a single build command that takes the command as the first
+        # argument like the rest of the drivers
+        self._add_build_handler(Commands.GET_STATUS, self._build_get_status_command)
+        self._add_build_handler(Commands.GET_IDENTIFICATION, self._build_get_identification_command)
+        self._add_build_handler(Commands.GET_LOGGER_DATE_AND_TIME, self._build_get_logger_date_and_time_command)
+        self._add_build_handler(Commands.GET_SAMPLE_INTERVAL, self._build_get_sample_interval_command)
+        self._add_build_handler(Commands.GET_START_DATE_AND_TIME, self._build_get_start_date_and_time_command)
+        self._add_build_handler(Commands.GET_END_DATE_AND_TIME, self._build_get_end_date_and_time_command)
+        self._add_build_handler(Commands.GET_BATTERY_VOLTAGE, self._build_get_battery_voltage_command)
+        self._add_build_handler(Commands.GET_CHANNEL_CALIBRATION, self._build_get_channel_calibration_command)
+        self._add_build_handler(Commands.GET_ADVANCED_FUNCTIONS, self._build_get_advanced_functions_command)
+        self._add_build_handler(Commands.START_SAMPLING, self._build_start_sampling_command)
 
         # Add build handlers for device set commands.
-        self._add_build_handler(InstrumentCmds.SET_LOGGER_DATE_AND_TIME, self._build_set_date_time_command)
-        self._add_build_handler(InstrumentCmds.SET_START_DATE_AND_TIME, self._build_set_date_time_command)
-        self._add_build_handler(InstrumentCmds.SET_END_DATE_AND_TIME, self._build_set_date_time_command)
-        self._add_build_handler(InstrumentCmds.SET_SAMPLE_INTERVAL, self._build_set_time_command)
-        self._add_build_handler(InstrumentCmds.SET_ADVANCED_FUNCTIONS, self._build_set_advanced_functions_command)
+        self._add_build_handler(Commands.SET_LOGGER_DATE_AND_TIME, self._build_set_date_time_command)
+        self._add_build_handler(Commands.SET_START_DATE_AND_TIME, self._build_set_date_time_command)
+        self._add_build_handler(Commands.SET_END_DATE_AND_TIME, self._build_set_date_time_command)
+        self._add_build_handler(Commands.SET_SAMPLE_INTERVAL, self._build_set_time_command)
+        self._add_build_handler(Commands.SET_ADVANCED_FUNCTIONS, self._build_set_advanced_functions_command)
 
         # Add response handlers for device get commands.
-        self._add_response_handler(InstrumentCmds.GET_STATUS, self._parse_status_response)
-        self._add_response_handler(InstrumentCmds.GET_IDENTIFICATION, self._parse_identification_response)
-        self._add_response_handler(InstrumentCmds.GET_LOGGER_DATE_AND_TIME, self._parse_logger_date_and_time_response)
-        self._add_response_handler(InstrumentCmds.GET_SAMPLE_INTERVAL, self._parse_sample_interval_response)
-        self._add_response_handler(InstrumentCmds.GET_START_DATE_AND_TIME, self._parse_start_date_and_time_response)
-        self._add_response_handler(InstrumentCmds.GET_END_DATE_AND_TIME, self._parse_end_date_and_time_response)
-        self._add_response_handler(InstrumentCmds.GET_BATTERY_VOLTAGE, self._parse_battery_voltage_response)
-        self._add_response_handler(InstrumentCmds.GET_CHANNEL_CALIBRATION, self._parse_channel_calibration_response)
-        self._add_response_handler(InstrumentCmds.GET_ADVANCED_FUNCTIONS, self._parse_advanced_functions_response)
-        self._add_response_handler(InstrumentCmds.START_SAMPLING, self._parse_start_sampling_response)
+        self._add_response_handler(Commands.GET_STATUS, self._parse_status_response)
+        self._add_response_handler(Commands.GET_IDENTIFICATION, self._parse_identification_response)
+        self._add_response_handler(Commands.GET_LOGGER_DATE_AND_TIME, self._parse_logger_date_and_time_response)
+        self._add_response_handler(Commands.GET_SAMPLE_INTERVAL, self._parse_sample_interval_response)
+        self._add_response_handler(Commands.GET_START_DATE_AND_TIME, self._parse_start_date_and_time_response)
+        self._add_response_handler(Commands.GET_END_DATE_AND_TIME, self._parse_end_date_and_time_response)
+        self._add_response_handler(Commands.GET_BATTERY_VOLTAGE, self._parse_battery_voltage_response)
+        self._add_response_handler(Commands.GET_CHANNEL_CALIBRATION, self._parse_channel_calibration_response)
+        self._add_response_handler(Commands.GET_ADVANCED_FUNCTIONS, self._parse_advanced_functions_response)
+        self._add_response_handler(Commands.START_SAMPLING, self._parse_start_sampling_response)
 
 ##################################################################################################
 # set command handlers

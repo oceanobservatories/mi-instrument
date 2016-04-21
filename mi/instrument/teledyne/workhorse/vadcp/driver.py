@@ -102,6 +102,7 @@ class InstrumentDriver(SingleConnectionInstrumentDriver):
 
     def _handler_inst_disconnected_connect(self, *args, **kwargs):
         self._build_protocol()
+        self.set_init_params({})
         self._protocol.connections[SlaveProtocol.FOURBEAM] = self._connection[SlaveProtocol.FOURBEAM]
         self._protocol.connections[SlaveProtocol.FIFTHBEAM] = self._connection[SlaveProtocol.FIFTHBEAM]
         return DriverConnectionState.CONNECTED, None
@@ -209,6 +210,26 @@ class InstrumentDriver(SingleConnectionInstrumentDriver):
                 except (TypeError, KeyError) as e:
                     raise InstrumentParameterException('Invalid comms config dict.. %r' % e)
         return connections
+
+    def get_direct_config(self):
+        """
+        Note - must override if instrument driver has more than one instrument configuration.
+        :return: list of dictionaries containing direct access configuration and commands
+        """
+        config = []
+        if self._protocol:
+            for idx, connection in enumerate([SlaveProtocol.FOURBEAM, SlaveProtocol.FIFTHBEAM]):
+                config.append({})
+                config[idx] = self._protocol.get_direct_config()
+                if connection is SlaveProtocol.FOURBEAM:
+                    config[idx]['title'] = 'Beams 1-4'
+                if connection is SlaveProtocol.FIFTHBEAM:
+                    config[idx]['title'] = '5th Beam'
+                config[idx]['ip'] = self._port_agent_config.get(connection, {}).get('host', 'uft20')
+                config[idx]['data'] = self._port_agent_config.get(connection, {}).get('ports', {}).get('da')
+                config[idx]['sniffer'] = \
+                    self._port_agent_config.get(connection, {}).get('ports', {}).get('sniff')
+        return config
 
     def _got_data(self, port_agent_packet, connection=None):
         if isinstance(port_agent_packet, Exception):
