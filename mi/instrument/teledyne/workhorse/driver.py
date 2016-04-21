@@ -137,7 +137,7 @@ class WorkhorseParameter(DriverParameter):
     GET_STATUS_INTERVAL = WorkhorseEngineeringParameter.GET_STATUS_INTERVAL
 
 
-class WorkhorseInstrumentCmds(BaseEnum):
+class WorkhorseInstrumentCommands(BaseEnum):
     """
     Device specific commands
     Represents the commands the driver implements and the string that
@@ -153,6 +153,24 @@ class WorkhorseInstrumentCmds(BaseEnum):
     # Engineering commands
     SET = 'set'
     GET = 'get'
+
+
+class WorkhorseInstrumentCommandNames(BaseEnum):
+    """
+    Device specific commands
+    Represents the commands the driver implements and the string that
+    must be sent to the instrument to execute the command.
+    """
+    # Instrument Commands
+    OUTPUT_CALIBRATION_DATA = 'Calibration'
+    START_LOGGING = 'Start Logging'
+    GET_SYSTEM_CONFIGURATION = 'System Config'
+    RUN_TEST_200 = 'Test 200'
+    OUTPUT_PT2 = 'PT2'
+    OUTPUT_PT4 = 'PT4'
+    # Engineering commands
+    SET = 'Set>'
+    GET = 'Get?'
 
 
 class WorkhorseProtocolState(BaseEnum):
@@ -827,23 +845,23 @@ class WorkhorseProtocol(CommandResponseInstrumentProtocol):
         self._build_driver_dict()
 
         # Add build handlers for device commands.
-        self._add_build_handler(WorkhorseInstrumentCmds.OUTPUT_CALIBRATION_DATA, self._build_simple_command)
-        self._add_build_handler(WorkhorseInstrumentCmds.START_LOGGING, self._build_simple_command)
-        self._add_build_handler(WorkhorseInstrumentCmds.GET_SYSTEM_CONFIGURATION, self._build_simple_command)
-        self._add_build_handler(WorkhorseInstrumentCmds.RUN_TEST_200, self._build_simple_command)
-        self._add_build_handler(WorkhorseInstrumentCmds.SET, self._build_set_command)
-        self._add_build_handler(WorkhorseInstrumentCmds.GET, self._build_get_command)
-        self._add_build_handler(WorkhorseInstrumentCmds.OUTPUT_PT2, self._build_simple_command)
-        self._add_build_handler(WorkhorseInstrumentCmds.OUTPUT_PT4, self._build_simple_command)
+        self._add_build_handler(WorkhorseInstrumentCommands.OUTPUT_CALIBRATION_DATA, self._build_simple_command)
+        self._add_build_handler(WorkhorseInstrumentCommands.START_LOGGING, self._build_simple_command)
+        self._add_build_handler(WorkhorseInstrumentCommands.GET_SYSTEM_CONFIGURATION, self._build_simple_command)
+        self._add_build_handler(WorkhorseInstrumentCommands.RUN_TEST_200, self._build_simple_command)
+        self._add_build_handler(WorkhorseInstrumentCommands.SET, self._build_set_command)
+        self._add_build_handler(WorkhorseInstrumentCommands.GET, self._build_get_command)
+        self._add_build_handler(WorkhorseInstrumentCommands.OUTPUT_PT2, self._build_simple_command)
+        self._add_build_handler(WorkhorseInstrumentCommands.OUTPUT_PT4, self._build_simple_command)
 
         # Add response handlers
-        self._add_response_handler(WorkhorseInstrumentCmds.OUTPUT_CALIBRATION_DATA, self._response_passthrough)
-        self._add_response_handler(WorkhorseInstrumentCmds.GET_SYSTEM_CONFIGURATION, self._response_passthrough)
-        self._add_response_handler(WorkhorseInstrumentCmds.RUN_TEST_200, self._response_passthrough)
-        self._add_response_handler(WorkhorseInstrumentCmds.SET, self._parse_set_response)
-        self._add_response_handler(WorkhorseInstrumentCmds.GET, self._parse_get_response)
-        self._add_response_handler(WorkhorseInstrumentCmds.OUTPUT_PT2, self._response_passthrough)
-        self._add_response_handler(WorkhorseInstrumentCmds.OUTPUT_PT4, self._response_passthrough)
+        self._add_response_handler(WorkhorseInstrumentCommands.OUTPUT_CALIBRATION_DATA, self._response_passthrough)
+        self._add_response_handler(WorkhorseInstrumentCommands.GET_SYSTEM_CONFIGURATION, self._response_passthrough)
+        self._add_response_handler(WorkhorseInstrumentCommands.RUN_TEST_200, self._response_passthrough)
+        self._add_response_handler(WorkhorseInstrumentCommands.SET, self._parse_set_response)
+        self._add_response_handler(WorkhorseInstrumentCommands.GET, self._parse_get_response)
+        self._add_response_handler(WorkhorseInstrumentCommands.OUTPUT_PT2, self._response_passthrough)
+        self._add_response_handler(WorkhorseInstrumentCommands.OUTPUT_PT4, self._response_passthrough)
 
         # State state machine in UNKNOWN state.
         self._protocol_fsm.start(WorkhorseProtocolState.UNKNOWN)
@@ -858,6 +876,20 @@ class WorkhorseProtocol(CommandResponseInstrumentProtocol):
         # dictionary to store last transmitted metadata particle values
         # so we can not send updates when nothing changed
         self._last_values = {}
+
+        self._display_name = 'VADCP'
+        self._direct_commands['Wake Up'] = NEWLINE
+        command_dict = WorkhorseInstrumentCommands.dict()
+        label_dict = WorkhorseInstrumentCommandNames.dict()
+        for key in command_dict:
+            label = label_dict.get(key)
+            command = command_dict[key]
+            builder = self._build_handlers.get(command, None)
+            if builder in [self._build_simple_command]:
+                command = builder(command)
+                self._direct_commands[label] = command
+            else:
+                self._direct_commands[label] = command + ' '
 
     def _build_param_dict(self):
         for param in parameter_regexes:
@@ -1131,7 +1163,7 @@ class WorkhorseProtocol(CommandResponseInstrumentProtocol):
                 continue
             if val != old_config.get(key):
                 changed.append(key)
-                commands.append(self._build_set_command(WorkhorseInstrumentCmds.SET, key, val))
+                commands.append(self._build_set_command(WorkhorseInstrumentCommands.SET, key, val))
 
         if commands:
             # we are going to send the concatenation of all our set commands
@@ -1192,7 +1224,7 @@ class WorkhorseProtocol(CommandResponseInstrumentProtocol):
         @param timeout: how long to wait for a prompt
         @throws: InstrumentProtocolException if failed to start logging
         """
-        self._do_cmd_resp(WorkhorseInstrumentCmds.START_LOGGING, timeout=timeout)
+        self._do_cmd_resp(WorkhorseInstrumentCommands.START_LOGGING, timeout=timeout)
 
     def _stop_logging(self):
         self._send_break()
@@ -1218,7 +1250,7 @@ class WorkhorseProtocol(CommandResponseInstrumentProtocol):
     def _run_test(self, *args, **kwargs):
         kwargs['timeout'] = 30
         kwargs['expected_prompt'] = WorkhorsePrompt.COMMAND
-        return self._do_cmd_resp(WorkhorseInstrumentCmds.RUN_TEST_200, *args, **kwargs)
+        return self._do_cmd_resp(WorkhorseInstrumentCommands.RUN_TEST_200, *args, **kwargs)
 
     @contextmanager
     def _pause_logging(self):
@@ -1291,7 +1323,7 @@ class WorkhorseProtocol(CommandResponseInstrumentProtocol):
 
         # Issue start command and switch to autosample if successful.
         try:
-            self._sync_clock(WorkhorseInstrumentCmds.SET, WorkhorseParameter.TIME)
+            self._sync_clock(WorkhorseInstrumentCommands.SET, WorkhorseParameter.TIME)
             self._start_logging()
 
         except InstrumentException:
@@ -1337,14 +1369,14 @@ class WorkhorseProtocol(CommandResponseInstrumentProtocol):
         result = []
 
         timeout = kwargs.get('timeout', TIMEOUT)
-        self._sync_clock(WorkhorseInstrumentCmds.SET, WorkhorseParameter.TIME, timeout)
+        self._sync_clock(WorkhorseInstrumentCommands.SET, WorkhorseParameter.TIME, timeout)
         return next_state, (next_state, result)
 
     def _do_acquire_status(self, *args, **kwargs):
-        self._do_cmd_resp(WorkhorseInstrumentCmds.GET_SYSTEM_CONFIGURATION, *args, **kwargs),
-        self._do_cmd_resp(WorkhorseInstrumentCmds.OUTPUT_CALIBRATION_DATA, *args, **kwargs),
-        self._do_cmd_resp(WorkhorseInstrumentCmds.OUTPUT_PT2, *args, **kwargs),
-        self._do_cmd_resp(WorkhorseInstrumentCmds.OUTPUT_PT4, *args, **kwargs)
+        self._do_cmd_resp(WorkhorseInstrumentCommands.GET_SYSTEM_CONFIGURATION, *args, **kwargs),
+        self._do_cmd_resp(WorkhorseInstrumentCommands.OUTPUT_CALIBRATION_DATA, *args, **kwargs),
+        self._do_cmd_resp(WorkhorseInstrumentCommands.OUTPUT_PT2, *args, **kwargs),
+        self._do_cmd_resp(WorkhorseInstrumentCommands.OUTPUT_PT4, *args, **kwargs)
 
     def _handler_command_acquire_status(self, *args, **kwargs):
         """

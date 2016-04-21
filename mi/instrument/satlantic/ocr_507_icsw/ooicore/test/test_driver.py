@@ -37,7 +37,7 @@ from mi.instrument.satlantic.ocr_507_icsw.ooicore.driver import SatlanticProtoco
 from mi.instrument.satlantic.ocr_507_icsw.ooicore.driver import SatlanticProtocolEvent
 from mi.instrument.satlantic.ocr_507_icsw.ooicore.driver import SatlanticCapability
 from mi.instrument.satlantic.ocr_507_icsw.ooicore.driver import Parameter
-from mi.instrument.satlantic.ocr_507_icsw.ooicore.driver import Command
+from mi.instrument.satlantic.ocr_507_icsw.ooicore.driver import Commands
 from mi.instrument.satlantic.ocr_507_icsw.ooicore.driver import Prompt
 from mi.instrument.satlantic.ocr_507_icsw.ooicore.driver import SatlanticOCR507DataParticle
 from mi.instrument.satlantic.ocr_507_icsw.ooicore.driver import SatlanticOCR507DataParticleKey
@@ -206,7 +206,7 @@ class SatlanticProtocolUnitTest(InstrumentDriverUnitTestCase, SatlanticMixin):
         Verify that all driver enumeration has no duplicate values that might cause confusion.  Also
         do a little extra validation for the Capabilites
         """
-        self.assert_enum_has_no_duplicates(Command())
+        self.assert_enum_has_no_duplicates(Commands())
         self.assert_enum_has_no_duplicates(DataParticleType())
         self.assert_enum_has_no_duplicates(SatlanticProtocolState())
         self.assert_enum_has_no_duplicates(SatlanticProtocolEvent())

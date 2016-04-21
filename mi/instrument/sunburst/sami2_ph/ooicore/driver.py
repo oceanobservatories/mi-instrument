@@ -31,7 +31,7 @@ from mi.core.instrument.protocol_param_dict import ParameterDictVisibility
 from mi.instrument.sunburst.driver import Prompt, SamiBatteryVoltageDataParticle, SamiThermistorVoltageDataParticle
 from mi.instrument.sunburst.driver import SamiDataParticleType
 from mi.instrument.sunburst.driver import SamiParameter
-from mi.instrument.sunburst.driver import SamiInstrumentCommand
+from mi.instrument.sunburst.driver import SamiInstrumentCommands
 from mi.instrument.sunburst.driver import SamiRegularStatusDataParticle
 from mi.instrument.sunburst.driver import SamiConfigDataParticleKey
 from mi.instrument.sunburst.driver import SamiInstrumentDriver
@@ -211,7 +211,7 @@ class Parameter(SamiParameter):
     SEAWATER_FLUSH_DURATION = 'seawater_flush_duration'
 
 
-class InstrumentCommand(SamiInstrumentCommand):
+class InstrumentCommand(SamiInstrumentCommands):
     """
     Device specific Instrument command strings. Extends superclass
     SamiInstrumentCommand
