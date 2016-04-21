@@ -111,7 +111,6 @@ class InstrumentDriver(SingleConnectionInstrumentDriver):
         Establish communications with the device via port agent / logger and
         construct and initialize a protocol FSM for device interaction.
         @return (next_state, result) tuple, (DriverConnectionState.CONNECTED, None) if successful.
-        @raises InstrumentConnectionException if the attempt to connect failed.
         """
         next_state = DriverConnectionState.INST_DISCONNECTED
         result = None

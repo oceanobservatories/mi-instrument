@@ -231,16 +231,20 @@ class InstrumentDriver(SingleConnectionInstrumentDriver):
         Establish communications with the device via port agent / logger and
         construct and initialize a protocol FSM for device interaction.
         @return (next_state, result) tuple, (DriverConnectionState.CONNECTED, None) if successful.
-        @raises InstrumentConnectionException if the attempt to connect failed.
         """
         try:
             for connection in self._connection.values():
                 connection.init_comms()
-            next_state = DriverConnectionState.CONNECTED
+            next_state = DriverConnectionState.INST_DISCONNECTED
         except InstrumentConnectionException as e:
             log.error("Connection Exception: %s", e)
             log.error("Instrument Driver returning to unconfigured state.")
             next_state = DriverConnectionState.UNCONFIGURED
+
+        init_config = {}
+        if len(args) > 0 and isinstance(args[0], dict):
+            init_config = args[0]
+        self.set_init_params(init_config)
 
         return next_state, None
 

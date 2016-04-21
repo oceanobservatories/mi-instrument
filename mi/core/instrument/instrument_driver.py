@@ -925,7 +925,6 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
         construct and initialize a protocol FSM for device interaction.
         @retval (next_state, result) tuple, (DriverConnectionState.CONNECTED,
         None) if successful.
-        @raises InstrumentConnectionException if the attempt to connect failed.
         """
         result = None
 
