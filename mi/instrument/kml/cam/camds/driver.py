@@ -303,20 +303,8 @@ class CamdsImageMetadata(DataParticle):
                        DataParticleKey.VALUE: param_dict.get(Parameter.IRIS_POSITION[ParameterIndex.KEY])})
         result.append({DataParticleKey.VALUE_ID: "camds_resolution",
                        DataParticleKey.VALUE: param_dict.get(Parameter.IMAGE_RESOLUTION[ParameterIndex.KEY])})
-
-        brightness_param = param_dict.get(Parameter.LAMP_BRIGHTNESS[ParameterIndex.KEY])
-
-        try:
-            brightness = int(brightness_param.split(':')[1])
-            result.append({DataParticleKey.VALUE_ID: "camds_brightness", DataParticleKey.VALUE: brightness})
-
-        except ValueError:
-            log.error("Error building camds_image_metadata particle: Brightness value is not an Integer")
-
-        except IndexError:
-            log.error("Error building camds_image_metadata particle: Brightness parameter incorrectly "
-                      "formatted: %s" % brightness_param)
-
+        result.append({DataParticleKey.VALUE_ID: "camds_brightness",
+                       DataParticleKey.VALUE: param_dict.get(Parameter.LAMP_BRIGHTNESS[ParameterIndex.KEY])})
         result.append({DataParticleKey.VALUE_ID: "camds_gain",
                        DataParticleKey.VALUE: param_dict.get(Parameter.CAMERA_GAIN[ParameterIndex.KEY])})
 
