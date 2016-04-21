@@ -236,7 +236,7 @@ class InstrumentDriver(SingleConnectionInstrumentDriver):
         try:
             for connection in self._connection.values():
                 connection.init_comms()
-            next_state = DriverConnectionState.CONNECTED
+            next_state = DriverConnectionState.INST_DISCONNECTED
         except InstrumentConnectionException as e:
             log.error("Connection Exception: %s", e)
             log.error("Instrument Driver returning to unconfigured state.")
