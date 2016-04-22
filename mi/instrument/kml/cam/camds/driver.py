@@ -373,7 +373,7 @@ class Parameter(DriverParameter):
     """
 
     CAMERA_MODE = ('SV', '<\x03:GV:>', 1, 1, '\x09', 'Camera Mode',
-                   'Capture mode of the camera (None:0 | Stream:9 | Framing:10 | Focus:11)', 'CAMERA_MODE', None)
+                   'Capture mode of the camera (None:0 | Stream:9 | Framing:10 | Focus:11)', 'CAMERA_MODE', 9)
 
     """
     set <\x04:FR:\x1E>
@@ -384,7 +384,7 @@ class Parameter(DriverParameter):
     GR + 1 Byte with value between 1 and 30.
     If the requested frame rate cannot be achieved, the maximum rate will be used.
     """
-    FRAME_RATE = ('FR', '<\x03:GR:>', 1, 1, '\x1E', 'Frame Rate', 'Capture rate in frames per second (1-30)', 'FRAME_RATE', None)
+    FRAME_RATE = ('FR', '<\x03:GR:>', 1, 1, '\x1E', 'Frame Rate', 'Capture rate in frames per second (1-30)', 'FRAME_RATE', 30)
 
     """
     set <\x04:SD:\x01>
@@ -397,7 +397,7 @@ class Parameter(DriverParameter):
     GD + 1 Byte with a dividing value of 0x1, 0x2, 0x4 and 0x8.
     """
     IMAGE_RESOLUTION = ('SD', '<\x03:GD:>', 1, 1, '\x01',
-                        'Image Resolution', 'Resolution of streamed images (Full Resolution:1 | Half Resolution:2 | Quarter Resolution:4 | Eighth Resolution:8)', 'IMAGE_RESOLUTION', None)
+                        'Image Resolution', 'Resolution of streamed images (Full Resolution:1 | Half Resolution:2 | Quarter Resolution:4 | Eighth Resolution:8)', 'IMAGE_RESOLUTION', 1)
 
     """
     set <\x04:CD:\x64>
@@ -410,7 +410,7 @@ class Parameter(DriverParameter):
     GI + 1 Byte with value between 0x01 and 0x64. (decimal 1 - 100) 0x64 = Minimum data loss 0x01 = Maximum data loss
     """
     COMPRESSION_RATIO = ('CD', '<\x03:GI:>', 1, 1, '\x64', 'Compression Ratio',
-                         'Compression ratio of streamed images (1-100)', 'COMPRESSION_RATIO', None)
+                         'Compression ratio of streamed images (1-100)', 'COMPRESSION_RATIO', 100)
 
     """
     get <\x04:GS:\xFF>
@@ -1637,25 +1637,25 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
         """
         self.stop_scheduled_job(schedule_job)
 
-        (hours, minutes, seconds) = (int(val) for val in self._param_dict.get(param).split(':'))
+        hours = 0
+        minutes = 0
+        seconds = 0
 
-        # enforce a maximum auto capture duration to prevent the instrument from becoming
-        # unresponsive for extended periods of time
         if param == Parameter.AUTO_CAPTURE_DURATION[ParameterIndex.KEY]:
-            if hours > 0 or minutes > 0 or seconds > MAX_AUTO_CAPTURE_DURATION:
-                log.error("Capture Duration is greater than maximum permissible value. Not performing capture.")
-                raise InstrumentParameterException('Capture Duration is greater than maximum permissible value.')
+            seconds = self._param_dict.get(param)
+        else:
+            (hours, minutes, seconds) = (int(val) for val in self._param_dict.get(param).split(':'))
 
-        # make sure the sample interval is never less than the instrument recovery time
-        # otherwise we'll be trying to collect samples faster than the instrument can process them
-        if param == Parameter.SAMPLE_INTERVAL[ParameterIndex.KEY]:
-            interval_secs = hours * 3600 + minutes * 60 + seconds
-            recovery_time = self._calculate_recovery_time()
-            if interval_secs < recovery_time:
-                hours = recovery_time / 3600
-                recovery_time %= 3600
-                minutes = recovery_time / 60
-                seconds = recovery_time % 60
+            # make sure the sample interval is never less than the instrument recovery time
+            # otherwise we'll be trying to collect samples faster than the instrument can process them
+            if param == Parameter.SAMPLE_INTERVAL[ParameterIndex.KEY]:
+                interval_secs = hours * 3600 + minutes * 60 + seconds
+                recovery_time = self._calculate_recovery_time()
+                if interval_secs < recovery_time:
+                    hours = recovery_time / 3600
+                    recovery_time %= 3600
+                    minutes = recovery_time / 60
+                    seconds = recovery_time % 60
 
         log.debug("Setting scheduled interval for %s to %02d:%02d:%02d" % (param, hours, minutes, seconds))
 
@@ -2009,10 +2009,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
         # by frame_rate*30 to get sleep time in seconds
 
         # first get the capture duration in seconds...
-        capture_duration = self._param_dict.get(Parameter.AUTO_CAPTURE_DURATION[ParameterIndex.KEY])
-
-        interval = capture_duration.split(':')
-        duration_seconds = int(interval[2])
+        duration_seconds = self._param_dict.get(Parameter.AUTO_CAPTURE_DURATION[ParameterIndex.KEY])
 
         if duration_seconds > MAX_AUTO_CAPTURE_DURATION:
             duration_seconds = MAX_AUTO_CAPTURE_DURATION
