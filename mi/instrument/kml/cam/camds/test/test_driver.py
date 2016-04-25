@@ -711,7 +711,7 @@ class DriverIntegrationTest(InstrumentDriverIntegrationTestCase, CAMDSMixin):
 
         self.assert_initialize_driver()
         self.assert_current_state(ProtocolState.COMMAND)
-        self.assert_set(Parameter.AUTO_CAPTURE_DURATION, '00:00:02')
+        self.assert_set(Parameter.AUTO_CAPTURE_DURATION, 2)
         self.assert_driver_command(InstrumentCmds.START_CAPTURE)
         time.sleep(1)
         self.assert_acquire_sample()
