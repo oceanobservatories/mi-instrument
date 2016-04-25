@@ -523,7 +523,8 @@ class Parameter(DriverParameter):
     VIDEO_FORWARDING_TIMEOUT = (None, None, None, None, '01:00:00', 'Video Forwarding Timeout',
                                 'Length of time to stream live video.', 'VIDEO_FORWARDING_TIMEOUT', '01:00:00')
     PRESET_NUMBER = (None, None, None, None, 1, 'Preset number', 'Preset number to set/go to (1-15)', 'PRESET_NUMBER', 1)
-    AUTO_CAPTURE_DURATION = (None, None, None, None, 3, 'Auto Capture Duration', 'How long to run auto capture mode (1-5)',
+    AUTO_CAPTURE_DURATION = (None, None, None, None, 3, 'Auto Capture Duration',
+                             'How long to run auto capture mode. Zero indicates snapshot (0-5)',
                              'AUTO_CAPTURE_DURATION', 3)
 
 
@@ -1125,7 +1126,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
                              description=Parameter.AUTO_CAPTURE_DURATION[ParameterIndex.DESCRIPTION],
                              startup_param=False,
                              direct_access=False,
-                             range=(1, 5),
+                             range=(0, 5),
                              units=Units.SECOND,
                              default_value=Parameter.AUTO_CAPTURE_DURATION[ParameterIndex.D_DEFAULT])
 
@@ -1750,7 +1751,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
 
         # If the capture duration is set to 0, schedule an event to take a snapshot at the sample interval,
         # Otherwise schedule an event to capture a series of images for the capture duration, at the sample interval
-        if capture_duration == ZERO_TIME_INTERVAL:
+        if capture_duration == 0:
             self.start_scheduled_job(Parameter.SAMPLE_INTERVAL[ParameterIndex.KEY], ScheduledJob.SAMPLE,
                                      ProtocolEvent.ACQUIRE_SAMPLE)
         else:
@@ -1919,7 +1920,13 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
 
         capturing_duration = self._param_dict.get(Parameter.AUTO_CAPTURE_DURATION[ParameterIndex.KEY])
 
-        if capturing_duration != ZERO_TIME_INTERVAL:
+        if capturing_duration == 0:
+            # Before performing capture, update parameters
+            self._update_metadata_params()
+
+            # If duration = 0, then just take a single snapshot
+            self._do_cmd_resp(InstrumentCmds.TAKE_SNAPSHOT, *args, **kwargs)
+        elif 0 < capturing_duration < 6:
             # Before performing capture, update parameters
             self._update_metadata_params()
 
@@ -1928,7 +1935,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
                                      ProtocolEvent.STOP_CAPTURE)
             self._do_cmd_resp(InstrumentCmds.START_CAPTURE, *args, **kwargs)
         else:
-            log.error("Capturing Duration set to 0: Not Performing Capture.")
+            log.error("Capturing Duration %s out of range: Not Performing Capture." % capturing_duration)
 
         return next_state, (next_state, result)
 
