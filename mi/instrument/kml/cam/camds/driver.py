@@ -596,7 +596,6 @@ class Capability(BaseEnum):
     LAMP_ON = ProtocolEvent.LAMP_ON
     LAMP_OFF = ProtocolEvent.LAMP_OFF
 
-    SET_PRESET = ProtocolEvent.SET_PRESET
     GOTO_PRESET = ProtocolEvent.GOTO_PRESET
 
     GET = DriverEvent.GET
@@ -1165,10 +1164,6 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
                            timeout=DEFAULT_DICT_TIMEOUT,
                            display_name="Goto Preset",
                            description="Go to the preset number")
-        self._cmd_dict.add(Capability.SET_PRESET,
-                           timeout=DEFAULT_DICT_TIMEOUT,
-                           display_name="Set Preset",
-                           description="Set the preset number")
         self._cmd_dict.add(Capability.LAMP_OFF,
                            timeout=DEFAULT_DICT_TIMEOUT,
                            display_name="Lamp Off",

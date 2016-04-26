@@ -220,7 +220,6 @@ class CAMDSMixin(DriverTestMixin):
         Capability.STOP_AUTOSAMPLE: {STATES: [ProtocolState.COMMAND, ProtocolState.AUTOSAMPLE]},
         Capability.ACQUIRE_STATUS: {STATES: [ProtocolState.COMMAND, ProtocolState.AUTOSAMPLE]},
         Capability.GOTO_PRESET: {STATES: [ProtocolState.COMMAND, ProtocolState.AUTOSAMPLE]},
-        Capability.SET_PRESET: {STATES: [ProtocolState.COMMAND, ProtocolState.AUTOSAMPLE]},
         Capability.LAMP_OFF: {STATES: [ProtocolState.COMMAND, ProtocolState.AUTOSAMPLE]},
         Capability.LAMP_ON: {STATES: [ProtocolState.COMMAND, ProtocolState.AUTOSAMPLE]},
         Capability.LASER_1_OFF: {STATES: [ProtocolState.COMMAND, ProtocolState.AUTOSAMPLE]},
@@ -639,7 +638,6 @@ class DriverIntegrationTest(InstrumentDriverIntegrationTestCase, CAMDSMixin):
         self.assert_driver_command(ProtocolEvent.ACQUIRE_SAMPLE, delay=2)
         self.assert_acquire_sample()
         self.assert_driver_command(ProtocolEvent.GOTO_PRESET)
-        self.assert_driver_command(ProtocolEvent.SET_PRESET)
         self.assert_driver_command(ProtocolEvent.STOP_FORWARD)
         self.assert_driver_command(ProtocolEvent.LAMP_ON)
         self.assert_driver_command(ProtocolEvent.LAMP_OFF)
@@ -662,7 +660,6 @@ class DriverIntegrationTest(InstrumentDriverIntegrationTestCase, CAMDSMixin):
         self.assert_driver_command(ProtocolEvent.ACQUIRE_SAMPLE, delay=2)
         self.assert_acquire_sample()
         self.assert_driver_command(ProtocolEvent.GOTO_PRESET)
-        self.assert_driver_command(ProtocolEvent.SET_PRESET)
         self.assert_driver_command(ProtocolEvent.STOP_FORWARD)
         self.assert_driver_command(ProtocolEvent.LAMP_ON)
         self.assert_driver_command(ProtocolEvent.LAMP_OFF)
