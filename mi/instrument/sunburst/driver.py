@@ -170,7 +170,6 @@ class SamiProtocolState(BaseEnum):
     POLLED_SAMPLE = 'PROTOCOL_STATE_POLLED_SAMPLE'
     SCHEDULED_SAMPLE = 'PROTOCOL_STATE_SCHEDULED_SAMPLE'
     REAGENT_FLUSH = 'PROTOCOL_STATE_REAGENT_FLUSH'
-    ACQUIRING_STATUS = 'ACQUIRING_STATUS'
 
 
 class SamiProtocolEvent(BaseEnum):
@@ -191,7 +190,6 @@ class SamiProtocolEvent(BaseEnum):
     ACQUIRE_SAMPLE = DriverEvent.ACQUIRE_SAMPLE
     ACQUIRE_STATUS = DriverEvent.ACQUIRE_STATUS
 
-    ACQUIRE_STATUS_GET = 'PROTOCOL_EVENT_ACQUIRE_STATUS_GET'
     EXECUTE = 'PROTOCOL_EVENT_EXECUTE'  # command execute
     SUCCESS = 'PROTOCOL_EVENT_SUCCESS'  # command success
     TIMEOUT = 'PROTOCOL_EVENT_TIMEOUT'  # command timeout
@@ -623,16 +621,6 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
             self._handler_command_reagent_flush)
 
         self._protocol_fsm.add_handler(
-            SamiProtocolState.ACQUIRING_STATUS, SamiProtocolEvent.ENTER,
-            self._handler_acquiring_status_enter)
-        self._protocol_fsm.add_handler(
-            SamiProtocolState.ACQUIRING_STATUS, SamiProtocolEvent.ACQUIRE_STATUS_GET,
-            self._handler_acquiring_status_get)
-        self._protocol_fsm.add_handler(
-            SamiProtocolState.ACQUIRING_STATUS, SamiProtocolEvent.EXIT,
-            self._handler_generic_exit)
-
-        self._protocol_fsm.add_handler(
             SamiProtocolState.DIRECT_ACCESS, SamiProtocolEvent.ENTER,
             self._handler_direct_access_enter)
         self._protocol_fsm.add_handler(
@@ -1030,26 +1018,7 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
         """
         Acquire the instrument's status
         """
-        next_state = SamiProtocolState.ACQUIRING_STATUS
-        result = []
-
-        return next_state, (next_state, result)
-
-    ########################################################################
-    # Acquiring Status Handlers.
-    ########################################################################
-
-    def _handler_acquiring_status_enter(self, *args, **kwargs):
-        """
-        raise an asynchronous to acquire status
-        """
-        self._async_raise_fsm_event(SamiProtocolEvent.ACQUIRE_STATUS_GET)
-
-    def _handler_acquiring_status_get(self, *args, **kwargs):
-        """
-        acquire status and return to command state
-        """
-        next_state = SamiProtocolState.COMMAND
+        next_state = None
         result = []
 
         try:
@@ -1066,11 +1035,14 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
                               timeout=SAMI_DEFAULT_TIMEOUT,
                               response_regex=self._get_configuration_string_regex_matcher())
 
-        except InstrumentTimeoutException:
-
+        except InstrumentTimeoutException as e:
             log.error('SamiProtocol._handler_command_acquire_status(): InstrumentTimeoutException')
+            raise e
 
-        return next_state, (next_state, result)
+        timeout = time.time() + SAMI_DEFAULT_TIMEOUT
+        particles = self.wait_for_particles([SamiRegularStatusDataParticle._data_particle_type], timeout)
+
+        return next_state, (next_state, particles)
 
     ########################################################################
     # Unknown handlers.
