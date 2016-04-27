@@ -222,12 +222,8 @@ class CAMDSMixin(DriverTestMixin):
         Capability.GOTO_PRESET: {STATES: [ProtocolState.COMMAND, ProtocolState.AUTOSAMPLE]},
         Capability.LAMP_OFF: {STATES: [ProtocolState.COMMAND, ProtocolState.AUTOSAMPLE]},
         Capability.LAMP_ON: {STATES: [ProtocolState.COMMAND, ProtocolState.AUTOSAMPLE]},
-        Capability.LASER_1_OFF: {STATES: [ProtocolState.COMMAND, ProtocolState.AUTOSAMPLE]},
-        Capability.LASER_1_ON: {STATES: [ProtocolState.COMMAND, ProtocolState.AUTOSAMPLE]},
-        Capability.LASER_2_OFF: {STATES: [ProtocolState.COMMAND, ProtocolState.AUTOSAMPLE]},
-        Capability.LASER_2_ON: {STATES: [ProtocolState.COMMAND, ProtocolState.AUTOSAMPLE]},
-        Capability.LASER_BOTH_OFF: {STATES: [ProtocolState.COMMAND, ProtocolState.AUTOSAMPLE]},
-        Capability.LASER_BOTH_ON: {STATES: [ProtocolState.COMMAND, ProtocolState.AUTOSAMPLE]},
+        Capability.LASERS_OFF: {STATES: [ProtocolState.COMMAND, ProtocolState.AUTOSAMPLE]},
+        Capability.LASERS_ON: {STATES: [ProtocolState.COMMAND, ProtocolState.AUTOSAMPLE]},
         Capability.ACQUIRE_SAMPLE: {STATES: [ProtocolState.COMMAND, ProtocolState.AUTOSAMPLE]},
         Capability.EXECUTE_AUTO_CAPTURE: {STATES: [ProtocolState.COMMAND, ProtocolState.AUTOSAMPLE]},
     }
@@ -641,12 +637,8 @@ class DriverIntegrationTest(InstrumentDriverIntegrationTestCase, CAMDSMixin):
         self.assert_driver_command(ProtocolEvent.STOP_FORWARD)
         self.assert_driver_command(ProtocolEvent.LAMP_ON)
         self.assert_driver_command(ProtocolEvent.LAMP_OFF)
-        self.assert_driver_command(ProtocolEvent.LASER_1_ON)
-        self.assert_driver_command(ProtocolEvent.LASER_2_ON)
-        self.assert_driver_command(ProtocolEvent.LASER_1_OFF)
-        self.assert_driver_command(ProtocolEvent.LASER_2_OFF)
-        self.assert_driver_command(ProtocolEvent.LASER_BOTH_ON)
-        self.assert_driver_command(ProtocolEvent.LASER_BOTH_OFF)
+        self.assert_driver_command(ProtocolEvent.LASERS_ON)
+        self.assert_driver_command(ProtocolEvent.LASERS_OFF)
 
         # ####
         # # Test in streaming mode
@@ -663,12 +655,8 @@ class DriverIntegrationTest(InstrumentDriverIntegrationTestCase, CAMDSMixin):
         self.assert_driver_command(ProtocolEvent.STOP_FORWARD)
         self.assert_driver_command(ProtocolEvent.LAMP_ON)
         self.assert_driver_command(ProtocolEvent.LAMP_OFF)
-        self.assert_driver_command(ProtocolEvent.LASER_1_ON)
-        self.assert_driver_command(ProtocolEvent.LASER_2_ON)
-        self.assert_driver_command(ProtocolEvent.LASER_1_OFF)
-        self.assert_driver_command(ProtocolEvent.LASER_2_OFF)
-        self.assert_driver_command(ProtocolEvent.LASER_BOTH_ON)
-        self.assert_driver_command(ProtocolEvent.LASER_BOTH_OFF)
+        self.assert_driver_command(ProtocolEvent.LASERS_ON)
+        self.assert_driver_command(ProtocolEvent.LASERS_OFF)
 
         self.assert_driver_command(ProtocolEvent.STOP_AUTOSAMPLE, state=ProtocolState.COMMAND, delay=1)
 
