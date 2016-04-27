@@ -556,11 +556,7 @@ class ProtocolEvent(BaseEnum):
     ACQUIRE_STATUS = DriverEvent.ACQUIRE_STATUS
     ACQUIRE_SAMPLE = DriverEvent.ACQUIRE_SAMPLE
 
-    LASER_1_ON = "DRIVER_EVENT_LASER_1_ON"
-    LASER_2_ON = "DRIVER_EVENT_LASER_2_ON"
     LASER_BOTH_ON = "DRIVER_EVENT_LASER_BOTH_ON"
-    LASER_1_OFF = "DRIVER_EVENT_LASER_1_OFF"
-    LASER_2_OFF = "DRIVER_EVENT_LASER_2_OFF"
     LASER_BOTH_OFF = "DRIVER_EVENT_LASER_BOTH_OFF"
 
     LAMP_ON = "DRIVER_EVENT_LAMP_ON"
@@ -586,11 +582,7 @@ class Capability(BaseEnum):
 
     EXECUTE_AUTO_CAPTURE = ProtocolEvent.EXECUTE_AUTO_CAPTURE
 
-    LASER_1_ON = ProtocolEvent.LASER_1_ON
-    LASER_2_ON = ProtocolEvent.LASER_2_ON
     LASER_BOTH_ON = ProtocolEvent.LASER_BOTH_ON
-    LASER_1_OFF = ProtocolEvent.LASER_1_OFF
-    LASER_2_OFF = ProtocolEvent.LASER_2_OFF
     LASER_BOTH_OFF = ProtocolEvent.LASER_BOTH_OFF
 
     LAMP_ON = ProtocolEvent.LAMP_ON
@@ -810,16 +802,8 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
                                        self._handler_command_lamp_on)
         self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.LAMP_OFF,
                                        self._handler_command_lamp_off)
-        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.LASER_1_ON,
-                                       self._handler_command_laser1_on)
-        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.LASER_2_ON,
-                                       self._handler_command_laser2_on)
         self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.LASER_BOTH_ON,
                                        self._handler_command_laser_both_on)
-        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.LASER_1_OFF,
-                                       self._handler_command_laser1_off)
-        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.LASER_2_OFF,
-                                       self._handler_command_laser2_off)
         self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.LASER_BOTH_OFF,
                                        self._handler_command_laser_both_off)
         self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.SET_PRESET,
@@ -853,16 +837,8 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
                                        self._handler_command_lamp_on)
         self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.LAMP_OFF,
                                        self._handler_command_lamp_off)
-        self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.LASER_1_ON,
-                                       self._handler_command_laser1_on)
-        self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.LASER_2_ON,
-                                       self._handler_command_laser2_on)
         self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.LASER_BOTH_ON,
                                        self._handler_command_laser_both_on)
-        self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.LASER_1_OFF,
-                                       self._handler_command_laser1_off)
-        self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.LASER_2_OFF,
-                                       self._handler_command_laser2_off)
         self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.LASER_BOTH_OFF,
                                        self._handler_command_laser_both_off)
         self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.SET_PRESET,
@@ -1172,30 +1148,14 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
                            timeout=DEFAULT_DICT_TIMEOUT,
                            display_name="Lamp On",
                            description="Turn on the lamp")
-        self._cmd_dict.add(Capability.LASER_1_OFF,
-                           timeout=DEFAULT_DICT_TIMEOUT,
-                           display_name="Laser 1 Off",
-                           description="Turn off the laser #1")
-        self._cmd_dict.add(Capability.LASER_2_OFF,
-                           timeout=DEFAULT_DICT_TIMEOUT,
-                           display_name="Laser 2 Off",
-                           description="Turn off the laser #2")
         self._cmd_dict.add(Capability.LASER_BOTH_OFF,
                            timeout=DEFAULT_DICT_TIMEOUT,
-                           display_name="Laser Off",
-                           description="Turn off the all laser")
-        self._cmd_dict.add(Capability.LASER_1_ON,
-                           timeout=DEFAULT_DICT_TIMEOUT,
-                           display_name="Laser 1 On",
-                           description="Turn on the laser #1")
-        self._cmd_dict.add(Capability.LASER_2_ON,
-                           timeout=DEFAULT_DICT_TIMEOUT,
-                           display_name="Laser 2 On",
-                           description="Turn on the laser #2")
+                           display_name="Lasers Off",
+                           description="Turn off the lasers")
         self._cmd_dict.add(Capability.LASER_BOTH_ON,
                            timeout=DEFAULT_DICT_TIMEOUT,
-                           display_name="Laser On",
-                           description="Turn on the all laser")
+                           display_name="Lasers On",
+                           description="Turn on the lasers")
         self._cmd_dict.add(Capability.DISCOVER, display_name='Discover')
 
     def _build_driver_dict(self):
@@ -1832,55 +1792,31 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
 
         return next_state, (next_state, result)
 
-    def _handler_command_laser(self, command, light, *args, **kwargs):
-
+    def _handler_command_laser_both_on(self, *args, **kwargs):
         """
-        Command the laser
+        Turn both lasers on
         """
         next_state = None
         result = []
 
         kwargs['timeout'] = 2
 
-        self._do_cmd_resp(command, light, **kwargs)
+        self._do_cmd_resp(InstrumentCmds.LASER_ON, '\x03', **kwargs)
 
         return next_state, (next_state, result)
-
-    def _handler_command_laser1_on(self, *args, **kwargs):
-        """
-        Turn laser 1 on
-        """
-        return self._handler_command_laser(InstrumentCmds.LASER_ON, '\x01', *args, **kwargs)
-
-    def _handler_command_laser1_off(self, *args, **kwargs):
-        """
-        Turn laser 1 off
-        """
-        return self._handler_command_laser(InstrumentCmds.LASER_OFF, '\x01', *args, **kwargs)
-
-    def _handler_command_laser2_on(self, *args, **kwargs):
-        """
-        Turn laser 2 on
-        """
-        return self._handler_command_laser(InstrumentCmds.LASER_ON, '\x02', *args, **kwargs)
-
-    def _handler_command_laser2_off(self, *args, **kwargs):
-        """
-        Turn laser 2 off
-        """
-        return self._handler_command_laser(InstrumentCmds.LASER_OFF, '\x02', *args, **kwargs)
-
-    def _handler_command_laser_both_on(self, *args, **kwargs):
-        """
-        Turn both lasers on
-        """
-        return self._handler_command_laser(InstrumentCmds.LASER_ON, '\x03', *args, **kwargs)
 
     def _handler_command_laser_both_off(self, *args, **kwargs):
         """
         Turn both lasers off
         """
-        return self._handler_command_laser(InstrumentCmds.LASER_OFF, '\x03', *args, **kwargs)
+        next_state = None
+        result = []
+
+        kwargs['timeout'] = 2
+
+        self._do_cmd_resp(InstrumentCmds.LASER_OFF, '\x03', **kwargs)
+
+        return next_state, (next_state, result)
 
     def _handler_command_set_preset(self, *args, **kwargs):
         """
