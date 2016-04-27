@@ -531,10 +531,6 @@ class Protocol(SamiProtocol):
         self._protocol_fsm.add_handler(
             ProtocolState.SEAWATER_FLUSH_2750ML, ProtocolEvent.TIMEOUT,
             self._execution_timeout_to_command_state)
-        # Events to queue - intended for schedulable events occurring when a sample is being taken
-        self._protocol_fsm.add_handler(
-            ProtocolState.SEAWATER_FLUSH_2750ML, ProtocolEvent.ACQUIRE_STATUS,
-            self._handler_queue_acquire_status)
 
         # this state would be entered whenever a PUMP_REAGENT_50ML event
         # occurred while in the COMMAND state
@@ -553,10 +549,6 @@ class Protocol(SamiProtocol):
         self._protocol_fsm.add_handler(
             ProtocolState.REAGENT_FLUSH_50ML, ProtocolEvent.TIMEOUT,
             self._execution_timeout_to_command_state)
-        # Events to queue - intended for schedulable events occurring when a sample is being taken
-        self._protocol_fsm.add_handler(
-            ProtocolState.REAGENT_FLUSH_50ML, ProtocolEvent.ACQUIRE_STATUS,
-            self._handler_queue_acquire_status)
 
         # this state would be entered whenever a SEAWATER_FLUSH event
         # occurred while in the COMMAND state
@@ -575,10 +567,6 @@ class Protocol(SamiProtocol):
         self._protocol_fsm.add_handler(
             ProtocolState.SEAWATER_FLUSH, ProtocolEvent.TIMEOUT,
             self._execution_timeout_to_command_state)
-        # Events to queue - intended for schedulable events occurring when a sample is being taken
-        self._protocol_fsm.add_handler(
-            ProtocolState.SEAWATER_FLUSH, ProtocolEvent.ACQUIRE_STATUS,
-            self._handler_queue_acquire_status)
 
         self._engineering_parameters.append(Parameter.FLUSH_CYCLES)
         self._engineering_parameters.append(Parameter.SEAWATER_FLUSH_DURATION)

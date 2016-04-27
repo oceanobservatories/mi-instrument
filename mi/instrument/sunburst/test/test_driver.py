@@ -369,7 +369,7 @@ class SamiUnitTest(InstrumentDriverUnitTestCase, SamiMixin):
             driver._protocol._handler_command_start_autosample()
 
         # Don't take sample upon entering autosample state
-        driver._protocol._queued_commands.reset()
+        driver._protocol._sample_on_autosample_enter = False
 
         self.sleep_for_realsies(3)
 

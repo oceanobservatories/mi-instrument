@@ -356,10 +356,6 @@ class Pco2wProtocol(SamiProtocol):
         self._protocol_fsm.add_handler(
             Pco2wProtocolState.POLLED_BLANK_SAMPLE, Pco2wProtocolEvent.TIMEOUT,
             self._execution_timeout_to_command_state)
-        # Events to queue - intended for schedulable events occurring when a sample is being taken
-        self._protocol_fsm.add_handler(
-            Pco2wProtocolState.POLLED_BLANK_SAMPLE, Pco2wProtocolEvent.ACQUIRE_STATUS,
-            self._handler_queue_acquire_status)
 
         # this state would be entered whenever an ACQUIRE_BLANK_SAMPLE event
         # occurred while in the AUTOSAMPLE state
@@ -380,10 +376,6 @@ class Pco2wProtocol(SamiProtocol):
         self._protocol_fsm.add_handler(
             Pco2wProtocolState.SCHEDULED_BLANK_SAMPLE, Pco2wProtocolEvent.TIMEOUT,
             self._execution_timeout_to_autosample_state)
-        # Events to queue - intended for schedulable events occurring when a sample is being taken
-        self._protocol_fsm.add_handler(
-            Pco2wProtocolState.SCHEDULED_BLANK_SAMPLE, Pco2wProtocolEvent.ACQUIRE_STATUS,
-            self._handler_queue_acquire_status)
 
         # this state would be entered whenever a DEIONIZED_WATER_FLUSH_100ML event
         # occurred while in the COMMAND state
@@ -402,10 +394,6 @@ class Pco2wProtocol(SamiProtocol):
         self._protocol_fsm.add_handler(
             Pco2wProtocolState.DEIONIZED_WATER_FLUSH_100ML, Pco2wProtocolEvent.TIMEOUT,
             self._execution_timeout_to_command_state)
-        # Events to queue - intended for schedulable events occurring when a sample is being taken
-        self._protocol_fsm.add_handler(
-            Pco2wProtocolState.DEIONIZED_WATER_FLUSH_100ML, Pco2wProtocolEvent.ACQUIRE_STATUS,
-            self._handler_queue_acquire_status)
 
         # this state would be entered whenever a REAGENT_FLUSH_100ML event
         # occurred while in the COMMAND state
@@ -424,10 +412,6 @@ class Pco2wProtocol(SamiProtocol):
         self._protocol_fsm.add_handler(
             Pco2wProtocolState.REAGENT_FLUSH_100ML, Pco2wProtocolEvent.TIMEOUT,
             self._execution_timeout_to_command_state)
-        # Events to queue - intended for schedulable events occurring when a sample is being taken
-        self._protocol_fsm.add_handler(
-            Pco2wProtocolState.REAGENT_FLUSH_100ML, Pco2wProtocolEvent.ACQUIRE_STATUS,
-            self._handler_queue_acquire_status)
 
         # this state would be entered whenever a DEIONIZED_WATER_FLUSH event
         # occurred while in the COMMAND state
@@ -446,10 +430,6 @@ class Pco2wProtocol(SamiProtocol):
         self._protocol_fsm.add_handler(
             Pco2wProtocolState.DEIONIZED_WATER_FLUSH, Pco2wProtocolEvent.TIMEOUT,
             self._execution_timeout_to_command_state)
-        # Events to queue - intended for schedulable events occurring when a sample is being taken
-        self._protocol_fsm.add_handler(
-            Pco2wProtocolState.DEIONIZED_WATER_FLUSH, Pco2wProtocolEvent.ACQUIRE_STATUS,
-            self._handler_queue_acquire_status)
 
         self._engineering_parameters.append(Pco2wParameter.PUMP_100ML_CYCLES)
         self._engineering_parameters.append(Pco2wParameter.DEIONIZED_WATER_FLUSH_DURATION)
