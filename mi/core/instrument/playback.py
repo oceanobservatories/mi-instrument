@@ -145,6 +145,8 @@ class PlaybackWrapper(object):
             if index % 100 == 0:
                 self.publish()
         self.publish()
+        if hasattr(self.particle_publisher, 'write'):
+            self.particle_publisher.write()
 
     def got_data(self, packet):
         try:
