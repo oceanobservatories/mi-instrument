@@ -511,26 +511,6 @@ class SamiConfigDataParticleKey(BaseEnum):
     # the portions of the configuration that is unique to each.
 
 
-class QueuedCommands:
-    """
-    Structure to buffer commands which are received when a sample is being taken
-    """
-
-    def __init__(self):
-        """
-        Initialize
-        """
-        self.sample = None  # Can be None or ProtocolEvent.ACQUIRE_SAMPLE
-        self.status = None  # Can be None or ProtocolEvent.ACQUIRE_STATUS
-
-    def reset(self):
-        """
-        Reset buffers
-        """
-        self.sample = None
-        self.status = None
-
-
 ###############################################################################
 # Driver
 ###############################################################################
@@ -668,10 +648,6 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
         self._protocol_fsm.add_handler(
             SamiProtocolState.POLLED_SAMPLE, SamiProtocolEvent.TIMEOUT,
             self._execution_timeout_to_command_state)
-        # Events to queue - intended for schedulable events occurring when a sample is being taken
-        self._protocol_fsm.add_handler(
-            SamiProtocolState.POLLED_SAMPLE, SamiProtocolEvent.ACQUIRE_STATUS,
-            self._handler_queue_acquire_status)
 
         # this state would be entered whenever an ACQUIRE_SAMPLE event
         # occurred while in the AUTOSAMPLE state and will last anywhere
@@ -692,10 +668,6 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
         self._protocol_fsm.add_handler(
             SamiProtocolState.SCHEDULED_SAMPLE, SamiProtocolEvent.TIMEOUT,
             self._execution_timeout_to_autosample_state)
-        # Events to queue - intended for schedulable events occurring when a sample is being taken
-        self._protocol_fsm.add_handler(
-            SamiProtocolState.SCHEDULED_SAMPLE, SamiProtocolEvent.ACQUIRE_STATUS,
-            self._handler_queue_acquire_status)
 
         # this state would be entered whenever a PUMP_REAGENT event
         # occurred while in the COMMAND state
@@ -714,10 +686,6 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
         self._protocol_fsm.add_handler(
             SamiProtocolState.REAGENT_FLUSH, SamiProtocolEvent.TIMEOUT,
             self._execution_timeout_to_command_state)
-        # Events to queue - intended for schedulable events occurring when a sample is being taken
-        self._protocol_fsm.add_handler(
-            SamiProtocolState.REAGENT_FLUSH, SamiProtocolEvent.ACQUIRE_STATUS,
-            self._handler_queue_acquire_status)
 
         # Construct the parameter dictionary containing device
         # parameters, current parameter values, and set formatting
@@ -766,9 +734,7 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
         # commands sent sent to device to be filtered in responses for telnet DA
         self._sent_cmds = []
 
-        # self._startup = True
-
-        self._queued_commands = QueuedCommands()
+        self._sample_on_autosample_enter = False
 
         # initialize scheduler
         if not self._scheduler:
@@ -930,23 +896,6 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
                                     response_regex=SAMI_NEW_LINE_REGEX_MATCHER)
 
     ########################################################################
-    # Events to queue handlers.
-    ########################################################################
-    def _handler_queue_acquire_status(self, *args, **kwargs):
-        """
-        Buffer acquire status command
-        """
-        log.debug('SamiProtocol._handler_queue_acquire_status(): queueing SamiProtocolEvent.ACQUIRE_STATUS in state %s',
-                  self.get_current_state())
-
-        self._queued_commands.status = SamiProtocolEvent.ACQUIRE_STATUS
-
-        next_state = None
-        result = []  # asynchronous particle return
-
-        return next_state, (next_state, result)
-
-    ########################################################################
     # Common instrument command state handlers
     ########################################################################
 
@@ -1053,8 +1002,6 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
         @retval next_state, (next_state, result)
         """
 
-        self._queued_commands.reset()
-
         # Stop status and check for boot prompt
         try:
             response = self._do_cmd_resp(SamiInstrumentCommand.SAMI_STOP_STATUS,
@@ -1121,13 +1068,6 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
 
         self._init_params()
         self._driver_event(DriverAsyncEvent.STATE_CHANGE)
-
-        # Execute acquire status if queued
-        if self._queued_commands.status is not None:
-            command = self._queued_commands.status
-            self._queued_commands.status = None
-            log.debug('SamiProtocol._handler_command_enter: Raising queued command event: %s', command)
-            self._protocol_fsm.on_event(command)
 
     def _handler_command_init_params(self, *args, **kwargs):
         """
@@ -1220,7 +1160,7 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
         self._add_scheduler_event(SamiScheduledJob.AUTO_SAMPLE, SamiProtocolEvent.ACQUIRE_SAMPLE)
 
         # Make sure a sample is taken as soon as autosample mode is entered.
-        self._queued_commands.sample = SamiProtocolEvent.ACQUIRE_SAMPLE
+        self._sample_on_autosample_enter = True
 
         next_state = SamiProtocolState.AUTOSAMPLE
         result = []
@@ -1280,22 +1220,11 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
         # Superclass will query the state.
         self._driver_event(DriverAsyncEvent.STATE_CHANGE)
 
-        # Capture a sample upon entering autosample mode.  An ACQUIRE_SAMPLE event should have been queued in the start
-        # autosample command handler.
-
-        # Execute acquire status first if queued
-        if self._queued_commands.status is not None:
-            command = self._queued_commands.status
-            self._queued_commands.status = None
-            log.debug('SamiProtocol._handler_autosample_enter: Raising queued command event: %s', command)
-            self._protocol_fsm.on_event(command)
-
-        if self._queued_commands.sample is not None:
-            command = self._queued_commands.sample
-            self._queued_commands.sample = None
-            log.debug('SamiProtocol._handler_autosample_enter: Raising queued command event: %s', command)
+        log.debug('SamiProtocol._handler_autosample_enter: Acquiring Sample')
+        if self._sample_on_autosample_enter:
+            self._sample_on_autosample_enter = False
             self._async_agent_state_change(ResourceAgentState.BUSY)
-            self._async_raise_fsm_event(command)
+            self._async_raise_fsm_event(SamiProtocolEvent.ACQUIRE_SAMPLE)
 
     def _handler_autosample_stop(self, *args, **kwargs):
         """

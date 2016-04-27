@@ -462,10 +462,6 @@ class Protocol(Pco2wProtocol):
         self._protocol_fsm.add_handler(
             ProtocolState.RUN_EXTERNAL_PUMP, ProtocolEvent.TIMEOUT,
             self._execution_timeout_to_command_state)
-        ## Events to queue - intended for schedulable events occurring when a sample is being taken
-        self._protocol_fsm.add_handler(
-            ProtocolState.RUN_EXTERNAL_PUMP, ProtocolEvent.ACQUIRE_STATUS,
-            self._handler_queue_acquire_status)
 
         # Add build handlers for device commands.
         ### primarily defined in base class
