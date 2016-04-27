@@ -980,6 +980,7 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
 
     def _handler_inst_disconnected_connect(self, *args, **kwargs):
         self._build_protocol()
+        self.set_init_params({})
         self._protocol._connection = self._connection
         return DriverConnectionState.CONNECTED, None
 
