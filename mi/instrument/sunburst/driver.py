@@ -1220,8 +1220,8 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
         # Superclass will query the state.
         self._driver_event(DriverAsyncEvent.STATE_CHANGE)
 
-        log.debug('SamiProtocol._handler_autosample_enter: Acquiring Sample')
         if self._sample_on_autosample_enter:
+            log.debug('SamiProtocol._handler_autosample_enter: Acquiring Sample')
             self._sample_on_autosample_enter = False
             self._async_agent_state_change(ResourceAgentState.BUSY)
             self._async_raise_fsm_event(SamiProtocolEvent.ACQUIRE_SAMPLE)
@@ -2020,6 +2020,7 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
                              startup_param=True,
                              direct_access=False,
                              default_value=3600,
+                             range=(0, 604800), # up to 1 week
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name='Auto Sample Interval',
                              description='Interval implemented by the driver to create pseudo-autosample mode.',
