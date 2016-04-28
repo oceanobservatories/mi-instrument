@@ -102,6 +102,7 @@ class InstrumentDriver(SingleConnectionInstrumentDriver):
 
     def _handler_inst_disconnected_connect(self, *args, **kwargs):
         self._build_protocol()
+        self.set_init_params({})
         self._protocol.connections[SlaveProtocol.FOURBEAM] = self._connection[SlaveProtocol.FOURBEAM]
         self._protocol.connections[SlaveProtocol.FIFTHBEAM] = self._connection[SlaveProtocol.FIFTHBEAM]
         return DriverConnectionState.CONNECTED, None
