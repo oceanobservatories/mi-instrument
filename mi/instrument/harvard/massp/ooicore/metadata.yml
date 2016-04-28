@@ -5,4 +5,4 @@ driver_metadata:
   driver_name: ooicore
   release_notes: Driver for the MASSP in-situ mass spectrometer
   email: petercable@gmail.com
-  version: 0.0.8
+  version: 0.0.9

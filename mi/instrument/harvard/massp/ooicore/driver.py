@@ -217,6 +217,7 @@ class InstrumentDriver(SingleConnectionInstrumentDriver):
 
     def _handler_inst_disconnected_connect(self, *args, **kwargs):
         self._build_protocol()
+        self.set_init_params({})
         for name, connection in self._connection.items():
             self._slave_protocols[name]._connection = connection
 
