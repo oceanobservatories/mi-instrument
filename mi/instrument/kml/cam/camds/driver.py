@@ -846,7 +846,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
         self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.GOTO_PRESET,
                                        self._handler_command_goto_preset)
         self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.STOP_CAPTURE,
-                                       self._handler_autosample_stop_capture)
+                                       self._handler_command_stop_capture)
         self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.EXECUTE_AUTO_CAPTURE,
                                        self._handler_autosample_start_capture)
         self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.START_RECOVER,
@@ -1887,7 +1887,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
         """
         Stop Auto capture
         """
-        next_state = None
+        next_state = ProtocolState.RECOVERY
         result = []
 
         kwargs['timeout'] = 2
@@ -1985,8 +1985,6 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
         log.debug("Starting timer for %s seconds" % recovery_time)
         Timer(recovery_time, self._recovery_timer_expired, [self._protocol_fsm.get_current_state()]).start()
 
-        # Transiton to the Recovery State until the timer expires
-        self._async_raise_fsm_event(ProtocolEvent.START_RECOVER)
 
     ###################################################################################
     # Direct Access State handlers
@@ -2079,12 +2077,6 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
         self._handler_command_goto_preset()
 
         self._handler_command_start_capture(*args, **kwargs)
-
-    def _handler_autosample_stop_capture(self, *args, **kwargs):
-        """
-        Stop Auto capture
-        """
-        self._handler_command_stop_capture(*args, **kwargs)
 
     def _handler_autosample_stop_autosample(self, *args, **kwargs):
         """
