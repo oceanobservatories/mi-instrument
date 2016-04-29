@@ -846,7 +846,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
         self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.GOTO_PRESET,
                                        self._handler_command_goto_preset)
         self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.STOP_CAPTURE,
-                                       self._handler_autosample_stop_capture)
+                                       self._handler_command_stop_capture)
         self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.EXECUTE_AUTO_CAPTURE,
                                        self._handler_autosample_start_capture)
         self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.START_RECOVER,
@@ -1125,7 +1125,8 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
                            display_name="Stop Autosample",
                            description="Exit autosample mode and return to command mode")
         self._cmd_dict.add(Capability.EXECUTE_AUTO_CAPTURE,
-                           timeout=DEFAULT_DICT_TIMEOUT,
+                           # This 35 is to cover the 30 second sleep and the ~5 seconds to get latest values from CAMDS
+                           timeout=35,
                            display_name="Auto Capture",
                            description="Capture images for default duration")
         self._cmd_dict.add(Capability.ACQUIRE_STATUS,
@@ -1305,52 +1306,24 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
                            Parameter.NTP_SETTING[ParameterIndex.KEY],
                            Parameter.WHEN_DISK_IS_FULL[ParameterIndex.KEY]]:
 
-                result = self._do_cmd_resp(InstrumentCmds.SET, key, val, **kwargs)
-                time.sleep(2)
+                if self._param_dict.get(key) != params[key]:
+                    log.debug("Parameter %s is dirty: old: %s - new: %s" % (key, self._param_dict.get(key), params[key]))
 
-                # The instrument needs extra time to process these commands
-                if key in [Parameter.CAMERA_MODE[ParameterIndex.KEY],
-                           Parameter.IMAGE_RESOLUTION[ParameterIndex.KEY]]:
-                    log.debug("Just set Camera parameters, sleeping for 25 seconds")
-                    time.sleep(25)
-                elif key in [Parameter.IRIS_POSITION[ParameterIndex.KEY],
-                             Parameter.FOCUS_POSITION[ParameterIndex.KEY],
-                             Parameter.ZOOM_POSITION[ParameterIndex.KEY]]:
-                    log.debug("Just set Camera parameters, sleeping for 10 seconds")
+                    result = self._do_cmd_resp(InstrumentCmds.SET, key, val, **kwargs)
+                    time.sleep(2)
+
+                    # The instrument needs extra time to process these commands
+                    if key in [Parameter.CAMERA_MODE[ParameterIndex.KEY],
+                               Parameter.IMAGE_RESOLUTION[ParameterIndex.KEY]]:
+                        log.debug("Just set Camera parameters, sleeping for 25 seconds")
+                        time.sleep(25)
+                    elif key in [Parameter.IRIS_POSITION[ParameterIndex.KEY],
+                                 Parameter.FOCUS_POSITION[ParameterIndex.KEY],
+                                 Parameter.ZOOM_POSITION[ParameterIndex.KEY]]:
+                        log.debug("Just set Camera parameters, sleeping for 10 seconds")
                     time.sleep(10)
 
         self._update_params()
-
-    def _instrument_config_dirty(self):
-        """
-        Read the startup config and compare that to what the instrument
-        is configured too.  If they differ then return True
-        @return: True if the startup config doesn't match the instrument
-        """
-        startup_params = self._param_dict.get_startup_list()
-        log.debug("Startup Parameters: %s" % startup_params)
-
-        for param in startup_params:
-
-            if param in [Parameter.CAMERA_MODE[ParameterIndex.KEY],
-                         Parameter.CAMERA_GAIN[ParameterIndex.KEY],
-                         Parameter.COMPRESSION_RATIO[ParameterIndex.KEY],
-                         Parameter.FOCUS_POSITION[ParameterIndex.KEY],
-                         Parameter.FRAME_RATE[ParameterIndex.KEY],
-                         Parameter.IMAGE_RESOLUTION[ParameterIndex.KEY],
-                         Parameter.IRIS_POSITION[ParameterIndex.KEY],
-                         Parameter.LAMP_BRIGHTNESS[ParameterIndex.KEY],
-                         Parameter.PAN_POSITION[ParameterIndex.KEY],
-                         Parameter.TILT_POSITION[ParameterIndex.KEY],
-                         Parameter.ZOOM_POSITION[ParameterIndex.KEY],
-                         ]:
-                if self._param_dict.get(param) != self._param_dict.get_config_value(param):
-                    log.debug("Instrument config DIRTY: %s %s != %s" % (
-                        param, self._param_dict.get(param), self._param_dict.get_config_value(param)))
-                    return True
-
-        log.debug("Instrument config clean.")
-        return False
 
     def build_simple_command(self, cmd):
         command = '<\x03:%s:>' % cmd
@@ -1692,7 +1665,6 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
         """
         Exit command state.
         """
-        self.stop_scheduled_job(ScheduledJob.STOP_CAPTURE)
         self.stop_scheduled_job(ScheduledJob.STATUS)
         self.stop_scheduled_job(ScheduledJob.VIDEO_FORWARDING)
 
@@ -1869,15 +1841,19 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
 
         if capturing_duration == 0:
             # If duration = 0, then just take a single snapshot
-            self._handler_command_acquire_sample(*args, **kwargs)
+            return self._handler_command_acquire_sample(*args, **kwargs)
         elif 0 < capturing_duration < 6:
             # Before performing capture, update parameters
             self._update_metadata_params()
 
-            self.start_scheduled_job(Parameter.AUTO_CAPTURE_DURATION[ParameterIndex.KEY],
-                                     ScheduledJob.STOP_CAPTURE,
-                                     ProtocolEvent.STOP_CAPTURE)
             self._do_cmd_resp(InstrumentCmds.START_CAPTURE, *args, **kwargs)
+
+            time.sleep(capturing_duration)
+
+            next_state = self._handler_command_stop_capture()
+
+            return next_state
+
         else:
             log.error("Capturing Duration %s out of range: Not Performing Capture." % capturing_duration)
 
@@ -1887,12 +1863,10 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
         """
         Stop Auto capture
         """
-        next_state = None
+        next_state = ProtocolState.RECOVERY
         result = []
 
         kwargs['timeout'] = 2
-
-        self.stop_scheduled_job(ScheduledJob.STOP_CAPTURE)
 
         self._do_cmd_resp(InstrumentCmds.STOP_CAPTURE, *args, **kwargs)
 
@@ -1931,9 +1905,15 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
             if key == Parameter.PRESET_NUMBER[ParameterIndex.KEY]:
                 preset_number = value
 
-        log.debug("Commanding camera to go to preset position %s " % preset_number)
+        log.debug("Commanding camera to go to preset position %s then sleeping for 30 seconds " % preset_number)
 
         self._do_cmd_resp(InstrumentCmds.GO_TO_PRESET, preset_number, *args, **kwargs)
+
+        # Give camera 30 seconds to move to new position
+        time.sleep(30)
+
+        # Update parameters to get new position data
+        self._update_params()
 
         return next_state, (next_state, result)
 
@@ -1985,8 +1965,6 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
         log.debug("Starting timer for %s seconds" % recovery_time)
         Timer(recovery_time, self._recovery_timer_expired, [self._protocol_fsm.get_current_state()]).start()
 
-        # Transiton to the Recovery State until the timer expires
-        self._async_raise_fsm_event(ProtocolEvent.START_RECOVER)
 
     ###################################################################################
     # Direct Access State handlers
@@ -2079,12 +2057,6 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
         self._handler_command_goto_preset()
 
         self._handler_command_start_capture(*args, **kwargs)
-
-    def _handler_autosample_stop_capture(self, *args, **kwargs):
-        """
-        Stop Auto capture
-        """
-        self._handler_command_stop_capture(*args, **kwargs)
 
     def _handler_autosample_stop_autosample(self, *args, **kwargs):
         """
