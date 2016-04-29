@@ -764,6 +764,7 @@ class Pco2wProtocol(SamiProtocol):
                              startup_param=True,
                              direct_access=True,
                              default_value=0x10,
+                             range=(0, 0xFF),
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name='Pump Pulse Duration',
                              description='',
@@ -776,6 +777,7 @@ class Pco2wProtocol(SamiProtocol):
                              startup_param=True,
                              direct_access=True,
                              default_value=0x20,
+                             range=(0, 0xFF),
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name='Pump Measurement Duration',
                              description='',
@@ -788,6 +790,7 @@ class Pco2wProtocol(SamiProtocol):
                              startup_param=True,
                              direct_access=True,
                              default_value=0xFF,
+                             range=(0, 0xFF),
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name='Samples Per Measurement',
                              description='Number of samples per measurement.')
@@ -799,6 +802,7 @@ class Pco2wProtocol(SamiProtocol):
                              startup_param=True,
                              direct_access=True,
                              default_value=0x54,
+                             range=(0, 0xFF),
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name='Cycles Between Blanks',
                              description='Number of cycles between blanks.')
@@ -810,6 +814,7 @@ class Pco2wProtocol(SamiProtocol):
                              startup_param=True,
                              direct_access=True,
                              default_value=0x18,
+                             range=(0, 0xFF),
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name='Number of Reagent Cycles',
                              description='')
@@ -821,6 +826,7 @@ class Pco2wProtocol(SamiProtocol):
                              startup_param=True,
                              direct_access=True,
                              default_value=0x1C,
+                             range=(0, 0xFF),
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name='Number of Blank Cycles',
                              description='')
@@ -832,6 +838,7 @@ class Pco2wProtocol(SamiProtocol):
                              startup_param=True,
                              direct_access=True,
                              default_value=0x01,
+                             range=(0, 0xFF),
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name='Flush Pump Interval',
                              description='',
@@ -844,6 +851,7 @@ class Pco2wProtocol(SamiProtocol):
                              startup_param=True,
                              direct_access=True,
                              default_value=0x00,
+                             range=(0, 0xFF),
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name='Pump Settings',
                              description='Bit switches, where bit 0 = Don\'t start with blank flush,'
@@ -856,6 +864,7 @@ class Pco2wProtocol(SamiProtocol):
                              startup_param=True,
                              direct_access=True,
                              default_value=0x38,
+                             range=(0, 0xFF),
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name='Number of Extra Pump Cycles',
                              description='')
@@ -867,6 +876,7 @@ class Pco2wProtocol(SamiProtocol):
                              startup_param=True,
                              direct_access=False,
                              default_value=0x1,
+                             range=(0, 0xFF),
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name='Pump 100ml Cycles',
                              description='Number of pump cycles when executing pump.')
@@ -878,6 +888,7 @@ class Pco2wProtocol(SamiProtocol):
                              startup_param=True,
                              direct_access=False,
                              default_value=0x8,
+                             range=(0, 0xFF),
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name='Reagent Flush Duration',
                              description='Set duration of reagent flush when executing pump.',
@@ -891,6 +902,7 @@ class Pco2wProtocol(SamiProtocol):
                              startup_param=True,
                              direct_access=False,
                              default_value=0x8,
+                             range=(0, 0xFF),
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name='Deionized Water Flush Duration',
                              description='Set duration of deionized water flush when executing pump.',

@@ -709,6 +709,7 @@ class Protocol(Pco2wProtocol):
                              startup_param=True,
                              direct_access=True,
                              default_value=0x1E,
+                             range=(0, 0xFF),
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name='External Pump Settings',
                              description='Timeout for taking a device 1 sample.',
@@ -723,6 +724,7 @@ class Protocol(Pco2wProtocol):
                              startup_param=True,
                              direct_access=False,
                              default_value=360,
+                             range=(0, 86400),  # up to 1 day
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name='External Pump Delay',
                              description='Time to wait before taking a sample after running the external pump.',
