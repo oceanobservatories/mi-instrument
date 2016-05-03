@@ -12,10 +12,8 @@ USAGE:
        $ bin/test_driver -i [-t testname]
        $ bin/test_driver -q [-t testname]
 """
+import os
 import ftplib
-
-__author__ = 'Richard Han'
-__license__ = 'Apache 2.0'
 
 import time
 import json
@@ -23,7 +21,7 @@ from mock import Mock
 
 from nose.plugins.attrib import attr
 from mi.core.log import get_logger
-log = get_logger()
+from mi.core.instrument.chunker import StringChunker
 
 # MI imports.
 from mi.idk.unit_test import InstrumentDriverTestCase, ParameterTestConfigKey
@@ -48,6 +46,12 @@ from mi.instrument.kut.ek60.ooicore.driver import Protocol
 from mi.instrument.kut.ek60.ooicore.driver import Prompt
 from mi.instrument.kut.ek60.ooicore.driver import ZPLSCStatusParticle
 from mi.instrument.kut.ek60.ooicore.driver import NEWLINE
+from mi.instrument.kut.ek60.ooicore.zplsc_b import ZplscBParticleKey
+
+log = get_logger()
+
+__author__ = 'Richard Han'
+__license__ = 'Apache 2.0'
 
 
 ###
@@ -166,7 +170,7 @@ zplsc_status_particle_04 = [{DataParticleKey.VALUE_ID: ZPLSCStatusParticleKey.ZP
 PORT_TIMESTAMP = 3558720820.531179
 DRIVER_TIMESTAMP = 3555423722.711772
 
-#################################### RULES ####################################
+########################################################################
 #                                                                             #
 # Common capabilities in the base class                                       #
 #                                                                             #
@@ -191,6 +195,8 @@ DRIVER_TIMESTAMP = 3555423722.711772
 # This class defines a configuration structure for testing and common assert  #
 # methods for validating data particles.                                      #
 ###############################################################################
+
+
 class DriverTestMixinSub(DriverTestMixin):
 
     """
@@ -289,8 +295,8 @@ class DriverTestMixinSub(DriverTestMixin):
                     "    repeat_every:   \"00:05\"" + NEWLINE + \
                     "    stop_repeating_at: \"23:55\"" + NEWLINE + \
                     "    interval:   1000" + NEWLINE + \
-                    "   max_range:  150"  + NEWLINE + \
-                    "   frequency:"  + NEWLINE + \
+                    "   max_range:  150" + NEWLINE + \
+                    "   frequency:" + NEWLINE + \
                     "     38000:" + NEWLINE + \
                     "         mode:   passive" + NEWLINE + \
                     "         power:  100" + NEWLINE + \
@@ -300,7 +306,7 @@ class DriverTestMixinSub(DriverTestMixin):
                     "         power:  100" + NEWLINE + \
                     "         pulse_length:   64" + NEWLINE + \
                     "     200000:" + NEWLINE + \
-                    "         mode:   active"  + NEWLINE + \
+                    "         mode:   active" + NEWLINE + \
                     "         power:  120" + NEWLINE + \
                     "         pulse_length:   64" + NEWLINE + \
                     "..."
@@ -328,7 +334,7 @@ class DriverTestMixinSub(DriverTestMixin):
         "{'connected': True," + NEWLINE + \
         "         'er60_channels': {'GPT  38 kHz 00907207b7b1 6-1 OOI.38|200': {'frequency': 38000," + NEWLINE + \
         "                                                                       'mode': 'active'," + NEWLINE + \
-        "                                                                       'power': 100.0,"  + NEWLINE + \
+        "                                                                       'power': 100.0," + NEWLINE + \
         "                                                                       'pulse_length': 0.000256," + NEWLINE + \
         "                                                                       'sample_interval': 6.4e-05}," + NEWLINE + \
         "                           'GPT 120 kHz 00907207b7dc 1-1 ES120-7CD': {'frequency': 120000," + NEWLINE + \
@@ -420,6 +426,30 @@ class DriverTestMixinSub(DriverTestMixin):
         ZPLSCStatusParticleKey.ZPLSC_SCHEDULE_FILENAME: {TYPE: unicode, VALUE: 'driver_schedule.yaml', REQUIRED: True}
     }
 
+    base_path = os.path.dirname(os.path.dirname(__file__))
+    resource_dir = os.path.join(base_path, 'resource')
+    input_file = os.path.join(resource_dir, 'OOI-D20141212-T152500.raw')
+    _test_file_notice = 'downloaded file:' + input_file
+
+    ouptut_file_1 = os.path.join(resource_dir, 'OOI-D20141212-T152500_38k.png')
+    ouptut_file_2 = os.path.join(resource_dir, 'OOI-D20141212-T152500_120k.png')
+    ouptut_file_3 = os.path.join(resource_dir, 'OOI-D20141212-T152500_200k.png')
+
+    _metadata_dict = {
+        ZplscBParticleKey.FILE_TIME: {'type': str, 'value': 2},
+        ZplscBParticleKey.ECHOGRAM_PATH: {'type': list, 'value': [ouptut_file_1, ouptut_file_2, ouptut_file_3]},
+        ZplscBParticleKey.CHANNEL: {'type': list, 'value': [1, 2, 3]},
+        ZplscBParticleKey.TRANSDUCER_DEPTH: {'type': list, 'value': [0.0, 0.0, 0.0]},
+        ZplscBParticleKey.FREQUENCY: {'type': list, 'value': [120000.0, 38000.0, 200000.0]},
+        ZplscBParticleKey.TRANSMIT_POWER: {'type': list, 'value': [25.0, 100.0, 25.0]},
+        ZplscBParticleKey.PULSE_LENGTH: {'type': list, 'value': [0.000256, 0.001024, 0.0000634]},
+        ZplscBParticleKey.BANDWIDTH: {'type': list, 'value': [8709.9277, 2425.149685, 10635.04492]},
+        ZplscBParticleKey.SAMPLE_INTERVAL: {'type': list, 'value': [0.000064, 0.000256, 0.000064]},
+        ZplscBParticleKey.SOUND_VELOCITY: {'type': list, 'value': [1493.8888, 1493.888, 1493.888]},
+        ZplscBParticleKey.ABSORPTION_COEF: {'type': list, 'value': [0.03744, 0.00979, 0.052688]},
+        ZplscBParticleKey.TEMPERATURE: {'type': list, 'value': [10.0, 10.0, 10.0]}
+    }
+
     def assert_particle_sample(self, data_particle, verify_values=False):
         """
         Verify sample particle
@@ -447,6 +477,15 @@ class DriverTestMixinSub(DriverTestMixin):
         @param verify_values: should we verify values against definition?
         """
         self.assert_parameters(current_parameters, self._driver_parameters, verify_values)
+
+    def assert_file_data(self, data_particle, verify_values=True):
+        """
+        Verify ZIPLSC file data particle
+        @param data_particle:
+        @param verify_values: bool, should we verify parameter values
+        """
+        self.assert_data_particle_header(data_particle, DataParticleType.METADATA)
+        self.assert_data_particle_parameters(data_particle, self._metadata_dict)  # , verify_values
 
 
 ###############################################################################
@@ -552,6 +591,31 @@ class DriverUnitTest(InstrumentDriverUnitTestCase, DriverTestMixinSub):
         data = json.loads(self.VALID_STATUS_04)
         self.compare_parsed_data_particle(ZPLSCStatusParticle, data, expected_particle)
 
+    def test_chunker(self):
+        """
+        Test the chunker and verify the particles created.
+        """
+        chunker = StringChunker(Protocol.sieve_function)
+
+        self.assert_chunker_sample(chunker, self._test_file_notice)
+        self.assert_chunker_sample_with_noise(chunker, self._test_file_notice)
+        self.assert_chunker_fragmented_sample(chunker, self._test_file_notice, 5)
+        self.assert_chunker_combined_sample(chunker, self._test_file_notice)
+
+    def test_got_data(self):
+        """
+        Verify sample data passed through the got data method produces the correct data particles
+        """
+        # Create and initialize the instrument driver with a mock port agent
+        driver = InstrumentDriver(self._got_data_event_callback)
+        self.assert_initialize_driver(driver)
+
+        self.assert_raw_particle_published(driver, True)
+
+        # Start validating data particles
+
+        self.assert_particle_published(driver, self._test_file_notice, self.assert_file_data, True)
+
 
 ###############################################################################
 #                            INTEGRATION TESTS                                #
@@ -639,8 +703,8 @@ class DriverIntegrationTest(InstrumentDriverIntegrationTestCase, DriverTestMixin
         dir_files = ftp_session.nlst()
 
         log.debug("nlst = %s", dir_files)
-        for file in dir_files:
-            ftp_session.delete(file)
+        for the_file in dir_files:
+            ftp_session.delete(the_file)
 
     def ftp_login(self):
         host = self.FTP_IP_ADDRESS
