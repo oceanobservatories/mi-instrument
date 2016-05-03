@@ -13,7 +13,11 @@ import json
 import tempfile
 import urllib2
 import yaml
+
 import time
+
+import re
+
 
 from mi.core.common import BaseEnum
 from mi.core.exceptions import InstrumentParameterException, InstrumentException, SampleException
@@ -31,14 +35,23 @@ from mi.core.instrument.protocol_param_dict import ParameterDictType
 
 from mi.core.log import get_logger
 from mi.core.log import get_logging_metaclass
-log = get_logger()
+from mi.core.instrument.chunker import StringChunker
+
+
+from mi.instrument.kut.ek60.ooicore.zplsc_b import FILE_NAME_REGEX, \
+    parse_echogram_file, \
+    ZplscBInstrumentDataParticle
+from mi.instrument.kut.ek60.ooicore.zplsc_b import DataParticleType as ZplscBDataParticleType
 
 __author__ = 'Richard Han & Craig Risien'
 __license__ = 'Apache 2.0'
 
 
-# newline.
-NEWLINE = '\r\n'
+log = get_logger()
+
+NEWLINE = '\n'
+FILEPATH_REGEX = r'(?P<Marker>downloaded file:)(?P<Filepath>\S*/' + FILE_NAME_REGEX + ')' + NEWLINE
+FILEPATH_MATCHER = re.compile(FILEPATH_REGEX)
 
 # Default Instrument's IP Address
 DEFAULT_HOST = "128.193.64.201"
@@ -137,6 +150,7 @@ class DataParticleType(BaseEnum):
     """
     RAW = CommonDataParticleType.RAW
     ZPLSC_STATUS = 'zplsc_status'
+    METADATA = ZplscBDataParticleType.METADATA
 
 
 class ProtocolState(BaseEnum):
@@ -519,6 +533,8 @@ class Protocol(CommandResponseInstrumentProtocol):
         # commands sent sent to device to be filtered in responses for telnet DA
         self._sent_cmds = []
 
+        self._chunker = StringChunker(self.sieve_function)
+
     def _build_param_dict(self):
         """
         Populate the parameter dictionary with parameters.
@@ -590,7 +606,6 @@ class Protocol(CommandResponseInstrumentProtocol):
         self._cmd_dict.add(Capability.STOP_AUTOSAMPLE, display_name="Stop Autosample")
         self._cmd_dict.add(Capability.ACQUIRE_STATUS, display_name="Acquire Status")
         self._cmd_dict.add(Capability.DISCOVER, display_name='Discover')
-
 
     def _filter_capabilities(self, events):
         """
@@ -920,3 +935,46 @@ class Protocol(CommandResponseInstrumentProtocol):
         log.debug("handler_autosample_stop: stop schedule returns %r", res)
 
         return next_state, (next_state, result)
+
+    @staticmethod
+    def sieve_function(raw_data):
+        """
+        Chunker sieve method to help the chunker identify chunks.
+        @param raw_data from chunker
+        @returns a list of chunks identified, if any.
+        The chunks are all the same type.
+        """
+
+        return_list = []
+        log.debug('Sieve function raw data %r' % raw_data)
+
+        for match in FILEPATH_MATCHER.finditer(raw_data):
+            log.debug('Sieve function match %s' % match)
+
+            return_list.append((match.start(), match.end()))
+        return return_list
+
+    def _got_chunk(self, chunk, timestamp):
+        """
+        The base class got_data has gotten a chunk from the chunker.
+        Pass it to extract_sample with the appropriate particle
+        objects and REGEXes.
+        """
+
+        match = FILEPATH_MATCHER.search(chunk)
+
+        if match:
+
+            # parse_echogram_file takes the filepath and
+            # creates the echogram image files.  It returns a
+            # tuple containing the metadata and timestamp for creation
+            # of the particle
+            metadata, timestamp = parse_echogram_file(match.group('Filepath'))
+
+            particle = ZplscBInstrumentDataParticle(metadata, port_timestamp=timestamp)
+            parsed_sample = particle.generate()
+
+            if self._driver_event:
+                self._driver_event(DriverAsyncEvent.SAMPLE, parsed_sample)
+
+
