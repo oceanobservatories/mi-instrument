@@ -37,7 +37,8 @@ class KombuPublisher(Publisher):
         now = time.time()
         try:
             publish = self.connection.ensure(self.producer, self.producer.publish, max_retries=4)
-            publish(json.dumps(events), headers=msg_headers, user_id=self.username, declare=[self._queue])
+            publish(json.dumps(events), headers=msg_headers, user_id=self.username,
+                    declare=[self._queue], content_type='text/plain')
             log.info('Published %d messages using KOMBU in %.2f secs', len(events), time.time() - now)
         except Exception as e:
             log.error('Exception attempting to publish events: %r', e)

@@ -127,7 +127,7 @@ class Publisher(object):
 
         result = urlparse.urlsplit(url)
         queue, query = extract_param('queue', result.query)
-        url = result.scheme + '://' + result.netloc
+        url = result.scheme + '://' + result.netloc + result.path
 
         username = password = 'guest'
         if '@' in result.netloc:
