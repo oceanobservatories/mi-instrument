@@ -7,9 +7,6 @@
 Unit test suite to test Satlantic PAR sensor
 """
 
-from gevent import monkey
-monkey.patch_all()
-
 import time
 import json
 import random
@@ -158,7 +155,8 @@ class PARMixin(DriverTestMixin):
                                         PARProtocolEvent.SCHEDULED_ACQUIRE_STATUS,
                                         PARProtocolEvent.ACQUIRE_STATUS],
 
-        PARProtocolState.AUTOSAMPLE:   [PARProtocolEvent.STOP_AUTOSAMPLE,
+        PARProtocolState.AUTOSAMPLE:   [PARProtocolEvent.GET,
+                                        PARProtocolEvent.STOP_AUTOSAMPLE,
                                         PARProtocolEvent.SCHEDULED_ACQUIRE_STATUS],
 
         PARProtocolState.DIRECT_ACCESS: [PARProtocolEvent.STOP_DIRECT,
@@ -644,10 +642,10 @@ class SatlanticParProtocolIntegrationTest(InstrumentDriverIntegrationTestCase, P
 @attr('QUAL', group='mi')
 class SatlanticParProtocolQualificationTest(InstrumentDriverQualificationTestCase, PARMixin):
     """Qualification Test Container"""
-    
+
     # Qualification tests live in the base class.  This class is extended
     # here so that when running this test from 'nosetests' all tests
-    # (UNIT, INT, and QUAL) are run.  
+    # (UNIT, INT, and QUAL) are run.
 
     def test_direct_access_telnet_mode(self):
         """
