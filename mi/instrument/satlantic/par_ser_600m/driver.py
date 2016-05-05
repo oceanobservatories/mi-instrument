@@ -383,6 +383,7 @@ class SatlanticPARInstrumentProtocol(CommandResponseInstrumentProtocol):
         self._protocol_fsm.add_handler(PARProtocolState.COMMAND, PARProtocolEvent.START_DIRECT, self._handler_command_start_direct)
 
         self._protocol_fsm.add_handler(PARProtocolState.AUTOSAMPLE, PARProtocolEvent.ENTER, self._handler_autosample_enter)
+        self._protocol_fsm.add_handler(PARProtocolState.AUTOSAMPLE, PARProtocolEvent.SET, self._handler_command_set)
         self._protocol_fsm.add_handler(PARProtocolState.AUTOSAMPLE, PARProtocolEvent.STOP_AUTOSAMPLE, self._handler_autosample_stop_autosample)
         self._protocol_fsm.add_handler(PARProtocolState.AUTOSAMPLE, PARProtocolEvent.SCHEDULED_ACQUIRE_STATUS, self._handler_autosample_acquire_status)
 
@@ -867,9 +868,8 @@ class SatlanticPARInstrumentProtocol(CommandResponseInstrumentProtocol):
         if self._init_type != InitializationType.NONE:
             next_state, (_, result) = self._handler_autosample_stop_autosample()
             self._update_params()
+            self._init_params()
             next_state, (_, result) = self._handler_command_start_autosample()
-
-        self._init_params()
 
         self._driver_event(DriverAsyncEvent.STATE_CHANGE)
 
