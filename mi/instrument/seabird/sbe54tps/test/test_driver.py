@@ -22,6 +22,7 @@ import copy
 from nose.plugins.attrib import attr
 from mock import Mock
 import time
+import ntplib
 
 from mi.core.log import get_logger
 from mi.core.time_tools import timegm_to_float
@@ -52,7 +53,7 @@ from mi.core.instrument.instrument_driver import ResourceAgentEvent
 from mi.core.instrument.instrument_driver import ResourceAgentState
 from mi.core.exceptions import InstrumentCommandException
 from mi.core.instrument.chunker import StringChunker
-
+from mi.core.instrument.port_agent_client import PortAgentPacket
 
 __author__ = 'Roger Unwin'
 __license__ = 'Apache 2.0'
@@ -422,6 +423,112 @@ class SeaBird54PlusUnitTest(SeaBirdUnitTest, SeaBird54tpsMixin):
 
         driver = SBE54PlusInstrumentDriver(self._got_data_event_callback)
         self.assert_capabilities(driver, capabilities)
+
+    def _create_port_agent_packet(self, data_item):
+        ts = ntplib.system_to_ntp_time(time.time())
+        port_agent_packet = PortAgentPacket()
+        port_agent_packet.attach_data(data_item)
+        port_agent_packet.attach_timestamp(ts)
+        port_agent_packet.pack_header()
+        return port_agent_packet
+
+    def _send_port_agent_packet(self, driver, data_item):
+        driver._protocol.got_data(self._create_port_agent_packet(data_item))
+
+    def send_side_effect(self, driver):
+        def inner(data):
+            data = data.strip()
+            log.debug('get data response for "%s"', data)
+            response = self._responses.get(data)
+            if response is None:
+                log.warn('No response found for %r', data)
+                response = Prompt.COMMAND
+            log.debug("my_send: data: %s, my_response: %s", data, response)
+            self._send_port_agent_packet(driver, response + NEWLINE)
+
+        return inner
+
+    _responses = {
+        'GetSD': SAMPLE_GETSD + NEWLINE + Prompt.COMMAND,
+        'GetCD': SAMPLE_GETCD + NEWLINE + Prompt.COMMAND,
+        'SampleRefOsc': SAMPLE_REF_OSC + NEWLINE
+    }
+
+    def test_connect(self, initial_protocol_state=ProtocolState.COMMAND):
+        """
+        Verify we can initialize the driver.  Set up mock events for other tests.
+        @param initial_protocol_state: target protocol state for driver
+        @return: driver instance
+        """
+        startup_config = {
+            DriverStartupConfigKey.PARAMETERS: {
+                Parameter.SAMPLE_PERIOD: 15,
+                Parameter.ENABLE_ALERTS: 1,
+            },
+            DriverStartupConfigKey.SCHEDULER: {
+                ScheduledJob.ACQUIRE_STATUS: {},
+                ScheduledJob.STATUS_DATA: {},
+                ScheduledJob.HARDWARE_DATA: {},
+                ScheduledJob.EVENT_COUNTER_DATA: {},
+                ScheduledJob.CONFIGURATION_DATA: {},
+                ScheduledJob.CLOCK_SYNC: {}
+            }
+        }
+
+        driver = SBE54PlusInstrumentDriver(self._got_data_event_callback)
+        self.assert_initialize_driver(driver, initial_protocol_state)
+        driver._protocol.set_init_params(startup_config)
+        driver._connection.send.side_effect = self.send_side_effect(driver)
+        driver._protocol._protocol_fsm.on_event_actual = driver._protocol._protocol_fsm.on_event
+        driver._protocol._protocol_fsm.on_event = Mock()
+        driver._protocol._protocol_fsm.on_event.side_effect = driver._protocol._protocol_fsm.on_event_actual
+        driver._protocol._init_params()
+
+        return driver
+
+    def test_oscillator_sample_fail(self):
+        """
+        Tests both good and failed responses to an oscillator sample command.
+
+        Normally the instrument returns a proper oscillator sample and remains
+        in the command state.
+        Bench testing showed that when storage is full it will instead
+        NOT return an oscillator sample and go into autosample.
+
+        This will test the driver to see if it ends up in the appropriate
+        state for each type of response.
+
+        @param self:
+        @return:
+        """
+
+        driver = self.test_connect()
+
+        # Test a normal oscillator sample
+        driver._protocol._protocol_fsm.on_event(ProtocolEvent.SAMPLE_REFERENCE_OSCILLATOR)
+        self.assertEqual(driver._protocol.get_current_state(), ProtocolState.OSCILLATOR)
+        time.sleep(0.1)
+        self.assertEqual(driver._protocol.get_current_state(), ProtocolState.COMMAND)
+
+        # Test a failed oscillator sample
+
+        # Mock _do_cmd_resp to force timeout to 0.1
+        def shorten_timeout(cmd, *args, **kwargs):
+            kwargs['timeout'] = 0.1
+            driver._protocol._do_cmd_resp_actual(cmd, *args, **kwargs)
+
+        driver._protocol._do_cmd_resp_actual = driver._protocol._do_cmd_resp
+        driver._protocol._do_cmd_resp = Mock()
+        driver._protocol._do_cmd_resp.side_effect = shorten_timeout
+
+        # Set response to failed oscillator sample
+        self._responses['SampleRefOsc'] = SAMPLE_REF_OSC_FAIL + NEWLINE
+
+        # Excercise driver
+        driver._protocol._protocol_fsm.on_event(ProtocolEvent.SAMPLE_REFERENCE_OSCILLATOR)
+        self.assertEqual(driver._protocol.get_current_state(), ProtocolState.OSCILLATOR)
+        time.sleep(0.2)
+        self.assertEqual(driver._protocol.get_current_state(), ProtocolState.COMMAND)
 
 
 ###############################################################################

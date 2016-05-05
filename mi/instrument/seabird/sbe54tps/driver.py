@@ -31,7 +31,7 @@ from mi.core.instrument.chunker import StringChunker
 
 from mi.core.exceptions import InstrumentParameterException
 from mi.core.exceptions import InstrumentProtocolException
-from mi.core.exceptions import InstrumentException
+from mi.core.exceptions import InstrumentTimeoutException
 
 from mi.instrument.seabird.driver import SeaBirdInstrumentDriver
 from mi.instrument.seabird.driver import SeaBirdProtocol
@@ -199,11 +199,8 @@ HARDWARE_DATA_REGEX_MATCHER = re.compile(HARDWARE_DATA_REGEX, re.DOTALL)
 SAMPLE_DATA_REGEX = r"<Sample Num='[0-9]+' Type='Pressure'>.*?</Sample>"
 SAMPLE_DATA_REGEX_MATCHER = re.compile(SAMPLE_DATA_REGEX, re.DOTALL)
 
-SAMPLE_REF_OSC_REGEX = r"<SetTimeout>.*?</Sample>"
+SAMPLE_REF_OSC_REGEX = r"<SetTimeout>.*?<Sample Num='[0-9]+' Type='RefOsc'>.*?</Sample>"
 SAMPLE_REF_OSC_MATCHER = re.compile(SAMPLE_REF_OSC_REGEX, re.DOTALL)
-
-ENGINEERING_DATA_REGEX = r"<MainSupplyVoltage>(.*?)</MainSupplyVoltage>"
-ENGINEERING_DATA_MATCHER = re.compile(SAMPLE_REF_OSC_REGEX, re.DOTALL)
 
 RECOVER_AUTOSAMPLE_REGEX = "CMD Mode 2 min timeout, returning to ACQ Mode"
 RECOVER_AUTOSAMPLE_MATCHER = re.compile(RECOVER_AUTOSAMPLE_REGEX, re.DOTALL)
@@ -998,7 +995,7 @@ class Protocol(SeaBirdProtocol):
                           EVENT_COUNTER_DATA_REGEX_MATCHER,
                           HARDWARE_DATA_REGEX_MATCHER,
                           SAMPLE_DATA_REGEX_MATCHER,
-                          ENGINEERING_DATA_MATCHER,
+                          SAMPLE_REF_OSC_MATCHER,
                           RECOVER_AUTOSAMPLE_MATCHER]
 
         for matcher in sieve_matchers:
@@ -1016,10 +1013,13 @@ class Protocol(SeaBirdProtocol):
         # in command mode.  If a message is seen, figure out if an event to needs to be raised to adjust
         # the state machine.
         if RECOVER_AUTOSAMPLE_MATCHER.match(chunk) and self._protocol_fsm.get_current_state() == ProtocolState.COMMAND:
-            log.debug("FSM state out of date.  Recovering to autosample!")
+            log.debug("Instrument has started sampling, update state to autosample")
             self._async_raise_fsm_event(ProtocolEvent.RECOVER_AUTOSAMPLE)
 
-        if self._extract_sample(SBE54tpsSampleDataParticle, SAMPLE_DATA_REGEX_MATCHER, chunk, timestamp): return
+        if self._extract_sample(SBE54tpsSampleDataParticle, SAMPLE_DATA_REGEX_MATCHER, chunk, timestamp):
+            if self._protocol_fsm.get_current_state() == ProtocolState.COMMAND:
+                self._async_raise_fsm_event(ProtocolEvent.RECOVER_AUTOSAMPLE)
+            return
         if self._extract_sample(SBE54tpsStatusDataParticle, STATUS_DATA_REGEX_MATCHER, chunk, timestamp): return
         if self._extract_sample(SBE54tpsConfigurationDataParticle, CONFIGURATION_DATA_REGEX_MATCHER, chunk, timestamp): return
         if self._extract_sample(SBE54tpsEventCounterDataParticle, EVENT_COUNTER_DATA_REGEX_MATCHER, chunk, timestamp): return
@@ -1048,7 +1048,7 @@ class Protocol(SeaBirdProtocol):
         self._cmd_dict.add(Capability.SAMPLE_REFERENCE_OSCILLATOR, display_name="Sample Reference Oscillator")
         self._cmd_dict.add(Capability.START_AUTOSAMPLE, display_name="Start Autosample")
         self._cmd_dict.add(Capability.STOP_AUTOSAMPLE, display_name="Stop Autosample")
-        self._cmd_dict.add(Capability.TEST_EEPROM, display_name="Test EEPROM")
+        self._cmd_dict.add(Capability.TEST_EEPROM, timeout=TIMEOUT, display_name="Test EEPROM")
         self._cmd_dict.add(Capability.DISCOVER, display_name='Discover')
 
     def _send_wakeup(self):
@@ -1160,15 +1160,18 @@ class Protocol(SeaBirdProtocol):
     def _handler_oscillator_acquire_sample(self, *args, **kwargs):
 
         result = None
-        kwargs['expected_prompt'] = "</Sample>"
+        next_state = ProtocolState.COMMAND
+        kwargs['response_regex'] = SAMPLE_REF_OSC_MATCHER
         kwargs['timeout'] = LONG_TIMEOUT
 
         try:
             result = self._do_cmd_resp(InstrumentCommands.SAMPLE_REFERENCE_OSCILLATOR, *args, **kwargs)
-        except InstrumentException as e:
-            log.error("Exception occurred when trying to acquire Reference Oscillator Sample: %s" % e)
+        except InstrumentTimeoutException:
+            log.error('Timed out when trying to acquire Reference Oscillator Sample')
+            # Instrument may have gone to autosample; enforce command state
+            self._do_cmd_no_resp(InstrumentCommands.STOP_LOGGING, *args, **kwargs)
 
-        return ProtocolState.COMMAND, (ProtocolState.COMMAND, result)
+        return next_state, (next_state, result)
 
     def _handler_oscillator_exit(self, *args, **kwargs):
         """
