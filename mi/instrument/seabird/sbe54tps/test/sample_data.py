@@ -89,7 +89,19 @@ SAMPLE_REF_OSC = "<SetTimeout>125000</SetTimeout>" + NEWLINE +\
                  "<PCBTempRaw>18413</PCBTempRaw>" + NEWLINE +\
                  "<RefErrorPPM>0.090</RefErrorPPM>" + NEWLINE +\
                  "</Sample>"
-                      
-                      
-                      
-  
+
+SAMPLE_REF_OSC_FAIL = "<SetTimeout>125000</SetTimeout>" + NEWLINE +\
+                      "<SetTimeoutMax>150000</SetTimeoutMax>" + NEWLINE +\
+                      "<SetTimeoutICD>125000</SetTimeoutICD>" + NEWLINE +\
+                      "<!--Ref osc warmup next 120 seconds-->" + NEWLINE +\
+                      "<!--Warmup complete, starting measurement at 0.1Hz-->" + NEWLINE +\
+                      "<POWERON/>" + NEWLINE +\
+                      "<!--BatteryType reset to Lithium (0)-->" + NEWLINE +\
+                      "<Sample Num='0' Type='Pressure'>" + NEWLINE +\
+                      "<Time>2016-05-03T17:14:40</Time>" + NEWLINE +\
+                      "<PressurePSI>13.6866</PressurePSI>" + NEWLINE +\
+                      "<PTemp>20.6288</PTemp>" + NEWLINE +\
+                      "</Sample>"
+
+
+
