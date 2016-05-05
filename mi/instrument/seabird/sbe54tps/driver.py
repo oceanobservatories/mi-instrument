@@ -31,7 +31,7 @@ from mi.core.instrument.chunker import StringChunker
 
 from mi.core.exceptions import InstrumentParameterException
 from mi.core.exceptions import InstrumentProtocolException
-from mi.core.exceptions import InstrumentException
+from mi.core.exceptions import InstrumentTimeoutException
 
 from mi.instrument.seabird.driver import SeaBirdInstrumentDriver
 from mi.instrument.seabird.driver import SeaBirdProtocol
@@ -69,7 +69,7 @@ class DataParticleType(BaseEnum):
 
 
 # Device specific parameters.
-class InstrumentCommands(BaseEnum):
+class InstrumentCmds(BaseEnum):
     """
     Instrument Commands
     These are the commands that according to the science profile must be supported.
@@ -90,29 +90,6 @@ class InstrumentCommands(BaseEnum):
 
     # Diagnostic
     TEST_EEPROM = "TestEeprom"
-
-
-class InstrumentCommandNames(BaseEnum):
-    """
-    Instrument Commands
-    These are the commands that according to the science profile must be supported.
-    """
-    # Artificial Constructed Commands for Driver
-    SET = 'Set>'
-
-    # Status
-    GET_CONFIGURATION_DATA = 'Configuration'
-    GET_STATUS_DATA = 'Status'
-    GET_EVENT_COUNTER_DATA = 'Event Counter'
-    GET_HARDWARE_DATA = 'Hardware Config'
-
-    # Sampling
-    START_LOGGING = 'Start'
-    STOP_LOGGING = 'Stop'
-    SAMPLE_REFERENCE_OSCILLATOR = 'Reference Oscillator'
-
-    # Diagnostic
-    TEST_EEPROM = 'Test EEPROM'
 
 
 class ProtocolState(BaseEnum):
@@ -199,14 +176,8 @@ HARDWARE_DATA_REGEX_MATCHER = re.compile(HARDWARE_DATA_REGEX, re.DOTALL)
 SAMPLE_DATA_REGEX = r"<Sample Num='[0-9]+' Type='Pressure'>.*?</Sample>"
 SAMPLE_DATA_REGEX_MATCHER = re.compile(SAMPLE_DATA_REGEX, re.DOTALL)
 
-SAMPLE_REF_OSC_REGEX = r"<SetTimeout>.*?</Sample>"
+SAMPLE_REF_OSC_REGEX = r"<SetTimeout>.*?<Sample Num='[0-9]+' Type='RefOsc'>.*?</Sample>"
 SAMPLE_REF_OSC_MATCHER = re.compile(SAMPLE_REF_OSC_REGEX, re.DOTALL)
-
-ENGINEERING_DATA_REGEX = r"<MainSupplyVoltage>(.*?)</MainSupplyVoltage>"
-ENGINEERING_DATA_MATCHER = re.compile(SAMPLE_REF_OSC_REGEX, re.DOTALL)
-
-RECOVER_AUTOSAMPLE_REGEX = "CMD Mode 2 min timeout, returning to ACQ Mode"
-RECOVER_AUTOSAMPLE_MATCHER = re.compile(RECOVER_AUTOSAMPLE_REGEX, re.DOTALL)
 
 
 class SBE54tpsStatusDataParticleKey(BaseEnum):
@@ -941,24 +912,24 @@ class Protocol(SeaBirdProtocol):
         self._build_driver_dict()
 
         # Add build handlers for device commands.
-        self._add_build_handler(InstrumentCommands.SET, self._build_set_command)
-        self._add_build_handler(InstrumentCommands.GET_CONFIGURATION_DATA, self._build_simple_command)
-        self._add_build_handler(InstrumentCommands.GET_STATUS_DATA, self._build_simple_command)
-        self._add_build_handler(InstrumentCommands.GET_EVENT_COUNTER_DATA, self._build_simple_command)
-        self._add_build_handler(InstrumentCommands.GET_HARDWARE_DATA, self._build_simple_command)
-        self._add_build_handler(InstrumentCommands.START_LOGGING, self._build_simple_command)
-        self._add_build_handler(InstrumentCommands.STOP_LOGGING, self._build_simple_command)
-        self._add_build_handler(InstrumentCommands.SAMPLE_REFERENCE_OSCILLATOR, self._build_simple_command)
-        self._add_build_handler(InstrumentCommands.TEST_EEPROM, self._build_simple_command)
+        self._add_build_handler(InstrumentCmds.SET, self._build_set_command)
+        self._add_build_handler(InstrumentCmds.GET_CONFIGURATION_DATA, self._build_simple_command)
+        self._add_build_handler(InstrumentCmds.GET_STATUS_DATA, self._build_simple_command)
+        self._add_build_handler(InstrumentCmds.GET_EVENT_COUNTER_DATA, self._build_simple_command)
+        self._add_build_handler(InstrumentCmds.GET_HARDWARE_DATA, self._build_simple_command)
+        self._add_build_handler(InstrumentCmds.START_LOGGING, self._build_simple_command)
+        self._add_build_handler(InstrumentCmds.STOP_LOGGING, self._build_simple_command)
+        self._add_build_handler(InstrumentCmds.SAMPLE_REFERENCE_OSCILLATOR,  self._build_simple_command)
+        self._add_build_handler(InstrumentCmds.TEST_EEPROM, self._build_simple_command)
 
         # Add response handlers for device commands.
-        self._add_response_handler(InstrumentCommands.SET, self._parse_set_response)
-        self._add_response_handler(InstrumentCommands.GET_CONFIGURATION_DATA, self._parse_generic_response)
-        self._add_response_handler(InstrumentCommands.GET_STATUS_DATA, self._parse_generic_response)
-        self._add_response_handler(InstrumentCommands.GET_EVENT_COUNTER_DATA, self._parse_generic_response)
-        self._add_response_handler(InstrumentCommands.GET_HARDWARE_DATA, self._parse_generic_response)
-        self._add_response_handler(InstrumentCommands.SAMPLE_REFERENCE_OSCILLATOR, self._parse_sample_ref_osc)
-        self._add_response_handler(InstrumentCommands.TEST_EEPROM, self._parse_test_eeprom)
+        self._add_response_handler(InstrumentCmds.SET, self._parse_set_response)
+        self._add_response_handler(InstrumentCmds.GET_CONFIGURATION_DATA, self._parse_generic_response)
+        self._add_response_handler(InstrumentCmds.GET_STATUS_DATA,self._parse_generic_response)
+        self._add_response_handler(InstrumentCmds.GET_EVENT_COUNTER_DATA, self._parse_generic_response)
+        self._add_response_handler(InstrumentCmds.GET_HARDWARE_DATA, self._parse_generic_response)
+        self._add_response_handler(InstrumentCmds.SAMPLE_REFERENCE_OSCILLATOR, self._parse_sample_ref_osc)
+        self._add_response_handler(InstrumentCmds.TEST_EEPROM, self._parse_test_eeprom)
 
         # State state machine in UNKNOWN state.
         self._protocol_fsm.start(ProtocolState.UNKNOWN)
@@ -970,21 +941,6 @@ class Protocol(SeaBirdProtocol):
         self._sent_cmds = []
 
         self._chunker = StringChunker(Protocol.sieve_function)
-
-        self._direct_commands['Newline'] = NEWLINE
-        self._direct_commands['Interrupt'] = self._build_handlers.get(InstrumentCommands.STOP_LOGGING)(InstrumentCommands.STOP_LOGGING)
-        command_dict = InstrumentCommands.dict()
-        label_dict = InstrumentCommandNames.dict()
-        for key in command_dict:
-            label = label_dict.get(key)
-            command = command_dict[key]
-            builder = self._build_handlers.get(command, None)
-            if builder is self._build_simple_command:
-                command = builder(command)
-                self._direct_commands[label] = command
-            if builder is self._build_set_command:
-                command = 'set'
-                self._direct_commands[label] = command
 
     @staticmethod
     def sieve_function(raw_data):
@@ -998,8 +954,7 @@ class Protocol(SeaBirdProtocol):
                           EVENT_COUNTER_DATA_REGEX_MATCHER,
                           HARDWARE_DATA_REGEX_MATCHER,
                           SAMPLE_DATA_REGEX_MATCHER,
-                          ENGINEERING_DATA_MATCHER,
-                          RECOVER_AUTOSAMPLE_MATCHER]
+                          SAMPLE_REF_OSC_MATCHER]
 
         for matcher in sieve_matchers:
             for match in matcher.finditer(raw_data):
@@ -1015,11 +970,10 @@ class Protocol(SeaBirdProtocol):
         # This instrument will automatically put itself back into autosample mode after a couple minutes idle
         # in command mode.  If a message is seen, figure out if an event to needs to be raised to adjust
         # the state machine.
-        if RECOVER_AUTOSAMPLE_MATCHER.match(chunk) and self._protocol_fsm.get_current_state() == ProtocolState.COMMAND:
-            log.debug("FSM state out of date.  Recovering to autosample!")
-            self._async_raise_fsm_event(ProtocolEvent.RECOVER_AUTOSAMPLE)
-
-        if self._extract_sample(SBE54tpsSampleDataParticle, SAMPLE_DATA_REGEX_MATCHER, chunk, timestamp): return
+        if self._extract_sample(SBE54tpsSampleDataParticle, SAMPLE_DATA_REGEX_MATCHER, chunk, timestamp):
+            if self._protocol_fsm.get_current_state() == ProtocolState.COMMAND:
+                self._async_raise_fsm_event(ProtocolEvent.RECOVER_AUTOSAMPLE)
+            return
         if self._extract_sample(SBE54tpsStatusDataParticle, STATUS_DATA_REGEX_MATCHER, chunk, timestamp): return
         if self._extract_sample(SBE54tpsConfigurationDataParticle, CONFIGURATION_DATA_REGEX_MATCHER, chunk, timestamp): return
         if self._extract_sample(SBE54tpsEventCounterDataParticle, EVENT_COUNTER_DATA_REGEX_MATCHER, chunk, timestamp): return
@@ -1048,7 +1002,7 @@ class Protocol(SeaBirdProtocol):
         self._cmd_dict.add(Capability.SAMPLE_REFERENCE_OSCILLATOR, display_name="Sample Reference Oscillator")
         self._cmd_dict.add(Capability.START_AUTOSAMPLE, display_name="Start Autosample")
         self._cmd_dict.add(Capability.STOP_AUTOSAMPLE, display_name="Stop Autosample")
-        self._cmd_dict.add(Capability.TEST_EEPROM, display_name="Test EEPROM")
+        self._cmd_dict.add(Capability.TEST_EEPROM, timeout=TIMEOUT, display_name="Test EEPROM")
         self._cmd_dict.add(Capability.DISCOVER, display_name='Discover')
 
     def _send_wakeup(self):
@@ -1097,10 +1051,10 @@ class Protocol(SeaBirdProtocol):
         timeout = kwargs.get('timeout', TIMEOUT)
 
         next_state = None
-        self._do_cmd_resp(InstrumentCommands.GET_CONFIGURATION_DATA, timeout=timeout)
-        self._do_cmd_resp(InstrumentCommands.GET_STATUS_DATA, timeout=timeout)
-        self._do_cmd_resp(InstrumentCommands.GET_EVENT_COUNTER_DATA, timeout=timeout)
-        self._do_cmd_resp(InstrumentCommands.GET_HARDWARE_DATA, timeout=timeout)
+        self._do_cmd_resp(InstrumentCmds.GET_CONFIGURATION_DATA, timeout=timeout)
+        self._do_cmd_resp(InstrumentCmds.GET_STATUS_DATA, timeout=timeout)
+        self._do_cmd_resp(InstrumentCmds.GET_EVENT_COUNTER_DATA, timeout=timeout)
+        self._do_cmd_resp(InstrumentCmds.GET_HARDWARE_DATA, timeout=timeout)
 
         result = self.wait_for_particles([DataParticleType.PREST_CONFIGURATION_DATA,
                                           DataParticleType.PREST_DEVICE_STATUS,
@@ -1134,7 +1088,7 @@ class Protocol(SeaBirdProtocol):
         next_state = None
         kwargs['expected_prompt'] = GENERIC_PROMPT
         kwargs['timeout'] = LONG_TIMEOUT
-        result = self._do_cmd_resp(InstrumentCommands.TEST_EEPROM, *args, **kwargs)
+        result = self._do_cmd_resp(InstrumentCmds.TEST_EEPROM, *args, **kwargs)
 
         return next_state, (next_state, [result])
 
@@ -1160,15 +1114,19 @@ class Protocol(SeaBirdProtocol):
     def _handler_oscillator_acquire_sample(self, *args, **kwargs):
 
         result = None
-        kwargs['expected_prompt'] = "</Sample>"
+        state = ProtocolState.COMMAND
+        kwargs['response_regex'] = SAMPLE_REF_OSC_MATCHER
         kwargs['timeout'] = LONG_TIMEOUT
 
         try:
-            result = self._do_cmd_resp(InstrumentCommands.SAMPLE_REFERENCE_OSCILLATOR, *args, **kwargs)
-        except InstrumentException as e:
-            log.error("Exception occurred when trying to acquire Reference Oscillator Sample: %s" % e)
+            result = self._do_cmd_resp(InstrumentCmds.SAMPLE_REFERENCE_OSCILLATOR, *args, **kwargs)
 
-        return ProtocolState.COMMAND, (ProtocolState.COMMAND, result)
+        except InstrumentTimeoutException as e:
+            log.error('Timed out when trying to acquire Reference Oscillator Sample')
+            # Instrument may have gone to autosample; enforce command state
+            self._do_cmd_no_resp(InstrumentCmds.STOP_LOGGING, *args, **kwargs)
+
+        return state, (state, result)
 
     def _handler_oscillator_exit(self, *args, **kwargs):
         """
@@ -1183,7 +1141,7 @@ class Protocol(SeaBirdProtocol):
         @throws InstrumentProtocolException if command could not be built or misunderstood.
         """
         next_state = None
-        result = self._do_cmd_resp(InstrumentCommands.SET, Parameter.TIME, get_timestamp_delayed("%Y-%m-%dT%H:%M:%S"), **kwargs)
+        result = self._do_cmd_resp(InstrumentCmds.SET, Parameter.TIME, get_timestamp_delayed("%Y-%m-%dT%H:%M:%S"), **kwargs)
         return next_state, (next_state, [result])
 
     def _handler_command_start_autosample(self, *args, **kwargs):
@@ -1199,10 +1157,10 @@ class Protocol(SeaBirdProtocol):
         kwargs['expected_prompt'] = Prompt.COMMAND
         kwargs['timeout'] = 30
         log.info("SYNCING TIME WITH SENSOR")
-        self._do_cmd_resp(InstrumentCommands.SET, Parameter.TIME, get_timestamp_delayed("%Y-%m-%dT%H:%M:%S"), **kwargs)
+        self._do_cmd_resp(InstrumentCmds.SET, Parameter.TIME, get_timestamp_delayed("%Y-%m-%dT%H:%M:%S"), **kwargs)
 
         # Issue start command and switch to autosample if successful.
-        self._do_cmd_no_resp(InstrumentCommands.START_LOGGING, *args, **kwargs)
+        self._do_cmd_no_resp(InstrumentCmds.START_LOGGING, *args, **kwargs)
 
         return next_state, (next_state, result)
 
@@ -1226,7 +1184,7 @@ class Protocol(SeaBirdProtocol):
             self._stop_logging()
 
             # Sync the clock
-            result = self._do_cmd_resp(InstrumentCommands.SET, Parameter.TIME, get_timestamp_delayed("%Y-%m-%dT%H:%M:%S"), **kwargs)
+            result = self._do_cmd_resp(InstrumentCmds.SET, Parameter.TIME, get_timestamp_delayed("%Y-%m-%dT%H:%M:%S"), **kwargs)
 
         finally:
             # Switch back to streaming
@@ -1247,10 +1205,10 @@ class Protocol(SeaBirdProtocol):
             self._stop_logging()
 
             timeout = kwargs.get('timeout', TIMEOUT)
-            self._do_cmd_resp(InstrumentCommands.GET_CONFIGURATION_DATA, timeout=timeout)
-            self._do_cmd_resp(InstrumentCommands.GET_STATUS_DATA, timeout=timeout)
-            self._do_cmd_resp(InstrumentCommands.GET_EVENT_COUNTER_DATA, timeout=timeout)
-            self._do_cmd_resp(InstrumentCommands.GET_HARDWARE_DATA, timeout=timeout)
+            self._do_cmd_resp(InstrumentCmds.GET_CONFIGURATION_DATA, timeout=timeout)
+            self._do_cmd_resp(InstrumentCmds.GET_STATUS_DATA, timeout=timeout)
+            self._do_cmd_resp(InstrumentCmds.GET_EVENT_COUNTER_DATA, timeout=timeout)
+            self._do_cmd_resp(InstrumentCmds.GET_HARDWARE_DATA, timeout=timeout)
 
             result = self.wait_for_particles([DataParticleType.PREST_CONFIGURATION_DATA,
                                           DataParticleType.PREST_DEVICE_STATUS,
@@ -1269,7 +1227,7 @@ class Protocol(SeaBirdProtocol):
         """
         next_state = ProtocolState.COMMAND
         result = []
-        self._do_cmd_resp(InstrumentCommands.STOP_LOGGING, *args, **kwargs)
+        self._do_cmd_resp(InstrumentCmds.STOP_LOGGING, *args, **kwargs)
 
         return next_state, (next_state, result)
 
@@ -1387,7 +1345,7 @@ class Protocol(SeaBirdProtocol):
 
         for (key, val) in params.iteritems():
             log.debug("KEY = " + str(key) + " VALUE = " + str(val))
-            self._do_cmd_resp(InstrumentCommands.SET, key, val, **kwargs)
+            self._do_cmd_resp(InstrumentCmds.SET, key, val, **kwargs)
 
         self._update_params()
 
@@ -1419,14 +1377,14 @@ class Protocol(SeaBirdProtocol):
         # Issue display commands and parse results.
         timeout = kwargs.get('timeout', TIMEOUT)
 
-        log.debug("Run status command: %s" % InstrumentCommands.GET_STATUS_DATA)
-        response = self._do_cmd_resp(InstrumentCommands.GET_STATUS_DATA, timeout=timeout)
+        log.debug("Run status command: %s" % InstrumentCmds.GET_STATUS_DATA)
+        response = self._do_cmd_resp(InstrumentCmds.GET_STATUS_DATA, timeout=timeout)
         for line in response.split(NEWLINE):
             self._param_dict.update(line)
         log.debug("status command response: %r" % response)
 
-        log.debug("Run configure command: %s" % InstrumentCommands.GET_CONFIGURATION_DATA)
-        response = self._do_cmd_resp(InstrumentCommands.GET_CONFIGURATION_DATA, timeout=timeout)
+        log.debug("Run configure command: %s" % InstrumentCmds.GET_CONFIGURATION_DATA)
+        response = self._do_cmd_resp(InstrumentCmds.GET_CONFIGURATION_DATA, timeout=timeout)
         for line in response.split(NEWLINE):
             self._param_dict.update(line)
         log.debug("configure command response: %r" % response)
@@ -1467,12 +1425,12 @@ class Protocol(SeaBirdProtocol):
         @return: True if successful
         @raise: InstrumentProtocolException if failed to start logging
         """
-        self._do_cmd_no_resp(InstrumentCommands.START_LOGGING)
+        self._do_cmd_no_resp(InstrumentCmds.START_LOGGING)
         return True
 
     def _stop_logging(self):
 
-        self._do_cmd_resp(InstrumentCommands.STOP_LOGGING)
+        self._do_cmd_resp(InstrumentCmds.STOP_LOGGING)
         return True
 
     def _is_logging(self, *args, **kwargs):
