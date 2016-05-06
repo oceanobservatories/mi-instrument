@@ -111,18 +111,6 @@ NORTEK_COMMON_REGEXES = [USER_CONFIG_DATA_REGEX,
 INTERVAL_TIME_REGEX = r"([0-9][0-9]:[0-9][0-9]:[0-9][0-9])"
 
 
-class ParameterConstraint(BaseEnum):
-    """
-    Constraints for parameters
-    (type, min, max)
-    """
-    average_interval = (int, 1, 65535)
-    cell_size = (int, 1, 65535)
-    blanking_distance = (int, 1, 65535)
-    coordinate_system = (int, 0, 2)  # enum 0, 1, 2
-    measurement_interval = (int, 0, 65535)
-
-
 class ParameterUnits(BaseEnum):
     TIME_INTERVAL = 'HH:MM:SS'
     PARTS_PER_TRILLION = 'ppt'
@@ -1346,25 +1334,11 @@ class NortekInstrumentProtocol(CommandResponseInstrumentProtocol):
         self._verify_not_readonly(*args, **kwargs)
 
         old_config = self._param_dict.get_config()
-        constraints = ParameterConstraint.dict()
         set_params = False
 
         # For each key, value in the params list set the value in parameters copy.
         try:
             for name, value in params.iteritems():
-
-                if name in constraints:
-                    var_type, minimum, maximum = constraints[name]
-                    constraint_string = 'Parameter: %s Value: %s Type: %s Minimum: %s Maximum: %s' % \
-                                        (name, value, var_type, minimum, maximum)
-                    log.debug('SET CONSTRAINT: %s', constraint_string)
-                    try:
-                        var_type(value)
-                    except ValueError:
-                        raise InstrumentParameterException('Type mismatch: %s' % constraint_string)
-
-                    if value < minimum or value > maximum:
-                        raise InstrumentParameterException('Out of range: %s' % constraint_string)
 
                 old_val = self._param_dict.format(name)
                 new_val = self._param_dict.format(name, params[name])
@@ -1983,7 +1957,7 @@ class NortekInstrumentProtocol(CommandResponseInstrumentProtocol):
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name="Timing Control Register",
                              range=(1, 65535),
-                             description="See manual for usage.",
+                             description="See manual for usage. (1-65535)",
                              direct_access=True,
                              default_value=130)
         self._param_dict.add(Parameter.COMPASS_UPDATE_RATE,
@@ -2018,9 +1992,9 @@ class NortekInstrumentProtocol(CommandResponseInstrumentProtocol):
                              type=ParameterDictType.INT,
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name="Coordinate System",
+                             range={'ENU': 0, 'XYZ': 1, 'Beam': 2},
                              description='Coordinate System (0:ENU | 1:XYZ | 2:Beam)',
                              default_value=2,
-                             range={'ENU': 0, 'XYZ': 1, 'Beam': 2},
                              startup_param=True,
                              direct_access=True)
         self._param_dict.add(Parameter.NUMBER_BINS,
@@ -2043,9 +2017,10 @@ class NortekInstrumentProtocol(CommandResponseInstrumentProtocol):
                              type=ParameterDictType.INT,
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name="Bin Length",
-                             description="Size of water volume analyzed.",
+                             range=(1, 65535),
+                             description="Length of the section of the beam used to analyze water. (1-65535)",
                              default_value=7,
-                             units=Units.MILLIMETER + '³',
+                             units=Units.METER,
                              startup_param=True,
                              direct_access=True)
         self._param_dict.add(Parameter.DEPLOYMENT_NAME,
