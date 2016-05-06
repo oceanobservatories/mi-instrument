@@ -2043,9 +2043,9 @@ class NortekInstrumentProtocol(CommandResponseInstrumentProtocol):
                              type=ParameterDictType.INT,
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name="Bin Length",
-                             description="Size of water volume analyzed.",
+                             description="Length of the section of the beam used to analyze water. (1-65535)",
                              default_value=7,
-                             units=Units.MILLIMETER + '³',
+                             units=Units.METER,
                              startup_param=True,
                              direct_access=True)
         self._param_dict.add(Parameter.DEPLOYMENT_NAME,

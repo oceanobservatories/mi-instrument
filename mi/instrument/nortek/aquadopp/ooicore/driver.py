@@ -358,7 +358,7 @@ class Protocol(NortekInstrumentProtocol):
                              description="Number of pings in each burst sequence.",
                              range=(0, 65535),
                              default_value=1,
-                             units=Units.HERTZ,
+                             units=Units.COUNTS,
                              startup_param=True,
                              direct_access=True)
         self._param_dict.add(Parameter.AVG_INTERVAL,
