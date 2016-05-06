@@ -1,5 +1,5 @@
 driver_metadata:
-  version: 1.1.14
+  version: 1.1.15
   author: Bill Bollenbacher
   driver_model: vector
   driver_make: nortek
