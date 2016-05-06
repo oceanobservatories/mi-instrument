@@ -22,11 +22,6 @@ __license__ = 'Apache 2.0'
 METALOGGER = get_logging_metaclass('trace')
 
 NEWLINE = '\n'
-IRIS = 'IRIS'
-LILY = 'LILY'
-HEAT = 'HEAT'
-NANO = 'NANO'
-SYST = 'SYST'
 
 common_regex_items = {
     'float': r'\s*-?\d*\.\d*\s*',
