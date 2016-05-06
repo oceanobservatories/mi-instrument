@@ -24,7 +24,6 @@ METALOGGER = get_logging_metaclass('trace')
 NEWLINE = '\n'
 IRIS = 'IRIS'
 LILY = 'LILY'
-HEAT = 'HEAT'
 NANO = 'NANO'
 SYST = 'SYST'
 

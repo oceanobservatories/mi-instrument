@@ -49,7 +49,6 @@ NEWLINE = '\n'
 LILY_STRING = 'LILY,'
 NANO_STRING = 'NANO,'
 IRIS_STRING = 'IRIS,'
-HEAT_STRING = 'HEAT,'
 SYST_STRING = 'SYST,'
 
 LILY_COMMAND = '*9900XY'
@@ -68,7 +67,6 @@ class ScheduledJob(BaseEnum):
     Instrument scheduled jobs
     """
     LEVELING_TIMEOUT = 'botpt_leveling_timeout'
-    HEATER_TIMEOUT = 'botpt_heater_timeout'
     NANO_TIME_SYNC = 'botpt_nano_time_sync'
     ACQUIRE_STATUS = 'botpt_acquire_status'
 
@@ -101,10 +99,7 @@ class ProtocolEvent(BaseEnum):
     START_LEVELING = 'PROTOCOL_EVENT_START_LEVELING'
     STOP_LEVELING = 'PROTOCOL_EVENT_STOP_LEVELING'
     NANO_TIME_SYNC = 'PROTOCOL_EVENT_NANO_TIME_SYNC'
-    START_HEATER = 'PROTOCOL_EVENT_START_HEATER'
-    STOP_HEATER = 'PROTOCOL_EVENT_STOP_HEATER'
     LEVELING_TIMEOUT = 'PROTOCOL_EVENT_LEVELING_TIMEOUT'
-    HEATER_TIMEOUT = 'PROTOCOL_EVENT_HEATER_TIMEOUT'
 
 
 class Capability(BaseEnum):
@@ -120,8 +115,6 @@ class Capability(BaseEnum):
     ACQUIRE_STATUS = ProtocolEvent.ACQUIRE_STATUS
     START_LEVELING = ProtocolEvent.START_LEVELING
     STOP_LEVELING = ProtocolEvent.STOP_LEVELING
-    START_HEATER = ProtocolEvent.START_HEATER
-    STOP_HEATER = ProtocolEvent.STOP_HEATER
     DISCOVER = ProtocolEvent.DISCOVER
 
 
@@ -135,8 +128,6 @@ class Parameter(DriverParameter):
     LEVELING_TIMEOUT = 'relevel_timeout'
     LEVELING_FAILED = 'leveling_failed'
     OUTPUT_RATE = 'output_rate_hz'
-    HEAT_DURATION = 'heat_duration'
-    HEATER_ON = 'heater_on'
     LILY_LEVELING = 'lily_leveling'
 
     @classmethod
@@ -153,7 +144,6 @@ class ParameterConstraint(BaseEnum):
     YTILT_TRIGGER = (float, 0, 330)
     LEVELING_TIMEOUT = (int, 60, 6000)
     OUTPUT_RATE = (int, 1, 40)
-    HEAT_DURATION = (int, 1, 8)
     AUTO_RELEVEL = (bool, None, None)
 
 
@@ -176,7 +166,6 @@ class InstrumentCommands(BaseEnum):
     IRIS_OFF = IRIS_STRING + IRIS_COMMAND + 'C-OFF'  # turns off continuous data
     IRIS_DUMP1 = IRIS_STRING + IRIS_COMMAND + '-DUMP-SETTINGS'  # outputs current settings
     IRIS_DUMP2 = IRIS_STRING + IRIS_COMMAND + '-DUMP2'  # outputs current extended settings
-    HEAT = HEAT_STRING  # turns the heater on; HEAT,<number of hours>
     SYST_DUMP1 = SYST_STRING + '1'
 
 
@@ -199,7 +188,6 @@ class InstrumentCommandNames(BaseEnum):
     IRIS_OFF = 'Iris Off'
     IRIS_DUMP1 = 'Iris Settings'
     IRIS_DUMP2 = 'Iris Extended Settings'
-    HEAT = 'Heater On>'
     SYST_DUMP1 = 'System Settings'
 
 
@@ -213,13 +201,6 @@ class Prompt(BaseEnum):
     IRIS_OFF = IRIS_COMMAND + 'C-OFF'
     LILY_START_LEVELING = LILY_COMMAND + '-LEVEL,1'
     LILY_STOP_LEVELING = LILY_COMMAND + '-LEVEL,0'
-
-
-class RegexResponse(BaseEnum):
-    """
-    Instrument responses (regex)
-    """
-    HEAT = re.compile(r'(HEAT,.{19},\*\d)\n')
 
 
 ###############################################################################
@@ -291,10 +272,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                 (ProtocolEvent.START_LEVELING, self._handler_start_leveling),
                 (ProtocolEvent.STOP_LEVELING, self._handler_stop_leveling),
                 (ProtocolEvent.NANO_TIME_SYNC, self._handler_time_sync),
-                (ProtocolEvent.START_HEATER, self._handler_start_heater),
-                (ProtocolEvent.STOP_HEATER, self._handler_stop_heater),
                 (ProtocolEvent.LEVELING_TIMEOUT, self._handler_leveling_timeout),
-                (ProtocolEvent.HEATER_TIMEOUT, self._handler_heater_timeout),
             ],
             ProtocolState.COMMAND: [
                 (ProtocolEvent.ENTER, self._handler_command_enter),
@@ -307,10 +285,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                 (ProtocolEvent.STOP_LEVELING, self._handler_stop_leveling),
                 (ProtocolEvent.START_DIRECT, self._handler_command_start_direct),
                 (ProtocolEvent.NANO_TIME_SYNC, self._handler_time_sync),
-                (ProtocolEvent.START_HEATER, self._handler_start_heater),
-                (ProtocolEvent.STOP_HEATER, self._handler_stop_heater),
                 (ProtocolEvent.LEVELING_TIMEOUT, self._handler_leveling_timeout),
-                (ProtocolEvent.HEATER_TIMEOUT, self._handler_heater_timeout),
             ],
             ProtocolState.DIRECT_ACCESS: [
                 (ProtocolEvent.ENTER, self._handler_direct_access_enter),
@@ -331,7 +306,7 @@ class Protocol(CommandResponseInstrumentProtocol):
 
         # Add build handlers for device commands.
         for command in InstrumentCommands.list():
-            if command in [InstrumentCommands.NANO_SET_RATE, InstrumentCommands.HEAT]:
+            if command in [InstrumentCommands.NANO_SET_RATE]:
                 self._add_build_handler(command, self._build_command_with_value)
             else:
                 self._add_build_handler(command, self._build_simple_command)
@@ -448,16 +423,11 @@ class Protocol(CommandResponseInstrumentProtocol):
         @param events: list of events to be filtered
         @return: list of filtered events
         """
-        heating = self._param_dict.get(Parameter.HEATER_ON)
         leveling = self._param_dict.get(Parameter.LILY_LEVELING)
 
         capabilities = []
         for x in events:
             if Capability.has(x):
-                if x is Capability.START_HEATER and heating:
-                    continue
-                if x is Capability.STOP_HEATER and not heating:
-                    continue
                 if x is Capability.START_LEVELING and leveling:
                     continue
                 if x is Capability.STOP_LEVELING and not leveling:
@@ -474,8 +444,6 @@ class Protocol(CommandResponseInstrumentProtocol):
         self._cmd_dict.add(Capability.ACQUIRE_STATUS, display_name="Acquire Status")
         self._cmd_dict.add(Capability.START_LEVELING, display_name="Start LILY Leveling")
         self._cmd_dict.add(Capability.STOP_LEVELING, display_name="Stop LILY Leveling")
-        self._cmd_dict.add(Capability.START_HEATER, display_name="Start Heater")
-        self._cmd_dict.add(Capability.STOP_HEATER, display_name="Stop Heater")
         self._cmd_dict.add(Capability.DISCOVER, display_name='Discover')
 
     def _build_param_dict(self):
@@ -524,15 +492,6 @@ class Protocol(CommandResponseInstrumentProtocol):
                 'visibility': rw,
                 'startup_param': True,
             },
-            Parameter.HEAT_DURATION: {
-                'type': _int,
-                'display_name': 'Heater Run Time Duration',
-                'description': 'The number of hours the heater will run when it is given the command to turn on: (1-8)',
-                'range': (1, 8),
-                'units': Units.HOUR,
-                'visibility': rw,
-                'startup_param': True,
-            },
             Parameter.OUTPUT_RATE: {
                 'type': _int,
                 'display_name': 'NANO Output Rate',
@@ -541,14 +500,6 @@ class Protocol(CommandResponseInstrumentProtocol):
                 'units': Units.HERTZ,
                 'visibility': rw,
                 'startup_param': True,
-            },
-            Parameter.HEATER_ON: {
-                'type': _bool,
-                'display_name': 'Heater Running',
-                'description': 'Indicates if the heater is running: (true | false)',
-                'range': {True: 'true', False: 'false'},
-                'value': False,
-                'visibility': ro,
             },
             Parameter.LILY_LEVELING: {
                 'type': _bool,
@@ -721,36 +672,6 @@ class Protocol(CommandResponseInstrumentProtocol):
 
         self.set_init_params(config)
         self._add_scheduler_event(ScheduledJob.LEVELING_TIMEOUT, ProtocolEvent.LEVELING_TIMEOUT)
-
-    def _remove_heater_timeout(self):
-        """
-        Clean up the heater timer
-        """
-        try:
-            self._remove_scheduler(ScheduledJob.HEATER_TIMEOUT)
-        except KeyError:
-            log.debug('Unable to remove HEATER_TIMEOUT scheduled job, job does not exist.')
-
-    def _schedule_heater_timeout(self):
-        """
-        Set up a timer to set HEATER_ON to false around the time the heater shuts off
-        """
-        self._remove_heater_timeout()
-        dt = datetime.datetime.now() + datetime.timedelta(hours=self._param_dict.get(Parameter.HEAT_DURATION))
-        job_name = ScheduledJob.HEATER_TIMEOUT
-        config = {
-            DriverConfigKey.SCHEDULER: {
-                job_name: {
-                    DriverSchedulerConfigKey.TRIGGER: {
-                        DriverSchedulerConfigKey.TRIGGER_TYPE: TriggerType.ABSOLUTE,
-                        DriverSchedulerConfigKey.DATE: dt
-                    },
-                }
-            }
-        }
-
-        self.set_init_params(config)
-        self._add_scheduler_event(ScheduledJob.HEATER_TIMEOUT, ProtocolEvent.HEATER_TIMEOUT)
 
     def _stop_autosample(self):
         """
@@ -1100,52 +1021,6 @@ class Protocol(CommandResponseInstrumentProtocol):
         self._param_dict.set_value(Parameter.LEVELING_FAILED, True)
         self._handler_stop_leveling()
         raise InstrumentProtocolException('Leveling failed to complete within timeout, disabling auto-relevel')
-
-    def _handler_start_heater(self, *args, **kwargs):
-        """
-        Turn the heater on for Parameter.HEAT_DURATION hours
-        @return next_state, (next_state, result)
-        """
-        next_state = None
-        result = 'heater is already on'
-        if not self._param_dict.get(Parameter.HEATER_ON):
-            result = self._do_cmd_resp(InstrumentCommands.HEAT,
-                                       self._param_dict.get(Parameter.HEAT_DURATION),
-                                       response_regex=RegexResponse.HEAT)
-            self._param_dict.set_value(Parameter.HEATER_ON, True)
-
-            # Want to disable auto leveling when the heater is on
-            self._param_dict.set_value(Parameter.AUTO_RELEVEL, False)
-
-            self._schedule_heater_timeout()
-            self._driver_event(DriverAsyncEvent.CONFIG_CHANGE)
-        return next_state, (next_state, result)
-
-    def _handler_stop_heater(self, *args, **kwargs):
-        """
-        Turn the heater on for Parameter.HEAT_DURATION hours
-        @return next_state, (next_state, result)
-        """
-        next_state = None
-        result = 'heater was not on - no need to stop'
-        if self._param_dict.get(Parameter.HEATER_ON):
-            self._do_cmd_resp(InstrumentCommands.HEAT,
-                              0,
-                              response_regex=RegexResponse.HEAT)
-            self._param_dict.set_value(Parameter.HEATER_ON, False)
-            self._remove_heater_timeout()
-            self._driver_event(DriverAsyncEvent.CONFIG_CHANGE)
-        return next_state, (next_state, result)
-
-    def _handler_heater_timeout(self):
-        """
-        Heater should be finished.  Set HEATER_ON to false.
-        """
-        next_state = None
-        result = 'heater timeout reached'
-        self._param_dict.set_value(Parameter.HEATER_ON, False)
-        self._driver_event(DriverAsyncEvent.CONFIG_CHANGE)
-        return next_state, (next_state, result)
 
 
 def create_playback_protocol(callback):
