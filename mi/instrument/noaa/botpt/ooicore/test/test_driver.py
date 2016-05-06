@@ -58,7 +58,6 @@ botpt_startup_config = {
             Parameter.LEVELING_TIMEOUT: 600,
             Parameter.XTILT_TRIGGER: 300.0,
             Parameter.YTILT_TRIGGER: 300.0,
-            Parameter.HEAT_DURATION: 1,
             Parameter.OUTPUT_RATE: 40,
         }
 }
@@ -121,10 +120,8 @@ class BotptTestMixinSub(DriverTestMixin):
         Parameter.YTILT_TRIGGER: {TYPE: float, READONLY: False, DA: False, STARTUP: True, VALUE: 300},
         Parameter.LEVELING_TIMEOUT: {TYPE: int, READONLY: False, DA: False, STARTUP: True, VALUE: 600},
         Parameter.OUTPUT_RATE: {TYPE: int, READONLY: False, DA: False, STARTUP: True, VALUE: 40},
-        Parameter.HEAT_DURATION: {TYPE: int, READONLY: False, DA: False, STARTUP: True, VALUE: 1},
         # RO
         Parameter.LILY_LEVELING: {TYPE: bool, READONLY: True, DA: False, STARTUP: False, VALUE: False},
-        Parameter.HEATER_ON: {TYPE: bool, READONLY: True, DA: False, STARTUP: False, VALUE: False},
         Parameter.LEVELING_FAILED: {TYPE: bool, READONLY: True, DA: False, STARTUP: False, VALUE: False},
     }
 
@@ -141,8 +138,6 @@ class BotptTestMixinSub(DriverTestMixin):
         Capability.STOP_AUTOSAMPLE: {STATES: [ProtocolState.AUTOSAMPLE]},
         Capability.START_LEVELING: {STATES: [ProtocolState.COMMAND, ProtocolState.AUTOSAMPLE]},
         Capability.STOP_LEVELING: {STATES: [ProtocolState.COMMAND, ProtocolState.AUTOSAMPLE]},
-        Capability.START_HEATER: {STATES: [ProtocolState.COMMAND, ProtocolState.AUTOSAMPLE]},
-        Capability.STOP_HEATER: {STATES: [ProtocolState.COMMAND, ProtocolState.AUTOSAMPLE]},
     }
 
     _capabilities = {
@@ -155,9 +150,6 @@ class BotptTestMixinSub(DriverTestMixin):
                                 'PROTOCOL_EVENT_START_LEVELING',
                                 'PROTOCOL_EVENT_STOP_LEVELING',
                                 'PROTOCOL_EVENT_LEVELING_TIMEOUT',
-                                'PROTOCOL_EVENT_HEATER_TIMEOUT',
-                                'PROTOCOL_EVENT_START_HEATER',
-                                'PROTOCOL_EVENT_STOP_HEATER',
                                 'PROTOCOL_EVENT_NANO_TIME_SYNC'],
         ProtocolState.AUTOSAMPLE: ['DRIVER_EVENT_GET',
                                    'DRIVER_EVENT_STOP_AUTOSAMPLE',
@@ -165,9 +157,6 @@ class BotptTestMixinSub(DriverTestMixin):
                                    'PROTOCOL_EVENT_START_LEVELING',
                                    'PROTOCOL_EVENT_STOP_LEVELING',
                                    'PROTOCOL_EVENT_LEVELING_TIMEOUT',
-                                   'PROTOCOL_EVENT_HEATER_TIMEOUT',
-                                   'PROTOCOL_EVENT_START_HEATER',
-                                   'PROTOCOL_EVENT_STOP_HEATER',
                                    'PROTOCOL_EVENT_NANO_TIME_SYNC'],
         ProtocolState.DIRECT_ACCESS: ['DRIVER_EVENT_STOP_DIRECT',
                                       'EXECUTE_DIRECT'],
@@ -651,16 +640,6 @@ class DriverUnitTest(InstrumentDriverUnitTestCase, BotptTestMixinSub):
         # assert that we raised the expected events
         self.assertEqual(driver._protocol._protocol_fsm.on_event.call_args_list, expected)
 
-    def test_heat_on(self):
-        """
-        Test turning the heater on/off
-        """
-        driver = self.test_connect()
-        driver._protocol._handler_start_heater()
-        self.assertEqual(driver._protocol._param_dict.get(Parameter.HEATER_ON), True)
-        driver._protocol._handler_stop_heater()
-        self.assertEqual(driver._protocol._param_dict.get(Parameter.HEATER_ON), False)
-
     def test_driver_enums(self):
         """
         Verify that all driver enumeration has no duplicate values that might cause confusion. Also
@@ -695,9 +674,8 @@ class DriverUnitTest(InstrumentDriverUnitTestCase, BotptTestMixinSub):
         driver_capabilities = Capability.list()
         test_capabilities = Capability.list()
 
-        # BOTPT adds/removes heating/leveling capabilities dynamically
+        # BOTPT adds/removes leveling capabilities dynamically
         # we need to remove the STOP capabilities for this test
-        driver_capabilities.remove(Capability.STOP_HEATER)
         driver_capabilities.remove(Capability.STOP_LEVELING)
 
         # Add a bogus capability that will be filtered out.
@@ -790,7 +768,6 @@ class DriverIntegrationTest(InstrumentDriverIntegrationTestCase, BotptTestMixinS
             Parameter.LEVELING_TIMEOUT: 601,
             Parameter.XTILT_TRIGGER: 301,
             Parameter.YTILT_TRIGGER: 301,
-            Parameter.HEAT_DURATION: 2,
             Parameter.OUTPUT_RATE: 1,
         }
 
@@ -913,16 +890,6 @@ class DriverIntegrationTest(InstrumentDriverIntegrationTestCase, BotptTestMixinS
         If we sync time in command mode, we will generate at least one NANO sample particle.
         """
         self.assert_scheduled_event(ScheduledJob.NANO_TIME_SYNC, self.assert_time_sync, delay=20)
-
-    def test_heat_on(self):
-        """
-        Test turning the heater on and off.
-        """
-        self.assert_initialize_driver()
-        self.assert_driver_command(Capability.START_HEATER)
-        self.assert_get(Parameter.HEATER_ON, True)
-        self.assert_driver_command(Capability.STOP_HEATER)
-        self.assert_get(Parameter.HEATER_ON, False)
 
 
 ###############################################################################
@@ -1051,8 +1018,6 @@ class DriverQualificationTest(InstrumentDriverQualificationTestCase, BotptTestMi
                 ProtocolEvent.ACQUIRE_STATUS,
                 ProtocolEvent.START_LEVELING,
                 ProtocolEvent.STOP_LEVELING,
-                ProtocolEvent.START_HEATER,
-                ProtocolEvent.STOP_HEATER,
             ],
             AgentCapabilityType.RESOURCE_INTERFACE: None,
             AgentCapabilityType.RESOURCE_PARAMETER: self._driver_parameters.keys()
@@ -1071,8 +1036,6 @@ class DriverQualificationTest(InstrumentDriverQualificationTestCase, BotptTestMi
             ProtocolEvent.ACQUIRE_STATUS,
             ProtocolEvent.START_LEVELING,
             ProtocolEvent.STOP_LEVELING,
-            ProtocolEvent.START_HEATER,
-            ProtocolEvent.STOP_HEATER,
         ]
 
         self.assert_start_autosample()
