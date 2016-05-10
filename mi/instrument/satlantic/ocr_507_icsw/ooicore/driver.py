@@ -445,6 +445,8 @@ class SatlanticOCR507InstrumentProtocol(CommandResponseInstrumentProtocol):
                                        self._handler_autosample_enter)
         self._protocol_fsm.add_handler(SatlanticProtocolState.AUTOSAMPLE, SatlanticProtocolEvent.STOP_AUTOSAMPLE,
                                        self._handler_autosample_stop_autosample)
+        self._protocol_fsm.add_handler(SatlanticProtocolState.AUTOSAMPLE, SatlanticProtocolEvent.GET,
+                                       self._handler_command_get)
         self._protocol_fsm.add_handler(SatlanticProtocolState.DIRECT_ACCESS, SatlanticProtocolEvent.ENTER,
                                        self._handler_direct_access_enter)
         self._protocol_fsm.add_handler(SatlanticProtocolState.DIRECT_ACCESS, SatlanticProtocolEvent.EXECUTE_DIRECT,
@@ -512,10 +514,10 @@ class SatlanticOCR507InstrumentProtocol(CommandResponseInstrumentProtocol):
                              startup_param=True,
                              direct_access=True)
 
-        self._cmd_dict.add(SatlanticCapability.START_AUTOSAMPLE, display_name="Start Autosample")
+        self._cmd_dict.add(SatlanticCapability.START_AUTOSAMPLE, display_name="Start Autosample", timeout=20)
         self._cmd_dict.add(SatlanticCapability.STOP_AUTOSAMPLE, display_name="Stop Autosample")
         self._cmd_dict.add(SatlanticCapability.ACQUIRE_STATUS, display_name="Acquire Status")
-        self._cmd_dict.add(SatlanticCapability.DISCOVER, display_name='Discover')
+        self._cmd_dict.add(SatlanticCapability.DISCOVER, display_name='Discover', timeout=60)
 
         self._driver_dict.add(DriverDictKey.VENDOR_SW_COMPATIBLE, True)
 
