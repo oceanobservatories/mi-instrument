@@ -308,7 +308,8 @@ class SeaBirdProtocol(CommandResponseInstrumentProtocol):
         @throws InstrumentProtocolException if the update commands and not recognized.
         """
         # Command device to initialize parameters and send a config change event.
-        self._protocol_fsm.on_event(DriverEvent.INIT_PARAMS)
+        if self._init_type != InitializationType.NONE:
+            self._protocol_fsm.on_event(DriverEvent.INIT_PARAMS)
 
         # Tell driver superclass to send a state change event.
         # Superclass will query the state.
@@ -318,7 +319,8 @@ class SeaBirdProtocol(CommandResponseInstrumentProtocol):
         """
         Enter autosample state.
         """
-        self._protocol_fsm.on_event(DriverEvent.INIT_PARAMS)
+        if self._init_type != InitializationType.NONE:
+            self._protocol_fsm.on_event(DriverEvent.INIT_PARAMS)
 
         # Tell driver superclass to send a state change event.
         # Superclass will query the state.
@@ -330,7 +332,10 @@ class SeaBirdProtocol(CommandResponseInstrumentProtocol):
         """
         next_state = None
         result = []
+
+        self._update_params()
         self._init_params()
+
         return next_state, (next_state, result)
 
     def _handler_autosample_init_params(self, *args, **kwargs):
@@ -341,17 +346,15 @@ class SeaBirdProtocol(CommandResponseInstrumentProtocol):
         """
         next_state = None
         result = []
-        if self._init_type != InitializationType.NONE:
 
-            try:
-                self._stop_logging()
-                self._init_params()
+        self._update_params()
 
-            finally:
-                # Switch back to streaming
-                if not self._is_logging():
-                    log.debug("SBE is logging again")
-                    self._start_logging()
+        try:
+            self._stop_logging()
+            self._init_params()
+        finally:
+            # Switch back to streaming
+            self._start_logging()
 
         return next_state, (next_state, result)
 
