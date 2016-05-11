@@ -1983,7 +1983,7 @@ class NortekInstrumentProtocol(CommandResponseInstrumentProtocol):
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name="Timing Control Register",
                              range=(1, 65535),
-                             description="See manual for usage.",
+                             description="See manual for usage. (1-65535)",
                              direct_access=True,
                              default_value=130)
         self._param_dict.add(Parameter.COMPASS_UPDATE_RATE,
@@ -2018,9 +2018,9 @@ class NortekInstrumentProtocol(CommandResponseInstrumentProtocol):
                              type=ParameterDictType.INT,
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name="Coordinate System",
+                             range={'ENU': 0, 'XYZ': 1, 'Beam': 2},
                              description='Coordinate System (0:ENU | 1:XYZ | 2:Beam)',
                              default_value=2,
-                             range={'ENU': 0, 'XYZ': 1, 'Beam': 2},
                              startup_param=True,
                              direct_access=True)
         self._param_dict.add(Parameter.NUMBER_BINS,
@@ -2043,9 +2043,10 @@ class NortekInstrumentProtocol(CommandResponseInstrumentProtocol):
                              type=ParameterDictType.INT,
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name="Bin Length",
-                             description="Size of water volume analyzed.",
+                             range=(1, 65535),
+                             description="Length of the section of the beam used to analyze water. (1-65535)",
                              default_value=7,
-                             units=Units.MILLIMETER + '³',
+                             units=Units.METER,
                              startup_param=True,
                              direct_access=True)
         self._param_dict.add(Parameter.DEPLOYMENT_NAME,
