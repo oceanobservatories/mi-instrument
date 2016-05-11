@@ -11,8 +11,6 @@ import re
 import time
 from mi.core.log import get_logger
 
-from mi.core.util import dict_equal
-
 from mi.core.common import BaseEnum, Units
 from mi.core.time_tools import get_timestamp_delayed
 from mi.core.time_tools import timegm_to_float
@@ -32,6 +30,7 @@ from mi.core.instrument.chunker import StringChunker
 from mi.core.exceptions import InstrumentParameterException
 from mi.core.exceptions import InstrumentProtocolException
 from mi.core.exceptions import InstrumentTimeoutException
+from mi.core.exceptions import InstrumentDataException
 
 from mi.instrument.seabird.driver import SeaBirdInstrumentDriver
 from mi.instrument.seabird.driver import SeaBirdProtocol
@@ -166,6 +165,7 @@ class Capability(BaseEnum):
     START_DIRECT = DriverEvent.START_DIRECT
     STOP_DIRECT = DriverEvent.STOP_DIRECT
     DISCOVER = DriverEvent.DISCOVER
+
 
 # Device specific parameters.
 class Parameter(DriverParameter):
@@ -446,7 +446,7 @@ class SBE54tpsConfigurationDataParticle(DataParticle):
                                    SBE54tpsConfigurationDataParticleKey.PRESSURE_CAL_DATE,
                                    SBE54tpsConfigurationDataParticleKey.ACQ_OSC_CAL_DATE,
                                    SBE54tpsConfigurationDataParticleKey.PRESSURE_SERIAL_NUM,
-                                   SBE54tpsConfigurationDataParticleKey.SERIAL_NUMBER,]:
+                                   SBE54tpsConfigurationDataParticleKey.SERIAL_NUMBER]:
                             values[key] = val
 
                         elif key in [SBE54tpsConfigurationDataParticleKey.BATTERY_TYPE,
@@ -1049,13 +1049,7 @@ class Protocol(SeaBirdProtocol):
         self._cmd_dict.add(Capability.START_AUTOSAMPLE, display_name="Start Autosample")
         self._cmd_dict.add(Capability.STOP_AUTOSAMPLE, display_name="Stop Autosample")
         self._cmd_dict.add(Capability.TEST_EEPROM, timeout=TIMEOUT, display_name="Test EEPROM")
-        self._cmd_dict.add(Capability.DISCOVER, display_name='Discover')
-
-    def _send_wakeup(self):
-        pass
-
-    def _wakeup(self, timeout, delay=1):
-        pass
+        self._cmd_dict.add(Capability.DISCOVER, timeout=TIMEOUT, display_name='Discover')
 
     ########################################################################
     # Unknown handlers.
@@ -1070,13 +1064,7 @@ class Protocol(SeaBirdProtocol):
         """
         Discover current state
         """
-        next_state = self._discover()
-        result = []
-
-        if next_state is ProtocolState.UNKNOWN:
-            result = 'Failure to connect to instrument'
-
-        return next_state, (next_state, result)
+        return self._discover(*args, **kwargs)
 
     def _handler_unknown_exit(self, *args, **kwargs):
         """
@@ -1168,8 +1156,13 @@ class Protocol(SeaBirdProtocol):
             result = self._do_cmd_resp(InstrumentCommands.SAMPLE_REFERENCE_OSCILLATOR, *args, **kwargs)
         except InstrumentTimeoutException:
             log.error('Timed out when trying to acquire Reference Oscillator Sample')
-            # Instrument may have gone to autosample; enforce command state
+            # Instrument may have gone to autosample; verify instrument command state
             self._do_cmd_no_resp(InstrumentCommands.STOP_LOGGING, *args, **kwargs)
+
+            # report failure
+            exception = InstrumentDataException('Could not acquire Reference Oscillator Sample. '
+                                                'Check instrument storage usage/availability')
+            self._driver_event(DriverAsyncEvent.ERROR, exception)
 
         return next_state, (next_state, result)
 
@@ -1335,7 +1328,6 @@ class Protocol(SeaBirdProtocol):
 
         return response
 
-
     def _parse_test_eeprom(self, response, prompt):
         """
         @return: True or False
@@ -1386,6 +1378,8 @@ class Protocol(SeaBirdProtocol):
         except IndexError:
             raise InstrumentParameterException('Set command requires a parameter dict.')
 
+        old_config = self._param_dict.get_config()
+
         self._verify_not_readonly(*args, **kwargs)
 
         for (key, val) in params.iteritems():
@@ -1393,6 +1387,10 @@ class Protocol(SeaBirdProtocol):
             self._do_cmd_resp(InstrumentCommands.SET, key, val, **kwargs)
 
         self._update_params()
+        new_config = self._param_dict.get_config()
+        if old_config != new_config:
+            self._driver_event(DriverAsyncEvent.CONFIG_CHANGE)
+            log.debug('_set_params: config updated!')
 
     def apply_startup_params(self):
 
@@ -1406,7 +1404,6 @@ class Protocol(SeaBirdProtocol):
         # don't need to do anything.
         if self._instrument_config_dirty():
             self._apply_params()
-
 
     def _update_params(self, *args, **kwargs):
         """
@@ -1437,31 +1434,9 @@ class Protocol(SeaBirdProtocol):
         # Get new param dict config. If it differs from the old config,
         # tell driver superclass to publish a config change event.
         new_config = self._param_dict.get_config()
-        log.debug("new_config: %s == old_config: %s" % (new_config, old_config))
-        if not dict_equal(old_config, new_config, ignore_keys=Parameter.TIME):
-            log.debug("configuration has changed.  Send driver event")
+
+        if new_config != old_config:
             self._driver_event(DriverAsyncEvent.CONFIG_CHANGE)
-
-
-    ########################################################################
-    # Private helpers.
-    ########################################################################
-    def _discover(self):
-        """
-        Determine instrument state. PREST is always sampling, so if we haven't received a particle within the last
-        max sample period, then we've lost connection to the instrument.
-        """
-        state = DriverProtocolState.AUTOSAMPLE
-
-        sample_period = self._param_dict.get(Parameter.SAMPLE_PERIOD)
-        if not sample_period:
-            sample_period = MAX_SAMPLE_DURATION
-
-        particles = self.wait_for_particles([DataParticleType.PREST_REAL_TIME], time.time()+sample_period+1)
-        if not particles:
-            state = DriverProtocolState.UNKNOWN
-
-        return state
 
     def _start_logging(self, timeout=TIMEOUT):
         """
@@ -1480,10 +1455,24 @@ class Protocol(SeaBirdProtocol):
 
     def _is_logging(self, *args, **kwargs):
         """
-        Determine if we are in autosample
-        @return: True - PREST is always in a logging state or will return to logging after inactivity
+        Wake up the instrument and inspect the prompt to determine if we
+        are in streaming
+        @param: timeout - Command timeout
+        @return: True - instrument logging, False - not logging,
+                 None - unknown logging state
+        @raise: InstrumentProtocolException if we can't identify the prompt
         """
-        return True
+        prompt = self._wakeup(timeout=TIMEOUT)
+
+        if prompt == Prompt.AUTOSAMPLE:
+            result = True
+        elif prompt == Prompt.COMMAND:
+            result = False
+        else:
+            result = None
+
+        log.debug('_is_logging: returning result %s', result)
+        return result
 
     @staticmethod
     def _bool_to_int_string(v):
@@ -1503,7 +1492,6 @@ class Protocol(SeaBirdProtocol):
                              lambda match: match.group(1),
                              str,
                              type=ParameterDictType.STRING,
-                             expiration=0,
                              visibility=ParameterDictVisibility.READ_ONLY,
                              display_name="Instrument Time",
                              description="Timestamp of last clock sync.",

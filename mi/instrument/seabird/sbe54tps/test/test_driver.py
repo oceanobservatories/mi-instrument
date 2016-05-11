@@ -435,7 +435,7 @@ class SeaBird54PlusUnitTest(SeaBirdUnitTest, SeaBird54tpsMixin):
     def _send_port_agent_packet(self, driver, data_item):
         driver._protocol.got_data(self._create_port_agent_packet(data_item))
 
-    def send_side_effect(self, driver):
+    def _send_side_effect(self, driver):
         def inner(data):
             data = data.strip()
             log.debug('get data response for "%s"', data)
@@ -454,7 +454,7 @@ class SeaBird54PlusUnitTest(SeaBirdUnitTest, SeaBird54tpsMixin):
         'SampleRefOsc': SAMPLE_REF_OSC + NEWLINE
     }
 
-    def test_connect(self, initial_protocol_state=ProtocolState.COMMAND):
+    def _test_connect(self, initial_protocol_state=ProtocolState.COMMAND):
         """
         Verify we can initialize the driver.  Set up mock events for other tests.
         @param initial_protocol_state: target protocol state for driver
@@ -476,13 +476,27 @@ class SeaBird54PlusUnitTest(SeaBirdUnitTest, SeaBird54tpsMixin):
         }
 
         driver = SBE54PlusInstrumentDriver(self._got_data_event_callback)
+
         self.assert_initialize_driver(driver, initial_protocol_state)
+
+        # Shorten the test by removing the sleeps associated with _wakeup
+        driver._protocol._wakeup = lambda x: Prompt.AUTOSAMPLE
+
         driver._protocol.set_init_params(startup_config)
-        driver._connection.send.side_effect = self.send_side_effect(driver)
+        driver._connection.send.side_effect = self._send_side_effect(driver)
         driver._protocol._protocol_fsm.on_event_actual = driver._protocol._protocol_fsm.on_event
         driver._protocol._protocol_fsm.on_event = Mock()
         driver._protocol._protocol_fsm.on_event.side_effect = driver._protocol._protocol_fsm.on_event_actual
         driver._protocol._init_params()
+
+        # Mock _do_cmd_resp to force timeout to 0.1
+        def shorten_timeout(cmd, *args, **kwargs):
+            kwargs['timeout'] = 0.1
+            driver._protocol._do_cmd_resp_actual(cmd, *args, **kwargs)
+
+        driver._protocol._do_cmd_resp_actual = driver._protocol._do_cmd_resp
+        driver._protocol._do_cmd_resp = Mock()
+        driver._protocol._do_cmd_resp.side_effect = shorten_timeout
 
         return driver
 
@@ -502,29 +516,17 @@ class SeaBird54PlusUnitTest(SeaBirdUnitTest, SeaBird54tpsMixin):
         @return:
         """
 
-        driver = self.test_connect()
+        driver = self._test_connect()
 
         # Test a normal oscillator sample
         driver._protocol._protocol_fsm.on_event(ProtocolEvent.SAMPLE_REFERENCE_OSCILLATOR)
         self.assertEqual(driver._protocol.get_current_state(), ProtocolState.OSCILLATOR)
-        time.sleep(0.1)
+        time.sleep(0.2)
         self.assertEqual(driver._protocol.get_current_state(), ProtocolState.COMMAND)
 
-        # Test a failed oscillator sample
-
-        # Mock _do_cmd_resp to force timeout to 0.1
-        def shorten_timeout(cmd, *args, **kwargs):
-            kwargs['timeout'] = 0.1
-            driver._protocol._do_cmd_resp_actual(cmd, *args, **kwargs)
-
-        driver._protocol._do_cmd_resp_actual = driver._protocol._do_cmd_resp
-        driver._protocol._do_cmd_resp = Mock()
-        driver._protocol._do_cmd_resp.side_effect = shorten_timeout
-
-        # Set response to failed oscillator sample
+        # Set response to failed oscillator sample and test again
         self._responses['SampleRefOsc'] = SAMPLE_REF_OSC_FAIL + NEWLINE
 
-        # Excercise driver
         driver._protocol._protocol_fsm.on_event(ProtocolEvent.SAMPLE_REFERENCE_OSCILLATOR)
         self.assertEqual(driver._protocol.get_current_state(), ProtocolState.OSCILLATOR)
         time.sleep(0.2)
