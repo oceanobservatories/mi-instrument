@@ -1137,7 +1137,7 @@ class InstrumentProtocol(CommandResponseInstrumentProtocol):
         self._cmd_dict.add(Capability.CLOCK_SYNC, display_name='Synchronize Clock')
         self._cmd_dict.add(Capability.START_AUTOSAMPLE, display_name="Start Autosample")
         self._cmd_dict.add(Capability.STOP_AUTOSAMPLE, display_name="Stop Autosample")
-        self._cmd_dict.add(Capability.DISCOVER, display_name='Discover', timeout=20)
+        self._cmd_dict.add(Capability.DISCOVER, display_name='Discover', timeout=30)
 
 
     def _build_param_dict(self):
