@@ -477,8 +477,8 @@ class SatlanticPARInstrumentProtocol(CommandResponseInstrumentProtocol):
         self._cmd_dict = ProtocolCommandDict()
         self._cmd_dict.add(PARCapability.ACQUIRE_SAMPLE, display_name='Acquire Sample')
         self._cmd_dict.add(PARCapability.ACQUIRE_STATUS, display_name='Acquire Status')
-        self._cmd_dict.add(PARCapability.START_AUTOSAMPLE, display_name='Start Autosample', timeout=20)
-        self._cmd_dict.add(PARCapability.STOP_AUTOSAMPLE, display_name='Stop Autosample', timeout=20)
+        self._cmd_dict.add(PARCapability.START_AUTOSAMPLE, display_name='Start Autosample', timeout=40)
+        self._cmd_dict.add(PARCapability.STOP_AUTOSAMPLE, display_name='Stop Autosample', timeout=40)
         self._cmd_dict.add(PARCapability.DISCOVER, display_name='Discover', timeout=50)
 
     def _build_driver_dict(self):
@@ -546,27 +546,8 @@ class SatlanticPARInstrumentProtocol(CommandResponseInstrumentProtocol):
                     if time.time() > starttime + 3:
                         break
 
-                # Limit resend_check_value from expected_prompt to one of the two below
-                resend_check_value = None
-                if expected_prompt is not None:
-                    for check in (Prompt.COMMAND, Prompt.SAMPLES):
-                        if check in expected_prompt:
-                            log.trace('_do_cmd: command: %s, check=%s' % (cmd_line, check))
-                            resend_check_value = check
-
-                # Resend the EOLN if it did not go through the first time
-                starttime = time.time()
-                if resend_check_value is not None:
-                    while True:
-                        time.sleep(0.1)
-                        if time.time() > starttime + 2:
-                            log.trace("Sending eoln again.")
-                            self._connection.send(EOLN)
-                            starttime = time.time()
-                        if resend_check_value in self._promptbuf:
-                            break
-                        if PARProtocolError.INVALID_COMMAND in self._promptbuf:
-                            break
+            if cmd is Commands.EXIT:
+                self._connection.send(EOLN)
 
         return cmd_line
 
