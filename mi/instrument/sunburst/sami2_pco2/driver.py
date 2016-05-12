@@ -767,8 +767,8 @@ class Pco2wProtocol(SamiProtocol):
                              range=(0, 0xFF),
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name='Pump Pulse Duration',
-                             description='',
-                             units='16 ' + Units.HERTZ)
+                             description='(0-255)',
+                             units='1/16 ' + Units.SECOND)
 
         self._param_dict.add(Pco2wParameter.PUMP_DURATION, configuration_string_regex,
                              lambda match: int(match.group(22), 16),
@@ -780,8 +780,8 @@ class Pco2wProtocol(SamiProtocol):
                              range=(0, 0xFF),
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name='Pump Measurement Duration',
-                             description='',
-                             units='16 ' + Units.HERTZ)
+                             description='(0-255)',
+                             units='1/16 ' + Units.SECOND)
 
         self._param_dict.add(Pco2wParameter.SAMPLES_PER_MEASUREMENT, configuration_string_regex,
                              lambda match: int(match.group(23), 16),
@@ -793,7 +793,7 @@ class Pco2wProtocol(SamiProtocol):
                              range=(0, 0xFF),
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name='Samples Per Measurement',
-                             description='Number of samples per measurement.')
+                             description='Number of samples per measurement (0-255)')
 
         self._param_dict.add(Pco2wParameter.CYCLES_BETWEEN_BLANKS, configuration_string_regex,
                              lambda match: int(match.group(24), 16),
@@ -805,7 +805,7 @@ class Pco2wProtocol(SamiProtocol):
                              range=(0, 0xFF),
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name='Cycles Between Blanks',
-                             description='Number of cycles between blanks.')
+                             description='Number of cycles between blanks (0-255)')
 
         self._param_dict.add(Pco2wParameter.NUMBER_REAGENT_CYCLES, configuration_string_regex,
                              lambda match: int(match.group(25), 16),
@@ -817,7 +817,7 @@ class Pco2wProtocol(SamiProtocol):
                              range=(0, 0xFF),
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name='Number of Reagent Cycles',
-                             description='')
+                             description='(0-255)')
 
         self._param_dict.add(Pco2wParameter.NUMBER_BLANK_CYCLES, configuration_string_regex,
                              lambda match: int(match.group(26), 16),
@@ -829,7 +829,7 @@ class Pco2wProtocol(SamiProtocol):
                              range=(0, 0xFF),
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name='Number of Blank Cycles',
-                             description='')
+                             description='(0-255)')
 
         self._param_dict.add(Pco2wParameter.FLUSH_PUMP_INTERVAL, configuration_string_regex,
                              lambda match: int(match.group(27), 16),
@@ -841,7 +841,7 @@ class Pco2wProtocol(SamiProtocol):
                              range=(0, 0xFF),
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name='Flush Pump Interval',
-                             description='',
+                             description='(0-255)',
                              units=Units.SECOND)
 
         self._param_dict.add(Pco2wParameter.PUMP_SETTINGS, configuration_string_regex,
@@ -867,7 +867,7 @@ class Pco2wProtocol(SamiProtocol):
                              range=(0, 0xFF),
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name='Number of Extra Pump Cycles',
-                             description='')
+                             description='(0-255)')
 
         self._param_dict.add(Pco2wParameter.PUMP_100ML_CYCLES, r'Pump 100ml cycles = ([0-9]+)',
                              lambda match: match.group(1),
@@ -879,7 +879,7 @@ class Pco2wProtocol(SamiProtocol):
                              range=(0, 0xFF),
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name='Pump 100ml Cycles',
-                             description='Number of pump cycles when executing pump.')
+                             description='Number of pump cycles when executing pump (0-255)')
 
         self._param_dict.add(Pco2wParameter.REAGENT_FLUSH_DURATION, r'Reagent flush duration = ([0-9]+)',
                              lambda match: match.group(1),
@@ -891,8 +891,8 @@ class Pco2wProtocol(SamiProtocol):
                              range=(0, 0xFF),
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name='Reagent Flush Duration',
-                             description='Set duration of reagent flush when executing pump.',
-                             units='8 ' + Units.HERTZ)
+                             description='Set duration of reagent flush when executing pump (0-255)',
+                             units='1/8 ' + Units.SECOND)
 
         self._param_dict.add(Pco2wParameter.DEIONIZED_WATER_FLUSH_DURATION,
                              r'Deionized water flush duration = ([0-9]+)',
@@ -905,8 +905,8 @@ class Pco2wProtocol(SamiProtocol):
                              range=(0, 0xFF),
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name='Deionized Water Flush Duration',
-                             description='Set duration of deionized water flush when executing pump.',
-                             units='8 ' + Units.HERTZ)
+                             description='Set duration of deionized water flush when executing pump (0-255)',
+                             units='1/8 ' + Units.SECOND)
 
     ########################################################################
     # Overridden base class methods
