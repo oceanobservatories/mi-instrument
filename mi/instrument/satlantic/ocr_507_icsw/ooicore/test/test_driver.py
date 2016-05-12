@@ -280,7 +280,8 @@ class SatlanticProtocolUnitTest(InstrumentDriverUnitTestCase, SatlanticMixin):
                                              'DRIVER_EVENT_START_AUTOSAMPLE',
                                              'DRIVER_EVENT_ACQUIRE_STATUS',
                                              'DRIVER_EVENT_START_DIRECT'],
-            SatlanticProtocolState.AUTOSAMPLE: ['DRIVER_EVENT_STOP_AUTOSAMPLE'],
+            SatlanticProtocolState.AUTOSAMPLE: ['DRIVER_EVENT_STOP_AUTOSAMPLE',
+                                                'DRIVER_EVENT_GET'],
             SatlanticProtocolState.DIRECT_ACCESS: ['DRIVER_EVENT_STOP_DIRECT',
                                                    'EXECUTE_DIRECT']
         }
