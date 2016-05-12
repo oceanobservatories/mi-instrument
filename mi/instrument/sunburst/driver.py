@@ -2056,10 +2056,10 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
                              startup_param=True,
                              direct_access=False,
                              default_value=3600,
-                             range=(0, 604800), # up to 1 week
+                             range=(600, 604800), # up to 1 week
                              visibility=ParameterDictVisibility.READ_WRITE,
                              display_name='Auto Sample Interval',
-                             description='Interval implemented by the driver to create pseudo-autosample mode.',
+                             description='Implemented by the driver to create pseudo-autosample mode (600, 604800)',
                              units=Units.SECOND)
 
     def _pre_sample_processing(self):
