@@ -8,6 +8,7 @@
 import re
 import json
 import time
+import subprocess
 
 from mi.core.instrument.driver_dict import DriverDictKey
 from mi.core.instrument.protocol_param_dict import ParameterDictType
@@ -85,6 +86,12 @@ CAMHD_METADATA_MATCHER = re.compile(CAMHD_METADATA_REGEX, re.DOTALL)
 
 CAMHD_STATUS_REGEX = r'(ADVAL)(.*)' + NEWLINE
 CAMHD_STATUS_MATCHER = re.compile(CAMHD_STATUS_REGEX, re.DOTALL)
+
+START_ARCHIVE_COMMAND = 'curl -X POST -H "Accept: application/xml" -H "Content-type: application/xml"' \
+                        ' -d "<group_id>27</group_id>" http://209.124.182.238/api/live_events/4/start_output_group'
+
+STOP_ARCHIVE_COMMAND = 'curl -X POST -H "Accept: application/xml" -H "Content-type: application/xml"' \
+                       ' -d "<group_id>27</group_id>" http://209.124.182.238/api/live_events/4/stop_output_group'
 
 ADREAD_DATA_POSITION = 2
 
@@ -1319,6 +1326,10 @@ class CAMHDProtocol(CommandResponseInstrumentProtocol):
         kwargs['timeout'] = 30
         kwargs['response_regex'] = START_RESPONSE_PATTERN
 
+        # First, start the archive recording on elemental
+        subprocess.call(START_ARCHIVE_COMMAND, shell=True)
+
+        # Next, send command to instrument to start streaming
         resp = self._do_cmd_resp(Command.START, **kwargs)
 
         if resp.startswith('ERROR'):
@@ -1332,6 +1343,9 @@ class CAMHDProtocol(CommandResponseInstrumentProtocol):
 
         # Send command to instrument to stop streaming
         resp = self._do_cmd_resp(Command.STOP, response_regex=STOP_RESPONSE_PATTERN)
+
+        # Next, stop the archive recording on elemental
+        subprocess.call(STOP_ARCHIVE_COMMAND, shell=True)
 
         if resp.startswith('ERROR'):
             log.warn("Unable to Stop Streaming. In response to STOP command, Instrument returned: %s" % resp)
@@ -1445,6 +1459,9 @@ class CAMHDProtocol(CommandResponseInstrumentProtocol):
 
         # Send command to instrument to stop streaming
         resp = self._do_cmd_resp(Command.STOP, response_regex=STOP_RESPONSE_PATTERN)
+
+        # Next, stop the archive recording on elemental
+        subprocess.call(STOP_ARCHIVE_COMMAND, shell=True)
 
         if resp.startswith('ERROR'):
             log.warn("Unable to Stop Streaming. In response to STOP command, Instrument returned: %s" % resp)
