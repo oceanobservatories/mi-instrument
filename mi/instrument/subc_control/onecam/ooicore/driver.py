@@ -8,6 +8,7 @@
 import re
 import json
 import time
+import requests
 
 from mi.core.instrument.driver_dict import DriverDictKey
 from mi.core.instrument.protocol_param_dict import ParameterDictType
@@ -175,6 +176,8 @@ class Parameter(DriverParameter):
     SAMPLE_INTERVAL = 'Sample_Interval'
     STATUS_INTERVAL = 'Acquire_Status_Interval'
     AUTO_CAPTURE_DURATION = 'Auto_Capture_Duration'
+    ELEMENTAL_IP_ADDRESS = 'Elemental_IP_Address'
+    OUTPUT_GROUP_ID = 'Output_Group_ID'
 
 
 class ParameterUnit(BaseEnum):
@@ -383,7 +386,7 @@ class CAMHDProtocol(CommandResponseInstrumentProtocol):
         self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.START_STREAMING,
                                        self._handler_command_start_streaming)
         self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.STOP_STREAMING,
-                                       self._handler_command_stop_streaming)
+                                       self._handler_stop_streaming)
         self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.GET_STATUS_STREAMING,
                                        self._handler_command_get_status_streaming)
         self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.START_AUTOSAMPLE,
@@ -738,12 +741,38 @@ class CAMHDProtocol(CommandResponseInstrumentProtocol):
                              default_value='00:05:00',
                              units=ParameterUnit.TIME_INTERVAL,
                              visibility=ParameterDictVisibility.READ_WRITE)
+        self._param_dict.add(Parameter.ELEMENTAL_IP_ADDRESS,
+                             r'NOT USED',
+                             None,
+                             str,
+                             type=ParameterDictType.STRING,
+                             display_name="Elemental IP Address",
+                             description='IP Address of the elemental live server running the video archive process.',
+                             startup_param=False,
+                             direct_access=False,
+                             default_value='209.124.182.238',
+                             visibility=ParameterDictVisibility.READ_WRITE)
+        self._param_dict.add(Parameter.OUTPUT_GROUP_ID,
+                             r'NOT USED',
+                             None,
+                             int,
+                             type=ParameterDictType.INT,
+                             display_name="Output Group ID",
+                             description='Output group ID for the archive video output streams being recorded '
+                                         'by elemental.',
+                             startup_param=False,
+                             direct_access=False,
+                             default_value=27,
+                             range=(1, 65536),
+                             visibility=ParameterDictVisibility.READ_WRITE)
 
         self._param_dict.set_default(Parameter.SAMPLE_INTERVAL)
         self._param_dict.set_default(Parameter.STATUS_INTERVAL)
         self._param_dict.set_default(Parameter.ENDPOINT)
         self._param_dict.set_default(Parameter.PAN_TILT_SPEED)
         self._param_dict.set_default(Parameter.AUTO_CAPTURE_DURATION)
+        self._param_dict.set_default(Parameter.ELEMENTAL_IP_ADDRESS)
+        self._param_dict.set_default(Parameter.OUTPUT_GROUP_ID)
 
     def _filter_capabilities(self, events):
         """
@@ -788,7 +817,7 @@ class CAMHDProtocol(CommandResponseInstrumentProtocol):
 
         # Return streaming back to original state
         if not was_streaming:
-            self._handler_command_stop_streaming()
+            self._handler_stop_streaming()
 
         new_config = self._param_dict.get_config()
 
@@ -1101,7 +1130,7 @@ class CAMHDProtocol(CommandResponseInstrumentProtocol):
         # Update parameters - get values from Instrument
         # No startup parameters to apply here, simply get Instrument values
         # stop streaming, just to make sure we get a fresh start
-        self._handler_command_stop_streaming()
+        self._handler_stop_streaming()
 
         self._update_params()
 
@@ -1171,6 +1200,16 @@ class CAMHDProtocol(CommandResponseInstrumentProtocol):
                 self._param_dict.set_value(Parameter.AUTO_CAPTURE_DURATION, params[Parameter.AUTO_CAPTURE_DURATION])
                 changed = True
 
+        if Parameter.ELEMENTAL_IP_ADDRESS in params:
+            if params[Parameter.ELEMENTAL_IP_ADDRESS] != self._param_dict.get(Parameter.ELEMENTAL_IP_ADDRESS):
+                self._param_dict.set_value(Parameter.ELEMENTAL_IP_ADDRESS, params[Parameter.ELEMENTAL_IP_ADDRESS])
+                changed = True
+
+        if Parameter.OUTPUT_GROUP_ID in params:
+            if params[Parameter.OUTPUT_GROUP_ID] != self._param_dict.get(Parameter.OUTPUT_GROUP_ID):
+                self._param_dict.set_value(Parameter.OUTPUT_GROUP_ID, params[Parameter.OUTPUT_GROUP_ID])
+                changed = True
+
         if changed:
             self._driver_event(DriverAsyncEvent.CONFIG_CHANGE)
 
@@ -1207,7 +1246,8 @@ class CAMHDProtocol(CommandResponseInstrumentProtocol):
         for key, val in params.iteritems():
 
             # These are driver specific parameters. They are not set on the instrument.
-            if key in [Parameter.SAMPLE_INTERVAL, Parameter.STATUS_INTERVAL, Parameter.AUTO_CAPTURE_DURATION]:
+            if key in [Parameter.SAMPLE_INTERVAL, Parameter.STATUS_INTERVAL, Parameter.AUTO_CAPTURE_DURATION,
+                       Parameter.ELEMENTAL_IP_ADDRESS, Parameter.OUTPUT_GROUP_ID]:
                 filtered_params.pop(key)
             else:
 
@@ -1319,24 +1359,56 @@ class CAMHDProtocol(CommandResponseInstrumentProtocol):
         kwargs['timeout'] = 30
         kwargs['response_regex'] = START_RESPONSE_PATTERN
 
-        resp = self._do_cmd_resp(Command.START, **kwargs)
+        # First, start the archive recording on elemental
+        xml = 'application/xml'
+        headers = {'Accept': xml, 'Content-type': xml}
+        elemental_ip = self._param_dict.get(Parameter.ELEMENTAL_IP_ADDRESS)
+        url = 'http://' + elemental_ip + '/api/live_events/4/start_output_group'
+        group_id = self._param_dict.get(Parameter.OUTPUT_GROUP_ID)
+        data = '<group_id>' + str(group_id) + '</group_id>'
+        resp = requests.post(url, data=data, headers=headers)
 
-        if resp.startswith('ERROR'):
-            log.error("Unable to Start Streaming. In response to START command, Instrument returned: %s" % resp)
+        if resp.status_code != 200:
+            log.error("Unable to Start Video Archive recording. Received status code %d when starting video archive on "
+                      "elemental." % resp.status_code)
+            raise InstrumentProtocolException("Unable to Start Streaming - failed to start video archive recording.")
 
-    def _handler_command_stop_streaming(self):
+        # Next, send command to instrument to start streaming
+        cam_resp = self._do_cmd_resp(Command.START, **kwargs)
+
+        if cam_resp.startswith('ERROR'):
+            log.error("Unable to Start Streaming. In response to START command, Instrument returned: %s" % cam_resp)
+            raise InstrumentProtocolException("Unable to Start Streaming. Camera returned: %s" % cam_resp)
+
+    def _handler_stop_streaming(self):
         """
         Stop streaming video.
         """
         next_state = None
+        result = []
 
         # Send command to instrument to stop streaming
-        resp = self._do_cmd_resp(Command.STOP, response_regex=STOP_RESPONSE_PATTERN)
+        cam_resp = self._do_cmd_resp(Command.STOP, response_regex=STOP_RESPONSE_PATTERN)
 
-        if resp.startswith('ERROR'):
-            log.warn("Unable to Stop Streaming. In response to STOP command, Instrument returned: %s" % resp)
+        if cam_resp.startswith('ERROR'):
+            log.error("Unable to Stop Streaming. In response to STOP command, Instrument returned: %s" % cam_resp)
+            raise InstrumentProtocolException("Unable to Stop Streaming. Camera returned: %s" % cam_resp)
 
-        return next_state, (next_state, [resp])
+        # Next, stop the archive recording on elemental
+        xml = 'application/xml'
+        headers = {'Accept': xml, 'Content-type': xml}
+        elemental_ip = self._param_dict.get(Parameter.ELEMENTAL_IP_ADDRESS)
+        url = 'http://' + elemental_ip + '/api/live_events/4/stop_output_group'
+        group_id = self._param_dict.get(Parameter.OUTPUT_GROUP_ID)
+        data = '<group_id>' + str(group_id) + '</group_id>'
+        resp = requests.post(url, data=data, headers=headers)
+
+        if resp.status_code != 200:
+            log.error("Unable to Stop Video Archive recording. Received status code %d when starting video archive on "
+                      "elemental." % resp.status_code)
+            raise InstrumentProtocolException("Unable to Stop video archive recording.")
+
+        return next_state, (next_state, result)
 
     def _handler_command_get_status_streaming(self):
         """
@@ -1373,7 +1445,7 @@ class CAMHDProtocol(CommandResponseInstrumentProtocol):
 
         # if we are streaming, stop streaming
         if self._streaming:
-            self._handler_command_stop_streaming()
+            self._handler_stop_streaming()
 
         # Schedule an event to capture streaming video for the capture duration, at the sample interval
         self.start_scheduled_job(Parameter.SAMPLE_INTERVAL, ScheduledJob.SAMPLE, ProtocolEvent.ACQUIRE_SAMPLE)
@@ -1441,15 +1513,7 @@ class CAMHDProtocol(CommandResponseInstrumentProtocol):
         # Remove the job that was scheduled to stop streaming
         self._remove_scheduler(ScheduledJob.STOP_CAPTURE)
 
-        next_state = None
-
-        # Send command to instrument to stop streaming
-        resp = self._do_cmd_resp(Command.STOP, response_regex=STOP_RESPONSE_PATTERN)
-
-        if resp.startswith('ERROR'):
-            log.warn("Unable to Stop Streaming. In response to STOP command, Instrument returned: %s" % resp)
-
-        return next_state, (next_state, [resp])
+        return self._handler_stop_streaming()
 
     def _handler_autosample_stop_autosample(self, *args, **kwargs):
         """
@@ -1462,7 +1526,7 @@ class CAMHDProtocol(CommandResponseInstrumentProtocol):
 
         # If currently streaming, send STOP to instrument
         if self._streaming:
-            self._handler_command_stop_streaming()
+            self._handler_stop_streaming()
 
         self.stop_scheduled_job(ScheduledJob.SAMPLE)
 
