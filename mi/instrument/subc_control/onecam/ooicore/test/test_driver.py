@@ -106,12 +106,10 @@ class DriverTestMixinSub(DriverTestMixin):
 
     _driver_capabilities = {
         # capabilities defined in the IOS
-        Capability.START_AUTOSAMPLE: {STATES: [ProtocolState.COMMAND]},
-        Capability.STOP_AUTOSAMPLE: {STATES: [ProtocolState.AUTOSAMPLE]},
-        Capability.ACQUIRE_STATUS: {STATES: [ProtocolState.COMMAND, ProtocolState.AUTOSAMPLE]},
-        Capability.GET_STATUS_STREAMING: {STATES: [ProtocolState.COMMAND, ProtocolState.AUTOSAMPLE]},
+        Capability.ACQUIRE_STATUS: {STATES: [ProtocolState.COMMAND]},
+        Capability.GET_STATUS_STREAMING: {STATES: [ProtocolState.COMMAND, ProtocolState.STREAMING]},
         Capability.START_STREAMING: {STATES: [ProtocolState.COMMAND]},
-        Capability.STOP_STREAMING: {STATES: [ProtocolState.COMMAND, ProtocolState.AUTOSAMPLE]},
+        Capability.STOP_STREAMING: {STATES: [ProtocolState.STREAMING]},
 
     }
 
@@ -131,9 +129,9 @@ class DriverTestMixinSub(DriverTestMixin):
         Parameter.LIGHT_2_LEVEL: {TYPE: int, READONLY: False, DA: False, STARTUP: False, DEFAULT: 50, VALUE: 50},
         Parameter.ZOOM_LEVEL: {TYPE: int, READONLY: False, DA: False, STARTUP: False, DEFAULT: 0, VALUE: 0},
         Parameter.LASERS_STATE: {TYPE: str, READONLY: False, DA: False, STARTUP: False, DEFAULT: 'off', VALUE: 'off'},
-        Parameter.SAMPLE_INTERVAL: {TYPE: str, READONLY: False, DA: False, STARTUP: False, DEFAULT: '00:30:00', VALUE: '00:30:00'},
         Parameter.STATUS_INTERVAL: {TYPE: str, READONLY: False, DA: False, STARTUP: False, DEFAULT: '00:00:00', VALUE: '00:00:00'},
-        Parameter.AUTO_CAPTURE_DURATION: {TYPE: str, READONLY: False, DA: False, STARTUP: False, DEFAULT: '00:05:00', VALUE: '00:05:00'},
+        Parameter.ELEMENTAL_IP_ADDRESS: {TYPE: str, READONLY: False, DA: False, STARTUP: False, DEFAULT: '209.124.182.238', VALUE: '209.124.182.238'},
+        Parameter.OUTPUT_GROUP_ID: {TYPE: int, READONLY: False, DA: False, STARTUP: False, DEFAULT: 27, VALUE: 27},
 
     }
 
@@ -243,17 +241,12 @@ class DriverUnitTest(InstrumentDriverUnitTestCase, DriverTestMixinSub):
             ProtocolState.COMMAND: ['DRIVER_EVENT_ACQUIRE_STATUS',
                                     'DRIVER_EVENT_GET',
                                     'DRIVER_EVENT_SET',
-                                    'DRIVER_EVENT_START_AUTOSAMPLE',
                                     'DRIVER_EVENT_START_STREAMING',
-                                    'DRIVER_EVENT_STOP_STREAMING',
-                                    'DRIVER_EVENT_GET_STATUS_STREAMING',
                                     'DRIVER_EVENT_START_DIRECT'],
-            ProtocolState.AUTOSAMPLE: ['DRIVER_EVENT_GET',
-                                       'DRIVER_EVENT_STOP_AUTOSAMPLE',
-                                       'DRIVER_EVENT_ACQUIRE_SAMPLE',
-                                       'DRIVER_EVENT_ACQUIRE_STATUS',
-                                       'DRIVER_EVENT_STOP_STREAMING',
-                                       'DRIVER_EVENT_GET_STATUS_STREAMING'],
+            ProtocolState.STREAMING: ['DRIVER_EVENT_STOP_STREAMING',
+                                      'DRIVER_EVENT_GET',
+                                      'DRIVER_EVENT_SET',
+                                      'DRIVER_EVENT_GET_STATUS_STREAMING'],
             ProtocolState.DIRECT_ACCESS: ['DRIVER_EVENT_STOP_DIRECT', 'EXECUTE_DIRECT']
         }
 

@@ -8,6 +8,7 @@
 import re
 import json
 import time
+import requests
 
 from mi.core.instrument.driver_dict import DriverDictKey
 from mi.core.instrument.protocol_param_dict import ParameterDictType
@@ -104,7 +105,7 @@ class ProtocolState(BaseEnum):
     """
     UNKNOWN = DriverProtocolState.UNKNOWN
     COMMAND = DriverProtocolState.COMMAND
-    AUTOSAMPLE = DriverProtocolState.AUTOSAMPLE
+    STREAMING = 'DRIVER_STATE_STREAMING'
     DIRECT_ACCESS = DriverProtocolState.DIRECT_ACCESS
 
 
@@ -119,8 +120,6 @@ class ProtocolEvent(BaseEnum):
     DISCOVER = DriverEvent.DISCOVER
     START_DIRECT = DriverEvent.START_DIRECT
     STOP_DIRECT = DriverEvent.STOP_DIRECT
-    START_AUTOSAMPLE = DriverEvent.START_AUTOSAMPLE
-    STOP_AUTOSAMPLE = DriverEvent.STOP_AUTOSAMPLE
     EXECUTE_DIRECT = DriverEvent.EXECUTE_DIRECT
     ACQUIRE_STATUS = DriverEvent.ACQUIRE_STATUS
     ACQUIRE_SAMPLE = DriverEvent.ACQUIRE_SAMPLE
@@ -134,10 +133,7 @@ class Capability(BaseEnum):
     """
     Protocol events that should be exposed to users (subset of above).
     """
-    START_AUTOSAMPLE = DriverEvent.START_AUTOSAMPLE
-    STOP_AUTOSAMPLE = DriverEvent.STOP_AUTOSAMPLE
     ACQUIRE_STATUS = DriverEvent.ACQUIRE_STATUS
-
     GET_STATUS_STREAMING = ProtocolEvent.GET_STATUS_STREAMING
     START_STREAMING = ProtocolEvent.START_STREAMING
     STOP_STREAMING = ProtocolEvent.STOP_STREAMING
@@ -172,9 +168,9 @@ class Parameter(DriverParameter):
     LIGHT_2_LEVEL = 'Light_2_Level'
     ZOOM_LEVEL = 'Zoom_Level'
     LASERS_STATE = 'Lasers_State'
-    SAMPLE_INTERVAL = 'Sample_Interval'
     STATUS_INTERVAL = 'Acquire_Status_Interval'
-    AUTO_CAPTURE_DURATION = 'Auto_Capture_Duration'
+    ELEMENTAL_IP_ADDRESS = 'Elemental_IP_Address'
+    OUTPUT_GROUP_ID = 'Output_Group_ID'
 
 
 class ParameterUnit(BaseEnum):
@@ -185,8 +181,6 @@ class ScheduledJob(BaseEnum):
     """
     Scheduled Jobs for CAMHD
     """
-    SAMPLE = 'sample'
-    STOP_CAPTURE = "stop capturing"
     ACQUIRE_STATUS = "acquire_status"
 
 
@@ -382,29 +376,15 @@ class CAMHDProtocol(CommandResponseInstrumentProtocol):
                                        self._handler_command_acquire_status)
         self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.START_STREAMING,
                                        self._handler_command_start_streaming)
-        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.STOP_STREAMING,
-                                       self._handler_command_stop_streaming)
-        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.GET_STATUS_STREAMING,
-                                       self._handler_command_get_status_streaming)
-        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.START_AUTOSAMPLE,
-                                       self._handler_command_start_autosample)
 
-        self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.ENTER,
-                                       self._handler_autosample_enter)
-        self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.EXIT,
-                                       self._handler_autosample_exit)
-        self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.STOP_AUTOSAMPLE,
-                                       self._handler_autosample_stop_autosample)
-        self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.GET,
-                                       self._handler_get)
-        self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.ACQUIRE_STATUS,
-                                       self._handler_command_acquire_status)
-        self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.ACQUIRE_SAMPLE,
-                                       self._handler_autosample_acquire_sample)
-        self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.STOP_STREAMING,
-                                       self._handler_autosample_stop_streaming)
-        self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.GET_STATUS_STREAMING,
-                                       self._handler_command_get_status_streaming)
+        self._protocol_fsm.add_handler(ProtocolState.STREAMING, ProtocolEvent.ENTER, self._handler_streaming_enter)
+        self._protocol_fsm.add_handler(ProtocolState.STREAMING, ProtocolEvent.EXIT, self._handler_streaming_exit)
+        self._protocol_fsm.add_handler(ProtocolState.STREAMING, ProtocolEvent.GET, self._handler_command_get)
+        self._protocol_fsm.add_handler(ProtocolState.STREAMING, ProtocolEvent.SET, self._handler_command_set)
+        self._protocol_fsm.add_handler(ProtocolState.STREAMING, ProtocolEvent.GET_STATUS_STREAMING,
+                                       self._handler_get_status_streaming)
+        self._protocol_fsm.add_handler(ProtocolState.STREAMING, ProtocolEvent.STOP_STREAMING,
+                                       self._handler_stop_streaming)
 
         self._protocol_fsm.add_handler(ProtocolState.DIRECT_ACCESS, ProtocolEvent.ENTER,
                                        self._handler_direct_access_enter)
@@ -540,10 +520,7 @@ class CAMHDProtocol(CommandResponseInstrumentProtocol):
         """
         Populate the command dictionary with command.
         """
-        self._cmd_dict.add(Capability.START_AUTOSAMPLE, display_name="Start Autosample")
-        self._cmd_dict.add(Capability.STOP_AUTOSAMPLE, display_name="Stop Autosample")
         self._cmd_dict.add(Capability.ACQUIRE_STATUS, display_name="Acquire Status")
-
         self._cmd_dict.add(Capability.GET_STATUS_STREAMING, display_name="Get Status_Streaming")
         self._cmd_dict.add(Capability.START_STREAMING, display_name="Start Streaming")
         self._cmd_dict.add(Capability.STOP_STREAMING, display_name="Stop Streaming")
@@ -699,19 +676,6 @@ class CAMHDProtocol(CommandResponseInstrumentProtocol):
                              default_value='off',
                              visibility=ParameterDictVisibility.READ_WRITE)
 
-        self._param_dict.add(Parameter.SAMPLE_INTERVAL,
-                             r'NOT USED',
-                             None,
-                             str,
-                             type=ParameterDictType.STRING,
-                             display_name="Sample Interval",
-                             description='Time to wait between taking time-lapsed samples.',
-                             startup_param=False,
-                             direct_access=False,
-                             default_value='00:30:00',
-                             units=ParameterUnit.TIME_INTERVAL,
-                             visibility=ParameterDictVisibility.READ_WRITE)
-
         self._param_dict.add(Parameter.STATUS_INTERVAL,
                              r'NOT USED',
                              None,
@@ -725,25 +689,37 @@ class CAMHDProtocol(CommandResponseInstrumentProtocol):
                              units=ParameterUnit.TIME_INTERVAL,
                              visibility=ParameterDictVisibility.READ_WRITE)
 
-        self._param_dict.add(Parameter.AUTO_CAPTURE_DURATION,
+        self._param_dict.add(Parameter.ELEMENTAL_IP_ADDRESS,
                              r'NOT USED',
                              None,
                              str,
                              type=ParameterDictType.STRING,
-                             display_name="Auto Capture Duration",
-                             description='Duration for which streaming video will be captured before '
-                                         'it is stopped by the driver.',
+                             display_name="Elemental IP Address",
+                             description='IP Address of the elemental live server running the video archive process.',
                              startup_param=False,
                              direct_access=False,
-                             default_value='00:05:00',
-                             units=ParameterUnit.TIME_INTERVAL,
+                             default_value='209.124.182.238',
                              visibility=ParameterDictVisibility.READ_WRITE)
 
-        self._param_dict.set_default(Parameter.SAMPLE_INTERVAL)
+        self._param_dict.add(Parameter.OUTPUT_GROUP_ID,
+                             r'NOT USED',
+                             None,
+                             int,
+                             type=ParameterDictType.INT,
+                             display_name="Output Group ID",
+                             description='Output group ID for the archive video output streams being recorded '
+                                         'by elemental.',
+                             startup_param=False,
+                             direct_access=False,
+                             default_value=27,
+                             range=(1, 65536),
+                             visibility=ParameterDictVisibility.READ_WRITE)
+
         self._param_dict.set_default(Parameter.STATUS_INTERVAL)
         self._param_dict.set_default(Parameter.ENDPOINT)
         self._param_dict.set_default(Parameter.PAN_TILT_SPEED)
-        self._param_dict.set_default(Parameter.AUTO_CAPTURE_DURATION)
+        self._param_dict.set_default(Parameter.ELEMENTAL_IP_ADDRESS)
+        self._param_dict.set_default(Parameter.OUTPUT_GROUP_ID)
 
     def _filter_capabilities(self, events):
         """
@@ -788,7 +764,7 @@ class CAMHDProtocol(CommandResponseInstrumentProtocol):
 
         # Return streaming back to original state
         if not was_streaming:
-            self._handler_command_stop_streaming()
+            self._handler_stop_streaming()
 
         new_config = self._param_dict.get_config()
 
@@ -990,16 +966,14 @@ class CAMHDProtocol(CommandResponseInstrumentProtocol):
 
     def _discover(self):
         """
-        Discover current state; can be COMMAND or AUTOSAMPLE or UNKNOWN.
+        Discover current state
         @return (next_protocol_state, next_protocol_state)
         """
-        next_state = ProtocolState.COMMAND
 
-        if self._scheduler_callback is not None:
-            if self._scheduler_callback.get(ScheduledJob.SAMPLE):
-                next_state = ProtocolState.AUTOSAMPLE
-
-        return next_state
+        # TODO: need to figure out a way to determine if we are currently streaming
+        # Test with Simulator once it is available
+        # For now, discover into Command mode
+        return ProtocolState.COMMAND
 
     ########################################################################
     # Unknown handlers.
@@ -1020,7 +994,7 @@ class CAMHDProtocol(CommandResponseInstrumentProtocol):
 
     def _handler_unknown_discover(self, *args, **kwargs):
         """
-        Discover current state; can be COMMAND or AUTOSAMPLE.
+        Discover current state; can be COMMAND or STREAMING.
         """
         next_state = self._discover()
         result = []
@@ -1033,22 +1007,13 @@ class CAMHDProtocol(CommandResponseInstrumentProtocol):
     def start_scheduled_job(self, param, schedule_job, protocol_event):
         """
         Add a scheduled job
-        :param param: if set to 'Auto_Capture_Duration', use the configured duration
+        :param param: the parameter identifying the interval
         :param schedule_job: currently scheduled job identifier
         :param protocol_event: protocol event to use for new job
         """
         self.stop_scheduled_job(schedule_job)
 
         (hours, minutes, seconds) = (int(val) for val in self._param_dict.get(param).split(':'))
-
-        # Video Capture Duration must be less than Autosample Interval
-        if param == Parameter.AUTO_CAPTURE_DURATION:
-            capture_interval = self.get_interval_seconds(param)
-            sample_interval = self.get_interval_seconds(Parameter.SAMPLE_INTERVAL)
-
-            if capture_interval >= sample_interval:
-                log.error("Video Capture Duration must be less than Autosample Interval. Not performing capture.")
-                raise InstrumentParameterException('Video Capture Duration must be less than Autosample Interval.')
 
         log.debug("Setting scheduled interval for %s to %02d:%02d:%02d" % (param, hours, minutes, seconds))
 
@@ -1101,15 +1066,13 @@ class CAMHDProtocol(CommandResponseInstrumentProtocol):
         # Update parameters - get values from Instrument
         # No startup parameters to apply here, simply get Instrument values
         # stop streaming, just to make sure we get a fresh start
-        self._handler_command_stop_streaming()
+        self._handler_stop_streaming()
 
         self._update_params()
 
         # Tell driver superclass to send a state change event.
         # Superclass will query the state.
         self._driver_event(DriverAsyncEvent.STATE_CHANGE)
-
-        self.stop_scheduled_job(ScheduledJob.SAMPLE)
 
         # start scheduled event for get_status only if the interval is not "00:00:00
         status_interval = self._param_dict.get(Parameter.STATUS_INTERVAL)
@@ -1152,13 +1115,6 @@ class CAMHDProtocol(CommandResponseInstrumentProtocol):
             raise InstrumentParameterException('Set parameters not a dict.')
 
         # Handle engineering parameters
-        if Parameter.SAMPLE_INTERVAL in params:
-            if params[Parameter.SAMPLE_INTERVAL] != self._param_dict.get(Parameter.SAMPLE_INTERVAL):
-                self._param_dict.set_value(Parameter.SAMPLE_INTERVAL, params[Parameter.SAMPLE_INTERVAL])
-                if params[Parameter.SAMPLE_INTERVAL] == ZERO_TIME_INTERVAL:
-                    self.stop_scheduled_job(ScheduledJob.SAMPLE)
-                changed = True
-
         if Parameter.STATUS_INTERVAL in params:
             if params[Parameter.STATUS_INTERVAL] != self._param_dict.get(Parameter.STATUS_INTERVAL):
                 self._param_dict.set_value(Parameter.STATUS_INTERVAL, params[Parameter.STATUS_INTERVAL])
@@ -1166,9 +1122,14 @@ class CAMHDProtocol(CommandResponseInstrumentProtocol):
                     self.stop_scheduled_job(ScheduledJob.ACQUIRE_STATUS)
                 changed = True
 
-        if Parameter.AUTO_CAPTURE_DURATION in params:
-            if params[Parameter.AUTO_CAPTURE_DURATION] != self._param_dict.get(Parameter.AUTO_CAPTURE_DURATION):
-                self._param_dict.set_value(Parameter.AUTO_CAPTURE_DURATION, params[Parameter.AUTO_CAPTURE_DURATION])
+        if Parameter.ELEMENTAL_IP_ADDRESS in params:
+            if params[Parameter.ELEMENTAL_IP_ADDRESS] != self._param_dict.get(Parameter.ELEMENTAL_IP_ADDRESS):
+                self._param_dict.set_value(Parameter.ELEMENTAL_IP_ADDRESS, params[Parameter.ELEMENTAL_IP_ADDRESS])
+                changed = True
+
+        if Parameter.OUTPUT_GROUP_ID in params:
+            if params[Parameter.OUTPUT_GROUP_ID] != self._param_dict.get(Parameter.OUTPUT_GROUP_ID):
+                self._param_dict.set_value(Parameter.OUTPUT_GROUP_ID, params[Parameter.OUTPUT_GROUP_ID])
                 changed = True
 
         if changed:
@@ -1207,7 +1168,7 @@ class CAMHDProtocol(CommandResponseInstrumentProtocol):
         for key, val in params.iteritems():
 
             # These are driver specific parameters. They are not set on the instrument.
-            if key in [Parameter.SAMPLE_INTERVAL, Parameter.STATUS_INTERVAL, Parameter.AUTO_CAPTURE_DURATION]:
+            if key in [Parameter.STATUS_INTERVAL, Parameter.ELEMENTAL_IP_ADDRESS, Parameter.OUTPUT_GROUP_ID]:
                 filtered_params.pop(key)
             else:
 
@@ -1303,9 +1264,9 @@ class CAMHDProtocol(CommandResponseInstrumentProtocol):
 
     def _handler_command_start_streaming(self, **kwargs):
         """
-        Start streaming video in command mode.
+        Start streaming video.
         """
-        next_state = None
+        next_state = ProtocolState.STREAMING
         result = []
 
         self._handler_start_streaming(**kwargs)
@@ -1319,26 +1280,67 @@ class CAMHDProtocol(CommandResponseInstrumentProtocol):
         kwargs['timeout'] = 30
         kwargs['response_regex'] = START_RESPONSE_PATTERN
 
-        resp = self._do_cmd_resp(Command.START, **kwargs)
+        # First, start the archive recording on elemental
+        self._start_or_stop_archive('start')
 
-        if resp.startswith('ERROR'):
-            log.error("Unable to Start Streaming. In response to START command, Instrument returned: %s" % resp)
+        # Next, send command to instrument to start streaming
+        cam_resp = self._do_cmd_resp(Command.START, **kwargs)
 
-    def _handler_command_stop_streaming(self):
+        if cam_resp.startswith('ERROR'):
+            log.error("Unable to Start Streaming. In response to START command, Instrument returned: %s" % cam_resp)
+            raise InstrumentProtocolException("Unable to Start Streaming. Camera returned: %s" % cam_resp)
+
+    def _handler_streaming_enter(self, *args, **kwargs):
+        """
+        Enter the Streaming state
+        """
+        # Tell driver superclass to send a state change event.
+        # Superclass will query the state.
+
+        self._driver_event(DriverAsyncEvent.STATE_CHANGE)
+
+    def _handler_streaming_exit(self, *args, **kwargs):
+        """
+        Exit streaming state.
+        """
+
+    def _start_or_stop_archive(self, action):
+        """
+        Start/Stop the video archive process on the elemental server.
+        """
+        xml = 'application/xml'
+        headers = {'Accept': xml, 'Content-type': xml}
+        elemental_ip = self._param_dict.get(Parameter.ELEMENTAL_IP_ADDRESS)
+        url = 'http://' + elemental_ip + '/api/live_events/4/' + action + '_output_group'
+        group_id = self._param_dict.get(Parameter.OUTPUT_GROUP_ID)
+        data = '<group_id>' + str(group_id) + '</group_id>'
+        resp = requests.post(url, data=data, headers=headers)
+
+        if resp.status_code != 200:
+            log.error("Unable to %s Video Archive recording. Received status code %d attempting to %s video archive on "
+                      "elemental." % (action, action, resp.status_code))
+            raise InstrumentProtocolException("Unable to %s video archive recording." % action)
+
+    def _handler_stop_streaming(self):
         """
         Stop streaming video.
         """
-        next_state = None
+        next_state = ProtocolState.COMMAND
+        result = []
 
         # Send command to instrument to stop streaming
-        resp = self._do_cmd_resp(Command.STOP, response_regex=STOP_RESPONSE_PATTERN)
+        cam_resp = self._do_cmd_resp(Command.STOP, response_regex=STOP_RESPONSE_PATTERN)
 
-        if resp.startswith('ERROR'):
-            log.warn("Unable to Stop Streaming. In response to STOP command, Instrument returned: %s" % resp)
+        if cam_resp.startswith('ERROR'):
+            log.error("Unable to Stop Streaming. In response to STOP command, Instrument returned: %s" % cam_resp)
+            raise InstrumentProtocolException("Unable to Stop Streaming. Camera returned: %s" % cam_resp)
 
-        return next_state, (next_state, [resp])
+        # Next, stop the archive recording on elemental
+        self._start_or_stop_archive('stop')
 
-    def _handler_command_get_status_streaming(self):
+        return next_state, (next_state, result)
+
+    def _handler_get_status_streaming(self):
         """
         Get video streaming status.
         """
@@ -1359,113 +1361,6 @@ class CAMHDProtocol(CommandResponseInstrumentProtocol):
         """
         next_state = ProtocolState.DIRECT_ACCESS
         result = []
-        return next_state, (next_state, result)
-
-    def _handler_command_start_autosample(self, *args, **kwargs):
-        """
-        Switch into autosample mode.
-        """
-        next_state = ProtocolState.AUTOSAMPLE
-        result = []
-
-        # first stop scheduled sampling
-        self.stop_scheduled_job(ScheduledJob.SAMPLE)
-
-        # if we are streaming, stop streaming
-        if self._streaming:
-            self._handler_command_stop_streaming()
-
-        # Schedule an event to capture streaming video for the capture duration, at the sample interval
-        self.start_scheduled_job(Parameter.SAMPLE_INTERVAL, ScheduledJob.SAMPLE, ProtocolEvent.ACQUIRE_SAMPLE)
-
-        return next_state, (next_state, result)
-
-    ########################################################################
-    # Autosample handlers.
-    ########################################################################
-
-    def _handler_autosample_enter(self):
-        """
-        Enter autosample state.
-        """
-
-        # Tell driver superclass to send a state change event.
-        # Superclass will query the state.
-
-        self._driver_event(DriverAsyncEvent.STATE_CHANGE)
-
-    def _handler_autosample_exit(self):
-        """
-        Exit autosample state.
-        """
-
-    def _handler_autosample_acquire_sample(self, *args, **kwargs):
-        """
-        Acquire Sample
-        """
-        next_state = None
-
-        # Schedule event to execute STOP when the capture time expires
-        capturing_duration = self._param_dict.get(Parameter.AUTO_CAPTURE_DURATION)
-
-        if capturing_duration != ZERO_TIME_INTERVAL:
-            self.start_scheduled_job(Parameter.AUTO_CAPTURE_DURATION,
-                                     ScheduledJob.STOP_CAPTURE,
-                                     ProtocolEvent.STOP_STREAMING)
-        else:
-            log.error("Capturing Duration set to 0: Not Performing Capture.")
-
-        # First, start streaming
-        self._handler_start_streaming(**kwargs)
-
-        # Set pan/tilt, lights, camera to user defined position
-
-        # This sends the 'LOOKAT' command to the instrument with user set values for Pan/Tilt
-        # populated from the param dict
-        self._do_cmd_resp(Command.SET, Parameter.PAN_POSITION, response_regex=LOOKAT_SET_RESPONSE_PATTERN)
-
-        # This sends the 'LIGHTS' command to the instrument with user set values for Light Intensity
-        # populated from the param dict
-        self._do_cmd_resp(Command.SET, Parameter.LIGHT_1_LEVEL, response_regex=LIGHTS_RESPONSE_PATTERN)
-
-        # This sends the 'CAMERA' command to the instrument with user set values for Zoom/Lasers state
-        # populated from the param dict
-        resp = self._do_cmd_resp(Command.SET, Parameter.ZOOM_LEVEL, response_regex=CAMERA_RESPONSE_PATTERN)
-
-        return next_state, (next_state, [resp])
-
-    def _handler_autosample_stop_streaming(self):
-        """
-        Stop streaming video.
-        """
-        # Remove the job that was scheduled to stop streaming
-        self._remove_scheduler(ScheduledJob.STOP_CAPTURE)
-
-        next_state = None
-
-        # Send command to instrument to stop streaming
-        resp = self._do_cmd_resp(Command.STOP, response_regex=STOP_RESPONSE_PATTERN)
-
-        if resp.startswith('ERROR'):
-            log.warn("Unable to Stop Streaming. In response to STOP command, Instrument returned: %s" % resp)
-
-        return next_state, (next_state, [resp])
-
-    def _handler_autosample_stop_autosample(self, *args, **kwargs):
-        """
-        Stop autosample and switch back to command mode.
-        @return  next_state, (next_state, result) if successful.
-        incorrect prompt received.
-        """
-        next_state = ProtocolState.COMMAND
-        result = []
-
-        # If currently streaming, send STOP to instrument
-        if self._streaming:
-            self._handler_command_stop_streaming()
-
-        self.stop_scheduled_job(ScheduledJob.SAMPLE)
-
         return next_state, (next_state, result)
 
     ########################################################################
