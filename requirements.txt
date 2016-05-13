@@ -15,3 +15,4 @@ pandas
 xarray
 kombu
 librabbitmq
+modestimage
