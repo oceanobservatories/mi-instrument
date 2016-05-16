@@ -637,7 +637,7 @@ class THSPHProtocol(CommandResponseInstrumentProtocol):
         # data every sample interval seconds
 
         job_name = ScheduledJob.AUTO_SAMPLE
-        polled_interval = self._param_dict.get_config_value(Parameter.INTERVAL)
+        polled_interval = self._param_dict.get(Parameter.INTERVAL)
         config = {
             DriverConfigKey.SCHEDULER: {
                 job_name: {
