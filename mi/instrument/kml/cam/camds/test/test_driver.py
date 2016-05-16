@@ -74,14 +74,10 @@ InstrumentDriverTestCase.initialize(
             Parameter.SAMPLE_INTERVAL[ParameterIndex.KEY]: Parameter.SAMPLE_INTERVAL[ParameterIndex.DEFAULT_DATA],
             Parameter.TILT_POSITION[ParameterIndex.KEY]: Parameter.TILT_POSITION[ParameterIndex.DEFAULT_DATA],
 
-            Parameter.VIDEO_FORWARDING[ParameterIndex.KEY]: Parameter.VIDEO_FORWARDING[ParameterIndex.DEFAULT_DATA],
-            Parameter.VIDEO_FORWARDING_TIMEOUT[ParameterIndex.KEY]: Parameter.VIDEO_FORWARDING_TIMEOUT[
-                ParameterIndex.DEFAULT_DATA],
             Parameter.WHEN_DISK_IS_FULL[ParameterIndex.KEY]: Parameter.WHEN_DISK_IS_FULL[ParameterIndex.DEFAULT_DATA],
             Parameter.ZOOM_POSITION[ParameterIndex.KEY]: Parameter.ZOOM_POSITION[ParameterIndex.DEFAULT_DATA]
         },
         DriverStartupConfigKey.SCHEDULER: {
-            ScheduledJob.VIDEO_FORWARDING: {},
             ScheduledJob.SAMPLE: {},
             ScheduledJob.STATUS: {},
             ScheduledJob.STOP_CAPTURE: {}
@@ -195,14 +191,6 @@ class CAMDSMixin(DriverTestMixin):
             {TYPE: str, READONLY: False, DA: False, STARTUP: False,
              DEFAULT: Parameter.ACQUIRE_STATUS_INTERVAL[ParameterIndex.DEFAULT_DATA],
              VALUE: Parameter.ACQUIRE_STATUS_INTERVAL[ParameterIndex.D_DEFAULT]},
-        Parameter.VIDEO_FORWARDING[ParameterIndex.KEY]:
-            {TYPE: str, READONLY: False, DA: False, STARTUP: False,
-             DEFAULT: Parameter.VIDEO_FORWARDING[ParameterIndex.DEFAULT_DATA],
-             VALUE: Parameter.VIDEO_FORWARDING[ParameterIndex.D_DEFAULT]},
-        Parameter.VIDEO_FORWARDING_TIMEOUT[ParameterIndex.KEY]:
-            {TYPE: str, READONLY: False, DA: False, STARTUP: False,
-             DEFAULT: Parameter.VIDEO_FORWARDING_TIMEOUT[ParameterIndex.DEFAULT_DATA],
-             VALUE: Parameter.VIDEO_FORWARDING_TIMEOUT[ParameterIndex.D_DEFAULT]},
         Parameter.SAMPLE_INTERVAL[ParameterIndex.KEY]:
             {TYPE: str, READONLY: False, DA: False, STARTUP: False,
              DEFAULT: Parameter.SAMPLE_INTERVAL[ParameterIndex.DEFAULT_DATA],
@@ -634,7 +622,6 @@ class DriverIntegrationTest(InstrumentDriverIntegrationTestCase, CAMDSMixin):
         self.assert_driver_command(ProtocolEvent.ACQUIRE_SAMPLE, delay=2)
         self.assert_acquire_sample()
         self.assert_driver_command(ProtocolEvent.GOTO_PRESET)
-        self.assert_driver_command(ProtocolEvent.STOP_FORWARD)
         self.assert_driver_command(ProtocolEvent.LAMP_ON)
         self.assert_driver_command(ProtocolEvent.LAMP_OFF)
         self.assert_driver_command(ProtocolEvent.LASERS_ON)
@@ -652,7 +639,6 @@ class DriverIntegrationTest(InstrumentDriverIntegrationTestCase, CAMDSMixin):
         self.assert_driver_command(ProtocolEvent.ACQUIRE_SAMPLE, delay=2)
         self.assert_acquire_sample()
         self.assert_driver_command(ProtocolEvent.GOTO_PRESET)
-        self.assert_driver_command(ProtocolEvent.STOP_FORWARD)
         self.assert_driver_command(ProtocolEvent.LAMP_ON)
         self.assert_driver_command(ProtocolEvent.LAMP_OFF)
         self.assert_driver_command(ProtocolEvent.LASERS_ON)

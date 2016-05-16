@@ -518,10 +518,6 @@ class Parameter(DriverParameter):
                        'Time to wait between time-lapsed samples.', 'SAMPLE_INTERVAL', '00:30:00')
     ACQUIRE_STATUS_INTERVAL = (None, None, None, None, '00:00:00', 'Acquire Status Interval',
                                'Time to wait between acquiring status.', 'ACQUIRE_STATUS_INTERVAL', '00:00:00')
-    VIDEO_FORWARDING = (None, None, None, None, 'N', 'Video Forwarding Flag',
-                        'Enable streaming live video (Yes:Y | No:N)', 'VIDEO_FORWARDING', 'N')
-    VIDEO_FORWARDING_TIMEOUT = (None, None, None, None, '01:00:00', 'Video Forwarding Timeout',
-                                'Length of time to stream live video.', 'VIDEO_FORWARDING_TIMEOUT', '01:00:00')
     PRESET_NUMBER = (None, None, None, None, 1, 'Preset number', 'Preset number to set/go to (1-15)', 'PRESET_NUMBER', 1)
     AUTO_CAPTURE_DURATION = (None, None, None, None, 3, 'Auto Capture Duration',
                              'How long to run auto capture mode. Zero indicates snapshot (0-5)',
@@ -567,8 +563,6 @@ class ProtocolEvent(BaseEnum):
     EXECUTE_AUTO_CAPTURE = 'DRIVER_EVENT_EXECUTE_AUTO_CAPTURE'
     STOP_CAPTURE = 'DRIVER_EVENT_STOP_CAPTURE'
 
-    STOP_FORWARD = 'DRIVER_EVENT_STOP_FORWARD'
-
 
 class Capability(BaseEnum):
     """
@@ -601,7 +595,6 @@ class Capability(BaseEnum):
 
 class ScheduledJob(BaseEnum):
     SAMPLE = 'sample'
-    VIDEO_FORWARDING = "video forwarding"
     STATUS = "status"
     STOP_CAPTURE = "stop capturing"
 
@@ -765,7 +758,6 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
         # filtered in responses for telnet DA
         self._sent_cmds = []
 
-        self.video_forwarding_flag = False
         self.disable_autosample_recover = False
 
         self.initialize_scheduler()
@@ -877,8 +869,6 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
                                        self._handler_command_start_capture)
         self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.START_RECOVER,
                                        self._handler_command_start_recovery)
-        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.STOP_FORWARD,
-                                       self._handler_command_stop_forward)
 
         self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.ENTER,
                                        self._handler_autosample_enter)
@@ -912,8 +902,6 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
                                        self._handler_autosample_start_capture)
         self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.START_RECOVER,
                                        self._handler_command_start_recovery)
-        self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.STOP_FORWARD,
-                                       self._handler_command_stop_forward)
 
         self._protocol_fsm.add_handler(ProtocolState.RECOVERY, ProtocolEvent.ENTER,
                                        self._handler_recovery_enter)
@@ -1117,30 +1105,6 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
                              units= "HH:MM:SS",
                              default_value=Parameter.ACQUIRE_STATUS_INTERVAL[ParameterIndex.D_DEFAULT])
 
-        self._param_dict.add(Parameter.VIDEO_FORWARDING[ParameterIndex.KEY],
-                             r'NOT USED',
-                             None,
-                             str,
-                             type=ParameterDictType.STRING,
-                             display_name=Parameter.VIDEO_FORWARDING[ParameterIndex.DISPLAY_NAME],
-                             description=Parameter.VIDEO_FORWARDING[ParameterIndex.DESCRIPTION],
-                             range={'Yes': 'Y', 'No': 'N'},
-                             startup_param=False,
-                             direct_access=False,
-                             default_value=Parameter.VIDEO_FORWARDING[ParameterIndex.D_DEFAULT])
-
-        self._param_dict.add(Parameter.VIDEO_FORWARDING_TIMEOUT[ParameterIndex.KEY],
-                             r'NOT USED',
-                             None,
-                             str,
-                             type=ParameterDictType.STRING,
-                             display_name=Parameter.VIDEO_FORWARDING_TIMEOUT[ParameterIndex.DISPLAY_NAME],
-                             description=Parameter.VIDEO_FORWARDING_TIMEOUT[ParameterIndex.DESCRIPTION],
-                             startup_param=False,
-                             direct_access=False,
-                             units= "HH:MM:SS",
-                             default_value=Parameter.VIDEO_FORWARDING_TIMEOUT[ParameterIndex.D_DEFAULT])
-
         self._param_dict.add(Parameter.PRESET_NUMBER[ParameterIndex.KEY],
                              r'NOT USED',
                              None,
@@ -1168,8 +1132,6 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
 
         self._param_dict.set_default(Parameter.SAMPLE_INTERVAL[ParameterIndex.KEY])
         self._param_dict.set_default(Parameter.ACQUIRE_STATUS_INTERVAL[ParameterIndex.KEY])
-        self._param_dict.set_default(Parameter.VIDEO_FORWARDING[ParameterIndex.KEY])
-        self._param_dict.set_default(Parameter.VIDEO_FORWARDING_TIMEOUT[ParameterIndex.KEY])
         self._param_dict.set_default(Parameter.PRESET_NUMBER[ParameterIndex.KEY])
         self._param_dict.set_default(Parameter.AUTO_CAPTURE_DURATION[ParameterIndex.KEY])
 
@@ -1247,10 +1209,8 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
 
             # These are engineering params
             if param[ParameterIndex.KEY] not in [Parameter.SAMPLE_INTERVAL[ParameterIndex.KEY],
-                                                 Parameter.VIDEO_FORWARDING_TIMEOUT[ParameterIndex.KEY],
                                                  Parameter.ACQUIRE_STATUS_INTERVAL[ParameterIndex.KEY],
                                                  Parameter.AUTO_CAPTURE_DURATION[ParameterIndex.KEY],
-                                                 Parameter.VIDEO_FORWARDING[ParameterIndex.KEY],
                                                  Parameter.PRESET_NUMBER[ParameterIndex.KEY],
                                                  'ALL']:
 
@@ -1341,8 +1301,7 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
 
             # Time interval params must have a valid range of 00:00:00 - 99:59:59
             elif key in {Parameter.ACQUIRE_STATUS_INTERVAL[ParameterIndex.KEY],
-                            Parameter.SAMPLE_INTERVAL[ParameterIndex.KEY],
-                            Parameter.VIDEO_FORWARDING_TIMEOUT[ParameterIndex.KEY]}:
+                            Parameter.SAMPLE_INTERVAL[ParameterIndex.KEY]}:
 
                 val = params[key]
                 valid_value_regex = r'^\d{2}:[0-5]\d:[0-5]\d$'
@@ -1359,10 +1318,8 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
 
             # These are driver specific parameters. They are not set on the instrument.
             if key not in [Parameter.SAMPLE_INTERVAL[ParameterIndex.KEY],
-                           Parameter.VIDEO_FORWARDING_TIMEOUT[ParameterIndex.KEY],
                            Parameter.ACQUIRE_STATUS_INTERVAL[ParameterIndex.KEY],
                            Parameter.AUTO_CAPTURE_DURATION[ParameterIndex.KEY],
-                           Parameter.VIDEO_FORWARDING[ParameterIndex.KEY],
                            Parameter.PRESET_NUMBER[ParameterIndex.KEY],
                            Parameter.NTP_SETTING[ParameterIndex.KEY],
                            Parameter.WHEN_DISK_IS_FULL[ParameterIndex.KEY]]:
@@ -1715,20 +1672,11 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
                                      ScheduledJob.STATUS,
                                      ProtocolEvent.ACQUIRE_STATUS)
 
-        self.video_forwarding_flag = self._param_dict.get(Parameter.VIDEO_FORWARDING[ParameterIndex.KEY])
-        self.forwarding_time = self._param_dict.get(Parameter.VIDEO_FORWARDING_TIMEOUT[ParameterIndex.KEY])
-        if self.video_forwarding_flag:
-            if self.forwarding_time != ZERO_TIME_INTERVAL:
-                self.start_scheduled_job(Parameter.VIDEO_FORWARDING_TIMEOUT[ParameterIndex.KEY],
-                                         ScheduledJob.VIDEO_FORWARDING,
-                                         ProtocolEvent.STOP_FORWARD)
-
     def _handler_command_exit(self, *args, **kwargs):
         """
         Exit command state.
         """
         self.stop_scheduled_job(ScheduledJob.STATUS)
-        self.stop_scheduled_job(ScheduledJob.VIDEO_FORWARDING)
 
     def _handler_command_start_direct(self, *args, **kwargs):
         next_state = ProtocolState.DIRECT_ACCESS
@@ -1936,17 +1884,6 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
         self._do_recover(self._calculate_recovery_time())
 
         return next_state, (next_state, result)
-
-    def _handler_command_stop_forward(self, *args, **kwargs):
-        """
-        Stop Video Forwarding
-        """
-        next_state = None
-
-        kwargs['timeout'] = 2
-
-        self.stop_scheduled_job(ScheduledJob.VIDEO_FORWARDING)
-        self.video_forwarding_flag = False
 
     def _handler_command_goto_preset(self, *args, **kwargs):
         """
@@ -2224,36 +2161,6 @@ class CAMDSProtocol(CommandResponseInstrumentProtocol):
                                            params[Parameter.ACQUIRE_STATUS_INTERVAL[ParameterIndex.KEY]])
                 if params[Parameter.ACQUIRE_STATUS_INTERVAL[ParameterIndex.KEY]] == ZERO_TIME_INTERVAL:
                     self.stop_scheduled_job(ScheduledJob.STATUS)
-                changed = True
-
-        if Parameter.VIDEO_FORWARDING_TIMEOUT[ParameterIndex.KEY] in params:
-            if (params[Parameter.VIDEO_FORWARDING_TIMEOUT[ParameterIndex.KEY]] != self._param_dict.get(
-                    Parameter.VIDEO_FORWARDING_TIMEOUT[ParameterIndex.KEY])):
-                self._param_dict.set_value(Parameter.VIDEO_FORWARDING_TIMEOUT[ParameterIndex.KEY],
-                                           params[Parameter.VIDEO_FORWARDING_TIMEOUT[ParameterIndex.KEY]])
-
-                self.forwarding_time = params[Parameter.VIDEO_FORWARDING_TIMEOUT[ParameterIndex.KEY]]
-                if self.video_forwarding_flag is True:
-                    if self.forwarding_time != ZERO_TIME_INTERVAL:
-                        self.start_scheduled_job(Parameter.VIDEO_FORWARDING_TIMEOUT[ParameterIndex.KEY],
-                                                 ScheduledJob.VIDEO_FORWARDING,
-                                                 ProtocolEvent.STOP_FORWARD)
-                if self.forwarding_time == ZERO_TIME_INTERVAL:
-                    self.stop_scheduled_job(ScheduledJob.VIDEO_FORWARDING)
-                changed = True
-
-        if Parameter.VIDEO_FORWARDING[ParameterIndex.KEY] in params:
-            if (params[Parameter.VIDEO_FORWARDING[ParameterIndex.KEY]] != self._param_dict.get(
-                    Parameter.VIDEO_FORWARDING[ParameterIndex.KEY])):
-                self._param_dict.set_value(Parameter.VIDEO_FORWARDING[ParameterIndex.KEY],
-                                           params[Parameter.VIDEO_FORWARDING[ParameterIndex.KEY]])
-                self.video_forwarding_flag = params[Parameter.VIDEO_FORWARDING[ParameterIndex.KEY]]
-
-                if self.video_forwarding_flag is True:
-                    if self.forwarding_time != ZERO_TIME_INTERVAL:
-                        self.start_scheduled_job(Parameter.VIDEO_FORWARDING_TIMEOUT[ParameterIndex.KEY],
-                                                 ScheduledJob.VIDEO_FORWARDING,
-                                                 ProtocolEvent.STOP_FORWARD)
                 changed = True
 
         if Parameter.AUTO_CAPTURE_DURATION[ParameterIndex.KEY] in params:
