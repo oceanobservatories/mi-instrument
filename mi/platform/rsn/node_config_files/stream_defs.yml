@@ -64,11 +64,11 @@ streams:
     - omc_parameter_name: "CIB Board State"
       ion_parameter_name: sn_cib_board_state
       monitor_cycle_seconds: 3
-      scale_factor: 0.001
+      scale_factor: 1
     - omc_parameter_name: "CIB Error State"
       ion_parameter_name: sn_cib_error_state
       monitor_cycle_seconds: 3
-      scale_factor: 0.001
+      scale_factor: 1
     - omc_parameter_name: "CIB Hotel Current"
       ion_parameter_name: sn_cib_hotel_current
       monitor_cycle_seconds: 3
@@ -108,7 +108,7 @@ streams:
     - omc_parameter_name: "HPB Error State"
       ion_parameter_name: sn_hpb_error_state
       monitor_cycle_seconds: 3
-      scale_factor: 0.001
+      scale_factor: 1
     - omc_parameter_name: "HPB Input Voltage"
       ion_parameter_name: sn_hpb_input_voltage
       monitor_cycle_seconds: 3
@@ -136,7 +136,7 @@ streams:
     - omc_parameter_name: "HPB Board State"
       ion_parameter_name: sn_hpb_board_state
       monitor_cycle_seconds: 3
-      scale_factor: 0.001
+      scale_factor: 1
 
   primary_node_out_of_band_port_data:
     variables:
