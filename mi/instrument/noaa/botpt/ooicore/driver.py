@@ -87,10 +87,9 @@ class ProtocolEvent(BaseEnum):
     """
     ENTER = DriverEvent.ENTER
     EXIT = DriverEvent.EXIT
+    START_AUTOSAMPLE = DriverEvent.START_AUTOSAMPLE
     GET = DriverEvent.GET
     SET = DriverEvent.SET
-    START_AUTOSAMPLE = DriverEvent.START_AUTOSAMPLE
-    STOP_AUTOSAMPLE = DriverEvent.STOP_AUTOSAMPLE
     DISCOVER = DriverEvent.DISCOVER
     ACQUIRE_STATUS = DriverEvent.ACQUIRE_STATUS
     START_DIRECT = DriverEvent.START_DIRECT
@@ -110,8 +109,6 @@ class Capability(BaseEnum):
     STOP_DIRECT = ProtocolEvent.STOP_DIRECT
     GET = ProtocolEvent.GET
     SET = ProtocolEvent.SET
-    START_AUTOSAMPLE = ProtocolEvent.START_AUTOSAMPLE
-    STOP_AUTOSAMPLE = ProtocolEvent.STOP_AUTOSAMPLE
     ACQUIRE_STATUS = ProtocolEvent.ACQUIRE_STATUS
     START_LEVELING = ProtocolEvent.START_LEVELING
     STOP_LEVELING = ProtocolEvent.STOP_LEVELING
@@ -267,8 +264,8 @@ class Protocol(CommandResponseInstrumentProtocol):
                 (ProtocolEvent.ENTER, self._handler_autosample_enter),
                 (ProtocolEvent.EXIT, self._handler_generic_exit),
                 (ProtocolEvent.GET, self._handler_command_get),
+                (ProtocolEvent.START_AUTOSAMPLE, self._handler_start_autosample),
                 (ProtocolEvent.ACQUIRE_STATUS, self._handler_acquire_status),
-                (ProtocolEvent.STOP_AUTOSAMPLE, self._handler_autosample_stop_autosample),
                 (ProtocolEvent.START_LEVELING, self._handler_start_leveling),
                 (ProtocolEvent.STOP_LEVELING, self._handler_stop_leveling),
                 (ProtocolEvent.NANO_TIME_SYNC, self._handler_time_sync),
@@ -279,8 +276,8 @@ class Protocol(CommandResponseInstrumentProtocol):
                 (ProtocolEvent.EXIT, self._handler_generic_exit),
                 (ProtocolEvent.GET, self._handler_command_get),
                 (ProtocolEvent.SET, self._handler_command_set),
+                (ProtocolEvent.START_AUTOSAMPLE, self._handler_start_autosample),
                 (ProtocolEvent.ACQUIRE_STATUS, self._handler_acquire_status),
-                (ProtocolEvent.START_AUTOSAMPLE, self._handler_command_start_autosample),
                 (ProtocolEvent.START_LEVELING, self._handler_start_leveling),
                 (ProtocolEvent.STOP_LEVELING, self._handler_stop_leveling),
                 (ProtocolEvent.START_DIRECT, self._handler_command_start_direct),
@@ -440,8 +437,6 @@ class Protocol(CommandResponseInstrumentProtocol):
         """
         Populate the command dictionary with commands.
         """
-        self._cmd_dict.add(Capability.START_AUTOSAMPLE, display_name="Start Autosample")
-        self._cmd_dict.add(Capability.STOP_AUTOSAMPLE, display_name="Stop Autosample")
         self._cmd_dict.add(Capability.ACQUIRE_STATUS, display_name="Acquire Status")
         self._cmd_dict.add(Capability.START_LEVELING, display_name="Start LILY Leveling")
         self._cmd_dict.add(Capability.STOP_LEVELING, display_name="Stop LILY Leveling")
@@ -674,16 +669,6 @@ class Protocol(CommandResponseInstrumentProtocol):
         self.set_init_params(config)
         self._add_scheduler_event(ScheduledJob.LEVELING_TIMEOUT, ProtocolEvent.LEVELING_TIMEOUT)
 
-    def _stop_autosample(self):
-        """
-        Stop autosample, leveling if in progress.
-        """
-        self.leveling = False
-        self._do_cmd_no_resp(InstrumentCommands.NANO_OFF)
-        self._do_cmd_resp(InstrumentCommands.LILY_STOP_LEVELING, expected_prompt=Prompt.LILY_STOP_LEVELING)
-        self._do_cmd_resp(InstrumentCommands.LILY_OFF, expected_prompt=Prompt.LILY_OFF)
-        self._do_cmd_resp(InstrumentCommands.IRIS_OFF, expected_prompt=Prompt.IRIS_OFF)
-
     def _generic_response_handler(self, resp, prompt):
         """
         Pass through response handler
@@ -764,6 +749,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         Check if PPS sync status has changed.  Update driver flag and, if appropriate, trigger a time sync
         @param sample: sample to be checked
         """
+        log.debug("KIRK - %r", sample)
         sample = self._particle_to_dict(sample)
         pps_sync = sample[particles.NanoSampleParticleKey.PPS_SYNC] == 'P'
         if pps_sync:
@@ -784,7 +770,9 @@ class Protocol(CommandResponseInstrumentProtocol):
         Process discover event
         @return next_state, (next_state, result)
         """
-        next_state = ProtocolState.COMMAND
+        next_state = ProtocolState.AUTOSAMPLE
+
+        self._driver_event(DriverAsyncEvent.STATE_CHANGE)
         result = []
 
         return next_state, (next_state, result)
@@ -797,17 +785,14 @@ class Protocol(CommandResponseInstrumentProtocol):
         """
         Enter autosample state.
         """
+        # key off the initialization flag to determine if we should sync the time
+        if self._init_type == InitializationType.STARTUP:
+            self._handler_time_sync()
+
         self._init_params()
         self._driver_event(DriverAsyncEvent.STATE_CHANGE)
 
-    def _handler_autosample_stop_autosample(self, *args, **kwargs):
-        """
-        Stop autosample
-        @return next_state, (next_state, result)
-        """
-        next_state = ProtocolState.COMMAND
-        result = []
-        return next_state, (next_state, result)
+        self._handler_start_autosample()
 
     ########################################################################
     # Command handlers.
@@ -822,8 +807,9 @@ class Protocol(CommandResponseInstrumentProtocol):
             self._handler_time_sync()
 
         self._init_params()
-        self._stop_autosample()
         self._driver_event(DriverAsyncEvent.STATE_CHANGE)
+
+        self._handler_start_autosample()
 
     def _handler_command_get(self, *args, **kwargs):
         """
@@ -865,7 +851,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         result = []
         return next_state, (next_state, result)
 
-    def _handler_command_start_autosample(self):
+    def _handler_start_autosample(self):
         """
         Start autosample
         @return next_state, (next_state, result)
