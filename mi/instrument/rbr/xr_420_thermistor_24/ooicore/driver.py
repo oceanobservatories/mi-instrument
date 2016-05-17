@@ -5,7 +5,7 @@
 @brief Driver for the RBR Thermistor String (24 thermistors)
 Release notes:
 
-initial release
+initial releas
 """
 
 import time
