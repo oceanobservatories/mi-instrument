@@ -133,27 +133,18 @@ class BotptTestMixinSub(DriverTestMixin):
     _driver_capabilities = {
         # capabilities defined in the IOS
         Capability.DISCOVER: {STATES: [ProtocolState.UNKNOWN]},
-        Capability.ACQUIRE_STATUS: {STATES: [ProtocolState.COMMAND, ProtocolState.AUTOSAMPLE]},
-        Capability.START_AUTOSAMPLE: {STATES: [ProtocolState.COMMAND]},
-        Capability.STOP_AUTOSAMPLE: {STATES: [ProtocolState.AUTOSAMPLE]},
-        Capability.START_LEVELING: {STATES: [ProtocolState.COMMAND, ProtocolState.AUTOSAMPLE]},
-        Capability.STOP_LEVELING: {STATES: [ProtocolState.COMMAND, ProtocolState.AUTOSAMPLE]},
+        Capability.ACQUIRE_STATUS: {STATES: [ProtocolState.AUTOSAMPLE]},
+        Capability.START_LEVELING: {STATES: [ProtocolState.AUTOSAMPLE]},
+        Capability.STOP_LEVELING: {STATES: [ProtocolState.AUTOSAMPLE]},
     }
 
     _capabilities = {
         ProtocolState.UNKNOWN: ['DRIVER_EVENT_DISCOVER'],
-        ProtocolState.COMMAND: ['DRIVER_EVENT_ACQUIRE_STATUS',
-                                'DRIVER_EVENT_GET',
-                                'DRIVER_EVENT_SET',
-                                'DRIVER_EVENT_START_AUTOSAMPLE',
-                                'DRIVER_EVENT_START_DIRECT',
-                                'PROTOCOL_EVENT_START_LEVELING',
-                                'PROTOCOL_EVENT_STOP_LEVELING',
-                                'PROTOCOL_EVENT_LEVELING_TIMEOUT',
-                                'PROTOCOL_EVENT_NANO_TIME_SYNC'],
         ProtocolState.AUTOSAMPLE: ['DRIVER_EVENT_GET',
-                                   'DRIVER_EVENT_STOP_AUTOSAMPLE',
+                                    'DRIVER_EVENT_SET',
                                    'DRIVER_EVENT_ACQUIRE_STATUS',
+                                   'DRIVER_EVENT_START_AUTOSAMPLE',
+                                   'DRIVER_EVENT_START_DIRECT',
                                    'PROTOCOL_EVENT_START_LEVELING',
                                    'PROTOCOL_EVENT_STOP_LEVELING',
                                    'PROTOCOL_EVENT_LEVELING_TIMEOUT',
@@ -409,7 +400,7 @@ class DriverUnitTest(InstrumentDriverUnitTestCase, BotptTestMixinSub):
     def setUp(self):
         InstrumentDriverUnitTestCase.setUp(self)
 
-    def test_connect(self, initial_protocol_state=ProtocolState.COMMAND):
+    def test_connect(self, initial_protocol_state=ProtocolState.AUTOSAMPLE):
         """
         Verify we can initialize the driver.  Set up mock events for other tests.
         @param initial_protocol_state: target protocol state for driver
@@ -520,18 +511,6 @@ class DriverUnitTest(InstrumentDriverUnitTestCase, BotptTestMixinSub):
             (timestamp, result) = chunker.get_next_data()
             self.assertEqual(result, None)
 
-    def test_start_stop_autosample(self):
-        """
-        Test starting/stopping autosample, verify state transitions
-        """
-        driver = self.test_connect()
-
-        driver._protocol._protocol_fsm.on_event(ProtocolEvent.START_AUTOSAMPLE)
-        self.assertEqual(driver._protocol.get_current_state(), ProtocolState.AUTOSAMPLE)
-
-        driver._protocol._protocol_fsm.on_event(ProtocolEvent.STOP_AUTOSAMPLE)
-        self.assertEqual(driver._protocol.get_current_state(), ProtocolState.COMMAND)
-
     def test_status_handler(self):
         """
         Test the acquire status handler
@@ -577,7 +556,7 @@ class DriverUnitTest(InstrumentDriverUnitTestCase, BotptTestMixinSub):
         # feed in a leveling complete status message
         self._send_port_agent_packet(driver, samples.LEVELED_STATUS)
         # Assert we have returned to the command state
-        self.assertEquals(driver._protocol.get_current_state(), ProtocolState.COMMAND)
+        self.assertEquals(driver._protocol.get_current_state(), ProtocolState.AUTOSAMPLE)
 
         expected = [call(ProtocolEvent.GET, Parameter.ALL),  # startup get ALL
                     call(ProtocolEvent.START_LEVELING),      # start leveling
@@ -609,7 +588,7 @@ class DriverUnitTest(InstrumentDriverUnitTestCase, BotptTestMixinSub):
             time.sleep(1)
         except InstrumentDataException:
             self.assertFalse(driver._protocol._param_dict.get(Parameter.AUTO_RELEVEL))
-        self.assertEqual(driver._protocol.get_current_state(), ProtocolState.COMMAND)
+        self.assertEqual(driver._protocol.get_current_state(), ProtocolState.AUTOSAMPLE)
 
         expected = [call(ProtocolEvent.GET, Parameter.ALL),  # startup get ALL
                     call(ProtocolEvent.START_LEVELING),      # start leveling
@@ -814,26 +793,24 @@ class DriverIntegrationTest(InstrumentDriverIntegrationTestCase, BotptTestMixinS
         # leveling before the triggers have been reset to 300
         self.assert_set(Parameter.XTILT_TRIGGER, 0, no_get=True)
 
-        self.assert_driver_command(Capability.START_AUTOSAMPLE, state=ProtocolState.AUTOSAMPLE)
+        self.assert_driver_command(Capability.DISCOVER, state=ProtocolState.AUTOSAMPLE)
         self.assert_async_particle_generation(particles.DataParticleType.LILY_LEVELING,
                                               self.assert_particle_lily_leveling_01)
 
         # verify the flag is set
         self.assert_get(Parameter.LILY_LEVELING, True)
-        self.assert_driver_command(Capability.STOP_AUTOSAMPLE, state=ProtocolState.COMMAND)
 
     def test_autosample(self):
         """
         Test for turning data on
         """
         self.assert_initialize_driver()
-        self.assert_driver_command(Capability.START_AUTOSAMPLE, state=ProtocolState.AUTOSAMPLE)
+        self.assert_driver_command(Capability.DISCOVER, state=ProtocolState.AUTOSAMPLE)
         rate = int(self.test_config.driver_startup_config[DriverConfigKey.PARAMETERS][Parameter.OUTPUT_RATE])
 
         # autosample for 10 seconds, then count the samples...
         # we can't test "inline" because the nano data rate is too high.
         time.sleep(10)
-        self.assert_driver_command(Capability.STOP_AUTOSAMPLE, state=ProtocolState.COMMAND, delay=1)
 
         for particle_type, assert_func, count in [
             (particles.DataParticleType.LILY_SAMPLE, self.assert_particle_lily_sample_01, 5),
@@ -859,7 +836,7 @@ class DriverIntegrationTest(InstrumentDriverIntegrationTestCase, BotptTestMixinS
         self.assert_initialize_driver()
 
         # go to autosample
-        self.assert_driver_command(Capability.START_AUTOSAMPLE, state=ProtocolState.AUTOSAMPLE, delay=5)
+        self.assert_driver_command(Capability.DISCOVER, state=ProtocolState.AUTOSAMPLE, delay=5)
 
         #Issue start leveling command
         self.assert_driver_command(Capability.START_LEVELING)
@@ -876,7 +853,6 @@ class DriverIntegrationTest(InstrumentDriverIntegrationTestCase, BotptTestMixinS
 
         # Verify the flag is unset
         self.assert_get(Parameter.LILY_LEVELING, False)
-        self.assert_driver_command(Capability.STOP_AUTOSAMPLE, state=ProtocolState.COMMAND, delay=5)
 
     def test_scheduled_acquire_status(self):
         """
@@ -923,7 +899,6 @@ class DriverQualificationTest(InstrumentDriverQualificationTestCase, BotptTestMi
         self.assert_particle_async(particles.DataParticleType.NANO_SAMPLE, self.assert_particle_nano_sample_01)
         self.assert_particle_async(particles.DataParticleType.HEAT_SAMPLE, self.assert_particle_heat_sample_01)
 
-        self.assert_stop_autosample()
         # verify all particles in command
         self.assert_particle_async(particles.DataParticleType.HEAT_SAMPLE, self.assert_particle_heat_sample_01)
         self.assert_particle_polled(Capability.ACQUIRE_STATUS, self.assert_particle_botpt_status,
@@ -949,7 +924,7 @@ class DriverQualificationTest(InstrumentDriverQualificationTestCase, BotptTestMi
         result = self.tcp_client.expect('-DUMP-SETTINGS')
         self.assertTrue(result, msg='Failed to receive expected response in direct access mode.')
         self.assert_direct_access_stop_telnet()
-        self.assert_state_change(ResourceAgentState.COMMAND, ProtocolState.COMMAND, 10)
+        self.assert_state_change(ResourceAgentState.STREAMING, ProtocolState.AUTOSAMPLE, 10)
 
     def test_leveling(self):
         """
@@ -969,7 +944,6 @@ class DriverQualificationTest(InstrumentDriverQualificationTestCase, BotptTestMi
         """
         self.assert_enter_command_mode()
         constraints = ParameterConstraint.dict()
-        parameters = Parameter.dict()
         reverse_param = Parameter.reverse_dict()
         startup_config = self.test_config.driver_startup_config[DriverConfigKey.PARAMETERS]
 
@@ -996,7 +970,6 @@ class DriverQualificationTest(InstrumentDriverQualificationTestCase, BotptTestMi
             with self.assertRaises(BadRequest):
                 self.assert_set_parameter(key, 'BOGUS')
 
-        startup_config = self.test_config.driver_startup_config['parameters']
 
     def test_get_capabilities(self):
         """
@@ -1014,7 +987,6 @@ class DriverQualificationTest(InstrumentDriverQualificationTestCase, BotptTestMi
             AgentCapabilityType.RESOURCE_COMMAND: [
                 ProtocolEvent.GET,
                 ProtocolEvent.SET,
-                ProtocolEvent.START_AUTOSAMPLE,
                 ProtocolEvent.ACQUIRE_STATUS,
                 ProtocolEvent.START_LEVELING,
                 ProtocolEvent.STOP_LEVELING,
@@ -1032,7 +1004,6 @@ class DriverQualificationTest(InstrumentDriverQualificationTestCase, BotptTestMi
         capabilities[AgentCapabilityType.AGENT_COMMAND] = self._common_agent_commands(ResourceAgentState.STREAMING)
         capabilities[AgentCapabilityType.RESOURCE_COMMAND] = [
             ProtocolEvent.GET,
-            ProtocolEvent.STOP_AUTOSAMPLE,
             ProtocolEvent.ACQUIRE_STATUS,
             ProtocolEvent.START_LEVELING,
             ProtocolEvent.STOP_LEVELING,
@@ -1040,7 +1011,6 @@ class DriverQualificationTest(InstrumentDriverQualificationTestCase, BotptTestMi
 
         self.assert_start_autosample()
         self.assert_capabilities(capabilities)
-        self.assert_stop_autosample()
 
         ##################
         #  DA Mode
@@ -1067,15 +1037,15 @@ class DriverQualificationTest(InstrumentDriverQualificationTestCase, BotptTestMi
 
     def test_direct_access_exit_from_autosample(self):
         """
-        Overridden.  This driver always discovers to command
+        Overridden.  This driver always discovers to autosample
         """
 
     def test_discover(self):
         """
-        Overridden.  The driver always discovers to command
+        Overridden.  The driver always discovers to autosample
         """
         # Verify the agent is in command mode
-        self.assert_enter_command_mode()
+        #self.assert_enter_command_mode()
 
         # Now reset and try to discover.  This will stop the driver which holds the current
         # instrument state.

@@ -23,7 +23,6 @@ from mi.core.instrument.instrument_driver import SingleConnectionInstrumentDrive
 from mi.core.instrument.instrument_driver import DriverParameter
 from mi.core.instrument.instrument_driver import DriverConfigKey
 from mi.core.instrument.instrument_driver import DriverAsyncEvent
-from mi.core.instrument.instrument_driver import ResourceAgentState
 from mi.core.instrument.instrument_driver import DriverProtocolState
 from mi.core.exceptions import InstrumentParameterException
 from mi.core.exceptions import InstrumentProtocolException
@@ -76,8 +75,15 @@ class ProtocolState(BaseEnum):
     Instrument protocol states
     """
     UNKNOWN = DriverProtocolState.UNKNOWN
-    COMMAND = DriverProtocolState.COMMAND
-    AUTOSAMPLE = DriverProtocolState.AUTOSAMPLE
+
+    # BOTPT initiates sampling at discovery. However, the UI commands still need to be available for execution
+    # as BOTPT can handle commands while sampling. As such, even though sampling is started, the state will
+    # remain COMMAND so that the UI will allow command execution. There is currently a tracking issue against the UI
+    # (Redmine 10283) to allow the driver to control what capabilities are available. When that issue is resolved,
+    # this will need to be changed from DriverProtocolState.COMMAND to DriverProtocolState.AUTOSAMPLE. Currently,
+    # this just allows us to fake out the UI
+    AUTOSAMPLE = DriverProtocolState.COMMAND
+
     DIRECT_ACCESS = DriverProtocolState.DIRECT_ACCESS
 
 
@@ -87,10 +93,9 @@ class ProtocolEvent(BaseEnum):
     """
     ENTER = DriverEvent.ENTER
     EXIT = DriverEvent.EXIT
+    START_AUTOSAMPLE = DriverEvent.START_AUTOSAMPLE
     GET = DriverEvent.GET
     SET = DriverEvent.SET
-    START_AUTOSAMPLE = DriverEvent.START_AUTOSAMPLE
-    STOP_AUTOSAMPLE = DriverEvent.STOP_AUTOSAMPLE
     DISCOVER = DriverEvent.DISCOVER
     ACQUIRE_STATUS = DriverEvent.ACQUIRE_STATUS
     START_DIRECT = DriverEvent.START_DIRECT
@@ -110,8 +115,6 @@ class Capability(BaseEnum):
     STOP_DIRECT = ProtocolEvent.STOP_DIRECT
     GET = ProtocolEvent.GET
     SET = ProtocolEvent.SET
-    START_AUTOSAMPLE = ProtocolEvent.START_AUTOSAMPLE
-    STOP_AUTOSAMPLE = ProtocolEvent.STOP_AUTOSAMPLE
     ACQUIRE_STATUS = ProtocolEvent.ACQUIRE_STATUS
     START_LEVELING = ProtocolEvent.START_LEVELING
     STOP_LEVELING = ProtocolEvent.STOP_LEVELING
@@ -266,24 +269,13 @@ class Protocol(CommandResponseInstrumentProtocol):
             ProtocolState.AUTOSAMPLE: [
                 (ProtocolEvent.ENTER, self._handler_autosample_enter),
                 (ProtocolEvent.EXIT, self._handler_generic_exit),
-                (ProtocolEvent.GET, self._handler_command_get),
+                (ProtocolEvent.GET, self._handler_autosample_get),
+                (ProtocolEvent.SET, self._handler_autosample_set),
+                (ProtocolEvent.START_AUTOSAMPLE, self._handler_start_autosample),
                 (ProtocolEvent.ACQUIRE_STATUS, self._handler_acquire_status),
-                (ProtocolEvent.STOP_AUTOSAMPLE, self._handler_autosample_stop_autosample),
                 (ProtocolEvent.START_LEVELING, self._handler_start_leveling),
                 (ProtocolEvent.STOP_LEVELING, self._handler_stop_leveling),
-                (ProtocolEvent.NANO_TIME_SYNC, self._handler_time_sync),
-                (ProtocolEvent.LEVELING_TIMEOUT, self._handler_leveling_timeout),
-            ],
-            ProtocolState.COMMAND: [
-                (ProtocolEvent.ENTER, self._handler_command_enter),
-                (ProtocolEvent.EXIT, self._handler_generic_exit),
-                (ProtocolEvent.GET, self._handler_command_get),
-                (ProtocolEvent.SET, self._handler_command_set),
-                (ProtocolEvent.ACQUIRE_STATUS, self._handler_acquire_status),
-                (ProtocolEvent.START_AUTOSAMPLE, self._handler_command_start_autosample),
-                (ProtocolEvent.START_LEVELING, self._handler_start_leveling),
-                (ProtocolEvent.STOP_LEVELING, self._handler_stop_leveling),
-                (ProtocolEvent.START_DIRECT, self._handler_command_start_direct),
+                (ProtocolEvent.START_DIRECT, self._handler_autosample_start_direct),
                 (ProtocolEvent.NANO_TIME_SYNC, self._handler_time_sync),
                 (ProtocolEvent.LEVELING_TIMEOUT, self._handler_leveling_timeout),
             ],
@@ -440,8 +432,6 @@ class Protocol(CommandResponseInstrumentProtocol):
         """
         Populate the command dictionary with commands.
         """
-        self._cmd_dict.add(Capability.START_AUTOSAMPLE, display_name="Start Autosample")
-        self._cmd_dict.add(Capability.STOP_AUTOSAMPLE, display_name="Stop Autosample")
         self._cmd_dict.add(Capability.ACQUIRE_STATUS, display_name="Acquire Status")
         self._cmd_dict.add(Capability.START_LEVELING, display_name="Start LILY Leveling")
         self._cmd_dict.add(Capability.STOP_LEVELING, display_name="Stop LILY Leveling")
@@ -674,16 +664,6 @@ class Protocol(CommandResponseInstrumentProtocol):
         self.set_init_params(config)
         self._add_scheduler_event(ScheduledJob.LEVELING_TIMEOUT, ProtocolEvent.LEVELING_TIMEOUT)
 
-    def _stop_autosample(self):
-        """
-        Stop autosample, leveling if in progress.
-        """
-        self.leveling = False
-        self._do_cmd_no_resp(InstrumentCommands.NANO_OFF)
-        self._do_cmd_resp(InstrumentCommands.LILY_STOP_LEVELING, expected_prompt=Prompt.LILY_STOP_LEVELING)
-        self._do_cmd_resp(InstrumentCommands.LILY_OFF, expected_prompt=Prompt.LILY_OFF)
-        self._do_cmd_resp(InstrumentCommands.IRIS_OFF, expected_prompt=Prompt.IRIS_OFF)
-
     def _generic_response_handler(self, resp, prompt):
         """
         Pass through response handler
@@ -731,7 +711,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         # Read only parameter, must be set outside of handler
         self._param_dict.set_value(Parameter.LEVELING_FAILED, True)
         # Use the handler to disable auto relevel to raise a config change event if needed.
-        self._handler_command_set({Parameter.AUTO_RELEVEL: False})
+        self._handler_autosample_set({Parameter.AUTO_RELEVEL: False})
         raise InstrumentDataException('LILY Leveling (%s) Failed.  Disabling auto relevel' % axis)
 
     def _check_completed_leveling(self, sample):
@@ -746,7 +726,7 @@ class Protocol(CommandResponseInstrumentProtocol):
             # If leveling complete, send STOP_LEVELING, set the _leveling_failed flag to False
             if 'Leveled' in status:
                 if self._param_dict.get(Parameter.LEVELING_FAILED):
-                    self._handler_command_set({Parameter.LEVELING_FAILED: False})
+                    self._handler_autosample_set({Parameter.LEVELING_FAILED: False})
                 self._async_raise_fsm_event(ProtocolEvent.STOP_LEVELING)
             # Leveling X failed!  Set the flag and raise an exception to notify the operator
             # and disable auto leveling. Let the instrument attempt to level
@@ -770,7 +750,7 @@ class Protocol(CommandResponseInstrumentProtocol):
             if not self.has_pps:
                 # pps sync regained, sync the time
                 self.has_pps = True
-                if self.get_current_state() in [ProtocolState.COMMAND, ProtocolState.AUTOSAMPLE]:
+                if self.get_current_state() == ProtocolState.AUTOSAMPLE:
                     self._async_raise_fsm_event(ProtocolEvent.NANO_TIME_SYNC)
         else:
             self.has_pps = False
@@ -784,7 +764,8 @@ class Protocol(CommandResponseInstrumentProtocol):
         Process discover event
         @return next_state, (next_state, result)
         """
-        next_state = ProtocolState.COMMAND
+        next_state = ProtocolState.AUTOSAMPLE
+
         result = []
 
         return next_state, (next_state, result)
@@ -797,41 +778,24 @@ class Protocol(CommandResponseInstrumentProtocol):
         """
         Enter autosample state.
         """
-        self._init_params()
-        self._driver_event(DriverAsyncEvent.STATE_CHANGE)
-
-    def _handler_autosample_stop_autosample(self, *args, **kwargs):
-        """
-        Stop autosample
-        @return next_state, (next_state, result)
-        """
-        next_state = ProtocolState.COMMAND
-        result = []
-        return next_state, (next_state, result)
-
-    ########################################################################
-    # Command handlers.
-    ########################################################################
-
-    def _handler_command_enter(self, *args, **kwargs):
-        """
-        Enter command state.
-        """
         # key off the initialization flag to determine if we should sync the time
         if self._init_type == InitializationType.STARTUP:
             self._handler_time_sync()
 
         self._init_params()
-        self._stop_autosample()
         self._driver_event(DriverAsyncEvent.STATE_CHANGE)
 
-    def _handler_command_get(self, *args, **kwargs):
+        # Since BOTPT is to discover into the Autosample state without a command execution, and remain that
+        # way permanently, we make the call to start autosampling here
+        self._handler_start_autosample()
+
+    def _handler_autosample_get(self, *args, **kwargs):
         """
         Process GET event
         """
         return self._handler_get(*args, **kwargs)
 
-    def _handler_command_set(self, *args, **kwargs):
+    def _handler_autosample_set(self, *args, **kwargs):
         """
         Perform a set command.
         @param args[0] parameter : value dict.
@@ -856,7 +820,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         self._set_params(params, startup)
         return next_state, result
 
-    def _handler_command_start_direct(self):
+    def _handler_autosample_start_direct(self):
         """
         Start direct access
         @return next_state, (next_state, result)
@@ -865,7 +829,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         result = []
         return next_state, (next_state, result)
 
-    def _handler_command_start_autosample(self):
+    def _handler_start_autosample(self):
         """
         Start autosample
         @return next_state, (next_state, result)
@@ -907,8 +871,6 @@ class Protocol(CommandResponseInstrumentProtocol):
         @return next_state, (next_state, result)
         """
         next_state, (_, result) = self._handler_unknown_discover()
-        if next_state == DriverProtocolState.COMMAND:
-            next_agent_state = ResourceAgentState.COMMAND
 
         return next_state, (next_state, result)
 
@@ -972,8 +934,6 @@ class Protocol(CommandResponseInstrumentProtocol):
         """
         next_state = None
         result = self._do_cmd_resp(InstrumentCommands.NANO_SET_TIME, expected_prompt=NANO_STRING)
-        if self.get_current_state() == ProtocolState.COMMAND:
-            self._do_cmd_no_resp(InstrumentCommands.NANO_OFF)
         return next_state, (next_state, result)
 
     def _handler_start_leveling(self):
