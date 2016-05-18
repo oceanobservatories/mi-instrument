@@ -50,8 +50,7 @@ InstrumentDriverTestCase.initialize(
         DriverConfigKey.PARAMETERS: {
             Parameter.MAXRATE: 1,
             Parameter.FIRMWARE: '1.0.0',
-            Parameter.SERIAL: '4278190306',
-            Parameter.INSTRUMENT: 'SATPAR'}}
+            Parameter.SERIAL: '4278190306'}}
 )
 
 
@@ -115,7 +114,6 @@ class PARMixin(DriverTestMixin):
         Parameter.MAXRATE: {TYPE: float, READONLY: False, DA: True, STARTUP: True, VALUE: 4, REQUIRED: True},
         Parameter.FIRMWARE: {TYPE: str, READONLY: True, DA: False, STARTUP: False, VALUE: '1.0.0', REQUIRED: False},
         Parameter.SERIAL: {TYPE: str, READONLY: True, DA: False, STARTUP: False, VALUE: '4278190306', REQUIRED: False},
-        Parameter.INSTRUMENT: {TYPE: str, READONLY: True, DA: False, STARTUP: False, VALUE: 'SATPAR', REQUIRED: False},
         Parameter.ACQUIRE_STATUS_INTERVAL: {TYPE: str, READONLY: False, DA: False, STARTUP: True, VALUE: '00:00:00', REQUIRED: True}
     }
 
@@ -319,7 +317,7 @@ class SatlanticParProtocolUnitTest(InstrumentDriverUnitTestCase, PARMixin):
             test_particle = particle_type(raw_input, port_timestamp=port_timestamp,
                                           internal_timestamp=internal_timestamp)
         else:
-            test_particle = particle_type("4278190306", "1.0.0", "SATPAR", raw_input, port_timestamp=port_timestamp)
+            test_particle = particle_type("4278190306", "1.0.0", raw_input, port_timestamp=port_timestamp)
 
         parsed_result = test_particle.generate()
 
@@ -398,7 +396,6 @@ class SatlanticParProtocolIntegrationTest(InstrumentDriverIntegrationTestCase, P
         #test read only parameter
         self.assert_set_exception(Parameter.FIRMWARE, '1.0.1')
         self.assert_set_exception(Parameter.SERIAL, '4278190307')
-        self.assert_set_exception(Parameter.INSTRUMENT, 'CATCAR')
 
     def test_metadata_generation(self):
         """
@@ -430,7 +427,6 @@ class SatlanticParProtocolIntegrationTest(InstrumentDriverIntegrationTestCase, P
             Parameter.MAXRATE: 4,
             Parameter.FIRMWARE: '1.0.0',
             Parameter.SERIAL: '4278190306',
-            Parameter.INSTRUMENT: 'SATPAR',
             Parameter.ACQUIRE_STATUS_INTERVAL: '00:00:00'
         }
 
