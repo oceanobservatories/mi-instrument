@@ -13,9 +13,11 @@ __author__ = 'Ronald Ronquilllo'
 __license__ = 'Apache 2.0'
 
 import time
+
 import re
 
 from mi.core.log import get_logger, get_logging_metaclass
+
 log = get_logger()
 
 from mi.core.common import BaseEnum, Units
@@ -28,7 +30,6 @@ from mi.core.instrument.instrument_driver import DriverProtocolState
 from mi.core.instrument.instrument_driver import DriverAsyncEvent
 from mi.core.instrument.instrument_driver import DriverConfigKey
 from mi.core.instrument.instrument_driver import DriverParameter
-from mi.core.instrument.instrument_driver import ResourceAgentState
 from mi.core.instrument.protocol_cmd_dict import ProtocolCommandDict
 
 from mi.core.instrument.instrument_protocol import DEFAULT_CMD_TIMEOUT, RE_PATTERN
@@ -48,12 +49,13 @@ from mi.core.instrument.data_particle import DataParticle, DataParticleKey, Data
 # Module-wide values
 ####################################################################
 
+INSTRUMENT = 'SATPAR'
+
 # ex SATPAR4278190306,55713.85,2206748544,234
 SAMPLE_PATTERN = r'SATPAR(?P<sernum>\d+),(?P<timer>\d+\.\d+),(?P<counts>\d+),(?P<checksum>\d+)\r\n'
 SAMPLE_REGEX = re.compile(SAMPLE_PATTERN)
 
-HEADER_PATTERN = r'Satlantic Digital PAR Sensor\r\nCopyright \(C\) 2003, Satlantic Inc. All rights reserved.\r\n' \
-                 r'Instrument: (?P<instr>.*)\r\nS/N: (?P<sernum>\d{4,10})\r\nFirmware: (?P<firm>.*)\r\n'
+HEADER_PATTERN = r'S/N: (?P<sernum>\d+)\r\nFirmware: (?P<firm>\S+)\r\n'
 HEADER_REGEX = re.compile(HEADER_PATTERN)
 
 COMMAND_PATTERN = 'Command Console'
@@ -96,9 +98,6 @@ class EngineeringParameter(DriverParameter):
     Driver Parameters (aka, engineering parameters)
     """
     ACQUIRE_STATUS_INTERVAL = 'AcquireStatusInterval'
-    FIRMWARE = 'firmware'
-    SERIAL = 'serial'
-    INSTRUMENT = 'instrument'
 
 
 class ScheduledJob(BaseEnum):
@@ -180,9 +179,8 @@ class PARCapability(BaseEnum):
 
 class Parameter(DriverParameter):
     MAXRATE = 'maxrate'
-    FIRMWARE = EngineeringParameter.FIRMWARE
-    SERIAL = EngineeringParameter.SERIAL
-    INSTRUMENT = EngineeringParameter.INSTRUMENT
+    FIRMWARE = 'firmware'
+    SERIAL = 'serial'
     ACQUIRE_STATUS_INTERVAL = EngineeringParameter.ACQUIRE_STATUS_INTERVAL
 
 
@@ -310,10 +308,9 @@ class SatlanticPARConfigParticle(DataParticle):
     Overrides the building of values, and the rest comes along for free.
     Serial Number, Firmware, & Instrument are read only values retrieved from the param dictionary.
     """
-    def __init__(self, serial_num, firmware, instrument, *args, **kwargs):
+    def __init__(self, serial_num, firmware, *args, **kwargs):
         self._serial_num = serial_num
         self._firmware = firmware
-        self._instrument = instrument
         super(SatlanticPARConfigParticle, self).__init__(*args, **kwargs)
 
     _data_particle_type = DataParticleType.CONFIG
@@ -339,7 +336,7 @@ class SatlanticPARConfigParticle(DataParticle):
             raise SampleException('malformed particle - missing required value(s)')
 
         log.trace("_build_parsed_values: %s, %s, %s, %s, %s",
-                  maxrate, baud, self._serial_num, self._firmware, self._instrument)
+                  maxrate, baud, self._serial_num, self._firmware, INSTRUMENT)
 
         result = [{DataParticleKey.VALUE_ID: SatlanticPARConfigParticleKey.BAUD_RATE, DataParticleKey.VALUE: baud},
                   {DataParticleKey.VALUE_ID: SatlanticPARConfigParticleKey.MAX_RATE, DataParticleKey.VALUE: maxrate},
@@ -348,7 +345,7 @@ class SatlanticPARConfigParticle(DataParticle):
                   {DataParticleKey.VALUE_ID: SatlanticPARConfigParticleKey.FIRMWARE,
                    DataParticleKey.VALUE: self._firmware},
                   {DataParticleKey.VALUE_ID: SatlanticPARConfigParticleKey.TYPE,
-                   DataParticleKey.VALUE: self._instrument}]
+                   DataParticleKey.VALUE: INSTRUMENT}]
 
         return result
 
@@ -417,35 +414,23 @@ class SatlanticPARInstrumentProtocol(CommandResponseInstrumentProtocol):
                              units=Units.HERTZ,
                              visibility=ParameterDictVisibility.READ_WRITE)
 
-        self._param_dict.add(Parameter.INSTRUMENT,
-                             HEADER_PATTERN,
-                             lambda match: match.group(1),
-                             str,
-                             visibility=ParameterDictVisibility.IMMUTABLE,
-                             display_name='Instrument Type',
-                             description="",
-                             type=ParameterDictType.STRING,
-                             startup_param=True)
-
         self._param_dict.add(Parameter.SERIAL,
                              HEADER_PATTERN,
-                             lambda match: match.group(1),
+                             lambda match: match.group('sernum'),
                              str,
-                             visibility=ParameterDictVisibility.IMMUTABLE,
+                             visibility=ParameterDictVisibility.READ_ONLY,
                              display_name='Serial Number',
                              description="",
-                             type=ParameterDictType.STRING,
-                             startup_param=True)
+                             type=ParameterDictType.STRING)
 
         self._param_dict.add(Parameter.FIRMWARE,
                              HEADER_PATTERN,
-                             lambda match: match.group(1),
+                             lambda match: match.group('firm'),
                              str,
-                             visibility=ParameterDictVisibility.IMMUTABLE,
+                             visibility=ParameterDictVisibility.READ_ONLY,
                              display_name='Firmware Version',
                              description="",
-                             type=ParameterDictType.STRING,
-                             startup_param=True)
+                             type=ParameterDictType.STRING)
 
         self._param_dict.add(Parameter.ACQUIRE_STATUS_INTERVAL,
                              INTERVAL_TIME_REGEX,
@@ -493,7 +478,7 @@ class SatlanticPARInstrumentProtocol(CommandResponseInstrumentProtocol):
         """
         The method that splits samples
         """
-        matchers = [SAMPLE_REGEX, MAXANDBAUDRATE_REGEX]
+        matchers = [SAMPLE_REGEX, MAXANDBAUDRATE_REGEX, HEADER_REGEX]
         return_list = []
 
         for matcher in matchers:
@@ -676,6 +661,10 @@ class SatlanticPARInstrumentProtocol(CommandResponseInstrumentProtocol):
         # Command device to update parameters and send a config change event.
         if self._init_type != InitializationType.NONE:
             self._update_params()
+            # we need to briefly start sampling so we can stop sampling
+            # and get the serial number and firmware version
+            self._do_cmd_no_resp(Commands.EXIT)
+            self._send_break()
 
         self._init_params()
         self._driver_event(DriverAsyncEvent.STATE_CHANGE)
@@ -743,8 +732,6 @@ class SatlanticPARInstrumentProtocol(CommandResponseInstrumentProtocol):
                         instrument_params_changed = True
             elif name == Parameter.ACQUIRE_STATUS_INTERVAL:
                 pass
-            elif name in [Parameter.FIRMWARE, Parameter.INSTRUMENT, Parameter.SERIAL]:
-                self._param_dict.set_value(name, new_val)
             else:
                 raise InstrumentParameterException("Parameter not in dictionary: %s" % name)
 
@@ -1124,13 +1111,16 @@ class SatlanticPARInstrumentProtocol(CommandResponseInstrumentProtocol):
         Extract samples from a chunk of data
         @param chunk: bytes to parse into a sample.
         """
-        self._extract_sample(SatlanticPARDataParticle, SAMPLE_REGEX, chunk, timestamp)
-        self._extract_sample_param_dict(self._param_dict.get(Parameter.SERIAL),
-                                        self._param_dict.get(Parameter.FIRMWARE),
-                                        self._param_dict.get(Parameter.INSTRUMENT),
-                                        SatlanticPARConfigParticle, MAXANDBAUDRATE_REGEX, chunk, timestamp)
+        if self._extract_sample(SatlanticPARDataParticle, SAMPLE_REGEX, chunk, timestamp):
+            return
+        if self._extract_sample_param_dict(self._param_dict.get(Parameter.SERIAL),
+                                             self._param_dict.get(Parameter.FIRMWARE),
+                                             SatlanticPARConfigParticle, MAXANDBAUDRATE_REGEX, chunk, timestamp):
+            return
+        if HEADER_REGEX.match(chunk):
+            self._param_dict.update_many(chunk)
 
-    def _extract_sample_param_dict(self, serial_num, firmware, instrument,
+    def _extract_sample_param_dict(self, serial_num, firmware,
                                    particle_class, regex, line, timestamp, publish=True):
         """
         Extract sample from a response line if present and publish parsed particle
@@ -1151,7 +1141,7 @@ class SatlanticPARInstrumentProtocol(CommandResponseInstrumentProtocol):
         """
         if regex.match(line):
 
-            particle = particle_class(serial_num, firmware, instrument, line, port_timestamp=timestamp)
+            particle = particle_class(serial_num, firmware, line, port_timestamp=timestamp)
             parsed_sample = particle.generate()
 
             self._particle_dict[particle.data_particle_type()] = parsed_sample
