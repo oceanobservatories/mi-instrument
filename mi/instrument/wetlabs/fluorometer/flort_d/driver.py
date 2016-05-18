@@ -1426,11 +1426,11 @@ class Protocol(CommandResponseInstrumentProtocol):
         Populate the command dictionary with commands
         """
 
-        self._cmd_dict.add(Capability.RUN_WIPER, timeout=5, display_name="Run Wiper")
-        self._cmd_dict.add(Capability.CLOCK_SYNC, timeout=5, display_name='Synchronize Clock')
+        self._cmd_dict.add(Capability.RUN_WIPER, timeout=10, display_name="Run Wiper")
+        self._cmd_dict.add(Capability.CLOCK_SYNC, timeout=10, display_name='Synchronize Clock')
         self._cmd_dict.add(Capability.ACQUIRE_SAMPLE, timeout=SAMPLE_TIMEOUT, display_name='Acquire Sample')
-        self._cmd_dict.add(Capability.START_AUTOSAMPLE, timeout=5, display_name='Start Autosample')
-        self._cmd_dict.add(Capability.STOP_AUTOSAMPLE, timeout=5, display_name='Stop Autosample')
+        self._cmd_dict.add(Capability.START_AUTOSAMPLE, timeout=10, display_name='Start Autosample')
+        self._cmd_dict.add(Capability.STOP_AUTOSAMPLE, timeout=10, display_name='Stop Autosample')
         self._cmd_dict.add(Capability.ACQUIRE_STATUS, timeout=STATUS_TIMEOUT, display_name='Acquire Status')
         self._cmd_dict.add(Capability.DISCOVER, timeout=10, display_name='Discover')
 
