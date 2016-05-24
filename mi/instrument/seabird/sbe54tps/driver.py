@@ -1044,10 +1044,10 @@ class Protocol(SeaBirdProtocol):
         Populate the command dictionary with command.
         """
         self._cmd_dict.add(Capability.ACQUIRE_STATUS, timeout=TIMEOUT, display_name="Acquire Status")
-        self._cmd_dict.add(Capability.CLOCK_SYNC, display_name="Synchronize Clock")
+        self._cmd_dict.add(Capability.CLOCK_SYNC, timeout=TIMEOUT, display_name="Synchronize Clock")
         self._cmd_dict.add(Capability.SAMPLE_REFERENCE_OSCILLATOR, display_name="Sample Reference Oscillator")
-        self._cmd_dict.add(Capability.START_AUTOSAMPLE, display_name="Start Autosample")
-        self._cmd_dict.add(Capability.STOP_AUTOSAMPLE, display_name="Stop Autosample")
+        self._cmd_dict.add(Capability.START_AUTOSAMPLE, timeout=TIMEOUT, display_name="Start Autosample")
+        self._cmd_dict.add(Capability.STOP_AUTOSAMPLE, timeout=TIMEOUT, display_name="Stop Autosample")
         self._cmd_dict.add(Capability.TEST_EEPROM, timeout=TIMEOUT, display_name="Test EEPROM")
         self._cmd_dict.add(Capability.DISCOVER, timeout=TIMEOUT, display_name='Discover')
 
