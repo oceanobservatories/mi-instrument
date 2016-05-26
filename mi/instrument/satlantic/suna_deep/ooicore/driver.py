@@ -42,8 +42,12 @@ __license__ = 'Apache 2.0'
 NEWLINE = '\r\n'
 
 # default timeout.
-TIMEOUT = 15
-POLL_TIMEOUT = 100
+DEFAULT_TIMEOUT = 15
+
+MEASURE_N_TIMEOUT = 60
+TIMED_N_TIMEOUT = 65
+CLOCK_SYNC_TIMEOUT = 20
+DISCOVER_TIMEOUT = 25
 
 MIN_TIME_SAMPLE = 0
 MIN_LIGHT_SAMPLE = 1
@@ -1067,16 +1071,16 @@ class Protocol(CommandResponseInstrumentProtocol):
         """
         Populate the command dictionary with commands
         """
-        self._cmd_dict.add(Capability.ACQUIRE_SAMPLE, timeout=15, display_name='Acquire Sample')
-        self._cmd_dict.add(Capability.ACQUIRE_STATUS, timeout=15, display_name='Acquire Status')
-        self._cmd_dict.add(Capability.MEASURE_N, timeout=25, display_name='Acquire N Light Samples')
-        self._cmd_dict.add(Capability.MEASURE_0, timeout=15, display_name='Acquire Dark Sample')
-        self._cmd_dict.add(Capability.TIMED_N, timeout=25, display_name='Acquire Light Samples (N seconds)')
+        self._cmd_dict.add(Capability.ACQUIRE_SAMPLE, timeout=DEFAULT_TIMEOUT, display_name='Acquire Sample')
+        self._cmd_dict.add(Capability.ACQUIRE_STATUS, timeout=DEFAULT_TIMEOUT, display_name='Acquire Status')
+        self._cmd_dict.add(Capability.MEASURE_N, timeout=MEASURE_N_TIMEOUT, display_name='Acquire N Light Samples')
+        self._cmd_dict.add(Capability.MEASURE_0, timeout=DEFAULT_TIMEOUT, display_name='Acquire Dark Sample')
+        self._cmd_dict.add(Capability.TIMED_N, timeout=TIMED_N_TIMEOUT, display_name='Acquire Light Samples (N seconds)')
         self._cmd_dict.add(Capability.TEST, display_name='Execute Test')
         self._cmd_dict.add(Capability.START_AUTOSAMPLE, display_name='Start Autosample')
         self._cmd_dict.add(Capability.STOP_AUTOSAMPLE, display_name='Stop Autosample')
-        self._cmd_dict.add(Capability.CLOCK_SYNC, timeout=20, display_name='Synchronize Clock')
-        self._cmd_dict.add(Capability.DISCOVER, timeout=25, display_name='Discover')
+        self._cmd_dict.add(Capability.CLOCK_SYNC, timeout=CLOCK_SYNC_TIMEOUT, display_name='Synchronize Clock')
+        self._cmd_dict.add(Capability.DISCOVER, timeout=DISCOVER_TIMEOUT, display_name='Discover')
 
     def _build_param_dict(self):
         """
@@ -1621,11 +1625,11 @@ class Protocol(CommandResponseInstrumentProtocol):
         Get a sample from the SUNA
         """
         next_state = None
-        timeout = time.time() + TIMEOUT
+        timeout = time.time() + DEFAULT_TIMEOUT
 
         # exit command-line to CMD? prompt (does nothing if already at CMD? prompt)
         self._do_cmd_no_resp(InstrumentCommands.EXIT)
-        self._do_cmd_resp(InstrumentCommands.MEASURE, 1, expected_prompt=Prompt.POLLED, timeout=POLL_TIMEOUT)
+        self._do_cmd_resp(InstrumentCommands.MEASURE, 1, expected_prompt=Prompt.POLLED, timeout=DEFAULT_TIMEOUT)
         particles = self.wait_for_particles([DataParticleType.SUNA_SAMPLE], timeout)
         return next_state, (next_state, particles)
 
@@ -1634,7 +1638,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         Start acquire status
         """
         next_state = None
-        timeout = time.time() + TIMEOUT
+        timeout = time.time() + DEFAULT_TIMEOUT
 
         self._bring_up_command_line()
         status_output = self._do_cmd_resp(InstrumentCommands.STATUS, expected_prompt=[Prompt.OK, Prompt.ERROR])
@@ -1728,7 +1732,7 @@ class Protocol(CommandResponseInstrumentProtocol):
 
             if current_high != new_high or current_low != new_low:
                 value = new_low + ',' + new_high
-                self._do_cmd_resp(InstrumentCommands.SET, Parameter.FIT_WAVELENGTH_BOTH, value, timeout=TIMEOUT,
+                self._do_cmd_resp(InstrumentCommands.SET, Parameter.FIT_WAVELENGTH_BOTH, value, timeout=DEFAULT_TIMEOUT,
                                   expected_prompt=[Prompt.OK, Prompt.ERROR])
 
         # Handle parameters that are for the driver, not the instrument
@@ -1759,7 +1763,7 @@ class Protocol(CommandResponseInstrumentProtocol):
             new_val = self._format_value(key, val)
             current_val = self._format_value(key, self._param_dict.get(key))
             if current_val != new_val:
-                self._do_cmd_resp(InstrumentCommands.SET, key, new_val, timeout=TIMEOUT,
+                self._do_cmd_resp(InstrumentCommands.SET, key, new_val, timeout=DEFAULT_TIMEOUT,
                                   expected_prompt=[Prompt.OK, Prompt.ERROR])
 
         # Collect the current settings from the instrument
@@ -1793,7 +1797,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         log.debug('syncing clock to: %s', str_time)
 
         self._bring_up_command_line()
-        result = self._do_cmd_resp(InstrumentCommands.SET_CLOCK, str_time, timeout=TIMEOUT,
+        result = self._do_cmd_resp(InstrumentCommands.SET_CLOCK, str_time, timeout=CLOCK_SYNC_TIMEOUT,
                                    expected_prompt=[Prompt.OK, Prompt.ERROR])
 
         return next_state, (next_state, [result])
@@ -1841,9 +1845,11 @@ class Protocol(CommandResponseInstrumentProtocol):
         # exit command-line to CMD? prompt (does nothing if already at CMD? prompt)
         self._do_cmd_no_resp(InstrumentCommands.EXIT)
         result = self._do_cmd_resp(InstrumentCommands.MEASURE, self._param_dict.get(Parameter.NUM_LIGHT_SAMPLES),
-                                   expected_prompt=Prompt.POLLED, timeout=POLL_TIMEOUT)
+                                   expected_prompt=Prompt.POLLED, timeout=MEASURE_N_TIMEOUT)
 
-        return next_state, (next_state, [result])
+        particles = self.wait_for_particles([DataParticleType.SUNA_SAMPLE], 0)
+
+        return next_state, (next_state, [particles])
 
     def _handler_command_measure_0(self):
         """
@@ -1853,9 +1859,11 @@ class Protocol(CommandResponseInstrumentProtocol):
 
         # exit command-line to CMD? prompt (does nothing if already at CMD? prompt)
         self._do_cmd_no_resp(InstrumentCommands.EXIT)
-        result = self._do_cmd_resp(InstrumentCommands.MEASURE, 0, expected_prompt=Prompt.POLLED, timeout=POLL_TIMEOUT)
+        result = self._do_cmd_resp(InstrumentCommands.MEASURE, 0, expected_prompt=Prompt.POLLED)
 
-        return next_state, (next_state, [result])
+        particles = self.wait_for_particles([DataParticleType.SUNA_DARK_SAMPLE], 0)
+
+        return next_state, (next_state, [particles])
 
     def _handler_command_timed_n(self):
         """
@@ -1866,9 +1874,11 @@ class Protocol(CommandResponseInstrumentProtocol):
         # exit command-line to CMD? prompt (does nothing if already at CMD? prompt)
         self._do_cmd_no_resp(InstrumentCommands.EXIT)
         result = self._do_cmd_resp(InstrumentCommands.TIMED, self._param_dict.get(Parameter.TIME_LIGHT_SAMPLE),
-                                   expected_prompt=Prompt.POLLED, timeout=POLL_TIMEOUT)
+                                   expected_prompt=Prompt.POLLED, timeout=TIMED_N_TIMEOUT)
 
-        return next_state, (next_state, [result])
+        particles = self.wait_for_particles([DataParticleType.SUNA_SAMPLE], 0)
+
+        return next_state, (next_state, [particles])
 
     ########################################################################
     # Autosample handlers.
@@ -2016,7 +2026,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         """
         self._simple_send(InstrumentCommands.CMD_LINE, expected_prompt=[Prompt.COMMAND_LINE])
 
-    def _simple_send(self, cmd, timeout=TIMEOUT, expected_prompt=None):
+    def _simple_send(self, cmd, timeout=DEFAULT_TIMEOUT, expected_prompt=None):
         """
         Sends a command and waits up to timeout seconds (default TIMEOUT) for one
         of the prompts in expected_prompt.

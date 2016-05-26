@@ -42,7 +42,7 @@ from mi.core.instrument.data_particle import DataParticleKey, DataParticleValue
 from mi.core.instrument.chunker import StringChunker
 from mi.core.instrument.instrument_driver import DriverConnectionState, ResourceAgentState, DriverConfigKey, DriverEvent
 
-from mi.instrument.satlantic.suna_deep.ooicore.driver import InstrumentDriver, SUNAStatusDataParticle, TIMEOUT, \
+from mi.instrument.satlantic.suna_deep.ooicore.driver import InstrumentDriver, SUNAStatusDataParticle, DEFAULT_TIMEOUT, \
     SUNATestDataParticle, InstrumentCommandArgs, SUNASampleDataParticleKey, SUNAStatusDataParticleKey, \
     SUNATestDataParticleKey
 from mi.instrument.satlantic.suna_deep.ooicore.driver import DataParticleType
@@ -747,7 +747,7 @@ class DriverIntegrationTest(InstrumentDriverIntegrationTestCase, DriverTestMixin
         self.assert_initialize_driver()
         self.clear_events()
         self.assert_particle_generation(ProtocolEvent.ACQUIRE_SAMPLE, DataParticleType.SUNA_SAMPLE,
-                                        self.assert_data_particle_sample, delay=TIMEOUT)
+                                        self.assert_data_particle_sample, delay=DEFAULT_TIMEOUT)
 
     def test_acquire_status(self):
         """
@@ -756,7 +756,7 @@ class DriverIntegrationTest(InstrumentDriverIntegrationTestCase, DriverTestMixin
         self.assert_initialize_driver()
         self.clear_events()
         self.assert_particle_generation(ProtocolEvent.ACQUIRE_STATUS, DataParticleType.SUNA_STATUS,
-                                        self.assert_data_particle_status, delay=TIMEOUT)
+                                        self.assert_data_particle_status, delay=DEFAULT_TIMEOUT)
 
     def test_selftest(self):
         """
@@ -765,7 +765,7 @@ class DriverIntegrationTest(InstrumentDriverIntegrationTestCase, DriverTestMixin
         self.assert_initialize_driver()
         self.clear_events()
         self.assert_particle_generation(ProtocolEvent.TEST, DataParticleType.SUNA_TEST,
-                                        self.assert_data_particle, delay=TIMEOUT)
+                                        self.assert_data_particle, delay=DEFAULT_TIMEOUT)
 
     def test_start_stop_polled(self):
         """
@@ -774,13 +774,13 @@ class DriverIntegrationTest(InstrumentDriverIntegrationTestCase, DriverTestMixin
         self.assert_initialize_driver()
 
         self.assert_particle_generation(ProtocolEvent.MEASURE_0, DataParticleType.SUNA_SAMPLE,
-                                        self.assert_data_particle_sample, delay=TIMEOUT)
+                                        self.assert_data_particle_sample, delay=DEFAULT_TIMEOUT)
 
         self.assert_particle_generation(ProtocolEvent.MEASURE_N, DataParticleType.SUNA_SAMPLE,
-                                        self.assert_data_particle_sample, delay=TIMEOUT)
+                                        self.assert_data_particle_sample, delay=DEFAULT_TIMEOUT)
 
         self.assert_particle_generation(ProtocolEvent.TIMED_N, DataParticleType.SUNA_SAMPLE,
-                                        self.assert_data_particle_sample, delay=TIMEOUT)
+                                        self.assert_data_particle_sample, delay=DEFAULT_TIMEOUT)
 
     def test_start_stop_auto_sample(self):
         """
@@ -827,13 +827,13 @@ class DriverIntegrationTest(InstrumentDriverIntegrationTestCase, DriverTestMixin
         self.assert_driver_command_exception(ProtocolEvent.ACQUIRE_SAMPLE, exception_class=InstrumentCommandException)
 
         # Test that the driver is in state disconnected.
-        self.assert_state_change(DriverConnectionState.DISCONNECTED, timeout=TIMEOUT)
+        self.assert_state_change(DriverConnectionState.DISCONNECTED, timeout=DEFAULT_TIMEOUT)
 
         # Setup the protocol state machine and the connection to port agent.
         self.driver_client.cmd_dvr('initialize')
 
         # Test that the driver is in state unconfigured.
-        self.assert_state_change(DriverConnectionState.UNCONFIGURED, timeout=TIMEOUT)
+        self.assert_state_change(DriverConnectionState.UNCONFIGURED, timeout=DEFAULT_TIMEOUT)
 
         # Assert we forgot the comms parameter.
         self.assert_driver_command_exception('configure', exception_class=InstrumentParameterException)
@@ -907,7 +907,7 @@ class DriverQualificationTest(InstrumentDriverQualificationTestCase, DriverTestM
         self.tcp_client.expect("SUNA>")
 
         self.assert_direct_access_stop_telnet()
-        self.assert_state_change(ResourceAgentState.COMMAND, ProtocolState.COMMAND, TIMEOUT)
+        self.assert_state_change(ResourceAgentState.COMMAND, ProtocolState.COMMAND, DEFAULT_TIMEOUT)
 
         #DA param should change back to pre-DA val
         self.assert_get_parameter(Parameter.OPERATION_MODE, InstrumentCommandArgs.POLLED)
@@ -941,7 +941,7 @@ class DriverQualificationTest(InstrumentDriverQualificationTestCase, DriverTestM
         """
         self.assert_enter_command_mode()
         self.assert_particle_polled(DriverEvent.ACQUIRE_STATUS, self.assert_data_particle_status,
-                                    DataParticleType.SUNA_STATUS, timeout=TIMEOUT, sample_count=1)
+                                    DataParticleType.SUNA_STATUS, timeout=DEFAULT_TIMEOUT, sample_count=1)
 
     def test_execute_test(self):
         """
@@ -949,7 +949,7 @@ class DriverQualificationTest(InstrumentDriverQualificationTestCase, DriverTestM
         """
         self.assert_enter_command_mode()
         self.assert_particle_polled(DriverEvent.TEST, self.assert_data_particle, DataParticleType.SUNA_TEST,
-                                    timeout=TIMEOUT, sample_count=1)
+                                    timeout=DEFAULT_TIMEOUT, sample_count=1)
 
     def test_poll(self):
         """
@@ -957,7 +957,7 @@ class DriverQualificationTest(InstrumentDriverQualificationTestCase, DriverTestM
         """
         self.assert_enter_command_mode()
         self.assert_particle_polled(DriverEvent.ACQUIRE_SAMPLE, self.assert_data_particle_sample,
-                                    DataParticleType.SUNA_SAMPLE, timeout=TIMEOUT, sample_count=1)
+                                    DataParticleType.SUNA_SAMPLE, timeout=DEFAULT_TIMEOUT, sample_count=1)
 
     def test_autosample(self):
         """
