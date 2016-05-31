@@ -1,0 +1,8 @@
+driver_metadata:
+  author: Kirk Hunt
+  driver_make: uw
+  driver_model: bars
+  driver_name: ooicore
+  email: kirk.e.hunt@raytheon.com
+  release_notes: This supports the UW BARS instrument, with no hydrogen sensors attached, from the Marv Tilley lab
+  version: 0.0.1
