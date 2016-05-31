@@ -1068,7 +1068,7 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
         next_state = None
 
         # Get the value for all direct access parameters and store them in the protocol
-        _, self._pre_da_config = self.get_resource(self._protocol.get_direct_access_params())
+        self._pre_da_config = self.get_resource(self._protocol.get_direct_access_params())
         self._protocol.store_direct_access_config(self._pre_da_config)
         self._protocol.enable_da_initialization()
         log.debug("starting DA.  Storing DA parameters for restore: %s", self._pre_da_config)

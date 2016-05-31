@@ -1682,8 +1682,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         Get parameter(s)
         @param params List of parameters to get
         """
-        next_state, result = self._handler_get(*args, **kwargs)
-        return next_state, (next_state, result)
+        return self._handler_get(*args, **kwargs)
 
     def _handler_command_set(self, params, *args):
         """
@@ -1828,10 +1827,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         """
         Stopping DA, restore the DA parameters to their previous value
         """
-        next_state = ProtocolState.COMMAND
-        result = []
-        self._init_params()
-        return next_state, (next_state, result)
+        return self._handler_unknown_discover()
 
     ########################################################################
     # Measurement commands

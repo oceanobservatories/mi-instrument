@@ -5,7 +5,7 @@ try:
 except ImportError:
     from distutils.core import setup
 
-version = '0.3.80'
+version = '0.3.81'
 
 setup(name='mi-instrument',
       version=version,
