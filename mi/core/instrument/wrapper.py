@@ -194,11 +194,14 @@ class CommandHandler(threading.Thread):
         return 'ping from wrapper pid:%s, resource:%s' % (os.getpid(), self.driver)
 
     def _overall_state(self, *args, **kwargs):
+        direct_config = {}
+        if hasattr(self.driver, 'get_direct_config'):
+            direct_config = self.driver.get_direct_config()
         return {'capabilities': self.driver.get_resource_capabilities(),
                 'state': self.driver.get_resource_state(),
                 'metadata': self.driver.get_config_metadata(),
                 'parameters': self.driver.get_cached_config(),
-                'direct_config': self.driver.get_direct_config(),
+                'direct_config': direct_config,
                 'init_params': self.driver.get_init_params()}
 
     def _send_command(self, command, *args, **kwargs):
