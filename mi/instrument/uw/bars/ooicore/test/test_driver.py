@@ -214,10 +214,15 @@ class TRHPHMixinSub(DriverTestMixin):
         BarsDataParticleKey.RESISTIVITY_5: {TYPE: float, VALUE: 0.090, REQUIRED: True},
         BarsDataParticleKey.RESISTIVITY_X1: {TYPE: float, VALUE: 0.080, REQUIRED: True},
         BarsDataParticleKey.RESISTIVITY_X5: {TYPE: float, VALUE: 0.070, REQUIRED: True},
-        BarsDataParticleKey.HYDROGEN_5: {TYPE: float, VALUE: 0.060, REQUIRED: True},
-        BarsDataParticleKey.HYDROGEN_X1: {TYPE: float, VALUE: 0.025, REQUIRED: True},
-        BarsDataParticleKey.HYDROGEN_X5: {TYPE: float, VALUE: 0.045, REQUIRED: True},
-        BarsDataParticleKey.EH_SENSOR: {TYPE: float, VALUE: 2.999, REQUIRED: True},
+
+        # At the moment, none of the BARS/TRHPH instruments have hydrogen sensors attached and are therefore not
+        # producing such data. Commenting this out to prevent useless data from being produced in the data particle,
+        # but keeping it around in case we need it again in the future
+        # BarsDataParticleKey.HYDROGEN_5: {TYPE: float, VALUE: 0.060, REQUIRED: True},
+        # BarsDataParticleKey.HYDROGEN_X1: {TYPE: float, VALUE: 0.025, REQUIRED: True},
+        # BarsDataParticleKey.HYDROGEN_X5: {TYPE: float, VALUE: 0.045, REQUIRED: True},
+        # BarsDataParticleKey.EH_SENSOR: {TYPE: float, VALUE: 2.999, REQUIRED: True},
+
         BarsDataParticleKey.REFERENCE_TEMP_VOLTS: {TYPE: float, VALUE: 1.173, REQUIRED: True},
         BarsDataParticleKey.REFERENCE_TEMP_DEG_C: {TYPE: float, VALUE: 20.75, REQUIRED: True},
         BarsDataParticleKey.RESISTIVITY_TEMP_VOLTS: {TYPE: float, VALUE: 0.019, REQUIRED: True},
@@ -230,10 +235,15 @@ class TRHPHMixinSub(DriverTestMixin):
         BarsDataParticleKey.RESISTIVITY_5: {TYPE: float, VALUE: 0.010, REQUIRED: True},
         BarsDataParticleKey.RESISTIVITY_X1: {TYPE: float, VALUE: 0.020, REQUIRED: True},
         BarsDataParticleKey.RESISTIVITY_X5: {TYPE: float, VALUE: 0.030, REQUIRED: True},
-        BarsDataParticleKey.HYDROGEN_5: {TYPE: float, VALUE: 0.040, REQUIRED: True},
-        BarsDataParticleKey.HYDROGEN_X1: {TYPE: float, VALUE: 0.021, REQUIRED: True},
-        BarsDataParticleKey.HYDROGEN_X5: {TYPE: float, VALUE: 0.042, REQUIRED: True},
-        BarsDataParticleKey.EH_SENSOR: {TYPE: float, VALUE: 1.999, REQUIRED: True},
+
+        # At the moment, none of the BARS/TRHPH instruments have hydrogen sensors attached and are therefore not
+        # producing such data. Commenting this out to prevent useless data from being produced in the data particle,
+        # but keeping it around in case we need it again in the future
+        # BarsDataParticleKey.HYDROGEN_5: {TYPE: float, VALUE: 0.040, REQUIRED: True},
+        # BarsDataParticleKey.HYDROGEN_X1: {TYPE: float, VALUE: 0.021, REQUIRED: True},
+        # BarsDataParticleKey.HYDROGEN_X5: {TYPE: float, VALUE: 0.042, REQUIRED: True},
+        # BarsDataParticleKey.EH_SENSOR: {TYPE: float, VALUE: 1.999, REQUIRED: True},
+
         BarsDataParticleKey.REFERENCE_TEMP_VOLTS: {TYPE: float, VALUE: 1.173, REQUIRED: True},
         BarsDataParticleKey.REFERENCE_TEMP_DEG_C: {TYPE: float, VALUE: 20.75, REQUIRED: True},
         BarsDataParticleKey.RESISTIVITY_TEMP_VOLTS: {TYPE: float, VALUE: 0.016, REQUIRED: True},
