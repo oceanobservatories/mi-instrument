@@ -27,7 +27,6 @@ from mi.core.instrument.instrument_driver import DriverEvent
 from mi.core.instrument.instrument_driver import DriverAsyncEvent
 from mi.core.instrument.instrument_driver import DriverProtocolState
 from mi.core.instrument.instrument_driver import DriverParameter
-from mi.core.instrument.instrument_driver import ResourceAgentState
 from mi.core.instrument.instrument_driver import DriverConfigKey
 from mi.core.driver_scheduler import DriverSchedulerConfigKey
 from mi.core.driver_scheduler import TriggerType
@@ -377,10 +376,15 @@ class BarsDataParticleKey(BaseEnum):
     RESISTIVITY_5 = "resistivity_5"
     RESISTIVITY_X1 = "resistivity_x1"
     RESISTIVITY_X5 = "resistivity_x5"
-    HYDROGEN_5 = "hydrogen_5"
-    HYDROGEN_X1 = "hydrogen_x1"
-    HYDROGEN_X5 = "hydrogen_x5"
-    EH_SENSOR = "eh_sensor"
+
+    # At the moment, none of the BARS/TRHPH instruments have hydrogen sensors attached and are therefore not
+    # producing such data. Commenting this out to prevent useless data from being produced in the data particle,
+    # but keeping it around in case we need it again in the future
+    # HYDROGEN_5 = "hydrogen_5"
+    # HYDROGEN_X1 = "hydrogen_x1"
+    # HYDROGEN_X5 = "hydrogen_x5"
+    # EH_SENSOR = "eh_sensor"
+
     REFERENCE_TEMP_VOLTS = "ref_temp_volts"
     REFERENCE_TEMP_DEG_C = "ref_temp_degc"
     RESISTIVITY_TEMP_VOLTS = "resistivity_temp_volts"
@@ -432,10 +436,10 @@ class BarsDataParticle(DataParticle):
         res_5 = float(match.group(1))
         res_x1 = float(match.group(2))
         res_x5 = float(match.group(3))
-        h_5 = float(match.group(4))
-        h_x1 = float(match.group(5))
-        h_x5 = float(match.group(6))
-        eh = float(match.group(7))
+        # h_5 = float(match.group(4))
+        # h_x1 = float(match.group(5))
+        # h_x5 = float(match.group(6))
+        # eh = float(match.group(7))
         ref_temp_v = float(match.group(8))
         ref_temp_c = float(match.group(9))
         res_temp_v = float(match.group(10))
@@ -448,14 +452,19 @@ class BarsDataParticle(DataParticle):
                    DataParticleKey.VALUE: res_x1},
                   {DataParticleKey.VALUE_ID: BarsDataParticleKey.RESISTIVITY_X5,
                    DataParticleKey.VALUE: res_x5},
-                  {DataParticleKey.VALUE_ID: BarsDataParticleKey.HYDROGEN_5,
-                   DataParticleKey.VALUE: h_5},
-                  {DataParticleKey.VALUE_ID: BarsDataParticleKey.HYDROGEN_X1,
-                   DataParticleKey.VALUE: h_x1},
-                  {DataParticleKey.VALUE_ID: BarsDataParticleKey.HYDROGEN_X5,
-                   DataParticleKey.VALUE: h_x5},
-                  {DataParticleKey.VALUE_ID: BarsDataParticleKey.EH_SENSOR,
-                   DataParticleKey.VALUE: eh},
+
+                  # At the moment, none of the BARS/TRHPH instruments have hydrogen sensors attached and are therefore not
+                  # producing such data. Commenting this out to prevent useless data from being produced in the data particle,
+                  # but keeping it around in case we need it again in the future
+                  # {DataParticleKey.VALUE_ID: BarsDataParticleKey.HYDROGEN_5,
+                  #  DataParticleKey.VALUE: h_5},
+                  # {DataParticleKey.VALUE_ID: BarsDataParticleKey.HYDROGEN_X1,
+                  #  DataParticleKey.VALUE: h_x1},
+                  # {DataParticleKey.VALUE_ID: BarsDataParticleKey.HYDROGEN_X5,
+                  #  DataParticleKey.VALUE: h_x5},
+                  # {DataParticleKey.VALUE_ID: BarsDataParticleKey.EH_SENSOR,
+                  #  DataParticleKey.VALUE: eh},
+
                   {DataParticleKey.VALUE_ID: BarsDataParticleKey.REFERENCE_TEMP_VOLTS,
                    DataParticleKey.VALUE: ref_temp_v},
                   {DataParticleKey.VALUE_ID: BarsDataParticleKey.REFERENCE_TEMP_DEG_C,
@@ -480,15 +489,6 @@ class InstrumentDriver(SingleConnectionInstrumentDriver):
     Subclasses SingleConnectionInstrumentDriver with connection state
     machine.
     """
-    ########################################################################
-    # Superclass overrides for resource query.
-    ########################################################################
-    def get_resource_params(self):
-        """
-        Return list of device parameters available.
-        """
-        return Parameter.list()
-
     ########################################################################
     # Protocol builder.
     ########################################################################
