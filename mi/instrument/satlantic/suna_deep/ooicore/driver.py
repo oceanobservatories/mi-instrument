@@ -1090,19 +1090,6 @@ class Protocol(CommandResponseInstrumentProtocol):
         """
 
         # DATA ACQUISITION
-        self._param_dict.add(Parameter.OPERATION_MODE,
-                             r'OPERMODE\s(\S*)',
-                             lambda match: match.group(1),
-                             str,
-                             type=ParameterDictType.STRING,
-                             startup_param=True,
-                             direct_access=True,
-                             default_value='Polled',
-                             visibility=ParameterDictVisibility.READ_WRITE,
-                             display_name="Operation Mode",
-                             range={'Continuous': 'Continuous', 'Polled': 'Polled'},
-                             description='Operation mode: (Continuous | Polled) ')
-
         self._param_dict.add(Parameter.OPERATION_CONTROL,
                              r'OPERCTRL\s(\S*)',
                              lambda match: match.group(1),

@@ -71,7 +71,6 @@ InstrumentDriverTestCase.initialize(
     instrument_agent_packet_config=DataParticleType(),
 
     driver_startup_config={DriverConfigKey.PARAMETERS: {
-                           Parameter.OPERATION_MODE: InstrumentCommandArgs.POLLED,
                            Parameter.OPERATION_CONTROL: "Samples",
                            Parameter.LIGHT_SAMPLES: 5,
                            Parameter.DARK_SAMPLES: 1,
@@ -161,7 +160,6 @@ SUNA_ASCII_TEST = "Extrn Disk Size; Free , 1960968192; 1956216832\r\n" \
 
 
 class ParameterConstraints(BaseEnum):
-    OPERATION_MODE = (Parameter.OPERATION_MODE, str, InstrumentCommandArgs.CONTINUOUS, InstrumentCommandArgs.POLLED)
     OPERATION_CONTROL = (Parameter.OPERATION_CONTROL, str, 'Samples', 'Duration')
     LIGHT_SAMPLES = (Parameter.LIGHT_SAMPLES, int, 1, 65535)
     DARK_SAMPLES = (Parameter.DARK_SAMPLES, int, 1, 65535)
@@ -697,7 +695,6 @@ class DriverIntegrationTest(InstrumentDriverIntegrationTestCase, DriverTestMixin
         """
         self.assert_initialize_driver()
 
-        self.assert_set(Parameter.OPERATION_MODE, InstrumentCommandArgs.CONTINUOUS)
         self.assert_set(Parameter.OPERATION_CONTROL, "Duration")
         self.assert_set(Parameter.LIGHT_SAMPLES, 57)
         self.assert_set(Parameter.DARK_SAMPLES, 3)
@@ -910,7 +907,6 @@ class DriverQualificationTest(InstrumentDriverQualificationTestCase, DriverTestM
         self.assert_state_change(ResourceAgentState.COMMAND, ProtocolState.COMMAND, DEFAULT_TIMEOUT)
 
         #DA param should change back to pre-DA val
-        self.assert_get_parameter(Parameter.OPERATION_MODE, InstrumentCommandArgs.POLLED)
         self.assert_get_parameter(Parameter.POLLED_TIMEOUT, 65535)
         self.assert_get_parameter(Parameter.SKIP_SLEEP_AT_START, True)
         self.assert_get_parameter(Parameter.COUNTDOWN, 15)
@@ -991,7 +987,6 @@ class DriverQualificationTest(InstrumentDriverQualificationTestCase, DriverTestM
         #self.assert_get_parameter(Parameter.FIT_WAVELENGTH_HIGH, 9003)
 
         #read/write params
-        self.assert_set_parameter(Parameter.OPERATION_MODE, InstrumentCommandArgs.CONTINUOUS)
         self.assert_set_parameter(Parameter.OPERATION_CONTROL, "Duration")
         self.assert_set_parameter(Parameter.LIGHT_SAMPLES, 57)
         self.assert_set_parameter(Parameter.DARK_SAMPLES, 3)
