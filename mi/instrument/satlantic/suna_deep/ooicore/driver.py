@@ -996,8 +996,10 @@ class Protocol(CommandResponseInstrumentProtocol):
                                        self._handler_direct_access_stop_direct)
 
         # AUTOSAMPLE State
-        self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.ENTER, self._handler_generic_enter)
+        self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.ENTER, self._handler_autosample_enter)
         self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.EXIT, self._handler_generic_exit)
+        self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.GET, self._handler_autosample_get)
+        self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.SET, self._handler_autosample_set)
         self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.STOP_AUTOSAMPLE,
                                        self._handler_autosample_stop_autosample)
 
@@ -1581,9 +1583,8 @@ class Protocol(CommandResponseInstrumentProtocol):
             next_state = ProtocolState.COMMAND
 
         elif mode == InstrumentCommandArgs.CONTINUOUS:
-            # Instrument is in AUTOSAMPLE state. Send Exit command to resume collecting data
+            # Instrument is in AUTOSAMPLE state. Sampling will resume after param init.
             next_state = ProtocolState.AUTOSAMPLE
-            self._do_cmd_no_resp(InstrumentCommands.EXIT)
 
         else:
             # Instrument is in unused state. Set to COMMAND state
@@ -1866,6 +1867,35 @@ class Protocol(CommandResponseInstrumentProtocol):
     ########################################################################
     # Autosample handlers.
     ########################################################################
+    def _handler_autosample_enter(self):
+        """
+        Enter autosample state.
+        """
+
+        if self._init_type != InitializationType.NONE:
+            self._update_params()
+            self._init_params()
+            # After setting parameters return to autosample state
+            self._do_cmd_no_resp(InstrumentCommands.EXIT)
+
+        self._driver_event(DriverAsyncEvent.STATE_CHANGE)
+
+    def _handler_autosample_get(self, *args, **kwargs):
+        """
+        Get parameter(s)
+        @param params List of parameters to get
+        """
+        return self._handler_get(*args, **kwargs)
+
+    def _handler_autosample_set(self, params, *args):
+        """
+        Set parameter
+        """
+        next_state = None
+        result = []
+        self._set_params(params, *args)
+        return next_state, (next_state, result)
+
     def _handler_autosample_stop_autosample(self):
         """
         Exit the autosample state
