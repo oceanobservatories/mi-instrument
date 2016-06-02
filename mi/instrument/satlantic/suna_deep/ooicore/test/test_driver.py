@@ -645,7 +645,8 @@ class DriverUnitTest(InstrumentDriverUnitTestCase, DriverTestMixinSub):
                                           ProtocolEvent.TIMED_N],
             ProtocolState.DIRECT_ACCESS: [ProtocolEvent.EXECUTE_DIRECT,
                                           ProtocolEvent.STOP_DIRECT],
-            ProtocolState.AUTOSAMPLE:    [ProtocolEvent.STOP_AUTOSAMPLE]
+            ProtocolState.AUTOSAMPLE:    [ProtocolEvent.STOP_AUTOSAMPLE,
+                                          ProtocolEvent.GET]
         }
 
         driver = InstrumentDriver(self._got_data_event_callback)
