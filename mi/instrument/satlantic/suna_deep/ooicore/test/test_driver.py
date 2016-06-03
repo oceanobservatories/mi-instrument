@@ -636,6 +636,7 @@ class DriverUnitTest(InstrumentDriverUnitTestCase, DriverTestMixinSub):
                                           ProtocolEvent.ACQUIRE_STATUS,
                                           ProtocolEvent.START_DIRECT,
                                           ProtocolEvent.START_AUTOSAMPLE,
+                                          ProtocolEvent.START_PERIODIC,
                                           ProtocolEvent.GET,
                                           ProtocolEvent.SET,
                                           ProtocolEvent.TEST,
@@ -645,7 +646,10 @@ class DriverUnitTest(InstrumentDriverUnitTestCase, DriverTestMixinSub):
                                           ProtocolEvent.TIMED_N],
             ProtocolState.DIRECT_ACCESS: [ProtocolEvent.EXECUTE_DIRECT,
                                           ProtocolEvent.STOP_DIRECT],
-            ProtocolState.AUTOSAMPLE:    [ProtocolEvent.STOP_AUTOSAMPLE]
+            ProtocolState.AUTOSAMPLE:    [ProtocolEvent.STOP_AUTOSAMPLE,
+                                          ProtocolEvent.GET],
+            ProtocolState.PERIODIC:      [ProtocolEvent.STOP_PERIODIC,
+                                          ProtocolEvent.GET]
         }
 
         driver = InstrumentDriver(self._got_data_event_callback)
@@ -1021,6 +1025,7 @@ class DriverQualificationTest(InstrumentDriverQualificationTestCase, DriverTestM
             AgentCapabilityType.RESOURCE_COMMAND: [ProtocolEvent.ACQUIRE_SAMPLE,
                                                    ProtocolEvent.ACQUIRE_STATUS,
                                                    ProtocolEvent.START_AUTOSAMPLE,
+                                                   ProtocolEvent.START_PERIODIC,
                                                    ProtocolEvent.GET,
                                                    ProtocolEvent.SET,
                                                    ProtocolEvent.TEST,
