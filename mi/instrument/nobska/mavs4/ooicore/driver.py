@@ -797,7 +797,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
         self._protocol_fsm.add_handler(ProtocolStates.AUTOSAMPLE, ProtocolEvent.EXIT, self._handler_autosample_exit)
         self._protocol_fsm.add_handler(ProtocolStates.AUTOSAMPLE, ProtocolEvent.STOP_AUTOSAMPLE,
                                        self._handler_autosample_stop_autosample)
-        self._protocol_fsm.add_handler(ProtocolStates.COMMAND, ProtocolEvent.SCHEDULED_CLOCK_SYNC,
+        self._protocol_fsm.add_handler(ProtocolStates.AUTOSAMPLE, ProtocolEvent.SCHEDULED_CLOCK_SYNC,
                                        self._handler_autosample_clock_sync)
         self._protocol_fsm.add_handler(ProtocolStates.DIRECT_ACCESS, ProtocolEvent.ENTER,
                                        self._handler_direct_access_enter)

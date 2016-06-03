@@ -548,7 +548,8 @@ class Testmavs4_UNIT(InstrumentDriverUnitTestCase, Mavs4Mixin):
                                      ProtocolEvent.SET,
                                      ProtocolEvent.START_AUTOSAMPLE,
                                      ProtocolEvent.START_DIRECT],
-            ProtocolStates.AUTOSAMPLE: [ProtocolEvent.STOP_AUTOSAMPLE],
+            ProtocolStates.AUTOSAMPLE: [ProtocolEvent.STOP_AUTOSAMPLE,
+                                        ProtocolEvent.SCHEDULED_CLOCK_SYNC],
             ProtocolStates.DIRECT_ACCESS: [ProtocolEvent.STOP_DIRECT,
                                            ProtocolEvent.EXECUTE_DIRECT]
         }
