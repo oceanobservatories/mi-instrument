@@ -31,6 +31,8 @@ from mi.core.instrument.protocol_param_dict import ParameterDictType
 from mi.core.exceptions import SampleException
 from mi.core.exceptions import InstrumentProtocolException
 from mi.core.exceptions import InstrumentParameterException
+from mi.core.exceptions import InstrumentStateException
+from mi.core.exceptions import InstrumentTimeoutException
 from mi.core.time_tools import get_timestamp_delayed
 
 log = get_logger()
@@ -47,16 +49,14 @@ DEFAULT_TIMEOUT = 15
 MEASURE_N_TIMEOUT = 60
 TIMED_N_TIMEOUT = 65
 CLOCK_SYNC_TIMEOUT = 20
-DISCOVER_TIMEOUT = 25
+DISCOVER_TIMEOUT = 40
+STOP_PERIODIC_TIMEOUT = 30
 
 MIN_TIME_SAMPLE = 0
 MIN_LIGHT_SAMPLE = 1
 
 MAX_TIME_SAMPLE = 30
 MAX_LIGHT_SAMPLE = 40
-
-# default number of retries for a command
-RETRY = 3
 
 # SUNA ASCII FRAME REGEX
 SUNA_SAMPLE_PATTERN = r'SAT'  # Sentinal
@@ -230,6 +230,7 @@ class ProtocolState(BaseEnum):
     COMMAND = DriverProtocolState.COMMAND
     DIRECT_ACCESS = DriverProtocolState.DIRECT_ACCESS
     AUTOSAMPLE = DriverProtocolState.AUTOSAMPLE
+    PERIODIC = 'DRIVER_STATE_PERIODIC'
 
 
 class ProtocolEvent(BaseEnum):
@@ -241,6 +242,8 @@ class ProtocolEvent(BaseEnum):
     ACQUIRE_SAMPLE = DriverEvent.ACQUIRE_SAMPLE
     START_AUTOSAMPLE = DriverEvent.START_AUTOSAMPLE
     STOP_AUTOSAMPLE = DriverEvent.STOP_AUTOSAMPLE
+    START_PERIODIC = "DRIVER_EVENT_START_PERIODIC"
+    STOP_PERIODIC = "DRIVER_EVENT_STOP_PERIODIC"
     TEST = DriverEvent.TEST
     START_DIRECT = DriverEvent.START_DIRECT
     STOP_DIRECT = DriverEvent.STOP_DIRECT
@@ -271,6 +274,8 @@ class Capability(BaseEnum):
     # Change States
     START_AUTOSAMPLE = ProtocolEvent.START_AUTOSAMPLE
     STOP_AUTOSAMPLE = ProtocolEvent.STOP_AUTOSAMPLE
+    START_PERIODIC = ProtocolEvent.START_PERIODIC
+    STOP_PERIODIC = ProtocolEvent.STOP_PERIODIC
     DISCOVER = ProtocolEvent.DISCOVER
 
     # Parameter Accessors/Mutators
@@ -308,6 +313,10 @@ class Parameter(DriverParameter):
     INTEG_TIME_FACTOR = "intprfac"
     INTEG_TIME_STEP = "intadstp"
     INTEG_TIME_MAX = "intadmax"
+    PERIODIC_INTERVAL = "perdival"
+    PERIODIC_OFFSET = "perdoffs"
+    PERIODIC_DURATION = "perddura"
+    PERIODIC_SAMPLES = "perdsmpl"
 
     # Driver Parameters
     NUM_LIGHT_SAMPLES = "nmlgtspl"
@@ -394,6 +403,7 @@ class InstrumentCommandNames(BaseEnum):
 class InstrumentCommandArgs(BaseEnum):
     POLLED = 'Polled'
     CONTINUOUS = 'Continuous'
+    PERIODIC = 'Periodic'
     ON = 'On'
     OFF = 'Off'
 
@@ -967,7 +977,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         self._protocol_fsm.add_handler(ProtocolState.UNKNOWN, ProtocolEvent.DISCOVER, self._handler_unknown_discover)
 
         # COMMAND State
-        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.ENTER, self._handler_command_enter)
+        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.ENTER, self._handler_enter)
         self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.EXIT, self._handler_generic_exit)
         self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.ACQUIRE_SAMPLE,
                                        self._handler_command_acquire_sample)
@@ -977,7 +987,9 @@ class Protocol(CommandResponseInstrumentProtocol):
                                        self._handler_command_start_direct)
         self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.START_AUTOSAMPLE,
                                        self._handler_command_start_autosample)
-        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.GET, self._handler_command_get)
+        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.START_PERIODIC,
+                                       self._handler_command_start_periodic)
+        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.GET, self._handler_get)
         self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.SET, self._handler_command_set)
         self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.TEST, self._handler_command_test)
         self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.CLOCK_SYNC,
@@ -996,11 +1008,18 @@ class Protocol(CommandResponseInstrumentProtocol):
                                        self._handler_direct_access_stop_direct)
 
         # AUTOSAMPLE State
-        self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.ENTER, self._handler_autosample_enter)
+        self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.ENTER, self._handler_enter)
         self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.EXIT, self._handler_generic_exit)
-        self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.GET, self._handler_autosample_get)
+        self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.GET, self._handler_get)
         self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.STOP_AUTOSAMPLE,
                                        self._handler_autosample_stop_autosample)
+
+        # PERIODIC State
+        self._protocol_fsm.add_handler(ProtocolState.PERIODIC, ProtocolEvent.ENTER, self._handler_enter)
+        self._protocol_fsm.add_handler(ProtocolState.PERIODIC, ProtocolEvent.EXIT, self._handler_generic_exit)
+        self._protocol_fsm.add_handler(ProtocolState.PERIODIC, ProtocolEvent.GET, self._handler_get)
+        self._protocol_fsm.add_handler(ProtocolState.PERIODIC, ProtocolEvent.STOP_PERIODIC,
+                                       self._handler_periodic_stop_periodic)
 
         # State state machine in UNKNOWN state.
         self._protocol_fsm.start(ProtocolState.UNKNOWN)
@@ -1080,6 +1099,8 @@ class Protocol(CommandResponseInstrumentProtocol):
         self._cmd_dict.add(Capability.TEST, display_name='Execute Test')
         self._cmd_dict.add(Capability.START_AUTOSAMPLE, display_name='Start Autosample')
         self._cmd_dict.add(Capability.STOP_AUTOSAMPLE, display_name='Stop Autosample')
+        self._cmd_dict.add(Capability.START_PERIODIC, display_name='Start Periodic Mode')
+        self._cmd_dict.add(Capability.STOP_PERIODIC, timeout=STOP_PERIODIC_TIMEOUT, display_name='Stop Periodic Mode')
         self._cmd_dict.add(Capability.CLOCK_SYNC, timeout=CLOCK_SYNC_TIMEOUT, display_name='Synchronize Clock')
         self._cmd_dict.add(Capability.DISCOVER, timeout=DISCOVER_TIMEOUT, display_name='Discover')
 
@@ -1501,6 +1522,67 @@ class Protocol(CommandResponseInstrumentProtocol):
                              description="Maximum integration time factor: (1 - 20)",
                              units=Units.SECOND)
 
+        # PERIODIC PARAMETERS
+        self._param_dict.add(Parameter.PERIODIC_INTERVAL,
+                             r'PERDIVAL\s(\S*)',
+                             lambda match: match.group(1),
+                             str,
+                             type=ParameterDictType.STRING,
+                             startup_param=True,
+                             direct_access=True,
+                             default_value='1h',
+                             visibility=ParameterDictVisibility.READ_WRITE,
+                             display_name="Periodic Interval",
+                             range={'00:01': '1m', '00:02': '2m', '00:05': '5m', '00:06': '6m', '00:10': '10m',
+                                    '00:15': '15m', '00:20': '20m', '00:30': '30m', '01:00': '1h', '02:00': '2h',
+                                    '03:00': '3h', '04:00': '4h', '06:00': '6h', '08:00': '8h', '12:00': '12h',
+                                    '24:00': '24h'},
+                             description="Establishes a grid of acquisition times in Periodic Mode (HH:MM)")
+
+        self._param_dict.add(Parameter.PERIODIC_OFFSET,
+                             r'PERDOFFS\s(\S*)',
+                             lambda match: int(match.group(1)),
+                             str,
+                             type=ParameterDictType.INT,
+                             startup_param=True,
+                             direct_access=True,
+                             default_value=0,
+                             visibility=ParameterDictVisibility.READ_WRITE,
+                             display_name="Periodic Offset",
+                             range=(0, 86399),
+                             description="Measured in seconds. Locates the time grid"
+                                         " relative to the start of the day in Periodic Mode (0-86399)",
+                             units=Units.SECOND)
+
+        self._param_dict.add(Parameter.PERIODIC_DURATION,
+                             r'PERDDURA\s(\S*)',
+                             lambda match: int(match.group(1)),
+                             str,
+                             type=ParameterDictType.INT,
+                             startup_param=True,
+                             direct_access=True,
+                             default_value=10,
+                             visibility=ParameterDictVisibility.READ_WRITE,
+                             display_name="Periodic Duration",
+                             range=(1, 255),
+                             description="Number of seconds over which data will be collected in Periodic mode when"
+                                         " Operation Control is Duration (1-255)",
+                             units=Units.SECOND)
+
+        self._param_dict.add(Parameter.PERIODIC_SAMPLES,
+                             r'PERDSMPL\s(\S*)',
+                             lambda match: int(match.group(1)),
+                             str,
+                             type=ParameterDictType.INT,
+                             startup_param=True,
+                             direct_access=True,
+                             default_value=10,
+                             visibility=ParameterDictVisibility.READ_WRITE,
+                             display_name="Periodic Samples",
+                             range=(1, 255),
+                             description="Number of samples collected in Periodic mode when Operation Control is"
+                                         " Samples (1-255)")
+
         # DRIVER PARAMETERS
         self._param_dict.add(Parameter.NUM_LIGHT_SAMPLES,
                              r'donotmatch',
@@ -1562,6 +1644,20 @@ class Protocol(CommandResponseInstrumentProtocol):
         """
         self._driver_event(DriverAsyncEvent.STATE_CHANGE)
 
+    def _handler_enter(self):
+        """
+        Enter handler for states that can initialize parameters.
+        Used for COMMAND, AUTOSAMPLE, and PERIODIC
+        """
+
+        if self._init_type != InitializationType.NONE:
+            self._update_params()
+            self._init_params()
+            # Exit will resume sampling if in PERIODIC or AUTOSAMPLE. No effect if COMMAND.
+            self._do_cmd_no_resp(InstrumentCommands.EXIT)
+
+        self._driver_event(DriverAsyncEvent.STATE_CHANGE)
+
     ########################################################################
     # Unknown handlers.
     ########################################################################
@@ -1577,36 +1673,24 @@ class Protocol(CommandResponseInstrumentProtocol):
         mode = self._do_cmd_resp(InstrumentCommands.GET, Parameter.OPERATION_MODE, response_regex=OK_GET_REGEX)
         log.debug('Upon discover instrument mode is %s', mode)
 
-        if mode == InstrumentCommandArgs.POLLED:
-            # Instrument is in COMMAND state and awaiting instruction
-            next_state = ProtocolState.COMMAND
+        state_map = {
+            InstrumentCommandArgs.POLLED: ProtocolState.COMMAND,
+            InstrumentCommandArgs.CONTINUOUS: ProtocolState.AUTOSAMPLE,
+            InstrumentCommandArgs.PERIODIC: ProtocolState.PERIODIC
+        }
 
-        elif mode == InstrumentCommandArgs.CONTINUOUS:
-            # Instrument is in AUTOSAMPLE state. Sampling will resume after param init.
-            next_state = ProtocolState.AUTOSAMPLE
+        next_state = state_map[mode]
 
-        else:
+        if next_state is None:
             # Instrument is in unused state. Set to COMMAND state
             next_state = ProtocolState.COMMAND
-            self._do_cmd_resp(InstrumentCommands.SET, Parameter.OPERATION_MODE, InstrumentCommandArgs.POLLED,
-                              expected_prompt=[Prompt.OK, Prompt.ERROR])
+            log.info('Instrument is in unsupported mode "%s", setting state to %s', mode, next_state)
 
         return next_state, (next_state, result)
 
     ########################################################################
     # Command handlers.
     ########################################################################
-    def _handler_command_enter(self):
-        """
-        Enter command state.
-        """
-
-        if self._init_type != InitializationType.NONE:
-            self._update_params()
-
-        self._init_params()
-        self._driver_event(DriverAsyncEvent.STATE_CHANGE)
-
     def _handler_command_acquire_sample(self):
         """
         Get a sample from the SUNA
@@ -1654,22 +1738,13 @@ class Protocol(CommandResponseInstrumentProtocol):
         """
         Start autosampling
         """
-        next_state = ProtocolState.AUTOSAMPLE
-        result = []
+        return self._change_state(ProtocolState.AUTOSAMPLE)
 
-        self._bring_up_command_line()
-        self._do_cmd_resp(InstrumentCommands.SET, Parameter.OPERATION_MODE, InstrumentCommandArgs.CONTINUOUS,
-                          expected_prompt=[Prompt.OK, Prompt.ERROR])
-        self._do_cmd_no_resp(InstrumentCommands.EXIT)
-
-        return next_state, (next_state, result)
-
-    def _handler_command_get(self, *args, **kwargs):
+    def _handler_command_start_periodic(self):
         """
-        Get parameter(s)
-        @param params List of parameters to get
+        Start Periodic
         """
-        return self._handler_get(*args, **kwargs)
+        return self._change_state(ProtocolState.PERIODIC)
 
     def _handler_command_set(self, params, *args):
         """
@@ -1866,38 +1941,20 @@ class Protocol(CommandResponseInstrumentProtocol):
     ########################################################################
     # Autosample handlers.
     ########################################################################
-    def _handler_autosample_enter(self):
-        """
-        Enter autosample state.
-        """
-
-        if self._init_type != InitializationType.NONE:
-            self._update_params()
-            self._init_params()
-            # After setting parameters return to autosample state
-            self._do_cmd_no_resp(InstrumentCommands.EXIT)
-
-        self._driver_event(DriverAsyncEvent.STATE_CHANGE)
-
-    def _handler_autosample_get(self, *args, **kwargs):
-        """
-        Get parameter(s)
-        @param params List of parameters to get
-        """
-        return self._handler_get(*args, **kwargs)
-
     def _handler_autosample_stop_autosample(self):
         """
         Exit the autosample state
         """
-        next_state = ProtocolState.COMMAND
+        return self._change_state(ProtocolState.COMMAND)
 
-        # Set instrument mode to polled
-        self._bring_up_command_line()
-        result = self._do_cmd_resp(InstrumentCommands.SET, Parameter.OPERATION_MODE, InstrumentCommandArgs.POLLED,
-                                   expected_prompt=[Prompt.OK, Prompt.ERROR])
-
-        return next_state, (next_state, [result])
+    ########################################################################
+    # Autosample handlers.
+    ########################################################################
+    def _handler_periodic_stop_periodic(self):
+        """
+        Exit the periodic state
+        """
+        return self._change_state(ProtocolState.COMMAND)
 
     ########################################################################
     # Build handlers
@@ -2016,6 +2073,32 @@ class Protocol(CommandResponseInstrumentProtocol):
         """
         self._connection.send(NEWLINE)
 
+    def _change_state(self, next_state):
+        """
+        Transitions to a new state
+        @param next_state:
+        @return:
+        @raise InstrumentStateException: if unhandled state requested
+        """
+
+        mode_map = {
+            ProtocolState.COMMAND: InstrumentCommandArgs.POLLED,
+            ProtocolState.AUTOSAMPLE: InstrumentCommandArgs.CONTINUOUS,
+            ProtocolState.PERIODIC: InstrumentCommandArgs.PERIODIC
+        }
+
+        args = mode_map[next_state]
+        if args is None:
+            raise InstrumentStateException('Requested transition to unknown state %s', next_state)
+
+        # Set new state
+        self._bring_up_command_line()
+        result = self._do_cmd_resp(InstrumentCommands.SET, Parameter.OPERATION_MODE, args,
+                                   expected_prompt=[Prompt.OK, Prompt.ERROR])
+        self._do_cmd_no_resp(InstrumentCommands.EXIT)
+
+        return next_state, (next_state, [result])
+
     @staticmethod
     def _is_true(x):
         if isinstance(x, basestring):
@@ -2025,37 +2108,43 @@ class Protocol(CommandResponseInstrumentProtocol):
 
     def _bring_up_command_line(self):
         """
-        Get to the command line, that is SUNA> prompt for entering commands
-        """
-        self._simple_send(InstrumentCommands.CMD_LINE, expected_prompt=[Prompt.COMMAND_LINE])
+        Get to the command line, that is SUNA> prompt for entering commands.
+        It's tricky to get to the prompt when the instrument is in Periodic
+        mode.
+        What seems to work best is to send $ character, wait until there's
+        some response, wait ~1 second, then send it again, repeating until
+        the SUNA> prompt appears.
 
-    def _simple_send(self, cmd, timeout=DEFAULT_TIMEOUT, expected_prompt=None):
-        """
-        Sends a command and waits up to timeout seconds (default TIMEOUT) for one
-        of the prompts in expected_prompt.
-        If no prompt is specified then all prompts in Prompt are considered.
-        If a prompt is found it is returned, otherwise a timeout exception
-        is thrown.
-        This method differs from _do_cmd_resp() in that it does not invoke a
-        command handler, a response handler, or _wakeup().
-        @param cmd: string to send to instrument
-        @param timeout: time to look for expected prompts
-        @param expected_prompt: returns when one of these strings is found
-        @return: the prompt found
-        @raise: InstrumentTimeoutException on timeout
+        @raise InstrumentProtocolException: If prompt is not received within
+        STOP_PERIODIC_TIMEOUT seconds
         """
         self._linebuf = ''
-        self._promptbuf = ''
-        self._send_wakeup()
-        self._connection.send(cmd + NEWLINE)
-        return self._get_response(timeout, expected_prompt)
+        re_newline = re.compile(r'(.*)\n(.*)', re.DOTALL)
+        timeout = time.time() + STOP_PERIODIC_TIMEOUT
+
+        while time.time() < timeout:
+            self._connection.send(InstrumentCommands.CMD_LINE + NEWLINE)
+            try:
+                groups = self._get_response(5, response_regex=re_newline)
+                line = groups[0]
+                if Prompt.COMMAND_LINE in line:
+                    return
+                # Save any characters after the last newline
+                self._linebuf = groups[1]
+                # Wait 1 second before sending the next $
+                time.sleep(1)
+
+            except InstrumentTimeoutException:
+                pass
+
+        raise InstrumentProtocolException('Could not bring up command line')
 
     def _format_value(self, param, value):
         """
         @param param: Parameter in _param_dict to use for formatting
         @param value: value to be formatted
         @return: A string formatted using _param_dict.format()
-        @raise: InstrumentParameterException if the parameter name is invalid.
+        @raise InstrumentParameterException: if the parameter name is invalid.
         """
         try:
             formatted_value = self._param_dict.format(param, value)
