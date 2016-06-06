@@ -13,6 +13,8 @@ Options:
     -h, --help          Show this screen.
 
 """
+import base64
+
 import consulate
 import importlib
 import json
@@ -79,6 +81,21 @@ def _decode(data):
     return data
 
 
+def _transform(value):
+    flag = '_base64:'
+    if isinstance(value, basestring):
+        if value.startswith(flag):
+            data = value.split(flag, 1)[1]
+            return base64.b64decode(data)
+        return value
+
+    elif isinstance(value, (list, tuple)):
+        return [_transform(x) for x in value]
+
+    elif isinstance(value, dict):
+        return {k: _transform(value[k]) for k in value}
+
+
 def build_event(event_type, value, command=None, args=None, kwargs=None):
     event = {
         EventKeys.TIME: time.time(),
@@ -138,12 +155,20 @@ class CommandHandler(threading.Thread):
             Commands.STOP_WORKER: self._stop_worker,
         }
 
-    def _execute(self, command, args, kwargs):
+    def _execute(self, raw_command, raw_args, raw_kwargs):
+        # check for b64 encoded values
+        # decode them prior to processing this command
+        command = _transform(raw_command)
+        args = _transform(raw_args)
+        kwargs = _transform(raw_kwargs)
 
+        # lookup the function to be executed
         _func = self._routes.get(command, self._send_command)
+        # ensure args is iterable
         if not isinstance(args, (list, tuple)):
             args = (args,)
 
+        # Attempt to execute this command
         try:
             reply = _func(command, *args, **kwargs)
             event_type = DriverAsyncEvent.RESULT
@@ -152,7 +177,9 @@ class CommandHandler(threading.Thread):
             reply = encode_exception(e)
             event_type = DriverAsyncEvent.ERROR
 
-        event = build_event(event_type, reply, command, args, kwargs)
+        # Build the response event. Use the raw values, if something was
+        # base64 encoded, we may not be able to send the decoded value back raw
+        event = build_event(event_type, reply, raw_command, raw_args, raw_kwargs)
         log.trace('CommandHandler generated event: %r', event)
         return event
 
