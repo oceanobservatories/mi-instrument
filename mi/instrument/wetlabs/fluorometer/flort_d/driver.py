@@ -878,6 +878,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         """
         next_state = DriverProtocolState.COMMAND
         response = []
+        self._particle_dict = {}
         sample = DataParticleType.FLORDD_SAMPLE
 
         if self.__instrument_class__ == FLORT_CLASS:
