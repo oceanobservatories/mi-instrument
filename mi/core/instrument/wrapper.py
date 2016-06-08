@@ -95,6 +95,8 @@ def _transform(value):
     elif isinstance(value, dict):
         return {k: _transform(value[k]) for k in value}
 
+    return value
+
 
 def build_event(event_type, value, command=None, args=None, kwargs=None):
     event = {
