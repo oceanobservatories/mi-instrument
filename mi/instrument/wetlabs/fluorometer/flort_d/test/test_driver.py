@@ -443,13 +443,13 @@ class DriverUnitTest(InstrumentDriverUnitTestCase, DriverTestMixinSub):
         mock_callback = Mock()
         protocol = Protocol(Prompt, NEWLINE, mock_callback)
 
-        # COMMAND state
-        protocol._particle_dict = {}
+        # COMMAND state, wait for particles returns an empty list
+        protocol.wait_for_particles = Mock(return_value=[])
         next_state, result = protocol._handler_unknown_discover()
         self.assertEqual(next_state, DriverProtocolState.COMMAND)
 
-        # AUTOSAMPLE state
-        protocol._particle_dict = {DataParticleType.FLORTD_SAMPLE: None}
+        # AUTOSAMPLE state, wait for particles returns one or more particles
+        protocol.wait_for_particles = Mock(return_value=[1])
         next_state, result = protocol._handler_unknown_discover()
         self.assertEqual(next_state, DriverProtocolState.AUTOSAMPLE)
 
