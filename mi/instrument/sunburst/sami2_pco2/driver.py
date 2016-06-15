@@ -753,7 +753,7 @@ class Pco2wProtocol(SamiProtocol):
                              startup_param=True,
                              direct_access=True,
                              default_value=0x04,
-                             visibility=ParameterDictVisibility.READ_ONLY,
+                             visibility=ParameterDictVisibility.IMMUTABLE,
                              display_name='Sami Driver Version',
                              description='SAMI driver version: (04 = CO2 Ave+)')
 
