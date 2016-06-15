@@ -1952,7 +1952,7 @@ class NortekInstrumentProtocol(CommandResponseInstrumentProtocol):
         self._cmd_dict.add(Capability.STOP_AUTOSAMPLE, display_name='Stop Autosample')
         self._cmd_dict.add(Capability.CLOCK_SYNC, display_name='Synchronize Clock')
         self._cmd_dict.add(Capability.ACQUIRE_STATUS, timeout=30, display_name='Acquire Status')
-        self._cmd_dict.add(Capability.DISCOVER, display_name='Discover')
+        self._cmd_dict.add(Capability.DISCOVER, timeout=20, display_name='Discover')
 
     def _build_param_dict(self):
         """
