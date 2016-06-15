@@ -859,7 +859,7 @@ class Protocol(SamiProtocol):
                              startup_param=True,
                              direct_access=True,
                              default_value=0x02,
-                             visibility=ParameterDictVisibility.READ_ONLY,
+                             visibility=ParameterDictVisibility.IMMUTABLE,
                              display_name='Mode Bits',
                              range=UINT8,
                              description='Switch bits for sample scheduling.')
@@ -871,7 +871,7 @@ class Protocol(SamiProtocol):
                              startup_param=True,
                              direct_access=True,
                              default_value=0x0A,
-                             visibility=ParameterDictVisibility.READ_ONLY,
+                             visibility=ParameterDictVisibility.IMMUTABLE,
                              display_name='Sami Driver Version',
                              range={'PHSEN':0x0A, 'PC02': 0x04},
                              description='SAMI driver version: (0A = PHSEN | 04 = PCO2)')
@@ -883,7 +883,7 @@ class Protocol(SamiProtocol):
                              startup_param=True,
                              direct_access=True,
                              default_value=0x000000,
-                             visibility=ParameterDictVisibility.READ_ONLY,
+                             visibility=ParameterDictVisibility.IMMUTABLE,
                              display_name='Device 1 Sample Interval',
                              description='',
                              units=Units.SECOND)
@@ -895,7 +895,7 @@ class Protocol(SamiProtocol):
                              startup_param=True,
                              direct_access=True,
                              default_value=0x00,
-                             visibility=ParameterDictVisibility.READ_ONLY,
+                             visibility=ParameterDictVisibility.IMMUTABLE,
                              display_name='Device 1 Driver Version',
                              description='')
 
@@ -906,7 +906,7 @@ class Protocol(SamiProtocol):
                              startup_param=True,
                              direct_access=True,
                              default_value=0x00,
-                             visibility=ParameterDictVisibility.READ_ONLY,
+                             visibility=ParameterDictVisibility.IMMUTABLE,
                              display_name='Device 1 Parameter Pointer',
                              description='Pointer to device 1 parameters (offset from position 76).')
 

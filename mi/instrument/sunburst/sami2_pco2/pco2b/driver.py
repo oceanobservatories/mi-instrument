@@ -664,7 +664,7 @@ class Protocol(Pco2wProtocol):
                              startup_param=True,
                              direct_access=True,
                              default_value=0x02,
-                             visibility=ParameterDictVisibility.READ_ONLY,
+                             visibility=ParameterDictVisibility.IMMUTABLE,
                              display_name='Mode Bits',
                              description='Switch bits for sample scheduling.')
 
@@ -675,7 +675,7 @@ class Protocol(Pco2wProtocol):
                              startup_param=True,
                              direct_access=True,
                              default_value=0x000E10,
-                             visibility=ParameterDictVisibility.READ_ONLY,
+                             visibility=ParameterDictVisibility.IMMUTABLE,
                              display_name='Device 1 Sample Interval',
                              description='',
                              units=Units.SECOND)
@@ -687,7 +687,7 @@ class Protocol(Pco2wProtocol):
                              startup_param=True,
                              direct_access=True,
                              default_value=0x01,
-                             visibility=ParameterDictVisibility.READ_ONLY,
+                             visibility=ParameterDictVisibility.IMMUTABLE,
                              display_name='Device 1 Driver Version',
                              description='')
 
@@ -698,7 +698,7 @@ class Protocol(Pco2wProtocol):
                              startup_param=True,
                              direct_access=True,
                              default_value=0x0B,
-                             visibility=ParameterDictVisibility.READ_ONLY,
+                             visibility=ParameterDictVisibility.IMMUTABLE,
                              display_name='Device 1 Parameter Pointer',
                              description='Pointer to device 1 parameters (offset from position 76).')
 
