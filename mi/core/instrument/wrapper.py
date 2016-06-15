@@ -15,7 +15,6 @@ Options:
 """
 import base64
 
-import consulate
 import importlib
 import json
 import os
@@ -33,6 +32,7 @@ from mi.core.exceptions import UnexpectedError, InstrumentCommandException, Inst
 from mi.core.instrument.instrument_driver import DriverAsyncEvent
 from mi.core.instrument.publisher import Publisher
 from mi.core.log import get_logger, get_logging_metaclass
+from mi.core.service_registry import ConsulServiceRegistry
 
 log = get_logger()
 
@@ -113,30 +113,6 @@ def build_event(event_type, value, command=None, args=None, kwargs=None):
         }
 
     return event
-
-
-class StatusThread(threading.Thread):
-    def __init__(self, wrapper, ttl=120):
-        super(StatusThread, self).__init__()
-        self.wrapper = wrapper
-        self.consul = consulate.Consul()
-        self.ttl = ttl
-        # sleep for 1/2 ttl, so 2 missed polls will degrade the state
-        self.sleep_time = ttl / 2.0
-        self.running = True
-
-    def run(self):
-        refdes = self.wrapper.refdes
-        service = 'instrument_driver'
-        service_id = '%s_%s' % (service, refdes)
-        check = 'service:%s' % service_id
-        self.consul.agent.service.register('instrument_driver', service_id=service_id,
-                                           port=self.wrapper.port, tags=[refdes],
-                                           ttl='%ds' % self.ttl)
-
-        while self.running:
-            self.consul.agent.check.ttl_pass(check)
-            time.sleep(self.sleep_time)
 
 
 class CommandHandler(threading.Thread):
@@ -295,6 +271,9 @@ class CommandHandler(threading.Thread):
 
         sock.close()
 
+    def stop(self):
+        self._stop = True
+
 
 class LoadBalancer(object):
     """
@@ -348,13 +327,14 @@ class LoadBalancer(object):
                 log.info('ZMQ Context terminated, exiting load balancer loop')
                 break
 
-        log.info('Load balancer done')
-
     def _start_workers(self):
         for _ in xrange(self.num_workers):
             t = CommandHandler(self.wrapper, self.worker_url)
             t.setDaemon(True)
             t.start()
+
+    def stop(self):
+        self.running = False
 
 
 class DriverWrapper(object):
@@ -385,7 +365,6 @@ class DriverWrapper(object):
 
         self.load_balancer = None
         self.status_thread = None
-        self.running = False
         self.particle_count = 0
 
         headers = {'sensor': self.refdes, 'deliveryType': 'streamed'}
@@ -441,10 +420,6 @@ class DriverWrapper(object):
 
         if self.driver is not None or self.construct_driver():
             self.start_threads()
-            while self.running:
-                time.sleep(1)
-
-        os._exit(0)
 
     def start_threads(self):
         """
@@ -463,30 +438,18 @@ class DriverWrapper(object):
         self.port = self.load_balancer.port
 
         # now that we have a port, start our status thread
-        self.status_thread = StatusThread(self)
+        self.status_thread = ConsulServiceRegistry.create_health_thread(self.refdes, self.port)
+        self.status_thread.setDaemon(True)
         self.status_thread.start()
 
         self.load_balancer.run()
-
-        self.send_event(build_event(DriverAsyncEvent.DRIVER_CONFIG,
-                                    'started on port %d' % self.port))
 
     def stop_messaging(self):
         """
         Close messaging resource for the driver. Set flags to cause
         command and event threads to close sockets and conclude.
         """
-        self.event_publisher.stop()
-        self.particle_publisher.stop()
-
-        if self.status_thread:
-            self.status_thread.running = False
-        if self.load_balancer:
-            self.load_balancer.running = False
-
-        self.running = False
-
-        zmq.Context.instance().term()
+        self.load_balancer.stop()
 
 
 def main():
