@@ -42,6 +42,9 @@ __license__ = 'Apache 2.0'
 log = get_logger()
 
 WAKEUP_TIMEOUT = 3
+DISCOVER_TIMEOUT = 40
+ACQUIRE_SAMPLE_TIMEOUT = 55
+ACQUIRE_STATUS_TIMEOUT = 80
 NEWLINE = '\r\n'
 SBE_EPOCH = (datetime.date(2000, 1, 1) - datetime.date(1970, 1, 1)).total_seconds()
 TIMEOUT = 20
@@ -1108,9 +1111,9 @@ class SBE16Protocol(CommandResponseInstrumentProtocol):
         self._cmd_dict.add(Capability.START_AUTOSAMPLE, display_name="Start Autosample")
         self._cmd_dict.add(Capability.STOP_AUTOSAMPLE, display_name="Stop Autosample")
         self._cmd_dict.add(Capability.CLOCK_SYNC, display_name="Synchronize Clock")
-        self._cmd_dict.add(Capability.ACQUIRE_STATUS, display_name="Acquire Status")
-        self._cmd_dict.add(Capability.ACQUIRE_SAMPLE, display_name="Acquire Sample")
-        self._cmd_dict.add(Capability.DISCOVER, display_name='Discover')
+        self._cmd_dict.add(Capability.ACQUIRE_STATUS, timeout=ACQUIRE_STATUS_TIMEOUT, display_name="Acquire Status")
+        self._cmd_dict.add(Capability.ACQUIRE_SAMPLE, timeout=ACQUIRE_SAMPLE_TIMEOUT, display_name="Acquire Sample")
+        self._cmd_dict.add(Capability.DISCOVER, timeout=DISCOVER_TIMEOUT, display_name='Discover')
 
     ########################################################################
     # Unknown handlers.
