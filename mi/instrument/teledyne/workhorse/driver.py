@@ -438,7 +438,7 @@ parameter_names = {
     WorkhorseParameter.SAVE_NVRAM_TO_RECORDER: "Save NVRAM to Recorder",
     WorkhorseParameter.POLLED_MODE: "Polled Mode",
     WorkhorseParameter.XMIT_POWER: "Transmit Power",
-    WorkhorseParameter.LATENCY_TRIGGER: "Latency trigger",
+    WorkhorseParameter.LATENCY_TRIGGER: "Latency Trigger",
     WorkhorseParameter.HEADING_ALIGNMENT: "Heading Alignment",
     WorkhorseParameter.HEADING_BIAS: "Heading Bias",
     WorkhorseParameter.SPEED_OF_SOUND: 'Speed of Sound',
