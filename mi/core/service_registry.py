@@ -26,8 +26,8 @@ class ConsulServiceRegistry(object):
     @staticmethod
     def locate_port_agent(reference_designator):
         try:
-            data_port = CONSUL.health.service('port-agent', passing=True, tag=reference_designator)
-            cmd_port = CONSUL.health.service('command-port-agent', passing=True, tag=reference_designator)
+            _, data_port = CONSUL.health.service('port-agent', passing=True, tag=reference_designator)
+            _, cmd_port = CONSUL.health.service('command-port-agent', passing=True, tag=reference_designator)
 
             if data_port and cmd_port:
                 port = data_port[0]['Service']['Port']
@@ -114,6 +114,9 @@ class ConsulPersistentStore(MutableMapping):
     def _delete(self, key):
         try:
             my_key = self._make_key(key)
+            # fetch first, as consul will not raise KeyError
+            # when deleting a KV that does not exist.
+            self._get_one(key)
             CONSUL.kv.delete(my_key)
         except ConnectionError:
             raise InstrumentParameterException('Unable to connect to Consul')

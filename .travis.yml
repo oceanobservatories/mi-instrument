@@ -1,4 +1,9 @@
 sudo: false
+env:
+  global:
+    - CONSUL_VERSION=0.6.4
+    - CONSUL_DIR=$HOME/consul_$CONSUL_VERSION
+
 language: python
 python:
   - "2.7"
@@ -23,8 +28,12 @@ before_script:
   - psql -c 'create role awips superuser createdb createrole inherit login;' -U postgres
   - psql -c 'create database metadata;' -U postgres
   - psql -c 'grant all privileges on database metadata to awips;' -U postgres
+  - 'if [[ ! -f $CONSUL_DIR/consul ]]; then (mkdir -p $CONSUL_DIR && cd $CONSUL_DIR && wget https://releases.hashicorp.com/consul/${CONSUL_VERSION}/consul_${CONSUL_VERSION}_linux_amd64.zip); fi'
+  - $CONSUL_DIR/consul --version
+  - $CONSUL_DIR/consul agent -dev &
+  # Wait for consul to be ready
+  - sleep 1
 
 # command to run tests
 script:
   - nosetests -a UNIT -e antelope
-
