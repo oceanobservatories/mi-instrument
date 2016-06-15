@@ -20,7 +20,6 @@ from pprint import PrettyPrinter
 from mi.core.unit_test import MiIntTestCase
 from mi.core.unit_test import ParticleTestMixin
 
-from ooi.reflection import EggCache
 from mi.idk.util import remove_all_files
 from mi.idk.unit_test import InstrumentDriverTestConfig
 from mi.idk.exceptions import TestNotInitialized
@@ -225,7 +224,7 @@ class DataSetTestCase(MiIntTestCase):
                 data_dir.append(this_dir)
 
         return data_dir
-    
+
     def get_data_storage_dir(self):
         """
         Verify the test data directory is created and exists.  Return the path to
