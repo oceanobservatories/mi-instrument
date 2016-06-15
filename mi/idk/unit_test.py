@@ -534,7 +534,7 @@ class DriverTestMixin(MiUnitTest, ParticleTestMixin):
 
         self.assert_driver_schema_parameters_keys(parameter_dict, parameters)
 
-        for key in parameter_dict.keys():
+        for key in parameter_dict:
             log.debug("verify driver parameter %s", key)
 
             config_parameter = parameter_dict.get(key)
@@ -544,6 +544,7 @@ class DriverTestMixin(MiUnitTest, ParticleTestMixin):
 
             self.assert_schema_parameter_type(key, config_parameter, expected_parameter)
             self.assert_schema_parameter_read_only(key, config_parameter, expected_parameter)
+            self.assert_schema_parameter_immutable(key, config_parameter)
             self.assert_schema_parameter_metadata(key, config_parameter)
             self.assert_schema_value_metadata(key, config_parameter)
 
@@ -605,11 +606,24 @@ class DriverTestMixin(MiUnitTest, ParticleTestMixin):
         read_only = expected_parameter.get(ParameterTestConfigKey.READONLY, False)
 
         log.debug("Key: %s, Expected Read-Only: %s, schema visibility: %s", name, read_only, param_visibility)
-        if (param_visibility == ParameterDictVisibility.READ_ONLY or
-                    param_visibility == ParameterDictVisibility.IMMUTABLE):
+        if param_visibility in [ParameterDictVisibility.READ_ONLY, ParameterDictVisibility.IMMUTABLE]:
             self.assertTrue(read_only, "%s is NOT defined as read-only" % name)
         else:
             self.assertFalse(read_only, "%s is defined as read-only" % name)
+
+    def assert_schema_parameter_immutable(self, name, config_parameter):
+        """
+        verify config returned describes the immutable parameters properly
+        @param name parameter name
+        @param config_parameter parameter as returned from the schema
+        """
+        param_visibility = config_parameter.get(ParameterDictKey.VISIBILITY)
+        self.assertIsNotNone(param_visibility)
+        startup = config_parameter.get(ParameterDictKey.STARTUP)
+        self.assertIsNotNone(startup)
+
+        self.assertFalse(param_visibility == ParameterDictVisibility.READ_ONLY and startup,
+                         '%s is startup and read-only, should be immutable instead' % name)
 
     def assert_schema_parameter_metadata(self, name, config_parameter):
         """

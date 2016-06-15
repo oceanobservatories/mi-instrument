@@ -1878,7 +1878,7 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
                              startup_param=True,
                              direct_access=True,
                              default_value=0x00000000,
-                             visibility=ParameterDictVisibility.READ_ONLY,
+                             visibility=ParameterDictVisibility.IMMUTABLE,
                              display_name='Launch Time',
                              description='Total seconds from 1904-01-01, derived from system clock at time of launch.',
                              units=Units.SECOND)
@@ -1890,7 +1890,7 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
                              startup_param=True,
                              direct_access=True,
                              default_value=FIVE_YEARS_IN_SECONDS,
-                             visibility=ParameterDictVisibility.READ_ONLY,
+                             visibility=ParameterDictVisibility.IMMUTABLE,
                              display_name='Start Time After Launch Time',
                              description='',
                              units=Units.SECOND)
@@ -1902,7 +1902,7 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
                              startup_param=True,
                              direct_access=True,
                              default_value=ONE_YEAR_IN_SECONDS,
-                             visibility=ParameterDictVisibility.READ_ONLY,
+                             visibility=ParameterDictVisibility.IMMUTABLE,
                              display_name='Stop Time After Start Time',
                              description='',
                              units=Units.SECOND)
@@ -1914,7 +1914,7 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
                              startup_param=True,
                              direct_access=True,
                              default_value=0x000E10,
-                             visibility=ParameterDictVisibility.READ_ONLY,
+                             visibility=ParameterDictVisibility.IMMUTABLE,
                              display_name='Sami Sample Interval',
                              description='',
                              units=Units.SECOND)
@@ -1926,7 +1926,7 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
                              startup_param=True,
                              direct_access=True,
                              default_value=0x02,
-                             visibility=ParameterDictVisibility.READ_ONLY,
+                             visibility=ParameterDictVisibility.IMMUTABLE,
                              display_name='Sami Parameter Pointer',
                              description='Pointer to SAMI parameters (offset from position 76).')
 
@@ -1937,7 +1937,7 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
                              startup_param=True,
                              direct_access=True,
                              default_value=0x000000,
-                             visibility=ParameterDictVisibility.READ_ONLY,
+                             visibility=ParameterDictVisibility.IMMUTABLE,
                              display_name='Device 2 Sample Interval',
                              description='',
                              units=Units.SECOND)
@@ -1949,7 +1949,7 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
                              startup_param=True,
                              direct_access=True,
                              default_value=0x00,
-                             visibility=ParameterDictVisibility.READ_ONLY,
+                             visibility=ParameterDictVisibility.IMMUTABLE,
                              display_name='Device 2 Driver Version',
                              description='')
 
@@ -1961,7 +1961,7 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
                              startup_param=True,
                              direct_access=True,
                              default_value=0x00,
-                             visibility=ParameterDictVisibility.READ_ONLY,
+                             visibility=ParameterDictVisibility.IMMUTABLE,
                              display_name='Device 2 Parameter Pointer',
                              description='Pointer to device 2 parameters (offset from position 76).')
 
@@ -1972,7 +1972,7 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
                              startup_param=True,
                              direct_access=True,
                              default_value=0x000000,
-                             visibility=ParameterDictVisibility.READ_ONLY,
+                             visibility=ParameterDictVisibility.IMMUTABLE,
                              display_name='Device 3 Sample Interval',
                              description='',
                              units=Units.SECOND)
@@ -1984,7 +1984,7 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
                              startup_param=True,
                              direct_access=True,
                              default_value=0x00,
-                             visibility=ParameterDictVisibility.READ_ONLY,
+                             visibility=ParameterDictVisibility.IMMUTABLE,
                              display_name='Device 3 Driver Version',
                              description='')
 
@@ -1995,7 +1995,7 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
                              startup_param=True,
                              direct_access=True,
                              default_value=0x00,
-                             visibility=ParameterDictVisibility.READ_ONLY,
+                             visibility=ParameterDictVisibility.IMMUTABLE,
                              display_name='Device 3 Parameter Pointer',
                              description='Pointer to device 3 parameters (offset from position 76).')
 
@@ -2006,7 +2006,7 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
                              startup_param=True,
                              direct_access=True,
                              default_value=0x000000,
-                             visibility=ParameterDictVisibility.READ_ONLY,
+                             visibility=ParameterDictVisibility.IMMUTABLE,
                              display_name='Prestart Sample Interval',
                              description='',
                              units=Units.SECOND)
@@ -2018,7 +2018,7 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
                              startup_param=True,
                              direct_access=True,
                              default_value=0x00,
-                             visibility=ParameterDictVisibility.READ_ONLY,
+                             visibility=ParameterDictVisibility.IMMUTABLE,
                              display_name='Prestart Driver Version',
                              description='')
 
@@ -2030,7 +2030,7 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
                              startup_param=True,
                              direct_access=True,
                              default_value=0x00,
-                             visibility=ParameterDictVisibility.READ_ONLY,
+                             visibility=ParameterDictVisibility.IMMUTABLE,
                              display_name='Prestart Parameter Pointer',
                              description='Pointer to prestart parameters (offset from position 76).')
 
@@ -2043,7 +2043,7 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
                              startup_param=True,
                              direct_access=True,
                              default_value=0x07,
-                             visibility=ParameterDictVisibility.READ_ONLY,
+                             visibility=ParameterDictVisibility.IMMUTABLE,
                              display_name='Global Bits',
                              description='Global mode switches.')
 
