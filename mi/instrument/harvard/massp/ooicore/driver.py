@@ -305,9 +305,9 @@ class InstrumentDriver(SingleConnectionInstrumentDriver):
             all_configs = args[0]  # via first argument
 
         if all_configs is None:
-            all_configs = {MCU: self._get_config_from_consul(self.refdes + '-MCU'),
-                           TURBO: self._get_config_from_consul(self.refdes + '-TURBO'),
-                           RGA: self._get_config_from_consul(self.refdes + '-RGA')}
+            all_configs = {MCU: self._get_port_agent_config(self.refdes + '-MCU'),
+                           TURBO: self._get_port_agent_config(self.refdes + '-TURBO'),
+                           RGA: self._get_port_agent_config(self.refdes + '-RGA')}
 
         for key in all_configs:
             if all_configs[key] is None:

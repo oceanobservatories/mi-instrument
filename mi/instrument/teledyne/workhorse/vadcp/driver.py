@@ -178,8 +178,8 @@ class InstrumentDriver(SingleConnectionInstrumentDriver):
             all_configs = args[0]  # via first argument
 
         if all_configs is None:
-            all_configs = {SlaveProtocol.FOURBEAM: self._get_config_from_consul(self.refdes + '-4'),
-                           SlaveProtocol.FIFTHBEAM: self._get_config_from_consul(self.refdes + '-5')}
+            all_configs = {SlaveProtocol.FOURBEAM: self._get_port_agent_config(self.refdes + '-4'),
+                           SlaveProtocol.FIFTHBEAM: self._get_port_agent_config(self.refdes + '-5')}
 
         for key in all_configs:
             if all_configs[key] is None:
