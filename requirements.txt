@@ -1,7 +1,7 @@
 flask
 ntplib>=0.1.9
 apscheduler==2.1.0
-consulate
+python-consul
 pyzmq
 docopt
 pyyaml

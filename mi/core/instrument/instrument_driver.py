@@ -9,7 +9,6 @@ with individual instruments in the system.
 """
 import json
 
-import consulate
 import random
 import time
 
@@ -25,7 +24,7 @@ from mi.core.exceptions import InstrumentConnectionException
 from mi.core.instrument.instrument_fsm import ThreadSafeFSM
 from mi.core.instrument.port_agent_client import PortAgentClient, PortAgentPacket
 from mi.core.log import get_logger, get_logging_metaclass
-
+from mi.core.service_registry import ConsulServiceRegistry
 
 __author__ = 'Steve Foley'
 __license__ = 'Apache 2.0'
@@ -462,9 +461,6 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
 
         # The one and only instrument protocol.
         self._protocol = None
-
-        # Consul
-        self.consul = consulate.Consul()
 
         # Reference Designator to the port agent service
         self.refdes = refdes
@@ -1119,7 +1115,7 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
             config = args[0]  # via first argument
 
         if config is None:
-            config = self._get_config_from_consul(self.refdes)
+            config = self._get_port_agent_config(self.refdes)
 
             if config is None:
                 raise AutoDiscoverFailure()
@@ -1143,22 +1139,14 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
         except (TypeError, KeyError):
             raise InstrumentParameterException('Invalid comms config dict.')
 
-    def _get_config_from_consul(self, tag):
+    def _get_port_agent_config(self, tag):
         """
         Query consul for the port agent service
         configuration parameters: data port, command port, and address
         This will retry a specified number of times with exponential backoff.
         """
         try:
-            data_port = self.consul.health.service('port-agent', passing=True, tag=tag)
-            cmd_port = self.consul.health.service('command-port-agent', passing=True, tag=tag)
-
-            if data_port and cmd_port:
-                port = data_port[0]['Service']['Port']
-                addr = data_port[0]['Node']['Address']
-                cmd_port = cmd_port[0]['Service']['Port']
-                port_agent_config = {'port': port, 'cmd_port': cmd_port, 'addr': addr}
-                return port_agent_config
+            return ConsulServiceRegistry.locate_port_agent(tag)
         except ConnectionError:
             return None
 
