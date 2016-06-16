@@ -21,9 +21,10 @@ before_install:
 
 # Install packages
 install:
-  - conda config --add channels http://conda.anaconda.org/ooi
-  - conda install --yes python=$TRAVIS_PYTHON_VERSION matplotlib nose cython pyzmq gevent mock psycopg2 twisted sqlalchemy pandas xarray ooi_port_agent ntplib apscheduler qpid-python tqdm kombu librabbitmq
-  - pip install ModestImage obspy
+  - conda install --yes python=$TRAVIS_PYTHON_VERSION matplotlib nose cython pyzmq gevent mock psycopg2 twisted sqlalchemy pandas xarray
+  - conda install --yes -c ooi ntplib apscheduler qpid-python tqdm kombu librabbitmq python-consul ooi_port_agent
+  - conda install --yes -c obspy obspy
+  - pip install ModestImage
 
 before_script:
   - psql -c 'create role awips superuser createdb createrole inherit login;' -U postgres
