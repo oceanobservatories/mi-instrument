@@ -1661,8 +1661,10 @@ class NortekInstrumentProtocol(CommandResponseInstrumentProtocol):
                   byte_time.encode('hex'))
         self._do_cmd_resp(InstrumentCommands.SET_REAL_TIME_CLOCK, byte_time, **kwargs)
 
-        response = self._do_cmd_resp(InstrumentCommands.READ_REAL_TIME_CLOCK, *args, **kwargs)
-        minutes, seconds, day, hour, year, month, _ = struct.unpack('<6B2s', response)
+        groups = self._do_cmd_resp(InstrumentCommands.READ_REAL_TIME_CLOCK, response_regex=CLOCK_DATA_REGEX,
+                                     *args, **kwargs)
+        int_groups = (ord(c) for c in groups)
+        minutes, seconds, day, hour, year, month = int_groups
         response = '%02x/%02x/20%02x %02x:%02x:%02x' % (day, month, year, hour, minutes, seconds)
 
         # verify that the dates match
