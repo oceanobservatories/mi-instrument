@@ -38,9 +38,6 @@ log = get_logger()
 
 antelope_startup_config = {
         DriverConfigKey.PARAMETERS: {
-            Parameter.DB_ADDR: '127.0.0.1',
-            Parameter.DB_PORT: 5432,
-            Parameter.FLUSH_INTERVAL: 30,
             Parameter.REFDES: 'test',
             Parameter.SOURCE_REGEX: '.*',
             Parameter.FILE_LOCATION: './antelope_data',
@@ -99,9 +96,6 @@ class AntelopeTestMixinSub(DriverTestMixin):
 
     _driver_parameters = {
         # Parameters defined in the IOS
-        Parameter.DB_ADDR: {TYPE: str, READONLY: True, DA: True, STARTUP: True, DEFAULT: '127.0.0.1', VALUE: '127.0.0.1'},
-        Parameter.DB_PORT: {TYPE: int, READONLY: True, DA: True, STARTUP: True, DEFAULT: 5432, VALUE: 5432},
-        Parameter.FLUSH_INTERVAL: {TYPE: int, READONLY: True, DA: True, STARTUP: True, DEFAULT: 30, VALUE: 30},
         Parameter.REFDES: {TYPE: str, READONLY: True, DA: True, STARTUP: True, DEFAULT: 'test', VALUE: 'test'},
         Parameter.SOURCE_REGEX: {TYPE: str, READONLY: True, DA: True, STARTUP: True, DEFAULT: '.*', VALUE: '.*'},
         Parameter.FILE_LOCATION: {TYPE: str, READONLY: True, DA: True, STARTUP: True, DEFAULT: './antelope_data', VALUE: './antelope_data'},
@@ -111,24 +105,18 @@ class AntelopeTestMixinSub(DriverTestMixin):
 
     _driver_capabilities = {
         # capabilities defined in the IOS
-        Capability.START_AUTOSAMPLE: {STATES: [ProtocolState.COMMAND]},
-        Capability.STOP_AUTOSAMPLE: {STATES: [ProtocolState.AUTOSAMPLE]},
-        Capability.GET: {STATES: [ProtocolState.COMMAND, ProtocolState.AUTOSAMPLE]},
-        Capability.SET: {STATES: [ProtocolState.COMMAND]},
+        Capability.GET: {STATES: [ProtocolState.AUTOSAMPLE]},
+        Capability.SET: {STATES: [ProtocolState.AUTOSAMPLE]},
         Capability.DISCOVER: {STATES: [ProtocolState.UNKNOWN]},
-        Capability.CLEAR_WRITE_ERROR: {STATES: [ProtocolState.WRITE_ERROR]}
     }
 
     _capabilities = {
         ProtocolState.UNKNOWN: ['DRIVER_EVENT_DISCOVER'],
-        ProtocolState.COMMAND: ['DRIVER_EVENT_GET',
-                                'DRIVER_EVENT_SET',
-                                'DRIVER_EVENT_START_AUTOSAMPLE'],
         ProtocolState.AUTOSAMPLE: ['DRIVER_EVENT_GET',
-                                   'DRIVER_EVENT_STOP_AUTOSAMPLE',
-                                   'PROTOCOL_EVENT_FLUSH'],
-        ProtocolState.STOPPING: ['PROTOCOL_EVENT_FLUSH'],
-        ProtocolState.WRITE_ERROR: ['PROTOCOL_EVENT_CLEAR_WRITE_ERROR'],
+                                   'PROTOCOL_EVENT_FLUSH',
+                                   'PROTOCOL_EVENT_CONFIG_ERROR'],
+        ProtocolState.CONFIG_ERROR: [],
+        ProtocolState.WRITE_ERROR: [],
     }
 
     def assert_driver_parameters(self, current_parameters, verify_values=False):
@@ -208,7 +196,7 @@ class DriverUnitTest(InstrumentDriverUnitTestCase, AntelopeTestMixinSub):
     def setUp(self):
         InstrumentDriverUnitTestCase.setUp(self)
 
-    def test_connect(self, initial_protocol_state=ProtocolState.COMMAND):
+    def test_connect(self, initial_protocol_state=ProtocolState.AUTOSAMPLE):
         """
         Verify we can initialize the driver.  Set up mock events for other tests.
         @param initial_protocol_state: target protocol state for driver
@@ -231,19 +219,6 @@ class DriverUnitTest(InstrumentDriverUnitTestCase, AntelopeTestMixinSub):
         Verify corrupt data generates a SampleException
         """
         driver = self.test_connect()
-
-    def test_start_stop_autosample(self):
-        """
-        Test starting/stopping autosample, verify state transitions
-        """
-        driver = self.test_connect()
-        driver._protocol._build_persistent_dict()
-
-        driver._protocol._protocol_fsm.on_event(ProtocolEvent.START_AUTOSAMPLE)
-        self.assertEqual(driver._protocol.get_current_state(), ProtocolState.AUTOSAMPLE)
-
-        driver._protocol._protocol_fsm.on_event(ProtocolEvent.STOP_AUTOSAMPLE)
-        self.assertEqual(driver._protocol.get_current_state(), ProtocolState.STOPPING)
 
     def test_driver_enums(self):
         """
@@ -300,6 +275,8 @@ class DriverUnitTest(InstrumentDriverUnitTestCase, AntelopeTestMixinSub):
 #     - Common Integration tests test the driver through the instrument agent #
 #     and common for all drivers (minimum requirement for ION ingestion)      #
 ###############################################################################
+# Integration tests currently broken. Will need to be fixed if a need arises
+# to execute testing against an ORB.
 @attr('INT', group='mi')
 class DriverIntegrationTest(InstrumentDriverIntegrationTestCase, AntelopeTestMixinSub):
     def setUp(self):

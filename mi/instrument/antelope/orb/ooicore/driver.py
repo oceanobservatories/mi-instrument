@@ -8,69 +8,57 @@ from mi.core.instrument.data_particle import DataParticle, DataParticleKey
 from mi.core.instrument.driver_dict import DriverDictKey
 from mi.core.instrument.port_agent_client import PortAgentPacket
 from mi.core.instrument.protocol_param_dict import ParameterDictVisibility, ParameterDictType
-from mi.core.log import get_logger
+from mi.core.log import get_logger, get_logging_metaclass
+from mi.core.service_registry import ConsulPersistentStore
 from mi.instrument.antelope.orb.ooicore.packet_log import PacketLog, GapException
-
-
-log = get_logger()
-
 from mi.core.common import BaseEnum, Units
-from mi.core.persistent_store import PersistentStoreDict
-
 from mi.core.instrument.instrument_driver import SingleConnectionInstrumentDriver, DriverConfigKey
 from mi.core.instrument.instrument_driver import DriverProtocolState
 from mi.core.instrument.instrument_driver import DriverEvent
 from mi.core.instrument.instrument_driver import DriverAsyncEvent
-from mi.core.instrument.instrument_driver import ResourceAgentState
-
 from mi.core.instrument.instrument_protocol import InstrumentProtocol
 from mi.core.instrument.instrument_fsm import ThreadSafeFSM
 
+
+log = get_logger()
+META_LOGGER = get_logging_metaclass('trace')
 
 ORBOLDEST = -13
 
 
 class ProtocolState(BaseEnum):
     UNKNOWN = DriverProtocolState.UNKNOWN
-    COMMAND = DriverProtocolState.COMMAND
     AUTOSAMPLE = DriverProtocolState.AUTOSAMPLE
-    STOPPING = 'DRIVER_STATE_STOPPING'
     WRITE_ERROR = 'DRIVER_STATE_WRITE_ERROR'
+    CONFIG_ERROR = 'DRIVER_STATE_CONFIG_ERROR'
 
 
 class ProtocolEvent(BaseEnum):
     ENTER = DriverEvent.ENTER
     EXIT = DriverEvent.EXIT
     DISCOVER = DriverEvent.DISCOVER
-    START_AUTOSAMPLE = DriverEvent.START_AUTOSAMPLE
-    STOP_AUTOSAMPLE = DriverEvent.STOP_AUTOSAMPLE
     GET = DriverEvent.GET
     SET = DriverEvent.SET
     FLUSH = 'PROTOCOL_EVENT_FLUSH'
-    CLEAR_WRITE_ERROR = 'PROTOCOL_EVENT_CLEAR_WRITE_ERROR'
+    CONFIG_ERROR = 'PROTOCOL_EVENT_CONFIG_ERROR'
 
 
 class Capability(BaseEnum):
     DISCOVER = DriverEvent.DISCOVER
-    START_AUTOSAMPLE = DriverEvent.START_AUTOSAMPLE
-    STOP_AUTOSAMPLE = DriverEvent.STOP_AUTOSAMPLE
     GET = DriverEvent.GET
     SET = DriverEvent.SET
-    CLEAR_WRITE_ERROR = ProtocolEvent.CLEAR_WRITE_ERROR
 
 
 class Parameter(BaseEnum):
     REFDES = 'refdes'
     SOURCE_REGEX = 'source_regex'
     START_PKTID = 'start_pktid'
-    FLUSH_INTERVAL = 'flush_interval'
-    DB_ADDR = 'database_address'
-    DB_PORT = 'database_port'
     FILE_LOCATION = 'file_location'
 
 
 class ScheduledJob(BaseEnum):
-    FLUSH = 'flush'
+    FLUSH = ProtocolEvent.FLUSH
+    DISCOVER = ProtocolEvent.DISCOVER
 
 
 class AntelopeDataParticles(BaseEnum):
@@ -127,6 +115,8 @@ class InstrumentDriver(SingleConnectionInstrumentDriver):
 
 # noinspection PyMethodMayBeStatic,PyUnusedLocal
 class Protocol(InstrumentProtocol):
+    __metaclass__ = META_LOGGER
+
     def __init__(self, driver_event):
         super(Protocol, self).__init__(driver_event)
         self._protocol_fsm = ThreadSafeFSM(ProtocolState, ProtocolEvent,
@@ -138,30 +128,22 @@ class Protocol(InstrumentProtocol):
                 (ProtocolEvent.EXIT, self._handler_unknown_exit),
                 (ProtocolEvent.DISCOVER, self._handler_unknown_discover),
             ),
-            ProtocolState.COMMAND: (
-                (ProtocolEvent.ENTER, self._handler_command_enter),
-                (ProtocolEvent.EXIT, self._handler_command_exit),
-                (ProtocolEvent.GET, self._handler_get),
-                (ProtocolEvent.SET, self._handler_set),
-                (ProtocolEvent.START_AUTOSAMPLE, self._handler_command_start_autosample),
-            ),
             ProtocolState.AUTOSAMPLE: (
                 (ProtocolEvent.ENTER, self._handler_autosample_enter),
                 (ProtocolEvent.EXIT, self._handler_autosample_exit),
                 (ProtocolEvent.GET, self._handler_get),
                 (ProtocolEvent.FLUSH, self._flush),
-                (ProtocolEvent.STOP_AUTOSAMPLE, self._handler_autosample_stop_autosample),
-            ),
-            ProtocolState.STOPPING: (
-                (ProtocolEvent.ENTER, self._handler_stopping_enter),
-                (ProtocolEvent.EXIT, self._handler_stopping_exit),
-                (ProtocolEvent.FLUSH, self._flush),
+                (ProtocolEvent.CONFIG_ERROR, self._handler_config_error),
             ),
             ProtocolState.WRITE_ERROR: (
-                (ProtocolEvent.ENTER, self._handler_write_error_enter),
-                (ProtocolEvent.EXIT, self._handler_write_error_exit),
-                (ProtocolEvent.CLEAR_WRITE_ERROR, self._handler_clear_write_error),
-            )}
+                (ProtocolEvent.ENTER, self._handler_error_enter),
+                (ProtocolEvent.EXIT, self._handler_error_exit),
+            ),
+            ProtocolState.CONFIG_ERROR: (
+                (ProtocolEvent.ENTER, self._handler_error_enter),
+                (ProtocolEvent.EXIT, self._handler_error_exit),
+            )
+        }
 
         for state in handlers:
             for event, handler in handlers[state]:
@@ -199,12 +181,9 @@ class Protocol(InstrumentProtocol):
         """
         Populate the command dictionary with commands.
         """
-        self._cmd_dict.add(Capability.START_AUTOSAMPLE, display_name="Start Autosample")
-        self._cmd_dict.add(Capability.STOP_AUTOSAMPLE, display_name="Stop Autosample")
         self._cmd_dict.add(Capability.GET, display_name="Get")
         self._cmd_dict.add(Capability.SET, display_name="Set")
         self._cmd_dict.add(Capability.DISCOVER, display_name="Discover")
-        self._cmd_dict.add(Capability.CLEAR_WRITE_ERROR, display_name="Clear Write Error")
 
     def _build_param_dict(self):
         self._param_dict.add(Parameter.REFDES,
@@ -226,39 +205,6 @@ class Protocol(InstrumentProtocol):
                              description='Filter sources to be processed from the ORB',
                              type=ParameterDictType.STRING,
                              value_description='Regular expression')
-        self._param_dict.add(Parameter.FLUSH_INTERVAL,
-                             'NA',
-                             str,
-                             str,
-                             visibility=ParameterDictVisibility.IMMUTABLE,
-                             startup_param=True,
-                             display_name='Flush Interval',
-                             description='Interval after which all records are flushed to disk',
-                             type=ParameterDictType.INT,
-                             value_description='Interval, in seconds',
-                             units=Units.SECOND)
-        self._param_dict.add(Parameter.DB_ADDR,
-                             'NA',
-                             str,
-                             str,
-                             visibility=ParameterDictVisibility.IMMUTABLE,
-                             startup_param=True,
-                             default_value='localhost',
-                             display_name='Database Address',
-                             description='Postgres database IP address or hostname',
-                             type=ParameterDictType.STRING,
-                             value_description='IP address or hostname')
-        self._param_dict.add(Parameter.DB_PORT,
-                             'NA',
-                             str,
-                             str,
-                             visibility=ParameterDictVisibility.IMMUTABLE,
-                             startup_param=True,
-                             default_value=5432,
-                             display_name='Database Port',
-                             description='Postgres database port number',
-                             type=ParameterDictType.INT,
-                             value_description='Integer port number (default 5432)')
         self._param_dict.add(Parameter.FILE_LOCATION,
                              'NA',
                              str,
@@ -280,10 +226,8 @@ class Protocol(InstrumentProtocol):
     def _build_persistent_dict(self):
         name = 'antelope'
         refdes = self._param_dict.get(Parameter.REFDES)
-        host = self._param_dict.get(Parameter.DB_ADDR)
-        port = self._param_dict.get(Parameter.DB_PORT)
 
-        self._persistent_store = PersistentStoreDict(name, refdes, host=host, port=port)
+        self._persistent_store = ConsulPersistentStore(refdes)
         if 'pktid' not in self._persistent_store:
             self._persistent_store['pktid'] = ORBOLDEST
 
@@ -320,17 +264,8 @@ class Protocol(InstrumentProtocol):
         PacketLog.base_dir = self._param_dict.get(Parameter.FILE_LOCATION)
 
     def _flush(self):
-        log.info('flush')
         particles = []
         with self._lock:
-            log.info('got lock')
-
-            # On the last flush, close all the bins.
-            last_flush = self.get_current_state() == ProtocolState.STOPPING
-            if last_flush:
-                self._filled_logs.extend(self._logs.values())
-                self._logs = {}
-
             for _log in self._logs.itervalues():
                 try:
                     _log.flush()
@@ -364,10 +299,6 @@ class Protocol(InstrumentProtocol):
         for particle in particles:
             self._driver_event(DriverAsyncEvent.SAMPLE, particle.generate())
 
-        if last_flush:
-            self.stop_scheduled_job(ScheduledJob.FLUSH)
-            return ProtocolState.COMMAND, (ProtocolState.COMMAND, None)
-
         return None, (None, None)
 
     # noinspection PyProtectedMember
@@ -390,32 +321,6 @@ class Protocol(InstrumentProtocol):
                 self._remove_scheduler(schedule_job)
             except KeyError:
                 log.warn("_remove_scheduler could not find %s", schedule_job)
-
-    def start_scheduled_job(self, param, schedule_job, protocol_event):
-        """
-        Add a scheduled job
-        """
-        self.stop_scheduled_job(schedule_job)
-        val = self._param_dict.get(param)
-
-        try:
-            seconds = int(val)
-        except ValueError:
-            raise InstrumentParameterException('Bad interval. Cannot parse %r as integer' % val)
-
-        if seconds > 0:
-            config = {
-                DriverConfigKey.SCHEDULER: {
-                    schedule_job: {
-                        DriverSchedulerConfigKey.TRIGGER: {
-                            DriverSchedulerConfigKey.TRIGGER_TYPE: TriggerType.INTERVAL,
-                            DriverSchedulerConfigKey.SECONDS: seconds
-                        }
-                    }
-                }
-            }
-            self.set_init_params(config)
-            self._add_scheduler_event(schedule_job, protocol_event)
 
     def got_data(self, port_agent_packet):
         data_length = port_agent_packet.get_data_length()
@@ -497,57 +402,23 @@ class Protocol(InstrumentProtocol):
         # Tell driver superclass to send a state change event.
         # Superclass will query the state.
         self._driver_event(DriverAsyncEvent.STATE_CHANGE)
+        self._add_scheduler_event(ScheduledJob.DISCOVER, ProtocolEvent.DISCOVER)
 
     def _handler_unknown_exit(self, *args, **kwargs):
         """
         Exit unknown state.
         """
+        self.stop_scheduled_job(ScheduledJob.DISCOVER)
 
     def _handler_unknown_discover(self, *args, **kwargs):
         """
         Discover current state; always COMMAND.
         @return protocol_state, protocol_state
         """
-        next_state = ProtocolState.COMMAND
+        next_state = None
+        if self._connection:
+            next_state = ProtocolState.AUTOSAMPLE
         result = []
-        return next_state, (next_state, result)
-
-    ########################################################################
-    # COMMAND handlers.
-    ########################################################################
-
-    def _handler_command_enter(self, *args, **kwargs):
-        """
-        Enter command state.
-        @throws InstrumentTimeoutException if the device cannot be woken.
-        @throws InstrumentProtocolException if the update commands and not recognized.
-        """
-        self._init_params()
-        # We can't build the persistent dict until parameters are applied, so build it here
-        if self._persistent_store is None:
-            self._build_persistent_dict()
-        self._driver_event(DriverAsyncEvent.STATE_CHANGE)
-
-    def _handler_command_exit(self, *args, **kwargs):
-        """
-        Exit command state.
-        """
-
-    def _handler_command_start_autosample(self, *args, **kwargs):
-        """
-        Switch into autosample mode.
-        @return next_state, (next_state, result) if successful.
-        """
-        result = []
-
-        # Ensure the current logs are clear to prevent residual data from being flushed.
-        self._logs = {}
-        self._filled_logs = []
-
-        self._orbstart()
-        next_state = ProtocolState.AUTOSAMPLE
-        next_agent_state = ResourceAgentState.STREAMING
-
         return next_state, (next_state, result)
 
     ######################################################
@@ -558,71 +429,44 @@ class Protocol(InstrumentProtocol):
         """
         Enter autosample state.
         """
-        self.start_scheduled_job(Parameter.FLUSH_INTERVAL, ScheduledJob.FLUSH, ProtocolEvent.FLUSH)
+        try:
+            self._init_params()
+            self._build_persistent_dict()
+            self._add_scheduler_event(ScheduledJob.FLUSH, ProtocolEvent.FLUSH)
+            self._orbstart()
+
+        except InstrumentProtocolException:
+            self._async_raise_fsm_event(ProtocolEvent.CONFIG_ERROR)
+
         self._driver_event(DriverAsyncEvent.STATE_CHANGE)
 
     def _handler_autosample_exit(self, *args, **kwargs):
         """
         Exit autosample state.
         """
+        self.stop_scheduled_job(ScheduledJob.FLUSH)
         self._orbstop()
 
-    def _handler_autosample_stop_autosample(self, *args, **kwargs):
-        """
-        Stop autosample and switch back to command mode.
-        @return  next_state, (next_state, result) if successful.
-        """
-        self._orbstop()
-
-        result = []
-        next_state = ProtocolState.STOPPING
-        next_agent_state = None
-
+    def _handler_config_error(self, *args, **kwargs):
+        next_state = ProtocolState.CONFIG_ERROR
+        result = None
         return next_state, (next_state, result)
 
     ######################################################
-    # STOPPING handlers
+    # ERROR handlers
     ######################################################
 
-    def _handler_stopping_enter(self, *args, **kwargs):
+    def _handler_error_enter(self, *args, **kwargs):
         """
-        Enter stopping state.
+        Enter error state.
         """
-        self._driver_event(DriverAsyncEvent.STATE_CHANGE)
-
-    def _handler_stopping_exit(self, *args, **kwargs):
-        """
-        Exit stopping state.
-        Stop the scheduled flush job and schedule flush one more time and
-        indicate that it is the last flush before stopping auto sampling.
-        """
-        pass
-
-    ######################################################
-    # WRITE_ERROR handlers
-    ######################################################
-
-    def _handler_write_error_enter(self, *args, **kwargs):
-        """
-        Enter write error state.
-        """
-        self.stop_scheduled_job(ScheduledJob.FLUSH)
-
         # Tell driver superclass to send a state change event.
         # Superclass will query the state.
         self._driver_event(DriverAsyncEvent.STATE_CHANGE)
 
-    def _handler_write_error_exit(self, *args, **kwargs):
+    def _handler_error_exit(self, *args, **kwargs):
         """
-        Exit write error state.
+        Exit error state.
+        This should never occur, this state is a dead end.
         """
         pass
-
-    def _handler_clear_write_error(self, *args, **kwargs):
-        """
-        Clear the WRITE_ERROR state by transitioning to the COMMAND state.
-        @return next_state, (next_state, result)
-        """
-        next_state = ProtocolState.COMMAND
-        result = []
-        return next_state, (next_state, result)
