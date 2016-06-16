@@ -73,7 +73,7 @@ class ConsulServiceRegistry(object):
 
 
 class ConsulPersistentStore(MutableMapping):
-    def __init__(self, reference_designator, prefix='instrument_driver/persist'):
+    def __init__(self, reference_designator, prefix='persist'):
         self.refdes = reference_designator
         self.prefix = prefix
 
@@ -97,11 +97,11 @@ class ConsulPersistentStore(MutableMapping):
 
     def _make_key(self, key=None):
         if key is None:
-            return '/'.join((self.prefix, self.refdes))
+            return '/'.join((self.refdes, self.prefix))
 
         if not isinstance(key, basestring):
             raise InstrumentParameterException('Persistent store keys MUST be strings')
-        return '/'.join((self.prefix, self.refdes, key))
+        return '/'.join((self.refdes, self.prefix, key))
 
     def _put(self, key, value):
         try:

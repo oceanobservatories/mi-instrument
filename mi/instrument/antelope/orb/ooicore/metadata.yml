@@ -4,5 +4,5 @@ driver_metadata:
   driver_model: orb
   driver_name: ooicore
   email: petercable@gmail.com
-  release_notes: 'initial version'
-  version: 1.0.2
+  release_notes: 'implement autostart'
+  version: 1.1.0
