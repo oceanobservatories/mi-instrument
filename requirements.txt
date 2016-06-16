@@ -6,7 +6,6 @@ pyzmq
 docopt
 pyyaml
 ooi_port_agent
-pika
 qpid-python
 psycopg2
 tqdm
