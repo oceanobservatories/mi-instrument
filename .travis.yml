@@ -32,10 +32,11 @@ before_script:
   - psql -c 'grant all privileges on database metadata to awips;' -U postgres
   - 'if [[ ! -f $CONSUL_DIR/consul ]]; then (mkdir -p $CONSUL_DIR && cd $CONSUL_DIR && wget https://releases.hashicorp.com/consul/${CONSUL_VERSION}/${CONSUL_ZIPNAME} && unzip ${CONSUL_ZIPNAME}); fi'
   - $CONSUL_DIR/consul --version
-  - $CONSUL_DIR/consul agent -dev &
+  - $CONSUL_DIR/consul agent -dev -log-level=warn &
   # Wait for consul to be ready
   - sleep 1
 
 # command to run tests
 script:
-  - nosetests -a UNIT -e antelope
+  #- nosetests -a UNIT -e antelope
+  - nosetests -a UNIT
