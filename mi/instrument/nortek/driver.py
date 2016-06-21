@@ -1388,17 +1388,17 @@ class NortekInstrumentProtocol(CommandResponseInstrumentProtocol):
         if set_params:
             output = self._create_set_output(self._param_dict)
 
-            prompt, result = super(NortekInstrumentProtocol, self)._do_cmd_resp(InstrumentCommands.CONFIGURE_INSTRUMENT,
-                                                                                output, timeout=TIMEOUT,
-                                                                                expected_prompt=[
-                                                                                    InstrumentPrompts.Z_ACK,
-                                                                                    InstrumentPrompts.Z_NACK])
+            result = super(NortekInstrumentProtocol, self)._do_cmd_resp(InstrumentCommands.CONFIGURE_INSTRUMENT,
+                                                                        output, timeout=TIMEOUT,
+                                                                        expected_prompt=[
+                                                                            InstrumentPrompts.Z_ACK,
+                                                                            InstrumentPrompts.Z_NACK])
 
-            log.debug('_set_params: prompt=%r', prompt)
-            if prompt == InstrumentPrompts.Z_NACK:
+            log.debug('_set_params: result=%s', result)
+            if result == InstrumentPrompts.Z_NACK:
                 self._update_params()
                 raise InstrumentParameterException(
-                    "NortekInstrumentProtocol._set_params(): Invalid configuration file! ")
+                    "Instrument rejected parameter change")
 
             self._update_params()
 
@@ -1877,22 +1877,7 @@ class NortekInstrumentProtocol(CommandResponseInstrumentProtocol):
         Stop Direct Access, and put the driver into a healthy state by reverting itself back to the previous
         state before stopping Direct Access.
         """
-        # discover the state to go to next
-        next_state, (_, result) = self._handler_unknown_discover()
-
-        if next_state == DriverProtocolState.AUTOSAMPLE:
-            # go into command mode in order to set parameters
-            self._handler_autosample_stop_autosample()
-
-        # restore parameters
-        log.debug("da_param_restore = %s,", self._param_dict.get_direct_access_list())
-        self._init_params()
-
-        if next_state == DriverProtocolState.AUTOSAMPLE:
-            # go back into autosample mode
-            result = self._do_cmd_resp(InstrumentCommands.START_MEASUREMENT_WITHOUT_RECORDER, timeout=SAMPLE_TIMEOUT)
-
-        return next_state, (next_state, result)
+        return self._handler_unknown_discover(*args, **kwargs)
 
     ########################################################################
     # Common handlers.
@@ -1969,7 +1954,7 @@ class NortekInstrumentProtocol(CommandResponseInstrumentProtocol):
                              NortekProtocolParameterDict.word_to_string,
                              regex_flags=re.DOTALL,
                              type=ParameterDictType.INT,
-                             visibility=ParameterDictVisibility.READ_ONLY,
+                             visibility=ParameterDictVisibility.IMMUTABLE,
                              display_name="Number of Beams",
                              description="Number of beams on the instrument.",
                              value=3,
@@ -2006,7 +1991,7 @@ class NortekInstrumentProtocol(CommandResponseInstrumentProtocol):
                              NortekProtocolParameterDict.word_to_string,
                              regex_flags=re.DOTALL,
                              type=ParameterDictType.INT,
-                             visibility=ParameterDictVisibility.READ_ONLY,
+                             visibility=ParameterDictVisibility.IMMUTABLE,
                              display_name="Power Control Register",
                              description="See manual for usage.",
                              direct_access=True,
@@ -2155,7 +2140,7 @@ class NortekInstrumentProtocol(CommandResponseInstrumentProtocol):
                              regex_flags=re.DOTALL,
                              type=ParameterDictType.STRING,
                              range=(-4, 40),
-                             visibility=ParameterDictVisibility.READ_ONLY,
+                             visibility=ParameterDictVisibility.IMMUTABLE,
                              display_name="Velocity Adj Table",
                              description="Scaling factors to account for the speed of sound variation as a function of "
                                          "temperature and salinity.",
