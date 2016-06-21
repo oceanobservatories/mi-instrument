@@ -136,6 +136,21 @@ class DriverTestMixinSub(SamiMixin):
                           'FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF' + \
                           'FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF' + SAMI_NEWLINE
 
+    # Test config string return for a PHSEND instrument (namely, PHSEND103) which has extra info appended to the end
+    # after all of the 'FFFFFF's. This string is an actual capture from executing an L command on the PHSEND103
+    # instrument. The only values that were manually modified are the start_time_offset and the launch_time values,
+    # which have been set to the same as VALID_CONFIG_STRING to ensure that time values match the test parameter values.
+    VALID_CONFIG_STRING2 = 'CDDD731D01E1338001E1338002000E100A020000000011000000001100000' + \
+                          '00011000000001107013704200108081004081008170000000000000000000' + \
+                          '00000000000000000000000000000000000000000000000000000000000000' + \
+                          '00000000000000000000000000000000000000000000000FFFFFFFFFFFFFFF' + \
+                          'FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF' + \
+                          'FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF' + \
+                          'FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF' + \
+                          'FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF' + \
+                          'FFFFFFFFFFFFFFFFF43453032534842502D4C4A3031442D31302D504853454' + \
+                          'E44313033' + SAMI_NEWLINE
+
     # Data records -- SAMI (response to the R or R0 command)
     VALID_DATA_SAMPLE = '*F8E70ACDDE9E4F06350BAA077C06A408040BAD077906A307' + \
                         'FE0BA80778069F08010BAA077C06A208020BAB077E06A208040BAB077906A' + \
@@ -465,7 +480,7 @@ class DriverUnitTest(SamiUnitTest, DriverTestMixinSub):
         """
         chunker = StringChunker(Protocol.sieve_function)
 
-        for part in [self.VALID_STATUS_MESSAGE, self.VALID_DATA_SAMPLE, self.VALID_CONFIG_STRING]:
+        for part in [self.VALID_STATUS_MESSAGE, self.VALID_DATA_SAMPLE, self.VALID_CONFIG_STRING, self.VALID_CONFIG_STRING2]:
             self.assert_chunker_sample(chunker, part)
             self.assert_chunker_sample_with_noise(chunker, part)
             self.assert_chunker_fragmented_sample(chunker, part)
@@ -486,6 +501,11 @@ class DriverUnitTest(SamiUnitTest, DriverTestMixinSub):
         self.assert_chunker_fragmented_sample(chunker, self.VALID_CONFIG_STRING)
         self.assert_chunker_combined_sample(chunker, self.VALID_CONFIG_STRING)
 
+        self.assert_chunker_sample(chunker, self.VALID_CONFIG_STRING2)
+        self.assert_chunker_sample_with_noise(chunker, self.VALID_CONFIG_STRING2)
+        self.assert_chunker_fragmented_sample(chunker, self.VALID_CONFIG_STRING2)
+        self.assert_chunker_combined_sample(chunker, self.VALID_CONFIG_STRING2)
+
     def test_got_data(self):
         """
         Verify sample data passed through the got data method produces the correct data particles
@@ -503,6 +523,8 @@ class DriverUnitTest(SamiUnitTest, DriverTestMixinSub):
             driver, self.VALID_DATA_SAMPLE, self.assert_particle_sami_data_sample, True)
         self.assert_particle_published(
             driver, self.VALID_CONFIG_STRING, self.assert_particle_configuration, True)
+        self.assert_particle_published(
+            driver, self.VALID_CONFIG_STRING2, self.assert_particle_configuration, True)
 
     def test_protocol_filter_capabilities(self):
         """

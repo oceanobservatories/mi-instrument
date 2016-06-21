@@ -135,7 +135,7 @@ PHSEN_CONFIGURATION_REGEX = (
     '([0-9A-Fa-f]{2})' +  # pH12: Measure to pump on
     '([0-9A-Fa-f]{2})' +  # pH13: Number of measurements
     '([0-9A-Fa-f]{2})' +  # pH14: Salinity delay
-    '([0-9A-Fa-f]{406})' +  # padding of F or 0
+    '([0-9A-Fa-f]*)' +  # padding of F or 0
     SAMI_NEWLINE)
 PHSEN_CONFIGURATION_REGEX_MATCHER = re.compile(PHSEN_CONFIGURATION_REGEX)
 
