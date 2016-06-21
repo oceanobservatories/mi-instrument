@@ -241,35 +241,6 @@ class Protocol(NortekInstrumentProtocol):
         self._extract_sample(AquadoppDwVelocityDataParticle, VELOCITY_DATA_REGEX, structure, timestamp)
         self._got_chunk_base(structure, timestamp)
 
-    def _handler_command_acquire_status(self, *args, **kwargs):
-        """
-        High level command for the operator to get all of the status from the instrument:
-        Battery voltage, clock, hw configuration, head configuration, user configuration, and identification string
-        """
-        next_state = None
-
-        # ID + BV    Call these commands at the same time, so their responses are combined (non-unique regex workaround)
-        # Issue read id, battery voltage, & clock commands all at the same time (non-unique REGEX workaround).
-        self._do_cmd_resp(InstrumentCommands.READ_ID + InstrumentCommands.READ_BATTERY_VOLTAGE,
-                          response_regex=ID_BATTERY_DATA_REGEX, timeout=30)
-
-        # RC
-        self._do_cmd_resp(InstrumentCommands.READ_REAL_TIME_CLOCK, response_regex=CLOCK_DATA_REGEX)
-
-        # GP
-        self._do_cmd_resp(InstrumentCommands.READ_HW_CONFIGURATION, response_regex=HARDWARE_CONFIG_DATA_REGEX)
-
-        # GH
-        self._do_cmd_resp(InstrumentCommands.READ_HEAD_CONFIGURATION, response_regex=HEAD_CONFIG_DATA_REGEX)
-
-        # GC
-        self._do_cmd_resp(InstrumentCommands.READ_USER_CONFIGURATION, response_regex=USER_CONFIG_DATA_REGEX)
-
-        particles = self.wait_for_particles([NortekDataParticleType.CLOCK, NortekDataParticleType.HARDWARE_CONFIG,
-                                             NortekDataParticleType.HEAD_CONFIG, NortekDataParticleType.USER_CONFIG])
-
-        return next_state, (next_state, particles)
-
     def _build_param_dict(self):
         """
         Overwrite base classes method.

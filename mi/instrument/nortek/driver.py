@@ -11,6 +11,7 @@
 """
 import struct
 from datetime import datetime
+from datetime import timedelta
 
 __author__ = 'Rachel Manoni, Ronald Ronquillo'
 __license__ = 'Apache 2.0'
@@ -18,6 +19,7 @@ __license__ = 'Apache 2.0'
 import re
 import time
 import base64
+import binascii
 
 from mi.core.log import get_logger, get_logging_metaclass
 
@@ -60,8 +62,10 @@ NEWLINE = '\n\r'
 
 # default timeout.
 TIMEOUT = 15
-# allowable time delay for sync the clock
-TIME_DELAY = 2
+# offset to accurately set instrument clock, in seconds
+CLOCK_SYNC_OFFSET = 2.0
+# maximum acceptable time difference when verifying clock sync, in seconds
+CLOCK_SYNC_MAX_DIFF = 2
 # sample collection is ~60 seconds, add padding
 SAMPLE_TIMEOUT = 70
 # set up the 'structure' lengths (in bytes) and sync/id/size constants
@@ -1651,7 +1655,14 @@ class NortekInstrumentProtocol(CommandResponseInstrumentProtocol):
         The mechanics of synchronizing a clock
         @throws InstrumentCommandException if the clock was not synchronized
         """
-        str_time = get_timestamp_delayed("%M %S %d %H %y %m")
+
+        now = self._get_time_delayed()
+
+        # Apply offset
+        now = now + timedelta(seconds=CLOCK_SYNC_OFFSET)
+
+        # Convert to instrument format
+        str_time = now.strftime("%M %S %d %H %y %m")
         byte_time = ''
         for v in str_time.split():
             byte_time += chr(int('0x' + v, base=16))
@@ -1661,32 +1672,22 @@ class NortekInstrumentProtocol(CommandResponseInstrumentProtocol):
                   byte_time.encode('hex'))
         self._do_cmd_resp(InstrumentCommands.SET_REAL_TIME_CLOCK, byte_time, **kwargs)
 
-        response = self._do_cmd_resp(InstrumentCommands.READ_REAL_TIME_CLOCK, *args, **kwargs)
-        minutes, seconds, day, hour, year, month, _ = struct.unpack('<6B2s', response)
-        response = '%02x/%02x/20%02x %02x:%02x:%02x' % (day, month, year, hour, minutes, seconds)
+        # Read clock back to verify time setting
+        groups = self._do_cmd_resp(InstrumentCommands.READ_REAL_TIME_CLOCK, response_regex=CLOCK_DATA_REGEX,
+                                     *args, **kwargs)
+        minutes, seconds, day, hour, year, month = [int(binascii.hexlify(c)) for c in groups]
+        instrument_time = datetime(year+2000, month, day, hour, minutes, seconds)
 
-        # verify that the dates match
-        date_str = get_timestamp_delayed('%d/%m/%Y %H:%M:%S')
+        # Get local time and compare
+        now = datetime.utcnow()
+        time_diff = abs((now - instrument_time).total_seconds())
 
-        if date_str[:10] != response[:10]:
-            raise InstrumentCommandException("Syncing the clock did not work!")
+        log.debug("Instrument time: %s  Local time: %s  seconds difference: %d", instrument_time, now, time_diff)
+        if time_diff > CLOCK_SYNC_MAX_DIFF:
+            raise InstrumentCommandException("Syncing the clock did not work! Off by %s seconds" % time_diff)
 
-        # verify that the times match closely
-        hours = int(date_str[11:12])
-        minutes = int(date_str[14:15])
-        seconds = int(date_str[17:18])
-        total_time = (hours * 3600) + (minutes * 60) + seconds
-
-        hours = int(response[11:12])
-        minutes = int(response[14:15])
-        seconds = int(response[17:18])
-        total_time2 = (hours * 3600) + (minutes * 60) + seconds
-
-        if total_time - total_time2 > TIME_DELAY:
-            raise InstrumentCommandException("Syncing the clock did not work! Off by %s seconds" %
-                                             (total_time - total_time2))
-
-        return response
+        clock_particle = self.wait_for_particles(NortekDataParticleType.CLOCK, 0)
+        return clock_particle
 
     def _handler_command_clock_sync(self, *args, **kwargs):
         """
@@ -2459,3 +2460,27 @@ class NortekInstrumentProtocol(CommandResponseInstrumentProtocol):
             raise InstrumentProtocolException("Invalid read user response. (%r)" % response)
 
         return response
+
+    def _get_time_delayed(self, resolution_ms=100000):
+        """
+        Utility function.
+        Sleeps until the current time is close to the next whole second
+        :param resolution_ms: function will attempt to be accurate to this amount
+        :return: current time as date_time (may be rounded up to next whole second)
+        """
+        now = datetime.utcnow()
+
+        # Delay until the next whole second
+        if now.microsecond > resolution_ms:
+            delay_sec = 1 - now.microsecond / 1000000.0
+            log.debug("delaying for %s seconds", delay_sec)
+            time.sleep(delay_sec)
+
+        now = datetime.utcnow()
+
+        # If time is close to the next second, round up
+        round_up_ms = 1000000 - now.microsecond
+        if round_up_ms < resolution_ms:
+            now = now + timedelta(microseconds=round_up_ms)
+
+        return now
