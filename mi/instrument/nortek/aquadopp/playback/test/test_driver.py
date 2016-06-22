@@ -2,41 +2,23 @@
 @package mi.instrument.nortek.aquadopp.playback.test.test_driver
 @author Peter Cable
 @brief Test cases for playback driver
-
-USAGE:
- Make tests verbose and provide stdout
-   * From the IDK
-       $ bin/test_driver
-       $ bin/test_driver -u
-       $ bin/test_driver -i
-       $ bin/test_driver -q
-
-   * From pyon
-       $ bin/nosetests -s -v /Users/Bill/WorkSpace/marine-integrations/mi/instrument/nortek/aquadopp/playback
-       $ bin/nosetests -s -v /Users/Bill/WorkSpace/marine-integrations/mi/instrument/nortek/aquadopp/playback -a UNIT
-       $ bin/nosetests -s -v /Users/Bill/WorkSpace/marine-integrations/mi/instrument/nortek/aquadopp/playback -a INT
-       $ bin/nosetests -s -v /Users/Bill/WorkSpace/marine-integrations/mi/instrument/nortek/aquadopp/playback -a QUAL
 """
-
-__author__ = 'Peter Cable'
-__license__ = 'Apache 2.0'
-
 from nose.plugins.attrib import attr
-
-from mi.core.log import get_logger
-log = get_logger()
+from ooi.logging import log
 
 from mi.idk.unit_test import InstrumentDriverTestCase, ParameterTestConfigKey, InstrumentDriverUnitTestCase
 from mi.core.instrument.data_particle import DataParticleKey, DataParticleValue
 from mi.core.instrument.chunker import StringChunker
-
 from mi.core.exceptions import SampleException
-
-from mi.instrument.nortek.aquadopp.playback.driver import NortekDataParticleType
 from mi.instrument.nortek.aquadopp.playback.driver import AquadoppDwVelocityDataParticleKey
-
 from mi.instrument.nortek.test.test_driver import DriverTestMixinSub
 from mi.instrument.nortek.aquadopp.playback.driver import Protocol, AquadoppDwVelocityAsciiDataParticle
+from mi.instrument.nortek.particles import AquadoppDataParticleType
+
+
+__author__ = 'Peter Cable'
+__license__ = 'Apache 2.0'
+
 
 ###
 #   Driver parameters for the tests
@@ -46,7 +28,7 @@ InstrumentDriverTestCase.initialize(
     driver_class="InstrumentDriver",
     instrument_agent_resource_id='nortek_aquadopp_dw_playback',
     instrument_agent_name='nortek_aquadopp_dw_playback_agent',
-    instrument_agent_packet_config=NortekDataParticleType(),
+    instrument_agent_packet_config=AquadoppDataParticleType(),
     driver_startup_config={}
 )
 
@@ -58,7 +40,7 @@ BAD_SAMPLE = VELOCITY_SAMPLE[5:]
 
 velocity_particle = [{'value_id': 'date_time_string', 'value': '30/04/2015 23:59:59'},
                      {'value_id': 'error_code', 'value': 0},
-                     {'value_id': 'analog1', 'value': 0}, 
+                     {'value_id': 'analog1', 'value': 0},
                      {'value_id': 'battery_voltage_dV', 'value': 116},
                      {'value_id': 'sound_speed_dms', 'value': 14846},
                      {'value_id': 'heading_decidegree', 'value': 1718},
@@ -130,7 +112,7 @@ class AquadoppDriverTestMixinSub(DriverTestMixinSub):
         @param verify_values bool, should we verify parameter values
         """
         self.assert_data_particle_keys(AquadoppDwVelocityDataParticleKey, self._sample_velocity_diagnostic)
-        self.assert_data_particle_header(data_particle, NortekDataParticleType.VELOCITY)
+        self.assert_data_particle_header(data_particle, AquadoppDataParticleType.VELOCITY)
         self.assert_data_particle_parameters(data_particle, self._sample_velocity_diagnostic, verify_values)
 
 
@@ -160,7 +142,7 @@ class DriverUnitTest(InstrumentDriverUnitTestCase):
         Verify driver specific enums have no duplicates
         Base unit test driver will test enums specific for the base class.
         """
-        self.assert_enum_has_no_duplicates(NortekDataParticleType())
+        self.assert_enum_has_no_duplicates(AquadoppDataParticleType())
 
     def test_velocity_sample_format(self):
         """
@@ -175,14 +157,14 @@ class DriverUnitTest(InstrumentDriverUnitTestCase):
         expected_particle = {
             DataParticleKey.PKT_FORMAT_ID: DataParticleValue.JSON_DATA,
             DataParticleKey.PKT_VERSION: 1,
-            DataParticleKey.STREAM_NAME: NortekDataParticleType.VELOCITY,
+            DataParticleKey.STREAM_NAME: AquadoppDataParticleType.VELOCITY,
             DataParticleKey.PORT_TIMESTAMP: port_timestamp,
             DataParticleKey.DRIVER_TIMESTAMP: driver_timestamp,
             DataParticleKey.INTERNAL_TIMESTAMP: internal_timestamp,
             DataParticleKey.PREFERRED_TIMESTAMP: DataParticleKey.PORT_TIMESTAMP,
             DataParticleKey.QUALITY_FLAG: DataParticleValue.OK,
             DataParticleKey.VALUES: velocity_particle}
-        
+
         self.compare_parsed_data_particle(AquadoppDwVelocityAsciiDataParticle, VELOCITY_SAMPLE, expected_particle)
 
     def test_chunker(self):
