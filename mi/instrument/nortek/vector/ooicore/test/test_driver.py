@@ -3,57 +3,33 @@
 @file /Users/Bill/WorkSpace/marine-integrations/mi/instrument/nortek/vector/ooicore/driver.py
 @author Bill Bollenbacher
 @brief Test cases for ooicore driver
-
-USAGE:
- Make tests verbose and provide stdout
-   * From the IDK
-       $ bin/test_driver
-       $ bin/test_driver -u
-       $ bin/test_driver -i
-       $ bin/test_driver -q
-
-   * From pyon
-       $ bin/nosetests -s -v /Users/Bill/WorkSpace/marine-integrations/mi/instrument/nortek/vector/ooicore
-       $ bin/nosetests -s -v /Users/Bill/WorkSpace/marine-integrations/mi/instrument/nortek/vector/ooicore -a UNIT
-       $ bin/nosetests -s -v /Users/Bill/WorkSpace/marine-integrations/mi/instrument/nortek/vector/ooicore -a INT
-       $ bin/nosetests -s -v /Users/Bill/WorkSpace/marine-integrations/mi/instrument/nortek/vector/ooicore -a QUAL
 """
-__author__ = 'Rachel Manoni, Ronald Ronquillo'
-__license__ = 'Apache 2.0'
-
 import time
 import ntplib
 
 from nose.plugins.attrib import attr
 
-from mi.core.log import get_logger
-log = get_logger()
+from mi.instrument.nortek import common
+from ooi.logging import log
 
 from mi.idk.unit_test import InstrumentDriverTestCase
 from mi.idk.unit_test import ParameterTestConfigKey
-
-from mi.instrument.nortek.test.test_driver import NortekUnitTest, NortekIntTest, NortekQualTest, DriverTestMixinSub, \
-    user_config2, bad_sample
-
-from mi.core.instrument.instrument_driver import DriverConfigKey, DriverEvent, ResourceAgentState
-
+from mi.instrument.nortek.test.test_driver import NortekUnitTest, NortekIntTest, DriverTestMixinSub, bad_sample
+from mi.core.instrument.instrument_driver import DriverConfigKey
 from mi.core.instrument.data_particle import DataParticleKey, DataParticleValue
 from mi.core.instrument.chunker import StringChunker
-
 from mi.core.exceptions import SampleException
 from mi.core.time_tools import timegm_to_float
+from mi.instrument.nortek.driver import ProtocolEvent, Parameter, EngineeringParameter, ProtocolState
+from mi.instrument.nortek.vector.ooicore.driver import Protocol
+from mi.instrument.nortek.particles import (VectorDataParticleType, VectorVelocityDataParticleKey,
+                                            VectorVelocityHeaderDataParticleKey, VectorSystemDataParticleKey,
+                                            VectorVelocityHeaderDataParticle, VectorVelocityDataParticle,
+                                            VectorSystemDataParticle)
 
-from mi.instrument.nortek.driver import ProtocolState, TIMEOUT, Parameter, NEWLINE, EngineeringParameter
 
-from mi.instrument.nortek.driver import ProtocolEvent
-
-from mi.instrument.nortek.vector.ooicore.driver import Protocol, DataParticleType, NortekDataParticleType
-from mi.instrument.nortek.vector.ooicore.driver import VectorVelocityHeaderDataParticle
-from mi.instrument.nortek.vector.ooicore.driver import VectorVelocityHeaderDataParticleKey
-from mi.instrument.nortek.vector.ooicore.driver import VectorVelocityDataParticle
-from mi.instrument.nortek.vector.ooicore.driver import VectorVelocityDataParticleKey
-from mi.instrument.nortek.vector.ooicore.driver import VectorSystemDataParticle
-from mi.instrument.nortek.vector.ooicore.driver import VectorSystemDataParticleKey
+__author__ = 'Rachel Manoni, Ronald Ronquillo'
+__license__ = 'Apache 2.0'
 
 ###
 #   Driver parameters for the tests
@@ -64,10 +40,13 @@ InstrumentDriverTestCase.initialize(
 
     instrument_agent_resource_id='nortek_vector_dw_ooicore',
     instrument_agent_name='nortek_vector_dw_ooicore_agent',
-    instrument_agent_packet_config=DataParticleType(),
+    instrument_agent_packet_config=VectorDataParticleType(),
     driver_startup_config={
         DriverConfigKey.PARAMETERS: {}}
 )
+
+VID = DataParticleKey.VALUE_ID
+VAL = DataParticleKey.VALUE
 
 
 # velocity data particle & sample
@@ -76,19 +55,19 @@ def velocity_sample():
     return sample_as_hex.decode('hex')
 
 # these values checkout against the sample above
-velocity_particle = [{DataParticleKey.VALUE_ID: VectorVelocityDataParticleKey.ANALOG_INPUT2, DataParticleKey.VALUE: 0},
-                     {DataParticleKey.VALUE_ID: VectorVelocityDataParticleKey.COUNT, DataParticleKey.VALUE: 219},
-                     {DataParticleKey.VALUE_ID: VectorVelocityDataParticleKey.PRESSURE, DataParticleKey.VALUE: 4239},
-                     {DataParticleKey.VALUE_ID: VectorVelocityDataParticleKey.ANALOG_INPUT1, DataParticleKey.VALUE: 0},
-                     {DataParticleKey.VALUE_ID: VectorVelocityDataParticleKey.VELOCITY_BEAM1, DataParticleKey.VALUE: -4023},
-                     {DataParticleKey.VALUE_ID: VectorVelocityDataParticleKey.VELOCITY_BEAM2, DataParticleKey.VALUE: -2239},
-                     {DataParticleKey.VALUE_ID: VectorVelocityDataParticleKey.VELOCITY_BEAM3, DataParticleKey.VALUE: 803},
-                     {DataParticleKey.VALUE_ID: VectorVelocityDataParticleKey.AMPLITUDE_BEAM1, DataParticleKey.VALUE: 48},
-                     {DataParticleKey.VALUE_ID: VectorVelocityDataParticleKey.AMPLITUDE_BEAM2, DataParticleKey.VALUE: 49},
-                     {DataParticleKey.VALUE_ID: VectorVelocityDataParticleKey.AMPLITUDE_BEAM3, DataParticleKey.VALUE: 50},
-                     {DataParticleKey.VALUE_ID: VectorVelocityDataParticleKey.CORRELATION_BEAM1, DataParticleKey.VALUE: 18},
-                     {DataParticleKey.VALUE_ID: VectorVelocityDataParticleKey.CORRELATION_BEAM2, DataParticleKey.VALUE: 9},
-                     {DataParticleKey.VALUE_ID: VectorVelocityDataParticleKey.CORRELATION_BEAM3, DataParticleKey.VALUE: 24}]
+velocity_particle = [{VID: VectorVelocityDataParticleKey.ANALOG_INPUT2, VAL: 0},
+                     {VID: VectorVelocityDataParticleKey.COUNT, VAL: 219},
+                     {VID: VectorVelocityDataParticleKey.PRESSURE, VAL: 4239},
+                     {VID: VectorVelocityDataParticleKey.ANALOG_INPUT1, VAL: 0},
+                     {VID: VectorVelocityDataParticleKey.VELOCITY_BEAM1, VAL: -4023},
+                     {VID: VectorVelocityDataParticleKey.VELOCITY_BEAM2, VAL: -2239},
+                     {VID: VectorVelocityDataParticleKey.VELOCITY_BEAM3, VAL: 803},
+                     {VID: VectorVelocityDataParticleKey.AMPLITUDE_BEAM1, VAL: 48},
+                     {VID: VectorVelocityDataParticleKey.AMPLITUDE_BEAM2, VAL: 49},
+                     {VID: VectorVelocityDataParticleKey.AMPLITUDE_BEAM3, VAL: 50},
+                     {VID: VectorVelocityDataParticleKey.CORRELATION_BEAM1, VAL: 18},
+                     {VID: VectorVelocityDataParticleKey.CORRELATION_BEAM2, VAL: 9},
+                     {VID: VectorVelocityDataParticleKey.CORRELATION_BEAM3, VAL: 24}]
 
 
 # velocity header data particle & sample
@@ -97,14 +76,14 @@ def velocity_header_sample():
     return sample_as_hex.decode('hex')
 
 # these values checkout against the sample above
-velocity_header_particle = [{DataParticleKey.VALUE_ID: VectorVelocityHeaderDataParticleKey.TIMESTAMP, DataParticleKey.VALUE: '2012-12-17 11:12:49'},
-                            {DataParticleKey.VALUE_ID: VectorVelocityHeaderDataParticleKey.NUMBER_OF_RECORDS, DataParticleKey.VALUE: 880},
-                            {DataParticleKey.VALUE_ID: VectorVelocityHeaderDataParticleKey.NOISE1, DataParticleKey.VALUE: 47},
-                            {DataParticleKey.VALUE_ID: VectorVelocityHeaderDataParticleKey.NOISE2, DataParticleKey.VALUE: 47},
-                            {DataParticleKey.VALUE_ID: VectorVelocityHeaderDataParticleKey.NOISE3, DataParticleKey.VALUE: 46},
-                            {DataParticleKey.VALUE_ID: VectorVelocityHeaderDataParticleKey.CORRELATION1, DataParticleKey.VALUE: 2},
-                            {DataParticleKey.VALUE_ID: VectorVelocityHeaderDataParticleKey.CORRELATION2, DataParticleKey.VALUE: 9},
-                            {DataParticleKey.VALUE_ID: VectorVelocityHeaderDataParticleKey.CORRELATION3, DataParticleKey.VALUE: 13}]
+velocity_header_particle = [{VID: VectorVelocityHeaderDataParticleKey.TIMESTAMP, VAL: '2012-12-17 11:12:49'},
+                            {VID: VectorVelocityHeaderDataParticleKey.NUMBER_OF_RECORDS, VAL: 880},
+                            {VID: VectorVelocityHeaderDataParticleKey.NOISE1, VAL: 47},
+                            {VID: VectorVelocityHeaderDataParticleKey.NOISE2, VAL: 47},
+                            {VID: VectorVelocityHeaderDataParticleKey.NOISE3, VAL: 46},
+                            {VID: VectorVelocityHeaderDataParticleKey.CORRELATION1, VAL: 2},
+                            {VID: VectorVelocityHeaderDataParticleKey.CORRELATION2, VAL: 9},
+                            {VID: VectorVelocityHeaderDataParticleKey.CORRELATION3, VAL: 13}]
 
 
 # system data particle & sample
@@ -113,16 +92,16 @@ def system_sample():
     return sample_as_hex.decode('hex')
 
 # these values checkout against the sample above
-system_particle = [{DataParticleKey.VALUE_ID: VectorSystemDataParticleKey.TIMESTAMP, DataParticleKey.VALUE: '2012-12-13 17:03:26'},
-                   {DataParticleKey.VALUE_ID: VectorSystemDataParticleKey.BATTERY, DataParticleKey.VALUE: 148},
-                   {DataParticleKey.VALUE_ID: VectorSystemDataParticleKey.SOUND_SPEED, DataParticleKey.VALUE: 15228},
-                   {DataParticleKey.VALUE_ID: VectorSystemDataParticleKey.HEADING, DataParticleKey.VALUE: 1155},
-                   {DataParticleKey.VALUE_ID: VectorSystemDataParticleKey.PITCH, DataParticleKey.VALUE: 275},
-                   {DataParticleKey.VALUE_ID: VectorSystemDataParticleKey.ROLL, DataParticleKey.VALUE: -307},
-                   {DataParticleKey.VALUE_ID: VectorSystemDataParticleKey.TEMPERATURE, DataParticleKey.VALUE: 2058},
-                   {DataParticleKey.VALUE_ID: VectorSystemDataParticleKey.ERROR, DataParticleKey.VALUE: 0},
-                   {DataParticleKey.VALUE_ID: VectorSystemDataParticleKey.STATUS, DataParticleKey.VALUE: 123},
-                   {DataParticleKey.VALUE_ID: VectorSystemDataParticleKey.ANALOG_INPUT, DataParticleKey.VALUE: 0}]
+system_particle = [{VID: VectorSystemDataParticleKey.TIMESTAMP, VAL: '2012-12-13 17:03:26'},
+                   {VID: VectorSystemDataParticleKey.BATTERY, VAL: 148},
+                   {VID: VectorSystemDataParticleKey.SOUND_SPEED, VAL: 15228},
+                   {VID: VectorSystemDataParticleKey.HEADING, VAL: 1155},
+                   {VID: VectorSystemDataParticleKey.PITCH, VAL: 275},
+                   {VID: VectorSystemDataParticleKey.ROLL, VAL: -307},
+                   {VID: VectorSystemDataParticleKey.TEMPERATURE, VAL: 2058},
+                   {VID: VectorSystemDataParticleKey.ERROR, VAL: 0},
+                   {VID: VectorSystemDataParticleKey.STATUS, VAL: 123},
+                   {VID: VectorSystemDataParticleKey.ANALOG_INPUT, VAL: 0}]
 
 
 #################################### RULES ####################################
@@ -213,7 +192,7 @@ class VectorDriverTestMixinSub(DriverTestMixinSub):
 
         self.assert_data_particle_keys(VectorVelocityDataParticleKey, self._sample_parameters_01)
         log.debug('asserted keys')
-        self.assert_data_particle_header(data_particle, DataParticleType.VELOCITY)
+        self.assert_data_particle_header(data_particle, VectorDataParticleType.VELOCITY)
         log.debug('asserted header')
         self.assert_data_particle_parameters(data_particle, self._sample_parameters_01, verify_values)
         log.debug('asserted particle params')
@@ -226,7 +205,7 @@ class VectorDriverTestMixinSub(DriverTestMixinSub):
         """
 
         self.assert_data_particle_keys(VectorVelocityHeaderDataParticleKey, self._sample_parameters_02)
-        self.assert_data_particle_header(data_particle, DataParticleType.VELOCITY_HEADER)
+        self.assert_data_particle_header(data_particle, VectorDataParticleType.VELOCITY_HEADER)
         self.assert_data_particle_parameters(data_particle, self._sample_parameters_02, verify_values)
 
     def assert_particle_system(self, data_particle, verify_values=False):
@@ -237,7 +216,7 @@ class VectorDriverTestMixinSub(DriverTestMixinSub):
         """
 
         self.assert_data_particle_keys(VectorSystemDataParticleKey, self._system_data_parameter)
-        self.assert_data_particle_header(data_particle, DataParticleType.SYSTEM)
+        self.assert_data_particle_header(data_particle, VectorDataParticleType.SYSTEM)
         self.assert_data_particle_parameters(data_particle, self._system_data_parameter, verify_values)
 
 
@@ -255,7 +234,7 @@ class UnitFromIDK(NortekUnitTest):
         Verify driver specific enums have no duplicates
         Base unit test driver will test enums specific for the base class.
         """
-        self.assert_enum_has_no_duplicates(NortekDataParticleType())
+        self.assert_enum_has_no_duplicates(VectorDataParticleType())
 
     def test_velocity_header_sample_format(self):
         """
@@ -273,7 +252,7 @@ class UnitFromIDK(NortekUnitTest):
         expected_particle = {
             DataParticleKey.PKT_FORMAT_ID: DataParticleValue.JSON_DATA,
             DataParticleKey.PKT_VERSION: 1,
-            DataParticleKey.STREAM_NAME: DataParticleType.VELOCITY_HEADER,
+            DataParticleKey.STREAM_NAME: VectorDataParticleType.VELOCITY_HEADER,
             DataParticleKey.PORT_TIMESTAMP: port_timestamp,
             DataParticleKey.DRIVER_TIMESTAMP: driver_timestamp,
             DataParticleKey.INTERNAL_TIMESTAMP: internal_timestamp,
@@ -300,7 +279,7 @@ class UnitFromIDK(NortekUnitTest):
         expected_particle = {
             DataParticleKey.PKT_FORMAT_ID: DataParticleValue.JSON_DATA,
             DataParticleKey.PKT_VERSION: 1,
-            DataParticleKey.STREAM_NAME: DataParticleType.VELOCITY,
+            DataParticleKey.STREAM_NAME: VectorDataParticleType.VELOCITY,
             DataParticleKey.PORT_TIMESTAMP: port_timestamp,
             DataParticleKey.DRIVER_TIMESTAMP: driver_timestamp,
             DataParticleKey.PREFERRED_TIMESTAMP: DataParticleKey.PORT_TIMESTAMP,
@@ -327,7 +306,7 @@ class UnitFromIDK(NortekUnitTest):
         expected_particle = {
             DataParticleKey.PKT_FORMAT_ID: DataParticleValue.JSON_DATA,
             DataParticleKey.PKT_VERSION: 1,
-            DataParticleKey.STREAM_NAME: DataParticleType.SYSTEM,
+            DataParticleKey.STREAM_NAME: VectorDataParticleType.SYSTEM,
             DataParticleKey.PORT_TIMESTAMP: port_timestamp,
             DataParticleKey.DRIVER_TIMESTAMP: driver_timestamp,
             DataParticleKey.INTERNAL_TIMESTAMP: internal_timestamp,
@@ -410,7 +389,7 @@ class IntFromIDK(NortekIntTest, VectorDriverTestMixinSub):
         """
         self.assert_initialize_driver(ProtocolState.COMMAND)
         self.assert_driver_command(ProtocolEvent.ACQUIRE_SAMPLE)
-        self.assert_async_particle_generation(DataParticleType.VELOCITY, self.assert_particle_sample, timeout=TIMEOUT)
+        self.assert_async_particle_generation(VectorDataParticleType.VELOCITY, self.assert_particle_sample, timeout=common.TIMEOUT)
 
     def test_command_autosample(self):
         """
@@ -425,10 +404,10 @@ class IntFromIDK(NortekIntTest, VectorDriverTestMixinSub):
 
         self.assert_driver_command(ProtocolEvent.START_AUTOSAMPLE, state=ProtocolState.AUTOSAMPLE, delay=1)
 
-        self.assert_async_particle_generation(NortekDataParticleType.USER_CONFIG, self.assert_particle_user)
-        self.assert_async_particle_generation(DataParticleType.VELOCITY_HEADER, self.assert_particle_velocity)
-        self.assert_async_particle_generation(DataParticleType.SYSTEM, self.assert_particle_system)
-        self.assert_async_particle_generation(DataParticleType.VELOCITY, self.assert_particle_sample, timeout=45)
+        self.assert_async_particle_generation(VectorDataParticleType.USER_CONFIG, self.assert_particle_user)
+        self.assert_async_particle_generation(VectorDataParticleType.VELOCITY_HEADER, self.assert_particle_velocity)
+        self.assert_async_particle_generation(VectorDataParticleType.SYSTEM, self.assert_particle_system)
+        self.assert_async_particle_generation(VectorDataParticleType.VELOCITY, self.assert_particle_sample, timeout=45)
 
         self.assert_driver_command(ProtocolEvent.STOP_AUTOSAMPLE, state=ProtocolState.COMMAND, delay=1)
 
@@ -448,7 +427,6 @@ class IntFromIDK(NortekIntTest, VectorDriverTestMixinSub):
         self.assert_set(Parameter.TIMING_CONTROL_REGISTER, 131)
         self.assert_set(Parameter.COORDINATE_SYSTEM, 0)
         self.assert_set(Parameter.BIN_LENGTH, 8)
-        self.assert_set(Parameter.USER_2_SPARE, 0)
         self.assert_set(Parameter.ADJUSTMENT_SOUND_SPEED, 16658)
         self.assert_set(Parameter.VELOCITY_ADJ_TABLE, 'B50ePTk9Uz1uPYg9oj27PdQ97T0GPh4+Nj5OPmU+fT6TPqo+wD7WPuw+Aj8'
                                           'XPyw/QT9VP2k/fT+RP6Q/uD/KP90/8D8CQBRAJkA3QElAWkBrQHxAjECcQK'
@@ -464,9 +442,6 @@ class IntFromIDK(NortekIntTest, VectorDriverTestMixinSub):
         self.assert_set_exception(Parameter.AVG_INTERVAL, 65)
         self.assert_set_exception(Parameter.USER_NUMBER_BEAMS, 4)
         self.assert_set_exception(Parameter.POWER_CONTROL_REGISTER, 1)
-        self.assert_set_exception(Parameter.A1_1_SPARE, 3)
-        self.assert_set_exception(Parameter.B0_1_SPARE, 1)
-        self.assert_set_exception(Parameter.B1_1_SPARE, 2)
         self.assert_set_exception(Parameter.COMPASS_UPDATE_RATE, 2)
         self.assert_set_exception(Parameter.NUMBER_BINS, 2)
         self.assert_set_exception(Parameter.MEASUREMENT_INTERVAL, 601)
@@ -481,201 +456,15 @@ class IntFromIDK(NortekIntTest, VectorDriverTestMixinSub):
         self.assert_set_exception(Parameter.MODE_TEST, 5)
         self.assert_set_exception(Parameter.ANALOG_INPUT_ADDR, '123')
         self.assert_set_exception(Parameter.SW_VERSION, 'blah')
-        self.assert_set_exception(Parameter.USER_1_SPARE, 23)
         self.assert_set_exception(Parameter.COMMENTS, 'hello there')
         self.assert_set_exception(Parameter.WAVE_MEASUREMENT_MODE, 3)
-        self.assert_set_exception(Parameter.DYN_PERCENTAGE_POSITION, 3)
-        self.assert_set_exception(Parameter.WAVE_TRANSMIT_PULSE,3 )
-        self.assert_set_exception(Parameter.WAVE_BLANKING_DISTANCE, 3)
-        self.assert_set_exception(Parameter.WAVE_CELL_SIZE, 3)
-        self.assert_set_exception(Parameter.NUMBER_DIAG_SAMPLES, 1)
-        self.assert_set_exception(Parameter.A1_2_SPARE, 6)
-        self.assert_set_exception(Parameter.B0_2_SPARE, 4)
+        # self.assert_set_exception(Parameter.DYN_PERCENTAGE_POSITION, 3)
+        # self.assert_set_exception(Parameter.WAVE_TRANSMIT_PULSE,3 )
+        # self.assert_set_exception(Parameter.WAVE_BLANKING_DISTANCE, 3)
+        # self.assert_set_exception(Parameter.WAVE_CELL_SIZE, 3)
+        # self.assert_set_exception(Parameter.NUMBER_DIAG_SAMPLES, 1)
         self.assert_set_exception(Parameter.NUMBER_SAMPLES_PER_BURST, 4)
         self.assert_set_exception(Parameter.ANALOG_OUTPUT_SCALE, 234)
         self.assert_set_exception(Parameter.CORRELATION_THRESHOLD, 1234)
-        self.assert_set_exception(Parameter.USER_3_SPARE, 1)
         self.assert_set_exception(Parameter.TRANSMIT_PULSE_LENGTH_SECOND_LAG, 1)
-        self.assert_set_exception(Parameter.USER_4_SPARE, 1)
-        self.assert_set_exception(Parameter.QUAL_CONSTANTS, 'consts')
-
-
-###############################################################################
-#                            QUALIFICATION TESTS                              #
-# Device specific qualification tests are for                                 #
-# testing device specific capabilities                                        #
-###############################################################################
-@attr('QUAL', group='mi')
-class QualFromIDK(NortekQualTest, VectorDriverTestMixinSub):
-
-    def test_direct_access_telnet_mode(self):
-        """
-        This test manually tests that the Instrument Driver properly supports direct access to the
-        physical instrument. (telnet mode)
-        """
-        self.assert_direct_access_start_telnet()
-        self.assertTrue(self.tcp_client)
-        log.debug('finished set up')
-
-        self.tcp_client.send_data("K1W%!Q")
-        result = self.tcp_client.expect("VECTOR")
-        self.assertTrue(result)
-
-        log.debug("DA Server Started.  Reading battery voltage")
-        self.tcp_client.send_data("BV")
-        self.tcp_client.expect("\x06\x06")
-
-        self.tcp_client.send_data("CC" + user_config2())
-        self.tcp_client.expect("\x06\x06")
-
-        self.assert_direct_access_stop_telnet()
-        self.assert_state_change(ResourceAgentState.COMMAND, ProtocolState.COMMAND, 10)
-
-        #verify the setting got restored.
-        self.assert_get_parameter(Parameter.TRANSMIT_PULSE_LENGTH, 2)
-        self.assert_get_parameter(Parameter.RECEIVE_LENGTH, 7)
-        self.assert_get_parameter(Parameter.TIME_BETWEEN_BURST_SEQUENCES, 0)
-        self.assert_get_parameter(Parameter.TIMING_CONTROL_REGISTER, 131)
-        self.assert_get_parameter(Parameter.BIN_LENGTH, 7)
-        self.assert_get_parameter(Parameter.ADJUSTMENT_SOUND_SPEED, 16657)
-        self.assert_get_parameter(Parameter.VELOCITY_ADJ_TABLE, 'Aj0ePTk9Uz1uPYg9oj27PdQ97T0GPh4+Nj5OPmU+fT6TPqo+wD7WPuw+Aj8'
-                                          'XPyw/QT9VP2k/fT+RP6Q/uD/KP90/8D8CQBRAJkA3QElAWkBrQHxAjECcQK'
-                                          'xAvEDMQNtA6kD5QAhBF0ElQTNBQkFPQV1BakF4QYVBkkGeQatBt0HDQc9B20'
-                                          'HnQfJB/UEIQhNCHkIoQjNCPUJHQlFCW0JkQm5Cd0KAQolCkUKaQqJCqkKyQrpC',)
-
-        self.assert_get_parameter(EngineeringParameter.CLOCK_SYNC_INTERVAL, '00:00:00')
-        self.assert_get_parameter(EngineeringParameter.ACQUIRE_STATUS_INTERVAL, '00:00:00')
-        self.assert_get_parameter(Parameter.BLANKING_DISTANCE, 16)
-        self.assert_get_parameter(Parameter.TIME_BETWEEN_PINGS, 44)
-        self.assert_get_parameter(Parameter.NUMBER_PINGS, 0)
-        self.assert_get_parameter(Parameter.AVG_INTERVAL, 64)
-        self.assert_get_parameter(Parameter.USER_NUMBER_BEAMS, 3)
-        self.assert_get_parameter(Parameter.POWER_CONTROL_REGISTER, 0)
-        self.assert_get_parameter(Parameter.COMPASS_UPDATE_RATE, 1)
-        self.assert_get_parameter(Parameter.COORDINATE_SYSTEM, 2)
-        self.assert_get_parameter(Parameter.NUMBER_BINS, 1)
-        self.assert_get_parameter(Parameter.MEASUREMENT_INTERVAL, 600)
-        self.assert_get_parameter(Parameter.WRAP_MODE, 0)
-        self.assert_get_parameter(Parameter.CLOCK_DEPLOY, [0,0,0,0,0,0])
-        self.assert_get_parameter(Parameter.DIAGNOSTIC_INTERVAL, 10800)
-        self.assert_get_parameter(Parameter.MODE, 48)
-        self.assert_get_parameter(Parameter.NUMBER_SAMPLES_DIAGNOSTIC, 1)
-        self.assert_get_parameter(Parameter.NUMBER_BEAMS_CELL_DIAGNOSTIC, 1)
-        self.assert_get_parameter(Parameter.NUMBER_PINGS_DIAGNOSTIC, 1)
-        self.assert_get_parameter(Parameter.MODE_TEST, 4)
-        self.assert_get_parameter(Parameter.WAVE_MEASUREMENT_MODE, 295)
-        self.assert_get_parameter(Parameter.DYN_PERCENTAGE_POSITION, 32768)
-        self.assert_get_parameter(Parameter.WAVE_TRANSMIT_PULSE, 16384)
-        self.assert_get_parameter(Parameter.WAVE_BLANKING_DISTANCE, 0)
-        self.assert_get_parameter(Parameter.WAVE_CELL_SIZE, 0)
-        self.assert_get_parameter(Parameter.NUMBER_DIAG_SAMPLES, 0)
-        self.assert_get_parameter(Parameter.NUMBER_SAMPLES_PER_BURST, 0)
-        self.assert_get_parameter(Parameter.ANALOG_OUTPUT_SCALE, 6711)
-        self.assert_get_parameter(Parameter.CORRELATION_THRESHOLD, 0)
-        self.assert_get_parameter(Parameter.TRANSMIT_PULSE_LENGTH_SECOND_LAG, 2)
-
-        # Test direct access inactivity timeout
-        self.assert_direct_access_start_telnet(inactivity_timeout=30, session_timeout=90)
-        self.assert_state_change(ResourceAgentState.COMMAND, ProtocolState.COMMAND, 60)
-
-        # Test session timeout without activity
-        self.assert_direct_access_start_telnet(inactivity_timeout=120, session_timeout=30)
-        self.assert_state_change(ResourceAgentState.COMMAND, ProtocolState.COMMAND, 60)
-
-        # Test direct access session timeout with activity
-        self.assert_direct_access_start_telnet(inactivity_timeout=30, session_timeout=60)
-        # Send some activity every 30 seconds to keep DA alive.
-        for i in range(1, 2, 3):
-            self.tcp_client.send_data(NEWLINE)
-            log.debug("Sending a little keep alive communication, sleeping for 15 seconds")
-            time.sleep(15)
-
-        self.assert_state_change(ResourceAgentState.COMMAND, ProtocolState.COMMAND, 45)
-
-    def test_get_set_parameters(self):
-        """
-        Verify that parameters can be get/set properly
-        """
-        self.assert_enter_command_mode()
-
-        #read/write params
-        self.assert_set_parameter(Parameter.TRANSMIT_PULSE_LENGTH, 2)
-        self.assert_set_parameter(Parameter.RECEIVE_LENGTH, 8)
-        self.assert_set_parameter(Parameter.TIME_BETWEEN_BURST_SEQUENCES, 45)
-        self.assert_set_parameter(Parameter.TIMING_CONTROL_REGISTER, 131)
-        self.assert_set_parameter(Parameter.BIN_LENGTH, 8)
-        self.assert_set_parameter(Parameter.ADJUSTMENT_SOUND_SPEED, 16658)
-        self.assert_set_parameter(Parameter.VELOCITY_ADJ_TABLE, 'B50ePTk9Uz1uPYg9oj27PdQ97T0GPh4+Nj5OPmU+fT6TPqo+wD7WPuw+Aj8'
-                                          'XPyw/QT9VP2k/fT+RP6Q/uD/KP90/8D8CQBRAJkA3QElAWkBrQHxAjECcQK'
-                                          'xAvEDMQNtA6kD5QAhBF0ElQTNBQkFPQV1BakF4QYVBkkGeQatBt0HDQc9B20'
-                                          'HnQfJB/UEIQhNCHkIoQjNCPUJHQlFCW0JkQm5Cd0KAQolCkUKaQqJCqkKyQrpC',)
-
-        #read-only params
-        self.assert_get_parameter(EngineeringParameter.CLOCK_SYNC_INTERVAL, '00:00:00')
-        self.assert_get_parameter(EngineeringParameter.ACQUIRE_STATUS_INTERVAL, '00:00:00')
-        self.assert_get_parameter(Parameter.BLANKING_DISTANCE, 16)
-        self.assert_get_parameter(Parameter.TIME_BETWEEN_PINGS, 44)
-        self.assert_get_parameter(Parameter.NUMBER_PINGS, 0)
-        self.assert_get_parameter(Parameter.AVG_INTERVAL, 64)
-        self.assert_get_parameter(Parameter.USER_NUMBER_BEAMS, 3)
-        self.assert_get_parameter(Parameter.POWER_CONTROL_REGISTER, 0)
-        self.assert_get_parameter(Parameter.COMPASS_UPDATE_RATE, 1)
-        self.assert_get_parameter(Parameter.COORDINATE_SYSTEM, 2)
-        self.assert_get_parameter(Parameter.NUMBER_BINS, 1)
-        self.assert_get_parameter(Parameter.MEASUREMENT_INTERVAL, 600)
-        self.assert_get_parameter(Parameter.WRAP_MODE, 0)
-        self.assert_get_parameter(Parameter.CLOCK_DEPLOY, [0,0,0,0,0,0])
-        self.assert_get_parameter(Parameter.DIAGNOSTIC_INTERVAL, 10800)
-        self.assert_get_parameter(Parameter.MODE, 48)
-        self.assert_get_parameter(Parameter.NUMBER_SAMPLES_DIAGNOSTIC, 1)
-        self.assert_get_parameter(Parameter.NUMBER_BEAMS_CELL_DIAGNOSTIC, 1)
-        self.assert_get_parameter(Parameter.NUMBER_PINGS_DIAGNOSTIC, 1)
-        self.assert_get_parameter(Parameter.MODE_TEST, 4)
-        self.assert_get_parameter(Parameter.WAVE_MEASUREMENT_MODE, 295)
-        self.assert_get_parameter(Parameter.DYN_PERCENTAGE_POSITION, 32768)
-        self.assert_get_parameter(Parameter.WAVE_TRANSMIT_PULSE, 16384)
-        self.assert_get_parameter(Parameter.WAVE_BLANKING_DISTANCE, 0)
-        self.assert_get_parameter(Parameter.WAVE_CELL_SIZE, 0)
-        self.assert_get_parameter(Parameter.NUMBER_DIAG_SAMPLES, 0)
-        self.assert_get_parameter(Parameter.NUMBER_SAMPLES_PER_BURST, 0)
-        self.assert_get_parameter(Parameter.ANALOG_OUTPUT_SCALE, 6711)
-        self.assert_get_parameter(Parameter.CORRELATION_THRESHOLD, 0)
-        self.assert_get_parameter(Parameter.TRANSMIT_PULSE_LENGTH_SECOND_LAG, 2)
-
-        #NOTE: the following cannot be tested because there are no default values
-        #    'spare' parameters are not used by the driver, only place holders for the config file sent to set params
-        #     other parameter values are dependent on the instrument being tested
-        # self.assert_get_parameter(Parameter.A1_1_SPARE, 3)
-        # self.assert_get_parameter(Parameter.B0_1_SPARE, 1)
-        # self.assert_get_parameter(Parameter.B1_1_SPARE, 2)
-        # self.assert_get_parameter(Parameter.DEPLOYMENT_NAME, 'test')
-        # self.assert_get_parameter(Parameter.ANALOG_INPUT_ADDR, '123')
-        # self.assert_get_parameter(Parameter.SW_VERSION, 'blah')
-        # self.assert_get_parameter(Parameter.USER_1_SPARE, 23)
-        # self.assert_get_parameter(Parameter.COMMENTS, 'hello there')
-        # self.assert_get_parameter(Parameter.A1_2_SPARE, 6)
-        # self.assert_get_parameter(Parameter.B0_2_SPARE, 4)
-        # self.assert_get_parameter(Parameter.USER_2_SPARE, 1)
-        # self.assert_get_parameter(Parameter.USER_3_SPARE, 1)
-        # self.assert_get_parameter(Parameter.USER_4_SPARE, 1)
-        # self.assert_get_parameter(Parameter.QUAL_CONSTANTS, 'consts')
-
-    def test_poll(self):
-        """
-        Verify data particles for a single sample that are specific to Vector
-        """
-        self.assert_enter_command_mode()
-        self.assert_particle_polled(DriverEvent.ACQUIRE_SAMPLE, self.assert_particle_sample, DataParticleType.VELOCITY,
-                                    timeout=10, sample_count=1)
-
-    def test_autosample(self):
-        """
-        Verify data particles for auto-sampling that are specific to Vector
-        """
-        self.assert_enter_command_mode()
-        self.assert_start_autosample()
-
-        self.assert_particle_async(DataParticleType.SYSTEM, self.assert_particle_system)
-        self.assert_particle_async(DataParticleType.VELOCITY, self.assert_particle_sample)
-
-        self.assert_stop_autosample()
+        # self.assert_set_exception(Parameter.QUAL_CONSTANTS, 'consts')
