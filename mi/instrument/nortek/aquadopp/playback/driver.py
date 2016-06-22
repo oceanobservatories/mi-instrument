@@ -6,26 +6,23 @@ Release notes:
 
 Driver for Aquadopp DW
 """
+import datetime
+import re
+
+from ooi.logging import log
+
+from mi.core.exceptions import SampleException
+from mi.core.instrument.chunker import StringChunker
+from mi.core.instrument.instrument_protocol import CommandResponseInstrumentProtocol
+from mi.core.instrument.data_particle import DataParticle, DataParticleKey
+from mi.core.common import BaseEnum
+from mi.instrument.nortek.driver import ProtocolState
+from mi.instrument.nortek.particles import AquadoppDataParticleType
+
 
 __author__ = 'Pete Cable'
 __license__ = 'Apache 2.0'
 
-import re
-import datetime
-
-
-from mi.core.log import get_logger
-log = get_logger()
-
-from mi.core.exceptions import SampleException
-from mi.core.instrument.chunker import StringChunker
-from mi.core.instrument.instrument_driver import DriverAsyncEvent
-from mi.core.instrument.instrument_protocol import CommandResponseInstrumentProtocol
-from mi.core.instrument.instrument_fsm import ThreadSafeFSM
-from mi.instrument.nortek.aquadopp.ooicore.driver import NortekDataParticleType
-from mi.core.instrument.data_particle import DataParticle, DataParticleKey
-from mi.core.common import BaseEnum
-from mi.instrument.nortek.driver import ProtocolState, ProtocolEvent
 
 integer_pattern = r'\d+'
 float_pattern = r'[+\-\d.]+'
@@ -65,7 +62,7 @@ class AquadoppDwVelocityAsciiDataParticle(DataParticle):
     """
     Routine for parsing velocity data into a data particle structure for the Aquadopp DW sensor.
     """
-    _data_particle_type = NortekDataParticleType.VELOCITY
+    _data_particle_type = AquadoppDataParticleType.VELOCITY
     ntp_epoch = datetime.datetime(1900, 1, 1)
 
     def _build_parsed_values(self):
