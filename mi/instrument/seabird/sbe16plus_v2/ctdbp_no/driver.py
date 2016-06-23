@@ -566,7 +566,7 @@ class SBE16NOProtocol(SBE19Protocol):
     ########################################################################
     # Command handlers.
     ########################################################################
-    def _handler_command_acquire_status(self, *args, **kwargs):
+    def _handler_acquire_status_async(self, *args, **kwargs):
         """
         Get device status
         """
