@@ -1216,17 +1216,23 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
         # randomness to prevent all instrument drivers from trying to reconnect at the same exact time.
         self._reconnect_interval = self._reconnect_interval * 2 + random.uniform(-.5, .5)
         self._reconnect_interval = min(self._reconnect_interval, self._max_reconnect_interval)
-        self._async_raise_event(DriverEvent.CONFIGURE, event_delay=self._reconnect_interval)
+        self._async_raise_event(DriverEvent.CONFIGURE, event_delay=self._reconnect_interval, check_state=True)
         log.info('Created delayed CONFIGURE event with %.2f second delay', self._reconnect_interval)
 
     def _async_raise_event(self, event, *args, **kwargs):
         delay = kwargs.pop('event_delay', 0)
+        check_state = kwargs.pop('check_state', False)
+
+        def event_in_state():
+            fsm_state = self._connection_fsm.current_state
+            return (fsm_state, event) in self._connection_fsm.state_handlers
 
         def inner():
             try:
                 time.sleep(delay)
-                log.info('Async raise event: %r', event)
-                self._connection_fsm.on_event(event)
+                if not check_state or event_in_state():
+                    log.info('Async raise event: %r', event)
+                    self._connection_fsm.on_event(event)
             except Exception as exc:
                 log.exception('Exception in asynchronous thread: %r', exc)
                 self._driver_event(DriverAsyncEvent.ERROR, exc)
