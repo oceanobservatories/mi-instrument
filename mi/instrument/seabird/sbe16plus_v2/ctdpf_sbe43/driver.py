@@ -34,7 +34,7 @@ from mi.instrument.seabird.sbe16plus_v2.ctdpf_jb.driver import SBE19CalibrationP
 
 from mi.instrument.seabird.sbe16plus_v2.driver import Prompt, SBE16InstrumentDriver, SBE16Protocol, \
     ConfirmedParameter, CommonParameter, Sbe16plusBaseParticle, NEWLINE, TIMEOUT, WAKEUP_TIMEOUT, Command, \
-    ProtocolEvent, Capability
+    ProtocolEvent, Capability, DISCOVER_TIMEOUT, ACQUIRE_STATUS_TIMEOUT
 
 __author__ = 'Tapana Gupta'
 __license__ = 'Apache 2.0'
@@ -528,6 +528,11 @@ class SBE43Protocol(SBE16Protocol):
                 (ProtocolEvent.CLOCK_SYNC, self._handler_command_clock_sync_clock),
                 (ProtocolEvent.ACQUIRE_STATUS, self._handler_command_acquire_status)
             ],
+            ProtocolState.ACQUIRING_SAMPLE: [
+                (ProtocolEvent.ENTER, self._handler_acquiring_sample_enter),
+                (ProtocolEvent.EXIT, self._handler_generic_exit),
+                (ProtocolEvent.ACQUIRE_SAMPLE_ASYNC, self._handler_acquire_sample_async),
+            ],
             ProtocolState.DIRECT_ACCESS: [
                 (ProtocolEvent.ENTER, self._handler_direct_access_enter),
                 (ProtocolEvent.EXIT, self._handler_generic_exit),
@@ -573,6 +578,17 @@ class SBE43Protocol(SBE16Protocol):
         self._protocol_fsm.start(ProtocolState.UNKNOWN)
 
         self._chunker = StringChunker(self.sieve_function)
+
+    def _build_command_dict(self):
+        """
+        Populate the command dictionary with command. Overridden to specify timeouts.
+        """
+        self._cmd_dict.add(Capability.START_AUTOSAMPLE, display_name="Start Autosample")
+        self._cmd_dict.add(Capability.STOP_AUTOSAMPLE, display_name="Stop Autosample")
+        self._cmd_dict.add(Capability.CLOCK_SYNC, display_name="Synchronize Clock")
+        self._cmd_dict.add(Capability.ACQUIRE_STATUS, timeout=ACQUIRE_STATUS_TIMEOUT, display_name="Acquire Status")
+        self._cmd_dict.add(Capability.ACQUIRE_SAMPLE, display_name="Acquire Sample")
+        self._cmd_dict.add(Capability.DISCOVER, timeout=DISCOVER_TIMEOUT, display_name='Discover')
 
     def _filter_capabilities(self, events):
         return [x for x in events if Capability.has(x)]
@@ -687,10 +703,25 @@ class SBE43Protocol(SBE16Protocol):
 
     def _handler_command_acquire_sample(self, *args, **kwargs):
         """
+        Acquire Sample is implemented asynchronously. Transition to ACQUIRING_SAMPLE state.
+        """
+        next_state = ProtocolState.ACQUIRING_SAMPLE
+        result = []
+
+        return next_state, (next_state, result)
+
+    def _handler_acquiring_sample_enter(self):
+        """
+        Trigger the ACQUIRE_SAMPLE_ASYNC event
+        """
+        self._async_raise_fsm_event(ProtocolEvent.ACQUIRE_SAMPLE_ASYNC)
+
+    def _handler_acquire_sample_async(self, *args, **kwargs):
+        """
         Acquire sample from SBE16.
         @retval next_state, (next_state, result) tuple
         """
-        next_state = None
+        next_state = ProtocolState.COMMAND
         timeout = time.time() + TIMEOUT
 
         self._do_cmd_resp(Command.TS, *args, **kwargs)

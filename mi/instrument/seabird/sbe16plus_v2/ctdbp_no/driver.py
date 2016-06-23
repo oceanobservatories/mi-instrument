@@ -30,7 +30,7 @@ from mi.instrument.seabird.sbe16plus_v2.ctdpf_jb.driver import SBE19Configuratio
 from mi.instrument.seabird.sbe16plus_v2.ctdpf_jb.driver import OptodeSettingsParticle
 
 from mi.instrument.seabird.sbe16plus_v2.driver import \
-    Prompt, SBE16InstrumentDriver, Sbe16plusBaseParticle, WAKEUP_TIMEOUT, NEWLINE, TIMEOUT
+    Prompt, SBE16InstrumentDriver, Sbe16plusBaseParticle, WAKEUP_TIMEOUT, NEWLINE, TIMEOUT, ProtocolState
 from mi.core.instrument.protocol_param_dict import ParameterDictType, ParameterDictVisibility
 
 
@@ -566,11 +566,11 @@ class SBE16NOProtocol(SBE19Protocol):
     ########################################################################
     # Command handlers.
     ########################################################################
-    def _handler_command_acquire_status(self, *args, **kwargs):
+    def _handler_acquire_status_async(self, *args, **kwargs):
         """
         Get device status
         """
-        next_state = None
+        next_state = ProtocolState.COMMAND
         result = []
 
         result.append(self._do_cmd_resp(Command.GET_SD, response_regex=SBE16NOStatusParticle.regex_compiled(),

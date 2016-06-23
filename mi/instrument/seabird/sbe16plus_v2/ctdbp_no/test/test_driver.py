@@ -643,6 +643,35 @@ class Sbe16plus16NOUnitTestCase(Sbe16plusUnitTestCase, SBE16NOMixin):
         self.assert_particle_published(driver, self.VALID_GETCD_RESPONSE, self.assert_particle_configuration, True)
         self.assert_particle_published(driver, self.VALID_SEND_OPTODE_RESPONSE, self.assert_particle_send_optode, True)
 
+    def test_capabilities(self):
+        """
+        Verify the FSM reports capabilities as expected.  All states defined in this dict must
+        also be defined in the protocol FSM.
+        """
+        capabilities = {
+            ProtocolState.UNKNOWN: [ProtocolEvent.DISCOVER],
+            ProtocolState.COMMAND: [ProtocolEvent.ACQUIRE_SAMPLE,
+                                    ProtocolEvent.ACQUIRE_STATUS,
+                                    ProtocolEvent.CLOCK_SYNC,
+                                    ProtocolEvent.GET,
+                                    ProtocolEvent.SET,
+                                    ProtocolEvent.START_AUTOSAMPLE,
+                                    ProtocolEvent.START_DIRECT,
+                                    ProtocolEvent.SCHEDULED_CLOCK_SYNC,
+                                    ProtocolEvent.SCHEDULED_ACQUIRED_STATUS],
+            ProtocolState.AUTOSAMPLE: [ProtocolEvent.GET,
+                                       ProtocolEvent.STOP_AUTOSAMPLE,
+                                       ProtocolEvent.SCHEDULED_ACQUIRED_STATUS,
+                                       ProtocolEvent.SCHEDULED_CLOCK_SYNC],
+            ProtocolState.DIRECT_ACCESS: [ProtocolEvent.STOP_DIRECT,
+                                          ProtocolEvent.EXECUTE_DIRECT],
+            ProtocolState.ACQUIRING_SAMPLE: [],
+            ProtocolState.ACQUIRING_STATUS: [ProtocolEvent.ACQUIRE_STATUS_ASYNC]
+        }
+
+        driver = self.InstrumentDriver(self._got_data_event_callback)
+        self.assert_capabilities(driver, capabilities)
+
 
 ###############################################################################
 #                            INTEGRATION TESTS                                #
