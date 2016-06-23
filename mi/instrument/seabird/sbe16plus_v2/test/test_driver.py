@@ -540,7 +540,9 @@ class Sbe16plusUnitTestCase(InstrumentDriverUnitTestCase, SeaBird16plusMixin):
                                        ProtocolEvent.SCHEDULED_ACQUIRED_STATUS,
                                        ProtocolEvent.SCHEDULED_CLOCK_SYNC],
             ProtocolState.DIRECT_ACCESS: [ProtocolEvent.STOP_DIRECT,
-                                          ProtocolEvent.EXECUTE_DIRECT]
+                                          ProtocolEvent.EXECUTE_DIRECT],
+            ProtocolState.ACQUIRING_SAMPLE: [],
+            ProtocolState.ACQUIRING_STATUS: []
         }
 
         driver = self.InstrumentDriver(self._got_data_event_callback)

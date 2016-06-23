@@ -31,7 +31,7 @@ from xml.dom.minidom import parseString
 from mi.instrument.seabird.sbe16plus_v2.driver import \
     SBE16Protocol, SBE16InstrumentDriver, Sbe16plusBaseParticle, NEWLINE, \
     DEFAULT_ENCODER_KEY, TIMEOUT, WAKEUP_TIMEOUT, ScheduledJob, Command, ProtocolState, ProtocolEvent, \
-    ConfirmedParameter, CommonParameter, Prompt
+    ConfirmedParameter, CommonParameter, Prompt, Capability, DISCOVER_TIMEOUT, ACQUIRE_SAMPLE_TIMEOUT
 
 
 __author__ = 'Tapana Gupta'
@@ -996,6 +996,11 @@ class SBE19Protocol(SBE16Protocol):
                 (ProtocolEvent.SCHEDULED_ACQUIRED_STATUS, self._handler_autosample_acquire_status),
                 (ProtocolEvent.SCHEDULED_CLOCK_SYNC, self._handler_command_clock_sync_clock)
             ],
+            ProtocolState.ACQUIRING_STATUS: [
+                (ProtocolEvent.ENTER, self._handler_acquiring_status_enter),
+                (ProtocolEvent.EXIT, self._handler_generic_exit),
+                (ProtocolEvent.ACQUIRE_STATUS_ASYNC, self._handler_acquire_status_async),
+            ],
             ProtocolState.DIRECT_ACCESS: [
                 (ProtocolEvent.ENTER, self._handler_direct_access_enter),
                 (ProtocolEvent.EXIT, self._handler_generic_exit),
@@ -1054,6 +1059,17 @@ class SBE19Protocol(SBE16Protocol):
         #Setup schedulable commands
         self._add_scheduler_event(ScheduledJob.ACQUIRE_STATUS, ProtocolEvent.ACQUIRE_STATUS)
         self._add_scheduler_event(ScheduledJob.CLOCK_SYNC, ProtocolEvent.SCHEDULED_CLOCK_SYNC)
+
+    def _build_command_dict(self):
+        """
+        Populate the command dictionary with command.
+        """
+        self._cmd_dict.add(Capability.START_AUTOSAMPLE, display_name="Start Autosample")
+        self._cmd_dict.add(Capability.STOP_AUTOSAMPLE, display_name="Stop Autosample")
+        self._cmd_dict.add(Capability.CLOCK_SYNC, display_name="Synchronize Clock")
+        self._cmd_dict.add(Capability.ACQUIRE_STATUS, display_name="Acquire Status")
+        self._cmd_dict.add(Capability.ACQUIRE_SAMPLE, timeout=ACQUIRE_SAMPLE_TIMEOUT, display_name="Acquire Sample")
+        self._cmd_dict.add(Capability.DISCOVER, timeout=DISCOVER_TIMEOUT, display_name='Discover')
 
     @staticmethod
     def sieve_function(raw_data):
@@ -1119,9 +1135,25 @@ class SBE19Protocol(SBE16Protocol):
 
     def _handler_command_acquire_status(self, *args, **kwargs):
         """
+        Switch into acquire sample mode.
+        """
+        next_state = ProtocolState.ACQUIRING_STATUS
+        result = []
+
+        return next_state, (next_state, result)
+
+    def _handler_acquiring_status_enter(self):
+        """
+        enter the acquiring sample state and
+        :return: new state (new state, particles)
+        """
+        self._async_raise_fsm_event(ProtocolEvent.ACQUIRE_STATUS_ASYNC)
+
+    def _handler_acquire_status_async(self, *args, **kwargs):
+        """
         Get device status
         """
-        next_state = None
+        next_state = ProtocolState.COMMAND
         result = []
 
         result.append(self._do_cmd_resp(Command.GET_SD, response_regex=SBE19StatusParticle.regex_compiled(),
