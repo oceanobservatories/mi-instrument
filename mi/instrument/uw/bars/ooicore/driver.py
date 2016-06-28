@@ -798,16 +798,16 @@ class Protocol(MenuInstrumentProtocol):
 
                     self._go_to_root_menu()
 
-            elif key == Parameter.RUN_ACQUIRE_STATUS_INTERVAL:
-                self._param_dict.set_value(key, val)
+                elif key == Parameter.RUN_ACQUIRE_STATUS_INTERVAL:
+                    self._param_dict.set_value(key, val)
 
-                self.stop_scheduled_job(ScheduledJob.ACQUIRE_STATUS)
+                    self.stop_scheduled_job(ScheduledJob.ACQUIRE_STATUS)
 
-                log.debug("Configuring the scheduler to acquire status %s",
-                          self._param_dict.get(Parameter.RUN_ACQUIRE_STATUS_INTERVAL))
-                if self._param_dict.get(Parameter.RUN_ACQUIRE_STATUS_INTERVAL) != '00:00:00':
-                    self.start_scheduled_job(Parameter.RUN_ACQUIRE_STATUS_INTERVAL, ScheduledJob.ACQUIRE_STATUS,
-                                             ProtocolEvent.SCHEDULED_ACQUIRE_STATUS)
+                    log.debug("Configuring the scheduler to acquire status %s",
+                              self._param_dict.get(Parameter.RUN_ACQUIRE_STATUS_INTERVAL))
+                    if self._param_dict.get(Parameter.RUN_ACQUIRE_STATUS_INTERVAL) != '00:00:00':
+                        self.start_scheduled_job(Parameter.RUN_ACQUIRE_STATUS_INTERVAL, ScheduledJob.ACQUIRE_STATUS,
+                                                 ProtocolEvent.SCHEDULED_ACQUIRE_STATUS)
 
     def _set_params(self, *args, **kwargs):
         """
@@ -1147,7 +1147,7 @@ class Protocol(MenuInstrumentProtocol):
         self._cmd_dict.add(Capability.START_AUTOSAMPLE, display_name="Start Autosample")
         self._cmd_dict.add(Capability.STOP_AUTOSAMPLE, display_name="Stop Autosample", timeout=40)
         self._cmd_dict.add(Capability.ACQUIRE_STATUS, display_name="Acquire Status")
-        self._cmd_dict.add(Capability.DISCOVER, display_name="Discover", timeout=40)
+        self._cmd_dict.add(Capability.DISCOVER, display_name="Discover", timeout=59)
 
     def _build_param_dict(self):
         """
