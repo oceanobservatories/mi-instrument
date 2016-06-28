@@ -600,6 +600,7 @@ class Protocol(MenuInstrumentProtocol):
         self._add_response_handler(Command.CHANGE_REFERENCE_TEMP_POWER, self._parse_menu_change_response)
         self._add_response_handler(Command.DIRECT_SET, self._parse_menu_change_response)
 
+        self.initialize_scheduler()
         self._add_scheduler_event(ScheduledJob.ACQUIRE_STATUS, ProtocolEvent.SCHEDULED_ACQUIRE_STATUS)
 
         # Add sample handlers.
@@ -798,16 +799,16 @@ class Protocol(MenuInstrumentProtocol):
 
                     self._go_to_root_menu()
 
-            elif key == Parameter.RUN_ACQUIRE_STATUS_INTERVAL:
-                self._param_dict.set_value(key, val)
+                elif key == Parameter.RUN_ACQUIRE_STATUS_INTERVAL:
+                    self._param_dict.set_value(key, val)
 
-                self.stop_scheduled_job(ScheduledJob.ACQUIRE_STATUS)
+                    self.stop_scheduled_job(ScheduledJob.ACQUIRE_STATUS)
 
-                log.debug("Configuring the scheduler to acquire status %s",
-                          self._param_dict.get(Parameter.RUN_ACQUIRE_STATUS_INTERVAL))
-                if self._param_dict.get(Parameter.RUN_ACQUIRE_STATUS_INTERVAL) != '00:00:00':
-                    self.start_scheduled_job(Parameter.RUN_ACQUIRE_STATUS_INTERVAL, ScheduledJob.ACQUIRE_STATUS,
-                                             ProtocolEvent.SCHEDULED_ACQUIRE_STATUS)
+                    log.debug("Configuring the scheduler to acquire status %s",
+                              self._param_dict.get(Parameter.RUN_ACQUIRE_STATUS_INTERVAL))
+                    if self._param_dict.get(Parameter.RUN_ACQUIRE_STATUS_INTERVAL) != '00:00:00':
+                        self.start_scheduled_job(Parameter.RUN_ACQUIRE_STATUS_INTERVAL, ScheduledJob.ACQUIRE_STATUS,
+                                                 ProtocolEvent.SCHEDULED_ACQUIRE_STATUS)
 
     def _set_params(self, *args, **kwargs):
         """
@@ -1297,7 +1298,7 @@ class Protocol(MenuInstrumentProtocol):
                              submenu_write=[["5"]])
 
         self._param_dict.add(Parameter.RUN_ACQUIRE_STATUS_INTERVAL,
-                             "fakeregexdontmatch",
+                             r"([0-9][0-9]:[0-9][0-9]:[0-9][0-9])",
                              lambda match: match.group(0),
                              str,
                              type=ParameterDictType.STRING,
