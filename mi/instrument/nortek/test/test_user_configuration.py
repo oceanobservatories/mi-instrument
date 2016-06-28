@@ -1,7 +1,7 @@
 import base64
 from binascii import unhexlify
 
-from unittest2 import TestCase
+from unittest import TestCase
 
 from mi.core.instrument.data_particle import DataParticleKey
 from mi.instrument.nortek.test.test_driver import user_config_sample, user_config_particle

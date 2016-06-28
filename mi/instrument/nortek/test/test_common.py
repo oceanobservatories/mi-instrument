@@ -1,4 +1,4 @@
-from unittest2 import TestCase
+from unittest import TestCase
 
 from mi.core.exceptions import SampleException
 from mi.instrument.nortek.common import (convert_word_to_int, convert_word_to_bit_field,
