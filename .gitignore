@@ -9,3 +9,6 @@ develop-eggs
 eggs
 parts
 marine_integrations.egg-info
+.coverage
+.cache
+mi_instrument.egg-info

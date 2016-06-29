@@ -24,7 +24,7 @@ install:
   - conda install --yes python=$TRAVIS_PYTHON_VERSION matplotlib nose cython pyzmq gevent mock psycopg2 twisted sqlalchemy pandas xarray
   - conda install --yes -c ooi ntplib apscheduler qpid-python tqdm kombu librabbitmq python-consul ooi_port_agent
   - conda install --yes -c obspy obspy
-  - pip install ModestImage
+  - pip install ModestImage codecov
 
 before_script:
   - psql -c 'create role awips superuser createdb createrole inherit login;' -U postgres
@@ -38,5 +38,7 @@ before_script:
 
 # command to run tests
 script:
-  #- nosetests -a UNIT -e antelope
-  - nosetests -a UNIT
+  - nosetests -a UNIT --with-coverage --cover-package=mi
+
+after_success:
+  - codecov
