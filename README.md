@@ -1,8 +1,7 @@
 [![Build Status](https://travis-ci.org/oceanobservatories/mi-instrument.svg?branch=master)](https://travis-ci.org/oceanobservatories/mi-instrument)
 [![codecov](https://codecov.io/gh/oceanobservatories/mi-instrument/branch/master/graph/badge.svg)](https://codecov.io/gh/oceanobservatories/mi-instrument)
 
-
-===========================================================
+```
 Ocean Observatories Initiative Cyber Infrastructure (OOI CI)
 Integrated Observatory Network (ION) - OOINet
 
@@ -10,159 +9,73 @@ Marine Integration source code repository.
 
 (C) The Regents of the University of California, 2010-2014
 See LICENSE.txt for license.
-===========================================================
 
 This is the repository that contains the implemention for all marine integrations
-including drivers and transforms.
+including drivers and transforms. 
+```
 
-Marine integration packages are intended to be developed and released
-independently of other ION releases.
+# INSTALL prerequisite software
+## Install homebrew
 
-To develop drivers you must install ION and the Instrument Development Kit.  
-
-INSTALL prerequisite software for COI-services
-============================================
-- homebrew
-    /usr/bin/ruby <(curl -fsSkL raw.github.com/mxcl/homebrew/go)
+    /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
     brew doctor
     brew tap homebrew/science
 
-- python 2.7.x
-    > brew install python --framework --universal
+## Install python 2.7
 
-- git 1.7.7: Use brew or download the Mac or Linux installer and run it
+    brew install python --framework --universal
 
-- libevent libyaml zeromq rabbitmq hdf5 pkg-config netcdf freetype spatialindex udunits, if not already present:
+## Install git
+
+    brew install git
+
+## Install libraries
+
     brew install libevent libyaml zeromq rabbitmq hdf5 pkg-config netcdf freetype spatialindex udunits
 
-- Install Postgres with Homebrew (PostgreSQL is the default but CouchDB is possible)
-    brew install postgres postgis
+## Install pip/virtualenv
 
-    If you have trouble with the installation, please see:
-    https://confluence.oceanobservatories.org/display/CIDev/Postgres+Datastore
-    https://confluence.oceanobservatories.org/display/CIDev/M112+Geospatial+Search
-
-- Once Postgres is running, add an ion user
-    createuser ion
-
-- pip
     easy_install pip
-- virtualenv
-    easy_install --upgrade virtualenv
-    easy_install --upgrade virtualenvwrapper
-- modify ~/.bash_profile
+    pip install virtualenv
+    pip install virtualenvwrapper
+    
+## Modify ~/.bash_profile
+
     add this to the end:
-       export WORKON_HOME=$HOME/OOICI/virtenvs
+       export WORKON_HOME=$HOME/virtenvs
        . /usr/local/share/python/virtualenvwrapper.sh
-- setup a virtual environment to work in.
+       
+    source ~/.bash_profile
+       
+## Create a virtualenv
+
     mkvirtualenv --no-site-packages --python=python2.7 ooi
-    pip install -U setuptools==0.8
-    pip install numpy==1.7.1
 
 
-INSTALL
-=======
+# INSTALL
 
-# Download the lastest source from github.  Note: in order to run 
-# start_driver or package driver it is mandatory that you are running
-# on a fork of the ooici/marine-integrations repository.
+Download the lastest source from github.
 
-# Read only checkout
-$ git clone git://github.com/ooici/marine-integrations
+## Read only checkout
+    $ git clone git://github.com/ooici/marine-integrations
 
-# Read / write checkout
-$ git clone git@github.com:<your_github_uname>/marine-integrations
+## Read / write checkout
+    $ git clone git@github.com:<your_github_uname>/marine-integrations
 
-# Update all submodules (ion-definitions, coi-services, pyon)
-$ cd marine-integrations
-$ git submodule update --init
-
-# Buildout the environment
-$ workon ooi
-$ python bootstrap.py -v 2.2.0
-$ bin/buildout
-$ bin/generate_interfaces
+## Install requirements
+    $ workon ooi
+    $ python install -r requirements.txt
+    
+## Execute unit tests
+    $ nosetests -a UNIT
 
 
-** If matplot lib fails to build due to not finding the free type headers, try:
-    if /usr/X11/lib/pkgconfig has a file named freetype2.pc, then add the following line to your .bash_profile
-    export PKG_CONFIG_PATH=/usr/X11/lib/pkgconfig
+# Table of Contents
 
-
-####
-##   Fresh Build
-####
-
-If you have unexplained issues or have done a large pull you may want to do a full rebuild.  
-
-# Clean the last build
-$ ant clean clean-buildout
-
-# remove submodules
-$ rm -r extern
-
-# reload submodules, submodule sycn read the .gitmodules file and resets your
-# local git modules index.
-$ git submodule sync
-$ git submodule init
-$ git submodule update
-
-# Buildout
-$ python bootstrap.py
-$ bin/buildout
-$ bin/generate_interfaces
-
-
-USAGE
-=====
-
-####
-#    Configuration
-####
-
-The first time you run an IDK script it will create an IDK configuration
-directory (~/.idk).  In this directory you will find IDK log files and 
-and IDK configuration file.  The important configuration that you are 
-looking for in this file is 'working_repo'.  That is the directory where
-you checkouted the marine-integrations repository.
-
-If you move the local repository directory that file needs to be updated.
-You can do this from the command line by running idk_rebase from the root 
-of the local marine-integrations repository.
-
-####
-#    New Driver Workflow
-####
-
-bin/start_driver:
-   Run this process to start developing a new driver.  
-
-bin/switch_driver:
-   Switch to
-
-bin/test_driver:
-   Run this process to run driver tests.  If no options are given all tests 
-   (unit, integration, and qualification) are run.  This program offers 
-   different usage options.  Use -h for detailed usage.
-
-bin/package_driver:
-   Run this process to submit the driver for ingestion into the OOI network.  
-   The submitted driver could be rejected if tests are not complete, there is
-   a naming conflict, or any other issues.  Feedback will be sent to the 
-   developer to the address on your gethub account.
-
-bin/idk_rebase:
-   If you move the IDK directory this command will update your local IDK 
-   configuration with the new directory.
-
-bin/da_server:
-   Start the direct access server
-
-Table of Contents
-=================
 Source code is organized in directories by instrument vendor. The following is
 a listing of currently deployed instruments by make.
 
+```
 Instrument	  location
 ----------------------------------------------
 ADCP          teledyne.workhorse.adcp
@@ -197,4 +110,4 @@ VEL3D-C       nortek.vector.ooicore
 VEL3D_C       nortek.vector.ooicore
 VELPT         nortek.aquadopp.ooicore
 ZPLSC         kut.ek60.ooicore
-
+```
