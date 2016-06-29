@@ -1145,9 +1145,9 @@ class Protocol(MenuInstrumentProtocol):
         Populate the command dictionary with command.
         """
         self._cmd_dict.add(Capability.START_AUTOSAMPLE, display_name="Start Autosample")
-        self._cmd_dict.add(Capability.STOP_AUTOSAMPLE, display_name="Stop Autosample")
+        self._cmd_dict.add(Capability.STOP_AUTOSAMPLE, display_name="Stop Autosample", timeout=40)
         self._cmd_dict.add(Capability.ACQUIRE_STATUS, display_name="Acquire Status")
-        self._cmd_dict.add(Capability.DISCOVER, display_name="Discover")
+        self._cmd_dict.add(Capability.DISCOVER, display_name="Discover", timeout=40)
 
     def _build_param_dict(self):
         """
