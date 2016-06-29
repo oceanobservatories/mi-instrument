@@ -315,6 +315,9 @@ class NortekProtocolParameterDict(ProtocolParameterDict):
     def set_visibility(self, name, vis):
         self._param_dict[name].description.visibility = vis
 
+    def set_default_value(self, name, default_value):
+        self._param_dict[name].description.default_value = default_value
+
     def has(self, name):
         return name in self._param_dict
 
@@ -418,6 +421,7 @@ class NortekInstrumentProtocol(CommandResponseInstrumentProtocol):
         self.velocity_sync_bytes = ''
         self.clock_particle = []
         self.status_particles = []
+        self._user_config = None
 
         self._direct_commands['Newline'] = self._newline
         command_dict = InstrumentCommands.dict()
@@ -1285,26 +1289,27 @@ class NortekInstrumentProtocol(CommandResponseInstrumentProtocol):
         """
         config_string = self._do_cmd_resp(InstrumentCommands.READ_USER_CONFIGURATION,
                                           response_regex=common.USER_CONFIG_DATA_REGEX)
-        user_config = UserConfiguration(config_string)
-        if not user_config.valid:
+        self._user_config = UserConfiguration(config_string)
+        if not self._user_config.valid:
             raise InstrumentParameterException('Received invalid configuration from instrument, checksum error')
 
         for each in Parameter.list():
-            if hasattr(user_config, each) and self._param_dict.has(each):
-                self._param_dict.set_value(each, getattr(user_config, each))
+            if hasattr(self._user_config, each) and self._param_dict.has(each):
+                self._param_dict.set_value(each, getattr(self._user_config, each))
 
     def _create_set_output(self, parameters):
-        user_config = UserConfiguration()
+        if self._user_config is None:
+            raise InstrumentParameterException('Attempted to set_params before update_params')
 
         for each in Parameter.list():
-            if hasattr(user_config, each) and self._param_dict.has(each):
+            if hasattr(self._user_config, each) and self._param_dict.has(each):
                 try:
-                    setattr(user_config, each, parameters.get(each))
+                    setattr(self._user_config, each, parameters.get(each))
                 except (ValueError, TypeError):
                     log.error('Received invalid value for %s (%r)', each, parameters.get(each))
                     raise InstrumentParameterException('Received invalid value for %s' % each)
 
-        return repr(user_config)
+        return repr(self._user_config)
 
     def _build_command_default(self, cmd):
         return cmd

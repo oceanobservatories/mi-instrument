@@ -3,11 +3,14 @@ from binascii import unhexlify
 
 from unittest import TestCase
 
+from nose.plugins.attrib import attr
+
 from mi.core.instrument.data_particle import DataParticleKey
 from mi.instrument.nortek.test.test_driver import user_config_sample, user_config_particle
 from mi.instrument.nortek.user_configuration import UserConfiguration
 
 
+@attr('UNIT', group='mi')
 class UserConfigurationTest(TestCase):
     def assert_round_trip(self, config_string):
         uc = UserConfiguration(config_string)
@@ -86,26 +89,30 @@ class UserConfigurationTest(TestCase):
         self.assertEqual(uc.diagnostics_interval, 1)
 
         # high only
-        uc.diagnostics_interval = 256
+        uc.diagnostics_interval = 65536
         self.assertEqual(uc.diag_interval_low, 0)
         self.assertEqual(uc.diag_interval_high, 1)
-        self.assertEqual(uc.diagnostics_interval, 256)
+        self.assertEqual(uc.diagnostics_interval, 65536)
 
         # both
-        uc.diagnostics_interval = 257
+        uc.diagnostics_interval = 65537
         self.assertEqual(uc.diag_interval_low, 1)
         self.assertEqual(uc.diag_interval_high, 1)
-        self.assertEqual(uc.diagnostics_interval, 257)
+        self.assertEqual(uc.diagnostics_interval, 65537)
 
         # max
-        uc.diagnostics_interval = 65535
-        self.assertEqual(uc.diag_interval_low, 255)
-        self.assertEqual(uc.diag_interval_high, 255)
-        self.assertEqual(uc.diagnostics_interval, 65535)
+        uc.diagnostics_interval = 2**32-1
+        self.assertEqual(uc.diag_interval_low, 65535)
+        self.assertEqual(uc.diag_interval_high, 65535)
+        self.assertEqual(uc.diagnostics_interval, 2**32-1)
 
         # too big
         with self.assertRaises(ValueError):
-            uc.diagnostics_interval = 65536
+            uc.diagnostics_interval = 2**32
+
+        uc.diagnostics_interval = 10800
+        print uc.diag_interval_low
+        print uc.diag_interval_high
 
     def test_set_filter_constants(self):
         uc = UserConfiguration(user_config_sample())

@@ -1,10 +1,13 @@
 from unittest import TestCase
 
+from nose.plugins.attrib import attr
+
 from mi.core.exceptions import SampleException
 from mi.instrument.nortek.common import (convert_word_to_int, convert_word_to_bit_field,
                                          convert_bcd_bytes_to_ints, convert_time)
 
 
+@attr('UNIT', group='mi')
 class CommonTest(TestCase):
     def test_convert_word_to_int(self):
         word = '\x00\x00'

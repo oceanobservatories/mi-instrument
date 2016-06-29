@@ -323,14 +323,14 @@ class UserConfiguration(LittleEndianStructure):
 
     @property
     def diagnostics_interval(self):
-        return (self.diag_interval_high << 8) + self.diag_interval_low
+        return (self.diag_interval_high << 16) + self.diag_interval_low
 
     @diagnostics_interval.setter
     def diagnostics_interval(self, value):
-        if value >= 2**16:
+        if value >= 2**32:
             raise ValueError
-        self.diag_interval_low = value & 0xff
-        self.diag_interval_high = (value & 0xff00) >> 8
+        self.diag_interval_low = value & 0xffff
+        self.diag_interval_high = (value & 0xffff0000) >> 16
 
     @property
     def valid(self):
@@ -355,6 +355,17 @@ class UserConfiguration(LittleEndianStructure):
 
             rdict[name] = value
         return pformat(rdict)
+
+    def _dict(self):
+        rdict = {}
+        for field in self._fields_:
+            name = field[0]
+            value = getattr(self, name)
+            if not isinstance(value, (int, long)):
+                value = str(list(value))
+
+            rdict[name] = value
+        return rdict
 
     def diff(self, other):
         diff = {}
