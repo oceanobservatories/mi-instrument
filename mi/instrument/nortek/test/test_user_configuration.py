@@ -1,5 +1,7 @@
 import base64
+from _ctypes import sizeof
 from binascii import unhexlify
+from pprint import pformat
 
 from unittest import TestCase
 
@@ -497,6 +499,28 @@ class UserConfigurationTest(TestCase):
         self.assertEqual(uc.wave_data_rate, 0)
         self.assertEqual(uc.wave_cell_position, 0)
         self.assertEqual(uc.dynamic_position_type, 1)
+
+    def test_set_short_out_of_range(self):
+        uc = UserConfiguration()
+        with self.assertRaises(ValueError):
+            uc._set_short_at(sizeof(UserConfiguration), 1)
+
+        with self.assertRaises(ValueError):
+            uc._set_short_at(sizeof(UserConfiguration) - 1, 1)
+
+        with self.assertRaises(ValueError):
+            uc._set_short_at(- 1, 1)
+
+    def test_dict(self):
+        uc = UserConfiguration()
+        d = uc._dict()
+        self.assertEqual(d['sync'], 165)
+        self.assertListEqual(sorted([f[0] for f in uc._fields_]), sorted(d))
+
+    def test_str(self):
+        uc = UserConfiguration()
+        d = uc._dict()
+        self.assertEqual(str(uc), pformat(d))
 
     def test_ocean_data(self):
         velptd106 = '''

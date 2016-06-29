@@ -230,7 +230,7 @@ class UserConfiguration(LittleEndianStructure):
 
     def _set_short_at(self, offset, value):
         max_offset = sizeof(self) - 2
-        if offset > max_offset:
+        if offset < 0 or offset > max_offset:
             raise ValueError
         addr = addressof(self) + offset
         value_string = struct.pack('<H', value)
@@ -346,14 +346,7 @@ class UserConfiguration(LittleEndianStructure):
         return base + struct.pack('<H', checksum)
 
     def __str__(self):
-        rdict = {}
-        for field in self._fields_:
-            name = field[0]
-            value = getattr(self, name)
-            if not isinstance(value, (int, long)):
-                value = str(list(value))
-
-            rdict[name] = value
+        rdict = self._dict()
         return pformat(rdict)
 
     def _dict(self):
