@@ -7,10 +7,7 @@
 @brief Contains logic to generate data particles to be exchanged between
 the driver and agent. This involves a JSON interchange format
 """
-
-__author__ = 'Steve Foley'
-__license__ = 'Apache 2.0'
-
+import json
 import time
 import ntplib
 import base64
@@ -18,7 +15,13 @@ import base64
 from mi.core.common import BaseEnum
 from mi.core.exceptions import SampleException, ReadOnlyException, NotImplementedException, InstrumentParameterException
 from mi.core.log import get_logger
+
+
+__author__ = 'Steve Foley'
+__license__ = 'Apache 2.0'
+
 log = get_logger()
+
 
 class CommonDataParticleType(BaseEnum):
     """
@@ -26,6 +29,7 @@ class CommonDataParticleType(BaseEnum):
     using an enum here we have the opportunity to define more common data particles.
     """
     RAW = "raw"
+
 
 class DataParticleKey(BaseEnum):
     PKT_FORMAT_ID = "pkt_format_id"
@@ -42,6 +46,7 @@ class DataParticleKey(BaseEnum):
     BINARY = "binary"
     NEW_SEQUENCE = "new_sequence"
 
+
 class DataParticleValue(BaseEnum):
     JSON_DATA = "JSON_Data"
     ENG = "eng"
@@ -50,6 +55,7 @@ class DataParticleValue(BaseEnum):
     OUT_OF_RANGE = "out_of_range"
     INVALID = "invalid"
     QUESTIONABLE = "questionable"
+
 
 class DataParticle(object):
     """
@@ -98,23 +104,41 @@ class DataParticle(object):
 
     def __eq__(self, arg):
         """
-        Quick equality check for testing purposes. If they have the same raw
-        data, timestamp, they are the same enough for this particle
+        Equality check for testing purposes.
         """
-        allowed_diff = .000001
-        if ((self.raw_data == arg.raw_data) and \
-            (abs(self.contents[DataParticleKey.INTERNAL_TIMESTAMP] - \
-                 arg.contents[DataParticleKey.INTERNAL_TIMESTAMP]) <= allowed_diff)):
-            return True
-        else:
-            if self.raw_data != arg.raw_data:
-                log.debug('Raw data does not match')
-            elif abs(self.contents[DataParticleKey.INTERNAL_TIMESTAMP] - \
-                     arg.contents[DataParticleKey.INTERNAL_TIMESTAMP]) > allowed_diff:
-                log.debug('Timestamp %s does not match %s',
-                          self.contents[DataParticleKey.INTERNAL_TIMESTAMP],
-                          arg.contents[DataParticleKey.INTERNAL_TIMESTAMP])
+        if self.data_particle_type() != arg.data_particle_type():
+            log.debug('Data particle type does not match: %s %s', self.data_particle_type(), arg.data_particle_type())
             return False
+
+        if self.raw_data != arg.raw_data:
+            log.debug('Raw data does not match')
+            return False
+
+        generated1 = self.generate()
+        generated2 = arg.generate()
+        missing, differing = self._compare(generated1, generated2, ignore_keys=[DataParticleKey.DRIVER_TIMESTAMP,
+                                                                                DataParticleKey.PREFERRED_TIMESTAMP])
+        if missing:
+            log.error('Key mismatch between particle dictionaries: %r', missing)
+            return False
+
+        if differing:
+            log.error('Value mismatch between particle dictionaries: %r', differing)
+
+        return True
+
+    @staticmethod
+    def _compare(d1, d2, ignore_keys=None):
+        ignore_keys = ignore_keys if ignore_keys else []
+        missing = set(d1).symmetric_difference(d2)
+        differing = {}
+        for k in d1:
+            if k in ignore_keys or k in missing:
+                continue
+            if d1[k] != d2[k]:
+                differing[k] = (d1[k], d2[k])
+
+        return missing, differing
 
     @classmethod
     def type(cls):
@@ -128,7 +152,7 @@ class DataParticle(object):
         """
         Set the internal timestamp
         @param timestamp: NTP timestamp to set
-        @param unit_time: Unix time as returned from time.time()
+        @param unix_time: Unix time as returned from time.time()
         @raise InstrumentParameterException if timestamp or unix_time not supplied
         """
         if timestamp is None and unix_time is None:
@@ -139,38 +163,37 @@ class DataParticle(object):
 
         self.contents[DataParticleKey.INTERNAL_TIMESTAMP] = float(timestamp)
 
-    def set_value(self, id, value):
+    def set_value(self, value_id, value):
         """
         Set a content value, restricted as necessary
 
-        @param id The ID of the value to set, should be from DataParticleKey
+        @param value_id The ID of the value to set, should be from DataParticleKey
         @param value The value to set
         @raises ReadOnlyException If the parameter cannot be set
         """
-        if (id == DataParticleKey.INTERNAL_TIMESTAMP) and (self._check_timestamp(value)):
+        if (value_id == DataParticleKey.INTERNAL_TIMESTAMP) and (self._check_timestamp(value)):
             self.contents[DataParticleKey.INTERNAL_TIMESTAMP] = value
         else:
             raise ReadOnlyException("Parameter %s not able to be set to %s after object creation!" %
-                                    (id, value))
+                                    (value_id, value))
 
-    def get_value(self, id):
+    def get_value(self, value_id):
         """ Return a stored value
 
-        @param id The ID (from DataParticleKey) for the parameter to return
+        @param value_id The ID (from DataParticleKey) for the parameter to return
         @raises NotImplementedException If there is an invalid id
         """
-        if DataParticleKey.has(id):
-            return self.contents[id]
+        if DataParticleKey.has(value_id):
+            return self.contents[value_id]
         else:
-            raise NotImplementedException("Value %s not available in particle!", id)
-
+            raise NotImplementedException("Value %s not available in particle!", value_id)
 
     def data_particle_type(self):
         """
         Return the data particle type (aka stream name)
         @raise: NotImplementedException if _data_particle_type is not set
         """
-        if(self._data_particle_type == None):
+        if self._data_particle_type is None:
             raise NotImplementedException("_data_particle_type not initialized")
 
         return self._data_particle_type
@@ -185,7 +208,7 @@ class DataParticle(object):
         @throws InstrumentDriverException if there is a problem wtih the inputs
         """
         # Do we wan't downstream processes to check this?
-        #for time in [DataParticleKey.INTERNAL_TIMESTAMP,
+        # for time in [DataParticleKey.INTERNAL_TIMESTAMP,
         #             DataParticleKey.DRIVER_TIMESTAMP,
         #             DataParticleKey.PORT_TIMESTAMP]:
         #    if  not self._check_timestamp(self.contents[time]):
@@ -231,7 +254,6 @@ class DataParticle(object):
         """
         raise SampleException("Parsed values block not overridden")
 
-
     def _build_base_structure(self):
         """
         Build the base/header information for an output structure.
@@ -254,13 +276,13 @@ class DataParticle(object):
         @param timestamp An NTP4 formatted timestamp (64bit)
         @return True if timestamp is okay or None, False otherwise
         """
-        if timestamp == None:
+        if timestamp is None:
             return True
         if not isinstance(timestamp, float):
             return False
 
         # is it sufficiently in the future to be unreasonable?
-        if timestamp > ntplib.system_to_ntp_time(time.time()+(86400*365)):
+        if timestamp > ntplib.system_to_ntp_time(time.time() + (86400 * 365)):
             return False
         else:
             return True
@@ -274,13 +296,13 @@ class DataParticle(object):
         @throws SampleException When there is a problem with the preferred
             timestamp in the sample.
         """
-        if self.contents[DataParticleKey.PREFERRED_TIMESTAMP] == None:
+        if self.contents[DataParticleKey.PREFERRED_TIMESTAMP] is None:
             raise SampleException("Missing preferred timestamp, %s, in particle" %
                                   self.contents[DataParticleKey.PREFERRED_TIMESTAMP])
 
         # This should be handled downstream.  Don't want to not publish data because
         # the port agent stopped putting out timestamps
-        #if self.contents[self.contents[DataParticleKey.PREFERRED_TIMESTAMP]] == None:
+        # if self.contents[self.contents[DataParticleKey.PREFERRED_TIMESTAMP]] == None:
         #    raise SampleException("Preferred timestamp, %s, is not defined" %
         #                          self.contents[DataParticleKey.PREFERRED_TIMESTAMP])
 
@@ -294,7 +316,7 @@ class DataParticle(object):
 
         try:
             encoded_val = encoding_function(value)
-        except Exception as e:
+        except Exception:
             log.error("Data particle error encoding. Name:%s Value:%s", name, value)
             self._encoding_errors.append({name: value})
         return {DataParticleKey.VALUE_ID: name,
@@ -306,11 +328,13 @@ class DataParticle(object):
         """
         return self._encoding_errors
 
+
 class RawDataParticleKey(BaseEnum):
     PAYLOAD = "raw"
     LENGTH = "length"
     TYPE = "type"
     CHECKSUM = "checksum"
+
 
 class RawDataParticle(DataParticle):
     """
@@ -329,17 +353,16 @@ class RawDataParticle(DataParticle):
         """
 
         port_agent_packet = self.raw_data
-        if(not isinstance(port_agent_packet, dict)):
+        if not isinstance(port_agent_packet, dict):
             raise SampleException("raw data not a dictionary")
 
         for param in ["raw", "length", "type", "checksum"]:
-             if(not param in port_agent_packet.keys()):
-                  raise SampleException("raw data not a complete port agent packet. missing %s" % param)
-
+            if param not in port_agent_packet:
+                raise SampleException("raw data not a complete port agent packet. missing %s" % param)
 
         payload = None
         length = None
-        type = None
+        ptype = None
         checksum = None
 
         # Attempt to convert values
@@ -354,7 +377,7 @@ class RawDataParticle(DataParticle):
             pass
 
         try:
-            type = int(port_agent_packet.get("type"))
+            ptype = int(port_agent_packet.get("type"))
         except TypeError:
             pass
 
@@ -364,18 +387,18 @@ class RawDataParticle(DataParticle):
             pass
 
         result = [{
-                      DataParticleKey.VALUE_ID: RawDataParticleKey.PAYLOAD,
-                      DataParticleKey.VALUE: payload,
-                      DataParticleKey.BINARY: True},
-                  {
-                      DataParticleKey.VALUE_ID: RawDataParticleKey.LENGTH,
-                      DataParticleKey.VALUE: length},
-                  {
-                      DataParticleKey.VALUE_ID: RawDataParticleKey.TYPE,
-                      DataParticleKey.VALUE: type},
-                  {
-                      DataParticleKey.VALUE_ID: RawDataParticleKey.CHECKSUM,
-                      DataParticleKey.VALUE: checksum},
+            DataParticleKey.VALUE_ID: RawDataParticleKey.PAYLOAD,
+            DataParticleKey.VALUE: payload,
+            DataParticleKey.BINARY: True},
+            {
+                DataParticleKey.VALUE_ID: RawDataParticleKey.LENGTH,
+                DataParticleKey.VALUE: length},
+            {
+                DataParticleKey.VALUE_ID: RawDataParticleKey.TYPE,
+                DataParticleKey.VALUE: ptype},
+            {
+                DataParticleKey.VALUE_ID: RawDataParticleKey.CHECKSUM,
+                DataParticleKey.VALUE: checksum},
         ]
 
         return result
