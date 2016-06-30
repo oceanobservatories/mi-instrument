@@ -1374,21 +1374,21 @@ class SBE16Protocol(CommandResponseInstrumentProtocol):
         next_state = None
         result = []
 
-        result.append(self._do_cmd_resp(Command.GET_SD, timeout=TIMEOUT))
-        log.debug("_handler_command_acquire_status: GetSD Response: %s", result)
-        result.append(self._do_cmd_resp(Command.GET_HD, timeout=TIMEOUT))
-        log.debug("_handler_command_acquire_status: GetHD Response: %s", result)
-        result.append(self._do_cmd_resp(Command.GET_CD, timeout=TIMEOUT))
-        log.debug("_handler_command_acquire_status: GetCD Response: %s", result)
-        result.append(self._do_cmd_resp(Command.GET_CC, timeout=TIMEOUT))
-        log.debug("_handler_command_acquire_status: GetCC Response: %s", result)
-        result.append(self._do_cmd_resp(Command.GET_EC, timeout=TIMEOUT))
-        log.debug("_handler_command_acquire_status: GetEC Response: %s", result)
+        response = self._do_cmd_resp(Command.GET_SD, timeout=TIMEOUT)
+        log.debug("_handler_command_acquire_status: GetSD Response: %s", response)
+        response =  self._do_cmd_resp(Command.GET_HD, timeout=TIMEOUT)
+        log.debug("_handler_command_acquire_status: GetHD Response: %s", response)
+        response = self._do_cmd_resp(Command.GET_CD, timeout=TIMEOUT)
+        log.debug("_handler_command_acquire_status: GetCD Response: %s", response)
+        response = self._do_cmd_resp(Command.GET_CC, timeout=TIMEOUT)
+        log.debug("_handler_command_acquire_status: GetCC Response: %s", response)
+        response = self._do_cmd_resp(Command.GET_EC, timeout=TIMEOUT)
+        log.debug("_handler_command_acquire_status: GetEC Response: %s", response)
 
         # Reset the event counter right after getEC
         self._do_cmd_resp(Command.RESET_EC, timeout=TIMEOUT)
 
-        return next_state, (next_state, ''.join(result))
+        return next_state, (next_state, result)
 
     ########################################################################
     # Common handlers.
