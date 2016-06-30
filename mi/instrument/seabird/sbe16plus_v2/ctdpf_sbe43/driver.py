@@ -681,25 +681,24 @@ class SBE43Protocol(SBE16Protocol):
         next_state = None
         result = []
 
-        result.append(self._do_cmd_resp(Command.GET_SD, response_regex=SBE43StatusParticle.regex_compiled(),
-                                        timeout=TIMEOUT))
+        self._do_cmd_resp(Command.GET_SD, response_regex=SBE43StatusParticle.regex_compiled(), timeout=TIMEOUT)
         log.debug("_handler_command_acquire_status: GetSD Response: %s", result)
-        result.append(self._do_cmd_resp(Command.GET_HD, response_regex=SBE43HardwareParticle.regex_compiled(),
-                                        timeout=TIMEOUT))
+        self._do_cmd_resp(Command.GET_HD, response_regex=SBE43HardwareParticle.regex_compiled(), timeout=TIMEOUT)
         log.debug("_handler_command_acquire_status: GetHD Response: %s", result)
-        result.append(self._do_cmd_resp(Command.GET_CD, response_regex=SBE43ConfigurationParticle.regex_compiled(),
-                                        timeout=TIMEOUT))
+        self._do_cmd_resp(Command.GET_CD, response_regex=SBE43ConfigurationParticle.regex_compiled(), timeout=TIMEOUT)
         log.debug("_handler_command_acquire_status: GetCD Response: %s", result)
-        result.append(self._do_cmd_resp(Command.GET_CC, response_regex=SBE43CalibrationParticle.regex_compiled(),
-                                        timeout=TIMEOUT))
+        self._do_cmd_resp(Command.GET_CC, response_regex=SBE43CalibrationParticle.regex_compiled(), timeout=TIMEOUT)
         log.debug("_handler_command_acquire_status: GetCC Response: %s", result)
-        result.append(self._do_cmd_resp(Command.GET_EC, timeout=TIMEOUT))
+        self._do_cmd_resp(Command.GET_EC, timeout=TIMEOUT)
         log.debug("_handler_command_acquire_status: GetEC Response: %s", result)
 
         # Reset the event counter right after getEC
         self._do_cmd_resp(Command.RESET_EC, timeout=TIMEOUT)
 
-        return next_state, (next_state, ''.join(result))
+        result = self.wait_for_particles([SBE43StatusParticle, SBE43HardwareParticle, SBE43ConfigurationParticle,
+                                          SBE43CalibrationParticle])
+
+        return next_state, (next_state, result)
 
     def _handler_command_acquire_sample(self, *args, **kwargs):
         """
@@ -744,22 +743,22 @@ class SBE43Protocol(SBE16Protocol):
         result.append(self._do_cmd_resp(Command.GET_SD, response_regex=SBE43StatusParticle.regex_compiled(),
                                         timeout=TIMEOUT))
         log.debug("_handler_autosample_acquire_status: GetSD Response: %s", result)
-        result.append(self._do_cmd_resp(Command.GET_HD, response_regex=SBE43HardwareParticle.regex_compiled(),
-                                        timeout=TIMEOUT))
+        self._do_cmd_resp(Command.GET_HD, response_regex=SBE43HardwareParticle.regex_compiled(), timeout=TIMEOUT)
         log.debug("_handler_autosample_acquire_status: GetHD Response: %s", result)
-        result.append(self._do_cmd_resp(Command.GET_CD, response_regex=SBE43ConfigurationParticle.regex_compiled(),
-                                        timeout=TIMEOUT))
+        self._do_cmd_resp(Command.GET_CD, response_regex=SBE43ConfigurationParticle.regex_compiled(), timeout=TIMEOUT)
         log.debug("_handler_autosample_acquire_status: GetCD Response: %s", result)
-        result.append(self._do_cmd_resp(Command.GET_CC, response_regex=SBE43CalibrationParticle.regex_compiled(),
-                                        timeout=TIMEOUT))
+        self._do_cmd_resp(Command.GET_CC, response_regex=SBE43CalibrationParticle.regex_compiled(), timeout=TIMEOUT)
         log.debug("_handler_autosample_acquire_status: GetCC Response: %s", result)
-        result.append(self._do_cmd_resp(Command.GET_EC, timeout=TIMEOUT))
+        self._do_cmd_resp(Command.GET_EC, timeout=TIMEOUT)
         log.debug("_handler_autosample_acquire_status: GetEC Response: %s", result)
 
         # Reset the event counter right after getEC
         self._do_cmd_no_resp(Command.RESET_EC)
 
-        return next_state, (next_state, ''.join(result))
+        result = self.wait_for_particles([SBE43StatusParticle, SBE43HardwareParticle, SBE43ConfigurationParticle,
+                                          SBE43CalibrationParticle], timeout=TIMEOUT)
+
+        return next_state, (next_state, result)
 
     ########################################################################
     # response handlers.
