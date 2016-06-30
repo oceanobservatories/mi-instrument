@@ -317,7 +317,7 @@ class SeaBirdProtocol(CommandResponseInstrumentProtocol):
 
     def _handler_autosample_enter(self, *args, **kwargs):
         """
-        Enter autosample state.
+        Enter autosamle state.
         """
         if self._init_type != InitializationType.NONE:
             self._protocol_fsm.on_event(DriverEvent.INIT_PARAMS)
