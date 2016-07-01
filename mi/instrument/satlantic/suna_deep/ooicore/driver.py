@@ -46,11 +46,17 @@ NEWLINE = '\r\n'
 # default timeout.
 DEFAULT_TIMEOUT = 15
 
-MEASURE_N_TIMEOUT = 60
+ACQUIRE_SAMPLE_TIMEOUT = 40
+ACQUIRE_STATUS_TIMEOUT = 30
+MEASURE_N_TIMEOUT = 65
+MEASURE_N_CMD_TIMEOUT = 60
+MEASURE_0_TIMEOUT = 40
 TIMED_N_TIMEOUT = 65
+TIMED_N_CMD_TIMEOUT = 60
 CLOCK_SYNC_TIMEOUT = 20
 DISCOVER_TIMEOUT = 40
 STOP_PERIODIC_TIMEOUT = 30
+STOP_AUTOSAMPLE_TIMEOUT = 40
 
 MIN_TIME_SAMPLE = 0
 MIN_LIGHT_SAMPLE = 1
@@ -231,6 +237,8 @@ class ProtocolState(BaseEnum):
     DIRECT_ACCESS = DriverProtocolState.DIRECT_ACCESS
     AUTOSAMPLE = DriverProtocolState.AUTOSAMPLE
     PERIODIC = 'DRIVER_STATE_PERIODIC'
+    MEASURING_N = 'DRIVER_STATE_MEASURING_N'
+    MEASURING_TIMED_N = 'DRIVER_STATE_MEASURING_TIMED_N'
 
 
 class ProtocolEvent(BaseEnum):
@@ -250,8 +258,10 @@ class ProtocolEvent(BaseEnum):
     CLOCK_SYNC = DriverEvent.CLOCK_SYNC
     ACQUIRE_STATUS = DriverEvent.ACQUIRE_STATUS
     MEASURE_N = "DRIVER_EVENT_MEASURE_N"
+    MEASURE_N_ASYNC = "DRIVER_EVENT_MEASURE_N_ASYNC"
     MEASURE_0 = "DRIVER_EVENT_MEASURE_0"
     TIMED_N = "DRIVER_EVENT_TIMED_N"
+    TIMED_N_ASYNC = "DRIVER_EVENT_TIMED_N_ASYNC"
     GET = DriverEvent.GET
     SET = DriverEvent.SET
     EXECUTE_DIRECT = DriverEvent.EXECUTE_DIRECT
@@ -1007,6 +1017,19 @@ class Protocol(CommandResponseInstrumentProtocol):
         self._protocol_fsm.add_handler(ProtocolState.DIRECT_ACCESS, ProtocolEvent.STOP_DIRECT,
                                        self._handler_direct_access_stop_direct)
 
+        # ASYNC MEASURE_N State
+        self._protocol_fsm.add_handler(ProtocolState.MEASURING_N, ProtocolEvent.ENTER, self._handler_measuring_n_enter)
+        self._protocol_fsm.add_handler(ProtocolState.MEASURING_N, ProtocolEvent.EXIT, self._handler_generic_exit)
+        self._protocol_fsm.add_handler(ProtocolState.MEASURING_N, ProtocolEvent.MEASURE_N_ASYNC,
+                                       self._handler_measure_n_async)
+
+        # ASYNC TIMED_N State
+        self._protocol_fsm.add_handler(ProtocolState.MEASURING_TIMED_N, ProtocolEvent.ENTER,
+                                       self._handler_measuring_timed_n_enter)
+        self._protocol_fsm.add_handler(ProtocolState.MEASURING_TIMED_N, ProtocolEvent.EXIT, self._handler_generic_exit)
+        self._protocol_fsm.add_handler(ProtocolState.MEASURING_TIMED_N, ProtocolEvent.TIMED_N_ASYNC,
+                                       self._handler_timed_n_async)
+
         # AUTOSAMPLE State
         self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.ENTER, self._handler_enter)
         self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.EXIT, self._handler_generic_exit)
@@ -1091,14 +1114,14 @@ class Protocol(CommandResponseInstrumentProtocol):
         """
         Populate the command dictionary with commands
         """
-        self._cmd_dict.add(Capability.ACQUIRE_SAMPLE, timeout=DEFAULT_TIMEOUT, display_name='Acquire Sample')
-        self._cmd_dict.add(Capability.ACQUIRE_STATUS, timeout=DEFAULT_TIMEOUT, display_name='Acquire Status')
+        self._cmd_dict.add(Capability.ACQUIRE_SAMPLE, timeout=ACQUIRE_SAMPLE_TIMEOUT, display_name='Acquire Sample')
+        self._cmd_dict.add(Capability.ACQUIRE_STATUS, timeout=ACQUIRE_STATUS_TIMEOUT, display_name='Acquire Status')
         self._cmd_dict.add(Capability.MEASURE_N, timeout=MEASURE_N_TIMEOUT, display_name='Acquire N Light Samples')
-        self._cmd_dict.add(Capability.MEASURE_0, timeout=DEFAULT_TIMEOUT, display_name='Acquire Dark Sample')
+        self._cmd_dict.add(Capability.MEASURE_0, timeout=MEASURE_0_TIMEOUT, display_name='Acquire Dark Sample')
         self._cmd_dict.add(Capability.TIMED_N, timeout=TIMED_N_TIMEOUT, display_name='Acquire Light Samples (N seconds)')
         self._cmd_dict.add(Capability.TEST, display_name='Execute Test')
         self._cmd_dict.add(Capability.START_AUTOSAMPLE, display_name='Start Autosample')
-        self._cmd_dict.add(Capability.STOP_AUTOSAMPLE, display_name='Stop Autosample')
+        self._cmd_dict.add(Capability.STOP_AUTOSAMPLE, timeout=STOP_AUTOSAMPLE_TIMEOUT, display_name='Stop Autosample')
         self._cmd_dict.add(Capability.START_PERIODIC, display_name='Start Periodic Mode')
         self._cmd_dict.add(Capability.STOP_PERIODIC, timeout=STOP_PERIODIC_TIMEOUT, display_name='Stop Periodic Mode')
         self._cmd_dict.add(Capability.CLOCK_SYNC, timeout=CLOCK_SYNC_TIMEOUT, display_name='Synchronize Clock')
@@ -1896,18 +1919,31 @@ class Protocol(CommandResponseInstrumentProtocol):
     ########################################################################
     def _handler_command_measure_n(self):
         """
+        Measure N is asynchronous. Transition to MEASURING_N State
+        """
+        next_state = ProtocolState.MEASURING_N
+        result = []
+        return next_state, (next_state, result)
+
+    def _handler_measuring_n_enter(self):
+        """
+        Trigger the MEASURE_N_ASYNC event
+        """
+        self._async_raise_fsm_event(ProtocolEvent.MEASURE_N_ASYNC)
+
+    def _handler_measure_n_async(self):
+        """
         Measure N Light Samples
         """
-        next_state = None
+        next_state = ProtocolState.COMMAND
+        result = []
 
         # exit command-line to CMD? prompt (does nothing if already at CMD? prompt)
         self._do_cmd_no_resp(InstrumentCommands.EXIT)
-        result = self._do_cmd_resp(InstrumentCommands.MEASURE, self._param_dict.get(Parameter.NUM_LIGHT_SAMPLES),
-                                   expected_prompt=Prompt.POLLED, timeout=MEASURE_N_TIMEOUT)
+        self._do_cmd_resp(InstrumentCommands.MEASURE, self._param_dict.get(Parameter.NUM_LIGHT_SAMPLES),
+                                   expected_prompt=Prompt.POLLED, timeout=MEASURE_N_CMD_TIMEOUT)
 
-        particles = self.wait_for_particles([DataParticleType.SUNA_SAMPLE], 0)
-
-        return next_state, (next_state, [particles])
+        return next_state, (next_state, result)
 
     def _handler_command_measure_0(self):
         """
@@ -1925,18 +1961,30 @@ class Protocol(CommandResponseInstrumentProtocol):
 
     def _handler_command_timed_n(self):
         """
+        Timed N is asynchronous. Transition to MEASURING_TIMED_N State
+        """
+        next_state = ProtocolState.MEASURING_TIMED_N
+        result = []
+        return next_state, (next_state, result)
+
+    def _handler_measuring_timed_n_enter(self):
+        """
+        Trigger the TIMED_N_ASYNC event
+        """
+        self._async_raise_fsm_event(ProtocolEvent.TIMED_N_ASYNC)
+
+    def _handler_timed_n_async(self):
+        """
         Timed Sampling for N time
         """
-        next_state = None
+        next_state = ProtocolState.COMMAND
+        result = []
 
         # exit command-line to CMD? prompt (does nothing if already at CMD? prompt)
         self._do_cmd_no_resp(InstrumentCommands.EXIT)
-        result = self._do_cmd_resp(InstrumentCommands.TIMED, self._param_dict.get(Parameter.TIME_LIGHT_SAMPLE),
-                                   expected_prompt=Prompt.POLLED, timeout=TIMED_N_TIMEOUT)
-
-        particles = self.wait_for_particles([DataParticleType.SUNA_SAMPLE], 0)
-
-        return next_state, (next_state, [particles])
+        self._do_cmd_resp(InstrumentCommands.TIMED, self._param_dict.get(Parameter.TIME_LIGHT_SAMPLE),
+                                   expected_prompt=Prompt.POLLED, timeout=TIMED_N_CMD_TIMEOUT)
+        return next_state, (next_state, result)
 
     ########################################################################
     # Autosample handlers.
