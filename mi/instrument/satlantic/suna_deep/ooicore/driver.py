@@ -46,13 +46,17 @@ NEWLINE = '\r\n'
 # default timeout.
 DEFAULT_TIMEOUT = 15
 
+ACQUIRE_SAMPLE_TIMEOUT = 40
+ACQUIRE_STATUS_TIMEOUT = 30
 MEASURE_N_TIMEOUT = 65
 MEASURE_N_CMD_TIMEOUT = 60
+MEASURE_0_TIMEOUT = 40
 TIMED_N_TIMEOUT = 65
 TIMED_N_CMD_TIMEOUT = 60
 CLOCK_SYNC_TIMEOUT = 20
 DISCOVER_TIMEOUT = 40
 STOP_PERIODIC_TIMEOUT = 30
+STOP_AUTOSAMPLE_TIMEOUT = 40
 
 MIN_TIME_SAMPLE = 0
 MIN_LIGHT_SAMPLE = 1
@@ -1110,14 +1114,14 @@ class Protocol(CommandResponseInstrumentProtocol):
         """
         Populate the command dictionary with commands
         """
-        self._cmd_dict.add(Capability.ACQUIRE_SAMPLE, timeout=DEFAULT_TIMEOUT, display_name='Acquire Sample')
-        self._cmd_dict.add(Capability.ACQUIRE_STATUS, timeout=DEFAULT_TIMEOUT, display_name='Acquire Status')
+        self._cmd_dict.add(Capability.ACQUIRE_SAMPLE, timeout=ACQUIRE_SAMPLE_TIMEOUT, display_name='Acquire Sample')
+        self._cmd_dict.add(Capability.ACQUIRE_STATUS, timeout=ACQUIRE_STATUS_TIMEOUT, display_name='Acquire Status')
         self._cmd_dict.add(Capability.MEASURE_N, timeout=MEASURE_N_TIMEOUT, display_name='Acquire N Light Samples')
-        self._cmd_dict.add(Capability.MEASURE_0, timeout=DEFAULT_TIMEOUT, display_name='Acquire Dark Sample')
+        self._cmd_dict.add(Capability.MEASURE_0, timeout=MEASURE_0_TIMEOUT, display_name='Acquire Dark Sample')
         self._cmd_dict.add(Capability.TIMED_N, timeout=TIMED_N_TIMEOUT, display_name='Acquire Light Samples (N seconds)')
         self._cmd_dict.add(Capability.TEST, display_name='Execute Test')
         self._cmd_dict.add(Capability.START_AUTOSAMPLE, display_name='Start Autosample')
-        self._cmd_dict.add(Capability.STOP_AUTOSAMPLE, display_name='Stop Autosample')
+        self._cmd_dict.add(Capability.STOP_AUTOSAMPLE, timeout=STOP_AUTOSAMPLE_TIMEOUT, display_name='Stop Autosample')
         self._cmd_dict.add(Capability.START_PERIODIC, display_name='Start Periodic Mode')
         self._cmd_dict.add(Capability.STOP_PERIODIC, timeout=STOP_PERIODIC_TIMEOUT, display_name='Stop Periodic Mode')
         self._cmd_dict.add(Capability.CLOCK_SYNC, timeout=CLOCK_SYNC_TIMEOUT, display_name='Synchronize Clock')
