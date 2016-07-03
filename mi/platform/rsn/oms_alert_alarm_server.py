@@ -42,11 +42,12 @@ def process_oms_request():
     if isinstance(request.json, list):
         # Log the list of Alert & Alarm messages from the OMS Event
         for alert_alarm_dict in request.json:
+            aa_publisher.enqueue(alert_alarm_dict)
             log.info('oms_alert_alarm_server: OMS_AA_MSG: %r',
                      alert_alarm_dict)
 
         # Publish the list of Alert & Alarm messages to qpid
-        aa_publisher.publish(request.json)
+        aa_publisher.publish()
 
     else:
         log.error('No data in the POSTed alert/alarm OMS Event ...')
