@@ -747,7 +747,7 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
         self._add_response_handler(SamiInstrumentCommands.SAMI_GET_STATUS, self._parse_response_get_status)
         self._add_response_handler(SamiInstrumentCommands.SAMI_STOP_STATUS, self._parse_response_stop_status)
         self._add_response_handler(SamiInstrumentCommands.SAMI_GET_CONFIG, self._parse_response_get_config)
-        self._add_response_handler(SamiInstrumentCommands.SAMI_SET_CONFIG, self._parse_response_newline)
+        self._add_response_handler(SamiInstrumentCommands.SAMI_SET_CONFIG, self._parse_response_set_config)
         self._add_response_handler(SamiInstrumentCommands.SAMI_GET_BATTERY_VOLTAGE,
                                    self._parse_response_get_battery_voltage)
         self._add_response_handler(SamiInstrumentCommands.SAMI_GET_THERMISTOR_VOLTAGE,
@@ -1239,7 +1239,7 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
         return next_state, (next_state, result)
 
     def _handler_direct_access_stop_direct(self):
-        next_state = self._discover()
+        next_state = self._handler_unknown_discover();
         result = []
         return next_state, (next_state, result)
 
@@ -1304,6 +1304,7 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
 
         return next_state, (next_state, result)
 
+
     ########################################################################
     # Reagent flush handlers.
     ########################################################################
@@ -1341,9 +1342,9 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
         self._cmd_dict.add(SamiCapability.ACQUIRE_SAMPLE, display_name="Acquire Sample")
         self._cmd_dict.add(SamiCapability.ACQUIRE_STATUS, display_name="Acquire Status")
         self._cmd_dict.add(SamiCapability.START_AUTOSAMPLE, display_name="Start Autosample")
-        self._cmd_dict.add(SamiCapability.STOP_AUTOSAMPLE, display_name="Stop Autosample")
+        self._cmd_dict.add(SamiCapability.STOP_AUTOSAMPLE, display_name="Stop Autosample", timeout=20)
         self._cmd_dict.add(SamiCapability.REAGENT_FLUSH, display_name="Reagent Flush")
-        self._cmd_dict.add(SamiCapability.DISCOVER, timeout=25, display_name='Discover')
+        self._cmd_dict.add(SamiCapability.DISCOVER, display_name='Discover', timeout=25)
 
     def _build_driver_dict(self):
         """
@@ -1423,6 +1424,20 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
         """
         return response
 
+    def _parse_response_set_config(self, response, prompt):
+        """
+        Parse set config instrument command response
+        """
+
+        # Response should be a line break. If it is not, then execute call _init_params to attempt to set the startup
+        # config command again to be sure it worked. A number of other commands have to be executed prior to
+        # the SAMI_SET_CONFIG being called, so calling _init_params will ensure that it gets executed in the correct
+        # order (see the _set_configuration() method)
+        if response:
+            log.error('SamiProtocol._parse_response_set_config: Executing _init_params() again for another attempt to'
+                      'set the startup config. Received data when only newline expected, response = %r', response)
+            self._init_params()
+
     def _parse_response_erase_all(self, response, prompt):
         """
         Parse erase all instrument command response
@@ -1438,11 +1453,11 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
     def _parse_response_newline(self, response, prompt):
         """
         Parse response to command expecting a newline
-        @raises InstrumentTimeoutException if any data occurs before newline
+        @raises InstrumentProtocolException if any data occurs before newline
         """
         if response:
             log.error('SamiProtocol._parse_response_newline: Data when only newline expected, response = %r', response)
-            raise InstrumentTimeoutException('Invalid response %s' % response)
+            raise InstrumentProtocolException('Invalid response %s' % response)
 
     def _wakeup(self, timeout=0, delay=0):
         """
