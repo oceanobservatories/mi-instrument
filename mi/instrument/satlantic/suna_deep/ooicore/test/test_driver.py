@@ -707,6 +707,7 @@ class DriverUnitTest(InstrumentDriverUnitTestCase, DriverTestMixinSub):
                                           ProtocolEvent.GET],
             ProtocolState.MEASURING_N:   [ProtocolEvent.MEASURE_N_ASYNC],
             ProtocolState.MEASURING_TIMED_N: [ProtocolEvent.TIMED_N_ASYNC],
+            ProtocolState.ACQUIRING_SAMPLE: [ProtocolEvent.ACQUIRE_SAMPLE_ASYNC],
         }
 
         driver = InstrumentDriver(self._got_data_event_callback)
