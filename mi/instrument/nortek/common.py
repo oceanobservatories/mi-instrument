@@ -41,7 +41,7 @@ CLOCK_DATA_PATTERN = r'([\x00-\x60])([\x00-\x60])([\x01-\x31])([\x00-\x24])([\x0
 CLOCK_DATA_REGEX = re.compile(CLOCK_DATA_PATTERN, re.DOTALL)
 
 # Special combined regex to give battery voltage a "unique sync byte" to search for (non-unique regex workaround)
-ID_BATTERY_DATA_PATTERN = r'(?:AQD|VEC) [0-9]{4} {0,6}\x06\x06([\x00-\xFF][\x13-\x46])\x06\x06'
+ID_BATTERY_DATA_PATTERN = r'(?:AQD|VEC) ?[0-9]{4,5} {0,6}\x06\x06([\x00-\xFF]-?[\x13-\x46])\x06\x06'
 ID_BATTERY_DATA_REGEX = re.compile(ID_BATTERY_DATA_PATTERN, re.DOTALL)
 
 # [\x00, \x01, \x02, \x04, and \x05]
@@ -53,7 +53,7 @@ BATTERY_DATA_PATTERN = r'([\x00-\xFF][\x13-\x46])\x06\x06'
 BATTERY_DATA_REGEX = re.compile(BATTERY_DATA_PATTERN, re.DOTALL)
 
 # ["VEC 8181", "AQD 8493      "]
-ID_DATA_PATTERN = r'((?:AQD|VEC) [0-9]{4}) {0,6}\x06\x06'
+ID_DATA_PATTERN = r'((?:AQD|VEC) ?[0-9]{4,5}) {0,6}\x06\x06'
 ID_DATA_REGEX = re.compile(ID_DATA_PATTERN, re.DOTALL)
 
 
