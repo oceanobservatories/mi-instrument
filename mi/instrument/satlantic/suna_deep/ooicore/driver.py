@@ -46,14 +46,13 @@ NEWLINE = '\r\n'
 # default timeout.
 DEFAULT_TIMEOUT = 15
 
-ACQUIRE_SAMPLE_TIMEOUT = 40
+ACQUIRE_SAMPLE_CMD_TIMEOUT = 50
 ACQUIRE_STATUS_TIMEOUT = 30
-MEASURE_N_TIMEOUT = 65
 MEASURE_N_CMD_TIMEOUT = 60
 MEASURE_0_TIMEOUT = 40
-TIMED_N_TIMEOUT = 65
 TIMED_N_CMD_TIMEOUT = 60
-CLOCK_SYNC_TIMEOUT = 20
+CLOCK_SYNC_TIMEOUT = 25
+CLOCK_SYNC_CMD_TIMEOUT = 20
 DISCOVER_TIMEOUT = 40
 STOP_PERIODIC_TIMEOUT = 30
 STOP_AUTOSAMPLE_TIMEOUT = 40
@@ -242,6 +241,7 @@ class ProtocolState(BaseEnum):
     PERIODIC = 'DRIVER_STATE_PERIODIC'
     MEASURING_N = 'DRIVER_STATE_MEASURING_N'
     MEASURING_TIMED_N = 'DRIVER_STATE_MEASURING_TIMED_N'
+    ACQUIRING_SAMPLE = 'DRIVER_STATE_ACQUIRING_SAMPLE'
 
 
 class ProtocolEvent(BaseEnum):
@@ -251,6 +251,7 @@ class ProtocolEvent(BaseEnum):
     DISCOVER = DriverEvent.DISCOVER
     INITIALIZE = DriverEvent.INITIALIZE
     ACQUIRE_SAMPLE = DriverEvent.ACQUIRE_SAMPLE
+    ACQUIRE_SAMPLE_ASYNC = "DRIVER_EVENT_ACQUIRE_SAMPLE_ASYNC"
     START_AUTOSAMPLE = DriverEvent.START_AUTOSAMPLE
     STOP_AUTOSAMPLE = DriverEvent.STOP_AUTOSAMPLE
     START_PERIODIC = "DRIVER_EVENT_START_PERIODIC"
@@ -1028,6 +1029,13 @@ class Protocol(CommandResponseInstrumentProtocol):
         self._protocol_fsm.add_handler(ProtocolState.DIRECT_ACCESS, ProtocolEvent.STOP_DIRECT,
                                        self._handler_direct_access_stop_direct)
 
+        # ASYNC Acquire sample State
+        self._protocol_fsm.add_handler(ProtocolState.ACQUIRING_SAMPLE, ProtocolEvent.ENTER,
+                                       self._handler_acquiring_sample_enter)
+        self._protocol_fsm.add_handler(ProtocolState.ACQUIRING_SAMPLE, ProtocolEvent.EXIT, self._handler_generic_exit)
+        self._protocol_fsm.add_handler(ProtocolState.ACQUIRING_SAMPLE, ProtocolEvent.ACQUIRE_SAMPLE_ASYNC,
+                                       self._handler_acquire_sample_async)
+
         # ASYNC MEASURE_N State
         self._protocol_fsm.add_handler(ProtocolState.MEASURING_N, ProtocolEvent.ENTER, self._handler_measuring_n_enter)
         self._protocol_fsm.add_handler(ProtocolState.MEASURING_N, ProtocolEvent.EXIT, self._handler_generic_exit)
@@ -1125,11 +1133,11 @@ class Protocol(CommandResponseInstrumentProtocol):
         """
         Populate the command dictionary with commands
         """
-        self._cmd_dict.add(Capability.ACQUIRE_SAMPLE, timeout=ACQUIRE_SAMPLE_TIMEOUT, display_name='Acquire Sample')
+        self._cmd_dict.add(Capability.ACQUIRE_SAMPLE, display_name='Acquire Sample')
         self._cmd_dict.add(Capability.ACQUIRE_STATUS, timeout=ACQUIRE_STATUS_TIMEOUT, display_name='Acquire Status')
-        self._cmd_dict.add(Capability.MEASURE_N, timeout=MEASURE_N_TIMEOUT, display_name='Acquire N Light Samples')
+        self._cmd_dict.add(Capability.MEASURE_N, display_name='Acquire N Light Samples')
         self._cmd_dict.add(Capability.MEASURE_0, timeout=MEASURE_0_TIMEOUT, display_name='Acquire Dark Sample')
-        self._cmd_dict.add(Capability.TIMED_N, timeout=TIMED_N_TIMEOUT, display_name='Acquire Light Samples (N seconds)')
+        self._cmd_dict.add(Capability.TIMED_N, display_name='Acquire Light Samples (N seconds)')
         self._cmd_dict.add(Capability.TEST, display_name='Execute Test')
         self._cmd_dict.add(Capability.START_AUTOSAMPLE, display_name='Start Autosample')
         self._cmd_dict.add(Capability.STOP_AUTOSAMPLE, timeout=STOP_AUTOSAMPLE_TIMEOUT, display_name='Stop Autosample')
@@ -1727,14 +1735,29 @@ class Protocol(CommandResponseInstrumentProtocol):
     ########################################################################
     def _handler_command_acquire_sample(self):
         """
+        Acquire Sample is asynchronous. Transition to ACQUIRING_SAMPLE State
+        """
+        next_state = ProtocolState.ACQUIRING_SAMPLE
+        result = []
+        return next_state, (next_state, result)
+
+    def _handler_acquiring_sample_enter(self):
+        """
+        Trigger the ACQUIRE_SAMPLE_ASYNC event
+        """
+        self._async_raise_fsm_event(ProtocolEvent.ACQUIRE_SAMPLE_ASYNC)
+
+    def _handler_acquire_sample_async(self):
+        """
         Get a sample from the SUNA
         """
-        next_state = None
-        timeout = time.time() + DEFAULT_TIMEOUT
+        next_state = ProtocolState.COMMAND
+        timeout = time.time() + ACQUIRE_SAMPLE_CMD_TIMEOUT
 
         # exit command-line to CMD? prompt (does nothing if already at CMD? prompt)
         self._do_cmd_no_resp(InstrumentCommands.EXIT)
-        self._do_cmd_resp(InstrumentCommands.MEASURE, 1, expected_prompt=Prompt.POLLED, timeout=DEFAULT_TIMEOUT)
+        self._do_cmd_resp(InstrumentCommands.MEASURE, 1, expected_prompt=Prompt.POLLED,
+                          timeout=ACQUIRE_SAMPLE_CMD_TIMEOUT)
         particles = self.wait_for_particles([DataParticleType.SUNA_SAMPLE], timeout)
         return next_state, (next_state, particles)
 
@@ -1888,14 +1911,16 @@ class Protocol(CommandResponseInstrumentProtocol):
         set clock YYYY/MM/DD hh:mm:ss
         """
         next_state = None
+        result = []
+
         str_time = get_timestamp_delayed("%Y/%m/%d %H:%M:%S")
         log.debug('syncing clock to: %s', str_time)
 
         self._bring_up_command_line()
-        result = self._do_cmd_resp(InstrumentCommands.SET_CLOCK, str_time, timeout=CLOCK_SYNC_TIMEOUT,
+        result = self._do_cmd_resp(InstrumentCommands.SET_CLOCK, str_time, timeout=CLOCK_SYNC_CMD_TIMEOUT,
                                    expected_prompt=[Prompt.OK, Prompt.ERROR])
 
-        return next_state, (next_state, [result])
+        return next_state, (next_state, result)
 
     ########################################################################
     # Direct access handlers.
@@ -1968,7 +1993,7 @@ class Protocol(CommandResponseInstrumentProtocol):
 
         particles = self.wait_for_particles([DataParticleType.SUNA_DARK_SAMPLE], 0)
 
-        return next_state, (next_state, [particles])
+        return next_state, (next_state, particles)
 
     def _handler_command_timed_n(self):
         """
