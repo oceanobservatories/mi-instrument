@@ -193,6 +193,7 @@ class SamiProtocolEvent(BaseEnum):
     EXECUTE = 'PROTOCOL_EVENT_EXECUTE'  # command execute
     SUCCESS = 'PROTOCOL_EVENT_SUCCESS'  # command success
     TIMEOUT = 'PROTOCOL_EVENT_TIMEOUT'  # command timeout
+    RETURN_TO_UNKOWN = 'PROTOCOL_EVENT_RETURN_TO_UNKOWN'
 
     REAGENT_FLUSH = 'DRIVER_EVENT_REAGENT_FLUSH'
 
@@ -626,6 +627,9 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
         self._protocol_fsm.add_handler(
             SamiProtocolState.COMMAND, SamiProtocolEvent.REAGENT_FLUSH,
             self._handler_command_reagent_flush)
+        self._protocol_fsm.add_handler(
+            SamiProtocolState.COMMAND, SamiProtocolEvent.RETURN_TO_UNKOWN,
+            self._handler_command_return_to_unkown)
 
         self._protocol_fsm.add_handler(
             SamiProtocolState.DIRECT_ACCESS, SamiProtocolEvent.ENTER,
@@ -747,7 +751,7 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
         self._add_response_handler(SamiInstrumentCommands.SAMI_GET_STATUS, self._parse_response_get_status)
         self._add_response_handler(SamiInstrumentCommands.SAMI_STOP_STATUS, self._parse_response_stop_status)
         self._add_response_handler(SamiInstrumentCommands.SAMI_GET_CONFIG, self._parse_response_get_config)
-        self._add_response_handler(SamiInstrumentCommands.SAMI_SET_CONFIG, self._parse_response_newline)
+        self._add_response_handler(SamiInstrumentCommands.SAMI_SET_CONFIG, self._parse_response_set_config)
         self._add_response_handler(SamiInstrumentCommands.SAMI_GET_BATTERY_VOLTAGE,
                                    self._parse_response_get_battery_voltage)
         self._add_response_handler(SamiInstrumentCommands.SAMI_GET_THERMISTOR_VOLTAGE,
@@ -1212,6 +1216,12 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
 
         return next_state, (next_state, result)
 
+    def _handler_command_return_to_unkown(self):
+        result = []
+        next_state = SamiProtocolState.UNKNOWN
+
+        return next_state (next_state, result)
+
     ########################################################################
     # Direct access handlers.
     ########################################################################
@@ -1239,9 +1249,9 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
         return next_state, (next_state, result)
 
     def _handler_direct_access_stop_direct(self):
-        next_state = self._discover()
+        next_state = self._handler_unknown_discover();
         result = []
-        return next_state, (next_state, result)
+        return self._handler_unknown_discover()
 
     ########################################################################
     # Autosample handlers.
@@ -1304,6 +1314,7 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
 
         return next_state, (next_state, result)
 
+
     ########################################################################
     # Reagent flush handlers.
     ########################################################################
@@ -1341,9 +1352,9 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
         self._cmd_dict.add(SamiCapability.ACQUIRE_SAMPLE, display_name="Acquire Sample")
         self._cmd_dict.add(SamiCapability.ACQUIRE_STATUS, display_name="Acquire Status")
         self._cmd_dict.add(SamiCapability.START_AUTOSAMPLE, display_name="Start Autosample")
-        self._cmd_dict.add(SamiCapability.STOP_AUTOSAMPLE, display_name="Stop Autosample")
+        self._cmd_dict.add(SamiCapability.STOP_AUTOSAMPLE, display_name="Stop Autosample", timeout=20)
         self._cmd_dict.add(SamiCapability.REAGENT_FLUSH, display_name="Reagent Flush")
-        self._cmd_dict.add(SamiCapability.DISCOVER, timeout=25, display_name='Discover')
+        self._cmd_dict.add(SamiCapability.DISCOVER, display_name='Discover', timeout=25)
 
     def _build_driver_dict(self):
         """
@@ -1423,6 +1434,19 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
         """
         return response
 
+    def _parse_response_set_config(self, response, prompt):
+        """
+        Parse set config instrument command response
+        """
+
+        # Response should be a line break. If it is not, then raise an event to return to the unknown state and
+        # raise an exception
+        if response:
+            log.error('SamiProtocol._parse_response_set_config: Executing _init_params() again for another attempt to'
+                      'set the startup config. Received data when only newline expected, response = %r', response)
+            self._async_raise_fsm_event(SamiProtocolEvent.RETURN_TO_UNKOWN)
+            raise InstrumentProtocolException('Instrument failed to set parameters')
+
     def _parse_response_erase_all(self, response, prompt):
         """
         Parse erase all instrument command response
@@ -1438,11 +1462,11 @@ class SamiProtocol(CommandResponseInstrumentProtocol):
     def _parse_response_newline(self, response, prompt):
         """
         Parse response to command expecting a newline
-        @raises InstrumentTimeoutException if any data occurs before newline
+        @raises InstrumentProtocolException if any data occurs before newline
         """
         if response:
             log.error('SamiProtocol._parse_response_newline: Data when only newline expected, response = %r', response)
-            raise InstrumentTimeoutException('Invalid response %s' % response)
+            raise InstrumentProtocolException('Invalid response %s' % response)
 
     def _wakeup(self, timeout=0, delay=0):
         """
