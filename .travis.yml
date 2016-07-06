@@ -22,7 +22,7 @@ before_install:
 # Install packages
 install:
   - conda install --yes python=$TRAVIS_PYTHON_VERSION matplotlib nose cython pyzmq gevent mock psycopg2 twisted sqlalchemy pandas xarray
-  - conda install --yes -c ooi ntplib apscheduler qpid-python tqdm kombu librabbitmq python-consul ooi_port_agent
+  - conda install --yes -c ooi ntplib apscheduler==2.1 qpid-python tqdm kombu librabbitmq python-consul ooi_port_agent
   - conda install --yes -c obspy obspy
   - pip install ModestImage codecov
 
