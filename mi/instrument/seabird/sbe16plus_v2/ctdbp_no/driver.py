@@ -30,7 +30,7 @@ from mi.instrument.seabird.sbe16plus_v2.ctdpf_jb.driver import SBE19Configuratio
 from mi.instrument.seabird.sbe16plus_v2.ctdpf_jb.driver import OptodeSettingsParticle
 
 from mi.instrument.seabird.sbe16plus_v2.driver import \
-    Prompt, SBE16InstrumentDriver, Sbe16plusBaseParticle, WAKEUP_TIMEOUT, NEWLINE, TIMEOUT
+    Prompt, SBE16InstrumentDriver, Sbe16plusBaseParticle, WAKEUP_TIMEOUT, NEWLINE, TIMEOUT, ProtocolState
 from mi.core.instrument.protocol_param_dict import ParameterDictType, ParameterDictVisibility
 
 
@@ -566,27 +566,27 @@ class SBE16NOProtocol(SBE19Protocol):
     ########################################################################
     # Command handlers.
     ########################################################################
-    def _handler_command_acquire_status(self, *args, **kwargs):
+    def _handler_acquire_status_async(self, *args, **kwargs):
         """
         Get device status
         """
-        next_state = None
+        next_state = ProtocolState.COMMAND
         result = []
 
-        result.append(self._do_cmd_resp(Command.GET_SD, response_regex=SBE16NOStatusParticle.regex_compiled(),
-                                   timeout=TIMEOUT))
-        log.debug("_handler_command_acquire_status: GetSD Response: %s", result)
-        result.append(self._do_cmd_resp(Command.GET_HD, response_regex=SBE16NOHardwareParticle.regex_compiled(),
-                                    timeout=TIMEOUT))
-        log.debug("_handler_command_acquire_status: GetHD Response: %s", result)
-        result.append(self._do_cmd_resp(Command.GET_CD, response_regex=SBE16NOConfigurationParticle.regex_compiled(),
-                                    timeout=TIMEOUT))
-        log.debug("_handler_command_acquire_status: GetCD Response: %s", result)
-        result.append(self._do_cmd_resp(Command.GET_CC, response_regex=SBE16NOCalibrationParticle.regex_compiled(),
-                                    timeout=TIMEOUT))
-        log.debug("_handler_command_acquire_status: GetCC Response: %s", result)
-        result.append(self._do_cmd_resp(Command.GET_EC, timeout=TIMEOUT))
-        log.debug("_handler_command_acquire_status: GetEC Response: %s", result)
+        response = self._do_cmd_resp(Command.GET_SD, response_regex=SBE16NOStatusParticle.regex_compiled(),
+                                     timeout=TIMEOUT)
+        log.debug("_handler_acquire_status_async: GetSD Response: %s", response)
+        response = self._do_cmd_resp(Command.GET_HD, response_regex=SBE16NOHardwareParticle.regex_compiled(),
+                                     timeout=TIMEOUT)
+        log.debug("_handler_acquire_status_async: GetHD Response: %s", response)
+        response = self._do_cmd_resp(Command.GET_CD, response_regex=SBE16NOConfigurationParticle.regex_compiled(),
+                                     timeout=TIMEOUT)
+        log.debug("_handler_acquire_status_async: GetCD Response: %s", response)
+        response = self._do_cmd_resp(Command.GET_CC, response_regex=SBE16NOCalibrationParticle.regex_compiled(),
+                                     timeout=TIMEOUT)
+        log.debug("_handler_acquire_status_async: GetCC Response: %s", response)
+        response = self._do_cmd_resp(Command.GET_EC, timeout=TIMEOUT)
+        log.debug("_handler_autosample_acquire_status: GetEC Response: %s", response)
 
         # Reset the event counter right after getEC
         self._do_cmd_resp(Command.RESET_EC, timeout=TIMEOUT)
@@ -604,13 +604,13 @@ class SBE16NOProtocol(SBE19Protocol):
         optode_commands = SendOptodeCommand.list()
         for command in optode_commands:
             log.debug("Sending optode command: %s" % command)
-            result.append(self._do_cmd_resp(OptodeCommands.SEND_OPTODE, command, timeout=TIMEOUT))
-            log.debug("_handler_command_acquire_status: SendOptode Response: %s", result)
+            response = self._do_cmd_resp(OptodeCommands.SEND_OPTODE, command, timeout=TIMEOUT)
+            log.debug("_handler_acquire_status_async: SendOptode Response: %s", response)
 
         # restart the optode
         self._do_cmd_resp(OptodeCommands.SEND_OPTODE, start_command, timeout=TIMEOUT)
 
-        return next_state, (next_state, ''.join(result))
+        return next_state, (next_state, result)
 
     def _handler_command_acquire_sample(self, *args, **kwargs):
         """
@@ -618,11 +618,10 @@ class SBE16NOProtocol(SBE19Protocol):
         @retval next_state, (next_state, result) tuple
         """
         next_state = None
-        timeout = time.time() + TIMEOUT
 
         self._do_cmd_resp(Command.TS, *args, **kwargs)
 
-        particles = self.wait_for_particles(DataParticleType.CTD_PARSED, timeout)
+        particles = self.wait_for_particles([DataParticleType.CTD_PARSED])
 
         return next_state, (next_state, particles)
 
@@ -637,25 +636,25 @@ class SBE16NOProtocol(SBE19Protocol):
         self._wakeup(timeout=WAKEUP_TIMEOUT)
         self._wakeup(timeout=WAKEUP_TIMEOUT)
 
-        result.append(self._do_cmd_resp(Command.GET_SD, response_regex=SBE16NOStatusParticle.regex_compiled(),
-                                   timeout=TIMEOUT))
-        log.debug("_handler_autosample_acquire_status: GetSD Response: %s", result)
-        result.append(self._do_cmd_resp(Command.GET_HD, response_regex=SBE16NOHardwareParticle.regex_compiled(),
-                                    timeout=TIMEOUT))
-        log.debug("_handler_autosample_acquire_status: GetHD Response: %s", result)
-        result.append(self._do_cmd_resp(Command.GET_CD, response_regex=SBE16NOConfigurationParticle.regex_compiled(),
-                                    timeout=TIMEOUT))
-        log.debug("_handler_autosample_acquire_status: GetCD Response: %s", result)
-        result.append(self._do_cmd_resp(Command.GET_CC, response_regex=SBE16NOCalibrationParticle.regex_compiled(),
-                                    timeout=TIMEOUT))
-        log.debug("_handler_autosample_acquire_status: GetCC Response: %s", result)
-        result.append(self._do_cmd_resp(Command.GET_EC, timeout=TIMEOUT))
-        log.debug("_handler_autosample_acquire_status: GetEC Response: %s", result)
+        response = self._do_cmd_resp(Command.GET_SD, response_regex=SBE16NOStatusParticle.regex_compiled(),
+                                     timeout=TIMEOUT)
+        log.debug("_handler_autosample_acquire_status: GetSD Response: %s", response)
+        response = self._do_cmd_resp(Command.GET_HD, response_regex=SBE16NOHardwareParticle.regex_compiled(),
+                                     timeout=TIMEOUT)
+        log.debug("_handler_autosample_acquire_status: GetHD Response: %s", response)
+        response = self._do_cmd_resp(Command.GET_CD, response_regex=SBE16NOConfigurationParticle.regex_compiled(),
+                                     timeout=TIMEOUT)
+        log.debug("_handler_autosample_acquire_status: GetCD Response: %s", response)
+        response = self._do_cmd_resp(Command.GET_CC, response_regex=SBE16NOCalibrationParticle.regex_compiled(),
+                                     timeout=TIMEOUT)
+        log.debug("_handler_autosample_acquire_status: GetCC Response: %s", response)
+        response = self._do_cmd_resp(Command.GET_EC, timeout=TIMEOUT)
+        log.debug("_handler_autosample_acquire_status: GetEC Response: %s", response)
 
         # Reset the event counter right after getEC
         self._do_cmd_no_resp(Command.RESET_EC)
 
-        return next_state, (next_state, ''.join(result))
+        return next_state, (next_state, result)
 
     ########################################################################
     # response handlers.

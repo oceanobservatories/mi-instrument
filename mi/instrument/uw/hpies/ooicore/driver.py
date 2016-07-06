@@ -275,7 +275,7 @@ class ParameterConstraints(BaseEnum):
     MOTOR_TIMEOUTS_2B = (int, 10, 1000)
 
 
-class Command(BaseEnum):
+class InstrumentCommand(BaseEnum):
     """
     Instrument command strings - base strings, use [stm|hef|ies]_command to build command
     """
@@ -335,33 +335,89 @@ class Command(BaseEnum):
     # 'baud'  # display baud rate (serial RSN to STM)
     # 'baud #'  # set baud rate
 
+class InstrumentCommandName(BaseEnum):
+    """
+    Instrument command name strings
+    """
+    # STM commands
+    REBOOT = 'Reboot'
+    ACQUISITION_START = 'DAQ Start'
+    ACQUISITION_STOP = 'DAQ Stop'
+    IES_PORT_ON = 'IES Opto On'
+    IES_PORT_OFF = 'IES Opto Off'
+    IES_POWER_ON = 'IES Pwr On'
+    IES_POWER_OFF = 'IES Pwr Off'
+    HEF_PORT_ON = 'HEF Opto On'
+    HEF_PORT_OFF = 'HEF Opto Off'
+    HEF_POWER_ON = 'HEF Pwr On'
+    HEF_POWER_OFF = 'HEF Pwr Off'
+    HEF_WAKE = 'HEF Wake'
+    HEF_PARAMS = 'Params'
+    HEF_SAVE = 'Params Save'
+    SYNC_CLOCK = 'Force Rtc Update'
+
+    # HEF specific commands
+    PREFIX = 'Prefix'
+    MISSION_START = 'Mission Start'
+    MISSION_STOP = 'Mission Stop'
+
+    # Commands which set parameters
+    DEBUG_LEVEL = 'Debug Level'
+    WSRUN_PINCH = 'Wsrun Pinch'
+    NFC_CALIBRATE = 'NFC Calibrate'
+    CAL_HOLD = 'Cal Hold'
+    NHC_COMPASS = 'Nhc Compass'
+    COMPASS_SAMPLES = 'Compass Samples'
+    COMPASS_DELAY = 'Compass Delay'
+    MOTOR_SAMPLES = 'Motor Samples'
+    EF_SAMPLES = 'EF Samples'
+    CAL_SAMPLES = 'Cal Samples'
+    CONSOLE_TIMEOUT = 'Console Timeout'
+    WSRUN_DELAY = 'Wsrun Delay'
+    MOTOR_DIR_NHOLD = 'Motor Dir Nhold'
+    MOTOR_DIR_INIT = 'Motor Dir Init'
+    POWER_COMPASS_W_MOTOR = 'Power Compass W Motor'
+    KEEP_AWAKE_W_MOTOR = 'Keep Awake W Motor'
+    MOTOR_TIMEOUTS_1A = 'Motor Timeouts 1A'
+    MOTOR_TIMEOUTS_1B = 'Motor Timeouts 1B'
+    MOTOR_TIMEOUTS_2A = 'Motor Timeouts 2A'
+    MOTOR_TIMEOUTS_2B = 'Motor Timeouts 2B'
+    RSN_CONFIG = 'RSN Config'
+    INVERT_LED_DRIVERS = 'Invert LED Drivers'
+    M1A_LED = 'M1a LED'
+    M2A_LED = 'M2a LED'
+
 
 class Timeout(BaseEnum):
+    # Driver timeouts
+    DISCOVERY_TIMEOUT = 45
+    AUTOSAMPLE_STOP = 45 # The command state enter takes a while to complete
+
     """
     Timeouts for instrument commands
     """
     # STM commands
-    DEFAULT = 3
+    DEFAULT_CMD = 3
     REBOOT = 5
-    ACQUISITION_START = DEFAULT
-    ACQUISITION_STOP = DEFAULT
-    IES_PORT_ON = DEFAULT
-    IES_PORT_OFF = DEFAULT
+    ACQUISITION_START = DEFAULT_CMD
+    ACQUISITION_STOP = DEFAULT_CMD
+    IES_PORT_ON = DEFAULT_CMD
+    IES_PORT_OFF = DEFAULT_CMD
     IES_POWER_ON = 30  # observations from 8-24 seconds
-    IES_POWER_OFF = DEFAULT
-    HEF_PORT_ON = DEFAULT
-    HEF_PORT_OFF = DEFAULT
+    IES_POWER_OFF = DEFAULT_CMD
+    HEF_PORT_ON = DEFAULT_CMD
+    HEF_PORT_OFF = DEFAULT_CMD
     HEF_POWER_ON = 6
-    HEF_POWER_OFF = DEFAULT
-    HEF_WAKE = DEFAULT
+    HEF_POWER_OFF = DEFAULT_CMD
+    HEF_WAKE = DEFAULT_CMD
     HEF_PARAMS = 6
-    HEF_SAVE = DEFAULT
-    SYNC_CLOCK = DEFAULT
+    HEF_SAVE = DEFAULT_CMD
+    SYNC_CLOCK = DEFAULT_CMD
 
     # HEF specific commands
-    PREFIX = DEFAULT
-    MISSION_START = DEFAULT
-    MISSION_STOP = DEFAULT
+    PREFIX = DEFAULT_CMD
+    MISSION_START = DEFAULT_CMD
+    MISSION_STOP = DEFAULT_CMD
 
 
 class Prompt(BaseEnum):
@@ -372,6 +428,7 @@ class Prompt(BaseEnum):
     HEF_PARAMS = '#3_params'
     HEF_PROMPT = '#3_HEF C>'
     HEF_PORT_ON = DEFAULT  # port on command doesn't return the HEF prompt (return is #3_\r\n)
+    IES_POWER_ON = '#4_  Next scheduled 1 minute warning at:'  # last line of IES power on prompt
 
 
 class Response(BaseEnum):
@@ -382,7 +439,6 @@ class Response(BaseEnum):
     UNKNOWN_COMMAND = re.compile(r'.*?unknown command: .*?')
     PROMPT = re.compile(r'^STM> .*?')
     HEF_POWER_ON = re.compile(r'#3_Use <BREAK> to enter command mode')  # last line of HEF power on prompt
-    IES_POWER_ON = re.compile(r'#4_\s+Next scheduled 1 minute warning at:')  # last line of IES power on prompt
     ERROR = re.compile(r'.*?port.*?not open')
     OPENED_FILE = re.compile(r'#3_Opened raw output file, (\S+)\\r')
     SET_PARAMETER = re.compile(r'.+\s=\s(%(int)s)' % common_matches)
@@ -1144,34 +1200,35 @@ class Protocol(CommandResponseInstrumentProtocol):
 
         # Add build handlers for device commands.
         # Add response handlers for device commands.
-        for cmd in Command.list():
+        for cmd in InstrumentCommand.list():
             self._add_build_handler(cmd, self._build_command)
             self._add_response_handler(cmd, self._check_command)
-        self._add_response_handler(Command.HEF_PARAMS, self._parse_hef_params_response)
-        self._add_response_handler(Command.PREFIX, self._parse_prefix_response)
-        for cmd in (Command.DEBUG_LEVEL,
-                    Command.WSRUN_PINCH,
-                    Command.NFC_CALIBRATE,
-                    Command.CAL_HOLD,
-                    Command.NHC_COMPASS,
-                    Command.COMPASS_SAMPLES,
-                    Command.COMPASS_DELAY,
-                    Command.MOTOR_SAMPLES,
-                    Command.EF_SAMPLES,
-                    Command.CAL_SAMPLES,
-                    Command.CONSOLE_TIMEOUT,
-                    Command.WSRUN_DELAY,
-                    Command.MOTOR_DIR_NHOLD,
-                    Command.POWER_COMPASS_W_MOTOR,
-                    Command.KEEP_AWAKE_W_MOTOR,
-                    Command.MOTOR_TIMEOUTS_1A,
-                    Command.MOTOR_TIMEOUTS_1B,
-                    Command.MOTOR_TIMEOUTS_2A,
-                    Command.MOTOR_TIMEOUTS_2B,
-                    Command.RSN_CONFIG,
-                    Command.INVERT_LED_DRIVERS,
-                    Command.M1A_LED,
-                    Command.M2A_LED, ):
+        self._add_response_handler(InstrumentCommand.IES_POWER_ON, self._parse_ies_power_on_response)
+        self._add_response_handler(InstrumentCommand.HEF_PARAMS, self._parse_hef_params_response)
+        self._add_response_handler(InstrumentCommand.PREFIX, self._parse_prefix_response)
+        for cmd in (InstrumentCommand.DEBUG_LEVEL,
+                    InstrumentCommand.WSRUN_PINCH,
+                    InstrumentCommand.NFC_CALIBRATE,
+                    InstrumentCommand.CAL_HOLD,
+                    InstrumentCommand.NHC_COMPASS,
+                    InstrumentCommand.COMPASS_SAMPLES,
+                    InstrumentCommand.COMPASS_DELAY,
+                    InstrumentCommand.MOTOR_SAMPLES,
+                    InstrumentCommand.EF_SAMPLES,
+                    InstrumentCommand.CAL_SAMPLES,
+                    InstrumentCommand.CONSOLE_TIMEOUT,
+                    InstrumentCommand.WSRUN_DELAY,
+                    InstrumentCommand.MOTOR_DIR_NHOLD,
+                    InstrumentCommand.POWER_COMPASS_W_MOTOR,
+                    InstrumentCommand.KEEP_AWAKE_W_MOTOR,
+                    InstrumentCommand.MOTOR_TIMEOUTS_1A,
+                    InstrumentCommand.MOTOR_TIMEOUTS_1B,
+                    InstrumentCommand.MOTOR_TIMEOUTS_2A,
+                    InstrumentCommand.MOTOR_TIMEOUTS_2B,
+                    InstrumentCommand.RSN_CONFIG,
+                    InstrumentCommand.INVERT_LED_DRIVERS,
+                    InstrumentCommand.M1A_LED,
+                    InstrumentCommand.M2A_LED, ):
             self._add_response_handler(cmd, self._parse_set_param_response)
 
         # Add sample handlers.
@@ -1316,7 +1373,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                              units=Units.SECOND,
                              display_name='Compass Delay',
                              range=(1, 3600),
-                             description='Time between measurements in a burst.',
+                             description='Time between measurements in a burst (1-3600).',
                              visibility=ParameterDictVisibility.READ_WRITE,
                              default_value=10,
                              startup_param=True,
@@ -1589,7 +1646,7 @@ class Protocol(CommandResponseInstrumentProtocol):
                              direct_access=False,
                              visibility=ParameterDictVisibility.READ_ONLY)
         self._param_dict.add(Parameter.ACOUSTIC_OUTPUT,
-                             r'Acoustic Output: (%(int)s)' % common_matches,
+                             r'Acoustic output set at (%(int)s)' % common_matches,
                              lambda match: int(match.group(1)),
                              None,
                              type=ParameterDictType.INT,
@@ -1897,17 +1954,17 @@ class Protocol(CommandResponseInstrumentProtocol):
         """
         # if we are able to get the parameters from the HEF, it is already awake
         try:
-            self._do_cmd_resp(Command.HEF_WAKE, expected_prompt=Prompt.DEFAULT)
-            self._do_cmd_resp(Command.HEF_PARAMS, expected_prompt=Prompt.HEF_PROMPT, timeout=Timeout.HEF_PARAMS)
+            self._do_cmd_resp(InstrumentCommand.HEF_WAKE, expected_prompt=Prompt.DEFAULT)
+            self._do_cmd_resp(InstrumentCommand.HEF_PARAMS, expected_prompt=Prompt.HEF_PROMPT, timeout=Timeout.HEF_PARAMS)
             log.debug('HPIES is awake')
 
         # otherwise, we need to restart
         except InstrumentTimeoutException:
-            self._do_cmd_resp(Command.REBOOT, expected_prompt=Prompt.DEFAULT, timeout=Timeout.REBOOT)
-            self._do_cmd_resp(Command.ACQUISITION_START, expected_prompt=Prompt.DEFAULT,
+            self._do_cmd_resp(InstrumentCommand.REBOOT, expected_prompt=Prompt.DEFAULT, timeout=Timeout.REBOOT)
+            self._do_cmd_resp(InstrumentCommand.ACQUISITION_START, expected_prompt=Prompt.DEFAULT,
                               timeout=Timeout.ACQUISITION_START)
             self._do_cmd_hef_on()
-            self._do_cmd_resp(Command.HEF_PARAMS, expected_prompt=Prompt.HEF_PROMPT, timeout=Timeout.HEF_PARAMS)
+            self._do_cmd_resp(InstrumentCommand.HEF_PARAMS, expected_prompt=Prompt.HEF_PROMPT, timeout=Timeout.HEF_PARAMS)
             log.debug('HPIES is awake')
 
     def _build_command(self, cmd, *args):
@@ -1916,49 +1973,49 @@ class Protocol(CommandResponseInstrumentProtocol):
         Called by _do_cmd_* functions to build a command string for @a cmd.
         @retval command string to send to the instrument
         """
-        if cmd in (Command.REBOOT,
-                   Command.ACQUISITION_START,
-                   Command.ACQUISITION_STOP,
-                   Command.IES_PORT_ON,
-                   Command.IES_PORT_OFF,
-                   Command.IES_POWER_ON,
-                   Command.IES_POWER_OFF,
-                   Command.HEF_PORT_ON,
-                   Command.HEF_PORT_OFF,
-                   Command.HEF_POWER_ON,
-                   Command.HEF_POWER_OFF,
-                   Command.HEF_WAKE,
-                   Command.SYNC_CLOCK):
+        if cmd in (InstrumentCommand.REBOOT,
+                   InstrumentCommand.ACQUISITION_START,
+                   InstrumentCommand.ACQUISITION_STOP,
+                   InstrumentCommand.IES_PORT_ON,
+                   InstrumentCommand.IES_PORT_OFF,
+                   InstrumentCommand.IES_POWER_ON,
+                   InstrumentCommand.IES_POWER_OFF,
+                   InstrumentCommand.HEF_PORT_ON,
+                   InstrumentCommand.HEF_PORT_OFF,
+                   InstrumentCommand.HEF_POWER_ON,
+                   InstrumentCommand.HEF_POWER_OFF,
+                   InstrumentCommand.HEF_WAKE,
+                   InstrumentCommand.SYNC_CLOCK):
             return stm_command(cmd, *args)
-        elif cmd in (Command.PREFIX,
-                     Command.HEF_PARAMS,
-                     Command.HEF_SAVE,
-                     Command.MISSION_START,
-                     Command.MISSION_STOP,
-                     Command.DEBUG_LEVEL,
-                     Command.WSRUN_PINCH,
-                     Command.NFC_CALIBRATE,
-                     Command.CAL_HOLD,
-                     Command.NHC_COMPASS,
-                     Command.COMPASS_SAMPLES,
-                     Command.COMPASS_DELAY,
-                     Command.MOTOR_SAMPLES,
-                     Command.EF_SAMPLES,
-                     Command.CAL_SAMPLES,
-                     Command.CONSOLE_TIMEOUT,
-                     Command.WSRUN_DELAY,
-                     Command.MOTOR_DIR_NHOLD,
-                     Command.MOTOR_DIR_INIT,
-                     Command.POWER_COMPASS_W_MOTOR,
-                     Command.KEEP_AWAKE_W_MOTOR,
-                     Command.MOTOR_TIMEOUTS_1A,
-                     Command.MOTOR_TIMEOUTS_1B,
-                     Command.MOTOR_TIMEOUTS_2A,
-                     Command.MOTOR_TIMEOUTS_2B,
-                     Command.RSN_CONFIG,
-                     Command.INVERT_LED_DRIVERS,
-                     Command.M1A_LED,
-                     Command.M2A_LED):
+        elif cmd in (InstrumentCommand.PREFIX,
+                     InstrumentCommand.HEF_PARAMS,
+                     InstrumentCommand.HEF_SAVE,
+                     InstrumentCommand.MISSION_START,
+                     InstrumentCommand.MISSION_STOP,
+                     InstrumentCommand.DEBUG_LEVEL,
+                     InstrumentCommand.WSRUN_PINCH,
+                     InstrumentCommand.NFC_CALIBRATE,
+                     InstrumentCommand.CAL_HOLD,
+                     InstrumentCommand.NHC_COMPASS,
+                     InstrumentCommand.COMPASS_SAMPLES,
+                     InstrumentCommand.COMPASS_DELAY,
+                     InstrumentCommand.MOTOR_SAMPLES,
+                     InstrumentCommand.EF_SAMPLES,
+                     InstrumentCommand.CAL_SAMPLES,
+                     InstrumentCommand.CONSOLE_TIMEOUT,
+                     InstrumentCommand.WSRUN_DELAY,
+                     InstrumentCommand.MOTOR_DIR_NHOLD,
+                     InstrumentCommand.MOTOR_DIR_INIT,
+                     InstrumentCommand.POWER_COMPASS_W_MOTOR,
+                     InstrumentCommand.KEEP_AWAKE_W_MOTOR,
+                     InstrumentCommand.MOTOR_TIMEOUTS_1A,
+                     InstrumentCommand.MOTOR_TIMEOUTS_1B,
+                     InstrumentCommand.MOTOR_TIMEOUTS_2A,
+                     InstrumentCommand.MOTOR_TIMEOUTS_2B,
+                     InstrumentCommand.RSN_CONFIG,
+                     InstrumentCommand.INVERT_LED_DRIVERS,
+                     InstrumentCommand.M1A_LED,
+                     InstrumentCommand.M2A_LED):
             return hef_command(cmd, *args)
         raise InstrumentProtocolException('attempt to process unknown command: %r' % cmd)
 
@@ -1977,30 +2034,54 @@ class Protocol(CommandResponseInstrumentProtocol):
         """
         @brief Populate the command dictionary with command.
         """
-        self._cmd_dict.add(Capability.START_AUTOSAMPLE, display_name='Start Autosample')
-        self._cmd_dict.add(Capability.STOP_AUTOSAMPLE, display_name='Stop Autosample')
-        self._cmd_dict.add(Capability.DISCOVER, display_name='Discover')
+        self._cmd_dict.add(Capability.START_AUTOSAMPLE, display_name='Start Autosample', timeout=TIMEOUT)
+        self._cmd_dict.add(Capability.STOP_AUTOSAMPLE, display_name='Stop Autosample', timeout=Timeout.AUTOSAMPLE_STOP)
+        self._cmd_dict.add(Capability.DISCOVER, display_name='Discover', timeout=Timeout.DISCOVERY_TIMEOUT)
 
     def _parse_hef_params_response(self, response, prompt):
         """
         @brief process the response for request to get HEF parameters
-        @param response command string
+        @param response response string
         @retval True if able to update parameters, False otherwise
         """
-        log.debug('djm parameter dictionary:\r%s', self._param_dict.get_all())
+        log.debug('Parameter dictionary:\r%s', self._param_dict.get_all())
         if re.match(Response.ERROR, response):
-            raise InstrumentParameterException('unable to get parameters - data acquisition has not been started')
+            raise InstrumentParameterException('Unable to get parameters - data acquisition has not been started')
 
         param_lines = []
         for line in response.split(NEWLINE):
-            log.debug('checking line for parameter: %r' % line)
+            log.debug('Checking line for parameter: %r' % line)
             if ' = ' in line:
                 if valid_response(line):
-                    log.debug('checksum valid, setting value')
+                    log.debug('Checksum valid, setting value')
                     param_lines.append(line)
         dictionary = self._param_dict.update_many(response)
         if dictionary:
-            log.debug('djm updated dictionary: %r', self._param_dict.get_all())
+            log.debug('Updated dictionary: %r', self._param_dict.get_all())
+            return True
+
+        return False
+
+    def _parse_ies_power_on_response(self, response, prompt):
+        """
+        @brief process the response for request to power on the IES, which returns its current params
+        @param response response string
+        @retval True if able to update parameters, False otherwise
+        """
+        log.debug('IES Power On Response: %s', response)
+        if re.match(Response.ERROR, response):
+            raise InstrumentParameterException('Unable to execute IES Power On')
+
+        param_lines = []
+        for line in response.split(NEWLINE):
+            log.debug('Checking line for parameter: %r' % line)
+            if ' = ' in line:
+                if valid_response(line):
+                    log.debug('Checksum valid, setting value')
+                    param_lines.append(line)
+        dictionary = self._param_dict.update_many(response)
+        if dictionary:
+            log.debug('Updated dictionary: %r', self._param_dict.get_all())
             return True
 
         return False
@@ -2013,7 +2094,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         prefix_file = ''
         while prefix_bad:
             prefix_root = tempfile.mktemp(prefix='', dir='')
-            prefix_file = self._do_cmd_resp(Command.PREFIX, prefix_root,
+            prefix_file = self._do_cmd_resp(InstrumentCommand.PREFIX, prefix_root,
                                             expected_prompt=Prompt.HEF_PROMPT,
                                             timeout=Timeout.PREFIX)
             if prefix_file is not None:
@@ -2026,20 +2107,32 @@ class Protocol(CommandResponseInstrumentProtocol):
         Turn on the IES
         """
         try:
-            self._do_cmd_resp(Command.IES_PORT_ON, expected_prompt=Prompt.DEFAULT, timeout=Timeout.IES_PORT_ON)
-            self._do_cmd_resp(Command.IES_POWER_ON, response_regex=Response.IES_POWER_ON, timeout=Timeout.IES_POWER_ON)
-            self._do_cmd_resp(Command.IES_PORT_OFF, expected_prompt=Prompt.DEFAULT, timeout=Timeout.IES_PORT_OFF)
+            # To get params from IES, you first must turn on the port, turn off the power, and then turn the power
+            # back on. If you just call to turn power on, it will not return params
+            self._do_cmd_resp(InstrumentCommand.IES_PORT_ON, expected_prompt=Prompt.DEFAULT, timeout=Timeout.IES_PORT_ON)
+            self._do_cmd_resp(InstrumentCommand.IES_POWER_OFF, timeout=Timeout.IES_POWER_OFF)
+            self._do_cmd_resp(InstrumentCommand.IES_POWER_ON, expected_prompt=Prompt.IES_POWER_ON, timeout=Timeout.IES_POWER_ON)
+
         except InstrumentTimeoutException:
             raise InstrumentTimeoutException('IES did not respond to power on sequence')
+
+    def _do_cmd_ies_comms_off(self):
+        """
+        Turn off the IES comms port
+        """
+        try:
+            self._do_cmd_resp(InstrumentCommand.IES_PORT_OFF, expected_prompt=Prompt.DEFAULT, timeout=Timeout.IES_PORT_OFF)
+        except InstrumentTimeoutException:
+            raise InstrumentTimeoutException('IES did not respond to comms port power off sequence')
 
     def _do_cmd_hef_on(self):
         """
         Turn on the HEF
         """
         try:
-            self._do_cmd_resp(Command.HEF_PORT_ON, expected_prompt=Prompt.HEF_PORT_ON, timeout=Timeout.HEF_PORT_ON)
-            self._do_cmd_resp(Command.HEF_POWER_ON, response_regex=Response.HEF_POWER_ON, timeout=Timeout.HEF_POWER_ON)
-            self._do_cmd_resp(Command.HEF_WAKE, expected_prompt=Prompt.DEFAULT)
+            self._do_cmd_resp(InstrumentCommand.HEF_PORT_ON, expected_prompt=Prompt.HEF_PORT_ON, timeout=Timeout.HEF_PORT_ON)
+            self._do_cmd_resp(InstrumentCommand.HEF_POWER_ON, response_regex=Response.HEF_POWER_ON, timeout=Timeout.HEF_POWER_ON)
+            self._do_cmd_resp(InstrumentCommand.HEF_WAKE, expected_prompt=Prompt.DEFAULT)
         except InstrumentTimeoutException:
             raise InstrumentTimeoutException('HEF did not respond to power on sequence')
 
@@ -2085,7 +2178,7 @@ class Protocol(CommandResponseInstrumentProtocol):
     def _handler_unknown_discover(self):
         next_state = ProtocolState.COMMAND
         # any existing mission needs to be stopped. If one is not already running, no harm in sending the stop.
-        result = self._do_cmd_no_resp(Command.MISSION_STOP)
+        result = self._do_cmd_no_resp(InstrumentCommand.MISSION_STOP)
         # delay so the instrument doesn't overwrite the next response
         time.sleep(2)
 
@@ -2106,13 +2199,18 @@ class Protocol(CommandResponseInstrumentProtocol):
         self._init_params()
 
         try:
-            self._do_cmd_resp(Command.REBOOT, expected_prompt=Prompt.DEFAULT, timeout=Timeout.REBOOT)
-            self._do_cmd_resp(Command.ACQUISITION_START, expected_prompt=Prompt.DEFAULT,
+            self._do_cmd_resp(InstrumentCommand.REBOOT, expected_prompt=Prompt.DEFAULT, timeout=Timeout.REBOOT)
+            self._do_cmd_resp(InstrumentCommand.ACQUISITION_START, expected_prompt=Prompt.DEFAULT,
                               timeout=Timeout.ACQUISITION_START)
             self._do_cmd_ies_on()
+
+            # Make a separate call to turn off IES comms port so that can processing of the IES power on can
+            # complete first. If the comms port is turned off too quickly, then we will not get the param data back
+            self._do_cmd_ies_comms_off()
+
             self._do_cmd_hef_on()
 
-            self._do_cmd_resp(Command.HEF_PARAMS, expected_prompt=Prompt.HEF_PROMPT, timeout=Timeout.HEF_PARAMS)
+            self._do_cmd_resp(InstrumentCommand.HEF_PARAMS, expected_prompt=Prompt.HEF_PROMPT, timeout=Timeout.HEF_PARAMS)
 
         except InstrumentTimeoutException as e:
             log.error('Unable to initialize HPIES: %r', e.message)
@@ -2196,8 +2294,10 @@ class Protocol(CommandResponseInstrumentProtocol):
         self._driver_event(DriverAsyncEvent.STATE_CHANGE)
 
         try:
+            # Sometimes the prefix command does not respond and it times out. A wakeup first prevents this
+            self._hef_wakeup()
             self._do_cmd_prefix()
-            self._do_cmd_resp(Command.MISSION_START, expected_prompt=Prompt.HEF_PROMPT, timeout=Timeout.MISSION_START)
+            self._do_cmd_resp(InstrumentCommand.MISSION_START, expected_prompt=Prompt.HEF_PROMPT, timeout=Timeout.MISSION_START)
             log.debug('mission start completed')
 
         except InstrumentTimeoutException as e:
@@ -2213,8 +2313,8 @@ class Protocol(CommandResponseInstrumentProtocol):
         result = []
 
         try:
-            self._do_cmd_resp(Command.MISSION_STOP, expected_prompt=Prompt.DEFAULT, timeout=Timeout.MISSION_STOP)
-            self._do_cmd_resp(Command.ACQUISITION_STOP, expected_prompt=Prompt.DEFAULT,
+            self._do_cmd_resp(InstrumentCommand.MISSION_STOP, expected_prompt=Prompt.DEFAULT, timeout=Timeout.MISSION_STOP)
+            self._do_cmd_resp(InstrumentCommand.ACQUISITION_STOP, expected_prompt=Prompt.DEFAULT,
                               timeout=Timeout.ACQUISITION_STOP)
 
         except InstrumentTimeoutException as e:
@@ -2282,7 +2382,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         try:
             log.debug("apply_startup_params now")
             self._set_params(self.get_startup_config(), True)
-            self._do_cmd_resp(Command.HEF_SAVE, expected_prompt=Prompt.HEF_PROMPT, timeout=Timeout.HEF_SAVE)
+            self._do_cmd_resp(InstrumentCommand.HEF_SAVE, expected_prompt=Prompt.HEF_PROMPT, timeout=Timeout.HEF_SAVE)
 
         # Catch all errors so we can put driver back into streaming. Then rethrow the error.
         except Exception as e:
@@ -2387,16 +2487,16 @@ class Protocol(CommandResponseInstrumentProtocol):
 
         for key, val in params.iteritems():
             if not key in old_config:
-                raise InstrumentParameterException('attempted to set unknown parameter: %s to %s' % (key, val))
+                raise InstrumentParameterException('Attempted to set unknown parameter: %s to %s' % (key, val))
             command_response = self._do_cmd_resp(key, val, expected_prompt=Prompt.HEF_PROMPT)
-            log.debug('command: %r returned: %r', key, command_response)
+            log.debug('Command: %r returned: %r', key, command_response)
 
         new_config = self._param_dict.get_all()
-        log.debug('djm old config: %r', old_config)
-        log.debug('djm new config: %r', new_config)
+        log.debug('Old config: %r', old_config)
+        log.debug('New config: %r', new_config)
 
         if new_config != old_config:
-            log.debug('djm configuration differs, saving parameters and signaling event')
+            log.debug('Configuration differs, saving parameters and signaling event')
             self._driver_event(DriverAsyncEvent.CONFIG_CHANGE)
 
 

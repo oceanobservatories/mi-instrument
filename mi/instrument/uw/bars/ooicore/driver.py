@@ -1146,9 +1146,9 @@ class Protocol(MenuInstrumentProtocol):
         Populate the command dictionary with command.
         """
         self._cmd_dict.add(Capability.START_AUTOSAMPLE, display_name="Start Autosample")
-        self._cmd_dict.add(Capability.STOP_AUTOSAMPLE, display_name="Stop Autosample")
+        self._cmd_dict.add(Capability.STOP_AUTOSAMPLE, display_name="Stop Autosample", timeout=40)
         self._cmd_dict.add(Capability.ACQUIRE_STATUS, display_name="Acquire Status")
-        self._cmd_dict.add(Capability.DISCOVER, display_name="Discover")
+        self._cmd_dict.add(Capability.DISCOVER, display_name="Discover", timeout=40)
 
     def _build_param_dict(self):
         """
@@ -1170,6 +1170,7 @@ class Protocol(MenuInstrumentProtocol):
                              startup_param=True,
                              direct_access=True,
                              default_value=20,
+                             range=(15, 3600),
                              menu_path_read=SubMenu.SHOW_PARAM,
                              submenu_read=[],
                              menu_path_write=SubMenu.CHANGE_PARAM,
@@ -1187,10 +1188,11 @@ class Protocol(MenuInstrumentProtocol):
                              visibility=ParameterDictVisibility.IMMUTABLE,
                              startup_param=True,
                              direct_access=True,
+                             range={'On':1, 'Off':0},
                              init_value=0,
                              value=0,
                              # TODO - HAD PROBLEMS COMPARING VALUES BEFORE SETTING DURING INIT BECAUSE VALUE WASN'T SET IN UPDATE PARAMS (NO WAY TO GET VALUE FROM INSTRUMENT)
-                             description="Enable verbosity with data points (1:on | 0:off)",
+                             description="Enable verbosity with data points",
                              menu_path_write=SubMenu.CHANGE_PARAM,
                              submenu_write=[["2", Prompt.VERBOSE_PROMPT]])
 
@@ -1203,8 +1205,9 @@ class Protocol(MenuInstrumentProtocol):
                              visibility=ParameterDictVisibility.IMMUTABLE,
                              startup_param=True,
                              direct_access=True,
+                             range={'On':1, 'Off':0},
                              init_value=0,
-                             description="Enable display of metadata at startup (1:on | 0:off)",
+                             description="Enable display of metadata at startup",
                              menu_path_write=SubMenu.CHANGE_PARAM,
                              submenu_write=[["3", Prompt.METADATA_PROMPT]])
 
@@ -1217,8 +1220,9 @@ class Protocol(MenuInstrumentProtocol):
                              visibility=ParameterDictVisibility.IMMUTABLE,
                              startup_param=True,
                              direct_access=True,
+                             range={'On':1, 'Off':0},
                              init_value=0,
-                             description="Enable display of metadata at restart (1:on | 0:off)",
+                             description="Enable display of metadata at restart",
                              menu_path_write=SubMenu.CHANGE_PARAM,
                              submenu_write=[["4", Prompt.METADATA_PROMPT]])
 
@@ -1231,9 +1235,10 @@ class Protocol(MenuInstrumentProtocol):
                              visibility=ParameterDictVisibility.READ_ONLY,
                              startup_param=False,
                              direct_access=False,
+                             range={'On':1, 'Off':0},
                              menu_path_read=SubMenu.SHOW_PARAM,
                              submenu_read=[],
-                             description="Enable res sensor power (1:on | 0:off)",
+                             description="Enable res sensor power",
                              menu_path_write=SubMenu.SENSOR_POWER,
                              submenu_write=[["1"]])
 
@@ -1246,7 +1251,8 @@ class Protocol(MenuInstrumentProtocol):
                              visibility=ParameterDictVisibility.READ_ONLY,
                              startup_param=False,
                              direct_access=False,
-                             description="Enable instrumentation amp power (1:on | 0:off)",
+                             range={'On':1, 'Off':0},
+                             description="Enable instrumentation amp power",
                              menu_path_read=SubMenu.SHOW_PARAM,
                              submenu_read=[],
                              menu_path_write=SubMenu.SENSOR_POWER,
@@ -1261,7 +1267,8 @@ class Protocol(MenuInstrumentProtocol):
                              visibility=ParameterDictVisibility.READ_ONLY,
                              startup_param=False,
                              direct_access=False,
-                             description="Enable eH isolation amp power (1:on | 0:off)",
+                             range={'On':1, 'Off':0},
+                             description="Enable eH isolation amp power",
                              menu_path_read=SubMenu.SHOW_PARAM,
                              submenu_read=[],
                              menu_path_write=SubMenu.SENSOR_POWER,
@@ -1276,7 +1283,8 @@ class Protocol(MenuInstrumentProtocol):
                              visibility=ParameterDictVisibility.READ_ONLY,
                              startup_param=False,
                              direct_access=False,
-                             description="Enable hydrogen sensor power (1:on | 0:off)",
+                             range={'On':1, 'Off':0},
+                             description="Enable hydrogen sensor power",
                              menu_path_read=SubMenu.SHOW_PARAM,
                              submenu_read=[],
                              menu_path_write=SubMenu.SENSOR_POWER,
@@ -1291,7 +1299,8 @@ class Protocol(MenuInstrumentProtocol):
                              visibility=ParameterDictVisibility.READ_ONLY,
                              startup_param=False,
                              direct_access=False,
-                             description="Enable reference temperature power (1:on | 0:off)",
+                             range={'On':1, 'Off':0},
+                             description="Enable reference temperature power",
                              menu_path_read=SubMenu.SHOW_PARAM,
                              submenu_read=[],
                              menu_path_write=SubMenu.SENSOR_POWER,

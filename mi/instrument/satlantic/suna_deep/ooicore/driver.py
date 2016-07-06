@@ -46,11 +46,17 @@ NEWLINE = '\r\n'
 # default timeout.
 DEFAULT_TIMEOUT = 15
 
-MEASURE_N_TIMEOUT = 60
+ACQUIRE_SAMPLE_TIMEOUT = 40
+ACQUIRE_STATUS_TIMEOUT = 30
+MEASURE_N_TIMEOUT = 65
+MEASURE_N_CMD_TIMEOUT = 60
+MEASURE_0_TIMEOUT = 40
 TIMED_N_TIMEOUT = 65
+TIMED_N_CMD_TIMEOUT = 60
 CLOCK_SYNC_TIMEOUT = 20
 DISCOVER_TIMEOUT = 40
 STOP_PERIODIC_TIMEOUT = 30
+STOP_AUTOSAMPLE_TIMEOUT = 40
 
 MIN_TIME_SAMPLE = 0
 MIN_LIGHT_SAMPLE = 1
@@ -107,9 +113,9 @@ SUNA_STATUS_PATTERN += r'THEBRAND\s+(\w+)\s+'
 SUNA_STATUS_PATTERN += r'PATHLGTH\s+(\w+)\s+'
 SUNA_STATUS_PATTERN += r'INTWIPER\s+(\w+)\s+'
 SUNA_STATUS_PATTERN += r'EXTPPORT\s+(\w+)\s+'
-SUNA_STATUS_PATTERN += r'LMPSHUTR\s+(\w+)\s+'
-SUNA_STATUS_PATTERN += r'REFDTECT\s+(\w+)\s+'
-SUNA_STATUS_PATTERN += r'PROTECTR\s+(\w+)\s+'
+SUNA_STATUS_PATTERN += r'(?:LMPSHUTR\s+(\w+)\s+)?'  # 8
+SUNA_STATUS_PATTERN += r'(?:REFDTECT\s+(\w+)\s+)?'  # 9
+SUNA_STATUS_PATTERN += r'(?:PROTECTR\s+(\w+)\s+)?'  # 10
 SUNA_STATUS_PATTERN += r'SUPRCAPS\s+(\w+)\s+'
 SUNA_STATUS_PATTERN += r'PWRSVISR\s+(\w+)\s+'
 SUNA_STATUS_PATTERN += r'USBSWTCH\s+(\w+)\s+'
@@ -119,12 +125,13 @@ SUNA_STATUS_PATTERN += r'ANALGBRD\s+(\w+)\s+'
 SUNA_STATUS_PATTERN += r'INTDATLG\s+(\w+)\s+'
 SUNA_STATUS_PATTERN += r'APFIFACE\s+(\w+)\s+'
 SUNA_STATUS_PATTERN += r'SCHDLING\s+(\w+)\s+'
-SUNA_STATUS_PATTERN += r'FANATLMP\s+(\w+)\s+'
+SUNA_STATUS_PATTERN += r'(?:FANATLMP\s+(\w+)\s+)?'  # 20
 SUNA_STATUS_PATTERN += r'OWIRETLP\s+([0-9a-f]+)\s+'
 SUNA_STATUS_PATTERN += r'OWIRETSP\s+([0-9a-f]+)\s+'
 SUNA_STATUS_PATTERN += r'OWIRETHS\s+([0-9a-f]+)\s+'
 SUNA_STATUS_PATTERN += r'ZSPEC_SN\s+(\d+)\s+'
 SUNA_STATUS_PATTERN += r'FIBERLSN\s+([\w.]+)\s+'
+SUNA_STATUS_PATTERN += r'(?:CUSTOMID\s+\w+\s+)?'  # w+ not captured
 SUNA_STATUS_PATTERN += r'STUPSTUS\s+(\w+)\s+'
 SUNA_STATUS_PATTERN += r'BAUDRATE\s+(\d+)\s+'
 SUNA_STATUS_PATTERN += r'MSGLEVEL\s+(\w+)\s+'
@@ -134,8 +141,9 @@ SUNA_STATUS_PATTERN += r'OUTFRTYP\s+(\w+)\s+'
 SUNA_STATUS_PATTERN += r'LOGFRTYP\s+(\w+)\s+'
 SUNA_STATUS_PATTERN += r'OUTDRKFR\s+(\w+)\s+'
 SUNA_STATUS_PATTERN += r'LOGDRKFR\s+(\w+)\s+'
-SUNA_STATUS_PATTERN += r'TIMERESL\s+(\w+)\s+'
+SUNA_STATUS_PATTERN += r'(?:TIMERESL\s+(\w+)\s+)?'  #35
 SUNA_STATUS_PATTERN += r'LOGFTYPE\s+(\w+)\s+'
+SUNA_STATUS_PATTERN += r'(?:AFILEDUR\s+\d+\s+)?'  # d+ not captured
 SUNA_STATUS_PATTERN += r'ACQCOUNT\s+(\d+)\s+'
 SUNA_STATUS_PATTERN += r'CNTCOUNT\s+(\d+)\s+'
 SUNA_STATUS_PATTERN += r'DCMINNO3\s+([+-]?\d+.\d+)\s+'
@@ -149,7 +157,8 @@ SUNA_STATUS_PATTERN += r'OPERCTRL\s+(\w+)\s+'
 SUNA_STATUS_PATTERN += r'EXDEVTYP\s+(\w+)\s+'
 SUNA_STATUS_PATTERN += r'EXDEVPRE\s+(\d+)\s+'
 SUNA_STATUS_PATTERN += r'EXDEVRUN\s+(\w+)\s+'
-SUNA_STATUS_PATTERN += r'WATCHDOG\s+(\w+)\s+'
+SUNA_STATUS_PATTERN += r'(?:EXDVIVAL\s+\d+\s+)?'  # d+ not captured
+SUNA_STATUS_PATTERN += r'(?:WATCHDOG\s+(\w+)\s+)?'  # 50
 SUNA_STATUS_PATTERN += r'COUNTDWN\s+(\d+)\s+'
 SUNA_STATUS_PATTERN += r'FIXDDURA\s+(\d+)\s+'
 SUNA_STATUS_PATTERN += r'PERDIVAL\s+(\w+)\s+'
@@ -159,13 +168,13 @@ SUNA_STATUS_PATTERN += r'PERDSMPL\s+(\d+)\s+'
 SUNA_STATUS_PATTERN += r'POLLTOUT\s+(\d+)\s+'
 SUNA_STATUS_PATTERN += r'APFATOFF\s+([+-]?\d+.\d+)\s+'
 SUNA_STATUS_PATTERN += r'STBLTIME\s+(\d+)\s+'
-SUNA_STATUS_PATTERN += r'REFLIMIT\s+(\d+)\s+'
+SUNA_STATUS_PATTERN += r'(?:REFLIMIT\s+(\d+)\s+)?'  # 60
 SUNA_STATUS_PATTERN += r'SKPSLEEP\s+(\w+)\s+'
 SUNA_STATUS_PATTERN += r'LAMPTOFF\s+(\d+)\s+'
 SUNA_STATUS_PATTERN += r'SPINTPER\s+(\d+)\s+'
 SUNA_STATUS_PATTERN += r'DRKAVERS\s+(\d+)\s+'
 SUNA_STATUS_PATTERN += r'LGTAVERS\s+(\d+)\s+'
-SUNA_STATUS_PATTERN += r'REFSMPLS\s+(\d+)\s+'
+SUNA_STATUS_PATTERN += r'(?:REFSMPLS\s+(\d+)\s+)?'  # 66
 SUNA_STATUS_PATTERN += r'DRKSMPLS\s+(\d+)\s+'
 SUNA_STATUS_PATTERN += r'LGTSMPLS\s+(\d+)\s+'
 SUNA_STATUS_PATTERN += r'DRKDURAT\s+(\d+)\s+'
@@ -176,11 +185,11 @@ SUNA_STATUS_PATTERN += r'BRMTRACE\s+(\w+)\s+'
 SUNA_STATUS_PATTERN += r'BL_ORDER\s+(\d+)\s+'
 SUNA_STATUS_PATTERN += r'FITCONCS\s+(\d+)\s+'
 SUNA_STATUS_PATTERN += r'DRKCORMT\s+(\w+)\s+'
-SUNA_STATUS_PATTERN += r'DRKCOEFS\s+(\w+)\s+'
-SUNA_STATUS_PATTERN += r'DAVGPRM0\s+([+-]?\d+.\d+)\s+'
-SUNA_STATUS_PATTERN += r'DAVGPRM1\s+([+-]?\d+.\d+)\s+'
-SUNA_STATUS_PATTERN += r'DAVGPRM2\s+([+-]?\d+.\d+)\s+'
-SUNA_STATUS_PATTERN += r'DAVGPRM3\s+([+-]?\d+.\d+)\s+'
+SUNA_STATUS_PATTERN += r'(?:DRKCOEFS\s+(\w+)\s+)?'  # 77
+SUNA_STATUS_PATTERN += r'(?:DAVGPRM0\s+([+-]?\d+.\d+)\s+)?'  # 78
+SUNA_STATUS_PATTERN += r'(?:DAVGPRM1\s+([+-]?\d+.\d+)\s+)?'  # 79
+SUNA_STATUS_PATTERN += r'(?:DAVGPRM2\s+([+-]?\d+.\d+)\s+)?'  # 80
+SUNA_STATUS_PATTERN += r'(?:DAVGPRM3\s+([+-]?\d+.\d+)\s+)?'  # 81
 SUNA_STATUS_PATTERN += r'A_CUTOFF\s+([+-]?\d+.\d+)\s+'
 SUNA_STATUS_PATTERN += r'INTPRADJ\s+(\w+)\s+'
 SUNA_STATUS_PATTERN += r'INTPRFAC\s+(\d+)\s+'
@@ -231,6 +240,8 @@ class ProtocolState(BaseEnum):
     DIRECT_ACCESS = DriverProtocolState.DIRECT_ACCESS
     AUTOSAMPLE = DriverProtocolState.AUTOSAMPLE
     PERIODIC = 'DRIVER_STATE_PERIODIC'
+    MEASURING_N = 'DRIVER_STATE_MEASURING_N'
+    MEASURING_TIMED_N = 'DRIVER_STATE_MEASURING_TIMED_N'
 
 
 class ProtocolEvent(BaseEnum):
@@ -250,8 +261,10 @@ class ProtocolEvent(BaseEnum):
     CLOCK_SYNC = DriverEvent.CLOCK_SYNC
     ACQUIRE_STATUS = DriverEvent.ACQUIRE_STATUS
     MEASURE_N = "DRIVER_EVENT_MEASURE_N"
+    MEASURE_N_ASYNC = "DRIVER_EVENT_MEASURE_N_ASYNC"
     MEASURE_0 = "DRIVER_EVENT_MEASURE_0"
     TIMED_N = "DRIVER_EVENT_TIMED_N"
+    TIMED_N_ASYNC = "DRIVER_EVENT_TIMED_N_ASYNC"
     GET = DriverEvent.GET
     SET = DriverEvent.SET
     EXECUTE_DIRECT = DriverEvent.EXECUTE_DIRECT
@@ -623,6 +636,12 @@ class SUNAStatusDataParticleKey(BaseEnum):
 class SUNAStatusDataParticle(DataParticle):
     _data_particle_type = DataParticleType.SUNA_STATUS
 
+    def _none_check(self, func, x):
+        if x is None:
+            return None
+
+        return func(x)
+
     def _build_parsed_values(self):
         matched = SUNA_STATUS_REGEX.match(self.raw_data)
 
@@ -643,11 +662,11 @@ class SUNAStatusDataParticle(DataParticle):
                 {DataParticleKey.VALUE_ID: SUNAStatusDataParticleKey.EXT_POWER_PORT,
                  DataParticleKey.VALUE: str(matched.group(7))},
                 {DataParticleKey.VALUE_ID: SUNAStatusDataParticleKey.LAMP_SHUTTER,
-                 DataParticleKey.VALUE: str(matched.group(8))},
+                 DataParticleKey.VALUE: self._none_check(str, matched.group(8))},
                 {DataParticleKey.VALUE_ID: SUNAStatusDataParticleKey.REF_DETECTOR,
-                 DataParticleKey.VALUE: str(matched.group(9))},
+                 DataParticleKey.VALUE: self._none_check(str, matched.group(9))},
                 {DataParticleKey.VALUE_ID: SUNAStatusDataParticleKey.PROTECTR,
-                 DataParticleKey.VALUE: str(matched.group(10))},
+                 DataParticleKey.VALUE: self._none_check(str, matched.group(10))},
                 {DataParticleKey.VALUE_ID: SUNAStatusDataParticleKey.SUPER_CAPACITORS,
                  DataParticleKey.VALUE: str(matched.group(11))},
                 {DataParticleKey.VALUE_ID: SUNAStatusDataParticleKey.PSB_SUPERVISOR,
@@ -667,7 +686,7 @@ class SUNAStatusDataParticle(DataParticle):
                 {DataParticleKey.VALUE_ID: SUNAStatusDataParticleKey.SCHEDULING,
                  DataParticleKey.VALUE: str(matched.group(19))},
                 {DataParticleKey.VALUE_ID: SUNAStatusDataParticleKey.LAMP_FAN,
-                 DataParticleKey.VALUE: str(matched.group(20))},
+                 DataParticleKey.VALUE: self._none_check(str, matched.group(20))},
                 {DataParticleKey.VALUE_ID: SUNAStatusDataParticleKey.ADDR_LAMP_TEMP,
                  DataParticleKey.VALUE: str(matched.group(21))},
                 {DataParticleKey.VALUE_ID: SUNAStatusDataParticleKey.ADDR_SPEC_TEMP,
@@ -697,7 +716,7 @@ class SUNAStatusDataParticle(DataParticle):
                 {DataParticleKey.VALUE_ID: SUNAStatusDataParticleKey.LOGGING_DARK_FRAME,
                  DataParticleKey.VALUE: str(matched.group(34))},
                 {DataParticleKey.VALUE_ID: SUNAStatusDataParticleKey.TIMERESL,
-                 DataParticleKey.VALUE: str(matched.group(35))},
+                 DataParticleKey.VALUE: self._none_check(str, matched.group(35))},
                 {DataParticleKey.VALUE_ID: SUNAStatusDataParticleKey.LOG_FILE_TYPE,
                  DataParticleKey.VALUE: str(matched.group(36))},
                 {DataParticleKey.VALUE_ID: SUNAStatusDataParticleKey.ACQCOUNT,
@@ -727,7 +746,7 @@ class SUNAStatusDataParticle(DataParticle):
                 {DataParticleKey.VALUE_ID: SUNAStatusDataParticleKey.DEV_DURING_ACQ,
                  DataParticleKey.VALUE: str(matched.group(49))},
                 {DataParticleKey.VALUE_ID: SUNAStatusDataParticleKey.WATCHDOG_TIME,
-                 DataParticleKey.VALUE: str(matched.group(50))},
+                 DataParticleKey.VALUE: self._none_check(str, matched.group(50))},
                 {DataParticleKey.VALUE_ID: SUNAStatusDataParticleKey.COUNTDOWN,
                  DataParticleKey.VALUE: int(matched.group(51))},
                 {DataParticleKey.VALUE_ID: SUNAStatusDataParticleKey.FIXED_TIME,
@@ -747,7 +766,7 @@ class SUNAStatusDataParticle(DataParticle):
                 {DataParticleKey.VALUE_ID: SUNAStatusDataParticleKey.STABILITY_TIME,
                  DataParticleKey.VALUE: int(matched.group(59))},
                 {DataParticleKey.VALUE_ID: SUNAStatusDataParticleKey.MIN_LAMP_ON,
-                 DataParticleKey.VALUE: int(matched.group(60))},
+                 DataParticleKey.VALUE: self._none_check(int, matched.group(60))},
                 {DataParticleKey.VALUE_ID: SUNAStatusDataParticleKey.SKIP_SLEEP,
                  DataParticleKey.VALUE: str(matched.group(61))},
                 {DataParticleKey.VALUE_ID: SUNAStatusDataParticleKey.SWITCHOFF_TEMP,
@@ -759,7 +778,7 @@ class SUNAStatusDataParticle(DataParticle):
                 {DataParticleKey.VALUE_ID: SUNAStatusDataParticleKey.LGTAVERS,
                  DataParticleKey.VALUE: int(matched.group(65))},
                 {DataParticleKey.VALUE_ID: SUNAStatusDataParticleKey.REFSAMPLES,
-                 DataParticleKey.VALUE: int(matched.group(66))},
+                 DataParticleKey.VALUE: self._none_check(int, matched.group(66))},
                 {DataParticleKey.VALUE_ID: SUNAStatusDataParticleKey.DARK_SAMPLES,
                  DataParticleKey.VALUE: int(matched.group(67))},
                 {DataParticleKey.VALUE_ID: SUNAStatusDataParticleKey.LIGHT_SAMPLES,
@@ -781,15 +800,15 @@ class SUNAStatusDataParticle(DataParticle):
                 {DataParticleKey.VALUE_ID: SUNAStatusDataParticleKey.DARK_CORR_METHOD,
                  DataParticleKey.VALUE: str(matched.group(76))},
                 {DataParticleKey.VALUE_ID: SUNAStatusDataParticleKey.DRKCOEFS,
-                 DataParticleKey.VALUE: str(matched.group(77))},
+                 DataParticleKey.VALUE: self._none_check(str, matched.group(77))},
                 {DataParticleKey.VALUE_ID: SUNAStatusDataParticleKey.DAVGPRM_0,
-                 DataParticleKey.VALUE: float(matched.group(78))},
+                 DataParticleKey.VALUE: self._none_check(float, matched.group(78))},
                 {DataParticleKey.VALUE_ID: SUNAStatusDataParticleKey.DAVGPRM_1,
-                 DataParticleKey.VALUE: float(matched.group(79))},
+                 DataParticleKey.VALUE: self._none_check(float, matched.group(79))},
                 {DataParticleKey.VALUE_ID: SUNAStatusDataParticleKey.DAVGPRM_2,
-                 DataParticleKey.VALUE: float(matched.group(80))},
+                 DataParticleKey.VALUE: self._none_check(float, matched.group(80))},
                 {DataParticleKey.VALUE_ID: SUNAStatusDataParticleKey.DAVGPRM_3,
-                 DataParticleKey.VALUE: float(matched.group(81))},
+                 DataParticleKey.VALUE: self._none_check(float, matched.group(81))},
                 {DataParticleKey.VALUE_ID: SUNAStatusDataParticleKey.ABSORBANCE_CUTOFF,
                  DataParticleKey.VALUE: float(matched.group(82))},
                 {DataParticleKey.VALUE_ID: SUNAStatusDataParticleKey.TIME_ADJ,
@@ -808,6 +827,8 @@ class SUNAStatusDataParticle(DataParticle):
                  DataParticleKey.VALUE: int(matched.group(89))},
                 {DataParticleKey.VALUE_ID: SUNAStatusDataParticleKey.CALIBRATION_FILE,
                  DataParticleKey.VALUE: str(matched.group(90))}]
+
+            parsed_data_list = [x for x in parsed_data_list if not x[DataParticleKey.VALUE] is None]
 
         except ValueError:
             raise SampleException("ValueError while parsing data [%s]" % self.raw_data)
@@ -1007,6 +1028,19 @@ class Protocol(CommandResponseInstrumentProtocol):
         self._protocol_fsm.add_handler(ProtocolState.DIRECT_ACCESS, ProtocolEvent.STOP_DIRECT,
                                        self._handler_direct_access_stop_direct)
 
+        # ASYNC MEASURE_N State
+        self._protocol_fsm.add_handler(ProtocolState.MEASURING_N, ProtocolEvent.ENTER, self._handler_measuring_n_enter)
+        self._protocol_fsm.add_handler(ProtocolState.MEASURING_N, ProtocolEvent.EXIT, self._handler_generic_exit)
+        self._protocol_fsm.add_handler(ProtocolState.MEASURING_N, ProtocolEvent.MEASURE_N_ASYNC,
+                                       self._handler_measure_n_async)
+
+        # ASYNC TIMED_N State
+        self._protocol_fsm.add_handler(ProtocolState.MEASURING_TIMED_N, ProtocolEvent.ENTER,
+                                       self._handler_measuring_timed_n_enter)
+        self._protocol_fsm.add_handler(ProtocolState.MEASURING_TIMED_N, ProtocolEvent.EXIT, self._handler_generic_exit)
+        self._protocol_fsm.add_handler(ProtocolState.MEASURING_TIMED_N, ProtocolEvent.TIMED_N_ASYNC,
+                                       self._handler_timed_n_async)
+
         # AUTOSAMPLE State
         self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.ENTER, self._handler_enter)
         self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.EXIT, self._handler_generic_exit)
@@ -1091,14 +1125,14 @@ class Protocol(CommandResponseInstrumentProtocol):
         """
         Populate the command dictionary with commands
         """
-        self._cmd_dict.add(Capability.ACQUIRE_SAMPLE, timeout=DEFAULT_TIMEOUT, display_name='Acquire Sample')
-        self._cmd_dict.add(Capability.ACQUIRE_STATUS, timeout=DEFAULT_TIMEOUT, display_name='Acquire Status')
+        self._cmd_dict.add(Capability.ACQUIRE_SAMPLE, timeout=ACQUIRE_SAMPLE_TIMEOUT, display_name='Acquire Sample')
+        self._cmd_dict.add(Capability.ACQUIRE_STATUS, timeout=ACQUIRE_STATUS_TIMEOUT, display_name='Acquire Status')
         self._cmd_dict.add(Capability.MEASURE_N, timeout=MEASURE_N_TIMEOUT, display_name='Acquire N Light Samples')
-        self._cmd_dict.add(Capability.MEASURE_0, timeout=DEFAULT_TIMEOUT, display_name='Acquire Dark Sample')
+        self._cmd_dict.add(Capability.MEASURE_0, timeout=MEASURE_0_TIMEOUT, display_name='Acquire Dark Sample')
         self._cmd_dict.add(Capability.TIMED_N, timeout=TIMED_N_TIMEOUT, display_name='Acquire Light Samples (N seconds)')
         self._cmd_dict.add(Capability.TEST, display_name='Execute Test')
         self._cmd_dict.add(Capability.START_AUTOSAMPLE, display_name='Start Autosample')
-        self._cmd_dict.add(Capability.STOP_AUTOSAMPLE, display_name='Stop Autosample')
+        self._cmd_dict.add(Capability.STOP_AUTOSAMPLE, timeout=STOP_AUTOSAMPLE_TIMEOUT, display_name='Stop Autosample')
         self._cmd_dict.add(Capability.START_PERIODIC, display_name='Start Periodic Mode')
         self._cmd_dict.add(Capability.STOP_PERIODIC, timeout=STOP_PERIODIC_TIMEOUT, display_name='Stop Periodic Mode')
         self._cmd_dict.add(Capability.CLOCK_SYNC, timeout=CLOCK_SYNC_TIMEOUT, display_name='Synchronize Clock')
@@ -1896,18 +1930,31 @@ class Protocol(CommandResponseInstrumentProtocol):
     ########################################################################
     def _handler_command_measure_n(self):
         """
+        Measure N is asynchronous. Transition to MEASURING_N State
+        """
+        next_state = ProtocolState.MEASURING_N
+        result = []
+        return next_state, (next_state, result)
+
+    def _handler_measuring_n_enter(self):
+        """
+        Trigger the MEASURE_N_ASYNC event
+        """
+        self._async_raise_fsm_event(ProtocolEvent.MEASURE_N_ASYNC)
+
+    def _handler_measure_n_async(self):
+        """
         Measure N Light Samples
         """
-        next_state = None
+        next_state = ProtocolState.COMMAND
+        result = []
 
         # exit command-line to CMD? prompt (does nothing if already at CMD? prompt)
         self._do_cmd_no_resp(InstrumentCommands.EXIT)
-        result = self._do_cmd_resp(InstrumentCommands.MEASURE, self._param_dict.get(Parameter.NUM_LIGHT_SAMPLES),
-                                   expected_prompt=Prompt.POLLED, timeout=MEASURE_N_TIMEOUT)
+        self._do_cmd_resp(InstrumentCommands.MEASURE, self._param_dict.get(Parameter.NUM_LIGHT_SAMPLES),
+                                   expected_prompt=Prompt.POLLED, timeout=MEASURE_N_CMD_TIMEOUT)
 
-        particles = self.wait_for_particles([DataParticleType.SUNA_SAMPLE], 0)
-
-        return next_state, (next_state, [particles])
+        return next_state, (next_state, result)
 
     def _handler_command_measure_0(self):
         """
@@ -1925,18 +1972,30 @@ class Protocol(CommandResponseInstrumentProtocol):
 
     def _handler_command_timed_n(self):
         """
+        Timed N is asynchronous. Transition to MEASURING_TIMED_N State
+        """
+        next_state = ProtocolState.MEASURING_TIMED_N
+        result = []
+        return next_state, (next_state, result)
+
+    def _handler_measuring_timed_n_enter(self):
+        """
+        Trigger the TIMED_N_ASYNC event
+        """
+        self._async_raise_fsm_event(ProtocolEvent.TIMED_N_ASYNC)
+
+    def _handler_timed_n_async(self):
+        """
         Timed Sampling for N time
         """
-        next_state = None
+        next_state = ProtocolState.COMMAND
+        result = []
 
         # exit command-line to CMD? prompt (does nothing if already at CMD? prompt)
         self._do_cmd_no_resp(InstrumentCommands.EXIT)
-        result = self._do_cmd_resp(InstrumentCommands.TIMED, self._param_dict.get(Parameter.TIME_LIGHT_SAMPLE),
-                                   expected_prompt=Prompt.POLLED, timeout=TIMED_N_TIMEOUT)
-
-        particles = self.wait_for_particles([DataParticleType.SUNA_SAMPLE], 0)
-
-        return next_state, (next_state, [particles])
+        self._do_cmd_resp(InstrumentCommands.TIMED, self._param_dict.get(Parameter.TIME_LIGHT_SAMPLE),
+                                   expected_prompt=Prompt.POLLED, timeout=TIMED_N_CMD_TIMEOUT)
+        return next_state, (next_state, result)
 
     ########################################################################
     # Autosample handlers.

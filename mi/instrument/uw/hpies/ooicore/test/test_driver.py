@@ -38,7 +38,7 @@ from mi.instrument.uw.hpies.ooicore.driver import \
     InstrumentDriver, HEFDataParticle, ParameterConstraints, HEFMotorCurrentParticleKey, HEFDataParticleKey, \
     CalStatusParticleKey, HEFStatusParticleKey, IESDataParticleKey, DataHeaderParticleKey, hef_command
 from mi.instrument.uw.hpies.ooicore.driver import \
-    DataParticleType, Command, ProtocolState, ProtocolEvent, Capability, Parameter, Protocol, Prompt, \
+    DataParticleType, InstrumentCommand, ProtocolState, ProtocolEvent, Capability, Parameter, Protocol, Prompt, \
     NEWLINE
 
 # ##
@@ -443,7 +443,7 @@ class DriverUnitTest(InstrumentDriverUnitTestCase, UtilMixin):
         self.assert_enum_has_no_duplicates(ProtocolState())
         self.assert_enum_has_no_duplicates(ProtocolEvent())
         self.assert_enum_has_no_duplicates(Parameter())
-        self.assert_enum_has_no_duplicates(Command())
+        self.assert_enum_has_no_duplicates(InstrumentCommand())
 
         # Test capabilities for duplicates, then verify that capabilities is a subset of proto events
         self.assert_enum_has_no_duplicates(Capability())

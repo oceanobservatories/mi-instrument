@@ -5,7 +5,7 @@ try:
 except ImportError:
     from distutils.core import setup
 
-version = '0.3.86'
+version = '0.3.90'
 
 setup(name='mi-instrument',
       version=version,
@@ -30,6 +30,7 @@ setup(name='mi-instrument',
               'analyze=mi.core.instrument.playback_analysis:main',
               'oms_extractor=mi.platform.rsn.oms_extractor:main',
               'shovel=mi.core.shovel:main',
+              'oms_aa_server=mi.platform.rsn.oms_alert_alarm_server:main',
           ],
       },
       )

@@ -146,6 +146,46 @@ SUNA_ASCII_STATUS = "SENSTYPE SUNA\r\nSENSVERS V2\r\nSERIALNO 344\r\nTHEBRAND Mi
                     "INTADSTP 20\r\nINTADMAX 20\r\nWFIT_LOW 217.00\r\nWFIT_HGH 240.00\r\nLAMPTIME 172577\r\n" \
                     "$Ok \r\nSUNA> get activecalfile\r\nget activecalfile\r\n$Ok SNA0234H.cal"
 
+# From live instrument RS03AXPS-SF03A-4A-NUTNRA301
+SUNA_ASCII_STATUS_2 = 'SENSTYPE SUNA\r\nSENSVERS V2\r\nSERIALNO 618\r\nTHEBRAND Satlantic\r\nPATHLGTH 10mm\r\n' \
+                      'INTWIPER Missing\r\nEXTPPORT Missing\r\nSUPRCAPS Available\r\nPWRSVISR Available\r\n' \
+                      'USBSWTCH Available\r\nRELAYBRD Missing\r\nSDI12BRD Available\r\nANALGBRD Available\r\n' \
+                      'INTDATLG Available\r\nAPFIFACE Missing\r\nSCHDLING Available\r\nOWIRETLP 100673e102080095\r\n' \
+                      'OWIRETSP 103b06e80208001e\r\nOWIRETHS 10e3ff8c020800b0\r\nZSPEC_SN 98078\r\n' \
+                      'FIBERLSN M3.D01.1885\r\nCUSTOMID None\r\nSTUPSTUS Done\r\nBAUDRATE 57600\r\nMSGLEVEL Info\r\n' \
+                      'MSGFSIZE 2\r\nDATFSIZE 5\r\nOUTFRTYP Full_ASCII\r\nLOGFRTYP Full_ASCII\r\nOUTDRKFR Output\r\n' \
+                      'LOGDRKFR Output\r\nLOGFTYPE Acquisition\r\nAFILEDUR 60\r\nACQCOUNT 8471\r\nCNTCOUNT 281\r\n' \
+                      'DCMINNO3 -5.000\r\nDCMAXNO3 100.000\r\nWDAT_LOW 217.00\r\nWDAT_HGH 250.00\r\nSDI12ADD 48\r\n' \
+                      'DATAMODE Real\r\nOPERMODE Polled\r\nOPERCTRL Samples\r\nEXDEVTYP None\r\nEXDEVPRE 0\r\n' \
+                      'EXDEVRUN Off\r\nEXDVIVAL 0\r\nCOUNTDWN 15\r\nFIXDDURA 300\r\nPERDIVAL 30m\r\nPERDOFFS 0\r\n' \
+                      'PERDDURA 5\r\nPERDSMPL 3\r\nPOLLTOUT 15\r\nAPFATOFF 10.0000\r\nSTBLTIME 5\r\nSKPSLEEP Off\r\n' \
+                      'LAMPTOFF 35\r\nSPINTPER 250\r\nDRKAVERS 1\r\nLGTAVERS 1\r\nDRKSMPLS 2\r\nLGTSMPLS 58\r\n' \
+                      'DRKDURAT 36\r\nLGTDURAT 1\r\nTEMPCOMP Off\r\nSALINFIT On\r\nBRMTRACE Off\r\nBL_ORDER 1\r\n' \
+                      'FITCONCS 3\r\nDRKCORMT SpecAverage\r\nA_CUTOFF 1.3000\r\nINTPRADJ Off\r\nINTPRFAC 1\r\n' \
+                      'INTADSTP 20\r\nINTADMAX 20\r\nWFIT_LOW 217.00\r\nWFIT_HGH 240.00\r\nLAMPTIME 243785\r\n' \
+                      '$Ok \r\nSUNA> \r\nSUNA> get activecalfile\r\n$Ok SNA0618C.cal'
+
+# From live instrument RS10ENGC-XX00X-00-NUTNRA001
+SUNA_ASCII_STATUS_3 = 'SENSTYPE SUNA\r\nSENSVERS V2\r\nSERIALNO 234\r\nTHEBRAND Satlantic\r\nPATHLGTH Unknown\r\n' \
+                      'INTWIPER Available\r\nEXTPPORT Missing\r\nLMPSHUTR Missing\r\nREFDTECT Missing\r\n' \
+                      'PROTECTR Available\r\nSUPRCAPS Available\r\nPWRSVISR Available\r\nUSBSWTCH Available\r\n' \
+                      'RELAYBRD Available\r\nSDI12BRD Available\r\nANALGBRD Available\r\nINTDATLG Available\r\n' \
+                      'APFIFACE Available\r\nSCHDLING Available\r\nFANATLMP Available\r\n' \
+                      'OWIRETLP 10879983020800b8\r\nOWIRETSP 102aeb54020800c7\r\nOWIRETHS 1084a69302080032\r\n' \
+                      'ZSPEC_SN 78466\r\nFIBERLSN K9.B01.1205\r\nSTUPSTUS Done\r\nBAUDRATE 57600\r\nMSGLEVEL Info\r\n' \
+                      'MSGFSIZE 0\r\nDATFSIZE 5\r\nOUTFRTYP Full_ASCII\r\nLOGFRTYP None\r\nOUTDRKFR Output\r\n' \
+                      'LOGDRKFR Output\r\nTIMERESL Fractsec\r\nLOGFTYPE Acquisition\r\nACQCOUNT 1359\r\n' \
+                      'CNTCOUNT 76\r\nDCMINNO3 -5.000\r\nDCMAXNO3 100.000\r\nWDAT_LOW 217.00\r\nWDAT_HGH 250.00\r\n' \
+                      'SDI12ADD 48\r\nDATAMODE Real\r\nOPERMODE Polled\r\nOPERCTRL Samples\r\nEXDEVTYP None\r\n' \
+                      'EXDEVPRE 0\r\nEXDEVRUN Off\r\nWATCHDOG On\r\nCOUNTDWN 15\r\nFIXDDURA 10\r\nPERDIVAL 1h\r\n' \
+                      'PERDOFFS 0\r\nPERDDURA 10\r\nPERDSMPL 10\r\nPOLLTOUT 65535\r\nAPFATOFF 10.0000\r\n' \
+                      'STBLTIME 5\r\nREFLIMIT 0\r\nSKPSLEEP On\r\nLAMPTOFF 35\r\nSPINTPER 600\r\nDRKAVERS 1\r\n' \
+                      'LGTAVERS 1\r\nREFSMPLS 20\r\nDRKSMPLS 1\r\nLGTSMPLS 5\r\nDRKDURAT 5\r\nLGTDURAT 10\r\n' \
+                      'TEMPCOMP Off\r\nSALINFIT On\r\nBRMTRACE Off\r\nBL_ORDER 1\r\nFITCONCS 1\r\n' \
+                      'DRKCORMT SpecAverage\r\nDRKCOEFS Missing\r\nDAVGPRM0 500.000\r\nDAVGPRM1 0.00000\r\n' \
+                      'DAVGPRM2 0.00000\r\nDAVGPRM3 0.000000\r\nA_CUTOFF 1.3000\r\nINTPRADJ On\r\nINTPRFAC 1\r\n' \
+                      'INTADSTP 20\r\nINTADMAX 20\r\nWFIT_LOW 217.00\r\nWFIT_HGH 240.00\r\nLAMPTIME 1014607\r\n' \
+                      '$Ok \r\nSUNA> \r\nSUNA> get activecalfile\r\n$Ok SNA0234H.cal'
 
 SUNA_ASCII_TEST = "Extrn Disk Size; Free , 1960968192; 1956216832\r\n" \
                   "Intrn Disk Size; Free , 2043904; 1956864\r\n" \
@@ -532,10 +572,25 @@ class DriverUnitTest(InstrumentDriverUnitTestCase, DriverTestMixinSub):
         self.assert_chunker_fragmented_sample(chunker, SUNA_ASCII_STATUS)
         self.assert_chunker_combined_sample(chunker, SUNA_ASCII_STATUS)
 
+        self.assert_chunker_sample(chunker, SUNA_ASCII_STATUS_2)
+        self.assert_chunker_sample_with_noise(chunker, SUNA_ASCII_STATUS_2)
+        self.assert_chunker_fragmented_sample(chunker, SUNA_ASCII_STATUS_2)
+        self.assert_chunker_combined_sample(chunker, SUNA_ASCII_STATUS_2)
+
+        self.assert_chunker_sample(chunker, SUNA_ASCII_STATUS_3)
+        self.assert_chunker_sample_with_noise(chunker, SUNA_ASCII_STATUS_3)
+        self.assert_chunker_fragmented_sample(chunker, SUNA_ASCII_STATUS_3)
+        self.assert_chunker_combined_sample(chunker, SUNA_ASCII_STATUS_3)
+
         self.assert_chunker_sample(chunker, SUNA_ASCII_TEST)
         self.assert_chunker_sample_with_noise(chunker, SUNA_ASCII_TEST)
         self.assert_chunker_fragmented_sample(chunker, SUNA_ASCII_TEST)
         self.assert_chunker_combined_sample(chunker, SUNA_ASCII_TEST)
+
+    def test_data_particles(self):
+        SUNAStatusDataParticle(SUNA_ASCII_STATUS).generate_dict()
+        SUNAStatusDataParticle(SUNA_ASCII_STATUS_2).generate_dict()
+        SUNAStatusDataParticle(SUNA_ASCII_STATUS_3).generate_dict()
 
     def test_corrupt_data_particles(self):
         """
@@ -649,7 +704,9 @@ class DriverUnitTest(InstrumentDriverUnitTestCase, DriverTestMixinSub):
             ProtocolState.AUTOSAMPLE:    [ProtocolEvent.STOP_AUTOSAMPLE,
                                           ProtocolEvent.GET],
             ProtocolState.PERIODIC:      [ProtocolEvent.STOP_PERIODIC,
-                                          ProtocolEvent.GET]
+                                          ProtocolEvent.GET],
+            ProtocolState.MEASURING_N:   [ProtocolEvent.MEASURE_N_ASYNC],
+            ProtocolState.MEASURING_TIMED_N: [ProtocolEvent.TIMED_N_ASYNC],
         }
 
         driver = InstrumentDriver(self._got_data_event_callback)

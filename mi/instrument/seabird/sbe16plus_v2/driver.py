@@ -43,8 +43,8 @@ log = get_logger()
 
 WAKEUP_TIMEOUT = 3
 DISCOVER_TIMEOUT = 40
-ACQUIRE_SAMPLE_TIMEOUT = 55
-ACQUIRE_STATUS_TIMEOUT = 80
+ACQUIRE_SAMPLE_TIMEOUT = 29
+ACQUIRE_STATUS_TIMEOUT = 29
 NEWLINE = '\r\n'
 SBE_EPOCH = (datetime.date(2000, 1, 1) - datetime.date(1970, 1, 1)).total_seconds()
 TIMEOUT = 20
@@ -82,6 +82,8 @@ class ProtocolState(BaseEnum):
     UNKNOWN = DriverProtocolState.UNKNOWN
     COMMAND = DriverProtocolState.COMMAND
     AUTOSAMPLE = DriverProtocolState.AUTOSAMPLE
+    ACQUIRING_SAMPLE = 'DRIVER_STATE_ACQUIRING_SAMPLE'
+    ACQUIRING_STATUS = 'DRIVER_STATE_ACQUIRING_STATUS'
     DIRECT_ACCESS = DriverProtocolState.DIRECT_ACCESS
 
 
@@ -95,6 +97,7 @@ class ProtocolEvent(BaseEnum):
     SET = DriverEvent.SET
     DISCOVER = DriverEvent.DISCOVER
     ACQUIRE_SAMPLE = DriverEvent.ACQUIRE_SAMPLE
+    ACQUIRE_SAMPLE_ASYNC = 'DRIVER_EVENT_ACQUIRE_SAMPLE_ASYNC'
     START_AUTOSAMPLE = DriverEvent.START_AUTOSAMPLE
     STOP_AUTOSAMPLE = DriverEvent.STOP_AUTOSAMPLE
     EXECUTE_DIRECT = DriverEvent.EXECUTE_DIRECT
@@ -103,7 +106,8 @@ class ProtocolEvent(BaseEnum):
     CLOCK_SYNC = DriverEvent.CLOCK_SYNC
     SCHEDULED_CLOCK_SYNC = DriverEvent.SCHEDULED_CLOCK_SYNC
     ACQUIRE_STATUS = DriverEvent.ACQUIRE_STATUS
-    SCHEDULED_ACQUIRED_STATUS = 'PROTOCOL_EVENT_SCHEDULED_ACQUIRE_STATUS'
+    ACQUIRE_STATUS_ASYNC = 'DRIVER_EVENT_ACQUIRE_STATUS_ASYNC'
+    SCHEDULED_ACQUIRED_STATUS = 'DRIVER_EVENT_SCHEDULED_ACQUIRE_STATUS'
 
 
 class Capability(BaseEnum):
@@ -1127,30 +1131,38 @@ class SBE16Protocol(CommandResponseInstrumentProtocol):
     def _handler_unknown_discover(self, *args, **kwargs):
         """
         Discover current state; can be COMMAND or AUTOSAMPLE.
-        @retval next_state, (next_state, result) - COMMAND or AUTOSAMPLE
-        @throws InstrumentProtocolException if the device response does not correspond to
-        an expected state.
+        @return next_state, (next_state, result) - COMMAND or AUTOSAMPLE, []
         """
         next_state = None
         result = []
 
-        # check for a sample particle
+        # check for a sample particle for up to 5 seconds
         self._sampling = False
-        timeout = 2
-        end_time = time.time() + timeout
+        end_time = time.time() + 5
         while time.time() < end_time:
             if self._sampling:
                 next_state = ProtocolState.AUTOSAMPLE
                 break
-            time.sleep(.1)
+            time.sleep(.5)
 
-        if next_state is not ProtocolState.AUTOSAMPLE:
-            try:
-                self._wakeup(WAKEUP_TIMEOUT)
-                next_state = ProtocolState.COMMAND
-            except InstrumentTimeoutException:
-                next_state = ProtocolState.UNKNOWN
-                result = 'Failure to communicate with the instrument'
+        # If no particles have yet been found then attempt to get a prompt for about 10 seconds
+        end_time = time.time() + 10
+        while next_state is None and time.time() < end_time:
+            # Check for particles
+            if self._sampling:
+                next_state = ProtocolState.AUTOSAMPLE
+            else:
+                # Check for a prompt
+                try:
+                    self._wakeup(WAKEUP_TIMEOUT)
+                    next_state = ProtocolState.COMMAND
+                except InstrumentTimeoutException:
+                    log.warn('_handler_unknown_discover: Failure to communicate with the instrument')
+
+        # No particles found and no prompt found. Return default
+        if next_state is None:
+            log.warn('_handler_unknown_discover: Defaulting state to COMMAND')
+            next_state = ProtocolState.COMMAND
 
         return next_state, (next_state, result)
 
@@ -1362,21 +1374,21 @@ class SBE16Protocol(CommandResponseInstrumentProtocol):
         next_state = None
         result = []
 
-        result.append(self._do_cmd_resp(Command.GET_SD, timeout=TIMEOUT))
-        log.debug("_handler_command_acquire_status: GetSD Response: %s", result)
-        result.append(self._do_cmd_resp(Command.GET_HD, timeout=TIMEOUT))
-        log.debug("_handler_command_acquire_status: GetHD Response: %s", result)
-        result.append(self._do_cmd_resp(Command.GET_CD, timeout=TIMEOUT))
-        log.debug("_handler_command_acquire_status: GetCD Response: %s", result)
-        result.append(self._do_cmd_resp(Command.GET_CC, timeout=TIMEOUT))
-        log.debug("_handler_command_acquire_status: GetCC Response: %s", result)
-        result.append(self._do_cmd_resp(Command.GET_EC, timeout=TIMEOUT))
-        log.debug("_handler_command_acquire_status: GetEC Response: %s", result)
+        response = self._do_cmd_resp(Command.GET_SD, timeout=TIMEOUT)
+        log.debug("_handler_command_acquire_status: GetSD Response: %s", response)
+        response =  self._do_cmd_resp(Command.GET_HD, timeout=TIMEOUT)
+        log.debug("_handler_command_acquire_status: GetHD Response: %s", response)
+        response = self._do_cmd_resp(Command.GET_CD, timeout=TIMEOUT)
+        log.debug("_handler_command_acquire_status: GetCD Response: %s", response)
+        response = self._do_cmd_resp(Command.GET_CC, timeout=TIMEOUT)
+        log.debug("_handler_command_acquire_status: GetCC Response: %s", response)
+        response = self._do_cmd_resp(Command.GET_EC, timeout=TIMEOUT)
+        log.debug("_handler_command_acquire_status: GetEC Response: %s", response)
 
         # Reset the event counter right after getEC
         self._do_cmd_resp(Command.RESET_EC, timeout=TIMEOUT)
 
-        return next_state, (next_state, ''.join(result))
+        return next_state, (next_state, result)
 
     ########################################################################
     # Common handlers.
@@ -1431,11 +1443,7 @@ class SBE16Protocol(CommandResponseInstrumentProtocol):
         """
         @throw InstrumentProtocolException on invalid command
         """
-        next_state, next_agent_state = self._handler_unknown_discover()
-        if next_state == DriverProtocolState.COMMAND:
-            next_agent_state = ResourceAgentState.COMMAND
-
-        return next_state, (next_state, [])
+        return self._handler_unknown_discover()
 
     ########################################################################
     # Private helpers.

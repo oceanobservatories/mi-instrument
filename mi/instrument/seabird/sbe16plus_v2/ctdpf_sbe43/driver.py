@@ -34,7 +34,7 @@ from mi.instrument.seabird.sbe16plus_v2.ctdpf_jb.driver import SBE19CalibrationP
 
 from mi.instrument.seabird.sbe16plus_v2.driver import Prompt, SBE16InstrumentDriver, SBE16Protocol, \
     ConfirmedParameter, CommonParameter, Sbe16plusBaseParticle, NEWLINE, TIMEOUT, WAKEUP_TIMEOUT, Command, \
-    ProtocolEvent, Capability
+    ProtocolEvent, Capability, DISCOVER_TIMEOUT, ACQUIRE_STATUS_TIMEOUT
 
 __author__ = 'Tapana Gupta'
 __license__ = 'Apache 2.0'
@@ -47,6 +47,7 @@ MIN_PUMP_DELAY = 0
 MAX_PUMP_DELAY = 600
 MIN_AVG_SAMPLES = 1
 MAX_AVG_SAMPLES = 32767
+ASYNC_TIMEOUT = 50
 
 INT16 = (0, (1 << 16)-1)
 
@@ -528,6 +529,11 @@ class SBE43Protocol(SBE16Protocol):
                 (ProtocolEvent.CLOCK_SYNC, self._handler_command_clock_sync_clock),
                 (ProtocolEvent.ACQUIRE_STATUS, self._handler_command_acquire_status)
             ],
+            ProtocolState.ACQUIRING_SAMPLE: [
+                (ProtocolEvent.ENTER, self._handler_acquiring_sample_enter),
+                (ProtocolEvent.EXIT, self._handler_generic_exit),
+                (ProtocolEvent.ACQUIRE_SAMPLE_ASYNC, self._handler_acquire_sample_async),
+            ],
             ProtocolState.DIRECT_ACCESS: [
                 (ProtocolEvent.ENTER, self._handler_direct_access_enter),
                 (ProtocolEvent.EXIT, self._handler_generic_exit),
@@ -573,6 +579,17 @@ class SBE43Protocol(SBE16Protocol):
         self._protocol_fsm.start(ProtocolState.UNKNOWN)
 
         self._chunker = StringChunker(self.sieve_function)
+
+    def _build_command_dict(self):
+        """
+        Populate the command dictionary with command. Overridden to specify timeouts.
+        """
+        self._cmd_dict.add(Capability.START_AUTOSAMPLE, display_name="Start Autosample")
+        self._cmd_dict.add(Capability.STOP_AUTOSAMPLE, display_name="Stop Autosample")
+        self._cmd_dict.add(Capability.CLOCK_SYNC, display_name="Synchronize Clock")
+        self._cmd_dict.add(Capability.ACQUIRE_STATUS, timeout=ACQUIRE_STATUS_TIMEOUT, display_name="Acquire Status")
+        self._cmd_dict.add(Capability.ACQUIRE_SAMPLE, display_name="Acquire Sample")
+        self._cmd_dict.add(Capability.DISCOVER, timeout=DISCOVER_TIMEOUT, display_name='Discover')
 
     def _filter_capabilities(self, events):
         return [x for x in events if Capability.has(x)]
@@ -663,41 +680,56 @@ class SBE43Protocol(SBE16Protocol):
         Get device status
         """
         next_state = None
-        result = []
 
-        result.append(self._do_cmd_resp(Command.GET_SD, response_regex=SBE43StatusParticle.regex_compiled(),
-                                        timeout=TIMEOUT))
-        log.debug("_handler_command_acquire_status: GetSD Response: %s", result)
-        result.append(self._do_cmd_resp(Command.GET_HD, response_regex=SBE43HardwareParticle.regex_compiled(),
-                                        timeout=TIMEOUT))
-        log.debug("_handler_command_acquire_status: GetHD Response: %s", result)
-        result.append(self._do_cmd_resp(Command.GET_CD, response_regex=SBE43ConfigurationParticle.regex_compiled(),
-                                        timeout=TIMEOUT))
-        log.debug("_handler_command_acquire_status: GetCD Response: %s", result)
-        result.append(self._do_cmd_resp(Command.GET_CC, response_regex=SBE43CalibrationParticle.regex_compiled(),
-                                        timeout=TIMEOUT))
-        log.debug("_handler_command_acquire_status: GetCC Response: %s", result)
-        result.append(self._do_cmd_resp(Command.GET_EC, timeout=TIMEOUT))
-        log.debug("_handler_command_acquire_status: GetEC Response: %s", result)
+        response = self._do_cmd_resp(Command.GET_SD, response_regex=SBE43StatusParticle.regex_compiled(),
+                                     timeout=TIMEOUT)
+        log.debug("_handler_command_acquire_status: GetSD Response: %s", response)
+        response = self._do_cmd_resp(Command.GET_HD, response_regex=SBE43HardwareParticle.regex_compiled(),
+                                     timeout=TIMEOUT)
+        log.debug("_handler_command_acquire_status: GetHD Response: %s", response)
+        response = self._do_cmd_resp(Command.GET_CD, response_regex=SBE43ConfigurationParticle.regex_compiled(),
+                                     timeout=TIMEOUT)
+        log.debug("_handler_command_acquire_status: GetCD Response: %s", response)
+        response = self._do_cmd_resp(Command.GET_CC, response_regex=SBE43CalibrationParticle.regex_compiled(),
+                                     timeout=TIMEOUT)
+        log.debug("_handler_command_acquire_status: GetCC Response: %s", response)
+        response = self._do_cmd_resp(Command.GET_EC, timeout=TIMEOUT)
+        log.debug("_handler_command_acquire_status: GetEC Response: %s", response)
 
         # Reset the event counter right after getEC
         self._do_cmd_resp(Command.RESET_EC, timeout=TIMEOUT)
 
-        return next_state, (next_state, ''.join(result))
+        result = self.wait_for_particles([DataParticleType.DEVICE_STATUS, DataParticleType.DEVICE_CALIBRATION,
+                                          DataParticleType.DEVICE_HARDWARE, DataParticleType.DEVICE_CONFIGURATION])
+
+        return next_state, (next_state, result)
 
     def _handler_command_acquire_sample(self, *args, **kwargs):
+        """
+        Acquire Sample is implemented asynchronously. Transition to ACQUIRING_SAMPLE state.
+        """
+        next_state = ProtocolState.ACQUIRING_SAMPLE
+        result = []
+
+        return next_state, (next_state, result)
+
+    def _handler_acquiring_sample_enter(self):
+        """
+        Trigger the ACQUIRE_SAMPLE_ASYNC event
+        """
+        self._async_raise_fsm_event(ProtocolEvent.ACQUIRE_SAMPLE_ASYNC)
+
+    def _handler_acquire_sample_async(self, *args, **kwargs):
         """
         Acquire sample from SBE16.
         @retval next_state, (next_state, result) tuple
         """
-        next_state = None
-        timeout = time.time() + TIMEOUT
+        next_state = ProtocolState.COMMAND
+        result = []
 
-        self._do_cmd_resp(Command.TS, *args, **kwargs)
+        self._do_cmd_resp(Command.TS, *args, timeout=ASYNC_TIMEOUT, **kwargs)
 
-        particles = self.wait_for_particles(DataParticleType.CTD_PARSED, timeout)
-
-        return next_state, (next_state, particles)
+        return next_state, (next_state, result)
 
     def _handler_autosample_acquire_status(self, *args, **kwargs):
         """
@@ -710,25 +742,25 @@ class SBE43Protocol(SBE16Protocol):
         self._wakeup(timeout=WAKEUP_TIMEOUT, delay=0.3)
         self._wakeup(timeout=WAKEUP_TIMEOUT, delay=0.3)
 
-        result.append(self._do_cmd_resp(Command.GET_SD, response_regex=SBE43StatusParticle.regex_compiled(),
-                                        timeout=TIMEOUT))
-        log.debug("_handler_autosample_acquire_status: GetSD Response: %s", result)
-        result.append(self._do_cmd_resp(Command.GET_HD, response_regex=SBE43HardwareParticle.regex_compiled(),
-                                        timeout=TIMEOUT))
-        log.debug("_handler_autosample_acquire_status: GetHD Response: %s", result)
-        result.append(self._do_cmd_resp(Command.GET_CD, response_regex=SBE43ConfigurationParticle.regex_compiled(),
-                                        timeout=TIMEOUT))
-        log.debug("_handler_autosample_acquire_status: GetCD Response: %s", result)
-        result.append(self._do_cmd_resp(Command.GET_CC, response_regex=SBE43CalibrationParticle.regex_compiled(),
-                                        timeout=TIMEOUT))
-        log.debug("_handler_autosample_acquire_status: GetCC Response: %s", result)
-        result.append(self._do_cmd_resp(Command.GET_EC, timeout=TIMEOUT))
-        log.debug("_handler_autosample_acquire_status: GetEC Response: %s", result)
+        response = self._do_cmd_resp(Command.GET_SD, response_regex=SBE43StatusParticle.regex_compiled(),
+                                        timeout=TIMEOUT)
+        log.debug("_handler_autosample_acquire_status: GetSD Response: %s", response)
+        response = self._do_cmd_resp(Command.GET_HD, response_regex=SBE43HardwareParticle.regex_compiled(),
+                                     timeout=TIMEOUT)
+        log.debug("_handler_autosample_acquire_status: GetHD Response: %s", response)
+        response = self._do_cmd_resp(Command.GET_CD, response_regex=SBE43ConfigurationParticle.regex_compiled(),
+                                     timeout=TIMEOUT)
+        log.debug("_handler_autosample_acquire_status: GetCD Response: %s", response)
+        response = self._do_cmd_resp(Command.GET_CC, response_regex=SBE43CalibrationParticle.regex_compiled(),
+                                     timeout=TIMEOUT)
+        log.debug("_handler_autosample_acquire_status: GetCC Response: %s", response)
+        response = self._do_cmd_resp(Command.GET_EC, timeout=TIMEOUT)
+        log.debug("_handler_autosample_acquire_status: GetEC Response: %s", response)
 
         # Reset the event counter right after getEC
         self._do_cmd_no_resp(Command.RESET_EC)
 
-        return next_state, (next_state, ''.join(result))
+        return next_state, (next_state, result)
 
     ########################################################################
     # response handlers.

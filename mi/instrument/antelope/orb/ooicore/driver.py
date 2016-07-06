@@ -185,7 +185,7 @@ class Protocol(InstrumentProtocol):
         # lock for flush actions to prevent writing or altering the data files
         # during flush
         self._lock = Lock()
-        self._pktid = 0
+        self._pktid = None
 
     def _filter_capabilities(self, events):
         """
@@ -357,8 +357,9 @@ class Protocol(InstrumentProtocol):
                 _log.data = []
 
             self._filled_logs = []
-            log.info('updating persistent store')
-            self._persistent_store['pktid'] = self._pktid
+            if self._pktid is not None:
+                log.info('updating persistent store')
+                self._persistent_store['pktid'] = self._pktid
 
         for particle in particles:
             self._driver_event(DriverAsyncEvent.SAMPLE, particle.generate())

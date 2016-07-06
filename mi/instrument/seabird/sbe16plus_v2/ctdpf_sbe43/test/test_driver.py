@@ -616,6 +616,8 @@ class Sbe16plus43UnitTestCase(Sbe16plusUnitTestCase, SBE43Mixin):
             ProtocolState.AUTOSAMPLE: [ProtocolEvent.GET,
                                        ProtocolEvent.STOP_AUTOSAMPLE,
                                        ProtocolEvent.SCHEDULED_ACQUIRED_STATUS],
+            ProtocolState.ACQUIRING_SAMPLE: [ProtocolEvent.ACQUIRE_SAMPLE_ASYNC],
+            ProtocolState.ACQUIRING_STATUS: [],
             ProtocolState.DIRECT_ACCESS: [ProtocolEvent.STOP_DIRECT,
                                           ProtocolEvent.EXECUTE_DIRECT]
         }

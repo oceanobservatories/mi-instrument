@@ -676,10 +676,10 @@ class Protocol(CommandResponseInstrumentProtocol):
         Populate the command dictionary with commands.
         """
         self._cmd_dict.add(Capability.START_AUTOSAMPLE, display_name="Start Autosample")
-        self._cmd_dict.add(Capability.STOP_AUTOSAMPLE, display_name="Stop Autosample")
+        self._cmd_dict.add(Capability.STOP_AUTOSAMPLE, display_name="Stop Autosample", timeout=40)
         self._cmd_dict.add(Capability.ACQUIRE_SAMPLE, display_name="Acquire Sample")
 
-        self._cmd_dict.add(Capability.DISCOVER, display_name='Discover')
+        self._cmd_dict.add(Capability.DISCOVER, display_name='Discover', timeout=30)
 
     def _add_setup_param(self, name, fmt, **kwargs):
         """
