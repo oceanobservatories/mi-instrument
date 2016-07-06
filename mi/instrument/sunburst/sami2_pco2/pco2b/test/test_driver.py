@@ -445,6 +445,7 @@ class DriverUnitTest(Pco2DriverUnitTest, DriverTestMixinSub):
                                 'DRIVER_EVENT_START_DIRECT',
                                 'DRIVER_EVENT_ACQUIRE_STATUS',
                                 'DRIVER_EVENT_ACQUIRE_SAMPLE',
+                                'PROTOCOL_EVENT_RETURN_TO_UNKNOWN',
                                 'DRIVER_EVENT_ACQUIRE_BLANK_SAMPLE',
                                 'DRIVER_EVENT_START_AUTOSAMPLE',
                                 'DRIVER_EVENT_DEIONIZED_WATER_FLUSH',

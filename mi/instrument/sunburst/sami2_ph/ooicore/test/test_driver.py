@@ -409,6 +409,7 @@ class DriverUnitTest(SamiUnitTest, DriverTestMixinSub):
                                 'DRIVER_EVENT_START_DIRECT',
                                 'DRIVER_EVENT_ACQUIRE_STATUS',
                                 'DRIVER_EVENT_ACQUIRE_SAMPLE',
+                                'PROTOCOL_EVENT_RETURN_TO_UNKNOWN',
                                 'DRIVER_EVENT_START_AUTOSAMPLE',
                                 'DRIVER_EVENT_SEAWATER_FLUSH_2750ML',
                                 'DRIVER_EVENT_REAGENT_FLUSH_50ML',
