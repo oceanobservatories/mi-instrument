@@ -132,6 +132,9 @@ class Capability(BaseEnum):
     ACQUIRE_SAMPLE = DriverEvent.ACQUIRE_SAMPLE
     DISCOVER = DriverEvent.DISCOVER
 
+    START_DIRECT = ProtocolEvent.START_DIRECT
+    STOP_DIRECT = ProtocolEvent.STOP_DIRECT
+
 
 # baud rate (9- 57600, 8- 115200, 7- 300, 6- 600, 5- 1200, 4- 2400, 3- 4800, 2-9600, 1- 19200, 0-38400)
 class BaudRate(BaseEnum):
