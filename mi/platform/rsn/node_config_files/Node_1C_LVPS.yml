@@ -3,10 +3,9 @@ node_meta_data:
   location: Endurance Off Shore
   node_id_name: Node 1C LVPS
   oms_sample_rate: 10
-  reference_designator: RS01OSBP-PN01C
+  reference_designator: CE04OSBP-PN01C
   read_only_mode: True
 
 node_streams:
   primary_node_eng_data:
     - name: PN1C-LVPS
-

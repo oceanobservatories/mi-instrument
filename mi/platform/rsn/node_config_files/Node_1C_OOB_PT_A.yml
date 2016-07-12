@@ -3,7 +3,7 @@ node_meta_data:
   location: Endurance Off Shore
   node_id_name: Node 1C OOB.PT A
   oms_sample_rate: 10
-  reference_designator: RS01OSBP-PN01C
+  reference_designator: CE04OSBP-PN01C
   read_only_mode: True
 
 node_streams:

@@ -3,7 +3,7 @@ node_meta_data:
   location: Axial Base
   node_id_name: SN0201-PD03A
   oms_sample_rate: 10
-  reference_designator: RS03AXBS-PD03A
+  reference_designator: RS03AXPD-PD03A
   serial_number: SN0201
   read_only_mode: True
 
