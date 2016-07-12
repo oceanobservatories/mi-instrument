@@ -748,6 +748,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
         self.write_delay = WRITE_DELAY
         self._last_data_timestamp = None
         self.eoln = INSTRUMENT_NEWLINE
+        self._location = None
 
         # create short alias for Directions class
         directions = MenuInstrumentProtocol.MenuTree.Directions
@@ -920,6 +921,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                 log.info('failed to return to root menu [%r], retrying...', e)
 
         if not got_prompt:
+            self._location = None
             raise InstrumentTimeoutException()
 
         # Get dest_submenu
@@ -931,14 +933,18 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
         cmd_timeout = kwargs.pop('timeout', None)
         cmd_expected_prompt = kwargs.pop('expected_prompt', None)
 
-        # iterate through the menu traversing directions
-        directions_list = self._menu.get_directions(dest_submenu)
-        for directions in directions_list:
-            log.debug('_navigate_and_execute: directions: %s', directions)
-            command = directions.get_command()
-            response = directions.get_response()
-            timeout = directions.get_timeout()
-            self._do_cmd_resp(command, expected_prompt=response, timeout=timeout, **kwargs)
+        if dest_submenu != self._location:
+            # iterate through the menu traversing directions
+            directions_list = self._menu.get_directions(dest_submenu)
+            for directions in directions_list:
+                log.debug('_navigate_and_execute: directions: %s', directions)
+                command = directions.get_command()
+                response = directions.get_response()
+                timeout = directions.get_timeout()
+                self._do_cmd_resp(command, expected_prompt=response, timeout=timeout, **kwargs)
+            self._location = dest_submenu
+        else:
+            log.debug('_navigate_and_execute: took shortcut (already at %s)', dest_submenu)
 
         # restore timeout and expected_prompt for the execution of the actual command
         kwargs['timeout'] = cmd_timeout
@@ -948,6 +954,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
             log.debug('_navigate_and_execute: sending cmd:%s, kwargs: %s to _do_cmd_resp.',
                       command, kwargs)
             command = self._do_cmd_resp(command, **kwargs)
+        return self._location, dest_submenu
 
     def _do_cmd_resp(self, cmd, *args, **kwargs):
         """
@@ -1476,6 +1483,10 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
         """
         Try to get root menu presuming the instrument is not sleeping by sending single control-C
         """
+        if self._location == SubMenues.ROOT:
+            log.debug('_go_to_root_menu: took shortcut (already at %s)', self._location)
+            return
+
         for attempt in range(0, 2):
             self._linebuf = ''
             self._promptbuf = ''
@@ -1490,6 +1501,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
             else:
                 if prompt == InstrumentPrompts.MAIN_MENU:
                     log.debug("_go_to_root_menu: got root menu prompt")
+                    self._location = SubMenues.ROOT
                     return
                 if prompt == InstrumentPrompts.SLEEPING:
                     # instrument says it is sleeping, so try to wake it up
@@ -1514,6 +1526,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
             log.debug("_go_to_root_menu: prompt after sending %d control-c characters = <%s>",
                       count, prompt)
             if prompt == InstrumentPrompts.MAIN_MENU:
+                self._location = SubMenues.ROOT
                 return
             if prompt == InstrumentPrompts.SLEEP_WAKEUP:
                 count = 1  # send 1 control=c to get the root menu
@@ -1522,8 +1535,8 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
 
         log.debug("_go_to_root_menu: failed to get to root menu, prompt=%s (%s)",
                   prompt, prompt.encode("hex"))
+        self._location = None
         raise InstrumentTimeoutException("failed to get to root menu.")
-
 
     def _parse_sensor_orientation(self, sensor_orientation):
 
@@ -1595,8 +1608,8 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            lambda match: match.group(1),
                            lambda string: str(string),
                            regex_flags=re.DOTALL,
-                           menu_path_read=SubMenues.ROOT,
-                           submenu_read=InstrumentCmds.SET_TIME,
+                           menu_path_read=SubMenues.SET_TIME,
+                           submenu_read=None,
                            menu_path_write=SubMenues.SET_TIME,
                            submenu_write=InstrumentCmds.ENTER_TIME,
                            display_name="System Clock",
