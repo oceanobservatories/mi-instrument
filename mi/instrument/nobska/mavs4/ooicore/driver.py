@@ -273,10 +273,10 @@ class InstrumentParameters(DriverParameter):
     NOTE3 = 'note3'
     VELOCITY_FRAME = 'velocity_frame'
     MONITOR = 'monitor'
-    LOG_DISPLAY_TIME = 'log/display_time'
-    LOG_DISPLAY_FRACTIONAL_SECOND = 'log/display_fractional_second'
-    LOG_DISPLAY_ACOUSTIC_AXIS_VELOCITIES = 'log/display_acoustic_axis_velocities'
-    LOG_DISPLAY_ACOUSTIC_AXIS_VELOCITIES_FORMAT = 'log/display_acoustic_axis_velocities_format'
+    LOG_DISPLAY_TIME = 'log_display_time'
+    LOG_DISPLAY_FRACTIONAL_SECOND = 'log_display_fractional_second'
+    LOG_DISPLAY_ACOUSTIC_AXIS_VELOCITIES = 'log_display_acoustic_axis_velocities'
+    LOG_DISPLAY_ACOUSTIC_AXIS_VELOCITIES_FORMAT = 'log_display_acoustic_axis_velocities_format'
     QUERY_MODE = 'query_mode'
     FREQUENCY = 'frequency'
     MEASUREMENTS_PER_SAMPLE = 'measurements_per_sample'
@@ -1012,6 +1012,12 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
         """
 
         if not isinstance(v, float):
+            if isinstance(v, str):
+                try:
+                    val = float(v)
+                    return v
+                except ValueError:
+                    raise InstrumentParameterException('Cannot coerce "%s" into a number' % v)
             raise InstrumentParameterException('Value %s is not a float.' % v)
         else:
             return str(v)
@@ -1243,7 +1249,11 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
         old_config = self._param_dict.get_config()
         log.debug('old_config:           %r', old_config)
         log.debug('params_to_set before: %r', params_to_set)
-        params_to_set = {key: value for key, value in params_to_set.iteritems() if old_config.get(key) != value}
+        new_params = {}
+        for key, value in params_to_set.iteritems():
+            if old_config.get(key) != value:
+                new_params[key] = self._param_dict.format(key, value)
+        params_to_set = new_params
         log.debug('params_to_set after:  %r', params_to_set)
 
         if params_to_set:
