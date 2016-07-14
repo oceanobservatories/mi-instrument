@@ -1154,6 +1154,14 @@ class CommandResponseInstrumentProtocol(InstrumentProtocol):
         """
         particles = []
 
+        # Ensure that particle_classes is a list
+        if not isinstance(particle_classes, (list, tuple)):
+            particle_classes = [particle_classes]
+
+        # Make a copy of the list before mutating it
+        particle_classes = particle_classes[:]
+        particles = []
+
         while True:
 
             for particle_class in particle_classes[:]:
