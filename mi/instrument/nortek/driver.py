@@ -714,7 +714,8 @@ class NortekInstrumentProtocol(CommandResponseInstrumentProtocol):
         # GC
         self._do_cmd_resp(InstrumentCommands.READ_USER_CONFIGURATION, response_regex=common.USER_CONFIG_DATA_REGEX)
 
-        result = self.wait_for_particles(self.status_particles)
+        needed_particles = list(self.status_particles)
+        result = self.wait_for_particles(needed_particles)
         return next_state, (next_state, result)
 
     def _handler_command_set(self, *args, **kwargs):
@@ -817,7 +818,8 @@ class NortekInstrumentProtocol(CommandResponseInstrumentProtocol):
         if time_diff > common.CLOCK_SYNC_MAX_DIFF:
             raise InstrumentCommandException("Syncing the clock did not work! Off by %s seconds" % time_diff)
 
-        clock_particle = self.wait_for_particles(self.clock_particle, 0)
+        needed_particles = list(self.clock_particle)
+        clock_particle = self.wait_for_particles(needed_particles, 0)
         return clock_particle
 
     def _handler_command_clock_sync(self, *args, **kwargs):
