@@ -4,7 +4,7 @@ node_meta_data:
   node_id_name: SN0144-SF01B
   node_type: ProfilerFloat
   oms_sample_rate: 5
-  reference_designator: RS01OSBP-SF01B
+  reference_designator: CE04OSPS-SF01B
   serial_number: SN0144
   read_only_mode: True
 

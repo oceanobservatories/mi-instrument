@@ -3,7 +3,7 @@ node_meta_data:
   location: Endurance In Shore
   node_id_name: Node 1D LVPS
   oms_sample_rate: 10
-  reference_designator: RS01SHBP-PN01D
+  reference_designator: CE04OSPI-PN01D
   read_only_mode: True
 
 node_streams:
