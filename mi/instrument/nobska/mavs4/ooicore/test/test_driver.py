@@ -468,9 +468,8 @@ class Testmavs4_UNIT(InstrumentDriverUnitTestCase, Mavs4Mixin):
         driver = mavs4InstrumentDriver(self._got_data_event_callback)
         self.assert_initialize_driver(driver, ProtocolStates.COMMAND)
 
-        # mock the _update_params() method which tries to get parameters from an actual instrument
-        _update_params_mock = Mock(spec="_update_params")
-        driver._protocol._update_params = _update_params_mock
+        # status particle generation first gets the system clock - stub it out
+        driver._protocol._get_param = Mock()
 
         # load the status parameter values
         pd = driver._protocol._param_dict
