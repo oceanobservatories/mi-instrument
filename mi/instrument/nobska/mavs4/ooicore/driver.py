@@ -1100,7 +1100,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
         recognized.
         """
         self._update_params()
-        self._init_params()
+        #self._init_params()
 
         # Tell driver superclass to send a state change event.
         # Superclass will query the state.
@@ -1345,11 +1345,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
         """
         next_state = None
 
-        timeout = time.time() + STATUS_TIMEOUT
-
-        self._generate_status_event()
-
-        particles = self.wait_for_particles([DataParticleType.STATUS], timeout)
+        particles = [self._generate_status_event()]
 
         return next_state, (next_state, particles)
 
@@ -1444,14 +1440,44 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
     # Private helpers.
     ########################################################################
 
-    def _generate_status_event(self):
-        if not self._driver_event:
-            # can't send events, so don't bother creating the particle
-            return
+    def _extract_sample(self, particle_class, regex, line, timestamp, publish=True):
+        """
+        Override the base class
+        Extract sample from a response line if present and publish
+        parsed particle
 
-        # update parameters so param_dict values used for status are latest
-        # and greatest.
-        self._update_params()
+        @param particle_class The class to instantiate for this specific
+            data particle. Parameterizing this allows for simple, standard
+            behavior from this routine
+        @param regex The regular expression that matches a data sample
+        @param line string to match for sample.
+        @param timestamp port agent timestamp to include with the particle
+        @param publish boolean to publish samples (default True). If True,
+               two different events are published: one to notify raw data and
+               the other to notify parsed data.
+
+        @retval dict of dicts {'parsed': parsed_sample, 'raw': raw_sample} if
+                the line can be parsed for a sample. Otherwise, None.
+        @todo Figure out how the agent wants the results for a single poll
+            and return them that way from here
+        """
+
+        if regex.match(line):
+
+            particle = particle_class(line, port_timestamp=timestamp)
+            parsed_sample = particle.generate()
+
+            # Add an entry to the particle dictionary, with the particle class as the key
+            self._particle_dict[particle.data_particle_type()] = parsed_sample
+
+            if publish and self._driver_event:
+                self._driver_event(DriverAsyncEvent.SAMPLE, parsed_sample)
+
+            return parsed_sample
+
+    def _generate_status_event(self):
+        # only the clock will have changed
+        self._get_param(InstrumentParameters.SYS_CLOCK)
 
         # build a dictionary of the parameters that are to be returned in the
         # status data particle
@@ -1470,6 +1496,8 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
 
         # send particle as an event
         self._driver_event(DriverAsyncEvent.SAMPLE, status)
+
+        return status
 
     def _send_control_c(self, count):
         """
@@ -2777,6 +2805,11 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
             if time.time() > starttime + timeout:
                 raise InstrumentTimeoutException()
 
+    def _get_param(self, key):
+        dest_submenu = self._param_dict.get_menu_path_read(key)
+        command = self._param_dict.get_submenu_read(key)
+        self._navigate_and_execute(command, name=InstrumentParameters.ALL, dest_submenu=dest_submenu, timeout=10)
+
     def _update_params(self, *args, **kwargs):
         """
         Update the parameter dictionary. Issue the upload command. The response
@@ -2789,6 +2822,23 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
         # Get old param dict config.
         old_config = self._param_dict.get_config()
 
+        # get all parameters from menu 1> Time
+        self._get_param(InstrumentParameters.SYS_CLOCK)
+        # get all parameters from menu S> System Configuration
+        self._get_param(InstrumentParameters.SOLID_STATE_TILT)
+        # get all parameters from menu 3> Calibration
+        self._get_param(InstrumentParameters.VELOCITY_OFFSET_PATH_A)
+        self._get_param(InstrumentParameters.COMPASS_OFFSET_0)
+        self._get_param(InstrumentParameters.COMPASS_SCALE_FACTORS_0)
+        # get all parameters from menu 6> Deploy
+        self._get_param(InstrumentParameters.MONITOR)
+        # get the tilt offsets only if enabled
+        if self._param_dict.get(InstrumentParameters.SOLID_STATE_TILT) == NO:
+            self._param_dict.set_value(InstrumentParameters.TILT_PITCH_OFFSET, -1)
+            self._param_dict.set_value(InstrumentParameters.TILT_ROLL_OFFSET, -1)
+        else:
+            self._get_param(InstrumentParameters.TILT_PITCH_OFFSET)
+
         deploy_menu_parameters_parsed = False
         system_configuration_menu_parameters_parsed = False
         velocity_offset_set_parameters_parsed = False
@@ -2796,72 +2846,92 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
         compass_scale_factors_set_parameters_parsed = False
         tilt_offset_set_parameters_parsed = False
 
+        # parameters_by_menu = {}
+        # for key in InstrumentParameters.list():
+        #     if key == InstrumentParameters.ALL:
+        #         # this is not the name of any parameter
+        #         continue
+        #     dest_submenu = self._param_dict.get_menu_path_read(key)
+        #     if dest_submenu is None:
+        #         continue
+        #     command = self._param_dict.get_submenu_read(key)
+        #     parameters_by_menu.setdefault(dest_submenu, []).append((key, command))
+        #
+        # for submenu, keyed_commands in parameters_by_menu.iteritems():
+        #     got_all = False
+        #     for key, command in keyed_commands:
+        #         if command is None and not got_all:
+        #             self._navigate_and_execute(command, name=InstrumentParameters.ALL, dest_submenu=submenu, timeout=10)
+        #             got_all = True
+        #         elif command:
+        #             self._navigate_and_execute(command, name=key, dest_submenu=submenu, timeout=10)
+
         # sort the list so that the solid_state_tilt parameter will be updated
         # and accurate before the tilt_offset parameters are updated, so that
         # the check of the solid_state_tilt param value reflects what's on the
         # instrument
-        for key in InstrumentParameters.list():
-            if key == InstrumentParameters.ALL:
-                # this is not the name of any parameter
-                continue
-            dest_submenu = self._param_dict.get_menu_path_read(key)
-            command = self._param_dict.get_submenu_read(key)
-
-            if key in DeployMenuParameters.list():
-                # only screen scrape the deploy menu once for efficiency
-                if deploy_menu_parameters_parsed:
-                    continue
-                deploy_menu_parameters_parsed = True
-                # set name to ALL so _parse_deploy_menu_response() knows to get all values
-                key = InstrumentParameters.ALL
-
-            elif key in SystemConfigurationMenuParameters.list():
-                # only screen scrape the system configuration menu once for efficiency
-                if system_configuration_menu_parameters_parsed:
-                    continue
-                system_configuration_menu_parameters_parsed = True
-                # set name to ALL so _parse_system_configuration_menu_response() knows to get all values
-                key = InstrumentParameters.ALL
-
-            elif key in VelocityOffsetParameters.list():
-                # only screen scrape the velocity offset set response once for efficiency
-                if velocity_offset_set_parameters_parsed:
-                    continue
-                velocity_offset_set_parameters_parsed = True
-                # set name to ALL so _parse_velocity_offset_set_response() knows to get all values
-                key = InstrumentParameters.ALL
-
-            elif key in CompassOffsetParameters.list():
-                # only screen scrape the compass offset set response once for efficiency
-                if compass_offset_set_parameters_parsed:
-                    continue
-                compass_offset_set_parameters_parsed = True
-                # set name to ALL so _parse_compass_offset_set_response() knows to get all values
-                key = InstrumentParameters.ALL
-
-            elif key in CompassScaleFactorsParameters.list():
-                # only screen scrape the compass scale factors set response once for efficiency
-                if compass_scale_factors_set_parameters_parsed:
-                    continue
-                compass_scale_factors_set_parameters_parsed = True
-                # set name to ALL so _parse_compass_scale_factors_set_response() knows to get all values
-                key = InstrumentParameters.ALL
-
-            elif key in TiltOffsetParameters.list():
-                # only screen scrape the tilt offset set response once for efficiency
-                if tilt_offset_set_parameters_parsed:
-                    continue
-                if self._param_dict.get(InstrumentParameters.SOLID_STATE_TILT) == NO:
-                    # don't get the tilt offset parameters if the solid state tilt is disabled
-                    self._param_dict.set_value(InstrumentParameters.TILT_PITCH_OFFSET, -1)
-                    self._param_dict.set_value(InstrumentParameters.TILT_ROLL_OFFSET, -1)
-                    tilt_offset_set_parameters_parsed = True
-                    continue
-                tilt_offset_set_parameters_parsed = True
-                # set name to ALL so _parse_tilt_offset_set_response() knows to get all values
-                key = InstrumentParameters.ALL
-
-            self._navigate_and_execute(command, name=key, dest_submenu=dest_submenu, timeout=10)
+        # for key in InstrumentParameters.list():
+        #     if key == InstrumentParameters.ALL:
+        #         # this is not the name of any parameter
+        #         continue
+        #     dest_submenu = self._param_dict.get_menu_path_read(key)
+        #     command = self._param_dict.get_submenu_read(key)
+        #
+        #     if key in DeployMenuParameters.list():
+        #         # only screen scrape the deploy menu once for efficiency
+        #         if deploy_menu_parameters_parsed:
+        #             continue
+        #         deploy_menu_parameters_parsed = True
+        #         # set name to ALL so _parse_deploy_menu_response() knows to get all values
+        #         key = InstrumentParameters.ALL
+        #
+        #     elif key in SystemConfigurationMenuParameters.list():
+        #         # only screen scrape the system configuration menu once for efficiency
+        #         if system_configuration_menu_parameters_parsed:
+        #             continue
+        #         system_configuration_menu_parameters_parsed = True
+        #         # set name to ALL so _parse_system_configuration_menu_response() knows to get all values
+        #         key = InstrumentParameters.ALL
+        #
+        #     elif key in VelocityOffsetParameters.list():
+        #         # only screen scrape the velocity offset set response once for efficiency
+        #         if velocity_offset_set_parameters_parsed:
+        #             continue
+        #         velocity_offset_set_parameters_parsed = True
+        #         # set name to ALL so _parse_velocity_offset_set_response() knows to get all values
+        #         key = InstrumentParameters.ALL
+        #
+        #     elif key in CompassOffsetParameters.list():
+        #         # only screen scrape the compass offset set response once for efficiency
+        #         if compass_offset_set_parameters_parsed:
+        #             continue
+        #         compass_offset_set_parameters_parsed = True
+        #         # set name to ALL so _parse_compass_offset_set_response() knows to get all values
+        #         key = InstrumentParameters.ALL
+        #
+        #     elif key in CompassScaleFactorsParameters.list():
+        #         # only screen scrape the compass scale factors set response once for efficiency
+        #         if compass_scale_factors_set_parameters_parsed:
+        #             continue
+        #         compass_scale_factors_set_parameters_parsed = True
+        #         # set name to ALL so _parse_compass_scale_factors_set_response() knows to get all values
+        #         key = InstrumentParameters.ALL
+        #
+        #     elif key in TiltOffsetParameters.list():
+        #         # only screen scrape the tilt offset set response once for efficiency
+        #         if tilt_offset_set_parameters_parsed:
+        #             continue
+        #         if self._param_dict.get(InstrumentParameters.SOLID_STATE_TILT) == NO:
+        #             # don't get the tilt offset parameters if the solid state tilt is disabled
+        #             self._param_dict.set_value(InstrumentParameters.TILT_PITCH_OFFSET, -1)
+        #             self._param_dict.set_value(InstrumentParameters.TILT_ROLL_OFFSET, -1)
+        #             tilt_offset_set_parameters_parsed = True
+        #             continue
+        #         tilt_offset_set_parameters_parsed = True
+        #         # set name to ALL so _parse_tilt_offset_set_response() knows to get all values
+        #         key = InstrumentParameters.ALL
+        #
+        #     self._navigate_and_execute(command, name=key, dest_submenu=dest_submenu, timeout=10)
 
         # Get new param dict config. If it differs from the old config,
         # tell driver superclass to publish a config change event.
