@@ -35,12 +35,13 @@ from mi.core.instrument.chunker import StringChunker
 from mi.core.exceptions import SampleException, InstrumentCommandException
 
 from mi.instrument.uw.hpies.ooicore.driver import \
-    InstrumentDriver, HEFDataParticle, ParameterConstraints, HEFMotorCurrentParticleKey, HEFDataParticleKey, \
-    CalStatusParticleKey, HEFStatusParticleKey, IESDataParticleKey, DataHeaderParticleKey, hef_command
+    InstrumentDriver, HEFDataParticle, HEFMotorCurrentParticle, CalStatusParticle, HEFStatusParticle, \
+    IESDataParticle, ParameterConstraints, HEFMotorCurrentParticleKey, HEFDataParticleKey, DataHeaderParticle, \
+    TimestampParticleKey, TimestampParticle, CalStatusParticleKey, HEFStatusParticleKey, IESDataParticleKey, \
+    DataHeaderParticleKey, hef_command
 from mi.instrument.uw.hpies.ooicore.driver import \
     DataParticleType, InstrumentCommand, ProtocolState, ProtocolEvent, Capability, Parameter, Protocol, Prompt, \
-    NEWLINE
-
+    NEWLINE, IESStatusParticle, IESStatusParticleKey
 # ##
 # Driver parameters for the tests
 ###
@@ -123,14 +124,14 @@ class UtilMixin(DriverTestMixin):
     STATES = ParameterTestConfigKey.STATES
 
     # Sample raw data particles
-    SAMPLE_HEF_HEADER = "#3__HE05 E a 0 985 2 3546330153 3113 3 3 3 1398896784*1bbc"
+    SAMPLE_HEF_HEADER = "#3__HE05 E a 0 1026 226160 1465256580 1352 10 10 3 1465257448*6487"
     SAMPLE_HEF = '#3__DE 1159 396997 397259 397512 397260 396951 397701*d595'
     SAMPLE_MOTOR_HEADER = '#3__HE05 f a 0 382 0 3546329882 17917 3 3 3 1398896422*d6fe'
     SAMPLE_MOTOR = '#3__DM 11 24425*396b'
     SAMPLE_CAL_HEADER = '#3__HE05 E a 0 983 130 3546345513 13126 3 3 3 1398912144*f7aa'
     SAMPLE_CAL = '#3__DC 2 192655 192637 135611 80036 192554 192644*5c28'
     SAMPLE_HPIES_STATUS = \
-        '#3__s1 -748633661 31 23 0 C:\\DATA\\12345.000 OK*3e90' + NEWLINE + \
+        r'#3__s1 -748633661 31 23 0 C:\\DATA\\12345.000 OK*3e90' + NEWLINE + \
         '#3__s2 10 0 0 984001 0 0 0*ac87' + NEWLINE + \
         '#3__s3 0 0 0 0 0 0 1*35b7'
     SAMPLE_IES_5AUX = '#5_AUX,1398880200,04,999999,999999,999999,999999,0010848,021697,022030,' + \
@@ -151,6 +152,172 @@ class UtilMixin(DriverTestMixin):
         r'#5_E:388559 2.29 0.01 0.00 14.00 6.93 5.05 23.83 0.0000 10935 1623 33228.480 172171.656 0.109 \r\n*1605'
     SAMPLE_TIMESTAMP = \
         '#2_TOD,1398883295,1398883288*0059'
+    SAMPLE_BACKUP_IES_STATUS = \
+        r'#4_  IES s/n: 177    Paros s/n: 95953    Bliley s/n: 150244\r\n*58ae' + NEWLINE + \
+        r'#4_  Pressure   = 2955268 10Pa       Temperature = 1478 millidegrees C\r\n*01c0' + NEWLINE + \
+        r'#4_  Bliley Temperature = 1.480 C     Bliley Frequency = 4000018.132 Hz\r\n*a7fc' + NEWLINE + \
+        r'#4_\r\n*8462' + NEWLINE + \
+        r'#4_  Hour stamp = 407015\r\n*3a34' + NEWLINE + \
+        r'#4_  Processing data for telemetry file...\r\n*312a' + NEWLINE + \
+        r'#4_\r\n*8462' + NEWLINE + \
+        r'#4_  Sorted list of travel times:\r\n*25c5' + NEWLINE + \
+        r'#4_\r\n*8462' + NEWLINE + \
+        r'#4_    # 23 = 3.91403\r\n*e4b0'+ NEWLINE + \
+        r'#4_    # 22 = 3.91345\r\n*40b6' + NEWLINE + \
+        r'#4_    # 21 = 3.91150\r\n*8d0c' + NEWLINE + \
+        r'#4_    # 20 = 3.90988\r\n*f58a' + NEWLINE + \
+        r'#4_    # 19 = 3.90897\r\n*87f1' + NEWLINE + \
+        r'#4_    # 18 = 3.90854\r\n*e3e3' + NEWLINE + \
+        r'#4_    # 17 = 3.90830\r\n*77bc' + NEWLINE + \
+        r'#4_    # 16 = 3.90778\r\n*6cee' + NEWLINE + \
+        r'#4_    # 15 = 3.90759\r\n*b782' + NEWLINE + \
+        r'#4_    # 14 = 3.90680\r\n*04c6' + NEWLINE + \
+        r'#4_    # 13 = 3.90647\r\n*f529' + NEWLINE + \
+        r'#4_    # 12 = 3.90619\r\n*c83c' + NEWLINE + \
+        r'#4_    # 11 = 3.90567\r\n*c545' + NEWLINE + \
+        r'#4_    # 10 = 3.90558\r\n*ebee' + NEWLINE + \
+        r'#4_    # 9 = 3.90537\r\n*4359' + NEWLINE + \
+        r'#4_    # 8 = 3.90521\r\n*34c0' + NEWLINE + \
+        r'#4_    # 7 = 3.90491\r\n*2785' + NEWLINE + \
+        r'#4_    # 6 = 3.90491\r\n*6faf' + NEWLINE + \
+        r'#4_    # 5 = 3.90460\r\n*811c' + NEWLINE + \
+        r'#4_    # 4 = 3.90454\r\n*e85b' + NEWLINE + \
+        r'#4_    # 3 = 3.90454\r\n*189c' + NEWLINE + \
+        r'#4_    # 2 = 3.90372\r\n*a460' + NEWLINE + \
+        r'#4_    # 1 = 3.90329\r\n*2f75' + NEWLINE + \
+        r'#4_    # 0 = 3.89423\r\n*0d11' + NEWLINE + \
+        r'#4_\r\n*8462' + NEWLINE + \
+        r'#4_  Disregarding zeros and echos > 9 secs:\r\n*00d6' + NEWLINE + \
+        r'#4_\r\n*8462' + NEWLINE + \
+        r'#4_    TTMedian: 3.90619 secs.\r\n*e9b1' + NEWLINE + \
+        r'#4_       TTMean: 3.90650 secs\r\n*1abf' + NEWLINE + \
+        r'#4_       TTquart: 3.90491 secs\r\n*c96f' + NEWLINE + \
+        r'#4_          TTStd: 0.004649 secs\r\n*2430' + NEWLINE + \
+        r'#4_\r\n*8462' + NEWLINE + \
+        r'#4_  No need for further processing...\r\n*4490' + NEWLINE + \
+        r'#4_\r\n*8462' + NEWLINE + \
+        r'#4_  Sorted list of pressure values:\r\n*ee73' + NEWLINE + \
+        r'#4_\r\n*8462' + NEWLINE + \
+        r'#4_    # 23 = 2955604\r\n*f610' + NEWLINE + \
+        r'#4_    # 22 = 2955540\r\n*2be8' + NEWLINE + \
+        r'#4_    # 21 = 2955471\r\n*6b7a' + NEWLINE + \
+        r'#4_    # 20 = 2955402\r\n*224d' + NEWLINE + \
+        r'#4_    # 19 = 2955337\r\n*4c05' + NEWLINE + \
+        r'#4_    # 18 = 2955268\r\n*e581' + NEWLINE + \
+        r'#4_    # 17 = 0\r\n*0572' + NEWLINE + \
+        r'#4_    # 16 = 0\r\n*488f' + NEWLINE + \
+        r'#4_    # 15 = 0\r\n*9e88' + NEWLINE + \
+        r'#4_    # 14 = 0\r\n*d375' + NEWLINE + \
+        r'#4_    # 13 = 0\r\n*3a97' + NEWLINE + \
+        r'#4_    # 12 = 0\r\n*776a' + NEWLINE + \
+        r'#4_    # 11 = 0\r\n*a16d' + NEWLINE + \
+        r'#4_    # 10 = 0\r\n*ec90' + NEWLINE + \
+        r'#4_    # 9 = 0\r\n*0c6c' + NEWLINE + \
+        r'#4_    # 8 = 0\r\n*4191' + NEWLINE + \
+        r'#4_    # 7 = 0\r\n*d7b9' + NEWLINE + \
+        r'#4_    # 6 = 0\r\n*9a44' + NEWLINE + \
+        r'#4_    # 5 = 0\r\n*4c43' + NEWLINE + \
+        r'#4_    # 4 = 0\r\n*01be' + NEWLINE + \
+        r'#4_    # 3 = 0\r\n*e85c' + NEWLINE + \
+        r'#4_    # 2 = 0\r\n*a5a1' + NEWLINE + \
+        r'#4_    # 1 = 0\r\n*73a6' + NEWLINE + \
+        r'#4_    # 0 = 0\r\n*3e5b' + NEWLINE + \
+        r'#4_\r\n*8462' + NEWLINE + \
+        r'#4_    PMedian: 2955471 10Pa.\r\n*2d81' + NEWLINE + \
+        r'#4_       PMean: 2955437 10Pa\r\n*c835' + NEWLINE + \
+        r'#4_          PStd: 115 10Pa\r\n*d5df' + NEWLINE + \
+        r'#4_\r\n*8462' + NEWLINE + \
+        r'#4_  2nd pass.. new list, within 97% of median :\r\n*eb23' + NEWLINE + \
+        r'#4_\r\n*8462' + NEWLINE + \
+        r'#4_    # 5 = 2955604\r\n*1735' + NEWLINE + \
+        r'#4_    # 4 = 2955540\r\n*cacd' + NEWLINE + \
+        r'#4_    # 3 = 2955471\r\n*a2e6' + NEWLINE + \
+        r'#4_    # 2 = 2955402\r\n*ebd1' + NEWLINE + \
+        r'#4_    # 1 = 2955337\r\n*de9e' + NEWLINE + \
+        r'#4_    # 0 = 2955268\r\n*771a' + NEWLINE + \
+        r'#4_\r\n*8462' + NEWLINE + \
+        r'#4_\r\n*8462' + NEWLINE + \
+        r'#4_    PMedian: 2955471 10Pa.\r\n*2d81' + NEWLINE + \
+        r'#4_       PMean: 2955437 10Pa\r\n*c835' + NEWLINE + \
+        r'#4_          PStd: 115 10Pa\r\n*d5df' + NEWLINE + \
+        r'#4_\r\n*8462' + NEWLINE + \
+        r'#4_  New Tide[0] entry = 2955437\r\n*7fe7' + NEWLINE + \
+        r'#4_  Measuring Real Time Clock frequency...  wait\r\n*3fb8' + NEWLINE + \
+        r'#4_\r\n*8462' + NEWLINE + \
+        r'#4_  Bliley frequency corrected for 1.48 degrees C = 4000018.250 Hz\r\n*4211' + NEWLINE + \
+        r'#4_\r\n*8462' + NEWLINE + \
+        r'#4_  RTC clock frequency = 32767.639 Hz\r\n*050f' + NEWLINE + \
+        r'#4_  IES clock cumulative error = -1.014 seconds\r\n*0dd7' + NEWLINE + \
+        r'#4_  Clock adjust: +1 sec\r\n*8181' + NEWLINE + \
+        r'#4_\r\n*8462' + NEWLINE + \
+        r'#4_  Performed hourly chores at: Mon Jun  6 23:51:52 2016\r\n*d846' + NEWLINE + \
+        r'#4_\r\n*8462' + NEWLINE + \
+        r'#4_  Start the end-of-24hour-measurement-day tasks...\r\n*2b86' + NEWLINE + \
+        r'#4_\r\n*8462' + NEWLINE + \
+        r'#4_  Sorted list of travel times:\r\n*25c5' + NEWLINE + \
+        r'#4_\r\n*8462' + NEWLINE + \
+        r'#4_    # 23 = 3.90567\r\n*cf30' + NEWLINE + \
+        r'#4_    # 22 = 3.90561\r\n*bc82' + NEWLINE + \
+        r'#4_    # 21 = 3.90561\r\n*64fc' + NEWLINE + \
+        r'#4_    # 20 = 3.90503\r\n*22a4' + NEWLINE + \
+        r'#4_    # 19 = 3.90497\r\n*366b' + NEWLINE + \
+        r'#4_    # 18 = 3.90491\r\n*45d9' + NEWLINE + \
+        r'#4_    # 17 = 3.90488\r\n*b123' + NEWLINE + \
+        r'#4_    # 16 = 3.90476\r\n*a538' + NEWLINE + \
+        r'#4_    # 15 = 3.90463\r\n*5f39' + NEWLINE + \
+        r'#4_    # 14 = 3.90457\r\n*367e' + NEWLINE + \
+        r'#4_    # 13 = 3.90408\r\n*b8c2' + NEWLINE + \
+        r'#4_    # 12 = 3.90405\r\n*8c9c' + NEWLINE + \
+        r'#4_    # 11 = 3.90396\r\n*ab45' + NEWLINE + \
+        r'#4_    # 10 = 3.90354\r\n*c413' + NEWLINE + \
+        r'#4_    # 9 = 3.90354\r\n*1ea2' + NEWLINE + \
+        r'#4_    # 8 = 3.90354\r\n*5688' + NEWLINE + \
+        r'#4_    # 7 = 3.90326\r\n*fd64' + NEWLINE + \
+        r'#4_    # 6 = 3.90268\r\n*5b8f' + NEWLINE + \
+        r'#4_    # 5 = 3.90262\r\n*cf59' + NEWLINE + \
+        r'#4_    # 4 = 3.90241\r\n*92e9' + NEWLINE + \
+        r'#4_    # 3 = 3.90216\r\n*4675' + NEWLINE + \
+        r'#4_    # 2 = 3.90186\r\n*8342' + NEWLINE + \
+        r'#4_    # 1 = 3.90161\r\n*5242' + NEWLINE + \
+        r'#4_    # 0 = 3.90161\r\n*1a68' + NEWLINE + \
+        r'#4_\r\n*8462' + NEWLINE + \
+        r'#4_  Disregarding zeros and echos > 9 secs:\r\n*00d6' + NEWLINE + \
+        r'#4_\r\n*8462' + NEWLINE + \
+        r'#4_    TTMedian: 3.90405 secs.\r\n*8541' + NEWLINE + \
+        r'#4_       TTMean: 3.90381 secs\r\n*01d5' + NEWLINE + \
+        r'#4_       TTquart: 3.90268 secs\r\n*97e0' + NEWLINE + \
+        r'#4_          TTStd: 0.002521 secs\r\n*226e' + NEWLINE + \
+        r'#4_\r\n*8462' + NEWLINE + \
+        r'#4_  No need for further processing...\r\n*4490' + NEWLINE + \
+        r'#4_  Day buffers appended to data files...\r\n*ae60' + NEWLINE + \
+        r'#4_\r\n*8462' + NEWLINE + \
+        r'#4_  Average pressure for previous day = 2954894 10Pa\r\n*74f2' + NEWLINE + \
+        r'#4_  Average temperature for previous day = 1433 millidegrees C\r\n*6097' + NEWLINE + \
+        r'#4_  Measuring Real Time Clock frequency...  wait\r\n*3fb8' + NEWLINE + \
+        r'#4_\r\n*8462' + NEWLINE + \
+        r'#4_  Bliley frequency corrected for 1.48 degrees C = 4000018.250 Hz\r\n*4211' + NEWLINE + \
+        r'#4_\r\n*8462' + NEWLINE + \
+        r'#4_\r\n*8462' + NEWLINE + \
+        r'#4_  Record written to engineering data file...\r\n*e339' + NEWLINE + \
+        r'#4_  407015 3.18 0.92 44.45 14.16 6.86 0.00 1.48 3.9041 2954894 1433 35066.660 171578.531 -0.348\r\n*24d1' + NEWLINE + \
+        r'#4_  UW/RSN: Sending wakeup...\r\n*b218' + NEWLINE + \
+        r'#4_\r\n*8462' + NEWLINE + \
+        r'#4_  All data buffers have been cleared...\r\n*1fc9' + NEWLINE + \
+        r'#4_\r\n*8462' + NEWLINE + \
+        r'#4_\r\n*8462' + NEWLINE + \
+        r'#4_  Data record written to TELEM.dat file...\r\n*bc64' + NEWLINE + \
+        r'#4_\r\n*8462' + NEWLINE + \
+        r'#4_  System Battery = 6.82 Volts @ 44.53 mA\r\n*156a' + NEWLINE + \
+        r'#4_  System battery O.K.\r\n*b463' + NEWLINE + \
+        r'#4_  Release Battery = 14.16 Volts @ 0.92 mA\r\n*f02c' + NEWLINE + \
+        r'#4_  Release Battery O.K.\r\n*5619' + NEWLINE + \
+        r'#4_  Completed end-of-24hour-measurement-day tasks at: Mon Jun  6 23:52:11 2016\r\n*b91f' + NEWLINE
+       #  r'#4_\r\n*8462' + NEWLINE + \
+       #  r'#4_AUX,1465257000,04,390329,390454,391345,390646,2955268,001478,001480,04000018.132,7608\r\r\n*2a77' + NEWLINE + \
+       #  r'#4_\r\n*8462' + NEWLINE + \
+       #  r'#4_  UW/RSN: Sending wakeup...\r\n*b218' + NEWLINE + \
+       #  r'#4_  Next scheduled 1 minute warning at: Mon Jun  6 23:59:00 2016\r\n*cf58' + NEWLINE + \
+       # r'#4_\r\n*8462' + NEWLINE
 
     valid_samples = [
         SAMPLE_HEF_HEADER,
@@ -163,7 +330,8 @@ class UtilMixin(DriverTestMixin):
         SAMPLE_IES_4AUX,
         SAMPLE_IES_5AUX,
         SAMPLE_IES_STATUS,
-        SAMPLE_TIMESTAMP
+        SAMPLE_TIMESTAMP,
+        SAMPLE_BACKUP_IES_STATUS
     ]
 
     # Sample raw data particles - invalid
@@ -408,6 +576,170 @@ class UtilMixin(DriverTestMixin):
         self.assert_data_particle_header(particle, DataParticleType.ECHO_SOUNDING)
         self.assert_data_particle_parameters(particle, self._echo_sample, verify_values)
 
+    data_header_particle_e = [
+        {DataParticleKey.VALUE_ID: DataHeaderParticleKey.DATA_VALID, DataParticleKey.VALUE: True},
+        {DataParticleKey.VALUE_ID: DataHeaderParticleKey.VERSION, DataParticleKey.VALUE: 05},
+        {DataParticleKey.VALUE_ID: DataHeaderParticleKey.TYPE, DataParticleKey.VALUE: 'E'},
+        {DataParticleKey.VALUE_ID: DataHeaderParticleKey.DESTINATION, DataParticleKey.VALUE: 'a'},
+        {DataParticleKey.VALUE_ID: DataHeaderParticleKey.INDEX_START, DataParticleKey.VALUE: 0},
+        {DataParticleKey.VALUE_ID: DataHeaderParticleKey.INDEX_STOP, DataParticleKey.VALUE: 1026},
+        {DataParticleKey.VALUE_ID: DataHeaderParticleKey.HCNO, DataParticleKey.VALUE: 226160},
+        {DataParticleKey.VALUE_ID: DataHeaderParticleKey.TIME, DataParticleKey.VALUE: 1465256580},
+        {DataParticleKey.VALUE_ID: DataHeaderParticleKey.TICKS, DataParticleKey.VALUE: 1352},
+        {DataParticleKey.VALUE_ID: DataHeaderParticleKey.MOTOR_SAMPLES, DataParticleKey.VALUE: 10},
+        {DataParticleKey.VALUE_ID: DataHeaderParticleKey.EF_SAMPLES, DataParticleKey.VALUE: 10},
+        {DataParticleKey.VALUE_ID: DataHeaderParticleKey.CAL_SAMPLES, DataParticleKey.VALUE: 3},
+        {DataParticleKey.VALUE_ID: DataHeaderParticleKey.STM_TIME, DataParticleKey.VALUE: 1465257448},
+    ]
+
+    hef_particle = [
+        {DataParticleKey.VALUE_ID: HEFDataParticleKey.DATA_VALID, DataParticleKey.VALUE: True},
+        {DataParticleKey.VALUE_ID: HEFDataParticleKey.INDEX, DataParticleKey.VALUE: 1159},
+        {DataParticleKey.VALUE_ID: HEFDataParticleKey.CHANNEL_1, DataParticleKey.VALUE: 396997},
+        {DataParticleKey.VALUE_ID: HEFDataParticleKey.CHANNEL_2, DataParticleKey.VALUE: 397259},
+        {DataParticleKey.VALUE_ID: HEFDataParticleKey.CHANNEL_3, DataParticleKey.VALUE: 397512},
+        {DataParticleKey.VALUE_ID: HEFDataParticleKey.CHANNEL_4, DataParticleKey.VALUE: 397260},
+        {DataParticleKey.VALUE_ID: HEFDataParticleKey.CHANNEL_5, DataParticleKey.VALUE: 396951},
+        {DataParticleKey.VALUE_ID: HEFDataParticleKey.CHANNEL_6, DataParticleKey.VALUE: 397701}
+    ]
+
+    motor_current_particle = [
+        {DataParticleKey.VALUE_ID: HEFMotorCurrentParticleKey.DATA_VALID, DataParticleKey.VALUE: True},
+        {DataParticleKey.VALUE_ID: HEFMotorCurrentParticleKey.INDEX, DataParticleKey.VALUE: 11},
+        {DataParticleKey.VALUE_ID: HEFMotorCurrentParticleKey.CURRENT, DataParticleKey.VALUE: 24425}
+    ]
+
+    calibration_status_particle = [
+        {DataParticleKey.VALUE_ID: CalStatusParticleKey.DATA_VALID, DataParticleKey.VALUE: True},
+        {DataParticleKey.VALUE_ID: CalStatusParticleKey.INDEX, DataParticleKey.VALUE: 2},
+        {DataParticleKey.VALUE_ID: CalStatusParticleKey.E1C, DataParticleKey.VALUE: 192655},
+        {DataParticleKey.VALUE_ID: CalStatusParticleKey.E1A, DataParticleKey.VALUE: 192637},
+        {DataParticleKey.VALUE_ID: CalStatusParticleKey.E1B, DataParticleKey.VALUE: 135611},
+        {DataParticleKey.VALUE_ID: CalStatusParticleKey.E2C, DataParticleKey.VALUE: 80036},
+        {DataParticleKey.VALUE_ID: CalStatusParticleKey.E2A, DataParticleKey.VALUE: 192554},
+        {DataParticleKey.VALUE_ID: CalStatusParticleKey.E2B, DataParticleKey.VALUE: 192644},
+    ]
+
+    hpies_status_particle = [
+        {DataParticleKey.VALUE_ID: HEFStatusParticleKey.DATA_VALID, DataParticleKey.VALUE: True},
+        {DataParticleKey.VALUE_ID: HEFStatusParticleKey.UNIX_TIME, DataParticleKey.VALUE: -748633661},
+        {DataParticleKey.VALUE_ID: HEFStatusParticleKey.HCNO, DataParticleKey.VALUE: 31},
+        {DataParticleKey.VALUE_ID: HEFStatusParticleKey.HCNO_LAST_CAL, DataParticleKey.VALUE: 23},
+        {DataParticleKey.VALUE_ID: HEFStatusParticleKey.HCNO_LAST_COMP, DataParticleKey.VALUE: 0},
+        {DataParticleKey.VALUE_ID: HEFStatusParticleKey.OFILE, DataParticleKey.VALUE: r'C:\\DATA\\12345.000'},
+        {DataParticleKey.VALUE_ID: HEFStatusParticleKey.IFOK, DataParticleKey.VALUE: 'OK'},
+        {DataParticleKey.VALUE_ID: HEFStatusParticleKey.N_COMPASS_WRITES, DataParticleKey.VALUE: 10},
+        {DataParticleKey.VALUE_ID: HEFStatusParticleKey.N_COMPASS_FAIL_WRITES, DataParticleKey.VALUE: 0},
+        {DataParticleKey.VALUE_ID: HEFStatusParticleKey.MOTOR_POWER_UPS, DataParticleKey.VALUE: 0},
+        {DataParticleKey.VALUE_ID: HEFStatusParticleKey.N_SERVICE_LOOPS, DataParticleKey.VALUE: 984001},
+        {DataParticleKey.VALUE_ID: HEFStatusParticleKey.SERIAL_PORT_ERRORS, DataParticleKey.VALUE: 0},
+        {DataParticleKey.VALUE_ID: HEFStatusParticleKey.COMPASS_PORT_CLOSED_COUNT, DataParticleKey.VALUE: 0},
+        {DataParticleKey.VALUE_ID: HEFStatusParticleKey.COMPASS_PORT_ERRORS, DataParticleKey.VALUE: 0},
+        {DataParticleKey.VALUE_ID: HEFStatusParticleKey.IRQ2_COUNT, DataParticleKey.VALUE: 0},
+        {DataParticleKey.VALUE_ID: HEFStatusParticleKey.SPURIOUS_COUNT, DataParticleKey.VALUE: 0},
+        {DataParticleKey.VALUE_ID: HEFStatusParticleKey.SPSR_BITS56_COUNT, DataParticleKey.VALUE: 0},
+        {DataParticleKey.VALUE_ID: HEFStatusParticleKey.PIT_ZERO_COUNT, DataParticleKey.VALUE: 0},
+        {DataParticleKey.VALUE_ID: HEFStatusParticleKey.ADC_BUFFER_OVERFLOWS, DataParticleKey.VALUE: 0},
+        {DataParticleKey.VALUE_ID: HEFStatusParticleKey.MAX7317_QUEUE_OVERFLOWS, DataParticleKey.VALUE: 0},
+        {DataParticleKey.VALUE_ID: HEFStatusParticleKey.PINCH_TIMING_ERRORS, DataParticleKey.VALUE: 1}
+    ]
+
+    echo_sounding_particle_4 = [
+        {DataParticleKey.VALUE_ID: IESDataParticleKey.DATA_VALID, DataParticleKey.VALUE: True},
+        {DataParticleKey.VALUE_ID: IESDataParticleKey.IES_TIMESTAMP, DataParticleKey.VALUE: 1439251200},
+        {DataParticleKey.VALUE_ID: IESDataParticleKey.TRAVEL_TIMES, DataParticleKey.VALUE: 04},
+        {DataParticleKey.VALUE_ID: IESDataParticleKey.TRAVEL_TIME_1, DataParticleKey.VALUE: 390262},
+        {DataParticleKey.VALUE_ID: IESDataParticleKey.TRAVEL_TIME_2, DataParticleKey.VALUE: 390286},
+        {DataParticleKey.VALUE_ID: IESDataParticleKey.TRAVEL_TIME_3, DataParticleKey.VALUE: 390213},
+        {DataParticleKey.VALUE_ID: IESDataParticleKey.TRAVEL_TIME_4, DataParticleKey.VALUE: 390484},
+        {DataParticleKey.VALUE_ID: IESDataParticleKey.PRESSURE, DataParticleKey.VALUE: 2954625},
+        {DataParticleKey.VALUE_ID: IESDataParticleKey.TEMPERATURE, DataParticleKey.VALUE: 1426},
+        {DataParticleKey.VALUE_ID: IESDataParticleKey.BLILEY_TEMPERATURE, DataParticleKey.VALUE: 1420},
+        {DataParticleKey.VALUE_ID: IESDataParticleKey.BLILEY_FREQUENCY, DataParticleKey.VALUE: 04000018.093},
+    ]
+
+    echo_sounding_particle_5 = [
+        {DataParticleKey.VALUE_ID: IESDataParticleKey.DATA_VALID, DataParticleKey.VALUE: True},
+        {DataParticleKey.VALUE_ID: IESDataParticleKey.IES_TIMESTAMP, DataParticleKey.VALUE: 1398880200},
+        {DataParticleKey.VALUE_ID: IESDataParticleKey.TRAVEL_TIMES, DataParticleKey.VALUE: 04},
+        {DataParticleKey.VALUE_ID: IESDataParticleKey.TRAVEL_TIME_1, DataParticleKey.VALUE: 999999},
+        {DataParticleKey.VALUE_ID: IESDataParticleKey.TRAVEL_TIME_2, DataParticleKey.VALUE: 999999},
+        {DataParticleKey.VALUE_ID: IESDataParticleKey.TRAVEL_TIME_3, DataParticleKey.VALUE: 999999},
+        {DataParticleKey.VALUE_ID: IESDataParticleKey.TRAVEL_TIME_4, DataParticleKey.VALUE: 999999},
+        {DataParticleKey.VALUE_ID: IESDataParticleKey.PRESSURE, DataParticleKey.VALUE: 10848},
+        {DataParticleKey.VALUE_ID: IESDataParticleKey.TEMPERATURE, DataParticleKey.VALUE: 21697},
+        {DataParticleKey.VALUE_ID: IESDataParticleKey.BLILEY_TEMPERATURE, DataParticleKey.VALUE: 22030},
+        {DataParticleKey.VALUE_ID: IESDataParticleKey.BLILEY_FREQUENCY, DataParticleKey.VALUE: 04000005.252},
+        {DataParticleKey.VALUE_ID: IESDataParticleKey.STM_TIMESTAMP, DataParticleKey.VALUE: 1398966715}
+    ]
+
+    ies_status_particle = [
+        {DataParticleKey.VALUE_ID: IESStatusParticleKey.DATA_VALID, DataParticleKey.VALUE: True},
+        {DataParticleKey.VALUE_ID: IESStatusParticleKey.IES_TIME, DataParticleKey.VALUE: 388559},
+        {DataParticleKey.VALUE_ID: IESStatusParticleKey.TRAVEL_TIMES, DataParticleKey.VALUE: [999999, 999999, 999999,
+                                                                                              999999, 999999, 999999,
+                                                                                              999999, 999999, 999999,
+                                                                                              999999, 999999, 999999,
+                                                                                              999999, 999999, 999999,
+                                                                                              999999, 999999, 999999,
+                                                                                              999999, 999999, 999999,
+                                                                                              999999, 999999, 999999]
+         },
+        {DataParticleKey.VALUE_ID: IESStatusParticleKey.PRESSURES, DataParticleKey.VALUE: [10932, 10935, 10934, 10934,
+                                                                                           10933, 10932]},
+        {DataParticleKey.VALUE_ID: IESStatusParticleKey.TEMPERATURES, DataParticleKey.VALUE: [23370, 23397, 23422,
+                                                                                              23446, 23472, 23492]},
+        {DataParticleKey.VALUE_ID: IESStatusParticleKey.PFREQUENCIES, DataParticleKey.VALUE: [33228500, 33228496,
+                                                                                              33228492, 33228488,
+                                                                                              33228484, 33228480]},
+        {DataParticleKey.VALUE_ID: IESStatusParticleKey.TFREQUENCIES, DataParticleKey.VALUE: [172170704, 172170928,
+                                                                                              172171120, 172171312,
+                                                                                              172171504, 172171664]},
+        {DataParticleKey.VALUE_ID: IESStatusParticleKey.BACKUP_BATTERY, DataParticleKey.VALUE: 2.29},
+        {DataParticleKey.VALUE_ID: IESStatusParticleKey.RELEASE_DRAIN, DataParticleKey.VALUE: 0.01},
+        {DataParticleKey.VALUE_ID: IESStatusParticleKey.SYSTEM_DRAIN, DataParticleKey.VALUE: 0.00},
+        {DataParticleKey.VALUE_ID: IESStatusParticleKey.RELEASE_BATTERY, DataParticleKey.VALUE: 14.00},
+        {DataParticleKey.VALUE_ID: IESStatusParticleKey.SYSTEM_BATTERY, DataParticleKey.VALUE: 6.93},
+        {DataParticleKey.VALUE_ID: IESStatusParticleKey.RELEASE_SYSTEM, DataParticleKey.VALUE: 5.05},
+        {DataParticleKey.VALUE_ID: IESStatusParticleKey.INTERNAL_TEMP, DataParticleKey.VALUE: 23.83},
+        {DataParticleKey.VALUE_ID: IESStatusParticleKey.MEAN_TRAVEL, DataParticleKey.VALUE: 0.0000},
+        {DataParticleKey.VALUE_ID: IESStatusParticleKey.MEAN_PRESSURE, DataParticleKey.VALUE: 10935},
+        {DataParticleKey.VALUE_ID: IESStatusParticleKey.MEAN_TEMPERATURE, DataParticleKey.VALUE: 1623},
+        {DataParticleKey.VALUE_ID: IESStatusParticleKey.LAST_PRESSURE, DataParticleKey.VALUE: 33228.480},
+        {DataParticleKey.VALUE_ID: IESStatusParticleKey.LAST_TEMPERATURE, DataParticleKey.VALUE: 172171.656},
+        {DataParticleKey.VALUE_ID: IESStatusParticleKey.IES_CLOCK_ERROR, DataParticleKey.VALUE: 0.109}
+    ]
+
+    backup_status_particle = [
+        {DataParticleKey.VALUE_ID: IESStatusParticleKey.DATA_VALID, DataParticleKey.VALUE: True},
+        {DataParticleKey.VALUE_ID: IESStatusParticleKey.IES_TIME, DataParticleKey.VALUE: 407015},
+        {DataParticleKey.VALUE_ID: IESStatusParticleKey.TRAVEL_TIMES, DataParticleKey.VALUE: [390567, 390561, 390561,
+                                                                                              390503, 390497, 390491,
+                                                                                              390488, 390476, 390463,
+                                                                                              390457, 390408, 390405,
+                                                                                              390396, 390354, 390354,
+                                                                                              390354, 390326, 390268,
+                                                                                              390262, 390241, 390216,
+                                                                                              390186, 390161, 390161]
+         },
+        {DataParticleKey.VALUE_ID: IESStatusParticleKey.PRESSURES, DataParticleKey.VALUE: [29556, 29555, 29554,
+                                                                                           29554, 29553, 29552]},
+        {DataParticleKey.VALUE_ID: IESStatusParticleKey.RELEASE_DRAIN, DataParticleKey.VALUE: 0.92},
+        {DataParticleKey.VALUE_ID: IESStatusParticleKey.SYSTEM_DRAIN, DataParticleKey.VALUE: 44.53},
+        {DataParticleKey.VALUE_ID: IESStatusParticleKey.RELEASE_BATTERY, DataParticleKey.VALUE: 14.16},
+        {DataParticleKey.VALUE_ID: IESStatusParticleKey.SYSTEM_BATTERY, DataParticleKey.VALUE: 6.82},
+        {DataParticleKey.VALUE_ID: IESStatusParticleKey.MEAN_TRAVEL, DataParticleKey.VALUE: 390381},
+        {DataParticleKey.VALUE_ID: IESStatusParticleKey.MEAN_PRESSURE, DataParticleKey.VALUE: 29548},
+        {DataParticleKey.VALUE_ID: IESStatusParticleKey.MEAN_TEMPERATURE, DataParticleKey.VALUE: 1433},
+        {DataParticleKey.VALUE_ID: IESStatusParticleKey.IES_CLOCK_ERROR, DataParticleKey.VALUE: -0.3610000000007858}
+    ]
+
+    stm_timestamp_particle = [
+        {DataParticleKey.VALUE_ID: TimestampParticleKey.DATA_VALID, DataParticleKey.VALUE: True},
+        {DataParticleKey.VALUE_ID: TimestampParticleKey.RSN_TIME, DataParticleKey.VALUE: 1398883295},
+        {DataParticleKey.VALUE_ID: TimestampParticleKey.STM_TIME, DataParticleKey.VALUE: 1398883288}
+    ]
+
 
 ###############################################################################
 #                                UNIT TESTS                                   #
@@ -425,6 +757,7 @@ class UtilMixin(DriverTestMixin):
 @attr('UNIT', group='mi')
 class DriverUnitTest(InstrumentDriverUnitTestCase, UtilMixin):
     def setUp(self):
+        IESStatusParticle.time_since_stream_5 = time.time() - 48*60*60
         InstrumentDriverUnitTestCase.setUp(self)
 
     def test_driver_schema(self):
@@ -454,7 +787,6 @@ class DriverUnitTest(InstrumentDriverUnitTestCase, UtilMixin):
         Test the chunker and verify the particles created.
         """
         chunker = StringChunker(Protocol.sieve_function)
-
         for sample in self.valid_samples:
             self.assert_chunker_sample(chunker, sample)
             self.assert_chunker_sample_with_noise(chunker, sample)
@@ -484,6 +816,85 @@ class DriverUnitTest(InstrumentDriverUnitTestCase, UtilMixin):
         # Create and initialize the instrument driver with a mock port agent
         driver = InstrumentDriver(self._got_data_event_callback)
         self.assert_initialize_driver(driver)
+        self.maxDiff = None
+
+        expected_particle = {
+            DataParticleKey.PKT_FORMAT_ID: DataParticleValue.JSON_DATA,
+            DataParticleKey.PKT_VERSION: 1,
+            DataParticleKey.STREAM_NAME: DataParticleType.ECHO_STATUS,
+            DataParticleKey.PORT_TIMESTAMP: 3555423720.711772,
+            DataParticleKey.DRIVER_TIMESTAMP: 3555423722.711772,
+            DataParticleKey.PREFERRED_TIMESTAMP: DataParticleKey.PORT_TIMESTAMP,
+            DataParticleKey.QUALITY_FLAG: DataParticleValue.OK,
+            DataParticleKey.VALUES: self.ies_status_particle
+        }
+        self.compare_parsed_data_particle(IESStatusParticle, self.SAMPLE_IES_STATUS, expected_particle)
+        IESStatusParticle.time_since_stream_5 = time.time() - 48*60*60
+        expected_particle[DataParticleKey.VALUES] = self.backup_status_particle
+        self.compare_parsed_data_particle(IESStatusParticle, self.SAMPLE_BACKUP_IES_STATUS, expected_particle)
+
+        expected_particle[DataParticleKey.VALUES] = self.hef_particle
+        expected_particle[DataParticleKey.STREAM_NAME] = DataParticleType.HORIZONTAL_FIELD
+        self.compare_parsed_data_particle(HEFDataParticle, self.SAMPLE_HEF, expected_particle)
+
+        expected_particle[DataParticleKey.VALUES] = self.motor_current_particle
+        expected_particle[DataParticleKey.STREAM_NAME] = DataParticleType.MOTOR_CURRENT
+        self.compare_parsed_data_particle(HEFMotorCurrentParticle, self.SAMPLE_MOTOR, expected_particle)
+
+        expected_particle[DataParticleKey.VALUES] = self.calibration_status_particle
+        expected_particle[DataParticleKey.STREAM_NAME] = DataParticleType.CALIBRATION_STATUS
+        self.compare_parsed_data_particle(CalStatusParticle, self.SAMPLE_CAL, expected_particle)
+
+        expected_particle[DataParticleKey.VALUES] = self.hpies_status_particle
+        expected_particle[DataParticleKey.STREAM_NAME] = DataParticleType.HPIES_STATUS
+        self.compare_parsed_data_particle(HEFStatusParticle, self.SAMPLE_HPIES_STATUS, expected_particle)
+
+        expected_particle[DataParticleKey.VALUES] = self.echo_sounding_particle_4
+        expected_particle[DataParticleKey.STREAM_NAME] = DataParticleType.ECHO_SOUNDING
+        self.compare_parsed_data_particle(IESDataParticle, self.SAMPLE_IES_4AUX, expected_particle)
+
+        expected_particle[DataParticleKey.VALUES] = self.echo_sounding_particle_5
+        self.compare_parsed_data_particle(IESDataParticle, self.SAMPLE_IES_5AUX, expected_particle)
+
+        expected_particle[DataParticleKey.VALUES] = self.data_header_particle_e
+        expected_particle[DataParticleKey.STREAM_NAME] = DataParticleType.HPIES_DATA_HEADER
+        self.compare_parsed_data_particle(DataHeaderParticle, self.SAMPLE_HEF_HEADER, expected_particle)
+
+        expected_particle[DataParticleKey.VALUES] = self.stm_timestamp_particle
+        expected_particle[DataParticleKey.STREAM_NAME] = DataParticleType.TIMESTAMP
+        self.compare_parsed_data_particle(TimestampParticle, self.SAMPLE_TIMESTAMP, expected_particle)
+
+    def test_disable_backup(self):
+        """
+        Verify that the driver stops looking for the backup stream for the IES status particle
+        after it receives the primary
+        """
+        chunker = StringChunker(Protocol.sieve_function)
+        pass_test = False
+        self.assert_chunker_sample(chunker, self.SAMPLE_BACKUP_IES_STATUS)
+        # Create and initialize the instrument driver with a mock port agent
+        driver = InstrumentDriver(self._got_data_event_callback)
+        self.assert_initialize_driver(driver)
+        self.maxDiff = None
+        IESStatusParticle.time_since_stream_5 = time.time() - 48*60*60
+        expected_particle = {
+            DataParticleKey.PKT_FORMAT_ID: DataParticleValue.JSON_DATA,
+            DataParticleKey.PKT_VERSION: 1,
+            DataParticleKey.STREAM_NAME: DataParticleType.ECHO_STATUS,
+            DataParticleKey.PORT_TIMESTAMP: 3555423720.711772,
+            DataParticleKey.DRIVER_TIMESTAMP: 3555423722.711772,
+            DataParticleKey.PREFERRED_TIMESTAMP: DataParticleKey.PORT_TIMESTAMP,
+            DataParticleKey.QUALITY_FLAG: DataParticleValue.OK,
+            DataParticleKey.VALUES: self.ies_status_particle
+        }
+        self.compare_parsed_data_particle(IESStatusParticle, self.SAMPLE_IES_STATUS, expected_particle)
+
+        self.assert_chunker_sample(chunker, self.SAMPLE_IES_STATUS)
+        try:
+            self.assert_chunker_sample(chunker, self.SAMPLE_BACKUP_IES_STATUS)
+        except AssertionError:
+            pass_test = True
+        assert pass_test
 
     def test_protocol_filter_capabilities(self):
         """

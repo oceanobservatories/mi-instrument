@@ -11,6 +11,7 @@ initial_rev
 import time
 import re
 import tempfile
+from functools import partial
 
 from mi.core.exceptions import \
     SampleException, \
@@ -721,7 +722,7 @@ class CalStatusParticle(HPIESDataParticle):
 
     def _encode_all(self):
         return [
-            self._encode_value(CalStatusParticleKey.DATA_VALID, self.check_crc(), int),
+            self._encode_value(CalStatusParticleKey.DATA_VALID, self.check_crc(), bool),
             self._encode_value(CalStatusParticleKey.INDEX, self.match.group('index'), int),
             self._encode_value(CalStatusParticleKey.E1C, self.match.group('e1c'), int),
             self._encode_value(CalStatusParticleKey.E1A, self.match.group('e1a'), int),
@@ -934,7 +935,7 @@ class IESDataParticle(HPIESDataParticle):
         ]
 
         # the 5_AUX type contains an stm_timestamp value.
-        if self.match.group(1) == '5':
+        if '#5' in self.match.group(0):
             results.append(self._encode_value(IESDataParticleKey.STM_TIMESTAMP, self.match.group('stm_timestamp'), int),)
 
         return results
@@ -963,14 +964,20 @@ class IESStatusParticleKey(BaseEnum):
     MEAN_TEMPERATURE = 'hpies_average_temperature'
     LAST_PRESSURE = 'hpies_last_pressure'
     LAST_TEMPERATURE = 'hpies_last_temperature'
-    IES_OFFSET = 'hpies_ies_clock_error'
+    IES_CLOCK_ERROR = 'hpies_ies_clock_error'
 
 
 class IESStatusParticle(HPIESDataParticle):
     _data_particle_type = DataParticleType.ECHO_STATUS
+    time_since_stream_5 = time.time()
+    STREAM_5_TIMEOUT = 60*60*25
+
+    @classmethod
+    def regex_compiled(cls, flag=True):
+        return re.compile(cls.regex(flag))
 
     @staticmethod
-    def regex():
+    def regex(flag):
         """
         @return regex string for matching HPIES IES status particle
 
@@ -1016,7 +1023,69 @@ class IESStatusParticle(HPIESDataParticle):
             (?P<crc4>             %(crc)s)
             """ % common_matches
 
+        if time.time() > IESStatusParticle.time_since_stream_5 + IESStatusParticle.STREAM_5_TIMEOUT:
+            if flag:
+                pattern += r"""|
+                    \#4_\s{2}IES\ss/n:.+\r\n
+                    \#4_.+Temperature\s=\s(?P<internal_tempB>%(int)s).+\r\n
+                    (?:\#4_.+\r\n)+?
+                    \#4_\s{2}Hour\sstamp\s=\s(?P<ies_timeB>%(int)s).+\r\n
+                    (?:\#4_.+\r\n)+?
+                    \#4_\s{2}2nd\spass.+\r\n
+                    (?:\#4_.+\r\n)+?
+                    (?P<ptB>(?:\#4_.+=\s\d*\.?\d+.+\r?\n?){6})
+                    (?:\#4_.+\r\n)+?
+                    \#4_\s{2}RTC\sclock\sfrequency\s=\s(?P<clock_offsetB>-?\d*\.?\d+).+\r\n
+                    (?:\#4_.+\r\n)+?
+                    \#4_\s{2}Sorted\slist.+\r\n
+                    (?:\#4_.+\r\n)+?
+                    (?P<travel_timesB>(?:\#4_\s+\#\s\d+\s=\s-?\d*\.?\d+\\r\\n\*[0-9a-fA-F]{4}\r?\n?)+)
+                    (?:\#4_.+\r\n)+?
+                    \#4_\s*TTMean:\s(?P<mean_travelB>%(float)s)\ssecs\\r\\n\*%(crc)s\r\n
+                    (?:\#4_.+\r\n)+?
+                    \#4_\s+Average\spressure\sfor\sprevious\sday\s=\s(?P<mean_pressureB>-?\d+)\s10Pa\\r\\n\*%(crc)s\r\n
+                    \#4_\s+Average\stemperature\sfor\sprevious\sday\s=\s(?P<mean_tempB>-?\d+)\smillidegrees\sC\\r\\n\*%(crc)s\r\n
+                    (?:\#4_.+\r\n)+?
+                    \#4_\s+System\sBattery\s=\s(?P<system_batteryB>-?\d+\.\d+)\sVolts\s@\s(?P<system_drainB>-?\d+.\d+)\smA\\r\\n\*%(crc)s\r\n
+                    (?:\#4_.+\r\n)+?
+                    \#4_\s+Release\sBattery\s=\s(?P<release_batteryB>-?\d+\.\d+)\sVolts\s@\s(?P<release_drainB>-?\d+.\d+)\smA\\r\\n\*%(crc)s\r\n
+                """ % common_matches
+            else:
+                pattern += r"""|
+                    \#4_\s{2}IES\ss/n:.+\r\n
+                    (?:\#4_.+\r\n)+?
+                    \#4_\s{2}Completed\send-of-24hour-measurement-day.+\r\n
+                """
+
         return pattern
+
+    @staticmethod
+    def _extract_values(raw_string):
+        extracted_data = []
+        regex = re.compile(r'#4_\s*#\s*\d+\s*=\s*(\d+\.?\d*)\\r')
+        raw_string = raw_string.split('\n')
+        for line in raw_string:
+            matcher = regex.search(line)
+            if matcher:
+                extracted_data.append(matcher.group(1))
+        return extracted_data
+
+    class EncodingFunctions:
+        """
+        This class stores the functions necessary to convert the backup stream particle parameters into
+        the expecte units
+        """
+        @staticmethod
+        def convert_travel_time(travel_time):
+            return int(float(travel_time)*1e5)
+
+        @staticmethod
+        def convert_pressure(pressure):
+            return int(pressure)/100
+
+        @staticmethod
+        def convert_clock_frequency(freq):
+            return float(freq) - 32768
 
     def check_crc(self):
         valid = True
@@ -1030,39 +1099,65 @@ class IESStatusParticle(HPIESDataParticle):
         return valid
 
     def _encode_all(self):
-        travel_times = [int(x) for x in self.match.group('travel_times').split()]
+        if self.match.group('ies_time'):
+            IESStatusParticle.time_since_stream_5 = time.time()
 
-        temp = [int(x) for x in self.match.group('pt').split()]
-        pressures = temp[::2]
-        temperatures = temp[1::2]
+            travel_times = [int(x) for x in self.match.group('travel_times').split()]
 
-        temp = [int(x) for x in self.match.group('ptf').split()]
-        pfrequencies = temp[::2]
-        tfrequencies = temp[1::2]
+            temp = [int(x) for x in self.match.group('pt').split()]
+            pressures = temp[::2]
+            temperatures = temp[1::2]
 
-        return [
-            self._encode_value(IESStatusParticleKey.DATA_VALID, self.check_crc(), int),
-            self._encode_value(IESStatusParticleKey.IES_TIME, self.match.group('ies_time'), int),
-            self._encode_value(IESStatusParticleKey.TRAVEL_TIMES, travel_times, int),
-            self._encode_value(IESStatusParticleKey.PRESSURES, pressures, int),
-            self._encode_value(IESStatusParticleKey.TEMPERATURES, temperatures, int),
-            self._encode_value(IESStatusParticleKey.PFREQUENCIES, pfrequencies, int),
-            self._encode_value(IESStatusParticleKey.TFREQUENCIES, tfrequencies, int),
-            self._encode_value(IESStatusParticleKey.BACKUP_BATTERY, self.match.group('backup_battery'), float),
-            self._encode_value(IESStatusParticleKey.RELEASE_DRAIN, self.match.group('release_drain'), float),
-            self._encode_value(IESStatusParticleKey.SYSTEM_DRAIN, self.match.group('system_drain'), float),
-            self._encode_value(IESStatusParticleKey.RELEASE_BATTERY, self.match.group('release_battery'), float),
-            self._encode_value(IESStatusParticleKey.SYSTEM_BATTERY, self.match.group('system_battery'), float),
-            self._encode_value(IESStatusParticleKey.RELEASE_SYSTEM, self.match.group('release_system'), float),
-            self._encode_value(IESStatusParticleKey.INTERNAL_TEMP, self.match.group('internal_temp'), float),
-            self._encode_value(IESStatusParticleKey.MEAN_TRAVEL, self.match.group('mean_travel'), float),
-            self._encode_value(IESStatusParticleKey.MEAN_PRESSURE, self.match.group('mean_pressure'), int),
-            self._encode_value(IESStatusParticleKey.MEAN_TEMPERATURE, self.match.group('mean_temp'), int),
-            self._encode_value(IESStatusParticleKey.LAST_PRESSURE, self.match.group('last_pressure'), float),
-            self._encode_value(IESStatusParticleKey.LAST_TEMPERATURE, self.match.group('last_temp'), float),
-            self._encode_value(IESStatusParticleKey.IES_OFFSET, self.match.group('clock_offset'), float),
-        ]
+            temp = [int(x) for x in self.match.group('ptf').split()]
+            pfrequencies = temp[::2]
+            tfrequencies = temp[1::2]
 
+            return [
+                self._encode_value(IESStatusParticleKey.DATA_VALID, self.check_crc(), int),
+                self._encode_value(IESStatusParticleKey.IES_TIME, self.match.group('ies_time'), int),
+                self._encode_value(IESStatusParticleKey.TRAVEL_TIMES, travel_times, partial(map, int)),
+                self._encode_value(IESStatusParticleKey.PRESSURES, pressures, partial(map, int)),
+                self._encode_value(IESStatusParticleKey.TEMPERATURES, temperatures, partial(map, int)),
+                self._encode_value(IESStatusParticleKey.PFREQUENCIES, pfrequencies, partial(map, int)),
+                self._encode_value(IESStatusParticleKey.TFREQUENCIES, tfrequencies, partial(map, int)),
+                self._encode_value(IESStatusParticleKey.BACKUP_BATTERY, self.match.group('backup_battery'), float),
+                self._encode_value(IESStatusParticleKey.RELEASE_DRAIN, self.match.group('release_drain'), float),
+                self._encode_value(IESStatusParticleKey.SYSTEM_DRAIN, self.match.group('system_drain'), float),
+                self._encode_value(IESStatusParticleKey.RELEASE_BATTERY, self.match.group('release_battery'), float),
+                self._encode_value(IESStatusParticleKey.SYSTEM_BATTERY, self.match.group('system_battery'), float),
+                self._encode_value(IESStatusParticleKey.RELEASE_SYSTEM, self.match.group('release_system'), float),
+                self._encode_value(IESStatusParticleKey.INTERNAL_TEMP, self.match.group('internal_temp'), float),
+                self._encode_value(IESStatusParticleKey.MEAN_TRAVEL, self.match.group('mean_travel'), float),
+                self._encode_value(IESStatusParticleKey.MEAN_PRESSURE, self.match.group('mean_pressure'), int),
+                self._encode_value(IESStatusParticleKey.MEAN_TEMPERATURE, self.match.group('mean_temp'), int),
+                self._encode_value(IESStatusParticleKey.LAST_PRESSURE, self.match.group('last_pressure'), float),
+                self._encode_value(IESStatusParticleKey.LAST_TEMPERATURE, self.match.group('last_temp'), float),
+                self._encode_value(IESStatusParticleKey.IES_CLOCK_ERROR, self.match.group('clock_offset'), float),
+            ]
+
+        else:
+            pressures = IESStatusParticle._extract_values(self.match.group('ptB'))
+            travel_times = IESStatusParticle._extract_values(self.match.group('travel_timesB'))
+
+            return [
+                self._encode_value(IESStatusParticleKey.DATA_VALID, self.check_crc(), int),
+                self._encode_value(IESStatusParticleKey.IES_TIME, self.match.group('ies_timeB'), int),
+                self._encode_value(IESStatusParticleKey.TRAVEL_TIMES, travel_times,
+                                   partial(map, self.EncodingFunctions.convert_travel_time)),
+                self._encode_value(IESStatusParticleKey.PRESSURES, pressures,
+                                   partial(map, self.EncodingFunctions.convert_pressure)),
+                self._encode_value(IESStatusParticleKey.RELEASE_DRAIN, self.match.group('release_drainB'), float),
+                self._encode_value(IESStatusParticleKey.SYSTEM_DRAIN, self.match.group('system_drainB'), float),
+                self._encode_value(IESStatusParticleKey.RELEASE_BATTERY, self.match.group('release_batteryB'), float),
+                self._encode_value(IESStatusParticleKey.SYSTEM_BATTERY, self.match.group('system_batteryB'), float),
+                self._encode_value(IESStatusParticleKey.MEAN_TRAVEL, self.match.group('mean_travelB'),
+                                   self.EncodingFunctions.convert_travel_time),
+                self._encode_value(IESStatusParticleKey.MEAN_PRESSURE, self.match.group('mean_pressureB'),
+                                   self.EncodingFunctions.convert_pressure),
+                self._encode_value(IESStatusParticleKey.MEAN_TEMPERATURE, self.match.group('mean_tempB'), int),
+                self._encode_value(IESStatusParticleKey.IES_CLOCK_ERROR, self.match.group('clock_offsetB'),
+                                   self.EncodingFunctions.convert_clock_frequency)
+                ]
 
 class TimestampParticleKey(BaseEnum):
     """
@@ -1253,7 +1348,10 @@ class Protocol(CommandResponseInstrumentProtocol):
         return_list = []
 
         for particle in Protocol.particles:
-            matchers.append(particle.regex_compiled())
+            if particle is not Protocol.particles[-2]:
+                matchers.append(particle.regex_compiled())
+            else:
+                matchers.append(particle.regex_compiled(False))
 
         for matcher in matchers:
             for match in matcher.finditer(raw_data):
@@ -1908,7 +2006,10 @@ class Protocol(CommandResponseInstrumentProtocol):
         with the appropriate particle objects and REGEXes.
         """
         for particle in Protocol.particles:
-            self._extract_sample(particle, particle.regex_compiled(), chunk, timestamp)
+            if particle is not Protocol.particles[-2] or '#5_T' in chunk:
+                    self._extract_sample(particle, particle.regex_compiled(), chunk, timestamp)
+            else:
+                    self._extract_sample(particle, particle.regex_compiled(False), chunk, timestamp)
 
     def _filter_capabilities(self, events):
         """
