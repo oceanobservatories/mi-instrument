@@ -39,8 +39,7 @@ from mi.instrument.uw.hpies.ooicore.driver import \
     CalStatusParticleKey, HEFStatusParticleKey, IESDataParticleKey, DataHeaderParticleKey, hef_command
 from mi.instrument.uw.hpies.ooicore.driver import \
     DataParticleType, InstrumentCommand, ProtocolState, ProtocolEvent, Capability, Parameter, Protocol, Prompt, \
-    NEWLINE
-
+    NEWLINE, IESStatusParticle
 # ##
 # Driver parameters for the tests
 ###
@@ -151,6 +150,172 @@ class UtilMixin(DriverTestMixin):
         r'#5_E:388559 2.29 0.01 0.00 14.00 6.93 5.05 23.83 0.0000 10935 1623 33228.480 172171.656 0.109 \r\n*1605'
     SAMPLE_TIMESTAMP = \
         '#2_TOD,1398883295,1398883288*0059'
+    SAMPLE_BACKUP_IES_STATUS = \
+        r'#4_  IES s/n: 177    Paros s/n: 95953    Bliley s/n: 150244\r\n*58ae' + NEWLINE + \
+        r'#4_  Pressure   = 2955268 10Pa       Temperature = 1478 millidegrees C\r\n*01c0' + NEWLINE + \
+        r'#4_  Bliley Temperature = 1.480 C     Bliley Frequency = 4000018.132 Hz\r\n*a7fc' + NEWLINE + \
+        r'#4_\r\n*8462' + NEWLINE + \
+        r'#4_  Hour stamp = 407015\r\n*3a34' + NEWLINE + \
+        r'#4_  Processing data for telemetry file...\r\n*312a' + NEWLINE + \
+        r'#4_\r\n*8462' + NEWLINE + \
+        r'#4_  Sorted list of travel times:\r\n*25c5' + NEWLINE + \
+        r'#4_\r\n*8462' + NEWLINE + \
+        r'#4_    # 23 = 3.91403\r\n*e4b0'+ NEWLINE + \
+        r'#4_    # 22 = 3.91345\r\n*40b6' + NEWLINE + \
+        r'#4_    # 21 = 3.91150\r\n*8d0c' + NEWLINE + \
+        r'#4_    # 20 = 3.90988\r\n*f58a' + NEWLINE + \
+        r'#4_    # 19 = 3.90897\r\n*87f1' + NEWLINE + \
+        r'#4_    # 18 = 3.90854\r\n*e3e3' + NEWLINE + \
+        r'#4_    # 17 = 3.90830\r\n*77bc' + NEWLINE + \
+        r'#4_    # 16 = 3.90778\r\n*6cee' + NEWLINE + \
+        r'#4_    # 15 = 3.90759\r\n*b782' + NEWLINE + \
+        r'#4_    # 14 = 3.90680\r\n*04c6' + NEWLINE + \
+        r'#4_    # 13 = 3.90647\r\n*f529' + NEWLINE + \
+        r'#4_    # 12 = 3.90619\r\n*c83c' + NEWLINE + \
+        r'#4_    # 11 = 3.90567\r\n*c545' + NEWLINE + \
+        r'#4_    # 10 = 3.90558\r\n*ebee' + NEWLINE + \
+        r'#4_    # 9 = 3.90537\r\n*4359' + NEWLINE + \
+        r'#4_    # 8 = 3.90521\r\n*34c0' + NEWLINE + \
+        r'#4_    # 7 = 3.90491\r\n*2785' + NEWLINE + \
+        r'#4_    # 6 = 3.90491\r\n*6faf' + NEWLINE + \
+        r'#4_    # 5 = 3.90460\r\n*811c' + NEWLINE + \
+        r'#4_    # 4 = 3.90454\r\n*e85b' + NEWLINE + \
+        r'#4_    # 3 = 3.90454\r\n*189c' + NEWLINE + \
+        r'#4_    # 2 = 3.90372\r\n*a460' + NEWLINE + \
+        r'#4_    # 1 = 3.90329\r\n*2f75' + NEWLINE + \
+        r'#4_    # 0 = 3.89423\r\n*0d11' + NEWLINE + \
+        r'#4_\r\n*8462' + NEWLINE + \
+        r'#4_  Disregarding zeros and echos > 9 secs:\r\n*00d6' + NEWLINE + \
+        r'#4_\r\n*8462' + NEWLINE + \
+        r'#4_    TTMedian: 3.90619 secs.\r\n*e9b1' + NEWLINE + \
+        r'#4_       TTMean: 3.90650 secs\r\n*1abf' + NEWLINE + \
+        r'#4_       TTquart: 3.90491 secs\r\n*c96f' + NEWLINE + \
+        r'#4_          TTStd: 0.004649 secs\r\n*2430' + NEWLINE + \
+        r'#4_\r\n*8462' + NEWLINE + \
+        r'#4_  No need for further processing...\r\n*4490' + NEWLINE + \
+        r'#4_\r\n*8462' + NEWLINE + \
+        r'#4_  Sorted list of pressure values:\r\n*ee73' + NEWLINE + \
+        r'#4_\r\n*8462' + NEWLINE + \
+        r'#4_    # 23 = 2955604\r\n*f610' + NEWLINE + \
+        r'#4_    # 22 = 2955540\r\n*2be8' + NEWLINE + \
+        r'#4_    # 21 = 2955471\r\n*6b7a' + NEWLINE + \
+        r'#4_    # 20 = 2955402\r\n*224d' + NEWLINE + \
+        r'#4_    # 19 = 2955337\r\n*4c05' + NEWLINE + \
+        r'#4_    # 18 = 2955268\r\n*e581' + NEWLINE + \
+        r'#4_    # 17 = 0\r\n*0572' + NEWLINE + \
+        r'#4_    # 16 = 0\r\n*488f' + NEWLINE + \
+        r'#4_    # 15 = 0\r\n*9e88' + NEWLINE + \
+        r'#4_    # 14 = 0\r\n*d375' + NEWLINE + \
+        r'#4_    # 13 = 0\r\n*3a97' + NEWLINE + \
+        r'#4_    # 12 = 0\r\n*776a' + NEWLINE + \
+        r'#4_    # 11 = 0\r\n*a16d' + NEWLINE + \
+        r'#4_    # 10 = 0\r\n*ec90' + NEWLINE + \
+        r'#4_    # 9 = 0\r\n*0c6c' + NEWLINE + \
+        r'#4_    # 8 = 0\r\n*4191' + NEWLINE + \
+        r'#4_    # 7 = 0\r\n*d7b9' + NEWLINE + \
+        r'#4_    # 6 = 0\r\n*9a44' + NEWLINE + \
+        r'#4_    # 5 = 0\r\n*4c43' + NEWLINE + \
+        r'#4_    # 4 = 0\r\n*01be' + NEWLINE + \
+        r'#4_    # 3 = 0\r\n*e85c' + NEWLINE + \
+        r'#4_    # 2 = 0\r\n*a5a1' + NEWLINE + \
+        r'#4_    # 1 = 0\r\n*73a6' + NEWLINE + \
+        r'#4_    # 0 = 0\r\n*3e5b' + NEWLINE + \
+        r'#4_\r\n*8462' + NEWLINE + \
+        r'#4_    PMedian: 2955471 10Pa.\r\n*2d81' + NEWLINE + \
+        r'#4_       PMean: 2955437 10Pa\r\n*c835' + NEWLINE + \
+        r'#4_          PStd: 115 10Pa\r\n*d5df' + NEWLINE + \
+        r'#4_\r\n*8462' + NEWLINE + \
+        r'#4_  2nd pass.. new list, within 97% of median :\r\n*eb23' + NEWLINE + \
+        r'#4_\r\n*8462' + NEWLINE + \
+        r'#4_    # 5 = 2955604\r\n*1735' + NEWLINE + \
+        r'#4_    # 4 = 2955540\r\n*cacd' + NEWLINE + \
+        r'#4_    # 3 = 2955471\r\n*a2e6' + NEWLINE + \
+        r'#4_    # 2 = 2955402\r\n*ebd1' + NEWLINE + \
+        r'#4_    # 1 = 2955337\r\n*de9e' + NEWLINE + \
+        r'#4_    # 0 = 2955268\r\n*771a' + NEWLINE + \
+        r'#4_\r\n*8462' + NEWLINE + \
+        r'#4_\r\n*8462' + NEWLINE + \
+        r'#4_    PMedian: 2955471 10Pa.\r\n*2d81' + NEWLINE + \
+        r'#4_       PMean: 2955437 10Pa\r\n*c835' + NEWLINE + \
+        r'#4_          PStd: 115 10Pa\r\n*d5df' + NEWLINE + \
+        r'#4_\r\n*8462' + NEWLINE + \
+        r'#4_  New Tide[0] entry = 2955437\r\n*7fe7' + NEWLINE + \
+        r'#4_  Measuring Real Time Clock frequency...  wait\r\n*3fb8' + NEWLINE + \
+        r'#4_\r\n*8462' + NEWLINE + \
+        r'#4_  Bliley frequency corrected for 1.48 degrees C = 4000018.250 Hz\r\n*4211' + NEWLINE + \
+        r'#4_\r\n*8462' + NEWLINE + \
+        r'#4_  RTC clock frequency = 32767.639 Hz\r\n*050f' + NEWLINE + \
+        r'#4_  IES clock cumulative error = -1.014 seconds\r\n*0dd7' + NEWLINE + \
+        r'#4_  Clock adjust: +1 sec\r\n*8181' + NEWLINE + \
+        r'#4_\r\n*8462' + NEWLINE + \
+        r'#4_  Performed hourly chores at: Mon Jun  6 23:51:52 2016\r\n*d846' + NEWLINE + \
+        r'#4_\r\n*8462' + NEWLINE + \
+        r'#4_  Start the end-of-24hour-measurement-day tasks...\r\n*2b86' + NEWLINE + \
+        r'#4_\r\n*8462' + NEWLINE + \
+        r'#4_  Sorted list of travel times:\r\n*25c5' + NEWLINE + \
+        r'#4_\r\n*8462' + NEWLINE + \
+        r'#4_    # 23 = 3.90567\r\n*cf30' + NEWLINE + \
+        r'#4_    # 22 = 3.90561\r\n*bc82' + NEWLINE + \
+        r'#4_    # 21 = 3.90561\r\n*64fc' + NEWLINE + \
+        r'#4_    # 20 = 3.90503\r\n*22a4' + NEWLINE + \
+        r'#4_    # 19 = 3.90497\r\n*366b' + NEWLINE + \
+        r'#4_    # 18 = 3.90491\r\n*45d9' + NEWLINE + \
+        r'#4_    # 17 = 3.90488\r\n*b123' + NEWLINE + \
+        r'#4_    # 16 = 3.90476\r\n*a538' + NEWLINE + \
+        r'#4_    # 15 = 3.90463\r\n*5f39' + NEWLINE + \
+        r'#4_    # 14 = 3.90457\r\n*367e' + NEWLINE + \
+        r'#4_    # 13 = 3.90408\r\n*b8c2' + NEWLINE + \
+        r'#4_    # 12 = 3.90405\r\n*8c9c' + NEWLINE + \
+        r'#4_    # 11 = 3.90396\r\n*ab45' + NEWLINE + \
+        r'#4_    # 10 = 3.90354\r\n*c413' + NEWLINE + \
+        r'#4_    # 9 = 3.90354\r\n*1ea2' + NEWLINE + \
+        r'#4_    # 8 = 3.90354\r\n*5688' + NEWLINE + \
+        r'#4_    # 7 = 3.90326\r\n*fd64' + NEWLINE + \
+        r'#4_    # 6 = 3.90268\r\n*5b8f' + NEWLINE + \
+        r'#4_    # 5 = 3.90262\r\n*cf59' + NEWLINE + \
+        r'#4_    # 4 = 3.90241\r\n*92e9' + NEWLINE + \
+        r'#4_    # 3 = 3.90216\r\n*4675' + NEWLINE + \
+        r'#4_    # 2 = 3.90186\r\n*8342' + NEWLINE + \
+        r'#4_    # 1 = 3.90161\r\n*5242' + NEWLINE + \
+        r'#4_    # 0 = 3.90161\r\n*1a68' + NEWLINE + \
+        r'#4_\r\n*8462' + NEWLINE + \
+        r'#4_  Disregarding zeros and echos > 9 secs:\r\n*00d6' + NEWLINE + \
+        r'#4_\r\n*8462' + NEWLINE + \
+        r'#4_    TTMedian: 3.90405 secs.\r\n*8541' + NEWLINE + \
+        r'#4_       TTMean: 3.90381 secs\r\n*01d5' + NEWLINE + \
+        r'#4_       TTquart: 3.90268 secs\r\n*97e0' + NEWLINE + \
+        r'#4_          TTStd: 0.002521 secs\r\n*226e' + NEWLINE + \
+        r'#4_\r\n*8462' + NEWLINE + \
+        r'#4_  No need for further processing...\r\n*4490' + NEWLINE + \
+        r'#4_  Day buffers appended to data files...\r\n*ae60' + NEWLINE + \
+        r'#4_\r\n*8462' + NEWLINE + \
+        r'#4_  Average pressure for previous day = 2954894 10Pa\r\n*74f2' + NEWLINE + \
+        r'#4_  Average temperature for previous day = 1433 millidegrees C\r\n*6097' + NEWLINE + \
+        r'#4_  Measuring Real Time Clock frequency...  wait\r\n*3fb8' + NEWLINE + \
+        r'#4_\r\n*8462' + NEWLINE + \
+        r'#4_  Bliley frequency corrected for 1.48 degrees C = 4000018.250 Hz\r\n*4211' + NEWLINE + \
+        r'#4_\r\n*8462' + NEWLINE + \
+        r'#4_\r\n*8462' + NEWLINE + \
+        r'#4_  Record written to engineering data file...\r\n*e339' + NEWLINE + \
+        r'#4_  407015 3.18 0.92 44.45 14.16 6.86 0.00 1.48 3.9041 2954894 1433 35066.660 171578.531 -0.348\r\n*24d1' + NEWLINE + \
+        r'#4_  UW/RSN: Sending wakeup...\r\n*b218' + NEWLINE + \
+        r'#4_\r\n*8462' + NEWLINE + \
+        r'#4_  All data buffers have been cleared...\r\n*1fc9' + NEWLINE + \
+        r'#4_\r\n*8462' + NEWLINE + \
+        r'#4_\r\n*8462' + NEWLINE + \
+        r'#4_  Data record written to TELEM.dat file...\r\n*bc64' + NEWLINE + \
+        r'#4_\r\n*8462' + NEWLINE + \
+        r'#4_  System Battery = 6.82 Volts @ 44.53 mA\r\n*156a' + NEWLINE + \
+        r'#4_  System battery O.K.\r\n*b463' + NEWLINE + \
+        r'#4_  Release Battery = 14.16 Volts @ 0.92 mA\r\n*f02c' + NEWLINE
+       #  r'#4_  Release Battery O.K.\r\n*5619' + NEWLINE + \
+       #  r'#4_  Completed end-of-24hour-measurement-day tasks at: Mon Jun  6 23:52:11 2016\r\n*b91f' + NEWLINE + \
+       #  r'#4_\r\n*8462' + NEWLINE + \
+       #  r'#4_AUX,1465257000,04,390329,390454,391345,390646,2955268,001478,001480,04000018.132,7608\r\r\n*2a77' + NEWLINE + \
+       #  r'#4_\r\n*8462' + NEWLINE + \
+       #  r'#4_  UW/RSN: Sending wakeup...\r\n*b218' + NEWLINE + \
+       #  r'#4_  Next scheduled 1 minute warning at: Mon Jun  6 23:59:00 2016\r\n*cf58' + NEWLINE + \
+       # r'#4_\r\n*8462' + NEWLINE
 
     valid_samples = [
         SAMPLE_HEF_HEADER,
@@ -163,7 +328,8 @@ class UtilMixin(DriverTestMixin):
         SAMPLE_IES_4AUX,
         SAMPLE_IES_5AUX,
         SAMPLE_IES_STATUS,
-        SAMPLE_TIMESTAMP
+        SAMPLE_TIMESTAMP,
+        SAMPLE_BACKUP_IES_STATUS
     ]
 
     # Sample raw data particles - invalid
@@ -425,6 +591,7 @@ class UtilMixin(DriverTestMixin):
 @attr('UNIT', group='mi')
 class DriverUnitTest(InstrumentDriverUnitTestCase, UtilMixin):
     def setUp(self):
+        IESStatusParticle.time_since_stream_5 = time.time() - 48*60*60
         InstrumentDriverUnitTestCase.setUp(self)
 
     def test_driver_schema(self):
@@ -454,7 +621,6 @@ class DriverUnitTest(InstrumentDriverUnitTestCase, UtilMixin):
         Test the chunker and verify the particles created.
         """
         chunker = StringChunker(Protocol.sieve_function)
-
         for sample in self.valid_samples:
             self.assert_chunker_sample(chunker, sample)
             self.assert_chunker_sample_with_noise(chunker, sample)
