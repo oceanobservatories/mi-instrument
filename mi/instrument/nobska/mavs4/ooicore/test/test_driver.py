@@ -136,24 +136,28 @@ class Mavs4Mixin(DriverTestMixin):
     #  Parameter and Type Definitions
     ###
     _driver_parameters = {
-        InstrumentParameters.SYS_CLOCK: {TYPE: str, READONLY: False, DA: False, STARTUP: False},
+        InstrumentParameters.SYS_CLOCK: {TYPE: str, READONLY: True, DA: False, STARTUP: False},
         InstrumentParameters.NOTE1: {TYPE: str, READONLY: False, DA: False, STARTUP: False},
         InstrumentParameters.NOTE2: {TYPE: str, READONLY: False, DA: False, STARTUP: False},
         InstrumentParameters.NOTE3: {TYPE: str, READONLY: False, DA: False, STARTUP: False},
         InstrumentParameters.VELOCITY_FRAME: {
-            TYPE: str, READONLY: True, DA: False, STARTUP: True, DEFAULT: '3', VALUE: '3'},
-        InstrumentParameters.MONITOR: {TYPE: bool, READONLY: False, DA: False, STARTUP: False},
-        InstrumentParameters.LOG_DISPLAY_TIME: {TYPE: bool, READONLY: True, DA: False, STARTUP: False},
-        InstrumentParameters.LOG_DISPLAY_FRACTIONAL_SECOND: {TYPE: bool, READONLY: True, DA: False, STARTUP: False},
+            TYPE: str, READONLY: True, DA: True, STARTUP: True, DEFAULT: '3', VALUE: '3'},
+        InstrumentParameters.MONITOR: {
+            TYPE: bool, READONLY: True, DA: True, STARTUP: True, DEFAULT: True, VALUE: True},
+        InstrumentParameters.LOG_DISPLAY_TIME: {
+            TYPE: bool, READONLY: True, DA: True, STARTUP: True, DEFAULT: True, VALUE: True},
+        InstrumentParameters.LOG_DISPLAY_FRACTIONAL_SECOND: {
+            TYPE: bool, READONLY: True, DA: True, STARTUP: True, DEFAULT: True, VALUE: True},
         InstrumentParameters.LOG_DISPLAY_ACOUSTIC_AXIS_VELOCITIES: {
-            TYPE: bool, READONLY: False, DA: True, STARTUP: True, DEFAULT: True, VALUE: True},
+            TYPE: bool, READONLY: True, DA: True, STARTUP: True, DEFAULT: True, VALUE: True},
         InstrumentParameters.LOG_DISPLAY_ACOUSTIC_AXIS_VELOCITIES_FORMAT: {
-            TYPE: str, READONLY: False, DA: True, STARTUP: True, DEFAULT: 'H', VALUE: 'H'},
-        InstrumentParameters.QUERY_MODE: {TYPE: bool, READONLY: False, DA: False, STARTUP: True, DEFAULT: False},
+            TYPE: str, READONLY: True, DA: True, STARTUP: True, DEFAULT: 'H', VALUE: 'H'},
+        InstrumentParameters.QUERY_MODE: {
+            TYPE: bool, READONLY: True, DA: True, STARTUP: True, DEFAULT: False, VALUE: False},
         InstrumentParameters.FREQUENCY: {TYPE: float, READONLY: False, DA: False, STARTUP: False, DEFAULT: 1.0},
         InstrumentParameters.MEASUREMENTS_PER_SAMPLE: {
             TYPE: int, READONLY: False, DA: False, STARTUP: False, DEFAULT: 1},
-        InstrumentParameters.SAMPLE_PERIOD: {TYPE: float, READONLY: False, DA: False, STARTUP: False},
+        InstrumentParameters.SAMPLE_PERIOD: {TYPE: float, READONLY: True, DA: False, STARTUP: False},
         InstrumentParameters.SAMPLES_PER_BURST: {TYPE: int, READONLY: False, DA: False, STARTUP: False},
         InstrumentParameters.BURST_INTERVAL_DAYS: {TYPE: int, READONLY: False, DA: False, STARTUP: False, DEFAULT: 0},
         InstrumentParameters.BURST_INTERVAL_HOURS: {TYPE: int, READONLY: False, DA: False, STARTUP: False, DEFAULT: 0},
@@ -161,16 +165,17 @@ class Mavs4Mixin(DriverTestMixin):
             TYPE: int, READONLY: False, DA: False, STARTUP: False, DEFAULT: 0},
         InstrumentParameters.BURST_INTERVAL_SECONDS: {
             TYPE: int, READONLY: False, DA: False, STARTUP: False, DEFAULT: 0},
-        InstrumentParameters.SI_CONVERSION: {TYPE: float, READONLY: False, DA: False, STARTUP: False},
-        InstrumentParameters.WARM_UP_INTERVAL: {TYPE: str, READONLY: True, DA: False, STARTUP: True, DEFAULT: 'F'},
+        InstrumentParameters.SI_CONVERSION: {TYPE: float, READONLY: True, DA: False, STARTUP: False},
+        InstrumentParameters.WARM_UP_INTERVAL: {
+            TYPE: str, READONLY: True, DA: True, STARTUP: True, DEFAULT: 'F', VALUE: 'F'},
         InstrumentParameters.THREE_AXIS_COMPASS: {TYPE: bool, READONLY: True, DA: False, STARTUP: True, DEFAULT: True},
-        InstrumentParameters.SOLID_STATE_TILT: {TYPE: bool, READONLY: True, DA: False, STARTUP: True, DEFAULT: True},
-        InstrumentParameters.THERMISTOR: {TYPE: bool, READONLY: True, DA: False, STARTUP: True, DEFAULT: True},
-        InstrumentParameters.PRESSURE: {TYPE: bool, READONLY: True, DA: False, STARTUP: True, DEFAULT: False},
-        InstrumentParameters.AUXILIARY_1: {TYPE: bool, READONLY: True, DA: False, STARTUP: True, DEFAULT: False},
-        InstrumentParameters.AUXILIARY_2: {TYPE: bool, READONLY: True, DA: False, STARTUP: True, DEFAULT: False},
-        InstrumentParameters.AUXILIARY_3: {TYPE: bool, READONLY: True, DA: False, STARTUP: True, DEFAULT: False},
-        InstrumentParameters.SENSOR_ORIENTATION: {TYPE: str, READONLY: True, DA: False, STARTUP: True, DEFAULT: '2'},
+        InstrumentParameters.SOLID_STATE_TILT: {TYPE: bool, READONLY: True, DA: False, STARTUP: False, DEFAULT: True},
+        InstrumentParameters.THERMISTOR: {TYPE: bool, READONLY: True, DA: False, STARTUP: False, DEFAULT: True},
+        InstrumentParameters.PRESSURE: {TYPE: bool, READONLY: True, DA: False, STARTUP: False, DEFAULT: False},
+        InstrumentParameters.AUXILIARY_1: {TYPE: bool, READONLY: True, DA: False, STARTUP: False, DEFAULT: False},
+        InstrumentParameters.AUXILIARY_2: {TYPE: bool, READONLY: True, DA: False, STARTUP: False, DEFAULT: False},
+        InstrumentParameters.AUXILIARY_3: {TYPE: bool, READONLY: True, DA: False, STARTUP: False, DEFAULT: False},
+        InstrumentParameters.SENSOR_ORIENTATION: {TYPE: str, READONLY: True, DA: False, STARTUP: False},
         InstrumentParameters.SERIAL_NUMBER: {TYPE: str, READONLY: True, DA: False, STARTUP: False},
         InstrumentParameters.VELOCITY_OFFSET_PATH_A: {TYPE: int, READONLY: True, DA: False, STARTUP: False},
         InstrumentParameters.VELOCITY_OFFSET_PATH_B: {TYPE: int, READONLY: True, DA: False, STARTUP: False},
