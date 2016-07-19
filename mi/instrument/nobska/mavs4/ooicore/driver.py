@@ -20,7 +20,7 @@ from mi.core.time_tools import timegm_to_float
 from mi.core.common import BaseEnum, Units, Prefixes
 from mi.core.time_tools import get_timestamp_delayed
 from mi.core.instrument.driver_dict import DriverDict, DriverDictKey
-from mi.core.instrument.instrument_protocol import MenuInstrumentProtocol
+from mi.core.instrument.instrument_protocol import MenuInstrumentProtocol, InitializationType
 from mi.core.instrument.instrument_driver import DriverParameter
 from mi.core.instrument.instrument_driver import SingleConnectionInstrumentDriver
 from mi.core.instrument.instrument_fsm import ThreadSafeFSM
@@ -393,6 +393,7 @@ class Mavs4ProtocolParameterDict(ProtocolParameterDict):
         response = self._param_dict[name].update(response)
         return response
 
+
 class mavs4InstrumentDriver(SingleConnectionInstrumentDriver):
     """
     Instrument driver class for MAVS-4 driver.
@@ -740,7 +741,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                              None],
                         InstrumentCmds.TILT_OFFSETS_SET:
                             [InstrumentPrompts.TILT_OFFSETS_SET, None, None],
-    }
+                        }
 
     def __init__(self, prompts, newline, driver_event):
         """
@@ -778,14 +779,14 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
 
         # Add event handlers for protocol state machine.
         self._protocol_fsm.add_handler(ProtocolStates.UNKNOWN, ProtocolEvent.ENTER, self._handler_unknown_enter)
-        self._protocol_fsm.add_handler(ProtocolStates.UNKNOWN, ProtocolEvent.EXIT, self._handler_unknown_exit)
+        self._protocol_fsm.add_handler(ProtocolStates.UNKNOWN, ProtocolEvent.EXIT, self._handler_do_nothing)
         self._protocol_fsm.add_handler(ProtocolStates.UNKNOWN, ProtocolEvent.DISCOVER, self._handler_unknown_discover)
         self._protocol_fsm.add_handler(ProtocolStates.COMMAND, ProtocolEvent.ENTER, self._handler_command_enter)
-        self._protocol_fsm.add_handler(ProtocolStates.COMMAND, ProtocolEvent.EXIT, self._handler_command_exit)
+        self._protocol_fsm.add_handler(ProtocolStates.COMMAND, ProtocolEvent.EXIT, self._handler_do_nothing)
         self._protocol_fsm.add_handler(ProtocolStates.COMMAND, ProtocolEvent.START_AUTOSAMPLE,
                                        self._handler_command_start_autosample)
         self._protocol_fsm.add_handler(ProtocolStates.COMMAND, ProtocolEvent.SET, self._handler_command_set)
-        self._protocol_fsm.add_handler(ProtocolStates.COMMAND, ProtocolEvent.GET, self._handler_command_get)
+        self._protocol_fsm.add_handler(ProtocolStates.COMMAND, ProtocolEvent.GET, self._handler_get)
         self._protocol_fsm.add_handler(ProtocolStates.COMMAND, ProtocolEvent.START_DIRECT,
                                        self._handler_command_start_direct)
         self._protocol_fsm.add_handler(ProtocolStates.COMMAND, ProtocolEvent.CLOCK_SYNC,
@@ -794,8 +795,9 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                                        self._handler_command_clock_sync)
         self._protocol_fsm.add_handler(ProtocolStates.COMMAND, ProtocolEvent.ACQUIRE_STATUS,
                                        self._handler_command_acquire_status)
+        self._protocol_fsm.add_handler(ProtocolStates.AUTOSAMPLE, ProtocolEvent.GET, self._handler_get)
         self._protocol_fsm.add_handler(ProtocolStates.AUTOSAMPLE, ProtocolEvent.ENTER, self._handler_autosample_enter)
-        self._protocol_fsm.add_handler(ProtocolStates.AUTOSAMPLE, ProtocolEvent.EXIT, self._handler_autosample_exit)
+        self._protocol_fsm.add_handler(ProtocolStates.AUTOSAMPLE, ProtocolEvent.EXIT, self._handler_do_nothing)
         self._protocol_fsm.add_handler(ProtocolStates.AUTOSAMPLE, ProtocolEvent.STOP_AUTOSAMPLE,
                                        self._handler_autosample_stop_autosample)
         self._protocol_fsm.add_handler(ProtocolStates.AUTOSAMPLE, ProtocolEvent.SCHEDULED_CLOCK_SYNC,
@@ -803,7 +805,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
         self._protocol_fsm.add_handler(ProtocolStates.DIRECT_ACCESS, ProtocolEvent.ENTER,
                                        self._handler_direct_access_enter)
         self._protocol_fsm.add_handler(ProtocolStates.DIRECT_ACCESS, ProtocolEvent.EXIT,
-                                       self._handler_direct_access_exit)
+                                       self._handler_do_nothing)
         self._protocol_fsm.add_handler(ProtocolStates.DIRECT_ACCESS, ProtocolEvent.EXECUTE_DIRECT,
                                        self._handler_direct_access_execute_direct)
         self._protocol_fsm.add_handler(ProtocolStates.DIRECT_ACCESS, ProtocolEvent.STOP_DIRECT,
@@ -860,12 +862,11 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
         self._extract_sample(Mavs4SampleDataParticle, SAMPLE_DATA_REGEX,
                              structure, timestamp)
 
-
     ########################################################################
     # overridden superclass methods
     ########################################################################
 
-    def _get_response(self, timeout=10, expected_prompt=None):
+    def _get_response(self, timeout=10, expected_prompt=None, **kwargs):
         """
         Get a response from the instrument, and do not ignore white space as in
         base class method.
@@ -1006,7 +1007,8 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
             next_cmd = resp_result
         return next_cmd
 
-    def _float_to_string(self, v):
+    @staticmethod
+    def _float_to_string(v):
         """
         Write a float value to string formatted for "generic" set operations.
         Subclasses should overload this as needed for instrument-specific
@@ -1020,7 +1022,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
         if not isinstance(v, float):
             if isinstance(v, str):
                 try:
-                    val = float(v)
+                    float(v)
                     return v
                 except ValueError:
                     raise InstrumentParameterException('Cannot coerce "%s" into a number' % v)
@@ -1060,9 +1062,10 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
         # Superclass will query the state.
         self._driver_event(DriverAsyncEvent.STATE_CHANGE)
 
-    def _handler_unknown_exit(self, *args, **kwargs):
+    @staticmethod
+    def _handler_do_nothing(*args, **kwargs):
         """
-        Exit unknown state.
+        Generic pass-through handler.
         """
         pass
 
@@ -1074,11 +1077,17 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
         next_state = ProtocolStates.COMMAND
         result = []
 
+        # Typically the samples are at 1 Hz, but can be as infrequent as 0.01 Hz
+        # Give up to 10 seconds for a particle to be present, if so, next state should be autosample
+        samples = self.wait_for_particles([DataParticleType.SAMPLE], time.time()+10)
+        if samples:
+            next_state = ProtocolStates.AUTOSAMPLE
+
         # try to get root menu prompt from the device using timeout if passed.
         # NOTE: this driver always tries to put instrument into command mode
         # so that parameters can be initialized
         try:
-            self._go_to_root_menu()
+            self._go_to_root_menu()  # this will also interrupt autosample
         except InstrumentTimeoutException:
             # didn't get root menu prompt, so indicate that there is trouble
             # with the instrument
@@ -1098,24 +1107,13 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
         @throws InstrumentProtocolException if the update commands and not
         recognized.
         """
-        self._update_params()
-        self._init_params()
+        if self._init_type != InitializationType.NONE:
+            self._update_params()
+            self._init_params()
 
         # Tell driver superclass to send a state change event.
         # Superclass will query the state.
         self._driver_event(DriverAsyncEvent.STATE_CHANGE)
-
-    def _handler_command_exit(self, *args, **kwargs):
-        """
-        Exit command state.
-        """
-
-    def _set_query_mode_parameter(self, params_to_set):
-        """
-        Set the query mode parameter early since the burst interval parameters
-        depend on it.
-        @param params_to_set the parameters to set
-        """
 
     def _set_parameter_sub_parameters(self, params_to_set):
         parameters_handled = []
@@ -1155,7 +1153,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
         parameters_dict = dict([(x, params_to_set[x]) for x in self.burst_interval_parameters if x in params_to_set])
         if parameters_dict:
             # set the parameter values so they can be gotten in the command builders
-            for (key, value) in parameters_dict.iteritems():
+            for key, value in parameters_dict.iteritems():
                 self._param_dict.set_value(key, value)
             dest_submenu = self._param_dict.get_menu_path_write(InstrumentParameters.BURST_INTERVAL_DAYS)
             command = self._param_dict.get_submenu_write(InstrumentParameters.BURST_INTERVAL_DAYS)
@@ -1219,7 +1217,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
             return list(params)
 
         if ((len(target) == 2) and ((InstrumentParameters.FREQUENCY in target) and
-                                        (InstrumentParameters.MEASUREMENTS_PER_SAMPLE in target))):
+                                    (InstrumentParameters.MEASUREMENTS_PER_SAMPLE in target))):
             return_list.remove(InstrumentParameters.FREQUENCY)
             return_list.remove(InstrumentParameters.MEASUREMENTS_PER_SAMPLE)
             return_list.extend([InstrumentParameters.FREQUENCY,
@@ -1227,8 +1225,8 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
             return return_list
 
         if ((len(target) == 3) and (target[InstrumentParameters.SAMPLE_PERIOD] *
-                                        target[InstrumentParameters.FREQUENCY] ==
-                                        target[InstrumentParameters.MEASUREMENTS_PER_SAMPLE])):
+                                    target[InstrumentParameters.FREQUENCY] ==
+                                    target[InstrumentParameters.MEASUREMENTS_PER_SAMPLE])):
             return_list.remove(InstrumentParameters.FREQUENCY)
             return_list.remove(InstrumentParameters.MEASUREMENTS_PER_SAMPLE)
             return_list.remove(InstrumentParameters.SAMPLE_PERIOD)
@@ -1287,19 +1285,12 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
             false otherwise
         """
         next_state = None
+        self._go_to_root_menu()
         result = self._set_params(*args, **kwargs)
 
         return next_state, (next_state, result)
 
-    def _handler_command_get(self, *args, **kwargs):
-        """
-        Get device parameters from the parameter dict.
-        @param args[0] list of parameters to retrieve, or DriverParameter.ALL.
-        """
-        next_state, result = self._handler_get(*args, **kwargs)
-        return next_state, result
-
-    def _handler_command_start_autosample(self, *args, **kwargs):
+    def _handler_command_start_autosample(self, **kwargs):
         """
         Switch into autosample mode.
         @retval (next_state, result) tuple, (ProtocolStates.AUTOSAMPLE,
@@ -1311,7 +1302,8 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
 
         return next_state, (next_state, result)
 
-    def _handler_command_start_direct(self):
+    @staticmethod
+    def _handler_command_start_direct(*args, **kwargs):
         """
         """
         next_state = ProtocolStates.DIRECT_ACCESS
@@ -1356,15 +1348,14 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
         """
         Enter autosample state.
         """
+        if self._init_type != InitializationType.NONE:
+            self._update_params()
+            self._init_params()
+            self._handler_command_start_autosample()
+
         # Tell driver superclass to send a state change event.
         # Superclass will query the state.
         self._driver_event(DriverAsyncEvent.STATE_CHANGE)
-
-    def _handler_autosample_exit(self, *args, **kwargs):
-        """
-        Exit autosample state.
-        """
-        pass
 
     def _handler_autosample_stop_autosample(self, *args, **kwargs):
         """
@@ -1413,13 +1404,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
 
         self._sent_cmds = []
 
-    def _handler_direct_access_exit(self, *args, **kwargs):
-        """
-        Exit direct access state.
-        """
-        pass
-
-    def _handler_direct_access_execute_direct(self, data):
+    def _handler_direct_access_execute_direct(self, data, *args, **kwargs):
         """
         """
         next_state = None
@@ -1427,7 +1412,8 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
         self._do_cmd_direct(data)
         return next_state, (next_state, result)
 
-    def _handler_direct_access_stop_direct(self):
+    @staticmethod
+    def _handler_direct_access_stop_direct(*args, **kwargs):
         """
         @throw InstrumentProtocolException on invalid command
         """
@@ -1485,8 +1471,8 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
             self._connection.send(InstrumentCmds.CONTROL_C)
             try:
                 prompt, result = self._get_response(timeout=4,
-                                                      expected_prompt=[InstrumentPrompts.MAIN_MENU,
-                                                                       InstrumentPrompts.SLEEPING])
+                                                    expected_prompt=[InstrumentPrompts.MAIN_MENU,
+                                                                     InstrumentPrompts.SLEEPING])
             except InstrumentTimeoutException:
                 log.debug('_go_to_root_menu: TIMED_OUT WAITING FOR ROOT MENU FROM ONE CONTROL-C !')
                 pass
@@ -1509,27 +1495,27 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
             self._send_control_c(count)
             try:
                 prompt, result = self._get_response(timeout=4,
-                                                      expected_prompt=[InstrumentPrompts.MAIN_MENU,
-                                                                       InstrumentPrompts.SLEEP_WAKEUP,
-                                                                       InstrumentPrompts.SLEEPING])
+                                                    expected_prompt=[InstrumentPrompts.MAIN_MENU,
+                                                                     InstrumentPrompts.SLEEP_WAKEUP,
+                                                                     InstrumentPrompts.SLEEPING])
+                log.debug("_go_to_root_menu: prompt after sending %d control-c characters = <%s>",
+                          count, prompt)
+                if prompt == InstrumentPrompts.MAIN_MENU:
+                    self._location = SubMenues.ROOT
+                    return
+                if prompt == InstrumentPrompts.SLEEP_WAKEUP:
+                    count = 1  # send 1 control=c to get the root menu
+                if prompt == InstrumentPrompts.SLEEPING:
+                    count = 3  # send 3 control-c chars to get the instruments attention
             except InstrumentTimeoutException:
                 log.debug('_go_to_root_menu: TIMED_OUT WAITING FOR PROMPT FROM 3 CONTROL-Cs !')
                 pass
-            log.debug("_go_to_root_menu: prompt after sending %d control-c characters = <%s>",
-                      count, prompt)
-            if prompt == InstrumentPrompts.MAIN_MENU:
-                self._location = SubMenues.ROOT
-                return
-            if prompt == InstrumentPrompts.SLEEP_WAKEUP:
-                count = 1  # send 1 control=c to get the root menu
-            if prompt == InstrumentPrompts.SLEEPING:
-                count = 3  # send 3 control-c chars to get the instruments attention
 
-        log.debug("_go_to_root_menu: failed to get to root menu, prompt=%r", prompt)
         self._location = None
         raise InstrumentTimeoutException("failed to get to root menu.")
 
-    def _parse_sensor_orientation(self, sensor_orientation):
+    @staticmethod
+    def _parse_sensor_orientation(sensor_orientation):
 
         if 'Vertical/Down' in sensor_orientation:
             return '1'
@@ -1547,7 +1533,8 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
             return '7'
         return ''
 
-    def _parse_velocity_frame(self, velocity_frame):
+    @staticmethod
+    def _parse_velocity_frame(velocity_frame):
         if 'No Velocity Frame' in velocity_frame:
             return '1'
         if '(U, V, W)' in velocity_frame:
@@ -1663,7 +1650,8 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            submenu_write=InstrumentCmds.SET_VELOCITY_FRAME,
                            display_name="Velocity Frame",
                            type=ParameterDictType.ENUM,
-                           description=r"Frame type: (1:no velocity frame | 2:MAVS4(U, V, W) | 3:Earth(E, N, W) | 4:Earth(S, θ, W)"))
+                           description=r"Frame type: "
+                           "(1:no velocity frame | 2:MAVS4(U, V, W) | 3:Earth(E, N, W) | 4:Earth(S, θ, W)"))
 
         self._param_dict.add_parameter(
             RegexParameter(InstrumentParameters.MONITOR,
@@ -1869,7 +1857,8 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            submenu_read=None,
                            menu_path_write=SubMenues.CONFIGURATION,
                            submenu_write=InstrumentCmds.SET_SI_CONVERSION,
-                           description="Coefficient to use during conversion from binary to SI: (0.0010000 - 0.0200000)",
+                           description="Coefficient to use during conversion from binary to SI: "
+                                       "(0.0010000 - 0.0200000)",
                            display_name="SI Conversion Coefficient",
                            type=ParameterDictType.FLOAT))
 
@@ -1887,7 +1876,8 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            menu_path_write=SubMenues.CONFIGURATION,
                            submenu_write=InstrumentCmds.SET_WARM_UP_INTERVAL,
                            description="Adjusts warm up time to allow for working with auxiliary sensors "
-                                       "that have slower response times to get the required accuracy: (F:Fast | S:Slow)",
+                                       "that have slower response times to get the required accuracy: "
+                                       "(F:Fast | S:Slow)",
                            display_name="Warm Up Interval for Sensors",
                            type=ParameterDictType.ENUM))
 
@@ -2178,7 +2168,8 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
 
         self._param_dict.add_parameter(
             RegexParameter(InstrumentParameters.COMPASS_SCALE_FACTORS_1,
-                           r'Current compass scale factors:\s+(%(float)s)\s+(%(float)s)\s+(%(float)s)\s+' % common_matches,
+                           r'Current compass scale factors:\s+(%(float)s)\s+(%(float)s)\s+(%(float)s)\s+' %
+                           common_matches,
                            lambda match: float(match.group(2)),
                            self._float_to_string,
                            regex_flags=re.DOTALL,
@@ -2194,7 +2185,8 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
 
         self._param_dict.add_parameter(
             RegexParameter(InstrumentParameters.COMPASS_SCALE_FACTORS_2,
-                           r'Current compass scale factors:\s+(%(float)s)\s+(%(float)s)\s+(%(float)s)\s+' % common_matches,
+                           r'Current compass scale factors:\s+(%(float)s)\s+(%(float)s)\s+(%(float)s)\s+' %
+                           common_matches,
                            lambda match: float(match.group(3)),
                            self._float_to_string,
                            regex_flags=re.DOTALL,
@@ -2346,7 +2338,8 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
         return (cmd, InstrumentPrompts.SYSTEM_CONFIGURATION_MENU,
                 InstrumentCmds.SYSTEM_CONFIGURATION_EXIT)
 
-    def _build_set_auxiliary_command(self, **kwargs):
+    @staticmethod
+    def _build_set_auxiliary_command(**kwargs):
         """
         Build handler for auxiliary set command
         @retval list with:
@@ -2427,7 +2420,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
         return (cmd, InstrumentPrompts.SYSTEM_CONFIGURATION_MENU,
                 InstrumentCmds.SYSTEM_CONFIGURATION_EXIT)
 
-    def _build_enter_log_display_acoustic_axis_velocities_command(self, **kwargs):
+    def _build_enter_log_display_acoustic_axis_velocities_command(self, *args, **kwargs):
         """
         Build handler for log display acoustic axis velocities enter command
         @retval list with:
@@ -2441,7 +2434,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
             return cmd, InstrumentPrompts.DEPLOY_MENU, None
         return YES, InstrumentPrompts.VELOCITY_FORMAT, InstrumentCmds.ENTER_LOG_DISPLAY_ACOUSTIC_AXIS_VELOCITIES_FORMAT
 
-    def _build_enter_log_display_acoustic_axis_velocity_format_command(self, **kwargs):
+    def _build_enter_log_display_acoustic_axis_velocity_format_command(self, *args, **kwargs):
         """
         Build handler for log display acoustic axis velocity format enter command
         @retval list with:
@@ -2515,7 +2508,8 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
 
         return cmd, InstrumentPrompts.SELECTION, None
 
-    def _build_set_note_command(self, **kwargs):
+    @staticmethod
+    def _build_set_note_command(**kwargs):
         """
         Build handler for note set command
         @retval list with:
@@ -2583,7 +2577,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
         @throws InstrumentProtocolException if upload command misunderstood.
         @ retval The next command to be sent to device (set to None to indicate there isn't one)
         """
-        if not InstrumentPrompts.GET_TIME in response:
+        if InstrumentPrompts.GET_TIME not in response:
             raise InstrumentProtocolException('get time command not recognized by instrument: %s.' % response)
 
         log.debug("_parse_time_response: response=%s", response)
@@ -2600,7 +2594,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
         @throws InstrumentProtocolException if upload command misunderstood.
         @ retval The next command to be sent to device (set to None to indicate there isn't one)
         """
-        if not InstrumentPrompts.DEPLOY_MENU in response:
+        if InstrumentPrompts.DEPLOY_MENU not in response:
             raise InstrumentProtocolException('deploy menu command not recognized by instrument: %s.' % response)
 
         name = kwargs.get('name', None)
@@ -2608,7 +2602,6 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
             # only get the parameter values if called from _update_params()
             return None
         for parameter in DeployMenuParameters.list():
-            #log.debug('_parse_deploy_menu_response: name=%s, response=%s', parameter, response)
             if not self._param_dict.update(parameter, response):
                 log.debug('_parse_deploy_menu_response: Failed to parse %s', parameter)
         return None
@@ -2621,7 +2614,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
         @throws InstrumentProtocolException if upload command misunderstood.
         @ retval The next command to be sent to device (set to None to indicate there isn't one)
         """
-        if not InstrumentPrompts.SYSTEM_CONFIGURATION_MENU in response:
+        if InstrumentPrompts.SYSTEM_CONFIGURATION_MENU not in response:
             raise InstrumentProtocolException(
                 'system configuration menu command not recognized by instrument: %s.' % response)
 
@@ -2630,8 +2623,6 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
             # only get the parameter values if called from _update_params()
             return None
         for parameter in SystemConfigurationMenuParameters.list():
-            #log.debug('_parse_system_configuration_menu_response: name=%s, response=%s'
-            #   parameter, response)
             if not self._param_dict.update(parameter, response):
                 log.debug('_parse_system_configuration_menu_response: Failed to parse %s', parameter)
         return None
@@ -2644,7 +2635,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
         @throws InstrumentProtocolException if upload command misunderstood.
         @ retval The next command to be sent to device (set to None to indicate there isn't one)
         """
-        if not InstrumentPrompts.VELOCITY_OFFSETS_SET in response:
+        if InstrumentPrompts.VELOCITY_OFFSETS_SET not in response:
             raise InstrumentProtocolException('velocity offset set command not recognized by instrument: %s.', response)
 
         name = kwargs.get('name', None)
@@ -2652,7 +2643,6 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
             # only get the parameter values if called from _update_params()
             return None
         for parameter in VelocityOffsetParameters.list():
-            #log.debug('_parse_velocity_offset_set_response: name=%s, response=%s', parameter, response)
             if not self._param_dict.update(parameter, response):
                 log.debug('_parse_velocity_offset_set_response: Failed to parse %s', parameter)
         # don't leave instrument in calibration menu because it doesn't wakeup from sleeping correctly
@@ -2667,7 +2657,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
         @throws InstrumentProtocolException if upload command misunderstood.
         @ retval The next command to be sent to device (set to None to indicate there isn't one)
         """
-        if not InstrumentPrompts.COMPASS_OFFSETS_SET in response:
+        if InstrumentPrompts.COMPASS_OFFSETS_SET not in response:
             raise InstrumentProtocolException('compass offset set command not recognized by instrument: %s.' % response)
 
         name = kwargs.get('name', None)
@@ -2675,7 +2665,6 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
             # only get the parameter values if called from _update_params()
             return None
         for parameter in CompassOffsetParameters.list():
-            #log.debug('_parse_compass_offset_set_response: name=%s, response=%s', parameter, response)
             if not self._param_dict.update(parameter, response):
                 log.debug('_parse_compass_offset_set_response: Failed to parse %s' % parameter)
         # don't leave instrument in calibration menu because it doesn't wakeup from sleeping correctly
@@ -2690,7 +2679,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
         @throws InstrumentProtocolException if upload command misunderstood.
         @ retval The next command to be sent to device (set to None to indicate there isn't one)
         """
-        if not InstrumentPrompts.COMPASS_SCALE_FACTORS_SET in response:
+        if InstrumentPrompts.COMPASS_SCALE_FACTORS_SET not in response:
             raise InstrumentProtocolException(
                 'compass scale factors set command not recognized by instrument: %s.' % response)
 
@@ -2699,8 +2688,6 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
             # only get the parameter values if called from _update_params()
             return None
         for parameter in CompassScaleFactorsParameters.list():
-            #log.debug('_parse_compass_scale_factors_set_response: name=%s, response=%s',
-            #   parameter, response)
             if not self._param_dict.update(parameter, response):
                 log.debug('_parse_compass_scale_factors_set_response: Failed to parse %s', parameter)
         # don't leave instrument in calibration menu because it doesn't wakeup from sleeping correctly
@@ -2715,7 +2702,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
         @throws InstrumentProtocolException if upload command misunderstood.
         @ retval The next command to be sent to device (set to None to indicate there isn't one)
         """
-        if not InstrumentPrompts.TILT_OFFSETS_SET in response:
+        if InstrumentPrompts.TILT_OFFSETS_SET not in response:
             raise InstrumentProtocolException('tilt offset set command not recognized by instrument: %s.' % response)
 
         name = kwargs.get('name', None)
@@ -2723,7 +2710,6 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
             # only get the parameter values if called from _update_params()
             return None
         for parameter in TiltOffsetParameters.list():
-            #log.debug('_parse_tilt_offset_set_response: name=%s, response=%s', parameter, response)
             if not self._param_dict.update(parameter, response):
                 log.debug('_parse_tilt_offset_set_response: Failed to parse %s', parameter)
         # don't leave instrument in calibration menu because it doesn't wakeup from sleeping correctly
@@ -2778,8 +2764,6 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
         @throws InstrumentTimeoutException if device cannot be timely woken.
         @throws InstrumentProtocolException if ds/dc misunderstood.
         """
-        if self.get_current_state() != ProtocolStates.COMMAND:
-            raise InstrumentStateException('Cannot perform update of parameters when not in command state')
         # Get old param dict config.
         old_config = self._param_dict.get_config()
 
@@ -2811,7 +2795,8 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
             log.debug('dictionaries are not equal :(')
             self._driver_event(DriverAsyncEvent.CONFIG_CHANGE)
 
-    def _sorted_longest_to_shortest(self, param_list):
+    @staticmethod
+    def _sorted_longest_to_shortest(param_list):
         sorted_list = sorted(param_list, key=len, reverse=True)
         return sorted_list
 
