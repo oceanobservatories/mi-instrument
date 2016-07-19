@@ -1584,6 +1584,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            lambda match: match.group(1),
                            lambda string: str(string),
                            regex_flags=re.DOTALL,
+                           visibility=ParameterDictVisibility.READ_ONLY,
                            menu_path_read=SubMenues.SET_TIME,
                            submenu_read=None,
                            menu_path_write=SubMenues.SET_TIME,
@@ -1643,12 +1644,15 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            regex_flags=re.DOTALL,
                            startup_param=True,
                            visibility=ParameterDictVisibility.IMMUTABLE,
+                           direct_access=True,
                            default_value='3',
                            menu_path_read=SubMenues.DEPLOY,
                            submenu_read=None,
                            menu_path_write=SubMenues.DEPLOY,
                            submenu_write=InstrumentCmds.SET_VELOCITY_FRAME,
                            display_name="Velocity Frame",
+                           range={'No Velocity Frame': '1', 'MAVS4(U, V, W)': '2', 'Earth(E, N, W)': '3',
+                                  'Earth(S, θ, W)': '4'},
                            type=ParameterDictType.ENUM,
                            description=r"Frame type: "
                            "(1:no velocity frame | 2:MAVS4(U, V, W) | 3:Earth(E, N, W) | 4:Earth(S, θ, W)"))
@@ -1660,6 +1664,8 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            lambda x: YES if x else NO,
                            regex_flags=re.DOTALL,
                            value='',
+                           visibility=ParameterDictVisibility.IMMUTABLE,
+                           direct_access=True,
                            default_value=True,
                            menu_path_read=SubMenues.DEPLOY,
                            submenu_read=None,
@@ -1667,6 +1673,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            submenu_write=InstrumentCmds.SET_MONITOR,
                            description="Enable data monitor (true | false)",
                            display_name="Data Monitor",
+                           range={'True': True, 'False': False},
                            type=ParameterDictType.BOOL))
 
         self._param_dict.add_parameter(
@@ -1674,11 +1681,13 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            r'Monitor\s+(?:\w+\s+){1}(\w+)',
                            lambda match: True if match.group(1) == ON else False,
                            lambda x: YES if x else NO,
-                           visibility=ParameterDictVisibility.IMMUTABLE,
                            regex_flags=re.DOTALL,
+                           visibility=ParameterDictVisibility.IMMUTABLE,
+                           direct_access=True,
                            default_value=True,
                            description="Enable log display time while monitoring (true | false)",
                            display_name="Log Display Time",
+                           range={'True': True, 'False': False},
                            type=ParameterDictType.BOOL))
 
         self._param_dict.add_parameter(
@@ -1688,9 +1697,11 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            lambda x: YES if x else NO,
                            regex_flags=re.DOTALL,
                            visibility=ParameterDictVisibility.IMMUTABLE,
+                           direct_access=True,
                            default_value=True,
                            description="Enable log/display time with fractional seconds (true | false)",
                            display_name="Display Fractional Seconds",
+                           range={'True': True, 'False': False},
                            type=ParameterDictType.BOOL))
 
         self._param_dict.add_parameter(
@@ -1699,11 +1710,13 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            lambda match: False if match.group(1) == OFF else True,
                            lambda x: YES if x else NO,
                            regex_flags=re.DOTALL,
+                           visibility=ParameterDictVisibility.IMMUTABLE,
                            startup_param=True,
                            direct_access=True,
                            default_value=True,
                            description="Enable log/display format acoustic axis velocities (true | false)",
                            display_name="Acoustic Axis Velocities",
+                           range={'True': True, 'False': False},
                            type=ParameterDictType.BOOL))
 
         self._param_dict.add_parameter(
@@ -1712,11 +1725,13 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            lambda match: match.group(1)[:1],
                            str,
                            regex_flags=re.DOTALL,
+                           visibility=ParameterDictVisibility.IMMUTABLE,
                            startup_param=True,
                            direct_access=True,
                            default_value='H',
-                           description="Format: (H:Hexadecimal | D:Decimal | S:SI units cm/s)",
+                           description="Format: (H:Hexadecimal | D:Decimal | S:SI units cm/s) - must be Hex",
                            display_name="Format of Acoustic Axis Velocities",
+                           range={'Hexadecimal': 'H', 'Decimal': 'D', 'SI Units cm/s': 'S'},
                            type=ParameterDictType.STRING))
 
         self._param_dict.add_parameter(
@@ -1725,14 +1740,17 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            lambda match: True if match.group(1) == ENABLED else False,
                            lambda x: YES if x else NO,
                            regex_flags=re.DOTALL,
+                           visibility=ParameterDictVisibility.IMMUTABLE,
                            default_value=False,
                            startup_param=True,
+                           direct_access=True,
                            menu_path_read=SubMenues.DEPLOY,
                            submenu_read=None,
                            menu_path_write=SubMenues.DEPLOY,
                            submenu_write=InstrumentCmds.SET_QUERY,
-                           description="Enable query mode (true | false)",
+                           description="Enable query mode (true | false) - must be enabled",
                            display_name="Query Mode",
+                           range={'True': True, 'False': False},
                            type=ParameterDictType.BOOL))
 
         self._param_dict.add_parameter(
@@ -1748,6 +1766,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            submenu_write=InstrumentCmds.SET_FREQUENCY,
                            description="Measurement rate: (0.01 - 50.0)",
                            display_name="Measurement Frequency",
+                           range=(0.01, 50.0),
                            type=ParameterDictType.FLOAT,
                            units=Units.HERTZ))
 
@@ -1764,6 +1783,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            submenu_write=InstrumentCmds.SET_MEAS_PER_SAMPLE,
                            description="Number of measurements averaged: (1 - 10000)",
                            display_name="Measurements per Sample",
+                           range=(1, 10000),
                            type=ParameterDictType.INT))
 
         self._param_dict.add_parameter(
@@ -1772,12 +1792,14 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            lambda match: float(match.group(1)),
                            self._float_to_string,
                            regex_flags=re.DOTALL,
+                           visibility=ParameterDictVisibility.READ_ONLY,
                            menu_path_read=SubMenues.DEPLOY,
                            submenu_read=None,
                            menu_path_write=SubMenues.DEPLOY,
                            submenu_write=InstrumentCmds.SET_SAMPLE_PERIOD,
                            description="Interval between samples: (0.02 - 10000)",
                            display_name="Sample Period",
+                           range=(0.02, 10000),
                            type=ParameterDictType.FLOAT,
                            units=Units.SECOND))
 
@@ -1793,6 +1815,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            submenu_write=InstrumentCmds.SET_SAMPLES_PER_BURST,
                            description="Number of samples in a burst: (1 to 100000)",
                            display_name="Samples per Burst",
+                           range=(1, 100000),
                            type=ParameterDictType.INT))
 
         self._param_dict.add_parameter(
@@ -1808,6 +1831,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            submenu_write=InstrumentCmds.SET_BURST_INTERVAL_DAYS,
                            description="Day interval between bursts: (0=continuous sampling, 1 - 366)",
                            display_name="Burst Interval Days",
+                           range=(1, 366),
                            type=ParameterDictType.INT,
                            units=Units.DAY))
 
@@ -1820,6 +1844,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            default_value=0,
                            description="Hour interval between bursts: (0=continuous sampling, 1 - 23)",
                            display_name="Burst Interval Hours",
+                           range=(1, 23),
                            type=ParameterDictType.INT,
                            units=Units.HOUR))
 
@@ -1832,6 +1857,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            default_value=0,
                            description="Minute interval between bursts: (0=continuous sampling, 1 - 59)",
                            display_name="Burst Interval Minutes",
+                           range=(1, 59),
                            type=ParameterDictType.INT,
                            units=Units.MINUTE))
 
@@ -1844,6 +1870,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            default_value=0,
                            description="Seconds interval between bursts: (0=continuous sampling, 1 - 59)",
                            display_name="Burst Interval Seconds",
+                           range=(1, 59),
                            type=ParameterDictType.INT,
                            units=Units.SECOND))
 
@@ -1853,6 +1880,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            lambda match: float(match.group(1)),
                            self._float_to_string,
                            regex_flags=re.DOTALL,
+                           visibility=ParameterDictVisibility.READ_ONLY,
                            menu_path_read=SubMenues.CONFIGURATION,
                            submenu_read=None,
                            menu_path_write=SubMenues.CONFIGURATION,
@@ -1860,6 +1888,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            description="Coefficient to use during conversion from binary to SI: "
                                        "(0.0010000 - 0.0200000)",
                            display_name="SI Conversion Coefficient",
+                           range=(0.001000, 0.0200000),
                            type=ParameterDictType.FLOAT))
 
         self._param_dict.add_parameter(
@@ -1868,9 +1897,10 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            lambda match: match.group(1),
                            lambda string: str(string),
                            regex_flags=re.DOTALL,
-                           startup_param=True,
-                           default_value='F',
                            visibility=ParameterDictVisibility.IMMUTABLE,
+                           startup_param=True,
+                           direct_access=True,
+                           default_value='F',
                            menu_path_read=SubMenues.CONFIGURATION,
                            submenu_read=None,
                            menu_path_write=SubMenues.CONFIGURATION,
@@ -1879,6 +1909,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                                        "that have slower response times to get the required accuracy: "
                                        "(F:Fast | S:Slow)",
                            display_name="Warm Up Interval for Sensors",
+                           range={'Fast': 'F', 'Slow': 'S'},
                            type=ParameterDictType.ENUM))
 
         self._param_dict.add_parameter(
@@ -1896,6 +1927,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            submenu_write=InstrumentCmds.SET_THREE_AXIS_COMPASS,
                            description="Enable 3-axis compass sensor (true | false)",
                            display_name="3-axis Compass Sensor",
+                           range={'True': True, 'False': False},
                            type=ParameterDictType.BOOL))
 
         self._param_dict.add_parameter(
@@ -1906,13 +1938,14 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            regex_flags=re.DOTALL,
                            default_value=True,
                            startup_param=True,
-                           visibility=ParameterDictVisibility.IMMUTABLE,
+                           visibility=ParameterDictVisibility.READ_ONLY,
                            menu_path_read=SubMenues.CONFIGURATION,
                            submenu_read=None,
                            menu_path_write=SubMenues.CONFIGURATION,
                            submenu_write=InstrumentCmds.SET_SOLID_STATE_TILT,
                            description="Enable the solid state tilt sensor: (true | false)",
                            display_name="Solid State Tilt Sensor",
+                           range={'True': True, 'False': False},
                            type=ParameterDictType.BOOL))
 
         self._param_dict.add_parameter(
@@ -1923,13 +1956,14 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            regex_flags=re.DOTALL,
                            default_value=True,
                            startup_param=True,
-                           visibility=ParameterDictVisibility.IMMUTABLE,
+                           visibility=ParameterDictVisibility.READ_ONLY,
                            menu_path_read=SubMenues.CONFIGURATION,
                            submenu_read=None,
                            menu_path_write=SubMenues.CONFIGURATION,
                            submenu_write=InstrumentCmds.SET_THERMISTOR,
                            description="Enable the thermistor sensor (true | false)",
                            display_name="Thermistor Sensor",
+                           range={'True': True, 'False': False},
                            type=ParameterDictType.BOOL))
 
         self._param_dict.add_parameter(
@@ -1941,13 +1975,14 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            default_value=False,  # this parameter can only be set to NO (meaning disabled)
                            # support for setting it to YES has not been implemented
                            startup_param=True,
-                           visibility=ParameterDictVisibility.IMMUTABLE,
+                           visibility=ParameterDictVisibility.READ_ONLY,
                            menu_path_read=SubMenues.CONFIGURATION,
                            submenu_read=None,
                            menu_path_write=SubMenues.CONFIGURATION,
                            submenu_write=InstrumentCmds.SET_PRESSURE,
                            description="Enable the pressure sensor (true | false)",
                            display_name="Pressure Sensor",
+                           range={'True': True, 'False': False},
                            type=ParameterDictType.BOOL))
 
         self._param_dict.add_parameter(
@@ -1959,13 +1994,14 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            default_value=False,  # this parameter can only be set to NO (meaning disabled)
                            # support for setting it to YES has not been implemented
                            startup_param=True,
-                           visibility=ParameterDictVisibility.IMMUTABLE,
+                           visibility=ParameterDictVisibility.READ_ONLY,
                            menu_path_read=SubMenues.CONFIGURATION,
                            submenu_read=None,
                            menu_path_write=SubMenues.CONFIGURATION,
                            submenu_write=InstrumentCmds.SET_AUXILIARY,
                            description="Enable auxiliary sensor 1 (true | false)",
                            display_name="Auxiliary sensor 1",
+                           range={'True': True, 'False': False},
                            type=ParameterDictType.BOOL))
 
         self._param_dict.add_parameter(
@@ -1977,13 +2013,14 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            default_value=False,  # this parameter can only be set to NO (meaning disabled)
                            # support for setting it to YES has not been implemented
                            startup_param=True,
-                           visibility=ParameterDictVisibility.IMMUTABLE,
+                           visibility=ParameterDictVisibility.READ_ONLY,
                            menu_path_read=SubMenues.CONFIGURATION,
                            submenu_read=None,
                            menu_path_write=SubMenues.CONFIGURATION,
                            submenu_write=InstrumentCmds.SET_AUXILIARY,
                            description="Enable auxiliary sensor 2 (true | false)",
                            display_name="Auxiliary sensor 2",
+                           range={'True': True, 'False': False},
                            type=ParameterDictType.BOOL))
 
         self._param_dict.add_parameter(
@@ -1995,13 +2032,14 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            default_value=False,  # this parameter can only be set to NO (meaning disabled)
                            # support for setting it to YES has not been implemented
                            startup_param=True,
-                           visibility=ParameterDictVisibility.IMMUTABLE,
+                           visibility=ParameterDictVisibility.READ_ONLY,
                            menu_path_read=SubMenues.CONFIGURATION,
                            submenu_read=None,
                            menu_path_write=SubMenues.CONFIGURATION,
                            submenu_write=InstrumentCmds.SET_AUXILIARY,
                            description="Enable auxiliary sensor 3 (true | false)",
                            display_name="Auxiliary sensor 3",
+                           range={'True': True, 'False': False},
                            type=ParameterDictType.BOOL))
 
         self._param_dict.add_parameter(
@@ -2012,16 +2050,19 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            regex_flags=re.DOTALL,
                            default_value='2',
                            startup_param=True,
-                           visibility=ParameterDictVisibility.IMMUTABLE,
+                           visibility=ParameterDictVisibility.READ_ONLY,
                            menu_path_read=SubMenues.CONFIGURATION,
                            submenu_read=None,
                            menu_path_write=SubMenues.CONFIGURATION,
                            submenu_write=InstrumentCmds.SET_SENSOR_ORIENTATION,
                            display_name="Sensor Orientation",
-                           type=ParameterDictType.ENUM,
-                           value_description="Orientation: (1:Vertical/Down | 2:Vertical/Up | 3:Horizontal/Straight | "
-                                             "4:Horizontal/Bent Left | 5:Horizontal/Bent Right | 6:Horizontal/Bent Down"
-                                             " | 7:Horizontal/Bent Up)"))
+                           description="Orientation: (1:Vertical/Down | 2:Vertical/Up | 3:Horizontal/Straight | "
+                                       "4:Horizontal/Bent Left | 5:Horizontal/Bent Right | 6:Horizontal/Bent Down | "
+                                       "7:Horizontal/Bent Up)",
+                           range={'Vertical/Down': '1', 'Vertical/Up': '2', 'Horizontal/Straight': '3',
+                                  'Horizontal/Bent Left': '4', 'Horizontal/Bent Right': '5',
+                                  'Horizontal/Bent Down': '6', 'Horizontal/Bent Up': '7'},
+                           type=ParameterDictType.ENUM))
 
         self._param_dict.add_parameter(
             RegexParameter(InstrumentParameters.SERIAL_NUMBER,
@@ -2049,8 +2090,9 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            submenu_read=InstrumentCmds.VELOCITY_OFFSETS,
                            menu_path_write=None,
                            submenu_write=None,
-                           description="The velocity offset value for path A: (3328 - 62208)",
+                           description="The velocity offset value for path A: (-3328 - 3328)",
                            display_name="Velocity Offset Path A",
+                           range=(-3328, 3328),
                            type=ParameterDictType.INT,
                            units=Units.COUNTS))
 
@@ -2067,6 +2109,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            submenu_write=None,
                            description="The velocity offset value for path B: (3328 - 62208)",
                            display_name="Velocity Offset Path B",
+                           range=(-3328, 3328),
                            type=ParameterDictType.INT,
                            units=Units.COUNTS))
 
@@ -2083,6 +2126,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            submenu_write=None,
                            description="The velocity offset value for path C: (3328 - 62208)",
                            display_name="Velocity Offset Path C",
+                           range=(-3328, 3328),
                            type=ParameterDictType.INT,
                            units=Units.COUNTS))
 
@@ -2099,6 +2143,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            submenu_write=None,
                            description="The velocity offset value for path D: (3328 - 62208)",
                            display_name="Velocity Offset Path D",
+                           range=(-3328, 3328),
                            type=ParameterDictType.INT,
                            units=Units.COUNTS))
 
@@ -2115,6 +2160,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            submenu_write=None,
                            display_name="Compass Offset 0",
                            description="The offset value for compass 0: (-400 - 400)",
+                           range=(-400, 400),
                            type=ParameterDictType.INT,
                            units=Units.COUNTS))
 
@@ -2131,6 +2177,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            submenu_write=None,
                            display_name="Compass Offset 1",
                            description="The offset value for compass 1: (-400 - 400)",
+                           range=(-400, 400),
                            type=ParameterDictType.INT,
                            units=Units.COUNTS))
 
@@ -2147,6 +2194,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            submenu_write=None,
                            display_name="Compass Offset 2",
                            description="The offset value for compass 2: (-400 - 400)",
+                           range=(-400, 400),
                            type=ParameterDictType.INT,
                            units=Units.COUNTS))
 
@@ -2163,6 +2211,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            submenu_write=None,
                            display_name="Compass Scale Factor 0",
                            description="The scale factor for compass 0: (0.200 - 5.000)",
+                           range=(0.200, 5.000),
                            type=ParameterDictType.FLOAT,
                            units=Units.COUNTS))
 
@@ -2180,6 +2229,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            submenu_write=None,
                            display_name="Compass Scale Factor 1",
                            description="The scale factor for compass 1: (0.200 - 5.000)",
+                           range=(0.200, 5.000),
                            type=ParameterDictType.FLOAT,
                            units=Units.COUNTS))
 
@@ -2197,6 +2247,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            submenu_write=None,
                            display_name="Compass Scale Factor 2",
                            description="The scale factor for compass 2: (0.200 - 5.000)",
+                           range=(0.200, 5.000),
                            type=ParameterDictType.FLOAT,
                            units=Units.COUNTS))
 
@@ -2214,6 +2265,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            submenu_write=None,
                            description="Tilt offset for pitch axis: (0 to 30000)",
                            display_name="Tilt Offset (Pitch)",
+                           range=(0, 30000),
                            type=ParameterDictType.INT,
                            units=Prefixes.MILLI + Units.VOLT))
 
@@ -2231,6 +2283,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            submenu_write=None,
                            description="Tilt offset for roll axis: (0 to 30000)",
                            display_name="Tilt Offset (Roll)",
+                           range=(0, 30000),
                            type=ParameterDictType.INT,
                            units=Prefixes.MILLI + Units.VOLT))
 
