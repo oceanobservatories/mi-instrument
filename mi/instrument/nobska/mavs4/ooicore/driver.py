@@ -10,7 +10,7 @@ Release notes:
 
 initial release
 """
-
+import ctypes
 import struct
 import time
 import re
@@ -572,7 +572,8 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
     the more complex commands as well as command builders and response handles
     that can dynamically create and process the instrument interactions.
     """
-    monitor_sub_parameters = (InstrumentParameters.LOG_DISPLAY_ACOUSTIC_AXIS_VELOCITIES,
+    monitor_sub_parameters = (InstrumentParameters.MONITOR,
+                              InstrumentParameters.LOG_DISPLAY_ACOUSTIC_AXIS_VELOCITIES,
                               InstrumentParameters.LOG_DISPLAY_ACOUSTIC_AXIS_VELOCITIES_FORMAT,
                               InstrumentParameters.LOG_DISPLAY_FRACTIONAL_SECOND,
                               InstrumentParameters.LOG_DISPLAY_TIME)
@@ -1115,140 +1116,29 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
         # Superclass will query the state.
         self._driver_event(DriverAsyncEvent.STATE_CHANGE)
 
-    def _set_parameter_sub_parameters(self, params_to_set):
-        parameters_handled = []
-
-        # handle monitor sub-parameters as a block to reduce I/O with instrument
-        parameters_dict = dict([(x, params_to_set[x]) for x in self.monitor_sub_parameters if x in params_to_set])
-        if parameters_dict:
-            # set the parameter values so they can be gotten in the command builders
-            for key, value in parameters_dict.iteritems():
-                self._param_dict.set_value(key, value)
-            if not params_to_set.get(InstrumentParameters.MONITOR, False):
-                # if there isn't a set for enabling the monitor parameter then force a set so sub-parameters will be set
-                dest_submenu = self._param_dict.get_menu_path_write(InstrumentParameters.MONITOR)
-                command = self._param_dict.get_submenu_write(InstrumentParameters.MONITOR)
-                self._navigate_and_execute(command, name=InstrumentParameters.MONITOR, value=True,
-                                           dest_submenu=dest_submenu, timeout=15)
-                # check to see if the monitor parameter needs to be reset from the 'enabled' value
-                if not self._param_dict.get(InstrumentParameters.MONITOR):
-                    self._navigate_and_execute(command, name=InstrumentParameters.MONITOR, value=False,
-                                               dest_submenu=dest_submenu, timeout=15)
-            # remove the sub-parameters from the params_to_set dictionary
-            for parameter in parameters_dict:
-                parameters_handled.append(parameter)
-                del params_to_set[parameter]
-
-        # handle burst interval parameters as a block to reduce I/O with instrument
-        # ...but set the query mode first
-        if InstrumentParameters.QUERY_MODE in params_to_set:
-            dest_submenu = self._param_dict.get_menu_path_write(InstrumentParameters.QUERY_MODE)
-            command = self._param_dict.get_submenu_write(InstrumentParameters.QUERY_MODE)
-            self._navigate_and_execute(command, name=InstrumentParameters.QUERY_MODE,
-                                       value=params_to_set[InstrumentParameters.QUERY_MODE],
-                                       dest_submenu=dest_submenu, timeout=15)
-            parameters_handled.append(InstrumentParameters.QUERY_MODE)
-            del params_to_set[InstrumentParameters.QUERY_MODE]
-
-        parameters_dict = dict([(x, params_to_set[x]) for x in self.burst_interval_parameters if x in params_to_set])
-        if parameters_dict:
-            # set the parameter values so they can be gotten in the command builders
-            for key, value in parameters_dict.iteritems():
-                self._param_dict.set_value(key, value)
-            dest_submenu = self._param_dict.get_menu_path_write(InstrumentParameters.BURST_INTERVAL_DAYS)
-            command = self._param_dict.get_submenu_write(InstrumentParameters.BURST_INTERVAL_DAYS)
-            self._navigate_and_execute(command, name=key, dest_submenu=dest_submenu, timeout=15)
-            # remove the sub-parameters from the params_to_set dictionary
-            for parameter in parameters_dict:
-                parameters_handled.append(parameter)
-                del params_to_set[parameter]
-
-        return parameters_handled
-
-    def _check_deployment_params(self, params):
+    def _set_param(self, parameter, value):
         """
-        Verify that some of the deployment params are either not all set at the
-        same time or, if they are, all are set to correct values. This includes
-        the measurement/samples, measurement frequency, and sample period.
-        It also includes a check for validity of the burst and query mode
-        relationship.
-
-        @param params A dict of parameter names and values
-        @retval A list of keys to set. Must have these values in the correct
-        order to not hose things later.
-        @throws InstrumentParameterException if the parameters conflict or one
-        is missing
+        :param parameter:  parameter to set
+        :param value:  unformatted value to set parameter
+        :return:  <none>
         """
-        if params is None:
-            return list(params)
-        if not isinstance(params, dict):
-            raise InstrumentParameterException("Checking invalid deployment params")
-
-        return_list = list(params)
-
-        # query mode / burst check
-        query = (InstrumentParameters.QUERY_MODE in params)
-        burst = (InstrumentParameters.BURST_INTERVAL_DAYS in params)
-
-        if query:
-            log.trace("Parameters for query mode: %s",
-                      params[InstrumentParameters.QUERY_MODE])
-
-        if (query and burst) and (params[InstrumentParameters.QUERY_MODE] == YES):
-            raise InstrumentParameterException("Cannot set burst interval when in query mode!")
-        if (not query and burst) and (self._param_dict.get(InstrumentParameters.QUERY_MODE) == YES):
-            raise InstrumentParameterException("Cannot set burst interval when in query mode!")
-
-        # samples/freq/period relationship check
-        target = {}
-        if InstrumentParameters.FREQUENCY in params:
-            target[InstrumentParameters.FREQUENCY] = \
-                params[InstrumentParameters.FREQUENCY]
-
-        if InstrumentParameters.MEASUREMENTS_PER_SAMPLE in params:
-            target[InstrumentParameters.MEASUREMENTS_PER_SAMPLE] = \
-                params[InstrumentParameters.MEASUREMENTS_PER_SAMPLE]
-
-        if InstrumentParameters.SAMPLE_PERIOD in params:
-            target[InstrumentParameters.SAMPLE_PERIOD] = \
-                params[InstrumentParameters.SAMPLE_PERIOD]
-
-        if len(target) <= 1:
-            return list(params)
-
-        if ((len(target) == 2) and ((InstrumentParameters.FREQUENCY in target) and
-                                    (InstrumentParameters.MEASUREMENTS_PER_SAMPLE in target))):
-            return_list.remove(InstrumentParameters.FREQUENCY)
-            return_list.remove(InstrumentParameters.MEASUREMENTS_PER_SAMPLE)
-            return_list.extend([InstrumentParameters.FREQUENCY,
-                                InstrumentParameters.MEASUREMENTS_PER_SAMPLE])
-            return return_list
-
-        if ((len(target) == 3) and (target[InstrumentParameters.SAMPLE_PERIOD] *
-                                    target[InstrumentParameters.FREQUENCY] ==
-                                    target[InstrumentParameters.MEASUREMENTS_PER_SAMPLE])):
-            return_list.remove(InstrumentParameters.FREQUENCY)
-            return_list.remove(InstrumentParameters.MEASUREMENTS_PER_SAMPLE)
-            return_list.remove(InstrumentParameters.SAMPLE_PERIOD)
-            return_list.extend([InstrumentParameters.FREQUENCY,
-                                InstrumentParameters.MEASUREMENTS_PER_SAMPLE,
-                                InstrumentParameters.SAMPLE_PERIOD])
-            return return_list
-
-        # if we made it this far, it cant be good)
-        raise InstrumentParameterException("Invalid deployment parameter configuration! %s" %
-                                           target)
+        dest_submenu = self._param_dict.get_menu_path_write(parameter)
+        command = self._param_dict.get_submenu_write(parameter)
+        formatted_value = self._param_dict.format(parameter, value)
+        self._navigate_and_execute(command, name=parameter, value=formatted_value,
+                                   dest_submenu=dest_submenu, timeout=15)
 
     def _set_params(self, *args, **kwargs):
+        self._verify_not_readonly(*args, **kwargs)
+
         # Retrieve required parameter from args.
         # Raise exception if no parameter provided, or not a dict.
         try:
             params_to_set = args[0]
-        except IndexError:
-            raise InstrumentParameterException('Set command requires a parameter dict.')
-        else:
             if not isinstance(params_to_set, dict):
                 raise InstrumentParameterException('Set parameters not a dict.')
+        except IndexError:
+            raise InstrumentParameterException('Set command requires a parameter dict.')
 
         old_config = self._param_dict.get_config()
         log.debug('old_config:           %r', old_config)
@@ -1256,26 +1146,59 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
         new_params = {}
         for key, value in params_to_set.iteritems():
             if old_config.get(key) != value:
-                new_params[key] = self._param_dict.format(key, value)
+                new_params[key] = value
         params_to_set = new_params
         log.debug('params_to_set after:  %r', params_to_set)
 
-        if params_to_set:
-            self._verify_not_readonly(*args, **kwargs)
-            ordered_keys_to_set = self._check_deployment_params(params_to_set)
-            already_set = self._set_parameter_sub_parameters(params_to_set)
+        enforce_defaults = [InstrumentParameters.QUERY_MODE,
+                            InstrumentParameters.VELOCITY_FRAME,
+                            InstrumentParameters.MONITOR,
+                            InstrumentParameters.LOG_DISPLAY_TIME,
+                            InstrumentParameters.LOG_DISPLAY_FRACTIONAL_SECOND,
+                            InstrumentParameters.LOG_DISPLAY_ACOUSTIC_AXIS_VELOCITIES,
+                            InstrumentParameters.LOG_DISPLAY_ACOUSTIC_AXIS_VELOCITIES_FORMAT]
 
-            for key in ordered_keys_to_set:
-                log.debug('key (%r), params to set (%r), already set (%r)', key, params_to_set, already_set)
-                if key in params_to_set and key not in already_set:
-                    dest_submenu = self._param_dict.get_menu_path_write(key)
-                    command = self._param_dict.get_submenu_write(key)
-                    self._navigate_and_execute(command, name=key, value=params_to_set[key],
-                                               dest_submenu=dest_submenu, timeout=15)
-            self._update_params()
-            new_config = self._param_dict.get_config()
-            if not dict_equal(old_config, new_config, ignore_keys=InstrumentParameters.SYS_CLOCK):
-                self._driver_event(DriverAsyncEvent.CONFIG_CHANGE)
+        # make sure the requested settings match with enforced defaults
+        for parameter in enforce_defaults:
+            set_value = params_to_set.get(parameter)
+            cur_value = old_config.get(parameter)
+            default_value = self._param_dict.get_default_value(parameter)
+            if set_value is not None:
+                if set_value != default_value:
+                    raise InstrumentParameterException('Parameter %s must be set to %s' % (parameter, default_value))
+            if cur_value != default_value:
+                log.warn('Enforcing parameter %s to required default %s', parameter, default_value)
+                params_to_set[parameter] = default_value
+                self._param_dict.set_value(parameter, default_value)
+
+        # query must be set first
+        query = params_to_set.pop(InstrumentParameters.QUERY_MODE, None)
+        if query is not None:
+            self._set_param(InstrumentParameters.QUERY_MODE, query)
+
+        # monitor and burst parameters are set together
+        monitor = set(self.monitor_sub_parameters).intersection(params_to_set)
+        if monitor:
+            self._set_param(InstrumentParameters.MONITOR, self._param_dict.get(InstrumentParameters.MONITOR))
+            for each in monitor:
+                params_to_set.pop(each)
+
+        burst = set(self.burst_interval_parameters).intersection(params_to_set)
+        if burst:
+            for each in burst:
+                self._param_dict.set_value(each, params_to_set.pop(each))
+            self._set_param(InstrumentParameters.BURST_INTERVAL_DAYS,
+                            self._param_dict.get(InstrumentParameters.BURST_INTERVAL_DAYS))
+
+        # set the remaining parameters
+        for parameter in params_to_set:
+            self._set_param(parameter, params_to_set[parameter])
+
+        # update only the deploy menu parameters
+        self._get_param(InstrumentParameters.MONITOR)
+        new_config = self._param_dict.get_config()
+        if not dict_equal(old_config, new_config, ignore_keys=InstrumentParameters.SYS_CLOCK):
+            self._driver_event(DriverAsyncEvent.CONFIG_CHANGE)
 
     def _handler_command_set(self, *args, **kwargs):
         """
@@ -1762,7 +1685,6 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            lambda match: float(match.group(1)),
                            self._float_to_string,
                            regex_flags=re.DOTALL,
-                           default_value=1.0,
                            menu_path_read=SubMenues.DEPLOY,
                            submenu_read=None,
                            menu_path_write=SubMenues.DEPLOY,
@@ -1779,7 +1701,6 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            lambda match: int(match.group(1)),
                            self._int_to_string,
                            regex_flags=re.DOTALL,
-                           default_value=1,
                            menu_path_read=SubMenues.DEPLOY,
                            submenu_read=None,
                            menu_path_write=SubMenues.DEPLOY,
@@ -1827,14 +1748,13 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            lambda match: int(match.group(1)),
                            self._int_to_string,
                            regex_flags=re.DOTALL,
-                           default_value=0,
                            menu_path_read=SubMenues.DEPLOY,
                            submenu_read=None,
                            menu_path_write=SubMenues.DEPLOY,
                            submenu_write=InstrumentCmds.SET_BURST_INTERVAL_DAYS,
                            description="Day interval between bursts: (0=continuous sampling, 1 - 366)",
                            display_name="Burst Interval Days",
-                           range=(1, 366),
+                           range=(0, 366),
                            type=ParameterDictType.INT,
                            units=Units.DAY))
 
@@ -1844,10 +1764,9 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            lambda match: int(match.group(2)),
                            self._int_to_string,
                            regex_flags=re.DOTALL,
-                           default_value=0,
                            description="Hour interval between bursts: (0=continuous sampling, 1 - 23)",
                            display_name="Burst Interval Hours",
-                           range=(1, 23),
+                           range=(0, 23),
                            type=ParameterDictType.INT,
                            units=Units.HOUR))
 
@@ -1857,10 +1776,9 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            lambda match: int(match.group(3)),
                            self._int_to_string,
                            regex_flags=re.DOTALL,
-                           default_value=0,
                            description="Minute interval between bursts: (0=continuous sampling, 1 - 59)",
                            display_name="Burst Interval Minutes",
-                           range=(1, 59),
+                           range=(0, 59),
                            type=ParameterDictType.INT,
                            units=Units.MINUTE))
 
@@ -1870,10 +1788,9 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            lambda match: int(match.group(4)),
                            self._int_to_string,
                            regex_flags=re.DOTALL,
-                           default_value=0,
                            description="Seconds interval between bursts: (0=continuous sampling, 1 - 59)",
                            display_name="Burst Interval Seconds",
-                           range=(1, 59),
+                           range=(0, 59),
                            type=ParameterDictType.INT,
                            units=Units.SECOND))
 
@@ -1900,10 +1817,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            lambda match: match.group(1),
                            lambda string: str(string),
                            regex_flags=re.DOTALL,
-                           visibility=ParameterDictVisibility.IMMUTABLE,
-                           startup_param=True,
-                           direct_access=True,
-                           default_value='F',
+                           visibility=ParameterDictVisibility.READ_ONLY,
                            menu_path_read=SubMenues.CONFIGURATION,
                            submenu_read=None,
                            menu_path_write=SubMenues.CONFIGURATION,
@@ -1921,9 +1835,7 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            lambda match: True if match.group(1) == ENABLED else False,
                            lambda x: YES if x else NO,
                            regex_flags=re.DOTALL,
-                           default_value=True,
-                           startup_param=True,
-                           visibility=ParameterDictVisibility.IMMUTABLE,
+                           visibility=ParameterDictVisibility.READ_ONLY,
                            menu_path_read=SubMenues.CONFIGURATION,
                            submenu_read=None,
                            menu_path_write=SubMenues.CONFIGURATION,
@@ -1939,7 +1851,6 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            lambda match: True if match.group(1) == ENABLED else False,
                            lambda x: YES if x else NO,
                            regex_flags=re.DOTALL,
-                           default_value=True,
                            visibility=ParameterDictVisibility.READ_ONLY,
                            menu_path_read=SubMenues.CONFIGURATION,
                            submenu_read=None,
@@ -1956,7 +1867,6 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            lambda match: True if match.group(1) == ENABLED else False,
                            lambda string: bool_to_on_off(string),
                            regex_flags=re.DOTALL,
-                           default_value=True,
                            visibility=ParameterDictVisibility.READ_ONLY,
                            menu_path_read=SubMenues.CONFIGURATION,
                            submenu_read=None,
@@ -1973,8 +1883,6 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            lambda match: True if match.group(1) == ENABLED else False,
                            lambda x: YES if x else NO,
                            regex_flags=re.DOTALL,
-                           default_value=False,  # this parameter can only be set to NO (meaning disabled)
-                           # support for setting it to YES has not been implemented
                            visibility=ParameterDictVisibility.READ_ONLY,
                            menu_path_read=SubMenues.CONFIGURATION,
                            submenu_read=None,
@@ -1991,8 +1899,6 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            lambda match: True if match.group(1) == ENABLED else False,
                            lambda x: YES if x else NO,
                            regex_flags=re.DOTALL,
-                           default_value=False,  # this parameter can only be set to NO (meaning disabled)
-                           # support for setting it to YES has not been implemented
                            visibility=ParameterDictVisibility.READ_ONLY,
                            menu_path_read=SubMenues.CONFIGURATION,
                            submenu_read=None,
@@ -2009,8 +1915,6 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            lambda match: True if match.group(1) == ENABLED else False,
                            lambda x: YES if x else NO,
                            regex_flags=re.DOTALL,
-                           default_value=False,  # this parameter can only be set to NO (meaning disabled)
-                           # support for setting it to YES has not been implemented
                            visibility=ParameterDictVisibility.READ_ONLY,
                            menu_path_read=SubMenues.CONFIGURATION,
                            submenu_read=None,
@@ -2027,8 +1931,6 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            lambda match: True if match.group(1) == ENABLED else False,
                            lambda x: YES if x else NO,
                            regex_flags=re.DOTALL,
-                           default_value=False,  # this parameter can only be set to NO (meaning disabled)
-                           # support for setting it to YES has not been implemented
                            visibility=ParameterDictVisibility.READ_ONLY,
                            menu_path_read=SubMenues.CONFIGURATION,
                            submenu_read=None,
@@ -2045,7 +1947,6 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
                            lambda match: self._parse_sensor_orientation(match.group(1)),
                            lambda string: str(string),
                            regex_flags=re.DOTALL,
-                           default_value='2',
                            visibility=ParameterDictVisibility.READ_ONLY,
                            menu_path_read=SubMenues.CONFIGURATION,
                            submenu_read=None,
@@ -2078,8 +1979,8 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
         self._param_dict.add_parameter(
             RegexParameter(InstrumentParameters.VELOCITY_OFFSET_PATH_A,
                            r'.*Current path offsets:\s+(\w+)\s+.*',
-                           lambda match: int(match.group(1), 16),
-                           lambda num: '{:04x}'.format(num),
+                           lambda match: ctypes.c_short(int(match.group(1), 16)).value,
+                           lambda num: '{:04x}'.format(ctypes.c_ushort(num).value),
                            regex_flags=re.DOTALL,
                            visibility=ParameterDictVisibility.READ_ONLY,
                            menu_path_read=SubMenues.CALIBRATION,
@@ -2095,8 +1996,8 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
         self._param_dict.add_parameter(
             RegexParameter(InstrumentParameters.VELOCITY_OFFSET_PATH_B,
                            r'.*Current path offsets:\s+\w+\s+(\w+)\s+.*',
-                           lambda match: int(match.group(1), 16),
-                           lambda num: '{:04x}'.format(num),
+                           lambda match: ctypes.c_short(int(match.group(1), 16)).value,
+                           lambda num: '{:04x}'.format(ctypes.c_ushort(num).value),
                            regex_flags=re.DOTALL,
                            visibility=ParameterDictVisibility.READ_ONLY,
                            menu_path_read=SubMenues.CALIBRATION,
@@ -2112,8 +2013,8 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
         self._param_dict.add_parameter(
             RegexParameter(InstrumentParameters.VELOCITY_OFFSET_PATH_C,
                            r'.*Current path offsets:\s+\w+\s+\w+\s+(\w+)\s+.*',
-                           lambda match: int(match.group(1), 16),
-                           lambda num: '{:04x}'.format(num),
+                           lambda match: ctypes.c_short(int(match.group(1), 16)).value,
+                           lambda num: '{:04x}'.format(ctypes.c_ushort(num).value),
                            regex_flags=re.DOTALL,
                            visibility=ParameterDictVisibility.READ_ONLY,
                            menu_path_read=SubMenues.CALIBRATION,
@@ -2129,8 +2030,8 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
         self._param_dict.add_parameter(
             RegexParameter(InstrumentParameters.VELOCITY_OFFSET_PATH_D,
                            r'.*Current path offsets:\s+\w+\s+\w+\s+\w+\s+(\w+)\s+.*',
-                           lambda match: int(match.group(1), 16),
-                           lambda num: '{:04x}'.format(num),
+                           lambda match: ctypes.c_short(int(match.group(1), 16)).value,
+                           lambda num: '{:04x}'.format(ctypes.c_ushort(num).value),
                            regex_flags=re.DOTALL,
                            visibility=ParameterDictVisibility.READ_ONLY,
                            menu_path_read=SubMenues.CALIBRATION,
@@ -2591,11 +2492,10 @@ class mavs4InstrumentProtocol(MenuInstrumentProtocol):
         value = kwargs.get('value', None)
         if value is None:
             raise InstrumentParameterException('simple enter command requires a value.')
-        cmd = self._param_dict.format(name, value)
         response = self.Command_Response[cmd_name][0]
         next_cmd = self.Command_Response[cmd_name][1]
-        log.debug("_build_simple_enter_command: cmd=%s", cmd)
-        return cmd, response, next_cmd
+        log.debug("_build_simple_enter_command: cmd=%r", value)
+        return value, response, next_cmd
 
     def _build_simple_command(self, **kwargs):
         """
