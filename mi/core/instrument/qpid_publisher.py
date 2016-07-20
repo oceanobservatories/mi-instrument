@@ -23,7 +23,7 @@ class QpidPublisher(Publisher):
         self.queue = queue
         self.session = None
         self.sender = None
-        self.headers = headers
+        self._headers = headers
         self.connect()
 
     def connect(self):
@@ -32,10 +32,7 @@ class QpidPublisher(Publisher):
         self.sender = self.session.sender('%s; {create: always, node: {type: queue, durable: true}}' % self.queue)
 
     def _publish(self, events, headers):
-        msg_headers = self.headers
-        if headers is not None:
-            # apply any new header values
-            msg_headers.update(headers)
+        msg_headers = self._merge_headers(headers)
 
         # HACK!
         self.connection.error = None

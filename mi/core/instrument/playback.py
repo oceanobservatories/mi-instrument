@@ -17,22 +17,21 @@ Options:
     To run without installing:
     python -m mi.core.instrument.playback ...
 """
-
 import importlib
 import glob
 import sys
-from datetime import datetime
 import os
 import re
 import time
+from datetime import datetime
+
+import yaml
 from docopt import docopt
 
-from mi.core.log import get_logger
-log = get_logger()
-
+from ooi.logging import log
 from ooi_port_agent.packet import Packet, PacketHeader
 from ooi_port_agent.common import PacketType
-from wrapper import EventKeys, encode_exception
+from wrapper import EventKeys, encode_exception, DriverWrapper
 from mi.core.instrument.instrument_driver import DriverAsyncEvent
 from mi.core.instrument.publisher import Publisher
 from mi.core.instrument.data_particle import DataParticleKey
@@ -50,6 +49,7 @@ Y2K = (datetime(2000, 1, 1) - datetime(1900, 1, 1)).total_seconds()
 DATE_PATTERN = r'^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?Z?$'
 DATE_MATCHER = re.compile(DATE_PATTERN)
 DATE_FORMAT = "%Y-%m-%dT%H:%M:%S.%fZ"
+
 
 def string_to_ntp_date_time(datestr):
     """
@@ -128,16 +128,22 @@ class PlaybackPacket(Packet):
 
 class PlaybackWrapper(object):
     def __init__(self, module, refdes, event_url, particle_url, reader_klass, allowed, files):
-        headers = {'sensor': refdes, 'deliveryType': 'streamed'}
+        version = DriverWrapper.get_version(module)
+        headers = {'sensor': refdes, 'deliveryType': 'streamed', 'version': version, 'module': module}
         self.event_publisher = Publisher.from_url(event_url, headers)
         self.particle_publisher = Publisher.from_url(particle_url, headers, allowed)
 
         self.protocol = self.construct_protocol(module)
         self.reader = reader_klass(files, self.got_data)
 
+    def set_header_filename(self, filename):
+        self.event_publisher.set_source(filename)
+        self.particle_publisher.set_source(filename)
+
     def playback(self):
         for index, filename in enumerate(self.reader.read()):
             if filename is not None:
+                self.set_header_filename(filename)
                 if hasattr(self.protocol, 'got_filename'):
                     self.protocol.got_filename(filename)
             if index % 1000 == 0:
@@ -173,22 +179,6 @@ class PlaybackWrapper(object):
     def publish(self):
         self.event_publisher.publish()
         self.particle_publisher.publish()
-
-    def filter_bad_time_particles(self):
-        """
-        Filter out any particles with times before 2000 or after the current time
-        """
-        now = (datetime.utcnow() - datetime(1900, 1, 1)).total_seconds()
-        particles = []
-        for p in self.particles:
-            v = p.get('value')
-            if v is not None:
-                ts = v.get(v.get(DataParticleKey.PREFERRED_TIMESTAMP), 0)
-                if Y2K < ts < now:
-                    particles.append(p)
-                else:
-                    log.info('Rejecting particle for bad timestamp: %s', datetime.utcfromtimestamp(ts - NTP_DIFF))
-        self.particles = particles
 
     def handle_event(self, event_type, val=None):
         """

@@ -363,10 +363,22 @@ class DriverWrapper(object):
         self.load_balancer = None
         self.status_thread = None
         self.particle_count = 0
+        self.version = self.get_version(driver_module)
 
-        headers = {'sensor': self.refdes, 'deliveryType': 'streamed'}
+        headers = {'sensor': self.refdes, 'deliveryType': 'streamed', 'version': self.version, 'module': driver_module}
+        log.info('Publish headers set to: %r', headers)
         self.event_publisher = Publisher.from_url(self.event_url, headers)
         self.particle_publisher = Publisher.from_url(self.particle_url, headers)
+
+    @staticmethod
+    def get_version(driver_module):
+        module = importlib.import_module(driver_module)
+        dirname = os.path.dirname(module.__file__)
+        metadata_file = os.path.join(dirname, 'metadata.yml')
+        if os.path.exists(metadata_file):
+            metadata = yaml.load(open(metadata_file))
+            return metadata.get('driver_metadata', {}).get('version')
+        return 'UNVERSIONED'
 
     def construct_driver(self):
         """
@@ -426,8 +438,6 @@ class DriverWrapper(object):
         on REP and PUB sockets, respectively. Terminate loops and close
         sockets when stop flag is set in driver process.
         """
-        self.running = True
-
         self.event_publisher.start()
         self.particle_publisher.start()
 

@@ -20,7 +20,7 @@ class KombuPublisher(Publisher):
         super(KombuPublisher, self).__init__(allowed, **kwargs)
         self._url = url
         self.queue = queue
-        self.headers = headers
+        self._headers = headers
         self.username = username
         self.password = password
         self.exchange = kombu.Exchange(name='amq.direct', type='direct')
@@ -29,17 +29,15 @@ class KombuPublisher(Publisher):
         self.producer = kombu.Producer(self.connection, routing_key=self.queue, exchange=self.exchange)
 
     def _publish(self, events, headers):
-        msg_headers = self.headers
-        if headers is not None:
-            # apply any new header values
-            msg_headers.update(headers)
+        msg_headers = self._merge_headers(headers)
 
         now = time.time()
         try:
             publish = self.connection.ensure(self.producer, self.producer.publish, max_retries=4)
             publish(json.dumps(events), headers=msg_headers, user_id=self.username,
                     declare=[self._queue], content_type='text/plain')
-            log.info('Published %d messages using KOMBU in %.2f secs', len(events), time.time() - now)
+            log.info('Published %d messages using KOMBU in %.2f secs with headers %r',
+                     len(events), time.time() - now, msg_headers)
         except Exception as e:
             log.error('Exception attempting to publish events: %r', e)
             return events

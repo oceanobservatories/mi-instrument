@@ -7,12 +7,15 @@ Release notes:
 
 initial release
 """
+import copy
 import time
 import json
 import urllib
 import urlparse
 from collections import deque
 from threading import Thread
+
+import datetime
 
 from mi.core.instrument.instrument_driver import DriverAsyncEvent
 from ooi.logging import log
@@ -35,6 +38,7 @@ def extract_param(param, query):
 class Publisher(object):
     DEFAULT_MAX_EVENTS = 500
     DEFAULT_PUBLISH_INTERVAL = 5
+    SOURCE = 'source'
 
     def __init__(self, allowed, max_events=None, publish_interval=None):
         self._allowed = allowed
@@ -42,6 +46,7 @@ class Publisher(object):
         self._max_events = max_events if max_events else self.DEFAULT_MAX_EVENTS
         self._publish_interval = publish_interval if publish_interval else self.DEFAULT_PUBLISH_INTERVAL
         self._running = False
+        self._headers = {}
         log.info('Publisher: max_events: %d publish_interval: %d', self._max_events, self._publish_interval)
 
     def _run(self):
@@ -53,6 +58,18 @@ class Publisher(object):
                 last_publish = now
                 self.publish()
             time.sleep(.1)
+
+    def _merge_headers(self, headers):
+        msg_headers = copy.deepcopy(self._headers)
+        if headers:
+            msg_headers.update(headers)
+        if self.SOURCE not in msg_headers:
+            today = datetime.datetime.utcnow().date()
+            msg_headers[self.SOURCE] = 'live-%s' % today
+        return msg_headers
+
+    def set_source(self, source):
+        self._headers[self.SOURCE] = source
 
     def start(self):
         t = Thread(target=self._run)
