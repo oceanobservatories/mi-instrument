@@ -12,6 +12,7 @@ import json
 import random
 import time
 
+from collections import deque
 from threading import Thread
 from requests import ConnectionError
 
@@ -38,6 +39,7 @@ STARTING_RECONNECT_INTERVAL = .5
 MAXIMUM_RECONNECT_INTERVAL = 256
 MAXIMUM_CONSUL_QUERIES = 5
 MAXIMUM_BACKOFF = 5  # seconds
+MAX_DATA_BUFFER_LEN = 1000
 
 
 class AutoDiscoverFailure(Exception):
@@ -531,6 +533,11 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
         # Start state machine.
         self._connection_fsm.start(DriverConnectionState.UNCONFIGURED)
 
+        # initialize the data buffer
+        # queue any data received while transitioning
+        # between INST_DISCONNECTED and CONNECTED
+        self._data_buffer = deque(maxlen=MAX_DATA_BUFFER_LEN)
+
     #############################################################
     # Device connection interface.
     #############################################################
@@ -978,6 +985,7 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
         self._build_protocol()
         self.set_init_params({})
         self._protocol._connection = self._connection
+
         return DriverConnectionState.CONNECTED, None
 
     def _handler_inst_disconnected_pa_connection_lost(self, *args, **kwargs):
@@ -993,6 +1001,15 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
         """
         # Send state change event to agent.
         self._driver_event(DriverAsyncEvent.STATE_CHANGE)
+
+        # If we have any buffered data, feed to protocol
+        if self._data_buffer:
+            for each in self._data_buffer:
+                try:
+                    self._protocol.got_data(each)
+                except Exception as e:
+                    self._driver_event(DriverAsyncEvent.ERROR, e)
+            self._data_buffer.clear()
 
     def _handler_connected_exit(self, *args, **kwargs):
         """
@@ -1034,7 +1051,7 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
 
     def _handler_connected_pa_connection_lost(self, *args, **kwargs):
         self._destroy_protocol()
-
+        self._data_buffer.clear()
         return DriverConnectionState.INST_DISCONNECTED, None
 
     def _handler_connected_protocol_event(self, event, *args, **kwargs):
@@ -1190,6 +1207,9 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
             else:
                 if self._protocol:
                     self._protocol.got_data(port_agent_packet)
+                else:
+                    # queue this data up for once the protocol has been started
+                    self._data_buffer.append(port_agent_packet)
 
     def _lost_connection_callback(self):
         """
