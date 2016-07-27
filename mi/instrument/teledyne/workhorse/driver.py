@@ -561,7 +561,7 @@ parameter_ranges = {
     WorkhorseParameter.AMBIGUITY_VELOCITY: (2, 480),
 
     #VADCP Params
-    WorkhorseParameter.RDS3_MODE_SEL: {'Off': 0, 'RDS3 master': 1, 'RDS3 slave': 2, 'NEMO': 3},
+    WorkhorseParameter.RDS3_MODE_SEL: {'Off': 0, 'RDS3 Master': 1, 'RDS3 Slave': 2, 'NEMO': 3},
     WorkhorseParameter.SLAVE_TIMEOUT: (0, 10800),
     WorkhorseParameter.SYNCH_DELAY: (0, 65535)
 }

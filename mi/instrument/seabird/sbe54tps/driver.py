@@ -1516,7 +1516,7 @@ class Protocol(SeaBirdProtocol):
                              self._int_to_string,
                              type=ParameterDictType.INT,
                              display_name="Battery Type",
-                             range={'lithium': 0, 'alkaline': 1},
+                             range={'Lithium': 0, 'Alkaline': 1},
                              description="Battery type: (0:lithium | 1:alkaline) ",
                              default_value=1,
                              visibility=ParameterDictVisibility.IMMUTABLE,
