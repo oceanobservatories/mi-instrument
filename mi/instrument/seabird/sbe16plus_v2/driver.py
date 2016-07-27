@@ -1724,7 +1724,7 @@ class SBE16Protocol(CommandResponseInstrumentProtocol):
                              int,
                              type=ParameterDictType.INT,
                              display_name="Output Format",
-                             range={'Raw hex': 0, 'Converted hex': 1, 'Raw decimal': 2, 'Converted decimal': 3,
+                             range={'Raw Hex': 0, 'Converted Hex': 1, 'Raw Decimal': 2, 'Converted Decimal': 3,
                                     'Converted hex for afm': 4, 'Converted xml uvic': 5},
                              description="Format for the instrument output: (0:raw hex | 1:converted hex |"
                                          " 2:raw decimal | 3:converted decimal | 4:converted hex for afm | "
@@ -1760,7 +1760,7 @@ class SBE16Protocol(CommandResponseInstrumentProtocol):
                              str,
                              type=ParameterDictType.INT,
                              display_name="Pressure Sensor Type",
-                             range={'strain gauge': 1, 'quartz with temp comp': 3},
+                             range={'Strain Gauge': 1, 'Quartz with Temp Comp': 3},
                              startup_param=True,
                              direct_access=True,
                              default_value=1,
@@ -1797,7 +1797,7 @@ class SBE16Protocol(CommandResponseInstrumentProtocol):
                              str,
                              type=ParameterDictType.INT,
                              display_name="Pump Mode",
-                             range={'no pump':0, 'run pump for 0.5 sec': 1, 'run pump during sample': 2},
+                             range={'No Pump':0, 'Run Pump for 0.5 sec': 1, 'Run Pump during Sample': 2},
                              description="Mode: (0:no pump | 1:run pump for 0.5 sec | 2:run pump during sample)",
                              startup_param=True,
                              direct_access=True,
