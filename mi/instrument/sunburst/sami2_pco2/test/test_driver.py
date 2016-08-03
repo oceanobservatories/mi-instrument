@@ -17,10 +17,8 @@ __author__ = 'Christopher Wingard & Kevin Stiemke'
 __license__ = 'Apache 2.0'
 
 import mock
-
 from nose.plugins.attrib import attr
 from mock import Mock
-
 from mi.core.log import get_logger
 
 log = get_logger()
