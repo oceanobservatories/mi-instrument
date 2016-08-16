@@ -118,6 +118,8 @@ class Publisher(object):
                     if failed:
                         self.requeue(failed)
 
+        return len(self._deque)
+
     def _publish(self, events, headers):
         raise NotImplemented
 
@@ -139,7 +141,7 @@ class Publisher(object):
         return events
 
     @staticmethod
-    def from_url(url, headers=None, allowed=None, **kwargs):
+    def from_url(url, headers=None, allowed=None, max_events=None, **kwargs):
         if headers is None:
             headers = {}
 
@@ -186,7 +188,7 @@ class Publisher(object):
         if publisher:
             if queue is None:
                 raise Exception('No queue provided!')
-            return publisher(url, queue, headers, allowed, username, password, **kwargs)
+            return publisher(url, queue, headers, allowed, username, password, max_events, **kwargs)
 
 
 class LogPublisher(Publisher):
