@@ -6,9 +6,9 @@
 @brief Playback process using ZMQ messaging.
 
 Usage:
-    playback datalog <module> <refdes> <event_url> <particle_url> [--allowed=<particles>] <files>...
-    playback ascii <module> <refdes> <event_url> <particle_url> [--allowed=<particles>] <files>...
-    playback chunky <module> <refdes> <event_url> <particle_url> [--allowed=<particles>] <files>...
+    playback datalog <module> <refdes> <event_url> <particle_url> [--allowed=<particles>]  [--max_events=<events>] <files>...
+    playback ascii <module> <refdes> <event_url> <particle_url> [--allowed=<particles>] [--max_events=<events>] <files>...
+    playback chunky <module> <refdes> <event_url> <particle_url> [--allowed=<particles>] [--max_events=<events>] <files>...
 
 Options:
     -h, --help          Show this screen
@@ -127,11 +127,12 @@ class PlaybackPacket(Packet):
 
 
 class PlaybackWrapper(object):
-    def __init__(self, module, refdes, event_url, particle_url, reader_klass, allowed, files):
+    def __init__(self, module, refdes, event_url, particle_url, reader_klass, allowed, files, max_events):
         version = DriverWrapper.get_version(module)
         headers = {'sensor': refdes, 'deliveryType': 'streamed', 'version': version, 'module': module}
+        self.max_events = max_events
         self.event_publisher = Publisher.from_url(event_url, headers)
-        self.particle_publisher = Publisher.from_url(particle_url, headers, allowed)
+        self.particle_publisher = Publisher.from_url(particle_url, headers, allowed, max_events)
 
         self.protocol = self.construct_protocol(module)
         self.reader = reader_klass(files, self.got_data)
@@ -148,6 +149,7 @@ class PlaybackWrapper(object):
                     self.protocol.got_filename(filename)
             if index % 1000 == 0:
                 self.publish()
+
         self.publish()
         if hasattr(self.particle_publisher, 'write'):
             self.particle_publisher.write()
@@ -177,8 +179,10 @@ class PlaybackWrapper(object):
         sys.exit(1)
 
     def publish(self):
-        self.event_publisher.publish()
-        self.particle_publisher.publish()
+        for publisher in [self.event_publisher, self.particle_publisher]:
+            remaining = publisher.publish()
+            while remaining >= publisher._max_events:
+                remaining = publisher.publish()
 
     def handle_event(self, event_type, val=None):
         """
@@ -321,6 +325,11 @@ def main():
     allowed = options.get('--allowed')
     if allowed is not None:
         allowed = [_.strip() for _ in allowed.split(',')]
+    max_events = options.get('--max_events')
+    if max_events is None or max_events=='':
+        max_events = Publisher.DEFAULT_MAX_EVENTS
+    else:
+        max_events=int(max_events)
 
     # when running with the profiler, files will be a string
     # coerce to list
@@ -336,7 +345,7 @@ def main():
     else:
         reader = None
 
-    wrapper = PlaybackWrapper(module, refdes, event_url, particle_url, reader, allowed, files)
+    wrapper = PlaybackWrapper(module, refdes, event_url, particle_url, reader, allowed, files, max_events)
     wrapper.playback()
 
 if __name__ == '__main__':
