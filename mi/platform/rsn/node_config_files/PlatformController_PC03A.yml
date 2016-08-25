@@ -1,11 +1,11 @@
 node_meta_data:
   description: Platform Controller
   location: N/A
-  node_id_name: SN0106-PC03A
+  node_id_name: SN0103-PC03A
   node_type: PlatformController
   oms_sample_rate: 5
   reference_designator: RS03AXPS-PC03A
-  serial_number: SN0106
+  serial_number: SN0103
   read_only_mode: True
 
 node_streams:
