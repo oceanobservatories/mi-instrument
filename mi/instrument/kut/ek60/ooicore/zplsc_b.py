@@ -27,14 +27,12 @@ Release notes:
 Initial Release
 """
 
-import calendar
-import ntplib
 import re
 import os
 import numpy
 from multiprocessing import Process
-from datetime import datetime, timedelta
-from struct import unpack, unpack_from
+from datetime import datetime
+from struct import unpack_from
 from collections import defaultdict
 
 from mi.core.common import BaseEnum
@@ -43,8 +41,8 @@ from mi.core.instrument.data_particle import DataParticle
 from mi.core.log import get_logger
 
 from mi.instrument.kut.ek60.ooicore.zplsc_echogram import SAMPLE_MATCHER, LENGTH_SIZE, DATAGRAM_HEADER_SIZE, \
-    CONFIG_HEADER_SIZE, CONFIG_TRANSDUCER_SIZE,\
-    generate_plots, read_datagram_header, read_config_header, read_config_transducer
+    CONFIG_HEADER_SIZE, CONFIG_TRANSDUCER_SIZE, \
+    generate_plots, read_datagram_header, read_config_header
 
 log = get_logger()
 __author__ = 'Ronald Ronquillo'
@@ -72,18 +70,18 @@ class ZplscBParticleKey(BaseEnum):
 # The following is used for _build_parsed_values() and defined as below:
 # (parameter name, encoding function)
 METADATA_ENCODING_RULES = [
-    (ZplscBParticleKey.FILE_TIME,           str),
-    (ZplscBParticleKey.ECHOGRAM_PATH,       lambda x: [str(y) for y in x]),
-    (ZplscBParticleKey.CHANNEL,             lambda x: [int(y) for y in x]),
-    (ZplscBParticleKey.TRANSDUCER_DEPTH,    lambda x: [float(y) for y in x]),
-    (ZplscBParticleKey.FREQUENCY,           lambda x: [float(y) for y in x]),
-    (ZplscBParticleKey.TRANSMIT_POWER,      lambda x: [float(y) for y in x]),
-    (ZplscBParticleKey.PULSE_LENGTH,        lambda x: [float(y) for y in x]),
-    (ZplscBParticleKey.BANDWIDTH,           lambda x: [float(y) for y in x]),
-    (ZplscBParticleKey.SAMPLE_INTERVAL,     lambda x: [float(y) for y in x]),
-    (ZplscBParticleKey.SOUND_VELOCITY,      lambda x: [float(y) for y in x]),
-    (ZplscBParticleKey.ABSORPTION_COEF,     lambda x: [float(y) for y in x]),
-    (ZplscBParticleKey.TEMPERATURE,         lambda x: [float(y) for y in x])
+    (ZplscBParticleKey.FILE_TIME, str),
+    (ZplscBParticleKey.ECHOGRAM_PATH, lambda x: [str(y) for y in x]),
+    (ZplscBParticleKey.CHANNEL, lambda x: [int(y) for y in x]),
+    (ZplscBParticleKey.TRANSDUCER_DEPTH, lambda x: [float(y) for y in x]),
+    (ZplscBParticleKey.FREQUENCY, lambda x: [float(y) for y in x]),
+    (ZplscBParticleKey.TRANSMIT_POWER, lambda x: [float(y) for y in x]),
+    (ZplscBParticleKey.PULSE_LENGTH, lambda x: [float(y) for y in x]),
+    (ZplscBParticleKey.BANDWIDTH, lambda x: [float(y) for y in x]),
+    (ZplscBParticleKey.SAMPLE_INTERVAL, lambda x: [float(y) for y in x]),
+    (ZplscBParticleKey.SOUND_VELOCITY, lambda x: [float(y) for y in x]),
+    (ZplscBParticleKey.ABSORPTION_COEF, lambda x: [float(y) for y in x]),
+    (ZplscBParticleKey.TEMPERATURE, lambda x: [float(y) for y in x])
 ]
 
 # Numpy data type object for unpacking the Sample datagram including the header from binary *.raw
@@ -189,12 +187,12 @@ def parse_echogram_file(input_file_path, output_file_path=None):
     if match:
         file_time = match.group('Date') + match.group('Time')
     else:
-        file_time = ""
         # Files retrieved from the instrument should always match the timestamp naming convention
-        log.error("Unable to extract file time from input file name: %s."
-                 "Expected format *-DYYYYmmdd-THHMMSS.raw" % input_file_name)
-        raise InstrumentDataException("Unable to extract file time from input file name: %s."
-                 "Expected format *-DYYYYmmdd-THHMMSS.raw" % input_file_name)
+        error_message = \
+            "Unable to extract file time from input file name: %s. Expected format *-DYYYYmmdd-THHMMSS.raw" \
+            % input_file_name
+        log.error(error_message)
+        raise InstrumentDataException(error_message)
 
     # Read binary file a block at a time
     raw = input_file.read(BLOCK_SIZE)
@@ -207,7 +205,7 @@ def parse_echogram_file(input_file_path, output_file_path=None):
     byte_cnt += LENGTH_SIZE
 
     # Configuration datagram header
-    datagram_header = read_datagram_header(raw[byte_cnt:byte_cnt+DATAGRAM_HEADER_SIZE])
+    read_datagram_header(raw[byte_cnt:byte_cnt+DATAGRAM_HEADER_SIZE])
     byte_cnt += DATAGRAM_HEADER_SIZE
 
     # Configuration: header
@@ -237,6 +235,7 @@ def parse_echogram_file(input_file_path, output_file_path=None):
     td_dr = dict.fromkeys(trans_keys)                           # transducer depth measurement
 
     position = 0
+    particle_data = (None, None)
 
     while raw:
         # We only care for the Sample datagrams, skip over all the other datagrams
@@ -284,8 +283,8 @@ def parse_echogram_file(input_file_path, output_file_path=None):
 
         # Gather metadata once per transducer channel number
         if not trans_array[channel]:
-            file_path = os.path.join(
-                output_file_path, outfile + '_' + str(int(sample_data['frequency'])/1000) + 'k.png')
+            outfile += '_' + str(int(sample_data['frequency'])/1000) + 'k.png'
+            file_path = os.path.join(output_file_path, outfile)
 
             first_ping_metadata[ZplscBParticleKey.FILE_TIME] = file_time
             first_ping_metadata[ZplscBParticleKey.ECHOGRAM_PATH].append(file_path)
@@ -325,7 +324,7 @@ def parse_echogram_file(input_file_path, output_file_path=None):
 
         # Read the athwartship and alongship angle measurements
         if sample_data['mode'][0] > 1:
-            angle_data = numpy.fromfile(input_file, dtype=angle_dtype, count=count)
+            numpy.fromfile(input_file, dtype=angle_dtype, count=count)
 
         # Read and compare length1 (from beginning of datagram) to length2
         # (from the end of datagram). A mismatch can indicate an invalid, corrupt,
@@ -335,8 +334,8 @@ def parse_echogram_file(input_file_path, output_file_path=None):
         length2_data = numpy.fromfile(input_file, dtype=len_dtype, count=1)
         if not (sample_data['length1'][0] == length2_data['length2'][0]):
             log.warn("Mismatching beginning and end length values in sample datagram: length1"
-                     ": %s, length2: %s. Possible file corruption or format incompatibility."
-                     , sample_data['length1'][0], length2_data['length2'][0])
+                     ": %s, length2: %s. Possible file corruption or format incompatibility.",
+                     sample_data['length1'][0], length2_data['length2'][0])
 
         # Need current position in file to increment for next regex search offset
         position = input_file.tell()
