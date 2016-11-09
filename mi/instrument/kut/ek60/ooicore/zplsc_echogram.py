@@ -6,19 +6,18 @@
 
 Release notes:
 
-This Class supports the generation of ZPLSC echograms. It needs matplotlib version 1.3.1 for the code to display the
+This class supports the generation of ZPLSC echograms. It needs matplotlib version 1.3.1 for the code to display the
 colorbar at the bottom of the figure. If matplotlib version 1.1.1 is used, the colorbar is plotted over the
- figure instead of at the bottom of i.
+figure instead of at the bottom of it.
 """
 
-
-# Need to install matplotlib version 1.3.1 or higher for the colorbar to work correctly
 import matplotlib
+
 matplotlib.use("Agg")
 
 import matplotlib.pyplot as plt
 from matplotlib.dates import date2num, num2date
-from modest_image import ModestImage, imshow
+from modest_image import imshow
 
 from datetime import datetime
 
@@ -27,10 +26,8 @@ import numpy as np
 
 from struct import unpack
 
-
 __author__ = 'Craig Risien from OSU'
 __license__ = 'Apache 2.0'
-
 
 LENGTH_SIZE = 4
 DATAGRAM_HEADER_SIZE = 12
@@ -55,7 +52,7 @@ NMEA_MATCHER = re.compile(NMEA_REGEX, re.DOTALL)
 
 
 ###########################################################################
-# ZPLSCEchogram
+# ZPLSC Echogram
 ###########################################################################
 
 ####################################################################################
@@ -80,7 +77,7 @@ def read_datagram_header(chunk):
     # the internal date time structure represents the number of 100
     # nanosecond intervals since January 1, 1601. this is known as the
     # Windows NT Time Format.
-    internal = values[2] * (2**32) + values[1]
+    internal = values[2] * (2 ** 32) + values[1]
 
     # create the datagram header dictionary
     datagram_header = dict(zip(field_names, [values[0], internal]))
@@ -186,7 +183,7 @@ def generate_plots(trans_array, trans_array_time, td_f, td_dr, title, filename):
     # 11644473600 == difference between 1601 and 1970
     # 1e7 == divide by 10 million to convert to seconds
     trans_array_time = np.array(trans_array_time) / 1e7 - 11644473600
-    trans_array_time = (trans_array_time / (60*60*24)) + REF_TIME
+    trans_array_time = (trans_array_time / (60 * 60 * 24)) + REF_TIME
 
     # subset the xticks so that we don't plot every one
     xticks = np.linspace(0, max_time, num_xticks)

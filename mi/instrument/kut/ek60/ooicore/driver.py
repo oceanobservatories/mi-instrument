@@ -223,19 +223,23 @@ class ZPLSCStatusParticleKey(BaseEnum):
     ZPLSC_CONNECTED = "zplsc_connected"                                      # Connected to a running ER 60 instance
     ZPLSC_ACTIVE_38K_MODE = "zplsc_active_38k_mode"                          # 38K Transducer transmit mode
     ZPLSC_ACTIVE_38K_POWER = "zplsc_active_38k_power"                        # 38K Transducer transmit power in W
-    ZPLSC_ACTIVE_38K_PULSE_LENGTH = "zplsc_active_38k_pulse_length"          # 38K Transducer transmit pulse length in seconds
+    # 38K Transducer transmit pulse length in seconds
+    ZPLSC_ACTIVE_38K_PULSE_LENGTH = "zplsc_active_38k_pulse_length"
     ZPLSC_ACTIVE_38K_SAMPLE_INTERVAL = "zplsc_active_38k_sample_interval"    # Sample interval in seconds
     ZPLSC_ACTIVE_120K_MODE = "zplsc_active_120k_mode"                        # 120K Transducer transmit mode
     ZPLSC_ACTIVE_120K_POWER = "zplsc_active_120k_power"                      # 120K Transducer transmit power in W
-    ZPLSC_ACTIVE_120K_PULSE_LENGTH = "zplsc_active_120k_pulse_length"        # 120K Transducer Transmit pulse length in seconds
+    # 120K Transducer Transmit pulse length in seconds
+    ZPLSC_ACTIVE_120K_PULSE_LENGTH = "zplsc_active_120k_pulse_length"
     ZPLSC_ACTIVE_120K_SAMPLE_INTERVAL = "zplsc_active_120k_sample_interval"  # 120K Sample Interval
     ZPLSC_ACTIVE_200K_MODE = "zplsc_active_200k_mode"                        # 200K Transducer transmit mode
     ZPLSC_ACTIVE_200K_POWER = "zplsc_active_200k_power"                      # 200K Transducer transmit power in W
-    ZPLSC_ACTIVE_200K_PULSE_LENGTH = "zplsc_active_200k_pulse_length"        # 200K Transducer transmit pulse length in seconds
+    # 200K Transducer transmit pulse length in seconds
+    ZPLSC_ACTIVE_200K_PULSE_LENGTH = "zplsc_active_200k_pulse_length"
     ZPLSC_ACTIVE_200K_SAMPLE_INTERVAL = "zplsc_active_200k_sample_interval"  # 200K Transducer sample interval
     ZPLSC_CURRENT_UTC_TIME = "zplsc_current_utc_time"                        # Current UTC Time
     ZPLSC_EXECUTABLE = "zplsc_executable"                                    # Executable used to launch ER60
-    ZPLSC_FS_ROOT = "zplsc_fs_root"                                          # Root directory where data/logs/configs are stored
+    # Root directory where data/logs/configs are stored
+    ZPLSC_FS_ROOT = "zplsc_fs_root"
     ZPLSC_NEXT_SCHEDULED_INTERVAL = "zplsc_next_scheduled_interval"          # UTC time of next scheduled interval
     ZPLSC_HOST = "zplsc_host"                                                # Host IP Address
     ZPLSC_PID = "zplsc_pid"                                                  # PID of running ER60 process
@@ -249,7 +253,8 @@ class ZPLSCStatusParticleKey(BaseEnum):
     ZPLSC_SAVE_BOTTOM = "zplsc_save_bottom"                                  # Save bottom file
     ZPLSC_SAVE_INDEX = "zplsc_save_index"                                    # Save index file
     ZPLSC_SAVE_RAW = "zplsc_save_raw"                                        # Save raw file
-    ZPLSC_SCHEDULED_INTERVALS_REMAINING = "zplsc_scheduled_intervals_remaining"  # Number of intervals remaining in running schedule
+    # Number of intervals remaining in running schedule
+    ZPLSC_SCHEDULED_INTERVALS_REMAINING = "zplsc_scheduled_intervals_remaining"
     ZPLSC_GPTS_ENABLED = "zplsc_gpts_enabled"                                # GPTs enabled
     ZPLSC_SCHEDULE_FILENAME = "zplsc_schedule_filename"                      # Filename for .yaml schedule file
 
@@ -313,7 +318,7 @@ class ZPLSCStatusParticle(DataParticle):
         if value is not None:
             try:
                 encoded_val = encoding_function(value)
-            except Exception:
+            except ValueError:
                 log.error("Data particle error encoding. Name:%s Value:%s", name, value)
                 self._encoding_errors.append({name: value})
         return {DataParticleKey.VALUE_ID: name,
@@ -424,15 +429,18 @@ class ZPLSCStatusParticle(DataParticle):
             self._encode_value(ZPLSCStatusParticleKey.ZPLSC_ACTIVE_200K_MODE, active_200k_mode, str),
             self._encode_value(ZPLSCStatusParticleKey.ZPLSC_ACTIVE_200K_POWER, active_200k_power, float),
             self._encode_value(ZPLSCStatusParticleKey.ZPLSC_ACTIVE_200K_PULSE_LENGTH, active_200k_pulse_length, float),
-            self._encode_value(ZPLSCStatusParticleKey.ZPLSC_ACTIVE_200K_SAMPLE_INTERVAL, active_200k_sample_interval, float),
+            self._encode_value(ZPLSCStatusParticleKey.ZPLSC_ACTIVE_200K_SAMPLE_INTERVAL,
+                               active_200k_sample_interval, float),
             self._encode_value(ZPLSCStatusParticleKey.ZPLSC_ACTIVE_120K_MODE, active_120k_mode, str),
             self._encode_value(ZPLSCStatusParticleKey.ZPLSC_ACTIVE_120K_POWER, active_120k_power, float),
             self._encode_value(ZPLSCStatusParticleKey.ZPLSC_ACTIVE_120K_PULSE_LENGTH, active_120k_pulse_length, float),
-            self._encode_value(ZPLSCStatusParticleKey.ZPLSC_ACTIVE_120K_SAMPLE_INTERVAL, active_120k_sample_interval, float),
+            self._encode_value(ZPLSCStatusParticleKey.ZPLSC_ACTIVE_120K_SAMPLE_INTERVAL,
+                               active_120k_sample_interval, float),
             self._encode_value(ZPLSCStatusParticleKey.ZPLSC_ACTIVE_38K_MODE, active_38k_mode, str),
             self._encode_value(ZPLSCStatusParticleKey.ZPLSC_ACTIVE_38K_POWER, active_38k_power, float),
             self._encode_value(ZPLSCStatusParticleKey.ZPLSC_ACTIVE_38K_PULSE_LENGTH, active_38k_pulse_length, float),
-            self._encode_value(ZPLSCStatusParticleKey.ZPLSC_ACTIVE_38K_SAMPLE_INTERVAL, active_38k_sample_interval, float),
+            self._encode_value(ZPLSCStatusParticleKey.ZPLSC_ACTIVE_38K_SAMPLE_INTERVAL,
+                               active_38k_sample_interval, float),
             self._encode_value(ZPLSCStatusParticleKey.ZPLSC_CURRENT_UTC_TIME, current_utc_time, str),
             self._encode_value(ZPLSCStatusParticleKey.ZPLSC_EXECUTABLE, executable, str),
             self._encode_value(ZPLSCStatusParticleKey.ZPLSC_FS_ROOT, fs_root, str),
@@ -449,7 +457,8 @@ class ZPLSCStatusParticle(DataParticle):
             self._encode_value(ZPLSCStatusParticleKey.ZPLSC_SAVE_BOTTOM, save_bottom, int),
             self._encode_value(ZPLSCStatusParticleKey.ZPLSC_SAVE_INDEX, save_index, int),
             self._encode_value(ZPLSCStatusParticleKey.ZPLSC_SAVE_RAW, save_raw, int),
-            self._encode_value(ZPLSCStatusParticleKey.ZPLSC_SCHEDULED_INTERVALS_REMAINING, scheduled_intervals_remaining, int),
+            self._encode_value(ZPLSCStatusParticleKey.ZPLSC_SCHEDULED_INTERVALS_REMAINING,
+                               scheduled_intervals_remaining, int),
             self._encode_value(ZPLSCStatusParticleKey.ZPLSC_GPTS_ENABLED, gpts_enabled, int),
             self._encode_value(ZPLSCStatusParticleKey.ZPLSC_SCHEDULE_FILENAME, schedule_filename, str)
         ]
@@ -511,12 +520,15 @@ class Protocol(CommandResponseInstrumentProtocol):
         self._protocol_fsm.add_handler(ProtocolState.UNKNOWN, ProtocolEvent.DISCOVER, self._handler_unknown_discover)
 
         self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.ENTER, self._handler_command_enter)
-        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.START_AUTOSAMPLE, self._handler_command_autosample)
-        self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.ACQUIRE_STATUS, self._handler_command_acquire_status)
+        self._protocol_fsm.add_handler(ProtocolState.COMMAND,
+                                       ProtocolEvent.START_AUTOSAMPLE, self._handler_command_autosample)
+        self._protocol_fsm.add_handler(ProtocolState.COMMAND,
+                                       ProtocolEvent.ACQUIRE_STATUS, self._handler_command_acquire_status)
         self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.GET, self._handler_command_get)
         self._protocol_fsm.add_handler(ProtocolState.COMMAND, ProtocolEvent.SET, self._handler_command_set)
 
-        self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.STOP_AUTOSAMPLE, self._handler_autosample_stop)
+        self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE,
+                                       ProtocolEvent.STOP_AUTOSAMPLE, self._handler_autosample_stop)
         self._protocol_fsm.add_handler(ProtocolState.AUTOSAMPLE, ProtocolEvent.GET, self._handler_command_get)
 
         # Construct the parameter dictionary containing device parameters,
@@ -542,55 +554,60 @@ class Protocol(CommandResponseInstrumentProtocol):
         and value formatting function for set commands.
         """
 
-        self._param_dict.add(Parameter.SCHEDULE,
-                             r'schedule:\s+(.*)',
-                             lambda match: match.group(1),
-                             str,
-                             type=ParameterDictType.STRING,
-                             display_name="Schedule",
-                             description="Large block of text used to create the .yaml file defining the sampling schedule.",
-                             startup_param=True,
-                             default_value=yaml.dump(DEFAULT_CONFIG, default_flow_style=False))
+        self._param_dict.add(
+            Parameter.SCHEDULE,
+            r'schedule:\s+(.*)',
+            lambda match: match.group(1),
+            str,
+            type=ParameterDictType.STRING,
+            display_name="Schedule",
+            description="Large block of text used to create the .yaml file defining the sampling schedule.",
+            startup_param=True,
+            default_value=yaml.dump(DEFAULT_CONFIG, default_flow_style=False))
 
-        self._param_dict.add(Parameter.FTP_IP_ADDRESS,
-                             r'ftp address:\s+(\d\d\d\d\.\d\d\d\d\.\d\d\d\d\.\d\d\d)',
-                             lambda match: match.group(1),
-                             str,
-                             type=ParameterDictType.STRING,
-                             display_name="FTP IP Address",
-                             description="IP address the driver uses to connect to the instrument FTP server.",
-                             startup_param=True,
-                             default_value=DEFAULT_HOST)
+        self._param_dict.add(
+            Parameter.FTP_IP_ADDRESS,
+            r'ftp address:\s+(\d\d\d\d\.\d\d\d\d\.\d\d\d\d\.\d\d\d)',
+            lambda match: match.group(1),
+            str,
+            type=ParameterDictType.STRING,
+            display_name="FTP IP Address",
+            description="IP address the driver uses to connect to the instrument FTP server.",
+            startup_param=True,
+            default_value=DEFAULT_HOST)
 
-        self._param_dict.add(Parameter.FTP_USERNAME,
-                             r'username:(.*)',
-                             lambda match: match.group(1),
-                             str,
-                             type=ParameterDictType.STRING,
-                             display_name="FTP User Name",
-                             description="Username used to connect to the FTP server.",
-                             startup_param=True,
-                             default_value=USER_NAME)
+        self._param_dict.add(
+            Parameter.FTP_USERNAME,
+            r'username:(.*)',
+            lambda match: match.group(1),
+            str,
+            type=ParameterDictType.STRING,
+            display_name="FTP User Name",
+            description="Username used to connect to the FTP server.",
+            startup_param=True,
+            default_value=USER_NAME)
 
-        self._param_dict.add(Parameter.FTP_PASSWORD,
-                             r'password:(.*)',
-                             lambda match: match.group(1),
-                             str,
-                             type=ParameterDictType.STRING,
-                             display_name="FTP Password",
-                             description="Password used to connect to the FTP server.",
-                             startup_param=True,
-                             default_value=PASSWORD)
+        self._param_dict.add(
+            Parameter.FTP_PASSWORD,
+            r'password:(.*)',
+            lambda match: match.group(1),
+            str,
+            type=ParameterDictType.STRING,
+            display_name="FTP Password",
+            description="Password used to connect to the FTP server.",
+            startup_param=True,
+            default_value=PASSWORD)
 
-        self._param_dict.add(Parameter.FTP_PORT,
-                             r'port:(.*)',
-                             lambda match: match.group(1),
-                             str,
-                             type=ParameterDictType.STRING,
-                             display_name="FTP Port",
-                             description="Location on the OOI infrastructure where .raw files and echogram images will be stored.",
-                             startup_param=True,
-                             default_value=DEFAULT_PORT)
+        self._param_dict.add(
+            Parameter.FTP_PORT,
+            r'port:(.*)',
+            lambda match: match.group(1),
+            str,
+            type=ParameterDictType.STRING,
+            display_name="FTP Port",
+            description="Location on the OOI infrastructure where .raw files and echogram images will be stored.",
+            startup_param=True,
+            default_value=DEFAULT_PORT)
 
     def _build_driver_dict(self):
         """
@@ -625,7 +642,8 @@ class Protocol(CommandResponseInstrumentProtocol):
         # Superclass will query the state.
         self._driver_event(DriverAsyncEvent.STATE_CHANGE)
 
-    def _handler_unknown_exit(self, *args, **kwargs):
+    @staticmethod
+    def _handler_unknown_exit(*args, **kwargs):
         """
         Exit unknown state.
         """
@@ -666,7 +684,8 @@ class Protocol(CommandResponseInstrumentProtocol):
         # Superclass will query the state.
         self._driver_event(DriverAsyncEvent.STATE_CHANGE)
 
-    def _handler_command_exit(self, *args, **kwargs):
+    @staticmethod
+    def _handler_command_exit(*args, **kwargs):
         """
         Exit command state.
         """
@@ -821,7 +840,8 @@ class Protocol(CommandResponseInstrumentProtocol):
 
         log.debug("*** FTP %s to ftp host %s successfully", YAML_FILE_NAME, host)
 
-    def _url_request(self, host, port, page, data=None):
+    @staticmethod
+    def _url_request(host, port, page, data=None):
         """
         Loads a schedule file previously uploaded to the instrument and sets it as
         the active instrument configuration
@@ -976,5 +996,3 @@ class Protocol(CommandResponseInstrumentProtocol):
 
             if self._driver_event:
                 self._driver_event(DriverAsyncEvent.SAMPLE, parsed_sample)
-
-
