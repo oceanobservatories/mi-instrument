@@ -189,7 +189,7 @@ def generate_plots(trans_array, trans_array_time, td_f, td_dr, title, filename):
     xticks = np.linspace(0, max_time, num_xticks)
     # format trans_array_time array so that it can be used to label the x-axis
     xticklabels = [i.strftime('%Y-%m-%d %H:%M:%S')
-                   for i in num2date(trans_array_time[::round(xticks[1])])]
+                   for i in num2date(trans_array_time[::int(round(xticks[1]))])]
 
     # subset the yticks so that we don't plot everyone
     yticks = np.linspace(0, max_depth, num_yticks)
@@ -198,7 +198,7 @@ def generate_plots(trans_array, trans_array_time, td_f, td_dr, title, filename):
 
     fig, ax = plt.subplots()
     ax.grid(False)
-    figure_title = 'Converted Power: ' + title + 'Frequency: ' + str(td_f)
+    figure_title = 'Converted Power: ' + title + 'Frequency: ' + str(td_f) + ' Hz'
     ax.set_title(figure_title, fontsize=12)
     ax.set_xlabel('time (UTC)', fontsize=10)
     ax.set_ylabel('depth (m)', fontsize=10)
@@ -222,14 +222,11 @@ def generate_plots(trans_array, trans_array_time, td_f, td_dr, title, filename):
     cb = fig.colorbar(cax, orientation='horizontal', ticks=cbar_ticks, shrink=.6)
     cb.ax.set_xticklabels(cbar_ticks, fontsize=8)  # horizontally oriented colorbar
     cb.set_label('dB', fontsize=10)
-    cb.ax.set_xlim(-180, -60)
+    cb.ax.set_xlim(min_db, max_db-1)
 
     fig.tight_layout(pad=1.2)
     # adjust the subplot so that the x-tick labels will fit on the canvas
     fig.subplots_adjust(bottom=0.1)
-
-    plt.figtext(0.01, 0.01, '*Note: Strictly sequential time tags are not guaranteed.',
-                axes=ax, fontsize=7)
 
     # reposition the cbar
     cb.ax.set_position([.4, .05, .4, .1])
