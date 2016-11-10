@@ -49,7 +49,7 @@ from mi.idk.common import Singleton
 from mi.idk.exceptions import TestNotInitialized
 from mi.idk.exceptions import TestNoCommConfig
 
-from mi.core.exceptions import InstrumentException, IonException
+from mi.core.exceptions import InstrumentException
 from mi.core.exceptions import InstrumentParameterException
 from mi.core.exceptions import InstrumentStateException
 from mi.core.instrument.port_agent_client import PortAgentClient
