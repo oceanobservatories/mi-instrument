@@ -979,6 +979,8 @@ class Protocol(CommandResponseInstrumentProtocol):
         The base class got_data has gotten a chunk from the chunker.
         Pass it to extract_sample with the appropriate particle
         objects and REGEXes.
+
+        :param timestamp:  port agent timestamp
         """
 
         match = FILEPATH_MATCHER.search(chunk)
@@ -989,9 +991,11 @@ class Protocol(CommandResponseInstrumentProtocol):
             # creates the echogram image files.  It returns a
             # tuple containing the metadata and timestamp for creation
             # of the particle
-            metadata, timestamp = parse_echogram_file(match.group('Filepath'))
+            metadata, internal_timestamp = parse_echogram_file(match.group('Filepath'))
 
-            particle = ZplscBInstrumentDataParticle(metadata, port_timestamp=timestamp)
+            particle = ZplscBInstrumentDataParticle(metadata, port_timestamp=timestamp,
+                                                    internal_timestamp=internal_timestamp,
+                                                    preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
             parsed_sample = particle.generate()
 
             if self._driver_event:

@@ -46,7 +46,8 @@ from mi.instrument.kut.ek60.ooicore.driver import Protocol
 from mi.instrument.kut.ek60.ooicore.driver import Prompt
 from mi.instrument.kut.ek60.ooicore.driver import ZPLSCStatusParticle
 from mi.instrument.kut.ek60.ooicore.driver import NEWLINE
-from mi.instrument.kut.ek60.ooicore.zplsc_b import ZplscBParticleKey
+from mi.instrument.kut.ek60.ooicore.zplsc_b import ZplscBParticleKey, windows_to_ntp, build_windows_time, \
+    NTP_WINDOWS_DELTA
 
 log = get_logger()
 
@@ -506,6 +507,21 @@ class DriverUnitTest(InstrumentDriverUnitTestCase, DriverTestMixinSub):
 
     def setUp(self):
         InstrumentDriverUnitTestCase.setUp(self)
+
+    def test_build_windows_time(self):
+        """
+        Verify windows time is parsed correctly
+        """
+        high_word = 30414367
+        low_word = 3407094843
+        self.assertEqual(build_windows_time(high_word, low_word), 130628715000636475)
+
+    def test_windows_time_conversion(self):
+        """
+        Verify the conversion from Windows time from the parts is correct.
+        """
+        self.assertEqual(windows_to_ntp(NTP_WINDOWS_DELTA * 1e7), 0)
+        self.assertEqual(windows_to_ntp(131232059250000000), 3687721125)
 
     def test_driver_enums(self):
         """

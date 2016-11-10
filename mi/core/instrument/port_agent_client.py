@@ -13,6 +13,8 @@ import struct
 import threading
 import time
 
+import ntplib
+
 from mi.core.exceptions import InstrumentConnectionException, InstrumentException
 from mi.core.log import get_logger
 
@@ -115,7 +117,8 @@ class PortAgentPacket:
             if self.__type is None:
                 self.__type = self.DATA_FROM_DRIVER
             self.__length = len(self.__data)
-            self.__port_agent_timestamp = time.time()
+            if self.__port_agent_timestamp is None:
+                self.__port_agent_timestamp = ntplib.system_to_ntp_time(time.time())
 
             int_secs = int(self.__port_agent_timestamp)
             frac_secs = int((self.__port_agent_timestamp - int_secs) * 2**32)
