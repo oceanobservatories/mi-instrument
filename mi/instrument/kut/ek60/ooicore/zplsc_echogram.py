@@ -148,91 +148,122 @@ def read_config_transducer(chunk):
     return config_transducer
 
 
-def generate_plots(trans_array, trans_array_time, td_f, td_dr, title, filename):
-    """
-    Generate plots for a transducer
-    @param trans_array Transducer data array
-    @param trans_array_time Transducer internal time array
-    @param td_f Transducer frequency
-    @param td_dr Transducer's sample thickness (in range)
-    @param title Transducer title
-    @param filename png file name to save the figure to
-    """
+class ZPLSPlot:
+    def __init__(self, data):
+        self.font_size_small = 14
+        self.font_size_large = 18
+        interplot_spacing = 0.1
 
-    # only generate plots for the transducers that have data
-    if np.size(trans_array_time) <= 0:
-        return
+        self.trans_array = data['trans_array']
+        self.trans_array_time = data['trans_array_time']
+        self.td_f = data['td_f']
+        self.td_dr = data['td_dr']
 
-    # determine size of the data array
-    max_depth, max_time = np.shape(trans_array)
-    min_depth = 0
-    min_time = 0
+        self.cax = None
 
-    # subset/decimate the x & y ticks so that we don't plot everyone
-    num_xticks = 7
-    num_yticks = 10
+        # Transpose array data so the sample power data is on the y-axis
+        for channel in self.td_f:
+            # print self.trans_array[channel].shape
+            self.trans_array[channel] = np.transpose(self.trans_array[channel])
 
-    min_db = -180
-    max_db = -59
+            # reverse the Y axis (so depth is measured from the surface (at the top) to the ZPLS (at the bottom)
+            self.trans_array[channel] = self.trans_array[channel][::-1]
 
-    cbar_ticks = np.arange(min_db, max_db, 20)
+        # convert time, which represents the number of 100-nanosecond intervals that
+        # have elapsed since 12:00 A.M. January 1, 1601 Coordinated Universal Time (UTC)
+        # to unix time, i.e. seconds since 1970-01-01 00:00:00.
+        # 11644473600 == difference between 1601 and 1970
+        # 1e7 == divide by 10 million to convert to seconds
+        self.trans_array_time = np.array(self.trans_array_time[1]) / 1e7 - 11644473600
+        self.trans_array_time = (self.trans_array_time / (60 * 60 * 24)) + REF_TIME
 
-    # convert time, which represents the number of 100-nanosecond intervals that
-    # have elapsed since 12:00 A.M. January 1, 1601 Coordinated Universal Time (UTC)
-    # to unix time, i.e. seconds since 1970-01-01 00:00:00.
-    # 11644473600 == difference between 1601 and 1970
-    # 1e7 == divide by 10 million to convert to seconds
-    trans_array_time = np.array(trans_array_time) / 1e7 - 11644473600
-    trans_array_time = (trans_array_time / (60 * 60 * 24)) + REF_TIME
+        # ranges & increments
+        self.min_db = -80
+        self.max_db = -35
+        self.min_depth = self.min_time = 0
+        self.max_depth, self.max_time = np.shape(self.trans_array[1])
 
-    # subset the xticks so that we don't plot every one
-    xticks = np.linspace(0, max_time, num_xticks)
-    # format trans_array_time array so that it can be used to label the x-axis
-    xticklabels = [i.strftime('%Y-%m-%d %H:%M:%S')
-                   for i in num2date(trans_array_time[::int(round(xticks[1]))])]
+        self.num_xticks = 7
+        self.num_yticks = 5
 
-    # subset the yticks so that we don't plot everyone
-    yticks = np.linspace(0, max_depth, num_yticks)
-    # create range vector (depth in meters)
-    yticklabels = np.round(np.arange(0, max_depth, round(yticks[1])) * td_dr)
+        # subset the yticks so that we don't plot everyone
+        yticks = np.linspace(0, self.max_depth, self.num_yticks)
+        # create range vector (depth in meters)
+        yticklabels = np.round(np.linspace(0, self.max_depth * self.td_dr[1], self.num_yticks)).astype(int)
 
-    fig, ax = plt.subplots()
-    ax.grid(False)
-    figure_title = 'Converted Power: ' + title + 'Frequency: ' + str(td_f) + ' Hz'
-    ax.set_title(figure_title, fontsize=12)
-    ax.set_xlabel('time (UTC)', fontsize=10)
-    ax.set_ylabel('depth (m)', fontsize=10)
+        self.fig, self.ax = plt.subplots(len(self.td_f), sharex=True, sharey=True)
+        self.fig.subplots_adjust(hspace=interplot_spacing)
+        self.fig.set_size_inches(19.2, 19)
 
-    # rotates and right aligns the x labels, and moves the bottom of the
-    # axes up to make room for them
-    ax.set_xticks(xticks)
-    ax.set_xticklabels(xticklabels, rotation=25, horizontalalignment='right', fontsize=10)
+        for axes in self.ax:
+            axes.grid(False)
+            axes.set_ylabel('depth (m)', fontsize=self.font_size_small)
+            axes.set_yticks(yticks)
+            axes.set_yticklabels(yticklabels, fontsize=self.font_size_small)
+            axes.tick_params(axis="both", labelcolor="k", pad=4, direction='out', length=5, width=2)
+            axes.spines['top'].set_visible(False)
+            axes.spines['right'].set_visible(False)
+            axes.spines['bottom'].set_visible(False)
+            axes.spines['left'].set_visible(False)
 
-    ax.set_yticks(yticks)
-    ax.set_yticklabels(yticklabels, fontsize=10)
+    def generate_plot(self, ax, trans_array, trans_array_time, title):
+        """
+        Generate a ZPLS plot for an individual channel
+        :param ax:  matplotlib axis to receive the plot image
+        :param trans_array:  Transducer data array
+        :param trans_array_time:  Transducer internal time array
+        :param title:  plot title
+        """
+        # only generate plots for the transducers that have data
+        if np.size(trans_array_time) <= 0:
+            return
 
-    ax.tick_params(axis="both", labelcolor="k", pad=4)
+        ax.set_title(title, fontsize=self.font_size_large)
 
-    # set the x and y limits
-    ax.set_ylim(max_depth, min_depth)
-    ax.set_xlim(min_time, max_time)
+        self.cax = imshow(ax, trans_array, interpolation='none', aspect='auto', cmap='jet',
+                          vmin=self.min_db, vmax=self.max_db)
 
-    # plot the colorbar
-    cax = imshow(ax, trans_array, interpolation='none', aspect='auto', cmap='jet', vmin=min_db, vmax=max_db)
-    cb = fig.colorbar(cax, orientation='horizontal', ticks=cbar_ticks, shrink=.6)
-    cb.ax.set_xticklabels(cbar_ticks, fontsize=8)  # horizontally oriented colorbar
-    cb.set_label('dB', fontsize=10)
-    cb.ax.set_xlim(min_db, max_db-1)
+    def generate_plots(self):
+        """
+        Generate plots for all transducers in data set
+        """
+        freq_to_channel = {v: k for k, v in self.td_f.iteritems()}
+        for index, frequency in enumerate(sorted(freq_to_channel)):
+            channel = freq_to_channel[frequency]
+            td_f = self.td_f[channel]
+            title = 'Volume Backscattering Strength: Transducer #%d: Frequency: %0.1f kHz' % (channel, td_f / 1000)
+            print self.trans_array[channel].shape
+            self.generate_plot(self.ax[index],
+                               self.trans_array[channel],
+                               self.trans_array_time[channel],
+                               title)
 
-    fig.tight_layout(pad=1.2)
-    # adjust the subplot so that the x-tick labels will fit on the canvas
-    fig.subplots_adjust(bottom=0.1)
+        self.display_x_labels(self.ax[2], self.trans_array_time)
+        self.display_colorbar()
 
-    # reposition the cbar
-    cb.ax.set_position([.4, .05, .4, .1])
+    def display_x_labels(self, ax, trans_array_time):
+        # X axis label
+        # subset the xticks so that we don't plot every one
+        xticks = np.linspace(0, self.max_time, self.num_xticks)
+        # format trans_array_time array so that it can be used to label the x-axis
+        xticklabels = [i.strftime('%Y-%m-%d\n%H:%M:%S')
+                       for i in num2date(trans_array_time[::int(round(xticks[1]))])]
+        xticklabels.append(num2date(trans_array_time[-1]).strftime('%Y-%m-%d\n%H:%M:%S'))
+        # rotates and right aligns the x labels, and moves the bottom of the
+        # axes up to make room for them
+        ax.set_xlabel('time (UTC)', fontsize=self.font_size_small)
+        ax.set_xticks(xticks)
+        ax.set_xticklabels(xticklabels, rotation=45, horizontalalignment='center', fontsize=self.font_size_small)
+        ax.set_xlim(self.min_time, self.max_time)
 
-    # save the figure
-    fig.savefig(filename, dpi=300)
+    def display_colorbar(self):
+        # colorbar
+        self.fig.subplots_adjust(right=0.9)
+        ax = self.fig.add_axes([0.91, 0.125, 0.02, 0.775])
+        cb = self.fig.colorbar(self.cax, cax=ax)
+        # cb.shrink(0.5)
+        cb.set_label('dB', fontsize=self.font_size_large)
+        cb.ax.tick_params(labelsize=self.font_size_small)
 
-    # close the figure
-    plt.close()
+    def writeImage(self, filename):
+        self.fig.savefig(filename)
