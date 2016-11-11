@@ -41,8 +41,7 @@ from mi.core.instrument.data_particle import DataParticle
 from mi.core.log import get_logger
 
 from mi.instrument.kut.ek60.ooicore.zplsc_echogram import SAMPLE_MATCHER, LENGTH_SIZE, DATAGRAM_HEADER_SIZE, \
-    CONFIG_HEADER_SIZE, CONFIG_TRANSDUCER_SIZE, \
-    generate_plots, read_datagram_header, read_config_header
+    CONFIG_HEADER_SIZE, CONFIG_TRANSDUCER_SIZE, read_datagram_header, read_config_header, ZPLSPlot
 
 log = get_logger()
 __author__ = 'Ronald Ronquillo'
@@ -220,6 +219,8 @@ def parse_echogram_file(input_file_path, output_file_path=None):
 
     # tuple contains the string before the '.', the '.', and the 'raw' string
     outfile = filename.rpartition('.')[0]
+    image_file = outfile + '.png'
+    image_path = os.path.join(output_file_path, image_file)
 
     match = FILE_NAME_MATCHER.match(input_file_name)
     if match:
@@ -320,10 +321,7 @@ def parse_echogram_file(input_file_path, output_file_path=None):
 
         # Gather metadata once per transducer channel number
         if not trans_array[channel]:
-            image_file = outfile + '_' + str(int(sample_data['frequency'])/1000) + 'k.png'
-            file_path = os.path.join(output_file_path, image_file)
-
-            append_metadata(first_ping_metadata, file_time, file_path, channel, sample_data)
+            append_metadata(first_ping_metadata, file_time, image_path, channel, sample_data)
 
             # Make only one particle for the first ping series containing data for all channels
             if channel == config_header['transducer_count']:
@@ -369,37 +367,15 @@ def parse_echogram_file(input_file_path, output_file_path=None):
         # Read the next block for regex search
         raw = input_file.read(BLOCK_SIZE)
 
-    generate_echogram_plots(td_f, td_dr, trans_array_time, trans_array, output_file_path, first_ping_metadata)
+    data = {
+        'trans_array_time': trans_array_time,
+        'trans_array': trans_array,
+        'td_f': td_f,
+        'td_dr': td_dr,
+    }
+
+    plot = ZPLSPlot(trans_array_time, trans_array, td_f, td_dr)
+    plot.generate_plots()
+    plot.writeImage(image_file)
 
     return particle_data
-
-
-def generate_echogram_plots(td_f, td_dr, trans_array_time, trans_array, output_file_path, first_ping_metadata):
-    # Driver spends most of the time plotting,
-    # this can take longer for more transducers so lets break out the work
-    processes = []
-
-    for channel in td_f:
-        try:
-            output_file = os.path.join(output_file_path,
-                                       first_ping_metadata[ZplscBParticleKey.ECHOGRAM_PATH][channel - 1])
-            process = Process(target=generate_echogram_plot,
-                              args=(trans_array_time[channel], trans_array[channel],
-                                    td_f[channel], td_dr[channel], channel, output_file))
-            process.start()
-            processes.append(process)
-
-        except Exception, e:
-            log.error("Error: Unable to start process: %s", e)
-
-    for p in processes:
-        p.join()
-
-
-def generate_echogram_plot(trans_array_time, trans_array, td_f, td_dr, channel, filename):
-    # Generate echogram plots with sample data collected for each channel
-    # Transpose array data so the sample power data is on the y-axis
-    trans_array = numpy.transpose(trans_array)
-
-    generate_plots(trans_array, trans_array_time, td_f, td_dr,
-                   "Transducer # " + str(channel) + ": ", filename)
