@@ -1,0 +1,7 @@
+Version 0.3.99
+
+**ZPLS**
+
+* Frequencies plots are now combined in a single plot. *Redmine 11310*
+* Power range is now set to -25 to -80 dB. *Redmine 11311*
+* Inverted transducer depth to create depth direction. *Redmine 11309*
