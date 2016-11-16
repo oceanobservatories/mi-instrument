@@ -23,6 +23,7 @@ from datetime import datetime
 
 import re
 import numpy as np
+import math
 
 from struct import unpack
 
@@ -182,8 +183,8 @@ class ZPLSPlot:
         self.min_depth = self.min_time = 0
         self.max_depth, self.max_time = np.shape(self.trans_array[1])
 
-        self.num_xticks = 7
-        self.num_yticks = 5
+        self.num_xticks = 13
+        self.num_yticks = 7
 
         # subset the yticks so that we don't plot everyone
         yticks = np.linspace(0, self.max_depth, self.num_yticks)
@@ -192,7 +193,7 @@ class ZPLSPlot:
 
         self.fig, self.ax = plt.subplots(len(self.td_f), sharex=True, sharey=True)
         self.fig.subplots_adjust(hspace=interplot_spacing)
-        self.fig.set_size_inches(19.2, 19)
+        self.fig.set_size_inches(40, 19)
 
         for axes in self.ax:
             axes.grid(False)
@@ -233,10 +234,11 @@ class ZPLSPlot:
             title = 'Volume Backscattering Strength: Transducer #%d: Frequency: %0.1f kHz' % (channel, td_f / 1000)
             self.generate_plot(self.ax[index],
                                self.trans_array[channel],
-                               self.trans_array_time[channel],
+                               self.trans_array_time,
                                title)
 
         self.display_x_labels(self.ax[2], self.trans_array_time)
+        self.fig.tight_layout(rect=[0, 0.0, 0.97, 1.0])
         self.display_colorbar()
 
     def display_x_labels(self, ax, trans_array_time):
@@ -256,9 +258,8 @@ class ZPLSPlot:
 
     def display_colorbar(self):
         # colorbar
-        self.fig.subplots_adjust(right=0.9)
-        ax = self.fig.add_axes([0.91, 0.125, 0.02, 0.775])
-        cb = self.fig.colorbar(self.cax, cax=ax)
+        ax = self.fig.add_axes([0.965, 0.12, 0.01, 0.775])
+        cb = self.fig.colorbar(self.cax, cax=ax, use_gridspec=True)
         cb.set_label('dB', fontsize=self.font_size_large)
         cb.ax.tick_params(labelsize=self.font_size_small)
 
