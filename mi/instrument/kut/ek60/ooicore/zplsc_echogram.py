@@ -23,6 +23,7 @@ from datetime import datetime
 
 import re
 import numpy as np
+import math
 
 from struct import unpack
 
@@ -177,7 +178,7 @@ class ZPLSPlot:
         self.trans_array_time = (self.trans_array_time / (60 * 60 * 24)) + REF_TIME
 
         # ranges & increments
-        self.min_db = -80
+        self.min_db = -120
         self.max_db = -35
         self.min_depth = self.min_time = 0
         self.max_depth, self.max_time = np.shape(self.trans_array[1])
@@ -233,7 +234,7 @@ class ZPLSPlot:
             title = 'Volume Backscattering Strength: Transducer #%d: Frequency: %0.1f kHz' % (channel, td_f / 1000)
             self.generate_plot(self.ax[index],
                                self.trans_array[channel],
-                               self.trans_array_time[channel],
+                               self.trans_array_time,
                                title)
 
         self.display_x_labels(self.ax[2], self.trans_array_time)
@@ -244,9 +245,13 @@ class ZPLSPlot:
         # subset the xticks so that we don't plot every one
         xticks = np.linspace(0, self.max_time, self.num_xticks)
         # format trans_array_time array so that it can be used to label the x-axis
+        xstep = int(math.ceil(self.max_time / self.num_xticks))
         xticklabels = [i.strftime('%Y-%m-%d\n%H:%M:%S')
-                       for i in num2date(trans_array_time[::int(round(xticks[1]))])]
+                       for i in num2date(trans_array_time[::xstep])]
         xticklabels.append(num2date(trans_array_time[-1]).strftime('%Y-%m-%d\n%H:%M:%S'))
+        print '----------------'
+        print 'times: %d - %s' % (len(trans_array_time), trans_array_time)
+        print '----------------'
         # rotates and right aligns the x labels, and moves the bottom of the
         # axes up to make room for them
         ax.set_xlabel('time (UTC)', fontsize=self.font_size_small)
