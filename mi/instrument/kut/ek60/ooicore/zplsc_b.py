@@ -367,15 +367,8 @@ def parse_echogram_file(input_file_path, output_file_path=None):
         # Read the next block for regex search
         raw = input_file.read(BLOCK_SIZE)
 
-    data = {
-        'trans_array_time': trans_array_time,
-        'trans_array': trans_array,
-        'td_f': td_f,
-        'td_dr': td_dr,
-    }
-
     plot = ZPLSPlot(trans_array_time, trans_array, td_f, td_dr)
     plot.generate_plots()
-    plot.writeImage(image_file)
+    plot.writeImage(image_path)
 
     return particle_data
