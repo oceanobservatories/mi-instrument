@@ -429,16 +429,14 @@ class DriverTestMixinSub(DriverTestMixin):
 
     base_path = os.path.dirname(os.path.dirname(__file__))
     resource_dir = os.path.join(base_path, 'resource')
-    input_file = os.path.join(resource_dir, 'OOI-D20141212-T152500.raw')
+    input_file = os.path.join(resource_dir, 'CE04OSPS-PC01B-05-ZPLSCB102_OOI-D20141212-T152500.raw')
     _test_file_notice = 'downloaded file:' + input_file + NEWLINE
 
-    ouptut_file_1 = os.path.join(resource_dir, 'OOI-D20141212-T152500_38k.png')
-    ouptut_file_2 = os.path.join(resource_dir, 'OOI-D20141212-T152500_120k.png')
-    ouptut_file_3 = os.path.join(resource_dir, 'OOI-D20141212-T152500_200k.png')
+    output_file = 'CE04OSPS-PC01B-05-ZPLSCB102_OOI-D20141212-T152500.png'
 
     _metadata_dict = {
         ZplscBParticleKey.FILE_TIME: {'type': str, 'value': 2},
-        ZplscBParticleKey.ECHOGRAM_PATH: {'type': list, 'value': [ouptut_file_1, ouptut_file_2, ouptut_file_3]},
+        ZplscBParticleKey.ECHOGRAM_PATH: {'type': str, 'value': output_file},
         ZplscBParticleKey.CHANNEL: {'type': list, 'value': [1, 2, 3]},
         ZplscBParticleKey.TRANSDUCER_DEPTH: {'type': list, 'value': [0.0, 0.0, 0.0]},
         ZplscBParticleKey.FREQUENCY: {'type': list, 'value': [120000.0, 38000.0, 200000.0]},
