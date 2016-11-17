@@ -19,6 +19,7 @@ from mi.core.port_agent_process import PortAgentProcess
 log = get_logger()
 
 import gevent
+import numpy as np
 
 from pprint import PrettyPrinter
 
@@ -453,8 +454,11 @@ class DriverTestMixin(MiUnitTest, ParticleTestMixin):
                 # Only test the equality if the parameter has a value.  Test for required parameters
                 # happens in assert_parameter_set
                 if param_value is not None:
-                    self.assertEqual(param_value, required_value, msg="%s value not equal: %s != %s" % (
-                        param_name, repr(param_value), repr(required_value)))
+                    msg = "%s value not equal: %r != %r" % (param_name, param_value, required_value)
+                    if isinstance(required_value, np.ndarray):
+                        np.testing.assert_almost_equal(param_value, required_value, decimal=4, err_msg=msg)
+                    else:
+                        self.assertEqual(param_value, required_value, msg=msg)
             except KeyError:
                 # Ignore key errors
                 pass
