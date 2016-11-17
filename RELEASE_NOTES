@@ -5,6 +5,7 @@ Version 0.3.100
 * Output PNGs now being writen to same directory as raw input files.
 * Power range set dynamically from 5-95% of data values *Redmine 11311*
 * Increased resolution of plots and reduced borders.
+* Fixed bug where invalid data prevented plot creation
 
 Version 0.3.99
 
