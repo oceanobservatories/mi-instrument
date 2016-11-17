@@ -26,7 +26,7 @@ Release notes:
 
 Initial Release
 """
-
+import numpy as np
 import re
 import os
 import numpy
@@ -46,6 +46,10 @@ from mi.instrument.kut.ek60.ooicore.zplsc_echogram import SAMPLE_MATCHER, LENGTH
 log = get_logger()
 __author__ = 'Ronald Ronquillo'
 __license__ = 'Apache 2.0'
+
+
+class InvalidTransducer(Exception):
+    pass
 
 
 class ZplscBParticleKey(BaseEnum):
@@ -196,6 +200,48 @@ def append_metadata(metadata, file_time, file_path, channel, sample_data):
     return metadata
 
 
+def process_sample(input_file, transducer_count):
+    # Read and unpack the Sample Datagram into numpy array
+    sample_data = numpy.fromfile(input_file, dtype=sample_dtype, count=1)
+    channel = sample_data['channel_number'][0]
+
+    # Check for a valid channel number that is within the number of transducers config
+    # to prevent incorrectly indexing into the dictionaries.
+    # An out of bounds channel number can indicate invalid, corrupt,
+    # or misaligned datagram or a reverse byte order binary data file.
+    # Log warning and continue to try and process the rest of the file.
+    if channel < 0 or channel > transducer_count:
+        log.warn("Invalid channel: %s for transducer count: %s."
+                 "Possible file corruption or format incompatibility.", channel, transducer_count)
+        raise InvalidTransducer
+
+    # Convert high and low bytes to internal time
+    windows_time = build_windows_time(sample_data['high_date_time'][0], sample_data['low_date_time'][0])
+    ntp_time = windows_to_ntp(windows_time)
+
+    count = sample_data['count'][0]
+
+    # Extract array of power data
+    power_data = numpy.fromfile(input_file, dtype=power_dtype, count=count)
+
+    # Read the athwartship and alongship angle measurements
+    if sample_data['mode'][0] > 1:
+        numpy.fromfile(input_file, dtype=angle_dtype, count=count)
+
+    # Read and compare length1 (from beginning of datagram) to length2
+    # (from the end of datagram). A mismatch can indicate an invalid, corrupt,
+    # or misaligned datagram or a reverse byte order binary data file.
+    # Log warning and continue to try and process the rest of the file.
+    len_dtype = numpy.dtype([('length2', '<i4')])  # 4 byte int (long)
+    length2_data = numpy.fromfile(input_file, dtype=len_dtype, count=1)
+    if not (sample_data['length1'][0] == length2_data['length2'][0]):
+        log.warn("Mismatching beginning and end length values in sample datagram: length1"
+                 ": %s, length2: %s. Possible file corruption or format incompatibility.",
+                 sample_data['length1'][0], length2_data['length2'][0])
+
+    return channel, ntp_time, sample_data, power_data
+
+
 def parse_echogram_file(input_file_path, output_file_path=None):
     """
     Parse the *.raw file.
@@ -244,7 +290,6 @@ def parse_echogram_file(input_file_path, output_file_path=None):
     byte_cnt += LENGTH_SIZE
 
     # Configuration datagram header
-    read_datagram_header(raw[byte_cnt:byte_cnt+DATAGRAM_HEADER_SIZE])
     byte_cnt += DATAGRAM_HEADER_SIZE
 
     # Configuration: header
@@ -266,15 +311,19 @@ def parse_echogram_file(input_file_path, output_file_path=None):
             ", length2: %s, byte_cnt: %s. Possible file corruption or format incompatibility." %
             (length1, length2, byte_cnt+LENGTH_SIZE))
 
-    first_ping_metadata = defaultdict(list)
     trans_keys = range(1, transducer_count+1)
-    trans_array = dict((key, []) for key in trans_keys)         # transducer power data
-    trans_array_time = dict((key, []) for key in trans_keys)    # transducer time data
-    td_f = dict.fromkeys(trans_keys)                            # transducer frequency
-    td_dr = dict.fromkeys(trans_keys)                           # transducer depth measurement
+    frequencies = dict.fromkeys(trans_keys)       # transducer frequency
+    bin_size = None                               # transducer depth measurement
 
     position = 0
     particle_data = (None, None)
+
+    last_time = None
+    sample_data_temp_dict = {}
+    power_data_temp_dict = {}
+
+    power_data_dict = {}
+    data_times = []
 
     while raw:
         # We only care for the Sample datagrams, skip over all the other datagrams
@@ -295,80 +344,58 @@ def parse_echogram_file(input_file_path, output_file_path=None):
         # Seek to the position of the length data before the token to read into numpy array
         input_file.seek(position + match_start)
 
-        # Read and unpack the Sample Datagram into numpy array
-        sample_data = numpy.fromfile(input_file, dtype=sample_dtype, count=1)
-        channel = sample_data['channel_number'][0]
+        try:
+            next_channel, next_time, next_sample, next_power = process_sample(input_file, transducer_count)
 
-        # Check for a valid channel number that is within the number of transducers config
-        # to prevent incorrectly indexing into the dictionaries.
-        # An out of bounds channel number can indicate invalid, corrupt,
-        # or misaligned datagram or a reverse byte order binary data file.
-        # Log warning and continue to try and process the rest of the file.
-        if channel < 0 or channel > transducer_count:
-            log.warn("Invalid channel: %s for transducer count: %s."
-                     "Possible file corruption or format incompatibility.", channel, transducer_count)
+            if next_time != last_time:
+                # Clear out our temporary dictionaries and set the last time to this time
+                sample_data_temp_dict = {}
+                power_data_temp_dict = {}
+                last_time = next_time
 
-            # Need current position in file to increment for next regex search offset
-            position = input_file.tell()
+            # Store this data
+            sample_data_temp_dict[next_channel] = next_sample
+            power_data_temp_dict[next_channel] = next_power
 
-            # Read the next block for regex search
-            raw = input_file.read(BLOCK_SIZE)
-            continue
+            # Check if we have enough records to produce a new row of data
+            if len(sample_data_temp_dict) == len(power_data_temp_dict) == transducer_count:
+                # if this is our first set of data, create our metadata particle and store
+                # the frequency / bin_size data
+                if not power_data_dict:
+                    first_ping_metadata = defaultdict(list)
+                    for channel, sample_data in sample_data_temp_dict.iteritems():
+                        append_metadata(first_ping_metadata, file_time, file_path,
+                                        channel, sample_data)
 
-        # Convert high and low bytes to internal time
-        windows_time = build_windows_time(sample_data['high_date_time'][0], sample_data['low_date_time'][0])
-        trans_array_time[channel].append(windows_time)
+                        frequency = sample_data['frequency'][0]
+                        frequencies[channel] = frequency
 
-        # Gather metadata once per transducer channel number
-        if not trans_array[channel]:
-            append_metadata(first_ping_metadata, file_time, image_path, channel, sample_data)
+                        if bin_size is None:
+                            bin_size = sample_data['sound_velocity'] * sample_data['sample_interval'] / 2
 
-            # Make only one particle for the first ping series containing data for all channels
-            if channel == config_header['transducer_count']:
-                # Convert from Windows time to NTP time.
-                ntp_time = windows_to_ntp(windows_time)
+                    particle_data = (first_ping_metadata, next_time)
+                    power_data_dict = {channel: [] for channel in power_data_temp_dict}
 
-                # Put the metadata and timestamp in a tuple to return to calling method for creation
-                # of a particle
+                # Save the time and power data for plotting
+                data_times.append(next_time)
+                for channel in power_data_temp_dict:
+                    power_data_dict[channel].append(power_data_temp_dict[channel])
 
-                particle_data = (first_ping_metadata, ntp_time)
-
-            # Extract various calibration parameters used for generating echogram plot
-            # This data doesn't change so extract it once per channel
-            td_f[channel] = sample_data['frequency'][0]
-            td_dr[channel] = sample_data['sound_velocity'][0] * sample_data['sample_interval'][0] / 2
-
-        count = sample_data['count'][0]
-
-        # Extract array of power data
-        power_data = numpy.fromfile(input_file, dtype=power_dtype, count=count)
-
-        # Decompress power data to dB
-        trans_array[channel].append(power_data['power_data'] * 10. * numpy.log10(2) / 256.)
-
-        # Read the athwartship and alongship angle measurements
-        if sample_data['mode'][0] > 1:
-            numpy.fromfile(input_file, dtype=angle_dtype, count=count)
-
-        # Read and compare length1 (from beginning of datagram) to length2
-        # (from the end of datagram). A mismatch can indicate an invalid, corrupt,
-        # or misaligned datagram or a reverse byte order binary data file.
-        # Log warning and continue to try and process the rest of the file.
-        len_dtype = numpy.dtype([('length2', '<i4')])     # 4 byte int (long)
-        length2_data = numpy.fromfile(input_file, dtype=len_dtype, count=1)
-        if not (sample_data['length1'][0] == length2_data['length2'][0]):
-            log.warn("Mismatching beginning and end length values in sample datagram: length1"
-                     ": %s, length2: %s. Possible file corruption or format incompatibility.",
-                     sample_data['length1'][0], length2_data['length2'][0])
+        except InvalidTransducer:
+            pass
 
         # Need current position in file to increment for next regex search offset
         position = input_file.tell()
-
         # Read the next block for regex search
         raw = input_file.read(BLOCK_SIZE)
 
-    plot = ZPLSPlot(trans_array_time, trans_array, td_f, td_dr)
+    data_times = np.array(data_times)
+    # Convert to numpy array and decompress power data to dB
+    for channel in power_data_dict:
+        power_data_dict[channel] = np.array(power_data_dict[channel]).astype('f8') * 10. * numpy.log10(2) / 256.
+
+    plot = ZPLSPlot(data_times, power_data_dict, frequencies, bin_size)
     plot.generate_plots()
-    plot.writeImage(image_path)
+    plot.write_image(image_path)
 
     return particle_data
