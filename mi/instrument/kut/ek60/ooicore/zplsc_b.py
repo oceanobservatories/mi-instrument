@@ -200,6 +200,7 @@ def append_metadata(metadata, file_time, file_path, channel, sample_data):
 
 
 def process_sample(input_file, transducer_count):
+    log.debug('Processing one sample from input_file: %r', input_file)
     # Read and unpack the Sample Datagram into numpy array
     sample_data = numpy.fromfile(input_file, dtype=sample_dtype, count=1)
     channel = sample_data['channel_number'][0]
@@ -264,7 +265,7 @@ def parse_echogram_file(input_file_path, output_file_path=None):
     @param output_file_path optional path to directory to write output
     If omitted outputs are written to path of input file
     """
-
+    log.info('Begin processing echogram data: %r', input_file_path)
     try:
         input_file = open(input_file_path, 'rb')
     except IOError as e:
@@ -410,8 +411,12 @@ def parse_echogram_file(input_file_path, output_file_path=None):
     for channel in power_data_dict:
         power_data_dict[channel] = np.array(power_data_dict[channel]).astype('f8') * 10. * numpy.log10(2) / 256.
 
+    log.info('Completed processing data. Generating echogram: %r', input_file_path)
+
     plot = ZPLSPlot(data_times, power_data_dict, frequencies, bin_size)
     plot.generate_plots()
     plot.write_image(image_path)
+
+    log.info('Completed generating echogram: %r', input_file_path)
 
     return particle_data
