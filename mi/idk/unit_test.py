@@ -401,11 +401,12 @@ class DriverTestMixin(MiUnitTest, ParticleTestMixin):
         optional_keys = []
 
         # get all the sample parameter names
-        sample_keys = sample_values.keys()
+        sample_keys = sorted(sample_values)
         log.info("Sample Keys: %s", sample_keys)
 
         # split the parameters into optional and required
-        for key, param in param_dict.items():
+        for key in sorted(param_dict):
+            param = param_dict[key]
             if isinstance(param, dict):
                 required = param.get(ParameterTestConfigKey.REQUIRED, True)
                 if required:
@@ -428,7 +429,8 @@ class DriverTestMixin(MiUnitTest, ParticleTestMixin):
             if optional in sample_keys:
                 sample_keys.remove(optional)
 
-        log.info("Unknown Keys: %s", sample_keys)
+        if sample_keys:
+            log.info("Unknown Keys: %s", sample_keys)
 
         # If there is anything left in the sample keys then it's a problem
         self.assertEqual(len(sample_keys), 0)
@@ -1349,6 +1351,44 @@ class InstrumentDriverUnitTestCase(InstrumentDriverTestCase):
         # Verify the data particle
         self.assert_particle_raw(particle, verify_values)
 
+    def push_data_to_driver(self, driver, sample_data):
+        ts = ntplib.system_to_ntp_time(time.time())
+
+        log.debug("Sample to publish: %r", sample_data)
+        # Create and populate the port agent packet.
+        port_agent_packet = PortAgentPacket()
+        port_agent_packet.attach_data(sample_data)
+        port_agent_packet.attach_timestamp(ts)
+        port_agent_packet.pack_header()
+
+        # Push the data into the driver
+        driver._protocol.got_data(port_agent_packet)
+
+    def assert_particle_published_async(self, particle_assert_method, verify_values=False, timeout=30):
+        self.clear_data_particle_queue()
+
+        timeout = time.time() + timeout
+
+        particles = []
+        while time.time() < timeout:
+            # Find all particles of the correct data particle types (not raw)
+
+            for p in self._data_particle_received:
+                stream_type = p.get('stream_name')
+                self.assertIsNotNone(stream_type)
+                if stream_type != CommonDataParticleType.RAW:
+                    particles.append(p)
+
+            if particles:
+                break
+
+            time.sleep(.1)
+
+        # Verify the data particle
+        log.debug("Non raw particles: %r ", particles)
+        self.assertEqual(len(particles), 1)
+        particle_assert_method(particles.pop(), verify_values)
+
     def assert_particle_published(self, driver, sample_data, particle_assert_method, verify_values=False):
         """
         Verify that we can send data through the port agent and the the correct particles
@@ -1361,19 +1401,8 @@ class InstrumentDriverUnitTestCase(InstrumentDriverTestCase):
         @param particle_assert_method: assert method to validate the data particle.
         @param verify_values: Should we validate values?
         """
-        ts = ntplib.system_to_ntp_time(time.time())
-
-        log.debug("Sample to publish: %r", sample_data)
-        # Create and populate the port agent packet.
-        port_agent_packet = PortAgentPacket()
-        port_agent_packet.attach_data(sample_data)
-        port_agent_packet.attach_timestamp(ts)
-        port_agent_packet.pack_header()
-
         self.clear_data_particle_queue()
-
-        # Push the data into the driver
-        driver._protocol.got_data(port_agent_packet)
+        self.push_data_to_driver(driver, sample_data)
 
         # Find all particles of the correct data particle types (not raw)
         particles = []

@@ -23,7 +23,6 @@ from datetime import datetime
 
 import re
 import numpy as np
-import math
 
 from struct import unpack
 

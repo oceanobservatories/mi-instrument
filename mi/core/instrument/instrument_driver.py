@@ -1264,8 +1264,5 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
 
     def _destroy_protocol(self):
         if self._protocol:
-            scheduler = self._protocol._scheduler
-            if scheduler:
-                scheduler._scheduler.shutdown()
-            scheduler = None
+            self._protocol.shutdown()
             self._protocol = None
