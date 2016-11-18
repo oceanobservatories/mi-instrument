@@ -9,8 +9,6 @@
 __author__ = 'Edward Hunter'
 
 
-from gevent import monkey
-monkey.patch_all()
 from gevent import spawn
 
 

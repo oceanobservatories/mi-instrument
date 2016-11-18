@@ -232,6 +232,9 @@ class DriverTestMixinSub(DriverTestMixin):
 
         # Push the response into the driver
         driver._protocol.got_data(port_agent_packet)
+        # sleep briefly, as some state changes happen asynchronously, this should give those
+        # threads time to finish
+        time.sleep(.01)
 
     def my_send(self, driver):
         """

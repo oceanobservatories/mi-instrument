@@ -10,8 +10,6 @@
 __author__ = 'Edward Hunter'
 __license__ = 'Apache 2.0'
 
-from gevent import monkey; monkey.patch_all()
-
 import logging
 
 from nose.plugins.attrib import attr

@@ -22,7 +22,6 @@ __license__ = 'Apache 2.0'
 
 
 import unittest
-from gevent import monkey; monkey.patch_all()
 import time
 import copy
 from mock import Mock

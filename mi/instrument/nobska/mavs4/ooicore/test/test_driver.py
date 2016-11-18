@@ -24,10 +24,7 @@ USAGE:
 __author__ = 'Bill Bollenbacher'
 __license__ = 'Apache 2.0'
 
-# Ensure the test class is monkey patched for gevent
-from gevent import monkey
 
-monkey.patch_all()
 import gevent
 from mock import Mock
 

@@ -336,6 +336,7 @@ class InstrumentProtocol(object):
             log.info('_async_raise_fsm_event: event complete. bub bye thread. (%r)', args)
 
         new_thread = Thread(target=run)
+        new_thread.daemon = True
         new_thread.start()
 
     ########################################################################

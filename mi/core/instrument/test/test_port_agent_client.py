@@ -7,9 +7,6 @@
 @brief Some unit tests for R2 port agent client
 """
 
-# Ensure the test class is monkey patched for gevent
-from gevent import monkey
-
 import gevent
 import logging
 import unittest
@@ -43,7 +40,6 @@ __author__ = 'David Everett'
 __license__ = 'Apache 2.0'
 
 
-monkey.patch_all()
 log = get_logger()
 
 SYSTEM_EPOCH = datetime.date(*time.gmtime(0)[0:3])
