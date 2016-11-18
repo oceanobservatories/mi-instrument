@@ -803,6 +803,11 @@ class InstrumentProtocol(object):
         else:
             return param_list
 
+    def shutdown(self):
+        if self._scheduler:
+            self._scheduler.shutdown()
+            self._scheduler = None
+
 
 class CommandResponseInstrumentProtocol(InstrumentProtocol):
     """

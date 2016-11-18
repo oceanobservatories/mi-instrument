@@ -191,6 +191,9 @@ class DriverScheduler(object):
         if(config):
             self.add_config(config)
 
+    def shutdown(self):
+        self._scheduler.shutdown()
+
     def run_job(self, name):
         """
         Try to run a polled job with the passed in name.  If it
