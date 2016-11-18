@@ -7,41 +7,38 @@ Release notes:
 This Driver supports the Kongsberg UnderWater Technology's EK60 Instrument.
 """
 
-
 import ftplib
 import json
+import multiprocessing
 import tempfile
-import urllib2
-import yaml
-
 import time
+import urllib2
+from collections import deque
+from threading import Thread
 
 import re
-
+import yaml
 
 from mi.core.common import BaseEnum
-from mi.core.exceptions import InstrumentParameterException, InstrumentException, SampleException
 from mi.core.exceptions import InstrumentConnectionException
+from mi.core.exceptions import InstrumentParameterException, InstrumentException, SampleException
+from mi.core.instrument.chunker import StringChunker
 from mi.core.instrument.data_particle import DataParticle, CommonDataParticleType, DataParticleKey
 from mi.core.instrument.driver_dict import DriverDictKey
-from mi.core.instrument.instrument_driver import SingleConnectionInstrumentDriver
-from mi.core.instrument.instrument_driver import DriverEvent
 from mi.core.instrument.instrument_driver import DriverAsyncEvent
-from mi.core.instrument.instrument_driver import DriverProtocolState
+from mi.core.instrument.instrument_driver import DriverEvent
 from mi.core.instrument.instrument_driver import DriverParameter
+from mi.core.instrument.instrument_driver import DriverProtocolState
+from mi.core.instrument.instrument_driver import SingleConnectionInstrumentDriver
 from mi.core.instrument.instrument_fsm import ThreadSafeFSM
 from mi.core.instrument.instrument_protocol import CommandResponseInstrumentProtocol
 from mi.core.instrument.protocol_param_dict import ParameterDictType
-
 from mi.core.log import get_logger
 from mi.core.log import get_logging_metaclass
-from mi.core.instrument.chunker import StringChunker
-
-
+from mi.instrument.kut.ek60.ooicore.zplsc_b import DataParticleType as ZplscBDataParticleType
 from mi.instrument.kut.ek60.ooicore.zplsc_b import FILE_NAME_REGEX, \
     parse_echogram_file, \
     ZplscBInstrumentDataParticle
-from mi.instrument.kut.ek60.ooicore.zplsc_b import DataParticleType as ZplscBDataParticleType
 
 __author__ = 'Richard Han & Craig Risien'
 __license__ = 'Apache 2.0'
@@ -62,6 +59,7 @@ USER_NAME = "ooi"
 PASSWORD = "994ef22"
 
 STATUS_TIMEOUT = 10
+POOL_SIZE = 4
 
 DEFAULT_CONFIG = {
     'file_prefix':    "Driver DEFAULT CONFIG_PREFIX",
@@ -547,6 +545,76 @@ class Protocol(CommandResponseInstrumentProtocol):
 
         self._chunker = StringChunker(self.sieve_function)
 
+        log.info('Creating echogram processing pool with %d workers', POOL_SIZE)
+        self._process_echograms = True
+        self._pending_echograms = deque()
+        self._processing_pool = multiprocessing.Pool(POOL_SIZE)
+
+        self._echogram_thread = Thread(target=self.echogram_thread)
+        self._echogram_thread.setDaemon(True)
+        self._echogram_thread.start()
+
+    def echogram_thread(self):
+        log.info('Starting echogram generation thread.')
+        processing_pool = self._processing_pool
+        try:
+            futures = {}
+
+            while self._process_echograms or futures:
+                # Pull all processing requests from our request deque
+                # Unless we have been instructed to terminate
+                while True and self._process_echograms:
+                    try:
+                        filepath, timestamp = self._pending_echograms.popleft()
+                        log.info('Received RAW file to process: %r %r', filepath, timestamp)
+                        # Schedule for processing
+                        # parse_echogram_file takes the filepath and
+                        # creates the echogram image files.  It returns a
+                        # tuple containing the metadata and timestamp for creation
+                        # of the particle
+                        futures[(filepath, timestamp)] = processing_pool.apply_async(parse_echogram_file, (filepath,))
+                    except IndexError:
+                        break
+
+                # Grab our keys here, to avoid mutating the dictionary while iterating
+                future_keys = sorted(futures)
+                if future_keys:
+                    log.debug('Awaiting completion of %d echograms', len(future_keys))
+
+                for key in future_keys:
+                    future = futures[key]
+                    if future.ready():
+                        # Job complete, remove the future from our dictionary and generate a particle
+                        metadata, internal_timestamp = future.get()
+                        futures.pop(key)
+                        filepath, timestamp = key
+                        log.info('Completed echogram with filepath: %r timestamp: %r', filepath, timestamp)
+
+                        particle = ZplscBInstrumentDataParticle(metadata, port_timestamp=timestamp,
+                                                                internal_timestamp=internal_timestamp,
+                                                                preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
+                        parsed_sample = particle.generate()
+
+                        if self._driver_event:
+                            self._driver_event(DriverAsyncEvent.SAMPLE, parsed_sample)
+
+                time.sleep(1)
+
+        finally:
+            if processing_pool:
+                processing_pool.close()
+                processing_pool.join()
+
+    def shutdown(self):
+        log.info('Shutting down ZPLSC protocol')
+        super(Protocol, self).shutdown()
+        # Do not add any more echograms to the processing queue
+        self._process_echograms = False
+        # Await completed processing of all echograms for a maximum of 10 minutes
+        log.info('Joining echogram_thread')
+        self._echogram_thread.join(timeout=600)
+        log.info('Completed ZPLSC protocol shutdown')
+
     def _build_param_dict(self):
         """
         Populate the parameter dictionary with parameters.
@@ -986,17 +1054,5 @@ class Protocol(CommandResponseInstrumentProtocol):
         match = FILEPATH_MATCHER.search(chunk)
 
         if match:
-
-            # parse_echogram_file takes the filepath and
-            # creates the echogram image files.  It returns a
-            # tuple containing the metadata and timestamp for creation
-            # of the particle
-            metadata, internal_timestamp = parse_echogram_file(match.group('Filepath'))
-
-            particle = ZplscBInstrumentDataParticle(metadata, port_timestamp=timestamp,
-                                                    internal_timestamp=internal_timestamp,
-                                                    preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
-            parsed_sample = particle.generate()
-
-            if self._driver_event:
-                self._driver_event(DriverAsyncEvent.SAMPLE, parsed_sample)
+            # Queue up this file for processing
+            self._pending_echograms.append((match.group('Filepath'), timestamp))

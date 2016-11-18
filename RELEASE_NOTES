@@ -1,3 +1,9 @@
+Version 0.3.102
+
+**ZPLS**
+
+* Moved echogram processing to an external processing pool *Redmine 11588*
+
 Version 0.3.101
 
 **ZPLS**

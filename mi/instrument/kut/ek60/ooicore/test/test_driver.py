@@ -628,8 +628,10 @@ class DriverUnitTest(InstrumentDriverUnitTestCase, DriverTestMixinSub):
         self.assert_raw_particle_published(driver, True)
 
         # Start validating data particles
+        self.push_data_to_driver(driver, self._test_file_notice)
+        self.clear_data_particle_queue()
 
-        self.assert_particle_published(driver, self._test_file_notice, self.assert_file_data, True)
+        self.assert_particle_published_async(self.assert_file_data, True)
 
 
 ###############################################################################
