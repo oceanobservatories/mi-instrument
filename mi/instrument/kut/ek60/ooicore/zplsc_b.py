@@ -200,7 +200,7 @@ def append_metadata(metadata, file_time, file_path, channel, sample_data):
 
 
 def process_sample(input_file, transducer_count):
-    log.debug('Processing one sample from input_file: %r', input_file)
+    log.trace('Processing one sample from input_file: %r', input_file)
     # Read and unpack the Sample Datagram into numpy array
     sample_data = numpy.fromfile(input_file, dtype=sample_dtype, count=1)
     channel = sample_data['channel_number'][0]
@@ -222,7 +222,7 @@ def process_sample(input_file, transducer_count):
     count = sample_data['count'][0]
 
     # Extract array of power data
-    power_data = numpy.fromfile(input_file, dtype=power_dtype, count=count)
+    power_data = numpy.fromfile(input_file, dtype=power_dtype, count=count).astype('f8')
 
     # Read the athwartship and alongship angle measurements
     if sample_data['mode'][0] > 1:
@@ -258,52 +258,37 @@ def generate_relative_file_path(filepath):
     return filename
 
 
-def parse_echogram_file(input_file_path, output_file_path=None):
-    """
-    Parse the *.raw file.
-    @param input_file_path absolute path/name to file to be parsed
-    @param output_file_path optional path to directory to write output
-    If omitted outputs are written to path of input file
-    """
-    log.info('Begin processing echogram data: %r', input_file_path)
-    try:
-        input_file = open(input_file_path, 'rb')
-    except IOError as e:
-        log.error('Could not open Raw Echogram file: %r %r', input_file_path, e)
-        raise
-
+def generate_image_file_path(filepath, output_path=None):
     # Extract the file time from the file name
-    input_file_name = input_file.name
-    file_path, filename = os.path.split(input_file_name)
+    absolute_path = os.path.abspath(filepath)
+    filename = os.path.basename(absolute_path)
+    directory_name = os.path.dirname(absolute_path)
 
-    if output_file_path is None:
-        output_file_path = file_path
+    output_path = directory_name if output_path is None else output_path
+    image_file = filename.replace('.raw', '.png')
+    return os.path.join(output_path, image_file)
 
-    # tuple contains the string before the '.', the '.', and the 'raw' string
-    outfile = filename.rpartition('.')[0]
-    image_file = outfile + '.png'
-    image_path = os.path.join(output_file_path, image_file)
 
-    match = FILE_NAME_MATCHER.match(input_file_name)
+def extract_file_time(filepath):
+    match = FILE_NAME_MATCHER.match(filepath)
     if match:
-        file_time = match.group('Date') + match.group('Time')
+        return match.group('Date') + match.group('Time')
     else:
         # Files retrieved from the instrument should always match the timestamp naming convention
         error_message = \
             "Unable to extract file time from input file name: %s. Expected format *-DYYYYmmdd-THHMMSS.raw" \
-            % input_file_name
+            % filepath
         log.error(error_message)
         raise InstrumentDataException(error_message)
 
-    # Read binary file a block at a time
-    raw = input_file.read(BLOCK_SIZE)
 
-    # Set starting byte
-    byte_cnt = 0
+def read_header(filehandle):
+    # Read binary file a block at a time
+    raw = filehandle.read(BLOCK_SIZE)
 
     # Read the configuration datagram, output at the beginning of the file
     length1, = unpack_from('<l', raw)
-    byte_cnt += LENGTH_SIZE
+    byte_cnt = LENGTH_SIZE
 
     # Configuration datagram header
     byte_cnt += DATAGRAM_HEADER_SIZE
@@ -311,10 +296,7 @@ def parse_echogram_file(input_file_path, output_file_path=None):
     # Configuration: header
     config_header = read_config_header(raw[byte_cnt:byte_cnt+CONFIG_HEADER_SIZE])
     byte_cnt += CONFIG_HEADER_SIZE
-
-    transducer_count = config_header['transducer_count']
-
-    byte_cnt += CONFIG_TRANSDUCER_SIZE * transducer_count
+    byte_cnt += CONFIG_TRANSDUCER_SIZE * config_header['transducer_count']
 
     # Compare length1 (from beginning of datagram) to length2 (from the end of datagram) to
     # the actual number of bytes read. A mismatch can indicate an invalid, corrupt, misaligned,
@@ -326,97 +308,123 @@ def parse_echogram_file(input_file_path, output_file_path=None):
             "Length of configuration datagram and number of bytes read do not match: length1: %s"
             ", length2: %s, byte_cnt: %s. Possible file corruption or format incompatibility." %
             (length1, length2, byte_cnt+LENGTH_SIZE))
+    byte_cnt += LENGTH_SIZE
+    filehandle.seek(byte_cnt)
+    return config_header
 
-    trans_keys = range(1, transducer_count+1)
-    frequencies = dict.fromkeys(trans_keys)       # transducer frequency
-    bin_size = None                               # transducer depth measurement
 
-    position = 0
-    particle_data = (None, None)
+def parse_echogram_file_wrapper(input_file_path, output_file_path=None):
+    try:
+        return parse_echogram_file(input_file_path, output_file_path)
+    except Exception as e:
+        log.exception('Exception generating echogram')
+        return e
 
-    last_time = None
-    sample_data_temp_dict = {}
-    power_data_temp_dict = {}
 
-    power_data_dict = {}
-    data_times = []
+def parse_echogram_file(input_file_path, output_file_path=None):
+    """
+    Parse the *.raw file.
+    @param input_file_path absolute path/name to file to be parsed
+    @param output_file_path optional path to directory to write output
+    If omitted outputs are written to path of input file
+    """
+    log.info('Begin processing echogram data: %r', input_file_path)
+    image_path = generate_image_file_path(input_file_path, output_file_path)
+    file_time = extract_file_time(input_file_path)
 
-    while raw:
-        # We only care for the Sample datagrams, skip over all the other datagrams
-        match = SAMPLE_MATCHER.search(raw)
+    with open(input_file_path, 'rb') as input_file:
 
-        if not match:
-            # Read in the next block w/ a token sized overlap
-            input_file.seek(input_file.tell() - 4)
-            raw = input_file.read(BLOCK_SIZE)
+        config_header = read_header(input_file)
+        transducer_count = config_header['transducer_count']
 
-            # The last 4 bytes is just the length2 of the last datagram
-            if len(raw) <= 4:
-                break
+        trans_keys = range(1, transducer_count+1)
+        frequencies = dict.fromkeys(trans_keys)       # transducer frequency
+        bin_size = None                               # transducer depth measurement
 
-        # Offset by size of length value
-        match_start = match.start() - LENGTH_SIZE
-
-        # Seek to the position of the length data before the token to read into numpy array
-        input_file.seek(position + match_start)
-
-        try:
-            next_channel, next_time, next_sample, next_power = process_sample(input_file, transducer_count)
-
-            if next_time != last_time:
-                # Clear out our temporary dictionaries and set the last time to this time
-                sample_data_temp_dict = {}
-                power_data_temp_dict = {}
-                last_time = next_time
-
-            # Store this data
-            sample_data_temp_dict[next_channel] = next_sample
-            power_data_temp_dict[next_channel] = next_power
-
-            # Check if we have enough records to produce a new row of data
-            if len(sample_data_temp_dict) == len(power_data_temp_dict) == transducer_count:
-                # if this is our first set of data, create our metadata particle and store
-                # the frequency / bin_size data
-                if not power_data_dict:
-                    relpath = generate_relative_file_path(image_path)
-                    first_ping_metadata = defaultdict(list)
-                    for channel, sample_data in sample_data_temp_dict.iteritems():
-                        append_metadata(first_ping_metadata, file_time, relpath,
-                                        channel, sample_data)
-
-                        frequency = sample_data['frequency'][0]
-                        frequencies[channel] = frequency
-
-                        if bin_size is None:
-                            bin_size = sample_data['sound_velocity'] * sample_data['sample_interval'] / 2
-
-                    particle_data = (first_ping_metadata, next_time)
-                    power_data_dict = {channel: [] for channel in power_data_temp_dict}
-
-                # Save the time and power data for plotting
-                data_times.append(next_time)
-                for channel in power_data_temp_dict:
-                    power_data_dict[channel].append(power_data_temp_dict[channel])
-
-        except InvalidTransducer:
-            pass
-
-        # Need current position in file to increment for next regex search offset
         position = input_file.tell()
-        # Read the next block for regex search
+        particle_data = None
+
+        last_time = None
+        sample_data_temp_dict = {}
+        power_data_temp_dict = {}
+
+        power_data_dict = {}
+        data_times = []
+
+        # Read binary file a block at a time
         raw = input_file.read(BLOCK_SIZE)
 
-    data_times = np.array(data_times)
-    # Convert to numpy array and decompress power data to dB
-    for channel in power_data_dict:
-        power_data_dict[channel] = np.array(power_data_dict[channel]).astype('f8') * 10. * numpy.log10(2) / 256.
+        while len(raw) > 4:
+            # We only care for the Sample datagrams, skip over all the other datagrams
+            match = SAMPLE_MATCHER.search(raw)
 
-    log.info('Completed processing data. Generating echogram: %r', input_file_path)
+            if match:
+                # Offset by size of length value
+                match_start = match.start() - LENGTH_SIZE
 
-    plot = ZPLSPlot(data_times, power_data_dict, frequencies, bin_size)
-    plot.generate_plots()
-    plot.write_image(image_path)
+                # Seek to the position of the length data before the token to read into numpy array
+                input_file.seek(position + match_start)
 
-    log.info('Completed generating echogram: %r', input_file_path)
+                try:
+                    next_channel, next_time, next_sample, next_power = process_sample(input_file, transducer_count)
 
-    return particle_data
+                    if next_time != last_time:
+                        # Clear out our temporary dictionaries and set the last time to this time
+                        sample_data_temp_dict = {}
+                        power_data_temp_dict = {}
+                        last_time = next_time
+
+                    # Store this data
+                    sample_data_temp_dict[next_channel] = next_sample
+                    power_data_temp_dict[next_channel] = next_power
+
+                    # Check if we have enough records to produce a new row of data
+                    if len(sample_data_temp_dict) == len(power_data_temp_dict) == transducer_count:
+                        # if this is our first set of data, create our metadata particle and store
+                        # the frequency / bin_size data
+                        if not power_data_dict:
+                            relpath = generate_relative_file_path(image_path)
+                            first_ping_metadata = defaultdict(list)
+                            for channel, sample_data in sample_data_temp_dict.iteritems():
+                                append_metadata(first_ping_metadata, file_time, relpath,
+                                                channel, sample_data)
+
+                                frequency = sample_data['frequency'][0]
+                                frequencies[channel] = frequency
+
+                                if bin_size is None:
+                                    bin_size = sample_data['sound_velocity'] * sample_data['sample_interval'] / 2
+
+                            particle_data = first_ping_metadata, next_time
+                            power_data_dict = {channel: [] for channel in power_data_temp_dict}
+
+                        # Save the time and power data for plotting
+                        data_times.append(next_time)
+                        for channel in power_data_temp_dict:
+                            power_data_dict[channel].append(power_data_temp_dict[channel])
+
+                except InvalidTransducer:
+                    pass
+
+            else:
+                input_file.seek(position + BLOCK_SIZE - 4)
+
+            # Need current position in file to increment for next regex search offset
+            position = input_file.tell()
+            # Read the next block for regex search
+            raw = input_file.read(BLOCK_SIZE)
+
+        data_times = np.array(data_times)
+        # Convert to numpy array and decompress power data to dB
+        for channel in power_data_dict:
+            power_data_dict[channel] = np.array(power_data_dict[channel]) * 10. * numpy.log10(2) / 256.
+
+        log.info('Completed processing data. Generating echogram: %r', input_file_path)
+
+        plot = ZPLSPlot(data_times, power_data_dict, frequencies, bin_size)
+        plot.generate_plots()
+        plot.write_image(image_path)
+
+        log.info('Completed generating echogram: %r', input_file_path)
+
+        return particle_data

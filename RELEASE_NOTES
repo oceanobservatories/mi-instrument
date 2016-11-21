@@ -1,3 +1,9 @@
+Version 0.3.103
+
+**ZPLS**
+
+* Added exception handling to echogram_thread and parse_echogram_file_wrapper
+
 Version 0.3.102
 
 **ZPLS**
