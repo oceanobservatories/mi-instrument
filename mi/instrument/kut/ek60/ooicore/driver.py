@@ -584,19 +584,32 @@ class Protocol(CommandResponseInstrumentProtocol):
                 for key in future_keys:
                     future = futures[key]
                     if future.ready():
-                        # Job complete, remove the future from our dictionary and generate a particle
-                        metadata, internal_timestamp = future.get()
+                        try:
+                            # Job complete, remove the future from our dictionary and generate a particle
+                            result = future.get()
+                        except Exception as e:
+                            self._driver_event(DriverAsyncEvent.ERROR, e)
+                            result = None
+
                         futures.pop(key)
-                        filepath, timestamp = key
-                        log.info('Completed echogram with filepath: %r timestamp: %r', filepath, timestamp)
 
-                        particle = ZplscBInstrumentDataParticle(metadata, port_timestamp=timestamp,
-                                                                internal_timestamp=internal_timestamp,
-                                                                preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
-                        parsed_sample = particle.generate()
+                        if isinstance(result, Exception):
+                            self._driver_event(DriverAsyncEvent.ERROR, result)
+                            continue
 
-                        if self._driver_event:
-                            self._driver_event(DriverAsyncEvent.SAMPLE, parsed_sample)
+                        if result is not None:
+                            metadata, internal_timestamp = result
+
+                            filepath, timestamp = key
+                            log.info('Completed echogram with filepath: %r timestamp: %r', filepath, timestamp)
+
+                            particle = ZplscBInstrumentDataParticle(metadata, port_timestamp=timestamp,
+                                                                    internal_timestamp=internal_timestamp,
+                                                                    preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
+                            parsed_sample = particle.generate()
+
+                            if self._driver_event:
+                                self._driver_event(DriverAsyncEvent.SAMPLE, parsed_sample)
 
                 time.sleep(1)
 

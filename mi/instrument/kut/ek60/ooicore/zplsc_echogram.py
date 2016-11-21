@@ -187,6 +187,8 @@ class ZPLSPlot(object):
 
     def write_image(self, filename):
         self.fig.savefig(filename)
+        plt.close(self.fig)
+        self.fig = None
 
     def _setup_plot(self, bin_size, max_depth):
         # subset the yticks so that we don't plot every one
