@@ -6,7 +6,7 @@
 @brief Move messages from rabbitMQ to QPID
 
 Usage:
-    shovel <rabbit_url> <rabbit_queue> <qpid_url> <qpid_queue>
+    shovel <rabbit_url> <rabbit_queue> <rabbit_key> <qpid_url> <qpid_queue>
 
 Options:
     -h, --help          Show this screen.
@@ -19,6 +19,7 @@ from docopt import docopt
 from kombu.mixins import ConsumerMixin
 from kombu import Connection, Queue, Exchange
 import qpid.messaging as qm
+from librabbitmq import ChannelError
 
 from ooi.logging import log
 from mi.core.log import LoggerManager
@@ -55,16 +56,29 @@ class QpidProducer(object):
             self.connect()
         message = qm.Message(content=message, content_type='text/plain', durable=True,
                              properties=headers, user_id='guest')
-        self.sender.send(message, sync=False)
+        self.sender.send(message, sync=True)
 
 
 class RabbitConsumer(ConsumerMixin):
-    def __init__(self, url, queue, qpid):
+    def __init__(self, url, queue, routing_key, qpid):
         self.connection = Connection(hostname=url)
         self.exchange = Exchange(name='amq.direct', type='direct', channel=self.connection)
-        self.queue = Queue(name=queue, exchange=self.exchange, routing_key=queue,
-                           channel=self.connection, durable=True)
         self.qpid = qpid
+
+        kwargs = {
+            'exchange': self.exchange,
+            'routing_key': routing_key,
+            'channel': self.connection,
+            'name': queue,
+        }
+
+        # If the requested queue already exists, attach to it
+        # Otherwise, declare a new, exclusive queue which will be deleted upon disconnect
+        try:
+            self.queue = Queue(**kwargs)
+            self.queue.queue_declare(passive=True)
+        except ChannelError:
+            self.queue = Queue(exclusive=True, **kwargs)
 
     def get_consumers(self, Consumer, channel):
         c = Consumer([self.queue], callbacks=[self.on_message])
@@ -87,9 +101,10 @@ def main():
     qpid_queue = options['<qpid_queue>']
     rabbit_url = options['<rabbit_url>']
     rabbit_queue = options['<rabbit_queue>']
+    rabbit_key = options['<rabbit_key>']
 
     qpid = QpidProducer(qpid_url, qpid_queue)
-    rabbit = RabbitConsumer(rabbit_url, rabbit_queue, qpid)
+    rabbit = RabbitConsumer(rabbit_url, rabbit_queue, rabbit_key, qpid)
     rabbit.run()
 
 

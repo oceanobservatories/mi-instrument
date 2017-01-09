@@ -1,3 +1,10 @@
+Version 0.3.104
+
+**Shovel**
+
+* Added the ability to specify a queue and routing key. If the queue does not
+already exist it will be created as an exclusive queue and deleted upon disconnect.
+
 Version 0.3.103
 
 **ZPLS**
