@@ -1,3 +1,9 @@
+Version 0.3.105
+
+**Shovel**
+
+* Added shovel status monitoring
+
 Version 0.3.104
 
 **Shovel**

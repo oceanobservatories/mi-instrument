@@ -13,8 +13,8 @@ Options:
 
 """
 import time
+from threading import Thread
 
-import os
 from docopt import docopt
 from kombu.mixins import ConsumerMixin
 from kombu import Connection, Queue, Exchange
@@ -64,6 +64,7 @@ class RabbitConsumer(ConsumerMixin):
         self.connection = Connection(hostname=url)
         self.exchange = Exchange(name='amq.direct', type='direct', channel=self.connection)
         self.qpid = qpid
+        self.count = 0
 
         kwargs = {
             'exchange': self.exchange,
@@ -73,12 +74,12 @@ class RabbitConsumer(ConsumerMixin):
         }
 
         # If the requested queue already exists, attach to it
-        # Otherwise, declare a new, exclusive queue which will be deleted upon disconnect
+        # Otherwise, declare a new queue which will be deleted upon disconnect
         try:
             self.queue = Queue(**kwargs)
             self.queue.queue_declare(passive=True)
         except ChannelError:
-            self.queue = Queue(exclusive=True, **kwargs)
+            self.queue = Queue(auto_delete=True, **kwargs)
 
     def get_consumers(self, Consumer, channel):
         c = Consumer([self.queue], callbacks=[self.on_message])
@@ -89,10 +90,50 @@ class RabbitConsumer(ConsumerMixin):
         try:
             self.qpid.send(str(body), message.headers)
             message.ack()
+            self.count += 1
         except Exception as e:
             log.exception('Exception while publishing message to QPID, requeueing')
             message.requeue()
             self.qpid.sender = None
+
+    def get_current_queue_depth(self):
+        try:
+            result = self.queue.queue_declare(passive=True)
+            name = result.queue
+            count = result.message_count
+        except ChannelError:
+            if self.count > 0:
+                log.exception('Exception getting queue count')
+            name = 'UNK'
+            count = 0
+        return name, count, self.count
+
+
+class StatsReporter(Thread):
+    def __init__(self, rabbit, report_interval=60):
+        self.rabbit = rabbit
+        self.report_interval = report_interval
+        self.last_time = None
+        self.last_count = 0
+        super(StatsReporter, self).__init__()
+
+    def run(self):
+        while True:
+            queue_name, queue_depth, sent_count = self.rabbit.get_current_queue_depth()
+            now = time.time()
+            if self.last_time is not None:
+                elapsed = now - self.last_time
+                if elapsed > 0:
+                    rate = float(sent_count - self.last_count) / elapsed
+                else:
+                    rate = -1
+                log.info('Queue: %s Depth: %d Sent Count: %d Rate: %.2f/s', queue_name, queue_depth, sent_count, rate)
+
+            self.last_time = now
+            self.last_count = sent_count
+
+            time.sleep(self.report_interval)
+
 
 
 def main():
@@ -102,9 +143,13 @@ def main():
     rabbit_url = options['<rabbit_url>']
     rabbit_queue = options['<rabbit_queue>']
     rabbit_key = options['<rabbit_key>']
+    log.info('Starting shovel: %r', options)
 
     qpid = QpidProducer(qpid_url, qpid_queue)
     rabbit = RabbitConsumer(rabbit_url, rabbit_queue, rabbit_key, qpid)
+    reporter = StatsReporter(rabbit)
+    reporter.daemon = True
+    reporter.start()
     rabbit.run()
 
 
