@@ -10,7 +10,7 @@ then the local override may be res/config/mi-logging.local.yml (for overrides sp
 or if this is not found, then res/config/logging.local.yml,
 or if this is not found then no overrides.
 
-The get_logger function is obsolete but kept to simplify transition to the ooi.logging code.
+The get_logger function is obsolete but kept to simplify transition to the mi.logging code.
 
 USAGE:
 to configure logging from the standard MI configuration files:
@@ -20,20 +20,19 @@ to configure logging from the standard MI configuration files:
 
 to create a logger automatically scoped with the calling package and ready to use:
 
-    from ooi.logging import log    # no longer need get_logger at all
+    from mi.logging import log    # no longer need get_logger at all
 
 """
 import inspect
-import logging
-import os
 import sys
-import yaml
-import pkg_resources
-from types import FunctionType
 from functools import wraps
 
+import os
+import pkg_resources
+import yaml
 from mi.core.common import Singleton
-from ooi.logging import config, log
+from mi.logging import log
+from types import FunctionType
 
 LOGGING_CONFIG_ENVIRONMENT_VARIABLE="MI_LOGGING_CONFIG"
 
@@ -45,12 +44,12 @@ LOGGING_CONTAINER_OVERRIDE='res/config/logging.local.yml'
 
 """Basic pyon logging (with or without container)
 
-   NOTE: the functionality of this module has moved to ooi.logging.config.
+   NOTE: the functionality of this module has moved to mi.logging.config.
          currently this module is maintained for API compatability, but is implemented using the new package.
 """
 
 import logging
-from ooi.logging import config
+from mi.logging import config
 
 DEFAULT_LOGGING_PATHS = ['res/config/logging.yml', 'res/config/logging.local.yml']
 logging_was_configured = False

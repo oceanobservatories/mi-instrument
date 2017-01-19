@@ -1,11 +1,9 @@
+import binascii
 import struct
 from datetime import datetime
 
-import binascii
 import re
-
 from mi.core.exceptions import SampleException
-from ooi.logging import log
 
 # newline.
 NEWLINE = '\n\r'

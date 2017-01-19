@@ -15,9 +15,10 @@ import inspect
 import sys
 
 from mi.core.log import get_logger
+
 log = get_logger()
 
-from ooi.exception import ApplicationException
+from mi.exception import ApplicationException
 
 class IonException(ApplicationException):
     status_code = -1

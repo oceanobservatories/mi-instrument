@@ -15,14 +15,13 @@ Options:
 import time
 from threading import Thread
 
-from docopt import docopt
-from kombu.mixins import ConsumerMixin
-from kombu import Connection, Queue, Exchange
 import qpid.messaging as qm
+from docopt import docopt
+from kombu import Connection, Queue, Exchange
+from kombu.mixins import ConsumerMixin
 from librabbitmq import ChannelError
-
-from ooi.logging import log
 from mi.core.log import LoggerManager
+from mi.logging import log
 
 LoggerManager()
 

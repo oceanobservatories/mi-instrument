@@ -1,7 +1,7 @@
-sudo: false
+sudo: true
 env:
   global:
-    - CONSUL_VERSION=0.6.4
+    - CONSUL_VERSION=0.7.2
     - CONSUL_DIR=$HOME/consul_$CONSUL_VERSION
     - CONSUL_ZIPNAME=consul_${CONSUL_VERSION}_linux_amd64.zip
 
@@ -13,6 +13,11 @@ notifications:
 
 # Setup anaconda
 before_install:
+  - 'if [[ ! -f $CONSUL_DIR/consul ]]; then (mkdir -p $CONSUL_DIR && cd $CONSUL_DIR && wget https://releases.hashicorp.com/consul/${CONSUL_VERSION}/${CONSUL_ZIPNAME} && unzip ${CONSUL_ZIPNAME}); fi'
+  - $CONSUL_DIR/consul --version
+  - $CONSUL_DIR/consul agent -dev -log-level=warn &
+  # Wait for consul to be ready
+  - sleep 1
   - wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
   - chmod +x miniconda.sh
   - ./miniconda.sh -b
@@ -30,15 +35,10 @@ before_script:
   - psql -c 'create role awips superuser createdb createrole inherit login;' -U postgres
   - psql -c 'create database metadata;' -U postgres
   - psql -c 'grant all privileges on database metadata to awips;' -U postgres
-  - 'if [[ ! -f $CONSUL_DIR/consul ]]; then (mkdir -p $CONSUL_DIR && cd $CONSUL_DIR && wget https://releases.hashicorp.com/consul/${CONSUL_VERSION}/${CONSUL_ZIPNAME} && unzip ${CONSUL_ZIPNAME}); fi'
-  - $CONSUL_DIR/consul --version
-  - $CONSUL_DIR/consul agent -dev -log-level=warn &
-  # Wait for consul to be ready
-  - sleep 1
 
 # command to run tests
 script:
-  - nosetests -a UNIT --with-coverage --cover-package=mi
+  - nosetests --processes=2 --process-timeout=360 -a UNIT --with-coverage --cover-package=mi
 
 after_success:
   - codecov

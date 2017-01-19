@@ -1,8 +1,9 @@
-
 import logging
-import traceback
-import ooi.exception
 import sys
+import traceback
+
+import mi.exception
+
 
 class StackFormatter(logging.Formatter):
     """ logging formatter that:
@@ -19,7 +20,7 @@ class StackFormatter(logging.Formatter):
 
             formatters:
               stacky:
-                (): 'ooi.logging.format.StackFormatter'
+                (): 'mi.logging.format.StackFormatter'
                 format: '%(asctime)s %(levelname)-8s %(threadName)s %(name)-15s:%(lineno)d %(message)s'
             handlers:
               console:
@@ -41,7 +42,7 @@ class StackFormatter(logging.Formatter):
         try:
             type,ex,tb = sys.exc_info()
             # use special exception logging only for IonExceptions with more than one saved stack
-            if isinstance(ex, ooi.exception.ApplicationException):
+            if isinstance(ex, mi.exception.ApplicationException):
                 stacks = ex.get_stacks()
             else:
                 stacks = [ ('exception: '+str(ex), traceback.extract_tb(tb) if tb else None) ]
@@ -94,12 +95,12 @@ class FieldFormatter(logging.Formatter):
         create with logging.yml:
 
           formatter:
-            (): ooi.logging.format.FieldFormatter
+            (): mi.logging.format.FieldFormatter
             fields: threadID,userName,conversationID
 
         and set these fields in code:
 
-          from ooi.logging import config
+          from mi.logging import config
           config.set_logging_fields( {'call':'conversationID'}, {'userName':'bob'} )
 
         and set the thread-local parts
@@ -108,7 +109,7 @@ class FieldFormatter(logging.Formatter):
           x = threading.local()
           x.call = 'abc'
 
-          from ooi.logging import log
+          from mi.logging import log
           log.warning('pop goes the weasel')
 
         should produce this output:

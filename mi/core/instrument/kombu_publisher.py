@@ -9,10 +9,10 @@ initial release
 """
 import json
 import time
-import kombu
 
+import kombu
 from mi.core.instrument.publisher import Publisher
-from ooi.logging import log
+from mi.logging import log
 
 
 class KombuPublisher(Publisher):

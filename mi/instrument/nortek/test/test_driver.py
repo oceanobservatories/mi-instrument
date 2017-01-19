@@ -7,28 +7,26 @@
 import base64
 from binascii import unhexlify
 
-from nose.plugins.attrib import attr
-from mock import Mock
-
-from mi.core.instrument.instrument_protocol import InitializationType
-from ooi.logging import log
-from mi.idk.unit_test import InstrumentDriverUnitTestCase, ParameterTestConfigKey, InstrumentDriverTestCase
-from mi.idk.unit_test import InstrumentDriverIntegrationTestCase
-from mi.idk.unit_test import DriverTestMixin
+import mi.instrument.nortek.particles as particles
+from mi.core.exceptions import InstrumentCommandException, InstrumentParameterException, SampleException
 from mi.core.instrument.chunker import StringChunker
 from mi.core.instrument.data_particle import DataParticleKey, DataParticleValue
 from mi.core.instrument.instrument_driver import DriverConnectionState, DriverParameter, DriverConfigKey
+from mi.core.instrument.instrument_protocol import InitializationType
 from mi.core.instrument.protocol_param_dict import ParameterDictVisibility, ParameterDictType
-from mi.instrument.nortek.driver import common, EngineeringParameter, ParameterUnits
-from mi.instrument.nortek.driver import UserConfigKey
-from mi.instrument.nortek.driver import NortekInstrumentProtocol
-from mi.instrument.nortek.driver import ScheduledJob
-from mi.core.exceptions import InstrumentCommandException, InstrumentParameterException, SampleException
+from mi.idk.unit_test import DriverTestMixin
+from mi.idk.unit_test import InstrumentDriverIntegrationTestCase
+from mi.idk.unit_test import InstrumentDriverUnitTestCase, ParameterTestConfigKey, InstrumentDriverTestCase
 from mi.instrument.nortek.driver import (InstrumentPrompts, Parameter, ProtocolState,
                                          ProtocolEvent, InstrumentCommands, Capability)
+from mi.instrument.nortek.driver import NortekInstrumentProtocol
+from mi.instrument.nortek.driver import ScheduledJob
+from mi.instrument.nortek.driver import UserConfigKey
+from mi.instrument.nortek.driver import common, EngineeringParameter, ParameterUnits
 from mi.instrument.nortek.user_configuration import UserConfigCompositeKey
-import mi.instrument.nortek.particles as particles
-
+from mi.logging import log
+from mock import Mock
+from nose.plugins.attrib import attr
 
 __author__ = 'Rachel Manoni, Ronald Ronquillo'
 __license__ = 'Apache 2.0'
