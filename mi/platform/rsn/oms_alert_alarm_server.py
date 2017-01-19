@@ -14,15 +14,16 @@ Options:
 
 """
 
-import re
+import httplib
 import xmlrpclib
+
+import re
 import yaml
 from docopt import docopt
 from flask import Flask, request
 from mi.core.instrument.publisher import Publisher
 from mi.core.log import LoggerManager
-from ooi.logging import log
-import httplib
+from mi.logging import log
 
 app = Flask(__name__)
 aa_publisher = None

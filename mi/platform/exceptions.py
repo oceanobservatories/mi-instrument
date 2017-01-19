@@ -12,9 +12,6 @@ __author__ = 'Carlos Rueda'
 __license__ = 'Apache 2.0'
 
 
-from ooi.exception import ApplicationException
-
-
 class PlatformException(InstrumentException):
     """
     Base class for platform related exceptions.

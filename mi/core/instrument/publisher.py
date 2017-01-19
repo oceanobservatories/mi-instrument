@@ -8,17 +8,16 @@ Release notes:
 initial release
 """
 import copy
-import time
+import datetime
 import json
+import time
 import urllib
 import urlparse
 from collections import deque
 from threading import Thread
 
-import datetime
-
 from mi.core.instrument.instrument_driver import DriverAsyncEvent
-from ooi.logging import log
+from mi.logging import log
 
 
 def extract_param(param, query):

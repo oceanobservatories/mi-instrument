@@ -14,8 +14,7 @@ import numpy as np
 import pandas as pd
 import xarray as xr
 from mi.core.instrument.publisher import Publisher
-
-from ooi.logging import log
+from mi.logging import log
 
 
 class CountPublisher(Publisher):

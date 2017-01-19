@@ -3,14 +3,14 @@
     USAGE:
 
     ### perform once as the application begins to initialize logging system-wide
-    from ooi.logging import config
+    from mi.logging import config
     config.add_configuration("some/path/logging.yml")           # could be normal file
     config.add_configuration("or/resource/logging.local.yml")   # or resource within egg
     # define special fields for GELF records
     config.set_logging_fields( {"username":"user", "conversation-id":"session"}, {"system":"alpha"} )
 
     ### now throughout codebase, can write log records
-    from ooi.logging import log
+    from mi.logging import log
     log.info("up and running now")
 
     ### but can also go back and change configuration later
@@ -19,16 +19,17 @@
         config.set_level("pyon.ion.endpoint", logging.ERROR)
 """
 
-from logging import NOTSET
-import logging.config
-import errno
-import yaml
 import collections
-from pkg_resources import resource_string
-import ooi.logging
-import logger
+import errno
+import logging.config
 import sys
 import traceback
+from logging import NOTSET
+
+import logger
+import yaml
+from pkg_resources import resource_string
+
 
 class _LoggingConfiguration(object):
 
@@ -177,7 +178,7 @@ class _LoggingConfiguration(object):
 
     def add_filter(self, filter):
         """ add a filter to all new loggers created """
-        ooi.logging.log._add_filter(filter)
+        mi.logging.log._add_filter(filter)
 
     def set_logging_fields(self, thread_local_fields, constant_fields, attribute_name):
         """WARNING: calling multiple times is currently additive -- will not replace fields"""

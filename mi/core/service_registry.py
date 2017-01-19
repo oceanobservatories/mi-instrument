@@ -1,14 +1,12 @@
 import json
-import consul
 import time
-
-from threading import Thread
 from collections import MutableMapping
-from requests import ConnectionError
+from threading import Thread
 
+import consul
 from mi.core.exceptions import InstrumentParameterException
-from ooi.logging import log
-
+from mi.logging import log
+from requests import ConnectionError
 
 DRIVER_SERVICE_NAME = 'instrument_driver'
 DRIVER_SERVICE_TTL = 60

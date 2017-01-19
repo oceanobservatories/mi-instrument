@@ -11,7 +11,7 @@
 
         formatters:
           raw:
-            (): 'ooi.logging.format.RawRecordFormatter'
+            (): 'mi.logging.format.RawRecordFormatter'
         handlers:
           file:
             class: logging.handlers.RotatingFileHandler
@@ -25,7 +25,7 @@
 
     Later the backups can be sent with this command:
 
-        python ooi/logging/replay.py graylog.oceanobservatories.org /path/to/some-file.log.*
+        python mi.logging/replay.py graylog.oceanobservatories.org /path/to/some-file.log.*
 
     This is probably not appropriate for sending the non-backup /path/to/some-file.log because it is still being written
     to by the running application.

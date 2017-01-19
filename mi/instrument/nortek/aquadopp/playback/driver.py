@@ -7,18 +7,16 @@ Release notes:
 Driver for Aquadopp DW
 """
 import datetime
+
 import re
-
-from ooi.logging import log
-
+from mi.core.common import BaseEnum
 from mi.core.exceptions import SampleException
 from mi.core.instrument.chunker import StringChunker
-from mi.core.instrument.instrument_protocol import CommandResponseInstrumentProtocol
 from mi.core.instrument.data_particle import DataParticle, DataParticleKey
-from mi.core.common import BaseEnum
+from mi.core.instrument.instrument_protocol import CommandResponseInstrumentProtocol
 from mi.instrument.nortek.driver import ProtocolState
 from mi.instrument.nortek.particles import AquadoppDataParticleType
-
+from mi.logging import log
 
 __author__ = 'Pete Cable'
 __license__ = 'Apache 2.0'
