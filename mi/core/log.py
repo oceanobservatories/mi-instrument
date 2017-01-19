@@ -24,16 +24,15 @@ to create a logger automatically scoped with the calling package and ready to us
 
 """
 import inspect
-import logging
-import os
 import sys
-import yaml
-import pkg_resources
-from types import FunctionType
 from functools import wraps
 
+import os
+import pkg_resources
+import yaml
 from mi.core.common import Singleton
-from ooi.logging import config, log
+from mi.logging import log
+from types import FunctionType
 
 LOGGING_CONFIG_ENVIRONMENT_VARIABLE="MI_LOGGING_CONFIG"
 
@@ -50,7 +49,7 @@ LOGGING_CONTAINER_OVERRIDE='res/config/logging.local.yml'
 """
 
 import logging
-from ooi.logging import config
+from mi.logging import config
 
 DEFAULT_LOGGING_PATHS = ['res/config/logging.yml', 'res/config/logging.local.yml']
 logging_was_configured = False

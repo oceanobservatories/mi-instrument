@@ -3,15 +3,12 @@ import struct
 from collections import namedtuple
 from datetime import datetime
 
-import re
-
 from mi.core.common import BaseEnum
 from mi.core.exceptions import SampleException
 from mi.core.instrument.data_particle import DataParticle, CommonDataParticleType, DataParticleKey, DataParticleValue
 from mi.instrument.nortek import common
 from mi.instrument.nortek.user_configuration import UserConfigKey, UserConfigCompositeKey, UserConfiguration
-from ooi.logging import log
-
+from mi.logging import log
 
 VID = DataParticleKey.VALUE_ID
 VAL = DataParticleKey.VALUE

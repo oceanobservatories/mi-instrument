@@ -17,29 +17,25 @@ Options:
     To run without installing:
     python -m mi.core.instrument.playback ...
 """
-import importlib
 import glob
+import importlib
 import sys
-import os
-import re
 import time
 from datetime import datetime
 
-import yaml
+import os
+import re
 from docopt import docopt
-
-from ooi.logging import log
-from ooi_port_agent.packet import Packet, PacketHeader
-from ooi_port_agent.common import PacketType
-from wrapper import EventKeys, encode_exception, DriverWrapper
 from mi.core.instrument.instrument_driver import DriverAsyncEvent
-from mi.core.instrument.publisher import Publisher
-from mi.core.instrument.data_particle import DataParticleKey
 from mi.core.instrument.instrument_protocol import \
     MenuInstrumentProtocol,\
     CommandResponseInstrumentProtocol, \
     InstrumentProtocol
-
+from mi.core.instrument.publisher import Publisher
+from mi.logging import log
+from ooi_port_agent.common import PacketType
+from ooi_port_agent.packet import Packet, PacketHeader
+from wrapper import EventKeys, encode_exception, DriverWrapper
 
 __author__ = 'Ronald Ronquillo'
 __license__ = 'Apache 2.0'

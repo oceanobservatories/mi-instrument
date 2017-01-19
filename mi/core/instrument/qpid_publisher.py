@@ -11,9 +11,8 @@ import json
 import time
 
 import qpid.messaging as qm
-
 from mi.core.instrument.publisher import Publisher
-from ooi.logging import log
+from mi.logging import log
 
 
 class QpidPublisher(Publisher):

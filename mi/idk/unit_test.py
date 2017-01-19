@@ -6,13 +6,13 @@
 @brief Base classes for instrument driver tests.
 """
 
+import datetime
 import gc
 import time
-import datetime
-import re
-import os
-import ntplib
 
+import ntplib
+import os
+import re
 from mi.core.log import get_logger
 from mi.core.port_agent_process import PortAgentProcess
 
@@ -70,7 +70,7 @@ from mi.core.driver_scheduler import TriggerType
 from mi.core.exceptions import Conflict
 from mi.core.exceptions import ResourceError, BadRequest, Timeout, ServerError
 
-from ooi.logging import log
+from mi.logging import log
 
 # Do not remove this import.  It is for package building.
 

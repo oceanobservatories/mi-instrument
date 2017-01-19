@@ -8,14 +8,12 @@
 """
 import Queue
 import importlib
-import subprocess
 import signal
-import os
+import subprocess
 import time
-import sys
 
-from ooi.logging import log
-
+import os
+from mi.logging import log
 
 __author__ = 'Edward Hunter'
 __license__ = 'Apache 2.0'

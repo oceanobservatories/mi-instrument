@@ -14,13 +14,13 @@ simple test:
 __author__ = 'Carlos Rueda'
 __license__ = 'Apache 2.0'
 
-from mi.platform.rsn.oms_client_factory import CIOMSClientFactory
-
-from ooi.logging import log
-import os
-import subprocess
 import signal
+import subprocess
+
+import os
 from gevent import sleep
+from mi.logging import log
+from mi.platform.rsn.oms_client_factory import CIOMSClientFactory
 
 _PYTHON_PATH = 'python'
 _PROGRAM     = "mi/platform/rsn/simulator/oms_simulator_server.py"
