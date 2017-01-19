@@ -8,22 +8,13 @@
 """
 __author__ = 'Edward Hunter'
 
-
-from gevent import spawn
-
-
 import time
-import thread
 
-# We import "regular" zmq, not the patched version because
-# we handle the nonblocking sockets directly as they need to work
-# with unpatched threads as well.
 import zmq
-
-from ooi.logging import log
-
+from gevent import spawn
 from mi.core.exceptions import ExceptionFactory
 from mi.core.exceptions import InstDriverClientTimeoutError
+from mi.logging import log
 
 
 EXCEPTION_FACTORY = ExceptionFactory()

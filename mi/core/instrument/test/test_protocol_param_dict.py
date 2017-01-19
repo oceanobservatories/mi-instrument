@@ -7,18 +7,18 @@
 @brief Test cases for the base protocol parameter dictionary module
 """
 import json
-import re
 
-from ooi.logging import log
-from nose.plugins.attrib import attr
-from mi.core.instrument.test.test_strings import TestUnitStringsDict
+import re
 from mi.core.exceptions import InstrumentParameterException
 from mi.core.exceptions import InstrumentParameterExpirationException
-from mi.core.instrument.protocol_param_dict import ProtocolParameterDict
-from mi.core.instrument.protocol_param_dict import ParameterDictVisibility
-from mi.core.instrument.protocol_param_dict import ParameterDictType
-from mi.core.instrument.protocol_param_dict import ParameterDictKey
 from mi.core.instrument.protocol_param_dict import Parameter, FunctionParameter, RegexParameter
+from mi.core.instrument.protocol_param_dict import ParameterDictKey
+from mi.core.instrument.protocol_param_dict import ParameterDictType
+from mi.core.instrument.protocol_param_dict import ParameterDictVisibility
+from mi.core.instrument.protocol_param_dict import ProtocolParameterDict
+from mi.core.instrument.test.test_strings import TestUnitStringsDict
+from mi.logging import log
+from nose.plugins.attrib import attr
 
 
 @attr('UNIT', group='mi')

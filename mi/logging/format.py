@@ -1,8 +1,9 @@
-
 import logging
-import traceback
-import ooi.exception
 import sys
+import traceback
+
+import mi.exception
+
 
 class StackFormatter(logging.Formatter):
     """ logging formatter that:
@@ -41,7 +42,7 @@ class StackFormatter(logging.Formatter):
         try:
             type,ex,tb = sys.exc_info()
             # use special exception logging only for IonExceptions with more than one saved stack
-            if isinstance(ex, ooi.exception.ApplicationException):
+            if isinstance(ex, mi.exception.ApplicationException):
                 stacks = ex.get_stacks()
             else:
                 stacks = [ ('exception: '+str(ex), traceback.extract_tb(tb) if tb else None) ]

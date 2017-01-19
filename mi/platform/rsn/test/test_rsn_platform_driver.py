@@ -14,8 +14,7 @@ __license__ = 'Apache 2.0'
 
 # bin/nosetests -sv ion/agents/platform/rsn/test/test_rsn_platform_driver.py
 
-from ooi.logging import log
-import logging
+from mi.logging import log
 
 # from pyon.util.containers import get_ion_ts
 

@@ -12,17 +12,16 @@
 __author__ = 'Carlos Rueda'
 __license__ = 'Apache 2.0'
 
-
-import sys
-from time import sleep
-import time
-import ntplib
-from urlparse import urlparse
 import httplib
-import yaml
 import json
+import time
+from time import sleep
+from urlparse import urlparse
 
-from ooi.logging import log
+import ntplib
+import yaml
+from mi.logging import log
+
 
 ##########################################################################
 # The "event type" concept was removed from the interface (~Apr/2013).

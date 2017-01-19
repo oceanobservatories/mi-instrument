@@ -5,59 +5,33 @@
 """
 
 import subprocess
+
 import gevent
-from pyon.public import CFG
-from ooi.logging import config
-
-from os.path import exists, join, isdir
-from os import listdir, mkfifo
-
-from mi.idk.metadata import Metadata
-from mi.idk.comm_config import CommConfig
-from mi.idk.config import Config
-from mi.idk.exceptions import DriverDoesNotExist
-
-# Pyon pubsub and event support.
-from pyon.event.event import EventSubscriber
-from pyon.ion.stream import StandaloneStreamSubscriber
-
-# Pyon unittest support.
-from mi.core.unit_test import MiIntTestCase
-
-# Agent imports.
-from pyon.util.context import LocalContextMixin
-from pyon.agent.agent import ResourceAgentClient
-from pyon.agent.agent import ResourceAgentState
-from pyon.agent.agent import ResourceAgentEvent
-
-# Driver imports.
-from ion.agents.instrument.direct_access.direct_access_server import DirectAccessTypes
-from ion.agents.instrument.driver_int_test_support import DriverIntegrationTestSupport
-from ion.agents.port.port_agent_process import PortAgentProcess
-from ion.agents.port.port_agent_process import PortAgentProcessType
-from ion.agents.instrument.driver_process import DriverProcessType
-from mi.core.instrument.instrument_driver import DriverEvent
-from mi.core.instrument.instrument_driver import DriverProtocolState
-from mi.core.instrument.instrument_driver import DriverConnectionState
-
-# Parameter dicts and publishing.
-from ion.agents.instrument.taxy_factory import get_taxonomy
-from ion.util.parameter_yaml_IO import get_param_dict
-from coverage_model.parameter import ParameterDictionary
-
-# Objects and clients.
 from interface.objects import AgentCommand
 from interface.objects import CapabilityType
-from interface.objects import AgentCapability
-from interface.services.icontainer_agent import ContainerAgentClient
-from interface.services.dm.ipubsub_management_service import PubsubManagementServiceClient
 from interface.services.dm.idataset_management_service import DatasetManagementServiceClient
+from interface.services.dm.ipubsub_management_service import PubsubManagementServiceClient
+from interface.services.icontainer_agent import ContainerAgentClient
+from ion.agents.instrument.direct_access.direct_access_server import DirectAccessTypes
+from ion.agents.port.port_agent_process import PortAgentProcess
+from ion.agents.port.port_agent_process import PortAgentProcessType
+from mi.core.instrument.instrument_driver import DriverEvent
+from mi.core.log import get_logger ;
+from mi.core.unit_test import MiIntTestCase
+from mi.idk.comm_config import CommConfig
+from mi.idk.exceptions import DriverDoesNotExist
+from mi.idk.metadata import Metadata
+from os import mkfifo
+from os.path import exists
+from pyon.agent.agent import ResourceAgentClient
+from pyon.agent.agent import ResourceAgentEvent
+from pyon.agent.agent import ResourceAgentState
+from pyon.ion.stream import StandaloneStreamSubscriber
+from pyon.util.context import LocalContextMixin
 
-from mi.core.log import get_logger ; log = get_logger()
+log = get_logger()
 
 from mi.idk import prompt
-
-from prototype.sci_data.stream_defs import ctd_stream_definition
 
 PIPE_PATH = "/tmp/run-instrument-data"
 

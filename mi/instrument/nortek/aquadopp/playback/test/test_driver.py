@@ -3,17 +3,15 @@
 @author Peter Cable
 @brief Test cases for playback driver
 """
-from nose.plugins.attrib import attr
-from ooi.logging import log
-
-from mi.idk.unit_test import InstrumentDriverTestCase, ParameterTestConfigKey, InstrumentDriverUnitTestCase
-from mi.core.instrument.data_particle import DataParticleKey, DataParticleValue
-from mi.core.instrument.chunker import StringChunker
 from mi.core.exceptions import SampleException
+from mi.core.instrument.chunker import StringChunker
+from mi.core.instrument.data_particle import DataParticleKey, DataParticleValue
+from mi.idk.unit_test import InstrumentDriverTestCase, ParameterTestConfigKey, InstrumentDriverUnitTestCase
 from mi.instrument.nortek.aquadopp.playback.driver import AquadoppDwVelocityDataParticleKey
-from mi.instrument.nortek.test.test_driver import DriverTestMixinSub
 from mi.instrument.nortek.aquadopp.playback.driver import Protocol, AquadoppDwVelocityAsciiDataParticle
 from mi.instrument.nortek.particles import AquadoppDataParticleType
+from mi.instrument.nortek.test.test_driver import DriverTestMixinSub
+from nose.plugins.attrib import attr
 
 
 __author__ = 'Peter Cable'

@@ -10,16 +10,14 @@
 __author__ = 'Steve Foley'
 __license__ = 'Apache 2.0'
 
-import unittest
-import re
 from functools import partial
-from mi.core.unit_test import MiUnitTest, MiUnitTestCase
-from nose.plugins.attrib import attr
-from mi.core.unit_test import IonUnitTestCase
-from ooi.logging import log
 
-from mi.core.exceptions import SampleException
+import re
 from mi.core.instrument.chunker import StringChunker
+from mi.core.unit_test import MiUnitTestCase
+from mi.logging import log
+from nose.plugins.attrib import attr
+
 
 @attr('UNIT', group='mi')
 class UnitTestStringChunker(MiUnitTestCase):

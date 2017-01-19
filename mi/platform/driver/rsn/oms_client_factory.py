@@ -10,13 +10,12 @@
 __author__ = 'Carlos Rueda'
 __license__ = 'Apache 2.0'
 
-
-from ooi.logging import log
-
-from mi.platform.rsn.simulator.oms_simulator import CIOMSSimulator
 import xmlrpclib
+
 import os
 from gevent import Greenlet, sleep
+from mi.logging import log
+from mi.platform.rsn.simulator.oms_simulator import CIOMSSimulator
 
 
 class CIOMSClientFactory(object):

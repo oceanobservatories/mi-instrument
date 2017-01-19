@@ -5,28 +5,25 @@
 @brief Test cases for ooicore driver
 """
 import time
+
 import ntplib
-
-from nose.plugins.attrib import attr
-
-from mi.instrument.nortek import common
-from ooi.logging import log
-
+from mi.core.exceptions import SampleException
+from mi.core.instrument.chunker import StringChunker
+from mi.core.instrument.data_particle import DataParticleKey, DataParticleValue
+from mi.core.instrument.instrument_driver import DriverConfigKey
+from mi.core.time_tools import timegm_to_float
 from mi.idk.unit_test import InstrumentDriverTestCase
 from mi.idk.unit_test import ParameterTestConfigKey
-from mi.instrument.nortek.test.test_driver import NortekUnitTest, NortekIntTest, DriverTestMixinSub, bad_sample
-from mi.core.instrument.instrument_driver import DriverConfigKey
-from mi.core.instrument.data_particle import DataParticleKey, DataParticleValue
-from mi.core.instrument.chunker import StringChunker
-from mi.core.exceptions import SampleException
-from mi.core.time_tools import timegm_to_float
+from mi.instrument.nortek import common
 from mi.instrument.nortek.driver import ProtocolEvent, Parameter, EngineeringParameter, ProtocolState
-from mi.instrument.nortek.vector.ooicore.driver import Protocol
 from mi.instrument.nortek.particles import (VectorDataParticleType, VectorVelocityDataParticleKey,
                                             VectorVelocityHeaderDataParticleKey, VectorSystemDataParticleKey,
                                             VectorVelocityHeaderDataParticle, VectorVelocityDataParticle,
                                             VectorSystemDataParticle)
-
+from mi.instrument.nortek.test.test_driver import NortekUnitTest, NortekIntTest, DriverTestMixinSub, bad_sample
+from mi.instrument.nortek.vector.ooicore.driver import Protocol
+from mi.logging import log
+from nose.plugins.attrib import attr
 
 __author__ = 'Rachel Manoni, Ronald Ronquillo'
 __license__ = 'Apache 2.0'
