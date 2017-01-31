@@ -1162,10 +1162,7 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
         configuration parameters: data port, command port, and address
         This will retry a specified number of times with exponential backoff.
         """
-        try:
-            return ConsulServiceRegistry.locate_port_agent(tag)
-        except ConnectionError:
-            return None
+        return ConsulServiceRegistry.locate_port_agent(tag)
 
     def _got_exception(self, exception):
         """

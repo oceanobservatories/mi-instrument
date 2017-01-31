@@ -33,7 +33,8 @@ class ConsulServiceRegistry(object):
                 cmd_port = cmd_port[0]['Service']['Port']
                 port_agent_config = {'port': port, 'cmd_port': cmd_port, 'addr': addr}
                 return port_agent_config
-        except ConnectionError:
+        except StandardError:
+            log.exception('Exception attempting to locate port agent via Consul')
             return None
 
     @staticmethod
@@ -54,16 +55,23 @@ class ConsulServiceRegistry(object):
         def run(self):
             self.running = True
 
-            while self.running and not self.registered:
-                try:
-                    ConsulServiceRegistry.register_driver(self.reference_designator, self.port)
-                    self.registered = True
-                except ConnectionError:
-                    log.error('Unable to register with Consul, will attempt again in %d secs', DRIVER_SERVICE_TTL / 2)
-                    time.sleep(DRIVER_SERVICE_TTL / 2)
-
             while self.running:
-                CONSUL.agent.check.ttl_pass(self.check_id)
+                if not self.registered:
+                    try:
+                        ConsulServiceRegistry.register_driver(self.reference_designator, self.port)
+                        self.registered = True
+                    except StandardError:
+                        log.exception('Unable to register with Consul, '
+                                      'will attempt again in %d secs', DRIVER_SERVICE_TTL / 2)
+                else:
+                    try:
+                        CONSUL.agent.check.ttl_pass(self.check_id)
+                    except StandardError:
+                        # Force re-register
+                        self.registered = False
+                        log.exception('Unable to update TTL health check with Consul, '
+                                      'will attempt again in %d secs', DRIVER_SERVICE_TTL / 2)
+
                 time.sleep(DRIVER_SERVICE_TTL / 2)
 
         def stop(self):
