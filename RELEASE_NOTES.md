@@ -1,3 +1,9 @@
+Version 0.3.106
+
+**ServiceRegistry**
+
+* Improved error handling
+
 Version 0.3.105
 
 **Shovel**
