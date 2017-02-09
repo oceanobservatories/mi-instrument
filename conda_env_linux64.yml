@@ -1,0 +1,78 @@
+name: mi
+channels:
+- defaults
+- ooi
+- conda-forge
+dependencies:
+- obspy=1.0.2
+- constantly=15.1.0
+- cycler=0.10.0
+- cython=0.25.2
+- decorator=4.0.11
+- freetype=2.5.5
+- funcsigs=1.0.2
+- functools32=3.2.3.2
+- future=0.16.0
+- gevent=1.2.1
+- greenlet=0.4.11
+- icu=54.1=0
+- incremental=16.10.1
+- libiconv=1.14=0
+- libpng=1.6.27=0
+- libpq=9.5.4=0
+- libxml2=2.9.4=0
+- libxslt=1.1.29=0
+- lxml=3.7.2
+- matplotlib=2.0.0
+- mkl=2017.0.1
+- mock=2.0.0
+- msgpack-python=0.4.8
+- nose=1.3.7=py27_1
+- numpy=1.11.3
+- ooi_port_agent=0.0.42
+- openssl=1.0.2k=0
+- pandas=0.19.2
+- pbr=1.10.0
+- pip=9.0.1
+- psycopg2=2.6.2
+- pyparsing=2.1.4
+- pyqt=5.6.0
+- python=2.7.13
+- python-dateutil=2.6.0
+- pytz=2016.10
+- pyyaml=3.12
+- pyzmq=16.0.2
+- qt=5.6.2=0
+- readline=6.2=2
+- requests=2.12.4
+- scipy=0.18.1
+- setuptools=27.2.0
+- sip=4.18
+- six=1.10.0
+- sqlalchemy=1.1.5
+- sqlite=3.13.0
+- subprocess32=3.2.7
+- tk=8.5.18=0
+- twisted=16.6.0
+- wheel=0.29.0
+- xarray=0.9.1
+- yaml=0.1.6
+- zlib=1.2.8
+- zope=1.0
+- zope.interface=4.3.3
+- pip:
+  - amqp==2.1.4
+  - apscheduler==2.1.0
+  - beautifulsoup4==4.5.3
+  - bs4==0.0.1
+  - codecov==2.0.5
+  - coverage==4.3.4
+  - kombu==4.0.2
+  - librabbitmq==1.6.1
+  - modestimage==0.1
+  - ntplib==0.3.3
+  - python-consul==0.7.0
+  - qpid-python==0.32.1
+  - tqdm==4.11.2
+  - vine==1.1.3
+

@@ -1,7 +1,7 @@
 sudo: true
 env:
   global:
-    - CONSUL_VERSION=0.7.2
+    - CONSUL_VERSION=0.7.4
     - CONSUL_DIR=$HOME/consul_$CONSUL_VERSION
     - CONSUL_ZIPNAME=consul_${CONSUL_VERSION}_linux_amd64.zip
 
@@ -16,8 +16,6 @@ before_install:
   - 'if [[ ! -f $CONSUL_DIR/consul ]]; then (mkdir -p $CONSUL_DIR && cd $CONSUL_DIR && wget https://releases.hashicorp.com/consul/${CONSUL_VERSION}/${CONSUL_ZIPNAME} && unzip ${CONSUL_ZIPNAME}); fi'
   - $CONSUL_DIR/consul --version
   - $CONSUL_DIR/consul agent -dev -log-level=warn &
-  # Wait for consul to be ready
-  - sleep 1
   - wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
   - chmod +x miniconda.sh
   - ./miniconda.sh -b
@@ -26,10 +24,8 @@ before_install:
 
 # Install packages
 install:
-  - conda install --yes python=$TRAVIS_PYTHON_VERSION matplotlib nose cython pyzmq gevent mock psycopg2 twisted sqlalchemy pandas xarray
-  - conda install --yes -c ooi ntplib apscheduler==2.1 qpid-python tqdm kombu librabbitmq python-consul ooi_port_agent
-  - conda install --yes -c obspy obspy
-  - pip install ModestImage codecov
+  - conda env create -f conda_env_linux64.yml
+  - source activate mi
 
 before_script:
   - psql -c 'create role awips superuser createdb createrole inherit login;' -U postgres
