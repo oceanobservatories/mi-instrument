@@ -1,0 +1,187 @@
+header:
+    particle_object: 'MULTIPLE'
+    particle_type: 'MULTIPLE'
+data:
+  - _index: 1
+    particle_object: CgDclEngDclMsgCountsRecoveredDataParticle
+    particle_type: cg_dcl_eng_dcl_msg_counts_recovered
+    internal_timestamp: 3619728260.019000
+    pps_counts: 30
+    superv_counts: 143
+    ntp_counts: 1
+    gps_counts: 601
+    header_timestamp: '2014/09/15 00:04:20.019'
+    dlog_mgr_counts: 10
+  - _index: 2
+    particle_object: CgDclEngDclCpuUptimeRecoveredDataParticle
+    particle_type: cg_dcl_eng_dcl_cpu_uptime_recovered
+    internal_timestamp: 3619728261.680000
+    uptime_string: '4 days 11:48:15'
+    mem_free: 12424
+    num_processes: 88
+    load_val_3:          0.18000
+    load_val_2:          0.24000
+    load_val_1:          0.80000
+    header_timestamp: '2014/09/15 00:04:21.680'
+  - _index: 3
+    particle_object: CgDclEngDclErrorRecoveredDataParticle
+    particle_type: cg_dcl_eng_dcl_error_recovered
+    internal_timestamp: 3619728267.383000
+    message_text: 'DLOGP1 Discarded too many bytes [100]'
+    header_timestamp: '2014/09/15 00:04:27.383'
+    log_type: 'WNG'
+  - _index: 4
+    particle_object: CgDclEngDclErrorRecoveredDataParticle
+    particle_type: cg_dcl_eng_dcl_error_recovered
+    internal_timestamp: 3619728269.191000
+    message_text: 'SUPERV Warning 4 3, NO MPIC DATA'
+    header_timestamp: '2014/09/15 00:04:29.191'
+    log_type: 'ALM'
+  - _index: 5
+    particle_object: CgDclEngDclErrorRecoveredDataParticle
+    particle_type: cg_dcl_eng_dcl_error_recovered
+    internal_timestamp: 3596486671.621000
+    message_text: 'DLOGP7 Command [(NULL)] Received no recognized response'
+    header_timestamp: '2013/12/20 00:04:31.621'
+    log_type: 'ERR'
+  - _index: 6
+    particle_object: CgDclEngDclGpsRecoveredDataParticle
+    particle_type: cg_dcl_eng_dcl_gps_recovered
+    internal_timestamp: 3619728273.020000
+    latitude_alt_format: '5955.6485 N'
+    gps_true_course:        294.60000
+    gps_speed:          0.00000
+    longitude:        -39.43884
+    gps_quality: 2
+    gps_num_satellites: 8
+    header_timestamp: '2014/09/15 00:04:33.020'
+    message_sent_timestamp: '2014/09/15 00:04:19.676'
+    gps_hdop:          1.00000
+    date_of_fix: '150914'
+    latitude:         59.92748
+    longitude_alt_format: '03926.3302 W'
+    gps_altitude:         10.90000
+    time_of_fix: '000419'
+  - _index: 7
+    particle_object: CgDclEngDclPpsRecoveredDataParticle
+    particle_type: cg_dcl_eng_dcl_pps_recovered
+    internal_timestamp: 3619728277.021000
+    delta_min: -28
+    bad_pulses: 0
+    nmea_lock: 1
+    header_timestamp: '2014/09/15 00:04:37.021'
+    message_sent_timestamp: '2014/09/15 00:04:15.000'
+    delta: 999963
+    delta_max: -48
+  - _index: 8
+    particle_object: CgDclEngDclPpsRecoveredDataParticle
+    particle_type: cg_dcl_eng_dcl_pps_recovered
+    internal_timestamp: 3619728578.920000
+    delta_min: 0
+    bad_pulses: 0
+    nmea_lock: 1
+    header_timestamp: '2014/09/15 00:09:38.920'
+    message_sent_timestamp: '2014/09/15 00:09:15.000'
+    delta: 1000000
+    delta_max: 39
+  - _index: 9
+    particle_object: CgDclEngDclSupervRecoveredDataParticle
+    particle_type: cg_dcl_eng_dcl_superv_recovered
+    internal_timestamp: 3619728011.706000
+    active_leak_detect_channels: 0
+    active_swgf_channels: 7
+    bmp085_pressure:         14.60000
+    bmp085_temp:         19.20000
+    board_type: 'dcl'
+    dpb_mode: 2
+    dpb_voltage_mode: 4
+    error_vmain_out_tolerance: 0
+    error_imain_out_tolerance: 0
+    error_dcl_iso_swgf_lim_exceeded: 0
+    error_dcl_rtn_swfg_lim_exceeded: 0
+    error_vmain_swgf_lim_exceeded: 1
+    error_gmain_swgf_lim_exceeded: 1
+    error_sensor_iso_swgf_lim_exceeded: 1
+    error_snsr_com_swgf_lim_exceeded: 0
+    error_leak_detect_c1_lim_exceeded: 0
+    error_leak_detect_c2_lim_exceeded: 0
+    error_channel_overcurrent_fault: 1
+    error_channel_1_not_responding: 0
+    error_channel_2_not_responding: 0
+    error_channel_3_not_responding: 0
+    header_timestamp: '2014/09/15 00:00:11.706'
+    imain_current:        768.00000
+    imain_dpb_in:        596.10000
+    leak_detect_c1_v: 0
+    leak_detect_c2_v: 0
+    murata_12v_temp:         20.20000
+    murata_24v_temp:         20.50000
+    out_12v_i:        136.00000
+    out_12v_v:         12.00000
+    out_24v_i:        204.00000
+    out_24v_v:         24.10000
+    pwr_board_mode: 2
+    sht25_humidity:          3.90000
+    sht25_temp:         17.10000
+    swgf_c1_max_leakage:          6.90000
+    swgf_c2_max_leakage:       -650.40000
+    swgf_c3_max_leakage:       -310.10000
+    vicor_12v_bcm_temp:         36.90000
+    vmain_backplane_bus_voltage:         24.30000
+    vmain_dpb_in:         24.30000
+    channel_state: [1, 0, 1, 1, 0, 1, 0, 1]
+    channel_v: [12.0, 0.0, 24.0, 12.0, 1.1, 12.0, 0.0, 24.1]
+    channel_i: [34.2, 0.0, 132.0, 39.1, 0.0, 97.8, 0.0, 19.6]
+    channel_error_status: [1, 0, 0, 0, 0, 0, 0, 0]
+  - _index: 10
+    particle_object: CgDclEngDclDlogMgrRecoveredDataParticle
+    particle_type: cg_dcl_eng_dcl_dlog_mgr_recovered
+    internal_timestamp: 3619728260.024000
+    dlog_mgr_hlt: 0
+    header_timestamp: '2014/09/15 00:04:20.024'
+    dlog_mgr_map: 'DDDDDD0D'
+    dlog_mgr_fld: 0
+    datalogger_timestamp: '2014/09/15 00:04:14.018'
+    dlog_mgr_act: 7
+    dlog_mgr_str: 7
+  - _index: 11
+    particle_object: CgDclEngDclDlogStatusRecoveredDataParticle
+    particle_type: cg_dcl_eng_dcl_dlog_status_recovered
+    internal_timestamp: 3619728260.025000
+    bytes_logged: 55072637
+    instrument_identifier: 'mopak'
+    bad_records: 18
+    time_last_communicated: 1410739431
+    bytes_sent: 1904
+    header_timestamp: '2014/09/15 00:04:20.025'
+    message_sent_timestamp: '2014/09/15 00:03:51.083'
+    good_records: 1280759
+    time_received_last_data: 1410739431
+    bad_bytes: 0
+    bytes_received: 55079462
+    datalogger_state: 'DAQ'
+  - _index: 12
+    particle_object: CgDclEngDclStatusRecoveredDataParticle
+    particle_type: cg_dcl_eng_dcl_status_recovered
+    internal_timestamp: 3619728260.260000
+    ntp_jitter:          0.06700
+    sync_type: '*SHM(1) .PPS.'
+    ntp_offset:         -0.20200
+    message_sent_type: 'NTP'
+    header_timestamp: '2014/09/15 00:04:20.260'
+    message_sent_timestamp: '2014/09/15 00:04:20.031'
+  - _index: 13
+    particle_object: CgDclEngDclDlogAarmRecoveredDataParticle
+    particle_type: cg_dcl_eng_dcl_dlog_aarm_recovered
+    internal_timestamp: 3619728260.023000
+    angular_rate_x:         -0.03223
+    angular_rate_y:          0.09233
+    magnetometer_y:         -0.20164
+    magnetometer_x:          0.00150
+    acceleration_x:         -0.06456
+    angular_rate_z:         -0.01336
+    header_timestamp: '2014/09/15 00:04:20.023'
+    acceleration_y:          0.06492
+    acceleration_z:         -0.92644
+    tic_counter:        254.34000
+    magnetometer_z:          0.49685

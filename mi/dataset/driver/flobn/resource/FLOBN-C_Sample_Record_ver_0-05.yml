@@ -1,0 +1,2860 @@
+header:
+    particle_object: 'MULTIPLE'
+    particle_type: 'MULTIPLE'
+data:
+  - _index: 1
+    particle_object: FlobnCUpperCoilDataParticle
+    particle_type: flobn_c_upper_coil_recovered
+    internal_timestamp: 3580012800.000000
+    tracking_id: 'HR5G-185'
+    sample_time: '2013/06/12 08'
+    boron_concentration: 397.350000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.480000
+    potassium_concentration: 10.370000
+    lithium_concentration: 26.820000
+    magnesium_concentration: 53.640000
+    sodium_concentration: 476.810000
+    sulfur_concentration: 27.810000
+    strontium_concentration: 86.420000
+    tracer_percent: 0.660000
+    flow_rate: 131.090000
+  - _index: 2
+    particle_object: FlobnCLowerCoilDataParticle
+    particle_type: flobn_c_lower_coil_recovered
+    internal_timestamp: 3580012800.000000
+    tracking_id: 'HR5R-188'
+    sample_time: '2013/06/12 08'
+    boron_concentration: 400.000000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.550000
+    potassium_concentration: 10.440000
+    lithium_concentration: 27.000000
+    magnesium_concentration: 54.000000
+    sodium_concentration: 480.000000
+    sulfur_concentration: 28.000000
+    strontium_concentration: 87.000000
+    tracer_percent: 0.000000
+    flow_rate: null
+  - _index: 3
+    particle_object: FlobnCUpperCoilDataParticle
+    particle_type: flobn_c_upper_coil_recovered
+    internal_timestamp: 3580153200.000000
+    tracking_id: 'HR5G-184'
+    sample_time: '2013/06/13 23'
+    boron_concentration: 392.240000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.350000
+    potassium_concentration: 10.240000
+    lithium_concentration: 26.480000
+    magnesium_concentration: 52.950000
+    sodium_concentration: 470.690000
+    sulfur_concentration: 27.460000
+    strontium_concentration: 85.310000
+    tracer_percent: 1.940000
+    flow_rate: 44.830000
+  - _index: 4
+    particle_object: FlobnCLowerCoilDataParticle
+    particle_type: flobn_c_lower_coil_recovered
+    internal_timestamp: 3580135200.000000
+    tracking_id: 'HR5R-187'
+    sample_time: '2013/06/13 18'
+    boron_concentration: 400.000000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.550000
+    potassium_concentration: 10.440000
+    lithium_concentration: 27.000000
+    magnesium_concentration: 54.000000
+    sodium_concentration: 480.000000
+    sulfur_concentration: 28.000000
+    strontium_concentration: 87.000000
+    tracer_percent: 0.000000
+    flow_rate: null
+  - _index: 5
+    particle_object: FlobnCUpperCoilDataParticle
+    particle_type: flobn_c_upper_coil_recovered
+    internal_timestamp: 3580290000.000000
+    tracking_id: 'HR5G-183'
+    sample_time: '2013/06/15 13'
+    boron_concentration: 392.600000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.350000
+    potassium_concentration: 10.250000
+    lithium_concentration: 26.500000
+    magnesium_concentration: 53.000000
+    sodium_concentration: 471.120000
+    sulfur_concentration: 27.480000
+    strontium_concentration: 85.390000
+    tracer_percent: 1.850000
+    flow_rate: 47.010000
+  - _index: 6
+    particle_object: FlobnCLowerCoilDataParticle
+    particle_type: flobn_c_lower_coil_recovered
+    internal_timestamp: 3580257600.000000
+    tracking_id: 'HR5R-186'
+    sample_time: '2013/06/15 04'
+    boron_concentration: 400.000000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.550000
+    potassium_concentration: 10.440000
+    lithium_concentration: 27.000000
+    magnesium_concentration: 54.000000
+    sodium_concentration: 480.000000
+    sulfur_concentration: 28.000000
+    strontium_concentration: 87.000000
+    tracer_percent: 0.000000
+    flow_rate: null
+  - _index: 7
+    particle_object: FlobnCUpperCoilDataParticle
+    particle_type: flobn_c_upper_coil_recovered
+    internal_timestamp: 3580430400.000000
+    tracking_id: 'HR5G-182'
+    sample_time: '2013/06/17 04'
+    boron_concentration: 394.290000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.400000
+    potassium_concentration: 10.290000
+    lithium_concentration: 26.610000
+    magnesium_concentration: 53.230000
+    sodium_concentration: 473.140000
+    sulfur_concentration: 27.600000
+    strontium_concentration: 85.760000
+    tracer_percent: 1.430000
+    flow_rate: 60.910000
+  - _index: 8
+    particle_object: FlobnCLowerCoilDataParticle
+    particle_type: flobn_c_lower_coil_recovered
+    internal_timestamp: 3580376400.000000
+    tracking_id: 'HR5R-185'
+    sample_time: '2013/06/16 13'
+    boron_concentration: 400.000000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.550000
+    potassium_concentration: 10.440000
+    lithium_concentration: 27.000000
+    magnesium_concentration: 54.000000
+    sodium_concentration: 480.000000
+    sulfur_concentration: 28.000000
+    strontium_concentration: 87.000000
+    tracer_percent: 0.000000
+    flow_rate: null
+  - _index: 9
+    particle_object: FlobnCUpperCoilDataParticle
+    particle_type: flobn_c_upper_coil_recovered
+    internal_timestamp: 3580567200.000000
+    tracking_id: 'HR5G-181'
+    sample_time: '2013/06/18 18'
+    boron_concentration: 396.910000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.470000
+    potassium_concentration: 10.360000
+    lithium_concentration: 26.790000
+    magnesium_concentration: 53.580000
+    sodium_concentration: 476.300000
+    sulfur_concentration: 27.780000
+    strontium_concentration: 86.330000
+    tracer_percent: 0.770000
+    flow_rate: 112.710000
+  - _index: 10
+    particle_object: FlobnCLowerCoilDataParticle
+    particle_type: flobn_c_lower_coil_recovered
+    internal_timestamp: 3580498800.000000
+    tracking_id: 'HR5R-184'
+    sample_time: '2013/06/17 23'
+    boron_concentration: 400.000000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.550000
+    potassium_concentration: 10.440000
+    lithium_concentration: 27.000000
+    magnesium_concentration: 54.000000
+    sodium_concentration: 480.000000
+    sulfur_concentration: 28.000000
+    strontium_concentration: 87.000000
+    tracer_percent: 0.000000
+    flow_rate: null
+  - _index: 11
+    particle_object: FlobnCUpperCoilDataParticle
+    particle_type: flobn_c_upper_coil_recovered
+    internal_timestamp: 3580704000.000000
+    tracking_id: 'HR5G-180'
+    sample_time: '2013/06/20 08'
+    boron_concentration: 395.560000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.430000
+    potassium_concentration: 10.320000
+    lithium_concentration: 26.700000
+    magnesium_concentration: 53.400000
+    sodium_concentration: 474.670000
+    sulfur_concentration: 27.690000
+    strontium_concentration: 86.030000
+    tracer_percent: 1.110000
+    flow_rate: 78.400000
+  - _index: 12
+    particle_object: FlobnCLowerCoilDataParticle
+    particle_type: flobn_c_lower_coil_recovered
+    internal_timestamp: 3580617600.000000
+    tracking_id: 'HR5R-183'
+    sample_time: '2013/06/19 08'
+    boron_concentration: 400.000000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.550000
+    potassium_concentration: 10.440000
+    lithium_concentration: 27.000000
+    magnesium_concentration: 54.000000
+    sodium_concentration: 480.000000
+    sulfur_concentration: 28.000000
+    strontium_concentration: 87.000000
+    tracer_percent: 0.000000
+    flow_rate: null
+  - _index: 13
+    particle_object: FlobnCUpperCoilDataParticle
+    particle_type: flobn_c_upper_coil_recovered
+    internal_timestamp: 3580844400.000000
+    tracking_id: 'HR5G-179'
+    sample_time: '2013/06/21 23'
+    boron_concentration: 395.730000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.440000
+    potassium_concentration: 10.330000
+    lithium_concentration: 26.710000
+    magnesium_concentration: 53.420000
+    sodium_concentration: 474.880000
+    sulfur_concentration: 27.700000
+    strontium_concentration: 86.070000
+    tracer_percent: 1.070000
+    flow_rate: 81.540000
+  - _index: 14
+    particle_object: FlobnCLowerCoilDataParticle
+    particle_type: flobn_c_lower_coil_recovered
+    internal_timestamp: 3580740000.000000
+    tracking_id: 'HR5R-182'
+    sample_time: '2013/06/20 18'
+    boron_concentration: 400.000000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.550000
+    potassium_concentration: 10.440000
+    lithium_concentration: 27.000000
+    magnesium_concentration: 54.000000
+    sodium_concentration: 480.000000
+    sulfur_concentration: 28.000000
+    strontium_concentration: 87.000000
+    tracer_percent: 0.000000
+    flow_rate: null
+  - _index: 15
+    particle_object: FlobnCUpperCoilDataParticle
+    particle_type: flobn_c_upper_coil_recovered
+    internal_timestamp: 3580981200.000000
+    tracking_id: 'HR5G-178'
+    sample_time: '2013/06/23 13'
+    boron_concentration: 393.510000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.380000
+    potassium_concentration: 10.270000
+    lithium_concentration: 26.560000
+    magnesium_concentration: 53.120000
+    sodium_concentration: 472.210000
+    sulfur_concentration: 27.550000
+    strontium_concentration: 85.590000
+    tracer_percent: 1.620000
+    flow_rate: 53.610000
+  - _index: 16
+    particle_object: FlobnCLowerCoilDataParticle
+    particle_type: flobn_c_lower_coil_recovered
+    internal_timestamp: 3580862400.000000
+    tracking_id: 'HR5R-181'
+    sample_time: '2013/06/22 04'
+    boron_concentration: 400.000000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.550000
+    potassium_concentration: 10.440000
+    lithium_concentration: 27.000000
+    magnesium_concentration: 54.000000
+    sodium_concentration: 480.000000
+    sulfur_concentration: 28.000000
+    strontium_concentration: 87.000000
+    tracer_percent: 0.000000
+    flow_rate: null
+  - _index: 17
+    particle_object: FlobnCUpperCoilDataParticle
+    particle_type: flobn_c_upper_coil_recovered
+    internal_timestamp: 3581121600.000000
+    tracking_id: 'HR5G-177'
+    sample_time: '2013/06/25 04'
+    boron_concentration: 394.100000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.390000
+    potassium_concentration: 10.290000
+    lithium_concentration: 26.600000
+    magnesium_concentration: 53.200000
+    sodium_concentration: 472.920000
+    sulfur_concentration: 27.590000
+    strontium_concentration: 85.720000
+    tracer_percent: 1.470000
+    flow_rate: 58.990000
+  - _index: 18
+    particle_object: FlobnCLowerCoilDataParticle
+    particle_type: flobn_c_lower_coil_recovered
+    internal_timestamp: 3580981200.000000
+    tracking_id: 'HR5R-180'
+    sample_time: '2013/06/23 13'
+    boron_concentration: 400.000000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.550000
+    potassium_concentration: 10.440000
+    lithium_concentration: 27.000000
+    magnesium_concentration: 54.000000
+    sodium_concentration: 480.000000
+    sulfur_concentration: 28.000000
+    strontium_concentration: 87.000000
+    tracer_percent: 0.000000
+    flow_rate: null
+  - _index: 19
+    particle_object: FlobnCUpperCoilDataParticle
+    particle_type: flobn_c_upper_coil_recovered
+    internal_timestamp: 3581258400.000000
+    tracking_id: 'HR5G-176'
+    sample_time: '2013/06/26 18'
+    boron_concentration: 394.820000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.410000
+    potassium_concentration: 10.300000
+    lithium_concentration: 26.650000
+    magnesium_concentration: 53.300000
+    sodium_concentration: 473.780000
+    sulfur_concentration: 27.640000
+    strontium_concentration: 85.870000
+    tracer_percent: 1.300000
+    flow_rate: 67.130000
+  - _index: 20
+    particle_object: FlobnCLowerCoilDataParticle
+    particle_type: flobn_c_lower_coil_recovered
+    internal_timestamp: 3581103600.000000
+    tracking_id: 'HR5R-179'
+    sample_time: '2013/06/24 23'
+    boron_concentration: 400.000000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.550000
+    potassium_concentration: 10.440000
+    lithium_concentration: 27.000000
+    magnesium_concentration: 54.000000
+    sodium_concentration: 480.000000
+    sulfur_concentration: 28.000000
+    strontium_concentration: 87.000000
+    tracer_percent: 0.000000
+    flow_rate: null
+  - _index: 21
+    particle_object: FlobnCUpperCoilDataParticle
+    particle_type: flobn_c_upper_coil_recovered
+    internal_timestamp: 3581395200.000000
+    tracking_id: 'HR5G-175'
+    sample_time: '2013/06/28 08'
+    boron_concentration: 397.590000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.490000
+    potassium_concentration: 10.380000
+    lithium_concentration: 26.840000
+    magnesium_concentration: 53.670000
+    sodium_concentration: 477.110000
+    sulfur_concentration: 27.830000
+    strontium_concentration: 86.480000
+    tracer_percent: 0.600000
+    flow_rate: 144.260000
+  - _index: 22
+    particle_object: FlobnCLowerCoilDataParticle
+    particle_type: flobn_c_lower_coil_recovered
+    internal_timestamp: 3581222400.000000
+    tracking_id: 'HR5R-178'
+    sample_time: '2013/06/26 08'
+    boron_concentration: 400.000000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.550000
+    potassium_concentration: 10.440000
+    lithium_concentration: 27.000000
+    magnesium_concentration: 54.000000
+    sodium_concentration: 480.000000
+    sulfur_concentration: 28.000000
+    strontium_concentration: 87.000000
+    tracer_percent: 0.000000
+    flow_rate: null
+  - _index: 23
+    particle_object: FlobnCUpperCoilDataParticle
+    particle_type: flobn_c_upper_coil_recovered
+    internal_timestamp: 3581535600.000000
+    tracking_id: 'HR5G-174'
+    sample_time: '2013/06/29 23'
+    boron_concentration: 397.640000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.490000
+    potassium_concentration: 10.380000
+    lithium_concentration: 26.840000
+    magnesium_concentration: 53.680000
+    sodium_concentration: 477.170000
+    sulfur_concentration: 27.840000
+    strontium_concentration: 86.490000
+    tracer_percent: 0.590000
+    flow_rate: 147.730000
+  - _index: 24
+    particle_object: FlobnCLowerCoilDataParticle
+    particle_type: flobn_c_lower_coil_recovered
+    internal_timestamp: 3581344800.000000
+    tracking_id: 'HR5R-177'
+    sample_time: '2013/06/27 18'
+    boron_concentration: 400.000000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.550000
+    potassium_concentration: 10.440000
+    lithium_concentration: 27.000000
+    magnesium_concentration: 54.000000
+    sodium_concentration: 480.000000
+    sulfur_concentration: 28.000000
+    strontium_concentration: 87.000000
+    tracer_percent: 0.000000
+    flow_rate: null
+  - _index: 25
+    particle_object: FlobnCUpperCoilDataParticle
+    particle_type: flobn_c_upper_coil_recovered
+    internal_timestamp: 3581672400.000000
+    tracking_id: 'HR5G-173'
+    sample_time: '2013/07/01 13'
+    boron_concentration: 394.450000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.400000
+    potassium_concentration: 10.300000
+    lithium_concentration: 26.630000
+    magnesium_concentration: 53.250000
+    sodium_concentration: 473.340000
+    sulfur_concentration: 27.610000
+    strontium_concentration: 85.790000
+    tracer_percent: 1.390000
+    flow_rate: 62.670000
+  - _index: 26
+    particle_object: FlobnCLowerCoilDataParticle
+    particle_type: flobn_c_lower_coil_recovered
+    internal_timestamp: 3581467200.000000
+    tracking_id: 'HR5R-176'
+    sample_time: '2013/06/29 04'
+    boron_concentration: 400.000000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.550000
+    potassium_concentration: 10.440000
+    lithium_concentration: 27.000000
+    magnesium_concentration: 54.000000
+    sodium_concentration: 480.000000
+    sulfur_concentration: 28.000000
+    strontium_concentration: 87.000000
+    tracer_percent: 0.000000
+    flow_rate: null
+  - _index: 27
+    particle_object: FlobnCUpperCoilDataParticle
+    particle_type: flobn_c_upper_coil_recovered
+    internal_timestamp: 3581812800.000000
+    tracking_id: 'HR5G-172'
+    sample_time: '2013/07/03 04'
+    boron_concentration: 393.730000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.380000
+    potassium_concentration: 10.280000
+    lithium_concentration: 26.580000
+    magnesium_concentration: 53.150000
+    sodium_concentration: 472.470000
+    sulfur_concentration: 27.560000
+    strontium_concentration: 85.640000
+    tracer_percent: 1.570000
+    flow_rate: 55.490000
+  - _index: 28
+    particle_object: FlobnCLowerCoilDataParticle
+    particle_type: flobn_c_lower_coil_recovered
+    internal_timestamp: 3581586000.000000
+    tracking_id: 'HR5R-175'
+    sample_time: '2013/06/30 13'
+    boron_concentration: 400.000000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.550000
+    potassium_concentration: 10.440000
+    lithium_concentration: 27.000000
+    magnesium_concentration: 54.000000
+    sodium_concentration: 480.000000
+    sulfur_concentration: 28.000000
+    strontium_concentration: 87.000000
+    tracer_percent: 0.000000
+    flow_rate: null
+  - _index: 29
+    particle_object: FlobnCUpperCoilDataParticle
+    particle_type: flobn_c_upper_coil_recovered
+    internal_timestamp: 3581949600.000000
+    tracking_id: 'HR5G-171'
+    sample_time: '2013/07/04 18'
+    boron_concentration: 390.580000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.300000
+    potassium_concentration: 10.190000
+    lithium_concentration: 26.360000
+    magnesium_concentration: 52.730000
+    sodium_concentration: 468.700000
+    sulfur_concentration: 27.340000
+    strontium_concentration: 84.950000
+    tracer_percent: 2.350000
+    flow_rate: 36.960000
+  - _index: 30
+    particle_object: FlobnCLowerCoilDataParticle
+    particle_type: flobn_c_lower_coil_recovered
+    internal_timestamp: 3581708400.000000
+    tracking_id: 'HR5R-174'
+    sample_time: '2013/07/01 23'
+    boron_concentration: 400.000000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.550000
+    potassium_concentration: 10.440000
+    lithium_concentration: 27.000000
+    magnesium_concentration: 54.000000
+    sodium_concentration: 480.000000
+    sulfur_concentration: 28.000000
+    strontium_concentration: 87.000000
+    tracer_percent: 0.000000
+    flow_rate: null
+  - _index: 31
+    particle_object: FlobnCUpperCoilDataParticle
+    particle_type: flobn_c_upper_coil_recovered
+    internal_timestamp: 3582086400.000000
+    tracking_id: 'HR5G-170'
+    sample_time: '2013/07/06 08'
+    boron_concentration: 392.060000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.340000
+    potassium_concentration: 10.230000
+    lithium_concentration: 26.460000
+    magnesium_concentration: 52.930000
+    sodium_concentration: 470.470000
+    sulfur_concentration: 27.440000
+    strontium_concentration: 85.270000
+    tracer_percent: 1.990000
+    flow_rate: 43.810000
+  - _index: 32
+    particle_object: FlobnCLowerCoilDataParticle
+    particle_type: flobn_c_lower_coil_recovered
+    internal_timestamp: 3581827200.000000
+    tracking_id: 'HR5R-173'
+    sample_time: '2013/07/03 08'
+    boron_concentration: 400.000000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.550000
+    potassium_concentration: 10.440000
+    lithium_concentration: 27.000000
+    magnesium_concentration: 54.000000
+    sodium_concentration: 480.000000
+    sulfur_concentration: 28.000000
+    strontium_concentration: 87.000000
+    tracer_percent: 0.000000
+    flow_rate: null
+  - _index: 33
+    particle_object: FlobnCUpperCoilDataParticle
+    particle_type: flobn_c_upper_coil_recovered
+    internal_timestamp: 3582226800.000000
+    tracking_id: 'HR5G-169'
+    sample_time: '2013/07/07 23'
+    boron_concentration: 390.220000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.290000
+    potassium_concentration: 10.180000
+    lithium_concentration: 26.340000
+    magnesium_concentration: 52.680000
+    sodium_concentration: 468.270000
+    sulfur_concentration: 27.320000
+    strontium_concentration: 84.870000
+    tracer_percent: 2.440000
+    flow_rate: 35.590000
+  - _index: 34
+    particle_object: FlobnCLowerCoilDataParticle
+    particle_type: flobn_c_lower_coil_recovered
+    internal_timestamp: 3581949600.000000
+    tracking_id: 'HR5R-172'
+    sample_time: '2013/07/04 18'
+    boron_concentration: 400.000000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.550000
+    potassium_concentration: 10.440000
+    lithium_concentration: 27.000000
+    magnesium_concentration: 54.000000
+    sodium_concentration: 480.000000
+    sulfur_concentration: 28.000000
+    strontium_concentration: 87.000000
+    tracer_percent: 0.000000
+    flow_rate: null
+  - _index: 35
+    particle_object: FlobnCUpperCoilDataParticle
+    particle_type: flobn_c_upper_coil_recovered
+    internal_timestamp: 3582363600.000000
+    tracking_id: 'HR5G-168'
+    sample_time: '2013/07/09 13'
+    boron_concentration: 391.970000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.340000
+    potassium_concentration: 10.230000
+    lithium_concentration: 26.460000
+    magnesium_concentration: 52.920000
+    sodium_concentration: 470.360000
+    sulfur_concentration: 27.440000
+    strontium_concentration: 85.250000
+    tracer_percent: 2.010000
+    flow_rate: 43.320000
+  - _index: 36
+    particle_object: FlobnCLowerCoilDataParticle
+    particle_type: flobn_c_lower_coil_recovered
+    internal_timestamp: 3582072000.000000
+    tracking_id: 'HR5R-171'
+    sample_time: '2013/07/06 04'
+    boron_concentration: 400.000000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.550000
+    potassium_concentration: 10.440000
+    lithium_concentration: 27.000000
+    magnesium_concentration: 54.000000
+    sodium_concentration: 480.000000
+    sulfur_concentration: 28.000000
+    strontium_concentration: 87.000000
+    tracer_percent: 0.000000
+    flow_rate: null
+  - _index: 37
+    particle_object: FlobnCUpperCoilDataParticle
+    particle_type: flobn_c_upper_coil_recovered
+    internal_timestamp: 3582504000.000000
+    tracking_id: 'HR5G-167'
+    sample_time: '2013/07/11 04'
+    boron_concentration: 391.960000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.340000
+    potassium_concentration: 10.230000
+    lithium_concentration: 26.460000
+    magnesium_concentration: 52.910000
+    sodium_concentration: 470.350000
+    sulfur_concentration: 27.440000
+    strontium_concentration: 85.250000
+    tracer_percent: 2.010000
+    flow_rate: 43.270000
+  - _index: 38
+    particle_object: FlobnCLowerCoilDataParticle
+    particle_type: flobn_c_lower_coil_recovered
+    internal_timestamp: 3582190800.000000
+    tracking_id: 'HR5R-170'
+    sample_time: '2013/07/07 13'
+    boron_concentration: 400.000000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.550000
+    potassium_concentration: 10.440000
+    lithium_concentration: 27.000000
+    magnesium_concentration: 54.000000
+    sodium_concentration: 480.000000
+    sulfur_concentration: 28.000000
+    strontium_concentration: 87.000000
+    tracer_percent: 0.000000
+    flow_rate: null
+  - _index: 39
+    particle_object: FlobnCUpperCoilDataParticle
+    particle_type: flobn_c_upper_coil_recovered
+    internal_timestamp: 3582640800.000000
+    tracking_id: 'HR5G-166'
+    sample_time: '2013/07/12 18'
+    boron_concentration: 392.860000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.360000
+    potassium_concentration: 10.250000
+    lithium_concentration: 26.520000
+    magnesium_concentration: 53.040000
+    sodium_concentration: 471.430000
+    sulfur_concentration: 27.500000
+    strontium_concentration: 85.450000
+    tracer_percent: 1.790000
+    flow_rate: 48.710000
+  - _index: 40
+    particle_object: FlobnCLowerCoilDataParticle
+    particle_type: flobn_c_lower_coil_recovered
+    internal_timestamp: 3582313200.000000
+    tracking_id: 'HR5R-169'
+    sample_time: '2013/07/08 23'
+    boron_concentration: 400.000000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.550000
+    potassium_concentration: 10.440000
+    lithium_concentration: 27.000000
+    magnesium_concentration: 54.000000
+    sodium_concentration: 480.000000
+    sulfur_concentration: 28.000000
+    strontium_concentration: 87.000000
+    tracer_percent: 0.000000
+    flow_rate: null
+  - _index: 41
+    particle_object: FlobnCUpperCoilDataParticle
+    particle_type: flobn_c_upper_coil_recovered
+    internal_timestamp: 3582777600.000000
+    tracking_id: 'HR5G-165'
+    sample_time: '2013/07/14 08'
+    boron_concentration: 393.240000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.370000
+    potassium_concentration: 10.260000
+    lithium_concentration: 26.540000
+    magnesium_concentration: 53.090000
+    sodium_concentration: 471.890000
+    sulfur_concentration: 27.530000
+    strontium_concentration: 85.530000
+    tracer_percent: 1.690000
+    flow_rate: 51.490000
+  - _index: 42
+    particle_object: FlobnCLowerCoilDataParticle
+    particle_type: flobn_c_lower_coil_recovered
+    internal_timestamp: 3582432000.000000
+    tracking_id: 'HR5R-168'
+    sample_time: '2013/07/10 08'
+    boron_concentration: 400.000000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.550000
+    potassium_concentration: 10.440000
+    lithium_concentration: 27.000000
+    magnesium_concentration: 54.000000
+    sodium_concentration: 480.000000
+    sulfur_concentration: 28.000000
+    strontium_concentration: 87.000000
+    tracer_percent: 0.000000
+    flow_rate: null
+  - _index: 43
+    particle_object: FlobnCUpperCoilDataParticle
+    particle_type: flobn_c_upper_coil_recovered
+    internal_timestamp: 3582918000.000000
+    tracking_id: 'HR5G-164'
+    sample_time: '2013/07/15 23'
+    boron_concentration: 392.860000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.360000
+    potassium_concentration: 10.250000
+    lithium_concentration: 26.520000
+    magnesium_concentration: 53.040000
+    sodium_concentration: 471.430000
+    sulfur_concentration: 27.500000
+    strontium_concentration: 85.450000
+    tracer_percent: 1.790000
+    flow_rate: 48.730000
+  - _index: 44
+    particle_object: FlobnCLowerCoilDataParticle
+    particle_type: flobn_c_lower_coil_recovered
+    internal_timestamp: 3582554400.000000
+    tracking_id: 'HR5R-167'
+    sample_time: '2013/07/11 18'
+    boron_concentration: 400.000000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.550000
+    potassium_concentration: 10.440000
+    lithium_concentration: 27.000000
+    magnesium_concentration: 54.000000
+    sodium_concentration: 480.000000
+    sulfur_concentration: 28.000000
+    strontium_concentration: 87.000000
+    tracer_percent: 0.000000
+    flow_rate: null
+  - _index: 45
+    particle_object: FlobnCUpperCoilDataParticle
+    particle_type: flobn_c_upper_coil_recovered
+    internal_timestamp: 3583054800.000000
+    tracking_id: 'HR5G-163'
+    sample_time: '2013/07/17 13'
+    boron_concentration: 391.560000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.330000
+    potassium_concentration: 10.220000
+    lithium_concentration: 26.430000
+    magnesium_concentration: 52.860000
+    sodium_concentration: 469.870000
+    sulfur_concentration: 27.410000
+    strontium_concentration: 85.160000
+    tracer_percent: 2.110000
+    flow_rate: 41.240000
+  - _index: 46
+    particle_object: FlobnCLowerCoilDataParticle
+    particle_type: flobn_c_lower_coil_recovered
+    internal_timestamp: 3582676800.000000
+    tracking_id: 'HR5R-166'
+    sample_time: '2013/07/13 04'
+    boron_concentration: 400.000000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.550000
+    potassium_concentration: 10.440000
+    lithium_concentration: 27.000000
+    magnesium_concentration: 54.000000
+    sodium_concentration: 480.000000
+    sulfur_concentration: 28.000000
+    strontium_concentration: 87.000000
+    tracer_percent: 0.000000
+    flow_rate: null
+  - _index: 47
+    particle_object: FlobnCUpperCoilDataParticle
+    particle_type: flobn_c_upper_coil_recovered
+    internal_timestamp: 3583195200.000000
+    tracking_id: 'HR5G-162'
+    sample_time: '2013/07/19 04'
+    boron_concentration: 373.560000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 9.850000
+    potassium_concentration: 9.750000
+    lithium_concentration: 25.220000
+    magnesium_concentration: 50.430000
+    sodium_concentration: 448.280000
+    sulfur_concentration: 26.150000
+    strontium_concentration: 81.250000
+    tracer_percent: 6.610000
+    flow_rate: 13.160000
+  - _index: 48
+    particle_object: FlobnCLowerCoilDataParticle
+    particle_type: flobn_c_lower_coil_recovered
+    internal_timestamp: 3582795600.000000
+    tracking_id: 'HR5R-165'
+    sample_time: '2013/07/14 13'
+    boron_concentration: 400.000000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.550000
+    potassium_concentration: 10.440000
+    lithium_concentration: 27.000000
+    magnesium_concentration: 54.000000
+    sodium_concentration: 480.000000
+    sulfur_concentration: 28.000000
+    strontium_concentration: 87.000000
+    tracer_percent: 0.000000
+    flow_rate: null
+  - _index: 49
+    particle_object: FlobnCUpperCoilDataParticle
+    particle_type: flobn_c_upper_coil_recovered
+    internal_timestamp: 3583332000.000000
+    tracking_id: 'HR5G-161'
+    sample_time: '2013/07/20 18'
+    boron_concentration: 370.730000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 9.780000
+    potassium_concentration: 9.680000
+    lithium_concentration: 25.020000
+    magnesium_concentration: 50.050000
+    sodium_concentration: 444.870000
+    sulfur_concentration: 25.950000
+    strontium_concentration: 80.630000
+    tracer_percent: 7.320000
+    flow_rate: 11.890000
+  - _index: 50
+    particle_object: FlobnCLowerCoilDataParticle
+    particle_type: flobn_c_lower_coil_recovered
+    internal_timestamp: 3582918000.000000
+    tracking_id: 'HR5R-164'
+    sample_time: '2013/07/15 23'
+    boron_concentration: 400.000000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.550000
+    potassium_concentration: 10.440000
+    lithium_concentration: 27.000000
+    magnesium_concentration: 54.000000
+    sodium_concentration: 480.000000
+    sulfur_concentration: 28.000000
+    strontium_concentration: 87.000000
+    tracer_percent: 0.000000
+    flow_rate: null
+  - _index: 51
+    particle_object: FlobnCUpperCoilDataParticle
+    particle_type: flobn_c_upper_coil_recovered
+    internal_timestamp: 3583468800.000000
+    tracking_id: 'HR5G-160'
+    sample_time: '2013/07/22 08'
+    boron_concentration: 346.220000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 9.130000
+    potassium_concentration: 9.040000
+    lithium_concentration: 23.370000
+    magnesium_concentration: 46.740000
+    sodium_concentration: 415.460000
+    sulfur_concentration: 24.240000
+    strontium_concentration: 75.300000
+    tracer_percent: 13.450000
+    flow_rate: 6.470000
+  - _index: 52
+    particle_object: FlobnCLowerCoilDataParticle
+    particle_type: flobn_c_lower_coil_recovered
+    internal_timestamp: 3583036800.000000
+    tracking_id: 'HR5R-163'
+    sample_time: '2013/07/17 08'
+    boron_concentration: 400.000000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.550000
+    potassium_concentration: 10.440000
+    lithium_concentration: 27.000000
+    magnesium_concentration: 54.000000
+    sodium_concentration: 480.000000
+    sulfur_concentration: 28.000000
+    strontium_concentration: 87.000000
+    tracer_percent: 0.000000
+    flow_rate: null
+  - _index: 53
+    particle_object: FlobnCUpperCoilDataParticle
+    particle_type: flobn_c_upper_coil_recovered
+    internal_timestamp: 3583609200.000000
+    tracking_id: 'HR5G-159'
+    sample_time: '2013/07/23 23'
+    boron_concentration: 325.590000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 8.590000
+    potassium_concentration: 8.500000
+    lithium_concentration: 21.980000
+    magnesium_concentration: 43.950000
+    sodium_concentration: 390.710000
+    sulfur_concentration: 22.790000
+    strontium_concentration: 70.820000
+    tracer_percent: 18.600000
+    flow_rate: 4.680000
+  - _index: 54
+    particle_object: FlobnCLowerCoilDataParticle
+    particle_type: flobn_c_lower_coil_recovered
+    internal_timestamp: 3583159200.000000
+    tracking_id: 'HR5R-162'
+    sample_time: '2013/07/18 18'
+    boron_concentration: 400.000000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.550000
+    potassium_concentration: 10.440000
+    lithium_concentration: 27.000000
+    magnesium_concentration: 54.000000
+    sodium_concentration: 480.000000
+    sulfur_concentration: 28.000000
+    strontium_concentration: 87.000000
+    tracer_percent: 0.000000
+    flow_rate: null
+  - _index: 55
+    particle_object: FlobnCUpperCoilDataParticle
+    particle_type: flobn_c_upper_coil_recovered
+    internal_timestamp: 3583746000.000000
+    tracking_id: 'HR5G-158'
+    sample_time: '2013/07/25 13'
+    boron_concentration: 306.150000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 8.070000
+    potassium_concentration: 7.990000
+    lithium_concentration: 20.660000
+    magnesium_concentration: 41.330000
+    sodium_concentration: 367.370000
+    sulfur_concentration: 21.430000
+    strontium_concentration: 66.590000
+    tracer_percent: 23.460000
+    flow_rate: 3.710000
+  - _index: 56
+    particle_object: FlobnCLowerCoilDataParticle
+    particle_type: flobn_c_lower_coil_recovered
+    internal_timestamp: 3583281600.000000
+    tracking_id: 'HR5R-161'
+    sample_time: '2013/07/20 04'
+    boron_concentration: 400.000000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.550000
+    potassium_concentration: 10.440000
+    lithium_concentration: 27.000000
+    magnesium_concentration: 54.000000
+    sodium_concentration: 480.000000
+    sulfur_concentration: 28.000000
+    strontium_concentration: 87.000000
+    tracer_percent: 0.000000
+    flow_rate: null
+  - _index: 57
+    particle_object: FlobnCUpperCoilDataParticle
+    particle_type: flobn_c_upper_coil_recovered
+    internal_timestamp: 3583886400.000000
+    tracking_id: 'HR5G-157'
+    sample_time: '2013/07/27 04'
+    boron_concentration: 312.230000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 8.240000
+    potassium_concentration: 8.150000
+    lithium_concentration: 21.080000
+    magnesium_concentration: 42.150000
+    sodium_concentration: 374.680000
+    sulfur_concentration: 21.860000
+    strontium_concentration: 67.910000
+    tracer_percent: 21.940000
+    flow_rate: 3.970000
+  - _index: 58
+    particle_object: FlobnCLowerCoilDataParticle
+    particle_type: flobn_c_lower_coil_recovered
+    internal_timestamp: 3583400400.000000
+    tracking_id: 'HR5R-160'
+    sample_time: '2013/07/21 13'
+    boron_concentration: 400.000000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.550000
+    potassium_concentration: 10.440000
+    lithium_concentration: 27.000000
+    magnesium_concentration: 54.000000
+    sodium_concentration: 480.000000
+    sulfur_concentration: 28.000000
+    strontium_concentration: 87.000000
+    tracer_percent: 0.000000
+    flow_rate: null
+  - _index: 59
+    particle_object: FlobnCUpperCoilDataParticle
+    particle_type: flobn_c_upper_coil_recovered
+    internal_timestamp: 3584023200.000000
+    tracking_id: 'HR5G-156'
+    sample_time: '2013/07/28 18'
+    boron_concentration: 326.000000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 8.600000
+    potassium_concentration: 8.510000
+    lithium_concentration: 22.010000
+    magnesium_concentration: 44.010000
+    sodium_concentration: 391.200000
+    sulfur_concentration: 22.820000
+    strontium_concentration: 70.910000
+    tracer_percent: 18.500000
+    flow_rate: 4.700000
+  - _index: 60
+    particle_object: FlobnCLowerCoilDataParticle
+    particle_type: flobn_c_lower_coil_recovered
+    internal_timestamp: 3583522800.000000
+    tracking_id: 'HR5R-159'
+    sample_time: '2013/07/22 23'
+    boron_concentration: 400.000000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.550000
+    potassium_concentration: 10.440000
+    lithium_concentration: 27.000000
+    magnesium_concentration: 54.000000
+    sodium_concentration: 480.000000
+    sulfur_concentration: 28.000000
+    strontium_concentration: 87.000000
+    tracer_percent: 0.000000
+    flow_rate: null
+  - _index: 61
+    particle_object: FlobnCUpperCoilDataParticle
+    particle_type: flobn_c_upper_coil_recovered
+    internal_timestamp: 3584160000.000000
+    tracking_id: 'HR5G-155'
+    sample_time: '2013/07/30 08'
+    boron_concentration: 324.970000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 8.570000
+    potassium_concentration: 8.480000
+    lithium_concentration: 21.940000
+    magnesium_concentration: 43.870000
+    sodium_concentration: 389.970000
+    sulfur_concentration: 22.750000
+    strontium_concentration: 70.680000
+    tracer_percent: 18.760000
+    flow_rate: 4.640000
+  - _index: 62
+    particle_object: FlobnCLowerCoilDataParticle
+    particle_type: flobn_c_lower_coil_recovered
+    internal_timestamp: 3583641600.000000
+    tracking_id: 'HR5R-158'
+    sample_time: '2013/07/24 08'
+    boron_concentration: 400.000000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.550000
+    potassium_concentration: 10.440000
+    lithium_concentration: 27.000000
+    magnesium_concentration: 54.000000
+    sodium_concentration: 480.000000
+    sulfur_concentration: 28.000000
+    strontium_concentration: 87.000000
+    tracer_percent: 0.000000
+    flow_rate: null
+  - _index: 63
+    particle_object: FlobnCUpperCoilDataParticle
+    particle_type: flobn_c_upper_coil_recovered
+    internal_timestamp: 3584300400.000000
+    tracking_id: 'HR5G-154'
+    sample_time: '2013/07/31 23'
+    boron_concentration: 315.770000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 8.330000
+    potassium_concentration: 8.240000
+    lithium_concentration: 21.310000
+    magnesium_concentration: 42.630000
+    sodium_concentration: 378.920000
+    sulfur_concentration: 22.100000
+    strontium_concentration: 68.680000
+    tracer_percent: 21.060000
+    flow_rate: 4.130000
+  - _index: 64
+    particle_object: FlobnCLowerCoilDataParticle
+    particle_type: flobn_c_lower_coil_recovered
+    internal_timestamp: 3583764000.000000
+    tracking_id: 'HR5R-157'
+    sample_time: '2013/07/25 18'
+    boron_concentration: 400.000000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.550000
+    potassium_concentration: 10.440000
+    lithium_concentration: 27.000000
+    magnesium_concentration: 54.000000
+    sodium_concentration: 480.000000
+    sulfur_concentration: 28.000000
+    strontium_concentration: 87.000000
+    tracer_percent: 0.000000
+    flow_rate: null
+  - _index: 65
+    particle_object: FlobnCUpperCoilDataParticle
+    particle_type: flobn_c_upper_coil_recovered
+    internal_timestamp: 3584437200.000000
+    tracking_id: 'HR5G-153'
+    sample_time: '2013/08/02 13'
+    boron_concentration: 318.690000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 8.410000
+    potassium_concentration: 8.320000
+    lithium_concentration: 21.510000
+    magnesium_concentration: 43.020000
+    sodium_concentration: 382.430000
+    sulfur_concentration: 22.310000
+    strontium_concentration: 69.320000
+    tracer_percent: 20.330000
+    flow_rate: 4.280000
+  - _index: 66
+    particle_object: FlobnCLowerCoilDataParticle
+    particle_type: flobn_c_lower_coil_recovered
+    internal_timestamp: 3583886400.000000
+    tracking_id: 'HR5R-156'
+    sample_time: '2013/07/27 04'
+    boron_concentration: 400.000000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.550000
+    potassium_concentration: 10.440000
+    lithium_concentration: 27.000000
+    magnesium_concentration: 54.000000
+    sodium_concentration: 480.000000
+    sulfur_concentration: 28.000000
+    strontium_concentration: 87.000000
+    tracer_percent: 0.000000
+    flow_rate: null
+  - _index: 67
+    particle_object: FlobnCUpperCoilDataParticle
+    particle_type: flobn_c_upper_coil_recovered
+    internal_timestamp: 3584577600.000000
+    tracking_id: 'HR5G-152'
+    sample_time: '2013/08/04 04'
+    boron_concentration: 316.480000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 8.350000
+    potassium_concentration: 8.260000
+    lithium_concentration: 21.360000
+    magnesium_concentration: 42.720000
+    sodium_concentration: 379.780000
+    sulfur_concentration: 22.150000
+    strontium_concentration: 68.830000
+    tracer_percent: 20.880000
+    flow_rate: 4.170000
+  - _index: 68
+    particle_object: FlobnCLowerCoilDataParticle
+    particle_type: flobn_c_lower_coil_recovered
+    internal_timestamp: 3584005200.000000
+    tracking_id: 'HR5R-155'
+    sample_time: '2013/07/28 13'
+    boron_concentration: 400.000000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.550000
+    potassium_concentration: 10.440000
+    lithium_concentration: 27.000000
+    magnesium_concentration: 54.000000
+    sodium_concentration: 480.000000
+    sulfur_concentration: 28.000000
+    strontium_concentration: 87.000000
+    tracer_percent: 0.000000
+    flow_rate: null
+  - _index: 69
+    particle_object: FlobnCUpperCoilDataParticle
+    particle_type: flobn_c_upper_coil_recovered
+    internal_timestamp: 3584714400.000000
+    tracking_id: 'HR5G-151'
+    sample_time: '2013/08/05 18'
+    boron_concentration: 323.070000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 8.520000
+    potassium_concentration: 8.430000
+    lithium_concentration: 21.810000
+    magnesium_concentration: 43.620000
+    sodium_concentration: 387.690000
+    sulfur_concentration: 22.620000
+    strontium_concentration: 70.270000
+    tracer_percent: 19.230000
+    flow_rate: 4.520000
+  - _index: 70
+    particle_object: FlobnCLowerCoilDataParticle
+    particle_type: flobn_c_lower_coil_recovered
+    internal_timestamp: 3584127600.000000
+    tracking_id: 'HR5R-154'
+    sample_time: '2013/07/29 23'
+    boron_concentration: 400.000000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.550000
+    potassium_concentration: 10.440000
+    lithium_concentration: 27.000000
+    magnesium_concentration: 54.000000
+    sodium_concentration: 480.000000
+    sulfur_concentration: 28.000000
+    strontium_concentration: 87.000000
+    tracer_percent: 0.000000
+    flow_rate: null
+  - _index: 71
+    particle_object: FlobnCUpperCoilDataParticle
+    particle_type: flobn_c_upper_coil_recovered
+    internal_timestamp: 3584851200.000000
+    tracking_id: 'HR5G-150'
+    sample_time: '2013/08/07 08'
+    boron_concentration: 312.040000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 8.230000
+    potassium_concentration: 8.140000
+    lithium_concentration: 21.060000
+    magnesium_concentration: 42.130000
+    sodium_concentration: 374.450000
+    sulfur_concentration: 21.840000
+    strontium_concentration: 67.870000
+    tracer_percent: 21.990000
+    flow_rate: 3.960000
+  - _index: 72
+    particle_object: FlobnCLowerCoilDataParticle
+    particle_type: flobn_c_lower_coil_recovered
+    internal_timestamp: 3584246400.000000
+    tracking_id: 'HR5R-153'
+    sample_time: '2013/07/31 08'
+    boron_concentration: 400.000000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.550000
+    potassium_concentration: 10.440000
+    lithium_concentration: 27.000000
+    magnesium_concentration: 54.000000
+    sodium_concentration: 480.000000
+    sulfur_concentration: 28.000000
+    strontium_concentration: 87.000000
+    tracer_percent: 0.000000
+    flow_rate: null
+  - _index: 73
+    particle_object: FlobnCUpperCoilDataParticle
+    particle_type: flobn_c_upper_coil_recovered
+    internal_timestamp: 3584991600.000000
+    tracking_id: 'HR5G-149'
+    sample_time: '2013/08/08 23'
+    boron_concentration: 314.290000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 8.290000
+    potassium_concentration: 8.200000
+    lithium_concentration: 21.210000
+    magnesium_concentration: 42.430000
+    sodium_concentration: 377.150000
+    sulfur_concentration: 22.000000
+    strontium_concentration: 68.360000
+    tracer_percent: 21.430000
+    flow_rate: 4.060000
+  - _index: 74
+    particle_object: FlobnCLowerCoilDataParticle
+    particle_type: flobn_c_lower_coil_recovered
+    internal_timestamp: 3584368800.000000
+    tracking_id: 'HR5R-152'
+    sample_time: '2013/08/01 18'
+    boron_concentration: 400.000000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.550000
+    potassium_concentration: 10.440000
+    lithium_concentration: 27.000000
+    magnesium_concentration: 54.000000
+    sodium_concentration: 480.000000
+    sulfur_concentration: 28.000000
+    strontium_concentration: 87.000000
+    tracer_percent: 0.000000
+    flow_rate: null
+  - _index: 75
+    particle_object: FlobnCUpperCoilDataParticle
+    particle_type: flobn_c_upper_coil_recovered
+    internal_timestamp: 3585128400.000000
+    tracking_id: 'HR5G-148'
+    sample_time: '2013/08/10 13'
+    boron_concentration: 303.830000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 8.010000
+    potassium_concentration: 7.930000
+    lithium_concentration: 20.510000
+    magnesium_concentration: 41.020000
+    sodium_concentration: 364.590000
+    sulfur_concentration: 21.270000
+    strontium_concentration: 66.080000
+    tracer_percent: 24.040000
+    flow_rate: 3.620000
+  - _index: 76
+    particle_object: FlobnCLowerCoilDataParticle
+    particle_type: flobn_c_lower_coil_recovered
+    internal_timestamp: 3584491200.000000
+    tracking_id: 'HR5R-151'
+    sample_time: '2013/08/03 04'
+    boron_concentration: 400.000000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.550000
+    potassium_concentration: 10.440000
+    lithium_concentration: 27.000000
+    magnesium_concentration: 54.000000
+    sodium_concentration: 480.000000
+    sulfur_concentration: 28.000000
+    strontium_concentration: 87.000000
+    tracer_percent: 0.000000
+    flow_rate: null
+  - _index: 77
+    particle_object: FlobnCUpperCoilDataParticle
+    particle_type: flobn_c_upper_coil_recovered
+    internal_timestamp: 3585268800.000000
+    tracking_id: 'HR5G-147'
+    sample_time: '2013/08/12 04'
+    boron_concentration: 307.170000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 8.100000
+    potassium_concentration: 8.020000
+    lithium_concentration: 20.730000
+    magnesium_concentration: 41.470000
+    sodium_concentration: 368.600000
+    sulfur_concentration: 21.500000
+    strontium_concentration: 66.810000
+    tracer_percent: 23.210000
+    flow_rate: 3.750000
+  - _index: 78
+    particle_object: FlobnCLowerCoilDataParticle
+    particle_type: flobn_c_lower_coil_recovered
+    internal_timestamp: 3584610000.000000
+    tracking_id: 'HR5R-150'
+    sample_time: '2013/08/04 13'
+    boron_concentration: 400.000000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.550000
+    potassium_concentration: 10.440000
+    lithium_concentration: 27.000000
+    magnesium_concentration: 54.000000
+    sodium_concentration: 480.000000
+    sulfur_concentration: 28.000000
+    strontium_concentration: 87.000000
+    tracer_percent: 0.000000
+    flow_rate: null
+  - _index: 79
+    particle_object: FlobnCUpperCoilDataParticle
+    particle_type: flobn_c_upper_coil_recovered
+    internal_timestamp: 3585405600.000000
+    tracking_id: 'HR5G-146'
+    sample_time: '2013/08/13 18'
+    boron_concentration: 302.930000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 7.990000
+    potassium_concentration: 7.910000
+    lithium_concentration: 20.450000
+    magnesium_concentration: 40.900000
+    sodium_concentration: 363.520000
+    sulfur_concentration: 21.210000
+    strontium_concentration: 65.890000
+    tracer_percent: 24.270000
+    flow_rate: 3.590000
+  - _index: 80
+    particle_object: FlobnCLowerCoilDataParticle
+    particle_type: flobn_c_lower_coil_recovered
+    internal_timestamp: 3584732400.000000
+    tracking_id: 'HR5R-149'
+    sample_time: '2013/08/05 23'
+    boron_concentration: 400.000000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.550000
+    potassium_concentration: 10.440000
+    lithium_concentration: 27.000000
+    magnesium_concentration: 54.000000
+    sodium_concentration: 480.000000
+    sulfur_concentration: 28.000000
+    strontium_concentration: 87.000000
+    tracer_percent: 0.000000
+    flow_rate: null
+  - _index: 81
+    particle_object: FlobnCUpperCoilDataParticle
+    particle_type: flobn_c_upper_coil_recovered
+    internal_timestamp: 3585542400.000000
+    tracking_id: 'HR5G-145'
+    sample_time: '2013/08/15 08'
+    boron_concentration: 308.660000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 8.140000
+    potassium_concentration: 8.060000
+    lithium_concentration: 20.830000
+    magnesium_concentration: 41.670000
+    sodium_concentration: 370.390000
+    sulfur_concentration: 21.610000
+    strontium_concentration: 67.130000
+    tracer_percent: 22.830000
+    flow_rate: 3.810000
+  - _index: 82
+    particle_object: FlobnCLowerCoilDataParticle
+    particle_type: flobn_c_lower_coil_recovered
+    internal_timestamp: 3584851200.000000
+    tracking_id: 'HR5R-148'
+    sample_time: '2013/08/07 08'
+    boron_concentration: 400.000000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.550000
+    potassium_concentration: 10.440000
+    lithium_concentration: 27.000000
+    magnesium_concentration: 54.000000
+    sodium_concentration: 480.000000
+    sulfur_concentration: 28.000000
+    strontium_concentration: 87.000000
+    tracer_percent: 0.000000
+    flow_rate: null
+  - _index: 83
+    particle_object: FlobnCUpperCoilDataParticle
+    particle_type: flobn_c_upper_coil_recovered
+    internal_timestamp: 3585682800.000000
+    tracking_id: 'HR5G-144'
+    sample_time: '2013/08/16 23'
+    boron_concentration: 308.980000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 8.150000
+    potassium_concentration: 8.060000
+    lithium_concentration: 20.860000
+    magnesium_concentration: 41.710000
+    sodium_concentration: 370.780000
+    sulfur_concentration: 21.630000
+    strontium_concentration: 67.200000
+    tracer_percent: 22.750000
+    flow_rate: 3.820000
+  - _index: 84
+    particle_object: FlobnCLowerCoilDataParticle
+    particle_type: flobn_c_lower_coil_recovered
+    internal_timestamp: 3584973600.000000
+    tracking_id: 'HR5R-147'
+    sample_time: '2013/08/08 18'
+    boron_concentration: 400.000000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.550000
+    potassium_concentration: 10.440000
+    lithium_concentration: 27.000000
+    magnesium_concentration: 54.000000
+    sodium_concentration: 480.000000
+    sulfur_concentration: 28.000000
+    strontium_concentration: 87.000000
+    tracer_percent: 0.000000
+    flow_rate: null
+  - _index: 85
+    particle_object: FlobnCUpperCoilDataParticle
+    particle_type: flobn_c_upper_coil_recovered
+    internal_timestamp: 3585819600.000000
+    tracking_id: 'HR5G-143'
+    sample_time: '2013/08/18 13'
+    boron_concentration: 309.600000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 8.170000
+    potassium_concentration: 8.080000
+    lithium_concentration: 20.900000
+    magnesium_concentration: 41.800000
+    sodium_concentration: 371.520000
+    sulfur_concentration: 21.670000
+    strontium_concentration: 67.340000
+    tracer_percent: 22.600000
+    flow_rate: 3.850000
+  - _index: 86
+    particle_object: FlobnCLowerCoilDataParticle
+    particle_type: flobn_c_lower_coil_recovered
+    internal_timestamp: 3585096000.000000
+    tracking_id: 'HR5R-146'
+    sample_time: '2013/08/10 04'
+    boron_concentration: 400.000000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.550000
+    potassium_concentration: 10.440000
+    lithium_concentration: 27.000000
+    magnesium_concentration: 54.000000
+    sodium_concentration: 480.000000
+    sulfur_concentration: 28.000000
+    strontium_concentration: 87.000000
+    tracer_percent: 0.000000
+    flow_rate: null
+  - _index: 87
+    particle_object: FlobnCUpperCoilDataParticle
+    particle_type: flobn_c_upper_coil_recovered
+    internal_timestamp: 3585960000.000000
+    tracking_id: 'HR5G-142'
+    sample_time: '2013/08/20 04'
+    boron_concentration: 304.130000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 8.020000
+    potassium_concentration: 7.940000
+    lithium_concentration: 20.530000
+    magnesium_concentration: 41.060000
+    sodium_concentration: 364.960000
+    sulfur_concentration: 21.290000
+    strontium_concentration: 66.150000
+    tracer_percent: 23.970000
+    flow_rate: 3.630000
+  - _index: 88
+    particle_object: FlobnCLowerCoilDataParticle
+    particle_type: flobn_c_lower_coil_recovered
+    internal_timestamp: 3585214800.000000
+    tracking_id: 'HR5R-145'
+    sample_time: '2013/08/11 13'
+    boron_concentration: 400.000000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.550000
+    potassium_concentration: 10.440000
+    lithium_concentration: 27.000000
+    magnesium_concentration: 54.000000
+    sodium_concentration: 480.000000
+    sulfur_concentration: 28.000000
+    strontium_concentration: 87.000000
+    tracer_percent: 0.000000
+    flow_rate: null
+  - _index: 89
+    particle_object: FlobnCUpperCoilDataParticle
+    particle_type: flobn_c_upper_coil_recovered
+    internal_timestamp: 3586096800.000000
+    tracking_id: 'HR5G-141'
+    sample_time: '2013/08/21 18'
+    boron_concentration: 309.580000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 8.170000
+    potassium_concentration: 8.080000
+    lithium_concentration: 20.900000
+    magnesium_concentration: 41.790000
+    sodium_concentration: 371.490000
+    sulfur_concentration: 21.670000
+    strontium_concentration: 67.330000
+    tracer_percent: 22.610000
+    flow_rate: 3.850000
+  - _index: 90
+    particle_object: FlobnCLowerCoilDataParticle
+    particle_type: flobn_c_lower_coil_recovered
+    internal_timestamp: 3585337200.000000
+    tracking_id: 'HR5R-144'
+    sample_time: '2013/08/12 23'
+    boron_concentration: 400.000000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.550000
+    potassium_concentration: 10.440000
+    lithium_concentration: 27.000000
+    magnesium_concentration: 54.000000
+    sodium_concentration: 480.000000
+    sulfur_concentration: 28.000000
+    strontium_concentration: 87.000000
+    tracer_percent: 0.000000
+    flow_rate: null
+  - _index: 91
+    particle_object: FlobnCUpperCoilDataParticle
+    particle_type: flobn_c_upper_coil_recovered
+    internal_timestamp: 3586233600.000000
+    tracking_id: 'HR5G-140'
+    sample_time: '2013/08/23 08'
+    boron_concentration: 308.710000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 8.140000
+    potassium_concentration: 8.060000
+    lithium_concentration: 20.840000
+    magnesium_concentration: 41.680000
+    sodium_concentration: 370.450000
+    sulfur_concentration: 21.610000
+    strontium_concentration: 67.140000
+    tracer_percent: 22.820000
+    flow_rate: 3.810000
+  - _index: 92
+    particle_object: FlobnCLowerCoilDataParticle
+    particle_type: flobn_c_lower_coil_recovered
+    internal_timestamp: 3585456000.000000
+    tracking_id: 'HR5R-143'
+    sample_time: '2013/08/14 08'
+    boron_concentration: 400.000000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.550000
+    potassium_concentration: 10.440000
+    lithium_concentration: 27.000000
+    magnesium_concentration: 54.000000
+    sodium_concentration: 480.000000
+    sulfur_concentration: 28.000000
+    strontium_concentration: 87.000000
+    tracer_percent: 0.000000
+    flow_rate: null
+  - _index: 93
+    particle_object: FlobnCUpperCoilDataParticle
+    particle_type: flobn_c_upper_coil_recovered
+    internal_timestamp: 3586374000.000000
+    tracking_id: 'HR5G-139'
+    sample_time: '2013/08/24 23'
+    boron_concentration: 318.870000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 8.410000
+    potassium_concentration: 8.320000
+    lithium_concentration: 21.520000
+    magnesium_concentration: 43.050000
+    sodium_concentration: 382.650000
+    sulfur_concentration: 22.320000
+    strontium_concentration: 69.350000
+    tracer_percent: 20.280000
+    flow_rate: 4.290000
+  - _index: 94
+    particle_object: FlobnCLowerCoilDataParticle
+    particle_type: flobn_c_lower_coil_recovered
+    internal_timestamp: 3585578400.000000
+    tracking_id: 'HR5R-142'
+    sample_time: '2013/08/15 18'
+    boron_concentration: 400.000000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.550000
+    potassium_concentration: 10.440000
+    lithium_concentration: 27.000000
+    magnesium_concentration: 54.000000
+    sodium_concentration: 480.000000
+    sulfur_concentration: 28.000000
+    strontium_concentration: 87.000000
+    tracer_percent: 0.000000
+    flow_rate: null
+  - _index: 95
+    particle_object: FlobnCUpperCoilDataParticle
+    particle_type: flobn_c_upper_coil_recovered
+    internal_timestamp: 3586510800.000000
+    tracking_id: 'HR5G-138'
+    sample_time: '2013/08/26 13'
+    boron_concentration: 317.590000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 8.380000
+    potassium_concentration: 8.290000
+    lithium_concentration: 21.440000
+    magnesium_concentration: 42.870000
+    sodium_concentration: 381.110000
+    sulfur_concentration: 22.230000
+    strontium_concentration: 69.080000
+    tracer_percent: 20.600000
+    flow_rate: 4.220000
+  - _index: 96
+    particle_object: FlobnCLowerCoilDataParticle
+    particle_type: flobn_c_lower_coil_recovered
+    internal_timestamp: 3585700800.000000
+    tracking_id: 'HR5R-141'
+    sample_time: '2013/08/17 04'
+    boron_concentration: 400.000000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.550000
+    potassium_concentration: 10.440000
+    lithium_concentration: 27.000000
+    magnesium_concentration: 54.000000
+    sodium_concentration: 480.000000
+    sulfur_concentration: 28.000000
+    strontium_concentration: 87.000000
+    tracer_percent: 0.000000
+    flow_rate: null
+  - _index: 97
+    particle_object: FlobnCUpperCoilDataParticle
+    particle_type: flobn_c_upper_coil_recovered
+    internal_timestamp: 3586651200.000000
+    tracking_id: 'HR5G-137'
+    sample_time: '2013/08/28 04'
+    boron_concentration: 329.400000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 8.690000
+    potassium_concentration: 8.600000
+    lithium_concentration: 22.230000
+    magnesium_concentration: 44.470000
+    sodium_concentration: 395.290000
+    sulfur_concentration: 23.060000
+    strontium_concentration: 71.650000
+    tracer_percent: 17.650000
+    flow_rate: 4.930000
+  - _index: 98
+    particle_object: FlobnCLowerCoilDataParticle
+    particle_type: flobn_c_lower_coil_recovered
+    internal_timestamp: 3585819600.000000
+    tracking_id: 'HR5R-140'
+    sample_time: '2013/08/18 13'
+    boron_concentration: 400.000000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.550000
+    potassium_concentration: 10.440000
+    lithium_concentration: 27.000000
+    magnesium_concentration: 54.000000
+    sodium_concentration: 480.000000
+    sulfur_concentration: 28.000000
+    strontium_concentration: 87.000000
+    tracer_percent: 0.000000
+    flow_rate: null
+  - _index: 99
+    particle_object: FlobnCUpperCoilDataParticle
+    particle_type: flobn_c_upper_coil_recovered
+    internal_timestamp: 3586788000.000000
+    tracking_id: 'HR5G-136'
+    sample_time: '2013/08/29 18'
+    boron_concentration: 322.740000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 8.510000
+    potassium_concentration: 8.420000
+    lithium_concentration: 21.790000
+    magnesium_concentration: 43.570000
+    sodium_concentration: 387.290000
+    sulfur_concentration: 22.590000
+    strontium_concentration: 70.200000
+    tracer_percent: 19.310000
+    flow_rate: 4.500000
+  - _index: 100
+    particle_object: FlobnCLowerCoilDataParticle
+    particle_type: flobn_c_lower_coil_recovered
+    internal_timestamp: 3585942000.000000
+    tracking_id: 'HR5R-139'
+    sample_time: '2013/08/19 23'
+    boron_concentration: 400.000000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.550000
+    potassium_concentration: 10.440000
+    lithium_concentration: 27.000000
+    magnesium_concentration: 54.000000
+    sodium_concentration: 480.000000
+    sulfur_concentration: 28.000000
+    strontium_concentration: 87.000000
+    tracer_percent: 0.000000
+    flow_rate: null
+  - _index: 101
+    particle_object: FlobnCUpperCoilDataParticle
+    particle_type: flobn_c_upper_coil_recovered
+    internal_timestamp: 3586924800.000000
+    tracking_id: 'HR5G-135'
+    sample_time: '2013/08/31 08'
+    boron_concentration: 326.580000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 8.610000
+    potassium_concentration: 8.520000
+    lithium_concentration: 22.040000
+    magnesium_concentration: 44.090000
+    sodium_concentration: 391.890000
+    sulfur_concentration: 22.860000
+    strontium_concentration: 71.030000
+    tracer_percent: 18.360000
+    flow_rate: 4.740000
+  - _index: 102
+    particle_object: FlobnCLowerCoilDataParticle
+    particle_type: flobn_c_lower_coil_recovered
+    internal_timestamp: 3586060800.000000
+    tracking_id: 'HR5R-138'
+    sample_time: '2013/08/21 08'
+    boron_concentration: 400.000000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.550000
+    potassium_concentration: 10.440000
+    lithium_concentration: 27.000000
+    magnesium_concentration: 54.000000
+    sodium_concentration: 480.000000
+    sulfur_concentration: 28.000000
+    strontium_concentration: 87.000000
+    tracer_percent: 0.000000
+    flow_rate: null
+  - _index: 103
+    particle_object: FlobnCUpperCoilDataParticle
+    particle_type: flobn_c_upper_coil_recovered
+    internal_timestamp: 3587065200.000000
+    tracking_id: 'HR5G-134'
+    sample_time: '2013/09/01 23'
+    boron_concentration: 317.180000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 8.370000
+    potassium_concentration: 8.280000
+    lithium_concentration: 21.410000
+    magnesium_concentration: 42.820000
+    sodium_concentration: 380.620000
+    sulfur_concentration: 22.200000
+    strontium_concentration: 68.990000
+    tracer_percent: 20.700000
+    flow_rate: 4.200000
+  - _index: 104
+    particle_object: FlobnCLowerCoilDataParticle
+    particle_type: flobn_c_lower_coil_recovered
+    internal_timestamp: 3586183200.000000
+    tracking_id: 'HR5R-137'
+    sample_time: '2013/08/22 18'
+    boron_concentration: 400.000000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.550000
+    potassium_concentration: 10.440000
+    lithium_concentration: 27.000000
+    magnesium_concentration: 54.000000
+    sodium_concentration: 480.000000
+    sulfur_concentration: 28.000000
+    strontium_concentration: 87.000000
+    tracer_percent: 0.000000
+    flow_rate: null
+  - _index: 105
+    particle_object: FlobnCUpperCoilDataParticle
+    particle_type: flobn_c_upper_coil_recovered
+    internal_timestamp: 3587202000.000000
+    tracking_id: 'HR5G-133'
+    sample_time: '2013/09/03 13'
+    boron_concentration: 320.340000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 8.450000
+    potassium_concentration: 8.360000
+    lithium_concentration: 21.620000
+    magnesium_concentration: 43.250000
+    sodium_concentration: 384.410000
+    sulfur_concentration: 22.420000
+    strontium_concentration: 69.670000
+    tracer_percent: 19.920000
+    flow_rate: 4.370000
+  - _index: 106
+    particle_object: FlobnCLowerCoilDataParticle
+    particle_type: flobn_c_lower_coil_recovered
+    internal_timestamp: 3586305600.000000
+    tracking_id: 'HR5R-136'
+    sample_time: '2013/08/24 04'
+    boron_concentration: 400.000000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.550000
+    potassium_concentration: 10.440000
+    lithium_concentration: 27.000000
+    magnesium_concentration: 54.000000
+    sodium_concentration: 480.000000
+    sulfur_concentration: 28.000000
+    strontium_concentration: 87.000000
+    tracer_percent: 0.000000
+    flow_rate: null
+  - _index: 107
+    particle_object: FlobnCUpperCoilDataParticle
+    particle_type: flobn_c_upper_coil_recovered
+    internal_timestamp: 3587342400.000000
+    tracking_id: 'HR5G-132'
+    sample_time: '2013/09/05 04'
+    boron_concentration: 309.910000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 8.170000
+    potassium_concentration: 8.090000
+    lithium_concentration: 20.920000
+    magnesium_concentration: 41.840000
+    sodium_concentration: 371.890000
+    sulfur_concentration: 21.690000
+    strontium_concentration: 67.410000
+    tracer_percent: 22.520000
+    flow_rate: 3.860000
+  - _index: 108
+    particle_object: FlobnCLowerCoilDataParticle
+    particle_type: flobn_c_lower_coil_recovered
+    internal_timestamp: 3586424400.000000
+    tracking_id: 'HR5R-135'
+    sample_time: '2013/08/25 13'
+    boron_concentration: 400.000000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.550000
+    potassium_concentration: 10.440000
+    lithium_concentration: 27.000000
+    magnesium_concentration: 54.000000
+    sodium_concentration: 480.000000
+    sulfur_concentration: 28.000000
+    strontium_concentration: 87.000000
+    tracer_percent: 0.000000
+    flow_rate: null
+  - _index: 109
+    particle_object: FlobnCUpperCoilDataParticle
+    particle_type: flobn_c_upper_coil_recovered
+    internal_timestamp: 3587479200.000000
+    tracking_id: 'HR5G-131'
+    sample_time: '2013/09/06 18'
+    boron_concentration: 309.060000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 8.150000
+    potassium_concentration: 8.070000
+    lithium_concentration: 20.860000
+    magnesium_concentration: 41.720000
+    sodium_concentration: 370.880000
+    sulfur_concentration: 21.630000
+    strontium_concentration: 67.220000
+    tracer_percent: 22.730000
+    flow_rate: 3.830000
+  - _index: 110
+    particle_object: FlobnCLowerCoilDataParticle
+    particle_type: flobn_c_lower_coil_recovered
+    internal_timestamp: 3586546800.000000
+    tracking_id: 'HR5R-134'
+    sample_time: '2013/08/26 23'
+    boron_concentration: 400.000000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.550000
+    potassium_concentration: 10.440000
+    lithium_concentration: 27.000000
+    magnesium_concentration: 54.000000
+    sodium_concentration: 480.000000
+    sulfur_concentration: 28.000000
+    strontium_concentration: 87.000000
+    tracer_percent: 0.000000
+    flow_rate: null
+  - _index: 111
+    particle_object: FlobnCUpperCoilDataParticle
+    particle_type: flobn_c_upper_coil_recovered
+    internal_timestamp: 3587616000.000000
+    tracking_id: 'HR5G-130'
+    sample_time: '2013/09/08 08'
+    boron_concentration: 316.450000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 8.350000
+    potassium_concentration: 8.260000
+    lithium_concentration: 21.360000
+    magnesium_concentration: 42.720000
+    sodium_concentration: 379.740000
+    sulfur_concentration: 22.150000
+    strontium_concentration: 68.830000
+    tracer_percent: 20.890000
+    flow_rate: 4.170000
+  - _index: 112
+    particle_object: FlobnCLowerCoilDataParticle
+    particle_type: flobn_c_lower_coil_recovered
+    internal_timestamp: 3586665600.000000
+    tracking_id: 'HR5R-133'
+    sample_time: '2013/08/28 08'
+    boron_concentration: 400.000000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.550000
+    potassium_concentration: 10.440000
+    lithium_concentration: 27.000000
+    magnesium_concentration: 54.000000
+    sodium_concentration: 480.000000
+    sulfur_concentration: 28.000000
+    strontium_concentration: 87.000000
+    tracer_percent: 0.000000
+    flow_rate: null
+  - _index: 113
+    particle_object: FlobnCUpperCoilDataParticle
+    particle_type: flobn_c_upper_coil_recovered
+    internal_timestamp: 3587756400.000000
+    tracking_id: 'HR5G-129'
+    sample_time: '2013/09/09 23'
+    boron_concentration: 325.120000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 8.580000
+    potassium_concentration: 8.490000
+    lithium_concentration: 21.950000
+    magnesium_concentration: 43.890000
+    sodium_concentration: 390.140000
+    sulfur_concentration: 22.760000
+    strontium_concentration: 70.710000
+    tracer_percent: 18.720000
+    flow_rate: 4.650000
+  - _index: 114
+    particle_object: FlobnCLowerCoilDataParticle
+    particle_type: flobn_c_lower_coil_recovered
+    internal_timestamp: 3586788000.000000
+    tracking_id: 'HR5R-132'
+    sample_time: '2013/08/29 18'
+    boron_concentration: 400.000000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.550000
+    potassium_concentration: 10.440000
+    lithium_concentration: 27.000000
+    magnesium_concentration: 54.000000
+    sodium_concentration: 480.000000
+    sulfur_concentration: 28.000000
+    strontium_concentration: 87.000000
+    tracer_percent: 0.000000
+    flow_rate: null
+  - _index: 115
+    particle_object: FlobnCUpperCoilDataParticle
+    particle_type: flobn_c_upper_coil_recovered
+    internal_timestamp: 3587893200.000000
+    tracking_id: 'HR5G-128'
+    sample_time: '2013/09/11 13'
+    boron_concentration: 325.110000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 8.570000
+    potassium_concentration: 8.490000
+    lithium_concentration: 21.940000
+    magnesium_concentration: 43.890000
+    sodium_concentration: 390.130000
+    sulfur_concentration: 22.760000
+    strontium_concentration: 70.710000
+    tracer_percent: 18.720000
+    flow_rate: 4.650000
+  - _index: 116
+    particle_object: FlobnCLowerCoilDataParticle
+    particle_type: flobn_c_lower_coil_recovered
+    internal_timestamp: 3586910400.000000
+    tracking_id: 'HR5R-131'
+    sample_time: '2013/08/31 04'
+    boron_concentration: 400.000000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.550000
+    potassium_concentration: 10.440000
+    lithium_concentration: 27.000000
+    magnesium_concentration: 54.000000
+    sodium_concentration: 480.000000
+    sulfur_concentration: 28.000000
+    strontium_concentration: 87.000000
+    tracer_percent: 0.000000
+    flow_rate: null
+  - _index: 117
+    particle_object: FlobnCUpperCoilDataParticle
+    particle_type: flobn_c_upper_coil_recovered
+    internal_timestamp: 3588033600.000000
+    tracking_id: 'HR5G-127'
+    sample_time: '2013/09/13 04'
+    boron_concentration: 324.040000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 8.550000
+    potassium_concentration: 8.460000
+    lithium_concentration: 21.870000
+    magnesium_concentration: 43.740000
+    sodium_concentration: 388.840000
+    sulfur_concentration: 22.680000
+    strontium_concentration: 70.480000
+    tracer_percent: 18.990000
+    flow_rate: 4.580000
+  - _index: 118
+    particle_object: FlobnCLowerCoilDataParticle
+    particle_type: flobn_c_lower_coil_recovered
+    internal_timestamp: 3587029200.000000
+    tracking_id: 'HR5R-130'
+    sample_time: '2013/09/01 13'
+    boron_concentration: 400.000000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.550000
+    potassium_concentration: 10.440000
+    lithium_concentration: 27.000000
+    magnesium_concentration: 54.000000
+    sodium_concentration: 480.000000
+    sulfur_concentration: 28.000000
+    strontium_concentration: 87.000000
+    tracer_percent: 0.000000
+    flow_rate: null
+  - _index: 119
+    particle_object: FlobnCUpperCoilDataParticle
+    particle_type: flobn_c_upper_coil_recovered
+    internal_timestamp: 3588170400.000000
+    tracking_id: 'HR5G-126'
+    sample_time: '2013/09/14 18'
+    boron_concentration: 322.530000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 8.510000
+    potassium_concentration: 8.420000
+    lithium_concentration: 21.770000
+    magnesium_concentration: 43.540000
+    sodium_concentration: 387.030000
+    sulfur_concentration: 22.580000
+    strontium_concentration: 70.150000
+    tracer_percent: 19.370000
+    flow_rate: 4.490000
+  - _index: 120
+    particle_object: FlobnCLowerCoilDataParticle
+    particle_type: flobn_c_lower_coil_recovered
+    internal_timestamp: 3587151600.000000
+    tracking_id: 'HR5R-129'
+    sample_time: '2013/09/02 23'
+    boron_concentration: 400.000000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.550000
+    potassium_concentration: 10.440000
+    lithium_concentration: 27.000000
+    magnesium_concentration: 54.000000
+    sodium_concentration: 480.000000
+    sulfur_concentration: 28.000000
+    strontium_concentration: 87.000000
+    tracer_percent: 0.000000
+    flow_rate: null
+  - _index: 121
+    particle_object: FlobnCUpperCoilDataParticle
+    particle_type: flobn_c_upper_coil_recovered
+    internal_timestamp: 3588307200.000000
+    tracking_id: 'HR5G-125'
+    sample_time: '2013/09/16 08'
+    boron_concentration: 319.820000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 8.440000
+    potassium_concentration: 8.350000
+    lithium_concentration: 21.590000
+    magnesium_concentration: 43.180000
+    sodium_concentration: 383.780000
+    sulfur_concentration: 22.390000
+    strontium_concentration: 69.560000
+    tracer_percent: 20.050000
+    flow_rate: 4.340000
+  - _index: 122
+    particle_object: FlobnCLowerCoilDataParticle
+    particle_type: flobn_c_lower_coil_recovered
+    internal_timestamp: 3587270400.000000
+    tracking_id: 'HR5R-128'
+    sample_time: '2013/09/04 08'
+    boron_concentration: 400.000000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.550000
+    potassium_concentration: 10.440000
+    lithium_concentration: 27.000000
+    magnesium_concentration: 54.000000
+    sodium_concentration: 480.000000
+    sulfur_concentration: 28.000000
+    strontium_concentration: 87.000000
+    tracer_percent: 0.000000
+    flow_rate: null
+  - _index: 123
+    particle_object: FlobnCUpperCoilDataParticle
+    particle_type: flobn_c_upper_coil_recovered
+    internal_timestamp: 3588447600.000000
+    tracking_id: 'HR5G-124'
+    sample_time: '2013/09/17 23'
+    boron_concentration: 322.230000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 8.500000
+    potassium_concentration: 8.410000
+    lithium_concentration: 21.750000
+    magnesium_concentration: 43.500000
+    sodium_concentration: 386.670000
+    sulfur_concentration: 22.560000
+    strontium_concentration: 70.080000
+    tracer_percent: 19.440000
+    flow_rate: 4.470000
+  - _index: 124
+    particle_object: FlobnCLowerCoilDataParticle
+    particle_type: flobn_c_lower_coil_recovered
+    internal_timestamp: 3587392800.000000
+    tracking_id: 'HR5R-127'
+    sample_time: '2013/09/05 18'
+    boron_concentration: 400.000000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.550000
+    potassium_concentration: 10.440000
+    lithium_concentration: 27.000000
+    magnesium_concentration: 54.000000
+    sodium_concentration: 480.000000
+    sulfur_concentration: 28.000000
+    strontium_concentration: 87.000000
+    tracer_percent: 0.000000
+    flow_rate: null
+  - _index: 125
+    particle_object: FlobnCUpperCoilDataParticle
+    particle_type: flobn_c_upper_coil_recovered
+    internal_timestamp: 3588584400.000000
+    tracking_id: 'HR5G-123'
+    sample_time: '2013/09/19 13'
+    boron_concentration: 325.670000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 8.590000
+    potassium_concentration: 8.500000
+    lithium_concentration: 21.980000
+    magnesium_concentration: 43.970000
+    sodium_concentration: 390.810000
+    sulfur_concentration: 22.800000
+    strontium_concentration: 70.830000
+    tracer_percent: 18.580000
+    flow_rate: 4.680000
+  - _index: 126
+    particle_object: FlobnCLowerCoilDataParticle
+    particle_type: flobn_c_lower_coil_recovered
+    internal_timestamp: 3587515200.000000
+    tracking_id: 'HR5R-126'
+    sample_time: '2013/09/07 04'
+    boron_concentration: 400.000000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.550000
+    potassium_concentration: 10.440000
+    lithium_concentration: 27.000000
+    magnesium_concentration: 54.000000
+    sodium_concentration: 480.000000
+    sulfur_concentration: 28.000000
+    strontium_concentration: 87.000000
+    tracer_percent: 0.000000
+    flow_rate: null
+  - _index: 127
+    particle_object: FlobnCUpperCoilDataParticle
+    particle_type: flobn_c_upper_coil_recovered
+    internal_timestamp: 3588724800.000000
+    tracking_id: 'HR5G-122'
+    sample_time: '2013/09/21 04'
+    boron_concentration: 314.240000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 8.290000
+    potassium_concentration: 8.200000
+    lithium_concentration: 21.210000
+    magnesium_concentration: 42.420000
+    sodium_concentration: 377.090000
+    sulfur_concentration: 22.000000
+    strontium_concentration: 68.350000
+    tracer_percent: 21.440000
+    flow_rate: 4.060000
+  - _index: 128
+    particle_object: FlobnCLowerCoilDataParticle
+    particle_type: flobn_c_lower_coil_recovered
+    internal_timestamp: 3587634000.000000
+    tracking_id: 'HR5R-125'
+    sample_time: '2013/09/08 13'
+    boron_concentration: 400.000000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.550000
+    potassium_concentration: 10.440000
+    lithium_concentration: 27.000000
+    magnesium_concentration: 54.000000
+    sodium_concentration: 480.000000
+    sulfur_concentration: 28.000000
+    strontium_concentration: 87.000000
+    tracer_percent: 0.000000
+    flow_rate: null
+  - _index: 129
+    particle_object: FlobnCUpperCoilDataParticle
+    particle_type: flobn_c_upper_coil_recovered
+    internal_timestamp: 3588861600.000000
+    tracking_id: 'HR5G-121'
+    sample_time: '2013/09/22 18'
+    boron_concentration: 301.550000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 7.950000
+    potassium_concentration: 7.870000
+    lithium_concentration: 20.350000
+    magnesium_concentration: 40.710000
+    sodium_concentration: 361.860000
+    sulfur_concentration: 21.110000
+    strontium_concentration: 65.590000
+    tracer_percent: 24.610000
+    flow_rate: 3.530000
+  - _index: 130
+    particle_object: FlobnCLowerCoilDataParticle
+    particle_type: flobn_c_lower_coil_recovered
+    internal_timestamp: 3587756400.000000
+    tracking_id: 'HR5R-124'
+    sample_time: '2013/09/09 23'
+    boron_concentration: 400.000000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.550000
+    potassium_concentration: 10.440000
+    lithium_concentration: 27.000000
+    magnesium_concentration: 54.000000
+    sodium_concentration: 480.000000
+    sulfur_concentration: 28.000000
+    strontium_concentration: 87.000000
+    tracer_percent: 0.000000
+    flow_rate: null
+  - _index: 131
+    particle_object: FlobnCUpperCoilDataParticle
+    particle_type: flobn_c_upper_coil_recovered
+    internal_timestamp: 3588998400.000000
+    tracking_id: 'HR5G-120'
+    sample_time: '2013/09/24 08'
+    boron_concentration: 305.480000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 8.060000
+    potassium_concentration: 7.970000
+    lithium_concentration: 20.620000
+    magnesium_concentration: 41.240000
+    sodium_concentration: 366.580000
+    sulfur_concentration: 21.380000
+    strontium_concentration: 66.440000
+    tracer_percent: 23.630000
+    flow_rate: 3.680000
+  - _index: 132
+    particle_object: FlobnCLowerCoilDataParticle
+    particle_type: flobn_c_lower_coil_recovered
+    internal_timestamp: 3587875200.000000
+    tracking_id: 'HR5R-123'
+    sample_time: '2013/09/11 08'
+    boron_concentration: 400.000000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.550000
+    potassium_concentration: 10.440000
+    lithium_concentration: 27.000000
+    magnesium_concentration: 54.000000
+    sodium_concentration: 480.000000
+    sulfur_concentration: 28.000000
+    strontium_concentration: 87.000000
+    tracer_percent: 0.000000
+    flow_rate: null
+  - _index: 133
+    particle_object: FlobnCUpperCoilDataParticle
+    particle_type: flobn_c_upper_coil_recovered
+    internal_timestamp: 3589138800.000000
+    tracking_id: 'HR5G-119'
+    sample_time: '2013/09/25 23'
+    boron_concentration: 328.140000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 8.650000
+    potassium_concentration: 8.560000
+    lithium_concentration: 22.150000
+    magnesium_concentration: 44.300000
+    sodium_concentration: 393.770000
+    sulfur_concentration: 22.970000
+    strontium_concentration: 71.370000
+    tracer_percent: 17.960000
+    flow_rate: 4.840000
+  - _index: 134
+    particle_object: FlobnCLowerCoilDataParticle
+    particle_type: flobn_c_lower_coil_recovered
+    internal_timestamp: 3587997600.000000
+    tracking_id: 'HR5R-122'
+    sample_time: '2013/09/12 18'
+    boron_concentration: 400.000000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.550000
+    potassium_concentration: 10.440000
+    lithium_concentration: 27.000000
+    magnesium_concentration: 54.000000
+    sodium_concentration: 480.000000
+    sulfur_concentration: 28.000000
+    strontium_concentration: 87.000000
+    tracer_percent: 0.000000
+    flow_rate: null
+  - _index: 135
+    particle_object: FlobnCUpperCoilDataParticle
+    particle_type: flobn_c_upper_coil_recovered
+    internal_timestamp: 3589275600.000000
+    tracking_id: 'HR5G-118'
+    sample_time: '2013/09/27 13'
+    boron_concentration: 328.430000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 8.660000
+    potassium_concentration: 8.570000
+    lithium_concentration: 22.170000
+    magnesium_concentration: 44.340000
+    sodium_concentration: 394.120000
+    sulfur_concentration: 22.990000
+    strontium_concentration: 71.430000
+    tracer_percent: 17.890000
+    flow_rate: 4.860000
+  - _index: 136
+    particle_object: FlobnCLowerCoilDataParticle
+    particle_type: flobn_c_lower_coil_recovered
+    internal_timestamp: 3588120000.000000
+    tracking_id: 'HR5R-121'
+    sample_time: '2013/09/14 04'
+    boron_concentration: 400.000000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.550000
+    potassium_concentration: 10.440000
+    lithium_concentration: 27.000000
+    magnesium_concentration: 54.000000
+    sodium_concentration: 480.000000
+    sulfur_concentration: 28.000000
+    strontium_concentration: 87.000000
+    tracer_percent: 0.000000
+    flow_rate: null
+  - _index: 137
+    particle_object: FlobnCUpperCoilDataParticle
+    particle_type: flobn_c_upper_coil_recovered
+    internal_timestamp: 3589416000.000000
+    tracking_id: 'HR5G-117'
+    sample_time: '2013/09/29 04'
+    boron_concentration: 321.630000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 8.480000
+    potassium_concentration: 8.390000
+    lithium_concentration: 21.710000
+    magnesium_concentration: 43.420000
+    sodium_concentration: 385.950000
+    sulfur_concentration: 22.510000
+    strontium_concentration: 69.950000
+    tracer_percent: 19.590000
+    flow_rate: 4.440000
+  - _index: 138
+    particle_object: FlobnCLowerCoilDataParticle
+    particle_type: flobn_c_lower_coil_recovered
+    internal_timestamp: 3588238800.000000
+    tracking_id: 'HR5R-120'
+    sample_time: '2013/09/15 13'
+    boron_concentration: 400.000000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.550000
+    potassium_concentration: 10.440000
+    lithium_concentration: 27.000000
+    magnesium_concentration: 54.000000
+    sodium_concentration: 480.000000
+    sulfur_concentration: 28.000000
+    strontium_concentration: 87.000000
+    tracer_percent: 0.000000
+    flow_rate: null
+  - _index: 139
+    particle_object: FlobnCUpperCoilDataParticle
+    particle_type: flobn_c_upper_coil_recovered
+    internal_timestamp: 3589552800.000000
+    tracking_id: 'HR5G-116'
+    sample_time: '2013/09/30 18'
+    boron_concentration: 303.190000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 8.000000
+    potassium_concentration: 7.910000
+    lithium_concentration: 20.470000
+    magnesium_concentration: 40.930000
+    sodium_concentration: 363.830000
+    sulfur_concentration: 21.220000
+    strontium_concentration: 65.940000
+    tracer_percent: 24.200000
+    flow_rate: 3.590000
+  - _index: 140
+    particle_object: FlobnCLowerCoilDataParticle
+    particle_type: flobn_c_lower_coil_recovered
+    internal_timestamp: 3588361200.000000
+    tracking_id: 'HR5R-119'
+    sample_time: '2013/09/16 23'
+    boron_concentration: 400.000000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.550000
+    potassium_concentration: 10.440000
+    lithium_concentration: 27.000000
+    magnesium_concentration: 54.000000
+    sodium_concentration: 480.000000
+    sulfur_concentration: 28.000000
+    strontium_concentration: 87.000000
+    tracer_percent: 0.000000
+    flow_rate: null
+  - _index: 141
+    particle_object: FlobnCUpperCoilDataParticle
+    particle_type: flobn_c_upper_coil_recovered
+    internal_timestamp: 3589689600.000000
+    tracking_id: 'HR5G-115'
+    sample_time: '2013/10/02 08'
+    boron_concentration: 300.440000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 7.920000
+    potassium_concentration: 7.840000
+    lithium_concentration: 20.280000
+    magnesium_concentration: 40.560000
+    sodium_concentration: 360.530000
+    sulfur_concentration: 21.030000
+    strontium_concentration: 65.350000
+    tracer_percent: 24.890000
+    flow_rate: 3.500000
+  - _index: 142
+    particle_object: FlobnCLowerCoilDataParticle
+    particle_type: flobn_c_lower_coil_recovered
+    internal_timestamp: 3588480000.000000
+    tracking_id: 'HR5R-118'
+    sample_time: '2013/09/18 08'
+    boron_concentration: 400.000000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.550000
+    potassium_concentration: 10.440000
+    lithium_concentration: 27.000000
+    magnesium_concentration: 54.000000
+    sodium_concentration: 480.000000
+    sulfur_concentration: 28.000000
+    strontium_concentration: 87.000000
+    tracer_percent: 0.000000
+    flow_rate: null
+  - _index: 143
+    particle_object: FlobnCUpperCoilDataParticle
+    particle_type: flobn_c_upper_coil_recovered
+    internal_timestamp: 3589830000.000000
+    tracking_id: 'HR5G-114'
+    sample_time: '2013/10/03 23'
+    boron_concentration: 279.990000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 7.380000
+    potassium_concentration: 7.310000
+    lithium_concentration: 18.900000
+    magnesium_concentration: 37.800000
+    sodium_concentration: 335.990000
+    sulfur_concentration: 19.600000
+    strontium_concentration: 60.900000
+    tracer_percent: 30.000000
+    flow_rate: 2.900000
+  - _index: 144
+    particle_object: FlobnCLowerCoilDataParticle
+    particle_type: flobn_c_lower_coil_recovered
+    internal_timestamp: 3588602400.000000
+    tracking_id: 'HR5R-117'
+    sample_time: '2013/09/19 18'
+    boron_concentration: 400.000000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.550000
+    potassium_concentration: 10.440000
+    lithium_concentration: 27.000000
+    magnesium_concentration: 54.000000
+    sodium_concentration: 480.000000
+    sulfur_concentration: 28.000000
+    strontium_concentration: 87.000000
+    tracer_percent: 0.000000
+    flow_rate: null
+  - _index: 145
+    particle_object: FlobnCUpperCoilDataParticle
+    particle_type: flobn_c_upper_coil_recovered
+    internal_timestamp: 3589966800.000000
+    tracking_id: 'HR5G-113'
+    sample_time: '2013/10/05 13'
+    boron_concentration: 274.380000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 7.240000
+    potassium_concentration: 7.160000
+    lithium_concentration: 18.520000
+    magnesium_concentration: 37.040000
+    sodium_concentration: 329.260000
+    sulfur_concentration: 19.210000
+    strontium_concentration: 59.680000
+    tracer_percent: 31.400000
+    flow_rate: 2.770000
+  - _index: 146
+    particle_object: FlobnCLowerCoilDataParticle
+    particle_type: flobn_c_lower_coil_recovered
+    internal_timestamp: 3588724800.000000
+    tracking_id: 'HR5R-116'
+    sample_time: '2013/09/21 04'
+    boron_concentration: 400.000000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.550000
+    potassium_concentration: 10.440000
+    lithium_concentration: 27.000000
+    magnesium_concentration: 54.000000
+    sodium_concentration: 480.000000
+    sulfur_concentration: 28.000000
+    strontium_concentration: 87.000000
+    tracer_percent: 0.000000
+    flow_rate: null
+  - _index: 147
+    particle_object: FlobnCUpperCoilDataParticle
+    particle_type: flobn_c_upper_coil_recovered
+    internal_timestamp: 3590107200.000000
+    tracking_id: 'HR5G-112'
+    sample_time: '2013/10/07 04'
+    boron_concentration: 270.470000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 7.130000
+    potassium_concentration: 7.060000
+    lithium_concentration: 18.260000
+    magnesium_concentration: 36.510000
+    sodium_concentration: 324.560000
+    sulfur_concentration: 18.930000
+    strontium_concentration: 58.830000
+    tracer_percent: 32.380000
+    flow_rate: 2.690000
+  - _index: 148
+    particle_object: FlobnCLowerCoilDataParticle
+    particle_type: flobn_c_lower_coil_recovered
+    internal_timestamp: 3588843600.000000
+    tracking_id: 'HR5R-115'
+    sample_time: '2013/09/22 13'
+    boron_concentration: 400.000000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.550000
+    potassium_concentration: 10.440000
+    lithium_concentration: 27.000000
+    magnesium_concentration: 54.000000
+    sodium_concentration: 480.000000
+    sulfur_concentration: 28.000000
+    strontium_concentration: 87.000000
+    tracer_percent: 0.000000
+    flow_rate: null
+  - _index: 149
+    particle_object: FlobnCUpperCoilDataParticle
+    particle_type: flobn_c_upper_coil_recovered
+    internal_timestamp: 3590244000.000000
+    tracking_id: 'HR5G-111'
+    sample_time: '2013/10/08 18'
+    boron_concentration: 273.320000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 7.210000
+    potassium_concentration: 7.130000
+    lithium_concentration: 18.450000
+    magnesium_concentration: 36.900000
+    sodium_concentration: 327.980000
+    sulfur_concentration: 19.130000
+    strontium_concentration: 59.450000
+    tracer_percent: 31.670000
+    flow_rate: 2.750000
+  - _index: 150
+    particle_object: FlobnCLowerCoilDataParticle
+    particle_type: flobn_c_lower_coil_recovered
+    internal_timestamp: 3588966000.000000
+    tracking_id: 'HR5R-114'
+    sample_time: '2013/09/23 23'
+    boron_concentration: 400.000000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.550000
+    potassium_concentration: 10.440000
+    lithium_concentration: 27.000000
+    magnesium_concentration: 54.000000
+    sodium_concentration: 480.000000
+    sulfur_concentration: 28.000000
+    strontium_concentration: 87.000000
+    tracer_percent: 0.000000
+    flow_rate: null
+  - _index: 151
+    particle_object: FlobnCUpperCoilDataParticle
+    particle_type: flobn_c_upper_coil_recovered
+    internal_timestamp: 3590380800.000000
+    tracking_id: 'HR5G-110'
+    sample_time: '2013/10/10 08'
+    boron_concentration: 280.940000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 7.410000
+    potassium_concentration: 7.330000
+    lithium_concentration: 18.960000
+    magnesium_concentration: 37.930000
+    sodium_concentration: 337.130000
+    sulfur_concentration: 19.670000
+    strontium_concentration: 61.100000
+    tracer_percent: 29.760000
+    flow_rate: 2.920000
+  - _index: 152
+    particle_object: FlobnCLowerCoilDataParticle
+    particle_type: flobn_c_lower_coil_recovered
+    internal_timestamp: 3589084800.000000
+    tracking_id: 'HR5R-113'
+    sample_time: '2013/09/25 08'
+    boron_concentration: 400.000000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.550000
+    potassium_concentration: 10.440000
+    lithium_concentration: 27.000000
+    magnesium_concentration: 54.000000
+    sodium_concentration: 480.000000
+    sulfur_concentration: 28.000000
+    strontium_concentration: 87.000000
+    tracer_percent: 0.000000
+    flow_rate: null
+  - _index: 153
+    particle_object: FlobnCUpperCoilDataParticle
+    particle_type: flobn_c_upper_coil_recovered
+    internal_timestamp: 3590521200.000000
+    tracking_id: 'HR5G-109'
+    sample_time: '2013/10/11 23'
+    boron_concentration: 281.940000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 7.440000
+    potassium_concentration: 7.360000
+    lithium_concentration: 19.030000
+    magnesium_concentration: 38.060000
+    sodium_concentration: 338.330000
+    sulfur_concentration: 19.740000
+    strontium_concentration: 61.320000
+    tracer_percent: 29.510000
+    flow_rate: 2.950000
+  - _index: 154
+    particle_object: FlobnCLowerCoilDataParticle
+    particle_type: flobn_c_lower_coil_recovered
+    internal_timestamp: 3589207200.000000
+    tracking_id: 'HR5R-112'
+    sample_time: '2013/09/26 18'
+    boron_concentration: 400.000000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.550000
+    potassium_concentration: 10.440000
+    lithium_concentration: 27.000000
+    magnesium_concentration: 54.000000
+    sodium_concentration: 480.000000
+    sulfur_concentration: 28.000000
+    strontium_concentration: 87.000000
+    tracer_percent: 0.000000
+    flow_rate: null
+  - _index: 155
+    particle_object: FlobnCUpperCoilDataParticle
+    particle_type: flobn_c_upper_coil_recovered
+    internal_timestamp: 3590658000.000000
+    tracking_id: 'HR5G-108'
+    sample_time: '2013/10/13 13'
+    boron_concentration: 284.230000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 7.500000
+    potassium_concentration: 7.420000
+    lithium_concentration: 19.190000
+    magnesium_concentration: 38.370000
+    sodium_concentration: 341.080000
+    sulfur_concentration: 19.900000
+    strontium_concentration: 61.820000
+    tracer_percent: 28.940000
+    flow_rate: 3.010000
+  - _index: 156
+    particle_object: FlobnCLowerCoilDataParticle
+    particle_type: flobn_c_lower_coil_recovered
+    internal_timestamp: 3589329600.000000
+    tracking_id: 'HR5R-111'
+    sample_time: '2013/09/28 04'
+    boron_concentration: 400.000000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.550000
+    potassium_concentration: 10.440000
+    lithium_concentration: 27.000000
+    magnesium_concentration: 54.000000
+    sodium_concentration: 480.000000
+    sulfur_concentration: 28.000000
+    strontium_concentration: 87.000000
+    tracer_percent: 0.000000
+    flow_rate: null
+  - _index: 157
+    particle_object: FlobnCUpperCoilDataParticle
+    particle_type: flobn_c_upper_coil_recovered
+    internal_timestamp: 3590798400.000000
+    tracking_id: 'HR5G-107'
+    sample_time: '2013/10/15 04'
+    boron_concentration: 283.010000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 7.460000
+    potassium_concentration: 7.390000
+    lithium_concentration: 19.100000
+    magnesium_concentration: 38.210000
+    sodium_concentration: 339.620000
+    sulfur_concentration: 19.810000
+    strontium_concentration: 61.560000
+    tracer_percent: 29.250000
+    flow_rate: 2.970000
+  - _index: 158
+    particle_object: FlobnCLowerCoilDataParticle
+    particle_type: flobn_c_lower_coil_recovered
+    internal_timestamp: 3589448400.000000
+    tracking_id: 'HR5R-110'
+    sample_time: '2013/09/29 13'
+    boron_concentration: 400.000000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.550000
+    potassium_concentration: 10.440000
+    lithium_concentration: 27.000000
+    magnesium_concentration: 54.000000
+    sodium_concentration: 480.000000
+    sulfur_concentration: 28.000000
+    strontium_concentration: 87.000000
+    tracer_percent: 0.000000
+    flow_rate: null
+  - _index: 159
+    particle_object: FlobnCUpperCoilDataParticle
+    particle_type: flobn_c_upper_coil_recovered
+    internal_timestamp: 3590935200.000000
+    tracking_id: 'HR5G-106'
+    sample_time: '2013/10/16 18'
+    boron_concentration: 283.960000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 7.490000
+    potassium_concentration: 7.410000
+    lithium_concentration: 19.170000
+    magnesium_concentration: 38.330000
+    sodium_concentration: 340.750000
+    sulfur_concentration: 19.880000
+    strontium_concentration: 61.760000
+    tracer_percent: 29.010000
+    flow_rate: 3.000000
+  - _index: 160
+    particle_object: FlobnCLowerCoilDataParticle
+    particle_type: flobn_c_lower_coil_recovered
+    internal_timestamp: 3589570800.000000
+    tracking_id: 'HR5R-109'
+    sample_time: '2013/09/30 23'
+    boron_concentration: 400.000000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.550000
+    potassium_concentration: 10.440000
+    lithium_concentration: 27.000000
+    magnesium_concentration: 54.000000
+    sodium_concentration: 480.000000
+    sulfur_concentration: 28.000000
+    strontium_concentration: 87.000000
+    tracer_percent: 0.000000
+    flow_rate: null
+  - _index: 161
+    particle_object: FlobnCUpperCoilDataParticle
+    particle_type: flobn_c_upper_coil_recovered
+    internal_timestamp: 3591072000.000000
+    tracking_id: 'HR5G-105'
+    sample_time: '2013/10/18 08'
+    boron_concentration: 284.770000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 7.510000
+    potassium_concentration: 7.430000
+    lithium_concentration: 19.220000
+    magnesium_concentration: 38.440000
+    sodium_concentration: 341.720000
+    sulfur_concentration: 19.930000
+    strontium_concentration: 61.940000
+    tracer_percent: 28.810000
+    flow_rate: 3.020000
+  - _index: 162
+    particle_object: FlobnCLowerCoilDataParticle
+    particle_type: flobn_c_lower_coil_recovered
+    internal_timestamp: 3589689600.000000
+    tracking_id: 'HR5R-108'
+    sample_time: '2013/10/02 08'
+    boron_concentration: 400.000000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.550000
+    potassium_concentration: 10.440000
+    lithium_concentration: 27.000000
+    magnesium_concentration: 54.000000
+    sodium_concentration: 480.000000
+    sulfur_concentration: 28.000000
+    strontium_concentration: 87.000000
+    tracer_percent: 0.000000
+    flow_rate: null
+  - _index: 163
+    particle_object: FlobnCUpperCoilDataParticle
+    particle_type: flobn_c_upper_coil_recovered
+    internal_timestamp: 3591212400.000000
+    tracking_id: 'HR5G-104'
+    sample_time: '2013/10/19 23'
+    boron_concentration: 271.650000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 7.160000
+    potassium_concentration: 7.090000
+    lithium_concentration: 18.340000
+    magnesium_concentration: 36.670000
+    sodium_concentration: 325.980000
+    sulfur_concentration: 19.020000
+    strontium_concentration: 59.080000
+    tracer_percent: 32.090000
+    flow_rate: 2.710000
+  - _index: 164
+    particle_object: FlobnCLowerCoilDataParticle
+    particle_type: flobn_c_lower_coil_recovered
+    internal_timestamp: 3589812000.000000
+    tracking_id: 'HR5R-107'
+    sample_time: '2013/10/03 18'
+    boron_concentration: 400.000000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.550000
+    potassium_concentration: 10.440000
+    lithium_concentration: 27.000000
+    magnesium_concentration: 54.000000
+    sodium_concentration: 480.000000
+    sulfur_concentration: 28.000000
+    strontium_concentration: 87.000000
+    tracer_percent: 0.000000
+    flow_rate: null
+  - _index: 165
+    particle_object: FlobnCUpperCoilDataParticle
+    particle_type: flobn_c_upper_coil_recovered
+    internal_timestamp: 3591349200.000000
+    tracking_id: 'HR5G-103'
+    sample_time: '2013/10/21 13'
+    boron_concentration: 265.270000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 7.000000
+    potassium_concentration: 6.920000
+    lithium_concentration: 17.910000
+    magnesium_concentration: 35.810000
+    sodium_concentration: 318.330000
+    sulfur_concentration: 18.570000
+    strontium_concentration: 57.700000
+    tracer_percent: 33.680000
+    flow_rate: 2.580000
+  - _index: 166
+    particle_object: FlobnCLowerCoilDataParticle
+    particle_type: flobn_c_lower_coil_recovered
+    internal_timestamp: 3589934400.000000
+    tracking_id: 'HR5R-106'
+    sample_time: '2013/10/05 04'
+    boron_concentration: 400.000000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.550000
+    potassium_concentration: 10.440000
+    lithium_concentration: 27.000000
+    magnesium_concentration: 54.000000
+    sodium_concentration: 480.000000
+    sulfur_concentration: 28.000000
+    strontium_concentration: 87.000000
+    tracer_percent: 0.000000
+    flow_rate: null
+  - _index: 167
+    particle_object: FlobnCUpperCoilDataParticle
+    particle_type: flobn_c_upper_coil_recovered
+    internal_timestamp: 3591489600.000000
+    tracking_id: 'HR5G-102'
+    sample_time: '2013/10/23 04'
+    boron_concentration: 250.070000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 6.600000
+    potassium_concentration: 6.530000
+    lithium_concentration: 16.880000
+    magnesium_concentration: 33.760000
+    sodium_concentration: 300.090000
+    sulfur_concentration: 17.510000
+    strontium_concentration: 54.390000
+    tracer_percent: 37.480000
+    flow_rate: 2.320000
+  - _index: 168
+    particle_object: FlobnCLowerCoilDataParticle
+    particle_type: flobn_c_lower_coil_recovered
+    internal_timestamp: 3590053200.000000
+    tracking_id: 'HR5R-105'
+    sample_time: '2013/10/06 13'
+    boron_concentration: 400.000000
+    barium_concentration_um: 0.000000
+    calcium_concentration: 10.550000
+    potassium_concentration: 10.440000
+    lithium_concentration: 27.000000
+    magnesium_concentration: 54.000000
+    sodium_concentration: 480.000000
+    sulfur_concentration: 28.000000
+    strontium_concentration: 87.000000
+    tracer_percent: 0.000000
+    flow_rate: null

@@ -1,0 +1,224 @@
+header:
+    particle_object: ParadNAuvRecoveredParticle
+    particle_type: parad_n_auv_instrument_recovered
+data:
+  - _index: 1
+    internal_timestamp: 3627998276.162
+    mission_epoch: 1419009476
+    auv_latitude: 41.5543
+    auv_longitude: -70.7050
+    mission_time: 62276162
+    m_depth: -0.07
+    biospherical_mobile_sensor_voltage: 1022.15
+    sensor_temperature: 6.93
+    parad_n_auv_supply_voltage: 11.70
+  - _index: 2
+    internal_timestamp: 3627998276.270
+    mission_epoch: 1419009476
+    auv_latitude: 41.5543
+    auv_longitude: -70.7050
+    mission_time: 62276270
+    m_depth: -0.05
+    biospherical_mobile_sensor_voltage: 1040.27
+    sensor_temperature: 6.93
+    parad_n_auv_supply_voltage: 11.57
+  - _index: 3
+    internal_timestamp: 3627998276.376
+    mission_epoch: 1419009476
+    auv_latitude: 41.5543
+    auv_longitude: -70.7050
+    mission_time: 62276376
+    m_depth: -0.05
+    biospherical_mobile_sensor_voltage: 1059.57
+    sensor_temperature: 6.93
+    parad_n_auv_supply_voltage: 11.70
+  - _index: 4
+    internal_timestamp: 3627998276.483
+    mission_epoch: 1419009476
+    auv_latitude: 41.5543
+    auv_longitude: -70.7050
+    mission_time: 62276483
+    m_depth: -0.01
+    biospherical_mobile_sensor_voltage: 1074.00
+    sensor_temperature: 6.93
+    parad_n_auv_supply_voltage: 11.70
+  - _index: 5
+    internal_timestamp: 3627998276.590
+    mission_epoch: 1419009476
+    auv_latitude: 41.5543
+    auv_longitude: -70.7050
+    mission_time: 62276590
+    m_depth: -0.01
+    biospherical_mobile_sensor_voltage: 1080.78
+    sensor_temperature: 6.93
+    parad_n_auv_supply_voltage: 11.68
+  - _index: 6
+    internal_timestamp: 3627998276.697
+    mission_epoch: 1419009476
+    auv_latitude: 41.5543
+    auv_longitude: -70.7050
+    mission_time: 62276697
+    m_depth: -0.01
+    biospherical_mobile_sensor_voltage: 1076.88
+    sensor_temperature: 6.93
+    parad_n_auv_supply_voltage: 11.57
+  - _index: 7
+    internal_timestamp: 3627998276.804
+    mission_epoch: 1419009476
+    auv_latitude: 41.5543
+    auv_longitude: -70.7050
+    mission_time: 62276804
+    m_depth: 0.06
+    biospherical_mobile_sensor_voltage: 1067.75
+    sensor_temperature: 6.93
+    parad_n_auv_supply_voltage: 11.68
+  - _index: 8
+    internal_timestamp: 3627998276.911
+    mission_epoch: 1419009476
+    auv_latitude: 41.5543
+    auv_longitude: -70.7050
+    mission_time: 62276911
+    m_depth: 0.06
+    biospherical_mobile_sensor_voltage: 1067.95
+    sensor_temperature: 6.93
+    parad_n_auv_supply_voltage: 11.70
+  - _index: 9
+    internal_timestamp: 3627998277.125
+    mission_epoch: 1419009477
+    auv_latitude: 41.5543
+    auv_longitude: -70.7050
+    mission_time: 62277125
+    m_depth: 0.10
+    biospherical_mobile_sensor_voltage: 1035.22
+    sensor_temperature: 6.93
+    parad_n_auv_supply_voltage: 11.70
+  - _index: 10
+    internal_timestamp: 3627998277.232
+    mission_epoch: 1419009477
+    auv_latitude: 41.5543
+    auv_longitude: -70.7050
+    mission_time: 62277232
+    m_depth: 0.09
+    biospherical_mobile_sensor_voltage: 585.90
+    sensor_temperature: 6.93
+    parad_n_auv_supply_voltage: 11.68
+  - _index: 11
+    internal_timestamp: 3627998277.339
+    mission_epoch: 1419009477
+    auv_latitude: 41.5543
+    auv_longitude: -70.7050
+    mission_time: 62277339
+    m_depth: 0.09
+    biospherical_mobile_sensor_voltage: 503.55
+    sensor_temperature: 6.93
+    parad_n_auv_supply_voltage: 11.78
+  - _index: 12
+    internal_timestamp: 3627998277.446
+    mission_epoch: 1419009477
+    auv_latitude: 41.5543
+    auv_longitude: -70.7050
+    mission_time: 62277446
+    m_depth: 0.09
+    biospherical_mobile_sensor_voltage: 497.79
+    sensor_temperature: 6.93
+    parad_n_auv_supply_voltage: 11.61
+  - _index: 13
+    internal_timestamp: 3627998277.553
+    mission_epoch: 1419009477
+    auv_latitude: 41.5543
+    auv_longitude: -70.7050
+    mission_time: 62277553
+    m_depth: 0.06
+    biospherical_mobile_sensor_voltage: 458.43
+    sensor_temperature: 6.93
+    parad_n_auv_supply_voltage: 11.65
+  - _index: 14
+    internal_timestamp: 3627998277.660
+    mission_epoch: 1419009477
+    auv_latitude: 41.5543
+    auv_longitude: -70.7050
+    mission_time: 62277660
+    m_depth: 0.06
+    biospherical_mobile_sensor_voltage: 450.02
+    sensor_temperature: 6.93
+    parad_n_auv_supply_voltage: 11.70
+  - _index: 15
+    internal_timestamp: 3627998277.767
+    mission_epoch: 1419009477
+    auv_latitude: 41.5543
+    auv_longitude: -70.7050
+    mission_time: 62277767
+    m_depth: 0.04
+    biospherical_mobile_sensor_voltage: 465.70
+    sensor_temperature: 6.93
+    parad_n_auv_supply_voltage: 11.65
+  - _index: 16
+    internal_timestamp: 3627998277.874
+    mission_epoch: 1419009477
+    auv_latitude: 41.5543
+    auv_longitude: -70.7050
+    mission_time: 62277874
+    m_depth: 0.04
+    biospherical_mobile_sensor_voltage: 441.09
+    sensor_temperature: 6.93
+    parad_n_auv_supply_voltage: 11.68
+  - _index: 17
+    internal_timestamp: 3627998277.981
+    mission_epoch: 1419009477
+    auv_latitude: 41.5543
+    auv_longitude: -70.7050
+    mission_time: 62277981
+    m_depth: 0.04
+    biospherical_mobile_sensor_voltage: 413.20
+    sensor_temperature: 6.93
+    parad_n_auv_supply_voltage: 11.65
+  - _index: 18
+    internal_timestamp: 3627998278.088
+    mission_epoch: 1419009478
+    auv_latitude: 41.5543
+    auv_longitude: -70.7050
+    mission_time: 62278088
+    m_depth: 0.00
+    biospherical_mobile_sensor_voltage: 446.18
+    sensor_temperature: 6.93
+    parad_n_auv_supply_voltage: 11.65
+  - _index: 19
+    internal_timestamp: 3627998278.195
+    mission_epoch: 1419009478
+    auv_latitude: 41.5543
+    auv_longitude: -70.7050
+    mission_time: 62278195
+    m_depth: 0.00
+    biospherical_mobile_sensor_voltage: 450.03
+    sensor_temperature: 6.93
+    parad_n_auv_supply_voltage: 11.65
+  - _index: 20
+    internal_timestamp: 3627998278.302
+    mission_epoch: 1419009478
+    auv_latitude: 41.5543
+    auv_longitude: -70.7050
+    mission_time: 62278302
+    m_depth: -0.03
+    biospherical_mobile_sensor_voltage: 436.97
+    sensor_temperature: 6.93
+    parad_n_auv_supply_voltage: 11.70
+  - _index: 21
+    internal_timestamp: 3627998278.409
+    mission_epoch: 1419009478
+    auv_latitude: 41.5543
+    auv_longitude: -70.7050
+    mission_time: 62278409
+    m_depth: -0.03
+    biospherical_mobile_sensor_voltage: 432.83
+    sensor_temperature: 6.93
+    parad_n_auv_supply_voltage: 11.70
+  - _index: 22
+    internal_timestamp: 3627998278.516
+    mission_epoch: 1419009478
+    auv_latitude: 41.5543
+    auv_longitude: -70.7050
+    mission_time: 62278516
+    m_depth: -0.03
+    biospherical_mobile_sensor_voltage: 428.46
+    sensor_temperature: 6.93
+    parad_n_auv_supply_voltage: 11.70

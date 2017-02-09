@@ -1,0 +1,214 @@
+header:
+    particle_object: AuvEngAuvFaultMessageRecovParticle
+    particle_type: 'auv_eng_auv_fault_message_recovered'
+data:
+  - _index: 1
+    internal_timestamp: 3627997726.000
+    filename: 'diagnose.cpp'
+    line: 924
+    mission_epoch: 1419008926
+    message: 'Warning: Verify transponder range test disabled in mission file, line 40'
+  - _index: 2
+    internal_timestamp: 3627997726.000
+    filename: 'objectiv.cpp'
+    line: 1465
+    mission_epoch: 1419008926
+    message: 'Warning: line 112, Minimum altitude (2.0 M) is within 1.5 meters of the emergency climb altitude (1.0 M)'
+  - _index: 3
+    internal_timestamp: 3627998274.000
+    filename: 'CLE/host.cpp'
+    line: 961
+    mission_epoch: 1419009474
+    message: 'Executing mission from VIP Run button'
+  - _index: 4
+    internal_timestamp: 3627998274.000
+    filename: '/gps_obj.cpp'
+    line: 657
+    mission_epoch: 1419009474
+    message: 'Fix needed: Mission start'
+  - _index: 5
+    internal_timestamp: 3627998283.000
+    filename: 'selftest.cpp'
+    line: 860
+    mission_epoch: 1419009483
+    message: 'Self test failure attitude (tilt),  [00800010] pausing mission'
+  - _index: 6
+    internal_timestamp: 3627998283.000
+    filename: 'selftest.cpp'
+    line: 860
+    mission_epoch: 1419009483
+    message: 'Self test failure attitude (tilt),  [00800010] pausing mission'
+  - _index: 7
+    internal_timestamp: 3627998284.000
+    filename: 'selftest.cpp'
+    line: 860
+    mission_epoch: 1419009484
+    message: 'Self test failure attitude (tilt),  [00800010] pausing mission'
+  - _index: 8
+    internal_timestamp: 3627998284.000
+    filename: 'selftest.cpp'
+    line: 860
+    mission_epoch: 1419009484
+    message: 'Self test failure attitude (tilt),  [00800010] pausing mission'
+  - _index: 9
+    internal_timestamp: 3627998309.000
+    filename: 'selftest.cpp'
+    line: 1214
+    mission_epoch: 1419009509
+    message: 'Vehicle stuck on surface; attempting to drive it down'
+  - _index: 10
+    internal_timestamp: 3627998315.000
+    filename: '/mot_tri.cpp'
+    line: 515
+    mission_epoch: 1419009515
+    message: 'Thruster is current limiting (1)'
+  - _index: 11
+    internal_timestamp: 3627998318.000
+    filename: '/mot_tri.cpp'
+    line: 515
+    mission_epoch: 1419009518
+    message: 'Thruster is current limiting (32)'
+  - _index: 12
+    internal_timestamp: 3627998322.000
+    filename: '/mot_tri.cpp'
+    line: 515
+    mission_epoch: 1419009522
+    message: 'Thruster is current limiting (47)'
+  - _index: 13
+    internal_timestamp: 3627998495.000
+    filename: '/gps_obj.cpp'
+    line: 657
+    mission_epoch: 1419009695
+    message: 'Fix needed: Get fix objective'
+  - _index: 14
+    internal_timestamp: 3627998548.000
+    filename: 'ooi_dock.cpp'
+    line: 1252
+    mission_epoch: 1419009748
+    message: 'OnLoiter:wake ping number: 1 State=0'
+  - _index: 15
+    internal_timestamp: 3627998549.000
+    filename: 'ooi_dock.cpp'
+    line: 1295
+    mission_epoch: 1419009749
+    message: 'OnLoiter:Send Request_To_Dock() State=1'
+  - _index: 16
+    internal_timestamp: 3627998551.000
+    filename: 'selftest.cpp'
+    line: 860
+    mission_epoch: 1419009751
+    message: 'Self test failure attitude (tilt),  [00800010] pausing mission'
+  - _index: 17
+    internal_timestamp: 3627998551.000
+    filename: 'selftest.cpp'
+    line: 860
+    mission_epoch: 1419009751
+    message: 'Self test failure attitude (tilt),  [00800010] pausing mission'
+  - _index: 18
+    internal_timestamp: 3627998581.000
+    filename: '/mot_tri.cpp'
+    line: 515
+    mission_epoch: 1419009781
+    message: 'Thruster is current limiting (224)'
+  - _index: 19
+    internal_timestamp: 3627998583.000
+    filename: '/mot_tri.cpp'
+    line: 515
+    mission_epoch: 1419009783
+    message: 'Thruster is current limiting (246)'
+  - _index: 20
+    internal_timestamp: 3627998584.000
+    filename: '/mot_tri.cpp'
+    line: 515
+    mission_epoch: 1419009784
+    message: 'Thruster is current limiting (256)'
+  - _index: 21
+    internal_timestamp: 3627998614.000
+    filename: 'ooi_dock.cpp'
+    line: 1295
+    mission_epoch: 1419009814
+    message: 'OnLoiter:Send Request_To_Dock() State=1'
+  - _index: 22
+    internal_timestamp: 3627998626.000
+    filename: 'ooi_dock.cpp'
+    line: 1339
+    mission_epoch: 1419009826
+    message: 'OnLoiter:OK TO DOCK State=3 coneheading=165.176468'
+  - _index: 23
+    internal_timestamp: 3627998626.000
+    filename: 'ooi_dock.cpp'
+    line: 1368
+    mission_epoch: 1419009826
+    message: 'end OOI_DOCK_LOITER'
+  - _index: 24
+    internal_timestamp: 3627998972.000
+    filename: 'ooi_dock.cpp'
+    line: 1174
+    mission_epoch: 1419010172
+    message: 'end OOI_DOCK_NAVIGATE_TO_GLIDEPATH'
+  - _index: 25
+    internal_timestamp: 3627998626.000
+    filename: 'ooi_dock.cpp'
+    line: 1368
+    mission_epoch: 1419009826
+    message: 'end OOI_DOCK_LOITER'
+  - _index: 26
+    internal_timestamp: 3627998972.000
+    filename: 'ooi_dock.cpp'
+    line: 1174
+    mission_epoch: 1419010172
+    message: 'end OOI_DOCK_NAVIGATE_TO_GLIDEPATH'
+  - _index: 27
+    internal_timestamp: 3627999003.000
+    filename: 'ooi_dock.cpp'
+    line: 1717
+    mission_epoch: 1419010203
+    message: 'Ping Detected r=448.9 a=-8.6 N=1 del t=31.4 S=0'
+  - _index: 28
+    internal_timestamp: 3627999014.000
+    filename: 'ooi_dock.cpp'
+    line: 1717
+    mission_epoch: 1419010214
+    message: 'Ping Detected r=431.7 a=-4.6 N=2 del t=10.9 S=0'
+  - _index: 29
+    internal_timestamp: 3627999037.000
+    filename: 'ooi_dock.cpp'
+    line: 1717
+    mission_epoch: 1419010237
+    message: 'Ping Detected r=400.2 a=-14.9 N=3 del t=22.7 S=0'
+  - _index: 30
+    internal_timestamp: 3627999045.000
+    filename: 'ooi_dock.cpp'
+    line: 1717
+    mission_epoch: 1419010245
+    message: 'Ping Detected r=387.7 a=-2.0 N=4 del t=8.0 S=0'
+  - _index: 31
+    internal_timestamp: 3627999356.000
+    filename: 'ooi_dock.cpp'
+    line: 1717
+    mission_epoch: 1419010556
+    message: 'Ping Detected r=13.4 a=1.8 N=35 del t=2.6 S=1'
+  - _index: 32
+    internal_timestamp: 3627999361.000
+    filename: 'ooi_dock.cpp'
+    line: 1717
+    mission_epoch: 1419010561
+    message: 'Ping Detected r=8.1 a=2.0 N=36 del t=5.1 S=1'
+  - _index: 33
+    internal_timestamp: 3627999365.000
+    filename: 'ooi_dock.cpp'
+    line: 1832
+    mission_epoch: 1419010565
+    message: 'end OOI_DOCK_GLIDEPATH'
+  - _index: 34
+    internal_timestamp: 3627999366.000
+    filename: 'ooi_dock.cpp'
+    line: 1465
+    mission_epoch: 1419010566
+    message: 'CONEINSERT: control_data.velocity_water_x:1.072338  near dock water velocity:3.333333'
+  - _index: 35
+    internal_timestamp: 3627999366.000
+    filename: 'ooi_dock.cpp'
+    line: 1531
+    mission_epoch: 1419010566
+    message: 'CONEINSERT: waiting for hit'

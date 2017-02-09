@@ -132,4 +132,3 @@ def timegm_to_float(timestamp):
     """
     gmfloat = float(calendar.timegm(timestamp))
     return gmfloat
-

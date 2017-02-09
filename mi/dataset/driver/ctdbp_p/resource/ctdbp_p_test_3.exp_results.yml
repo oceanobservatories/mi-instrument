@@ -1,0 +1,15 @@
+header:
+  particle_object: FlordGCtdbpPRecoveredDataParticle
+  particle_type: flord_g_ctdbp_p_instrument_recovered
+
+data:
+  - _index: 1
+    internal_timestamp: 3648132350.0
+    raw_signal_chl : 36998
+    raw_signal_beta : 59968
+    ctd_time: 492458750
+  - _index: 2
+    internal_timestamp: 3648133803.0
+    raw_signal_chl : 48110
+    raw_signal_beta : 65328
+    ctd_time: 492460203

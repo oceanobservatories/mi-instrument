@@ -87,5 +87,3 @@ class InstrumentDict(object):
                             
         log.debug("No external instrument dictionary metadata found, using hard coded values.")
         return None
-
-        

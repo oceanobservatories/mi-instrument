@@ -1,0 +1,396 @@
+header:
+    particle_object: 'MULTIPLE'
+    particle_type: 'MULTIPLE'
+data:
+  - _index: 1
+    particle_object: FlordLWfpSioDataParticle
+    particle_type: flord_l_wfp_instrument
+    internal_timestamp: 3585034925.000000
+    raw_signal_chl: 55
+    raw_signal_beta: 96
+    raw_internal_temp: 574
+    wfp_timestamp: 1376046125
+  - _index: 2
+    particle_object: FlordLWfpSioDataParticle
+    particle_type: flord_l_wfp_instrument
+    internal_timestamp: 3585035248.000000
+    raw_signal_chl: 55
+    raw_signal_beta: 97
+    raw_internal_temp: 572
+    wfp_timestamp: 1376046448
+  - _index: 3
+    particle_object: FlordLWfpSioDataParticle
+    particle_type: flord_l_wfp_instrument
+    internal_timestamp: 3585035568.000000
+    raw_signal_chl: 55
+    raw_signal_beta: 115
+    raw_internal_temp: 571
+    wfp_timestamp: 1376046768
+  - _index: 4
+    particle_object: FlordLWfpSioDataParticle
+    particle_type: flord_l_wfp_instrument
+    internal_timestamp: 3585035888.000000
+    raw_signal_chl: 55
+    raw_signal_beta: 94
+    raw_internal_temp: 571
+    wfp_timestamp: 1376047088
+  - _index: 5
+    particle_object: FlordLWfpSioDataParticle
+    particle_type: flord_l_wfp_instrument
+    internal_timestamp: 3585036208.000000
+    raw_signal_chl: 54
+    raw_signal_beta: 94
+    raw_internal_temp: 571
+    wfp_timestamp: 1376047408
+  - _index: 6
+    particle_object: FlordLWfpSioDataParticle
+    particle_type: flord_l_wfp_instrument
+    internal_timestamp: 3585036528.000000
+    raw_signal_chl: 54
+    raw_signal_beta: 97
+    raw_internal_temp: 571
+    wfp_timestamp: 1376047728
+  - _index: 7
+    particle_object: FlordLWfpSioDataParticle
+    particle_type: flord_l_wfp_instrument
+    internal_timestamp: 3585036848.000000
+    raw_signal_chl: 54
+    raw_signal_beta: 95
+    raw_internal_temp: 571
+    wfp_timestamp: 1376048048
+  - _index: 8
+    particle_object: FlordLWfpSioDataParticle
+    particle_type: flord_l_wfp_instrument
+    internal_timestamp: 3585037168.000000
+    raw_signal_chl: 54
+    raw_signal_beta: 95
+    raw_internal_temp: 571
+    wfp_timestamp: 1376048368
+  - _index: 9
+    particle_object: FlordLWfpSioDataParticle
+    particle_type: flord_l_wfp_instrument
+    internal_timestamp: 3585037488.000000
+    raw_signal_chl: 54
+    raw_signal_beta: 96
+    raw_internal_temp: 571
+    wfp_timestamp: 1376048688
+  - _index: 10
+    particle_object: FlordLWfpSioDataParticle
+    particle_type: flord_l_wfp_instrument
+    internal_timestamp: 3585037808.000000
+    raw_signal_chl: 53
+    raw_signal_beta: 98
+    raw_internal_temp: 571
+    wfp_timestamp: 1376049008
+  - _index: 11
+    particle_object: FlordLWfpSioDataParticle
+    particle_type: flord_l_wfp_instrument
+    internal_timestamp: 3585038128.000000
+    raw_signal_chl: 53
+    raw_signal_beta: 97
+    raw_internal_temp: 571
+    wfp_timestamp: 1376049328
+  - _index: 12
+    particle_object: FlordLWfpSioDataParticle
+    particle_type: flord_l_wfp_instrument
+    internal_timestamp: 3585038448.000000
+    raw_signal_chl: 55
+    raw_signal_beta: 96
+    raw_internal_temp: 571
+    wfp_timestamp: 1376049648
+  - _index: 13
+    particle_object: FlordLWfpSioDataParticle
+    particle_type: flord_l_wfp_instrument
+    internal_timestamp: 3585038768.000000
+    raw_signal_chl: 54
+    raw_signal_beta: 97
+    raw_internal_temp: 571
+    wfp_timestamp: 1376049968
+  - _index: 14
+    particle_object: FlordLWfpSioDataParticle
+    particle_type: flord_l_wfp_instrument
+    internal_timestamp: 3585039088.000000
+    raw_signal_chl: 55
+    raw_signal_beta: 96
+    raw_internal_temp: 571
+    wfp_timestamp: 1376050288
+  - _index: 15
+    particle_object: FlordLWfpSioDataParticle
+    particle_type: flord_l_wfp_instrument
+    internal_timestamp: 3585039408.000000
+    raw_signal_chl: 56
+    raw_signal_beta: 95
+    raw_internal_temp: 571
+    wfp_timestamp: 1376050608
+  - _index: 16
+    particle_object: FlordLWfpSioDataParticle
+    particle_type: flord_l_wfp_instrument
+    internal_timestamp: 3585039728.000000
+    raw_signal_chl: 56
+    raw_signal_beta: 96
+    raw_internal_temp: 571
+    wfp_timestamp: 1376050928
+  - _index: 17
+    particle_object: FlordLWfpSioDataParticle
+    particle_type: flord_l_wfp_instrument
+    internal_timestamp: 3585040048.000000
+    raw_signal_chl: 54
+    raw_signal_beta: 96
+    raw_internal_temp: 571
+    wfp_timestamp: 1376051248
+  - _index: 18
+    particle_object: FlordLWfpSioDataParticle
+    particle_type: flord_l_wfp_instrument
+    internal_timestamp: 3585040368.000000
+    raw_signal_chl: 53
+    raw_signal_beta: 96
+    raw_internal_temp: 571
+    wfp_timestamp: 1376051568
+  - _index: 19
+    particle_object: FlordLWfpSioDataParticle
+    particle_type: flord_l_wfp_instrument
+    internal_timestamp: 3585040688.000000
+    raw_signal_chl: 56
+    raw_signal_beta: 98
+    raw_internal_temp: 571
+    wfp_timestamp: 1376051888
+  - _index: 20
+    particle_object: FlordLWfpSioDataParticle
+    particle_type: flord_l_wfp_instrument
+    internal_timestamp: 3585041008.000000
+    raw_signal_chl: 56
+    raw_signal_beta: 96
+    raw_internal_temp: 571
+    wfp_timestamp: 1376052208
+  - _index: 21
+    particle_object: FlordLWfpSioDataParticle
+    particle_type: flord_l_wfp_instrument
+    internal_timestamp: 3585041328.000000
+    raw_signal_chl: 56
+    raw_signal_beta: 101
+    raw_internal_temp: 571
+    wfp_timestamp: 1376052528
+  - _index: 22
+    particle_object: FlordLWfpSioDataParticle
+    particle_type: flord_l_wfp_instrument
+    internal_timestamp: 3585041648.000000
+    raw_signal_chl: 55
+    raw_signal_beta: 95
+    raw_internal_temp: 571
+    wfp_timestamp: 1376052848
+  - _index: 23
+    particle_object: FlordLWfpSioDataParticle
+    particle_type: flord_l_wfp_instrument
+    internal_timestamp: 3585041968.000000
+    raw_signal_chl: 57
+    raw_signal_beta: 97
+    raw_internal_temp: 571
+    wfp_timestamp: 1376053168
+  - _index: 24
+    particle_object: FlordLWfpSioDataParticle
+    particle_type: flord_l_wfp_instrument
+    internal_timestamp: 3585042368.000000
+    raw_signal_chl: 56
+    raw_signal_beta: 98
+    raw_internal_temp: 570
+    wfp_timestamp: 1376053568
+  - _index: 25
+    particle_object: FlordLWfpSioDataParticle
+    particle_type: flord_l_wfp_instrument
+    internal_timestamp: 3585049324.000000
+    raw_signal_chl: 58
+    raw_signal_beta: 102
+    raw_internal_temp: 570
+    wfp_timestamp: 1376060524
+  - _index: 26
+    particle_object: FlordLWfpSioDataParticle
+    particle_type: flord_l_wfp_instrument
+    internal_timestamp: 3585049647.000000
+    raw_signal_chl: 57
+    raw_signal_beta: 103
+    raw_internal_temp: 568
+    wfp_timestamp: 1376060847
+  - _index: 27
+    particle_object: FlordLWfpSioDataParticle
+    particle_type: flord_l_wfp_instrument
+    internal_timestamp: 3585049967.000000
+    raw_signal_chl: 57
+    raw_signal_beta: 102
+    raw_internal_temp: 568
+    wfp_timestamp: 1376061167
+  - _index: 28
+    particle_object: FlordLWfpSioDataParticle
+    particle_type: flord_l_wfp_instrument
+    internal_timestamp: 3585050287.000000
+    raw_signal_chl: 77
+    raw_signal_beta: 237
+    raw_internal_temp: 567
+    wfp_timestamp: 1376061487
+  - _index: 29
+    particle_object: FlordLWfpSioDataParticle
+    particle_type: flord_l_wfp_instrument
+    internal_timestamp: 3585050607.000000
+    raw_signal_chl: 58
+    raw_signal_beta: 100
+    raw_internal_temp: 567
+    wfp_timestamp: 1376061807
+  - _index: 30
+    particle_object: FlordLWfpSioDataParticle
+    particle_type: flord_l_wfp_instrument
+    internal_timestamp: 3585050927.000000
+    raw_signal_chl: 59
+    raw_signal_beta: 101
+    raw_internal_temp: 567
+    wfp_timestamp: 1376062127
+  - _index: 31
+    particle_object: FlordLWfpSioDataParticle
+    particle_type: flord_l_wfp_instrument
+    internal_timestamp: 3585051247.000000
+    raw_signal_chl: 58
+    raw_signal_beta: 100
+    raw_internal_temp: 567
+    wfp_timestamp: 1376062447
+  - _index: 32
+    particle_object: FlordLWfpSioDataParticle
+    particle_type: flord_l_wfp_instrument
+    internal_timestamp: 3585051567.000000
+    raw_signal_chl: 57
+    raw_signal_beta: 114
+    raw_internal_temp: 567
+    wfp_timestamp: 1376062767
+  - _index: 33
+    particle_object: FlordLWfpSioDataParticle
+    particle_type: flord_l_wfp_instrument
+    internal_timestamp: 3585051887.000000
+    raw_signal_chl: 59
+    raw_signal_beta: 101
+    raw_internal_temp: 567
+    wfp_timestamp: 1376063087
+  - _index: 34
+    particle_object: FlordLWfpSioDataParticle
+    particle_type: flord_l_wfp_instrument
+    internal_timestamp: 3585052207.000000
+    raw_signal_chl: 59
+    raw_signal_beta: 102
+    raw_internal_temp: 567
+    wfp_timestamp: 1376063407
+  - _index: 35
+    particle_object: FlordLWfpSioDataParticle
+    particle_type: flord_l_wfp_instrument
+    internal_timestamp: 3585052527.000000
+    raw_signal_chl: 58
+    raw_signal_beta: 101
+    raw_internal_temp: 567
+    wfp_timestamp: 1376063727
+  - _index: 36
+    particle_object: FlordLWfpSioDataParticle
+    particle_type: flord_l_wfp_instrument
+    internal_timestamp: 3585052847.000000
+    raw_signal_chl: 59
+    raw_signal_beta: 100
+    raw_internal_temp: 567
+    wfp_timestamp: 1376064047
+  - _index: 37
+    particle_object: FlordLWfpSioDataParticle
+    particle_type: flord_l_wfp_instrument
+    internal_timestamp: 3585053167.000000
+    raw_signal_chl: 59
+    raw_signal_beta: 101
+    raw_internal_temp: 566
+    wfp_timestamp: 1376064367
+  - _index: 38
+    particle_object: FlordLWfpSioDataParticle
+    particle_type: flord_l_wfp_instrument
+    internal_timestamp: 3585053487.000000
+    raw_signal_chl: 58
+    raw_signal_beta: 102
+    raw_internal_temp: 566
+    wfp_timestamp: 1376064687
+  - _index: 39
+    particle_object: FlordLWfpSioDataParticle
+    particle_type: flord_l_wfp_instrument
+    internal_timestamp: 3585053807.000000
+    raw_signal_chl: 59
+    raw_signal_beta: 103
+    raw_internal_temp: 566
+    wfp_timestamp: 1376065007
+  - _index: 40
+    particle_object: FlordLWfpSioDataParticle
+    particle_type: flord_l_wfp_instrument
+    internal_timestamp: 3585054127.000000
+    raw_signal_chl: 59
+    raw_signal_beta: 101
+    raw_internal_temp: 566
+    wfp_timestamp: 1376065327
+  - _index: 41
+    particle_object: FlordLWfpSioDataParticle
+    particle_type: flord_l_wfp_instrument
+    internal_timestamp: 3585054447.000000
+    raw_signal_chl: 60
+    raw_signal_beta: 104
+    raw_internal_temp: 566
+    wfp_timestamp: 1376065647
+  - _index: 42
+    particle_object: FlordLWfpSioDataParticle
+    particle_type: flord_l_wfp_instrument
+    internal_timestamp: 3585054767.000000
+    raw_signal_chl: 60
+    raw_signal_beta: 104
+    raw_internal_temp: 566
+    wfp_timestamp: 1376065967
+  - _index: 43
+    particle_object: FlordLWfpSioDataParticle
+    particle_type: flord_l_wfp_instrument
+    internal_timestamp: 3585055087.000000
+    raw_signal_chl: 59
+    raw_signal_beta: 104
+    raw_internal_temp: 566
+    wfp_timestamp: 1376066287
+  - _index: 44
+    particle_object: FlordLWfpSioDataParticle
+    particle_type: flord_l_wfp_instrument
+    internal_timestamp: 3585055407.000000
+    raw_signal_chl: 60
+    raw_signal_beta: 105
+    raw_internal_temp: 565
+    wfp_timestamp: 1376066607
+  - _index: 45
+    particle_object: FlordLWfpSioDataParticle
+    particle_type: flord_l_wfp_instrument
+    internal_timestamp: 3585055727.000000
+    raw_signal_chl: 58
+    raw_signal_beta: 107
+    raw_internal_temp: 565
+    wfp_timestamp: 1376066927
+  - _index: 46
+    particle_object: FlordLWfpSioDataParticle
+    particle_type: flord_l_wfp_instrument
+    internal_timestamp: 3585056047.000000
+    raw_signal_chl: 56
+    raw_signal_beta: 107
+    raw_internal_temp: 565
+    wfp_timestamp: 1376067247
+  - _index: 47
+    particle_object: FlordLWfpSioDataParticle
+    particle_type: flord_l_wfp_instrument
+    internal_timestamp: 3585056367.000000
+    raw_signal_chl: 58
+    raw_signal_beta: 109
+    raw_internal_temp: 565
+    wfp_timestamp: 1376067567
+  - _index: 48
+    particle_object: FlordLWfpSioDataParticle
+    particle_type: flord_l_wfp_instrument
+    internal_timestamp: 3585056687.000000
+    raw_signal_chl: 58
+    raw_signal_beta: 115
+    raw_internal_temp: 565
+    wfp_timestamp: 1376067887
+  - _index: 49
+    particle_object: FlordLWfpSioDataParticle
+    particle_type: flord_l_wfp_instrument
+    internal_timestamp: 3585057297.000000
+    raw_signal_chl: 58
+    raw_signal_beta: 116
+    raw_internal_temp: 564
+    wfp_timestamp: 1376068497

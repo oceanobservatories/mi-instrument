@@ -1,0 +1,82 @@
+header:
+    particle_object: MULTIPLE
+    particle_type: MULTIPLE
+data:
+  - _index: 1
+    particle_object: NutnrMDataParticle
+    particle_type: nutnr_m_instrument_recovered
+    internal_timestamp: 3627902248.3222649
+    frame_type: 'SLR'
+    serial_number: '0357'
+    year: 2014
+    day_of_year: 352
+    time_of_sample: 14.6245339625
+    nitrate_concentration: 7.8890852
+    nutnr_nitrogen_in_nitrate: 0.11050006
+    nutnr_absorbance_at_254_nm: 0.0994139
+    nutnr_absorbance_at_350_nm: 0.11583983
+    nutnr_bromide_trace: 0.0
+    nutnr_spectrum_average: 17243
+    nutnr_dark_value_used_for_fit: 613
+    nutnr_integration_time_factor: 1
+    spectral_channels: [22993, 25226, 27498, 29735, 31761, 33401, 34572, 35111, 35011, 34382, 33384, 32099, 30736, 29509, 28387, 27507, 26880, 26439, 26245, 26258, 26450, 26834, 27347, 28017, 28856, 29812, 30888, 32092, 33381, 34685, 35966, 37116]
+    temp_spectrometer: 6.0625
+    temp_lamp: 7.9375
+    humidity: 2.4037137
+    nutnr_fit_rmse: 0.000227581
+    ctd_time_uint32: 0
+    ctd_psu: -1.0
+    ctd_temp: -1.0
+    ctd_dbar: -1.0
+  - _index: 2
+    particle_object: NutnrMDataParticle
+    particle_type: nutnr_m_instrument_recovered
+    internal_timestamp: 3627902256.3261709
+    frame_type: 'SLR'
+    serial_number: '0357'
+    year: 2014
+    day_of_year: 352
+    time_of_sample: 14.626757269722
+    nitrate_concentration: 7.9162025
+    nutnr_nitrogen_in_nitrate: 0.1108798
+    nutnr_absorbance_at_254_nm: 0.0405156
+    nutnr_absorbance_at_350_nm: 0.0543576
+    nutnr_bromide_trace: 0.0
+    nutnr_spectrum_average: 19647
+    nutnr_dark_value_used_for_fit: 613
+    nutnr_integration_time_factor: 1
+    spectral_channels: [25826, 28375, 30963, 33506, 35827, 37722, 39063, 39702, 39621, 38905, 37787, 36352, 34824, 33453, 32189, 31203, 30482, 30021, 29793, 29808, 30043, 30460, 31080, 31851, 32807, 33945, 35161, 36546, 38009, 39504, 40974, 42309]
+    temp_spectrometer: 6.125
+    temp_lamp: 7.9375
+    humidity: 2.5457479
+    nutnr_fit_rmse: 0.000199539
+    ctd_time_uint32: 0
+    ctd_psu: -1.0
+    ctd_temp: -1.0
+    ctd_dbar: -1.0
+  - _index: 3
+    particle_object: NutnrMDataParticle
+    particle_type: nutnr_m_instrument_recovered
+    internal_timestamp: 3627902269.3124999
+    frame_type: 'SLR'
+    serial_number: '0357'
+    year: 2014
+    day_of_year: 352
+    time_of_sample: 14.63036458333
+    nitrate_concentration: 7.4701547
+    nutnr_nitrogen_in_nitrate: 0.1046322
+    nutnr_absorbance_at_254_nm: 0.0364638
+    nutnr_absorbance_at_350_nm: 0.0554313
+    nutnr_bromide_trace: 0.0
+    nutnr_spectrum_average: 19822
+    nutnr_dark_value_used_for_fit: 611
+    nutnr_integration_time_factor: 1
+    spectral_channels: [26691, 29293, 31927, 34531, 36868, 38776, 40134, 40738, 40613, 39847, 38657, 37156, 35565, 34131, 32819, 31801, 31059, 30535, 30308, 30304, 30523, 30949, 31552, 32322, 33273, 34395, 35620, 37003, 38476, 39982, 41480, 42809]
+    temp_spectrometer: 6.1875
+    temp_lamp: 7.8125
+    humidity: 2.3001472
+    nutnr_fit_rmse: 0.00023772
+    ctd_time_uint32: 0
+    ctd_psu: -1.0
+    ctd_temp: -1.0
+    ctd_dbar: -1.0

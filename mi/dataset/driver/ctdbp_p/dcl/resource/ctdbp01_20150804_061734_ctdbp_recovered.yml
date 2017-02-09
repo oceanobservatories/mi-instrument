@@ -1,0 +1,12 @@
+header:
+  particle_object: CtdbpPDclRecoveredDataParticle
+  particle_type: ctdbp_p_dcl_instrument_recovered
+
+data:
+  - _index: 1
+    serial_number: '50059'
+    internal_timestamp: 3647656803.0
+    temp: 23.8673
+    conductivity: -0.00001
+    pressure: 0.003
+    date_time_string: '04Aug201506:00:03'

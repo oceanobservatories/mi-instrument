@@ -1,0 +1,16 @@
+#CTDBP Status
+#7370_DateTime: 20150726 171903
+#
+#SBE 16plus-IM V 2.5.2  SERIAL NO. 50059    26 Jul 2015 17:24:10
+#vbatt = 13.6, vlith =  8.7, ioper =  62.2 ma, ipump =   0.4 ma, 
+#wait four seconds for biowiper to close: iext01 =   0.4 ma, wait four seconds for biowiper to close: iext2345 =  29.2 ma
+#status = logging
+#samples = 95, free = 2860693
+#sample interval = 3600 seconds, number of measurements per sample = 4
+#pump = run pump for 0.5 sec, delay before sampling = 2.0 seconds, delay after sampling = 0.0 seconds
+#pressure sensor = strain gauge, range = 870.0
+##SamplesRecorded = 1
+#Begin Data
+
+50059,23.5762,0.00000,0.058,0.0002,0.0001,0.1452,4.9787,26Jul201517:00:03
+#End Data

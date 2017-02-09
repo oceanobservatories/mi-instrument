@@ -1,0 +1,41 @@
+header:
+    particle_object: SioEngSioTelemeteredDataParticle
+    particle_type: sio_eng_control_status
+
+data:
+  - _index: 1
+    internal_timestamp: 3583786261.0
+    sio_controller_id: 12371
+    sio_controller_timestamp: 1374797461
+    sio_eng_voltage: 18.62
+    sio_eng_temperature: 3.3
+    sio_eng_on_time: 6520
+    sio_eng_number_of_wakeups: 210
+    sio_eng_clock_drift: 2
+  - _index: 2
+    internal_timestamp: 3583786261.0
+    sio_controller_id: 12365
+    sio_controller_timestamp: 1374797461
+    sio_eng_voltage: 18.85
+    sio_eng_temperature: 13.6
+    sio_eng_on_time: 29194802
+    sio_eng_number_of_wakeups: 14598001
+    sio_eng_clock_drift: -1
+  - _index: 3
+    internal_timestamp: 3583872661.0
+    sio_controller_id: 12371
+    sio_controller_timestamp: 1374883861
+    sio_eng_voltage: 18.62
+    sio_eng_temperature: 3.3
+    sio_eng_on_time: 9645
+    sio_eng_number_of_wakeups: 309
+    sio_eng_clock_drift: 3
+  - _index: 4
+    internal_timestamp: 3583959060.0
+    sio_controller_id: 12371
+    sio_controller_timestamp: 1374970260
+    sio_eng_voltage: 18.63
+    sio_eng_temperature: 3.3
+    sio_eng_on_time: 12732
+    sio_eng_number_of_wakeups: 408
+    sio_eng_clock_drift: 4

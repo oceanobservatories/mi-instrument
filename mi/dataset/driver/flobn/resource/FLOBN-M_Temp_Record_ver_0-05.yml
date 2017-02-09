@@ -1,0 +1,1456 @@
+header:
+    particle_object: 'MULTIPLE'
+    particle_type: 'MULTIPLE'
+data:
+  - _index: 1
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581242620.000000
+    sample_time: '2013/06/26 13:37'
+    ambient_temperature: 24.026000
+  - _index: 2
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581244420.000000
+    sample_time: '2013/06/26 14:07'
+    ambient_temperature: 23.064000
+  - _index: 3
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581246220.000000
+    sample_time: '2013/06/26 14:37'
+    ambient_temperature: 22.920000
+  - _index: 4
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581248020.000000
+    sample_time: '2013/06/26 15:07'
+    ambient_temperature: 23.978000
+  - _index: 5
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581249820.000000
+    sample_time: '2013/06/26 15:37'
+    ambient_temperature: 24.339000
+  - _index: 6
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581251620.000000
+    sample_time: '2013/06/26 16:07'
+    ambient_temperature: 23.376000
+  - _index: 7
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581253420.000000
+    sample_time: '2013/06/26 16:37'
+    ambient_temperature: 23.088000
+  - _index: 8
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581255220.000000
+    sample_time: '2013/06/26 17:07'
+    ambient_temperature: 22.944000
+  - _index: 9
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581257020.000000
+    sample_time: '2013/06/26 17:37'
+    ambient_temperature: 23.160000
+  - _index: 10
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581258820.000000
+    sample_time: '2013/06/26 18:07'
+    ambient_temperature: 23.352000
+  - _index: 11
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581260620.000000
+    sample_time: '2013/06/26 18:37'
+    ambient_temperature: 23.328000
+  - _index: 12
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581262420.000000
+    sample_time: '2013/06/26 19:07'
+    ambient_temperature: 25.186000
+  - _index: 13
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581264220.000000
+    sample_time: '2013/06/26 19:37'
+    ambient_temperature: 24.702000
+  - _index: 14
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581266020.000000
+    sample_time: '2013/06/26 20:07'
+    ambient_temperature: 23.424000
+  - _index: 15
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581267820.000000
+    sample_time: '2013/06/26 20:37'
+    ambient_temperature: 22.848000
+  - _index: 16
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581269620.000000
+    sample_time: '2013/06/26 21:07'
+    ambient_temperature: 22.585000
+  - _index: 17
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581271420.000000
+    sample_time: '2013/06/26 21:37'
+    ambient_temperature: 22.441000
+  - _index: 18
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581273220.000000
+    sample_time: '2013/06/26 22:07'
+    ambient_temperature: 22.321000
+  - _index: 19
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581275020.000000
+    sample_time: '2013/06/26 22:37'
+    ambient_temperature: 22.226000
+  - _index: 20
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581276820.000000
+    sample_time: '2013/06/26 23:07'
+    ambient_temperature: 22.154000
+  - _index: 21
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581278620.000000
+    sample_time: '2013/06/26 23:37'
+    ambient_temperature: 22.130000
+  - _index: 22
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581280420.000000
+    sample_time: '2013/06/27 00:07'
+    ambient_temperature: 21.987000
+  - _index: 23
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581282220.000000
+    sample_time: '2013/06/27 00:37'
+    ambient_temperature: 21.294000
+  - _index: 24
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581284020.000000
+    sample_time: '2013/06/27 01:07'
+    ambient_temperature: 20.770000
+  - _index: 25
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581285820.000000
+    sample_time: '2013/06/27 01:37'
+    ambient_temperature: 20.412000
+  - _index: 26
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581287620.000000
+    sample_time: '2013/06/27 02:07'
+    ambient_temperature: 20.103000
+  - _index: 27
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581289420.000000
+    sample_time: '2013/06/27 02:37'
+    ambient_temperature: 19.912000
+  - _index: 28
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581291220.000000
+    sample_time: '2013/06/27 03:07'
+    ambient_temperature: 19.770000
+  - _index: 29
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581293020.000000
+    sample_time: '2013/06/27 03:37'
+    ambient_temperature: 19.627000
+  - _index: 30
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581294820.000000
+    sample_time: '2013/06/27 04:07'
+    ambient_temperature: 19.508000
+  - _index: 31
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581296620.000000
+    sample_time: '2013/06/27 04:37'
+    ambient_temperature: 19.508000
+  - _index: 32
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581298420.000000
+    sample_time: '2013/06/27 05:07'
+    ambient_temperature: 20.222000
+  - _index: 33
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581300220.000000
+    sample_time: '2013/06/27 05:37'
+    ambient_temperature: 20.793000
+  - _index: 34
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581302020.000000
+    sample_time: '2013/06/27 06:07'
+    ambient_temperature: 21.199000
+  - _index: 35
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581303820.000000
+    sample_time: '2013/06/27 06:37'
+    ambient_temperature: 21.461000
+  - _index: 36
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581305620.000000
+    sample_time: '2013/06/27 07:07'
+    ambient_temperature: 21.509000
+  - _index: 37
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581307420.000000
+    sample_time: '2013/06/27 07:37'
+    ambient_temperature: 21.581000
+  - _index: 38
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581309220.000000
+    sample_time: '2013/06/27 08:07'
+    ambient_temperature: 21.676000
+  - _index: 39
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581311020.000000
+    sample_time: '2013/06/27 08:37'
+    ambient_temperature: 21.963000
+  - _index: 40
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581312820.000000
+    sample_time: '2013/06/27 09:07'
+    ambient_temperature: 22.082000
+  - _index: 41
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581314620.000000
+    sample_time: '2013/06/27 09:37'
+    ambient_temperature: 22.393000
+  - _index: 42
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581316420.000000
+    sample_time: '2013/06/27 10:07'
+    ambient_temperature: 22.441000
+  - _index: 43
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581318220.000000
+    sample_time: '2013/06/27 10:37'
+    ambient_temperature: 22.393000
+  - _index: 44
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581320020.000000
+    sample_time: '2013/06/27 11:07'
+    ambient_temperature: 22.465000
+  - _index: 45
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581321820.000000
+    sample_time: '2013/06/27 11:37'
+    ambient_temperature: 22.465000
+  - _index: 46
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581323620.000000
+    sample_time: '2013/06/27 12:07'
+    ambient_temperature: 22.561000
+  - _index: 47
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581325420.000000
+    sample_time: '2013/06/27 12:37'
+    ambient_temperature: 22.609000
+  - _index: 48
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581327220.000000
+    sample_time: '2013/06/27 13:07'
+    ambient_temperature: 22.705000
+  - _index: 49
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581329020.000000
+    sample_time: '2013/06/27 13:37'
+    ambient_temperature: 22.729000
+  - _index: 50
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581330820.000000
+    sample_time: '2013/06/27 14:07'
+    ambient_temperature: 22.753000
+  - _index: 51
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581332620.000000
+    sample_time: '2013/06/27 14:37'
+    ambient_temperature: 22.800000
+  - _index: 52
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581334420.000000
+    sample_time: '2013/06/27 15:07'
+    ambient_temperature: 22.776000
+  - _index: 53
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581336220.000000
+    sample_time: '2013/06/27 15:37'
+    ambient_temperature: 22.896000
+  - _index: 54
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581338020.000000
+    sample_time: '2013/06/27 16:07'
+    ambient_temperature: 23.016000
+  - _index: 55
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581339820.000000
+    sample_time: '2013/06/27 16:37'
+    ambient_temperature: 23.040000
+  - _index: 56
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581341620.000000
+    sample_time: '2013/06/27 17:07'
+    ambient_temperature: 22.968000
+  - _index: 57
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581343420.000000
+    sample_time: '2013/06/27 17:37'
+    ambient_temperature: 22.633000
+  - _index: 58
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581345220.000000
+    sample_time: '2013/06/27 18:07'
+    ambient_temperature: 22.321000
+  - _index: 59
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581347020.000000
+    sample_time: '2013/06/27 18:37'
+    ambient_temperature: 22.202000
+  - _index: 60
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581348820.000000
+    sample_time: '2013/06/27 19:07'
+    ambient_temperature: 22.178000
+  - _index: 61
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581350620.000000
+    sample_time: '2013/06/27 19:37'
+    ambient_temperature: 22.202000
+  - _index: 62
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581352420.000000
+    sample_time: '2013/06/27 20:07'
+    ambient_temperature: 22.058000
+  - _index: 63
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581354220.000000
+    sample_time: '2013/06/27 20:37'
+    ambient_temperature: 22.011000
+  - _index: 64
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581356020.000000
+    sample_time: '2013/06/27 21:07'
+    ambient_temperature: 22.034000
+  - _index: 65
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581357820.000000
+    sample_time: '2013/06/27 21:37'
+    ambient_temperature: 21.963000
+  - _index: 66
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581359620.000000
+    sample_time: '2013/06/27 22:07'
+    ambient_temperature: 21.915000
+  - _index: 67
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581361420.000000
+    sample_time: '2013/06/27 22:37'
+    ambient_temperature: 21.963000
+  - _index: 68
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581363220.000000
+    sample_time: '2013/06/27 23:07'
+    ambient_temperature: 21.939000
+  - _index: 69
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581365020.000000
+    sample_time: '2013/06/27 23:37'
+    ambient_temperature: 21.891000
+  - _index: 70
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581366820.000000
+    sample_time: '2013/06/28 00:07'
+    ambient_temperature: 21.795000
+  - _index: 71
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581368620.000000
+    sample_time: '2013/06/28 00:37'
+    ambient_temperature: 21.079000
+  - _index: 72
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581370420.000000
+    sample_time: '2013/06/28 01:07'
+    ambient_temperature: 20.555000
+  - _index: 73
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581372220.000000
+    sample_time: '2013/06/28 01:37'
+    ambient_temperature: 20.198000
+  - _index: 74
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581374020.000000
+    sample_time: '2013/06/28 02:07'
+    ambient_temperature: 19.960000
+  - _index: 75
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581375820.000000
+    sample_time: '2013/06/28 02:37'
+    ambient_temperature: 19.793000
+  - _index: 76
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581377620.000000
+    sample_time: '2013/06/28 03:07'
+    ambient_temperature: 19.651000
+  - _index: 77
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581379420.000000
+    sample_time: '2013/06/28 03:37'
+    ambient_temperature: 19.555000
+  - _index: 78
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581381220.000000
+    sample_time: '2013/06/28 04:07'
+    ambient_temperature: 19.460000
+  - _index: 79
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581383020.000000
+    sample_time: '2013/06/28 04:37'
+    ambient_temperature: 19.436000
+  - _index: 80
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581384820.000000
+    sample_time: '2013/06/28 05:07'
+    ambient_temperature: 20.007000
+  - _index: 81
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581386620.000000
+    sample_time: '2013/06/28 05:37'
+    ambient_temperature: 20.484000
+  - _index: 82
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581388420.000000
+    sample_time: '2013/06/28 06:07'
+    ambient_temperature: 20.865000
+  - _index: 83
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581390220.000000
+    sample_time: '2013/06/28 06:37'
+    ambient_temperature: 21.103000
+  - _index: 84
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581392020.000000
+    sample_time: '2013/06/28 07:07'
+    ambient_temperature: 21.270000
+  - _index: 85
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581393820.000000
+    sample_time: '2013/06/28 07:37'
+    ambient_temperature: 21.366000
+  - _index: 86
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581395620.000000
+    sample_time: '2013/06/28 08:07'
+    ambient_temperature: 21.557000
+  - _index: 87
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581397420.000000
+    sample_time: '2013/06/28 08:37'
+    ambient_temperature: 21.819000
+  - _index: 88
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581399220.000000
+    sample_time: '2013/06/28 09:07'
+    ambient_temperature: 22.226000
+  - _index: 89
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581401020.000000
+    sample_time: '2013/06/28 09:37'
+    ambient_temperature: 22.441000
+  - _index: 90
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581402820.000000
+    sample_time: '2013/06/28 10:07'
+    ambient_temperature: 22.633000
+  - _index: 91
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581404620.000000
+    sample_time: '2013/06/28 10:37'
+    ambient_temperature: 22.681000
+  - _index: 92
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581406420.000000
+    sample_time: '2013/06/28 11:07'
+    ambient_temperature: 22.633000
+  - _index: 93
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581408220.000000
+    sample_time: '2013/06/28 11:37'
+    ambient_temperature: 22.609000
+  - _index: 94
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581410020.000000
+    sample_time: '2013/06/28 12:07'
+    ambient_temperature: 22.609000
+  - _index: 95
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581411820.000000
+    sample_time: '2013/06/28 12:37'
+    ambient_temperature: 22.585000
+  - _index: 96
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581413620.000000
+    sample_time: '2013/06/28 13:07'
+    ambient_temperature: 22.609000
+  - _index: 97
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581415420.000000
+    sample_time: '2013/06/28 13:37'
+    ambient_temperature: 22.609000
+  - _index: 98
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581417220.000000
+    sample_time: '2013/06/28 14:07'
+    ambient_temperature: 22.681000
+  - _index: 99
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581419020.000000
+    sample_time: '2013/06/28 14:37'
+    ambient_temperature: 22.800000
+  - _index: 100
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581420820.000000
+    sample_time: '2013/06/28 15:07'
+    ambient_temperature: 22.800000
+  - _index: 101
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581422620.000000
+    sample_time: '2013/06/28 15:37'
+    ambient_temperature: 22.992000
+  - _index: 102
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581424420.000000
+    sample_time: '2013/06/28 16:07'
+    ambient_temperature: 23.064000
+  - _index: 103
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581426220.000000
+    sample_time: '2013/06/28 16:37'
+    ambient_temperature: 23.088000
+  - _index: 104
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581428020.000000
+    sample_time: '2013/06/28 17:07'
+    ambient_temperature: 23.184000
+  - _index: 105
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581429820.000000
+    sample_time: '2013/06/28 17:37'
+    ambient_temperature: 23.160000
+  - _index: 106
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581431620.000000
+    sample_time: '2013/06/28 18:07'
+    ambient_temperature: 23.208000
+  - _index: 107
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581433420.000000
+    sample_time: '2013/06/28 18:37'
+    ambient_temperature: 23.232000
+  - _index: 108
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581435220.000000
+    sample_time: '2013/06/28 19:07'
+    ambient_temperature: 23.256000
+  - _index: 109
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581437020.000000
+    sample_time: '2013/06/28 19:37'
+    ambient_temperature: 23.016000
+  - _index: 110
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581438820.000000
+    sample_time: '2013/06/28 20:07'
+    ambient_temperature: 22.776000
+  - _index: 111
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581440620.000000
+    sample_time: '2013/06/28 20:37'
+    ambient_temperature: 22.705000
+  - _index: 112
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581442420.000000
+    sample_time: '2013/06/28 21:07'
+    ambient_temperature: 22.537000
+  - _index: 113
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581444220.000000
+    sample_time: '2013/06/28 21:37'
+    ambient_temperature: 22.393000
+  - _index: 114
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581446020.000000
+    sample_time: '2013/06/28 22:07'
+    ambient_temperature: 22.393000
+  - _index: 115
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581447820.000000
+    sample_time: '2013/06/28 22:37'
+    ambient_temperature: 22.345000
+  - _index: 116
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581449620.000000
+    sample_time: '2013/06/28 23:07'
+    ambient_temperature: 22.226000
+  - _index: 117
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581451420.000000
+    sample_time: '2013/06/28 23:37'
+    ambient_temperature: 22.154000
+  - _index: 118
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581453220.000000
+    sample_time: '2013/06/29 00:07'
+    ambient_temperature: 22.106000
+  - _index: 119
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581455020.000000
+    sample_time: '2013/06/29 00:37'
+    ambient_temperature: 21.294000
+  - _index: 120
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581456820.000000
+    sample_time: '2013/06/29 01:07'
+    ambient_temperature: 20.722000
+  - _index: 121
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581458620.000000
+    sample_time: '2013/06/29 01:37'
+    ambient_temperature: 20.341000
+  - _index: 122
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581460420.000000
+    sample_time: '2013/06/29 02:07'
+    ambient_temperature: 20.055000
+  - _index: 123
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581462220.000000
+    sample_time: '2013/06/29 02:37'
+    ambient_temperature: 19.841000
+  - _index: 124
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581464020.000000
+    sample_time: '2013/06/29 03:07'
+    ambient_temperature: 19.674000
+  - _index: 125
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581465820.000000
+    sample_time: '2013/06/29 03:37'
+    ambient_temperature: 19.508000
+  - _index: 126
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581467620.000000
+    sample_time: '2013/06/29 04:07'
+    ambient_temperature: 19.413000
+  - _index: 127
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581469420.000000
+    sample_time: '2013/06/29 04:37'
+    ambient_temperature: 19.413000
+  - _index: 128
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581471220.000000
+    sample_time: '2013/06/29 05:07'
+    ambient_temperature: 20.079000
+  - _index: 129
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581473020.000000
+    sample_time: '2013/06/29 05:37'
+    ambient_temperature: 20.579000
+  - _index: 130
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581474820.000000
+    sample_time: '2013/06/29 06:07'
+    ambient_temperature: 20.936000
+  - _index: 131
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581476620.000000
+    sample_time: '2013/06/29 06:37'
+    ambient_temperature: 21.199000
+  - _index: 132
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581478420.000000
+    sample_time: '2013/06/29 07:07'
+    ambient_temperature: 21.413000
+  - _index: 133
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581480220.000000
+    sample_time: '2013/06/29 07:37'
+    ambient_temperature: 21.557000
+  - _index: 134
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581482020.000000
+    sample_time: '2013/06/29 08:07'
+    ambient_temperature: 21.700000
+  - _index: 135
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581483820.000000
+    sample_time: '2013/06/29 08:37'
+    ambient_temperature: 21.819000
+  - _index: 136
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581485620.000000
+    sample_time: '2013/06/29 09:07'
+    ambient_temperature: 21.915000
+  - _index: 137
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581487420.000000
+    sample_time: '2013/06/29 09:37'
+    ambient_temperature: 21.987000
+  - _index: 138
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581489220.000000
+    sample_time: '2013/06/29 10:07'
+    ambient_temperature: 22.082000
+  - _index: 139
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581491020.000000
+    sample_time: '2013/06/29 10:37'
+    ambient_temperature: 22.106000
+  - _index: 140
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581492820.000000
+    sample_time: '2013/06/29 11:07'
+    ambient_temperature: 22.298000
+  - _index: 141
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581494620.000000
+    sample_time: '2013/06/29 11:37'
+    ambient_temperature: 22.417000
+  - _index: 142
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581496420.000000
+    sample_time: '2013/06/29 12:07'
+    ambient_temperature: 22.465000
+  - _index: 143
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581498220.000000
+    sample_time: '2013/06/29 12:37'
+    ambient_temperature: 22.513000
+  - _index: 144
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581500020.000000
+    sample_time: '2013/06/29 13:07'
+    ambient_temperature: 22.465000
+  - _index: 145
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581501820.000000
+    sample_time: '2013/06/29 13:37'
+    ambient_temperature: 22.298000
+  - _index: 146
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581503620.000000
+    sample_time: '2013/06/29 14:07'
+    ambient_temperature: 22.178000
+  - _index: 147
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581505420.000000
+    sample_time: '2013/06/29 14:37'
+    ambient_temperature: 22.226000
+  - _index: 148
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581507220.000000
+    sample_time: '2013/06/29 15:07'
+    ambient_temperature: 22.178000
+  - _index: 149
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581509020.000000
+    sample_time: '2013/06/29 15:37'
+    ambient_temperature: 22.298000
+  - _index: 150
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581510820.000000
+    sample_time: '2013/06/29 16:07'
+    ambient_temperature: 22.298000
+  - _index: 151
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581512620.000000
+    sample_time: '2013/06/29 16:37'
+    ambient_temperature: 22.393000
+  - _index: 152
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581514420.000000
+    sample_time: '2013/06/29 17:07'
+    ambient_temperature: 22.513000
+  - _index: 153
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581516220.000000
+    sample_time: '2013/06/29 17:37'
+    ambient_temperature: 22.537000
+  - _index: 154
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581518020.000000
+    sample_time: '2013/06/29 18:07'
+    ambient_temperature: 22.872000
+  - _index: 155
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581519820.000000
+    sample_time: '2013/06/29 18:37'
+    ambient_temperature: 23.088000
+  - _index: 156
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581521620.000000
+    sample_time: '2013/06/29 19:07'
+    ambient_temperature: 23.040000
+  - _index: 157
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581523420.000000
+    sample_time: '2013/06/29 19:37'
+    ambient_temperature: 23.304000
+  - _index: 158
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581525220.000000
+    sample_time: '2013/06/29 20:07'
+    ambient_temperature: 22.896000
+  - _index: 159
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581527020.000000
+    sample_time: '2013/06/29 20:37'
+    ambient_temperature: 22.537000
+  - _index: 160
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581528820.000000
+    sample_time: '2013/06/29 21:07'
+    ambient_temperature: 22.298000
+  - _index: 161
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581530620.000000
+    sample_time: '2013/06/29 21:37'
+    ambient_temperature: 22.321000
+  - _index: 162
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581532420.000000
+    sample_time: '2013/06/29 22:07'
+    ambient_temperature: 22.202000
+  - _index: 163
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581534220.000000
+    sample_time: '2013/06/29 22:37'
+    ambient_temperature: 22.202000
+  - _index: 164
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581536020.000000
+    sample_time: '2013/06/29 23:07'
+    ambient_temperature: 22.154000
+  - _index: 165
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581537820.000000
+    sample_time: '2013/06/29 23:37'
+    ambient_temperature: 22.034000
+  - _index: 166
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581539620.000000
+    sample_time: '2013/06/30 00:07'
+    ambient_temperature: 22.034000
+  - _index: 167
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581541420.000000
+    sample_time: '2013/06/30 00:37'
+    ambient_temperature: 21.175000
+  - _index: 168
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581543220.000000
+    sample_time: '2013/06/30 01:07'
+    ambient_temperature: 20.627000
+  - _index: 169
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581545020.000000
+    sample_time: '2013/06/30 01:37'
+    ambient_temperature: 20.246000
+  - _index: 170
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581546820.000000
+    sample_time: '2013/06/30 02:07'
+    ambient_temperature: 19.984000
+  - _index: 171
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581548620.000000
+    sample_time: '2013/06/30 02:37'
+    ambient_temperature: 19.746000
+  - _index: 172
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581550420.000000
+    sample_time: '2013/06/30 03:07'
+    ambient_temperature: 19.603000
+  - _index: 173
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581552220.000000
+    sample_time: '2013/06/30 03:37'
+    ambient_temperature: 19.460000
+  - _index: 174
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581554020.000000
+    sample_time: '2013/06/30 04:07'
+    ambient_temperature: 19.341000
+  - _index: 175
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581555820.000000
+    sample_time: '2013/06/30 04:37'
+    ambient_temperature: 19.341000
+  - _index: 176
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581557620.000000
+    sample_time: '2013/06/30 05:07'
+    ambient_temperature: 20.079000
+  - _index: 177
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581559420.000000
+    sample_time: '2013/06/30 05:37'
+    ambient_temperature: 20.650000
+  - _index: 178
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581561220.000000
+    sample_time: '2013/06/30 06:07'
+    ambient_temperature: 21.056000
+  - _index: 179
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581563020.000000
+    sample_time: '2013/06/30 06:37'
+    ambient_temperature: 21.342000
+  - _index: 180
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581564820.000000
+    sample_time: '2013/06/30 07:07'
+    ambient_temperature: 21.557000
+  - _index: 181
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581566620.000000
+    sample_time: '2013/06/30 07:37'
+    ambient_temperature: 21.700000
+  - _index: 182
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581568420.000000
+    sample_time: '2013/06/30 08:07'
+    ambient_temperature: 21.819000
+  - _index: 183
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581570220.000000
+    sample_time: '2013/06/30 08:37'
+    ambient_temperature: 21.891000
+  - _index: 184
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581572020.000000
+    sample_time: '2013/06/30 09:07'
+    ambient_temperature: 21.963000
+  - _index: 185
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581573820.000000
+    sample_time: '2013/06/30 09:37'
+    ambient_temperature: 22.034000
+  - _index: 186
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581575620.000000
+    sample_time: '2013/06/30 10:07'
+    ambient_temperature: 21.987000
+  - _index: 187
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581577420.000000
+    sample_time: '2013/06/30 10:37'
+    ambient_temperature: 22.011000
+  - _index: 188
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581579220.000000
+    sample_time: '2013/06/30 11:07'
+    ambient_temperature: 21.963000
+  - _index: 189
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581581020.000000
+    sample_time: '2013/06/30 11:37'
+    ambient_temperature: 22.034000
+  - _index: 190
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581582820.000000
+    sample_time: '2013/06/30 12:07'
+    ambient_temperature: 22.082000
+  - _index: 191
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581584620.000000
+    sample_time: '2013/06/30 12:37'
+    ambient_temperature: 22.082000
+  - _index: 192
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581586420.000000
+    sample_time: '2013/06/30 13:07'
+    ambient_temperature: 22.011000
+  - _index: 193
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581588220.000000
+    sample_time: '2013/06/30 13:37'
+    ambient_temperature: 22.130000
+  - _index: 194
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581590020.000000
+    sample_time: '2013/06/30 14:07'
+    ambient_temperature: 22.058000
+  - _index: 195
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581591820.000000
+    sample_time: '2013/06/30 14:37'
+    ambient_temperature: 22.154000
+  - _index: 196
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581593620.000000
+    sample_time: '2013/06/30 15:07'
+    ambient_temperature: 22.130000
+  - _index: 197
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581595420.000000
+    sample_time: '2013/06/30 15:37'
+    ambient_temperature: 22.393000
+  - _index: 198
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581597220.000000
+    sample_time: '2013/06/30 16:07'
+    ambient_temperature: 22.657000
+  - _index: 199
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581599020.000000
+    sample_time: '2013/06/30 16:37'
+    ambient_temperature: 22.681000
+  - _index: 200
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581600820.000000
+    sample_time: '2013/06/30 17:07'
+    ambient_temperature: 22.417000
+  - _index: 201
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581602620.000000
+    sample_time: '2013/06/30 17:37'
+    ambient_temperature: 22.321000
+  - _index: 202
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581604420.000000
+    sample_time: '2013/06/30 18:07'
+    ambient_temperature: 22.226000
+  - _index: 203
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581606220.000000
+    sample_time: '2013/06/30 18:37'
+    ambient_temperature: 22.465000
+  - _index: 204
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581608020.000000
+    sample_time: '2013/06/30 19:07'
+    ambient_temperature: 22.369000
+  - _index: 205
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581609820.000000
+    sample_time: '2013/06/30 19:37'
+    ambient_temperature: 22.274000
+  - _index: 206
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581611620.000000
+    sample_time: '2013/06/30 20:07'
+    ambient_temperature: 22.345000
+  - _index: 207
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581613420.000000
+    sample_time: '2013/06/30 20:37'
+    ambient_temperature: 22.178000
+  - _index: 208
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581615220.000000
+    sample_time: '2013/06/30 21:07'
+    ambient_temperature: 22.058000
+  - _index: 209
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581617020.000000
+    sample_time: '2013/06/30 21:37'
+    ambient_temperature: 22.130000
+  - _index: 210
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581618820.000000
+    sample_time: '2013/06/30 22:07'
+    ambient_temperature: 22.058000
+  - _index: 211
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581620620.000000
+    sample_time: '2013/06/30 22:37'
+    ambient_temperature: 22.130000
+  - _index: 212
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581622420.000000
+    sample_time: '2013/06/30 23:07'
+    ambient_temperature: 22.082000
+  - _index: 213
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581624220.000000
+    sample_time: '2013/06/30 23:37'
+    ambient_temperature: 22.011000
+  - _index: 214
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581626020.000000
+    sample_time: '2013/07/01 00:07'
+    ambient_temperature: 21.987000
+  - _index: 215
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581627820.000000
+    sample_time: '2013/07/01 00:37'
+    ambient_temperature: 21.056000
+  - _index: 216
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581629620.000000
+    sample_time: '2013/07/01 01:07'
+    ambient_temperature: 20.460000
+  - _index: 217
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581631420.000000
+    sample_time: '2013/07/01 01:37'
+    ambient_temperature: 20.079000
+  - _index: 218
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581633220.000000
+    sample_time: '2013/07/01 02:07'
+    ambient_temperature: 19.817000
+  - _index: 219
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581635020.000000
+    sample_time: '2013/07/01 02:37'
+    ambient_temperature: 19.603000
+  - _index: 220
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581636820.000000
+    sample_time: '2013/07/01 03:07'
+    ambient_temperature: 19.413000
+  - _index: 221
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581638620.000000
+    sample_time: '2013/07/01 03:37'
+    ambient_temperature: 19.318000
+  - _index: 222
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581640420.000000
+    sample_time: '2013/07/01 04:07'
+    ambient_temperature: 19.222000
+  - _index: 223
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581642220.000000
+    sample_time: '2013/07/01 04:37'
+    ambient_temperature: 19.246000
+  - _index: 224
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581644020.000000
+    sample_time: '2013/07/01 05:07'
+    ambient_temperature: 19.984000
+  - _index: 225
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581645820.000000
+    sample_time: '2013/07/01 05:37'
+    ambient_temperature: 20.531000
+  - _index: 226
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581647620.000000
+    sample_time: '2013/07/01 06:07'
+    ambient_temperature: 20.889000
+  - _index: 227
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581649420.000000
+    sample_time: '2013/07/01 06:37'
+    ambient_temperature: 21.127000
+  - _index: 228
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581651220.000000
+    sample_time: '2013/07/01 07:07'
+    ambient_temperature: 21.318000
+  - _index: 229
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581653020.000000
+    sample_time: '2013/07/01 07:37'
+    ambient_temperature: 21.461000
+  - _index: 230
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581654820.000000
+    sample_time: '2013/07/01 08:07'
+    ambient_temperature: 21.581000
+  - _index: 231
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581656620.000000
+    sample_time: '2013/07/01 08:37'
+    ambient_temperature: 21.676000
+  - _index: 232
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581658420.000000
+    sample_time: '2013/07/01 09:07'
+    ambient_temperature: 21.963000
+  - _index: 233
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581660220.000000
+    sample_time: '2013/07/01 09:37'
+    ambient_temperature: 22.130000
+  - _index: 234
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581662020.000000
+    sample_time: '2013/07/01 10:07'
+    ambient_temperature: 22.250000
+  - _index: 235
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581663820.000000
+    sample_time: '2013/07/01 10:37'
+    ambient_temperature: 22.393000
+  - _index: 236
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581665620.000000
+    sample_time: '2013/07/01 11:07'
+    ambient_temperature: 22.513000
+  - _index: 237
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581667420.000000
+    sample_time: '2013/07/01 11:37'
+    ambient_temperature: 22.585000
+  - _index: 238
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581669220.000000
+    sample_time: '2013/07/01 12:07'
+    ambient_temperature: 22.609000
+  - _index: 239
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581671020.000000
+    sample_time: '2013/07/01 12:37'
+    ambient_temperature: 22.609000
+  - _index: 240
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581672820.000000
+    sample_time: '2013/07/01 13:07'
+    ambient_temperature: 22.633000
+  - _index: 241
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581674620.000000
+    sample_time: '2013/07/01 13:37'
+    ambient_temperature: 22.657000
+  - _index: 242
+    particle_object: FlobnMAmbientTemperatureDataParticle
+    particle_type: flobn_m_ambient_temperature_recovered
+    internal_timestamp: 3581676420.000000
+    sample_time: '2013/07/01 14:07'
+    ambient_temperature: 22.800000

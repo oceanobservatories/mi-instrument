@@ -63,7 +63,7 @@ class ConsulServiceRegistry(object):
                     except StandardError:
                         log.exception('Unable to register with Consul, '
                                       'will attempt again in %d secs', DRIVER_SERVICE_TTL / 2)
-                else:
+                if self.registered:
                     try:
                         CONSUL.agent.check.ttl_pass(self.check_id)
                     except StandardError:

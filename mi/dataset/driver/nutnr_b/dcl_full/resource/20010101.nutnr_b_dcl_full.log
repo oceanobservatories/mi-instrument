@@ -1,0 +1,16 @@
+2001/01/01 03:05:08.013 [nutnr:DLOGP1]:Idle state, without initialize
+2001/01/01 03:05:10.371 [nutnr:DLOGP1]:Instrument sampling - Data logger entering data acquisition state
+2001/01/01 03:05:12.729 
+2001/01/01 03:05:15.087 01/01/2001 03:05:15: Message: ISUS Awakened on Schedule at UTC 04/30/2014 01:00:00.
+2001/01/01 03:05:17.445 
+2001/01/01 03:05:19.803 01/01/2001 03:05:19: Message: Initializing analog output.
+2001/01/01 03:05:22.161 01/01/2001 03:05:22: Message: Turning ON Spectrometer.
+2001/01/01 03:05:24.519 01/01/2001 03:05:24: Message: Spectrometer powered up.
+2001/01/01 03:05:26.877 01/01/2001 03:05:26: Message: Turning ON UV light source.
+2001/01/01 03:05:29.235 01/01/2001 03:05:29: Message: UV light source powered up.
+2001/01/01 03:05:31.593 01/01/2001 03:05:31: Message: Data log file is 'DATA/LOG_20010101.LOG'.
+2001/01/01 03:05:33.951 01/01/2001 03:05:33: Message: ISUS Next Wakeup at UTC 04/30/2014 02:00:00.
+2001/01/01 03:05:36.309 01/01/2001 03:05:36: Message: Entering low power suspension, waiting for scheduled event.
+2001/01/01 03:05:38.667 [nutnr:DLOGP7]:Instrument Stopped [Power Off]
+2001/01/01 03:05:41.025 [nutnr:DLOGP7]:----- END OF BLOCK -----
+2001/01/01 03:05:43.383 

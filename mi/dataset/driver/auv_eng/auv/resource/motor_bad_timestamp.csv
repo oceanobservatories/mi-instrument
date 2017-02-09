@@ -1,0 +1,6 @@
+Message Id[unsigned short|#],Timestamp[unsigned long|epoch],Fin Count[signed char|#],Pitch Position[signed char|%],Rudder Position[signed char|%],Roll Position[signed char|%],Pitch Command[float|°],Rudder Command[float|°],Roll Command[float|°],Command Data 1[float|°],Position Data 1[float|%],Command Data 2[float|°],Position Data 2[float|%],Command Data 3[float|°],Position Data 3[float|%],Command Data 4[float|°],Position Data 4[float|%],Command Data 5[float|°],Position Data 5[float|%],Command Data 6[float|°],Position Data 6[float|%],Yaw Translation Command[float|°],Depth Translation Command[float|°],Yaw Translation Position[signed char|%],Depth Translation Position[signed char|%]
+1089,1419009476,3,-62,75,0,-69.60,100.00,0.00,-83.62,-82.00,100.00,100.00,-16.38,-23.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0,0
+1089,1419ZZZ7,3,-87,30,-2,-100.00,0.00,0.00,0.00,6.00,100.00,99.75,-100.00,-100.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0,0
+1089,1419009479,3,-99,0,0,-100.00,0.00,0.00,0.00,0.00,100.00,99.50,-100.00,-99.50,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0,0
+1089,1419009481,3,-98,0,0,-100.00,0.00,0.00,0.00,0.00,100.00,98.25,-100.00,-99.25,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0,0
+1089,1419009483,3,-99,0,0,-100.00,0.00,0.00,0.00,-0.25,100.00,100.00,-100.00,-99.50,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0,0

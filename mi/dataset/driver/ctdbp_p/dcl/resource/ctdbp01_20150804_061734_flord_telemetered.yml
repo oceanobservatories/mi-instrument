@@ -1,0 +1,10 @@
+header:
+  particle_object: FlordGCtdbpPDclTelemeteredDataParticle
+  particle_type: flord_g_ctdbp_p_dcl_instrument
+
+data:
+  - _index: 1
+    internal_timestamp: 3647656803.0
+    raw_signal_chl_volts: 1.8025
+    raw_signal_beta_volts: 4.0166
+    date_time_string: '04Aug201506:00:03'

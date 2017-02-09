@@ -1,0 +1,98 @@
+header:
+    particle_object: 'MULTIPLE'
+    particle_type: 'MULTIPLE'
+data:
+  - _index: 1
+    particle_object: PhsenAbcdefImodemInstrumentRecoveredDataParticle
+    particle_type: phsen_abcdef_imodem_instrument_recovered
+    internal_timestamp: 3618485999.0
+    unique_id: 87
+    record_type: 10
+    record_time: 3492341999
+    passed_checksum: 0
+    thermistor_start: 1889
+    reference_light_measurements: [2412, 1539, 2510, 2846, 2414, 1534, 2507, 2845, 2412, 1535, 2510, 2845, 2414, 1538, 2507, 2844]
+    light_measurements: [2415, 1536, 2514, 2846, 2414, 1534, 2510, 2846, 2417, 1302, 2511, 2842, 2415, 737, 2510, 2830, 2414, 317, 2508, 2810, 2414, 157, 2507, 2792, 2418, 108, 2510, 2780, 2415, 104, 2511, 2774, 2414, 127, 2506, 2776, 2416, 181, 2506, 2788, 2415, 260, 2510, 2796, 2413, 367, 2509, 2804, 2411, 497, 2507, 2812, 2413, 633, 2505, 2816, 2419, 776, 2511, 2826, 2415, 904, 2507, 2827, 2415, 1018, 2507, 2831, 2417, 1119, 2510, 2833, 2412, 1201, 2507, 2836, 2414, 1267, 2503, 2838, 2413, 1321, 2509, 2843, 2412, 1363, 2504, 2840, 2418, 1392, 2510, 2838]
+    voltage_battery: 3153
+    thermistor_end: 1890
+  - _index: 2
+    particle_object: PhsenAbcdefImodemControlRecoveredDataParticle
+    particle_type: phsen_abcdef_imodem_control_recovered
+    internal_timestamp: 3618489599.0
+    unique_id: 87
+    record_type: 129
+    record_time: 3492345599
+    passed_checksum: 1
+    clock_active: 1
+    recording_active: 1
+    record_end_on_time: 0
+    record_memory_full: 0
+    record_end_on_error: 0
+    data_download_ok: 0
+    flash_memory_open: 1
+    battery_low_prestart: 0
+    battery_low_measurement: 0
+    battery_low_blank: 0
+    battery_low_external: 0
+    external_device1_fault: 0
+    external_device2_fault: 0
+    external_device3_fault: 0
+    flash_erased: 0
+    power_on_invalid: 0
+    num_data_records: 2
+    num_error_records: 0
+    num_bytes_stored: 530
+    voltage_battery: !!null
+  - _index: 3
+    particle_object: PhsenAbcdefImodemInstrumentRecoveredDataParticle
+    particle_type: phsen_abcdef_imodem_instrument_recovered
+    internal_timestamp: 3618489600.0
+    unique_id: 87
+    record_type: 10
+    record_time: 3492345600
+    passed_checksum: 1
+    thermistor_start: 1868
+    reference_light_measurements: [2415, 1540, 2455, 2790, 2418, 1542, 2456, 2787, 2422, 1542, 2458, 2788, 2417, 1540, 2457, 2788]
+    light_measurements: [2420, 1541, 2456, 2788, 2414, 1535, 2452, 2783, 2419, 1313, 2452, 2786, 2419, 738, 2452, 2778, 2414, 319, 2455, 2762, 2418, 153, 2456, 2743, 2416, 108, 2454, 2725, 2418, 105, 2455, 2718, 2414, 129, 2452, 2723, 2420, 185, 2457, 2727, 2418, 263, 2455, 2734, 2419, 371, 2455, 2742, 2418, 501, 2458, 2750, 2420, 639, 2458, 2756, 2417, 778, 2453, 2762, 2418, 911, 2453, 2768, 2417, 1029, 2453, 2773, 2419, 1124, 2456, 2775, 2417, 1210, 2452, 2778, 2416, 1271, 2453, 2778, 2418, 1324, 2456, 2778, 2416, 1368, 2453, 2785, 2415, 1400, 2452, 2781]
+    voltage_battery: 3147
+    thermistor_end: 1868
+  - _index: 4
+    particle_object: PhsenAbcdefImodemControlRecoveredDataParticle
+    particle_type: phsen_abcdef_imodem_control_recovered
+    internal_timestamp: 3618489599.0
+    unique_id: 87
+    record_type: 193
+    record_time: 3492345599
+    passed_checksum: 1
+    clock_active: 1
+    recording_active: 1
+    record_end_on_time: 0
+    record_memory_full: 0
+    record_end_on_error: 0
+    data_download_ok: 0
+    flash_memory_open: 1
+    battery_low_prestart: 0
+    battery_low_measurement: 0
+    battery_low_blank: 0
+    battery_low_external: 0
+    external_device1_fault: 0
+    external_device2_fault: 0
+    external_device3_fault: 0
+    flash_erased: 0
+    power_on_invalid: 0
+    num_data_records: 2
+    num_error_records: 0
+    num_bytes_stored: 530
+    voltage_battery: 21845
+  - _index: 5
+    particle_object: PhsenAbcdefImodemMetadataRecoveredDataParticle
+    particle_type: phsen_abcdef_imodem_metadata_recovered
+    internal_timestamp: 3618489949.0
+    file_time: '20140831 160549'
+    instrument_id: '23'
+    serial_number: '70001687'
+    voltage_flt32: 8.90
+    num_data_records: 2
+    record_length: 972
+    num_events: 541
+    num_samples: 3

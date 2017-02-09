@@ -1,0 +1,17 @@
+#MCAT Status
+# This line is unexpected data. 
+#7370_DateTime: 20140712 120719
+#SBE37-IM v3.1  SERIAL NO. 11477  12 Jul 2014 12:07:19
+#vMain =  6.91, vLith =  3.08
+#samplenumber = 4143, free = 555097
+#logging
+#sample interval = 60 seconds
+#PressureRange = 1450
+#SamplesRecorded = 4
+#Data Format: tttttcccccppppTTTTTTTT (p is optional pressure)
+#Begin Data
+563A00C351E50A28D3531B
+562DE0C351E50A67D3531B
+562EC0C351E50AA0D3531B
+563FB0C351E50ADCD3531B
+#End Data

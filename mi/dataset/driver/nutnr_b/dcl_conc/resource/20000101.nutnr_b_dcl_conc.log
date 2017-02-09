@@ -1,0 +1,55 @@
+2000/01/01 01:03:06.011 [nutnr:DLOGP1]:Idle state, without initialize
+2000/01/01 01:03:08.369 [nutnr:DLOGP1]:Instrument sampling - Data logger entering data acquisition state
+2000/01/01 01:03:10.727 
+2000/01/01 01:03:13.085 01/01/2000 01:03:13: Message: ISUS Awakened on Schedule at UTC 04/30/2014 01:00:00.
+2000/01/01 01:03:15.443 
+2000/01/01 01:03:17.801 01/01/2000 01:03:17: Message: Initializing analog output.
+2000/01/01 01:03:20.159 01/01/2000 01:03:20: Message: Turning ON Spectrometer.
+2000/01/01 01:03:22.517 01/01/2000 01:03:22: Message: Spectrometer powered up.
+2000/01/01 01:03:24.875 01/01/2000 01:03:24: Message: Turning ON UV light source.
+2000/01/01 01:03:27.233 01/01/2000 01:03:27: Message: UV light source powered up.
+2000/01/01 01:03:29.591 01/01/2000 01:03:29: Message: Data log file is 'DATA/LOG_20000101.LOG'.
+2000/01/01 01:03:31.949 SATNDC2000,2000001,0.000000,-3.33,-6.67,-10.00,-13.33,0.000000
+2000/01/01 01:03:34.307 SATNLC2000,2000001,0.135790,-2.22,-4.44,-6.67,-8.89,6.666666
+2000/01/01 01:03:36.665 01/01/2000 01:03:36: Message: ISUS Next Wakeup at UTC 04/30/2014 02:00:00.
+2000/01/01 01:03:39.023 01/01/2000 01:03:39: Message: Entering low power suspension, waiting for scheduled event.
+2000/01/01 01:03:41.381 [nutnr:DLOGP7]:Instrument Stopped [Power Off]
+2000/01/01 01:03:43.739 [nutnr:DLOGP7]:----- END OF BLOCK -----
+2000/01/01 01:03:46.097 
+2000/01/01 01:03:48.455 [nutnr:DLOGP1]:Idle state, without initialize
+2000/01/01 01:03:50.813 [nutnr:DLOGP1]:Instrument sampling - Data logger entering data acquisition state
+2000/01/01 01:03:53.171 
+2000/01/01 01:03:55.529 01/01/2000 01:03:55: Message: ISUS Awakened on Schedule at UTC 04/30/2014 01:00:00.
+2000/01/01 01:03:57.887 
+2000/01/01 01:04:00.245 01/01/2000 01:04:00: Message: Initializing analog output.
+2000/01/01 01:04:02.603 01/01/2000 01:04:02: Message: Turning ON Spectrometer.
+2000/01/01 01:04:04.961 01/01/2000 01:04:04: Message: Spectrometer powered up.
+2000/01/01 01:04:07.319 01/01/2000 01:04:07: Message: Turning ON UV light source.
+2000/01/01 01:04:09.677 01/01/2000 01:04:09: Message: UV light source powered up.
+2000/01/01 01:04:12.035 01/01/2000 01:04:12: Message: Data log file is 'DATA/LOG_20000101.LOG'.
+2000/01/01 01:04:14.393 SATNDC2000,2000001,0.271580,-1.11,-2.22,-3.33,-4.44,13.333332
+2000/01/01 01:04:16.751 SATNLC2000,2000001,0.407370,-0.00,-0.00,0.00,-0.00,19.999998
+2000/01/01 01:04:19.109 01/01/2000 01:04:19: Message: ISUS Next Wakeup at UTC 04/30/2014 02:00:00.
+2000/01/01 01:04:21.467 01/01/2000 01:04:21: Message: Entering low power suspension, waiting for scheduled event.
+2000/01/01 01:04:23.825 [nutnr:DLOGP7]:Instrument Stopped [Power Off]
+2000/01/01 01:04:26.183 [nutnr:DLOGP7]:----- END OF BLOCK -----
+2000/01/01 01:04:28.541 
+2000/01/01 01:04:30.899 [nutnr:DLOGP1]:Idle state, without initialize
+2000/01/01 01:04:33.257 [nutnr:DLOGP1]:Instrument sampling - Data logger entering data acquisition state
+2000/01/01 01:04:35.615 
+2000/01/01 01:04:37.973 01/01/2000 01:04:37: Message: ISUS Awakened on Schedule at UTC 04/30/2014 01:00:00.
+2000/01/01 01:04:40.331 
+2000/01/01 01:04:42.689 01/01/2000 01:04:42: Message: Initializing analog output.
+2000/01/01 01:04:45.047 01/01/2000 01:04:45: Message: Turning ON Spectrometer.
+2000/01/01 01:04:47.405 01/01/2000 01:04:47: Message: Spectrometer powered up.
+2000/01/01 01:04:49.763 01/01/2000 01:04:49: Message: Turning ON UV light source.
+2000/01/01 01:04:52.121 01/01/2000 01:04:52: Message: UV light source powered up.
+2000/01/01 01:04:54.479 01/01/2000 01:04:54: Message: Data log file is 'DATA/LOG_20000101.LOG'.
+2000/01/01 01:04:56.837 SATNDC2000,2000001,0.543160,1.11,2.22,3.33,4.44,26.666664
+2000/01/01 01:04:59.195 SATNLC2000,2000001,0.678950,2.22,4.44,6.67,8.89,33.333330
+2000/01/01 01:05:01.553 SATNLC2000,2000001,0.814740,3.33,6.67,10.00,13.33,39.999996
+2000/01/01 01:05:03.911 01/01/2000 01:05:03: Message: ISUS Next Wakeup at UTC 04/30/2014 02:00:00.
+2000/01/01 01:05:06.269 01/01/2000 01:05:06: Message: Entering low power suspension, waiting for scheduled event.
+2000/01/01 01:05:08.627 [nutnr:DLOGP7]:Instrument Stopped [Power Off]
+2000/01/01 01:05:10.985 [nutnr:DLOGP7]:----- END OF BLOCK -----
+2000/01/01 01:05:13.343 

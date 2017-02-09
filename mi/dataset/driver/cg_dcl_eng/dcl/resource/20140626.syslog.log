@@ -1,0 +1,268 @@
+2014/06/26 00:56:49.077 MSG D_STATUS bin/status v0.2-20130329 compiled on Apr 16 2014 16:47:57: Starting
+2014/06/26 00:56:49.816 MSG D_GPS bin/gps_sys v0.2-20110320 compiled on Apr 16 2014 16:48:35: Starting
+2014/06/26 00:56:49.827 ALM D_STATUS Clearing alarms for d_gps
+2014/06/26 00:56:50.278 MSG D_GPS set_sys_clock: system time ok [gps date=260614 time=005649]
+2014/06/26 00:56:50.507 MSG D_PPS [bin/pps]: v2.1-20120719  [main_pps.c compiled on Apr 16 2014 at 16:48:43]
+2014/06/26 00:56:50.513 MSG D_PPS [bin/pps]: IRQ File [/proc/irq/40/irq] Old Timing Mechanism [FALSE] Status Rate [10] Bad Pulse Rate [3600] Pulse Window [500] Warning Window [150]
+2014/06/26 00:56:50.530 ALM D_STATUS Clearing alarms for d_pps
+2014/06/26 00:56:51.306 MSG SUPERV bin/supervisor v0.1-20100331 compiled on Apr 16 2014 16:48:11: Starting
+2014/06/26 00:56:51.313 ALM D_STATUS Clearing alarms for superv
+2014/06/26 00:56:51.434 DAT SUPERV dcl: 30.6 112.0 00000000 t 9.6 8.1 0.0 0.0 0.0 h 1.9 p 14.6 gf 0 0.0 0.0 0.0 ld 0 0 0 p1 0 0.0 0.0 0 p2 0 0.0 0.0 0 p3 0 0.0 0.0 0 p4 0 0.0 0.0 0 p5 0 0.0 0.0 0 p6 0 0.0 0.0 0 p7 0 0.0 0.0 0 p8 0 0.0 0.0 0 hb 0 0 0 wake 0 wtc 0 wpc 0 pwr 0 0 0 0.0 0.0 0.0 0.0 0.0 0.0 34e3
+2014/06/26 00:56:51.956 MSG DLOG_MGR bin/dlog_mgr: v2.2-20130719  [main_dlog_mgr.c compiled on Apr 16 2014 at 16:48:32]
+2014/06/26 00:56:58.830 MSG D_CTL 
+2014/06/26 00:56:58.834 MSG D_CTL 
+2014/06/26 00:56:58.839 MSG D_CTL bin/dcl_control.pl - v2.0_20131017
+2014/06/26 00:56:59.998 MSG D_CTL Currently Running the Following CGSN Components:
+2014/06/26 00:57:00.003 MSG D_CTL root      1075  0.6  0.4   1456   596 ?        S    00:56   0:00 bin/logger
+2014/06/26 00:57:00.007 MSG D_CTL root      1078  0.7  0.6   1564   792 ?        S    00:56   0:00 bin/status -I D_STATUS
+2014/06/26 00:57:00.011 MSG D_CTL root      1081  3.0  0.5   1488   656 ?        S    00:56   0:00 bin/gps_sys -I D_GPS -l2 -s 60
+2014/06/26 00:57:00.016 MSG D_CTL root      1084  0.5  1.1   1476  1448 ?        SL   00:56   0:00 bin/pps -I D_PPS
+2014/06/26 00:57:00.020 MSG D_CTL root      1087  3.2  0.5   1488   644 ?        S    00:56   0:00 bin/supervisor -P DCL -l -s 30
+2014/06/26 00:57:00.024 MSG D_CTL root      1090  0.2  0.4   1484   612 ?        S    00:56   0:00 bin/dlog_mgr
+2014/06/26 00:57:00.028 MSG D_CTL root      1093  0.2  0.2   1296   268 ?        S    00:56   0:00 bin/watchdog
+2014/06/26 00:57:00.032 MSG D_CTL root      1097  0.4  0.4   1464   528 ?        S    00:56   0:00 bin/cgservices -I dcl16
+2014/06/26 00:57:03.010 MSG D_CTL Sent SUPERV,D_CTL,SUPERV_SEND_CMD,7,get_ton
+2014/06/26 00:57:03.014 MSG D_CTL check Cfg updates from CPM1 [rsync_cpm_dcl_cfgs]
+2014/06/26 00:57:05.110 MSG D_CTL Received: SUPERV_SEND_CMD get_ton: 59 ok 4b2 [src: SUPERV]
+2014/06/26 00:57:06.052 MSG D_CTL Config file loaded [Cfg/dcl_mission.cfg]
+2014/06/26 00:57:06.058 MSG D_CTL Sent SUPERV,D_CTL,SUPERV_SEND_CMD,6,get_id
+2014/06/26 00:57:06.064 MSG D_CTL Sent SUPERV,D_CTL,SUPERV_SEND_CMD,29,set_gflt_cfg iso3v3 1 200 200
+2014/06/26 00:57:06.069 MSG D_CTL Sent SUPERV,D_CTL,SUPERV_SEND_CMD,28,set_gflt_cfg vmain 1 200 200
+2014/06/26 00:57:06.074 MSG D_CTL Sent SUPERV,D_CTL,SUPERV_SEND_CMD,27,set_gflt_cfg inst 1 200 200
+2014/06/26 00:57:06.079 MSG D_CTL Sent SUPERV,D_CTL,SUPERV_SEND_CMD,12,get_gflt_cfg
+2014/06/26 00:57:06.084 MSG D_CTL Sent SUPERV,D_CTL,SUPERV_SEND_CMD,24,set_ldet_cfg 1 300 1 300
+2014/06/26 00:57:06.089 MSG D_CTL Sent SUPERV,D_CTL,SUPERV_SEND_CMD,4,go 2
+2014/06/26 00:57:06.141 MSG D_CTL MF: ce_hotel.eth1.pwr=0  State(eth1)=1
+2014/06/26 00:57:06.147 MSG D_CTL Turning eth1 off
+2014/06/26 00:57:06.187 MSG D_CTL Setting up schedule...
+2014/06/26 00:57:06.375 MSG D_CTL Schedule.1.enable = 1
+2014/06/26 00:57:06.381 MSG D_CTL Schedule.name     = port1.pwr
+2014/06/26 00:57:06.386 MSG D_CTL Schedule.hlist    = 0-23
+2014/06/26 00:57:06.392 MSG D_CTL Schedule.offset   = 0
+2014/06/26 00:57:06.397 MSG D_CTL Schedule.interval = 
+2014/06/26 00:57:06.403 MSG D_CTL Schedule.duration = 2      
+2014/06/26 00:57:06.408 MSG D_CTL 
+2014/06/26 00:57:06.418 MSG D_CTL Schedule.11.enable = 1
+2014/06/26 00:57:06.424 MSG D_CTL Schedule.name     = port6.pwr
+2014/06/26 00:57:06.433 MSG D_CTL Schedule.hlist    = 0-23
+2014/06/26 00:57:06.437 MSG D_CTL Schedule.offset   = 0
+2014/06/26 00:57:06.441 MSG D_CTL Schedule.interval = 
+2014/06/26 00:57:06.445 MSG D_CTL Schedule.duration = 4      
+2014/06/26 00:57:06.449 MSG D_CTL 
+2014/06/26 00:57:06.456 MSG D_CTL Schedule.13.enable = 1
+2014/06/26 00:57:06.460 MSG D_CTL Schedule.name     = port7.pwr
+2014/06/26 00:57:06.464 MSG D_CTL Schedule.hlist    = 0-23
+2014/06/26 00:57:06.468 MSG D_CTL Schedule.offset   = 59
+2014/06/26 00:57:06.472 MSG D_CTL Schedule.interval = 
+2014/06/26 00:57:06.476 MSG D_CTL Schedule.duration = 2     
+2014/06/26 00:57:06.480 MSG D_CTL 
+2014/06/26 00:57:06.487 MSG D_CTL Schedule.15.enable = 1
+2014/06/26 00:57:06.494 MSG D_CTL Schedule.name     = port8.pwr
+2014/06/26 00:57:06.562 MSG D_CTL Schedule.hlist    = 0-23
+2014/06/26 00:57:06.576 MSG D_CTL Schedule.offset   = 0
+2014/06/26 00:57:06.582 MSG D_CTL Schedule.interval = 
+2014/06/26 00:57:06.586 MSG D_CTL Schedule.duration = 2      
+2014/06/26 00:57:06.589 MSG D_CTL 
+2014/06/26 00:57:06.597 MSG D_CTL Schedule.3.enable = 1
+2014/06/26 00:57:06.601 MSG D_CTL Schedule.name     = port2.pwr
+2014/06/26 00:57:06.605 MSG D_CTL Schedule.hlist    = 0-23
+2014/06/26 00:57:06.609 MSG D_CTL Schedule.offset   = 0
+2014/06/26 00:57:06.614 MSG D_CTL Schedule.interval = 
+2014/06/26 00:57:06.618 MSG D_CTL Schedule.duration = 2      
+2014/06/26 00:57:06.622 MSG D_CTL 
+2014/06/26 00:57:06.629 MSG D_CTL Schedule.5.enable = 1
+2014/06/26 00:57:06.633 MSG D_CTL Schedule.name     = port3.pwr
+2014/06/26 00:57:06.637 MSG D_CTL Schedule.hlist    = 0-23
+2014/06/26 00:57:06.640 MSG D_CTL Schedule.offset   = 0
+2014/06/26 00:57:06.645 MSG D_CTL Schedule.interval = 
+2014/06/26 00:57:06.649 MSG D_CTL Schedule.duration = 2      
+2014/06/26 00:57:06.653 MSG D_CTL 
+2014/06/26 00:57:06.659 MSG D_CTL Schedule.7.enable = 1
+2014/06/26 00:57:06.664 MSG D_CTL Schedule.name     = port4.pwr
+2014/06/26 00:57:06.667 MSG D_CTL Schedule.hlist    = 0-23
+2014/06/26 00:57:06.671 MSG D_CTL Schedule.offset   = 59
+2014/06/26 00:57:06.676 MSG D_CTL Schedule.interval = 
+2014/06/26 00:57:06.680 MSG D_CTL Schedule.duration = 2     
+2014/06/26 00:57:06.683 MSG D_CTL 
+2014/06/26 00:57:06.690 MSG D_CTL Schedule.9.enable = 1
+2014/06/26 00:57:06.694 MSG D_CTL Schedule.name     = port5.pwr
+2014/06/26 00:57:06.698 MSG D_CTL Schedule.hlist    = 0-23
+2014/06/26 00:57:06.702 MSG D_CTL Schedule.offset   = 0
+2014/06/26 00:57:06.706 MSG D_CTL Schedule.interval = 
+2014/06/26 00:57:06.710 MSG D_CTL Schedule.duration = 7      
+2014/06/26 00:57:06.714 MSG D_CTL 
+2014/06/26 00:57:06.720 MSG D_CTL Managing inst port configs...
+2014/06/26 00:57:06.726 MSG D_CTL Sent SUPERV,D_CTL,INST_PORT_SCFG,14,1 1 2500 0 0 2
+2014/06/26 00:57:06.732 MSG D_CTL Sent SUPERV,D_CTL,INST_PORT_SCFG,14,2 1 1500 0 0 1
+2014/06/26 00:57:06.737 MSG D_CTL Sent SUPERV,D_CTL,INST_PORT_SCFG,14,3 1 1500 0 0 1
+2014/06/26 00:57:06.742 MSG D_CTL Sent SUPERV,D_CTL,INST_PORT_SCFG,14,4 1 1500 0 0 1
+2014/06/26 00:57:06.748 MSG D_CTL Sent SUPERV,D_CTL,INST_PORT_SCFG,14,5 1 1500 0 0 1
+2014/06/26 00:57:06.753 MSG D_CTL Sent SUPERV,D_CTL,INST_PORT_SCFG,14,6 1 1500 0 0 1
+2014/06/26 00:57:06.758 MSG D_CTL Sent SUPERV,D_CTL,INST_PORT_SCFG,14,7 2 2500 0 1 2
+2014/06/26 00:57:06.764 MSG D_CTL Sent SUPERV,D_CTL,INST_PORT_SCFG,14,8 1 1500 0 0 1
+2014/06/26 00:57:06.768 MSG D_CTL Managing DLOG processes...
+2014/06/26 00:57:06.779 MSG D_CTL Sent DLOG_MGR,D_CTL,DMGR_START,6,DLOGP1
+2014/06/26 00:57:07.782 MSG D_CTL Sent DLOG_MGR,D_CTL,DMGR_START,6,DLOGP2
+2014/06/26 00:57:07.882 MSG DLOGP1 [bin/dl_optaa]:  v1.0-05/30/2013  [dl_optaa.c compiled on Apr 16 2014 at 17:08:22]
+2014/06/26 00:57:07.885 MSG DLOGP1 CIA [Version v3.0-09/12/2013], Running on Port [/dev/ttyAM1], Logging type is [LOG_HOURLY]
+2014/06/26 00:57:08.795 MSG D_CTL Sent DLOG_MGR,D_CTL,DMGR_START,6,DLOGP3
+2014/06/26 00:57:08.917 MSG DLOGP2 [bin/dl_ecotrip]:  v3.0-03/21/2013  [dl_ecotrip.c compiled on Apr 16 2014 at 17:08:06]
+2014/06/26 00:57:08.920 MSG DLOGP2 CIA [Version v3.0-09/12/2013], Running on Port [/dev/ttts1], Logging type is [LOG_DAILY]
+2014/06/26 00:57:09.790 MSG D_CTL Sent DLOG_MGR,D_CTL,DMGR_START,6,DLOGP4
+2014/06/26 00:57:09.927 MSG DLOGP3 [bin/dl_ascii]:  v1.0-02/24/2014  [dl_ascii.c compiled on Apr 16 2014 at 17:08:32]
+2014/06/26 00:57:09.928 MSG DLOGP3 CIA [Version v3.0-09/12/2013], Running on Port [/dev/ttts4], Logging type is [LOG_DAILY]
+2014/06/26 00:57:10.795 MSG D_CTL Sent DLOG_MGR,D_CTL,DMGR_START,6,DLOGP5
+2014/06/26 00:57:10.887 MSG DLOGP4 [bin/dl_ascii]:  v1.0-02/24/2014  [dl_ascii.c compiled on Apr 16 2014 at 17:08:32]
+2014/06/26 00:57:10.888 MSG DLOGP4 CIA [Version v3.0-09/12/2013], Running on Port [/dev/ttts5], Logging type is [LOG_DAILY]
+2014/06/26 00:57:11.794 MSG D_CTL Sent DLOG_MGR,D_CTL,DMGR_START,6,DLOGP6
+2014/06/26 00:57:12.794 MSG D_CTL Sent DLOG_MGR,D_CTL,DMGR_START,6,DLOGP7
+2014/06/26 00:57:13.415 MSG DLOGP5 [bin/dl_sunburst]:  v3.0-08/12/2013  [dl_sunburst.c compiled on Apr 16 2014 at 17:07:55]
+2014/06/26 00:57:13.417 MSG DLOGP5 CIA [Version v3.0-09/12/2013], Running on Port [/dev/ttts6], Logging type is [LOG_DAILY]
+2014/06/26 00:57:13.697 MSG DLOGP6 [bin/dl_sunburst]:  v3.0-08/12/2013  [dl_sunburst.c compiled on Apr 16 2014 at 17:07:55]
+2014/06/26 00:57:13.699 MSG DLOGP6 CIA [Version v3.0-09/12/2013], Running on Port [/dev/ttts7], Logging type is [LOG_DAILY]
+2014/06/26 00:57:13.790 MSG D_CTL Sent DLOG_MGR,D_CTL,DMGR_START,6,DLOGP8
+2014/06/26 00:57:13.883 MSG DLOGP7 [bin/dl_ascii]:  v1.0-02/24/2014  [dl_ascii.c compiled on Apr 16 2014 at 17:08:32]
+2014/06/26 00:57:13.886 MSG DLOGP7 CIA [Version v3.0-09/12/2013], Running on Port [/dev/ttts9], Logging type is [LOG_DAILY]
+2014/06/26 00:57:14.668 MSG SUPERV get_pcfg: 1 1 2500 0 0 2 5f4
+2014/06/26 00:57:14.746 MSG SUPERV get_pcfg: 2 1 1500 0 0 1 5f3
+2014/06/26 00:57:14.824 MSG SUPERV get_pcfg: 3 1 1500 0 0 1 5f4
+2014/06/26 00:57:14.898 MSG DLOGP8 [bin/dl_spkir]:  v3.0-03/21/2013  [dl_spkir.c compiled on Apr 16 2014 at 17:08:16]
+2014/06/26 00:57:14.899 MSG DLOGP8 CIA [Version v3.0-09/12/2013], Running on Port [/dev/ttts10], Logging type is [LOG_DAILY]
+2014/06/26 00:57:14.909 MSG SUPERV get_pcfg: 4 1 1500 0 0 1 5f5
+2014/06/26 00:57:14.982 MSG SUPERV get_pcfg: 5 1 1500 0 0 1 5f6
+2014/06/26 00:57:15.060 MSG SUPERV get_pcfg: 6 1 1500 0 0 1 5f7
+2014/06/26 00:57:15.140 MSG SUPERV get_pcfg: 7 2 2500 0 1 2 5fc
+2014/06/26 00:57:15.217 MSG SUPERV get_pcfg: 8 1 1500 0 0 1 5f9
+2014/06/26 00:57:19.896 MSG D_CTL Managing power to ports...
+2014/06/26 00:57:19.901 MSG D_CTL Port1 power is scheduled
+2014/06/26 00:57:19.905 MSG D_CTL Port2 power is scheduled
+2014/06/26 00:57:19.909 MSG D_CTL Port3 power is scheduled
+2014/06/26 00:57:19.914 MSG D_CTL Port4 power is scheduled
+2014/06/26 00:57:19.918 MSG D_CTL Port5 power is scheduled
+2014/06/26 00:57:20.012 MSG D_CTL Port6 power is scheduled
+2014/06/26 00:57:20.016 MSG D_CTL Port7 power is scheduled
+2014/06/26 00:57:20.021 MSG D_CTL Port8 power is scheduled
+2014/06/26 00:57:20.054 MSG D_CTL Received: DMGR_RESP [DLOGP1] (optaa1) has been started with PID[1130] [src: DLOG_MGR]
+2014/06/26 00:57:20.060 MSG D_CTL Received: SUPERV_SEND_CMD get_id: pcm-2.10 dcl, d2.09 d2.09 d2.09 d2.09 d2.09 d2.09 d2.09 d2.09, sec_on:63 1441 [src: SUPERV]
+2014/06/26 00:57:20.065 MSG D_CTL Received: DMGR_RESP [DLOGP2] (flort) has been started with PID[1131] [src: DLOG_MGR]
+2014/06/26 00:57:20.073 MSG D_CTL Received: SUPERV_SEND_CMD set_gflt_cfg: iso3v3 1 200 200 ok a17 [src: SUPERV]
+2014/06/26 00:57:20.078 MSG D_CTL Received: DMGR_RESP [DLOGP3] (ctdbp1) has been started with PID[1139] [src: DLOG_MGR]
+2014/06/26 00:57:20.156 MSG D_CTL Received: SUPERV_SEND_CMD set_gflt_cfg: vmain 1 200 200 ok a0b [src: SUPERV]
+2014/06/26 00:57:20.162 MSG D_CTL Received: DMGR_RESP [DLOGP4] (velpt2) has been started with PID[1140] [src: DLOG_MGR]
+2014/06/26 00:57:20.296 MSG D_CTL Received: SUPERV_SEND_CMD set_gflt_cfg: inst 1 200 200 ok 9ae [src: SUPERV]
+2014/06/26 00:57:20.303 MSG D_CTL Received: DMGR_RESP [DLOGP5] (pco2w1) has been started with PID[1141] [src: DLOG_MGR]
+2014/06/26 00:57:20.309 MSG D_CTL Received: SUPERV_SEND_CMD get_gflt_cfg: iso3v3 1 200 200 vmain 1 200 200 inst 1 200 200 1094 [src: SUPERV]
+2014/06/26 00:57:20.317 MSG D_CTL Received: DMGR_RESP [DLOGP6] (phsen1) has been started with PID[1142] [src: DLOG_MGR]
+2014/06/26 00:57:20.328 MSG D_CTL Received: SUPERV_SEND_CMD set_ldet_cfg: ok 617 [src: SUPERV]
+2014/06/26 00:57:20.336 MSG D_CTL Received: DMGR_RESP [DLOGP7] (nutnr) has been started with PID[1143] [src: DLOG_MGR]
+2014/06/26 00:57:20.376 MSG D_CTL Received: SUPERV_SEND_CMD go: ok 20a [src: SUPERV]
+2014/06/26 00:57:20.383 MSG D_CTL Received: DMGR_RESP [DLOGP8] (spkir) has been started with PID[1144] [src: DLOG_MGR]
+2014/06/26 00:57:20.393 MSG D_CTL Received: INST_PORT_SCFG set_pcfg: 1 ok 4d0 [src: SUPERV]
+2014/06/26 00:57:20.401 MSG D_CTL Received: INST_PORT_SCFG set_pcfg: 2 ok 4d1 [src: SUPERV]
+2014/06/26 00:57:20.408 MSG D_CTL Received: INST_PORT_SCFG set_pcfg: 3 ok 4d2 [src: SUPERV]
+2014/06/26 00:57:20.414 MSG D_CTL Received: INST_PORT_SCFG set_pcfg: 4 ok 4d3 [src: SUPERV]
+2014/06/26 00:57:20.424 MSG D_CTL Received: INST_PORT_SCFG set_pcfg: 5 ok 4d4 [src: SUPERV]
+2014/06/26 00:57:20.452 MSG D_CTL Received: INST_PORT_SCFG set_pcfg: 6 ok 4d5 [src: SUPERV]
+2014/06/26 00:57:20.457 MSG D_CTL Received: INST_PORT_SCFG set_pcfg: 7 ok 4d6 [src: SUPERV]
+2014/06/26 00:57:20.462 MSG D_CTL Received: INST_PORT_SCFG set_pcfg: 8 ok 4d7 [src: SUPERV]
+2014/06/26 00:59:02.243 MSG D_CTL === Schedule: send POWER-ON  to port7.pwr ===
+2014/06/26 00:59:02.245 MSG D_CTL Sent SUPERV,D_CTL,INST_PORT_ON,1,7
+2014/06/26 00:59:02.246 MSG D_CTL Sent DLOGP7,D_CTL,DLOG_DAQ_ON,5,PWRON
+2014/06/26 00:59:02.247 MSG D_CTL === Schedule: send POWER-ON  to port4.pwr ===
+2014/06/26 00:59:02.249 MSG D_CTL Sent SUPERV,D_CTL,INST_PORT_ON,1,4
+2014/06/26 00:59:02.250 MSG D_CTL Sent DLOGP4,D_CTL,DLOG_DAQ_ON,5,PWRON
+2014/06/26 00:59:02.488 MSG D_CTL Received: DLOG_ACK Instrument reporting as already sampling [src: DLOGP4]
+2014/06/26 00:59:03.500 MSG D_CTL Received: DLOG_ACK Instrument reporting as already sampling [src: DLOGP7]
+2014/06/26 00:59:04.277 MSG D_CTL Received: INST_PORT_ON pon: 7 ok 2d8 [src: SUPERV]
+2014/06/26 00:59:05.283 MSG D_CTL Received: INST_PORT_ON pon: 4 ok 2d5 [src: SUPERV]
+2014/06/26 00:59:08.140 DAT SUPERV dcl: 29.6 426.0 00000000 t 10.3 8.8 5.3 5.5 14.7 h 1.9 p 14.6 gf 7 0.0 0.0 0.0 ld 3 361 317 p1 0 0.0 0.0 0 p2 0 0.0 0.0 0 p3 0 0.0 0.0 0 p4 1 12.0 4.9 0 p5 0 0.0 0.0 0 p6 0 0.0 0.0 0 p7 0 20.1 9.8 0 p8 0 0.0 0.0 0 hb 0 0 0 wake 0 wtc 0 wpc 0 pwr 2 2 4 29.7 318.1 12.0 10.0 24.2 38.0 385f
+2014/06/26 00:59:10.230 DAT SUPERV dcl: 29.6 441.0 00000000 t 10.3 8.8 5.0 5.3 15.9 h 1.9 p 14.6 gf 7 0.0 0.0 0.0 ld 3 344 322 p1 0 0.0 0.0 0 p2 0 0.0 0.0 0 p3 0 0.0 0.0 0 p4 1 12.0 0.0 0 p5 0 0.0 0.0 0 p6 0 0.0 0.0 0 p7 1 24.1 39.1 0 p8 0 0.0 0.0 0 hb 0 0 0 wake 0 wtc 0 wpc 0 pwr 2 2 4 29.6 342.1 12.0 12.0 24.2 60.0 3874
+2014/06/26 01:00:01.838 MSG D_CTL === Schedule: send POWER-ON  to port1.pwr ===
+2014/06/26 01:00:01.844 MSG D_CTL Sent SUPERV,D_CTL,INST_PORT_ON,1,1
+2014/06/26 01:00:01.854 MSG D_CTL Sent DLOGP1,D_CTL,DLOG_DAQ_ON,5,PWRON
+2014/06/26 01:00:01.861 MSG D_CTL === Schedule: send POWER-ON  to port6.pwr ===
+2014/06/26 01:00:01.866 MSG D_CTL Sent SUPERV,D_CTL,INST_PORT_ON,1,6
+2014/06/26 01:00:01.872 MSG D_CTL Sent DLOGP6,D_CTL,DLOG_DAQ_ON,5,PWRON
+2014/06/26 01:00:01.881 MSG D_CTL === Schedule: send POWER-ON  to port8.pwr ===
+2014/06/26 01:00:01.891 MSG D_CTL Sent SUPERV,D_CTL,INST_PORT_ON,1,8
+2014/06/26 01:00:01.892 MSG D_CTL Sent DLOGP8,D_CTL,DLOG_DAQ_ON,5,PWRON
+2014/06/26 01:00:01.898 MSG D_CTL === Schedule: send POWER-ON  to port2.pwr ===
+2014/06/26 01:00:01.903 MSG D_CTL Sent SUPERV,D_CTL,INST_PORT_ON,1,2
+2014/06/26 01:00:01.908 MSG D_CTL Sent DLOGP2,D_CTL,DLOG_DAQ_ON,5,PWRON
+2014/06/26 01:00:01.915 MSG D_CTL === Schedule: send POWER-ON  to port3.pwr ===
+2014/06/26 01:00:01.920 MSG D_CTL Sent SUPERV,D_CTL,INST_PORT_ON,1,3
+2014/06/26 01:00:01.931 MSG D_CTL Sent DLOGP3,D_CTL,DLOG_DAQ_ON,5,PWRON
+2014/06/26 01:00:01.934 MSG D_CTL === Schedule: send POWER-ON  to port5.pwr ===
+2014/06/26 01:00:01.939 MSG D_CTL Sent SUPERV,D_CTL,INST_PORT_ON,1,5
+2014/06/26 01:00:01.949 MSG D_CTL Sent DLOGP5,D_CTL,DLOG_DAQ_ON,5,PWRON
+2014/06/26 01:00:02.445 MSG D_CTL Received: INST_PORT_ON pon: 1 ok 2d2 [src: SUPERV]
+2014/06/26 01:00:03.473 MSG D_CTL Received: DLOG_ACK Instrument reporting as already sampling [src: DLOGP3]
+2014/06/26 01:00:04.225 MSG D_CTL Received: DLOG_ACK Instrument Started [Power On] [src: DLOGP1]
+2014/06/26 01:00:04.474 MSG D_CTL Received: INST_PORT_ON pon: 6 ok 2d7 [src: SUPERV]
+2014/06/26 01:00:06.520 MSG D_CTL Received: INST_PORT_ON pon: 8 ok 2d9 [src: SUPERV]
+2014/06/26 01:00:08.576 MSG D_CTL Received: INST_PORT_ON pon: 2 ok 2d3 [src: SUPERV]
+2014/06/26 01:00:10.367 MSG D_CTL Received: INST_PORT_ON pon: 3 ok 2d4 [src: SUPERV]
+2014/06/26 01:00:12.519 MSG D_CTL Received: INST_PORT_ON pon: 5 ok 2d6 [src: SUPERV]
+2014/06/26 01:00:12.520 MSG D_CTL Received: DLOG_ACK Instrument Started [Power On] [src: DLOGP8]
+2014/06/26 01:00:12.521 MSG D_CTL Received: DLOG_ACK Instrument Started [Power On] [src: DLOGP2]
+2014/06/26 01:00:13.341 ALM SUPERV Warning 4 3, NO MPIC DATA
+2014/06/26 01:00:14.259 DAT SUPERV dcl: 27.8 1600.0 00000000 t 11.1 9.5 5.8 6.3 29.7 h 1.4 p 14.6 gf 7 0.0 0.0 0.0 ld 3 342 325 p1 1 11.8 1270.8 0 p2 1 11.9 34.2 0 p3 1 11.8 -4.9 0 p4 1 11.9 0.0 0 p5 0 2.4 0.0 0 p6 1 11.9 14.7 0 p7 1 24.0 415.4 0 p8 1 11.9 205.3 0 hb 0 0 0 wake 0 wtc 0 wpc 0 pwr 2 2 4 27.6 1402.3 11.9 1604.4 24.1 460.1 3ca0
+2014/06/26 01:00:14.265 ALM D_STATUS Clearing alarms for superv
+2014/06/26 01:00:16.264 DAT SUPERV dcl: 27.9 1592.0 00000000 t 11.2 9.5 6.1 6.3 30.3 h 1.4 p 14.6 gf 7 0.0 0.0 0.0 ld 3 347 317 p1 1 11.8 1236.6 0 p2 1 11.9 34.2 0 p3 1 11.8 0.0 0 p4 1 11.9 0.0 0 p5 1 11.8 9.8 0 p6 1 11.9 14.7 0 p7 1 24.0 391.0 0 p8 1 11.8 195.5 0 hb 0 0 0 wake 0 wtc 0 wpc 0 pwr 2 2 4 27.7 1398.3 11.9 1618.4 24.1 458.1 3ccf
+2014/06/26 01:00:18.095 MSG D_CTL Received: DLOG_ACK Instrument Started [Power On] [src: DLOGP5]
+2014/06/26 01:00:18.348 MSG D_CTL Received: DLOG_ACK Instrument Started [Power On] [src: DLOGP6]
+2014/06/26 01:00:34.760 ERR DLOGP4 Read port [/dev/ttts5] too many NUL characters
+2014/06/26 01:00:34.789 ERR DLOGP4 Read port [/dev/ttts5] too many NUL characters
+2014/06/26 01:01:00.480 MSG D_CTL === Schedule: send POWER-OFF to port7.pwr ===
+2014/06/26 01:01:00.482 MSG D_CTL Sent DLOGP7,D_CTL,DLOG_DAQ_OFF,6,PWROFF
+2014/06/26 01:01:02.498 MSG D_CTL Sent SUPERV,D_CTL,INST_PORT_OFF,1,7
+2014/06/26 01:01:02.513 MSG D_CTL === Schedule: send POWER-OFF to port4.pwr ===
+2014/06/26 01:01:02.516 MSG D_CTL Sent DLOGP4,D_CTL,DLOG_DAQ_OFF,6,PWROFF
+2014/06/26 01:01:04.530 MSG D_CTL Sent SUPERV,D_CTL,INST_PORT_OFF,1,4
+2014/06/26 01:01:04.548 MSG D_CTL Received: DLOG_ACK Instrument Stopped [Power Off] [src: DLOGP7]
+2014/06/26 01:01:04.558 MSG D_CTL Received: DLOG_ACK Instrument Stopped [Power Off] [src: DLOGP4]
+2014/06/26 01:01:04.567 MSG D_CTL Received: INST_PORT_OFF poff: 7 ok 336 [src: SUPERV]
+2014/06/26 01:01:06.431 MSG D_CTL Received: INST_PORT_OFF poff: 4 ok 333 [src: SUPERV]
+2014/06/26 01:01:08.280 DAT SUPERV dcl: 28.6 1073.0 000000e0 t 12.5 10.8 7.4 7.7 33.3 h 1.4 p 14.6 gf 7 -25.4 204.8 825.4 ld 3 334 332 p1 1 11.8 1270.8 0 p2 1 11.9 34.2 0 p3 1 11.9 -4.9 0 p4 0 0.0 0.0 0 p5 1 11.9 9.8 0 p6 1 11.9 14.7 0 p7 0 0.0 0.0 0 p8 1 11.9 58.7 0 hb 0 0 0 wake 0 wtc 0 wpc 0 pwr 2 2 3 28.4 912.2 12.0 1468.4 0.0 0.0 3cbb
+2014/06/26 01:01:48.304 MSG D_STATUS CPU Uptime:   0 days 00:05:45  Load: 0.64 0.48 0.23  Free: 89796k  Nproc: 85
+2014/06/26 01:01:48.508 MSG D_STATUS STATUS: GPS=600, NTP=1, PPS=30, SUPERV=152, DLOG_MGR=10
+2014/06/26 01:01:48.512 DAT D_GPS 2014/06/26 01:01:47.845 GPS 44.658727 -124.095543 0.50 335.20 2 9 0.90 5.70 260614 010147 4439.5236 N 12405.7326 W
+2014/06/26 01:01:48.515 DAT D_PPS D_PPS: NMEA_Lock: TRUE  Delta: 0999994 DeltaMin: -0000002 DeltaMax: -0000224 BadPulses: 0003 TS: 2014/06/26 01:01:40.997
+2014/06/26 01:01:48.518 DAT SUPERV dcl: 28.6 1067.0 000000e0 t 13.2 11.5 8.7 8.7 34.5 h 1.4 p 14.6 gf 7 -25.4 204.8 825.4 ld 3 339 320 p1 1 11.9 1251.2 0 p2 1 11.9 34.2 0 p3 1 11.9 -4.9 0 p4 0 0.0 0.0 0 p5 1 11.9 9.8 0 p6 1 11.9 14.7 0 p7 0 0.0 0.0 0 p8 1 11.9 53.8 0 hb 0 0 0 wake 0 wtc 0 wpc 0 pwr 2 2 3 28.4 910.2 12.0 1466.4 0.0 0.0 3cb6
+2014/06/26 01:01:48.520 DAT DLOG_MGR dmgrstatus: 2014/06/26 01:01:39.209 act:8 str:8 hlt:0 fld:0 map:DDDDDDDD
+2014/06/26 01:01:48.522 DAT DLOGP1 istatus: 2014/06/26 01:01:20.064 optaa1 DAQ tx: 0 rx: 184729 log: 184470 good: 258 bad: 0 bb: 0 ld: 1403744480
+2014/06/26 01:01:48.524 DAT DLOGP2 istatus: 2014/06/26 01:01:21.216 flort DAQ tx: 8 rx: 2809 log: 4412 good: 61 bad: 0 bb: 0 ld: 1403744481
+2014/06/26 01:01:48.525 DAT DLOGP3 istatus: 2014/06/26 01:01:25.382 ctdbp1 DAQ tx: 0 rx: 29 log: 254 good: 0 bad: 0 bb: 0 ld: 1403744413
+2014/06/26 01:01:48.533 DAT DLOGP4 istatus: 2014/06/26 01:01:26.792 velpt2 IDLE tx: 0 rx: 34 log: 248 good: 0 bad: 0 bb: 0 ld: 0
+2014/06/26 01:01:48.535 DAT DLOGP5 istatus: 2014/06/26 01:01:28.501 pco2w1 DAQ tx: 10 rx: 23 log: 183 good: 1 bad: 0 bb: 0 ld: 1403744438
+2014/06/26 01:01:48.538 DAT DLOGP6 istatus: 2014/06/26 01:01:28.771 phsen1 DAQ tx: 8 rx: 20 log: 181 good: 1 bad: 0 bb: 0 ld: 1403744420
+2014/06/26 01:01:48.542 DAT DLOGP7 istatus: 2014/06/26 01:01:26.422 nutnr IDLE tx: 0 rx: 1213 log: 1986 good: 0 bad: 0 bb: 0 ld: 1403744466
+2014/06/26 01:01:48.545 DAT DLOGP8 istatus: 2014/06/26 01:01:27.126 spkir DAQ tx: 1 rx: 17900 log: 25171 good: 298 bad: 0 bb: 0 ld: 1403744487
+2014/06/26 01:01:48.805 DAT D_STATUS NTP: 2014/06/26 01:01:48.549 *SHM(1) .PPS. 2.846 0.583
+2014/06/26 01:02:00.306 MSG D_CTL === Schedule: send POWER-OFF to port1.pwr ===
+2014/06/26 01:02:00.314 MSG D_CTL Sent DLOGP1,D_CTL,DLOG_DAQ_OFF,6,PWROFF
+2014/06/26 01:02:02.335 MSG D_CTL Sent SUPERV,D_CTL,INST_PORT_OFF,1,1
+2014/06/26 01:02:02.343 MSG D_CTL === Schedule: send POWER-OFF to port8.pwr ===
+2014/06/26 01:02:02.345 MSG D_CTL Sent DLOGP8,D_CTL,DLOG_DAQ_OFF,6,PWROFF
+2014/06/26 01:02:04.365 MSG D_CTL Sent SUPERV,D_CTL,INST_PORT_OFF,1,8
+2014/06/26 01:02:04.367 MSG D_CTL === Schedule: send POWER-OFF to port2.pwr ===
+2014/06/26 01:02:04.373 MSG D_CTL Sent DLOGP2,D_CTL,DLOG_DAQ_OFF,6,PWROFF
+2014/06/26 01:02:06.394 MSG D_CTL Sent SUPERV,D_CTL,INST_PORT_OFF,1,2
+2014/06/26 01:02:06.395 MSG D_CTL === Schedule: send POWER-OFF to port3.pwr ===
+2014/06/26 01:02:06.399 MSG D_CTL Sent DLOGP3,D_CTL,DLOG_DAQ_OFF,6,PWROFF
+2014/06/26 01:02:08.424 MSG D_CTL Sent SUPERV,D_CTL,INST_PORT_OFF,1,3
+2014/06/26 01:02:08.435 MSG D_CTL Received: DLOG_ACK Instrument Stopped [Power Off] [src: DLOGP1]
+2014/06/26 01:02:08.444 MSG D_CTL Received: DLOG_ACK Instrument Stopped [Power Off] [src: DLOGP8]
+2014/06/26 01:02:08.454 MSG D_CTL Received: INST_PORT_OFF poff: 1 ok 330 [src: SUPERV]
+2014/06/26 01:02:08.455 MSG D_CTL Received: DLOG_ACK Instrument Stopped [Power Off] [src: DLOGP2]
+2014/06/26 01:02:08.457 MSG D_CTL Received: INST_PORT_OFF poff: 8 ok 337 [src: SUPERV]
+2014/06/26 01:02:08.464 MSG D_CTL Received: DLOG_ACK Instrument Stopped [Power Off] [src: DLOGP3]
+2014/06/26 01:02:08.557 MSG D_CTL Received: INST_PORT_OFF poff: 2 ok 331 [src: SUPERV]
+2014/06/26 01:02:10.340 MSG D_CTL Received: INST_PORT_OFF poff: 3 ok 332 [src: SUPERV]
+2014/06/26 01:02:12.622 DAT SUPERV dcl: 29.6 335.0 000000e0 t 13.6 11.6 9.3 9.5 33.9 h 1.4 p 14.6 gf 7 -25.4 204.8 825.4 ld 3 332 342 p1 0 0.0 0.0 0 p2 0 0.0 0.0 0 p3 0 0.0 0.0 0 p4 0 0.0 0.0 0 p5 1 12.0 9.8 0 p6 1 12.0 210.2 0 p7 0 0.0 0.0 0 p8 0 0.0 0.0 0 hb 0 0 0 wake 0 wtc 0 wpc 0 pwr 2 2 3 29.6 228.1 12.1 52.0 0.0 0.0 39f7
+2014/06/26 01:04:01.037 MSG D_CTL === Schedule: send POWER-OFF to port6.pwr ===
+2014/06/26 01:04:01.038 MSG D_CTL Sent DLOGP6,D_CTL,DLOG_DAQ_OFF,6,PWROFF
+2014/06/26 01:04:03.059 MSG D_CTL Sent SUPERV,D_CTL,INST_PORT_OFF,1,6
+2014/06/26 01:04:03.079 MSG D_CTL Received: DLOG_ACK Instrument Stopped [Power Off] [src: DLOGP6]
+2014/06/26 01:04:04.713 MSG D_CTL Received: INST_PORT_OFF poff: 6 ok 335 [src: SUPERV]
+2014/06/26 01:04:06.330 DAT SUPERV dcl: 29.9 307.0 000000e0 t 14.5 12.3 11.4 11.7 35.1 h 1.4 p 14.7 gf 7 -25.4 204.8 825.4 ld 3 349 330 p1 0 0.0 0.0 0 p2 0 0.0 0.0 0 p3 0 0.0 0.0 0 p4 0 0.0 0.0 0 p5 1 12.0 9.8 0 p6 0 0.0 0.0 0 p7 0 0.0 0.0 0 p8 0 0.0 0.0 0 hb 0 0 0 wake 0 wtc 0 wpc 0 pwr 2 2 3 29.8 216.1 12.1 28.0 0.0 0.0 39b5

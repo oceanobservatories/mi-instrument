@@ -1,0 +1,100 @@
+header:
+  particle_object: CtdmoGhqrSioRecoveredOffsetDataParticle
+  particle_type: ctdmo_ghqr_offset_recovered
+
+data:
+  - _index:  1
+    internal_timestamp: 3573390981
+    sio_controller_timestamp: 1364402181
+    inductive_id: 56
+    ctd_time_offset: -150
+  - _index:  2
+    internal_timestamp: 3573390981
+    sio_controller_timestamp: 1364402181
+    inductive_id: 57
+    ctd_time_offset: -110
+  - _index:  3
+    internal_timestamp: 3573390982
+    sio_controller_timestamp: 1364402182
+    inductive_id: 56
+    ctd_time_offset: -70
+  - _index:  4
+    internal_timestamp: 3573390982
+    sio_controller_timestamp: 1364402182
+    inductive_id: 55
+    ctd_time_offset: -30
+  - _index:  5
+    internal_timestamp: 3573390983
+    sio_controller_timestamp: 1364402183
+    inductive_id: 55
+    ctd_time_offset: 10
+  - _index:  6
+    internal_timestamp: 3573390983
+    sio_controller_timestamp: 1364402183
+    inductive_id: 59
+    ctd_time_offset: 50
+  - _index:  7
+    internal_timestamp: 3573390983
+    sio_controller_timestamp: 1364402183
+    inductive_id: 55
+    ctd_time_offset: 90
+  - _index:  8
+    internal_timestamp: 3573390983
+    sio_controller_timestamp: 1364402183
+    inductive_id: 55
+    ctd_time_offset: 130
+  - _index:  9
+    internal_timestamp: 3573390983
+    sio_controller_timestamp: 1364402183
+    inductive_id: 55
+    ctd_time_offset: 170
+  - _index:  10
+    internal_timestamp: 3573390985
+    sio_controller_timestamp: 1364402185
+    inductive_id: 55
+    ctd_time_offset: 210
+  - _index:  11
+    internal_timestamp: 3573390985
+    sio_controller_timestamp: 1364402185
+    inductive_id: 55
+    ctd_time_offset: 250
+  - _index:  12
+    internal_timestamp: 3573390985
+    sio_controller_timestamp: 1364402185
+    inductive_id: 55
+    ctd_time_offset: 290
+  - _index:  13
+    internal_timestamp: 3573390985
+    sio_controller_timestamp: 1364402185
+    inductive_id: 55
+    ctd_time_offset: 330
+  - _index:  14
+    internal_timestamp: 3573390985
+    sio_controller_timestamp: 1364402185
+    inductive_id: 55
+    ctd_time_offset: 370
+  - _index:  15
+    internal_timestamp: 3573390985
+    sio_controller_timestamp: 1364402185
+    inductive_id: 55
+    ctd_time_offset: 410
+  - _index:  16
+    internal_timestamp: 3573390985
+    sio_controller_timestamp: 1364402185
+    inductive_id: 55
+    ctd_time_offset: 450
+  - _index:  17
+    internal_timestamp: 3573390985
+    sio_controller_timestamp: 1364402185
+    inductive_id: 55
+    ctd_time_offset: 490
+  - _index:  18
+    internal_timestamp: 3573390985
+    sio_controller_timestamp: 1364402185
+    inductive_id: 55
+    ctd_time_offset: 530
+  - _index:  19
+    internal_timestamp: 3573390985
+    sio_controller_timestamp: 1364402185
+    inductive_id: 55
+    ctd_time_offset: 570

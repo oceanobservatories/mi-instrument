@@ -1,0 +1,11 @@
+Header without a star in the beginning
+The following line contains 35 Hex characters instead of 36
+0390230A677208164965CF2A60DE1BA6011
+The following line contains 37 Hex characters instead of 36
+0390230A677208164965CF2A60DE1BA60112A
+The following line has 36 characters, but some of them are non Hex!
+UV90290Z677308164865C52A619C1XY601PQ
+The following line has spaces in between
+0390230A6 77208164965C  F2A60DE1BA6011A
+The following line has a space at the beginning
+ 0390290A677308164865C52A619C1BA60125

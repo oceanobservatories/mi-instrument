@@ -1,0 +1,19 @@
+header:
+  particle_object: CtdbpPRecoveredDataParticle
+  particle_type: ctdbp_cdef_instrument_recovered
+
+data:
+  - _index: 1
+    internal_timestamp: 3648132350.0
+    temperature: 253604
+    conductivity: 654954
+    pressure: 529619
+    pressure_temp: 23173
+    ctd_time: 492458750
+  - _index: 2
+    internal_timestamp: 3648133803.0
+    temperature: 271201
+    conductivity: 654954
+    pressure: 529629
+    pressure_temp: 23142
+    ctd_time: 492460203

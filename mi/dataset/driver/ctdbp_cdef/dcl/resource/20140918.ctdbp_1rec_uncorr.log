@@ -1,0 +1,3 @@
+2014/09/18 00:02:20.944 [ctdbp:DLOGP3]:time out
+2014/09/18 00:02:25.338 #  8.1990,  3.62531,   12.203,  34.8400, 1483.226, 18 Sep 2014 00:02:19,  27.1182, 11.5,   2.0
+2014/09/18 00:02:25.435 [ctdbp:DLOGP3]:error --> alarm time not far enough in the future, resetting alarm to 5 sec from now

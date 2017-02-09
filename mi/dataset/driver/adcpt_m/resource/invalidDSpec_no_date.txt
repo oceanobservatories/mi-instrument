@@ -1,0 +1,9 @@
+
+ % Directional Spectrum
+% 4 Directions and 3 Frequencies
+% Units are mm^2/(Hz) per cycle
+% Frequency Bands are 0.01562500 Hz wide(first frequency band is centered at 0.00830078)
+% The first direction slice begins at 0 degrees
+ 6132 5984 5870 5802
+ 3831 3726 3643 3590
+ 930 958 995 1042

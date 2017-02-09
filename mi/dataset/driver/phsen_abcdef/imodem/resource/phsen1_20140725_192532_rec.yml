@@ -1,0 +1,133 @@
+header:
+    particle_object: 'MULTIPLE'
+    particle_type: 'MULTIPLE'
+data:
+  - _index: 1
+    particle_object: PhsenAbcdefImodemInstrumentRecoveredDataParticle
+    particle_type: phsen_abcdef_imodem_instrument_recovered
+    internal_timestamp: 3615274799.0
+    unique_id: 87
+    record_type: 10
+    record_time: 3489130799
+    passed_checksum: 1
+    thermistor_start: 1525
+    reference_light_measurements: [2492, 1621, 2062, 2293, 2492, 1621, 2060, 2294, 2492, 1622, 2059, 2293, 2494, 1622, 2060, 2294]
+    light_measurements: [2494, 1623, 2061, 2295, 2491, 1589, 2059, 2294, 2493, 1238, 2060, 2285, 2493, 553, 2060, 2269, 2492, 174, 2063, 2242, 2494, 76, 2059, 2215, 2494, 59, 2060, 2201, 2493, 79, 2058, 2202, 2494, 136, 2060, 2224, 2494, 244, 2059, 2239, 2494, 399, 2059, 2254, 2492, 594, 2057, 2268, 2492, 791, 2059, 2278, 2493, 973, 2057, 2283, 2493, 1125, 2059, 2286, 2495, 1244, 2058, 2285, 2492, 1330, 2060, 2287, 2494, 1402, 2056, 2291, 2493, 1448, 2057, 2290, 2495, 1489, 2058, 2290, 2494, 1519, 2061, 2293, 2492, 1535, 2058, 2290, 2491, 1553, 2058, 2293]
+    voltage_battery: 3234
+    thermistor_end: 1525
+  - _index: 2
+    particle_object: PhsenAbcdefImodemInstrumentRecoveredDataParticle
+    particle_type: phsen_abcdef_imodem_instrument_recovered
+    internal_timestamp: 3615278399.0
+    unique_id: 87
+    record_type: 10
+    record_time: 3489134399
+    passed_checksum: 1
+    thermistor_start: 1518
+    reference_light_measurements: [2491, 1622, 2063, 2298, 2491, 1621, 2063, 2296, 2496, 1621, 2062, 2296, 2491, 1623, 2059, 2296]
+    light_measurements: [2490, 1623, 2060, 2299, 2494, 1588, 2063, 2297, 2493, 1217, 2065, 2289, 2494, 526, 2063, 2268, 2491, 166, 2063, 2245, 2494, 73, 2065, 2215, 2494, 56, 2062, 2199, 2493, 79, 2062, 2207, 2493, 138, 2063, 2225, 2494, 245, 2060, 2245, 2495, 402, 2064, 2259, 2495, 592, 2063, 2272, 2493, 790, 2061, 2280, 2494, 974, 2061, 2284, 2495, 1125, 2063, 2289, 2492, 1242, 2060, 2291, 2494, 1331, 2061, 2291, 2496, 1398, 2063, 2291, 2495, 1451, 2063, 2296, 2498, 1488, 2060, 2296, 2497, 1515, 2063, 2294, 2496, 1537, 2061, 2297, 2495, 1552, 2063, 2295]
+    voltage_battery: 3232
+    thermistor_end: 1520
+  - _index: 3
+    particle_object: PhsenAbcdefImodemInstrumentRecoveredDataParticle
+    particle_type: phsen_abcdef_imodem_instrument_recovered
+    internal_timestamp: 3615281999.0
+    unique_id: 87
+    record_type: 10
+    record_time: 3489137999
+    passed_checksum: 1
+    thermistor_start: 1538
+    reference_light_measurements: [2490, 1623, 2064, 2297, 2490, 1624, 2059, 2297, 2492, 1622, 2062, 2296, 2495, 1623, 2061, 2298]
+    light_measurements: [2493, 1624, 2063, 2296, 2491, 1590, 2061, 2298, 2494, 1247, 2063, 2290, 2490, 561, 2062, 2275, 2493, 173, 2065, 2242, 2495, 72, 2066, 2219, 2492, 57, 2058, 2201, 2494, 78, 2060, 2207, 2492, 136, 2061, 2224, 2493, 239, 2060, 2244, 2495, 396, 2062, 2259, 2493, 583, 2062, 2268, 2495, 784, 2062, 2279, 2491, 965, 2061, 2282, 2494, 1118, 2063, 2290, 2492, 1239, 2059, 2292, 2488, 1328, 2061, 2292, 2494, 1397, 2063, 2294, 2497, 1447, 2062, 2291, 2493, 1486, 2062, 2293, 2493, 1514, 2063, 2294, 2497, 1533, 2065, 2296, 2491, 1549, 2060, 2292]
+    voltage_battery: 3232
+    thermistor_end: 1537
+  - _index: 4
+    particle_object: PhsenAbcdefImodemInstrumentRecoveredDataParticle
+    particle_type: phsen_abcdef_imodem_instrument_recovered
+    internal_timestamp: 3615285599.0
+    unique_id: 87
+    record_type: 10
+    record_time: 3489141599
+    passed_checksum: 1
+    thermistor_start: 1540
+    reference_light_measurements: [2488, 1623, 2079, 2317, 2495, 1622, 2078, 2316, 2495, 1622, 2078, 2314, 2494, 1624, 2080, 2315]
+    light_measurements: [2491, 1618, 2078, 2312, 2490, 1584, 2073, 2311, 2491, 1224, 2079, 2309, 2493, 538, 2078, 2288, 2490, 166, 2076, 2261, 2490, 71, 2079, 2236, 2494, 58, 2078, 2217, 2492, 78, 2076, 2223, 2492, 137, 2077, 2238, 2493, 244, 2076, 2258, 2493, 404, 2075, 2276, 2493, 594, 2075, 2284, 2495, 794, 2078, 2295, 2494, 977, 2076, 2301, 2491, 1124, 2078, 2305, 2494, 1245, 2075, 2308, 2493, 1336, 2080, 2311, 2496, 1399, 2077, 2308, 2496, 1451, 2075, 2310, 2495, 1489, 2077, 2313, 2491, 1515, 2076, 2314, 2493, 1532, 2077, 2312, 2491, 1547, 2076, 2311]
+    voltage_battery: 3231
+    thermistor_end: 1540
+  - _index: 5
+    particle_object: PhsenAbcdefImodemInstrumentRecoveredDataParticle
+    particle_type: phsen_abcdef_imodem_instrument_recovered
+    internal_timestamp: 3615289199.0
+    unique_id: 87
+    record_type: 10
+    record_time: 3489145199
+    passed_checksum: 1
+    thermistor_start: 1536
+    reference_light_measurements: [2489, 1624, 2089, 2326, 2494, 1621, 2087, 2323, 2492, 1621, 2084, 2322, 2489, 1620, 2084, 2323]
+    light_measurements: [2491, 1620, 2084, 2322, 2492, 1593, 2084, 2323, 2489, 1240, 2083, 2316, 2494, 545, 2086, 2297, 2493, 164, 2084, 2266, 2495, 70, 2085, 2240, 2494, 57, 2085, 2227, 2489, 77, 2087, 2231, 2493, 138, 2085, 2249, 2492, 243, 2085, 2265, 2493, 404, 2086, 2286, 2492, 597, 2084, 2293, 2493, 800, 2084, 2300, 2489, 980, 2084, 2311, 2491, 1129, 2082, 2310, 2492, 1249, 2090, 2318, 2490, 1339, 2083, 2317, 2492, 1402, 2084, 2317, 2494, 1452, 2086, 2319, 2494, 1487, 2082, 2319, 2491, 1514, 2084, 2318, 2495, 1536, 2083, 2323, 2491, 1550, 2084, 2320]
+    voltage_battery: 3231
+    thermistor_end: 1536
+  - _index: 6
+    particle_object: PhsenAbcdefImodemInstrumentRecoveredDataParticle
+    particle_type: phsen_abcdef_imodem_instrument_recovered
+    internal_timestamp: 3615292799.0
+    unique_id: 87
+    record_type: 10
+    record_time: 3489148799
+    passed_checksum: 1
+    thermistor_start: 1534
+    reference_light_measurements: [2487, 1622, 2088, 2328, 2489, 1619, 2086, 2327, 2493, 1620, 2091, 2323, 2495, 1616, 2089, 2323]
+    light_measurements: [2492, 1619, 2087, 2322, 2493, 1583, 2091, 2325, 2495, 1207, 2088, 2318, 2490, 520, 2086, 2298, 2493, 162, 2087, 2272, 2490, 70, 2087, 2244, 2492, 57, 2088, 2229, 2492, 78, 2089, 2233, 2492, 141, 2087, 2253, 2490, 251, 2086, 2272, 2493, 404, 2090, 2287, 2493, 595, 2091, 2298, 2491, 789, 2086, 2306, 2492, 970, 2089, 2311, 2491, 1119, 2084, 2314, 2495, 1238, 2086, 2319, 2494, 1327, 2087, 2320, 2491, 1396, 2084, 2322, 2498, 1445, 2090, 2323, 2497, 1483, 2089, 2324, 2492, 1514, 2085, 2325, 2492, 1531, 2089, 2323, 2492, 1549, 2087, 2323]
+    voltage_battery: 3230
+    thermistor_end: 1534
+  - _index: 7
+    particle_object: PhsenAbcdefImodemInstrumentRecoveredDataParticle
+    particle_type: phsen_abcdef_imodem_instrument_recovered
+    internal_timestamp: 3615296399.0
+    unique_id: 87
+    record_type: 10
+    record_time: 3489152399
+    passed_checksum: 1
+    thermistor_start: 1530
+    reference_light_measurements: [2490, 1619, 2088, 2323, 2494, 1619, 2088, 2323, 2489, 1620, 2090, 2324, 2490, 1619, 2085, 2325]
+    light_measurements: [2491, 1622, 2088, 2326, 2492, 1585, 2084, 2323, 2491, 1218, 2088, 2317, 2493, 530, 2089, 2302, 2490, 164, 2084, 2272, 2494, 68, 2088, 2242, 2494, 57, 2087, 2225, 2491, 77, 2084, 2231, 2494, 140, 2088, 2251, 2494, 244, 2087, 2269, 2492, 409, 2087, 2285, 2490, 602, 2086, 2297, 2491, 802, 2085, 2304, 2491, 988, 2081, 2309, 2492, 1139, 2087, 2316, 2492, 1255, 2086, 2317, 2493, 1344, 2085, 2318, 2495, 1407, 2089, 2321, 2496, 1461, 2088, 2323, 2490, 1492, 2085, 2322, 2493, 1522, 2085, 2325, 2492, 1535, 2083, 2321, 2491, 1551, 2084, 2320]
+    voltage_battery: 3230
+    thermistor_end: 1531
+  - _index: 8
+    particle_object: PhsenAbcdefImodemInstrumentRecoveredDataParticle
+    particle_type: phsen_abcdef_imodem_instrument_recovered
+    internal_timestamp: 3615299999.0
+    unique_id: 87
+    record_type: 10
+    record_time: 3489155999
+    passed_checksum: 1
+    thermistor_start: 1521
+    reference_light_measurements: [2490, 1622, 2083, 2322, 2489, 1620, 2085, 2321, 2493, 1622, 2081, 2320, 2490, 1619, 2083, 2320]
+    light_measurements: [2490, 1621, 2080, 2319, 2495, 1585, 2084, 2319, 2493, 1213, 2086, 2313, 2492, 521, 2078, 2292, 2490, 163, 2081, 2268, 2498, 72, 2084, 2238, 2493, 59, 2081, 2227, 2492, 84, 2084, 2232, 2487, 141, 2078, 2246, 2493, 250, 2082, 2266, 2489, 408, 2078, 2280, 2492, 598, 2080, 2292, 2493, 797, 2082, 2305, 2489, 972, 2079, 2306, 2495, 1121, 2081, 2311, 2492, 1235, 2080, 2312, 2496, 1325, 2083, 2314, 2494, 1391, 2080, 2315, 2494, 1441, 2083, 2316, 2495, 1480, 2084, 2316, 2490, 1510, 2080, 2317, 2490, 1531, 2079, 2318, 2491, 1543, 2081, 2315]
+    voltage_battery: 3230
+    thermistor_end: 1522
+  - _index: 9
+    particle_object: PhsenAbcdefImodemInstrumentRecoveredDataParticle
+    particle_type: phsen_abcdef_imodem_instrument_recovered
+    internal_timestamp: 3615303599.0
+    unique_id: 87
+    record_type: 10
+    record_time: 3489159599
+    passed_checksum: 1
+    thermistor_start: 1510
+    reference_light_measurements: [2494, 1624, 2072, 2308, 2492, 1622, 2071, 2305, 2492, 1621, 2070, 2308, 2491, 1622, 2071, 2307]
+    light_measurements: [2494, 1621, 2072, 2308, 2493, 1585, 2071, 2307, 2489, 1222, 2071, 2298, 2490, 546, 2072, 2283, 2491, 172, 2069, 2253, 2489, 75, 2070, 2226, 2489, 58, 2068, 2212, 2490, 79, 2070, 2216, 2498, 139, 2071, 2233, 2489, 245, 2070, 2252, 2491, 400, 2068, 2267, 2495, 592, 2070, 2278, 2494, 789, 2074, 2288, 2492, 968, 2073, 2292, 2492, 1117, 2069, 2298, 2494, 1231, 2070, 2298, 2491, 1322, 2069, 2301, 2491, 1391, 2070, 2302, 2489, 1440, 2070, 2305, 2489, 1476, 2070, 2299, 2494, 1506, 2068, 2303, 2494, 1530, 2069, 2303, 2491, 1546, 2069, 2305]
+    voltage_battery: 3230
+    thermistor_end: 1511
+  - _index: 10
+    particle_object: PhsenAbcdefImodemMetadataRecoveredDataParticle
+    particle_type: phsen_abcdef_imodem_metadata_recovered
+    internal_timestamp: 3615305132.0
+    file_time: '20140725 192532'
+    instrument_id: '23'
+    serial_number: '70001687'
+    voltage_flt32: 8.80
+    num_data_records: 9
+    record_length: 4194
+    num_events: 0
+    num_samples: 9

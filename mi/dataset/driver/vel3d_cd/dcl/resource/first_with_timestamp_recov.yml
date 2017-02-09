@@ -1,0 +1,194 @@
+header:
+    particle_object: 'MULTIPLE'
+    particle_type: 'MULTIPLE'
+data:
+  - _index: 1
+    particle_object: Vel3dCdDclDataHeaderRecoveredParticle
+    particle_type: vel3d_cd_dcl_data_header_recovered
+    internal_timestamp: 3621976168
+    date_time_string: '2014/10/11 00:29:28'
+    number_velocity_records: 1440
+    noise_amp_beam1: 71
+    noise_amp_beam2: 97
+    noise_amp_beam3: 97
+    noise_correlation_beam1: 22
+    noise_correlation_beam2: 12
+    noise_correlation_beam3: 20
+  - _index: 2
+    particle_object: Vel3dCdDclSystemRecoveredParticle
+    particle_type: vel3d_cd_dcl_system_data_recovered
+    internal_timestamp: 3621976169
+    date_time_string: '2014/10/11 00:29:29'
+    battery_voltage_dV:  128
+    sound_speed_dms:  14886
+    heading_decidegree:  3204
+    pitch_decidegree:  -10
+    roll_decidegree:  -2
+    temperature_centidegree:  986
+    error_code: 0
+    status_code: 99
+    analog_input: 0
+  - _index: 3
+    particle_object: Vel3dCdDclSystemRecoveredParticle
+    particle_type: vel3d_cd_dcl_system_data_recovered
+    internal_timestamp: 3621976170
+    date_time_string: '2014/10/11 00:29:30'
+    battery_voltage_dV:  128
+    sound_speed_dms:  14886
+    heading_decidegree:  3207
+    pitch_decidegree:  -12
+    roll_decidegree:  -2
+    temperature_centidegree:  987
+    error_code: 0
+    status_code: 99
+    analog_input: 0
+  - _index: 4
+    particle_object: Vel3dCdDclVelocityRecoveredParticle
+    particle_type: vel3d_cd_dcl_velocity_data_recovered
+    internal_timestamp: 3621976170.000
+    analog_input_2: 0
+    ensemble_counter: 0
+    seawater_pressure_mbar:  30679
+    analog_input_1: 0
+    turbulent_velocity_east: -844
+    turbulent_velocity_north: -584
+    turbulent_velocity_vertical: 396
+    amplitude_beam_1: 137
+    amplitude_beam_2: 137
+    amplitude_beam_3: 134
+    correlation_beam_1: 97
+    correlation_beam_2: 98
+    correlation_beam_3: 98
+  - _index: 5
+    particle_object: Vel3dCdDclVelocityRecoveredParticle
+    particle_type: vel3d_cd_dcl_velocity_data_recovered
+    internal_timestamp: 3621976170.125
+    analog_input_2: 0
+    ensemble_counter: 1
+    seawater_pressure_mbar:  31368
+    analog_input_1: 0
+    turbulent_velocity_east: -869
+    turbulent_velocity_north: -531
+    turbulent_velocity_vertical: 366
+    amplitude_beam_1: 119
+    amplitude_beam_2: 120
+    amplitude_beam_3: 118
+    correlation_beam_1: 98
+    correlation_beam_2: 98
+    correlation_beam_3: 97
+  - _index: 6
+    particle_object: Vel3dCdDclVelocityRecoveredParticle
+    particle_type: vel3d_cd_dcl_velocity_data_recovered
+    internal_timestamp: 3621976170.250
+    analog_input_2: 0
+    ensemble_counter: 2
+    seawater_pressure_mbar:  31713
+    analog_input_1: 0
+    turbulent_velocity_east: -740
+    turbulent_velocity_north: -403
+    turbulent_velocity_vertical: 340
+    amplitude_beam_1: 120
+    amplitude_beam_2: 125
+    amplitude_beam_3: 116
+    correlation_beam_1: 97
+    correlation_beam_2: 97
+    correlation_beam_3: 93
+  - _index: 7
+    particle_object: Vel3dCdDclVelocityRecoveredParticle
+    particle_type: vel3d_cd_dcl_velocity_data_recovered
+    internal_timestamp: 3621976170.375
+    analog_input_2: 0
+    ensemble_counter: 3
+    seawater_pressure_mbar:  30334
+    analog_input_1: 0
+    turbulent_velocity_east: -763
+    turbulent_velocity_north: -79
+    turbulent_velocity_vertical: 365
+    amplitude_beam_1: 118
+    amplitude_beam_2: 121
+    amplitude_beam_3: 118
+    correlation_beam_1: 97
+    correlation_beam_2: 95
+    correlation_beam_3: 96
+  - _index: 8
+    particle_object: Vel3dCdDclVelocityRecoveredParticle
+    particle_type: vel3d_cd_dcl_velocity_data_recovered
+    internal_timestamp: 3621976170.5 
+    analog_input_2: 0
+    ensemble_counter: 4
+    seawater_pressure_mbar:  31368
+    analog_input_1: 0
+    turbulent_velocity_east: -706
+    turbulent_velocity_north: -179
+    turbulent_velocity_vertical: 340
+    amplitude_beam_1: 118
+    amplitude_beam_2: 118
+    amplitude_beam_3: 118
+    correlation_beam_1: 98
+    correlation_beam_2: 97
+    correlation_beam_3: 97
+  - _index: 9
+    particle_object: Vel3dCdDclVelocityRecoveredParticle
+    particle_type: vel3d_cd_dcl_velocity_data_recovered
+    internal_timestamp: 3621976170.625
+    analog_input_2: 0
+    ensemble_counter: 5
+    seawater_pressure_mbar:  31024
+    analog_input_1: 0
+    turbulent_velocity_east: -793
+    turbulent_velocity_north: -249
+    turbulent_velocity_vertical: 224
+    amplitude_beam_1: 119
+    amplitude_beam_2: 124
+    amplitude_beam_3: 123
+    correlation_beam_1: 98
+    correlation_beam_2: 97
+    correlation_beam_3: 97
+  - _index: 10
+    particle_object: Vel3dCdDclVelocityRecoveredParticle
+    particle_type: vel3d_cd_dcl_velocity_data_recovered
+    internal_timestamp: 3621976170.75
+    analog_input_2: 0
+    ensemble_counter: 6
+    seawater_pressure_mbar:  31368
+    analog_input_1: 0
+    turbulent_velocity_east: -504
+    turbulent_velocity_north: -359
+    turbulent_velocity_vertical: 363
+    amplitude_beam_1: 127
+    amplitude_beam_2: 130
+    amplitude_beam_3: 124
+    correlation_beam_1: 98
+    correlation_beam_2: 97
+    correlation_beam_3: 96
+  - _index: 11
+    particle_object: Vel3dCdDclVelocityRecoveredParticle
+    particle_type: vel3d_cd_dcl_velocity_data_recovered
+    internal_timestamp: 3621976170.875
+    analog_input_2: 0
+    ensemble_counter: 7
+    seawater_pressure_mbar:  31713
+    analog_input_1: 0
+    turbulent_velocity_east: -521
+    turbulent_velocity_north: -248
+    turbulent_velocity_vertical: 572
+    amplitude_beam_1: 114
+    amplitude_beam_2: 116
+    amplitude_beam_3: 112
+    correlation_beam_1: 98
+    correlation_beam_2: 96
+    correlation_beam_3: 95
+  - _index: 12
+    particle_object: Vel3dCdDclSystemRecoveredParticle
+    particle_type: vel3d_cd_dcl_system_data_recovered
+    internal_timestamp: 3621976171
+    date_time_string: '2014/10/11 00:29:31'
+    battery_voltage_dV:  128
+    sound_speed_dms:  14886
+    heading_decidegree:  3206
+    pitch_decidegree:  -12
+    roll_decidegree:  -3
+    temperature_centidegree:  987
+    error_code: 0
+    status_code: 99
+    analog_input: 0

@@ -1,0 +1,16 @@
+header:
+  particle_object: NutnrMDataParticle
+  particle_type: nutnr_m_glider_instrument
+
+data:
+  - _index: 1
+    internal_timestamp: 3627902151.33377
+    m_present_time: 1418913351.33377
+    m_present_secs_into_mission: 7.33377
+    sci_m_present_time: 1418913351.33377
+    sci_m_present_secs_into_mission: 7.33377
+    sci_suna_timestamp: 14.5695
+    sci_suna_record_offset: 0
+    sci_suna_nitrate_um: 7.46876
+    sci_suna_nitrate_mg: 0.104613
+

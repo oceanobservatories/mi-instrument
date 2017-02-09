@@ -1,0 +1,1804 @@
+header:
+    particle_object: 'MULTIPLE'
+    particle_type: 'MULTIPLE'
+data:
+  - _index: 1
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796202.000000
+    date_time_array: [  114, 9, 8, 22, 30, 17 ]
+    vel3d_k_temp_c: 541
+    vel3d_k_heading: 1339
+    vel3d_k_pitch: 7
+    vel3d_k_roll: -5
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -568
+    vel3d_k_vel1: -927
+    vel3d_k_vel2: -981
+    vel3d_k_amp0: 115
+    vel3d_k_amp1: 105
+    vel3d_k_amp2: 99
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 2
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796202.500000
+    date_time_array: [  114, 9, 8, 22, 30, 17 ]
+    vel3d_k_temp_c: 541
+    vel3d_k_heading: 1339
+    vel3d_k_pitch: 7
+    vel3d_k_roll: -5
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -520
+    vel3d_k_vel1: -924
+    vel3d_k_vel2: -1006
+    vel3d_k_amp0: 112
+    vel3d_k_amp1: 112
+    vel3d_k_amp2: 107
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 3
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796203.000000
+    date_time_array: [  114, 9, 8, 22, 30, 18 ]
+    vel3d_k_temp_c: 541
+    vel3d_k_heading: 1323
+    vel3d_k_pitch: 8
+    vel3d_k_roll: -7
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -609
+    vel3d_k_vel1: -935
+    vel3d_k_vel2: -1087
+    vel3d_k_amp0: 107
+    vel3d_k_amp1: 109
+    vel3d_k_amp2: 104
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 4
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796203.500000
+    date_time_array: [  114, 9, 8, 22, 30, 18 ]
+    vel3d_k_temp_c: 541
+    vel3d_k_heading: 1323
+    vel3d_k_pitch: 8
+    vel3d_k_roll: -7
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -616
+    vel3d_k_vel1: -902
+    vel3d_k_vel2: -1028
+    vel3d_k_amp0: 98
+    vel3d_k_amp1: 106
+    vel3d_k_amp2: 114
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 5
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796204.000000
+    date_time_array: [  114, 9, 8, 22, 30, 19 ]
+    vel3d_k_temp_c: 541
+    vel3d_k_heading: 1304
+    vel3d_k_pitch: 8
+    vel3d_k_roll: -12
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -616
+    vel3d_k_vel1: -877
+    vel3d_k_vel2: -1014
+    vel3d_k_amp0: 114
+    vel3d_k_amp1: 99
+    vel3d_k_amp2: 109
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 6
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796204.500000
+    date_time_array: [  114, 9, 8, 22, 30, 19 ]
+    vel3d_k_temp_c: 541
+    vel3d_k_heading: 1304
+    vel3d_k_pitch: 8
+    vel3d_k_roll: -12
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -517
+    vel3d_k_vel1: -829
+    vel3d_k_vel2: -1185
+    vel3d_k_amp0: 100
+    vel3d_k_amp1: 101
+    vel3d_k_amp2: 97
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 7
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796205.000000
+    date_time_array: [  114, 9, 8, 22, 30, 20 ]
+    vel3d_k_temp_c: 541
+    vel3d_k_heading: 1278
+    vel3d_k_pitch: 7
+    vel3d_k_roll: -8
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -526
+    vel3d_k_vel1: -851
+    vel3d_k_vel2: -841
+    vel3d_k_amp0: 107
+    vel3d_k_amp1: 106
+    vel3d_k_amp2: 97
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 8
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796205.500000
+    date_time_array: [  114, 9, 8, 22, 30, 20 ]
+    vel3d_k_temp_c: 541
+    vel3d_k_heading: 1278
+    vel3d_k_pitch: 7
+    vel3d_k_roll: -8
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -510
+    vel3d_k_vel1: -770
+    vel3d_k_vel2: -949
+    vel3d_k_amp0: 103
+    vel3d_k_amp1: 106
+    vel3d_k_amp2: 95
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 9
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796206.000000
+    date_time_array: [  114, 9, 8, 22, 30, 21 ]
+    vel3d_k_temp_c: 540
+    vel3d_k_heading: 1259
+    vel3d_k_pitch: 7
+    vel3d_k_roll: -7
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -516
+    vel3d_k_vel1: -764
+    vel3d_k_vel2: -969
+    vel3d_k_amp0: 108
+    vel3d_k_amp1: 105
+    vel3d_k_amp2: 100
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 10
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796206.500000
+    date_time_array: [  114, 9, 8, 22, 30, 21 ]
+    vel3d_k_temp_c: 540
+    vel3d_k_heading: 1259
+    vel3d_k_pitch: 7
+    vel3d_k_roll: -7
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -544
+    vel3d_k_vel1: -780
+    vel3d_k_vel2: -964
+    vel3d_k_amp0: 109
+    vel3d_k_amp1: 102
+    vel3d_k_amp2: 100
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 11
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796207.000000
+    date_time_array: [  114, 9, 8, 22, 30, 22 ]
+    vel3d_k_temp_c: 540
+    vel3d_k_heading: 1236
+    vel3d_k_pitch: 8
+    vel3d_k_roll: -5
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -630
+    vel3d_k_vel1: -800
+    vel3d_k_vel2: -1021
+    vel3d_k_amp0: 113
+    vel3d_k_amp1: 103
+    vel3d_k_amp2: 108
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 12
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796207.500000
+    date_time_array: [  114, 9, 8, 22, 30, 22 ]
+    vel3d_k_temp_c: 540
+    vel3d_k_heading: 1236
+    vel3d_k_pitch: 8
+    vel3d_k_roll: -5
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -553
+    vel3d_k_vel1: -709
+    vel3d_k_vel2: -1043
+    vel3d_k_amp0: 106
+    vel3d_k_amp1: 102
+    vel3d_k_amp2: 105
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 13
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796208.000000
+    date_time_array: [  114, 9, 8, 22, 30, 23 ]
+    vel3d_k_temp_c: 540
+    vel3d_k_heading: 1217
+    vel3d_k_pitch: 8
+    vel3d_k_roll: -2
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -521
+    vel3d_k_vel1: -627
+    vel3d_k_vel2: -1059
+    vel3d_k_amp0: 100
+    vel3d_k_amp1: 104
+    vel3d_k_amp2: 98
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 14
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796208.500000
+    date_time_array: [  114, 9, 8, 22, 30, 23 ]
+    vel3d_k_temp_c: 540
+    vel3d_k_heading: 1217
+    vel3d_k_pitch: 8
+    vel3d_k_roll: -2
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -464
+    vel3d_k_vel1: -683
+    vel3d_k_vel2: -989
+    vel3d_k_amp0: 103
+    vel3d_k_amp1: 98
+    vel3d_k_amp2: 100
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 15
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796209.000000
+    date_time_array: [  114, 9, 8, 22, 30, 24 ]
+    vel3d_k_temp_c: 540
+    vel3d_k_heading: 1214
+    vel3d_k_pitch: 7
+    vel3d_k_roll: -5
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -566
+    vel3d_k_vel1: -714
+    vel3d_k_vel2: -1004
+    vel3d_k_amp0: 102
+    vel3d_k_amp1: 106
+    vel3d_k_amp2: 140
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 16
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796209.500000
+    date_time_array: [  114, 9, 8, 22, 30, 24 ]
+    vel3d_k_temp_c: 540
+    vel3d_k_heading: 1214
+    vel3d_k_pitch: 7
+    vel3d_k_roll: -5
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -562
+    vel3d_k_vel1: -762
+    vel3d_k_vel2: -1004
+    vel3d_k_amp0: 101
+    vel3d_k_amp1: 108
+    vel3d_k_amp2: 111
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 17
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796210.000000
+    date_time_array: [  114, 9, 8, 22, 30, 25 ]
+    vel3d_k_temp_c: 540
+    vel3d_k_heading: 1202
+    vel3d_k_pitch: 7
+    vel3d_k_roll: -7
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -555
+    vel3d_k_vel1: -760
+    vel3d_k_vel2: -1037
+    vel3d_k_amp0: 108
+    vel3d_k_amp1: 116
+    vel3d_k_amp2: 97
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 18
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796210.500000
+    date_time_array: [  114, 9, 8, 22, 30, 25 ]
+    vel3d_k_temp_c: 540
+    vel3d_k_heading: 1202
+    vel3d_k_pitch: 7
+    vel3d_k_roll: -7
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -484
+    vel3d_k_vel1: -755
+    vel3d_k_vel2: -994
+    vel3d_k_amp0: 101
+    vel3d_k_amp1: 112
+    vel3d_k_amp2: 101
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 19
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796211.000000
+    date_time_array: [  114, 9, 8, 22, 30, 26 ]
+    vel3d_k_temp_c: 541
+    vel3d_k_heading: 1197
+    vel3d_k_pitch: 7
+    vel3d_k_roll: -8
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -554
+    vel3d_k_vel1: -704
+    vel3d_k_vel2: -1020
+    vel3d_k_amp0: 105
+    vel3d_k_amp1: 110
+    vel3d_k_amp2: 101
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 20
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796211.500000
+    date_time_array: [  114, 9, 8, 22, 30, 26 ]
+    vel3d_k_temp_c: 541
+    vel3d_k_heading: 1197
+    vel3d_k_pitch: 7
+    vel3d_k_roll: -8
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -457
+    vel3d_k_vel1: -814
+    vel3d_k_vel2: -1071
+    vel3d_k_amp0: 102
+    vel3d_k_amp1: 112
+    vel3d_k_amp2: 100
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 21
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796212.000000
+    date_time_array: [  114, 9, 8, 22, 30, 27 ]
+    vel3d_k_temp_c: 541
+    vel3d_k_heading: 1174
+    vel3d_k_pitch: 9
+    vel3d_k_roll: -3
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -458
+    vel3d_k_vel1: -671
+    vel3d_k_vel2: -930
+    vel3d_k_amp0: 98
+    vel3d_k_amp1: 136
+    vel3d_k_amp2: 100
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 22
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796212.500000
+    date_time_array: [  114, 9, 8, 22, 30, 27 ]
+    vel3d_k_temp_c: 541
+    vel3d_k_heading: 1174
+    vel3d_k_pitch: 9
+    vel3d_k_roll: -3
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -506
+    vel3d_k_vel1: -684
+    vel3d_k_vel2: -980
+    vel3d_k_amp0: 105
+    vel3d_k_amp1: 145
+    vel3d_k_amp2: 97
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 23
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796213.000000
+    date_time_array: [  114, 9, 8, 22, 30, 28 ]
+    vel3d_k_temp_c: 541
+    vel3d_k_heading: 1158
+    vel3d_k_pitch: 7
+    vel3d_k_roll: 4
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -475
+    vel3d_k_vel1: -661
+    vel3d_k_vel2: -917
+    vel3d_k_amp0: 96
+    vel3d_k_amp1: 119
+    vel3d_k_amp2: 98
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 24
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796213.500000
+    date_time_array: [  114, 9, 8, 22, 30, 28 ]
+    vel3d_k_temp_c: 541
+    vel3d_k_heading: 1158
+    vel3d_k_pitch: 7
+    vel3d_k_roll: 4
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -545
+    vel3d_k_vel1: -646
+    vel3d_k_vel2: -1107
+    vel3d_k_amp0: 106
+    vel3d_k_amp1: 112
+    vel3d_k_amp2: 116
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 25
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796214.000000
+    date_time_array: [  114, 9, 8, 22, 30, 29 ]
+    vel3d_k_temp_c: 540
+    vel3d_k_heading: 1153
+    vel3d_k_pitch: 8
+    vel3d_k_roll: 1
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -482
+    vel3d_k_vel1: -728
+    vel3d_k_vel2: -1108
+    vel3d_k_amp0: 108
+    vel3d_k_amp1: 103
+    vel3d_k_amp2: 111
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 26
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796214.500000
+    date_time_array: [  114, 9, 8, 22, 30, 29 ]
+    vel3d_k_temp_c: 540
+    vel3d_k_heading: 1153
+    vel3d_k_pitch: 8
+    vel3d_k_roll: 1
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -496
+    vel3d_k_vel1: -774
+    vel3d_k_vel2: -1074
+    vel3d_k_amp0: 103
+    vel3d_k_amp1: 101
+    vel3d_k_amp2: 113
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 27
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796215.000000
+    date_time_array: [  114, 9, 8, 22, 30, 30 ]
+    vel3d_k_temp_c: 541
+    vel3d_k_heading: 1162
+    vel3d_k_pitch: 8
+    vel3d_k_roll: -7
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -618
+    vel3d_k_vel1: -645
+    vel3d_k_vel2: -1059
+    vel3d_k_amp0: 107
+    vel3d_k_amp1: 102
+    vel3d_k_amp2: 114
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 28
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796215.500000
+    date_time_array: [  114, 9, 8, 22, 30, 30 ]
+    vel3d_k_temp_c: 541
+    vel3d_k_heading: 1162
+    vel3d_k_pitch: 8
+    vel3d_k_roll: -7
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -608
+    vel3d_k_vel1: -699
+    vel3d_k_vel2: -1069
+    vel3d_k_amp0: 98
+    vel3d_k_amp1: 118
+    vel3d_k_amp2: 113
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 29
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796216.000000
+    date_time_array: [  114, 9, 8, 22, 30, 31 ]
+    vel3d_k_temp_c: 541
+    vel3d_k_heading: 1167
+    vel3d_k_pitch: 8
+    vel3d_k_roll: -7
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -591
+    vel3d_k_vel1: -829
+    vel3d_k_vel2: -1112
+    vel3d_k_amp0: 103
+    vel3d_k_amp1: 143
+    vel3d_k_amp2: 108
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 30
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796216.500000
+    date_time_array: [  114, 9, 8, 22, 30, 31 ]
+    vel3d_k_temp_c: 541
+    vel3d_k_heading: 1167
+    vel3d_k_pitch: 8
+    vel3d_k_roll: -7
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -545
+    vel3d_k_vel1: -544
+    vel3d_k_vel2: -1094
+    vel3d_k_amp0: 96
+    vel3d_k_amp1: 109
+    vel3d_k_amp2: 102
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 31
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796217.000000
+    date_time_array: [  114, 9, 8, 22, 30, 32 ]
+    vel3d_k_temp_c: 540
+    vel3d_k_heading: 1180
+    vel3d_k_pitch: 8
+    vel3d_k_roll: -6
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -635
+    vel3d_k_vel1: -871
+    vel3d_k_vel2: -1097
+    vel3d_k_amp0: 103
+    vel3d_k_amp1: 107
+    vel3d_k_amp2: 98
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 32
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796217.500000
+    date_time_array: [  114, 9, 8, 22, 30, 32 ]
+    vel3d_k_temp_c: 540
+    vel3d_k_heading: 1180
+    vel3d_k_pitch: 8
+    vel3d_k_roll: -6
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -542
+    vel3d_k_vel1: -796
+    vel3d_k_vel2: -1061
+    vel3d_k_amp0: 110
+    vel3d_k_amp1: 103
+    vel3d_k_amp2: 99
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 33
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796218.000000
+    date_time_array: [  114, 9, 8, 22, 30, 33 ]
+    vel3d_k_temp_c: 541
+    vel3d_k_heading: 1179
+    vel3d_k_pitch: 8
+    vel3d_k_roll: -6
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -530
+    vel3d_k_vel1: -749
+    vel3d_k_vel2: -1026
+    vel3d_k_amp0: 102
+    vel3d_k_amp1: 105
+    vel3d_k_amp2: 102
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 34
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796218.500000
+    date_time_array: [  114, 9, 8, 22, 30, 33 ]
+    vel3d_k_temp_c: 541
+    vel3d_k_heading: 1179
+    vel3d_k_pitch: 8
+    vel3d_k_roll: -6
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -494
+    vel3d_k_vel1: -647
+    vel3d_k_vel2: -950
+    vel3d_k_amp0: 108
+    vel3d_k_amp1: 108
+    vel3d_k_amp2: 95
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 35
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796219.000000
+    date_time_array: [  114, 9, 8, 22, 30, 34 ]
+    vel3d_k_temp_c: 540
+    vel3d_k_heading: 1173
+    vel3d_k_pitch: 8
+    vel3d_k_roll: -5
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -434
+    vel3d_k_vel1: -673
+    vel3d_k_vel2: -1071
+    vel3d_k_amp0: 100
+    vel3d_k_amp1: 109
+    vel3d_k_amp2: 91
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 36
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796219.500000
+    date_time_array: [  114, 9, 8, 22, 30, 34 ]
+    vel3d_k_temp_c: 540
+    vel3d_k_heading: 1173
+    vel3d_k_pitch: 8
+    vel3d_k_roll: -5
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -412
+    vel3d_k_vel1: -623
+    vel3d_k_vel2: -844
+    vel3d_k_amp0: 115
+    vel3d_k_amp1: 113
+    vel3d_k_amp2: 93
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 37
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796220.000000
+    date_time_array: [  114, 9, 8, 22, 30, 35 ]
+    vel3d_k_temp_c: 541
+    vel3d_k_heading: 1165
+    vel3d_k_pitch: 7
+    vel3d_k_roll: 1
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -462
+    vel3d_k_vel1: -567
+    vel3d_k_vel2: -804
+    vel3d_k_amp0: 105
+    vel3d_k_amp1: 101
+    vel3d_k_amp2: 92
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 38
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796220.500000
+    date_time_array: [  114, 9, 8, 22, 30, 35 ]
+    vel3d_k_temp_c: 541
+    vel3d_k_heading: 1165
+    vel3d_k_pitch: 7
+    vel3d_k_roll: 1
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -456
+    vel3d_k_vel1: -622
+    vel3d_k_vel2: -927
+    vel3d_k_amp0: 114
+    vel3d_k_amp1: 111
+    vel3d_k_amp2: 99
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 39
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796221.000000
+    date_time_array: [  114, 9, 8, 22, 30, 36 ]
+    vel3d_k_temp_c: 540
+    vel3d_k_heading: 1161
+    vel3d_k_pitch: 8
+    vel3d_k_roll: 3
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -450
+    vel3d_k_vel1: -629
+    vel3d_k_vel2: -937
+    vel3d_k_amp0: 105
+    vel3d_k_amp1: 107
+    vel3d_k_amp2: 104
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 40
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796221.500000
+    date_time_array: [  114, 9, 8, 22, 30, 36 ]
+    vel3d_k_temp_c: 540
+    vel3d_k_heading: 1161
+    vel3d_k_pitch: 8
+    vel3d_k_roll: 3
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -502
+    vel3d_k_vel1: -666
+    vel3d_k_vel2: -1064
+    vel3d_k_amp0: 105
+    vel3d_k_amp1: 99
+    vel3d_k_amp2: 105
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 41
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796222.000000
+    date_time_array: [  114, 9, 8, 22, 30, 37 ]
+    vel3d_k_temp_c: 541
+    vel3d_k_heading: 1175
+    vel3d_k_pitch: 7
+    vel3d_k_roll: -9
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -577
+    vel3d_k_vel1: -723
+    vel3d_k_vel2: -953
+    vel3d_k_amp0: 107
+    vel3d_k_amp1: 107
+    vel3d_k_amp2: 100
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 42
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796222.500000
+    date_time_array: [  114, 9, 8, 22, 30, 37 ]
+    vel3d_k_temp_c: 541
+    vel3d_k_heading: 1175
+    vel3d_k_pitch: 7
+    vel3d_k_roll: -9
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -564
+    vel3d_k_vel1: -746
+    vel3d_k_vel2: -715
+    vel3d_k_amp0: 104
+    vel3d_k_amp1: 106
+    vel3d_k_amp2: 99
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 43
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796223.000000
+    date_time_array: [  114, 9, 8, 22, 30, 38 ]
+    vel3d_k_temp_c: 540
+    vel3d_k_heading: 1188
+    vel3d_k_pitch: 6
+    vel3d_k_roll: -8
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -602
+    vel3d_k_vel1: -839
+    vel3d_k_vel2: -1153
+    vel3d_k_amp0: 101
+    vel3d_k_amp1: 102
+    vel3d_k_amp2: 102
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 44
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796223.500000
+    date_time_array: [  114, 9, 8, 22, 30, 38 ]
+    vel3d_k_temp_c: 540
+    vel3d_k_heading: 1188
+    vel3d_k_pitch: 6
+    vel3d_k_roll: -8
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -599
+    vel3d_k_vel1: -743
+    vel3d_k_vel2: -1080
+    vel3d_k_amp0: 103
+    vel3d_k_amp1: 111
+    vel3d_k_amp2: 107
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 45
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796224.000000
+    date_time_array: [  114, 9, 8, 22, 30, 39 ]
+    vel3d_k_temp_c: 540
+    vel3d_k_heading: 1188
+    vel3d_k_pitch: 8
+    vel3d_k_roll: -9
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -587
+    vel3d_k_vel1: -814
+    vel3d_k_vel2: -1072
+    vel3d_k_amp0: 108
+    vel3d_k_amp1: 107
+    vel3d_k_amp2: 108
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 46
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796224.500000
+    date_time_array: [  114, 9, 8, 22, 30, 39 ]
+    vel3d_k_temp_c: 540
+    vel3d_k_heading: 1188
+    vel3d_k_pitch: 8
+    vel3d_k_roll: -9
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -593
+    vel3d_k_vel1: -806
+    vel3d_k_vel2: -1128
+    vel3d_k_amp0: 100
+    vel3d_k_amp1: 102
+    vel3d_k_amp2: 104
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 47
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796225.000000
+    date_time_array: [  114, 9, 8, 22, 30, 40 ]
+    vel3d_k_temp_c: 540
+    vel3d_k_heading: 1187
+    vel3d_k_pitch: 7
+    vel3d_k_roll: -4
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -565
+    vel3d_k_vel1: -787
+    vel3d_k_vel2: -1087
+    vel3d_k_amp0: 104
+    vel3d_k_amp1: 128
+    vel3d_k_amp2: 105
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 48
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796225.500000
+    date_time_array: [  114, 9, 8, 22, 30, 40 ]
+    vel3d_k_temp_c: 540
+    vel3d_k_heading: 1187
+    vel3d_k_pitch: 7
+    vel3d_k_roll: -4
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -456
+    vel3d_k_vel1: -747
+    vel3d_k_vel2: -1074
+    vel3d_k_amp0: 111
+    vel3d_k_amp1: 115
+    vel3d_k_amp2: 106
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 49
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796226.000000
+    date_time_array: [  114, 9, 8, 22, 30, 41 ]
+    vel3d_k_temp_c: 540
+    vel3d_k_heading: 1186
+    vel3d_k_pitch: 6
+    vel3d_k_roll: 2
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -514
+    vel3d_k_vel1: -771
+    vel3d_k_vel2: -976
+    vel3d_k_amp0: 103
+    vel3d_k_amp1: 108
+    vel3d_k_amp2: 98
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 50
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796226.500000
+    date_time_array: [  114, 9, 8, 22, 30, 41 ]
+    vel3d_k_temp_c: 540
+    vel3d_k_heading: 1186
+    vel3d_k_pitch: 6
+    vel3d_k_roll: 2
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -600
+    vel3d_k_vel1: -606
+    vel3d_k_vel2: -992
+    vel3d_k_amp0: 107
+    vel3d_k_amp1: 109
+    vel3d_k_amp2: 100
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 51
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796227.000000
+    date_time_array: [  114, 9, 8, 22, 30, 42 ]
+    vel3d_k_temp_c: 540
+    vel3d_k_heading: 1180
+    vel3d_k_pitch: 7
+    vel3d_k_roll: 1
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -429
+    vel3d_k_vel1: -649
+    vel3d_k_vel2: -954
+    vel3d_k_amp0: 99
+    vel3d_k_amp1: 103
+    vel3d_k_amp2: 99
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 52
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796227.500000
+    date_time_array: [  114, 9, 8, 22, 30, 42 ]
+    vel3d_k_temp_c: 540
+    vel3d_k_heading: 1180
+    vel3d_k_pitch: 7
+    vel3d_k_roll: 1
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -475
+    vel3d_k_vel1: -583
+    vel3d_k_vel2: -967
+    vel3d_k_amp0: 98
+    vel3d_k_amp1: 104
+    vel3d_k_amp2: 105
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 53
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796228.000000
+    date_time_array: [  114, 9, 8, 22, 30, 43 ]
+    vel3d_k_temp_c: 541
+    vel3d_k_heading: 1192
+    vel3d_k_pitch: 6
+    vel3d_k_roll: -3
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -458
+    vel3d_k_vel1: -600
+    vel3d_k_vel2: -977
+    vel3d_k_amp0: 106
+    vel3d_k_amp1: 108
+    vel3d_k_amp2: 108
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 54
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796228.500000
+    date_time_array: [  114, 9, 8, 22, 30, 43 ]
+    vel3d_k_temp_c: 541
+    vel3d_k_heading: 1192
+    vel3d_k_pitch: 6
+    vel3d_k_roll: -3
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -523
+    vel3d_k_vel1: -623
+    vel3d_k_vel2: -901
+    vel3d_k_amp0: 96
+    vel3d_k_amp1: 106
+    vel3d_k_amp2: 108
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 55
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796229.000000
+    date_time_array: [  114, 9, 8, 22, 30, 44 ]
+    vel3d_k_temp_c: 541
+    vel3d_k_heading: 1188
+    vel3d_k_pitch: 6
+    vel3d_k_roll: -4
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -418
+    vel3d_k_vel1: -604
+    vel3d_k_vel2: -892
+    vel3d_k_amp0: 105
+    vel3d_k_amp1: 101
+    vel3d_k_amp2: 110
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 56
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796229.500000
+    date_time_array: [  114, 9, 8, 22, 30, 44 ]
+    vel3d_k_temp_c: 541
+    vel3d_k_heading: 1188
+    vel3d_k_pitch: 6
+    vel3d_k_roll: -4
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -434
+    vel3d_k_vel1: -581
+    vel3d_k_vel2: -877
+    vel3d_k_amp0: 99
+    vel3d_k_amp1: 101
+    vel3d_k_amp2: 104
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 57
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796230.000000
+    date_time_array: [  114, 9, 8, 22, 30, 45 ]
+    vel3d_k_temp_c: 540
+    vel3d_k_heading: 1178
+    vel3d_k_pitch: 9
+    vel3d_k_roll: -8
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -472
+    vel3d_k_vel1: -525
+    vel3d_k_vel2: -818
+    vel3d_k_amp0: 102
+    vel3d_k_amp1: 109
+    vel3d_k_amp2: 92
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 58
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796230.500000
+    date_time_array: [  114, 9, 8, 22, 30, 45 ]
+    vel3d_k_temp_c: 540
+    vel3d_k_heading: 1178
+    vel3d_k_pitch: 9
+    vel3d_k_roll: -8
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -468
+    vel3d_k_vel1: -581
+    vel3d_k_vel2: -901
+    vel3d_k_amp0: 114
+    vel3d_k_amp1: 95
+    vel3d_k_amp2: 95
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 59
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796231.000000
+    date_time_array: [  114, 9, 8, 22, 30, 46 ]
+    vel3d_k_temp_c: 540
+    vel3d_k_heading: 1156
+    vel3d_k_pitch: 8
+    vel3d_k_roll: 9
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -536
+    vel3d_k_vel1: -680
+    vel3d_k_vel2: -1010
+    vel3d_k_amp0: 105
+    vel3d_k_amp1: 113
+    vel3d_k_amp2: 105
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 60
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796231.500000
+    date_time_array: [  114, 9, 8, 22, 30, 46 ]
+    vel3d_k_temp_c: 540
+    vel3d_k_heading: 1156
+    vel3d_k_pitch: 8
+    vel3d_k_roll: 9
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -509
+    vel3d_k_vel1: -634
+    vel3d_k_vel2: -1034
+    vel3d_k_amp0: 104
+    vel3d_k_amp1: 108
+    vel3d_k_amp2: 108
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 61
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796232.000000
+    date_time_array: [  114, 9, 8, 22, 30, 47 ]
+    vel3d_k_temp_c: 540
+    vel3d_k_heading: 1160
+    vel3d_k_pitch: 7
+    vel3d_k_roll: -3
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -540
+    vel3d_k_vel1: -703
+    vel3d_k_vel2: -1006
+    vel3d_k_amp0: 105
+    vel3d_k_amp1: 101
+    vel3d_k_amp2: 102
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 62
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796232.500000
+    date_time_array: [  114, 9, 8, 22, 30, 47 ]
+    vel3d_k_temp_c: 540
+    vel3d_k_heading: 1160
+    vel3d_k_pitch: 7
+    vel3d_k_roll: -3
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -501
+    vel3d_k_vel1: -749
+    vel3d_k_vel2: -1037
+    vel3d_k_amp0: 109
+    vel3d_k_amp1: 100
+    vel3d_k_amp2: 107
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 63
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796233.000000
+    date_time_array: [  114, 9, 8, 22, 30, 48 ]
+    vel3d_k_temp_c: 540
+    vel3d_k_heading: 1142
+    vel3d_k_pitch: 8
+    vel3d_k_roll: 1
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -546
+    vel3d_k_vel1: -669
+    vel3d_k_vel2: -1065
+    vel3d_k_amp0: 98
+    vel3d_k_amp1: 110
+    vel3d_k_amp2: 105
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 64
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796233.500000
+    date_time_array: [  114, 9, 8, 22, 30, 48 ]
+    vel3d_k_temp_c: 540
+    vel3d_k_heading: 1142
+    vel3d_k_pitch: 8
+    vel3d_k_roll: 1
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -434
+    vel3d_k_vel1: -726
+    vel3d_k_vel2: -1047
+    vel3d_k_amp0: 98
+    vel3d_k_amp1: 96
+    vel3d_k_amp2: 102
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 65
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796234.000000
+    date_time_array: [  114, 9, 8, 22, 30, 49 ]
+    vel3d_k_temp_c: 541
+    vel3d_k_heading: 1141
+    vel3d_k_pitch: 7
+    vel3d_k_roll: -5
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -455
+    vel3d_k_vel1: -624
+    vel3d_k_vel2: -1026
+    vel3d_k_amp0: 104
+    vel3d_k_amp1: 99
+    vel3d_k_amp2: 101
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 66
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796234.500000
+    date_time_array: [  114, 9, 8, 22, 30, 49 ]
+    vel3d_k_temp_c: 541
+    vel3d_k_heading: 1141
+    vel3d_k_pitch: 7
+    vel3d_k_roll: -5
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -488
+    vel3d_k_vel1: -629
+    vel3d_k_vel2: -1046
+    vel3d_k_amp0: 97
+    vel3d_k_amp1: 107
+    vel3d_k_amp2: 106
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 67
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796235.000000
+    date_time_array: [  114, 9, 8, 22, 30, 50 ]
+    vel3d_k_temp_c: 540
+    vel3d_k_heading: 1150
+    vel3d_k_pitch: 7
+    vel3d_k_roll: -10
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -516
+    vel3d_k_vel1: -617
+    vel3d_k_vel2: -1181
+    vel3d_k_amp0: 108
+    vel3d_k_amp1: 104
+    vel3d_k_amp2: 104
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 68
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796235.500000
+    date_time_array: [  114, 9, 8, 22, 30, 50 ]
+    vel3d_k_temp_c: 540
+    vel3d_k_heading: 1150
+    vel3d_k_pitch: 7
+    vel3d_k_roll: -10
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -501
+    vel3d_k_vel1: -666
+    vel3d_k_vel2: -1019
+    vel3d_k_amp0: 111
+    vel3d_k_amp1: 110
+    vel3d_k_amp2: 102
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 69
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796236.000000
+    date_time_array: [  114, 9, 8, 22, 30, 51 ]
+    vel3d_k_temp_c: 540
+    vel3d_k_heading: 1152
+    vel3d_k_pitch: 6
+    vel3d_k_roll: -6
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -700
+    vel3d_k_vel1: -618
+    vel3d_k_vel2: -1062
+    vel3d_k_amp0: 105
+    vel3d_k_amp1: 108
+    vel3d_k_amp2: 103
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 70
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796236.500000
+    date_time_array: [  114, 9, 8, 22, 30, 51 ]
+    vel3d_k_temp_c: 540
+    vel3d_k_heading: 1152
+    vel3d_k_pitch: 6
+    vel3d_k_roll: -6
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -516
+    vel3d_k_vel1: -678
+    vel3d_k_vel2: -1127
+    vel3d_k_amp0: 104
+    vel3d_k_amp1: 107
+    vel3d_k_amp2: 98
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 71
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796237.000000
+    date_time_array: [  114, 9, 8, 22, 30, 52 ]
+    vel3d_k_temp_c: 540
+    vel3d_k_heading: 1162
+    vel3d_k_pitch: 7
+    vel3d_k_roll: -5
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -496
+    vel3d_k_vel1: -700
+    vel3d_k_vel2: -1102
+    vel3d_k_amp0: 106
+    vel3d_k_amp1: 108
+    vel3d_k_amp2: 96
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 72
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796237.500000
+    date_time_array: [  114, 9, 8, 22, 30, 52 ]
+    vel3d_k_temp_c: 540
+    vel3d_k_heading: 1162
+    vel3d_k_pitch: 7
+    vel3d_k_roll: -5
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -420
+    vel3d_k_vel1: -621
+    vel3d_k_vel2: -992
+    vel3d_k_amp0: 105
+    vel3d_k_amp1: 107
+    vel3d_k_amp2: 97
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 73
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796238.000000
+    date_time_array: [  114, 9, 8, 22, 30, 53 ]
+    vel3d_k_temp_c: 540
+    vel3d_k_heading: 1177
+    vel3d_k_pitch: 7
+    vel3d_k_roll: -6
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -552
+    vel3d_k_vel1: -627
+    vel3d_k_vel2: -1004
+    vel3d_k_amp0: 102
+    vel3d_k_amp1: 105
+    vel3d_k_amp2: 97
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 74
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796238.500000
+    date_time_array: [  114, 9, 8, 22, 30, 53 ]
+    vel3d_k_temp_c: 540
+    vel3d_k_heading: 1177
+    vel3d_k_pitch: 7
+    vel3d_k_roll: -6
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -544
+    vel3d_k_vel1: -573
+    vel3d_k_vel2: -970
+    vel3d_k_amp0: 99
+    vel3d_k_amp1: 108
+    vel3d_k_amp2: 104
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 75
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796239.000000
+    date_time_array: [  114, 9, 8, 22, 30, 54 ]
+    vel3d_k_temp_c: 540
+    vel3d_k_heading: 1195
+    vel3d_k_pitch: 7
+    vel3d_k_roll: -4
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -480
+    vel3d_k_vel1: -593
+    vel3d_k_vel2: -956
+    vel3d_k_amp0: 101
+    vel3d_k_amp1: 112
+    vel3d_k_amp2: 108
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 76
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796239.500000
+    date_time_array: [  114, 9, 8, 22, 30, 54 ]
+    vel3d_k_temp_c: 540
+    vel3d_k_heading: 1195
+    vel3d_k_pitch: 7
+    vel3d_k_roll: -4
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -490
+    vel3d_k_vel1: -680
+    vel3d_k_vel2: -923
+    vel3d_k_amp0: 101
+    vel3d_k_amp1: 96
+    vel3d_k_amp2: 111
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 77
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796240.000000
+    date_time_array: [  114, 9, 8, 22, 30, 55 ]
+    vel3d_k_temp_c: 540
+    vel3d_k_heading: 1214
+    vel3d_k_pitch: 6
+    vel3d_k_roll: -2
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -530
+    vel3d_k_vel1: -561
+    vel3d_k_vel2: -952
+    vel3d_k_amp0: 100
+    vel3d_k_amp1: 105
+    vel3d_k_amp2: 113
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 78
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796240.500000
+    date_time_array: [  114, 9, 8, 22, 30, 55 ]
+    vel3d_k_temp_c: 540
+    vel3d_k_heading: 1214
+    vel3d_k_pitch: 6
+    vel3d_k_roll: -2
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -465
+    vel3d_k_vel1: -720
+    vel3d_k_vel2: -953
+    vel3d_k_amp0: 107
+    vel3d_k_amp1: 108
+    vel3d_k_amp2: 114
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 79
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796241.000000
+    date_time_array: [  114, 9, 8, 22, 30, 56 ]
+    vel3d_k_temp_c: 540
+    vel3d_k_heading: 1231
+    vel3d_k_pitch: 8
+    vel3d_k_roll: -7
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -518
+    vel3d_k_vel1: -925
+    vel3d_k_vel2: -944
+    vel3d_k_amp0: 109
+    vel3d_k_amp1: 100
+    vel3d_k_amp2: 112
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 80
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796241.500000
+    date_time_array: [  114, 9, 8, 22, 30, 56 ]
+    vel3d_k_temp_c: 540
+    vel3d_k_heading: 1231
+    vel3d_k_pitch: 8
+    vel3d_k_roll: -7
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -532
+    vel3d_k_vel1: -679
+    vel3d_k_vel2: -955
+    vel3d_k_amp0: 105
+    vel3d_k_amp1: 106
+    vel3d_k_amp2: 103
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 81
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796242.000000
+    date_time_array: [  114, 9, 8, 22, 30, 57 ]
+    vel3d_k_temp_c: 539
+    vel3d_k_heading: 1239
+    vel3d_k_pitch: 5
+    vel3d_k_roll: 6
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -480
+    vel3d_k_vel1: -752
+    vel3d_k_vel2: -942
+    vel3d_k_amp0: 108
+    vel3d_k_amp1: 112
+    vel3d_k_amp2: 106
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 82
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796242.500000
+    date_time_array: [  114, 9, 8, 22, 30, 57 ]
+    vel3d_k_temp_c: 539
+    vel3d_k_heading: 1239
+    vel3d_k_pitch: 5
+    vel3d_k_roll: 6
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -474
+    vel3d_k_vel1: -685
+    vel3d_k_vel2: -901
+    vel3d_k_amp0: 103
+    vel3d_k_amp1: 107
+    vel3d_k_amp2: 118
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 83
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796243.000000
+    date_time_array: [  114, 9, 8, 22, 30, 58 ]
+    vel3d_k_temp_c: 540
+    vel3d_k_heading: 1253
+    vel3d_k_pitch: 7
+    vel3d_k_roll: 3
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -525
+    vel3d_k_vel1: -920
+    vel3d_k_vel2: -917
+    vel3d_k_amp0: 107
+    vel3d_k_amp1: 98
+    vel3d_k_amp2: 118
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 84
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796243.500000
+    date_time_array: [  114, 9, 8, 22, 30, 58 ]
+    vel3d_k_temp_c: 540
+    vel3d_k_heading: 1253
+    vel3d_k_pitch: 7
+    vel3d_k_roll: 3
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -490
+    vel3d_k_vel1: -818
+    vel3d_k_vel2: -1061
+    vel3d_k_amp0: 104
+    vel3d_k_amp1: 107
+    vel3d_k_amp2: 102
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 85
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796244.000000
+    date_time_array: [  114, 9, 8, 22, 30, 59 ]
+    vel3d_k_temp_c: 540
+    vel3d_k_heading: 1256
+    vel3d_k_pitch: 7
+    vel3d_k_roll: 6
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -571
+    vel3d_k_vel1: -822
+    vel3d_k_vel2: -1002
+    vel3d_k_amp0: 101
+    vel3d_k_amp1: 107
+    vel3d_k_amp2: 92
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 86
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796244.500000
+    date_time_array: [  114, 9, 8, 22, 30, 59 ]
+    vel3d_k_temp_c: 540
+    vel3d_k_heading: 1256
+    vel3d_k_pitch: 7
+    vel3d_k_roll: 6
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -576
+    vel3d_k_vel1: -763
+    vel3d_k_vel2: -905
+    vel3d_k_amp0: 111
+    vel3d_k_amp1: 102
+    vel3d_k_amp2: 93
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 87
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796245.000000
+    date_time_array: [  114, 9, 8, 22, 31, 0 ]
+    vel3d_k_temp_c: 541
+    vel3d_k_heading: 1269
+    vel3d_k_pitch: 4
+    vel3d_k_roll: 9
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -642
+    vel3d_k_vel1: -852
+    vel3d_k_vel2: -934
+    vel3d_k_amp0: 104
+    vel3d_k_amp1: 103
+    vel3d_k_amp2: 94
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 88
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796245.500000
+    date_time_array: [  114, 9, 8, 22, 31, 0 ]
+    vel3d_k_temp_c: 541
+    vel3d_k_heading: 1269
+    vel3d_k_pitch: 4
+    vel3d_k_roll: 9
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -548
+    vel3d_k_vel1: -775
+    vel3d_k_vel2: -952
+    vel3d_k_amp0: 101
+    vel3d_k_amp1: 104
+    vel3d_k_amp2: 104
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 89
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796246.000000
+    date_time_array: [  114, 9, 8, 22, 31, 1 ]
+    vel3d_k_temp_c: 540
+    vel3d_k_heading: 1281
+    vel3d_k_pitch: 7
+    vel3d_k_roll: 3
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -539
+    vel3d_k_vel1: -871
+    vel3d_k_vel2: -971
+    vel3d_k_amp0: 104
+    vel3d_k_amp1: 110
+    vel3d_k_amp2: 98
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 90
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796246.500000
+    date_time_array: [  114, 9, 8, 22, 31, 1 ]
+    vel3d_k_temp_c: 540
+    vel3d_k_heading: 1281
+    vel3d_k_pitch: 7
+    vel3d_k_roll: 3
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -569
+    vel3d_k_vel1: -807
+    vel3d_k_vel2: -1116
+    vel3d_k_amp0: 102
+    vel3d_k_amp1: 102
+    vel3d_k_amp2: 97
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 91
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796247.000000
+    date_time_array: [  114, 9, 8, 22, 31, 2 ]
+    vel3d_k_temp_c: 541
+    vel3d_k_heading: 1305
+    vel3d_k_pitch: 7
+    vel3d_k_roll: -5
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -488
+    vel3d_k_vel1: -825
+    vel3d_k_vel2: -1030
+    vel3d_k_amp0: 98
+    vel3d_k_amp1: 104
+    vel3d_k_amp2: 101
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 92
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796247.500000
+    date_time_array: [  114, 9, 8, 22, 31, 2 ]
+    vel3d_k_temp_c: 541
+    vel3d_k_heading: 1305
+    vel3d_k_pitch: 7
+    vel3d_k_roll: -5
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -544
+    vel3d_k_vel1: -815
+    vel3d_k_vel2: -1059
+    vel3d_k_amp0: 104
+    vel3d_k_amp1: 102
+    vel3d_k_amp2: 98
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 93
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796248.000000
+    date_time_array: [  114, 9, 8, 22, 31, 3 ]
+    vel3d_k_temp_c: 540
+    vel3d_k_heading: 1326
+    vel3d_k_pitch: 7
+    vel3d_k_roll: -6
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -514
+    vel3d_k_vel1: -764
+    vel3d_k_vel2: -929
+    vel3d_k_amp0: 112
+    vel3d_k_amp1: 103
+    vel3d_k_amp2: 105
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 94
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796248.500000
+    date_time_array: [  114, 9, 8, 22, 31, 3 ]
+    vel3d_k_temp_c: 540
+    vel3d_k_heading: 1326
+    vel3d_k_pitch: 7
+    vel3d_k_roll: -6
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -515
+    vel3d_k_vel1: -784
+    vel3d_k_vel2: -886
+    vel3d_k_amp0: 103
+    vel3d_k_amp1: 112
+    vel3d_k_amp2: 99
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 95
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796249.000000
+    date_time_array: [  114, 9, 8, 22, 31, 4 ]
+    vel3d_k_temp_c: 541
+    vel3d_k_heading: 1312
+    vel3d_k_pitch: 7
+    vel3d_k_roll: 5
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -517
+    vel3d_k_vel1: -719
+    vel3d_k_vel2: -887
+    vel3d_k_amp0: 115
+    vel3d_k_amp1: 101
+    vel3d_k_amp2: 102
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 96
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796249.500000
+    date_time_array: [  114, 9, 8, 22, 31, 4 ]
+    vel3d_k_temp_c: 541
+    vel3d_k_heading: 1312
+    vel3d_k_pitch: 7
+    vel3d_k_roll: 5
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -531
+    vel3d_k_vel1: -889
+    vel3d_k_vel2: -890
+    vel3d_k_amp0: 98
+    vel3d_k_amp1: 101
+    vel3d_k_amp2: 113
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 97
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796250.000000
+    date_time_array: [  114, 9, 8, 22, 31, 5 ]
+    vel3d_k_temp_c: 541
+    vel3d_k_heading: 1317
+    vel3d_k_pitch: 5
+    vel3d_k_roll: 4
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -512
+    vel3d_k_vel1: -723
+    vel3d_k_vel2: -999
+    vel3d_k_amp0: 112
+    vel3d_k_amp1: 117
+    vel3d_k_amp2: 113
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 98
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796250.500000
+    date_time_array: [  114, 9, 8, 22, 31, 5 ]
+    vel3d_k_temp_c: 541
+    vel3d_k_heading: 1317
+    vel3d_k_pitch: 5
+    vel3d_k_roll: 4
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -555
+    vel3d_k_vel1: -712
+    vel3d_k_vel2: -983
+    vel3d_k_amp0: 100
+    vel3d_k_amp1: 107
+    vel3d_k_amp2: 106
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 99
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796251.000000
+    date_time_array: [  114, 9, 8, 22, 31, 6 ]
+    vel3d_k_temp_c: 540
+    vel3d_k_heading: 1324
+    vel3d_k_pitch: 7
+    vel3d_k_roll: -7
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -551
+    vel3d_k_vel1: -721
+    vel3d_k_vel2: -983
+    vel3d_k_amp0: 101
+    vel3d_k_amp1: 100
+    vel3d_k_amp2: 97
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]
+  - _index: 100
+    particle_object: Vel3dKWfpStcInstrumentParticle
+    particle_type: vel3d_k_wfp_stc_instrument
+    internal_timestamp: 3621796251.500000
+    date_time_array: [  114, 9, 8, 22, 31, 6 ]
+    vel3d_k_temp_c: 540
+    vel3d_k_heading: 1324
+    vel3d_k_pitch: 7
+    vel3d_k_roll: -7
+    vel3d_k_beams: 3
+    vel3d_k_v_scale: -4
+    vel3d_k_vel0: -466
+    vel3d_k_vel1: -775
+    vel3d_k_vel2: -869
+    vel3d_k_amp0: 117
+    vel3d_k_amp1: 103
+    vel3d_k_amp2: 111
+    vel3d_k_data_set_description: [  1, 2, 4, 0, null ]

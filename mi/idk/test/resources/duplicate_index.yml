@@ -1,0 +1,13 @@
+header:
+    particle_object: FakeParticleClass
+    particle_type: fake_particle_stream
+
+data:
+  - _index: 0
+    internal_timestamp: 0
+    fake_param_1: 'ABC'
+    fake_param_2: 3.2
+  - _index: 0
+    internal_timestamp: 1
+    fake_param_1: 'DEF'
+    fake_param_2: 4.5

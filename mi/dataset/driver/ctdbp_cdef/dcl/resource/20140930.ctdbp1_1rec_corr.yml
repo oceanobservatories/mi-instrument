@@ -1,0 +1,14 @@
+header:
+  particle_object: 'MULTIPLE'
+  particle_type: 'MULTIPLE'
+
+data:
+  - _index: 1
+    particle_object: CtdbpCdefDclRecoveredDataParticle
+    particle_type: ctdbp_cdef_dcl_instrument_recovered
+    internal_timestamp: 3621025822.456
+    dcl_controller_timestamp: '2014/09/30 00:30:22.456'
+    temp: 19.7398
+    conductivity: 0.00004
+    pressure: -0.063
+    date_time_string: '30 Sep 2014 00:30:16'

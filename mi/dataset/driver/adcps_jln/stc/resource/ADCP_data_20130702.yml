@@ -1,0 +1,101 @@
+data:
+- _index: 1
+  bin_1_distance: 1873
+  cell_length: 1000
+  correlation_magnitude_beam1: [68, 70, 18, 19, 17, 17, 20, 19, 17, 15, 17, 20, 16,
+    17, 16, 17, 17, 18, 18, 17, 17, 19, 18, 17, 17, 19, 19, 17, 16, 16, 18, 19, 19,
+    17, 19, 19, 19, 18, 20, 17, 19, 19, 17, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+  correlation_magnitude_beam2: [105, 21, 15, 17, 18, 19, 17, 17, 17, 16, 18, 17, 18,
+    15, 17, 18, 18, 20, 16, 15, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+  correlation_magnitude_beam3: [102, 45, 16, 20, 20, 19, 17, 17, 15, 17, 17, 17, 19,
+    16, 16, 19, 21, 18, 20, 18, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+  correlation_magnitude_beam4: [63, 90, 20, 18, 19, 16, 19, 20, 16, 20, 19, 18, 18,
+    19, 17, 16, 18, 16, 18, 18, 18, 21, 18, 17, 15, 17, 17, 20, 17, 17, 20, 17, 19,
+    19, 21, 19, 18, 16, 16, 17, 17, 18, 20, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+  echo_intensity_beam1: [89, 51, 44, 43, 43, 43, 43, 44, 43, 44, 43, 43, 44, 44, 44,
+    43, 43, 44, 43, 44, 44, 43, 43, 44, 44, 44, 44, 44, 44, 44, 43, 43, 43, 43, 43,
+    43, 43, 44, 44, 43, 44, 44, 43, 43, 44, 43, 43, 44, 44, 43, 43, 44, 43, 43, 44]
+  echo_intensity_beam2: [87, 55, 43, 41, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40,
+    40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40,
+    40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40]
+  echo_intensity_beam3: [98, 71, 54, 47, 46, 45, 45, 44, 45, 45, 45, 45, 45, 45, 45,
+    45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45,
+    45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45]
+  echo_intensity_beam4: [94, 58, 46, 44, 44, 44, 44, 44, 44, 44, 44, 43, 44, 44, 44,
+    43, 44, 43, 44, 44, 44, 44, 44, 44, 44, 44, 43, 44, 44, 44, 44, 43, 44, 44, 44,
+    44, 44, 44, 44, 43, 44, 43, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44]
+  ensemble_number: 2
+  error_velocity: [80, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
+    -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
+    -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
+    -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
+    -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
+    -32768, -32768, -32768, -32768, -32768, -32768]
+  heading: 6630
+  internal_timestamp: 3581719370.03
+  num_cells: 55
+  particle_object: VelocityEarth
+  particle_type: adcp_velocity_earth
+  percent_bad_beams: [12, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100,
+    100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100,
+    100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100,
+    100, 100, 100, 100, 100, 100, 100, 100, 100, 100]
+  percent_good_3beam: [53, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0]
+  percent_good_4beam: [34, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0]
+  percent_transforms_reject: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+  pitch: -4588
+  pressure: 241
+  roll: -4459
+  salinity: 35
+  sysconfig_vertical_orientation: 1
+  temperature: 2551
+  transducer_depth: 10
+  water_velocity_east: [383, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
+    -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
+    -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
+    -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
+    -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
+    -32768, -32768, -32768, -32768, -32768, -32768, -32768]
+  water_velocity_north: [314, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
+    -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
+    -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
+    -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
+    -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
+    -32768, -32768, -32768, -32768, -32768, -32768, -32768]
+  water_velocity_up: [459, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
+    -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
+    -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
+    -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
+    -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
+    -32768, -32768, -32768, -32768, -32768, -32768, -32768]
+- {_index: 2, beam_angle: 20, blank_after_transmit: 704, cell_length: 1000, coord_transform_beams: 1,
+  coord_transform_mapping: 1, coord_transform_tilts: 1, coord_transform_type: 3, cpu_board_serial_number: '667707019074994391',
+  data_flag: 0, error_vel_threshold: 2000, false_target_threshold: 50, firmware_revision: 40,
+  firmware_version: 50, heading_alignment: 0, heading_bias: 0, internal_timestamp: 3581719370.03,
+  lag_length: 13, low_corr_threshold: 64, low_latency_trigger: 0, num_beams: 4, num_cells: 55,
+  num_code_repetitions: 6, particle_object: AdcpsConfig, particle_type: adcp_config,
+  percent_good_min: 0, pings_per_ensemble: 32, reference_layer_start: 1, reference_layer_stop: 5,
+  sensor_available_conductivity: 0, sensor_available_depth: 1, sensor_available_heading: 1,
+  sensor_available_pitch: 1, sensor_available_roll: 1, sensor_available_speed: 0,
+  sensor_available_temperature: 1, sensor_source_conductivity: 0, sensor_source_depth: 1,
+  sensor_source_heading: 1, sensor_source_pitch: 1, sensor_source_roll: 1, sensor_source_speed: 1,
+  sensor_source_temperature: 1, serial_number: '18352', signal_processing_mode: 1,
+  sysconfig_beam_angle: 1, sysconfig_beam_config: 4, sysconfig_beam_pattern: 1, sysconfig_frequency: 75,
+  sysconfig_head_attached: 1, sysconfig_sensor_config: 0, sysconfig_vertical_orientation: 1,
+  system_bandwidth: 1, system_power: 255, time_per_ping_hundredths: 50, time_per_ping_minutes: 0,
+  time_per_ping_seconds: 7, transmit_lag_distance: 195}
+- {_index: 3, adc_ambient_temp: 79, adc_attitude: 130, adc_attitude_temp: 79, adc_contamination_sensor: 159,
+  adc_pressure_minus: 79, adc_pressure_plus: 79, adc_transmit_current: 93, adc_transmit_voltage: 164,
+  bit_result: 0, error_status_word: 2281701376, heading_stdev: 0, internal_timestamp: 3581719370.03,
+  mpt_hundredths: 5, mpt_minutes: 0, mpt_seconds: 0, particle_object: AdcpsEngineering,
+  particle_type: adcp_engineering, pitch_stdev: 0, pressure_variance: 2429, roll_stdev: 0,
+  speed_of_sound: 1536, transmit_pulse_length: 1143}
+header: {particle_object: MULTIPLE, particle_type: MULTIPLE}

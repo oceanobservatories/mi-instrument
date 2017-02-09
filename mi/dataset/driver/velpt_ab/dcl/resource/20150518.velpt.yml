@@ -1,0 +1,277 @@
+header:
+    particle_object: 'MULTIPLE'
+    particle_type: 'MULTIPLE'
+data:
+  - _index: 1
+    particle_object:  VelptAbDclInstrumentDataParticle
+    particle_type: velpt_ab_dcl_instrument
+    internal_timestamp: 3640885278.000000
+    date_time_string: '2015/05/17 21:01:18'
+    error_code: 0
+    analog1: 0
+    battery_voltage_dV:  117
+    sound_speed_dms:  14775
+    heading_decidegree:  1082
+    pitch_decidegree:  20
+    roll_decidegree:  17
+    pressure_mbar:  13060
+    status: 33
+    temperature_centidegree:  670
+    velocity_beam1:  133
+    velocity_beam2:  -46
+    velocity_beam3:  -54
+    amplitude_beam1: 125
+    amplitude_beam2: 106
+    amplitude_beam3: 117
+  - _index: 2
+    particle_object:  VelptAbDclInstrumentDataParticle
+    particle_type: velpt_ab_dcl_instrument
+    internal_timestamp: 3640886176.000000
+    date_time_string: '2015/05/17 21:16:16'
+    error_code: 0
+    analog1: 0
+    battery_voltage_dV:  117
+    sound_speed_dms:  14775
+    heading_decidegree:  1304
+    pitch_decidegree:  13
+    roll_decidegree:  18
+    pressure_mbar:  13051
+    status: 33
+    temperature_centidegree:  670
+    velocity_beam1:  68
+    velocity_beam2:  -20
+    velocity_beam3:  -10
+    amplitude_beam1: 126
+    amplitude_beam2: 109
+    amplitude_beam3: 123
+  - _index: 3
+    particle_object:  VelptAbDclInstrumentDataParticle
+    particle_type: velpt_ab_dcl_instrument
+    internal_timestamp: 3640887077.000000
+    date_time_string: '2015/05/17 21:31:17'
+    error_code: 0
+    analog1: 0
+    battery_voltage_dV:  117
+    sound_speed_dms:  14775
+    heading_decidegree:  1073
+    pitch_decidegree:  19
+    roll_decidegree:  15
+    pressure_mbar:  13058
+    status: 33
+    temperature_centidegree:  670
+    velocity_beam1:  101
+    velocity_beam2:  -2
+    velocity_beam3:  -35
+    amplitude_beam1: 129
+    amplitude_beam2: 110
+    amplitude_beam3: 118
+  - _index: 4
+    particle_object:  VelptAbDclInstrumentDataParticle
+    particle_type: velpt_ab_dcl_instrument
+    internal_timestamp: 3640887978.000000
+    date_time_string: '2015/05/17 21:46:18'
+    error_code: 0
+    analog1: 0
+    battery_voltage_dV:  116
+    sound_speed_dms:  14775
+    heading_decidegree:  1129
+    pitch_decidegree:  19
+    roll_decidegree:  15
+    pressure_mbar:  13053
+    status: 33
+    temperature_centidegree:  671
+    velocity_beam1:  76
+    velocity_beam2:  4
+    velocity_beam3:  -31
+    amplitude_beam1: 129
+    amplitude_beam2: 115
+    amplitude_beam3: 123
+  - _index: 5
+    particle_object:  VelptAbDclInstrumentDataParticle
+    particle_type: velpt_ab_dcl_instrument
+    internal_timestamp: 3640888817.000000
+    date_time_string: '2015/05/17 22:00:17'
+    error_code: 0
+    analog1: 0
+    battery_voltage_dV:  117
+    sound_speed_dms:  14775
+    heading_decidegree:  1161
+    pitch_decidegree:  20
+    roll_decidegree:  15
+    pressure_mbar:  13070
+    status: 17
+    temperature_centidegree:  671
+    velocity_beam1:  84
+    velocity_beam2:  14
+    velocity_beam3:  -35
+    amplitude_beam1: 131
+    amplitude_beam2: 114
+    amplitude_beam3: 121
+  - _index: 6
+    particle_object:  VelptAbDclInstrumentDataParticle
+    particle_type: velpt_ab_dcl_instrument
+    internal_timestamp: 3640889775.000000
+    date_time_string: '2015/05/17 22:16:15'
+    error_code: 0
+    analog1: 0
+    battery_voltage_dV:  117
+    sound_speed_dms:  14775
+    heading_decidegree:  1112
+    pitch_decidegree:  17
+    roll_decidegree:  12
+    pressure_mbar:  13078
+    status: 33
+    temperature_centidegree:  671
+    velocity_beam1:  79
+    velocity_beam2:  -26
+    velocity_beam3:  -44
+    amplitude_beam1: 128
+    amplitude_beam2: 113
+    amplitude_beam3: 123
+  - _index: 7
+    particle_object:  VelptAbDclInstrumentDataParticle
+    particle_type: velpt_ab_dcl_instrument
+    internal_timestamp: 3640890615.000000
+    date_time_string: '2015/05/17 22:30:15'
+    error_code: 0
+    analog1: 0
+    battery_voltage_dV:  116
+    sound_speed_dms:  14775
+    heading_decidegree:  1123
+    pitch_decidegree:  20
+    roll_decidegree:  14
+    pressure_mbar:  13071
+    status: 17
+    temperature_centidegree:  671
+    velocity_beam1:  41
+    velocity_beam2:  -14
+    velocity_beam3:  -56
+    amplitude_beam1: 128
+    amplitude_beam2: 118
+    amplitude_beam3: 125
+  - _index: 8
+    particle_object:  VelptAbDclInstrumentDataParticle
+    particle_type: velpt_ab_dcl_instrument
+    internal_timestamp: 3640891575.000000
+    date_time_string: '2015/05/17 22:46:15'
+    error_code: 0
+    analog1: 0
+    battery_voltage_dV:  117
+    sound_speed_dms:  14775
+    heading_decidegree:  1167
+    pitch_decidegree:  19
+    roll_decidegree:  13
+    pressure_mbar:  13075
+    status: 33
+    temperature_centidegree:  671
+    velocity_beam1:  48
+    velocity_beam2:  -12
+    velocity_beam3:  -53
+    amplitude_beam1: 128
+    amplitude_beam2: 113
+    amplitude_beam3: 131
+  - _index: 9
+    particle_object:  VelptAbDclInstrumentDataParticle
+    particle_type: velpt_ab_dcl_instrument
+    internal_timestamp: 3640892479.000000
+    date_time_string: '2015/05/17 23:01:19'
+    error_code: 0
+    analog1: 0
+    battery_voltage_dV:  117
+    sound_speed_dms:  14775
+    heading_decidegree:  1029
+    pitch_decidegree:  21
+    roll_decidegree:  9
+    pressure_mbar:  13072
+    status: 33
+    temperature_centidegree:  671
+    velocity_beam1:  39
+    velocity_beam2:  9
+    velocity_beam3:  0
+    amplitude_beam1: 127
+    amplitude_beam2: 124
+    amplitude_beam3: 134
+  - _index: 10
+    particle_object:  VelptAbDclInstrumentDataParticle
+    particle_type: velpt_ab_dcl_instrument
+    internal_timestamp: 3640893315.000000
+    date_time_string: '2015/05/17 23:15:15'
+    error_code: 0
+    analog1: 0
+    battery_voltage_dV:  116
+    sound_speed_dms:  14775
+    heading_decidegree:  992
+    pitch_decidegree:  24
+    roll_decidegree:  12
+    pressure_mbar:  13072
+    status: 17
+    temperature_centidegree:  671
+    velocity_beam1:  60
+    velocity_beam2:  12
+    velocity_beam3:  -26
+    amplitude_beam1: 131
+    amplitude_beam2: 119
+    amplitude_beam3: 128
+  - _index: 11
+    particle_object:  VelptAbDclInstrumentDataParticle
+    particle_type: velpt_ab_dcl_instrument
+    internal_timestamp: 3640894215.000000
+    date_time_string: '2015/05/17 23:30:15'
+    error_code: 0
+    analog1: 0
+    battery_voltage_dV:  117
+    sound_speed_dms:  14775
+    heading_decidegree:  1232
+    pitch_decidegree:  21
+    roll_decidegree:  16
+    pressure_mbar:  13077
+    status: 17
+    temperature_centidegree:  671
+    velocity_beam1:  65
+    velocity_beam2:  22
+    velocity_beam3:  -36
+    amplitude_beam1: 128
+    amplitude_beam2: 131
+    amplitude_beam3: 126
+  - _index: 12
+    particle_object:  VelptAbDclInstrumentDataParticle
+    particle_type: velpt_ab_dcl_instrument
+    internal_timestamp: 3640895175.000000
+    date_time_string: '2015/05/17 23:46:15'
+    error_code: 0
+    analog1: 0
+    battery_voltage_dV:  116
+    sound_speed_dms:  14775
+    heading_decidegree:  1301
+    pitch_decidegree:  23
+    roll_decidegree:  17
+    pressure_mbar:  13078
+    status: 33
+    temperature_centidegree:  671
+    velocity_beam1:  65
+    velocity_beam2:  -14
+    velocity_beam3:  -38
+    amplitude_beam1: 126
+    amplitude_beam2: 117
+    amplitude_beam3: 129
+  - _index: 13
+    particle_object:  VelptAbDclInstrumentDataParticle
+    particle_type: velpt_ab_dcl_instrument
+    internal_timestamp: 3640896068.000000
+    date_time_string: '2015/05/18 00:01:08'
+    error_code: 0
+    analog1: 0
+    battery_voltage_dV:  116
+    sound_speed_dms:  14776
+    heading_decidegree:  1046
+    pitch_decidegree:  23
+    roll_decidegree:  12
+    pressure_mbar:  13090
+    status: 17
+    temperature_centidegree:  672
+    velocity_beam1:  55
+    velocity_beam2:  11
+    velocity_beam3:  11
+    amplitude_beam1: 125
+    amplitude_beam2: 121
+    amplitude_beam3: 127

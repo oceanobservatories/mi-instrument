@@ -1,0 +1,6 @@
+Message Id[unsigned short|#],Timestamp[unsigned long|epoch],Latitude[float|�],Longitude[float|�],Mission Time[unsigned long|tod],Depth[float|Meters],Salinity[float|PSS-78],Model[short|#],Serial[short|#],Concentration[float|uM],Saturation[float|%],Temperature[float|�C],Calibrated Phase[float|�],B Phase[float|�],R Phase[float|�],B Amp[float|mV],B Pot[float|mV],R Amp[float|mV],Raw Temperature[float|mV],Calculated Concentration[float|uM],Calculated Saturation[float|%],External Temperature[float|�C]
+1109,62274,41.55,-70.71,62274665,0.05,31.29,4330,1519,354.66,90.71,5.78,33.51,33.51,41.95,8.44,790.40,869.00,636.30,0.00,0.00,0.00
+1109,1419009476,41.55,-70.71,62276590,-0.01,26.60,4330,1519,354.62,90.70,5.78,33.51,33.51,41.95,8.44,790.40,868.80,636.30,0.00,0.00,0.00
+1109,1419009478,41.55,-70.71,62278623,-0.03,21.67,4330,354.62,90.70,5.78,33.51,33.51,41.95,8.44,790.30,868.80,636.40,0.00,0.00,0.00
+1109,1419009480,41.55,-70.71,62280656,0.00,30.10,4330,1519,354.61,90.70,5.78,33.51,33.51,41.95,8.44,790.30,868.80,636.30,0.00,0.00,0.00
+1109,1419009482,41.55,-70.71,62282582,0.07,31.30,4330,1519,354.69,90.71,5.78,33.51,33.51,41.95,8.44,790.40,868.70,636.40,0.00,0.00,0.00

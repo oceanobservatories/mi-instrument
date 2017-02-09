@@ -1,0 +1,76 @@
+header:
+    particle_object: 'MULTIPLE'
+    particle_type: 'MULTIPLE'
+data:
+  - _index: 1
+    particle_object: WinchCsppDataParticle
+    particle_type: winch_cspp_eng
+    internal_timestamp: 3624982962.699000
+    winch_date: '2014-11-14'
+    winch_time: '19:42:42.699'
+    winch_state: 'Idle'
+    winch_speed: 0
+    winch_payout: 1097
+    winch_current_draw:          2.10000
+    sensor_current_draw:          0.00000
+    winch_status: 'Brake-On'
+  - _index: 2
+    particle_object: WinchCsppDataParticle
+    particle_type: winch_cspp_eng
+    internal_timestamp: 3624982965.900000
+    winch_date: '2014-11-14'
+    winch_time: '19:42:45.900'
+    winch_state: 'Haul_in'
+    winch_speed: 0
+    winch_payout: 1094
+    winch_current_draw:          3.50000
+    sensor_current_draw:          0.00000
+    winch_status: ''
+  - _index: 3
+    particle_object: WinchCsppDataParticle
+    particle_type: winch_cspp_eng
+    internal_timestamp: 3624982972.110000
+    winch_date: '2014-11-14'
+    winch_time: '19:42:52.110'
+    winch_state: 'Haul_in'
+    winch_speed: 10
+    winch_payout: 1035
+    winch_current_draw:          3.80000
+    sensor_current_draw:          0.00000
+    winch_status: ''
+  - _index: 4
+    particle_object: WinchCsppDataParticle
+    particle_type: winch_cspp_eng
+    internal_timestamp: 3624982972.311000
+    winch_date: '2014-11-14'
+    winch_time: '19:42:52.311'
+    winch_state: 'Haul_in'
+    winch_speed: 10
+    winch_payout: 1032
+    winch_current_draw:          3.80000
+    sensor_current_draw:          0.00000
+    winch_status: ''
+  - _index: 5
+    particle_object: WinchCsppDataParticle
+    particle_type: winch_cspp_eng
+    internal_timestamp: 3624983570.774000
+    winch_date: '2014-11-14'
+    winch_time: '19:52:50.774'
+    winch_state: 'Parked'
+    winch_speed: 0
+    winch_payout: 716
+    winch_current_draw:          2.00000
+    sensor_current_draw:          0.00000
+    winch_status: 'PrkPrgs,Brake-On'
+  - _index: 6
+    particle_object: WinchCsppDataParticle
+    particle_type: winch_cspp_eng
+    internal_timestamp: 3624983570.974000
+    winch_date: '2014-11-14'
+    winch_time: '19:52:50.974'
+    winch_state: 'Idle'
+    winch_speed: 0
+    winch_payout: 716
+    winch_current_draw:          2.00000
+    sensor_current_draw:          0.00000
+    winch_status: 'PrkPrgs,Brake-On'

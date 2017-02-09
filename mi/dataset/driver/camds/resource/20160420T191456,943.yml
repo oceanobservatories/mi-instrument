@@ -1,0 +1,15 @@
+header:
+    particle_object: CamdsMetadataParticle
+    particle_type: camds_image_metadata
+data:
+  - _index: 1
+    internal_timestamp: 3670168496.943
+    camds_zoom_position: 126
+    camds_focus_position: 24
+    camds_iris_position: 0
+    camds_gain: 7
+    camds_pan_position: 0
+    camds_tilt_position: 0
+    camds_brightness: 25
+    camds_brightness2: 25
+    filepath: '20160420T191456,943.png'

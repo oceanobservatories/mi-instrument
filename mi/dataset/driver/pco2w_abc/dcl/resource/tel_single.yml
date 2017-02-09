@@ -1,0 +1,14 @@
+header:
+  particle_object: MULTIPLE
+  particle_type: MULTIPLE
+
+data:
+  - _index:  1
+    particle_object: Pco2wAbcDclPowerTelemeteredDataParticle
+    particle_type: pco2w_abc_dcl_power
+    internal_timestamp: 3617226039.425
+    dcl_controller_timestamp: '2014/08/17 01:00:39.425'
+    unique_id: 194
+    record_type: 17
+    record_time: 3491082145
+    passed_checksum: 1

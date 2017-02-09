@@ -1,0 +1,62 @@
+header:
+  particle_object: 'MULTIPLE'
+  particle_type: 'MULTIPLE'
+
+data:
+  - _index: 1
+    particle_object: PresfAbcTideDataParticle
+    particle_type: presf_abc_tide_measurement_recovered
+    internal_timestamp: 3606245722.0
+    presf_time: 450572122
+    presf_tide_pressure_number: 171330
+    presf_tide_temperature_number: 28876
+  - _index: 2
+    particle_object: PresfAbcTideDataParticle
+    particle_type: presf_abc_tide_measurement_recovered
+    internal_timestamp: 3606245782.0
+    presf_time: 450572182
+    presf_tide_pressure_number: 171330
+    presf_tide_temperature_number: 27633
+  - _index: 3
+    particle_object: PresfAbcWaveDataParticle
+    particle_type: presf_abc_wave_burst_recovered
+    internal_timestamp: 3606245844.0
+    presf_time: 450572244
+    presf_wave_press_temp_comp_number: 43735600
+    presf_wave_burst_pressure_number: [8441431, 8441428, 8441433, 8441432]
+  - _index: 4
+    particle_object: PresfAbcTideDataParticle
+    particle_type: presf_abc_tide_measurement_recovered
+    internal_timestamp: 3606245842.0
+    presf_time: 450572242
+    presf_tide_pressure_number: 169508
+    presf_tide_temperature_number: 26025
+  - _index: 5
+    particle_object: PresfAbcTideDataParticle
+    particle_type: presf_abc_tide_measurement_recovered
+    internal_timestamp: 3624386675.0
+    presf_time: 468713075
+    presf_tide_pressure_number: 183864
+    presf_tide_temperature_number: 17260
+  - _index: 6
+    particle_object: PresfAbcTideDataParticle
+    particle_type: presf_abc_tide_measurement_recovered
+    internal_timestamp: 3624390275.0
+    presf_time: 468716675
+    presf_tide_pressure_number: 184164
+    presf_tide_temperature_number: 16188
+  - _index: 7
+    particle_object: PresfAbcTideDataParticle
+    particle_type: presf_abc_tide_measurement_recovered
+    internal_timestamp: 3624393875.0
+    presf_time: 468720275
+    presf_tide_pressure_number: 184521
+    presf_tide_temperature_number: 15810
+  - _index: 8
+    particle_object: PresfAbcWaveDataParticle
+    particle_type: presf_abc_wave_burst_recovered
+    internal_timestamp: 3624408277.0
+    presf_time: 468734677
+    presf_wave_press_temp_comp_number: 43702948
+    presf_wave_burst_pressure_number: [8441719, 8441715, 8441718, 8441715,
+8441720, 8441718, 8441715, 8441714]

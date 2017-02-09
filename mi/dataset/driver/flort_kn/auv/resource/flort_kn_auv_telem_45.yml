@@ -1,0 +1,834 @@
+header:
+    particle_object: 'MULTIPLE'
+    particle_type: 'MULTIPLE'
+data:
+  - _index: 1
+    particle_object: FlortKnAuvInstrumentTelemParticle
+    particle_type: flort_kn_auv_instrument
+    internal_timestamp: 3627998277.125
+    mission_epoch: 1419009477
+    auv_latitude: 41.5543
+    auv_longitude: -70.7050
+    mission_time: 62277125
+    device_id: 0
+    device_count: 1
+    m_depth: 0.10
+    version: 0
+    parameter_0: 700.00
+    parameter_1: 73.00
+    parameter_2: 73.00
+    parameter_3: 695.00
+    parameter_4: 144.00
+    parameter_5: 144.00
+    parameter_6: 460.00
+    parameter_7: 108.00
+    parameter_8: 108.00
+  - _index: 2
+    particle_object: FlortKnAuvInstrumentTelemParticle
+    particle_type: flort_kn_auv_instrument
+    internal_timestamp: 3627998278.302
+    mission_epoch: 1419009478
+    auv_latitude: 41.5543
+    auv_longitude: -70.7050
+    mission_time: 62278302
+    device_id: 0
+    device_count: 1
+    m_depth: -0.03
+    version: 0
+    parameter_0: 700.00
+    parameter_1: 75.00
+    parameter_2: 75.00
+    parameter_3: 695.00
+    parameter_4: 160.00
+    parameter_5: 160.00
+    parameter_6: 460.00
+    parameter_7: 106.00
+    parameter_8: 106.00
+  - _index: 3
+    particle_object: FlortKnAuvInstrumentTelemParticle
+    particle_type: flort_kn_auv_instrument
+    internal_timestamp: 3627998279.372
+    mission_epoch: 1419009479
+    auv_latitude: 41.5543
+    auv_longitude: -70.7050
+    mission_time: 62279372
+    device_id: 0
+    device_count: 1
+    m_depth: 0.12
+    version: 0
+    parameter_0: 700.00
+    parameter_1: 76.00
+    parameter_2: 76.00
+    parameter_3: 695.00
+    parameter_4: 165.00
+    parameter_5: 165.00
+    parameter_6: 460.00
+    parameter_7: 109.00
+    parameter_8: 109.00
+  - _index: 4
+    particle_object: FlortKnAuvInstrumentTelemParticle
+    particle_type: flort_kn_auv_instrument
+    internal_timestamp: 3627998280.549
+    mission_epoch: 1419009480
+    auv_latitude: 41.5543
+    auv_longitude: -70.7050
+    mission_time: 62280549
+    device_id: 0
+    device_count: 1
+    m_depth: -0.02
+    version: 0
+    parameter_0: 700.00
+    parameter_1: 71.00
+    parameter_2: 71.00
+    parameter_3: 695.00
+    parameter_4: 162.00
+    parameter_5: 162.00
+    parameter_6: 460.00
+    parameter_7: 109.00
+    parameter_8: 109.00
+  - _index: 5
+    particle_object: FlortKnAuvInstrumentTelemParticle
+    particle_type: flort_kn_auv_instrument
+    internal_timestamp: 3627998281.619
+    mission_epoch: 1419009481
+    auv_latitude: 41.5543
+    auv_longitude: -70.7050
+    mission_time: 62281619
+    device_id: 0
+    device_count: 1
+    m_depth: -0.03
+    version: 0
+    parameter_0: 700.00
+    parameter_1: 81.00
+    parameter_2: 81.00
+    parameter_3: 695.00
+    parameter_4: 158.00
+    parameter_5: 158.00
+    parameter_6: 460.00
+    parameter_7: 106.00
+    parameter_8: 106.00
+  - _index: 6
+    particle_object: FlortKnAuvInstrumentTelemParticle
+    particle_type: flort_kn_auv_instrument
+    internal_timestamp: 3627998282.796
+    mission_epoch: 1419009482
+    auv_latitude: 41.5543
+    auv_longitude: -70.7051
+    mission_time: 62282796
+    device_id: 0
+    device_count: 1
+    m_depth: 0.13
+    version: 0
+    parameter_0: 700.00
+    parameter_1: 85.00
+    parameter_2: 85.00
+    parameter_3: 695.00
+    parameter_4: 166.00
+    parameter_5: 166.00
+    parameter_6: 460.00
+    parameter_7: 111.00
+    parameter_8: 111.00
+  - _index: 7
+    particle_object: FlortKnAuvInstrumentTelemParticle
+    particle_type: flort_kn_auv_instrument
+    internal_timestamp: 3627998283.867
+    mission_epoch: 1419009483
+    auv_latitude: 41.5543
+    auv_longitude: -70.7051
+    mission_time: 62283867
+    device_id: 0
+    device_count: 1
+    m_depth: -0.08
+    version: 0
+    parameter_0: 700.00
+    parameter_1: 70.00
+    parameter_2: 70.00
+    parameter_3: 695.00
+    parameter_4: 158.00
+    parameter_5: 158.00
+    parameter_6: 460.00
+    parameter_7: 108.00
+    parameter_8: 108.00
+  - _index: 8
+    particle_object: FlortKnAuvInstrumentTelemParticle
+    particle_type: flort_kn_auv_instrument
+    internal_timestamp: 3627998285.151
+    mission_epoch: 1419009485
+    auv_latitude: 41.5543
+    auv_longitude: -70.7051
+    mission_time: 62285151
+    device_id: 0
+    device_count: 1
+    m_depth: 0.15
+    version: 0
+    parameter_0: 700.00
+    parameter_1: 69.00
+    parameter_2: 69.00
+    parameter_3: 695.00
+    parameter_4: 168.00
+    parameter_5: 168.00
+    parameter_6: 460.00
+    parameter_7: 106.00
+    parameter_8: 106.00
+  - _index: 9
+    particle_object: FlortKnAuvInstrumentTelemParticle
+    particle_type: flort_kn_auv_instrument
+    internal_timestamp: 3627998286.114
+    mission_epoch: 1419009486
+    auv_latitude: 41.5543
+    auv_longitude: -70.7051
+    mission_time: 62286114
+    device_id: 0
+    device_count: 1
+    m_depth: -0.06
+    version: 0
+    parameter_0: 700.00
+    parameter_1: 72.00
+    parameter_2: 72.00
+    parameter_3: 695.00
+    parameter_4: 162.00
+    parameter_5: 162.00
+    parameter_6: 460.00
+    parameter_7: 109.00
+    parameter_8: 109.00
+  - _index: 10
+    particle_object: FlortKnAuvInstrumentTelemParticle
+    particle_type: flort_kn_auv_instrument
+    internal_timestamp: 3627998287.291
+    mission_epoch: 1419009487
+    auv_latitude: 41.5543
+    auv_longitude: -70.7051
+    mission_time: 62287291
+    device_id: 0
+    device_count: 1
+    m_depth: 0.10
+    version: 0
+    parameter_0: 700.00
+    parameter_1: 72.00
+    parameter_2: 72.00
+    parameter_3: 695.00
+    parameter_4: 168.00
+    parameter_5: 168.00
+    parameter_6: 460.00
+    parameter_7: 108.00
+    parameter_8: 108.00
+  - _index: 11
+    particle_object: FlortKnAuvInstrumentTelemParticle
+    particle_type: flort_kn_auv_instrument
+    internal_timestamp: 3627998288.468
+    mission_epoch: 1419009488
+    auv_latitude: 41.5543
+    auv_longitude: -70.7051
+    mission_time: 62288468
+    device_id: 0
+    device_count: 1
+    m_depth: -0.03
+    version: 0
+    parameter_0: 700.00
+    parameter_1: 74.00
+    parameter_2: 74.00
+    parameter_3: 695.00
+    parameter_4: 160.00
+    parameter_5: 160.00
+    parameter_6: 460.00
+    parameter_7: 110.00
+    parameter_8: 110.00
+  - _index: 12
+    particle_object: FlortKnAuvInstrumentTelemParticle
+    particle_type: flort_kn_auv_instrument
+    internal_timestamp: 3627998289.537
+    mission_epoch: 1419009489
+    auv_latitude: 41.5543
+    auv_longitude: -70.7051
+    mission_time: 62289537
+    device_id: 0
+    device_count: 1
+    m_depth: 0.04
+    version: 0
+    parameter_0: 700.00
+    parameter_1: 71.00
+    parameter_2: 71.00
+    parameter_3: 695.00
+    parameter_4: 172.00
+    parameter_5: 172.00
+    parameter_6: 460.00
+    parameter_7: 105.00
+    parameter_8: 105.00
+  - _index: 13
+    particle_object: FlortKnAuvInstrumentTelemParticle
+    particle_type: flort_kn_auv_instrument
+    internal_timestamp: 3627998290.715
+    mission_epoch: 1419009490
+    auv_latitude: 41.5543
+    auv_longitude: -70.7051
+    mission_time: 62290715
+    device_id: 0
+    device_count: 1
+    m_depth: -0.00
+    version: 0
+    parameter_0: 700.00
+    parameter_1: 74.00
+    parameter_2: 74.00
+    parameter_3: 695.00
+    parameter_4: 170.00
+    parameter_5: 170.00
+    parameter_6: 460.00
+    parameter_7: 107.00
+    parameter_8: 107.00
+  - _index: 14
+    particle_object: FlortKnAuvInstrumentTelemParticle
+    particle_type: flort_kn_auv_instrument
+    internal_timestamp: 3627998291.785
+    mission_epoch: 1419009491
+    auv_latitude: 41.5543
+    auv_longitude: -70.7051
+    mission_time: 62291785
+    device_id: 0
+    device_count: 1
+    m_depth: 0.13
+    version: 0
+    parameter_0: 700.00
+    parameter_1: 70.00
+    parameter_2: 70.00
+    parameter_3: 695.00
+    parameter_4: 159.00
+    parameter_5: 159.00
+    parameter_6: 460.00
+    parameter_7: 107.00
+    parameter_8: 107.00
+  - _index: 15
+    particle_object: FlortKnAuvInstrumentTelemParticle
+    particle_type: flort_kn_auv_instrument
+    internal_timestamp: 3627998293.068
+    mission_epoch: 1419009493
+    auv_latitude: 41.5543
+    auv_longitude: -70.7051
+    mission_time: 62293068
+    device_id: 0
+    device_count: 1
+    m_depth: -0.00
+    version: 0
+    parameter_0: 700.00
+    parameter_1: 75.00
+    parameter_2: 75.00
+    parameter_3: 695.00
+    parameter_4: 172.00
+    parameter_5: 172.00
+    parameter_6: 460.00
+    parameter_7: 110.00
+    parameter_8: 110.00
+  - _index: 16
+    particle_object: FlortKnAuvInstrumentTelemParticle
+    particle_type: flort_kn_auv_instrument
+    internal_timestamp: 3627998294.139
+    mission_epoch: 1419009494
+    auv_latitude: 41.5543
+    auv_longitude: -70.7051
+    mission_time: 62294139
+    device_id: 0
+    device_count: 1
+    m_depth: 0.04
+    version: 0
+    parameter_0: 700.00
+    parameter_1: 73.00
+    parameter_2: 73.00
+    parameter_3: 695.00
+    parameter_4: 157.00
+    parameter_5: 157.00
+    parameter_6: 460.00
+    parameter_7: 107.00
+    parameter_8: 107.00
+  - _index: 17
+    particle_object: FlortKnAuvInstrumentTelemParticle
+    particle_type: flort_kn_auv_instrument
+    internal_timestamp: 3627998295.209
+    mission_epoch: 1419009495
+    auv_latitude: 41.5543
+    auv_longitude: -70.7051
+    mission_time: 62295209
+    device_id: 0
+    device_count: 1
+    m_depth: -0.040
+    version: 0
+    parameter_0: 700.00
+    parameter_1: 73.00
+    parameter_2: 73.00
+    parameter_3: 695.00
+    parameter_4: 172.00
+    parameter_5: 172.00
+    parameter_6: 460.00
+    parameter_7: 108.00
+    parameter_8: 108.00
+  - _index: 18
+    particle_object: FlortKnAuvInstrumentTelemParticle
+    particle_type: flort_kn_auv_instrument
+    internal_timestamp: 3627998296.278
+    mission_epoch: 1419009496
+    auv_latitude: 41.5543
+    auv_longitude: -70.7051
+    mission_time: 62296278
+    device_id: 0
+    device_count: 1
+    m_depth: 0.07
+    version: 0
+    parameter_0: 700.00
+    parameter_1: 73.00
+    parameter_2: 73.00
+    parameter_3: 695.00
+    parameter_4: 167.00
+    parameter_5: 167.00
+    parameter_6: 460.00
+    parameter_7: 108.00
+    parameter_8: 108.00
+  - _index: 19
+    particle_object: FlortKnAuvInstrumentTelemParticle
+    particle_type: flort_kn_auv_instrument
+    internal_timestamp: 3627998297.455
+    mission_epoch: 1419009497
+    auv_latitude: 41.5543
+    auv_longitude: -70.7051
+    mission_time: 62297455
+    device_id: 0
+    device_count: 1
+    m_depth: 0.09
+    version: 0
+    parameter_0: 700.00
+    parameter_1: 72.00
+    parameter_2: 72.00
+    parameter_3: 695.00
+    parameter_4: 170.00
+    parameter_5: 170.00
+    parameter_6: 460.00
+    parameter_7: 109.00
+    parameter_8: 109.00
+  - _index: 20
+    particle_object: FlortKnAuvInstrumentTelemParticle
+    particle_type: flort_kn_auv_instrument
+    internal_timestamp: 3627998298.525
+    mission_epoch: 1419009498
+    auv_latitude: 41.5543
+    auv_longitude: -70.7051
+    mission_time: 62298525
+    device_id: 0
+    device_count: 1
+    m_depth: 0.01
+    version: 0
+    parameter_0: 700.00
+    parameter_1: 71.00
+    parameter_2: 71.00
+    parameter_3: 695.00
+    parameter_4: 168.00
+    parameter_5: 168.00
+    parameter_6: 460.00
+    parameter_7: 109.00
+    parameter_8: 109.00
+  - _index: 21
+    particle_object: FlortKnAuvInstrumentTelemParticle
+    particle_type: flort_kn_auv_instrument
+    internal_timestamp: 3627998299.702
+    mission_epoch: 1419009499
+    auv_latitude: 41.5543
+    auv_longitude: -70.7051
+    mission_time: 62299702
+    device_id: 0
+    device_count: 1
+    m_depth: 0.08
+    version: 0
+    parameter_0: 700.00
+    parameter_1: 73.00
+    parameter_2: 73.00
+    parameter_3: 695.00
+    parameter_4: 174.00
+    parameter_5: 174.00
+    parameter_6: 460.00
+    parameter_7: 109.00
+    parameter_8: 109.00
+  - _index: 22
+    particle_object: FlortKnAuvInstrumentTelemParticle
+    particle_type: flort_kn_auv_instrument
+    internal_timestamp: 3627998300.772
+    mission_epoch: 1419009500
+    auv_latitude: 41.5543
+    auv_longitude: -70.7051
+    mission_time: 62300772
+    device_id: 0
+    device_count: 1
+    m_depth: -0.02
+    version: 0
+    parameter_0: 700.00
+    parameter_1: 75.00
+    parameter_2: 75.00
+    parameter_3: 695.00
+    parameter_4: 170.00
+    parameter_5: 170.00
+    parameter_6: 460.00
+    parameter_7: 110.00
+    parameter_8: 110.00
+  - _index: 23
+    particle_object: FlortKnAuvMetadataTelemParticle
+    particle_type: flort_kn_auv_metadata
+    internal_timestamp: 3630147402.000
+    mission_epoch: 1421158602
+    device_id: 0
+    device_count: 1
+    parameter_name: 'Ref 660'
+    parameter_unit: 'Counts'
+    parameter_id: 0
+    eco_data_offset: 0
+    html_plot: 0
+    parameter_type: 0
+    mx: 1.00
+    b: 0.00
+    sensor_name: 'ECO Triplet'
+  - _index: 24
+    particle_object: FlortKnAuvMetadataTelemParticle
+    particle_type: flort_kn_auv_metadata
+    internal_timestamp: 3630147402.000
+    mission_epoch: 1421158602
+    device_id: 0
+    device_count: 1
+    parameter_name: 'Sig 660'
+    parameter_unit: 'Counts'
+    parameter_id: 1
+    eco_data_offset: 1
+    html_plot: 0
+    parameter_type: 0
+    mx: 1.00
+    b: 0.00
+    sensor_name: 'ECO Triplet'
+  - _index: 25
+    particle_object: FlortKnAuvMetadataTelemParticle
+    particle_type: flort_kn_auv_metadata
+    internal_timestamp: 3630147402.000
+    mission_epoch: 1421158602
+    device_id: 0
+    device_count: 1
+    parameter_name: 'Beta660'
+    parameter_unit: 'ug/liter'
+    parameter_id: 2
+    eco_data_offset: 1
+    html_plot: 1
+    parameter_type: 1
+    mx: 1.00
+    b: 0.00
+    sensor_name: 'ECO Triplet'
+  - _index: 26
+    particle_object: FlortKnAuvMetadataTelemParticle
+    particle_type: flort_kn_auv_metadata
+    internal_timestamp: 3630147402.000
+    mission_epoch: 1421158602
+    device_id: 0
+    device_count: 1
+    parameter_name: 'Ref CHL'
+    parameter_unit: 'Counts'
+    parameter_id: 3
+    eco_data_offset: 2
+    html_plot: 0
+    parameter_type: 0
+    mx: 1.00
+    b: 0.00
+    sensor_name: 'ECO Triplet'
+  - _index: 27
+    particle_object: FlortKnAuvMetadataTelemParticle
+    particle_type: flort_kn_auv_metadata
+    internal_timestamp: 3630147402.000
+    mission_epoch: 1421158602
+    device_id: 0
+    device_count: 1
+    parameter_name: 'Sig CHL'
+    parameter_unit: 'Counts'
+    parameter_id: 4
+    eco_data_offset: 3
+    html_plot: 0
+    parameter_type: 0
+    mx: 1.00
+    b: 0.00
+    sensor_name: 'ECO Triplet'
+  - _index: 28
+    particle_object: FlortKnAuvMetadataTelemParticle
+    particle_type: flort_kn_auv_metadata
+    internal_timestamp: 3630147402.000
+    mission_epoch: 1421158602
+    device_id: 0
+    device_count: 1
+    parameter_name: 'Chlorophyll A'
+    parameter_unit: 'ug/liter'
+    parameter_id: 5
+    eco_data_offset: 3
+    html_plot: 1
+    parameter_type: 1
+    mx: 1.00
+    b: 0.00
+    sensor_name: 'ECO Triplet'
+  - _index: 29
+    particle_object: FlortKnAuvMetadataTelemParticle
+    particle_type: flort_kn_auv_metadata
+    internal_timestamp: 3630147402.000
+    mission_epoch: 1421158602
+    device_id: 0
+    device_count: 1
+    parameter_name: 'Ref CDOM'
+    parameter_unit: 'Counts'
+    parameter_id: 6
+    eco_data_offset: 4
+    html_plot: 0
+    parameter_type: 0
+    mx: 1.00
+    b: 0.00
+    sensor_name: 'ECO Triplet'
+  - _index: 30
+    particle_object: FlortKnAuvMetadataTelemParticle
+    particle_type: flort_kn_auv_metadata
+    internal_timestamp: 3630147402.000
+    mission_epoch: 1421158602
+    device_id: 0
+    device_count: 1
+    parameter_name: 'Sig CDOM'
+    parameter_unit: 'Counts'
+    parameter_id: 7
+    eco_data_offset: 5
+    html_plot: 1
+    parameter_type: 0
+    mx: 1.00
+    b: 0.00
+    sensor_name: 'ECO Triplet'
+  - _index: 31
+    particle_object: FlortKnAuvMetadataTelemParticle
+    particle_type: flort_kn_auv_metadata
+    internal_timestamp: 3630147402.000
+    mission_epoch: 1421158602
+    device_id: 0
+    device_count: 1
+    parameter_name: 'CDOM'
+    parameter_unit: 'ug/liter'
+    parameter_id: 8
+    eco_data_offset: 5
+    html_plot: 1
+    parameter_type: 1
+    mx: 1.00
+    b: 0.00
+    sensor_name: 'ECO Triplet'
+  - _index: 32
+    particle_object: FlortKnAuvMetadataTelemParticle
+    particle_type: flort_kn_auv_metadata
+    internal_timestamp: 3630147402.000
+    mission_epoch: 1421158602
+    device_id: 0
+    device_count: 1
+    parameter_name: 'Ref 660'
+    parameter_unit: 'Counts'
+    parameter_id: 0
+    eco_data_offset: 0
+    html_plot: 0
+    parameter_type: 0
+    mx: 1.00
+    b: 0.00
+    sensor_name: 'ECO Triplet'
+  - _index: 33
+    particle_object: FlortKnAuvMetadataTelemParticle
+    particle_type: flort_kn_auv_metadata
+    internal_timestamp: 3630147402.000
+    mission_epoch: 1421158602
+    device_id: 0
+    device_count: 1
+    parameter_name: 'Sig 660'
+    parameter_unit: 'Counts'
+    parameter_id: 1
+    eco_data_offset: 1
+    html_plot: 0
+    parameter_type: 0
+    mx: 1.00
+    b: 0.00
+    sensor_name: 'ECO Triplet'
+  - _index: 34
+    particle_object: FlortKnAuvMetadataTelemParticle
+    particle_type: flort_kn_auv_metadata
+    internal_timestamp: 3630147402.000
+    mission_epoch: 1421158602
+    device_id: 0
+    device_count: 1
+    parameter_name: 'Beta660'
+    parameter_unit: 'ug/liter'
+    parameter_id: 2
+    eco_data_offset: 1
+    html_plot: 1
+    parameter_type: 1
+    mx: 1.00
+    b: 0.00
+    sensor_name: 'ECO Triplet'
+  - _index: 35
+    particle_object: FlortKnAuvMetadataTelemParticle
+    particle_type: flort_kn_auv_metadata
+    internal_timestamp: 3630147402.000
+    mission_epoch: 1421158602
+    device_id: 0
+    device_count: 1
+    parameter_name: 'Ref CHL'
+    parameter_unit: 'Counts'
+    parameter_id: 3
+    eco_data_offset: 2
+    html_plot: 0
+    parameter_type: 0
+    mx: 1.00
+    b: 0.00
+    sensor_name: 'ECO Triplet'
+  - _index: 36
+    particle_object: FlortKnAuvMetadataTelemParticle
+    particle_type: flort_kn_auv_metadata
+    internal_timestamp: 3630147402.000
+    mission_epoch: 1421158602
+    device_id: 0
+    device_count: 1
+    parameter_name: 'Sig CHL'
+    parameter_unit: 'Counts'
+    parameter_id: 4
+    eco_data_offset: 3
+    html_plot: 0
+    parameter_type: 0
+    mx: 1.00
+    b: 0.00
+    sensor_name: 'ECO Triplet'
+  - _index: 37
+    particle_object: FlortKnAuvMetadataTelemParticle
+    particle_type: flort_kn_auv_metadata
+    internal_timestamp: 3630147402.000
+    mission_epoch: 1421158602
+    device_id: 0
+    device_count: 1
+    parameter_name: 'Chlorophyll A'
+    parameter_unit: 'ug/liter'
+    parameter_id: 5
+    eco_data_offset: 3
+    html_plot: 1
+    parameter_type: 1
+    mx: 1.00
+    b: 0.00
+    sensor_name: 'ECO Triplet'
+  - _index: 38
+    particle_object: FlortKnAuvMetadataTelemParticle
+    particle_type: flort_kn_auv_metadata
+    internal_timestamp: 3630147402.000
+    mission_epoch: 1421158602
+    device_id: 0
+    device_count: 1
+    parameter_name: 'Ref CDOM'
+    parameter_unit: 'Counts'
+    parameter_id: 6
+    eco_data_offset: 4
+    html_plot: 0
+    parameter_type: 0
+    mx: 1.00
+    b: 0.00
+    sensor_name: 'ECO Triplet'
+  - _index: 39
+    particle_object: FlortKnAuvMetadataTelemParticle
+    particle_type: flort_kn_auv_metadata
+    internal_timestamp: 3630147402.000
+    mission_epoch: 1421158602
+    device_id: 0
+    device_count: 1
+    parameter_name: 'Sig CDOM'
+    parameter_unit: 'Counts'
+    parameter_id: 7
+    eco_data_offset: 5
+    html_plot: 1
+    parameter_type: 0
+    mx: 1.00
+    b: 0.00
+    sensor_name: 'ECO Triplet'
+  - _index: 40
+    particle_object: FlortKnAuvMetadataTelemParticle
+    particle_type: flort_kn_auv_metadata
+    internal_timestamp: 3630147402.000
+    mission_epoch: 1421158602
+    device_id: 0
+    device_count: 1
+    parameter_name: 'CDOM'
+    parameter_unit: 'ug/liter'
+    parameter_id: 8
+    eco_data_offset: 5
+    html_plot: 1
+    parameter_type: 1
+    mx: 1.00
+    b: 0.00
+    sensor_name: 'ECO Triplet'
+  - _index: 41
+    particle_object: FlortKnAuvMetadataTelemParticle
+    particle_type: flort_kn_auv_metadata
+    internal_timestamp: 3630147402.000
+    mission_epoch: 1421158602
+    device_id: 0
+    device_count: 1
+    parameter_name: 'Ref 660'
+    parameter_unit: 'Counts'
+    parameter_id: 0
+    eco_data_offset: 0
+    html_plot: 0
+    parameter_type: 0
+    mx: 1.00
+    b: 0.00
+    sensor_name: 'ECO Triplet'
+  - _index: 42
+    particle_object: FlortKnAuvMetadataTelemParticle
+    particle_type: flort_kn_auv_metadata
+    internal_timestamp: 3630147402.000
+    mission_epoch: 1421158602
+    device_id: 0
+    device_count: 1
+    parameter_name: 'Sig 660'
+    parameter_unit: 'Counts'
+    parameter_id: 1
+    eco_data_offset: 1
+    html_plot: 0
+    parameter_type: 0
+    mx: 1.00
+    b: 0.00
+    sensor_name: 'ECO Triplet'
+  - _index: 43
+    particle_object: FlortKnAuvMetadataTelemParticle
+    particle_type: flort_kn_auv_metadata
+    internal_timestamp: 3630147402.000
+    mission_epoch: 1421158602
+    device_id: 0
+    device_count: 1
+    parameter_name: 'Beta660'
+    parameter_unit: 'ug/liter'
+    parameter_id: 2
+    eco_data_offset: 1
+    html_plot: 1
+    parameter_type: 1
+    mx: 1.00
+    b: 0.00
+    sensor_name: 'ECO Triplet'
+  - _index: 44
+    particle_object: FlortKnAuvMetadataTelemParticle
+    particle_type: flort_kn_auv_metadata
+    internal_timestamp: 3630147402.000
+    mission_epoch: 1421158602
+    device_id: 0
+    device_count: 1
+    parameter_name: 'Ref CHL'
+    parameter_unit: 'Counts'
+    parameter_id: 3
+    eco_data_offset: 2
+    html_plot: 0
+    parameter_type: 0
+    mx: 1.00
+    b: 0.00
+    sensor_name: 'ECO Triplet'
+  - _index: 45
+    particle_object: FlortKnAuvMetadataTelemParticle
+    particle_type: flort_kn_auv_metadata
+    internal_timestamp: 3630147402.000
+    mission_epoch: 1421158602
+    device_id: 0
+    device_count: 1
+    parameter_name: 'Sig CHL'
+    parameter_unit: 'Counts'
+    parameter_id: 4
+    eco_data_offset: 3
+    html_plot: 0
+    parameter_type: 0
+    mx: 1.00
+    b: 0.00
+    sensor_name: 'ECO Triplet'

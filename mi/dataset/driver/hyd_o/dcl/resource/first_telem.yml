@@ -1,0 +1,46 @@
+header:
+    particle_object: HydODclTelemeteredDataParticle
+    particle_type: hyd_o_dcl_instrument
+data:
+  - _index: 1
+    internal_timestamp: 3618777695.892
+    dcl_controller_timestamp: '2014/09/04 00:01:35.892' 
+    hyd_raw: -0.12
+    hyd_percent: -0.12
+  - _index: 2
+    internal_timestamp: 3618777707.9
+    dcl_controller_timestamp: '2014/09/04 00:01:47.900'
+    hyd_raw: -0.13
+    hyd_percent: -0.13
+  - _index: 3
+    internal_timestamp: 3618777719.907
+    dcl_controller_timestamp: '2014/09/04 00:01:59.907'
+    hyd_raw: -0.16
+    hyd_percent: -0.16
+  - _index: 4
+    internal_timestamp: 3618777731.914
+    dcl_controller_timestamp: '2014/09/04 00:02:11.914'
+    hyd_raw: -0.14
+    hyd_percent: -0.14
+  - _index: 5
+    internal_timestamp: 3618777743.923
+    dcl_controller_timestamp: '2014/09/04 00:02:23.923'
+    hyd_raw: -0.14
+    hyd_percent: -0.14
+  - _index: 6
+    internal_timestamp: 3618777755.93
+    dcl_controller_timestamp: '2014/09/04 00:02:35.930'
+    hyd_raw: -0.13
+    hyd_percent: -0.13
+  - _index: 7
+    internal_timestamp: 3618777767.947
+    dcl_controller_timestamp: '2014/09/04 00:02:47.947'
+    hyd_raw: -0.17
+    hyd_percent: -0.17
+  - _index: 8
+    internal_timestamp: 3618777779.955
+    dcl_controller_timestamp: '2014/09/04 00:02:59.955'
+    hyd_raw: -0.15
+    hyd_percent: -0.15
+
+
