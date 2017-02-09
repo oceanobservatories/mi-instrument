@@ -1,0 +1,14 @@
+header:
+  particle_object: 'MULTIPLE'
+  particle_type: 'MULTIPLE'
+
+data:
+  - _index: 1
+    particle_object: PresfAbcDclRecoveredTideDataParticle
+    particle_type: presf_abc_dcl_tide_measurement_recovered
+    internal_timestamp: 3583825326.0
+    dcl_controller_timestamp: 1374837724
+    date_time_string: '17 Apr 2014 17:00:00'
+    absolute_pressure: 14.6612
+    pressure_temp: 11.380
+    seawater_temperature: 11.5248

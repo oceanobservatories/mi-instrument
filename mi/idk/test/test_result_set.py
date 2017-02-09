@@ -2,196 +2,324 @@
 
 """
 @package mi.idk.test.test_result_set
-@file mi.idk/test/test_result_set.py
-@author Bill French
-@brief Read a result set file and test the verification methods
+@file mi/idk/test/test_result_set.py
+@author Emily Hahn
+@brief Test code for result set
 """
-
-__author__ = 'Bill French'
+__author__ = 'Emily Hahn'
 __license__ = 'Apache 2.0'
 
-import os
-import re
-
-from nose.plugins.attrib import attr
-from mock import Mock
-from mi.core.common import BaseEnum
+import numpy
 from mi.core.unit_test import MiUnitTest
 from mi.idk.result_set import ResultSet
-from mi.core.instrument.data_particle import DataParticle, DataParticleKey
+from mi.core.instrument.dataset_data_particle import DataParticleKey
 
-from mi.core.log import get_logger ; log = get_logger()
-from mi.idk.metadata import Metadata
+from mi.core.instrument.dataset_data_particle import DataParticle
 
-from mi.core.exceptions import SampleException
+TEST_PATH = 'mi/idk/test/resources/'
 
-TIME_REGEX = r'\d{1,2}/\d{1,2}/\d{4}\s*\d{1,2}:\d{1,2}:\d{1,2}'
-TIME_MATCHER = re.compile(TIME_REGEX, re.DOTALL)
 
-DATA_REGEX = r'^\s*(\d*\.\d*),\s*(\d*\.\d*),\s*(\d*\.\d*),\s*(\d*\.\d)'
-DATA_MATCHER = re.compile(DATA_REGEX, re.DOTALL)
+class ResultSetUnitTest(MiUnitTest):
 
-class CtdpfParserDataParticleKey(BaseEnum):
-    TEMPERATURE = "temperature"
-    CONDUCTIVITY = "conductivity"
-    PRESSURE = "pressure"
-    OXYGEN = "oxygen"
-
-class CtdpfParserDataParticle(DataParticle):
-    """
-    Class for parsing data from the CTDPF instrument on a HYPM SP platform node
-    """
-
-    _data_particle_type = 'ctdpf_parsed'
-
-    def _build_parsed_values(self):
+    def test_yml_verification(self):
         """
-        Take something in the data format CSV delimited values and turn it into
-        a particle with the appropriate tag.
-        @throws SampleException If there is a problem with sample creation
-        """
-        match = DATA_MATCHER.match(self.raw_data)
-        if not match:
-            raise SampleException("CtdParserDataParticle: No regex match of parsed sample data: [%s]", self.raw_data)
-        try:
-            temp = float(match.group(2))
-            cond = float(match.group(1))
-            press = float(match.group(3))
-            o2 = float(match.group(4))
-        except (ValueError, TypeError, IndexError) as ex:
-            raise SampleException("Error (%s) while decoding parameters in data: [%s]" % (ex, self.raw_data))
-
-        result = [{DataParticleKey.VALUE_ID: CtdpfParserDataParticleKey.TEMPERATURE,
-                   DataParticleKey.VALUE: temp},
-                  {DataParticleKey.VALUE_ID: CtdpfParserDataParticleKey.CONDUCTIVITY,
-                   DataParticleKey.VALUE: cond},
-                  {DataParticleKey.VALUE_ID: CtdpfParserDataParticleKey.PRESSURE,
-                   DataParticleKey.VALUE: press},
-                  {DataParticleKey.VALUE_ID: CtdpfParserDataParticleKey.OXYGEN,
-                   DataParticleKey.VALUE: o2}]
-        log.debug('CtdpfParserDataParticle: particle=%s', result)
-        return result
-
-
-@attr('UNIT', group='mi')
-class TestResultSet(MiUnitTest):
-    """
-    Test the metadata object
-    """
-    def _get_result_set_file(self, filename):
-        """
-        return the full path to the result_set_file in
-        the same directory as the test file.
-        """
-        test_dir = os.path.dirname(__file__)
-        return os.path.join(test_dir, filename)
-
-    def setUp(self):
-        """
-        Setup the test case
+        Test for errors when loading the .yml and that these errors occur
         """
 
-    def test_ntp_conversion(self):
-        rs = ResultSet(self._get_result_set_file("record_set_files/test_data_1.txt.result.yml"))
-        ts = rs._string_to_ntp_date_time("1970-01-01T00:00:00.00Z")
-        self.assertEqual(ts, 2208988800.0)
+        # header is empty
+        with self.assertRaises(IOError):
+            rs = ResultSet(TEST_PATH + 'empty_header.yml')
 
-        ts = rs._string_to_ntp_date_time("1970-01-01T00:00:00.00")
-        self.assertEqual(ts, 2208988800.0)
+        # no particle_object in header
+        with self.assertRaises(IOError):
+            rs = ResultSet(TEST_PATH + 'missing_object.yml')
 
-        ts = rs._string_to_ntp_date_time("1970-01-01T00:00:00")
-        self.assertEqual(ts, 2208988800.0)
+        # not particle_type in header
+        with self.assertRaises(IOError):
+            rs = ResultSet(TEST_PATH + 'missing_type.yml')
 
-        ts = rs._string_to_ntp_date_time("1970-01-01T00:00:00Z")
-        self.assertEqual(ts, 2208988800.0)
+        # no 'data' section
+        with self.assertRaises(IOError):
+            rs = ResultSet(TEST_PATH + 'missing_data.yml')
 
-        ts = rs._string_to_ntp_date_time("1970-01-01T00:01:00.101Z")
-        self.assertEqual(ts, 2208988860.101)
+        # data section, but nothing in it
+        with self.assertRaises(IOError):
+            rs = ResultSet(TEST_PATH + 'empty_data.yml')
 
-        self.assertRaises(ValueError, rs._string_to_ntp_date_time, "09/05/2013 02:47:21.000")
+        # no index and no dictionary marker
+        with self.assertRaises(IOError):
+            rs = ResultSet(TEST_PATH + 'no_index.yml')
 
-    def test_simple_result_set(self):
+        # has dictionary marker, no index
+        with self.assertRaises(IOError):
+            rs = ResultSet(TEST_PATH + 'no_index2.yml')
+
+        # two of the same indices defined in yml
+        with self.assertRaises(IOError):
+            rs = ResultSet(TEST_PATH + 'duplicate_index.yml')
+
+    def test_fake_particle(self):
         """
-        Try the first result set with a single record.
+        Create a fake data particle class and test that comparison either fails or passes as expected
         """
-        rs = ResultSet(self._get_result_set_file("record_set_files/test_data_1.txt.result.yml"))
+        fdp = FakeDataParticle([])
 
-        # Test the happy path
-        base_timestamp = 3583861263.0
-        particle_a = CtdpfParserDataParticle("10.5914,  4.1870,  161.06,   2693.0",
-                                             internal_timestamp=base_timestamp, new_sequence=True)
-        particle_b = CtdpfParserDataParticle("10.5915,  4.1871,  161.07,   2693.1",
-                                             internal_timestamp=base_timestamp)
+        # particle is missing internal_timestamp
+        rs = ResultSet(TEST_PATH + 'missing_timestamp.yml')
+        # expect this to fail
+        if rs.verify([fdp]):
+            self.fail("Should be missing timestamp, but verification passed")
 
-        self.assertTrue(rs.verify([particle_a, particle_b]))
-        self.assertIsNone(rs.report())
+        # test with particle object and type in header
+        rs = ResultSet(TEST_PATH + 'fake_particle.yml')
+        # expect this to pass
+        if not rs.verify([fdp]):
+            self.fail("Failed particle verification")
 
-        # test record count mismatch
-        self.assertFalse(rs.verify([particle_a]))
-        self.assertIsNotNone(rs.report())
+        # test with MULTIPLE in particle object and type in header
+        rs = ResultSet(TEST_PATH + 'fake_multiple.yml')
+        # expect this to pass
+        if not rs.verify([fdp]):
+            self.fail("Failed particle verification")
 
-        # test out of order record
-        self.assertFalse(rs.verify([particle_b, particle_a]))
-        self.assertIsNotNone(rs.report())
+        # particle class does not match
+        rs = ResultSet(TEST_PATH + 'class_mismatch.yml')
+        # expect this to fail
+        if rs.verify([fdp]):
+            self.fail("Should have class mismatch, but verification passed")
 
-        # test bad data record
-        self.assertFalse(rs.verify([particle_a, particle_a]))
-        self.assertIsNotNone(rs.report())
+        # particle stream does not match
+        rs = ResultSet(TEST_PATH + 'stream_mismatch.yml')
+        # expect this to fail
+        if rs.verify([fdp]):
+            self.fail("Should have stream mismatch, but verification passed")
 
-        # multiple data types in result
-        self.assertFalse(rs.verify([particle_a, 'foo']))
-        self.assertIsNotNone(rs.report())
+        # particle class does not match inside particle
+        rs = ResultSet(TEST_PATH + 'class_mismatch_multiple.yml')
+        # expect this to fail
+        if rs.verify([fdp]):
+            self.fail("Should have class mismatch, but verification passed")
 
-        # stream name mismatch
-        particle_a._data_particle_type = 'foo'
-        particle_b._data_particle_type = 'foo'
-        self.assertFalse(rs.verify([particle_a, particle_b]))
-        self.assertIsNotNone(rs.report())
+        # particle stream does not match inside particle
+        rs = ResultSet(TEST_PATH + 'stream_mismatch_multiple.yml')
+        # expect this to fail
+        if rs.verify([fdp]):
+            self.fail("Should have stream mismatch, but verification passed")
 
-        # internal timestamp mismatch
-        particle_a = CtdpfParserDataParticle("10.5914,  4.1870,  161.06,   2693.0",
-                                             internal_timestamp=base_timestamp+1, new_sequence=True)
-        particle_b = CtdpfParserDataParticle("10.5915,  4.1871,  161.07,   2693.1",
-                                             internal_timestamp=base_timestamp+2)
-        self.assertFalse(rs.verify([particle_a, particle_a]))
-        self.assertIsNotNone(rs.report())
+        # particle timestamp does not match
+        rs = ResultSet(TEST_PATH + 'timestamp_mismatch.yml')
+        # expect this to fail
+        if rs.verify([fdp]):
+            self.fail("Should have timestamp mismatch, but verification passed")
 
+        # particle string does not match
+        rs = ResultSet(TEST_PATH + 'string_mismatch.yml')
+        # expect this to fail
+        if rs.verify([fdp]):
+            self.fail("Should have string mismatch, but verification passed")
 
-    def test_simple_result_set_as_dict(self):
+        # particle float does not match
+        rs = ResultSet(TEST_PATH + 'float_mismatch.yml')
+        # expect this to fail
+        if rs.verify([fdp]):
+            self.fail("Should have float mismatch, but verification passed")
+
+        # 2nd particle is empty
+        rs = ResultSet(TEST_PATH + 'empty_particle.yml')
+        # expect this to fail
+        if rs.verify([fdp, fdp]):
+            self.fail("Should have empty particle, but verification passed")
+
+        # particle class does not match
+        rs = ResultSet(TEST_PATH + 'bad_key_particle.yml')
+        # expect this to fail
+        if rs.verify([fdp]):
+            self.fail("Should have key mismatch, but verification passed")
+
+    def test_full_types(self):
         """
-        Try the first result set with a single record from dict.
+        Confirm that all data types pass or fail verification as expected
         """
-        rs = ResultSet(self._get_result_set_file("record_set_files/test_data_1.txt.result.yml"))
+        ftdp = FullTypesDataParticle([])
 
-        # Test the happy path
-        base_timestamp = 3583861263.0
-        particle_a = CtdpfParserDataParticle("10.5914,  4.1870,  161.06,   2693.0",
-                                             internal_timestamp=base_timestamp, new_sequence=True).generate_dict()
-        particle_b = CtdpfParserDataParticle("10.5915,  4.1871,  161.07,   2693.1",
-                                             internal_timestamp=base_timestamp).generate_dict()
+        # First test with the correct data in the yml to confirm everything passes
+        rs = ResultSet(TEST_PATH + 'full_types.yml')
+        if not rs.verify([ftdp]):
+            self.fail("Failed verification")
 
-        self.assertTrue(rs.verify([particle_a, particle_b]))
-        self.assertIsNone(rs.report())
+        # All parameters should not match
+        rs = ResultSet(TEST_PATH + 'full_bad_types.yml')
+        # expect this to fail
+        if rs.verify([ftdp]):
+            self.fail("Should have failed verification, but verification passed")
 
-        # test record count mismatch
-        self.assertFalse(rs.verify([particle_a]))
-        self.assertIsNotNone(rs.report())
+    def test_timestamp(self):
+        """
+        Test that the timestamp string conversion is working
+        """
+        ftdp = FakeDataParticle([])
 
-        # test out of order record
-        self.assertFalse(rs.verify([particle_b, particle_a]))
-        self.assertIsNotNone(rs.report())
+        # File contains 4 particles, each with different formatted timestamp string
+        rs = ResultSet(TEST_PATH + 'timestamp_string.yml')
+        # confirm all strings match
+        if not rs.verify([ftdp, ftdp, ftdp, ftdp]):
+            self.fail("Should have failed verification, but verification passed")
 
-        # test bad data record
-        self.assertFalse(rs.verify([particle_a, particle_a]))
-        self.assertIsNotNone(rs.report())
+    def test_incorrect_length(self):
+        """
+        Test that not having the matching number of particles in the yml and results generates fails
+        """
+        ftdp = FakeDataParticle([])
+
+        # only one particle in results file
+        rs = ResultSet(TEST_PATH + 'fake_particle.yml')
+        # compare to two, this should fail
+        if rs.verify([ftdp, ftdp]):
+            self.fail("Should have failed particle verification, but verification passed")
+
+    def test_not_data_particle(self):
+        """
+        Test that a class that is not a data particle is not accepted
+        """
+        ndp = NotDataParticle()
+
+        # class is not a subclass of DataParticle
+        rs = ResultSet(TEST_PATH + 'not_data_particle.yml')
+        # this should fail
+        if rs.verify([ndp]):
+            self.fail("Should have failed particle verification, but verification passed")
+
+    def test_no_particle_timestamp(self):
+        """
+        Test if a class has not set the particle timestamp but one is in the .yml that they do not match
+        """
+        ftdp = FakeNoTsParticle([])
+
+        # .yml file contains timestamp, class does not
+        rs = ResultSet(TEST_PATH + 'fake_no_ts_particle.yml')
+        # this should fail
+        if rs.verify([ftdp]):
+            self.fail("Should have failed particle verification, but verification passed")
+
+    def test_missing_type_multiple(self):
+        """
+        Test if a header has MULTIPLE but the particle does not specify the type that this does not match
+        """
+        ftdp = FakeDataParticle([])
+
+        # yml file is missing type in individual particle (stream)
+        rs = ResultSet(TEST_PATH + 'missing_type_multiple.yml')
+        # this should fail
+        if rs.verify([ftdp]):
+            self.fail("Should have failed particle verification, but verification passed")
+
+    def test_multiple_bad_type_object(self):
+        """
+        Test that a bad type or bad object does not match
+        """
+        ftdp = FakeDataParticle([])
+
+        # yml has bad type in individual particle (stream)
+        rs = ResultSet(TEST_PATH + 'bad_type_multiple.yml')
+        # this should fail
+        if rs.verify([ftdp]):
+            self.fail("Should have failed particle verification, but verification passed")
+
+        # yml has bad class in individual particle (stream)
+        rs = ResultSet(TEST_PATH + 'bad_class_multiple.yml')
+        # this should fail
+        if rs.verify([ftdp]):
+            self.fail("Should have failed particle verification, but verification passed")
 
     def test_round(self):
-        rs = ResultSet(self._get_result_set_file("record_set_files/test_data_2.txt.result.yml"))
+        """
+        Test that rounding occurs
+        """
+        fdp = FakeDataParticle([])
 
-        # Test the happy path
-        base_timestamp = 3583861263.0
-        particle_a = CtdpfParserDataParticle("10.5914,  4.1870,  161.06,   2693.0",
-                                             internal_timestamp=base_timestamp, new_sequence=True).generate_dict()
+        # test with a rounding dictionary in the yml
+        rs = ResultSet(TEST_PATH + 'fake_round.yml')
+        # expect this to pass
+        if not rs.verify([fdp]):
+            self.fail("Failed particle verification")
 
-        self.assertTrue(rs.verify([particle_a]))
-        self.assertIsNone(rs.report())
+        frp = FakeRoundParticle([])
+
+        # test with rounding dictionary with a nested list
+        rs = ResultSet(TEST_PATH + 'fake_round_list.yml')
+        # expect this to pass
+        if not rs.verify([frp]):
+            self.fail("Failed particle verification")
+
+    def test_particle_dict_compare(self):
+        """
+        test that a particle already converted to a dictionary can be compared
+        """
+        fdp = FakeDataParticle([])
+        fdp_dict = fdp.generate_dict()
+
+        # normal fake particle
+        rs = ResultSet(TEST_PATH + 'fake_particle.yml')
+        # expect this to pass
+        if not rs.verify([fdp_dict]):
+            self.fail("Failed particle verification")
+
+
+
+# create a fake data particle class for testing with
+class FakeDataParticle(DataParticle):
+    _data_particle_type = 'fake_particle_stream'
+
+    def _build_parsed_values(self):
+        self.set_internal_timestamp(3200000000)
+        return [self._encode_value('param_1', 'ABC', str),
+                self._encode_value('param_2', 3.2, float)]
+
+
+# create a second fake data particle class for testing with
+class FullTypesDataParticle(DataParticle):
+    _data_particle_type = 'full_types_particle_stream'
+
+    def _build_parsed_values(self):
+        self.set_internal_timestamp(323000000.3278492)
+        return [self._encode_value('param_1', 'ABC', str),
+                self._encode_value('param_2', ['ABC', '1234', 'DEF', 'GHIJK'], list),
+                self._encode_value('param_3', 3.2239587667, float),
+                self._encode_value('param_4', [1.20345678, 3.45349862098, 6.789235987647], list),
+                self._encode_value('param_5', [[1.20345678, 3.45349862098], [6.789235987647, 8.924958735],
+                                               [32.98249523, 59.332098755]], list),
+                self._encode_value('param_6', 3, int),
+                self._encode_value('param_7', [3, 4, 5], list),
+                self._encode_value('param_8', numpy.nan, float),
+                self._encode_value('param_9', [12.34, numpy.nan, 3.567], list),
+                self._encode_value('param_10', [[12.34, numpy.nan], [3.567, 4.253908467]], list),
+                {DataParticleKey.VALUE_ID: 'param_11', DataParticleKey.VALUE: None}]
+
+
+# create a fake class that exists but is not a data particle
+class NotDataParticle(object):
+    _data_particle_type = 'fake_particle_stream'
+
+    def _build_parsed_values(self):
+        return []
+
+
+# create a fake particle that doesn't set the timestamp
+class FakeNoTsParticle(DataParticle):
+    _data_particle_type = 'fake_particle_stream'
+
+    def _build_parsed_values(self):
+        return [self._encode_value('param_1', 'ABC', str),
+                self._encode_value('param_2', 3.2, float)]
+
+
+# create a fake particle with nested list for rounding
+class FakeRoundParticle(DataParticle):
+    _data_particle_type = 'fake_particle_stream'
+
+    def _build_parsed_values(self):
+        self.set_internal_timestamp(3200000000)
+        return [self._encode_value('param_1', 1, int),
+                self._encode_value('param_2', [[3.23, 42.5], [3.67, 921.24]], list)]
+
+

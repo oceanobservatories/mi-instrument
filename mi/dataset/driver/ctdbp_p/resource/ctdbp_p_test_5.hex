@@ -1,0 +1,200 @@
+* Sea-Bird SBE16plus-IM  Data File:
+* FileName = C:\Users\OOI User\Documents\CRUISES\Irminger 3\Recovered data 07-2016\CTDBP-P 16-50072\SBE16plus-IM_01650072_2016_07_20_02.hex
+* Software version 2.3.1
+* Temperature SN = 50072
+* Conductivity SN = 50072
+* System UpLoad Time = Jul 20 2016 13:13:42
+* <ApplicationData>
+* <Seaterm232>
+* <SoftwareVersion>2.3.1</SoftwareVersion>
+* <BuildDate>10-Mar-2014</BuildDate>
+* </Seaterm232>
+* </ApplicationData>
+* <InstrumentState>
+* <HardwareData DeviceType='SBE16plus-IM' SerialNumber='01650072'>
+*    <Manufacturer>Sea-Bird Electronics, Inc.</Manufacturer>
+*    <FirmwareVersion>2.5.3</FirmwareVersion>
+*    <FirmwareDate>12 Aug 2014 12:00</FirmwareDate>
+*    <CommandSetVersion>2.3</CommandSetVersion>
+*    <PCBAssembly PCBSerialNum='82243' AssemblyNum='41054H.2'/>
+*    <PCBAssembly PCBSerialNum='82246' AssemblyNum='41580B'/>
+*    <PCBAssembly PCBSerialNum='82249' AssemblyNum='41606'/>
+*    <PCBAssembly PCBSerialNum='65023' AssemblyNum='41059D'/>
+*    <MfgDate>15 SEP 2014</MfgDate>
+*    <InternalSensors>
+*       <Sensor id='Main Temperature'>
+*          <type>temperature0</type>
+*          <SerialNumber>01650072</SerialNumber>
+*       </Sensor>
+*       <Sensor id='Main Conductivity'>
+*          <type>conductivity-0</type>
+*          <SerialNumber>01650072</SerialNumber>
+*       </Sensor>
+*       <Sensor id='Main Pressure'>
+*          <type>strain-0</type>
+*          <SerialNumber>4174980</SerialNumber>
+*       </Sensor>
+*    </InternalSensors>
+*    <ExternalSensors>
+*       <Sensor id='volt 0'>
+*          <type>not assigned</type>
+*          <SerialNumber>not assigned</SerialNumber>
+*       </Sensor>
+*       <Sensor id='volt 1'>
+*          <type>not assigned</type>
+*          <SerialNumber>not assigned</SerialNumber>
+*       </Sensor>
+*       <Sensor id='volt 2'>
+*          <type>not assigned</type>
+*          <SerialNumber>not assigned</SerialNumber>
+*       </Sensor>
+*       <Sensor id='volt 3'>
+*          <type>not assigned</type>
+*          <SerialNumber>not assigned</SerialNumber>
+*       </Sensor>
+*       <Sensor id='volt 4'>
+*          <type>not assigned</type>
+*          <SerialNumber>not assigned</SerialNumber>
+*       </Sensor>
+*       <Sensor id='volt 5'>
+*          <type>not assigned</type>
+*          <SerialNumber>not assigned</SerialNumber>
+*       </Sensor>
+*       <Sensor id='serial'>
+*          <type>not assigned</type>
+*          <SerialNumber>not assigned</SerialNumber>
+*       </Sensor>
+*    </ExternalSensors>
+* </HardwareData>
+* <StatusData DeviceType='SBE16plus-IM' SerialNumber='01650072'>
+*    <DateTime>2016-07-20T13:12:07</DateTime>
+*    <LoggingState>not logging</LoggingState>
+*    <EventSummary numEvents='0'/>
+*    <Power>
+*       <vMain>13.8</vMain>
+*       <vLith>8.4</vLith>
+*       <iMain>61.6</iMain>
+*       <iPump> 0.4</iPump>
+* <Executing/>
+* <Executing/>
+* <Executing/>
+* <Executing/>
+*       <iExt01> 0.4</iExt01>
+* <Executing/>
+* <Executing/>
+* <Executing/>
+* <Executing/>
+*       <iExt2345> 0.3</iExt2345>
+*    </Power>
+*    <MemorySummary>
+*       <Bytes>172385</Bytes>
+*       <Samples>7495</Samples>
+*       <SamplesFree>2853293</SamplesFree>
+*       <SampleLength>23</SampleLength>
+*       <Headers>6</Headers>
+*    </MemorySummary>
+* </StatusData>
+* <ConfigurationData DeviceType='SBE16plus-IM' SerialNumber='01650072'>
+*    <SamplingParameters>
+*       <SampleInterval>3600</SampleInterval>
+*       <MeasurementsPerSample>4</MeasurementsPerSample>
+*       <Pump>run pump for 0.5 sec</Pump>
+*       <DelayBeforeSampling>2.0</DelayBeforeSampling>
+*       <DelayAfterSampling>0.0</DelayAfterSampling>
+*       <TransmitRealTime>yes</TransmitRealTime>
+*    </SamplingParameters>
+*    <DataChannels>
+*       <ExtVolt0>yes</ExtVolt0>
+*       <ExtVolt1>yes</ExtVolt1>
+*       <ExtVolt2>yes</ExtVolt2>
+*       <ExtVolt3>yes</ExtVolt3>
+*       <ExtVolt4>no</ExtVolt4>
+*       <ExtVolt5>no</ExtVolt5>
+*       <SBE38>no</SBE38>
+*       <SBE50>no</SBE50>
+*       <WETLABS>no</WETLABS>
+*       <OPTODE>no</OPTODE>
+*       <SBE63>no</SBE63>
+*       <GTD>no</GTD>
+*    </DataChannels>
+*    <OutputExecutedTag>yes</OutputExecutedTag>
+*    <OutputFormat>converted decimal</OutputFormat>
+*    <OutputSalinity>no</OutputSalinity>
+*    <OutputSoundVelocity>no</OutputSoundVelocity>
+*    <OutputSigmaT_V_I>no</OutputSigmaT_V_I>
+*    <OutputSampleNumber>no</OutputSampleNumber>
+* </ConfigurationData>
+* <CalibrationCoefficients DeviceType='SBE16plus-IM' SerialNumber='01650072'>
+*    <Calibration format='TEMP1' id='Main Temperature'>
+*       <SerialNum>01650072</SerialNum>
+*       <CalDate>04-oct-14</CalDate>
+*       <TA0>1.250057e-03</TA0>
+*       <TA1>2.741547e-04</TA1>
+*       <TA2>-1.042822e-06</TA2>
+*       <TA3>1.838406e-07</TA3>
+*       <TOFFSET>0.000000e+00</TOFFSET>
+*    </Calibration>
+*    <Calibration format='WBCOND0' id='Main Conductivity'>
+*       <SerialNum>01650072</SerialNum>
+*       <CalDate>04-oct-14</CalDate>
+*       <G>-9.970329e-01</G>
+*       <H>1.525303e-01</H>
+*       <I>-1.653370e-04</I>
+*       <J>3.435137e-05</J>
+*       <CPCOR>-9.570000e-08</CPCOR>
+*       <CTCOR>3.250000e-06</CTCOR>
+*       <CSLOPE>1.000000e+00</CSLOPE>
+*    </Calibration>
+*    <Calibration format='STRAIN0' id='Main Pressure'>
+*       <SerialNum>4174980</SerialNum>
+*       <CalDate>02-oct-14</CalDate>
+*       <PA0>-6.824081e-01</PA0>
+*       <PA1>2.647839e-03</PA1>
+*       <PA2>1.944753e-11</PA2>
+*       <PTCA0>5.240064e+05</PTCA0>
+*       <PTCA1>-1.702058e+01</PTCA1>
+*       <PTCA2>2.523294e-01</PTCA2>
+*       <PTCB0>2.498613e+01</PTCB0>
+*       <PTCB1>-3.750000e-04</PTCB1>
+*       <PTCB2>0.000000e+00</PTCB2>
+*       <PTEMPA0>-1.170891e+02</PTEMPA0>
+*       <PTEMPA1>1.108343e+02</PTEMPA1>
+*       <PTEMPA2>-1.798819e+01</PTEMPA2>
+*       <POFFSET>0.000000e+00</POFFSET>
+*       <PRANGE>8.700000e+02</PRANGE>
+*    </Calibration>
+*    <Calibration format='VOLT0' id='Volt 0'>
+*       <OFFSET>-4.842842e-02</OFFSET>
+*       <SLOPE>1.247052e+00</SLOPE>
+*    </Calibration>
+*    <Calibration format='VOLT0' id='Volt 1'>
+*       <OFFSET>-4.818316e-02</OFFSET>
+*       <SLOPE>1.247982e+00</SLOPE>
+*    </Calibration>
+*    <Calibration format='VOLT0' id='Volt 2'>
+*       <OFFSET>-4.810105e-02</OFFSET>
+*       <SLOPE>1.247488e+00</SLOPE>
+*    </Calibration>
+*    <Calibration format='VOLT0' id='Volt 3'>
+*       <OFFSET>-4.773263e-02</OFFSET>
+*       <SLOPE>1.248202e+00</SLOPE>
+*    </Calibration>
+*    <Calibration format='VOLT0' id='Volt 4'>
+*       <OFFSET>-4.914947e-02</OFFSET>
+*       <SLOPE>1.247368e+00</SLOPE>
+*    </Calibration>
+*    <Calibration format='VOLT0' id='Volt 5'>
+*       <OFFSET>-4.773895e-02</OFFSET>
+*       <SLOPE>1.247655e+00</SLOPE>
+*    </Calibration>
+*    <Calibration format='FREQ0' id='external frequency channel'>
+*       <EXTFREQSF>9.999911e-01</EXTFREQSF>
+*    </Calibration>
+* </CalibrationCoefficients>
+* <EventCounters DeviceType='SBE16plus-IM' SerialNumber='01650072'>
+*    <EventSummary numEvents='0'/>
+* </EventCounters></InstrumentState>
+*END*
+03DEA409FE6A0814D35A855521B21A9086EA401D5A52FE
+04236109FE6A0814DD5A665837Z969BBEEFF301D5A58AB
+

@@ -1,0 +1,57 @@
+*Sea-Bird SBE 26plus Data File:
+*FileName = C:\Users\OOI_User\Desktop\201510_Recovered_Data\CE09\MFN\PRESF_1385.hex
+*Software Version 2.0
+*DS
+*SBE 26plus-quartz V 7.2  SN 1385    19 Oct 2015  22:51:30
+*user info=ce09ossm
+*quartz pressure sensor: serial number = 113401, range = 1000 psia
+*internal temperature sensor
+*conductivity = NO
+*iop =  8.3 ma  vmain = 15.4 V  vlith =  9.0 V
+*last sample: p = 14.6894, t = 20.7462
+*
+*tide measurement: interval = 60.000 minutes, duration = 3600 seconds
+*measure waves every 6 tide samples
+*1024 wave samples/burst at 1.00 scans/sec, duration = 1024 seconds
+*logging start time =  09 Apr 2015  16:30:00
+*logging stop time = do not use stop time
+*
+*tide samples/day = 24.000
+*wave bursts/day = 4.000
+*memory endurance = 5305.9 days
+*nominal alkaline battery endurance = 455.8 days
+*total recorded tide measurements = 4638
+*total recorded wave bursts = 773
+*tide measurements since last start = 4638
+*wave bursts since last start = 773
+*
+*transmit real-time tide data = YES
+*transmit real-time wave burst data = NO
+*transmit real-time wave statistics = NO
+*
+*status = stopped by user
+*logging = NO, send start command to begin logging
+*S>DC
+*Pressure coefficients:  10-mar-14
+*    U0 = 5.821564e+00
+*    Y1 = -3.880374e+03
+*    Y2 = -9.063153e+03
+*    Y3 = 0.000000e+00
+*    C1 = -5.916308e+03
+*    C2 = 1.957207e+02
+*    C3 = 1.660159e+04
+*    D1 = 6.855200e-02
+*    D2 = 0.000000e+00
+*    T1 = 3.006687e+01
+*    T2 = 9.647350e-01
+*    T3 = 4.328319e+01
+*    T4 = 9.259003e+01
+*    M = 12582.9
+*    B = 838.8
+*    OFFSET = -4.079000e-01
+*Temperature coefficients:  08-mar-14
+*    TA0 = 3.236386e-04
+*    TA1 = 2.342151e-04
+*    TA2 = -4.085359e-07
+*    TA3 = 1.203740e-07
+*S>DD

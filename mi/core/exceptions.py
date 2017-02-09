@@ -92,6 +92,7 @@ class ExceptionFactory(object):
 #                out.add_stack(label, stack)
         return out
 
+
 class InstrumentException(ApplicationException):
     """Base class for an exception related to physical instruments or their
     representation in ION.
@@ -105,12 +106,12 @@ class InstrumentException(ApplicationException):
         """ get exception info without depending on MI exception classes """
         return self.error_code, "%s: %s" % (self.__class__.__name__, self.msg), self._stacks[-1:]
 
+
 class InstrumentConnectionException(InstrumentException):
     """Exception related to connection with a physical instrument"""
 
 class InstrumentProtocolException(InstrumentException):
     """Exception related to an instrument protocol problem
-
     These are generally related to parsing or scripting of what is supposed
     to happen when talking at the lowest layer protocol to a device.
     @todo Add partial result property?
@@ -184,7 +185,6 @@ class UnexpectedError(InstrumentException):
     """ wrapper to send non-MI exceptions over zmq """
     def __init__ (self, msg=None):
         super(UnexpectedError,self).__init__(msg=msg, error_code=ServerError)
-
 
 
 class PortAgentLaunchException(InstrumentException):

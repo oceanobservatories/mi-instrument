@@ -1,0 +1,103 @@
+# Result data after parsing node59p1_1.dosta.dat
+
+header:
+  particle_object: MULTIPLE
+  particle_type: MULTIPLE
+
+data:
+  - _index: 1
+    internal_timestamp: '2013-07-25T06:00:02'
+    particle_object: DostaAbcdjmSioTelemeteredMetadataDataParticle
+    particle_type: dosta_abcdjm_sio_metadata
+    product_number: 4831
+    serial_number: '128'
+  - _index: 2
+    internal_timestamp: '2013-07-25T06:00:02'
+    particle_object: DostaAbcdjmSioTelemeteredDataParticle
+    particle_type: dosta_abcdjm_sio_instrument
+    sio_controller_timestamp: 1374732002
+    estimated_oxygen_concentration: 343.778
+    estimated_oxygen_saturation: 100.587
+    optode_temperature: 11.337
+    calibrated_phase: 31.6
+    temp_compensated_phase: 31.6
+    blue_phase: 36.841
+    red_phase: 5.241
+    blue_amplitude: 975.4
+    red_amplitude: 1097.3
+    raw_temperature: 461.5
+  - _index: 3
+    internal_timestamp: '2013-07-25T12:00:02Z'
+    particle_object: DostaAbcdjmSioTelemeteredDataParticle
+    particle_type: dosta_abcdjm_sio_instrument
+    sio_controller_timestamp: 1374753602
+    estimated_oxygen_concentration: 336.397
+    estimated_oxygen_saturation: 100.497
+    optode_temperature: 12.247
+    calibrated_phase: 31.421
+    temp_compensated_phase: 31.421
+    blue_phase: 36.693
+    red_phase: 5.272
+    blue_amplitude: 950.9
+    red_amplitude: 1079.7
+    raw_temperature: 432.4
+  - _index: 4
+    internal_timestamp: '2013-07-25T18:00:01'
+    particle_object: DostaAbcdjmSioTelemeteredDataParticle
+    particle_type: dosta_abcdjm_sio_instrument
+    sio_controller_timestamp: 1374775201    
+    estimated_oxygen_concentration: 332.652
+    estimated_oxygen_saturation: 99.99
+    optode_temperature: 12.518
+    calibrated_phase: 31.426
+    temp_compensated_phase: 31.426
+    blue_phase: 36.748
+    red_phase: 5.322
+    blue_amplitude: 941.3
+    red_amplitude: 1071.1
+    raw_temperature: 423.7
+  - _index: 5
+    internal_timestamp: '2013-07-26T00:00:01'
+    particle_object: DostaAbcdjmSioTelemeteredDataParticle
+    particle_type: dosta_abcdjm_sio_instrument
+    sio_controller_timestamp: 1374796801
+    estimated_oxygen_concentration: 328.871
+    estimated_oxygen_saturation: 99.228
+    optode_temperature: 12.687
+    calibrated_phase: 31.484
+    temp_compensated_phase: 31.484
+    blue_phase: 36.787
+    red_phase: 5.303
+    blue_amplitude: 932.9
+    red_amplitude: 1063.5
+    raw_temperature: 418.3
+  - _index: 6
+    internal_timestamp: '2013-07-26T06:00:01'
+    particle_object: DostaAbcdjmSioTelemeteredDataParticle
+    particle_type: dosta_abcdjm_sio_instrument
+    sio_controller_timestamp: 1374818401
+    estimated_oxygen_concentration: 350.544
+    estimated_oxygen_saturation: 101.692
+    optode_temperature: 10.966
+    calibrated_phase: 31.544
+    temp_compensated_phase: 31.544
+    blue_phase: 36.766
+    red_phase: 5.222
+    blue_amplitude: 930.9
+    red_amplitude: 1086.6
+    raw_temperature: 473.3
+  - _index: 7
+    internal_timestamp: '2013-07-26T12:00:01'
+    particle_object: DostaAbcdjmSioTelemeteredDataParticle
+    particle_type: dosta_abcdjm_sio_instrument
+    sio_controller_timestamp: 1374840001
+    estimated_oxygen_concentration: 330.781
+    estimated_oxygen_saturation: 99.673
+    optode_temperature: 12.628
+    calibrated_phase: 31.442
+    temp_compensated_phase: 31.442
+    blue_phase: 36.731
+    red_phase: 5.289
+    blue_amplitude: 922.0
+    red_amplitude: 1059.6
+    raw_temperature: 420.2

@@ -1,0 +1,105 @@
+header:
+  particle_object: NutnrMDataParticle
+  particle_type: nutnr_m_glider_instrument
+
+data:
+  - _index: 1
+    internal_timestamp: 3627902151.33377
+    m_present_time: 1418913351.33377
+    m_present_secs_into_mission: 7.33377
+    sci_m_present_time: 1418913351.33377
+    sci_m_present_secs_into_mission: 7.33377
+    sci_suna_timestamp: 14.5695
+    sci_suna_record_offset: 0
+    sci_suna_nitrate_um: 7.46876
+    sci_suna_nitrate_mg: 0.104613
+  - _index: 2
+    internal_timestamp: 3627902276.45935
+    m_present_time: 1418913476.45935
+    m_present_secs_into_mission: 132.459
+    sci_m_present_time: 1418913476.45935
+    sci_m_present_secs_into_mission: 132.459
+    sci_suna_timestamp: 14.6245
+    sci_suna_record_offset: 0
+    sci_suna_nitrate_um: 7.88909
+    sci_suna_nitrate_mg: 0.1105
+  - _index: 3
+    internal_timestamp: 3627902284.52533
+    m_present_time: 1418913484.52533
+    m_present_secs_into_mission: 140.525
+    sci_m_present_time: 1418913484.52533
+    sci_m_present_secs_into_mission: 140.525
+    sci_suna_timestamp: 14.6268
+    sci_suna_record_offset: 144
+    sci_suna_nitrate_um: 7.9162
+    sci_suna_nitrate_mg: 0.11088
+  - _index: 4
+    internal_timestamp: 3627902297.73575
+    m_present_time: 1418913497.73575
+    m_present_secs_into_mission: 153.736
+    sci_m_present_time: 1418913497.73575
+    sci_m_present_secs_into_mission: 153.736
+    sci_suna_timestamp: 14.6304
+    sci_suna_record_offset: 288
+    sci_suna_nitrate_um: 7.47015
+    sci_suna_nitrate_mg: 0.104632
+  - _index: 5
+    internal_timestamp: 3627902304.77191
+    m_present_time: 1418913504.77191
+    m_present_secs_into_mission: 160.772
+    sci_m_present_time: 1418913504.77191
+    sci_m_present_secs_into_mission: 160.772 
+    sci_suna_timestamp: 14.6323
+    sci_suna_record_offset: 432
+    sci_suna_nitrate_um: 8.55511
+    sci_suna_nitrate_mg: 0.119829
+  - _index: 6
+    internal_timestamp: 3627902318.01672
+    m_present_time: 1418913518.01672
+    m_present_secs_into_mission: 174.017
+    sci_m_present_time: 1418913518.01672
+    sci_m_present_secs_into_mission: 174.017
+    sci_suna_timestamp: 14.6359
+    sci_suna_record_offset: 576
+    sci_suna_nitrate_um: 10.3565
+    sci_suna_nitrate_mg: 0.145061 
+  - _index: 7
+    internal_timestamp: 3627902332.16321
+    m_present_time: 1418913532.16321
+    m_present_secs_into_mission: 188.163
+    sci_m_present_time: 1418913532.16321
+    sci_m_present_secs_into_mission: 188.163
+    sci_suna_timestamp: 14.6398
+    sci_suna_record_offset: 720
+    sci_suna_nitrate_um: 10.1068
+    sci_suna_nitrate_mg: 0.141563
+  - _index: 8
+    internal_timestamp: 3627902345.29968
+    m_present_time: 1418913545.29968
+    m_present_secs_into_mission: 201.3
+    sci_m_present_time: 1418913545.29968
+    sci_m_present_secs_into_mission: 201.3
+    sci_suna_timestamp: 14.6434
+    sci_suna_record_offset: 864
+    sci_suna_nitrate_um: 9.76495
+    sci_suna_nitrate_mg: 0.136775
+  - _index: 9
+    internal_timestamp: 3627902358.48682
+    m_present_time: 1418913558.48682
+    m_present_secs_into_mission: 214.487
+    sci_m_present_time: 1418913558.48682
+    sci_m_present_secs_into_mission: 214.487
+    sci_suna_timestamp: 14.6473
+    sci_suna_record_offset: 1008
+    sci_suna_nitrate_um: 10.2847
+    sci_suna_nitrate_mg: 0.144054
+  - _index: 10
+    internal_timestamp: 3627902372.60785
+    m_present_time: 1418913572.60785
+    m_present_secs_into_mission: 228.608
+    sci_m_present_time: 1418913572.60785
+    sci_m_present_secs_into_mission: 228.608
+    sci_suna_timestamp: 14.6512
+    sci_suna_record_offset: 1152
+    sci_suna_nitrate_um: 10.1235
+    sci_suna_nitrate_mg: 0.141797

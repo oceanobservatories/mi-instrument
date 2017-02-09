@@ -1,0 +1,16 @@
+header:
+    particle_object: 'MULTIPLE'
+    particle_type: 'MULTIPLE'
+data:
+  - _index: 1
+    particle_object: PhsenAbcdefImodemMetadataRecoveredDataParticle
+    particle_type: phsen_abcdef_imodem_metadata_recovered
+    internal_timestamp: 3614706098.0
+    file_time: '20140718 210138'
+    instrument_id: '23'
+    serial_number: '70001687'
+    voltage_flt32: 8.90
+    num_data_records: 0
+    record_length: 0
+    num_events: 525
+    num_samples: 0

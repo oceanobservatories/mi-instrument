@@ -39,3 +39,5 @@ root:
 loggers:
   mi:
     level: INFO
+  ooi:
+    level: INFO

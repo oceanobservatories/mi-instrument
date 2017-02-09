@@ -1,0 +1,15 @@
+header:
+  particle_object: DostaAbcdjmCtdbpPRecoveredDataParticle
+  particle_type: dosta_abcdjm_ctdbp_p_instrument_recovered
+
+data:
+  - _index: 1
+    internal_timestamp: 3648132350.0
+    oxy_calphase: 21793
+    oxy_temp: 45594
+    ctd_time: 492458750
+  - _index: 2
+    internal_timestamp: 3648133803.0
+    oxy_calphase: 22583
+    oxy_temp: 39273
+    ctd_time: 492460203

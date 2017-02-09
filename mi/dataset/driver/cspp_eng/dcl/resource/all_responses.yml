@@ -1,0 +1,62 @@
+# Result data after parsing first_test.data
+
+header:
+  particle_object: 'MULTIPLE'
+  particle_type: 'MULTIPLE'
+
+data:
+  - _index: 1
+    internal_timestamp: '2015-10-10T00:31:22.359Z'
+    particle_object: CsppEngDclProfileParticle
+    particle_type: cspp_eng_dcl_profile
+    cspp_home_depth: -6640764
+    cspp_start_time: 86368
+    cspp_setup_rate: 10.0
+    cspp_setup_start_depth: -1.00
+    cspp_setup_end_depth: 1.00
+    cspp_setup_ascent_rate: 1.4
+    cspp_setup_descent_rate: 35.0
+    cspp_num_profiles: 1
+    cspp_interval_time: 86400
+    cspp_start_delay: 0
+  - _index: 2
+    internal_timestamp: '2015-10-10T00:31:45.324Z'
+    particle_object: CsppEngDclSummaryParticle
+    particle_type: cspp_eng_dcl_summary
+    cspp_start_depth: 22.00
+    cspp_end_depth: 0.67
+    cspp_travel_time: 1.65
+    cspp_system_voltage: 29.5
+    cspp_winch_end_position: -6645074
+    cspp_filename: '12808414.PPB'
+    cspp_file_size: 229257
+    cspp_file_space: 257818624
+    cspp_num_files: 1709
+    cspp_profile_number: 171
+    cspp_low_voltage: 30.15
+    cspp_low_cell_voltage: 3.729
+    cspp_watts_used: 2321.07
+    cspp_low_battery_number: 1
+  - _index: 3
+    internal_timestamp: '2015-10-10T00:30:18.778Z'
+    particle_object: CsppEngDclModemParticle
+    particle_type: cspp_eng_dcl_modem
+    cspp_modem_distance: 131.2
+    cspp_dsp_battery_voltage: 02.9
+    cspp_transmit_battery_voltage: 15.4
+  - _index: 4
+    internal_timestamp: '2015-10-10T00:30:39.259Z'
+    particle_object: CsppEngDclEngDataParticle
+    particle_type: cspp_eng_dcl_eng_data
+    cspp_date_time: 3653425865
+    cspp_current_state: 5
+    cspp_previous_state: 0
+    cspp_profile_start_time: 3650147766
+    cspp_profile_start_delta: 5102
+    cspp_enable_device: 'ACS'
+    cspp_enable_state: 'OFF'
+    cspp_wave_start_time: 3652070925
+    cspp_wave_height: 0.82
+    cspp_wave_period: 7.74
+    cspp_wave_mode: 1
+

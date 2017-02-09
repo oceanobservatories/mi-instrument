@@ -1,0 +1,232 @@
+header:
+    particle_object: 'MULTIPLE'
+    particle_type: 'MULTIPLE'
+data:
+  - _index: 1
+    particle_object: CgCpmEngCpmDataParticle
+    particle_type: cg_cpm_eng_cpm
+    internal_timestamp: 3617268903.730000
+    cg_eng_alarm_at: [4, 2]
+    cg_eng_alarm_err: [' NO PSC DATA', ' NO GPS DATA']
+    cg_eng_alarm_pc: [3, 6]
+    cg_eng_alarm_severity: ['Warning', 'Informational']
+    cg_eng_alarm_sys: ['C_POWER_SYS', 'C_TELEM_SYS']
+    cg_eng_alarm_ts: ['2014/08/17 12:53:58.217', '2014/08/18 02:37:46.502']
+    cg_eng_cpu_load1:           2.1600
+    cg_eng_cpu_load15:           0.3100
+    cg_eng_cpu_load5:           0.8500
+    cg_eng_cpu_uptime: '0 days 00:01:56'
+    cg_eng_err_bcmd: 8
+    cg_eng_err_c_ctl: null
+    cg_eng_err_c_gps: 1
+    cg_eng_err_c_imm: null
+    cg_eng_err_c_irid: null
+    cg_eng_err_c_power_sys: null
+    cg_eng_err_c_pps: 7
+    cg_eng_err_c_status: null
+    cg_eng_err_c_telem_sys: null
+    cg_eng_err_cpm1: null
+    cg_eng_err_d_ctl: null
+    cg_eng_err_d_status: null
+    cg_eng_err_dlog_mgr: null
+    cg_eng_err_dlogp1: null
+    cg_eng_err_dlogp2: null
+    cg_eng_err_dlogp3: null
+    cg_eng_err_dlogp4: null
+    cg_eng_err_dlogp5: null
+    cg_eng_err_dlogp6: null
+    cg_eng_err_dlogp7: 3
+    cg_eng_err_dlogp8: null
+    cg_eng_err_rcmd: null
+    cg_eng_err_superv: 9
+    cg_eng_errmsg_bcmd: '***Warning, BCMD error message'
+    cg_eng_errmsg_c_ctl: null
+    cg_eng_errmsg_c_gps: '***Warning, GPS error message'
+    cg_eng_errmsg_c_imm: null
+    cg_eng_errmsg_c_irid: null
+    cg_eng_errmsg_c_power_sys: null
+    cg_eng_errmsg_c_pps: '***Warning, PPS error message'
+    cg_eng_errmsg_c_status: null
+    cg_eng_errmsg_c_telem_sys: null
+    cg_eng_errmsg_cpm1: null
+    cg_eng_errmsg_d_ctl: null
+    cg_eng_errmsg_d_status: null
+    cg_eng_errmsg_dlog_mgr: null
+    cg_eng_errmsg_dlogp1: null
+    cg_eng_errmsg_dlogp2: null
+    cg_eng_errmsg_dlogp3: null
+    cg_eng_errmsg_dlogp4: null
+    cg_eng_errmsg_dlogp5: null
+    cg_eng_errmsg_dlogp6: null
+    cg_eng_errmsg_dlogp7: '***Warning, DLOGP7 error message'
+    cg_eng_errmsg_dlogp8: null
+    cg_eng_errmsg_rcmd: null
+    cg_eng_errmsg_superv: '***Warning, SUPERV error message'
+    cg_eng_gps_alt:           1.7000
+    cg_eng_gps_cog:         303.5000
+    cg_eng_gps_date: 170814
+    cg_eng_gps_fix: 2
+    cg_eng_gps_hdop:           1.1000
+    cg_eng_gps_last_update:           0.8610
+    cg_eng_gps_lat:          44.65875
+    cg_eng_gps_latstr: '4439.5250 N'
+    cg_eng_gps_lon:        -124.09549
+    cg_eng_gps_lonstr: '12405.7295 W'
+    cg_eng_gps_msg_date: '2014/08/17'
+    cg_eng_gps_msg_time: '12:55:02.868'
+    cg_eng_gps_nsat: 10
+    cg_eng_gps_spd:           0.9000
+    cg_eng_gps_time: 125502
+    cg_eng_loadshed_last_update:           0.1670
+    cg_eng_loadshed_status: 'ena 0 low 22.0 high 23.0 priority 6,4,7 shed: '
+    cg_eng_memory_free: 80972
+    cg_eng_memory_ram: 127460
+    cg_eng_mpic_bat_c:           0.0000
+    cg_eng_mpic_bat_v:           0.0000
+    cg_eng_mpic_dcl: 8
+    cg_eng_mpic_dsl: 1
+    cg_eng_mpic_eflag: 0
+    cg_eng_mpic_eflag2: 0
+    cg_eng_mpic_esw: 1
+    cg_eng_mpic_fw_wifi: 3
+    cg_eng_mpic_fw_wifi_c:         305.5000
+    cg_eng_mpic_fw_wifi_e: 0
+    cg_eng_mpic_fw_wifi_v:          11.9000
+    cg_eng_mpic_gf_ena: 15
+    cg_eng_mpic_gflt1:           7.3000
+    cg_eng_mpic_gflt2:          76.6000
+    cg_eng_mpic_gflt3:         120.6000
+    cg_eng_mpic_gflt4:           6.5000
+    cg_eng_mpic_gps: 1
+    cg_eng_mpic_hbeat_dtime: 125
+    cg_eng_mpic_hbeat_enable: 1
+    cg_eng_mpic_hbeat_threshold: 2
+    cg_eng_mpic_humid:          12.6000
+    cg_eng_mpic_irid: 0
+    cg_eng_mpic_irid_c:           4.9000
+    cg_eng_mpic_irid_e: 0
+    cg_eng_mpic_irid_v:           1.6000
+    cg_eng_mpic_last_update:           0.0010
+    cg_eng_mpic_ld_ena: 3
+    cg_eng_mpic_ldet1:        1204.0000
+    cg_eng_mpic_ldet2:        1211.0000
+    cg_eng_mpic_main_c:         541.0000
+    cg_eng_mpic_main_v:          31.1000
+    cg_eng_mpic_pps: 0
+    cg_eng_mpic_press:          14.2000
+    cg_eng_mpic_sbd: 0
+    cg_eng_mpic_sbd_ce_msg: 0
+    cg_eng_mpic_temp1:          16.0000
+    cg_eng_mpic_temp2:          14.4000
+    cg_eng_mpic_wake_cpm:           0.0000
+    cg_eng_mpic_wpc: 964
+    cg_eng_mpic_wsrc: 2
+    cg_eng_msg_cnts_c_gps: 138
+    cg_eng_msg_cnts_c_ntp: 1
+    cg_eng_msg_cnts_c_power_sys: 2
+    cg_eng_msg_cnts_c_pps: 7
+    cg_eng_msg_cnts_c_superv: 36
+    cg_eng_msg_cnts_c_telem: 0
+    cg_eng_nproc: 87
+    cg_eng_ntp_jitter:           0.0950
+    cg_eng_ntp_offset:          -5.1540
+    cg_eng_ntp_refid: '.PPS.'
+    cg_eng_platform_time: '2014/08/17 12:55:03.730'
+    cg_eng_platform_utime:  1408280103.7300
+    cg_eng_pps_bad_pulse: 2
+    cg_eng_pps_delta: 1000026
+    cg_eng_pps_deltamax: 134
+    cg_eng_pps_deltamin: -3
+    cg_eng_pps_last_update:           7.7240
+    cg_eng_pps_lock: 'TRUE'
+    cg_eng_pps_timestamp: '2014/08/17 12:54:56.005'
+    cg_eng_pwrsys_b1_0:           0.0000
+    cg_eng_pwrsys_b1_1:           0.0000
+    cg_eng_pwrsys_b1_2:           0.0000
+    cg_eng_pwrsys_b2_0:           0.0000
+    cg_eng_pwrsys_b2_1:           0.0000
+    cg_eng_pwrsys_b2_2:           0.0000
+    cg_eng_pwrsys_b3_0:           0.0000
+    cg_eng_pwrsys_b3_1:           0.0000
+    cg_eng_pwrsys_b3_2:           0.0000
+    cg_eng_pwrsys_b4_0:           0.0000
+    cg_eng_pwrsys_b4_1:           0.0000
+    cg_eng_pwrsys_b4_2:           0.0000
+    cg_eng_pwrsys_b_chg:           0.0000
+    cg_eng_pwrsys_cvt_0: 0
+    cg_eng_pwrsys_cvt_1:           0.0000
+    cg_eng_pwrsys_cvt_2:           0.0000
+    cg_eng_pwrsys_cvt_3: 0
+    cg_eng_pwrsys_cvt_4: 0
+    cg_eng_pwrsys_eflag1: 0
+    cg_eng_pwrsys_eflag2: 0
+    cg_eng_pwrsys_eflag3: 0
+    cg_eng_pwrsys_fc1_0: 0
+    cg_eng_pwrsys_fc1_1:           0.0000
+    cg_eng_pwrsys_fc1_2:           0.0000
+    cg_eng_pwrsys_fc2_0: 0
+    cg_eng_pwrsys_fc2_1:           0.0000
+    cg_eng_pwrsys_fc2_2:           0.0000
+    cg_eng_pwrsys_fc_level:           0.0000
+    cg_eng_pwrsys_last_update:  1408280103.7300
+    cg_eng_pwrsys_main_c:           0.0000
+    cg_eng_pwrsys_main_v:           0.0000
+    cg_eng_pwrsys_override: 0
+    cg_eng_pwrsys_pv1_0: 0
+    cg_eng_pwrsys_pv1_1:           0.0000
+    cg_eng_pwrsys_pv1_2:           0.0000
+    cg_eng_pwrsys_pv2_0: 0
+    cg_eng_pwrsys_pv2_1:           0.0000
+    cg_eng_pwrsys_pv2_2:           0.0000
+    cg_eng_pwrsys_pv3_0: 0
+    cg_eng_pwrsys_pv3_1:           0.0000
+    cg_eng_pwrsys_pv3_2:           0.0000
+    cg_eng_pwrsys_pv4_0: 0
+    cg_eng_pwrsys_pv4_1:           0.0000
+    cg_eng_pwrsys_pv4_2:           0.0000
+    cg_eng_pwrsys_swg_0: 0
+    cg_eng_pwrsys_swg_1:           0.0000
+    cg_eng_pwrsys_swg_2:           0.0000
+    cg_eng_pwrsys_temp:           0.0000
+    cg_eng_pwrsys_wt1_0: 0
+    cg_eng_pwrsys_wt1_1:           0.0000
+    cg_eng_pwrsys_wt1_2:           0.0000
+    cg_eng_pwrsys_wt2_0: 0
+    cg_eng_pwrsys_wt2_1:           0.0000
+    cg_eng_pwrsys_wt2_2:           0.0000
+    cg_eng_sbc_bid: 27784
+    cg_eng_sbc_bstr: 16
+    cg_eng_sbc_ce_led: 1
+    cg_eng_sbc_eth0: 1
+    cg_eng_sbc_eth1: 0
+    cg_eng_sbc_fb1: 0
+    cg_eng_sbc_fb2: 0
+    cg_eng_sbc_gpio0: 1
+    cg_eng_sbc_gpio1: 1
+    cg_eng_sbc_gpio2: 1
+    cg_eng_sbc_gpio3: 1
+    cg_eng_sbc_gpio4: 0
+    cg_eng_sbc_gpio5: 0
+    cg_eng_sbc_gpo0: 0
+    cg_eng_sbc_gpo1: 0
+    cg_eng_sbc_gpo2: 0
+    cg_eng_sbc_gpo3: 0
+    cg_eng_sbc_gpo4: 0
+    cg_eng_sbc_led0: 1
+    cg_eng_sbc_led1: 0
+    cg_eng_sbc_led2: 0
+    cg_eng_sbc_wdt: 1952
+    cg_eng_sched_last_update:           0.1470
+    cg_eng_sched_num1: [0, 0, 0, 0, 0]
+    cg_eng_sched_num2: [3, 3, 3, 3, 3]
+    cg_eng_sched_num3: [6, 6, 6, 6, 6]
+    cg_eng_sched_num4: [9, 9, 9, 9, 9]
+    cg_eng_sched_num5: [12, 12, 12, 12, 12]
+    cg_eng_sched_num6: [15, 15, 15, 15, 15]
+    cg_eng_sched_num7: [18, 18, 18, 18, 18]
+    cg_eng_sched_remaining: [1857, 1017, 57, 57, 1797]
+    cg_eng_sched_status: ['started', 'started', 'stopped', 'stopped', 'started']
+    cg_eng_sched_status_val: [1, 1, 1, 1, 1]
+    cg_eng_sched_sys: ['cpm', 'dcl4', 'dcl6', 'dcl7', 'telem']
+    cg_eng_sched_time: ['21:53:33', '21:54:18', '21:56:14', '21:56:14', '21:55:30']
+    cg_eng_sched_type: ['wake', 'pwr', 'pwr', 'pwr', 'irid']

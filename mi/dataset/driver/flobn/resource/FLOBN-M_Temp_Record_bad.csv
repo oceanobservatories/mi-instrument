@@ -1,0 +1,8 @@
+Core Data Product-Parameter,BENTHFL-TEMPTIME,BENTHFL-AMBTEMP
+Descriptive Name,FLOBN-M Temperature Sample Time,FLOBN-M Ambient Temperature
+Units,yyyy/mm/dd hh:mm,Centigrade
+Format,GMT Date and Time,Floating Point
+Significant Digits,Minute Resolution ,3 decimal points
+***SKIP FIRST LINE OF FILE***,"Date Time, GMT-07:00","Temp, C (LGR S/N: 10333951, SEN S/N: 10333951)"
+,2013/0 15:07,23.978
+2013/06/26 15:37,24.339

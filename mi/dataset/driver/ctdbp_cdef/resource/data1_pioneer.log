@@ -1,0 +1,303 @@
+* Sea-Bird SBE16plus  Data File:
+* FileName = C:\Pioneer 1 Deployment Data\CTDBP 16P 71174-7208\SBE16plus_01607208_2014_07_01.hex
+* Software version 1.1g
+* Temperature SN = 7208
+* Conductivity SN = 7208
+* System UpLoad Time = Jul 01 2014 16:50:05
+* <ApplicationData>
+* <Seaterm232>
+* <SoftwareVersion>1.1g</SoftwareVersion>
+* <BuildDate>15-Feb-2012</BuildDate>
+* </Seaterm232>
+* </ApplicationData>
+* <InstrumentState>
+* <HardwareData DeviceType='SBE16plus' SerialNumber='01607208'>
+*    <Manufacturer>Sea-Bird Electronics, Inc.</Manufacturer>
+*    <FirmwareVersion>2.5</FirmwareVersion>
+*    <FirmwareDate>01 May 2012 11:25</FirmwareDate>
+*    <CommandSetVersion>2.3</CommandSetVersion>
+*    <PCBAssembly PCBSerialNum='49543' AssemblyNum='41054H'/>
+*    <PCBAssembly PCBSerialNum='46730' AssemblyNum='41580B'/>
+*    <PCBAssembly PCBSerialNum='49385' AssemblyNum='41606'/>
+*    <PCBAssembly PCBSerialNum='45957' AssemblyNum='41059D'/>
+*    <MfgDate>15-Oct-2012</MfgDate>
+*    <InternalSensors>
+*       <Sensor id='Main Temperature'>
+*          <type>temperature0</type>
+*          <SerialNumber>01607208</SerialNumber>
+*       </Sensor>
+*       <Sensor id='Main Conductivity'>
+*          <type>conductivity-0</type>
+*          <SerialNumber>01607208</SerialNumber>
+*       </Sensor>
+*       <Sensor id='Main Pressure'>
+*          <type>strain-0</type>
+*          <SerialNumber>3708616</SerialNumber>
+*       </Sensor>
+*    </InternalSensors>
+*    <ExternalSensors>
+*       <Sensor id='volt 0'>
+*          <type>not assigned</type>
+*          <SerialNumber>not assigned</SerialNumber>
+*       </Sensor>
+*       <Sensor id='volt 1'>
+*          <type>not assigned</type>
+*          <SerialNumber>not assigned</SerialNumber>
+*       </Sensor>
+*       <Sensor id='volt 2'>
+*          <type>not assigned</type>
+*          <SerialNumber>not assigned</SerialNumber>
+*       </Sensor>
+*       <Sensor id='volt 3'>
+*          <type>not assigned</type>
+*          <SerialNumber>not assigned</SerialNumber>
+*       </Sensor>
+*       <Sensor id='volt 4'>
+*          <type>not assigned</type>
+*          <SerialNumber>not assigned</SerialNumber>
+*       </Sensor>
+*       <Sensor id='volt 5'>
+*          <type>not assigned</type>
+*          <SerialNumber>not assigned</SerialNumber>
+*       </Sensor>
+*       <Sensor id='serial'>
+*          <type>not assigned</type>
+*          <SerialNumber>not assigned</SerialNumber>
+*       </Sensor>
+*    </ExternalSensors>
+* </HardwareData>
+* <StatusData DeviceType='SBE16plus' SerialNumber='01607208'>
+*    <DateTime>2014-07-01T19:24:18</DateTime>
+*    <LoggingState>not logging</LoggingState>
+*    <EventSummary numEvents='255'/>
+*    <Power>
+*       <vMain>11.3</vMain>
+*       <vLith>8.4</vLith>
+*       <iMain>61.9</iMain>
+*       <iPump>203.3</iPump>
+*    </Power>
+*    <MemorySummary>
+*       <Bytes>4707405</Bytes>
+*       <Samples>313827</Samples>
+*       <SamplesFree>4072715</SamplesFree>
+*       <SampleLength>15</SampleLength>
+*       <Headers>999</Headers>
+*    </MemorySummary>
+* </StatusData>
+* <ConfigurationData DeviceType='SBE16plus' SerialNumber='01607208'>
+*    <SamplingParameters>
+*       <SampleInterval>10</SampleInterval>
+*       <MeasurementsPerSample>4</MeasurementsPerSample>
+*       <Pump>run pump for 0.5 sec</Pump>
+*       <DelayBeforeSampling>0.0</DelayBeforeSampling>
+*       <DelayAfterSampling>0.0</DelayAfterSampling>
+*       <TransmitRealTime>yes</TransmitRealTime>
+*    </SamplingParameters>
+*    <Battery>
+*       <CutOff>7.5</CutOff>
+*    </Battery>
+*    <DataChannels>
+*       <ExtVolt0>no</ExtVolt0>
+*       <ExtVolt1>no</ExtVolt1>
+*       <ExtVolt2>no</ExtVolt2>
+*       <ExtVolt3>no</ExtVolt3>
+*       <ExtVolt4>no</ExtVolt4>
+*       <ExtVolt5>no</ExtVolt5>
+*       <SBE38>no</SBE38>
+*       <SBE50>no</SBE50>
+*       <WETLABS>no</WETLABS>
+*       <OPTODE>no</OPTODE>
+*       <SBE63>no</SBE63>
+*       <GTD>no</GTD>
+*    </DataChannels>
+*    <EchoCharacters>yes</EchoCharacters>
+*    <OutputExecutedTag>yes</OutputExecutedTag>
+*    <OutputFormat>converted decimal</OutputFormat>
+*    <OutputSalinity>yes</OutputSalinity>
+*    <OutputSoundVelocity>yes</OutputSoundVelocity>
+*    <OutputSigmaT-V-I>yes</OutputSigmaT-V-I>
+*    <SerialLineSync>no</SerialLineSync>
+* </ConfigurationData>
+* <CalibrationCoefficients DeviceType='SBE16plus' SerialNumber='01607208'>
+*    <Calibration format='TEMP1' id='Main Temperature'>
+*       <SerialNum>01607208</SerialNum>
+*       <CalDate>25-Oct-12</CalDate>
+*       <TA0>1.238943e-03</TA0>
+*       <TA1>2.764602e-04</TA1>
+*       <TA2>-1.207305e-06</TA2>
+*       <TA3>1.864655e-07</TA3>
+*       <TOFFSET>0.000000e+00</TOFFSET>
+*    </Calibration>
+*    <Calibration format='WBCOND0' id='Main Conductivity'>
+*       <SerialNum>01607208</SerialNum>
+*       <CalDate>25-Oct-12</CalDate>
+*       <G>-9.907533e-01</G>
+*       <H>1.352599e-01</H>
+*       <I>-3.231306e-04</I>
+*       <J>4.094095e-05</J>
+*       <CPCOR>-9.570000e-08</CPCOR>
+*       <CTCOR>3.250000e-06</CTCOR>
+*       <CSLOPE>1.000000e+00</CSLOPE>
+*    </Calibration>
+*    <Calibration format='STRAIN0' id='Main Pressure'>
+*       <SerialNum>3708616</SerialNum>
+*       <CalDate>22-Oct-12</CalDate>
+*       <PA0>-1.261873e-02</PA0>
+*       <PA1>4.832305e-04</PA1>
+*       <PA2>-4.831339e-12</PA2>
+*       <PTCA0>5.248595e+05</PTCA0>
+*       <PTCA1>3.619037e+00</PTCA1>
+*       <PTCA2>-2.391939e-01</PTCA2>
+*       <PTCB0>2.525700e+01</PTCB0>
+*       <PTCB1>-8.000001e-04</PTCB1>
+*       <PTCB2>0.000000e+00</PTCB2>
+*       <PTEMPA0>-6.337669e+01</PTEMPA0>
+*       <PTEMPA1>5.451132e+01</PTEMPA1>
+*       <PTEMPA2>-8.674222e-01</PTEMPA2>
+*       <POFFSET>0.000000e+00</POFFSET>
+*       <PRANGE>1.600000e+02</PRANGE>
+*    </Calibration>
+*    <Calibration format='VOLT0' id='Volt 0'>
+*       <OFFSET>-4.799684e-02</OFFSET>
+*       <SLOPE>1.247177e+00</SLOPE>
+*    </Calibration>
+*    <Calibration format='VOLT0' id='Volt 1'>
+*       <OFFSET>-4.738527e-02</OFFSET>
+*       <SLOPE>1.247661e+00</SLOPE>
+*    </Calibration>
+*    <Calibration format='VOLT0' id='Volt 2'>
+*       <OFFSET>-4.759790e-02</OFFSET>
+*       <SLOPE>1.247131e+00</SLOPE>
+*    </Calibration>
+*    <Calibration format='VOLT0' id='Volt 3'>
+*       <OFFSET>-4.824526e-02</OFFSET>
+*       <SLOPE>1.246615e+00</SLOPE>
+*    </Calibration>
+*    <Calibration format='VOLT0' id='Volt 4'>
+*       <OFFSET>-4.844105e-02</OFFSET>
+*       <SLOPE>1.247225e+00</SLOPE>
+*    </Calibration>
+*    <Calibration format='VOLT0' id='Volt 5'>
+*       <OFFSET>-4.806947e-02</OFFSET>
+*       <SLOPE>1.248359e+00</SLOPE>
+*    </Calibration>
+*    <Calibration format='FREQ0' id='external frequency channel'>
+*       <EXTFREQSF>9.999930e-01</EXTFREQSF>
+*    </Calibration>
+* </CalibrationCoefficients>
+* <EventCounters DeviceType='SBE16plus' SerialNumber='01607208'>
+*    <EventSummary numEvents='255'/>
+*    <Event type='alarm short' count='255'/>
+* </EventCounters></InstrumentState>
+* <Headers>
+* hdr   1 10 Nov 2013 21:39:35 samples 1 to 25, int = 10, stop = stop cmd
+* hdr   2 10 Nov 2013 21:55:24 samples 26 to 74, int = 10, stop = stop cmd
+* hdr   3 10 Nov 2013 22:20:23 samples 75 to 110, int = 10, stop = stop cmd
+* hdr   4 10 Nov 2013 22:35:24 samples 111 to 146, int = 10, stop = stop cmd
+* hdr   5 10 Nov 2013 22:50:24 samples 147 to 182, int = 10, stop = stop cmd
+* hdr   6 10 Nov 2013 23:05:23 samples 183 to 237, int = 10, stop = stop cmd
+* hdr   7 10 Nov 2013 23:35:24 samples 238 to 279, int = 10, stop = stop cmd
+* hdr   8 10 Nov 2013 23:55:24 samples 280 to 308, int = 10, stop = stop cmd
+* hdr   9 11 Nov 2013 00:05:24 samples 309 to 344, int = 10, stop = stop cmd
+* hdr  10 11 Nov 2013 00:20:21 samples 345 to 369, int = 10, stop = stop cmd
+*END*
+064C8F0A984808787746DE1A12B995
+064D110A984808787946D11A12B99F
+06501D0A984708787B46DB1A12B9A9
+06519A0A984708787B46D31A12B9B3
+0653200A984808787946D51A12B9BD
+0653B80A984808787A46D21A12B9C7
+0654700A984708787A46D41A12B9D1
+0655A40A984708787646CA1A12B9DB
+0656550A984808787D46CB1A12B9E5
+0657130A984708787A46BE1A12B9EF
+0657E90A984708787846C61A12B9F9
+0658A60A984708787846C31A12BA03
+0660800A984608787346AE1A12BAA7
+0660F70A984708787946AB1A12BAB0
+0661360A984808787546A51A12BABA
+0661650A984808787946A21A12BAC4
+0661E70A984908787946A01A12BACE
+0662280A984808787A469B1A12BAD8
+0668ED0A984708787446811A12BBD2
+0669350A984808787846791A12BBDA
+0669A60A984908787B46781A12BBE4
+066A070A984908787846751A12BBEE
+066A870A984808787B466E1A12BBF8
+066B000A984908787B46691A12BC02
+066B520A9848087878466A1A12BC0C
+06701E0A984808788046481A12BD4A
+0670950A9848087880464A1A12BD54
+0670860A984808787C46431A12BD5E
+06708D0A984708787F464D1A12BD68
+06706C0A984708788046451A12BD72
+06708C0A984708788246481A12BD7C
+0670D40A9847087880463D1A12BD86
+0671410A9847087880463D1A12BD90
+0671650A984708787E46381A12BD9A
+0671C50A9847087882463C1A12BDA4
+0671FE0A9846087880463F1A12BDAE
+06720A0A984708787F46371A12BDB8
+0672670A984608787F46361A12BDC2
+0672780A9847087882463D1A12BDCC
+06728D0A984608788246391A12BDD6
+06728A0A984708788346301A12BDE0
+0672A70A984608788146321A12BDEA
+0672BC0A984708788446361A12BDF4
+0672810A984708788146341A12BDFE
+0672530A984608787F462E1A12BE08
+06724A0A984708787F46281A12BE12
+06725E0A984608787F462D1A12BE1C
+0672920A984708788046281A12BE26
+0672B40A984708787F46311A12BE30
+0672940A984608787E462A1A12BE3A
+0672E30A984608787E462D1A12BE44
+0673110A9846087880462B1A12BE4E
+06736A0A984608788146221A12BE58
+0673870A984708787E46271A12BE62
+0675200A984708787746191A12BF57
+0674F30A984908787D46151A12BF60
+0675290A984708787A46171A12BF6A
+0674F90A984808787D46171A12BF74
+0674E10A984708787D46121A12BF7E
+0674BB0A984708787C460C1A12BF88
+0675EC0A984708787846041A12C082
+0675F40A984808787845FD1A12C08A
+0675E40A984608787B45F31A12C094
+0675E30A984708787E45F81A12C09E
+0675F80A984708787C45FE1A12C0A8
+06760E0A984808787C45FE1A12C0B2
+0676170A984708787E45FB1A12C0BC
+0675C90A984708787745F71A12C1AD
+0675CA0A984808787A45F41A12C1B6
+0675E80A984708788045F21A12C1C0
+0675EF0A984808788245F21A12C1CA
+0675F40A984808787F45F01A12C1D4
+0676040A984808788045EE1A12C1DE
+0676080A984708788245ED1A12C1E8
+067A0B0A984708787D45E01A12C325
+067A2B0A984708787C45E41A12C32F
+067A5D0A984708787C45D71A12C339
+067A760A984708787D45E11A12C343
+067A8F0A984608787D45DC1A12C34D
+067AA60A984708787E45E11A12C357
+067AC50A984708787B45E21A12C361
+067B1B0A984708787945DD1A12C36B
+067B1F0A984708787B45D21A12C375
+067B3B0A984708787D45DF1A12C37F
+067BBA0A984708787B45E31A12C389
+067C350A984708787745D51A12C393
+067C5E0A984708787945DC1A12C39D
+067C640A984708787845D91A12C3A7
+067C730A984708787A45D91A12C3B1
+067C7F0A984608787A45D71A12C3BB
+067C960A984708787745D81A12C3C5
+067CAB0A984808787945D91A12C3CF
+067CC40A984708787A45DA1A12C3D9
+067CDE0A984708787845D71A12C3E3
+067CFC0A984708787545D51A12C3ED
+067D1B0A984708787945D51A12C3F7
+067D3F0A984708787745D31A12C401
+067D600A984708787745D91A12C40B
+067D820A984708787645D91A12C415
+067DA40A984708787B45D51A12C41F

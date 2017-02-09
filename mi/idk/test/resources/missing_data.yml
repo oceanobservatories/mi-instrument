@@ -1,0 +1,4 @@
+header:
+    particle_object: FakeParticleClass
+    particle_type: fake_particle_type
+

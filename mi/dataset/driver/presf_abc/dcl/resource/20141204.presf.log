@@ -1,0 +1,27 @@
+2014/12/04 19:57:14.675 [presf:DLOGP2]:Logger started: Idle state, without initialize
+2014/12/04 20:57:23.611 [presf:DLOGP2]:Logger started: Idle state, without initialize
+2014/12/04 21:57:17.956 [presf:DLOGP2]:Logger started: Idle state, without initialize
+2014/12/04 22:27:35.140 [presf:DLOGP2]:Logger started: Idle state, without initialize
+2014/12/04 22:31:46.158 [presf:DLOGP2]:[SETSAMPLING] Command returned first response (Accepted)
+2014/12/04 22:31:46.395 [presf:DLOGP2]:[60] Command returned first response (Accepted)
+2014/12/04 22:31:46.634 [presf:DLOGP2]:[3600] Command returned first response (Accepted)
+2014/12/04 22:31:46.872 [presf:DLOGP2]:[6] Command returned first response (Accepted)
+2014/12/04 22:31:47.103 [presf:DLOGP2]:[1024] Command returned first response (Accepted)
+2014/12/04 22:31:47.338 [presf:DLOGP2]:[1] Command returned first response (Accepted)
+2014/12/04 22:31:47.578 [presf:DLOGP2]:[Y] Command returned first response (Accepted)
+2014/12/04 22:31:47.821 [presf:DLOGP2]:[N] Command returned first response (Accepted)
+2014/12/04 22:31:48.207 [presf:DLOGP2]:[N] Command returned first response (Accepted)
+2014/12/04 22:31:48.474 [presf:DLOGP2]:[TxTide=Y] Command returned first response (Accepted)
+2014/12/04 22:31:48.756 [presf:DLOGP2]:[TxWave=N] Command returned first response (Accepted)
+2014/12/04 22:31:49.044 [presf:DLOGP2]:[ExternalTemperature=N] Command returned first response (Accepted)
+2014/12/04 22:31:49.323 [presf:DLOGP2]:[Conductivity=N] Command returned first response (Accepted)
+2014/12/04 22:31:49.642 [presf:DLOGP2]:[UserInfo=OOI] Command returned first response (Accepted)
+2014/12/04 22:31:49.643 [presf:DLOGP2]:Battery initialize [Initialize]
+2014/12/04 22:32:09.540 [presf:DLOGP2]:[DateTime=12042014223209] Command returned first response (Accepted)
+2014/12/04 22:32:09.540 [presf:DLOGP2]:Battery initialize [Time and Date]
+2014/12/04 22:34:12.103 time out
+2014/12/04 22:36:23.275 [presf:DLOGP2]:[setstarttime] Command returned first response (Accepted)
+2014/12/04 22:37:13.417 [presf:DLOGP2]:After 5 attemps no prompt [S>] found
+2014/12/04 22:39:02.595 [presf:DLOGP2]:Logger started: Idle state, without initialize
+2014/12/04 23:00:02.787 [presf:DLOGP2]:Battery power on message
+2014/12/04 23:10:16.899 [presf:DLOGP2]:Battery power off message

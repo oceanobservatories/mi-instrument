@@ -1,0 +1,40 @@
+dbd_label: DBD_ASC(dinkum_binary_data_ascii)file
+encoding_ver: 2
+num_ascii_tags: 14
+all_sensors: 0
+filename: cp_388-2016-012-0-0
+the8x3_filename: 00870000
+filename_extension: sbd
+filename_label: cp_388-2016-012-0-0-sbd(00870000)
+mission_name: initial.mi
+fileopen_time: Wed_Jan_13_17:21:17_2016
+sensors_per_cycle: 52
+num_label_lines: 3
+num_segments: 1
+segment_filename_0: cp_388-2016-012-0-0
+c_ballast_pumped c_battpos c_de_oil_vol c_dvl_on c_heading c_pitch c_wpt_lat c_wpt_lon m_air_pump m_altitude m_ballast_pumped m_battery m_battpos m_coulomb_amphr_total m_coulomb_current m_depth m_de_oil_vol m_fin m_gps_lat m_gps_lon m_heading m_lat m_lithium_battery_relative_charge m_lon m_pitch m_present_secs_into_mission m_present_time m_pressure m_raw_altitude m_roll m_speed m_thermal_valve m_vacuum m_water_depth m_water_vx m_water_vy x_low_power_status sci_bsipar_par sci_flbbcd_bb_units sci_flbbcd_cdom_units sci_flbbcd_chlor_units sci_m_disk_free sci_m_disk_usage sci_m_present_secs_into_mission sci_m_present_time sci_oxy4_oxygen sci_oxy4_saturation sci_water_cond sci_water_pressure sci_water_temp sci_x_disk_files_removed sci_x_sent_data_files 
+cc in cc sec rad rad lat lon bool m cc volts in amp-hrs amp m cc rad lat lon rad lat % lon rad sec timestamp bar m rad m/s enum inHg m m/s m/s nodim ue/m^2sec nodim ppb ug/l mbytes mbytes sec timestamp um % s/m bar degc nodim nodim 
+4 4 4 4 4 4 8 8 1 4 4 4 4 4 4 4 4 4 8 8 4 8 4 8 4 4 8 4 4 4 4 1 4 4 4 4 4 4 4 4 4 4 4 4 8 4 4 4 4 4 4 4 
+NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN 133.778 1452705594.77768 NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN 0.0321486 0 0 0 1026.53 972.938 133.778 1452705594.77768 241.855 61.326 0 0 0 0 0 
+260 0.738 260 -1 0 0 0 0 1 0 0 9.85037 0.745026 540.614 4.35397 624.704 146.587 0 69696969 69696969 3.50113 3950.8632 24.9147 -7046.3354 -0.190241 18.893 1452705611.24094 62.4704 0 -0.0663225 -0.151275 2 8.53757 -1 0 0 4 NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN 
+NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN 21.0263 1452705613.02628 NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN 0.0321486 0 0 0 1026.53 972.938 21.0263 1452705613.02628 241.855 61.326 0 0 0 0 0 
+NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN 101.199 1452705693.548 NaN NaN NaN NaN 2 NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN 
+260 -0.738 260 -1 0 0 0 0 1 0 0 9.85037 -0.726252 540.676 0.358922 596.607 NaN 0 69696969 69696969 5.05971 3950.8632 24.9061 -7046.3354 0.804597 178.125 1452705770.47406 59.6607 0 -0.0802851 0.368414 NaN 8.53757 -1 0 0 1 NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN 
+NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN 209.466 1452705801.81482 NaN NaN NaN NaN 2 NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN 
+260 -0.738 260 -1 NaN NaN NaN NaN 1 NaN NaN NaN -0.726252 540.693 0.366641 521.892 NaN 0 NaN NaN 5.25519 NaN 24.9038 NaN 0.802851 364.171 1452705956.5199 52.1892 NaN -0.0820305 0.380481 NaN NaN NaN NaN NaN 1 NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN 
+NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN 424.392 1452706016.74081 NaN NaN NaN NaN 2 NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN 
+260 -0.738 260 -1 NaN NaN NaN NaN 1 NaN NaN NaN -0.727492 540.71 0.357437 449.557 NaN 0 NaN NaN 5.5292 NaN 24.9013 NaN 0.815069 544.703 1452706137.05051 44.9557 NaN -0.0837758 0.357933 NaN NaN NaN NaN NaN 1 NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN 
+NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN 259.477 NaN NaN NaN NaN NaN NaN NaN NaN 589.909 1452706182.25702 NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN 
+NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN 635.202 1452706227.55066 NaN NaN NaN NaN 2 NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN 
+260 -0.738 260 -1 NaN NaN NaN NaN 1 NaN NaN NaN -0.726252 540.727 0.369312 376.045 NaN 0 NaN NaN 5.84511 NaN 24.899 NaN 0.79587 729.182 1452706321.53073 37.6045 NaN -0.0680678 0.388051 NaN NaN NaN NaN NaN 1 NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN 
+NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN 849.536 1452706441.88455 NaN NaN NaN NaN 2 NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN 
+260 -0.738 260 -1 NaN NaN NaN NaN 1 NaN NaN NaN -0.726252 540.745 0.369609 306.528 NaN 0 NaN NaN 5.99521 NaN 24.8966 NaN 0.792379 909.724 1452706502.0723 30.6528 NaN -0.0698132 0.36517 NaN NaN NaN NaN NaN 1 NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN 
+NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN 1060.11 1452706652.45615 NaN NaN NaN NaN 2 NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN 
+260 -0.738 260 -1 NaN NaN NaN NaN 1 NaN NaN NaN -0.726252 540.761 0.368125 238.296 NaN 0 NaN NaN 6.23257 NaN 24.8943 NaN 0.771436 1090.12 1452706682.47037 23.8296 NaN -0.0715585 0.369966 NaN NaN NaN NaN NaN 1 NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN 
+NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN 259.436 NaN NaN NaN NaN NaN NaN NaN NaN 1195.33 1452706787.67783 NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN 
+260 -0.738 260 -1 NaN NaN NaN NaN 1 NaN NaN NaN -0.726252 540.779 0.384453 170.886 NaN 0 NaN NaN 0.0314159 NaN 24.8918 NaN 0.783653 1270.63 1452706862.9827 17.0886 NaN -0.0698132 0.376223 2 NaN NaN NaN NaN 1 NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN 
+260 -0.738 260 -1 NaN NaN NaN NaN 1 NaN NaN NaN -0.726252 540.796 0.371094 106.183 NaN 0 NaN NaN 6.18196 NaN 24.8895 NaN 0.76969 1451.18 1452707043.52716 10.6183 NaN -0.0767945 0.343137 NaN NaN NaN NaN NaN 1 NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN 
+NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN 1481.38 1452707073.72937 NaN NaN NaN NaN 2 NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN 
+260 -0.738 260 -1 NaN NaN NaN NaN 1 NaN NaN NaN -0.726252 540.814 0.361 35.1613 NaN 0.00263872 NaN NaN 0.303687 NaN 24.887 NaN 0.741765 1634.54 1452707226.88834 3.51613 NaN -0.0366519 0.406496 NaN NaN NaN NaN NaN 1 NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN 
+NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN 1696.71 1452707289.06216 NaN NaN NaN NaN 2 NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN 
+NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN 1736.96 1452707328.96326 NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN 1026.41 973.062 1736.96 1452707328.96326 NaN NaN NaN NaN NaN 0 NaN 

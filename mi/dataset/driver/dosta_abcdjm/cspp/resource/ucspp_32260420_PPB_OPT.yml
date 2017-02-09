@@ -1,0 +1,51 @@
+header:
+    particle_object: 'MULTIPLE'
+    particle_type: 'MULTIPLE'
+data:
+  - _index: 1
+    particle_object: DostaAbcdjmCsppMetadataRecoveredDataParticle
+    particle_type: dosta_abcdjm_cspp_metadata_recovered
+    internal_timestamp: 3648503123.900
+    last_character_controller_id: '3'
+    day_of_year_number: 226
+    fraction_of_day: 420
+    processing_time: '10/22/2015 07:28:46'
+    source_file: 'C:\Users\ooiuser\Documents\uCSPP\CE01ISSP\2015_08\R00004\raw\32260420.PPB'
+    preprocessing_software_version: '1.11'
+    start_date: '08/14/2015'
+    product_number: 4831
+    serial_number: '353'
+  - _index: 2
+    particle_object: DostaAbcdjmCsppInstrumentRecoveredDataParticle
+    particle_type: dosta_abcdjm_cspp_instrument_recovered
+    internal_timestamp: 3648503123.900
+    profiler_timestamp: 1439514323.900
+    pressure_depth:        4580.639
+    suspect_timestamp: 1
+    estimated_oxygen_concentration:       299.457
+    estimated_oxygen_saturation: 85.997
+    optode_temperature:         10.531
+    calibrated_phase:        33.913
+    temp_compensated_phase:        33.913
+    blue_phase:        42.173
+    red_phase:         8.260
+    blue_amplitude:      731.3
+    red_amplitude:      749.5
+    raw_temperature:       420.6
+  - _index: 3
+    particle_object: DostaAbcdjmCsppInstrumentRecoveredDataParticle
+    particle_type: dosta_abcdjm_cspp_instrument_recovered
+    internal_timestamp: 3648503126.106
+    profiler_timestamp: 1439514326.106
+    pressure_depth:        16.981
+    suspect_timestamp: 0
+    estimated_oxygen_concentration:       299.441
+    estimated_oxygen_saturation: 85.991
+    optode_temperature:         10.530
+    calibrated_phase:        33.914
+    temp_compensated_phase:        33.914
+    blue_phase:        42.170
+    red_phase:         8.256
+    blue_amplitude:      731.4
+    red_amplitude:      750.8
+    raw_temperature:       420.6

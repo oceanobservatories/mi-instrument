@@ -1,0 +1,12 @@
+header:
+  particle_object: 'MULTIPLE'
+  particle_type: 'MULTIPLE'
+
+data:
+  - _index: 1
+    particle_object: PresfAbcWaveDataParticle
+    particle_type: presf_abc_wave_burst_recovered
+    internal_timestamp: 3637607402.0
+    presf_time: 481933802
+    presf_wave_press_temp_comp_number: 43983684
+    presf_wave_burst_pressure_number: [9076879, 9076881]

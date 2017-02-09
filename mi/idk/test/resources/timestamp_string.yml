@@ -1,0 +1,21 @@
+header:
+    particle_object: FakeDataParticle
+    particle_type: fake_particle_stream
+
+data:
+  - _index: 1
+    internal_timestamp: '2001-05-28T00:53:20Z'
+    param_1: 'ABC'
+    param_2: 3.2
+  - _index: 2
+    internal_timestamp: '2001-05-28T00:53:20.0Z'
+    param_1: 'ABC'
+    param_2: 3.2
+  - _index: 3
+    internal_timestamp: '2001-05-28T00:53:20'
+    param_1: 'ABC'
+    param_2: 3.2
+  - _index: 4
+    internal_timestamp: '2001-05-28T00:53:20.0Z'
+    param_1: 'ABC'
+    param_2: 3.2

@@ -1,0 +1,7 @@
+Message Id[unsigned short|#],Filename[signed char(13)|ascii],Line[short|#],Timestamp[unsigned long|epoch],Message[signed char(200)|ascii]1001,"/battery.cpp",127,1419008926,"Vehicle is high current charging capable: NO [Maximum allowed current: 40 amps]"
+1001,"diagnose.cpp",924,1419008926,"Warning: Verify transponder range test disabled in mission file, line 40"
+1001,"objectiv.cpp",1465,1419008926,"Warning: line 112, Minimum altitude (2.0 M) is within 1.5 meters of the emergency climb altitude (1.0 M)"
+1001,"CLE/host.cpp",961,1419009474,"Executing mission from VIP Run button"
+1001,"/gps_obj.cpp",657,1419009474,"Fix needed: Mission start"
+1001,"selftest.cpp",860,14190XYZ3,"Self test failure attitude (tilt),  [00800010] pausing mission"
+1001,"selftest.cpp",860,1419009483,"Self test failure attitude (tilt),  [00800010] pausing mission"

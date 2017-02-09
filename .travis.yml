@@ -39,6 +39,3 @@ before_script:
 # command to run tests
 script:
   - nosetests -a UNIT --with-coverage --cover-package=mi
-
-after_success:
-  - codecov

@@ -29,6 +29,7 @@ from logging import NOTSET
 import logger
 import yaml
 from pkg_resources import resource_string
+import mi.logging
 
 
 class _LoggingConfiguration(object):

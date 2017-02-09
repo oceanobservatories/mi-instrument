@@ -1,0 +1,204 @@
+header:
+    particle_object: AuvEngAuvOilCompensatorTelemParticle
+    particle_type: auv_eng_auv_oil_compensator
+data:
+  - _index: 1
+    internal_timestamp: 3627998285.043
+    mission_epoch: 1419009485
+    auv_latitude: 41.5543
+    auv_longitude: -70.7051
+    m_depth: 0.1500
+    raw_value: 252
+    oil_level: 50.6700
+    mission_time: 62285043
+    oil_location: 0
+  - _index: 2
+    internal_timestamp: 3627998295.209
+    mission_epoch: 1419009495
+    auv_latitude: 41.5543
+    auv_longitude: -70.7051
+    m_depth: -0.0400
+    raw_value: 250
+    oil_level: 50.0000
+    mission_time: 62295209
+    oil_location: 0
+  - _index: 3
+    internal_timestamp: 3627998305.373
+    mission_epoch: 1419009505
+    auv_latitude: 41.5543
+    auv_longitude: -70.7051
+    m_depth: 0.0100
+    raw_value: 250
+    oil_level: 50.0000
+    mission_time: 62305373
+    oil_location: 0
+  - _index: 4
+    internal_timestamp: 3627998315.538
+    mission_epoch: 1419009515
+    auv_latitude: 41.5543
+    auv_longitude: -70.7051
+    m_depth: -0.0600
+    raw_value: 268
+    oil_level: 56.0000
+    mission_time: 62315538
+    oil_location: 0
+  - _index: 5
+    internal_timestamp: 3627998325.657
+    mission_epoch: 1419009525
+    auv_latitude: 41.5543
+    auv_longitude: -70.7053
+    m_depth: 0.1200
+    raw_value: 276
+    oil_level: 58.6700
+    mission_time: 62325657
+    oil_location: 0
+  - _index: 6
+    internal_timestamp: 3627998335.824
+    mission_epoch: 1419009535
+    auv_latitude: 41.5543
+    auv_longitude: -70.7055
+    m_depth: 3.1200
+    raw_value: 280
+    oil_level: 60.0000
+    mission_time: 62335824
+    oil_location: 0
+  - _index: 7
+    internal_timestamp: 3627998345.987
+    mission_epoch: 1419009545
+    auv_latitude: 41.5544
+    auv_longitude: -70.7057
+    m_depth: 9.9800
+    raw_value: 252
+    oil_level: 50.6700
+    mission_time: 62345987
+    oil_location: 0
+  - _index: 8
+    internal_timestamp: 3627998356.152
+    mission_epoch: 1419009556
+    auv_latitude: 41.5544
+    auv_longitude: -70.7059
+    m_depth: 9.2000
+    raw_value: 276
+    oil_level: 58.6700
+    mission_time: 62356152
+    oil_location: 0
+  - _index: 9
+    internal_timestamp: 3627998366.317
+    mission_epoch: 1419009566
+    auv_latitude: 41.5544
+    auv_longitude: -70.7061
+    m_depth: 8.3100
+    raw_value: 281
+    oil_level: 60.3300
+    mission_time: 62366317
+    oil_location: 0
+  - _index: 10
+    internal_timestamp: 3627998376.482
+    mission_epoch: 1419009576
+    auv_latitude: 41.5544
+    auv_longitude: -70.7063
+    m_depth: 9.1500
+    raw_value: 282
+    oil_level: 60.6700
+    mission_time: 62376482
+    oil_location: 0
+  - _index: 11
+    internal_timestamp: 3627998386.647
+    mission_epoch: 1419009586
+    auv_latitude: 41.5543
+    auv_longitude: -70.7066
+    m_depth: 8.6900
+    raw_value: 282
+    oil_level: 60.6700
+    mission_time: 62386647
+    oil_location: 0
+  - _index: 12
+    internal_timestamp: 3627998396.812
+    mission_epoch: 1419009596
+    auv_latitude: 41.5543
+    auv_longitude: -70.7068
+    m_depth: 8.9800
+    raw_value: 283
+    oil_level: 61.0000
+    mission_time: 62396812
+    oil_location: 0
+  - _index: 13
+    internal_timestamp: 3627998406.978
+    mission_epoch: 1419009606
+    auv_latitude: 41.5543
+    auv_longitude: -70.7070
+    m_depth: 9.0300
+    raw_value: 284
+    oil_level: 61.3300
+    mission_time: 62406978
+    oil_location: 0
+  - _index: 14
+    internal_timestamp: 3627998417.142
+    mission_epoch: 1419009617
+    auv_latitude: 41.5543
+    auv_longitude: -70.7072
+    m_depth: 8.8900
+    raw_value: 284
+    oil_level: 61.3300
+    mission_time: 62417142
+    oil_location: 0
+  - _index: 15
+    internal_timestamp: 3627998427.307
+    mission_epoch: 1419009627
+    auv_latitude: 41.5543
+    auv_longitude: -70.7074
+    m_depth: 9.1800
+    raw_value: 284
+    oil_level: 61.3300
+    mission_time: 62427307
+    oil_location: 0
+  - _index: 16
+    internal_timestamp: 3627998437.472
+    mission_epoch: 1419009637
+    auv_latitude: 41.5544
+    auv_longitude: -70.7077
+    m_depth: 9.0300
+    raw_value: 284
+    oil_level: 61.3300
+    mission_time: 62437472
+    oil_location: 0
+  - _index: 17
+    internal_timestamp: 3627998447.637
+    mission_epoch: 1419009647
+    auv_latitude: 41.5543
+    auv_longitude: -70.7079
+    m_depth: 9.0100
+    raw_value: 284
+    oil_level: 61.3300
+    mission_time: 62447637
+    oil_location: 0
+  - _index: 18
+    internal_timestamp: 3627998457.802
+    mission_epoch: 1419009657
+    auv_latitude: 41.5543
+    auv_longitude: -70.7081
+    m_depth: 9.2900
+    raw_value: 285
+    oil_level: 61.6700
+    mission_time: 62457802
+    oil_location: 0
+  - _index: 19
+    internal_timestamp: 3627998467.967
+    mission_epoch: 1419009667
+    auv_latitude: 41.5544
+    auv_longitude: -70.7083
+    m_depth: 8.9900
+    raw_value: 285
+    oil_level: 61.6700
+    mission_time: 62467967
+    oil_location: 0
+  - _index: 20
+    internal_timestamp: 3627998478.132
+    mission_epoch: 1419009678
+    auv_latitude: 41.5543
+    auv_longitude: -70.7085
+    m_depth: 9.1100
+    raw_value: 287
+    oil_level: 62.3300
+    mission_time: 62478132
+    oil_location: 0

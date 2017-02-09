@@ -1,0 +1,151 @@
+header:
+    particle_object: 'MULTIPLE'
+    particle_type: 'MULTIPLE'
+data:
+  - _index: 1
+    particle_object: Pco2wAbcDclPowerRecoveredDataParticle
+    particle_type: pco2w_abc_dcl_power_recovered
+    internal_timestamp: 3608413240.102000
+    record_type: 17
+    record_time: 3482269311
+    dcl_controller_timestamp: '2014/05/07 01:00:40.102'
+    unique_id: 194
+    passed_checksum: 1
+  - _index: 2
+    particle_object: Pco2wAbcDclInstrumentRecoveredDataParticle
+    particle_type: pco2w_abc_dcl_instrument_recovered
+    internal_timestamp: 3608413533.702000
+    record_type: 4
+    record_time: 3482269603
+    dcl_controller_timestamp: '2014/05/07 01:05:33.702'
+    unique_id: 194
+    passed_checksum: 1
+    voltage_battery: 3163
+    thermistor_raw: 2019
+    light_measurements: [  68, 76, 3343, 579, 1968, 507, 2504, 3709, 68, 75, 3342, 578, 1970, 507 ]
+  - _index: 3
+    particle_object: Pco2wAbcDclPowerRecoveredDataParticle
+    particle_type: pco2w_abc_dcl_power_recovered
+    internal_timestamp: 3608424037.755000
+    record_type: 17
+    record_time: 3482280108
+    dcl_controller_timestamp: '2014/05/07 04:00:37.755'
+    unique_id: 194
+    passed_checksum: 1
+  - _index: 4
+    particle_object: Pco2wAbcDclInstrumentRecoveredDataParticle
+    particle_type: pco2w_abc_dcl_instrument_recovered
+    internal_timestamp: 3608424331.302000
+    record_type: 4
+    record_time: 3482280401
+    dcl_controller_timestamp: '2014/05/07 04:05:31.302'
+    unique_id: 194
+    passed_checksum: 1
+    voltage_battery: 3164
+    thermistor_raw: 2021
+    light_measurements: [  67, 75, 3340, 573, 1968, 523, 2478, 3873, 67, 75, 3342, 574, 1968, 525 ]
+  - _index: 5
+    particle_object: Pco2wAbcDclPowerRecoveredDataParticle
+    particle_type: pco2w_abc_dcl_power_recovered
+    internal_timestamp: 3608434837.917000
+    record_type: 17
+    record_time: 3482290909
+    dcl_controller_timestamp: '2014/05/07 07:00:37.917'
+    unique_id: 194
+    passed_checksum: 1
+  - _index: 6
+    particle_object: Pco2wAbcDclInstrumentRecoveredDataParticle
+    particle_type: pco2w_abc_dcl_instrument_recovered
+    internal_timestamp: 3608435131.470000
+    record_type: 4
+    record_time: 3482291201
+    dcl_controller_timestamp: '2014/05/07 07:05:31.470'
+    unique_id: 194
+    passed_checksum: 1
+    voltage_battery: 3163
+    thermistor_raw: 2017
+    light_measurements: [  66, 76, 3338, 572, 1967, 522, 2473, 3833, 68, 77, 3344, 570, 1969, 522 ]
+  - _index: 7
+    particle_object: Pco2wAbcDclPowerRecoveredDataParticle
+    particle_type: pco2w_abc_dcl_power_recovered
+    internal_timestamp: 3608445637.482000
+    record_type: 17
+    record_time: 3482301708
+    dcl_controller_timestamp: '2014/05/07 10:00:37.482'
+    unique_id: 194
+    passed_checksum: 1
+  - _index: 8
+    particle_object: Pco2wAbcDclInstrumentRecoveredDataParticle
+    particle_type: pco2w_abc_dcl_instrument_recovered
+    internal_timestamp: 3608445931.049000
+    record_type: 4
+    record_time: 3482302000
+    dcl_controller_timestamp: '2014/05/07 10:05:31.049'
+    unique_id: 194
+    passed_checksum: 1
+    voltage_battery: 3163
+    thermistor_raw: 2018
+    light_measurements: [  65, 74, 3338, 565, 1969, 518, 2445, 3811, 66, 74, 3343, 563, 1971, 521 ]
+  - _index: 9
+    particle_object: Pco2wAbcDclPowerRecoveredDataParticle
+    particle_type: pco2w_abc_dcl_power_recovered
+    internal_timestamp: 3608456438.104000
+    record_type: 17
+    record_time: 3482312509
+    dcl_controller_timestamp: '2014/05/07 13:00:38.104'
+    unique_id: 194
+    passed_checksum: 1
+  - _index: 10
+    particle_object: Pco2wAbcDclInstrumentBlankRecoveredDataParticle
+    particle_type: pco2w_abc_dcl_instrument_blank_recovered
+    internal_timestamp: 3608456780.390000
+    record_type: 5
+    record_time: 3482312848
+    dcl_controller_timestamp: '2014/05/07 13:06:20.390'
+    unique_id: 194
+    passed_checksum: 1
+    voltage_battery: 3146
+    thermistor_raw: 2018
+    blank_light_measurements: [  64, 76, 3340, 564, 1969, 522, 2439, 3854, 69, 78, 3344, 566, 1970, 522 ]
+  - _index: 11
+    particle_object: Pco2wAbcDclPowerRecoveredDataParticle
+    particle_type: pco2w_abc_dcl_power_recovered
+    internal_timestamp: 3608467238.139000
+    record_type: 17
+    record_time: 3482323309
+    dcl_controller_timestamp: '2014/05/07 16:00:38.139'
+    unique_id: 194
+    passed_checksum: 1
+  - _index: 12
+    particle_object: Pco2wAbcDclInstrumentRecoveredDataParticle
+    particle_type: pco2w_abc_dcl_instrument_recovered
+    internal_timestamp: 3608467531.122000
+    record_type: 4
+    record_time: 3482323601
+    dcl_controller_timestamp: '2014/05/07 16:05:31.122'
+    unique_id: 194
+    passed_checksum: 1
+    voltage_battery: 3164
+    thermistor_raw: 2008
+    light_measurements: [  64, 75, 3338, 565, 1968, 514, 2444, 3765, 68, 76, 3342, 565, 1969, 514 ]
+  - _index: 13
+    particle_object: Pco2wAbcDclPowerRecoveredDataParticle
+    particle_type: pco2w_abc_dcl_power_recovered
+    internal_timestamp: 3608478038.206000
+    record_type: 17
+    record_time: 3482334109
+    dcl_controller_timestamp: '2014/05/07 19:00:38.206'
+    unique_id: 194
+    passed_checksum: 1
+  - _index: 14
+    particle_object: Pco2wAbcDclInstrumentRecoveredDataParticle
+    particle_type: pco2w_abc_dcl_instrument_recovered
+    internal_timestamp: 3608478331.807000
+    record_type: 4
+    record_time: 3482334401
+    dcl_controller_timestamp: '2014/05/07 19:05:31.807'
+    unique_id: 194
+    passed_checksum: 1
+    voltage_battery: 3163
+    thermistor_raw: 2008
+    light_measurements: [  65, 76, 3337, 562, 1973, 512, 2446, 3754, 70, 77, 3340, 563, 1972, 512 ]

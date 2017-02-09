@@ -1,0 +1,12 @@
+===========================================================
+Ocean Observatories Initiative Cyberinfrastructure (OOI CI)
+
+Marine Integration source code repository.
+
+(C) The Regents of the University of California, 2010-2014
+See LICENSE.txt for license.
+===========================================================
+
+This repository contains implemention for all marine integrations
+dataset driver and parser code.
+

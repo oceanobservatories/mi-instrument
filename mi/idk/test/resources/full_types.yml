@@ -1,0 +1,22 @@
+header:
+    particle_object: FullTypesDataParticle
+    particle_type: full_types_particle_stream
+
+data:
+  - _index: 1
+    internal_timestamp: 323000000.3278492
+    param_1: 'ABC'
+    param_2: 
+    - 'ABC'
+    - '1234'
+    - 'DEF'
+    - 'GHIJK'
+    param_3: 3.223958
+    param_4: [1.203456, 3.453498, 6.789235]
+    param_5: [[1.203456, 3.453498], [6.789235, 8.924958], [32.982495, 59.332098]]
+    param_6: 3
+    param_7: [3, 4, 5]
+    param_8: .NAN
+    param_9: [12.34, .NAN, 3.567]
+    param_10: [[12.34, .NAN], [3.567, 4.253908]]
+    param_11: !!null 

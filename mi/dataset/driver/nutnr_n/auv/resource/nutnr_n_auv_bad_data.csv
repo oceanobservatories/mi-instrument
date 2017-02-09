@@ -1,0 +1,8 @@
+Message Id[unsigned short|#],Timestamp[unsigned long|epoch],Latitude[double|�],Longitude[double|�],Mission Time[unsigned long|tod],Depth[float|Meters],Sample Time[double|msecs],Nitrate Concentration[float|uMol/L],Nitrogen in Nitrage[float|mg/L],Spectral Average of Last Dark Frame[unsigned short|#],Spectrometer Temperature[float|�C],Lamp State[bool|^],Lamp Temperature[float|�C],Cumulative Lamp On-Time[unsigned long|secs],Relative Humidity[float|%],Input Voltage[float|V],Lamp Voltage[float|V],Internal Voltage[float|V],Main Current[float|mA]
+1174,1419009502,41.5543,-70.7051,62302912,0.06,2.0614,0.00,0.00,0,6.81,false,12.19,413420,2.20,12.11,0.10,4.98,51.06
+1174,1419009506,41.5543,-70.7051,62306015,0.06,2.0620,5.01,0.07,539,6.81,0,12.13,413422,2.74,11.88,11.98,5.01,481.57
+1174,1419009507,41.5543,-70.7051,62307192,0.08,2.0621,5.44,0.08,539,6.81,true,12.13,413423,2.64,11.88,11.99,4.99,491.39
+1174,1419009508,41.5543,-70.7051,62308369,0.09,2.0621,5.16,0.07,539,6.81,true,12.13,413424,2.72,11.85,12.01,5.00,488.64
+1174,1419009509,41.5543,-70.7051,62309653,0.07,2.0622,6.x0,0.09,539,6.81,true,12.06,413425,2.76,11.86,11.99,5.00,488.48
+1174,1419009510,41.5543,-70.7051,62310830,-0.05,2.0622,6.18,0.09,539,6.81,true,12.00,413427,2.92,11.88,12.00,5.02,486.90
+1174,1419009512,41.5543,-70.7051,62312007,0.11,2.0622,5.66,0.08,539,6.81,true,12.00,413428,2.76,11.83,12.02,4.99,487.17
