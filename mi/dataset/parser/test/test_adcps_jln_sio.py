@@ -19,11 +19,10 @@ from mi.core.log import get_logger
 log = get_logger()
 
 from mi.core.exceptions import RecoverableSampleException, UnexpectedDataException
-from mi.dataset.test.test_parser import ParserUnitTestCase, BASE_RESOURCE_PATH
+from mi.dataset.test.test_parser import ParserUnitTestCase
 from mi.dataset.parser.adcps_jln_sio import AdcpsJlnSioParser
 from mi.dataset.dataset_parser import DataSetDriverConfigKeys
-
-RESOURCE_PATH = os.path.join(BASE_RESOURCE_PATH, 'adcps_jln', 'sio', 'resource')
+from mi.dataset.driver.adcps_jln.sio.resource import RESOURCE_PATH
 
 
 @attr('UNIT', group='mi')

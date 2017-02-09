@@ -12,8 +12,9 @@ from nose.plugins.attrib import attr
 
 from mi.core.log import get_logger
 from mi.core.exceptions import RecoverableSampleException, SampleEncodingException
-from mi.dataset.test.test_parser import ParserUnitTestCase, BASE_RESOURCE_PATH
+from mi.dataset.test.test_parser import ParserUnitTestCase
 from mi.dataset.dataset_parser import DataSetDriverConfigKeys
+from mi.dataset.driver.dosta_abcdjm.cspp.resource import RESOURCE_PATH
 from mi.dataset.parser.cspp_base import METADATA_PARTICLE_CLASS_KEY, DATA_PARTICLE_CLASS_KEY
 from mi.dataset.parser.dosta_abcdjm_cspp import DostaAbcdjmCsppParser
 from mi.dataset.parser.dosta_abcdjm_cspp import DostaAbcdjmCsppMetadataRecoveredDataParticle, \
@@ -21,8 +22,6 @@ from mi.dataset.parser.dosta_abcdjm_cspp import DostaAbcdjmCsppMetadataRecovered
     DostaAbcdjmCsppInstrumentTelemeteredDataParticle
 
 log = get_logger()
-
-RESOURCE_PATH = os.path.join(BASE_RESOURCE_PATH, 'dosta_abcdjm', 'cspp', 'resource')
 
 
 @attr('UNIT', group='mi')

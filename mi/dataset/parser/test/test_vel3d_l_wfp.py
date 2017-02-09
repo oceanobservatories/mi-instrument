@@ -7,21 +7,15 @@
 @brief Test code for a vel3d_l_wfp parser for recovered and telemetered data
 """
 
-from nose.plugins.attrib import attr
-
-import os
-
-from mi.dataset.test.test_parser import BASE_RESOURCE_PATH
-
-from mi.core.log import get_logger
-log = get_logger()
-
-from mi.core.exceptions import SampleException
 from StringIO import StringIO
 
-from mi.dataset.test.test_parser import ParserUnitTestCase
-from mi.dataset.dataset_parser import DataSetDriverConfigKeys
+import os
+from nose.plugins.attrib import attr
 
+from mi.core.exceptions import SampleException
+from mi.core.log import get_logger
+from mi.dataset.dataset_parser import DataSetDriverConfigKeys
+from mi.dataset.driver.vel3d_l.wfp.resource import RESOURCE_PATH
 from mi.dataset.parser.vel3d_l_wfp import \
     Vel3dLWfpParser, \
     Vel3dLWfpSioParser, \
@@ -29,6 +23,11 @@ from mi.dataset.parser.vel3d_l_wfp import \
     Vel3dLWfpInstrumentRecoveredParticle, \
     Vel3dLWfpMetadataRecoveredParticle, \
     Vel3dLWfpSioMuleMetadataParticle
+from mi.dataset.test.test_parser import ParserUnitTestCase
+
+
+log = get_logger()
+
 
 # Recovered Record #1 has 1 instrument record.
 REC_RECORD_1 = \
@@ -984,9 +983,6 @@ TEL_EXPECTED_FIELDS_SIO_PS_WA_WA_3_META = (1374902331, 1390820404, 1390826721,
 
 
 #  NEW STUFF DEFS
-
-RESOURCE_PATH = os.path.join(BASE_RESOURCE_PATH, 'vel3d_l', 'wfp', 'resource')
-
 SIMPLE_LOG_FILE = 'tel_vel3d_l_1.dat'
 YAML_FILE = 'tel_vel3d_l_1.yml'
 NUM_REC_SIMPLE_LOG_FILE = 11

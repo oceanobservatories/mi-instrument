@@ -6,18 +6,20 @@
 @author Rachel Manoni
 @brief Test code for OSMOI data parser
 """
-__author__ = 'Rachel Manoni'
-
 import os
-from mi.core.log import get_logger
-log = get_logger()
 from nose.plugins.attrib import attr
+
+from mi.core.log import get_logger
 from mi.dataset.dataset_parser import DataSetDriverConfigKeys
+from mi.dataset.driver.osmoi.resource import RESOURCE_PATH
 from mi.dataset.parser.osmoi_a_subcon import OsmoiASubconParser
 from mi.dataset.test.test_parser import ParserUnitTestCase
-from mi.dataset.test.test_parser import BASE_RESOURCE_PATH
 
-RESOURCE_PATH = os.path.join(BASE_RESOURCE_PATH, 'osmoi', 'resource')
+__author__ = 'Rachel Manoni'
+
+log = get_logger()
+
+
 LOG_FILE = 'osmoi_chemdata_example.csv'
 YAML_FILE = 'osmoi_chemdata_example.yml'
 INVALID_DATA_FILE = 'osmoi_chemdata_bad.csv'

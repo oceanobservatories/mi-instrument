@@ -20,7 +20,7 @@ from nose.plugins.attrib import attr
 from mi.core.exceptions import RecoverableSampleException
 from mi.core.log import get_logger
 from mi.dataset.dataset_parser import DataSetDriverConfigKeys
-
+from mi.dataset.driver.optaa_dj.cspp.resource import RESOURCE_PATH
 from mi.dataset.parser.cspp_base import \
     METADATA_PARTICLE_CLASS_KEY, \
     DATA_PARTICLE_CLASS_KEY
@@ -32,12 +32,10 @@ from mi.dataset.parser.optaa_dj_cspp import \
     OptaaDjCsppInstrumentRecoveredDataParticle, \
     OptaaDjCsppMetadataRecoveredDataParticle
 
-from mi.dataset.test.test_parser import BASE_RESOURCE_PATH, ParserUnitTestCase
+from mi.dataset.test.test_parser import ParserUnitTestCase
 
 log = get_logger()
 
-RESOURCE_PATH = os.path.join(BASE_RESOURCE_PATH,
-                             'optaa_dj', 'cspp', 'resource')
 
 RECOVERED_SAMPLE_DATA = '11079364_ACS_ACS.txt'
 TELEMETERED_SAMPLE_DATA = '11079364_ACD_ACS.txt'

@@ -5,19 +5,15 @@
 @brief Test code for a nutnr_j_cspp data parser
 """
 import os
-
 from nose.plugins.attrib import attr
 
-from mi.core.log import get_logger
-log = get_logger()
 from mi.core.exceptions import RecoverableSampleException, \
     ConfigurationException
-
-from mi.dataset.test.test_parser import BASE_RESOURCE_PATH, ParserUnitTestCase
+from mi.core.log import get_logger
 from mi.dataset.dataset_parser import DataSetDriverConfigKeys
+from mi.dataset.driver.nutnr_j.cspp.resource import RESOURCE_PATH
 from mi.dataset.parser.cspp_base import \
     METADATA_PARTICLE_CLASS_KEY
-
 from mi.dataset.parser.nutnr_j_cspp import NutnrJCsppParser, \
     NutnrJCsppMetadataTelemeteredDataParticle, \
     NutnrJCsppTelemeteredDataParticle, \
@@ -27,8 +23,9 @@ from mi.dataset.parser.nutnr_j_cspp import NutnrJCsppParser, \
     NutnrJCsppRecoveredDataParticle, \
     LIGHT_PARTICLE_CLASS_KEY, \
     DARK_PARTICLE_CLASS_KEY
+from mi.dataset.test.test_parser import ParserUnitTestCase
 
-RESOURCE_PATH = os.path.join(BASE_RESOURCE_PATH, 'nutnr_j', 'cspp', 'resource')
+log = get_logger()
 
 MODE_ASCII_READ = 'r'
 

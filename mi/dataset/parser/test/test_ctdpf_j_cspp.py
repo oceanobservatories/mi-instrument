@@ -21,7 +21,7 @@ from mi.core.exceptions import RecoverableSampleException
 
 from mi.dataset.test.test_parser import ParserUnitTestCase
 from mi.dataset.dataset_parser import DataSetDriverConfigKeys
-
+from mi.dataset.driver.ctdpf_j.cspp.resource import RESOURCE_PATH
 from mi.dataset.parser.cspp_base import \
     METADATA_PARTICLE_CLASS_KEY, \
     DATA_PARTICLE_CLASS_KEY
@@ -33,7 +33,6 @@ from mi.dataset.parser.ctdpf_j_cspp import \
     CtdpfJCsppInstrumentRecoveredDataParticle, \
     CtdpfJCsppMetadataRecoveredDataParticle
 
-from mi.dataset.test.test_parser import BASE_RESOURCE_PATH
 
 log = get_logger()
 
@@ -42,7 +41,6 @@ class DataTypeKey(BaseEnum):
     CTDPF_J_CSPP_RECOVERED = 'ctdpf_j_cspp_recovered'
     CTDPF_J_CSPP_TELEMETERED = 'ctdpf_j_cspp_telemetered'
 
-RESOURCE_PATH = os.path.join(BASE_RESOURCE_PATH, 'ctdpf_j', 'cspp', 'resource')
 
 RECOVERED_SAMPLE_DATA = '11079364_PPB_CTD.txt'
 TELEMETERED_SAMPLE_DATA = '11079364_PPD_CTD.txt'

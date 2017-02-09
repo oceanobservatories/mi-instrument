@@ -13,7 +13,7 @@ import os
 from mi.core.exceptions import DatasetParserException
 from mi.core.unit_test import MiUnitTest
 from mi.idk.result_set import ResultSet
-from mi.dataset.driver import RESOURCE_PATH as BASE_RESOURCE_PATH
+from mi.logging import log
 
 
 # Shared parser unit test suite
@@ -46,6 +46,7 @@ class ParserUnitTestCase(MiUnitTest):
 
         @param exception The exception that occurred
         """
+        log.info('Received exception: %r', exception)
         self.exception_callback_value.append(exception)
 
     def assert_particles(self, particles, yml_file, resource_path=None):

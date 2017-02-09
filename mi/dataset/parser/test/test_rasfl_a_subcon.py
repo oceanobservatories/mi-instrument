@@ -6,18 +6,19 @@
 @author Rachel Manoni
 @brief Test code for RASFL data parser
 """
-__author__ = 'Rachel Manoni'
-
 import os
 from mi.core.log import get_logger
-log = get_logger()
 from nose.plugins.attrib import attr
 from mi.dataset.dataset_parser import DataSetDriverConfigKeys
+from mi.dataset.driver.rasfl.resource import RESOURCE_PATH
 from mi.dataset.parser.rasfl_a_subcon import RasflASubconParser
 from mi.dataset.test.test_parser import ParserUnitTestCase
-from mi.dataset.test.test_parser import BASE_RESOURCE_PATH
 
-RESOURCE_PATH = os.path.join(BASE_RESOURCE_PATH, 'rasfl', 'resource')
+
+__author__ = 'Rachel Manoni'
+log = get_logger()
+
+
 LOG_FILE = 'rasfl_chemdata_example.csv'
 YAML_FILE = 'rasfl_chemdata_example.yml'
 INVALID_DATA_FILE = 'rasfl_chemdata_bad.csv'

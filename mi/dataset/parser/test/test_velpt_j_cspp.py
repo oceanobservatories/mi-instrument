@@ -16,7 +16,8 @@ from nose.plugins.attrib import attr
 
 from mi.core.log import get_logger
 from mi.core.exceptions import RecoverableSampleException
-from mi.dataset.test.test_parser import ParserUnitTestCase, BASE_RESOURCE_PATH
+from mi.dataset.driver.velpt_j.cspp.resource import RESOURCE_PATH
+from mi.dataset.test.test_parser import ParserUnitTestCase
 from mi.dataset.dataset_parser import DataSetDriverConfigKeys
 from mi.dataset.parser.cspp_base import METADATA_PARTICLE_CLASS_KEY, DATA_PARTICLE_CLASS_KEY
 from mi.dataset.parser.velpt_j_cspp import VelptJCsppParser
@@ -25,8 +26,6 @@ from mi.dataset.parser.velpt_j_cspp import VelptJCsppMetadataRecoveredDataPartic
     VelptJCsppInstrumentTelemeteredDataParticle
 
 log = get_logger()
-
-RESOURCE_PATH = os.path.join(BASE_RESOURCE_PATH, 'velpt_j', 'cspp', 'resource')
 
 
 @attr('UNIT', group='mi')

@@ -15,8 +15,9 @@ from nose.plugins.attrib import attr
 
 from mi.core.exceptions import RecoverableSampleException
 from mi.logging import log
-from mi.dataset.test.test_parser import BASE_RESOURCE_PATH, ParserUnitTestCase
+from mi.dataset.test.test_parser import ParserUnitTestCase
 from mi.dataset.dataset_parser import DataSetDriverConfigKeys
+from mi.dataset.driver.pco2w_abc.dcl.resource import RESOURCE_PATH
 from mi.dataset.parser.pco2w_abc import Pco2wAbcParticleClassKey
 from mi.dataset.parser.pco2w_abc_dcl import Pco2wAbcDclParser
 from mi.dataset.parser.pco2w_abc_particles import Pco2wAbcDclInstrumentBlankRecoveredDataParticle, \
@@ -27,9 +28,6 @@ from mi.dataset.parser.pco2w_abc_particles import Pco2wAbcDclInstrumentBlankReco
     Pco2wAbcDclPowerTelemeteredDataParticle, \
     Pco2wAbcDclInstrumentTelemeteredDataParticle, \
     Pco2wAbcDclInstrumentBlankTelemeteredDataParticle
-
-RESOURCE_PATH = os.path.join(BASE_RESOURCE_PATH,
-                             'pco2w_abc', 'dcl', 'resource')
 
 
 @attr('UNIT', group='mi')

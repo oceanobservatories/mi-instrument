@@ -7,24 +7,16 @@
 @brief Test code for a presf_abc_dcl data parser
 
 """
-
 import os
-
 from nose.plugins.attrib import attr
 
-from mi.core.log import get_logger
-log = get_logger()
 from mi.core.exceptions import RecoverableSampleException
-
-from mi.dataset.test.test_parser import \
-    ParserUnitTestCase, \
-    BASE_RESOURCE_PATH
-
+from mi.core.log import get_logger
+from mi.dataset.driver.presf_abc.dcl.resource import RESOURCE_PATH
 from mi.dataset.parser.presf_abc_dcl import PresfAbcDclParser
+from mi.dataset.test.test_parser import ParserUnitTestCase
 
-RESOURCE_PATH = os.path.join(BASE_RESOURCE_PATH,
-                             'presf_abc',
-                             'dcl', 'resource')
+log = get_logger()
 
 MODULE_NAME = 'mi.dataset.parser.presf_abc_dcl'
 

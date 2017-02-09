@@ -10,14 +10,16 @@ import os
 from nose.plugins.attrib import attr
 
 from mi.core.log import get_logger
-log = get_logger()
 
 from mi.core.exceptions import SampleException, UnexpectedDataException, RecoverableSampleException
-from mi.dataset.test.test_parser import ParserUnitTestCase, BASE_RESOURCE_PATH
+from mi.dataset.test.test_parser import ParserUnitTestCase
+from mi.dataset.driver.phsen_abcdef.sio.resource import RESOURCE_PATH
 from mi.dataset.dataset_parser import DataSetDriverConfigKeys
 from mi.dataset.parser.phsen_abcdef_sio import PhsenAbcdefSioParser
 
-RESOURCE_PATH = os.path.join(BASE_RESOURCE_PATH, 'phsen_abcdef', 'sio', 'resource')
+
+log = get_logger()
+
 
 @attr('UNIT', group='mi')
 class PhsenAbcdefSioParserUnitTestCase(ParserUnitTestCase):

@@ -4,18 +4,18 @@
 @author Emily Hahn
 @brief A test parser for the hydrogen series o instrument through a DCL
 """
-
-__author__ = 'Emily Hahn'
-__license__ = 'Apache 2.0'
-
 import os
 from nose.plugins.attrib import attr
 
 from mi.core.exceptions import SampleException
-from mi.dataset.test.test_parser import ParserUnitTestCase, BASE_RESOURCE_PATH
+from mi.dataset.driver.hyd_o.dcl.resource import RESOURCE_PATH
+from mi.dataset.test.test_parser import ParserUnitTestCase
 from mi.dataset.parser.hyd_o_dcl import HydODclParser
 
-RESOURCE_PATH = os.path.join(BASE_RESOURCE_PATH, 'hyd_o', 'dcl', 'resource')
+
+__author__ = 'Emily Hahn'
+__license__ = 'Apache 2.0'
+
 
 @attr('UNIT', group='mi')
 class HydODclParserUnitTestCase(ParserUnitTestCase):

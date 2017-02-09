@@ -38,15 +38,13 @@ from mi.core.log import get_logger
 
 from mi.dataset.test.test_parser import ParserUnitTestCase
 from mi.dataset.dataset_parser import DataSetDriverConfigKeys
-
+from mi.dataset.driver.metbk_a.dcl.resource import RESOURCE_PATH
 from mi.dataset.parser.metbk_a_dcl import MetbkADclParser
 from mi.dataset.driver.metbk_a.dcl.metbk_dcl_a_driver import MODULE_NAME, \
     RECOVERED_PARTICLE_CLASS, TELEMETERED_PARTICLE_CLASS
 
-from mi.dataset.test.test_parser import BASE_RESOURCE_PATH
 
 log = get_logger()
-RESOURCE_PATH = os.path.join(BASE_RESOURCE_PATH, 'metbk_a', 'dcl', 'resource')
 
 FILE_4_1430 = '20140805.metbk2.log'
 FILE_4_9 = '20140805.metbk2_bad_sensor.log'

@@ -16,11 +16,10 @@ import os
 from nose.plugins.attrib import attr
 
 from mi.core.log import get_logger
-log = get_logger()
 
-from mi.dataset.test.test_parser import ParserUnitTestCase, BASE_RESOURCE_PATH
+from mi.dataset.test.test_parser import ParserUnitTestCase
 from mi.dataset.dataset_parser import DataSetDriverConfigKeys
-
+from mi.dataset.driver.dbg_pdbg.cspp.resource import RESOURCE_PATH
 from mi.core.exceptions import RecoverableSampleException
 
 from mi.dataset.parser.cspp_base import \
@@ -38,7 +37,8 @@ from mi.dataset.parser.dbg_pdbg_cspp import \
     BATTERY_STATUS_CLASS_KEY, \
     GPS_ADJUSTMENT_CLASS_KEY
 
-RESOURCE_PATH = os.path.join(BASE_RESOURCE_PATH, 'dbg_pdbg', 'cspp', 'resource')
+
+log = get_logger()
 
 
 @attr('UNIT', group='mi')

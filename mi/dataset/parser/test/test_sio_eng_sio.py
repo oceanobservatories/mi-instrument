@@ -13,13 +13,13 @@ import os
 from mi.core.exceptions import SampleException, UnexpectedDataException
 
 from mi.core.log import get_logger
-log = get_logger()
-
-from mi.dataset.test.test_parser import ParserUnitTestCase, BASE_RESOURCE_PATH
+from mi.dataset.driver.sio_eng.sio.resource import RESOURCE_PATH
+from mi.dataset.test.test_parser import ParserUnitTestCase
 from mi.dataset.dataset_parser import DataSetDriverConfigKeys
 from mi.dataset.parser.sio_eng_sio import SioEngSioParser
 
-RESOURCE_PATH = os.path.join(BASE_RESOURCE_PATH, 'sio_eng', 'sio', 'resource')
+
+log = get_logger()
 
 
 @attr('UNIT', group='mi')

@@ -4,22 +4,23 @@
 @author Emily Hahn
 @brief Test for the parser for the vel3d instrument series c,d through dcl dataset driver
 """
-
-__author__ = 'Emily Hahn'
-__license__ = 'Apache 2.0'
-
 import os
 from nose.plugins.attrib import attr
 import re
 
 from mi.core.log import get_logger
-log = get_logger()
 from mi.core.exceptions import UnexpectedDataException, SampleException
-from mi.dataset.test.test_parser import ParserUnitTestCase, BASE_RESOURCE_PATH
+from mi.dataset.driver.vel3d_cd.dcl.resource import RESOURCE_PATH
+from mi.dataset.test.test_parser import ParserUnitTestCase
 from mi.dataset.parser.vel3d_cd_dcl import Vel3dCdDclParser
 from mi.dataset.parser.common_regexes import FLOAT_REGEX, END_OF_LINE_REGEX
 
-RESOURCE_PATH = os.path.join(BASE_RESOURCE_PATH, 'vel3d_cd', 'dcl', 'resource')
+
+__author__ = 'Emily Hahn'
+__license__ = 'Apache 2.0'
+
+
+log = get_logger()
 
 
 @attr('UNIT', group='mi')

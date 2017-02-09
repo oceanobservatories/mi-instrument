@@ -24,16 +24,13 @@ from mi.core.exceptions import UnexpectedDataException
 
 from mi.dataset.test.test_parser import ParserUnitTestCase
 from mi.dataset.dataset_parser import DataSetDriverConfigKeys
-
+from mi.dataset.driver.pco2a_a.dcl.resource import RESOURCE_PATH
 from mi.dataset.parser.pco2a_a_dcl import Pco2aADclParser
 from mi.dataset.driver.pco2a_a.dcl.pco2a_a_dcl_driver import \
     MODULE_NAME, RECOVERED_PARTICLE_CLASSES, TELEMETERED_PARTICLE_CLASSES
 
-from mi.dataset.test.test_parser import BASE_RESOURCE_PATH
 
 log = get_logger()
-
-RESOURCE_PATH = os.path.join(BASE_RESOURCE_PATH, 'pco2a_a', 'dcl', 'resource')
 
 FILE = '20140217.pco2a.log'
 FILE_FAILURE = '20140217.pco2a_failure.log'

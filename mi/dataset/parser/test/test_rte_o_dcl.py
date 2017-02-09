@@ -13,14 +13,13 @@ from nose.plugins.attrib import attr
 
 from mi.core.log import get_logger
 from mi.core.exceptions import RecoverableSampleException
-
+from mi.dataset.driver.cg_stc_eng.stc.resource import RESOURCE_PATH
 from mi.dataset.test.test_parser import ParserUnitTestCase
 from mi.dataset.dataset_parser import DataSetDriverConfigKeys
 from mi.dataset.parser.rte_o_dcl import RteODclParser
-from mi.dataset.test.test_parser import BASE_RESOURCE_PATH
-log = get_logger()
 
-RESOURCE_PATH = os.path.join(BASE_RESOURCE_PATH, 'cg_stc_eng', 'stc', 'resource')
+
+log = get_logger()
 
 
 @attr('UNIT', group='mi')

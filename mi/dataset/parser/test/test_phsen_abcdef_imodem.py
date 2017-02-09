@@ -14,8 +14,9 @@ from nose.plugins.attrib import attr
 
 from mi.core.exceptions import UnexpectedDataException
 from mi.logging import log
-from mi.dataset.test.test_parser import BASE_RESOURCE_PATH, ParserUnitTestCase
+from mi.dataset.test.test_parser import ParserUnitTestCase
 from mi.dataset.dataset_parser import DataSetDriverConfigKeys
+from mi.dataset.driver.phsen_abcdef.imodem.resource import RESOURCE_PATH
 from mi.dataset.parser.phsen_abcdef_imodem import \
     PhsenAbcdefImodemParticleClassKey, \
     PhsenAbcdefImodemParser
@@ -27,8 +28,6 @@ from mi.dataset.parser.phsen_abcdef_imodem_particles import \
     PhsenAbcdefImodemControlTelemeteredDataParticle, \
     PhsenAbcdefImodemInstrumentTelemeteredDataParticle
 
-RESOURCE_PATH = os.path.join(BASE_RESOURCE_PATH,
-                             'phsen_abcdef', 'imodem', 'resource')
 
 O_MODE = 'rU'   # Universal Open mode
 

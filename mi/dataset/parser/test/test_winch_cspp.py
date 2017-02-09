@@ -12,21 +12,17 @@ Files used for testing:
   Contains engineering data for CSPP platform
 
 """
-
-
-import unittest
 import os
 from nose.plugins.attrib import attr
 
-from mi.core.log import get_logger; log = get_logger()
-
-from mi.dataset.test.test_parser import ParserUnitTestCase
+from mi.core.log import get_logger
 from mi.dataset.dataset_parser import DataSetDriverConfigKeys
+from mi.dataset.driver.winch_cspp.resource import RESOURCE_PATH
 from mi.dataset.parser.winch_cspp import WinchCsppParser
+from mi.dataset.test.test_parser import ParserUnitTestCase
 
-from mi.dataset.test.test_parser import BASE_RESOURCE_PATH
+log = get_logger()
 
-RESOURCE_PATH = os.path.join(BASE_RESOURCE_PATH, 'winch_cspp', 'resource')
 
 MODULE_NAME = 'mi.dataset.parser.winch_cspp'
 CLASS_NAME = 'WinchCsppDataParticle'

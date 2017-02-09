@@ -11,10 +11,10 @@ from nose.plugins.attrib import attr
 from mi.core.log import get_logger
 log = get_logger()
 from mi.core.exceptions import SampleException
-from mi.dataset.test.test_parser import BASE_RESOURCE_PATH, ParserUnitTestCase
+from mi.dataset.driver.nutnr_m.resource import RESOURCE_PATH
+from mi.dataset.test.test_parser import ParserUnitTestCase
 from mi.dataset.parser.nutnr_m import NutnrMParser
 
-RESOURCE_PATH = os.path.join(BASE_RESOURCE_PATH, 'nutnr_m', 'resource')
 
 @attr('UNIT', group='mi')
 class NutnrMParserUnitTestCase(ParserUnitTestCase):

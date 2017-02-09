@@ -7,14 +7,13 @@
 
 import os
 from nose.plugins.attrib import attr
-from mi.core.exceptions import UnexpectedDataException, SampleException, SampleEncodingException
-from mi.dataset.test.test_parser import ParserUnitTestCase, BASE_RESOURCE_PATH
+from mi.core.exceptions import UnexpectedDataException, SampleException
+from mi.dataset.driver.fdchp_a.dcl.resource import RESOURCE_PATH
+from mi.dataset.test.test_parser import ParserUnitTestCase
 from mi.dataset.parser.fdchp_a_dcl import FdchpADclParser
 
 __author__ = 'Emily Hahn'
 __license__ = 'Apache 2.0'
-
-RESOURCE_PATH = os.path.join(BASE_RESOURCE_PATH, 'fdchp_a', 'dcl', 'resource')
 
 
 @attr('UNIT', group='mi')

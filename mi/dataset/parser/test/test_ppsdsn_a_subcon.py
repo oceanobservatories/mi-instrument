@@ -15,10 +15,10 @@ from mi.core.log import get_logger
 log = get_logger()
 from nose.plugins.attrib import attr
 from mi.dataset.dataset_parser import DataSetDriverConfigKeys
+from mi.dataset.driver.ppsdn.resource import RESOURCE_PATH
 from mi.dataset.test.test_parser import ParserUnitTestCase
-from mi.dataset.test.test_parser import BASE_RESOURCE_PATH
 
-RESOURCE_PATH = os.path.join(BASE_RESOURCE_PATH, 'ppsdn', 'resource')
+
 LOG_FILE = 'ppsdn_gendata_example.csv'
 YAML_FILE = 'ppsdn_gendata_example.yml'
 INVALID_DATA_FILE = 'ppsdn_bad_example.csv'

@@ -9,13 +9,12 @@ import os
 from nose.plugins.attrib import attr
 
 from mi.core.exceptions import SampleException
-from mi.dataset.test.test_parser import ParserUnitTestCase, BASE_RESOURCE_PATH
+from mi.dataset.driver.fdchp_a.resource import RESOURCE_PATH
+from mi.dataset.test.test_parser import ParserUnitTestCase
 from mi.dataset.parser.fdchp_a import FdchpAParser
 
 __author__ = 'Emily Hahn'
 __license__ = 'Apache 2.0'
-
-RESOURCE_PATH = os.path.join(BASE_RESOURCE_PATH, 'fdchp_a', 'resource')
 
 
 @attr('UNIT', group='mi')

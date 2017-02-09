@@ -14,9 +14,8 @@ import os
 from nose.plugins.attrib import attr
 
 from mi.core.log import get_logger
-log = get_logger()
-
-from mi.dataset.test.test_parser import ParserUnitTestCase, BASE_RESOURCE_PATH
+from mi.dataset.driver.dosta_abcdjm.sio.resource import RESOURCE_PATH
+from mi.dataset.test.test_parser import ParserUnitTestCase
 from mi.dataset.parser.dosta_abcdjm_sio import \
     DostaAbcdjmSioRecoveredDataParticle, \
     DostaAbcdjmSioTelemeteredDataParticle, \
@@ -28,7 +27,7 @@ from mi.dataset.parser.dosta_abcdjm_sio import \
 from mi.dataset.dataset_parser import DataSetDriverConfigKeys
 
 
-RESOURCE_PATH = os.path.join(BASE_RESOURCE_PATH, 'dosta_abcdjm', 'sio', 'resource')
+log = get_logger()
 
 
 @attr('UNIT', group='mi')

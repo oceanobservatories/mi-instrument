@@ -22,8 +22,7 @@ from mi.dataset.driver.adcpt_acfgm.dcl.pd8.adcpt_acfgm_dcl_pd8_driver_common imp
     AdcptAcfgmPd8Parser, MODULE_NAME, ADCPT_ACFGM_DCL_PD8_RECOVERED_PARTICLE_CLASS, \
     ADCPT_ACFGM_DCL_PD8_TELEMETERED_PARTICLE_CLASS
 
-from mi.dataset.test.test_parser import BASE_RESOURCE_PATH
-RESOURCE_PATH = os.path.join(BASE_RESOURCE_PATH, 'adcpt_acfgm', 'dcl', 'pd8', 'resource')
+from mi.dataset.driver.adcpt_acfgm.dcl.pd8.resource import RESOURCE_PATH
 
 
 @attr('UNIT', group='mi')

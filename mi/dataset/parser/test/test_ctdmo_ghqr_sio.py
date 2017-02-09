@@ -42,8 +42,8 @@ from nose.plugins.attrib import attr
 from mi.core.log import get_logger
 log = get_logger()
 
-from mi.dataset.test.test_parser import ParserUnitTestCase, BASE_RESOURCE_PATH
-
+from mi.dataset.test.test_parser import ParserUnitTestCase
+from mi.dataset.driver.ctdmo_ghqr.sio.resource import RESOURCE_PATH
 from mi.dataset.parser.ctdmo_ghqr_sio import \
     CtdmoGhqrSioRecoveredCoParser, \
     CtdmoGhqrRecoveredCtParser, \
@@ -52,8 +52,6 @@ from mi.dataset.parser.ctdmo_ghqr_sio import \
 
 from mi.dataset.dataset_parser import DataSetDriverConfigKeys
 from mi.core.exceptions import DatasetParserException, UnexpectedDataException
-
-RESOURCE_PATH = os.path.join(BASE_RESOURCE_PATH, 'ctdmo_ghqr', 'sio', 'resource')
 
 
 @attr('UNIT', group='mi')

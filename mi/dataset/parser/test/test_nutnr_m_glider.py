@@ -4,21 +4,21 @@
 @author Emily Hahn
 @brief A test parser for the nutnr series m instrument through a glider
 """
+import os
+from nose.plugins.attrib import attr
+
+from mi.core.exceptions import SampleException, ConfigurationException, DatasetParserException
+from mi.core.log import get_logger
+from mi.dataset.dataset_parser import DataSetDriverConfigKeys
+from mi.dataset.driver.nutnr_m.glider.resource import RESOURCE_PATH
+from mi.dataset.parser.glider import GliderParser
+from mi.dataset.test.test_parser import ParserUnitTestCase
 
 __author__ = 'Emily Hahn'
 __license__ = 'Apache 2.0'
 
-import os
-from nose.plugins.attrib import attr
 
-from mi.core.log import get_logger
 log = get_logger()
-from mi.dataset.dataset_parser import DataSetDriverConfigKeys
-from mi.core.exceptions import SampleException, ConfigurationException, DatasetParserException
-from mi.dataset.test.test_parser import ParserUnitTestCase, BASE_RESOURCE_PATH
-from mi.dataset.parser.glider import GliderParser
-
-RESOURCE_PATH = os.path.join(BASE_RESOURCE_PATH, 'nutnr_m', 'glider', 'resource')
 
 
 @attr('UNIT', group='mi')

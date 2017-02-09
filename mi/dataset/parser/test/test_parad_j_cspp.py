@@ -10,8 +10,9 @@ import os
 from nose.plugins.attrib import attr
 
 from mi.core.log import get_logger
-from mi.dataset.test.test_parser import BASE_RESOURCE_PATH, ParserUnitTestCase
+from mi.dataset.test.test_parser import ParserUnitTestCase
 from mi.dataset.dataset_parser import DataSetDriverConfigKeys
+from mi.dataset.driver.parad_j.cspp.resource import RESOURCE_PATH
 
 from mi.dataset.parser.cspp_base import \
     METADATA_PARTICLE_CLASS_KEY, \
@@ -25,9 +26,6 @@ from mi.dataset.parser.parad_j_cspp import \
     ParadJCsppMetadataRecoveredDataParticle
 
 log = get_logger()
-
-RESOURCE_PATH = os.path.join(BASE_RESOURCE_PATH,
-                             'parad_j', 'cspp', 'resource')
 
 O_MODE = 'rU'   # Universal Open mode
 

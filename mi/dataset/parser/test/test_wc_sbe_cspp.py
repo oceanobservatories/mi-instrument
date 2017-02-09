@@ -17,9 +17,9 @@ from nose.plugins.attrib import attr
 
 from mi.core.log import get_logger
 
-from mi.dataset.test.test_parser import ParserUnitTestCase, BASE_RESOURCE_PATH
+from mi.dataset.test.test_parser import ParserUnitTestCase
 from mi.dataset.dataset_parser import DataSetDriverConfigKeys
-
+from mi.dataset.driver.wc_sbe.cspp.resource import RESOURCE_PATH
 from mi.core.exceptions import RecoverableSampleException
 
 from mi.dataset.parser.cspp_base import \
@@ -35,7 +35,6 @@ from mi.dataset.parser.wc_sbe_cspp import \
     WcSbeDataTypeKey
 
 log = get_logger()
-RESOURCE_PATH = os.path.join(BASE_RESOURCE_PATH, 'wc_sbe', 'cspp', 'resource')
 
 
 @attr('UNIT', group='mi')

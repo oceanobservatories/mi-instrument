@@ -10,14 +10,14 @@ from nose.plugins.attrib import attr
 
 from mi.core.log import get_logger
 from mi.core.exceptions import RecoverableSampleException
-from mi.dataset.test.test_parser import ParserUnitTestCase, BASE_RESOURCE_PATH
+from mi.dataset.driver.wavss_a.dcl.resource import RESOURCE_PATH
+from mi.dataset.test.test_parser import ParserUnitTestCase
 from mi.dataset.parser.wavss_a_dcl import WavssADclParser
+
 log = get_logger()
 
 __author__ = 'Emily Hahn'
 __license__ = 'Apache 2.0'
-
-RESOURCE_PATH = os.path.join(BASE_RESOURCE_PATH, 'wavss_a', 'dcl', 'resource')
 
 
 @attr('UNIT', group='mi')

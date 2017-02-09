@@ -17,11 +17,8 @@ from mi.core.exceptions import RecoverableSampleException
 
 from mi.dataset.test.test_parser import ParserUnitTestCase
 from mi.dataset.dataset_parser import DataSetDriverConfigKeys
-
+from mi.dataset.driver.adcpt_m.wvs.resource import RESOURCE_PATH
 from mi.dataset.parser.adcpt_m_wvs import AdcptMWVSParser
-
-from mi.dataset.test.test_parser import BASE_RESOURCE_PATH
-RESOURCE_PATH = os.path.join(BASE_RESOURCE_PATH, 'adcpt_m', 'wvs', 'resource')
 
 
 @attr('UNIT', group='mi')

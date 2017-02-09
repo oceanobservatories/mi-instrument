@@ -28,10 +28,8 @@ from mi.core.log import get_logger; log = get_logger()
 from mi.dataset.test.test_parser import ParserUnitTestCase
 from mi.dataset.dataset_parser import DataSetDriverConfigKeys
 from mi.dataset.parser.adcpt_m_log9 import AdcptMLog9Parser
+from mi.dataset.driver.adcpt_m.resource import RESOURCE_PATH
 
-from mi.dataset.test.test_parser import BASE_RESOURCE_PATH
-
-RESOURCE_PATH = os.path.join(BASE_RESOURCE_PATH, 'adcpt_m', 'resource')
 
 MODULE_NAME = 'mi.dataset.parser.adcpt_m_log9'
 

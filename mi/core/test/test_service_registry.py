@@ -102,6 +102,7 @@ class TestConsulServiceRegistry(MiUnitTest):
 
             # verify we have registered our driver and we are in a passing state
             _, result = CONSUL.health.service(DRIVER_SERVICE_NAME, tag=self.PA_NAME, passing=True)
+            print result
             self.assertEqual(len(result), 1)
 
 

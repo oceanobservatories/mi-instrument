@@ -78,7 +78,7 @@ import json
 import yaml
 import numpy
 
-from mi.core.time import string_to_ntp_date_time
+from mi.core.time_tools import string_to_ntp_date_time
 from mi.core.instrument.dataset_data_particle import DataParticle, DataParticleKey
 
 from mi.core.log import get_logger

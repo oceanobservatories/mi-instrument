@@ -15,10 +15,9 @@ from mi.core.log import get_logger
 log = get_logger()
 from nose.plugins.attrib import attr
 from mi.dataset.dataset_parser import DataSetDriverConfigKeys
+from mi.dataset.driver.flobn.resource import RESOURCE_PATH
 from mi.dataset.test.test_parser import ParserUnitTestCase
-from mi.dataset.test.test_parser import BASE_RESOURCE_PATH
 
-RESOURCE_PATH = os.path.join(BASE_RESOURCE_PATH, 'flobn', 'resource')
 
 TEMPERATURE_LOG_FILE = 'FLOBN-M_Temp_Record_ver_0-05.csv'
 TEMPERATURE_YAML_FILE = 'FLOBN-M_Temp_Record_ver_0-05.yml'
