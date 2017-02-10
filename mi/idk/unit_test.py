@@ -1210,10 +1210,9 @@ class InstrumentDriverUnitTestCase(InstrumentDriverTestCase):
     def tearDown(self):
         # schedulers need to be shutdown before GC will occur
         for obj in gc.get_objects():
-            if type(obj) == DriverScheduler:
-                if hasattr(obj, '_scheduler'):
-                    obj._scheduler.shutdown()
-                    del obj._scheduler
+            if isinstance(obj, InstrumentProtocol):
+                if hasattr(obj, 'shutdown'):
+                    obj.shutdown()
 
     def clear_data_particle_queue(self):
         """

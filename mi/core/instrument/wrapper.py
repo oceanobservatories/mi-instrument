@@ -457,6 +457,9 @@ class DriverWrapper(object):
         command and event threads to close sockets and conclude.
         """
         self.load_balancer.stop()
+        self.status_thread.stop()
+        self.event_publisher.stop()
+        self.particle_publisher.stop()
 
 
 def main():

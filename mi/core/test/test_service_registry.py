@@ -9,6 +9,7 @@
 import threading
 
 import time
+
 from mock import mock
 from nose.plugins.attrib import attr
 from mi.core.unit_test import MiUnitTest
@@ -102,7 +103,6 @@ class TestConsulServiceRegistry(MiUnitTest):
 
             # verify we have registered our driver and we are in a passing state
             _, result = CONSUL.health.service(DRIVER_SERVICE_NAME, tag=self.PA_NAME, passing=True)
-            print result
             self.assertEqual(len(result), 1)
 
 
