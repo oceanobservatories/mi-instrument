@@ -79,7 +79,7 @@ def start_web_service(oms_uri, alert_alarm_server_uri):
                  alert_alarm_server_uri)
         proxy.event.register_event_listener(alert_alarm_server_uri)
 
-    log.info('Listening for Alerts & Alarms on ' + alert_alarm_server_uri)
+    log.info('Listening for Alerts & Alarms on 0.0.0.0:' + str(alert_alarm_server_port))
     app.run(host='0.0.0.0', port=alert_alarm_server_port)
 
 
