@@ -44,8 +44,7 @@ def process_oms_request():
         # Log the list of Alert & Alarm messages from the OMS Event
         for alert_alarm_dict in request.json:
             aa_publisher.enqueue(alert_alarm_dict)
-            log.info('oms_alert_alarm_server: OMS_AA_MSG: %r',
-                     alert_alarm_dict)
+            log.info('oms_alert_alarm_server: OMS_AA_MSG: %r', alert_alarm_dict)
 
         # Publish the list of Alert & Alarm messages to qpid
         aa_publisher.publish()
@@ -66,21 +65,18 @@ def start_web_service(oms_uri, alert_alarm_server_uri):
     :return:
     """
 
-    alert_alarm_server_port = int(re.search('http://.+:(.+?)/',
-                                            alert_alarm_server_uri).group(1))
+    alert_alarm_server_port = int(re.search('http://.+:(.+?)/', alert_alarm_server_uri).group(1))
 
     if oms_uri == 'DEBUG':
-        log.info('DEBUG mode: OMS Alert Alarm Server not registering ' +
-                 'with OMS.')
+        log.info('DEBUG mode: OMS Alert Alarm Server not registering with OMS.')
     else:
-        log.info('Getting the proxy for OMS server: ' + oms_uri)
+        log.info('Getting the proxy for OMS server: %r', oms_uri)
         proxy = xmlrpclib.ServerProxy(oms_uri)
 
-        log.info('Registering OMS Alerts & Alarms server as listener: ' +
-                 alert_alarm_server_uri)
+        log.info('Registering OMS Alerts & Alarms server as listener: %r', alert_alarm_server_uri)
         proxy.event.register_event_listener(alert_alarm_server_uri)
 
-    log.info('Listening for Alerts & Alarms on ' + alert_alarm_server_uri)
+    log.info('Listening for Alerts & Alarms on 0.0.0.0:%d', alert_alarm_server_port)
     app.run(host='0.0.0.0', port=alert_alarm_server_port)
 
 
@@ -95,21 +91,24 @@ def main():
 
     global aa_publisher
 
-    oms_uri = None
-    alert_alarm_server_uri = None
-    qpid_uri = None
-
     options = docopt(__doc__)
     server_config_file = options['<server_config>']
-    config = yaml.load(open(server_config_file))
+    try:
+        config = yaml.load(open(server_config_file))
+    except IOError:
+        log.error('Cannot find configuration file: %r', server_config_file)
+        return
 
-    oms_uri = config.get('oms_uri')
-    alert_alarm_server_uri = config.get('alert_alarm_server_uri')
-    qpid_uri = config.get('qpid_uri')
+    try:
+        oms_uri = config.get('oms_uri')
+        alert_alarm_server_uri = config.get('alert_alarm_server_uri')
+        qpid_uri = config.get('qpid_uri')
+    except AttributeError:
+        log.error('Configuration file is empty: %r', server_config_file)
+        return
 
     if not all((oms_uri, alert_alarm_server_uri, qpid_uri)):
-        log.error('Missing mandatory configuration values missing from ' +
-                  server_config_file)
+        log.error('Missing mandatory configuration values missing from %r', server_config_file)
     else:
         headers = {'aaServerUri': alert_alarm_server_uri}
 
@@ -118,10 +117,10 @@ def main():
             start_web_service(oms_uri, alert_alarm_server_uri)
 
         except Exception as ex:
-            log.exception('Error starting OMS Alert and Alarm web service: %r',
-                          ex)
+            log.exception('Error starting OMS Alert and Alarm web service: %r', ex)
+            return
 
-    log.info('Stopping OMS Alert & Alarm Web Service.\n')
 
 if __name__ == '__main__':
     main()
+    log.info('Stopping OMS Alert & Alarm Web Service.\n')
