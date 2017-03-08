@@ -1,0 +1,133 @@
+header:
+    particle_object: 'MULTIPLE'
+    particle_type: 'MULTIPLE'
+data:
+  - _index: 1
+    particle_object: Pco2wAbcMetadataDataParticle
+    particle_type: pco2w_abc_metadata
+    internal_timestamp: 3466968623.000000
+    record_type: 128
+    record_time: 3466968623
+    clock_active: 1
+    recording_active: 0
+    record_end_on_time: 0
+    record_memory_full: 0
+    record_end_on_error: 0
+    data_download_ok: 0
+    flash_memory_open: 1
+    battery_low_prestart: 0
+    battery_low_measurement: 0
+    battery_low_blank: 0
+    battery_low_external: 0
+    external_device1_fault: 0
+    external_device2_fault: 0
+    external_device3_fault: 0
+    flash_erased: 0
+    power_on_invalid: 0
+    num_data_records: 1
+    num_error_records: 0
+    num_bytes_stored: 512
+    voltage_battery: !!null
+  - _index: 2
+    particle_object: Pco2wAbcPowerDataParticle
+    particle_type: pco2w_abc_power
+    internal_timestamp: 3466968635.000000
+    record_type: 17
+    record_time: 3466968635
+  - _index: 3
+    particle_object: Pco2wAbcInstrumentBlankDataParticle
+    particle_type: pco2w_abc_instrument_blank
+    internal_timestamp: 3466968983.000000
+    record_type: 5
+    record_time: 3466968983
+    voltage_battery: 3180
+    thermistor_raw: 2138
+    blank_light_measurements: [  41, 36, 2919, 1566, 1921, 1763, 8707, 15056, 42, 38, 2933, 1575, 1925, 1766 ]
+  - _index: 4
+    particle_object: Pco2wAbcPowerDataParticle
+    particle_type: pco2w_abc_power
+    internal_timestamp: 3466976139.000000
+    record_type: 17
+    record_time: 3466976139
+  - _index: 5
+    particle_object: Pco2wAbcInstrumentDataParticle
+    particle_type: pco2w_abc_instrument
+    internal_timestamp: 3466976441.000000
+    record_type: 4
+    record_time: 3466976441
+    voltage_battery: 3202
+    thermistor_raw: 2174
+    light_measurements: [  43, 38, 2899, 365, 1906, 613, 1876, 5063, 41, 37, 2916, 368, 1909, 615 ]
+  - _index: 6
+    particle_object: Pco2wAbcPowerDataParticle
+    particle_type: pco2w_abc_power
+    internal_timestamp: 3466983643.000000
+    record_type: 17
+    record_time: 3466983643
+  - _index: 7
+    particle_object: Pco2wAbcInstrumentDataParticle
+    particle_type: pco2w_abc_instrument
+    internal_timestamp: 3466983945.000000
+    record_type: 4
+    record_time: 3466983945
+    voltage_battery: 3200
+    thermistor_raw: 2195
+    light_measurements: [  43, 39, 2883, 337, 1891, 628, 1716, 5225, 44, 37, 2904, 339, 1892, 627 ]
+  - _index: 8
+    particle_object: Pco2wAbcMetadataDataParticle
+    particle_type: pco2w_abc_metadata
+    internal_timestamp: 3466990416.000000
+    record_type: 133
+    record_time: 3466990416
+    clock_active: 1
+    recording_active: 0
+    record_end_on_time: 0
+    record_memory_full: 0
+    record_end_on_error: 0
+    data_download_ok: 0
+    flash_memory_open: 1
+    battery_low_prestart: 0
+    battery_low_measurement: 0
+    battery_low_blank: 0
+    battery_low_external: 0
+    external_device1_fault: 0
+    external_device2_fault: 0
+    external_device3_fault: 0
+    flash_erased: 0
+    power_on_invalid: 0
+    num_data_records: 8
+    num_error_records: 0
+    num_bytes_stored: 668
+    voltage_battery: !!null
+  - _index: 9
+    particle_object: Pco2wAbcPowerDataParticle
+    particle_type: pco2w_abc_power
+    internal_timestamp: 3466990433.000000
+    record_type: 17
+    record_time: 3466990433
+  - _index: 10
+    particle_object: Pco2wAbcMetadataDataParticle
+    particle_type: pco2w_abc_metadata
+    internal_timestamp: 3466991433.000000
+    record_type: 192
+    record_time: 3466991433
+    clock_active: 1
+    recording_active: 0
+    record_end_on_time: 0
+    record_memory_full: 0
+    record_end_on_error: 0
+    data_download_ok: 0
+    flash_memory_open: 1
+    battery_low_prestart: 0
+    battery_low_measurement: 0
+    battery_low_blank: 0
+    battery_low_external: 0
+    external_device1_fault: 0
+    external_device2_fault: 0
+    external_device3_fault: 0
+    flash_erased: 0
+    power_on_invalid: 0
+    num_data_records: 1
+    num_error_records: 0
+    num_bytes_stored: 512
+    voltage_battery: 4096

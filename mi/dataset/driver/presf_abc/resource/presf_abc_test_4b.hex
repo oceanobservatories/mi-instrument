@@ -1,0 +1,94 @@
+*Sea-Bird SBE 26plus Data File:
+*FileName = C:\Users\Alai\Desktop\P3 OSSM Recovered Data\PRESF_SN_26P76848-1388_20150709.hex
+*Software Version 2.0
+*DS
+*SBE 26plus-quartz V 7.2  SN 1388    09 Jul 2015  19:30:42
+*user info=ooi
+*quartz pressure sensor: serial number = 130824, range = 1000 psia
+*internal temperature sensor
+*conductivity = NO
+*iop =  6.7 ma  vmain = 15.3 V  vlith =  9.0 V
+*last sample: p = 13.8424, t = 22.7003
+*
+*tide measurement: interval = 60.000 minutes, duration = 3600 seconds
+*measure waves every 6 tide samples
+*1024 wave samples/burst at 1.00 scans/sec, duration = 1024 seconds
+*logging start time =  03 Dec 2014  20:05:00
+*logging stop time = do not use stop time
+*
+*tide samples/day = 24.000
+*wave bursts/day = 4.000
+*memory endurance = 5305.9 days
+*nominal alkaline battery endurance = 455.8 days
+*total recorded tide measurements = 5855
+*total recorded wave bursts = 976
+*tide measurements since last start = 5231
+*wave bursts since last start = 871
+*
+*transmit real-time tide data = YES
+*transmit real-time wave burst data = NO
+*transmit real-time wave statistics = NO
+*
+*status = stopped by user
+*logging = NO, send start command to begin logging
+*S>DC
+*Pressure coefficients:  10-mar-14
+*    U0 = 5.858992e+00
+*    Y1 = -3.948355e+03
+*    Y2 = -1.019385e+04
+*    Y3 = 0.000000e+00
+*    C1 = -5.715219e+03
+*    C2 = -6.033690e-01
+*    C3 = 1.693125e+04
+*    D1 = 8.045600e-02
+*    D2 = 0.000000e+00
+*    T1 = 3.036646e+01
+*    T2 = 7.435300e-01
+*    T3 = 5.042604e+01
+*    T4 = 1.440226e+02
+*    M = 12582.9
+*    B = 838.8
+*    OFFSET = -4.742000e-01
+*Temperature coefficients:  08-mar-14
+*    TA0 = 3.496789e-04
+*    TA1 = 2.278682e-04
+*    TA2 = 1.012595e-07
+*    TA3 = 1.075962e-07
+*S>DD
+FFFFFFFFFBFFFFFFFF
+1ADB2F5A0000000000
+003C00040000000000
+FFFFFFFFFCFFFFFFFF
+FFFFFFFFFBFFFFFFFF
+1ADB2F5A0000000000
+003C00040000000000
+FFFFFFFFFCFFFFFFFF
+029D4270CC1ADB2F5A
+029D426BF11ADB2F96
+000000000000000000
+1ADB2FD40000000000
+029B5A300400000000
+80CE5780CE54
+80CE5980CE58
+FFFFFFFFFFFFFFFFFF
+02962465A91ADB2FD2
+FFFFFFFFFBFFFFFFFF
+1BEFF2A20000000000
+0E1000040000000000
+FFFFFFFFFCFFFFFFFF
+FFFFFFFFFBFFFFFFFF
+1BEFFE730000000000
+0E1000040000000000
+FFFFFFFFFCFFFFFFFF
+02CE38436C1BEFFE73
+02CF643F3C1BF00C83
+02D0C93DC21BF01A93
+000000000000000000
+1BF052D50000000000
+029ADAA40800000000
+80CF7780CF73
+80CF7680CF73
+80CF7880CF76
+80CF7380CF72
+FFFFFFFFFFFFFFFFFF
+S>

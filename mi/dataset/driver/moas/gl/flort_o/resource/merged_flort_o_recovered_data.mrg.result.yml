@@ -1,0 +1,52 @@
+# Expected Results
+
+header:
+  particle_object: FlortODataParticle
+  particle_type: flort_o_glider_data
+
+data:
+  - _index: 1
+    internal_timestamp: 3657433345.676850319
+    m_present_time: 1448444545.67685
+    m_present_secs_into_mission: 34869.7
+    sci_m_present_time: 1448444545.67685
+    sci_m_present_secs_into_mission: 34869.7
+    sci_bb3slo_b470_sig: 0
+    sci_bb3slo_b532_sig: 0
+    sci_bb3slo_b660_sig: 0
+  - _index: 2
+    internal_timestamp: 3657433455.366029739
+    m_present_time: 1448444655.36603
+    m_present_secs_into_mission: 34979.4
+    sci_m_present_time: 1448444655.36603
+    sci_m_present_secs_into_mission: 34979.4
+    sci_bb3slo_b470_sig: 109
+    sci_bb3slo_b532_sig: 108
+    sci_bb3slo_b660_sig: 132
+  - _index: 3
+    internal_timestamp: 3657433456.381680012
+    m_present_time: 1448444656.38168
+    m_present_secs_into_mission: 34980.4
+    sci_m_present_time: 1448444656.38168
+    sci_m_present_secs_into_mission: 34980.4
+    sci_bb3slo_b470_sig: 106
+    sci_bb3slo_b532_sig: 108
+    sci_bb3slo_b660_sig: 135
+  - _index: 4
+    internal_timestamp: 3657433457.394470215
+    m_present_time: 1448444657.39447
+    m_present_secs_into_mission: 34981.4
+    sci_m_present_time: 1448444657.39447
+    sci_m_present_secs_into_mission: 34981.4
+    sci_bb3slo_b470_sig: 109
+    sci_bb3slo_b532_sig: 104
+    sci_bb3slo_b660_sig: 131
+  - _index: 5
+    internal_timestamp: 3657433458.396850109
+    m_present_time: 1448444658.39685
+    m_present_secs_into_mission: 34982.4
+    sci_m_present_time: 1448444658.39685
+    sci_m_present_secs_into_mission: 34982.4
+    sci_bb3slo_b470_sig: 106
+    sci_bb3slo_b532_sig: 106
+    sci_bb3slo_b660_sig: 133

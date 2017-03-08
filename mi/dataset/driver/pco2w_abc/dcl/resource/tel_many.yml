@@ -1,0 +1,96 @@
+header:
+  particle_object: MULTIPLE
+  particle_type: MULTIPLE
+
+data:
+  - _index:  1
+    particle_object: Pco2wAbcDclPowerTelemeteredDataParticle
+    particle_type: pco2w_abc_dcl_power
+    internal_timestamp: 3608409640.0
+    dcl_controller_timestamp: '2014/05/07 01:00:40.102'
+    unique_id: 194
+    record_type: 17
+    record_time: 3482269311
+    passed_checksum: 1
+  - _index:  2
+    particle_object: Pco2wAbcDclInstrumentTelemeteredDataParticle
+    particle_type: pco2w_abc_dcl_instrument
+    internal_timestamp: 3608409933.0
+    dcl_controller_timestamp: '2014/05/07 01:05:33.702'
+    unique_id: 194
+    record_type: 4
+    record_time: 3482269603
+    light_measurements: [68, 76, 3343, 579, 1968, 507, 2504, 3709, 68, 75, 3342, 578, 1970, 507]
+    voltage_battery: 3163
+    thermistor_raw: 2019
+    passed_checksum: 1
+  - _index:  3
+    particle_object: Pco2wAbcDclInstrumentBlankTelemeteredDataParticle
+    particle_type: pco2w_abc_dcl_instrument_blank
+    internal_timestamp: 3608453180.0
+    dcl_controller_timestamp: '2014/05/07 13:06:20.390'
+    unique_id: 194
+    record_type: 5
+    record_time: 3482312848
+    blank_light_measurements: [64, 76, 3340, 564, 1969, 522, 2439, 3854, 69, 78, 3344, 566, 1970, 522]
+    voltage_battery: 3146
+    thermistor_raw: 2018
+    passed_checksum: 1
+  - _index:  4
+    particle_object: Pco2wAbcDclMetadataTelemeteredDataParticle
+    particle_type: pco2w_abc_dcl_metadata
+    internal_timestamp: 3619396381.0
+    dcl_controller_timestamp: '2014/09/11 04:53:01.971'
+    unique_id: 182
+    record_type: 133
+    record_time: 3466990381
+    clock_active: 0
+    recording_active: 0
+    record_end_on_time: 0
+    record_memory_full: 0
+    record_end_on_error: 0
+    data_download_ok: 0
+    flash_memory_open: 0
+    battery_low_prestart: 0
+    battery_low_measurement: 0
+    battery_low_blank: 1
+    battery_low_external: 0
+    external_device1_fault: 0
+    external_device2_fault: 0
+    external_device3_fault: 0
+    flash_erased: 0
+    power_on_invalid: 1
+    num_data_records: 11
+    num_error_records: 0
+    num_bytes_stored: 2609
+    voltage_battery: !!null
+    passed_checksum: 1
+  - _index:  5
+    particle_object: Pco2wAbcDclMetadataTelemeteredDataParticle
+    particle_type: pco2w_abc_dcl_metadata
+    internal_timestamp: 3619396381.0
+    dcl_controller_timestamp: '2014/09/11 04:53:01.971'
+    unique_id: 182
+    record_type: 193
+    record_time: 3466990381
+    clock_active: 0
+    recording_active: 0
+    record_end_on_time: 0
+    record_memory_full: 0
+    record_end_on_error: 0
+    data_download_ok: 0
+    flash_memory_open: 0
+    battery_low_prestart: 0
+    battery_low_measurement: 0
+    battery_low_blank: 1
+    battery_low_external: 0
+    external_device1_fault: 0
+    external_device2_fault: 0
+    external_device3_fault: 0
+    flash_erased: 0
+    power_on_invalid: 1
+    num_data_records: 11
+    num_error_records: 0
+    num_bytes_stored: 2609
+    voltage_battery: 5
+    passed_checksum: 1

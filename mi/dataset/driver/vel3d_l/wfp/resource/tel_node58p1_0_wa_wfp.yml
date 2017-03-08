@@ -1,0 +1,3454 @@
+header:
+    particle_object: 'MULTIPLE'
+    particle_type: 'MULTIPLE'
+data:
+  - _index: 1
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585034816.000000
+    vel3d_l_date_time_array: [2013, 8, 9, 11, 0, 16]
+    vel3d_l_heading: 242.363708496094
+    vel3d_l_tx:   1.864662170410
+    vel3d_l_ty:   1.193101048470
+    vel3d_l_hx:  -0.201887458563
+    vel3d_l_hy:  -0.347454905510
+    vel3d_l_hz:  -0.915705502033
+    vel3d_l_vp1:  -1.380420088768
+    vel3d_l_vp2:  -0.359347701073
+    vel3d_l_vp3:   0.150818169117
+    vel3d_l_vp4:   0.948289513588
+  - _index: 2
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585035016.000000
+    vel3d_l_date_time_array: [2013, 8, 9, 11, 3, 36]
+    vel3d_l_heading: 118.554084777832
+    vel3d_l_tx:   0.148527190089
+    vel3d_l_ty:   1.029758572578
+    vel3d_l_hx:  -0.198420658708
+    vel3d_l_hy:   0.343821316957
+    vel3d_l_hz:  -0.917832314968
+    vel3d_l_vp1:   0.526384949684
+    vel3d_l_vp2:  -7.920582771301
+    vel3d_l_vp3:   0.688431799412
+    vel3d_l_vp4:  13.075603485107
+  - _index: 3
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585035216.000000
+    vel3d_l_date_time_array: [2013, 8, 9, 11, 6, 56]
+    vel3d_l_heading: 143.331710815430
+    vel3d_l_tx:   0.467619180679
+    vel3d_l_ty:   0.866424679756
+    vel3d_l_hx:  -0.330461382866
+    vel3d_l_hy:   0.226620137691
+    vel3d_l_hz:  -0.916208803654
+    vel3d_l_vp1:  -0.434038221836
+    vel3d_l_vp2:  -7.136042118073
+    vel3d_l_vp3:  -0.149927392602
+    vel3d_l_vp4:  13.913537025452
+  - _index: 4
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585035416.000000
+    vel3d_l_date_time_array: [2013, 8, 9, 11, 10, 16]
+    vel3d_l_heading: 127.137435913086
+    vel3d_l_tx:   0.467619180679
+    vel3d_l_ty:   0.866424679756
+    vel3d_l_hx:  -0.253299862146
+    vel3d_l_hy:   0.310776740313
+    vel3d_l_hz:  -0.916109621525
+    vel3d_l_vp1:  -0.080026030540
+    vel3d_l_vp2:  -4.176364898682
+    vel3d_l_vp3:  -0.616110920906
+    vel3d_l_vp4:  13.979330062866
+  - _index: 5
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585035616.000000
+    vel3d_l_date_time_array: [2013, 8, 9, 11, 13, 36]
+    vel3d_l_heading: 139.494812011719
+    vel3d_l_tx:   0.467619180679
+    vel3d_l_ty:   1.193101048470
+    vel3d_l_hx:  -0.316335678101
+    vel3d_l_hy:   0.244786977768
+    vel3d_l_hz:  -0.916521131992
+    vel3d_l_vp1:  -0.132521510124
+    vel3d_l_vp2:  -6.639648437500
+    vel3d_l_vp3:  -0.480018854141
+    vel3d_l_vp4:  13.979768753052
+  - _index: 6
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585035816.000000
+    vel3d_l_date_time_array: [2013, 8, 9, 11, 16, 56]
+    vel3d_l_heading: 145.186523437500
+    vel3d_l_tx:   0.467619180679
+    vel3d_l_ty:   1.029758572578
+    vel3d_l_hx:  -0.338655769825
+    vel3d_l_hy:   0.213835328817
+    vel3d_l_hz:  -0.916289627552
+    vel3d_l_vp1:   0.755339741707
+    vel3d_l_vp2:  -6.931564807892
+    vel3d_l_vp3:   0.068757370114
+    vel3d_l_vp4:  13.063490867615
+  - _index: 7
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585036016.000000
+    vel3d_l_date_time_array: [2013, 8, 9, 11, 20, 16]
+    vel3d_l_heading: 150.196060180664
+    vel3d_l_tx:   0.467619180679
+    vel3d_l_ty:   0.866424679756
+    vel3d_l_hx:  -0.354011327028
+    vel3d_l_hy:   0.184625670314
+    vel3d_l_hz:  -0.916836619377
+    vel3d_l_vp1:   1.795884013176
+    vel3d_l_vp2:  -7.109448432922
+    vel3d_l_vp3:   1.644068121910
+    vel3d_l_vp4:  12.009058952332
+  - _index: 8
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585036216.000000
+    vel3d_l_date_time_array: [2013, 8, 9, 11, 23, 36]
+    vel3d_l_heading: 136.994735717773
+    vel3d_l_tx:   0.467619180679
+    vel3d_l_ty:   1.193101048470
+    vel3d_l_hx:  -0.307219713926
+    vel3d_l_hy:   0.260556340218
+    vel3d_l_hz:  -0.915273904800
+    vel3d_l_vp1:   1.277012228966
+    vel3d_l_vp2:  -6.918028831482
+    vel3d_l_vp3:   1.563735842705
+    vel3d_l_vp4:  11.874795913696
+  - _index: 9
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585036416.000000
+    vel3d_l_date_time_array: [2013, 8, 9, 11, 26, 56]
+    vel3d_l_heading: 109.909187316895
+    vel3d_l_tx:   0.467619180679
+    vel3d_l_ty:   0.866424679756
+    vel3d_l_hx:  -0.145938336849
+    vel3d_l_hy:   0.368458330631
+    vel3d_l_hz:  -0.918117880821
+    vel3d_l_vp1:   1.670409321785
+    vel3d_l_vp2:  -7.798990726471
+    vel3d_l_vp3:   2.770597457886
+    vel3d_l_vp4:  11.638360023499
+  - _index: 10
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585036616.000000
+    vel3d_l_date_time_array: [2013, 8, 9, 11, 30, 16]
+    vel3d_l_heading: 107.493766784668
+    vel3d_l_tx:   0.467619180679
+    vel3d_l_ty:   1.029758572578
+    vel3d_l_hx:  -0.131350934505
+    vel3d_l_hy:   0.376649856567
+    vel3d_l_hz:  -0.916996121407
+    vel3d_l_vp1:   1.434339165688
+    vel3d_l_vp2:  -6.337839126587
+    vel3d_l_vp3:   2.361134529114
+    vel3d_l_vp4:  12.110325813293
+  - _index: 11
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585036816.000000
+    vel3d_l_date_time_array: [2013, 8, 9, 11, 33, 36]
+    vel3d_l_heading: 102.443336486816
+    vel3d_l_tx:   0.308071970940
+    vel3d_l_ty:   0.866424679756
+    vel3d_l_hx:  -0.093189582229
+    vel3d_l_hy:   0.386193901300
+    vel3d_l_hz:  -0.917698204517
+    vel3d_l_vp1:   1.830954194069
+    vel3d_l_vp2:  -7.623154640198
+    vel3d_l_vp3:   1.812471270561
+    vel3d_l_vp4:  12.117829322815
+  - _index: 12
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585037016.000000
+    vel3d_l_date_time_array: [2013, 8, 9, 11, 36, 56]
+    vel3d_l_heading: 109.841056823730
+    vel3d_l_tx:   0.467619180679
+    vel3d_l_ty:   0.866424679756
+    vel3d_l_hx:  -0.145864903927
+    vel3d_l_hy:   0.369698196650
+    vel3d_l_hz:  -0.917630970478
+    vel3d_l_vp1:   1.530514597893
+    vel3d_l_vp2:  -6.981161594391
+    vel3d_l_vp3:   0.923238813877
+    vel3d_l_vp4:  11.995922088623
+  - _index: 13
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585037216.000000
+    vel3d_l_date_time_array: [2013, 8, 9, 11, 40, 16]
+    vel3d_l_heading: 107.413505554199
+    vel3d_l_tx:   0.467619180679
+    vel3d_l_ty:   1.193101048470
+    vel3d_l_hx:  -0.131030291319
+    vel3d_l_hy:   0.374940544367
+    vel3d_l_hz:  -0.917742133141
+    vel3d_l_vp1:   1.580496907234
+    vel3d_l_vp2:  -8.206163406372
+    vel3d_l_vp3:  -0.159567520022
+    vel3d_l_vp4:  11.932456970215
+  - _index: 14
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585037416.000000
+    vel3d_l_date_time_array: [2013, 8, 9, 11, 43, 36]
+    vel3d_l_heading: 123.998336791992
+    vel3d_l_tx:   0.308071970940
+    vel3d_l_ty:   1.193101048470
+    vel3d_l_hx:  -0.234817549586
+    vel3d_l_hy:   0.321821093559
+    vel3d_l_hz:  -0.917219638824
+    vel3d_l_vp1:   1.623551726341
+    vel3d_l_vp2:  -9.491505622864
+    vel3d_l_vp3:  -0.352968573570
+    vel3d_l_vp4:  11.306685447693
+  - _index: 15
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585037616.000000
+    vel3d_l_date_time_array: [2013, 8, 9, 11, 46, 56]
+    vel3d_l_heading: 119.431556701660
+    vel3d_l_tx:   0.467619180679
+    vel3d_l_ty:   0.866424679756
+    vel3d_l_hx:  -0.206967487931
+    vel3d_l_hy:   0.339741557837
+    vel3d_l_hz:  -0.917464017868
+    vel3d_l_vp1:   1.645464777946
+    vel3d_l_vp2: -10.853330612183
+    vel3d_l_vp3:  -0.561035871506
+    vel3d_l_vp4:  10.973190307617
+  - _index: 16
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585037816.000000
+    vel3d_l_date_time_array: [2013, 8, 9, 11, 50, 16]
+    vel3d_l_heading: 117.267318725586
+    vel3d_l_tx:   0.467619180679
+    vel3d_l_ty:   0.866424679756
+    vel3d_l_hx:  -0.193348318338
+    vel3d_l_hy:   0.346775680780
+    vel3d_l_hz:  -0.917803347111
+    vel3d_l_vp1:   0.693072915077
+    vel3d_l_vp2:  -9.257815361023
+    vel3d_l_vp3:  -1.460107922554
+    vel3d_l_vp4:  11.135304450989
+  - _index: 17
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585038016.000000
+    vel3d_l_date_time_array: [2013, 8, 9, 11, 53, 36]
+    vel3d_l_heading: 330.419403076172
+    vel3d_l_tx:   0.308071970940
+    vel3d_l_ty:   1.193101048470
+    vel3d_l_hx:   0.345304667950
+    vel3d_l_hy:  -0.217831388116
+    vel3d_l_hz:  -0.912860453129
+    vel3d_l_vp1:   0.762907147408
+    vel3d_l_vp2:  -9.540451049805
+    vel3d_l_vp3:   0.604688942432
+    vel3d_l_vp4:  10.082987785339
+  - _index: 18
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585038216.000000
+    vel3d_l_date_time_array: [2013, 8, 9, 11, 56, 56]
+    vel3d_l_heading: 325.401031494141
+    vel3d_l_tx:   0.467619180679
+    vel3d_l_ty:   1.193101048470
+    vel3d_l_hx:   0.322586059570
+    vel3d_l_hy:  -0.246734246612
+    vel3d_l_hz:  -0.913816452026
+    vel3d_l_vp1:   0.855053544044
+    vel3d_l_vp2:  -9.564929962158
+    vel3d_l_vp3:   0.601737082005
+    vel3d_l_vp4:  10.555819511414
+  - _index: 19
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585038416.000000
+    vel3d_l_date_time_array: [2013, 8, 9, 12, 0, 16]
+    vel3d_l_heading: 301.423828125000
+    vel3d_l_tx:   0.467619180679
+    vel3d_l_ty:   1.193101048470
+    vel3d_l_hx:   0.197467029095
+    vel3d_l_hy:  -0.354538053274
+    vel3d_l_hz:  -0.913952708244
+    vel3d_l_vp1:  -0.249798655510
+    vel3d_l_vp2: -10.073510169983
+    vel3d_l_vp3:   1.041619658470
+    vel3d_l_vp4:  11.650752067566
+  - _index: 20
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585038616.000000
+    vel3d_l_date_time_array: [2013, 8, 9, 12, 3, 36]
+    vel3d_l_heading: 299.240631103516
+    vel3d_l_tx:   0.467619180679
+    vel3d_l_ty:   1.193101048470
+    vel3d_l_hx:   0.183390364051
+    vel3d_l_hy:  -0.360080808401
+    vel3d_l_hz:  -0.914718449116
+    vel3d_l_vp1:  -0.133252859116
+    vel3d_l_vp2:  -9.158821105957
+    vel3d_l_vp3:   1.145227789879
+    vel3d_l_vp4:  12.505926132202
+  - _index: 21
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585038816.000000
+    vel3d_l_date_time_array: [2013, 8, 9, 12, 6, 56]
+    vel3d_l_heading: 289.545013427734
+    vel3d_l_tx:   0.467619180679
+    vel3d_l_ty:   0.866424679756
+    vel3d_l_hx:   0.124421298504
+    vel3d_l_hy:  -0.385416567326
+    vel3d_l_hz:  -0.914315819740
+    vel3d_l_vp1:   0.817264199257
+    vel3d_l_vp2:  -7.590128898621
+    vel3d_l_vp3:   1.077095389366
+    vel3d_l_vp4:  12.245302200317
+  - _index: 22
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585039016.000000
+    vel3d_l_date_time_array: [2013, 8, 9, 12, 10, 16]
+    vel3d_l_heading: 319.708435058594
+    vel3d_l_tx:   0.467619180679
+    vel3d_l_ty:   1.193101048470
+    vel3d_l_hx:   0.296184420586
+    vel3d_l_hy:  -0.276515901089
+    vel3d_l_hz:  -0.914228498936
+    vel3d_l_vp1:  -0.387566149235
+    vel3d_l_vp2:  -8.283416748047
+    vel3d_l_vp3:  -0.433972239494
+    vel3d_l_vp4:  13.467910766602
+  - _index: 23
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585039216.000000
+    vel3d_l_date_time_array: [2013, 8, 9, 12, 13, 36]
+    vel3d_l_heading: 315.150299072266
+    vel3d_l_tx:   0.308071970940
+    vel3d_l_ty:   1.193101048470
+    vel3d_l_hx:   0.275503039360
+    vel3d_l_hy:  -0.298041522503
+    vel3d_l_hz:  -0.913930654526
+    vel3d_l_vp1:   0.003391146660
+    vel3d_l_vp2:  -8.225081443787
+    vel3d_l_vp3:   0.334339708090
+    vel3d_l_vp4:  13.562582969666
+  - _index: 24
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585039416.000000
+    vel3d_l_date_time_array: [2013, 8, 9, 12, 16, 56]
+    vel3d_l_heading: 329.771423339844
+    vel3d_l_tx:   0.467619180679
+    vel3d_l_ty:   0.866424679756
+    vel3d_l_hx:   0.342383384705
+    vel3d_l_hy:  -0.217672944069
+    vel3d_l_hz:  -0.913997888565
+    vel3d_l_vp1:   1.396613001823
+    vel3d_l_vp2:  -7.851758956909
+    vel3d_l_vp3:   0.538989782333
+    vel3d_l_vp4:  13.025674819946
+  - _index: 25
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585039616.000000
+    vel3d_l_date_time_array: [2013, 8, 9, 12, 20, 16]
+    vel3d_l_heading: 345.440246582031
+    vel3d_l_tx:   0.308071970940
+    vel3d_l_ty:   1.193101048470
+    vel3d_l_hx:   0.389458090067
+    vel3d_l_hy:  -0.121444709599
+    vel3d_l_hz:  -0.913002610207
+    vel3d_l_vp1:   1.963051438332
+    vel3d_l_vp2:  -6.416329860687
+    vel3d_l_vp3:   0.769322454929
+    vel3d_l_vp4:  12.509056091309
+  - _index: 26
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585039816.000000
+    vel3d_l_date_time_array: [2013, 8, 9, 12, 23, 36]
+    vel3d_l_heading:   4.981495857239
+    vel3d_l_tx:   0.467619180679
+    vel3d_l_ty:   0.945541620255
+    vel3d_l_hx:   0.408447265625
+    vel3d_l_hy:   0.021221045405
+    vel3d_l_hz:  -0.912535250187
+    vel3d_l_vp1:   1.961175799370
+    vel3d_l_vp2:  -6.847981452942
+    vel3d_l_vp3:   1.225217580795
+    vel3d_l_vp4:  11.732088088989
+  - _index: 27
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585040016.000000
+    vel3d_l_date_time_array: [2013, 8, 9, 12, 26, 56]
+    vel3d_l_heading:   0.509373545647
+    vel3d_l_tx:   0.148527190089
+    vel3d_l_ty:   0.866424679756
+    vel3d_l_hx:   0.402054071426
+    vel3d_l_hy:  -0.010243889876
+    vel3d_l_hz:  -0.915558636189
+    vel3d_l_vp1:   2.700075626373
+    vel3d_l_vp2:  -7.771666049957
+    vel3d_l_vp3:   2.042986869812
+    vel3d_l_vp4:  10.799375534058
+  - _index: 28
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585040216.000000
+    vel3d_l_date_time_array: [2013, 8, 9, 12, 30, 16]
+    vel3d_l_heading:   4.402242183685
+    vel3d_l_tx:   0.467619180679
+    vel3d_l_ty:   1.193101048470
+    vel3d_l_hx:   0.408023566008
+    vel3d_l_hy:   0.013014111668
+    vel3d_l_hz:  -0.912878572941
+    vel3d_l_vp1:   2.374059200287
+    vel3d_l_vp2:  -7.155880928040
+    vel3d_l_vp3:   3.755516529083
+    vel3d_l_vp4:  10.676406860352
+  - _index: 29
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585040416.000000
+    vel3d_l_date_time_array: [2013, 8, 9, 12, 33, 36]
+    vel3d_l_heading:  28.195348739624
+    vel3d_l_tx:   0.308071970940
+    vel3d_l_ty:   0.866424679756
+    vel3d_l_hx:   0.360663324594
+    vel3d_l_hy:   0.182181701064
+    vel3d_l_hz:  -0.914730429649
+    vel3d_l_vp1:   3.311559200287
+    vel3d_l_vp2:  -7.919991016388
+    vel3d_l_vp3:   4.137671470642
+    vel3d_l_vp4:  10.721868515015
+  - _index: 30
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585040616.000000
+    vel3d_l_date_time_array: [2013, 8, 9, 12, 36, 56]
+    vel3d_l_heading:   6.050612926483
+    vel3d_l_tx:   0.148527190089
+    vel3d_l_ty:   1.193101048470
+    vel3d_l_hx:   0.405910044909
+    vel3d_l_hy:   0.024269627407
+    vel3d_l_hz:  -0.913590669632
+    vel3d_l_vp1:   2.294372081757
+    vel3d_l_vp2:  -7.411071777344
+    vel3d_l_vp3:   2.705081224442
+    vel3d_l_vp4:  11.615725517273
+  - _index: 31
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585040816.000000
+    vel3d_l_date_time_array: [2013, 8, 9, 12, 40, 16]
+    vel3d_l_heading:  27.931467056274
+    vel3d_l_tx:   0.148527190089
+    vel3d_l_ty:   1.193101048470
+    vel3d_l_hx:   0.362216442823
+    vel3d_l_hy:   0.174275502563
+    vel3d_l_hz:  -0.915656685829
+    vel3d_l_vp1:   2.345431327820
+    vel3d_l_vp2:  -9.031996726990
+    vel3d_l_vp3:   1.671446084976
+    vel3d_l_vp4:  11.635038375854
+  - _index: 32
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585041016.000000
+    vel3d_l_date_time_array: [2013, 8, 9, 12, 43, 36]
+    vel3d_l_heading:  63.534606933594
+    vel3d_l_tx:   0.467619180679
+    vel3d_l_ty:   0.866424679756
+    vel3d_l_hx:   0.177007377148
+    vel3d_l_hy:   0.356722533703
+    vel3d_l_hz:  -0.917288064957
+    vel3d_l_vp1:   2.051946163177
+    vel3d_l_vp2:  -7.319829463959
+    vel3d_l_vp3:   0.410649657249
+    vel3d_l_vp4:  11.546432495117
+  - _index: 33
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585041216.000000
+    vel3d_l_date_time_array: [2013, 8, 9, 12, 46, 56]
+    vel3d_l_heading:  63.717453002930
+    vel3d_l_tx:   0.148527190089
+    vel3d_l_ty:   0.866424679756
+    vel3d_l_hx:   0.179687991738
+    vel3d_l_hy:   0.354820966721
+    vel3d_l_hz:  -0.917504370213
+    vel3d_l_vp1:   1.935945153236
+    vel3d_l_vp2:  -8.253580093384
+    vel3d_l_vp3:  -0.061517402530
+    vel3d_l_vp4:  11.228261947632
+  - _index: 34
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585041416.000000
+    vel3d_l_date_time_array: [2013, 8, 9, 12, 50, 16]
+    vel3d_l_heading:  20.825366973877
+    vel3d_l_tx:   0.148527190089
+    vel3d_l_ty:   1.193101048470
+    vel3d_l_hx:   0.382992863655
+    vel3d_l_hy:   0.127567619085
+    vel3d_l_hz:  -0.914900541306
+    vel3d_l_vp1:   1.858185887337
+    vel3d_l_vp2: -10.750094413757
+    vel3d_l_vp3:  -0.695359468460
+    vel3d_l_vp4:  11.333651542664
+  - _index: 35
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585041616.000000
+    vel3d_l_date_time_array: [2013, 8, 9, 12, 53, 36]
+    vel3d_l_heading:  21.496696472168
+    vel3d_l_tx:   0.148527190089
+    vel3d_l_ty:   1.193101048470
+    vel3d_l_hx:   0.382078856230
+    vel3d_l_hy:   0.132406547666
+    vel3d_l_hz:  -0.914595067501
+    vel3d_l_vp1:   4.062651634216
+    vel3d_l_vp2: -10.298138618469
+    vel3d_l_vp3:   2.250532150269
+    vel3d_l_vp4:   9.249082565308
+  - _index: 36
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585041816.000000
+    vel3d_l_date_time_array: [2013, 8, 9, 12, 56, 56]
+    vel3d_l_heading:  38.845352172852
+    vel3d_l_tx:   0.148527190089
+    vel3d_l_ty:   1.193101048470
+    vel3d_l_hx:   0.319394528866
+    vel3d_l_hy:   0.240097090602
+    vel3d_l_hz:  -0.916700899601
+    vel3d_l_vp1:   3.385103225708
+    vel3d_l_vp2: -11.463066101074
+    vel3d_l_vp3:   1.681219220161
+    vel3d_l_vp4:   9.083857536316
+  - _index: 37
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585042016.000000
+    vel3d_l_date_time_array: [2013, 8, 9, 13, 0, 16]
+    vel3d_l_heading:  63.392223358154
+    vel3d_l_tx:   0.148527190089
+    vel3d_l_ty:   0.866424679756
+    vel3d_l_hx:   0.181290179491
+    vel3d_l_hy:   0.352803796530
+    vel3d_l_hz:  -0.917966961861
+    vel3d_l_vp1:   1.662218689919
+    vel3d_l_vp2: -11.840971946716
+    vel3d_l_vp3:   0.985853135586
+    vel3d_l_vp4:  10.196115493774
+  - _index: 38
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585042216.000000
+    vel3d_l_date_time_array: [2013, 8, 9, 13, 3, 36]
+    vel3d_l_heading:  29.049711227417
+    vel3d_l_tx:   0.148527190089
+    vel3d_l_ty:   1.029758572578
+    vel3d_l_hx:   0.358073353767
+    vel3d_l_hy:   0.183790951967
+    vel3d_l_hz:  -0.915425717831
+    vel3d_l_vp1:   1.088039040565
+    vel3d_l_vp2: -10.341991424561
+    vel3d_l_vp3:   1.662550568581
+    vel3d_l_vp4:  10.545900344849
+  - _index: 39
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585042491.000000
+    vel3d_l_date_time_array: [2013, 8, 9, 13, 8, 11]
+    vel3d_l_heading:  25.468339920044
+    vel3d_l_tx:   0.148527190089
+    vel3d_l_ty:   0.866424679756
+    vel3d_l_hx:   0.368013709784
+    vel3d_l_hy:   0.162594482303
+    vel3d_l_hz:  -0.915493845940
+    vel3d_l_vp1:   1.436573147774
+    vel3d_l_vp2:  -3.505893707275
+    vel3d_l_vp3:   1.765440702438
+    vel3d_l_vp4:  -1.908035516739
+  - _index: 40
+    particle_object: Vel3dLWfpSioMuleMetadataParticle
+    particle_type: vel3d_l_wfp_sio_mule_metadata
+    internal_timestamp: 3585043168.000000
+    vel3d_l_time_on: 1376046002
+    vel3d_l_time_off: 1376053700
+    serial_number: '1025'
+    vel3d_l_number_of_records: 39
+    vel3d_l_decimation_factor: !!null
+    vel3d_l_controller_timestamp: 1376054368
+  - _index: 41
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585049216.000000
+    vel3d_l_date_time_array: [2013, 8, 9, 15, 0, 16]
+    vel3d_l_heading: 281.546508789062
+    vel3d_l_tx:   2.397786378860
+    vel3d_l_ty: -19.525909423828
+    vel3d_l_hx:   0.100818835199
+    vel3d_l_hy:  -0.383478075266
+    vel3d_l_hz:  -0.918030619621
+    vel3d_l_vp1:   0.511410951614
+    vel3d_l_vp2:  -1.925175428391
+    vel3d_l_vp3:  -0.410212039948
+    vel3d_l_vp4:   1.546782016754
+  - _index: 42
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585049416.000000
+    vel3d_l_date_time_array: [2013, 8, 9, 15, 3, 36]
+    vel3d_l_heading:  59.592876434326
+    vel3d_l_tx:   1.019357919693
+    vel3d_l_ty:  -0.823561728001
+    vel3d_l_hx:   0.176886305213
+    vel3d_l_hy:   0.342680126429
+    vel3d_l_hz:  -0.922649145126
+    vel3d_l_vp1:   0.777731299400
+    vel3d_l_vp2: -10.374452590942
+    vel3d_l_vp3:  -0.193927288055
+    vel3d_l_vp4:  14.676084518433
+  - _index: 43
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585049616.000000
+    vel3d_l_date_time_array: [2013, 8, 9, 15, 6, 56]
+    vel3d_l_heading: 338.274230957031
+    vel3d_l_tx:   0.862401008606
+    vel3d_l_ty:  -0.664197385311
+    vel3d_l_hx:   0.378299474716
+    vel3d_l_hy:  -0.145646974444
+    vel3d_l_hz:  -0.914153397083
+    vel3d_l_vp1:  -0.556675851345
+    vel3d_l_vp2:  -8.779270172119
+    vel3d_l_vp3:   1.690645575523
+    vel3d_l_vp4:  15.184638977051
+  - _index: 44
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585049816.000000
+    vel3d_l_date_time_array: [2013, 8, 9, 15, 10, 16]
+    vel3d_l_heading: 335.841369628906
+    vel3d_l_tx:   1.019357919693
+    vel3d_l_ty:  -0.664197385311
+    vel3d_l_hx:   0.374189227819
+    vel3d_l_hy:  -0.164561301470
+    vel3d_l_hz:  -0.912634611130
+    vel3d_l_vp1:   0.389107584953
+    vel3d_l_vp2:  -9.486816406250
+    vel3d_l_vp3:   1.506299614906
+    vel3d_l_vp4:  14.941061973572
+  - _index: 45
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585050016.000000
+    vel3d_l_date_time_array: [2013, 8, 9, 15, 13, 36]
+    vel3d_l_heading:   2.361403226852
+    vel3d_l_tx:   1.019357919693
+    vel3d_l_ty:  -0.664197385311
+    vel3d_l_hx:   0.403131037951
+    vel3d_l_hy:   0.027856582776
+    vel3d_l_hz:  -0.914718151093
+    vel3d_l_vp1:   0.538426637650
+    vel3d_l_vp2: -11.017150878906
+    vel3d_l_vp3:   2.039232730865
+    vel3d_l_vp4:  14.632763862610
+  - _index: 46
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585050216.000000
+    vel3d_l_date_time_array: [2013, 8, 9, 15, 16, 56]
+    vel3d_l_heading: 319.647735595703
+    vel3d_l_tx:   1.019357919693
+    vel3d_l_ty:  -0.664197385311
+    vel3d_l_hx:   0.304435610771
+    vel3d_l_hy:  -0.261869609356
+    vel3d_l_hz:  -0.915829241276
+    vel3d_l_vp1:  -0.101438879967
+    vel3d_l_vp2:  -8.707308769226
+    vel3d_l_vp3:   0.867032468319
+    vel3d_l_vp4:  15.283532142639
+  - _index: 47
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585050416.000000
+    vel3d_l_date_time_array: [2013, 8, 9, 15, 20, 16]
+    vel3d_l_heading:  29.126119613647
+    vel3d_l_tx:   1.019357919693
+    vel3d_l_ty:  -0.664197385311
+    vel3d_l_hx:   0.339699864388
+    vel3d_l_hy:   0.208958864212
+    vel3d_l_hz:  -0.917027890682
+    vel3d_l_vp1:   0.363316893578
+    vel3d_l_vp2:  -7.655150890350
+    vel3d_l_vp3:   0.310098737478
+    vel3d_l_vp4:  15.502729415894
+  - _index: 48
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585050616.000000
+    vel3d_l_date_time_array: [2013, 8, 9, 15, 23, 36]
+    vel3d_l_heading: 218.783416748047
+    vel3d_l_tx:   1.019357919693
+    vel3d_l_ty:  -0.664197385311
+    vel3d_l_hx:  -0.312369436026
+    vel3d_l_hy:  -0.227085649967
+    vel3d_l_hz:  -0.922419428825
+    vel3d_l_vp1:   1.949688911438
+    vel3d_l_vp2:  -9.194171905518
+    vel3d_l_vp3:   1.284151077271
+    vel3d_l_vp4:  14.790463447571
+  - _index: 49
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585050816.000000
+    vel3d_l_date_time_array: [2013, 8, 9, 15, 26, 56]
+    vel3d_l_heading: 278.819091796875
+    vel3d_l_tx:   1.019357919693
+    vel3d_l_ty:  -0.982932329178
+    vel3d_l_hx:   0.046048901975
+    vel3d_l_hy:  -0.386270701885
+    vel3d_l_hz:  -0.921235322952
+    vel3d_l_vp1:   1.843338251114
+    vel3d_l_vp2:  -9.387099266052
+    vel3d_l_vp3:   0.898173451424
+    vel3d_l_vp4:  14.238568305969
+  - _index: 50
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585051016.000000
+    vel3d_l_date_time_array: [2013, 8, 9, 15, 30, 16]
+    vel3d_l_heading: 295.308929443359
+    vel3d_l_tx:   1.019357919693
+    vel3d_l_ty:  -0.664197385311
+    vel3d_l_hx:   0.159970566630
+    vel3d_l_hy:  -0.362094312906
+    vel3d_l_hz:  -0.918312013149
+    vel3d_l_vp1:   2.177425384521
+    vel3d_l_vp2:  -8.890962600708
+    vel3d_l_vp3:   1.636547803879
+    vel3d_l_vp4:  14.120666503906
+  - _index: 51
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585051216.000000
+    vel3d_l_date_time_array: [2013, 8, 9, 15, 33, 36]
+    vel3d_l_heading: 345.438201904297
+    vel3d_l_tx:   1.019357919693
+    vel3d_l_ty:  -0.664197385311
+    vel3d_l_hx:   0.392474502325
+    vel3d_l_hy:  -0.095604039729
+    vel3d_l_hz:  -0.914780676365
+    vel3d_l_vp1:   1.722504138947
+    vel3d_l_vp2:  -7.665615081787
+    vel3d_l_vp3:   0.766223311424
+    vel3d_l_vp4:  15.357449531555
+  - _index: 52
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585051416.000000
+    vel3d_l_date_time_array: [2013, 8, 9, 15, 36, 56]
+    vel3d_l_heading:   2.897054433823
+    vel3d_l_tx:   1.019357919693
+    vel3d_l_ty:  -0.905960977077
+    vel3d_l_hx:   0.404272824526
+    vel3d_l_hy:   0.035677082837
+    vel3d_l_hz:  -0.913942396641
+    vel3d_l_vp1:   1.238715887070
+    vel3d_l_vp2:  -8.280735969543
+    vel3d_l_vp3:   1.493411779404
+    vel3d_l_vp4:  15.489608764648
+  - _index: 53
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585051616.000000
+    vel3d_l_date_time_array: [2013, 8, 9, 15, 40, 16]
+    vel3d_l_heading:   4.367715358734
+    vel3d_l_tx:   1.019357919693
+    vel3d_l_ty:  -0.664197385311
+    vel3d_l_hx:   0.400186926126
+    vel3d_l_hy:   0.042378939688
+    vel3d_l_hz:  -0.915453135967
+    vel3d_l_vp1:   1.913644790649
+    vel3d_l_vp2:  -8.000626564026
+    vel3d_l_vp3:   2.498444557190
+    vel3d_l_vp4:  14.803520202637
+  - _index: 54
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585051816.000000
+    vel3d_l_date_time_array: [2013, 8, 9, 15, 43, 36]
+    vel3d_l_heading:  18.226839065552
+    vel3d_l_tx:   1.019357919693
+    vel3d_l_ty:  -0.664197385311
+    vel3d_l_hx:   0.377793014050
+    vel3d_l_hy:   0.140334337950
+    vel3d_l_hz:  -0.915193259716
+    vel3d_l_vp1:   1.834635496140
+    vel3d_l_vp2:  -7.073551654816
+    vel3d_l_vp3:   2.112787008286
+    vel3d_l_vp4:  15.640397071838
+  - _index: 55
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585052016.000000
+    vel3d_l_date_time_array: [2013, 8, 9, 15, 46, 56]
+    vel3d_l_heading: 353.303863525391
+    vel3d_l_tx:   1.019357919693
+    vel3d_l_ty:  -0.664197385311
+    vel3d_l_hx:   0.404397100210
+    vel3d_l_hy:  -0.038830395788
+    vel3d_l_hz:  -0.913758754730
+    vel3d_l_vp1:   2.162905454636
+    vel3d_l_vp2:  -7.840068340302
+    vel3d_l_vp3:   2.704764366150
+    vel3d_l_vp4:  15.453536033630
+  - _index: 56
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585052216.000000
+    vel3d_l_date_time_array: [2013, 8, 9, 15, 50, 16]
+    vel3d_l_heading: 339.539611816406
+    vel3d_l_tx:   1.019357919693
+    vel3d_l_ty:  -0.664197385311
+    vel3d_l_hx:   0.385642856359
+    vel3d_l_hy:  -0.139384001493
+    vel3d_l_hz:  -0.912059128284
+    vel3d_l_vp1:   2.179526329041
+    vel3d_l_vp2:  -5.359403133392
+    vel3d_l_vp3:   2.950584411621
+    vel3d_l_vp4:  14.930995941162
+  - _index: 57
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585052416.000000
+    vel3d_l_date_time_array: [2013, 8, 9, 15, 53, 36]
+    vel3d_l_heading: 310.033081054688
+    vel3d_l_tx:   1.019357919693
+    vel3d_l_ty:  -0.664197385311
+    vel3d_l_hx:   0.253394961357
+    vel3d_l_hy:  -0.310373127460
+    vel3d_l_hz:  -0.916220247746
+    vel3d_l_vp1:   1.577317237854
+    vel3d_l_vp2:  -7.086728572845
+    vel3d_l_vp3:   1.869327068329
+    vel3d_l_vp4:  15.341440200806
+  - _index: 58
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585052616.000000
+    vel3d_l_date_time_array: [2013, 8, 9, 15, 56, 56]
+    vel3d_l_heading: 291.642608642578
+    vel3d_l_tx:   1.019357919693
+    vel3d_l_ty:  -0.664197385311
+    vel3d_l_hx:   0.136739015579
+    vel3d_l_hy:  -0.374982118607
+    vel3d_l_hz:  -0.916891992092
+    vel3d_l_vp1:   2.790724039078
+    vel3d_l_vp2:  -7.131777763367
+    vel3d_l_vp3:   3.674717903137
+    vel3d_l_vp4:  13.826862335205
+  - _index: 59
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585052816.000000
+    vel3d_l_date_time_array: [2013, 8, 9, 16, 0, 16]
+    vel3d_l_heading: 313.613647460938
+    vel3d_l_tx:   1.019357919693
+    vel3d_l_ty:  -0.982932329178
+    vel3d_l_hx:   0.279686957598
+    vel3d_l_hy:  -0.294939607382
+    vel3d_l_hz:  -0.913666188717
+    vel3d_l_vp1:   2.632466316223
+    vel3d_l_vp2:  -7.859774112701
+    vel3d_l_vp3:   2.911405563354
+    vel3d_l_vp4:  13.707869529724
+  - _index: 60
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585053016.000000
+    vel3d_l_date_time_array: [2013, 8, 9, 16, 3, 36]
+    vel3d_l_heading: 348.597747802734
+    vel3d_l_tx:   1.019357919693
+    vel3d_l_ty:  -0.664197385311
+    vel3d_l_hx:   0.404467016459
+    vel3d_l_hy:  -0.074307590723
+    vel3d_l_hz:  -0.911528825760
+    vel3d_l_vp1:   3.075806140900
+    vel3d_l_vp2:  -7.648568630219
+    vel3d_l_vp3:   2.476921558380
+    vel3d_l_vp4:  12.316140174866
+  - _index: 61
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585053216.000000
+    vel3d_l_date_time_array: [2013, 8, 9, 16, 6, 56]
+    vel3d_l_heading: 324.527160644531
+    vel3d_l_tx:   1.019357919693
+    vel3d_l_ty:  -0.664197385311
+    vel3d_l_hx:   0.330300241709
+    vel3d_l_hy:  -0.236351311207
+    vel3d_l_hz:  -0.913805186749
+    vel3d_l_vp1:   1.221629619598
+    vel3d_l_vp2:  -8.037631988525
+    vel3d_l_vp3:   3.213281393051
+    vel3d_l_vp4:  12.702370643616
+  - _index: 62
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585053416.000000
+    vel3d_l_date_time_array: [2013, 8, 9, 16, 10, 16]
+    vel3d_l_heading: 354.410369873047
+    vel3d_l_tx:   1.019357919693
+    vel3d_l_ty:  -0.982932329178
+    vel3d_l_hx:   0.408200293779
+    vel3d_l_hy:  -0.025944173336
+    vel3d_l_hz:  -0.912523686886
+    vel3d_l_vp1:   3.263449668884
+    vel3d_l_vp2:  -8.031036376953
+    vel3d_l_vp3:   2.558709621429
+    vel3d_l_vp4:  11.858400344849
+  - _index: 63
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585053616.000000
+    vel3d_l_date_time_array: [2013, 8, 9, 16, 13, 36]
+    vel3d_l_heading: 353.631530761719
+    vel3d_l_tx:   1.019357919693
+    vel3d_l_ty:  -0.664197385311
+    vel3d_l_hx:   0.402773916721
+    vel3d_l_hy:  -0.036204189062
+    vel3d_l_hz:  -0.914583146572
+    vel3d_l_vp1:   2.768651485443
+    vel3d_l_vp2:  -8.057204246521
+    vel3d_l_vp3:   1.621077060699
+    vel3d_l_vp4:  12.152098655701
+  - _index: 64
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585053816.000000
+    vel3d_l_date_time_array: [2013, 8, 9, 16, 16, 56]
+    vel3d_l_heading: 166.184844970703
+    vel3d_l_tx:   1.019357919693
+    vel3d_l_ty:  -0.664197385311
+    vel3d_l_hx:  -0.375302672386
+    vel3d_l_hy:   0.098968319595
+    vel3d_l_hz:  -0.921603679657
+    vel3d_l_vp1:   2.537235021591
+    vel3d_l_vp2: -10.587067604065
+    vel3d_l_vp3:   0.495747745037
+    vel3d_l_vp4:  11.783565521240
+  - _index: 65
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585054016.000000
+    vel3d_l_date_time_array: [2013, 8, 9, 16, 20, 16]
+    vel3d_l_heading: 128.850234985352
+    vel3d_l_tx:   1.019357919693
+    vel3d_l_ty:  -0.664197385311
+    vel3d_l_hx:  -0.245593890548
+    vel3d_l_hy:   0.295178353786
+    vel3d_l_hz:  -0.923338115215
+    vel3d_l_vp1:   2.200415372849
+    vel3d_l_vp2:  -9.848220825195
+    vel3d_l_vp3:   2.480498313904
+    vel3d_l_vp4:  12.015089035034
+  - _index: 66
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585054216.000000
+    vel3d_l_date_time_array: [2013, 8, 9, 16, 23, 36]
+    vel3d_l_heading: 152.890441894531
+    vel3d_l_tx:   1.019357919693
+    vel3d_l_ty:  -0.664197385311
+    vel3d_l_hx:  -0.344991177320
+    vel3d_l_hy:   0.178913101554
+    vel3d_l_hz:  -0.921396434307
+    vel3d_l_vp1:   2.104452848434
+    vel3d_l_vp2: -10.165135383606
+    vel3d_l_vp3:   0.823033571243
+    vel3d_l_vp4:  12.389445304871
+  - _index: 67
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585054416.000000
+    vel3d_l_date_time_array: [2013, 8, 9, 16, 26, 56]
+    vel3d_l_heading: 208.364166259766
+    vel3d_l_tx:   1.019357919693
+    vel3d_l_ty:  -0.823561728001
+    vel3d_l_hx:  -0.346586585045
+    vel3d_l_hy:  -0.164931699634
+    vel3d_l_hz:  -0.923404216766
+    vel3d_l_vp1:  -0.063819050789
+    vel3d_l_vp2: -11.906874656677
+    vel3d_l_vp3:   2.218446254730
+    vel3d_l_vp4:  13.781931877136
+  - _index: 68
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585054616.000000
+    vel3d_l_date_time_array: [2013, 8, 9, 16, 30, 16]
+    vel3d_l_heading: 196.858825683594
+    vel3d_l_tx:   1.019357919693
+    vel3d_l_ty:  -0.664197385311
+    vel3d_l_hx:  -0.374869942665
+    vel3d_l_hy:  -0.097896188498
+    vel3d_l_hz:  -0.921894133091
+    vel3d_l_vp1:  -0.077055931091
+    vel3d_l_vp2:  -9.443243026733
+    vel3d_l_vp3:   2.761777400970
+    vel3d_l_vp4:  13.376389503479
+  - _index: 69
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585054816.000000
+    vel3d_l_date_time_array: [2013, 8, 9, 16, 33, 36]
+    vel3d_l_heading: 117.948944091797
+    vel3d_l_tx:   1.019357919693
+    vel3d_l_ty:  -0.664197385311
+    vel3d_l_hx:  -0.186558410525
+    vel3d_l_hy:   0.331251114607
+    vel3d_l_hz:  -0.924915552139
+    vel3d_l_vp1:  -0.190995693207
+    vel3d_l_vp2: -10.402868270874
+    vel3d_l_vp3:   5.373761177063
+    vel3d_l_vp4:  11.290018081665
+  - _index: 70
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585055016.000000
+    vel3d_l_date_time_array: [2013, 8, 9, 16, 36, 56]
+    vel3d_l_heading: 109.953697204590
+    vel3d_l_tx:   1.019357919693
+    vel3d_l_ty:  -0.664197385311
+    vel3d_l_hx:  -0.142435729504
+    vel3d_l_hy:   0.357674598694
+    vel3d_l_hz:  -0.922919869423
+    vel3d_l_vp1:   1.618716478348
+    vel3d_l_vp2: -11.232930183411
+    vel3d_l_vp3:   3.174587726593
+    vel3d_l_vp4:  11.590125083923
+  - _index: 71
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585055216.000000
+    vel3d_l_date_time_array: [2013, 8, 9, 16, 40, 16]
+    vel3d_l_heading: 118.711875915527
+    vel3d_l_tx:   1.019357919693
+    vel3d_l_ty:  -0.982932329178
+    vel3d_l_hx:  -0.191662967205
+    vel3d_l_hy:   0.335704356432
+    vel3d_l_hz:  -0.922262370586
+    vel3d_l_vp1:   0.779403328896
+    vel3d_l_vp2:  -9.589559555054
+    vel3d_l_vp3:   3.252426862717
+    vel3d_l_vp4:  12.892486572266
+  - _index: 72
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585055416.000000
+    vel3d_l_date_time_array: [2013, 8, 9, 16, 43, 36]
+    vel3d_l_heading: 112.536010742188
+    vel3d_l_tx:   1.019357919693
+    vel3d_l_ty:  -0.664197385311
+    vel3d_l_hx:  -0.158142194152
+    vel3d_l_hy:   0.352147281170
+    vel3d_l_hz:  -0.922487556934
+    vel3d_l_vp1:   1.374747991562
+    vel3d_l_vp2: -11.300331115723
+    vel3d_l_vp3:   3.739752292633
+    vel3d_l_vp4:  12.032640457153
+  - _index: 73
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585055616.000000
+    vel3d_l_date_time_array: [2013, 8, 9, 16, 46, 56]
+    vel3d_l_heading: 111.835281372070
+    vel3d_l_tx:   0.862401008606
+    vel3d_l_ty:  -0.982932329178
+    vel3d_l_hx:  -0.150328204036
+    vel3d_l_hy:   0.356270343065
+    vel3d_l_hz:  -0.922210872173
+    vel3d_l_vp1:   0.758234977722
+    vel3d_l_vp2: -10.754353523254
+    vel3d_l_vp3:   5.866870880127
+    vel3d_l_vp4:  12.107820510864
+  - _index: 74
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585055816.000000
+    vel3d_l_date_time_array: [2013, 8, 9, 16, 50, 16]
+    vel3d_l_heading: 132.570098876953
+    vel3d_l_tx:   1.019357919693
+    vel3d_l_ty:  -0.664197385311
+    vel3d_l_hx:  -0.266161829233
+    vel3d_l_hy:   0.282555848360
+    vel3d_l_hz:  -0.921585559845
+    vel3d_l_vp1:   0.527624130249
+    vel3d_l_vp2: -10.765869140625
+    vel3d_l_vp3:   2.759862661362
+    vel3d_l_vp4:  14.732276916504
+  - _index: 75
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585056016.000000
+    vel3d_l_date_time_array: [2013, 8, 9, 16, 53, 36]
+    vel3d_l_heading: 137.429641723633
+    vel3d_l_tx:   1.019357919693
+    vel3d_l_ty:  -0.664197385311
+    vel3d_l_hx:  -0.288783937693
+    vel3d_l_hy:   0.260880082846
+    vel3d_l_hz:  -0.921165227890
+    vel3d_l_vp1:  -0.146346926689
+    vel3d_l_vp2: -10.894927024841
+    vel3d_l_vp3:   5.367990493774
+    vel3d_l_vp4:  13.313874244690
+  - _index: 76
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585056216.000000
+    vel3d_l_date_time_array: [2013, 8, 9, 16, 56, 56]
+    vel3d_l_heading: 136.748123168945
+    vel3d_l_tx:   1.019357919693
+    vel3d_l_ty:  -0.664197385311
+    vel3d_l_hx:  -0.286394923925
+    vel3d_l_hy:   0.264673113823
+    vel3d_l_hz:  -0.920828998089
+    vel3d_l_vp1:   7.160779476166
+    vel3d_l_vp2: -15.819362640381
+    vel3d_l_vp3:   5.539891242981
+    vel3d_l_vp4:  10.426407814026
+  - _index: 77
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585056416.000000
+    vel3d_l_date_time_array: [2013, 8, 9, 17, 0, 16]
+    vel3d_l_heading: 152.755004882812
+    vel3d_l_tx:   0.862401008606
+    vel3d_l_ty:  -0.345488846302
+    vel3d_l_hx:  -0.342084497213
+    vel3d_l_hy:   0.174553558230
+    vel3d_l_hz:  -0.923314213753
+    vel3d_l_vp1:   8.317478179932
+    vel3d_l_vp2: -15.599768638611
+    vel3d_l_vp3:   6.104563713074
+    vel3d_l_vp4:   9.553637504578
+  - _index: 78
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585056616.000000
+    vel3d_l_date_time_array: [2013, 8, 9, 17, 3, 36]
+    vel3d_l_heading: 156.601089477539
+    vel3d_l_tx:   0.862401008606
+    vel3d_l_ty:  -0.664197385311
+    vel3d_l_hx:  -0.356307983398
+    vel3d_l_hy:   0.158875361085
+    vel3d_l_hz:  -0.920762300491
+    vel3d_l_vp1:   9.267391204834
+    vel3d_l_vp2: -17.344938278198
+    vel3d_l_vp3:   6.255614280701
+    vel3d_l_vp4:   9.646674156189
+  - _index: 79
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585056816.000000
+    vel3d_l_date_time_array: [2013, 8, 9, 17, 6, 56]
+    vel3d_l_heading: 156.451858520508
+    vel3d_l_tx:   1.019357919693
+    vel3d_l_ty:  -0.504838287830
+    vel3d_l_hx:  -0.349189370871
+    vel3d_l_hy:   0.153162747622
+    vel3d_l_hz:  -0.924450159073
+    vel3d_l_vp1:   4.140196323395
+    vel3d_l_vp2: -12.850042343140
+    vel3d_l_vp3:   7.099431991577
+    vel3d_l_vp4:  11.205456733704
+  - _index: 80
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585057016.000000
+    vel3d_l_date_time_array: [2013, 8, 9, 17, 10, 16]
+    vel3d_l_heading: 112.777038574219
+    vel3d_l_tx:   1.019357919693
+    vel3d_l_ty:  -0.982932329178
+    vel3d_l_hx:  -0.157098174095
+    vel3d_l_hy:   0.350752770901
+    vel3d_l_hz:  -0.923196911812
+    vel3d_l_vp1:   5.644775390625
+    vel3d_l_vp2: -11.561399459839
+    vel3d_l_vp3:   4.297154426575
+    vel3d_l_vp4:  12.121230125427
+  - _index: 81
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585057216.000000
+    vel3d_l_date_time_array: [2013, 8, 9, 17, 13, 36]
+    vel3d_l_heading:  84.254386901855
+    vel3d_l_tx:   1.019357919693
+    vel3d_l_ty:  -0.664197385311
+    vel3d_l_hx:   0.020983042195
+    vel3d_l_hy:   0.382923811674
+    vel3d_l_hz:  -0.923541545868
+    vel3d_l_vp1:   0.445366144180
+    vel3d_l_vp2:  -8.176063537598
+    vel3d_l_vp3:   4.422500133514
+    vel3d_l_vp4:  14.446336746216
+  - _index: 82
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585057416.000000
+    vel3d_l_date_time_array: [2013, 8, 9, 17, 16, 56]
+    vel3d_l_heading: 100.348258972168
+    vel3d_l_tx:   0.862401008606
+    vel3d_l_ty:  -0.982932329178
+    vel3d_l_hx:  -0.080180875957
+    vel3d_l_hy:   0.378668665886
+    vel3d_l_hz:  -0.922052562237
+    vel3d_l_vp1:   3.014135837555
+    vel3d_l_vp2:  -2.192718982697
+    vel3d_l_vp3:   3.568603277206
+    vel3d_l_vp4:   0.639465928078
+  - _index: 83
+    particle_object: Vel3dLWfpSioMuleMetadataParticle
+    particle_type: vel3d_l_wfp_sio_mule_metadata
+    internal_timestamp: 3585058142.000000
+    vel3d_l_time_on: 1376060402
+    vel3d_l_time_off: 1376068629
+    serial_number: '1024'
+    vel3d_l_number_of_records: 42
+    vel3d_l_decimation_factor: !!null
+    vel3d_l_controller_timestamp: 1376069342
+  - _index: 84
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585106817.000000
+    vel3d_l_date_time_array: [2013, 8, 10, 7, 0, 17]
+    vel3d_l_heading: 306.006866455078
+    vel3d_l_tx:   1.864662170410
+    vel3d_l_ty: -15.189280509949
+    vel3d_l_hx:   0.322880774736
+    vel3d_l_hy:  -0.254834115505
+    vel3d_l_hz:  -0.911486446857
+    vel3d_l_vp1:   0.967464327812
+    vel3d_l_vp2:  -3.098501682281
+    vel3d_l_vp3:   0.487199008465
+    vel3d_l_vp4:  -0.801747083664
+  - _index: 85
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585107017.000000
+    vel3d_l_date_time_array: [2013, 8, 10, 7, 3, 37]
+    vel3d_l_heading:  42.023071289062
+    vel3d_l_tx:   0.467619180679
+    vel3d_l_ty:   1.193101048470
+    vel3d_l_hx:   0.305796623230
+    vel3d_l_hy:   0.263294994831
+    vel3d_l_hz:  -0.914966762066
+    vel3d_l_vp1:   2.535229206085
+    vel3d_l_vp2:  11.960383415222
+    vel3d_l_vp3:   0.308677017689
+    vel3d_l_vp4:  -9.375535011292
+  - _index: 86
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585107217.000000
+    vel3d_l_date_time_array: [2013, 8, 10, 7, 6, 57]
+    vel3d_l_heading: 108.714500427246
+    vel3d_l_tx:   0.308071970940
+    vel3d_l_ty:   0.866424679756
+    vel3d_l_hx:  -0.136826634407
+    vel3d_l_hy:   0.375567167997
+    vel3d_l_hz:  -0.916639387608
+    vel3d_l_vp1:   2.889906406403
+    vel3d_l_vp2:  11.343069076538
+    vel3d_l_vp3:   0.637877583504
+    vel3d_l_vp4:  -7.299808502197
+  - _index: 87
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585107417.000000
+    vel3d_l_date_time_array: [2013, 8, 10, 7, 10, 17]
+    vel3d_l_heading: 135.079864501953
+    vel3d_l_tx:   0.467619180679
+    vel3d_l_ty:   0.866424679756
+    vel3d_l_hx:  -0.293630599976
+    vel3d_l_hy:   0.271513998508
+    vel3d_l_hz:  -0.916548609734
+    vel3d_l_vp1:   2.222702503204
+    vel3d_l_vp2:  12.024978637695
+    vel3d_l_vp3:   1.813548326492
+    vel3d_l_vp4:  -9.056200981140
+  - _index: 88
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585107617.000000
+    vel3d_l_date_time_array: [2013, 8, 10, 7, 13, 37]
+    vel3d_l_heading: 104.604560852051
+    vel3d_l_tx:   0.308071970940
+    vel3d_l_ty:   1.193101048470
+    vel3d_l_hx:  -0.110100850463
+    vel3d_l_hy:   0.384706199169
+    vel3d_l_hz:  -0.916449069977
+    vel3d_l_vp1:   3.555408000946
+    vel3d_l_vp2:  12.465739250183
+    vel3d_l_vp3:   0.531131386757
+    vel3d_l_vp4:  -8.987389564514
+  - _index: 89
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585107817.000000
+    vel3d_l_date_time_array: [2013, 8, 10, 7, 16, 57]
+    vel3d_l_heading: 211.799682617188
+    vel3d_l_tx:   0.148527190089
+    vel3d_l_ty:   0.866424679756
+    vel3d_l_hx:  -0.338159799576
+    vel3d_l_hy:  -0.222052842379
+    vel3d_l_hz:  -0.914516508579
+    vel3d_l_vp1:   2.281740188599
+    vel3d_l_vp2:  13.406802177429
+    vel3d_l_vp3:   0.521398186684
+    vel3d_l_vp4:  -9.856916427612
+  - _index: 90
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585108017.000000
+    vel3d_l_date_time_array: [2013, 8, 10, 7, 20, 17]
+    vel3d_l_heading: 164.178817749023
+    vel3d_l_tx:   0.148527190089
+    vel3d_l_ty:   1.029758572578
+    vel3d_l_hx:  -0.394691437483
+    vel3d_l_hy:   0.094754450023
+    vel3d_l_hz:  -0.913914799690
+    vel3d_l_vp1:   3.431402683258
+    vel3d_l_vp2:  12.583734512329
+    vel3d_l_vp3:   2.561290264130
+    vel3d_l_vp4:  -9.787168502808
+  - _index: 91
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585108217.000000
+    vel3d_l_date_time_array: [2013, 8, 10, 7, 23, 37]
+    vel3d_l_heading: 179.498764038086
+    vel3d_l_tx:   0.148527190089
+    vel3d_l_ty:   1.193101048470
+    vel3d_l_hx:  -0.407130479813
+    vel3d_l_hy:  -0.015489475802
+    vel3d_l_hz:  -0.913238644600
+    vel3d_l_vp1:   3.284899234772
+    vel3d_l_vp2:  12.205415725708
+    vel3d_l_vp3:   3.200304746628
+    vel3d_l_vp4: -10.257986068726
+  - _index: 92
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585108417.000000
+    vel3d_l_date_time_array: [2013, 8, 10, 7, 26, 57]
+    vel3d_l_heading: 156.983749389648
+    vel3d_l_tx:   0.148527190089
+    vel3d_l_ty:   0.866424679756
+    vel3d_l_hx:  -0.379748612642
+    vel3d_l_hy:   0.146512821317
+    vel3d_l_hz:  -0.913413941860
+    vel3d_l_vp1:   3.057937145233
+    vel3d_l_vp2:  12.063034057617
+    vel3d_l_vp3:   2.677131414413
+    vel3d_l_vp4:  -9.296042442322
+  - _index: 93
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585108617.000000
+    vel3d_l_date_time_array: [2013, 8, 10, 7, 30, 17]
+    vel3d_l_heading: 176.108657836914
+    vel3d_l_tx:   0.148527190089
+    vel3d_l_ty:   0.866424679756
+    vel3d_l_hx:  -0.409158736467
+    vel3d_l_hy:   0.013867979869
+    vel3d_l_hz:  -0.912357807159
+    vel3d_l_vp1:   3.288861751556
+    vel3d_l_vp2:  11.128113746643
+    vel3d_l_vp3:   3.929284811020
+    vel3d_l_vp4:  -8.965700149536
+  - _index: 94
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585108817.000000
+    vel3d_l_date_time_array: [2013, 8, 10, 7, 33, 37]
+    vel3d_l_heading: 171.464660644531
+    vel3d_l_tx:   0.148527190089
+    vel3d_l_ty:   0.866424679756
+    vel3d_l_hx:  -0.404363930225
+    vel3d_l_hy:   0.046517606825
+    vel3d_l_hz:  -0.913414418697
+    vel3d_l_vp1:   3.273138046265
+    vel3d_l_vp2:  11.831936836243
+    vel3d_l_vp3:   2.101653814316
+    vel3d_l_vp4:  -8.892145156860
+  - _index: 95
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585109017.000000
+    vel3d_l_date_time_array: [2013, 8, 10, 7, 36, 57]
+    vel3d_l_heading: 183.916717529297
+    vel3d_l_tx:   0.148527190089
+    vel3d_l_ty:   0.866424679756
+    vel3d_l_hx:  -0.402464747429
+    vel3d_l_hy:  -0.041234109551
+    vel3d_l_hz:  -0.914506375790
+    vel3d_l_vp1:   3.000608444214
+    vel3d_l_vp2:  11.838226318359
+    vel3d_l_vp3:   2.809269428253
+    vel3d_l_vp4:  -9.147489547729
+  - _index: 96
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585109217.000000
+    vel3d_l_date_time_array: [2013, 8, 10, 7, 40, 17]
+    vel3d_l_heading: 165.745147705078
+    vel3d_l_tx:   0.148527190089
+    vel3d_l_ty:   1.193101048470
+    vel3d_l_hx:  -0.395401775837
+    vel3d_l_hy:   0.080808326602
+    vel3d_l_hz:  -0.914946675301
+    vel3d_l_vp1:   3.527747631073
+    vel3d_l_vp2:  11.881466865540
+    vel3d_l_vp3:   2.702621221542
+    vel3d_l_vp4:  -8.158245086670
+  - _index: 97
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585109417.000000
+    vel3d_l_date_time_array: [2013, 8, 10, 7, 43, 37]
+    vel3d_l_heading: 147.664810180664
+    vel3d_l_tx:   0.148527190089
+    vel3d_l_ty:   1.193101048470
+    vel3d_l_hx:  -0.350718617439
+    vel3d_l_hy:   0.201510205865
+    vel3d_l_hz:  -0.914543628693
+    vel3d_l_vp1:   2.916956901550
+    vel3d_l_vp2:  12.645922660828
+    vel3d_l_vp3:   1.912389636040
+    vel3d_l_vp4:  -7.566142082214
+  - _index: 98
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585109617.000000
+    vel3d_l_date_time_array: [2013, 8, 10, 7, 46, 57]
+    vel3d_l_heading: 155.883361816406
+    vel3d_l_tx:   0.148527190089
+    vel3d_l_ty:   1.193101048470
+    vel3d_l_hx:  -0.375757008791
+    vel3d_l_hy:   0.148128628731
+    vel3d_l_hz:  -0.914802968502
+    vel3d_l_vp1:   1.303572535515
+    vel3d_l_vp2:  13.956056594849
+    vel3d_l_vp3:   0.774275481701
+    vel3d_l_vp4:  -8.468498229980
+  - _index: 99
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585109817.000000
+    vel3d_l_date_time_array: [2013, 8, 10, 7, 50, 17]
+    vel3d_l_heading: 125.849861145020
+    vel3d_l_tx:   0.467619180679
+    vel3d_l_ty:   1.193101048470
+    vel3d_l_hx:  -0.249228522182
+    vel3d_l_hy:   0.315597742796
+    vel3d_l_hz:  -0.915578067303
+    vel3d_l_vp1:   1.530228495598
+    vel3d_l_vp2:  13.255908966064
+    vel3d_l_vp3:   1.493801712990
+    vel3d_l_vp4:  -9.196108818054
+  - _index: 100
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585110017.000000
+    vel3d_l_date_time_array: [2013, 8, 10, 7, 53, 37]
+    vel3d_l_heading: 162.844055175781
+    vel3d_l_tx:   0.148527190089
+    vel3d_l_ty:   1.356447219849
+    vel3d_l_hx:  -0.393766522408
+    vel3d_l_hy:   0.099211752415
+    vel3d_l_hz:  -0.913840770721
+    vel3d_l_vp1:   0.782466769218
+    vel3d_l_vp2:  13.506000518799
+    vel3d_l_vp3:  -0.137986913323
+    vel3d_l_vp4:  -8.434338569641
+  - _index: 101
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585110217.000000
+    vel3d_l_date_time_array: [2013, 8, 10, 7, 56, 57]
+    vel3d_l_heading: 127.648445129395
+    vel3d_l_tx:   0.148527190089
+    vel3d_l_ty:   1.193101048470
+    vel3d_l_hx:  -0.257526189089
+    vel3d_l_hy:   0.311773777008
+    vel3d_l_hz:  -0.914591431618
+    vel3d_l_vp1:   1.181262373924
+    vel3d_l_vp2:  11.686923027039
+    vel3d_l_vp3:   2.156285047531
+    vel3d_l_vp4:  -7.857560634613
+  - _index: 102
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585110417.000000
+    vel3d_l_date_time_array: [2013, 8, 10, 8, 0, 17]
+    vel3d_l_heading: 115.258789062500
+    vel3d_l_tx:   0.467619180679
+    vel3d_l_ty:   1.519810318947
+    vel3d_l_hx:  -0.185376495123
+    vel3d_l_hy:   0.352881520987
+    vel3d_l_hz:  -0.917120575905
+    vel3d_l_vp1:   1.766863942146
+    vel3d_l_vp2:  10.507887840271
+    vel3d_l_vp3:   2.772562026978
+    vel3d_l_vp4: -10.774511337280
+  - _index: 103
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585110617.000000
+    vel3d_l_date_time_array: [2013, 8, 10, 8, 3, 37]
+    vel3d_l_heading: 106.708610534668
+    vel3d_l_tx:   0.467619180679
+    vel3d_l_ty:   1.193101048470
+    vel3d_l_hx:  -0.127073630691
+    vel3d_l_hy:   0.379494011402
+    vel3d_l_hz:  -0.916426002979
+    vel3d_l_vp1:   2.509805679321
+    vel3d_l_vp2:  10.365240097046
+    vel3d_l_vp3:   1.409354090691
+    vel3d_l_vp4:  -7.494765281677
+  - _index: 104
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585110817.000000
+    vel3d_l_date_time_array: [2013, 8, 10, 8, 6, 57]
+    vel3d_l_heading: 110.422027587891
+    vel3d_l_tx:   0.467619180679
+    vel3d_l_ty:   1.193101048470
+    vel3d_l_hx:  -0.152146533132
+    vel3d_l_hy:   0.369587421417
+    vel3d_l_hz:  -0.916655123234
+    vel3d_l_vp1:   2.569375038147
+    vel3d_l_vp2:  10.638462066650
+    vel3d_l_vp3:   0.769329071045
+    vel3d_l_vp4:  -8.868583679199
+  - _index: 105
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585111017.000000
+    vel3d_l_date_time_array: [2013, 8, 10, 8, 10, 17]
+    vel3d_l_heading: 121.398200988770
+    vel3d_l_tx:   0.148527190089
+    vel3d_l_ty:   1.193101048470
+    vel3d_l_hx:  -0.219562530518
+    vel3d_l_hy:   0.336853951216
+    vel3d_l_hz:  -0.915599048138
+    vel3d_l_vp1:   3.051647663116
+    vel3d_l_vp2:  11.524596214294
+    vel3d_l_vp3:   0.346333384514
+    vel3d_l_vp4:  -8.684237480164
+  - _index: 106
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585111217.000000
+    vel3d_l_date_time_array: [2013, 8, 10, 8, 13, 37]
+    vel3d_l_heading:  35.315715789795
+    vel3d_l_tx:   0.467619180679
+    vel3d_l_ty:   1.193101048470
+    vel3d_l_hx:   0.336173087358
+    vel3d_l_hy:   0.224461466074
+    vel3d_l_hz:  -0.914660990238
+    vel3d_l_vp1:   2.588708400726
+    vel3d_l_vp2:  12.395931243896
+    vel3d_l_vp3:  -0.183514937758
+    vel3d_l_vp4:  -8.600468635559
+  - _index: 107
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585111417.000000
+    vel3d_l_date_time_array: [2013, 8, 10, 8, 16, 57]
+    vel3d_l_heading: 346.321502685547
+    vel3d_l_tx:   0.467619180679
+    vel3d_l_ty:   1.193101048470
+    vel3d_l_hx:   0.392394095659
+    vel3d_l_hy:  -0.116301007569
+    vel3d_l_hz:  -0.912414908409
+    vel3d_l_vp1:   2.063035488129
+    vel3d_l_vp2:  13.290561676025
+    vel3d_l_vp3:  -0.710451245308
+    vel3d_l_vp4:  -8.324467658997
+  - _index: 108
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585111617.000000
+    vel3d_l_date_time_array: [2013, 8, 10, 8, 20, 17]
+    vel3d_l_heading: 203.704132080078
+    vel3d_l_tx:   0.148527190089
+    vel3d_l_ty:   1.193101048470
+    vel3d_l_hx:  -0.365192860365
+    vel3d_l_hy:  -0.178370594978
+    vel3d_l_hz:  -0.913683891296
+    vel3d_l_vp1:   2.432498455048
+    vel3d_l_vp2:  13.007216453552
+    vel3d_l_vp3:   0.512515962124
+    vel3d_l_vp4:  -7.799832344055
+  - _index: 109
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585111817.000000
+    vel3d_l_date_time_array: [2013, 8, 10, 8, 23, 37]
+    vel3d_l_heading: 162.553726196289
+    vel3d_l_tx:   0.148527190089
+    vel3d_l_ty:   1.193101048470
+    vel3d_l_hx:  -0.391636580229
+    vel3d_l_hy:   0.103308707476
+    vel3d_l_hz:  -0.914301991463
+    vel3d_l_vp1:   2.331004619598
+    vel3d_l_vp2:  12.309236526489
+    vel3d_l_vp3:   1.504837989807
+    vel3d_l_vp4:  -8.170977592468
+  - _index: 110
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585112017.000000
+    vel3d_l_date_time_array: [2013, 8, 10, 8, 26, 57]
+    vel3d_l_heading: 176.541809082031
+    vel3d_l_tx:   0.148527190089
+    vel3d_l_ty:   1.193101048470
+    vel3d_l_hx:  -0.404356181622
+    vel3d_l_hy:   0.005238741636
+    vel3d_l_hz:  -0.914586603642
+    vel3d_l_vp1:   2.253524303436
+    vel3d_l_vp2:  12.001869201660
+    vel3d_l_vp3:   2.241643428802
+    vel3d_l_vp4:  -8.627471923828
+  - _index: 111
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585112217.000000
+    vel3d_l_date_time_array: [2013, 8, 10, 8, 30, 17]
+    vel3d_l_heading:  97.857688903809
+    vel3d_l_tx:   0.467619180679
+    vel3d_l_ty:   1.193101048470
+    vel3d_l_hx:  -0.064518354833
+    vel3d_l_hy:   0.394509434700
+    vel3d_l_hz:  -0.916624128819
+    vel3d_l_vp1:   2.389191150665
+    vel3d_l_vp2:  11.536217689514
+    vel3d_l_vp3:   2.201038360596
+    vel3d_l_vp4:  -8.560750961304
+  - _index: 112
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585112417.000000
+    vel3d_l_date_time_array: [2013, 8, 10, 8, 33, 37]
+    vel3d_l_heading:  46.988506317139
+    vel3d_l_tx:   0.467619180679
+    vel3d_l_ty:   0.866424679756
+    vel3d_l_hx:   0.277930855751
+    vel3d_l_hy:   0.292113900185
+    vel3d_l_hz:  -0.915108680725
+    vel3d_l_vp1:   2.486064434052
+    vel3d_l_vp2:  11.560098648071
+    vel3d_l_vp3:   2.255177736282
+    vel3d_l_vp4:  -8.231124877930
+  - _index: 113
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585112617.000000
+    vel3d_l_date_time_array: [2013, 8, 10, 8, 36, 57]
+    vel3d_l_heading:  46.260620117188
+    vel3d_l_tx:   0.467619180679
+    vel3d_l_ty:   0.866424679756
+    vel3d_l_hx:   0.283130943775
+    vel3d_l_hy:   0.289867073298
+    vel3d_l_hz:  -0.914228618145
+    vel3d_l_vp1:   2.248318672180
+    vel3d_l_vp2:  12.395559310913
+    vel3d_l_vp3:   1.196247339249
+    vel3d_l_vp4: -10.055502891541
+  - _index: 114
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585112817.000000
+    vel3d_l_date_time_array: [2013, 8, 10, 8, 40, 17]
+    vel3d_l_heading:  44.746543884277
+    vel3d_l_tx:   0.467619180679
+    vel3d_l_ty:   1.029758572578
+    vel3d_l_hx:   0.290635555983
+    vel3d_l_hy:   0.279067456722
+    vel3d_l_hz:  -0.915233492851
+    vel3d_l_vp1:   1.379262566566
+    vel3d_l_vp2:  13.693559646606
+    vel3d_l_vp3:   0.211531072855
+    vel3d_l_vp4:  -7.658740520477
+  - _index: 115
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585113017.000000
+    vel3d_l_date_time_array: [2013, 8, 10, 8, 43, 37]
+    vel3d_l_heading: 320.046234130859
+    vel3d_l_tx:   0.467619180679
+    vel3d_l_ty:   0.866424679756
+    vel3d_l_hx:   0.302887946367
+    vel3d_l_hy:  -0.273800015450
+    vel3d_l_hz:  -0.912848591805
+    vel3d_l_vp1:   0.948642611504
+    vel3d_l_vp2:  13.849350929260
+    vel3d_l_vp3:   0.374003887177
+    vel3d_l_vp4:  -7.999801635742
+  - _index: 116
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585113217.000000
+    vel3d_l_date_time_array: [2013, 8, 10, 8, 46, 57]
+    vel3d_l_heading: 259.311462402344
+    vel3d_l_tx:   0.308071970940
+    vel3d_l_ty:   0.866424679756
+    vel3d_l_hx:  -0.077254310250
+    vel3d_l_hy:  -0.397039026022
+    vel3d_l_hz:  -0.914544641972
+    vel3d_l_vp1:   0.735735297203
+    vel3d_l_vp2:  13.542522430420
+    vel3d_l_vp3:   0.157665997744
+    vel3d_l_vp4:  -6.220486164093
+  - _index: 117
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585113417.000000
+    vel3d_l_date_time_array: [2013, 8, 10, 8, 50, 17]
+    vel3d_l_heading: 239.269683837891
+    vel3d_l_tx:   0.148527190089
+    vel3d_l_ty:   1.029758572578
+    vel3d_l_hx:  -0.201040491462
+    vel3d_l_hy:  -0.350679218769
+    vel3d_l_hz:  -0.914662122726
+    vel3d_l_vp1:   0.882152438164
+    vel3d_l_vp2:  12.766940116882
+    vel3d_l_vp3:   0.856143474579
+    vel3d_l_vp4:  -7.561541557312
+  - _index: 118
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585113617.000000
+    vel3d_l_date_time_array: [2013, 8, 10, 8, 53, 37]
+    vel3d_l_heading: 247.828231811523
+    vel3d_l_tx:   0.467619180679
+    vel3d_l_ty:   0.866424679756
+    vel3d_l_hx:  -0.153940960765
+    vel3d_l_hy:  -0.373247653246
+    vel3d_l_hz:  -0.914870679379
+    vel3d_l_vp1:   1.334401011467
+    vel3d_l_vp2:  11.322768211365
+    vel3d_l_vp3:   1.723210334778
+    vel3d_l_vp4:  -7.224761962891
+  - _index: 119
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585113792.000000
+    vel3d_l_date_time_array: [2013, 8, 10, 8, 56, 32]
+    vel3d_l_heading: 273.868347167969
+    vel3d_l_tx:   0.308071970940
+    vel3d_l_ty:   0.866424679756
+    vel3d_l_hx:   0.021454749629
+    vel3d_l_hy:  -0.404121190310
+    vel3d_l_hz:  -0.914453804493
+    vel3d_l_vp1:   0.600594043732
+    vel3d_l_vp2:  -2.605246067047
+    vel3d_l_vp3:   1.157354474068
+    vel3d_l_vp4:  -1.232002854347
+  - _index: 120
+    particle_object: Vel3dLWfpSioMuleMetadataParticle
+    particle_type: vel3d_l_wfp_sio_mule_metadata
+    internal_timestamp: 3585114430.000000
+    vel3d_l_time_on: 1376118002
+    vel3d_l_time_off: 1376125020
+    serial_number: '1025'
+    vel3d_l_number_of_records: 36
+    vel3d_l_decimation_factor: !!null
+    vel3d_l_controller_timestamp: 1376125630
+  - _index: 121
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585121216.000000
+    vel3d_l_date_time_array: [2013, 8, 10, 11, 0, 16]
+    vel3d_l_heading: 320.547088623047
+    vel3d_l_tx:   2.397786378860
+    vel3d_l_ty: -32.991638183594
+    vel3d_l_hx:   0.281491219997
+    vel3d_l_hy:   0.275568038225
+    vel3d_l_hz:  -0.919143617153
+    vel3d_l_vp1:  -1.370377063751
+    vel3d_l_vp2:  -4.336258888245
+    vel3d_l_vp3:   2.755753993988
+    vel3d_l_vp4:   1.996317982674
+  - _index: 122
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585121416.000000
+    vel3d_l_date_time_array: [2013, 8, 10, 11, 3, 36]
+    vel3d_l_heading:  47.765071868896
+    vel3d_l_tx:   1.019357919693
+    vel3d_l_ty:  -0.664197385311
+    vel3d_l_hx:   0.248065948486
+    vel3d_l_hy:   0.301937669516
+    vel3d_l_hz:  -0.920487284660
+    vel3d_l_vp1:   2.922630310059
+    vel3d_l_vp2:  12.248312950134
+    vel3d_l_vp3:   3.202378034592
+    vel3d_l_vp4:  -7.761198997498
+  - _index: 123
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585121616.000000
+    vel3d_l_date_time_array: [2013, 8, 10, 11, 6, 56]
+    vel3d_l_heading:  11.941558837891
+    vel3d_l_tx:   1.019357919693
+    vel3d_l_ty:  -0.982932329178
+    vel3d_l_hx:   0.390960544348
+    vel3d_l_hy:   0.101764164865
+    vel3d_l_hz:  -0.914764463902
+    vel3d_l_vp1:   3.025790214539
+    vel3d_l_vp2:  12.548560142517
+    vel3d_l_vp3:   2.438693284988
+    vel3d_l_vp4:  -8.449756622314
+  - _index: 124
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585121816.000000
+    vel3d_l_date_time_array: [2013, 8, 10, 11, 10, 16]
+    vel3d_l_heading:  48.992973327637
+    vel3d_l_tx:   1.019357919693
+    vel3d_l_ty:  -0.664197385311
+    vel3d_l_hx:   0.243162497878
+    vel3d_l_hy:   0.309114724398
+    vel3d_l_hz:  -0.919412910938
+    vel3d_l_vp1:   2.823021888733
+    vel3d_l_vp2:  10.455322265625
+    vel3d_l_vp3:   5.293928146362
+    vel3d_l_vp4:  -8.933811187744
+  - _index: 125
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585122016.000000
+    vel3d_l_date_time_array: [2013, 8, 10, 11, 13, 36]
+    vel3d_l_heading:  63.446231842041
+    vel3d_l_tx:   1.019357919693
+    vel3d_l_ty:  -0.664197385311
+    vel3d_l_hx:   0.156695827842
+    vel3d_l_hy:   0.357033193111
+    vel3d_l_hz:  -0.920854806900
+    vel3d_l_vp1:   2.776875495911
+    vel3d_l_vp2:  10.870871543884
+    vel3d_l_vp3:   4.381665229797
+    vel3d_l_vp4: -10.197134017944
+  - _index: 126
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585122216.000000
+    vel3d_l_date_time_array: [2013, 8, 10, 11, 16, 56]
+    vel3d_l_heading:  52.042953491211
+    vel3d_l_tx:   1.019357919693
+    vel3d_l_ty:  -0.823561728001
+    vel3d_l_hx:   0.222523257136
+    vel3d_l_hy:   0.319514036179
+    vel3d_l_hz:  -0.921083092690
+    vel3d_l_vp1:   2.659963846207
+    vel3d_l_vp2:  10.990887641907
+    vel3d_l_vp3:   4.772296905518
+    vel3d_l_vp4:  -9.949450492859
+  - _index: 127
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585122416.000000
+    vel3d_l_date_time_array: [2013, 8, 10, 11, 20, 16]
+    vel3d_l_heading:  43.488880157471
+    vel3d_l_tx:   1.019357919693
+    vel3d_l_ty:  -0.664197385311
+    vel3d_l_hx:   0.271733850241
+    vel3d_l_hy:   0.283920913935
+    vel3d_l_hz:  -0.919537782669
+    vel3d_l_vp1:   2.431206941605
+    vel3d_l_vp2:  11.699749946594
+    vel3d_l_vp3:   3.728769063950
+    vel3d_l_vp4:  -9.999118804932
+  - _index: 128
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585122616.000000
+    vel3d_l_date_time_array: [2013, 8, 10, 11, 23, 36]
+    vel3d_l_heading: 337.086700439453
+    vel3d_l_tx:   1.019357919693
+    vel3d_l_ty:  -0.664197385311
+    vel3d_l_hx:   0.374396562576
+    vel3d_l_hy:  -0.154547303915
+    vel3d_l_hz:  -0.914298832417
+    vel3d_l_vp1:   1.920665502548
+    vel3d_l_vp2:  11.818409919739
+    vel3d_l_vp3:   3.066272497177
+    vel3d_l_vp4:  -7.925148010254
+  - _index: 129
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585122816.000000
+    vel3d_l_date_time_array: [2013, 8, 10, 11, 26, 56]
+    vel3d_l_heading:  50.980514526367
+    vel3d_l_tx:   1.019357919693
+    vel3d_l_ty:  -0.982932329178
+    vel3d_l_hx:   0.226859107614
+    vel3d_l_hy:   0.316008001566
+    vel3d_l_hz:  -0.921234965324
+    vel3d_l_vp1:   3.828029155731
+    vel3d_l_vp2:  12.006213188171
+    vel3d_l_vp3:   1.545312166214
+    vel3d_l_vp4:  -6.199630737305
+  - _index: 130
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585123016.000000
+    vel3d_l_date_time_array: [2013, 8, 10, 11, 30, 16]
+    vel3d_l_heading:  88.011810302734
+    vel3d_l_tx:   1.019357919693
+    vel3d_l_ty:  -0.982932329178
+    vel3d_l_hx:  -0.003686835291
+    vel3d_l_hy:   0.384473621845
+    vel3d_l_hz:  -0.923128664494
+    vel3d_l_vp1:   5.055264472961
+    vel3d_l_vp2:   9.991598129272
+    vel3d_l_vp3:   5.102375030518
+    vel3d_l_vp4: -10.289466857910
+  - _index: 131
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585123216.000000
+    vel3d_l_date_time_array: [2013, 8, 10, 11, 33, 36]
+    vel3d_l_heading:  97.612419128418
+    vel3d_l_tx:   1.019357919693
+    vel3d_l_ty:  -0.823561728001
+    vel3d_l_hx:  -0.065604746342
+    vel3d_l_hy:   0.380971789360
+    vel3d_l_hz:  -0.922256290913
+    vel3d_l_vp1:   5.296227931976
+    vel3d_l_vp2:   9.845945358276
+    vel3d_l_vp3:   5.217551231384
+    vel3d_l_vp4: -10.040990829468
+  - _index: 132
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585123416.000000
+    vel3d_l_date_time_array: [2013, 8, 10, 11, 36, 56]
+    vel3d_l_heading: 117.640121459961
+    vel3d_l_tx:   1.019357919693
+    vel3d_l_ty:  -0.982932329178
+    vel3d_l_hx:  -0.185635715723
+    vel3d_l_hy:   0.338896065950
+    vel3d_l_hz:  -0.922327935696
+    vel3d_l_vp1:   5.636331558228
+    vel3d_l_vp2:  10.853067398071
+    vel3d_l_vp3:   3.897026062012
+    vel3d_l_vp4:  -9.400592803955
+  - _index: 133
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585123616.000000
+    vel3d_l_date_time_array: [2013, 8, 10, 11, 40, 16]
+    vel3d_l_heading: 144.191741943359
+    vel3d_l_tx:   1.019357919693
+    vel3d_l_ty:  -0.664197385311
+    vel3d_l_hx:  -0.314921915531
+    vel3d_l_hy:   0.226047515869
+    vel3d_l_hz:  -0.921806216240
+    vel3d_l_vp1:   3.966288566589
+    vel3d_l_vp2:  11.591089248657
+    vel3d_l_vp3:   4.327454566956
+    vel3d_l_vp4: -10.898802757263
+  - _index: 134
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585123816.000000
+    vel3d_l_date_time_array: [2013, 8, 10, 11, 43, 36]
+    vel3d_l_heading: 122.901634216309
+    vel3d_l_tx:   1.019357919693
+    vel3d_l_ty:  -0.982932329178
+    vel3d_l_hx:  -0.213886216283
+    vel3d_l_hy:   0.321006119251
+    vel3d_l_hz:  -0.922609210014
+    vel3d_l_vp1:   3.562705993652
+    vel3d_l_vp2:  11.500698089600
+    vel3d_l_vp3:   5.126336097717
+    vel3d_l_vp4: -10.964256286621
+  - _index: 135
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585124016.000000
+    vel3d_l_date_time_array: [2013, 8, 10, 11, 46, 56]
+    vel3d_l_heading: 110.501167297363
+    vel3d_l_tx:   1.019357919693
+    vel3d_l_ty:  -0.664197385311
+    vel3d_l_hx:  -0.145624339581
+    vel3d_l_hy:   0.356128305197
+    vel3d_l_hz:  -0.923020184040
+    vel3d_l_vp1:   4.105239391327
+    vel3d_l_vp2:  12.191264152527
+    vel3d_l_vp3:   3.880105972290
+    vel3d_l_vp4:  -8.686804771423
+  - _index: 136
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585124216.000000
+    vel3d_l_date_time_array: [2013, 8, 10, 11, 50, 16]
+    vel3d_l_heading: 104.873123168945
+    vel3d_l_tx:   1.019357919693
+    vel3d_l_ty:  -0.823561728001
+    vel3d_l_hx:  -0.109259307384
+    vel3d_l_hy:   0.362518548965
+    vel3d_l_hz:  -0.925549924374
+    vel3d_l_vp1:   3.259460449219
+    vel3d_l_vp2:  13.059314727783
+    vel3d_l_vp3:   4.233653068542
+    vel3d_l_vp4:  -8.837597846985
+  - _index: 137
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585124416.000000
+    vel3d_l_date_time_array: [2013, 8, 10, 11, 53, 36]
+    vel3d_l_heading: 167.958892822266
+    vel3d_l_tx:   1.019357919693
+    vel3d_l_ty:  -0.982932329178
+    vel3d_l_hx:  -0.377588480711
+    vel3d_l_hy:   0.092906080186
+    vel3d_l_hz:  -0.921300888062
+    vel3d_l_vp1:   3.503030300140
+    vel3d_l_vp2:  13.888618469238
+    vel3d_l_vp3:   3.417168378830
+    vel3d_l_vp4:  -6.862121582031
+  - _index: 138
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585124616.000000
+    vel3d_l_date_time_array: [2013, 8, 10, 11, 56, 56]
+    vel3d_l_heading: 157.544036865234
+    vel3d_l_tx:   1.019357919693
+    vel3d_l_ty:  -0.664197385311
+    vel3d_l_hx:  -0.348503261805
+    vel3d_l_hy:   0.147981524467
+    vel3d_l_hz:  -0.925552189350
+    vel3d_l_vp1:   4.181456089020
+    vel3d_l_vp2:  14.030913352966
+    vel3d_l_vp3:   3.566531419754
+    vel3d_l_vp4:  -8.449827194214
+  - _index: 139
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585124816.000000
+    vel3d_l_date_time_array: [2013, 8, 10, 12, 0, 16]
+    vel3d_l_heading: 297.638580322266
+    vel3d_l_tx:   1.019357919693
+    vel3d_l_ty:  -0.664197385311
+    vel3d_l_hx:   0.175229355693
+    vel3d_l_hy:  -0.355104684830
+    vel3d_l_hz:  -0.918256700039
+    vel3d_l_vp1:   3.518932819366
+    vel3d_l_vp2:  14.638340950012
+    vel3d_l_vp3:   0.928150951862
+    vel3d_l_vp4:  -5.660733222961
+  - _index: 140
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585125016.000000
+    vel3d_l_date_time_array: [2013, 8, 10, 12, 3, 36]
+    vel3d_l_heading:  27.741218566895
+    vel3d_l_tx:   1.019357919693
+    vel3d_l_ty:  -0.982932329178
+    vel3d_l_hx:   0.344122618437
+    vel3d_l_hy:   0.205239653587
+    vel3d_l_hz:  -0.916218519211
+    vel3d_l_vp1:   2.673393726349
+    vel3d_l_vp2:  13.481466293335
+    vel3d_l_vp3:   2.445162296295
+    vel3d_l_vp4:  -6.274484634399
+  - _index: 141
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585125216.000000
+    vel3d_l_date_time_array: [2013, 8, 10, 12, 6, 56]
+    vel3d_l_heading:  33.650474548340
+    vel3d_l_tx:   1.019357919693
+    vel3d_l_ty:  -0.664197385311
+    vel3d_l_hx:   0.322003483772
+    vel3d_l_hy:   0.235799908638
+    vel3d_l_hz:  -0.916903495789
+    vel3d_l_vp1:   3.533771991730
+    vel3d_l_vp2:  11.115959167480
+    vel3d_l_vp3:   4.758149147034
+    vel3d_l_vp4:  -8.109866142273
+  - _index: 142
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585125416.000000
+    vel3d_l_date_time_array: [2013, 8, 10, 12, 10, 16]
+    vel3d_l_heading:  12.678510665894
+    vel3d_l_tx:   1.019357919693
+    vel3d_l_ty:  -0.664197385311
+    vel3d_l_hx:   0.389380306005
+    vel3d_l_hy:   0.101827956736
+    vel3d_l_hz:  -0.915431141853
+    vel3d_l_vp1:   3.590715408325
+    vel3d_l_vp2:  10.014448165894
+    vel3d_l_vp3:   4.191335678101
+    vel3d_l_vp4:  -9.405632972717
+  - _index: 143
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585125616.000000
+    vel3d_l_date_time_array: [2013, 8, 10, 12, 13, 36]
+    vel3d_l_heading: 335.967346191406
+    vel3d_l_tx:   1.019357919693
+    vel3d_l_ty:  -0.664197385311
+    vel3d_l_hx:   0.371783405542
+    vel3d_l_hy:  -0.162453591824
+    vel3d_l_hz:  -0.913994550705
+    vel3d_l_vp1:   2.101624011993
+    vel3d_l_vp2:  10.959261894226
+    vel3d_l_vp3:   2.966879606247
+    vel3d_l_vp4:  -7.617275238037
+  - _index: 144
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585125816.000000
+    vel3d_l_date_time_array: [2013, 8, 10, 12, 16, 56]
+    vel3d_l_heading:   0.940245032310
+    vel3d_l_tx:   1.019357919693
+    vel3d_l_ty:  -0.664197385311
+    vel3d_l_hx:   0.403746128082
+    vel3d_l_hy:   0.017455387861
+    vel3d_l_hz:  -0.914704561234
+    vel3d_l_vp1:   1.401162147522
+    vel3d_l_vp2:  10.576827049255
+    vel3d_l_vp3:   2.540307044983
+    vel3d_l_vp4:  -7.638709068298
+  - _index: 145
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585126016.000000
+    vel3d_l_date_time_array: [2013, 8, 10, 12, 20, 16]
+    vel3d_l_heading:  19.148139953613
+    vel3d_l_tx:   1.019357919693
+    vel3d_l_ty:  -0.664197385311
+    vel3d_l_hx:   0.377249240875
+    vel3d_l_hy:   0.147192075849
+    vel3d_l_hz:  -0.914339959621
+    vel3d_l_vp1:  -0.576122343540
+    vel3d_l_vp2:  11.960525512695
+    vel3d_l_vp3:   3.097679376602
+    vel3d_l_vp4:  -6.109504699707
+  - _index: 146
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585126216.000000
+    vel3d_l_date_time_array: [2013, 8, 10, 12, 23, 36]
+    vel3d_l_heading: 358.449707031250
+    vel3d_l_tx:   1.019357919693
+    vel3d_l_ty:  -0.664197385311
+    vel3d_l_hx:   0.404345750809
+    vel3d_l_hy:  -0.000821135938
+    vel3d_l_hz:  -0.914605915546
+    vel3d_l_vp1:   1.402750968933
+    vel3d_l_vp2:  11.427858352661
+    vel3d_l_vp3:   2.212675333023
+    vel3d_l_vp4:  -8.063673019409
+  - _index: 147
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585126416.000000
+    vel3d_l_date_time_array: [2013, 8, 10, 12, 26, 56]
+    vel3d_l_heading:  25.814603805542
+    vel3d_l_tx:   1.019357919693
+    vel3d_l_ty:  -0.823561728001
+    vel3d_l_hx:   0.353278011084
+    vel3d_l_hy:   0.191892072558
+    vel3d_l_hz:  -0.915626585484
+    vel3d_l_vp1:  -0.853685021400
+    vel3d_l_vp2:  12.769698143005
+    vel3d_l_vp3:   1.004135131836
+    vel3d_l_vp4:  -7.757475852966
+  - _index: 148
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585126616.000000
+    vel3d_l_date_time_array: [2013, 8, 10, 12, 30, 16]
+    vel3d_l_heading:  93.300804138184
+    vel3d_l_tx:   0.862401008606
+    vel3d_l_ty:  -0.982932329178
+    vel3d_l_hx:  -0.035067997873
+    vel3d_l_hy:   0.382015526295
+    vel3d_l_hz:  -0.923490285873
+    vel3d_l_vp1:   1.064049959183
+    vel3d_l_vp2:  -2.243844985962
+    vel3d_l_vp3:  -1.122092604637
+    vel3d_l_vp4:   1.739052772522
+  - _index: 149
+    particle_object: Vel3dLWfpSioMuleMetadataParticle
+    particle_type: vel3d_l_wfp_sio_mule_metadata
+    internal_timestamp: 3585127108.000000
+    vel3d_l_time_on: 1376132402
+    vel3d_l_time_off: 1376137826
+    serial_number: '1024'
+    vel3d_l_number_of_records: 28
+    vel3d_l_decimation_factor: !!null
+    vel3d_l_controller_timestamp: 1376138308
+  - _index: 150
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585178816.000000
+    vel3d_l_date_time_array: [2013, 8, 11, 3, 0, 16]
+    vel3d_l_heading: 236.300872802734
+    vel3d_l_tx:   2.104911565781
+    vel3d_l_ty:   1.193101048470
+    vel3d_l_hx:  -0.235349267721
+    vel3d_l_hy:  -0.321220219135
+    vel3d_l_hz:  -0.917294025421
+    vel3d_l_vp1:   0.951255440712
+    vel3d_l_vp2:  -1.037707209587
+    vel3d_l_vp3:  -1.929057121277
+    vel3d_l_vp4:  -0.032850027084
+  - _index: 151
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585179016.000000
+    vel3d_l_date_time_array: [2013, 8, 11, 3, 3, 36]
+    vel3d_l_heading: 324.057617187500
+    vel3d_l_tx:   0.467619180679
+    vel3d_l_ty:   1.519810318947
+    vel3d_l_hx:   0.312586516142
+    vel3d_l_hy:  -0.256366908550
+    vel3d_l_hz:  -0.914639711380
+    vel3d_l_vp1:   1.648629307747
+    vel3d_l_vp2:  -9.482011795044
+    vel3d_l_vp3:   1.348375320435
+    vel3d_l_vp4:  12.347952842712
+  - _index: 152
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585179216.000000
+    vel3d_l_date_time_array: [2013, 8, 11, 3, 6, 56]
+    vel3d_l_heading: 326.130035400391
+    vel3d_l_tx:   0.467619180679
+    vel3d_l_ty:   1.193101048470
+    vel3d_l_hx:   0.324423223734
+    vel3d_l_hy:  -0.241838678718
+    vel3d_l_hz:  -0.914474487305
+    vel3d_l_vp1:   1.014760613441
+    vel3d_l_vp2:  -9.685430526733
+    vel3d_l_vp3:   1.021302223206
+    vel3d_l_vp4:  12.444620132446
+  - _index: 153
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585179416.000000
+    vel3d_l_date_time_array: [2013, 8, 11, 3, 10, 16]
+    vel3d_l_heading: 323.598510742188
+    vel3d_l_tx:   0.308071970940
+    vel3d_l_ty:   1.519810318947
+    vel3d_l_hx:   0.310912847519
+    vel3d_l_hy:  -0.257210582495
+    vel3d_l_hz:  -0.914973139763
+    vel3d_l_vp1:   0.648169636726
+    vel3d_l_vp2:  -6.129449367523
+    vel3d_l_vp3:   1.023895144463
+    vel3d_l_vp4:  13.079433441162
+  - _index: 154
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585179616.000000
+    vel3d_l_date_time_array: [2013, 8, 11, 3, 13, 36]
+    vel3d_l_heading: 327.395019531250
+    vel3d_l_tx:   0.467619180679
+    vel3d_l_ty:   1.519810318947
+    vel3d_l_hx:   0.327215790749
+    vel3d_l_hy:  -0.238386601210
+    vel3d_l_hz:  -0.914386034012
+    vel3d_l_vp1:   1.209990143776
+    vel3d_l_vp2:  -5.910920619965
+    vel3d_l_vp3:   0.925725281239
+    vel3d_l_vp4:  12.950880050659
+  - _index: 155
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585179816.000000
+    vel3d_l_date_time_array: [2013, 8, 11, 3, 16, 56]
+    vel3d_l_heading: 335.418518066406
+    vel3d_l_tx:   0.308071970940
+    vel3d_l_ty:   1.519810318947
+    vel3d_l_hx:   0.358228474855
+    vel3d_l_hy:  -0.190405160189
+    vel3d_l_hz:  -0.914012074471
+    vel3d_l_vp1:   1.577922224998
+    vel3d_l_vp2:  -8.470170021057
+    vel3d_l_vp3:   0.930445611477
+    vel3d_l_vp4:  12.368244171143
+  - _index: 156
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585180016.000000
+    vel3d_l_date_time_array: [2013, 8, 11, 3, 20, 16]
+    vel3d_l_heading: 333.486846923828
+    vel3d_l_tx:   0.308071970940
+    vel3d_l_ty:   1.519810318947
+    vel3d_l_hx:   0.352070271969
+    vel3d_l_hy:  -0.202375933528
+    vel3d_l_hz:  -0.913832843304
+    vel3d_l_vp1:   1.739199995995
+    vel3d_l_vp2:  -8.542596817017
+    vel3d_l_vp3:   1.030480384827
+    vel3d_l_vp4:  12.040479660034
+  - _index: 157
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585180216.000000
+    vel3d_l_date_time_array: [2013, 8, 11, 3, 23, 36]
+    vel3d_l_heading: 343.303070068359
+    vel3d_l_tx:   0.467619180679
+    vel3d_l_ty:   1.193101048470
+    vel3d_l_hx:   0.380345284939
+    vel3d_l_hy:  -0.135373011231
+    vel3d_l_hz:  -0.914883434772
+    vel3d_l_vp1:   1.452382922173
+    vel3d_l_vp2:  -7.554836273193
+    vel3d_l_vp3:   2.199845790863
+    vel3d_l_vp4:  11.601846694946
+  - _index: 158
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585180416.000000
+    vel3d_l_date_time_array: [2013, 8, 11, 3, 26, 56]
+    vel3d_l_heading: 327.829559326172
+    vel3d_l_tx:   0.467619180679
+    vel3d_l_ty:   1.193101048470
+    vel3d_l_hx:   0.332774162292
+    vel3d_l_hy:  -0.233064100146
+    vel3d_l_hz:  -0.913751840591
+    vel3d_l_vp1:   1.525621294975
+    vel3d_l_vp2:  -6.605382919312
+    vel3d_l_vp3:   2.764268159866
+    vel3d_l_vp4:  11.560407638550
+  - _index: 159
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585180616.000000
+    vel3d_l_date_time_array: [2013, 8, 11, 3, 30, 16]
+    vel3d_l_heading: 333.128356933594
+    vel3d_l_tx:   0.467619180679
+    vel3d_l_ty:   1.193101048470
+    vel3d_l_hx:   0.353702515364
+    vel3d_l_hy:  -0.202032908797
+    vel3d_l_hz:  -0.913278400898
+    vel3d_l_vp1:   1.128234982491
+    vel3d_l_vp2:  -7.787103652954
+    vel3d_l_vp3:   3.913787603378
+    vel3d_l_vp4:  11.604399681091
+  - _index: 160
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585180816.000000
+    vel3d_l_date_time_array: [2013, 8, 11, 3, 33, 36]
+    vel3d_l_heading: 326.654357910156
+    vel3d_l_tx:   0.467619180679
+    vel3d_l_ty:   1.193101048470
+    vel3d_l_hx:   0.329285681248
+    vel3d_l_hy:  -0.240621402860
+    vel3d_l_hz:  -0.913056552410
+    vel3d_l_vp1:   2.485193252563
+    vel3d_l_vp2:  -9.095714569092
+    vel3d_l_vp3:   2.856491088867
+    vel3d_l_vp4:  11.259327888489
+  - _index: 161
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585181016.000000
+    vel3d_l_date_time_array: [2013, 8, 11, 3, 36, 56]
+    vel3d_l_heading: 332.384490966797
+    vel3d_l_tx:   0.467619180679
+    vel3d_l_ty:   1.193101048470
+    vel3d_l_hx:   0.353748530149
+    vel3d_l_hy:  -0.207957014441
+    vel3d_l_hz:  -0.911929786205
+    vel3d_l_vp1:   3.882427692413
+    vel3d_l_vp2:  -8.335407257080
+    vel3d_l_vp3:   1.495304226875
+    vel3d_l_vp4:  10.818296432495
+  - _index: 162
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585181216.000000
+    vel3d_l_date_time_array: [2013, 8, 11, 3, 40, 16]
+    vel3d_l_heading: 336.517456054688
+    vel3d_l_tx:   0.467619180679
+    vel3d_l_ty:   1.193101048470
+    vel3d_l_hx:   0.363146752119
+    vel3d_l_hy:  -0.180055081844
+    vel3d_l_hz:  -0.914168775082
+    vel3d_l_vp1:   2.276953220367
+    vel3d_l_vp2: -10.246626853943
+    vel3d_l_vp3:   2.174647808075
+    vel3d_l_vp4:  10.685083389282
+  - _index: 163
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585181416.000000
+    vel3d_l_date_time_array: [2013, 8, 11, 3, 43, 36]
+    vel3d_l_heading: 340.529449462891
+    vel3d_l_tx:   0.467619180679
+    vel3d_l_ty:   1.193101048470
+    vel3d_l_hx:   0.376715302467
+    vel3d_l_hy:  -0.154837727547
+    vel3d_l_hz:  -0.913296699524
+    vel3d_l_vp1:   1.810078263283
+    vel3d_l_vp2:  -8.078647613525
+    vel3d_l_vp3:   1.182910799980
+    vel3d_l_vp4:  10.573623657227
+  - _index: 164
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585181616.000000
+    vel3d_l_date_time_array: [2013, 8, 11, 3, 46, 56]
+    vel3d_l_heading: 338.419189453125
+    vel3d_l_tx:   0.467619180679
+    vel3d_l_ty:   1.193101048470
+    vel3d_l_hx:   0.371488541365
+    vel3d_l_hy:  -0.168901145458
+    vel3d_l_hz:  -0.912945032120
+    vel3d_l_vp1:   2.877726554871
+    vel3d_l_vp2: -11.087565422058
+    vel3d_l_vp3:   0.300752162933
+    vel3d_l_vp4:  10.039839744568
+  - _index: 165
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585181816.000000
+    vel3d_l_date_time_array: [2013, 8, 11, 3, 50, 16]
+    vel3d_l_heading: 340.184417724609
+    vel3d_l_tx:   0.467619180679
+    vel3d_l_ty:   1.519810318947
+    vel3d_l_hx:   0.376398682594
+    vel3d_l_hy:  -0.162519082427
+    vel3d_l_hz:  -0.912091910839
+    vel3d_l_vp1:   3.259715080261
+    vel3d_l_vp2: -10.150198936462
+    vel3d_l_vp3:   0.026600077748
+    vel3d_l_vp4:   9.441007614136
+  - _index: 166
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585182016.000000
+    vel3d_l_date_time_array: [2013, 8, 11, 3, 53, 36]
+    vel3d_l_heading: 342.977203369141
+    vel3d_l_tx:   0.467619180679
+    vel3d_l_ty:   1.356447219849
+    vel3d_l_hx:   0.381802380085
+    vel3d_l_hy:  -0.140803694725
+    vel3d_l_hz:  -0.913455665112
+    vel3d_l_vp1:   3.375104427338
+    vel3d_l_vp2:  -9.246712684631
+    vel3d_l_vp3:   0.146190911531
+    vel3d_l_vp4:   9.325446128845
+  - _index: 167
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585182216.000000
+    vel3d_l_date_time_array: [2013, 8, 11, 3, 56, 56]
+    vel3d_l_heading: 330.372528076172
+    vel3d_l_tx:   0.467619180679
+    vel3d_l_ty:   1.193101048470
+    vel3d_l_hx:   0.343676716089
+    vel3d_l_hy:  -0.218730628490
+    vel3d_l_hz:  -0.913259685040
+    vel3d_l_vp1:   1.839836478233
+    vel3d_l_vp2: -11.199657440186
+    vel3d_l_vp3:   1.288486838341
+    vel3d_l_vp4:   9.754530906677
+  - _index: 168
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585182416.000000
+    vel3d_l_date_time_array: [2013, 8, 11, 4, 0, 16]
+    vel3d_l_heading: 332.808532714844
+    vel3d_l_tx:   0.467619180679
+    vel3d_l_ty:   1.193101048470
+    vel3d_l_hx:   0.354607582092
+    vel3d_l_hy:  -0.205014318228
+    vel3d_l_hz:  -0.912262439728
+    vel3d_l_vp1:   2.094960689545
+    vel3d_l_vp2:  -8.836542129517
+    vel3d_l_vp3:   1.564739823341
+    vel3d_l_vp4:  10.375701904297
+  - _index: 169
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585182616.000000
+    vel3d_l_date_time_array: [2013, 8, 11, 4, 3, 36]
+    vel3d_l_heading: 345.202026367188
+    vel3d_l_tx:   0.467619180679
+    vel3d_l_ty:   1.193101048470
+    vel3d_l_hx:   0.387327283621
+    vel3d_l_hy:  -0.123308733106
+    vel3d_l_hz:  -0.913658916950
+    vel3d_l_vp1:   0.032225012779
+    vel3d_l_vp2:  -8.661383628845
+    vel3d_l_vp3:   2.592976331711
+    vel3d_l_vp4:  11.534997940063
+  - _index: 170
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585182816.000000
+    vel3d_l_date_time_array: [2013, 8, 11, 4, 6, 56]
+    vel3d_l_heading:   3.867359638214
+    vel3d_l_tx:   0.467619180679
+    vel3d_l_ty:   1.193101048470
+    vel3d_l_hx:   0.405477434397
+    vel3d_l_hy:   0.008917870000
+    vel3d_l_hz:  -0.914061486721
+    vel3d_l_vp1:  -1.230353116989
+    vel3d_l_vp2:  -8.581878662109
+    vel3d_l_vp3:   2.517304658890
+    vel3d_l_vp4:  12.493206977844
+  - _index: 171
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585183016.000000
+    vel3d_l_date_time_array: [2013, 8, 11, 4, 10, 16]
+    vel3d_l_heading:   1.502199411392
+    vel3d_l_tx:   0.148527190089
+    vel3d_l_ty:   1.193101048470
+    vel3d_l_hx:   0.408527493477
+    vel3d_l_hy:  -0.008219903335
+    vel3d_l_hz:  -0.912708997726
+    vel3d_l_vp1:   1.585296988487
+    vel3d_l_vp2:  -8.373929023743
+    vel3d_l_vp3:  -0.583866357803
+    vel3d_l_vp4:  12.910830497742
+  - _index: 172
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585183216.000000
+    vel3d_l_date_time_array: [2013, 8, 11, 4, 13, 36]
+    vel3d_l_heading: 356.478942871094
+    vel3d_l_tx:   0.467619180679
+    vel3d_l_ty:   1.193101048470
+    vel3d_l_hx:   0.407095134258
+    vel3d_l_hy:  -0.044477470219
+    vel3d_l_hz:  -0.912302196026
+    vel3d_l_vp1:   1.900702357292
+    vel3d_l_vp2:  -7.239347934723
+    vel3d_l_vp3:  -0.851064205170
+    vel3d_l_vp4:  12.969735145569
+  - _index: 173
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585183416.000000
+    vel3d_l_date_time_array: [2013, 8, 11, 4, 16, 56]
+    vel3d_l_heading: 337.809844970703
+    vel3d_l_tx:   0.467619180679
+    vel3d_l_ty:   1.193101048470
+    vel3d_l_hx:   0.369296222925
+    vel3d_l_hy:  -0.172692894936
+    vel3d_l_hz:  -0.913125038147
+    vel3d_l_vp1:   2.775444507599
+    vel3d_l_vp2:  -6.250419616699
+    vel3d_l_vp3:   0.397539079189
+    vel3d_l_vp4:  12.255022048950
+  - _index: 174
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585183616.000000
+    vel3d_l_date_time_array: [2013, 8, 11, 4, 20, 16]
+    vel3d_l_heading: 348.844543457031
+    vel3d_l_tx:   0.467619180679
+    vel3d_l_ty:   1.193101048470
+    vel3d_l_hx:   0.397114127874
+    vel3d_l_hy:  -0.098764128983
+    vel3d_l_hz:  -0.912439644337
+    vel3d_l_vp1:   2.844303131104
+    vel3d_l_vp2:  -8.651285171509
+    vel3d_l_vp3:   2.184367656708
+    vel3d_l_vp4:  11.405945777893
+  - _index: 175
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585183816.000000
+    vel3d_l_date_time_array: [2013, 8, 11, 4, 23, 36]
+    vel3d_l_heading: 357.365905761719
+    vel3d_l_tx:   0.467619180679
+    vel3d_l_ty:   1.193101048470
+    vel3d_l_hx:   0.408153682947
+    vel3d_l_hy:  -0.038085151464
+    vel3d_l_hz:  -0.912118494511
+    vel3d_l_vp1:   3.650027275085
+    vel3d_l_vp2:  -8.820658683777
+    vel3d_l_vp3:   2.505965709686
+    vel3d_l_vp4:  10.446479797363
+  - _index: 176
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585184016.000000
+    vel3d_l_date_time_array: [2013, 8, 11, 4, 26, 56]
+    vel3d_l_heading:  13.794008255005
+    vel3d_l_tx:   0.467619180679
+    vel3d_l_ty:   0.866424679756
+    vel3d_l_hx:   0.399586737156
+    vel3d_l_hy:   0.086161956191
+    vel3d_l_hz:  -0.912637114525
+    vel3d_l_vp1:   2.830403327942
+    vel3d_l_vp2:  -9.538229942322
+    vel3d_l_vp3:   4.776107311249
+    vel3d_l_vp4:  10.303267478943
+  - _index: 177
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585184216.000000
+    vel3d_l_date_time_array: [2013, 8, 11, 4, 30, 16]
+    vel3d_l_heading:  12.640301704407
+    vel3d_l_tx:   0.467619180679
+    vel3d_l_ty:   1.193101048470
+    vel3d_l_hx:   0.400111079216
+    vel3d_l_hy:   0.072425425053
+    vel3d_l_hz:  -0.913600385189
+    vel3d_l_vp1:   2.681213855743
+    vel3d_l_vp2:  -9.477716445923
+    vel3d_l_vp3:   4.628271102905
+    vel3d_l_vp4:  10.540328979492
+  - _index: 178
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585184416.000000
+    vel3d_l_date_time_array: [2013, 8, 11, 4, 33, 36]
+    vel3d_l_heading: 358.156860351562
+    vel3d_l_tx:   0.467619180679
+    vel3d_l_ty:   1.193101048470
+    vel3d_l_hx:   0.403454065323
+    vel3d_l_hy:  -0.032235700637
+    vel3d_l_hz:  -0.914431869984
+    vel3d_l_vp1:   2.740504264832
+    vel3d_l_vp2:  -8.032534599304
+    vel3d_l_vp3:   3.734308242798
+    vel3d_l_vp4:  11.015721321106
+  - _index: 179
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585184616.000000
+    vel3d_l_date_time_array: [2013, 8, 11, 4, 36, 56]
+    vel3d_l_heading:   9.125201225281
+    vel3d_l_tx:   0.467619180679
+    vel3d_l_ty:   1.193101048470
+    vel3d_l_hx:   0.404281407595
+    vel3d_l_hy:   0.047157913446
+    vel3d_l_hz:  -0.913418054581
+    vel3d_l_vp1:   3.749513626099
+    vel3d_l_vp2:  -7.692802906036
+    vel3d_l_vp3:   3.247428417206
+    vel3d_l_vp4:  10.623704910278
+  - _index: 180
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585184816.000000
+    vel3d_l_date_time_array: [2013, 8, 11, 4, 40, 16]
+    vel3d_l_heading: 359.283721923828
+    vel3d_l_tx:   0.467619180679
+    vel3d_l_ty:   1.029758572578
+    vel3d_l_hx:   0.408379286528
+    vel3d_l_hy:  -0.021571764722
+    vel3d_l_hz:  -0.912557423115
+    vel3d_l_vp1:   4.323866367340
+    vel3d_l_vp2:  -8.132339477539
+    vel3d_l_vp3:   0.283519595861
+    vel3d_l_vp4:  11.297122001648
+  - _index: 181
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585185016.000000
+    vel3d_l_date_time_array: [2013, 8, 11, 4, 43, 36]
+    vel3d_l_heading:   1.098248958588
+    vel3d_l_tx:   0.467619180679
+    vel3d_l_ty:   1.193101048470
+    vel3d_l_hx:   0.407319992781
+    vel3d_l_hy:  -0.011031457223
+    vel3d_l_hz:  -0.913218855858
+    vel3d_l_vp1:   4.490301609039
+    vel3d_l_vp2: -10.029146194458
+    vel3d_l_vp3:   1.817391037941
+    vel3d_l_vp4:  10.203209877014
+  - _index: 182
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585185216.000000
+    vel3d_l_date_time_array: [2013, 8, 11, 4, 46, 56]
+    vel3d_l_heading: 345.751556396484
+    vel3d_l_tx:   0.467619180679
+    vel3d_l_ty:   0.866424679756
+    vel3d_l_hx:   0.393022596836
+    vel3d_l_hy:  -0.115475952625
+    vel3d_l_hz:  -0.912249207497
+    vel3d_l_vp1:   1.745163798332
+    vel3d_l_vp2:  -6.900264263153
+    vel3d_l_vp3:   2.079390048981
+    vel3d_l_vp4:  10.654520988464
+  - _index: 183
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585185416.000000
+    vel3d_l_date_time_array: [2013, 8, 11, 4, 50, 16]
+    vel3d_l_heading: 357.835357666016
+    vel3d_l_tx:   0.467619180679
+    vel3d_l_ty:   1.193101048470
+    vel3d_l_hx:   0.408602416515
+    vel3d_l_hy:  -0.034689363092
+    vel3d_l_hz:  -0.912053048611
+    vel3d_l_vp1:   3.492009162903
+    vel3d_l_vp2:  -9.016944885254
+    vel3d_l_vp3:  -0.957996606827
+    vel3d_l_vp4:  10.382403373718
+  - _index: 184
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585185616.000000
+    vel3d_l_date_time_array: [2013, 8, 11, 4, 53, 36]
+    vel3d_l_heading: 324.124267578125
+    vel3d_l_tx:   0.467619180679
+    vel3d_l_ty:   0.866424679756
+    vel3d_l_hx:   0.323803633451
+    vel3d_l_hy:  -0.253363132477
+    vel3d_l_hz:  -0.911569178104
+    vel3d_l_vp1:   2.398086547852
+    vel3d_l_vp2:  -9.741151809692
+    vel3d_l_vp3:  -0.217155680060
+    vel3d_l_vp4:  10.667737960815
+  - _index: 185
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585185816.000000
+    vel3d_l_date_time_array: [2013, 8, 11, 4, 56, 56]
+    vel3d_l_heading: 269.370178222656
+    vel3d_l_tx:   0.467619180679
+    vel3d_l_ty:   1.029758572578
+    vel3d_l_hx:  -0.011750943027
+    vel3d_l_hy:  -0.403506249189
+    vel3d_l_hz:  -0.914901375771
+    vel3d_l_vp1:   3.296334266663
+    vel3d_l_vp2: -12.060049057007
+    vel3d_l_vp3:  -0.438705921173
+    vel3d_l_vp4:   9.917389869690
+  - _index: 186
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585186016.000000
+    vel3d_l_date_time_array: [2013, 8, 11, 5, 0, 16]
+    vel3d_l_heading: 306.398162841797
+    vel3d_l_tx:   0.467619180679
+    vel3d_l_ty:   1.193101048470
+    vel3d_l_hx:   0.227266907692
+    vel3d_l_hy:  -0.337493598461
+    vel3d_l_hz:  -0.913481175900
+    vel3d_l_vp1:   2.539989471436
+    vel3d_l_vp2: -10.435255050659
+    vel3d_l_vp3:   0.813022196293
+    vel3d_l_vp4:   9.450089454651
+  - _index: 187
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585186216.000000
+    vel3d_l_date_time_array: [2013, 8, 11, 5, 3, 36]
+    vel3d_l_heading: 293.331817626953
+    vel3d_l_tx:   0.467619180679
+    vel3d_l_ty:   0.866424679756
+    vel3d_l_hx:   0.150205001235
+    vel3d_l_hy:  -0.379396170378
+    vel3d_l_hz:  -0.912960588932
+    vel3d_l_vp1:   1.161516785622
+    vel3d_l_vp2: -11.099878311157
+    vel3d_l_vp3:   3.337965726852
+    vel3d_l_vp4:   9.599172592163
+  - _index: 188
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585186516.000000
+    vel3d_l_date_time_array: [2013, 8, 11, 5, 8, 36]
+    vel3d_l_heading: 300.364105224609
+    vel3d_l_tx:   0.467619180679
+    vel3d_l_ty:   1.193101048470
+    vel3d_l_hx:   0.191267147660
+    vel3d_l_hy:  -0.358334451914
+    vel3d_l_hz:  -0.913790702820
+    vel3d_l_vp1:   2.326935768127
+    vel3d_l_vp2:  -4.420835494995
+    vel3d_l_vp3:   2.215854406357
+    vel3d_l_vp4:  -2.031854629517
+  - _index: 189
+    particle_object: Vel3dLWfpSioMuleMetadataParticle
+    particle_type: vel3d_l_wfp_sio_mule_metadata
+    internal_timestamp: 3585187198.000000
+    vel3d_l_time_on: 1376190002
+    vel3d_l_time_off: 1376197730
+    serial_number: '1025'
+    vel3d_l_number_of_records: 39
+    vel3d_l_decimation_factor: !!null
+    vel3d_l_controller_timestamp: 1376198398
+  - _index: 190
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585193216.000000
+    vel3d_l_date_time_array: [2013, 8, 11, 7, 0, 16]
+    vel3d_l_heading: 265.189117431641
+    vel3d_l_tx:   2.397786378860
+    vel3d_l_ty:  -0.982932329178
+    vel3d_l_hx:  -0.072540782392
+    vel3d_l_hy:  -0.391014814377
+    vel3d_l_hz:  -0.917521297932
+    vel3d_l_vp1:   2.070173978806
+    vel3d_l_vp2:  -2.167893886566
+    vel3d_l_vp3:  -2.004038572311
+    vel3d_l_vp4:   0.851495742798
+  - _index: 191
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585193416.000000
+    vel3d_l_date_time_array: [2013, 8, 11, 7, 3, 36]
+    vel3d_l_heading: 343.607330322266
+    vel3d_l_tx:   1.333296060562
+    vel3d_l_ty:  -0.982932329178
+    vel3d_l_hx:   0.397001326084
+    vel3d_l_hy:  -0.107448548079
+    vel3d_l_hz:  -0.911506772041
+    vel3d_l_vp1:   1.722477674484
+    vel3d_l_vp2:  -9.315660476685
+    vel3d_l_vp3:   2.408908605576
+    vel3d_l_vp4:  13.072630882263
+  - _index: 192
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585193616.000000
+    vel3d_l_date_time_array: [2013, 8, 11, 7, 6, 56]
+    vel3d_l_heading:  31.996791839600
+    vel3d_l_tx:   1.333296060562
+    vel3d_l_ty:  -0.664197385311
+    vel3d_l_hx:   0.329206079245
+    vel3d_l_hy:   0.229553133249
+    vel3d_l_hz:  -0.915930569172
+    vel3d_l_vp1:   0.238974213600
+    vel3d_l_vp2:  -9.728258132935
+    vel3d_l_vp3:   1.851110577583
+    vel3d_l_vp4:  14.261207580566
+  - _index: 193
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585193816.000000
+    vel3d_l_date_time_array: [2013, 8, 11, 7, 10, 16]
+    vel3d_l_heading:  80.927009582520
+    vel3d_l_tx:   1.019357919693
+    vel3d_l_ty:  -0.345488846302
+    vel3d_l_hx:   0.044704552740
+    vel3d_l_hy:   0.388135731220
+    vel3d_l_hz:  -0.920517325401
+    vel3d_l_vp1:  -0.548584818840
+    vel3d_l_vp2: -10.995317459106
+    vel3d_l_vp3:  -0.033728241920
+    vel3d_l_vp4:  15.971079826355
+  - _index: 194
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585194016.000000
+    vel3d_l_date_time_array: [2013, 8, 11, 7, 13, 36]
+    vel3d_l_heading: 299.662200927734
+    vel3d_l_tx:   1.176322579384
+    vel3d_l_ty:  -1.142304778099
+    vel3d_l_hx:   0.193491131067
+    vel3d_l_hy:  -0.354397058487
+    vel3d_l_hz:  -0.914857268333
+    vel3d_l_vp1:  -1.238529086113
+    vel3d_l_vp2: -10.156984329224
+    vel3d_l_vp3:   1.169599652290
+    vel3d_l_vp4:  16.126306533813
+  - _index: 195
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585194216.000000
+    vel3d_l_date_time_array: [2013, 8, 11, 7, 16, 56]
+    vel3d_l_heading: 322.846405029297
+    vel3d_l_tx:   1.333296060562
+    vel3d_l_ty:  -1.301691889763
+    vel3d_l_hx:   0.332732796669
+    vel3d_l_hy:  -0.247540161014
+    vel3d_l_hz:  -0.909952044487
+    vel3d_l_vp1:   0.652457833290
+    vel3d_l_vp2: -10.260087966919
+    vel3d_l_vp3:   0.977780997753
+    vel3d_l_vp4:  15.888294219971
+  - _index: 196
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585194416.000000
+    vel3d_l_date_time_array: [2013, 8, 11, 7, 20, 16]
+    vel3d_l_heading:  15.765875816345
+    vel3d_l_tx:   1.333296060562
+    vel3d_l_ty:  -0.982932329178
+    vel3d_l_hx:   0.383696705103
+    vel3d_l_hy:   0.129938960075
+    vel3d_l_hz:  -0.914271771908
+    vel3d_l_vp1:   0.078335523605
+    vel3d_l_vp2: -11.804816246033
+    vel3d_l_vp3:   1.244513511658
+    vel3d_l_vp4:  16.452156066895
+  - _index: 197
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585194616.000000
+    vel3d_l_date_time_array: [2013, 8, 11, 7, 23, 36]
+    vel3d_l_heading: 137.652511596680
+    vel3d_l_tx:   0.862401008606
+    vel3d_l_ty:  -0.345488846302
+    vel3d_l_hx:  -0.295018732548
+    vel3d_l_hy:   0.261805415154
+    vel3d_l_hz:  -0.918924272060
+    vel3d_l_vp1:   2.109625339508
+    vel3d_l_vp2: -11.246665000916
+    vel3d_l_vp3:  -1.272226095200
+    vel3d_l_vp4:  16.457674026489
+  - _index: 198
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585194816.000000
+    vel3d_l_date_time_array: [2013, 8, 11, 7, 26, 56]
+    vel3d_l_heading: 216.078582763672
+    vel3d_l_tx:   0.705456137657
+    vel3d_l_ty:  -0.982932329178
+    vel3d_l_hx:  -0.323436886072
+    vel3d_l_hy:  -0.211568862200
+    vel3d_l_hz:  -0.922294497490
+    vel3d_l_vp1:   2.154408693314
+    vel3d_l_vp2: -11.288583755493
+    vel3d_l_vp3:   2.234096527100
+    vel3d_l_vp4:  14.633441925049
+  - _index: 199
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585195016.000000
+    vel3d_l_date_time_array: [2013, 8, 11, 7, 30, 16]
+    vel3d_l_heading: 258.955230712891
+    vel3d_l_tx:   0.705456137657
+    vel3d_l_ty:  -0.982932329178
+    vel3d_l_hx:  -0.089398875833
+    vel3d_l_hy:  -0.384511172771
+    vel3d_l_hz:  -0.918781280518
+    vel3d_l_vp1:   2.005352497101
+    vel3d_l_vp2: -10.267402648926
+    vel3d_l_vp3:   3.196833133698
+    vel3d_l_vp4:  14.303151130676
+  - _index: 200
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585195216.000000
+    vel3d_l_date_time_array: [2013, 8, 11, 7, 33, 36]
+    vel3d_l_heading: 248.649520874023
+    vel3d_l_tx:   0.705456137657
+    vel3d_l_ty:  -1.301691889763
+    vel3d_l_hx:  -0.159860193729
+    vel3d_l_hy:  -0.359276950359
+    vel3d_l_hz:  -0.919437229633
+    vel3d_l_vp1:   1.477751255035
+    vel3d_l_vp2:  -8.991868019104
+    vel3d_l_vp3:   0.094724833965
+    vel3d_l_vp4:  15.603585243225
+  - _index: 201
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585195416.000000
+    vel3d_l_date_time_array: [2013, 8, 11, 7, 36, 56]
+    vel3d_l_heading: 303.026947021484
+    vel3d_l_tx:   1.019357919693
+    vel3d_l_ty:  -1.301691889763
+    vel3d_l_hx:   0.220597758889
+    vel3d_l_hy:  -0.343558251858
+    vel3d_l_hz:  -0.912855088711
+    vel3d_l_vp1:   2.844070434570
+    vel3d_l_vp2:  -8.674983978271
+    vel3d_l_vp3:   1.251673817635
+    vel3d_l_vp4:  14.834960937500
+  - _index: 202
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585195616.000000
+    vel3d_l_date_time_array: [2013, 8, 11, 7, 40, 16]
+    vel3d_l_heading: 307.653503417969
+    vel3d_l_tx:   1.019357919693
+    vel3d_l_ty:  -1.301691889763
+    vel3d_l_hx:   0.248777672648
+    vel3d_l_hy:  -0.322729229927
+    vel3d_l_hz:  -0.913211584091
+    vel3d_l_vp1:   1.915067434311
+    vel3d_l_vp2:  -9.603169441223
+    vel3d_l_vp3:   3.165309190750
+    vel3d_l_vp4:  14.262063980103
+  - _index: 203
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585195816.000000
+    vel3d_l_date_time_array: [2013, 8, 11, 7, 43, 36]
+    vel3d_l_heading: 297.873046875000
+    vel3d_l_tx:   0.862401008606
+    vel3d_l_ty:  -0.823561728001
+    vel3d_l_hx:   0.185580372810
+    vel3d_l_hy:  -0.363701105118
+    vel3d_l_hz:  -0.912842512131
+    vel3d_l_vp1:   2.475405216217
+    vel3d_l_vp2:  -8.051433563232
+    vel3d_l_vp3:   2.930507898331
+    vel3d_l_vp4:  14.389174461365
+  - _index: 204
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585196016.000000
+    vel3d_l_date_time_array: [2013, 8, 11, 7, 46, 56]
+    vel3d_l_heading: 251.404220581055
+    vel3d_l_tx:   0.705456137657
+    vel3d_l_ty:  -0.982932329178
+    vel3d_l_hx:  -0.138655140996
+    vel3d_l_hy:  -0.362696498632
+    vel3d_l_hz:  -0.921534538269
+    vel3d_l_vp1:   3.315386772156
+    vel3d_l_vp2:  -7.834909439087
+    vel3d_l_vp3:   2.736619949341
+    vel3d_l_vp4:  13.682467460632
+  - _index: 205
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585196216.000000
+    vel3d_l_date_time_array: [2013, 8, 11, 7, 50, 16]
+    vel3d_l_heading: 231.494003295898
+    vel3d_l_tx:   0.705456137657
+    vel3d_l_ty:  -1.301691889763
+    vel3d_l_hx:  -0.260364979506
+    vel3d_l_hy:  -0.292172849178
+    vel3d_l_hz:  -0.920241892338
+    vel3d_l_vp1:   3.538798332214
+    vel3d_l_vp2:  -6.889963626862
+    vel3d_l_vp3:   2.203793048859
+    vel3d_l_vp4:  13.679816246033
+  - _index: 206
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585196416.000000
+    vel3d_l_date_time_array: [2013, 8, 11, 7, 53, 36]
+    vel3d_l_heading: 270.611694335938
+    vel3d_l_tx:   1.019357919693
+    vel3d_l_ty:  -1.779912590981
+    vel3d_l_hx:  -0.011727673933
+    vel3d_l_hy:  -0.394315332174
+    vel3d_l_hz:  -0.918900370598
+    vel3d_l_vp1:   2.249094724655
+    vel3d_l_vp2:  -7.128693103790
+    vel3d_l_vp3:   3.740038156509
+    vel3d_l_vp4:  13.772265434265
+  - _index: 207
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585196616.000000
+    vel3d_l_date_time_array: [2013, 8, 11, 7, 56, 56]
+    vel3d_l_heading: 260.466369628906
+    vel3d_l_tx:   0.705456137657
+    vel3d_l_ty:  -0.664197385311
+    vel3d_l_hx:  -0.077733017504
+    vel3d_l_hy:  -0.384911209345
+    vel3d_l_hz:  -0.919674336910
+    vel3d_l_vp1:   2.401342391968
+    vel3d_l_vp2:  -8.129831314087
+    vel3d_l_vp3:   2.243656635284
+    vel3d_l_vp4:  13.974761009216
+  - _index: 208
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585196816.000000
+    vel3d_l_date_time_array: [2013, 8, 11, 8, 0, 16]
+    vel3d_l_heading: 322.028259277344
+    vel3d_l_tx:   1.019357919693
+    vel3d_l_ty:  -0.982932329178
+    vel3d_l_hx:   0.325077116489
+    vel3d_l_hy:  -0.250755250454
+    vel3d_l_hz:  -0.911836922169
+    vel3d_l_vp1:  -0.439478456974
+    vel3d_l_vp2:  -5.083309650421
+    vel3d_l_vp3:   2.938158512115
+    vel3d_l_vp4:  15.170230865479
+  - _index: 209
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585197016.000000
+    vel3d_l_date_time_array: [2013, 8, 11, 8, 3, 36]
+    vel3d_l_heading: 269.003326416016
+    vel3d_l_tx:   0.705456137657
+    vel3d_l_ty:  -1.301691889763
+    vel3d_l_hx:  -0.018496381119
+    vel3d_l_hy:  -0.395714640617
+    vel3d_l_hz:  -0.918187141418
+    vel3d_l_vp1:   4.328384876251
+    vel3d_l_vp2:  -8.592690467834
+    vel3d_l_vp3:   3.195968866348
+    vel3d_l_vp4:  11.942368507385
+  - _index: 210
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585197216.000000
+    vel3d_l_date_time_array: [2013, 8, 11, 8, 6, 56]
+    vel3d_l_heading: 246.791763305664
+    vel3d_l_tx:   0.391569703817
+    vel3d_l_ty:  -0.345488846302
+    vel3d_l_hx:  -0.162584200501
+    vel3d_l_hy:  -0.359007626772
+    vel3d_l_hz:  -0.919064700603
+    vel3d_l_vp1:   2.729691982269
+    vel3d_l_vp2: -11.008174896240
+    vel3d_l_vp3:   5.869569778442
+    vel3d_l_vp4:  10.843194007874
+  - _index: 211
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585197416.000000
+    vel3d_l_date_time_array: [2013, 8, 11, 8, 10, 16]
+    vel3d_l_heading: 255.082061767578
+    vel3d_l_tx:   0.705456137657
+    vel3d_l_ty:  -0.982932329178
+    vel3d_l_hx:  -0.115100637078
+    vel3d_l_hy:  -0.373874902725
+    vel3d_l_hz:  -0.920309364796
+    vel3d_l_vp1:   3.284883975983
+    vel3d_l_vp2: -11.727004051208
+    vel3d_l_vp3:   6.458908081055
+    vel3d_l_vp4:   9.788869857788
+  - _index: 212
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585197616.000000
+    vel3d_l_date_time_array: [2013, 8, 11, 8, 13, 36]
+    vel3d_l_heading: 229.428710937500
+    vel3d_l_tx:   0.705456137657
+    vel3d_l_ty:  -0.664197385311
+    vel3d_l_hx:  -0.266001731157
+    vel3d_l_hy:  -0.286762803793
+    vel3d_l_hz:  -0.920331656933
+    vel3d_l_vp1:   5.567574501038
+    vel3d_l_vp2: -12.075131416321
+    vel3d_l_vp3:   6.095056533813
+    vel3d_l_vp4:   9.088823318481
+  - _index: 213
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585197816.000000
+    vel3d_l_date_time_array: [2013, 8, 11, 8, 16, 56]
+    vel3d_l_heading: 249.214019775391
+    vel3d_l_tx:   0.705456137657
+    vel3d_l_ty:  -1.301691889763
+    vel3d_l_hx:  -0.153912261128
+    vel3d_l_hy:  -0.354784220457
+    vel3d_l_hz:  -0.922192573547
+    vel3d_l_vp1:   5.153474330902
+    vel3d_l_vp2: -12.925804138184
+    vel3d_l_vp3:   5.232071876526
+    vel3d_l_vp4:   9.526125907898
+  - _index: 214
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585198016.000000
+    vel3d_l_date_time_array: [2013, 8, 11, 8, 20, 16]
+    vel3d_l_heading: 264.797058105469
+    vel3d_l_tx:   0.705456137657
+    vel3d_l_ty:  -0.982932329178
+    vel3d_l_hx:  -0.048298947513
+    vel3d_l_hy:  -0.390824139118
+    vel3d_l_hz:  -0.919197320938
+    vel3d_l_vp1:   3.694582939148
+    vel3d_l_vp2: -10.910204887390
+    vel3d_l_vp3:   5.421709060669
+    vel3d_l_vp4:   9.701882362366
+  - _index: 215
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585198216.000000
+    vel3d_l_date_time_array: [2013, 8, 11, 8, 23, 36]
+    vel3d_l_heading: 290.771209716797
+    vel3d_l_tx:   1.019357919693
+    vel3d_l_ty:  -1.301691889763
+    vel3d_l_hx:   0.134571716189
+    vel3d_l_hy:  -0.376833051443
+    vel3d_l_hz:  -0.916453659534
+    vel3d_l_vp1:   2.158225059509
+    vel3d_l_vp2: -13.424882888794
+    vel3d_l_vp3:   6.468242645264
+    vel3d_l_vp4:  10.322813034058
+  - _index: 216
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585198416.000000
+    vel3d_l_date_time_array: [2013, 8, 11, 8, 26, 56]
+    vel3d_l_heading: 262.614776611328
+    vel3d_l_tx:   0.705456137657
+    vel3d_l_ty:  -0.982932329178
+    vel3d_l_hx:  -0.063631102443
+    vel3d_l_hy:  -0.388147711754
+    vel3d_l_hz:  -0.919397890568
+    vel3d_l_vp1:   5.009922504425
+    vel3d_l_vp2: -15.580603599548
+    vel3d_l_vp3:   5.908023834229
+    vel3d_l_vp4:   9.113740921021
+  - _index: 217
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585198616.000000
+    vel3d_l_date_time_array: [2013, 8, 11, 8, 30, 16]
+    vel3d_l_heading: 272.090606689453
+    vel3d_l_tx:   0.705456137657
+    vel3d_l_ty:  -0.664197385311
+    vel3d_l_hx:   0.003498389851
+    vel3d_l_hy:  -0.394376724958
+    vel3d_l_hz:  -0.918942153454
+    vel3d_l_vp1:   3.980801582336
+    vel3d_l_vp2: -13.342044830322
+    vel3d_l_vp3:   3.344333887100
+    vel3d_l_vp4:  11.127858161926
+  - _index: 218
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585198816.000000
+    vel3d_l_date_time_array: [2013, 8, 11, 8, 33, 36]
+    vel3d_l_heading: 273.364135742188
+    vel3d_l_tx:   0.862401008606
+    vel3d_l_ty:  -0.982932329178
+    vel3d_l_hx:   0.010122571141
+    vel3d_l_hy:  -0.391222715378
+    vel3d_l_hz:  -0.920240402222
+    vel3d_l_vp1:   1.549374103546
+    vel3d_l_vp2: -11.431170463562
+    vel3d_l_vp3:   7.486665725708
+    vel3d_l_vp4:  10.939223289490
+  - _index: 219
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585199016.000000
+    vel3d_l_date_time_array: [2013, 8, 11, 8, 36, 56]
+    vel3d_l_heading: 259.257751464844
+    vel3d_l_tx:   0.705456137657
+    vel3d_l_ty:  -0.982932329178
+    vel3d_l_hx:  -0.086045235395
+    vel3d_l_hy:  -0.378140389919
+    vel3d_l_hz:  -0.921740770340
+    vel3d_l_vp1:   1.742808341980
+    vel3d_l_vp2: -10.793272972107
+    vel3d_l_vp3:   5.204467773438
+    vel3d_l_vp4:  11.642434120178
+  - _index: 220
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585199216.000000
+    vel3d_l_date_time_array: [2013, 8, 11, 8, 40, 16]
+    vel3d_l_heading: 241.203933715820
+    vel3d_l_tx:   0.705456137657
+    vel3d_l_ty:  -0.823561728001
+    vel3d_l_hx:  -0.202130854130
+    vel3d_l_hy:  -0.333921402693
+    vel3d_l_hz:  -0.920673429966
+    vel3d_l_vp1:   2.631655216217
+    vel3d_l_vp2: -12.366915702820
+    vel3d_l_vp3:   5.298954010010
+    vel3d_l_vp4:  11.957699775696
+  - _index: 221
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585199416.000000
+    vel3d_l_date_time_array: [2013, 8, 11, 8, 43, 36]
+    vel3d_l_heading: 222.105407714844
+    vel3d_l_tx:   0.705456137657
+    vel3d_l_ty:  -0.982932329178
+    vel3d_l_hx:  -0.299942076206
+    vel3d_l_hy:  -0.245002627373
+    vel3d_l_hz:  -0.921958982944
+    vel3d_l_vp1:   2.428361415863
+    vel3d_l_vp2: -14.423229217529
+    vel3d_l_vp3:   7.139434814453
+    vel3d_l_vp4:  11.539942741394
+  - _index: 222
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585199616.000000
+    vel3d_l_date_time_array: [2013, 8, 11, 8, 46, 56]
+    vel3d_l_heading: 216.016143798828
+    vel3d_l_tx:   0.705456137657
+    vel3d_l_ty:  -0.982932329178
+    vel3d_l_hx:  -0.324026614428
+    vel3d_l_hy:  -0.211482167244
+    vel3d_l_hz:  -0.922107398510
+    vel3d_l_vp1:   3.608840465546
+    vel3d_l_vp2: -14.396748542786
+    vel3d_l_vp3:   7.547338485718
+    vel3d_l_vp4:  10.776311874390
+  - _index: 223
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585199816.000000
+    vel3d_l_date_time_array: [2013, 8, 11, 8, 50, 16]
+    vel3d_l_heading: 225.311416625977
+    vel3d_l_tx:   1.019357919693
+    vel3d_l_ty:  -0.982932329178
+    vel3d_l_hx:  -0.286034107208
+    vel3d_l_hy:  -0.256708085537
+    vel3d_l_hz:  -0.923193097115
+    vel3d_l_vp1:   3.408585548401
+    vel3d_l_vp2: -14.338322639465
+    vel3d_l_vp3:   7.326573371887
+    vel3d_l_vp4:  11.199440002441
+  - _index: 224
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585200016.000000
+    vel3d_l_date_time_array: [2013, 8, 11, 8, 53, 36]
+    vel3d_l_heading: 205.987670898438
+    vel3d_l_tx:   0.705456137657
+    vel3d_l_ty:  -0.823561728001
+    vel3d_l_hx:  -0.352101266384
+    vel3d_l_hy:  -0.152801096439
+    vel3d_l_hz:  -0.923404872417
+    vel3d_l_vp1:   6.236763477325
+    vel3d_l_vp2: -13.135021209717
+    vel3d_l_vp3:   3.608486890793
+    vel3d_l_vp4:  11.690728187561
+  - _index: 225
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585200216.000000
+    vel3d_l_date_time_array: [2013, 8, 11, 8, 56, 56]
+    vel3d_l_heading: 242.859405517578
+    vel3d_l_tx:   0.705456137657
+    vel3d_l_ty:  -0.664197385311
+    vel3d_l_hx:  -0.188874781132
+    vel3d_l_hy:  -0.335614115000
+    vel3d_l_hz:  -0.922870218754
+    vel3d_l_vp1:   5.282764911652
+    vel3d_l_vp2: -14.567092895508
+    vel3d_l_vp3:   6.048982620239
+    vel3d_l_vp4:  11.407640457153
+  - _index: 226
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585200416.000000
+    vel3d_l_date_time_array: [2013, 8, 11, 9, 0, 16]
+    vel3d_l_heading: 248.324218750000
+    vel3d_l_tx:   0.705456137657
+    vel3d_l_ty:  -0.982932329178
+    vel3d_l_hx:  -0.158825427294
+    vel3d_l_hy:  -0.355365991592
+    vel3d_l_hz:  -0.921134889126
+    vel3d_l_vp1:   2.422916412354
+    vel3d_l_vp2:  -9.749328613281
+    vel3d_l_vp3:   2.718496322632
+    vel3d_l_vp4:  13.301348686218
+  - _index: 227
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585200616.000000
+    vel3d_l_date_time_array: [2013, 8, 11, 9, 3, 36]
+    vel3d_l_heading: 168.478881835938
+    vel3d_l_tx:   0.862401008606
+    vel3d_l_ty:  -0.664197385311
+    vel3d_l_hx:  -0.380449712276
+    vel3d_l_hy:   0.085427552462
+    vel3d_l_hz:  -0.920847535133
+    vel3d_l_vp1:   1.024319171906
+    vel3d_l_vp2:  -8.959035873413
+    vel3d_l_vp3:   1.685858726501
+    vel3d_l_vp4:  13.916974067688
+  - _index: 228
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585200816.000000
+    vel3d_l_date_time_array: [2013, 8, 11, 9, 6, 56]
+    vel3d_l_heading: 139.831924438477
+    vel3d_l_tx:   0.862401008606
+    vel3d_l_ty:  -0.664197385311
+    vel3d_l_hx:  -0.295744091272
+    vel3d_l_hy:   0.248610422015
+    vel3d_l_hz:  -0.922349393368
+    vel3d_l_vp1:   3.082534313202
+    vel3d_l_vp2:  -8.744579315186
+    vel3d_l_vp3:   4.212338447571
+    vel3d_l_vp4:  11.830104827881
+  - _index: 229
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585201016.000000
+    vel3d_l_date_time_array: [2013, 8, 11, 9, 10, 16]
+    vel3d_l_heading: 203.119979858398
+    vel3d_l_tx:   0.862401008606
+    vel3d_l_ty:  -0.982932329178
+    vel3d_l_hx:  -0.363805055618
+    vel3d_l_hy:  -0.133550465107
+    vel3d_l_hz:  -0.921851456165
+    vel3d_l_vp1:   3.212509632111
+    vel3d_l_vp2: -10.560101509094
+    vel3d_l_vp3:   6.072198867798
+    vel3d_l_vp4:  12.108731269836
+  - _index: 230
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585201216.000000
+    vel3d_l_date_time_array: [2013, 8, 11, 9, 13, 36]
+    vel3d_l_heading: 217.557403564453
+    vel3d_l_tx:   0.862401008606
+    vel3d_l_ty:  -0.982932329178
+    vel3d_l_hx:  -0.317770868540
+    vel3d_l_hy:  -0.217815116048
+    vel3d_l_hz:  -0.922810018063
+    vel3d_l_vp1:   4.397062778473
+    vel3d_l_vp2: -12.858303070068
+    vel3d_l_vp3:   5.887997627258
+    vel3d_l_vp4:  12.284450531006
+  - _index: 231
+    particle_object: Vel3dLWfpInstrumentParticle
+    particle_type: vel3d_l_wfp_instrument
+    internal_timestamp: 3585201466.000000
+    vel3d_l_date_time_array: [2013, 8, 11, 9, 17, 46]
+    vel3d_l_heading: 240.819396972656
+    vel3d_l_tx:   0.862401008606
+    vel3d_l_ty:  -0.823561728001
+    vel3d_l_hx:  -0.203263476491
+    vel3d_l_hy:  -0.325863569975
+    vel3d_l_hz:  -0.923307657242
+    vel3d_l_vp1:   4.356015682220
+    vel3d_l_vp2:  -3.115632057190
+    vel3d_l_vp3:   5.317519187927
+    vel3d_l_vp4:  -1.273087501526
+  - _index: 232
+    particle_object: Vel3dLWfpSioMuleMetadataParticle
+    particle_type: vel3d_l_wfp_sio_mule_metadata
+    internal_timestamp: 3585202197.000000
+    vel3d_l_time_on: 1376204402
+    vel3d_l_time_off: 1376212679
+    serial_number: '1024'
+    vel3d_l_number_of_records: 42
+    vel3d_l_decimation_factor: !!null
+    vel3d_l_controller_timestamp: 1376213397

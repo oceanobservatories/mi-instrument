@@ -1,0 +1,14 @@
+header:
+   particle_object: 'MULTIPLE'
+   particle_type: 'MULTIPLE'
+data:
+- _index: 1
+  particle_type: dpc_ctd_instrument_recovered
+  particle_object: DeepProfilerParticle
+  internal_timestamp: 3597875423.522393
+  raw_time_seconds: 1388886623
+  raw_time_microseconds: 522393
+  conductivity_millisiemens: 32.2808
+  pressure: 14.28
+  temp: 7.8077
+

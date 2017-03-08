@@ -1,0 +1,7 @@
+Message Id[unsigned short|#],Timestamp[unsigned long|epoch],Transponder Table Index 1[signed char|#],Transponder Table Index 2[signed char|#],Inband Channel 1 SNR[unsigned char|dB],Inband Channel 2 SNR[unsigned char|dB],Interrogate Channel 1 SNR[signed char|dB],Interrogate Channel 2 SNR[signed char|dB],Receive Channel 1[signed char|#],Receive Channel 2[signed char|#],Range 1[float|Meters],Range 2[float|Meters],Reply Age 1[unsigned long|msecs],Reply Age 2[unsigned long|msecs],Latitude[double|�],Longitude[double|�],Compass True Heading[float|�],Sound Speed[float|m/s],Fail Flag[unsigned short|mask],Received Bits[signed char|mask],Mission Time[unsigned long|tod],Outband Channel 1 SNR[unsigned char|dB],Outband Channel 2 SNR[unsigned char|dB]
+1050,1419009829,0,0,0,0,1,1,2,2,-1.00,-1.00,4294967295,4294967295,0.0000,0.0000,0.00,0.00,32769,0,62629538,0,0
+1050,1419009842,0,0,0,0,1,1,2,2,-1.00,-1.00,4294967295,4294967295,0.0000,0.0000,0.00,0.00,32769,0,626XX8,0,0
+1050,1419009855,0,0,0,0,1,1,2,2,-1.00,-1.00,4294967295,4294967295,0.0000,0.0000,0.00,0.00,32769,0,62655646,0,0
+1050,1419009868,0,0,0,0,1,1,2,2,-1.00,-1.00,4294967295,4294967295,0.0000,0.0000,0.00,0.00,32769,0,62668700,0,0
+1050,14190XXX83,0,0,0,0,1,1,2,2,-1.00,-1.00,4294967295,4294967295,0.0000,0.0000,0.00,0.00,32769,0,62683787,0,0
+1050,1419009898,0,0,0,0,1,1,2,2,-1.00,-1.00,4294967295,4294967295,0.0000,0.0000,0.00,0.00,32769,0,62698874,0,0

@@ -1,0 +1,14 @@
+header:
+  particle_object: 'MULTIPLE'
+  particle_type: 'MULTIPLE'
+
+data:
+  - _index: 1
+    particle_object: CtdbpCdefDclTelemeteredDataParticle
+    particle_type: ctdbp_cdef_dcl_instrument
+    internal_timestamp: 3619987345.338
+    dcl_controller_timestamp: '2014/09/18 00:02:25.338'
+    temp: 8.1990
+    conductivity: 3.62531
+    pressure: 12.203
+    date_time_string: '18 Sep 2014 00:02:19'

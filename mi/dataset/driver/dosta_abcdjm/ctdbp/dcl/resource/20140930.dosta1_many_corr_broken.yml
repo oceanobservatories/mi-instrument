@@ -1,0 +1,48 @@
+header:
+  particle_object: 'MULTIPLE'
+  particle_type: 'MULTIPLE'
+
+data:
+  - _index: 1
+    particle_object: DostaAbcdjmCtdbpDclRecoveredDataParticle
+    particle_type: dosta_abcdjm_ctdbp_dcl_instrument_recovered
+    internal_timestamp: 3621025822.456
+    dcl_controller_timestamp: '2014/09/30 00:30:22.456'
+    dosta_ln_optode_oxygen: 271.659
+    date_time_string: '30 Sep 2014 00:30:16'
+  - _index: 2
+    particle_object: DostaAbcdjmCtdbpDclRecoveredDataParticle
+    particle_type: dosta_abcdjm_ctdbp_dcl_instrument_recovered
+    internal_timestamp: 3621029419.752
+    dcl_controller_timestamp: '2014/09/30 01:30:19.752'
+    dosta_ln_optode_oxygen: 268.399
+    date_time_string: '30 Sep 2014 01:30:14'
+  - _index: 3
+    particle_object: DostaAbcdjmCtdbpDclRecoveredDataParticle
+    particle_type: dosta_abcdjm_ctdbp_dcl_instrument_recovered
+    internal_timestamp: 3621033019.915
+    dcl_controller_timestamp: '2014/09/30 02:30:19.915'
+    dosta_ln_optode_oxygen: 266.661
+    date_time_string: '30 Sep 2014 02:30:14'
+  - _index: 4
+    particle_object: DostaAbcdjmCtdbpDclRecoveredDataParticle
+    particle_type: dosta_abcdjm_ctdbp_dcl_instrument_recovered
+    internal_timestamp: 3621036618.891
+    dcl_controller_timestamp: '2014/09/30 03:30:18.891'
+    dosta_ln_optode_oxygen: 266.292
+    date_time_string: '30 Sep 2014 03:30:13'
+  - _index: 5
+    particle_object: DostaAbcdjmCtdbpDclRecoveredDataParticle
+    particle_type: dosta_abcdjm_ctdbp_dcl_instrument_recovered
+    internal_timestamp: 3621040218.203
+    dcl_controller_timestamp: '2014/09/30 04:30:18.203'
+    dosta_ln_optode_oxygen: 266.401
+    date_time_string: '30 Sep 2014 04:30:12'
+  - _index: 6
+    particle_object: DostaAbcdjmCtdbpDclRecoveredDataParticle
+    particle_type: dosta_abcdjm_ctdbp_dcl_instrument_recovered
+    internal_timestamp: 3621047417.980
+    dcl_controller_timestamp: '2014/09/30 06:30:17.980'
+    dosta_ln_optode_oxygen: 266.795
+    date_time_string: '30 Sep 2014 06:30:12'
+

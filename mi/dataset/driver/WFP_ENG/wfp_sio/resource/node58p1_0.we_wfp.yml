@@ -1,0 +1,1410 @@
+header:
+    particle_object: 'MULTIPLE'
+    particle_type: 'MULTIPLE'
+data:
+  - _index: 1
+    particle_object: WfpEngWfpSioParserDataStartTimeParticle
+    particle_type: wfp_eng_wfp_sio_mule_start_time
+    internal_timestamp: 3585034925.000000
+    sio_controller_timestamp: 1376054368
+    wfp_sensor_start: 1376046002
+    wfp_profile_start: 1376046125
+  - _index: 2
+    particle_object: WfpEngWfpSioParserDataStatusParticle
+    particle_type: wfp_eng_wfp_sio_mule_status
+    internal_timestamp: 3585042372.000000
+    sio_controller_timestamp: 1376054368
+    wfp_indicator: -1
+    wfp_ramp_status: 0
+    wfp_profile_status: 13
+    wfp_profile_stop: 1376053572
+    wfp_sensor_stop: 1376053700
+    wfp_decimation_factor: !!null
+  - _index: 3
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585042368.000000
+    wfp_timestamp: 1376053568
+    wfp_prof_current:        294.93497
+    wfp_prof_voltage:         10.74280
+    wfp_prof_pressure:       2245.47998
+  - _index: 4
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585041968.000000
+    wfp_timestamp: 1376053168
+    wfp_prof_current:        286.93530
+    wfp_prof_voltage:         10.76080
+    wfp_prof_pressure:       2344.42993
+  - _index: 5
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585041648.000000
+    wfp_timestamp: 1376052848
+    wfp_prof_current:        294.60416
+    wfp_prof_voltage:         10.76000
+    wfp_prof_pressure:       2423.96997
+  - _index: 6
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585041328.000000
+    wfp_timestamp: 1376052528
+    wfp_prof_current:        283.32645
+    wfp_prof_voltage:         10.75760
+    wfp_prof_pressure:       2503.67993
+  - _index: 7
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585041008.000000
+    wfp_timestamp: 1376052208
+    wfp_prof_current:        275.74777
+    wfp_prof_voltage:         10.77560
+    wfp_prof_pressure:       2583.59009
+  - _index: 8
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585040688.000000
+    wfp_timestamp: 1376051888
+    wfp_prof_current:        281.61221
+    wfp_prof_voltage:         10.77960
+    wfp_prof_pressure:       2663.93994
+  - _index: 9
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585040368.000000
+    wfp_timestamp: 1376051568
+    wfp_prof_current:        279.74762
+    wfp_prof_voltage:         10.77800
+    wfp_prof_pressure:       2744.29004
+  - _index: 10
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585040048.000000
+    wfp_timestamp: 1376051248
+    wfp_prof_current:        266.75571
+    wfp_prof_voltage:         10.78480
+    wfp_prof_pressure:       2824.90991
+  - _index: 11
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585039728.000000
+    wfp_timestamp: 1376050928
+    wfp_prof_current:        265.43243
+    wfp_prof_voltage:         10.79600
+    wfp_prof_pressure:       2905.52002
+  - _index: 12
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585039408.000000
+    wfp_timestamp: 1376050608
+    wfp_prof_current:        263.32727
+    wfp_prof_voltage:         10.80120
+    wfp_prof_pressure:       2986.65991
+  - _index: 13
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585039088.000000
+    wfp_timestamp: 1376050288
+    wfp_prof_current:        261.85364
+    wfp_prof_voltage:         10.80480
+    wfp_prof_pressure:       3067.77002
+  - _index: 14
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585038768.000000
+    wfp_timestamp: 1376049968
+    wfp_prof_current:        252.10970
+    wfp_prof_voltage:         10.81880
+    wfp_prof_pressure:       3149.34009
+  - _index: 15
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585038448.000000
+    wfp_timestamp: 1376049648
+    wfp_prof_current:        252.92169
+    wfp_prof_voltage:         10.82640
+    wfp_prof_pressure:       3231.30005
+  - _index: 16
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585038128.000000
+    wfp_timestamp: 1376049328
+    wfp_prof_current:        248.80156
+    wfp_prof_voltage:         10.82960
+    wfp_prof_pressure:       3313.15991
+  - _index: 17
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585037808.000000
+    wfp_timestamp: 1376049008
+    wfp_prof_current:        251.11725
+    wfp_prof_voltage:         10.82960
+    wfp_prof_pressure:       3394.82007
+  - _index: 18
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585037488.000000
+    wfp_timestamp: 1376048688
+    wfp_prof_current:        241.67404
+    wfp_prof_voltage:         10.85080
+    wfp_prof_pressure:       3476.78003
+  - _index: 19
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585037168.000000
+    wfp_timestamp: 1376048368
+    wfp_prof_current:        246.48586
+    wfp_prof_voltage:         10.86240
+    wfp_prof_pressure:       3558.77002
+  - _index: 20
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585036848.000000
+    wfp_timestamp: 1376048048
+    wfp_prof_current:        238.78694
+    wfp_prof_voltage:         10.87000
+    wfp_prof_pressure:       3640.96997
+  - _index: 21
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585036528.000000
+    wfp_timestamp: 1376047728
+    wfp_prof_current:        235.35851
+    wfp_prof_voltage:         10.88400
+    wfp_prof_pressure:       3723.31006
+  - _index: 22
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585036208.000000
+    wfp_timestamp: 1376047408
+    wfp_prof_current:        230.84743
+    wfp_prof_voltage:         10.90440
+    wfp_prof_pressure:       3806.29004
+  - _index: 23
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585035888.000000
+    wfp_timestamp: 1376047088
+    wfp_prof_current:        238.48621
+    wfp_prof_voltage:         10.93480
+    wfp_prof_pressure:       3889.68994
+  - _index: 24
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585035568.000000
+    wfp_timestamp: 1376046768
+    wfp_prof_current:        237.91479
+    wfp_prof_voltage:         10.99360
+    wfp_prof_pressure:       3973.39990
+  - _index: 25
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585035248.000000
+    wfp_timestamp: 1376046448
+    wfp_prof_current:        230.18579
+    wfp_prof_voltage:         11.17920
+    wfp_prof_pressure:       4058.46997
+  - _index: 26
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585034925.000000
+    wfp_timestamp: 1376046125
+    wfp_prof_current:          0.00000
+    wfp_prof_voltage:         11.71480
+    wfp_prof_pressure:          0.00000
+  - _index: 27
+    particle_object: WfpEngWfpSioParserDataStartTimeParticle
+    particle_type: wfp_eng_wfp_sio_mule_start_time
+    internal_timestamp: 3585049324.000000
+    sio_controller_timestamp: 1376069342
+    wfp_sensor_start: 1376060402
+    wfp_profile_start: 1376060524
+  - _index: 28
+    particle_object: WfpEngWfpSioParserDataStatusParticle
+    particle_type: wfp_eng_wfp_sio_mule_status
+    internal_timestamp: 3585057301.000000
+    sio_controller_timestamp: 1376069342
+    wfp_indicator: -1
+    wfp_ramp_status: 0
+    wfp_profile_status: 13
+    wfp_profile_stop: 1376068501
+    wfp_sensor_stop: 1376068629
+    wfp_decimation_factor: !!null
+  - _index: 29
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585057297.000000
+    wfp_timestamp: 1376068497
+    wfp_prof_current:        417.57639
+    wfp_prof_voltage:         10.47520
+    wfp_prof_pressure:        329.84000
+  - _index: 30
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585056687.000000
+    wfp_timestamp: 1376067887
+    wfp_prof_current:        436.88388
+    wfp_prof_voltage:         10.46840
+    wfp_prof_pressure:        467.01001
+  - _index: 31
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585056367.000000
+    wfp_timestamp: 1376067567
+    wfp_prof_current:        430.41797
+    wfp_prof_voltage:         10.46480
+    wfp_prof_pressure:        537.90002
+  - _index: 32
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585056047.000000
+    wfp_timestamp: 1376067247
+    wfp_prof_current:        371.35278
+    wfp_prof_voltage:         10.49520
+    wfp_prof_pressure:        609.51001
+  - _index: 33
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585055727.000000
+    wfp_timestamp: 1376066927
+    wfp_prof_current:        366.90182
+    wfp_prof_voltage:         10.50880
+    wfp_prof_pressure:        682.34003
+  - _index: 34
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585055407.000000
+    wfp_timestamp: 1376066607
+    wfp_prof_current:        396.88556
+    wfp_prof_voltage:         10.50120
+    wfp_prof_pressure:        755.87000
+  - _index: 35
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585055087.000000
+    wfp_timestamp: 1376066287
+    wfp_prof_current:        345.30878
+    wfp_prof_voltage:         10.51520
+    wfp_prof_pressure:        829.53003
+  - _index: 36
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585054767.000000
+    wfp_timestamp: 1376065967
+    wfp_prof_current:        368.22510
+    wfp_prof_voltage:         10.51080
+    wfp_prof_pressure:        902.09003
+  - _index: 37
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585054447.000000
+    wfp_timestamp: 1376065647
+    wfp_prof_current:        368.01459
+    wfp_prof_voltage:         10.51600
+    wfp_prof_pressure:        975.28998
+  - _index: 38
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585054127.000000
+    wfp_timestamp: 1376065327
+    wfp_prof_current:        371.62347
+    wfp_prof_voltage:         10.51080
+    wfp_prof_pressure:       1049.46997
+  - _index: 39
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585053807.000000
+    wfp_timestamp: 1376065007
+    wfp_prof_current:        385.24692
+    wfp_prof_voltage:         10.52680
+    wfp_prof_pressure:       1123.93005
+  - _index: 40
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585053487.000000
+    wfp_timestamp: 1376064687
+    wfp_prof_current:        351.11304
+    wfp_prof_voltage:         10.53480
+    wfp_prof_pressure:       1199.56995
+  - _index: 41
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585053167.000000
+    wfp_timestamp: 1376064367
+    wfp_prof_current:        337.70007
+    wfp_prof_voltage:         10.54360
+    wfp_prof_pressure:       1275.59998
+  - _index: 42
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585052847.000000
+    wfp_timestamp: 1376064047
+    wfp_prof_current:        347.02298
+    wfp_prof_voltage:         10.56560
+    wfp_prof_pressure:       1351.47998
+  - _index: 43
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585052527.000000
+    wfp_timestamp: 1376063727
+    wfp_prof_current:        336.19638
+    wfp_prof_voltage:         10.59040
+    wfp_prof_pressure:       1428.44995
+  - _index: 44
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585052207.000000
+    wfp_timestamp: 1376063407
+    wfp_prof_current:        334.75284
+    wfp_prof_voltage:         10.60200
+    wfp_prof_pressure:       1504.65002
+  - _index: 45
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585051887.000000
+    wfp_timestamp: 1376063087
+    wfp_prof_current:        349.09808
+    wfp_prof_voltage:         10.61560
+    wfp_prof_pressure:       1581.56006
+  - _index: 46
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585051567.000000
+    wfp_timestamp: 1376062767
+    wfp_prof_current:        328.61777
+    wfp_prof_voltage:         10.65320
+    wfp_prof_pressure:       1659.04004
+  - _index: 47
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585051247.000000
+    wfp_timestamp: 1376062447
+    wfp_prof_current:        338.06097
+    wfp_prof_voltage:         10.68480
+    wfp_prof_pressure:       1736.82996
+  - _index: 48
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585050927.000000
+    wfp_timestamp: 1376062127
+    wfp_prof_current:        342.48181
+    wfp_prof_voltage:         10.70680
+    wfp_prof_pressure:       1815.08997
+  - _index: 49
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585050607.000000
+    wfp_timestamp: 1376061807
+    wfp_prof_current:        323.35483
+    wfp_prof_voltage:         10.74360
+    wfp_prof_pressure:       1894.32996
+  - _index: 50
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585050287.000000
+    wfp_timestamp: 1376061487
+    wfp_prof_current:        309.34039
+    wfp_prof_voltage:         10.78120
+    wfp_prof_pressure:       1973.66003
+  - _index: 51
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585049967.000000
+    wfp_timestamp: 1376061167
+    wfp_prof_current:        326.30203
+    wfp_prof_voltage:         10.84240
+    wfp_prof_pressure:       2052.84009
+  - _index: 52
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585049647.000000
+    wfp_timestamp: 1376060847
+    wfp_prof_current:        327.38474
+    wfp_prof_voltage:         11.02160
+    wfp_prof_pressure:       2133.37988
+  - _index: 53
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585049324.000000
+    wfp_timestamp: 1376060524
+    wfp_prof_current:          0.00000
+    wfp_prof_voltage:         11.66600
+    wfp_prof_pressure:          0.00000
+  - _index: 54
+    particle_object: WfpEngWfpSioParserDataStartTimeParticle
+    particle_type: wfp_eng_wfp_sio_mule_start_time
+    internal_timestamp: 3585106925.000000
+    sio_controller_timestamp: 1376125630
+    wfp_sensor_start: 1376118002
+    wfp_profile_start: 1376118125
+  - _index: 55
+    particle_object: WfpEngWfpSioParserDataStatusParticle
+    particle_type: wfp_eng_wfp_sio_mule_status
+    internal_timestamp: 3585113692.000000
+    sio_controller_timestamp: 1376125630
+    wfp_indicator: -1
+    wfp_ramp_status: 0
+    wfp_profile_status: 14
+    wfp_profile_stop: 1376124892
+    wfp_sensor_stop: 1376125020
+    wfp_decimation_factor: !!null
+  - _index: 56
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585113688.000000
+    wfp_timestamp: 1376124888
+    wfp_prof_current:        175.00015
+    wfp_prof_voltage:         10.92520
+    wfp_prof_pressure:       4137.06006
+  - _index: 57
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585113328.000000
+    wfp_timestamp: 1376124528
+    wfp_prof_current:        165.94791
+    wfp_prof_voltage:         10.92720
+    wfp_prof_pressure:       4039.56006
+  - _index: 58
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585113008.000000
+    wfp_timestamp: 1376124208
+    wfp_prof_current:        162.12851
+    wfp_prof_voltage:         10.94280
+    wfp_prof_pressure:       3952.83008
+  - _index: 59
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585112688.000000
+    wfp_timestamp: 1376123888
+    wfp_prof_current:        166.39902
+    wfp_prof_voltage:         10.93800
+    wfp_prof_pressure:       3865.81006
+  - _index: 60
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585112368.000000
+    wfp_timestamp: 1376123568
+    wfp_prof_current:        163.15103
+    wfp_prof_voltage:         10.95200
+    wfp_prof_pressure:       3778.68994
+  - _index: 61
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585112048.000000
+    wfp_timestamp: 1376123248
+    wfp_prof_current:        158.45949
+    wfp_prof_voltage:         10.94520
+    wfp_prof_pressure:       3691.72998
+  - _index: 62
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585111728.000000
+    wfp_timestamp: 1376122928
+    wfp_prof_current:        155.81299
+    wfp_prof_voltage:         10.95080
+    wfp_prof_pressure:       3604.38989
+  - _index: 63
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585111408.000000
+    wfp_timestamp: 1376122608
+    wfp_prof_current:        154.88071
+    wfp_prof_voltage:         10.96240
+    wfp_prof_pressure:       3517.02002
+  - _index: 64
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585111088.000000
+    wfp_timestamp: 1376122288
+    wfp_prof_current:        141.55795
+    wfp_prof_voltage:         10.96920
+    wfp_prof_pressure:       3429.56006
+  - _index: 65
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585110768.000000
+    wfp_timestamp: 1376121968
+    wfp_prof_current:        140.50537
+    wfp_prof_voltage:         10.97480
+    wfp_prof_pressure:       3341.66992
+  - _index: 66
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585110448.000000
+    wfp_timestamp: 1376121648
+    wfp_prof_current:        140.92639
+    wfp_prof_voltage:         10.99040
+    wfp_prof_pressure:       3253.30005
+  - _index: 67
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585110128.000000
+    wfp_timestamp: 1376121328
+    wfp_prof_current:        132.89665
+    wfp_prof_voltage:         11.00000
+    wfp_prof_pressure:       3164.65991
+  - _index: 68
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585109808.000000
+    wfp_timestamp: 1376121008
+    wfp_prof_current:        140.50537
+    wfp_prof_voltage:         11.00720
+    wfp_prof_pressure:       3075.95996
+  - _index: 69
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585109488.000000
+    wfp_timestamp: 1376120688
+    wfp_prof_current:        119.39348
+    wfp_prof_voltage:         11.01840
+    wfp_prof_pressure:       2986.85010
+  - _index: 70
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585109168.000000
+    wfp_timestamp: 1376120368
+    wfp_prof_current:        118.28074
+    wfp_prof_voltage:         11.02640
+    wfp_prof_pressure:       2897.43994
+  - _index: 71
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585108848.000000
+    wfp_timestamp: 1376120048
+    wfp_prof_current:        135.27251
+    wfp_prof_voltage:         11.04360
+    wfp_prof_pressure:       2807.43994
+  - _index: 72
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585108528.000000
+    wfp_timestamp: 1376119728
+    wfp_prof_current:        112.98772
+    wfp_prof_voltage:         11.07280
+    wfp_prof_pressure:       2717.33008
+  - _index: 73
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585108208.000000
+    wfp_timestamp: 1376119408
+    wfp_prof_current:        113.73957
+    wfp_prof_voltage:         11.08640
+    wfp_prof_pressure:       2626.66992
+  - _index: 74
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585107888.000000
+    wfp_timestamp: 1376119088
+    wfp_prof_current:        110.28107
+    wfp_prof_voltage:         11.12560
+    wfp_prof_pressure:       2535.57007
+  - _index: 75
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585107568.000000
+    wfp_timestamp: 1376118768
+    wfp_prof_current:        118.01007
+    wfp_prof_voltage:         11.20960
+    wfp_prof_pressure:       2443.48999
+  - _index: 76
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585107248.000000
+    wfp_timestamp: 1376118448
+    wfp_prof_current:        116.95749
+    wfp_prof_voltage:         11.37960
+    wfp_prof_pressure:       2350.30005
+  - _index: 77
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585106925.000000
+    wfp_timestamp: 1376118125
+    wfp_prof_current:          0.00000
+    wfp_prof_voltage:         11.73640
+    wfp_prof_pressure:          0.00000
+  - _index: 78
+    particle_object: WfpEngWfpSioParserDataStartTimeParticle
+    particle_type: wfp_eng_wfp_sio_mule_start_time
+    internal_timestamp: 3585121323.000000
+    sio_controller_timestamp: 1376138308
+    wfp_sensor_start: 1376132402
+    wfp_profile_start: 1376132523
+  - _index: 79
+    particle_object: WfpEngWfpSioParserDataStatusParticle
+    particle_type: wfp_eng_wfp_sio_mule_status
+    internal_timestamp: 3585126499.000000
+    sio_controller_timestamp: 1376138308
+    wfp_indicator: -1
+    wfp_ramp_status: 0
+    wfp_profile_status: 14
+    wfp_profile_stop: 1376137699
+    wfp_sensor_stop: 1376137826
+    wfp_decimation_factor: !!null
+  - _index: 80
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585126496.000000
+    wfp_timestamp: 1376137696
+    wfp_prof_current:         78.07190
+    wfp_prof_voltage:         11.05120
+    wfp_prof_pressure:       2203.91992
+  - _index: 81
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585126126.000000
+    wfp_timestamp: 1376137326
+    wfp_prof_current:         65.83182
+    wfp_prof_voltage:         11.06840
+    wfp_prof_pressure:       2098.34009
+  - _index: 82
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585125806.000000
+    wfp_timestamp: 1376137006
+    wfp_prof_current:         69.80157
+    wfp_prof_voltage:         11.07520
+    wfp_prof_pressure:       2006.31006
+  - _index: 83
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585125486.000000
+    wfp_timestamp: 1376136686
+    wfp_prof_current:         59.78696
+    wfp_prof_voltage:         11.08120
+    wfp_prof_pressure:       1914.32996
+  - _index: 84
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585125166.000000
+    wfp_timestamp: 1376136366
+    wfp_prof_current:         30.58518
+    wfp_prof_voltage:         11.11040
+    wfp_prof_pressure:       1821.96997
+  - _index: 85
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585124846.000000
+    wfp_timestamp: 1376136046
+    wfp_prof_current:         52.93011
+    wfp_prof_voltage:         11.10440
+    wfp_prof_pressure:       1729.00000
+  - _index: 86
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585124526.000000
+    wfp_timestamp: 1376135726
+    wfp_prof_current:         32.63020
+    wfp_prof_voltage:         11.12880
+    wfp_prof_pressure:       1635.98999
+  - _index: 87
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585124206.000000
+    wfp_timestamp: 1376135406
+    wfp_prof_current:         38.67506
+    wfp_prof_voltage:         11.14560
+    wfp_prof_pressure:       1542.68994
+  - _index: 88
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585123886.000000
+    wfp_timestamp: 1376135086
+    wfp_prof_current:         33.56250
+    wfp_prof_voltage:         11.15840
+    wfp_prof_pressure:       1448.81995
+  - _index: 89
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585123566.000000
+    wfp_timestamp: 1376134766
+    wfp_prof_current:         31.63776
+    wfp_prof_voltage:         11.16160
+    wfp_prof_pressure:       1354.81995
+  - _index: 90
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585123246.000000
+    wfp_timestamp: 1376134446
+    wfp_prof_current:         28.75067
+    wfp_prof_voltage:         11.18080
+    wfp_prof_pressure:       1261.14001
+  - _index: 91
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585122926.000000
+    wfp_timestamp: 1376134126
+    wfp_prof_current:          5.68397
+    wfp_prof_voltage:         11.21360
+    wfp_prof_pressure:       1166.84998
+  - _index: 92
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585122606.000000
+    wfp_timestamp: 1376133806
+    wfp_prof_current:         30.04385
+    wfp_prof_voltage:         11.22000
+    wfp_prof_pressure:       1071.58997
+  - _index: 93
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585122286.000000
+    wfp_timestamp: 1376133486
+    wfp_prof_current:          0.00000
+    wfp_prof_voltage:         11.28320
+    wfp_prof_pressure:        976.02002
+  - _index: 94
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585121966.000000
+    wfp_timestamp: 1376133166
+    wfp_prof_current:          6.55612
+    wfp_prof_voltage:         11.36280
+    wfp_prof_pressure:        879.53998
+  - _index: 95
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585121646.000000
+    wfp_timestamp: 1376132846
+    wfp_prof_current:         16.84140
+    wfp_prof_voltage:         11.48920
+    wfp_prof_pressure:        781.85999
+  - _index: 96
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585121323.000000
+    wfp_timestamp: 1376132523
+    wfp_prof_current:          0.00000
+    wfp_prof_voltage:         11.68120
+    wfp_prof_pressure:          0.00000
+  - _index: 97
+    particle_object: WfpEngWfpSioParserDataStartTimeParticle
+    particle_type: wfp_eng_wfp_sio_mule_start_time
+    internal_timestamp: 3585178925.000000
+    sio_controller_timestamp: 1376198398
+    wfp_sensor_start: 1376190002
+    wfp_profile_start: 1376190125
+  - _index: 98
+    particle_object: WfpEngWfpSioParserDataStatusParticle
+    particle_type: wfp_eng_wfp_sio_mule_status
+    internal_timestamp: 3585186402.000000
+    sio_controller_timestamp: 1376198398
+    wfp_indicator: -1
+    wfp_ramp_status: 0
+    wfp_profile_status: 13
+    wfp_profile_stop: 1376197602
+    wfp_sensor_stop: 1376197730
+    wfp_decimation_factor: !!null
+  - _index: 99
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585186398.000000
+    wfp_timestamp: 1376197598
+    wfp_prof_current:        292.73956
+    wfp_prof_voltage:         10.74720
+    wfp_prof_pressure:       2244.11011
+  - _index: 100
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585185968.000000
+    wfp_timestamp: 1376197168
+    wfp_prof_current:        287.86758
+    wfp_prof_voltage:         10.75320
+    wfp_prof_pressure:       2350.45996
+  - _index: 101
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585185648.000000
+    wfp_timestamp: 1376196848
+    wfp_prof_current:        272.59003
+    wfp_prof_voltage:         10.75720
+    wfp_prof_pressure:       2429.67993
+  - _index: 102
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585185328.000000
+    wfp_timestamp: 1376196528
+    wfp_prof_current:        280.89041
+    wfp_prof_voltage:         10.77120
+    wfp_prof_pressure:       2509.00000
+  - _index: 103
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585185008.000000
+    wfp_timestamp: 1376196208
+    wfp_prof_current:        273.49225
+    wfp_prof_voltage:         10.77080
+    wfp_prof_pressure:       2588.23999
+  - _index: 104
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585184688.000000
+    wfp_timestamp: 1376195888
+    wfp_prof_current:        278.69504
+    wfp_prof_voltage:         10.77160
+    wfp_prof_pressure:       2667.95996
+  - _index: 105
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585184368.000000
+    wfp_timestamp: 1376195568
+    wfp_prof_current:        272.22916
+    wfp_prof_voltage:         10.78200
+    wfp_prof_pressure:       2747.83008
+  - _index: 106
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585184048.000000
+    wfp_timestamp: 1376195248
+    wfp_prof_current:        266.99628
+    wfp_prof_voltage:         10.78160
+    wfp_prof_pressure:       2827.80005
+  - _index: 107
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585183728.000000
+    wfp_timestamp: 1376194928
+    wfp_prof_current:        255.95915
+    wfp_prof_voltage:         10.80200
+    wfp_prof_pressure:       2908.22998
+  - _index: 108
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585183408.000000
+    wfp_timestamp: 1376194608
+    wfp_prof_current:        269.76309
+    wfp_prof_voltage:         10.79440
+    wfp_prof_pressure:       2988.64990
+  - _index: 109
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585183088.000000
+    wfp_timestamp: 1376194288
+    wfp_prof_current:        252.65102
+    wfp_prof_voltage:         10.80560
+    wfp_prof_pressure:       3069.15991
+  - _index: 110
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585182768.000000
+    wfp_timestamp: 1376193968
+    wfp_prof_current:        262.48520
+    wfp_prof_voltage:         10.81480
+    wfp_prof_pressure:       3149.90991
+  - _index: 111
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585182448.000000
+    wfp_timestamp: 1376193648
+    wfp_prof_current:        254.27501
+    wfp_prof_voltage:         10.81600
+    wfp_prof_pressure:       3230.75000
+  - _index: 112
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585182128.000000
+    wfp_timestamp: 1376193328
+    wfp_prof_current:        260.13943
+    wfp_prof_voltage:         10.82440
+    wfp_prof_pressure:       3311.91992
+  - _index: 113
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585181808.000000
+    wfp_timestamp: 1376193008
+    wfp_prof_current:        250.54584
+    wfp_prof_voltage:         10.83480
+    wfp_prof_pressure:       3393.36011
+  - _index: 114
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585181488.000000
+    wfp_timestamp: 1376192688
+    wfp_prof_current:        242.48604
+    wfp_prof_voltage:         10.85240
+    wfp_prof_pressure:       3475.14990
+  - _index: 115
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585181168.000000
+    wfp_timestamp: 1376192368
+    wfp_prof_current:        253.04198
+    wfp_prof_voltage:         10.85840
+    wfp_prof_pressure:       3557.08008
+  - _index: 116
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585180848.000000
+    wfp_timestamp: 1376192048
+    wfp_prof_current:        245.25284
+    wfp_prof_voltage:         10.87160
+    wfp_prof_pressure:       3639.41992
+  - _index: 117
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585180528.000000
+    wfp_timestamp: 1376191728
+    wfp_prof_current:        241.22293
+    wfp_prof_voltage:         10.88320
+    wfp_prof_pressure:       3722.07007
+  - _index: 118
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585180208.000000
+    wfp_timestamp: 1376191408
+    wfp_prof_current:        239.02753
+    wfp_prof_voltage:         10.91000
+    wfp_prof_pressure:       3805.06006
+  - _index: 119
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585179888.000000
+    wfp_timestamp: 1376191088
+    wfp_prof_current:        233.82475
+    wfp_prof_voltage:         10.93760
+    wfp_prof_pressure:       3888.62012
+  - _index: 120
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585179568.000000
+    wfp_timestamp: 1376190768
+    wfp_prof_current:        232.47142
+    wfp_prof_voltage:         10.98560
+    wfp_prof_pressure:       3972.30005
+  - _index: 121
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585179248.000000
+    wfp_timestamp: 1376190448
+    wfp_prof_current:        242.81683
+    wfp_prof_voltage:         11.17480
+    wfp_prof_pressure:       4057.15991
+  - _index: 122
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585178925.000000
+    wfp_timestamp: 1376190125
+    wfp_prof_current:          0.00000
+    wfp_prof_voltage:         11.71720
+    wfp_prof_pressure:          0.00000
+  - _index: 123
+    particle_object: WfpEngWfpSioParserDataStartTimeParticle
+    particle_type: wfp_eng_wfp_sio_mule_start_time
+    internal_timestamp: 3585193324.000000
+    sio_controller_timestamp: 1376213397
+    wfp_sensor_start: 1376204402
+    wfp_profile_start: 1376204524
+  - _index: 124
+    particle_object: WfpEngWfpSioParserDataStatusParticle
+    particle_type: wfp_eng_wfp_sio_mule_status
+    internal_timestamp: 3585201351.000000
+    sio_controller_timestamp: 1376213397
+    wfp_indicator: -1
+    wfp_ramp_status: 0
+    wfp_profile_status: 13
+    wfp_profile_stop: 1376212551
+    wfp_sensor_stop: 1376212679
+    wfp_decimation_factor: !!null
+  - _index: 125
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585201347.000000
+    wfp_timestamp: 1376212547
+    wfp_prof_current:        283.77756
+    wfp_prof_voltage:         10.49720
+    wfp_prof_pressure:        329.39999
+  - _index: 126
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585201007.000000
+    wfp_timestamp: 1376212207
+    wfp_prof_current:        383.95377
+    wfp_prof_voltage:         10.50000
+    wfp_prof_pressure:        405.66000
+  - _index: 127
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585200687.000000
+    wfp_timestamp: 1376211887
+    wfp_prof_current:        377.75854
+    wfp_prof_voltage:         10.50000
+    wfp_prof_pressure:        478.35001
+  - _index: 128
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585200367.000000
+    wfp_timestamp: 1376211567
+    wfp_prof_current:        391.95343
+    wfp_prof_voltage:         10.49440
+    wfp_prof_pressure:        550.41998
+  - _index: 129
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585200047.000000
+    wfp_timestamp: 1376211247
+    wfp_prof_current:        417.27567
+    wfp_prof_voltage:         10.48480
+    wfp_prof_pressure:        622.44000
+  - _index: 130
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585199727.000000
+    wfp_timestamp: 1376210927
+    wfp_prof_current:        404.79498
+    wfp_prof_voltage:         10.49640
+    wfp_prof_pressure:        693.88000
+  - _index: 131
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585199407.000000
+    wfp_timestamp: 1376210607
+    wfp_prof_current:        376.61572
+    wfp_prof_voltage:         10.50000
+    wfp_prof_pressure:        765.75000
+  - _index: 132
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585199087.000000
+    wfp_timestamp: 1376210287
+    wfp_prof_current:        363.89444
+    wfp_prof_voltage:         10.49840
+    wfp_prof_pressure:        838.42999
+  - _index: 133
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585198767.000000
+    wfp_timestamp: 1376209967
+    wfp_prof_current:        365.93948
+    wfp_prof_voltage:         10.51360
+    wfp_prof_pressure:        910.83002
+  - _index: 134
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585198447.000000
+    wfp_timestamp: 1376209647
+    wfp_prof_current:        359.68408
+    wfp_prof_voltage:         10.52520
+    wfp_prof_pressure:        982.83002
+  - _index: 135
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585198127.000000
+    wfp_timestamp: 1376209327
+    wfp_prof_current:        372.76624
+    wfp_prof_voltage:         10.51960
+    wfp_prof_pressure:       1056.44995
+  - _index: 136
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585197807.000000
+    wfp_timestamp: 1376209007
+    wfp_prof_current:        346.81247
+    wfp_prof_voltage:         10.52760
+    wfp_prof_pressure:       1130.67004
+  - _index: 137
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585197487.000000
+    wfp_timestamp: 1376208687
+    wfp_prof_current:        352.16562
+    wfp_prof_voltage:         10.54160
+    wfp_prof_pressure:       1205.40002
+  - _index: 138
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585197167.000000
+    wfp_timestamp: 1376208367
+    wfp_prof_current:        331.50485
+    wfp_prof_voltage:         10.56000
+    wfp_prof_pressure:       1280.38000
+  - _index: 139
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585196847.000000
+    wfp_timestamp: 1376208047
+    wfp_prof_current:        330.96350
+    wfp_prof_voltage:         10.56760
+    wfp_prof_pressure:       1355.57996
+  - _index: 140
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585196527.000000
+    wfp_timestamp: 1376207727
+    wfp_prof_current:        338.81284
+    wfp_prof_voltage:         10.58800
+    wfp_prof_pressure:       1432.06006
+  - _index: 141
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585196207.000000
+    wfp_timestamp: 1376207407
+    wfp_prof_current:        341.91040
+    wfp_prof_voltage:         10.59480
+    wfp_prof_pressure:       1508.31006
+  - _index: 142
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585195887.000000
+    wfp_timestamp: 1376207087
+    wfp_prof_current:        323.08414
+    wfp_prof_voltage:         10.61840
+    wfp_prof_pressure:       1585.19995
+  - _index: 143
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585195567.000000
+    wfp_timestamp: 1376206767
+    wfp_prof_current:        356.13541
+    wfp_prof_voltage:         10.63800
+    wfp_prof_pressure:       1661.32996
+  - _index: 144
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585195247.000000
+    wfp_timestamp: 1376206447
+    wfp_prof_current:        331.11386
+    wfp_prof_voltage:         10.67640
+    wfp_prof_pressure:       1739.18005
+  - _index: 145
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585194927.000000
+    wfp_timestamp: 1376206127
+    wfp_prof_current:        333.57996
+    wfp_prof_voltage:         10.69960
+    wfp_prof_pressure:       1817.05005
+  - _index: 146
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585194607.000000
+    wfp_timestamp: 1376205807
+    wfp_prof_current:        322.15186
+    wfp_prof_voltage:         10.72000
+    wfp_prof_pressure:       1895.12000
+  - _index: 147
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585194287.000000
+    wfp_timestamp: 1376205487
+    wfp_prof_current:        331.11386
+    wfp_prof_voltage:         10.77520
+    wfp_prof_pressure:       1973.97998
+  - _index: 148
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585193967.000000
+    wfp_timestamp: 1376205167
+    wfp_prof_current:        325.00888
+    wfp_prof_voltage:         10.83360
+    wfp_prof_pressure:       2053.41992
+  - _index: 149
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585193647.000000
+    wfp_timestamp: 1376204847
+    wfp_prof_current:        318.33246
+    wfp_prof_voltage:         11.03720
+    wfp_prof_pressure:       2133.94995
+  - _index: 150
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585193324.000000
+    wfp_timestamp: 1376204524
+    wfp_prof_current:          0.00000
+    wfp_prof_voltage:         11.65920
+    wfp_prof_pressure:          0.00000
+  - _index: 151
+    particle_object: WfpEngWfpSioParserDataStartTimeParticle
+    particle_type: wfp_eng_wfp_sio_mule_start_time
+    internal_timestamp: 3585250924.000000
+    sio_controller_timestamp: 1376269651
+    wfp_sensor_start: 1376262002
+    wfp_profile_start: 1376262124
+  - _index: 152
+    particle_object: WfpEngWfpSioParserDataStatusParticle
+    particle_type: wfp_eng_wfp_sio_mule_status
+    internal_timestamp: 3585257711.000000
+    sio_controller_timestamp: 1376269651
+    wfp_indicator: -1
+    wfp_ramp_status: 0
+    wfp_profile_status: 14
+    wfp_profile_stop: 1376268911
+    wfp_sensor_stop: 1376269039
+    wfp_decimation_factor: !!null
+  - _index: 153
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585257707.000000
+    wfp_timestamp: 1376268907
+    wfp_prof_current:        174.75955
+    wfp_prof_voltage:         10.92080
+    wfp_prof_pressure:       4136.41992
+  - _index: 154
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585257327.000000
+    wfp_timestamp: 1376268527
+    wfp_prof_current:        166.60953
+    wfp_prof_voltage:         10.94800
+    wfp_prof_pressure:       4034.21997
+  - _index: 155
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585257007.000000
+    wfp_timestamp: 1376268207
+    wfp_prof_current:        163.03073
+    wfp_prof_voltage:         10.94280
+    wfp_prof_pressure:       3948.01001
+  - _index: 156
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585256687.000000
+    wfp_timestamp: 1376267887
+    wfp_prof_current:        157.79788
+    wfp_prof_voltage:         10.93960
+    wfp_prof_pressure:       3861.59009
+  - _index: 157
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585256367.000000
+    wfp_timestamp: 1376267567
+    wfp_prof_current:        162.06836
+    wfp_prof_voltage:         10.94960
+    wfp_prof_pressure:       3775.00000
+  - _index: 158
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585256047.000000
+    wfp_timestamp: 1376267247
+    wfp_prof_current:        149.55762
+    wfp_prof_voltage:         10.95560
+    wfp_prof_pressure:       3688.28003
+  - _index: 159
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585255727.000000
+    wfp_timestamp: 1376266927
+    wfp_prof_current:        150.00873
+    wfp_prof_voltage:         10.95680
+    wfp_prof_pressure:       3601.47998
+  - _index: 160
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585255407.000000
+    wfp_timestamp: 1376266607
+    wfp_prof_current:        148.14413
+    wfp_prof_voltage:         10.96520
+    wfp_prof_pressure:       3514.62012
+  - _index: 161
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585255087.000000
+    wfp_timestamp: 1376266287
+    wfp_prof_current:        149.13657
+    wfp_prof_voltage:         10.96920
+    wfp_prof_pressure:       3427.33008
+  - _index: 162
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585254767.000000
+    wfp_timestamp: 1376265967
+    wfp_prof_current:        143.30225
+    wfp_prof_voltage:         10.98080
+    wfp_prof_pressure:       3340.14990
+  - _index: 163
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585254447.000000
+    wfp_timestamp: 1376265647
+    wfp_prof_current:        138.34004
+    wfp_prof_voltage:         10.98200
+    wfp_prof_pressure:       3252.54004
+  - _index: 164
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585254127.000000
+    wfp_timestamp: 1376265327
+    wfp_prof_current:        144.23453
+    wfp_prof_voltage:         10.98600
+    wfp_prof_pressure:       3164.67993
+  - _index: 165
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585253807.000000
+    wfp_timestamp: 1376265007
+    wfp_prof_current:        134.37029
+    wfp_prof_voltage:         11.00200
+    wfp_prof_pressure:       3076.65991
+  - _index: 166
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585253487.000000
+    wfp_timestamp: 1376264687
+    wfp_prof_current:        131.87415
+    wfp_prof_voltage:         11.01600
+    wfp_prof_pressure:       2988.13989
+  - _index: 167
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585253167.000000
+    wfp_timestamp: 1376264367
+    wfp_prof_current:        124.62633
+    wfp_prof_voltage:         11.03280
+    wfp_prof_pressure:       2899.35010
+  - _index: 168
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585252847.000000
+    wfp_timestamp: 1376264047
+    wfp_prof_current:        122.52116
+    wfp_prof_voltage:         11.04680
+    wfp_prof_pressure:       2810.06006
+  - _index: 169
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585252527.000000
+    wfp_timestamp: 1376263727
+    wfp_prof_current:        110.25099
+    wfp_prof_voltage:         11.06800
+    wfp_prof_pressure:       2720.30005
+  - _index: 170
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585252207.000000
+    wfp_timestamp: 1376263407
+    wfp_prof_current:        105.34895
+    wfp_prof_voltage:         11.10160
+    wfp_prof_pressure:       2630.13989
+  - _index: 171
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585251887.000000
+    wfp_timestamp: 1376263087
+    wfp_prof_current:        110.79233
+    wfp_prof_voltage:         11.13000
+    wfp_prof_pressure:       2539.23999
+  - _index: 172
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585251567.000000
+    wfp_timestamp: 1376262767
+    wfp_prof_current:        108.53679
+    wfp_prof_voltage:         11.20360
+    wfp_prof_pressure:       2447.56006
+  - _index: 173
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585251247.000000
+    wfp_timestamp: 1376262447
+    wfp_prof_current:        104.71739
+    wfp_prof_voltage:         11.37680
+    wfp_prof_pressure:       2354.72998
+  - _index: 174
+    particle_object: WfpEngWfpSioParserDataEngineeringParticle
+    particle_type: wfp_eng_wfp_sio_mule_engineering
+    internal_timestamp: 3585250924.000000
+    wfp_timestamp: 1376262124
+    wfp_prof_current:          0.00000
+    wfp_prof_voltage:         11.72560
+    wfp_prof_pressure:          0.00000

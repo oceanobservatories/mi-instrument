@@ -1,0 +1,102 @@
+header:
+  particle_object: CtdmoGhqrSioTelemeteredInstrumentDataParticle
+  particle_type: ctdmo_ghqr_sio_mule_instrument
+
+data:
+  - _index: 1
+    internal_timestamp: '2013-07-25T04:00:01Z'
+    sio_controller_timestamp: 1374732438
+    inductive_id: 64
+    temperature: 123064
+    conductivity: 363095
+    pressure: 26865
+    ctd_time: 428040001
+  - _index: 2
+    internal_timestamp: '2013-07-25T04:00:01Z'
+    sio_controller_timestamp: 1374732438
+    inductive_id: 65
+    temperature: 129051
+    conductivity: 365083
+    pressure: 18730
+    ctd_time: 428040001
+  - _index: 3
+    internal_timestamp: '2013-07-25T04:00:01Z'
+    sio_controller_timestamp: 1374732438
+    inductive_id: 66 
+    temperature: 133529
+    conductivity: 367125
+    pressure: 14690
+    ctd_time: 428040001
+  - _index: 4
+    internal_timestamp: '2013-07-25T04:00:01Z'
+    sio_controller_timestamp: 1374732438
+    inductive_id: 58
+    temperature: 138548
+    conductivity: 365337
+    pressure: 16601
+    ctd_time: 428040001
+  - _index: 5
+    internal_timestamp: '2013-07-25T04:00:01Z'
+    sio_controller_timestamp: 1374732438
+    inductive_id: 16
+    temperature: 163296
+    conductivity: 375538
+    pressure: 5780
+    ctd_time: 428040001
+  - _index: 6
+    internal_timestamp: '2013-07-25T04:00:01Z'
+    sio_controller_timestamp: 1374732438
+    inductive_id: 63
+    temperature: 140043
+    conductivity: 364837
+    pressure: 12582
+    ctd_time: 428040001
+  - _index: 7
+    internal_timestamp: '2013-07-25T04:00:01Z'
+    sio_controller_timestamp: 1374732438
+    inductive_id: 59
+    temperature: 138336
+    conductivity: 366713
+    pressure: 22241
+    ctd_time: 428040001
+  - _index: 8
+    internal_timestamp: '2013-07-25T04:00:01Z'
+    sio_controller_timestamp: 1374732438
+    inductive_id: 17
+    temperature: 153334
+    conductivity: 367219
+    pressure: 7483
+    ctd_time: 428040001
+  - _index: 9
+    internal_timestamp: '2013-07-25T04:00:01Z'
+    sio_controller_timestamp: 1374732438
+    inductive_id: 22
+    temperature: 147857
+    conductivity: 364668
+    pressure: 9745
+    ctd_time: 428040001
+  - _index: 10
+    internal_timestamp: '2013-07-25T04:00:01Z'
+    sio_controller_timestamp: 1374732438
+    inductive_id: 21
+    temperature: 193264
+    conductivity: 400702
+    pressure: 4654
+    ctd_time: 428040001
+  - _index: 11
+    internal_timestamp: '2013-07-25T04:00:01Z'
+    sio_controller_timestamp: 1374732438
+    inductive_id: 53
+    temperature: 137858
+    conductivity: 368542
+    pressure: 30881
+    ctd_time: 428040001
+  - _index: 12
+    internal_timestamp: '2013-07-25T04:00:01Z'
+    sio_controller_timestamp: 1374732438
+    inductive_id: 55
+    temperature: 206930
+    conductivity: 412743
+    pressure: 4056
+    ctd_time: 428040001
+

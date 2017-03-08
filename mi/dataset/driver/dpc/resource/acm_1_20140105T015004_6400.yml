@@ -1,0 +1,21 @@
+header:
+    particle_object: 'MULTIPLE'
+    particle_type: 'MULTIPLE'
+data:
+  - _index: 1
+    internal_timestamp: 3597875415.528651
+    particle_object: DeepProfilerParticle
+    particle_type: dpc_acm_instrument_recovered
+    raw_time_seconds: 1388886615
+    raw_time_microseconds: 528651
+    vel3d_a_hx: 0.3263
+    vel3d_a_hy: 0.1313
+    vel3d_a_hz: -0.9361
+    vel3d_a_tx: -1.52
+    vel3d_a_ty: 0.31
+    vel3d_a_va: 4.11
+    vel3d_a_vb: -3.28
+    vel3d_a_vc: -0.79
+    vel3d_a_vd: -0.89
+
+

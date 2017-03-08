@@ -1,0 +1,1255 @@
+header:
+  particle_object: CtdmoGhqrSioRecoveredOffsetDataParticle
+  particle_type: ctdmo_ghqr_offset_recovered  
+
+data:
+  - _index:  1
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: -150
+  - _index:  2
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: -148
+  - _index:  3
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: -146
+  - _index:  4
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: -144
+  - _index:  5
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: -142
+  - _index:  6
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: -140
+  - _index:  7
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: -138
+  - _index:  8
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: -136
+  - _index:  9
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: -134
+  - _index:  10
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: -132
+  - _index:  11
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: -130
+  - _index:  12
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: -128
+  - _index:  13
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: -126
+  - _index:  14
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: -124
+  - _index:  15
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: -122
+  - _index:  16
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: -120
+  - _index:  17
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: -118
+  - _index:  18
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: -116
+  - _index:  19
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: -114
+  - _index:  20
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: -112
+  - _index:  21
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: -110
+  - _index:  22
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: -108
+  - _index:  23
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: -106
+  - _index:  24
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: -104
+  - _index:  25
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: -102
+  - _index:  26
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: -100
+  - _index:  27
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: -98
+  - _index:  28
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: -96
+  - _index:  29
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: -94
+  - _index:  30
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: -92
+  - _index:  31
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: -90
+  - _index:  32
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: -88
+  - _index:  33
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: -86
+  - _index:  34
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: -84
+  - _index:  35
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: -82
+  - _index:  36
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: -80
+  - _index:  37
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: -78
+  - _index:  38
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: -76
+  - _index:  39
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: -74
+  - _index:  40
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: -72
+  - _index:  41
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: -70
+  - _index:  42
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: -68
+  - _index:  43
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: -66
+  - _index:  44
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: -64
+  - _index:  45
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: -62
+  - _index:  46
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: -60
+  - _index:  47
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: -58
+  - _index:  48
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: -56
+  - _index:  49
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: -54
+  - _index:  50
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: -52
+  - _index:  51
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: -50
+  - _index:  52
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: -48
+  - _index:  53
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: -46
+  - _index:  54
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: -44
+  - _index:  55
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: -42
+  - _index:  56
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: -40
+  - _index:  57
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: -38
+  - _index:  58
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: -36
+  - _index:  59
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: -34
+  - _index:  60
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: -32
+  - _index:  61
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: -30
+  - _index:  62
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: -28
+  - _index:  63
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: -26
+  - _index:  64
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: -24
+  - _index:  65
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: -22
+  - _index:  66
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: -20
+  - _index:  67
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: -18
+  - _index:  68
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: -16
+  - _index:  69
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: -14
+  - _index:  70
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: -12
+  - _index:  71
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: -10
+  - _index:  72
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: -8
+  - _index:  73
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: -6
+  - _index:  74
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: -4
+  - _index:  75
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: -2
+  - _index:  76
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: 0
+  - _index:  77
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: 2
+  - _index:  78
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: 4
+  - _index:  79
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: 6
+  - _index:  80
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: 8
+  - _index:  81
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: 10
+  - _index:  82
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: 12
+  - _index:  83
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: 14
+  - _index:  84
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: 16
+  - _index:  85
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: 18
+  - _index:  86
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: 20
+  - _index:  87
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: 22
+  - _index:  88
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: 24
+  - _index:  89
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: 26
+  - _index:  90
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: 28
+  - _index:  91
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: 30
+  - _index:  92
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: 32
+  - _index:  93
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: 34
+  - _index:  94
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: 36
+  - _index:  95
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: 38
+  - _index:  96
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: 40
+  - _index:  97
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: 42
+  - _index:  98
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: 44
+  - _index:  99
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: 46
+  - _index:  100
+    internal_timestamp: 3573391233
+    sio_controller_timestamp: 1364402433
+    inductive_id: 55
+    ctd_time_offset: 48
+  - _index:  101
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 50
+  - _index:  102
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 52
+  - _index:  103
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 54
+  - _index:  104
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 56
+  - _index:  105
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 58
+  - _index:  106
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 60
+  - _index:  107
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 62
+  - _index:  108
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 64
+  - _index:  109
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 66
+  - _index:  110
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 68
+  - _index:  111
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 70
+  - _index:  112
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 72
+  - _index:  113
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 74
+  - _index:  114
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 76
+  - _index:  115
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 78
+  - _index:  116
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 80
+  - _index:  117
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 82
+  - _index:  118
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 84
+  - _index:  119
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 86
+  - _index:  120
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 88
+  - _index:  121
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 90
+  - _index:  122
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 92
+  - _index:  123
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 94
+  - _index:  124
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 96
+  - _index:  125
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 98
+  - _index:  126
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 100
+  - _index:  127
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 102
+  - _index:  128
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 104
+  - _index:  129
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 106
+  - _index:  130
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 108
+  - _index:  131
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 110
+  - _index:  132
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 112
+  - _index:  133
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 114
+  - _index:  134
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 116
+  - _index:  135
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 118
+  - _index:  136
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 120
+  - _index:  137
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 122
+  - _index:  138
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 124
+  - _index:  139
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 126
+  - _index:  140
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 128
+  - _index:  141
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 130
+  - _index:  142
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 132
+  - _index:  143
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 134
+  - _index:  144
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 136
+  - _index:  145
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 138
+  - _index:  146
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 140
+  - _index:  147
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 142
+  - _index:  148
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 144
+  - _index:  149
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 146
+  - _index:  150
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 148
+  - _index:  151
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 150
+  - _index:  152
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 152
+  - _index:  153
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 154
+  - _index:  154
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 156
+  - _index:  155
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 158
+  - _index:  156
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 160
+  - _index:  157
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 162
+  - _index:  158
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 164
+  - _index:  159
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 166
+  - _index:  160
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 168
+  - _index:  161
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 170
+  - _index:  162
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 172
+  - _index:  163
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 174
+  - _index:  164
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 176
+  - _index:  165
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 178
+  - _index:  166
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 180
+  - _index:  167
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 182
+  - _index:  168
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 184
+  - _index:  169
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 186
+  - _index:  170
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 188
+  - _index:  171
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 190
+  - _index:  172
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 192
+  - _index:  173
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 194
+  - _index:  174
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 196
+  - _index:  175
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 198
+  - _index:  176
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 200
+  - _index:  177
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 202
+  - _index:  178
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 204
+  - _index:  179
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 206
+  - _index:  180
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 208
+  - _index:  181
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 210
+  - _index:  182
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 212
+  - _index:  183
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 214
+  - _index:  184
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 216
+  - _index:  185
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 218
+  - _index:  186
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 220
+  - _index:  187
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 222
+  - _index:  188
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 224
+  - _index:  189
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 226
+  - _index:  190
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 228
+  - _index:  191
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 230
+  - _index:  192
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 232
+  - _index:  193
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 234
+  - _index:  194
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 236
+  - _index:  195
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 238
+  - _index:  196
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 240
+  - _index:  197
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 242
+  - _index:  198
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 244
+  - _index:  199
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 246
+  - _index:  200
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 248
+  - _index:  201
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 250
+  - _index:  202
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 252
+  - _index:  203
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 254
+  - _index:  204
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 256
+  - _index:  205
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 258
+  - _index:  206
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 260
+  - _index:  207
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 262
+  - _index:  208
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 264
+  - _index:  209
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 266
+  - _index:  210
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 268
+  - _index:  211
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 270
+  - _index:  212
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 272
+  - _index:  213
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 274
+  - _index:  214
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 276
+  - _index:  215
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 278
+  - _index:  216
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 280
+  - _index:  217
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 282
+  - _index:  218
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 284
+  - _index:  219
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 286
+  - _index:  220
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 288
+  - _index:  221
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 290
+  - _index:  222
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 292
+  - _index:  223
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 294
+  - _index:  224
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 296
+  - _index:  225
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 298
+  - _index:  226
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 300
+  - _index:  227
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 302
+  - _index:  228
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 304
+  - _index:  229
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 306
+  - _index:  230
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 308
+  - _index:  231
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 310
+  - _index:  232
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 312
+  - _index:  233
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 314
+  - _index:  234
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 316
+  - _index:  235
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 318
+  - _index:  236
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 320
+  - _index:  237
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 322
+  - _index:  238
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 324
+  - _index:  239
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 326
+  - _index:  240
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 328
+  - _index:  241
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 330
+  - _index:  242
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 332
+  - _index:  243
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 334
+  - _index:  244
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 336
+  - _index:  245
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 338
+  - _index:  246
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 340
+  - _index:  247
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 342
+  - _index:  248
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 344
+  - _index:  249
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 346
+  - _index:  250
+    internal_timestamp: 3573391234
+    sio_controller_timestamp: 1364402434
+    inductive_id: 55
+    ctd_time_offset: 348

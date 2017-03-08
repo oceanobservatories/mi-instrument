@@ -1,0 +1,12 @@
+header:
+  particle_object: 'MULTIPLE'
+  particle_type: 'MULTIPLE'
+
+data:
+  - _index: 1
+    particle_object: DostaAbcdjmCtdbpDclTelemeteredDataParticle
+    particle_type: dosta_abcdjm_ctdbp_dcl_instrument
+    internal_timestamp: 3621025822.456
+    dcl_controller_timestamp: '2014/09/30 00:30:22.456'
+    dosta_ln_optode_oxygen: 271.659
+    date_time_string: '30 Sep 2014 00:30:16'

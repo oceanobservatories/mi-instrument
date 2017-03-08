@@ -13,8 +13,9 @@
     They were written to be used as singletons from the mi.logging context.
     Incorrect usage has been associated with higher rates of dementia, seepage and loss of fur in laboratory animals.
 """
-from configure import _LoggingConfiguration
-from logger import TRACE, _ScopedLogger
+from .configure import _LoggingConfiguration
+from .logger import TRACE, _ScopedLogger
+
 
 # HACK: Timer (and possibly other places in utilties project)
 # fail to import built-in python logging module,

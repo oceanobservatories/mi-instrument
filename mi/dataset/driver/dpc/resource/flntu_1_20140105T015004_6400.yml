@@ -1,0 +1,12 @@
+header:
+   particle_object: 'MULTIPLE'
+   particle_type: 'MULTIPLE'
+data:
+- _index: 1
+  particle_type: dpc_flnturtd_instrument_recovered
+  particle_object: DeepProfilerParticle
+  raw_time_seconds: 1388886615
+  raw_time_microseconds: 464278
+  chlaflo: 85
+  ntuflo: 247
+  internal_timestamp: 3597875415.464278

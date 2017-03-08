@@ -1,0 +1,20 @@
+# Expected Results
+
+header:
+  particle_object: PhsenAbcdefDclInstrumentRecoveredDataParticle
+  particle_type: phsen_abcdef_dcl_instrument_recovered
+
+data:
+  - _index: 1
+    internal_timestamp: 3607286596.906000137
+    dcl_controller_timestamp: '2014/04/24 00:03:16.906'
+    unique_id: 238
+    record_type: 10
+    record_time: 3481142489
+    thermistor_start: 2067
+    reference_light_measurements: [2588, 5, 2121, 4, 2588, 3, 2117, 3, 2589, 4, 2124, 7, 2590, 2, 2123, 5]
+    light_measurements: [2590, 4, 2123, 4, 2592, 1, 2129, 3, 2587, 3, 2122, 5, 2589, 2, 2121, 3, 2587, 4, 2120, 4, 2590, 3, 2125, 4, 2586, 5, 2118, 7, 2592, 2, 2125, 2, 2587, 4, 2122, 4, 2587, 4, 2120, 3, 2589, 3, 2121, 5, 2590, 2, 2121, 4, 2590, 1, 2123, 5, 2587, 2, 2121, 4, 2586, 4, 2119, 5, 2591, 0, 2121, 4, 2590, 1, 2121, 3, 2587, 2, 2122, 4, 2588, 3, 2120, 5, 2585, 5, 2123, 6, 2589, 3, 2122, 5, 2588, 3, 2119, 3, 2587, 3, 2121, 2]
+    voltage_battery: 3136
+    thermistor_end: 2067
+    passed_checksum: 1
+    

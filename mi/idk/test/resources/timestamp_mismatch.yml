@@ -1,0 +1,11 @@
+header:
+    particle_object: MULTIPLE
+    particle_type: MULTIPLE
+
+data:
+  - _index: 1
+    particle_object: FakeDataParticle
+    particle_type: fake_particle_stream
+    internal_timestamp: 320000025.0
+    param_1: 'ABC'
+    param_2: 3.2

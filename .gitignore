@@ -3,13 +3,13 @@
 *.pyo
 *.swp
 *.png
+*.egg-info
 mi-drivers*log*
 .installed.cfg
 bin
 develop-eggs
 eggs
 parts
-marine_integrations.egg-info
 .coverage
 .cache
-mi_instrument.egg-info
+particle.yml

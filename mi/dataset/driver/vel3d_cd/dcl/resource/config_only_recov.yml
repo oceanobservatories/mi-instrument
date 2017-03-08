@@ -1,0 +1,91 @@
+header:
+    particle_object: 'MULTIPLE'
+    particle_type: 'MULTIPLE'
+data:
+  - _index: 1
+    particle_object: Vel3dCdDclHardwareConfigRecoveredParticle
+    particle_type: vel3d_cd_dcl_hardware_configuration_recovered
+    internal_timestamp: 3589656285
+    instrmt_type_serial_number: 'AQD11402      '
+    recorder_installed: 0
+    compass_installed: 0
+    board_frequency: 65535
+    pic_version: 0
+    hardware_revision: 4
+    recorder_size: 144
+    velocity_range: 0
+    firmware_version: '3.35'
+  - _index: 2
+    particle_object: Vel3dCdDclHeadConfigRecoveredParticle
+    particle_type: vel3d_cd_dcl_head_configuration_recovered
+    internal_timestamp: 3589656285
+    pressure_sensor: 1
+    magnetometer_sensor: 1
+    tilt_sensor: 1
+    tilt_sensor_mounting: 1
+    head_frequency: 2000
+    head_type: ""
+    head_serial_number: 'ALD 6324'
+    system_data: "QQBBAEEAAADFCx76HvoAAM/1MQqfDJ8Mnwx4tZ7x2CztAT2/bAwwLHr+yAAAAAAA//8AAAEAAAABAAAAAAAAAAAA//8AAP//AAD//wAAAAAAAP//AQAAAAAA/////wAAAAAAAKJknx/JBQMB2BtTKt+3kPf0LbEApLLm+nAunwD/f2kBX/9pAR589v+1AYn9vHhwABUAFAAAAAAAAAAAAAAAAAAAAAAAVRUQDhAOECc="
+    number_beams: 3   
+  - _index: 3
+    particle_object: Vel3dCdDclUserConfigRecoveredParticle
+    particle_type: vel3d_cd_dcl_user_configuration_recovered
+    internal_timestamp: 3589656285
+    transmit_pulse_length: 125
+    blanking_distance: 49
+    receive_length: 32
+    time_between_pings: 437
+    time_between_bursts: 512
+    number_pings: 23
+    average_interval: 1
+    number_beams: 3
+    profile_type: 1
+    mode_type: 0
+    power_level_tcm1: 0
+    power_level_tcm2: 1
+    sync_out_position: 0
+    sample_on_sync: 0
+    start_on_sync: 0
+    power_level_pcr1: 0
+    power_level_pcr2: 0
+    compass_update_rate: 1
+    coordinate_system: 0
+    number_cells: 1
+    cell_size: 32
+    measurement_interval: 1
+    deployment_name: '11402'
+    wrap_mode: 0
+    deployment_start_time: [68, 69, 1, 34, 19, 16] 
+    diagnostics_interval: 43200
+    use_specified_sound_speed: 0
+    diagnostics_mode_enable: 0
+    analog_output_enable: 0
+    output_format_nortek: 0
+    scaling: 0
+    serial_output_enable: 1
+    stage_enable: 0
+    analog_power_output: 0
+    sound_speed_adjust_factor: 16657
+    number_diagnostics_samples: 20
+    number_beams_per_cell: 1
+    number_pings_diagnostic: 20
+    use_dsp_filter: 0
+    filter_data_output: 0
+    analog_input_address: 0
+    software_version: 13902
+    velocity_adjustment_factor: 'Aj0ePTk9Uz1uPYg9oj27PdQ97T0GPh4+Nj5OPmU+fT6TPqo+wD7WPuw+Aj8XPyw/QT9VP2k/fT+RP6Q/uD/KP90/8D8CQBRAJkA3QElAWkBrQHxAjECcQKxAvEDMQNtA6kD5QAhBF0ElQTNBQkFPQV1BakF4QYVBkkGeQatBt0HDQc9B20HnQfJB/UEIQhNCHkIoQjNCPUJHQlFCW0JkQm5Cd0KAQolCkUKaQqJCqkKyQrpC'
+    file_comments: '3305-00104-00020-01102013'
+    wave_data_rate: 0
+    wave_cell_position: 0
+    dynamic_position_type: 0
+    percent_wave_cell_position: 0 
+    wave_transmit_pulse: 0
+    fixed_wave_blanking_distance: 0
+    wave_measurement_cell_size: 0
+    number_diagnostics_per_wave: 0
+    number_samples_per_burst: 0
+    analog_scale_factor: 0
+    correlation_threshold: 0
+    transmit_pulse_length_2nd: 6
+    filter_constants: 'Cv/N/4sA5QDuAAsAhP89/w=='

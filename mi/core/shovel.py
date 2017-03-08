@@ -55,7 +55,7 @@ class QpidProducer(object):
             self.connect()
         message = qm.Message(content=message, content_type='text/plain', durable=True,
                              properties=headers, user_id='guest')
-        self.sender.send(message, sync=True)
+        self.sender.send(message, sync=False)
 
 
 class RabbitConsumer(ConsumerMixin):

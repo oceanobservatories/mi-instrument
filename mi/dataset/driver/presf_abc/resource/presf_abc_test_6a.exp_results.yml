@@ -1,0 +1,12 @@
+header:
+  particle_object: 'MULTIPLE'
+  particle_type: 'MULTIPLE'
+
+data:
+  - _index: 1
+    particle_object: PresfAbcTideDataParticle
+    particle_type: presf_abc_tide_measurement_recovered
+    internal_timestamp: 3637585800.0
+    presf_time: 481912200
+    presf_tide_pressure_number: 3631057
+    presf_tide_temperature_number: 15454

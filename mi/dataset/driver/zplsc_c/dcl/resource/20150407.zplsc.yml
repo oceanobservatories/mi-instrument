@@ -1,0 +1,499 @@
+header:
+    particle_object: ZplscCInstrumentDataParticle
+    particle_type: zplsc_c_instrument
+data:
+  - _index: 1
+    internal_timestamp: 3637355706.0769997
+    zplsc_c_transmission_timestamp: '20150407003501'
+    serial_number: '55078'
+    zplsc_c_phase: 1
+    burst_number: 5
+    zplsc_c_number_of_frequencies: 4
+    zplsc_c_number_of_bins_frequency_1: 19
+    zplsc_c_number_of_bins_frequency_2: 19
+    zplsc_c_number_of_bins_frequency_3: 19
+    zplsc_c_number_of_bins_frequency_4: 19
+    zplsc_c_min_value_channel_1: 28872
+    zplsc_c_min_value_channel_2: 33944
+    zplsc_c_min_value_channel_3: 25840
+    zplsc_c_min_value_channel_4: 20520
+    zplsc_c_date_of_burst: '15040700350047'
+    zplsc_c_tilt_x: 21.8
+    zplsc_c_tilt_y: 45.7
+    zplsc_c_battery_voltage: 10.0
+    zplsc_c_temperature: 8.0
+    zplsc_c_pressure: 99.0
+    zplsc_c_board_number_channel_1: '0'
+    zplsc_c_frequency_channel_1: 38
+    zplsc_c_values_channel_1: [30344, 12184, 15960, 7816, 7800, 7464, 4728, 10960, 1784, 2784, 4128, 3328, 0, 4896, 1816, 5752, 3808, 19424, 12064]
+    zplsc_c_board_number_channel_2: '1'
+    zplsc_c_frequency_channel_2: 125
+    zplsc_c_values_channel_2: [26160, 0, 9144, 1176, 744, 1552, 984, 5008, 104, 552, 624, 408, 472, 272, 88, 496, 376, 15600, 2088]
+    zplsc_c_board_number_channel_3: '2'
+    zplsc_c_frequency_channel_3: 200
+    zplsc_c_values_channel_3: [33840, 5592, 15216, 4344, 2896, 3288, 6224, 10224, 2744, 3712, 2512, 2064, 920, 3232, 992, 0, 1920, 21680, 9048]
+    zplsc_c_board_number_channel_4: '3'
+    zplsc_c_frequency_channel_4: 455
+    zplsc_c_values_channel_4: [35528, 5192, 7384, 1464, 1400, 1056, 1240, 1584, 240, 568, 96, 40, 0, 40, 8, 56, 32, 15176, 536]
+  - _index: 2
+    internal_timestamp: 3637359306.0889997
+    zplsc_c_transmission_timestamp: '20150407013501'
+    serial_number: '55078'
+    zplsc_c_phase: 1
+    burst_number: 9
+    zplsc_c_number_of_frequencies: 4
+    zplsc_c_number_of_bins_frequency_1: 19
+    zplsc_c_number_of_bins_frequency_2: 19
+    zplsc_c_number_of_bins_frequency_3: 19
+    zplsc_c_number_of_bins_frequency_4: 19
+    zplsc_c_min_value_channel_1: 30320
+    zplsc_c_min_value_channel_2: 34160
+    zplsc_c_min_value_channel_3: 26896
+    zplsc_c_min_value_channel_4: 20456
+    zplsc_c_date_of_burst: '15040701350045'
+    zplsc_c_tilt_x: 21.8
+    zplsc_c_tilt_y: 45.7
+    zplsc_c_battery_voltage: 10.0
+    zplsc_c_temperature: 8.0
+    zplsc_c_pressure: 99.0
+    zplsc_c_board_number_channel_1: '0'
+    zplsc_c_frequency_channel_1: 38
+    zplsc_c_values_channel_1: [29280, 8208, 7568, 5272, 5736, 6080, 7280, 2296, 0, 2720, 4776, 2464, 480, 224, 2472, 4160, 3344, 27296, 20192]
+    zplsc_c_board_number_channel_2: '1'
+    zplsc_c_frequency_channel_2: 125
+    zplsc_c_values_channel_2: [22816, 2408, 2384, 1360, 2800, 2832, 2064, 1792, 976, 720, 464, 760, 144, 152, 0, 208, 104, 18720, 12032]
+    zplsc_c_board_number_channel_3: '2'
+    zplsc_c_frequency_channel_3: 200
+    zplsc_c_values_channel_3: [29264, 5056, 4320, 5296, 7240, 8328, 8728, 5192, 4704, 4320, 2176, 2048, 176, 1272, 984, 0, 2160, 23216, 22864]
+    zplsc_c_board_number_channel_4: '3'
+    zplsc_c_frequency_channel_4: 455
+    zplsc_c_values_channel_4: [34920, 6152, 1824, 1984, 3576, 4168, 2776, 1408, 1136, 312, 152, 88, 72, 0, 32, 88, 64, 15416, 7728]
+  - _index: 3
+    internal_timestamp: 3637362906.1009998
+    zplsc_c_transmission_timestamp: '20150407023501'
+    serial_number: '55078'
+    zplsc_c_phase: 1
+    burst_number: 13
+    zplsc_c_number_of_frequencies: 4
+    zplsc_c_number_of_bins_frequency_1: 19
+    zplsc_c_number_of_bins_frequency_2: 19
+    zplsc_c_number_of_bins_frequency_3: 19
+    zplsc_c_number_of_bins_frequency_4: 19
+    zplsc_c_min_value_channel_1: 31088
+    zplsc_c_min_value_channel_2: 34048
+    zplsc_c_min_value_channel_3: 24432
+    zplsc_c_min_value_channel_4: 20504
+    zplsc_c_date_of_burst: '15040702350042'
+    zplsc_c_tilt_x: 21.8
+    zplsc_c_tilt_y: 45.7
+    zplsc_c_battery_voltage: 10.0
+    zplsc_c_temperature: 8.0
+    zplsc_c_pressure: 99.0
+    zplsc_c_board_number_channel_1: '0'
+    zplsc_c_frequency_channel_1: 38
+    zplsc_c_values_channel_1: [28656, 7760, 2256, 5968, 2816, 6688, 4576, 2744, 2024, 2680, 2600, 1856, 2000, 0, 2416, 2152, 3808, 29080, 18384]
+    zplsc_c_board_number_channel_2: '1'
+    zplsc_c_frequency_channel_2: 125
+    zplsc_c_values_channel_2: [22760, 2368, 640, 944, 2848, 2696, 2304, 1776, 1072, 1440, 512, 600, 536, 464, 272, 0, 1600, 25304, 7880]
+    zplsc_c_board_number_channel_3: '2'
+    zplsc_c_frequency_channel_3: 200
+    zplsc_c_values_channel_3: [31784, 10816, 3152, 7312, 11112, 12760, 10400, 8248, 5664, 6648, 5360, 4408, 5104, 784, 0, 2136, 6168, 30968, 12816]
+    zplsc_c_board_number_channel_4: '3'
+    zplsc_c_frequency_channel_4: 455
+    zplsc_c_values_channel_4: [34840, 6376, 1192, 1016, 2560, 4776, 3144, 1288, 552, 424, 0, 8, 88, 48, 40, 40, 536, 19328, 1352]
+  - _index: 4
+    internal_timestamp: 3637366506.1129999
+    zplsc_c_transmission_timestamp: '20150407033501'
+    serial_number: '55078'
+    zplsc_c_phase: 1
+    burst_number: 17
+    zplsc_c_number_of_frequencies: 4
+    zplsc_c_number_of_bins_frequency_1: 19
+    zplsc_c_number_of_bins_frequency_2: 19
+    zplsc_c_number_of_bins_frequency_3: 19
+    zplsc_c_number_of_bins_frequency_4: 19
+    zplsc_c_min_value_channel_1: 29904
+    zplsc_c_min_value_channel_2: 34064
+    zplsc_c_min_value_channel_3: 25776
+    zplsc_c_min_value_channel_4: 20512
+    zplsc_c_date_of_burst: '15040703350039'
+    zplsc_c_tilt_x: 21.7
+    zplsc_c_tilt_y: 45.7
+    zplsc_c_battery_voltage: 10.0
+    zplsc_c_temperature: 8.0
+    zplsc_c_pressure: 99.0
+    zplsc_c_board_number_channel_1: '0'
+    zplsc_c_frequency_channel_1: 38
+    zplsc_c_values_channel_1: [29760, 7664, 4144, 8544, 8568, 11424, 5512, 5856, 5584, 3616, 3992, 4208, 0, 3696, 1624, 2040, 3208, 32384, 20024]
+    zplsc_c_board_number_channel_2: '1'
+    zplsc_c_frequency_channel_2: 125
+    zplsc_c_values_channel_2: [22872, 1992, 0, 2224, 1680, 4160, 2936, 2816, 1120, 1440, 264, 224, 704, 152, 352, 240, 1496, 24920, 12528]
+    zplsc_c_board_number_channel_3: '2'
+    zplsc_c_frequency_channel_3: 200
+    zplsc_c_values_channel_3: [30464, 8176, 4920, 7384, 7104, 12352, 10240, 9640, 7168, 5048, 3776, 4176, 1616, 1720, 0, 40, 3624, 31472, 16672]
+    zplsc_c_board_number_channel_4: '3'
+    zplsc_c_frequency_channel_4: 455
+    zplsc_c_values_channel_4: [34928, 5776, 2592, 560, 2272, 5056, 4416, 3816, 928, 1376, 160, 32, 8, 0, 80, 72, 72, 21072, 4432]
+  - _index: 5
+    internal_timestamp: 3637370106.1250000
+    zplsc_c_transmission_timestamp: '20150407043501'
+    serial_number: '55078'
+    zplsc_c_phase: 1
+    burst_number: 21
+    zplsc_c_number_of_frequencies: 4
+    zplsc_c_number_of_bins_frequency_1: 19
+    zplsc_c_number_of_bins_frequency_2: 19
+    zplsc_c_number_of_bins_frequency_3: 19
+    zplsc_c_number_of_bins_frequency_4: 19
+    zplsc_c_min_value_channel_1: 30152
+    zplsc_c_min_value_channel_2: 34096
+    zplsc_c_min_value_channel_3: 24368
+    zplsc_c_min_value_channel_4: 20536
+    zplsc_c_date_of_burst: '15040704350035'
+    zplsc_c_tilt_x: 21.8
+    zplsc_c_tilt_y: 45.7
+    zplsc_c_battery_voltage: 10.0
+    zplsc_c_temperature: 8.0
+    zplsc_c_pressure: 99.0
+    zplsc_c_board_number_channel_1: '0'
+    zplsc_c_frequency_channel_1: 38
+    zplsc_c_values_channel_1: [29456, 10656, 10440, 7072, 10600, 9288, 9760, 7616, 6824, 2920, 4040, 4256, 1128, 0, 1400, 1912, 1080, 30736, 21776]
+    zplsc_c_board_number_channel_2: '1'
+    zplsc_c_frequency_channel_2: 125
+    zplsc_c_values_channel_2: [22904, 4568, 2616, 3344, 3056, 4512, 5464, 3488, 2400, 1472, 848, 272, 536, 624, 0, 496, 416, 25304, 11256]
+    zplsc_c_board_number_channel_3: '2'
+    zplsc_c_frequency_channel_3: 200
+    zplsc_c_values_channel_3: [31864, 12248, 10472, 9128, 10160, 11136, 12440, 10808, 9512, 5440, 5888, 4928, 1744, 4624, 1152, 0, 2792, 32680, 19968]
+    zplsc_c_board_number_channel_4: '3'
+    zplsc_c_frequency_channel_4: 455
+    zplsc_c_values_channel_4: [34800, 7688, 3288, 1352, 2384, 2872, 4776, 4000, 3912, 808, 648, 88, 8, 32, 24, 0, 16, 21712, 1424]
+  - _index: 6
+    internal_timestamp: 3637373706.1370001
+    zplsc_c_transmission_timestamp: '20150407053501'
+    serial_number: '55078'
+    zplsc_c_phase: 1
+    burst_number: 25
+    zplsc_c_number_of_frequencies: 4
+    zplsc_c_number_of_bins_frequency_1: 19
+    zplsc_c_number_of_bins_frequency_2: 19
+    zplsc_c_number_of_bins_frequency_3: 19
+    zplsc_c_number_of_bins_frequency_4: 19
+    zplsc_c_min_value_channel_1: 29776
+    zplsc_c_min_value_channel_2: 33888
+    zplsc_c_min_value_channel_3: 26240
+    zplsc_c_min_value_channel_4: 20488
+    zplsc_c_date_of_burst: '15040705350031'
+    zplsc_c_tilt_x: 21.7
+    zplsc_c_tilt_y: 45.7
+    zplsc_c_battery_voltage: 10.0
+    zplsc_c_temperature: 7.9
+    zplsc_c_pressure: 99.0
+    zplsc_c_board_number_channel_1: '0'
+    zplsc_c_frequency_channel_1: 38
+    zplsc_c_values_channel_1: [30112, 13776, 13880, 11728, 11632, 10288, 11016, 9928, 7032, 7440, 3824, 536, 1776, 3168, 0, 2760, 5136, 28696, 19960]
+    zplsc_c_board_number_channel_2: '1'
+    zplsc_c_frequency_channel_2: 125
+    zplsc_c_values_channel_2: [24064, 7184, 8064, 5904, 4496, 4472, 2440, 2544, 2080, 1488, 1832, 464, 1056, 424, 80, 0, 2040, 24944, 10928]
+    zplsc_c_board_number_channel_3: '2'
+    zplsc_c_frequency_channel_3: 200
+    zplsc_c_values_channel_3: [30720, 13040, 13656, 11144, 8608, 8896, 7280, 7752, 7440, 7336, 6344, 2376, 304, 1680, 0, 608, 5664, 26792, 17624]
+    zplsc_c_board_number_channel_4: '3'
+    zplsc_c_frequency_channel_4: 455
+    zplsc_c_values_channel_4: [35008, 7064, 5256, 2960, 2176, 1096, 1448, 3408, 4288, 2216, 1472, 104, 40, 0, 8, 72, 56, 21048, 7992]
+  - _index: 7
+    internal_timestamp: 3637377306.1479998
+    zplsc_c_transmission_timestamp: '20150407063501'
+    serial_number: '55078'
+    zplsc_c_phase: 1
+    burst_number: 29
+    zplsc_c_number_of_frequencies: 4
+    zplsc_c_number_of_bins_frequency_1: 19
+    zplsc_c_number_of_bins_frequency_2: 19
+    zplsc_c_number_of_bins_frequency_3: 19
+    zplsc_c_number_of_bins_frequency_4: 19
+    zplsc_c_min_value_channel_1: 30592
+    zplsc_c_min_value_channel_2: 34064
+    zplsc_c_min_value_channel_3: 26456
+    zplsc_c_min_value_channel_4: 20544
+    zplsc_c_date_of_burst: '15040706350027'
+    zplsc_c_tilt_x: 21.8
+    zplsc_c_tilt_y: 45.7
+    zplsc_c_battery_voltage: 10.0
+    zplsc_c_temperature: 7.9
+    zplsc_c_pressure: 99.0
+    zplsc_c_board_number_channel_1: '0'
+    zplsc_c_frequency_channel_1: 38
+    zplsc_c_values_channel_1: [29264, 11568, 12480, 13248, 11776, 10032, 8264, 5888, 4056, 5456, 3544, 1008, 1744, 256, 0, 304, 112, 27248, 21088]
+    zplsc_c_board_number_channel_2: '1'
+    zplsc_c_frequency_channel_2: 125
+    zplsc_c_values_channel_2: [23024, 4640, 6872, 6128, 5184, 3712, 4360, 3024, 1752, 1592, 968, 624, 592, 280, 280, 496, 0, 22384, 17800]
+    zplsc_c_board_number_channel_3: '2'
+    zplsc_c_frequency_channel_3: 200
+    zplsc_c_values_channel_3: [29840, 11640, 12760, 11264, 9432, 8752, 9392, 9072, 8120, 5832, 2680, 2648, 648, 0, 1544, 256, 1488, 28608, 24952]
+    zplsc_c_board_number_channel_4: '3'
+    zplsc_c_frequency_channel_4: 455
+    zplsc_c_values_channel_4: [34880, 6944, 3672, 3560, 2800, 1544, 3160, 4408, 4568, 728, 64, 64, 24, 24, 16, 32, 0, 17880, 13472]
+  - _index: 8
+    internal_timestamp: 3637380906.1599998
+    zplsc_c_transmission_timestamp: '20150407073501'
+    serial_number: '55078'
+    zplsc_c_phase: 1
+    burst_number: 33
+    zplsc_c_number_of_frequencies: 4
+    zplsc_c_number_of_bins_frequency_1: 19
+    zplsc_c_number_of_bins_frequency_2: 19
+    zplsc_c_number_of_bins_frequency_3: 19
+    zplsc_c_number_of_bins_frequency_4: 19
+    zplsc_c_min_value_channel_1: 30000
+    zplsc_c_min_value_channel_2: 33936
+    zplsc_c_min_value_channel_3: 25216
+    zplsc_c_min_value_channel_4: 20488
+    zplsc_c_date_of_burst: '15040707350023'
+    zplsc_c_tilt_x: 21.7
+    zplsc_c_tilt_y: 45.7
+    zplsc_c_battery_voltage: 10.0
+    zplsc_c_temperature: 7.9
+    zplsc_c_pressure: 99.0
+    zplsc_c_board_number_channel_1: '0'
+    zplsc_c_frequency_channel_1: 38
+    zplsc_c_values_channel_1: [29624, 11504, 11392, 14736, 12304, 10856, 7696, 5312, 2800, 6144, 3472, 1872, 2792, 1000, 1984, 2400, 0, 26808, 24016]
+    zplsc_c_board_number_channel_2: '1'
+    zplsc_c_frequency_channel_2: 125
+    zplsc_c_values_channel_2: [23008, 4032, 5568, 5440, 8336, 5632, 3424, 2736, 2400, 2296, 888, 848, 320, 0, 712, 152, 128, 24264, 16888]
+    zplsc_c_board_number_channel_3: '2'
+    zplsc_c_frequency_channel_3: 200
+    zplsc_c_values_channel_3: [30936, 9160, 13376, 13120, 12416, 11184, 11168, 9872, 7840, 6672, 5352, 2224, 920, 1600, 0, 2112, 3544, 26824, 25136]
+    zplsc_c_board_number_channel_4: '3'
+    zplsc_c_frequency_channel_4: 455
+    zplsc_c_values_channel_4: [34896, 6824, 2648, 4760, 3864, 5528, 5032, 3368, 2488, 1336, 168, 8, 16, 0, 56, 64, 0, 17784, 12480]
+  - _index: 9
+    internal_timestamp: 3637384506.1710000
+    zplsc_c_transmission_timestamp: '20150407083501'
+    serial_number: '55078'
+    zplsc_c_phase: 1
+    burst_number: 37
+    zplsc_c_number_of_frequencies: 4
+    zplsc_c_number_of_bins_frequency_1: 19
+    zplsc_c_number_of_bins_frequency_2: 19
+    zplsc_c_number_of_bins_frequency_3: 19
+    zplsc_c_number_of_bins_frequency_4: 19
+    zplsc_c_min_value_channel_1: 29072
+    zplsc_c_min_value_channel_2: 34088
+    zplsc_c_min_value_channel_3: 25648
+    zplsc_c_min_value_channel_4: 20496
+    zplsc_c_date_of_burst: '15040708350019'
+    zplsc_c_tilt_x: 21.8
+    zplsc_c_tilt_y: 45.7
+    zplsc_c_battery_voltage: 10.0
+    zplsc_c_temperature: 8.0
+    zplsc_c_pressure: 99.0
+    zplsc_c_board_number_channel_1: '0'
+    zplsc_c_frequency_channel_1: 38
+    zplsc_c_values_channel_1: [30536, 11904, 12376, 14904, 12936, 13216, 7376, 4064, 5888, 6320, 2624, 2872, 2032, 0, 888, 2400, 784, 30272, 26568]
+    zplsc_c_board_number_channel_2: '1'
+    zplsc_c_frequency_channel_2: 125
+    zplsc_c_values_channel_2: [22832, 3640, 4824, 4960, 4760, 5960, 3760, 1840, 1736, 1216, 488, 120, 392, 64, 0, 408, 192, 21880, 20520]
+    zplsc_c_board_number_channel_3: '2'
+    zplsc_c_frequency_channel_3: 200
+    zplsc_c_values_channel_3: [30488, 10184, 12096, 8816, 11664, 11688, 9344, 7000, 6808, 4440, 4096, 1568, 2320, 824, 1248, 1280, 0, 26560, 24960]
+    zplsc_c_board_number_channel_4: '3'
+    zplsc_c_frequency_channel_4: 455
+    zplsc_c_values_channel_4: [34880, 6304, 2072, 3528, 4104, 4920, 4384, 3232, 2264, 24, 88, 24, 112, 0, 56, 72, 8, 17592, 14616]
+  - _index: 10
+    internal_timestamp: 3637388106.1830001
+    zplsc_c_transmission_timestamp: '20150407093501'
+    serial_number: '55078'
+    zplsc_c_phase: 1
+    burst_number: 41
+    zplsc_c_number_of_frequencies: 4
+    zplsc_c_number_of_bins_frequency_1: 19
+    zplsc_c_number_of_bins_frequency_2: 19
+    zplsc_c_number_of_bins_frequency_3: 19
+    zplsc_c_number_of_bins_frequency_4: 19
+    zplsc_c_min_value_channel_1: 28400
+    zplsc_c_min_value_channel_2: 33944
+    zplsc_c_min_value_channel_3: 23904
+    zplsc_c_min_value_channel_4: 20480
+    zplsc_c_date_of_burst: '15040709350015'
+    zplsc_c_tilt_x: 21.7
+    zplsc_c_tilt_y: 45.7
+    zplsc_c_battery_voltage: 10.0
+    zplsc_c_temperature: 8.0
+    zplsc_c_pressure: 99.0
+    zplsc_c_board_number_channel_1: '0'
+    zplsc_c_frequency_channel_1: 38
+    zplsc_c_values_channel_1: [30584, 10552, 10264, 15096, 14912, 13504, 10384, 6816, 4632, 9128, 5744, 2400, 2720, 1536, 720, 0, 1432, 27984, 27048]
+    zplsc_c_board_number_channel_2: '1'
+    zplsc_c_frequency_channel_2: 125
+    zplsc_c_values_channel_2: [23168, 5752, 2872, 5080, 5568, 6392, 4184, 2680, 2184, 1344, 1208, 792, 656, 472, 0, 536, 376, 21376, 16808]
+    zplsc_c_board_number_channel_3: '2'
+    zplsc_c_frequency_channel_3: 200
+    zplsc_c_values_channel_3: [32208, 13200, 8936, 13616, 13056, 13216, 10792, 10272, 11280, 9384, 6816, 3768, 1680, 848, 0, 2512, 2256, 29072, 26240]
+    zplsc_c_board_number_channel_4: '3'
+    zplsc_c_frequency_channel_4: 455
+    zplsc_c_values_channel_4: [34928, 7872, 2928, 2432, 2912, 3008, 4752, 3552, 3752, 640, 320, 48, 0, 48, 88, 16, 16, 15368, 16128]
+  - _index: 11
+    internal_timestamp: 3637391706.1970000
+    zplsc_c_transmission_timestamp: '20150407103501'
+    serial_number: '55078'
+    zplsc_c_phase: 1
+    burst_number: 45
+    zplsc_c_number_of_frequencies: 4
+    zplsc_c_number_of_bins_frequency_1: 19
+    zplsc_c_number_of_bins_frequency_2: 19
+    zplsc_c_number_of_bins_frequency_3: 19
+    zplsc_c_number_of_bins_frequency_4: 19
+    zplsc_c_min_value_channel_1: 29704
+    zplsc_c_min_value_channel_2: 34088
+    zplsc_c_min_value_channel_3: 24576
+    zplsc_c_min_value_channel_4: 20480
+    zplsc_c_date_of_burst: '15040710350012'
+    zplsc_c_tilt_x: 21.7
+    zplsc_c_tilt_y: 45.7
+    zplsc_c_battery_voltage: 10.0
+    zplsc_c_temperature: 8.0
+    zplsc_c_pressure: 99.0
+    zplsc_c_board_number_channel_1: '0'
+    zplsc_c_frequency_channel_1: 38
+    zplsc_c_values_channel_1: [30336, 6968, 10744, 12456, 12536, 8920, 7768, 7120, 6616, 4184, 3464, 3944, 1768, 1864, 600, 0, 2504, 26400, 23720]
+    zplsc_c_board_number_channel_2: '1'
+    zplsc_c_frequency_channel_2: 125
+    zplsc_c_values_channel_2: [22768, 2280, 4040, 5360, 6376, 4600, 3512, 2328, 3096, 1312, 904, 1144, 168, 104, 48, 344, 0, 23840, 22784]
+    zplsc_c_board_number_channel_3: '2'
+    zplsc_c_frequency_channel_3: 200
+    zplsc_c_values_channel_3: [31624, 8960, 10088, 12496, 12128, 11936, 12304, 11016, 8960, 7312, 4360, 4608, 2976, 2064, 0, 1232, 3024, 28248, 25864]
+    zplsc_c_board_number_channel_4: '3'
+    zplsc_c_frequency_channel_4: 455
+    zplsc_c_values_channel_4: [34864, 6448, 2976, 3200, 5488, 3520, 3376, 3680, 1752, 1816, 176, 104, 48, 24, 40, 0, 64, 16392, 14376]
+  - _index: 12
+    internal_timestamp: 3637395306.2040000
+    zplsc_c_transmission_timestamp: '20150407113501'
+    serial_number: '55078'
+    zplsc_c_phase: 1
+    burst_number: 49
+    zplsc_c_number_of_frequencies: 4
+    zplsc_c_number_of_bins_frequency_1: 19
+    zplsc_c_number_of_bins_frequency_2: 19
+    zplsc_c_number_of_bins_frequency_3: 19
+    zplsc_c_number_of_bins_frequency_4: 19
+    zplsc_c_min_value_channel_1: 30168
+    zplsc_c_min_value_channel_2: 34176
+    zplsc_c_min_value_channel_3: 28288
+    zplsc_c_min_value_channel_4: 20432
+    zplsc_c_date_of_burst: '15040711350008'
+    zplsc_c_tilt_x: 21.8
+    zplsc_c_tilt_y: 45.7
+    zplsc_c_battery_voltage: 10.0
+    zplsc_c_temperature: 8.0
+    zplsc_c_pressure: 99.0
+    zplsc_c_board_number_channel_1: '0'
+    zplsc_c_frequency_channel_1: 38
+    zplsc_c_values_channel_1: [30088, 8320, 8504, 10168, 10608, 7416, 6280, 7104, 2856, 4440, 3512, 2416, 2048, 4736, 0, 48, 472, 24376, 23296]
+    zplsc_c_board_number_channel_2: '1'
+    zplsc_c_frequency_channel_2: 125
+    zplsc_c_values_channel_2: [23744, 0, 3568, 5032, 5424, 3568, 2824, 3888, 2392, 1496, 1584, 1112, 728, 1152, 520, 392, 176, 21256, 15680]
+    zplsc_c_board_number_channel_3: '2'
+    zplsc_c_frequency_channel_3: 200
+    zplsc_c_values_channel_3: [29144, 4128, 6432, 8320, 9312, 9328, 6872, 6192, 4048, 5224, 3216, 856, 600, 3984, 1104, 0, 128, 23040, 20976]
+    zplsc_c_board_number_channel_4: '3'
+    zplsc_c_frequency_channel_4: 455
+    zplsc_c_values_channel_4: [35008, 6160, 3136, 2176, 3672, 5272, 3704, 3456, 2056, 1120, 504, 256, 88, 64, 64, 88, 0, 19584, 10016]
+  - _index: 13
+    internal_timestamp: 3637398907.4489999
+    zplsc_c_transmission_timestamp: '20150407123501'
+    serial_number: '55078'
+    zplsc_c_phase: 1
+    burst_number: 53
+    zplsc_c_number_of_frequencies: 4
+    zplsc_c_number_of_bins_frequency_1: 19
+    zplsc_c_number_of_bins_frequency_2: 19
+    zplsc_c_number_of_bins_frequency_3: 19
+    zplsc_c_number_of_bins_frequency_4: 19
+    zplsc_c_min_value_channel_1: 34656
+    zplsc_c_min_value_channel_2: 34752
+    zplsc_c_min_value_channel_3: 28224
+    zplsc_c_min_value_channel_4: 20448
+    zplsc_c_date_of_burst: '15040712350005'
+    zplsc_c_tilt_x: 21.8
+    zplsc_c_tilt_y: 45.7
+    zplsc_c_battery_voltage: 10.0
+    zplsc_c_temperature: 8.0
+    zplsc_c_pressure: 99.0
+    zplsc_c_board_number_channel_1: '0'
+    zplsc_c_frequency_channel_1: 38
+    zplsc_c_values_channel_1: [25312, 424, 4128, 7408, 8072, 5832, 4648, 4320, 2168, 80, 2488, 3904, 2640, 1576, 3296, 0, 96, 22576, 16096]
+    zplsc_c_board_number_channel_2: '1'
+    zplsc_c_frequency_channel_2: 125
+    zplsc_c_values_channel_2: [22224, 1168, 1112, 3952, 5120, 4328, 2632, 3840, 800, 392, 1152, 984, 0, 680, 1176, 264, 88, 21264, 10456]
+    zplsc_c_board_number_channel_3: '2'
+    zplsc_c_frequency_channel_3: 200
+    zplsc_c_values_channel_3: [27944, 5072, 3632, 6696, 8944, 8424, 7088, 4976, 3312, 3032, 5664, 5672, 2824, 2752, 1328, 0, 968, 26600, 18064]
+    zplsc_c_board_number_channel_4: '3'
+    zplsc_c_frequency_channel_4: 455
+    zplsc_c_values_channel_4: [35008, 5864, 4024, 2304, 3600, 3880, 4064, 3584, 2704, 592, 1760, 72, 192, 0, 80, 40, 112, 19696, 8184]
+  - _index: 14
+    internal_timestamp: 3637402506.2259998
+    zplsc_c_transmission_timestamp: '20150407133501'
+    serial_number: '55078'
+    zplsc_c_phase: 1
+    burst_number: 57
+    zplsc_c_number_of_frequencies: 4
+    zplsc_c_number_of_bins_frequency_1: 19
+    zplsc_c_number_of_bins_frequency_2: 19
+    zplsc_c_number_of_bins_frequency_3: 19
+    zplsc_c_number_of_bins_frequency_4: 19
+    zplsc_c_min_value_channel_1: 31816
+    zplsc_c_min_value_channel_2: 34392
+    zplsc_c_min_value_channel_3: 28912
+    zplsc_c_min_value_channel_4: 20448
+    zplsc_c_date_of_burst: '15040713350000'
+    zplsc_c_tilt_x: 21.7
+    zplsc_c_tilt_y: 45.7
+    zplsc_c_battery_voltage: 10.0
+    zplsc_c_temperature: 8.0
+    zplsc_c_pressure: 99.0
+    zplsc_c_board_number_channel_1: '0'
+    zplsc_c_frequency_channel_1: 38
+    zplsc_c_values_channel_1: [28288, 9224, 8248, 7120, 8824, 6056, 6984, 5576, 3344, 6248, 2688, 1528, 1184, 0, 1768, 1128, 912, 25912, 18680]
+    zplsc_c_board_number_channel_2: '1'
+    zplsc_c_frequency_channel_2: 125
+    zplsc_c_values_channel_2: [22552, 6192, 4368, 6288, 3960, 4976, 3368, 2024, 2752, 3096, 1560, 1672, 408, 0, 936, 760, 496, 24624, 8328]
+    zplsc_c_board_number_channel_3: '2'
+    zplsc_c_frequency_channel_3: 200
+    zplsc_c_values_channel_3: [27376, 10360, 7208, 8568, 9048, 6648, 5856, 5328, 4064, 5328, 2712, 1568, 0, 624, 16, 248, 416, 26088, 11992]
+    zplsc_c_board_number_channel_4: '3'
+    zplsc_c_frequency_channel_4: 455
+    zplsc_c_values_channel_4: [34960, 6504, 3768, 2288, 4840, 3576, 3128, 4328, 2664, 2512, 1328, 816, 200, 56, 0, 16, 32, 20656, 848]
+  - _index: 15
+    internal_timestamp: 3637406106.2390003
+    zplsc_c_transmission_timestamp: '20150407143501'
+    serial_number: '55078'
+    zplsc_c_phase: 1
+    burst_number: 61
+    zplsc_c_number_of_frequencies: 4
+    zplsc_c_number_of_bins_frequency_1: 19
+    zplsc_c_number_of_bins_frequency_2: 19
+    zplsc_c_number_of_bins_frequency_3: 19
+    zplsc_c_number_of_bins_frequency_4: 19
+    zplsc_c_min_value_channel_1: 34016
+    zplsc_c_min_value_channel_2: 34288
+    zplsc_c_min_value_channel_3: 28032
+    zplsc_c_min_value_channel_4: 20480
+    zplsc_c_date_of_burst: '15040714345996'
+    zplsc_c_tilt_x: 21.7
+    zplsc_c_tilt_y: 45.7
+    zplsc_c_battery_voltage: 10.0
+    zplsc_c_temperature: 8.0
+    zplsc_c_pressure: 99.0
+    zplsc_c_board_number_channel_1: '0'
+    zplsc_c_frequency_channel_1: 38
+    zplsc_c_values_channel_1: [26016, 0, 4072, 4352, 5512, 1416, 4488, 4704, 3400, 4088, 3200, 1280, 1504, 688, 1208, 800, 1712, 21200, 14824]
+    zplsc_c_board_number_channel_2: '1'
+    zplsc_c_frequency_channel_2: 125
+    zplsc_c_values_channel_2: [22624, 0, 3960, 2320, 3352, 4176, 3112, 3760, 2944, 3008, 2272, 1120, 824, 960, 1008, 320, 1448, 22632, 9536]
+    zplsc_c_board_number_channel_3: '2'
+    zplsc_c_frequency_channel_3: 200
+    zplsc_c_values_channel_3: [28128, 3272, 5160, 6120, 8368, 7952, 6704, 6040, 6400, 4840, 3968, 2528, 2176, 0, 3472, 3632, 6992, 27608, 11824]
+    zplsc_c_board_number_channel_4: '3'
+    zplsc_c_frequency_channel_4: 455
+    zplsc_c_values_channel_4: [34976, 4960, 2368, 1200, 4248, 5872, 3560, 3072, 1544, 2640, 920, 520, 320, 16, 16, 0, 968, 18720, 2928]

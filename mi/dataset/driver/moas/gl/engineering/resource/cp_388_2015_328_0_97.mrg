@@ -1,0 +1,22 @@
+dbd_label: DBD_ASC(dinkum_binary_data_ascii)file
+encoding_ver: 2
+num_ascii_tags: 14
+all_sensors: 0
+filename: cp_388-2015-328-0-97
+the8x3_filename: 00860097
+filename_extension: sbd
+filename_label: cp_388-2015-328-0-97-sbd(00860097)
+mission_name: CPDEEP.MI
+fileopen_time: Mon_Dec__7_18:36:49_2015
+sensors_per_cycle: 52
+num_label_lines: 3
+num_segments: 1
+segment_filename_0: cp_388-2015-328-0-97
+c_ballast_pumped c_battpos c_de_oil_vol c_dvl_on c_heading c_pitch c_wpt_lat c_wpt_lon m_air_pump m_altitude m_ballast_pumped m_battery m_battpos m_coulomb_amphr_total m_coulomb_current m_depth m_de_oil_vol m_fin m_gps_lat m_gps_lon m_heading m_lat m_lithium_battery_relative_charge m_lon m_pitch m_present_secs_into_mission m_present_time m_pressure m_raw_altitude m_roll m_speed m_thermal_valve m_vacuum m_water_depth m_water_vx m_water_vy x_low_power_status sci_bsipar_par sci_flbbcd_bb_units sci_flbbcd_cdom_units sci_flbbcd_chlor_units sci_m_disk_free sci_m_disk_usage sci_m_present_secs_into_mission sci_m_present_time sci_oxy4_oxygen sci_oxy4_saturation sci_water_cond sci_water_pressure sci_water_temp sci_x_disk_files_removed sci_x_sent_data_files 
+cc in cc sec rad rad lat lon bool m cc volts in amp-hrs amp m cc rad lat lon rad lat % lon rad sec timestamp bar m rad m/s enum inHg m m/s m/s nodim ue/m^2sec nodim ppb ug/l mbytes mbytes sec timestamp um % s/m bar degc nodim nodim 
+4 4 4 4 4 4 8 8 1 4 4 4 4 4 4 4 4 4 8 8 4 8 4 8 4 4 8 4 4 4 4 1 4 4 4 4 4 4 4 4 4 4 4 4 8 4 4 4 4 4 4 4 
+NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN 1103320 1449513349.45499 NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN 0 0 0 0 1444.19 555.281 1103320 1449513349.45499 0 0 0 0 0 0 0 
+260 0.738 260 -1 0.161109 0.4528 3954 -7053 1 4.6569 0 10.9238 0.748747 314.087 0.592266 0.243433 260.399 -0.00263872 3919.8193 -7046.0238 0.120428 3919.81930006068 56.3769 -7046.0238000075 0.460767 1103330 1449513359.48688 0.0243433 95.6496 -0.0453786 0.362266 2 9.14404 -1 -0.043416 -0.0842928 5 NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN 
+NaN 0.738 260 -1 NaN NaN NaN NaN 1 NaN NaN 10.924 0.748747 314.091 0.385344 0.325489 260.359 0 NaN NaN NaN 3919.81930006068 56.3762 -7046.0238000075 NaN 1103330 1449513359.48688 0.0325489 NaN NaN NaN 2 10.2673 NaN NaN NaN 5 NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN 
+NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN 1103330 1449513361.74268 NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN 0 0 0 0 1444.19 555.281 1103330 1449513361.74268 0 0 0 0 0 0 0 
+NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN 1103450 1449513483.16754 NaN NaN NaN NaN 2 NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN 

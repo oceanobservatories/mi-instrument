@@ -1,0 +1,8 @@
+Message Id[unsigned short|#],Timestamp[unsigned long|epoch],Voltage[float|V],Status[unsigned short|mask],Descent Status[signed char|#],Ascent Status[signed char|#],Pickup Status[signed char|#],Descent Continuity[unsigned char|#],Ascent Continuity[unsigned char|#],Pickup Continuity[unsigned char|#],Secondary Status[unsigned long|mask]
+1076,1421156961,15.97,0,0,0,0,128,128,128,3846
+1076,1421156966,15.98,0,0,0,0,128,128,128,3846
+1076,1421156971,15.96,0,0,0,0,128,128,128,3846
+1076,1421156976,15.96,0,0,0,0,128,128,128,3846
+1076,1421156982,15.95,0,0,0,0,128,128,128,3846
+1076,1421156987,15.96,0,0,0,0,128,128,128,3846
+1076,1421156992,15.96,0,0,0,0,128,128,128,3846

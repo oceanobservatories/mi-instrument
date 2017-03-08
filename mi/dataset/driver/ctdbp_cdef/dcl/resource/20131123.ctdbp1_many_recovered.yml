@@ -1,0 +1,222 @@
+header:
+  particle_object: 'MULTIPLE'
+  particle_type: 'MULTIPLE'
+
+data:
+  - _index: 1
+    particle_object: CtdbpCdefDclRecoveredDataParticle
+    particle_type: ctdbp_cdef_dcl_instrument_recovered
+    internal_timestamp: 3594153625.236
+    dcl_controller_timestamp: '2013/11/23 00:00:25.236'
+    temp: 13.7971
+    conductivity: 4.01241
+    pressure: 6.536
+    date_time_string: '23 Nov 2013 00:00:21'
+  - _index: 2
+    particle_object: CtdbpCdefDclRecoveredDataParticle
+    particle_type: ctdbp_cdef_dcl_instrument_recovered
+    internal_timestamp: 3594153635.229
+    dcl_controller_timestamp: '2013/11/23 00:00:35.229'
+    temp: 13.7946
+    conductivity: 4.01205
+    pressure: 6.486
+    date_time_string: '23 Nov 2013 00:00:31'
+  - _index: 3
+    particle_object: CtdbpCdefDclRecoveredDataParticle
+    particle_type: ctdbp_cdef_dcl_instrument_recovered
+    internal_timestamp: 3594153645.229
+    dcl_controller_timestamp: '2013/11/23 00:00:45.229'
+    temp: 13.7881
+    conductivity: 4.01122
+    pressure: 6.983
+    date_time_string: '23 Nov 2013 00:00:41'
+  - _index: 4
+    particle_object: CtdbpCdefDclRecoveredDataParticle
+    particle_type: ctdbp_cdef_dcl_instrument_recovered
+    internal_timestamp: 3594153655.230
+    dcl_controller_timestamp: '2013/11/23 00:00:55.230'
+    temp: 13.7911
+    conductivity: 4.01171
+    pressure: 7.525
+    date_time_string: '23 Nov 2013 00:00:51'
+  - _index: 5
+    particle_object: CtdbpCdefDclRecoveredDataParticle
+    particle_type: ctdbp_cdef_dcl_instrument_recovered
+    internal_timestamp: 3594153665.229
+    dcl_controller_timestamp: '2013/11/23 00:01:05.229'
+    temp: 13.7897
+    conductivity: 4.01157
+    pressure: 6.910
+    date_time_string: '23 Nov 2013 00:01:01'
+  - _index: 6
+    particle_object: CtdbpCdefDclRecoveredDataParticle
+    particle_type: ctdbp_cdef_dcl_instrument_recovered
+    internal_timestamp: 3594153675.229
+    dcl_controller_timestamp: '2013/11/23 00:01:15.229'
+    temp: 13.7902
+    conductivity: 4.01166
+    pressure: 6.967
+    date_time_string: '23 Nov 2013 00:01:11'
+  - _index: 7
+    particle_object: CtdbpCdefDclRecoveredDataParticle
+    particle_type: ctdbp_cdef_dcl_instrument_recovered
+    internal_timestamp: 3594153685.229
+    dcl_controller_timestamp: '2013/11/23 00:01:25.229'
+    temp: 13.7955
+    conductivity: 4.01218
+    pressure: 7.482
+    date_time_string: '23 Nov 2013 00:01:21'
+  - _index: 8
+    particle_object: CtdbpCdefDclRecoveredDataParticle
+    particle_type: ctdbp_cdef_dcl_instrument_recovered
+    internal_timestamp: 3594153695.230
+    dcl_controller_timestamp: '2013/11/23 00:01:35.230'
+    temp: 13.7974
+    conductivity: 4.01244
+    pressure: 7.174
+    date_time_string: '23 Nov 2013 00:01:31'
+  - _index: 9
+    particle_object: CtdbpCdefDclRecoveredDataParticle
+    particle_type: ctdbp_cdef_dcl_instrument_recovered
+    internal_timestamp: 3594153705.230999947
+    dcl_controller_timestamp: '2013/11/23 00:01:45.231'
+    temp: 13.7989
+    conductivity: 4.01265
+    pressure: 7.056
+    date_time_string: '23 Nov 2013 00:01:41'
+  - _index: 10
+    particle_object: CtdbpCdefDclRecoveredDataParticle
+    particle_type: ctdbp_cdef_dcl_instrument_recovered
+    internal_timestamp: 3594153715.230
+    dcl_controller_timestamp: '2013/11/23 00:01:55.230'
+    temp: 13.7973
+    conductivity: 4.01245
+    pressure: 7.403
+    date_time_string: '23 Nov 2013 00:01:51'
+  - _index: 11
+    particle_object: CtdbpCdefDclRecoveredDataParticle
+    particle_type: ctdbp_cdef_dcl_instrument_recovered
+    internal_timestamp: 3594153725.229
+    dcl_controller_timestamp: '2013/11/23 00:02:05.229'
+    temp: 13.7950
+    conductivity: 4.01219
+    pressure: 6.989
+    date_time_string: '23 Nov 2013 00:02:01'
+  - _index: 12
+    particle_object: CtdbpCdefDclRecoveredDataParticle
+    particle_type: ctdbp_cdef_dcl_instrument_recovered
+    internal_timestamp: 3594153735.229
+    dcl_controller_timestamp: '2013/11/23 00:02:15.229'
+    temp: 13.7948
+    conductivity: 4.01208
+    pressure: 6.389
+    date_time_string: '23 Nov 2013 00:02:11'
+  - _index: 13
+    particle_object: CtdbpCdefDclRecoveredDataParticle
+    particle_type: ctdbp_cdef_dcl_instrument_recovered
+    internal_timestamp: 3594153926.236
+    dcl_controller_timestamp: '2013/11/23 00:05:26.236'
+    temp: 13.8085
+    conductivity: 4.01400
+    pressure: 6.943
+    date_time_string: '23 Nov 2013 00:05:22'
+  - _index: 14
+    particle_object: CtdbpCdefDclRecoveredDataParticle
+    particle_type: ctdbp_cdef_dcl_instrument_recovered
+    internal_timestamp: 3594153936.230
+    dcl_controller_timestamp: '2013/11/23 00:05:36.230'
+    temp: 13.8029
+    conductivity: 4.01330
+    pressure: 7.045
+    date_time_string: '23 Nov 2013 00:05:32'
+  - _index: 15
+    particle_object: CtdbpCdefDclRecoveredDataParticle
+    particle_type: ctdbp_cdef_dcl_instrument_recovered
+    internal_timestamp: 3594153946.230
+    dcl_controller_timestamp: '2013/11/23 00:05:46.230'
+    temp: 13.8097
+    conductivity: 4.01407
+    pressure: 7.205
+    date_time_string: '23 Nov 2013 00:05:42'
+  - _index: 16
+    particle_object: CtdbpCdefDclRecoveredDataParticle
+    particle_type: ctdbp_cdef_dcl_instrument_recovered
+    internal_timestamp: 3594153956.229
+    dcl_controller_timestamp: '2013/11/23 00:05:56.229'
+    temp: 13.8069
+    conductivity: 4.01395
+    pressure: 7.058
+    date_time_string: '23 Nov 2013 00:05:52'
+  - _index: 17
+    particle_object: CtdbpCdefDclRecoveredDataParticle
+    particle_type: ctdbp_cdef_dcl_instrument_recovered
+    internal_timestamp: 3594153966.230
+    dcl_controller_timestamp: '2013/11/23 00:06:06.230'
+    temp: 13.8023
+    conductivity: 4.01332
+    pressure: 6.465
+    date_time_string: '23 Nov 2013 00:06:02'
+  - _index: 18
+    particle_object: CtdbpCdefDclRecoveredDataParticle
+    particle_type: ctdbp_cdef_dcl_instrument_recovered
+    internal_timestamp: 3594153976.230999947
+    dcl_controller_timestamp: '2013/11/23 00:06:16.231'
+    temp: 13.7962
+    conductivity: 4.01255
+    pressure: 7.235
+    date_time_string: '23 Nov 2013 00:06:12'
+  - _index: 19
+    particle_object: CtdbpCdefDclRecoveredDataParticle
+    particle_type: ctdbp_cdef_dcl_instrument_recovered
+    internal_timestamp: 3594153986.230
+    dcl_controller_timestamp: '2013/11/23 00:06:26.230'
+    temp: 13.7954
+    conductivity: 4.01225
+    pressure: 6.799
+    date_time_string: '23 Nov 2013 00:06:22'
+  - _index: 20
+    particle_object: CtdbpCdefDclRecoveredDataParticle
+    particle_type: ctdbp_cdef_dcl_instrument_recovered
+    internal_timestamp: 3594153996.241000175
+    dcl_controller_timestamp: '2013/11/23 00:06:36.241'
+    temp: 13.7970
+    conductivity: 4.01250
+    pressure: 6.937
+    date_time_string: '23 Nov 2013 00:06:32'
+  - _index: 21
+    particle_object: CtdbpCdefDclRecoveredDataParticle
+    particle_type: ctdbp_cdef_dcl_instrument_recovered
+    internal_timestamp: 3594154006.230
+    dcl_controller_timestamp: '2013/11/23 00:06:46.230'
+    temp: 13.8024
+    conductivity: 4.01317
+    pressure: 7.459
+    date_time_string: '23 Nov 2013 00:06:42'
+  - _index: 22
+    particle_object: CtdbpCdefDclRecoveredDataParticle
+    particle_type: ctdbp_cdef_dcl_instrument_recovered
+    internal_timestamp: 3594154016.230
+    dcl_controller_timestamp: '2013/11/23 00:06:56.230'
+    temp: 13.8024
+    conductivity: 4.01312
+    pressure: 6.782
+    date_time_string: '23 Nov 2013 00:06:52'
+  - _index: 23
+    particle_object: CtdbpCdefDclRecoveredDataParticle
+    particle_type: ctdbp_cdef_dcl_instrument_recovered
+    internal_timestamp: 3594154026.229
+    dcl_controller_timestamp: '2013/11/23 00:07:06.229'
+    temp: 13.8024
+    conductivity: 4.01313
+    pressure: 6.553
+    date_time_string: '23 Nov 2013 00:07:02'
+  - _index: 24
+    particle_object: CtdbpCdefDclRecoveredDataParticle
+    particle_type: ctdbp_cdef_dcl_instrument_recovered
+    internal_timestamp: 3594154036.230
+    dcl_controller_timestamp: '2013/11/23 00:07:16.230'
+    temp: 13.7949
+    conductivity: 4.01236
+    pressure: 6.790
+    date_time_string: '23 Nov 2013 00:07:12'
+
