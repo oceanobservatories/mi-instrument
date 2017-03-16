@@ -8,16 +8,16 @@ Release notes:
 initial release
 """
 
-__author__ = 'Joe Padula'
-__license__ = 'Apache 2.0'
-
 from datetime import datetime
 import time
 import ntplib
 import calendar
-import string
 
 from mi.core.log import get_logger
+
+__author__ = 'Joe Padula'
+__license__ = 'Apache 2.0'
+
 log = get_logger()
 
 # Format of DCL Controller Timestamp in records
@@ -69,6 +69,8 @@ def zulu_timestamp_to_ntp_time(zulu_timestamp_str):
 
 def time_2000_to_ntp_time(time_2000):
     """
+    :param time_2000: a timestamp in epoch 2000
+    :return: timestamp in epoch 1900
     This function calculates and returns a timestamp in epoch 1900
     based on an integer timestamp in epoch 2000.
     Parameter:
@@ -108,6 +110,32 @@ def dcl_controller_timestamp_to_ntp_time(dcl_controller_timestamp_str):
     return float(ntplib.system_to_ntp_time(utc_time))
 
 
+def timestamp_yyyymmddhhmmss_to_ntp_time(timestamp_str):
+    """
+    Converts a timestamp string, in the YYYYMMDDHHMMSS format, to NTP time.
+    :param timestamp_str: a timestamp string in the format YYYYMMDDHHMMSS
+    :return: NTP time (float64) in seconds and microseconds precision
+    """
+
+    timestamp_str = timestamp_str[:4] + '/' + timestamp_str[4:6] + '/' + timestamp_str[6:8] + ' ' + \
+        timestamp_str[8:10] + ':' + timestamp_str[10:12] + ':' + timestamp_str[12:] + '.00'
+
+    return dcl_controller_timestamp_to_ntp_time(timestamp_str)
+
+
+def timestamp_yymmddhhmmsshh_to_ntp_time(timestamp_str):
+    """
+    Converts a timestamp string, in the YYYYMMDDHHMMSS format, to NTP time.
+    :param timestamp_str: a timestamp string in the format YYYYMMDDHHMMSS
+    :return: NTP time (float64) in seconds and microseconds precision
+    """
+
+    timestamp_str = '20' + timestamp_str[:2] + '/' + timestamp_str[2:4] + '/' + timestamp_str[4:6] + ' ' + \
+        timestamp_str[6:8] + ':' + timestamp_str[8:10] + ':' + timestamp_str[10:12] + '.' + timestamp_str[12:]
+
+    return dcl_controller_timestamp_to_ntp_time(timestamp_str)
+
+
 def mac_timestamp_to_utc_timestamp(mac_timestamp):
     """
     :param mac_timestamp: A mac based timestamp
@@ -121,39 +149,39 @@ def mac_timestamp_to_utc_timestamp(mac_timestamp):
     return secs_since_1970
 
 
-def convert_to_signed_int_32_bit(input):
+def convert_to_signed_int_32_bit(hex_str):
     """
     Utility function to convert a hex string into a 32 bit signed hex integer value
-    :param input: hex String
+    :param hex_str: hex String
     :return: signed 32 bit integer
     """
-    val = int(input, 16)
+    val = int(hex_str, 16)
     if val > 0x7FFFFFFF:
-        val = ((val+0x80000000)&0xFFFFFFFF) - 0x80000000
+        val = ((val+0x80000000) & 0xFFFFFFFF) - 0x80000000
     return val
 
 
-def convert_to_signed_int_16_bit(input):
+def convert_to_signed_int_16_bit(hex_str):
     """
     Utility function to convert a hex string into a 16 bit signed hex integer value
-    :param input: hex String
+    :param hex_str: hex String
     :return: signed 16 bit integer
     """
-    val = int(input, 16)
+    val = int(hex_str, 16)
     if val > 0x7FFF:
-        val = ((val+0x8000)&0xFFFF) - 0x8000
+        val = ((val+0x8000) & 0xFFFF) - 0x8000
     return val
 
 
-def convert_to_signed_int_8_bit(input):
+def convert_to_signed_int_8_bit(hex_str):
     """
     Utility function to convert a hex string into a 8 bit signed hex integer value
-    :param input: hex String
+    :param hex_str: hex String
     :return: signed 8 bit integer
     """
-    val = int(input, 16)
+    val = int(hex_str, 16)
     if val > 0x7F:
-        val = ((val+0x80)&0xFF) - 0x80
+        val = ((val+0x80) & 0xFF) - 0x80
     return val
 
 
