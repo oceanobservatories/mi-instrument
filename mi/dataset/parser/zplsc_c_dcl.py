@@ -62,25 +62,24 @@ Release notes:
 Initial Release
 """
 
-__author__ = 'Ronald Ronquillo & Richard Han'
-__license__ = 'Apache 2.0'
-
-
-import ntplib
 import re
 
 from mi.core.log import get_logger
-log = get_logger()
-
 from mi.core.common import BaseEnum
 from mi.core.exceptions import RecoverableSampleException
 from mi.core.instrument.dataset_data_particle import DataParticle, DataParticleKey
 from mi.core.log import get_logging_metaclass
 from mi.dataset.dataset_parser import SimpleParser
-from mi.dataset.parser.utilities import dcl_controller_timestamp_to_ntp_time
+from mi.dataset.parser.utilities import dcl_controller_timestamp_to_ntp_time, timestamp_yyyymmddhhmmss_to_ntp_time, \
+    timestamp_yymmddhhmmsshh_to_ntp_time
 from mi.dataset.parser.common_regexes import UNSIGNED_INT_REGEX, END_OF_LINE_REGEX, \
     DATE_YYYY_MM_DD_REGEX, TIME_HR_MIN_SEC_MSEC_REGEX
 
+
+__author__ = 'Ronald Ronquillo & Richard Han'
+__license__ = 'Apache 2.0'
+
+log = get_logger()
 
 # Expected values used for validating data
 MAX_NUM_FREQS = 4
@@ -90,12 +89,33 @@ VALID_FREQUENCIES = ('38', '70', '125', '200', '455', '770', None)
 
 class ZplscCParticleKey(BaseEnum):
     """
-    Class that defines fields that need to be extracted from the data
+    Class that defines fields that need to be extracted for the data particle.
     """
     TRANS_TIMESTAMP = "zplsc_c_transmission_timestamp"
     SERIAL_NUMBER = "serial_number"
     PHASE = "zplsc_c_phase"
     BURST_NUMBER = "burst_number"
+    TILT_X = "zplsc_c_tilt_x"
+    TILT_Y = "zplsc_c_tilt_y"
+    BATTERY_VOLTAGE = "zplsc_c_battery_voltage"
+    TEMPERATURE = "zplsc_c_temperature"
+    PRESSURE = "zplsc_c_pressure"
+    FREQ_CHAN_1 = "zplsc_c_frequency_channel_1"
+    VALS_CHAN_1 = "zplsc_c_values_channel_1"
+    FREQ_CHAN_2 = "zplsc_c_frequency_channel_2"
+    VALS_CHAN_2 = "zplsc_c_values_channel_2"
+    FREQ_CHAN_3 = "zplsc_c_frequency_channel_3"
+    VALS_CHAN_3 = "zplsc_c_values_channel_3"
+    FREQ_CHAN_4 = "zplsc_c_frequency_channel_4"
+    VALS_CHAN_4 = "zplsc_c_values_channel_4"
+
+
+class ZplscCDataKey(BaseEnum):
+    """
+    Class that defines fields that need to be extracted but are not part of the data particle.
+    """
+    DCL_TIMESTAMP = 'zplsc_c_dcl_timestamp'
+    BURST_DATE = "zplsc_c_date_of_burst"
     NUM_FREQ = "zplsc_c_number_of_frequencies"
     NUM_BINS_FREQ_1 = "zplsc_c_number_of_bins_frequency_1"
     NUM_BINS_FREQ_2 = "zplsc_c_number_of_bins_frequency_2"
@@ -105,24 +125,10 @@ class ZplscCParticleKey(BaseEnum):
     MIN_VAL_CHAN_2 = "zplsc_c_min_value_channel_2"
     MIN_VAL_CHAN_3 = "zplsc_c_min_value_channel_3"
     MIN_VAL_CHAN_4 = "zplsc_c_min_value_channel_4"
-    BURST_DATE = "zplsc_c_date_of_burst"
-    TILT_X = "zplsc_c_tilt_x"
-    TILT_Y = "zplsc_c_tilt_y"
-    BATTERY_VOLTAGE = "zplsc_c_battery_voltage"
-    TEMPERATURE = "zplsc_c_temperature"
-    PRESSURE = "zplsc_c_pressure"
     BOARD_NUM_CHAN_1 = "zplsc_c_board_number_channel_1"
-    FREQ_CHAN_1 = "zplsc_c_frequency_channel_1"
-    VALS_CHAN_1 = "zplsc_c_values_channel_1"
     BOARD_NUM_CHAN_2 = "zplsc_c_board_number_channel_2"
-    FREQ_CHAN_2 = "zplsc_c_frequency_channel_2"
-    VALS_CHAN_2 = "zplsc_c_values_channel_2"
     BOARD_NUM_CHAN_3 = "zplsc_c_board_number_channel_3"
-    FREQ_CHAN_3 = "zplsc_c_frequency_channel_3"
-    VALS_CHAN_3 = "zplsc_c_values_channel_3"
     BOARD_NUM_CHAN_4 = "zplsc_c_board_number_channel_4"
-    FREQ_CHAN_4 = "zplsc_c_frequency_channel_4"
-    VALS_CHAN_4 = "zplsc_c_values_channel_4"
 
 
 # Basic patterns
@@ -131,6 +137,13 @@ common_matches = {
     'DCL_TIMESTAMP': DATE_YYYY_MM_DD_REGEX + '\s' + TIME_HR_MIN_SEC_MSEC_REGEX,
     'END_OF_LINE_REGEX': END_OF_LINE_REGEX,
     'UINT': UNSIGNED_INT_REGEX
+}
+
+min_value_mapping = {
+    ZplscCParticleKey.VALS_CHAN_1: ZplscCDataKey.MIN_VAL_CHAN_1,
+    ZplscCParticleKey.VALS_CHAN_2: ZplscCDataKey.MIN_VAL_CHAN_2,
+    ZplscCParticleKey.VALS_CHAN_3: ZplscCDataKey.MIN_VAL_CHAN_3,
+    ZplscCParticleKey.VALS_CHAN_4: ZplscCDataKey.MIN_VAL_CHAN_4
 }
 
 # DCL Log record:
@@ -153,7 +166,11 @@ PHASE_STATUS_MATCHER = re.compile(r"""
     """ % common_matches, re.VERBOSE)
 
 # Sensor Data Record:
-# 2015/04/06 23:35:06.057 @D20150406233501!@P,55078,1,1,4,19,19,19,19,31408,34160,25264,20440,15040623350051,21.8,45.7,10.0,7.9,99.0,0,38,28056,6760,9344,4984,3304,5600,1904,0,992,3288,2864,2400,2296,1808,3296,4344,1496,27760,17688,1,125,22696,3472,2840,224,1184,832,1336,2488,872,240,272,600,360,0,736,312,168,22752,15592,2,200,30904,8600,6880,6400,5360,6208,5392,7696,5072,5488,2704,4264,2808,1912,4136,3520,0,26288,20608,3,455,34944,5400,1496,1528,400,664,1768,1496,472,256,88,168,104,152,80,72,0,19648,8832!
+# 2015/04/06 23:35:06.057 @D20150406233501!@P,55078,1,1,4,19,19,19,19,31408,34160,25264,20440,15040623350051,21.8,45.7,
+# 10.0,7.9,99.0,0,38,28056,6760,9344,4984,3304,5600,1904,0,992,3288,2864,2400,2296,1808,3296,4344,1496,27760,17688,1,
+# 125,22696,3472,2840,224,1184,832,1336,2488,872,240,272,600,360,0,736,312,168,22752,15592,2,200,30904,8600,6880,6400,
+# 5360,6208,5392,7696,5072,5488,2704,4264,2808,1912,4136,3520,0,26288,20608,3,455,34944,5400,1496,1528,400,664,1768,
+# 1496,472,256,88,168,104,152,80,72,0,19648,8832!
 SENSOR_DATA_MATCHER = re.compile(r"""
     (?P<dcl_timestamp> %(DCL_TIMESTAMP)s)\s@D
     (?P<transmission_timestamp> %(UINT)s)!@P,
@@ -164,41 +181,60 @@ SENSOR_DATA_MATCHER = re.compile(r"""
 # The following is used to parse and encode values and is defined as below:
 # (parameter name, count (or count reference), encoding function)
 ZPLSC_C_DATA_RULES = [
-    (ZplscCParticleKey.TRANS_TIMESTAMP,  1,              str),
-    (ZplscCParticleKey.SERIAL_NUMBER,    1,              str),
-    (ZplscCParticleKey.PHASE,            1,              int),
-    (ZplscCParticleKey.BURST_NUMBER,     1,              int),
-    (ZplscCParticleKey.NUM_FREQ,         1,              int),
-    (ZplscCParticleKey.NUM_BINS_FREQ_1,  1,              int),
-    (ZplscCParticleKey.NUM_BINS_FREQ_2,  1,              int),
-    (ZplscCParticleKey.NUM_BINS_FREQ_3,  1,              int),
-    (ZplscCParticleKey.NUM_BINS_FREQ_4,  1,              int),
-    (ZplscCParticleKey.MIN_VAL_CHAN_1,   1,              int),
-    (ZplscCParticleKey.MIN_VAL_CHAN_2,   1,              int),
-    (ZplscCParticleKey.MIN_VAL_CHAN_3,   1,              int),
-    (ZplscCParticleKey.MIN_VAL_CHAN_4,   1,              int),
-    (ZplscCParticleKey.BURST_DATE,       1,              str),
-    (ZplscCParticleKey.TILT_X,           1,              float),
-    (ZplscCParticleKey.TILT_Y,           1,              float),
-    (ZplscCParticleKey.BATTERY_VOLTAGE,  1,              float),
-    (ZplscCParticleKey.TEMPERATURE,      1,              float),
-    (ZplscCParticleKey.PRESSURE,         1,              float),
+    (ZplscCDataKey.DCL_TIMESTAMP,        1),
+    (ZplscCParticleKey.TRANS_TIMESTAMP,  1),
+    (ZplscCParticleKey.SERIAL_NUMBER,    1),
+    (ZplscCParticleKey.PHASE,            1),
+    (ZplscCParticleKey.BURST_NUMBER,     1),
+    (ZplscCDataKey.NUM_FREQ,             1),
+    (ZplscCDataKey.NUM_BINS_FREQ_1,      1),
+    (ZplscCDataKey.NUM_BINS_FREQ_2,      1),
+    (ZplscCDataKey.NUM_BINS_FREQ_3,      1),
+    (ZplscCDataKey.NUM_BINS_FREQ_4,      1),
+    (ZplscCDataKey.MIN_VAL_CHAN_1,       1),
+    (ZplscCDataKey.MIN_VAL_CHAN_2,       1),
+    (ZplscCDataKey.MIN_VAL_CHAN_3,       1),
+    (ZplscCDataKey.MIN_VAL_CHAN_4,       1),
+    (ZplscCDataKey.BURST_DATE,           1),
+    (ZplscCParticleKey.TILT_X,           1),
+    (ZplscCParticleKey.TILT_Y,           1),
+    (ZplscCParticleKey.BATTERY_VOLTAGE,  1),
+    (ZplscCParticleKey.TEMPERATURE,      1),
+    (ZplscCParticleKey.PRESSURE,         1),
+    (ZplscCDataKey.BOARD_NUM_CHAN_1,     1),
+    (ZplscCParticleKey.FREQ_CHAN_1,      1),
+    (ZplscCParticleKey.VALS_CHAN_1,      ZplscCDataKey.NUM_BINS_FREQ_1),
+    (ZplscCDataKey.BOARD_NUM_CHAN_2,     1),
+    (ZplscCParticleKey.FREQ_CHAN_2,      1),
+    (ZplscCParticleKey.VALS_CHAN_2,      ZplscCDataKey.NUM_BINS_FREQ_2),
+    (ZplscCDataKey.BOARD_NUM_CHAN_3,     1),
+    (ZplscCParticleKey.FREQ_CHAN_3,      1),
+    (ZplscCParticleKey.VALS_CHAN_3,      ZplscCDataKey.NUM_BINS_FREQ_3),
+    (ZplscCDataKey.BOARD_NUM_CHAN_4,     1),
+    (ZplscCParticleKey.FREQ_CHAN_4,      1),
+    (ZplscCParticleKey.VALS_CHAN_4,      ZplscCDataKey.NUM_BINS_FREQ_4)
+]
 
-    (ZplscCParticleKey.BOARD_NUM_CHAN_1, 1,              str),
-    (ZplscCParticleKey.FREQ_CHAN_1,      1,              int),
-    (ZplscCParticleKey.VALS_CHAN_1,      ZplscCParticleKey.NUM_BINS_FREQ_1, lambda x: map(int, x)),
-
-    (ZplscCParticleKey.BOARD_NUM_CHAN_2, 1,              str),
-    (ZplscCParticleKey.FREQ_CHAN_2,      1,              int),
-    (ZplscCParticleKey.VALS_CHAN_2,      ZplscCParticleKey.NUM_BINS_FREQ_2, lambda x: map(int, x)),
-
-    (ZplscCParticleKey.BOARD_NUM_CHAN_3, 1,              str),
-    (ZplscCParticleKey.FREQ_CHAN_3,      1,              int),
-    (ZplscCParticleKey.VALS_CHAN_3,      ZplscCParticleKey.NUM_BINS_FREQ_3, lambda x: map(int, x)),
-
-    (ZplscCParticleKey.BOARD_NUM_CHAN_4, 1,              str),
-    (ZplscCParticleKey.FREQ_CHAN_4,      1,              int),
-    (ZplscCParticleKey.VALS_CHAN_4,      ZplscCParticleKey.NUM_BINS_FREQ_4, lambda x: map(int, x))
+# The following is used to encode values for the data particle and is defined as below:
+# (parameter name, count (or count reference), encoding function)
+ZPLSC_C_PARTICLE_RULES = [
+    (ZplscCParticleKey.TRANS_TIMESTAMP,  1,  timestamp_yyyymmddhhmmss_to_ntp_time),
+    (ZplscCParticleKey.SERIAL_NUMBER,    1,  str),
+    (ZplscCParticleKey.PHASE,            1,  int),
+    (ZplscCParticleKey.BURST_NUMBER,     1,  int),
+    (ZplscCParticleKey.TILT_X,           1,  float),
+    (ZplscCParticleKey.TILT_Y,           1,  float),
+    (ZplscCParticleKey.BATTERY_VOLTAGE,  1,  float),
+    (ZplscCParticleKey.TEMPERATURE,      1,  float),
+    (ZplscCParticleKey.PRESSURE,         1,  float),
+    (ZplscCParticleKey.FREQ_CHAN_1,      1,  int),
+    (ZplscCParticleKey.VALS_CHAN_1,      ZplscCDataKey.NUM_BINS_FREQ_1, lambda x: map(int, x)),
+    (ZplscCParticleKey.FREQ_CHAN_2,      1,  int),
+    (ZplscCParticleKey.VALS_CHAN_2,      ZplscCDataKey.NUM_BINS_FREQ_2, lambda x: map(int, x)),
+    (ZplscCParticleKey.FREQ_CHAN_3,      1,  int),
+    (ZplscCParticleKey.VALS_CHAN_3,      ZplscCDataKey.NUM_BINS_FREQ_3, lambda x: map(int, x)),
+    (ZplscCParticleKey.FREQ_CHAN_4,      1,  int),
+    (ZplscCParticleKey.VALS_CHAN_4,      ZplscCDataKey.NUM_BINS_FREQ_4, lambda x: map(int, x))
 ]
 
 
@@ -220,15 +256,17 @@ class ZplscCInstrumentDataParticle(DataParticle):
         @return: list containing type encoded "particle value id:value" dictionary pairs
         """
 
-        # Generate a particle by calling encode_value for each entry
-        # in the Instrument Particle Mapping table,
-        # where each entry is a tuple containing the particle field name, count(or count reference),
-        # and a function to use for data conversion.
+        # Generate a particle by calling encode_value for each entry in the Instrument
+        # Particle Mapping table, where each entry is a tuple containing the particle
+        # field name, count(or count reference) and a function to use for data conversion.
+
+        port_timestamp = dcl_controller_timestamp_to_ntp_time(self.raw_data[ZplscCDataKey.DCL_TIMESTAMP])
+        self.contents[DataParticleKey.PORT_TIMESTAMP] = port_timestamp
 
         return [{DataParticleKey.VALUE_ID: name, DataParticleKey.VALUE: None}
                 if self.raw_data[name] is None else
                 self._encode_value(name, self.raw_data[name], function)
-                for name, counter, function in ZPLSC_C_DATA_RULES]
+                for name, counter, function in ZPLSC_C_PARTICLE_RULES]
 
 
 class ZplscCDclParser(SimpleParser):
@@ -273,12 +311,13 @@ class ZplscCDclParser(SimpleParser):
                     log.error('Erroneous data found in line %s: %s', number, line)
                     continue
 
-                # Convert the DCL timestamp into the particle timestamp
-                time_stamp = dcl_controller_timestamp_to_ntp_time(match.group('dcl_timestamp'))
+                # Convert the Burst timestamp into the Internal timestamp
+                internal_timestamp = timestamp_yymmddhhmmsshh_to_ntp_time(data_dict[ZplscCDataKey.BURST_DATE])
 
-                # Extract a particle and append it to the record buffer
+                # Extract a particle, setting the internal timestamp to the burst timestamp and the preferred timestamp
+                # to the port timestamp. Then append it to the record buffer.
                 particle = self._extract_sample(
-                    ZplscCInstrumentDataParticle, None, data_dict, time_stamp)
+                    ZplscCInstrumentDataParticle, None, data_dict, internal_timestamp, DataParticleKey.PORT_TIMESTAMP)
                 if particle is not None:
                     log.trace('Parsed particle: %s' % particle.generate_dict())
                     self._record_buffer.append(particle)
@@ -297,7 +336,8 @@ class ZplscCDclParser(SimpleParser):
         @param matches: MatchObject containing regex matches for ZPLSC_C condensed ASCII data
         @return: dictionary of values with the particle names as keys or None
         """
-        data = [matches.group('transmission_timestamp')] + matches.group('condensed_data').split(',')
+        data = [matches.group('dcl_timestamp'), matches.group('transmission_timestamp')] +\
+            matches.group('condensed_data').split(',')
         num_freqs = matches.group('num_of_freqs')
 
         # Number of frequencies should be a number from 1 through 4 only
@@ -309,7 +349,7 @@ class ZplscCDclParser(SimpleParser):
         index = 0
 
         # Iterate through the ZPLSC_C data rules to parse out the individual condensed ASCII data
-        for key, counter, encoder in ZPLSC_C_DATA_RULES:
+        for key, counter in ZPLSC_C_DATA_RULES:
             # Skip channels beyond the expected number of frequencies (from 1-4)
             channel = key[-1]
             if channel.isdigit() and (int(channel) > int(num_freqs)):
@@ -333,9 +373,14 @@ class ZplscCDclParser(SimpleParser):
                           count, key, len(data), index)
                 return None
 
+            # Set the data in the particle data dictionary
             try:
                 if count > 1:
+                    # For the value list, add back in the minimum value that was subtracted by the instrument.
                     data_dict[key] = data[index:index + count]
+                    if key in min_value_mapping:
+                        min_value = int(data_dict[min_value_mapping[key]])
+                        data_dict[key] = [int(data_value) + min_value for data_value in data_dict[key]]
                 elif count == 1:
                     data_dict[key] = data[index]
                 else:
@@ -348,8 +393,8 @@ class ZplscCDclParser(SimpleParser):
             index += count
 
         # Check for valid board numbers per channel (0-3)
-        for value, name in enumerate((ZplscCParticleKey.BOARD_NUM_CHAN_1, ZplscCParticleKey.BOARD_NUM_CHAN_2,
-                                      ZplscCParticleKey.BOARD_NUM_CHAN_3, ZplscCParticleKey.BOARD_NUM_CHAN_4)):
+        for value, name in enumerate((ZplscCDataKey.BOARD_NUM_CHAN_1, ZplscCDataKey.BOARD_NUM_CHAN_2,
+                                      ZplscCDataKey.BOARD_NUM_CHAN_3, ZplscCDataKey.BOARD_NUM_CHAN_4)):
             if data_dict[name] not in (str(value), None):
                 log.error("Invalid data: %s should always be \'%s\' or None: %s %s",
                           name, value, data_dict[name], type(data_dict[name]))

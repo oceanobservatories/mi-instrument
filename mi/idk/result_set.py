@@ -71,9 +71,6 @@ data:
 
 """
 
-__author__ = 'Bill French'
-__license__ = 'Apache 2.0'
-
 import json
 import yaml
 import numpy
@@ -82,9 +79,14 @@ from mi.core.time_tools import string_to_ntp_date_time
 from mi.core.instrument.dataset_data_particle import DataParticle, DataParticleKey
 
 from mi.core.log import get_logger
+
+__author__ = 'Bill French'
+__license__ = 'Apache 2.0'
+
 log = get_logger()
 
 FLOAT_ALLOWED_DIFF = .00001
+TIMESTAMP_ALLOWED_DIFF = .001
 
 OBJECT_KEY = 'particle_object'
 TYPE_KEY = 'particle_type'
@@ -258,13 +260,17 @@ class ResultSet(object):
         return True
 
     @staticmethod
-    def _are_timestamps_equal(received_ts, expected_ts):
+    def _are_timestamps_equal(received_dict, expected_dict, timestamp_key):
         """
         Compare the timestamps
-        :param received_ts: received timestamp
-        :param expected_ts: expected timestamp from yml (can be string or ntp float)
+        :param received_dict: dictionary with received timestamp
+        :param expected_dict: dictionary with expected timestamp from yml (can be string or ntp float)
+        :param timestamp_key: key of the timestamp to check
         :return: If the timestamps are the same, None is returned, otherwise an error message string is
         """
+        received_ts = received_dict.get(timestamp_key)
+        expected_ts = expected_dict.get(timestamp_key)
+
         # Verify the timestamp, required to be in the particle
         if received_ts and expected_ts:
             # got timestamp in yml and received particle
@@ -274,16 +280,16 @@ class ResultSet(object):
                 # if not a string, timestamp should already be in ntp
                 expected = expected_ts
 
-            if abs(received_ts - expected) > FLOAT_ALLOWED_DIFF:
-                log.error("expected internal_timestamp mismatch, %.9f != %.9f" % (expected, received_ts))
+            if abs(received_ts - expected) > TIMESTAMP_ALLOWED_DIFF:
+                log.error("expected %s mismatch, %.9f != %.9f" % (timestamp_key, expected, received_ts))
                 return False
 
         elif expected_ts and not received_ts:
-            log.error("expected internal_timestamp, missing from received particle")
+            log.error("expected %s, missing from received particle" % timestamp_key)
             return False
 
         elif received_ts and not expected_ts:
-            log.error("internal_timestamp was received but is missing from .yml")
+            log.error("%s was received but is missing from .yml", timestamp_key)
             return False
 
         return True
@@ -301,8 +307,11 @@ class ResultSet(object):
         log.debug("Particle definition: %s", particle_expected)
 
         # compare internal timestamps
-        if not ResultSet._are_timestamps_equal(received_dict.get(DataParticleKey.INTERNAL_TIMESTAMP),
-                                               particle_expected.get(DataParticleKey.INTERNAL_TIMESTAMP)):
+        if not ResultSet._are_timestamps_equal(received_dict, particle_expected, DataParticleKey.INTERNAL_TIMESTAMP):
+            return False
+
+        # If the user has added the port_timestamp to the list of expected results then test it.
+        if not ResultSet._are_timestamps_equal(received_dict, particle_expected, DataParticleKey.PORT_TIMESTAMP):
             return False
 
         # particle object (class) and particle type (stream) keys will only be present for drivers
@@ -339,7 +348,7 @@ class ResultSet(object):
         # confirm the two particles have the same set of value keys
         if sorted(expected_keys) != sorted(received_keys):
             log.error("expected / particle keys mismatch: %s != %s" %
-                          (sorted(expected_keys), sorted(received_keys)))
+                      (sorted(expected_keys), sorted(received_keys)))
             return False
 
         # loop over each key and compare values
