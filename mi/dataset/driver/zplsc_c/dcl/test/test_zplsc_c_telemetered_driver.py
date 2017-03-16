@@ -18,7 +18,7 @@ class DriverTest(unittest.TestCase):
     def test_one(self):
 
         particle_data_handler = parse(None, self.source_file_path,
-                                       ParticleDataHandler())
+                                      ParticleDataHandler())
 
         log.info("SAMPLES: %s", particle_data_handler._samples)
         log.info("FAILURE: %s", particle_data_handler._failure)
@@ -28,4 +28,3 @@ class DriverTest(unittest.TestCase):
 if __name__ == '__main__':
     test = DriverTest('test_one')
     test.test_one()
-

@@ -101,7 +101,8 @@ class Parser(object):
         else:
             self._publish_callback([samples])
 
-    def _extract_sample(self, particle_class, regex, raw_data, timestamp):
+    def _extract_sample(self, particle_class, regex, raw_data, timestamp,
+                        preferred_ts=DataParticleKey.INTERNAL_TIMESTAMP):
         """
         Extract sample from a response line if present and publish
         parsed particle
@@ -112,6 +113,8 @@ class Parser(object):
         @param regex The regular expression that matches a data sample if regex
                      is none then process every line
         @param raw_data data to input into this particle.
+        @param timestamp the internal timestamp
+        @param preferred_ts the preferred timestamp (default: INTERNAL_TIMESTAMP)
         @retval return a raw particle if a sample was found, else None
         """
         particle = None
@@ -119,7 +122,7 @@ class Parser(object):
         try:
             if regex is None or regex.match(raw_data):
                 particle = particle_class(raw_data, internal_timestamp=timestamp,
-                                          preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
+                                          preferred_timestamp=preferred_ts)
 
                 # need to actually parse the particle fields to find out of there are errors
                 particle.generate_dict()

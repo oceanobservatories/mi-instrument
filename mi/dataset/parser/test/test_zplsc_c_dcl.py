@@ -207,4 +207,3 @@ class ZplscCDclParserUnitTestCase(ParserUnitTestCase):
 
             self.assertEqual(len(result), 3)
             self.assertListEqual(self.exception_callback_value, [])
-

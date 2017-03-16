@@ -34,7 +34,7 @@ def parse(unused, source_file_path, particle_data_handler):
 
 class ZplscCDclTelemeteredDriver(SimpleDatasetDriver):
     """
-    The zplsc_c_dcl driver class extends the SimpleDatasetDriver.
+    The zplsc_c_dcl telemetered driver class extends the SimpleDatasetDriver.
     """
 
     def __init__(self, unused, stream_handle, particle_data_handler):
