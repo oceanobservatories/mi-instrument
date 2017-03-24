@@ -59,7 +59,7 @@ data:
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2,
     2, 5, 5, 5, 5, 5, 12, 7, 10, 12, 7, 12, 5, 5, 0, 0]
   pitch: 316
-  port_timestamp: 3607286520.292
+  port_timestamp: 3607286518.003
   pressure: 25155
   roll: -484
   salinity: 35
@@ -85,7 +85,7 @@ data:
   firmware_version: 51, heading_alignment: 0, heading_bias: 0, internal_timestamp: 3607286478.64,
   lag_length: 53, low_corr_threshold: 64, low_latency_trigger: 0, num_beams: 4, num_cells: 60,
   num_code_repetitions: 3, particle_object: AdcpsConfig, particle_type: adcp_config,
-  percent_good_min: 0, pings_per_ensemble: 40, port_timestamp: 3607286520.292, reference_layer_start: 1,
+  percent_good_min: 0, pings_per_ensemble: 40, port_timestamp: 3607286518.003, reference_layer_start: 1,
   reference_layer_stop: 5, sensor_available_conductivity: 0, sensor_available_depth: 1,
   sensor_available_heading: 1, sensor_available_pitch: 1, sensor_available_roll: 1,
   sensor_available_speed: 0, sensor_available_temperature: 1, sensor_source_conductivity: 0,
@@ -99,7 +99,7 @@ data:
   adc_pressure_minus: 64, adc_pressure_plus: 97, adc_transmit_current: 111, adc_transmit_voltage: 130,
   bit_result: 0, error_status_word: 2281701376, heading_stdev: 0, internal_timestamp: 3607286478.64,
   mpt_hundredths: 0, mpt_minutes: 0, mpt_seconds: 0, particle_object: AdcpsEngineering,
-  particle_type: adcp_engineering, pitch_stdev: 0, port_timestamp: 3607286520.292,
+  particle_type: adcp_engineering, pitch_stdev: 0, port_timestamp: 3607286518.003,
   pressure_variance: 346, roll_stdev: 0, speed_of_sound: 1495, transmit_pulse_length: 71}
 - _index: 4
   bin_1_distance: 161
@@ -162,7 +162,7 @@ data:
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 5,
     5, 0, 7, 10, 7, 5, 12, 10, 10, 7, 7, 7, 7, 5, 0, 0]
   pitch: 316
-  port_timestamp: 3607287120.293
+  port_timestamp: 3607287118.003
   pressure: 25211
   roll: -483
   salinity: 35
@@ -186,7 +186,7 @@ data:
   adc_pressure_minus: 64, adc_pressure_plus: 97, adc_transmit_current: 111, adc_transmit_voltage: 130,
   bit_result: 0, error_status_word: 2281701376, heading_stdev: 0, internal_timestamp: 3607287078.64,
   mpt_hundredths: 0, mpt_minutes: 0, mpt_seconds: 0, particle_object: AdcpsEngineering,
-  particle_type: adcp_engineering, pitch_stdev: 0, port_timestamp: 3607287120.293,
+  particle_type: adcp_engineering, pitch_stdev: 0, port_timestamp: 3607287118.003,
   pressure_variance: 240, roll_stdev: 0, speed_of_sound: 1495, transmit_pulse_length: 71}
 - _index: 6
   bin_1_distance: 161
@@ -249,7 +249,7 @@ data:
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     2, 2, 5, 2, 5, 2, 5, 2, 2, 2, 0, 2, 2, 5, 0, 0]
   pitch: 317
-  port_timestamp: 3607287720.353
+  port_timestamp: 3607287718.065
   pressure: 25289
   roll: -482
   salinity: 35
@@ -273,7 +273,7 @@ data:
   adc_pressure_minus: 64, adc_pressure_plus: 97, adc_transmit_current: 61, adc_transmit_voltage: 62,
   bit_result: 0, error_status_word: 2281701376, heading_stdev: 0, internal_timestamp: 3607287678.64,
   mpt_hundredths: 0, mpt_minutes: 0, mpt_seconds: 0, particle_object: AdcpsEngineering,
-  particle_type: adcp_engineering, pitch_stdev: 0, port_timestamp: 3607287720.353,
+  particle_type: adcp_engineering, pitch_stdev: 0, port_timestamp: 3607287718.065,
   pressure_variance: 218, roll_stdev: 0, speed_of_sound: 1495, transmit_pulse_length: 71}
 - _index: 8
   bin_1_distance: 161
@@ -335,7 +335,7 @@ data:
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     2, 2, 0, 5, 10, 10, 17, 12, 17, 15, 12, 10, 2, 0, 0, 0]
   pitch: 316
-  port_timestamp: 3607288320.359
+  port_timestamp: 3607288318.067
   pressure: 25377
   roll: -479
   salinity: 35
@@ -359,7 +359,7 @@ data:
   adc_pressure_minus: 64, adc_pressure_plus: 97, adc_transmit_current: 58, adc_transmit_voltage: 62,
   bit_result: 0, error_status_word: 2281701376, heading_stdev: 0, internal_timestamp: 3607288278.64,
   mpt_hundredths: 0, mpt_minutes: 0, mpt_seconds: 0, particle_object: AdcpsEngineering,
-  particle_type: adcp_engineering, pitch_stdev: 0, port_timestamp: 3607288320.359,
+  particle_type: adcp_engineering, pitch_stdev: 0, port_timestamp: 3607288318.067,
   pressure_variance: 245, roll_stdev: 0, speed_of_sound: 1495, transmit_pulse_length: 71}
 - _index: 10
   bin_1_distance: 161
@@ -421,7 +421,7 @@ data:
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     2, 0, 0, 2, 7, 7, 7, 5, 5, 5, 5, 5, 5, 2, 0, 0]
   pitch: 319
-  port_timestamp: 3607288920.288
+  port_timestamp: 3607288917.999
   pressure: 25435
   roll: -480
   salinity: 35
@@ -445,7 +445,7 @@ data:
   adc_pressure_minus: 63, adc_pressure_plus: 98, adc_transmit_current: 110, adc_transmit_voltage: 129,
   bit_result: 0, error_status_word: 2281701376, heading_stdev: 0, internal_timestamp: 3607288878.64,
   mpt_hundredths: 0, mpt_minutes: 0, mpt_seconds: 0, particle_object: AdcpsEngineering,
-  particle_type: adcp_engineering, pitch_stdev: 0, port_timestamp: 3607288920.288,
+  particle_type: adcp_engineering, pitch_stdev: 0, port_timestamp: 3607288917.999,
   pressure_variance: 656, roll_stdev: 0, speed_of_sound: 1495, transmit_pulse_length: 71}
 - _index: 12
   bin_1_distance: 161
@@ -509,7 +509,7 @@ data:
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 2, 5, 2, 12, 12, 17, 15, 15, 10, 20, 17, 10, 0, 0]
   pitch: 322
-  port_timestamp: 3607289520.29
+  port_timestamp: 3607289518.0
   pressure: 25513
   roll: -485
   salinity: 35
@@ -533,7 +533,7 @@ data:
   adc_pressure_minus: 64, adc_pressure_plus: 97, adc_transmit_current: 110, adc_transmit_voltage: 130,
   bit_result: 0, error_status_word: 2281701376, heading_stdev: 0, internal_timestamp: 3607289478.64,
   mpt_hundredths: 0, mpt_minutes: 0, mpt_seconds: 0, particle_object: AdcpsEngineering,
-  particle_type: adcp_engineering, pitch_stdev: 0, port_timestamp: 3607289520.29,
+  particle_type: adcp_engineering, pitch_stdev: 0, port_timestamp: 3607289518.0,
   pressure_variance: 318, roll_stdev: 0, speed_of_sound: 1495, transmit_pulse_length: 71}
 - _index: 14
   bin_1_distance: 161
@@ -596,7 +596,7 @@ data:
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2,
     2, 2, 7, 7, 5, 2, 17, 17, 22, 20, 15, 17, 7, 15, 0, 0]
   pitch: 322
-  port_timestamp: 3607290120.291
+  port_timestamp: 3607290117.999
   pressure: 25585
   roll: -483
   salinity: 35
@@ -620,7 +620,7 @@ data:
   adc_pressure_minus: 64, adc_pressure_plus: 97, adc_transmit_current: 110, adc_transmit_voltage: 130,
   bit_result: 0, error_status_word: 2281701376, heading_stdev: 0, internal_timestamp: 3607290078.64,
   mpt_hundredths: 0, mpt_minutes: 0, mpt_seconds: 0, particle_object: AdcpsEngineering,
-  particle_type: adcp_engineering, pitch_stdev: 0, port_timestamp: 3607290120.291,
+  particle_type: adcp_engineering, pitch_stdev: 0, port_timestamp: 3607290117.999,
   pressure_variance: 167, roll_stdev: 0, speed_of_sound: 1495, transmit_pulse_length: 71}
 - _index: 16
   bin_1_distance: 161
@@ -682,7 +682,7 @@ data:
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 2, 0, 5, 12, 7, 12, 12, 17, 15, 17, 20, 10, 0, 0]
   pitch: 317
-  port_timestamp: 3607293720.284
+  port_timestamp: 3607293717.994
   pressure: 25984
   roll: -478
   salinity: 35
@@ -706,7 +706,7 @@ data:
   adc_pressure_minus: 63, adc_pressure_plus: 98, adc_transmit_current: 110, adc_transmit_voltage: 130,
   bit_result: 0, error_status_word: 2281701376, heading_stdev: 0, internal_timestamp: 3607293678.64,
   mpt_hundredths: 0, mpt_minutes: 0, mpt_seconds: 0, particle_object: AdcpsEngineering,
-  particle_type: adcp_engineering, pitch_stdev: 0, port_timestamp: 3607293720.284,
+  particle_type: adcp_engineering, pitch_stdev: 0, port_timestamp: 3607293717.994,
   pressure_variance: 297, roll_stdev: 0, speed_of_sound: 1495, transmit_pulse_length: 71}
 - _index: 18
   bin_1_distance: 161
@@ -769,7 +769,7 @@ data:
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 2, 5, 2, 5, 15, 10, 12, 0, 0]
   pitch: 317
-  port_timestamp: 3607297320.322
+  port_timestamp: 3607297317.993
   pressure: 26190
   roll: -476
   salinity: 35
@@ -793,7 +793,7 @@ data:
   adc_pressure_minus: 63, adc_pressure_plus: 98, adc_transmit_current: 110, adc_transmit_voltage: 130,
   bit_result: 0, error_status_word: 2281701376, heading_stdev: 0, internal_timestamp: 3607297278.64,
   mpt_hundredths: 0, mpt_minutes: 0, mpt_seconds: 0, particle_object: AdcpsEngineering,
-  particle_type: adcp_engineering, pitch_stdev: 0, port_timestamp: 3607297320.322,
+  particle_type: adcp_engineering, pitch_stdev: 0, port_timestamp: 3607297317.993,
   pressure_variance: 186, roll_stdev: 0, speed_of_sound: 1495, transmit_pulse_length: 71}
 - _index: 20
   bin_1_distance: 161
@@ -855,7 +855,7 @@ data:
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 2, 2, 5, 2, 7, 5, 12, 20, 12, 12, 2, 5, 0, 0]
   pitch: 317
-  port_timestamp: 3607308120.274
+  port_timestamp: 3607308117.985
   pressure: 25794
   roll: -479
   salinity: 35
@@ -879,7 +879,7 @@ data:
   adc_pressure_minus: 63, adc_pressure_plus: 97, adc_transmit_current: 111, adc_transmit_voltage: 130,
   bit_result: 0, error_status_word: 2281701376, heading_stdev: 0, internal_timestamp: 3607308078.64,
   mpt_hundredths: 0, mpt_minutes: 0, mpt_seconds: 0, particle_object: AdcpsEngineering,
-  particle_type: adcp_engineering, pitch_stdev: 0, port_timestamp: 3607308120.274,
+  particle_type: adcp_engineering, pitch_stdev: 0, port_timestamp: 3607308117.985,
   pressure_variance: 223, roll_stdev: 0, speed_of_sound: 1495, transmit_pulse_length: 71}
 - _index: 22
   bin_1_distance: 161
@@ -942,7 +942,7 @@ data:
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 2, 2, 0, 7, 12, 15, 20, 17, 12, 10, 2, 0, 0]
   pitch: 316
-  port_timestamp: 3607318920.264
+  port_timestamp: 3607318917.975
   pressure: 24843
   roll: -478
   salinity: 35
@@ -967,7 +967,7 @@ data:
   adc_pressure_minus: 64, adc_pressure_plus: 97, adc_transmit_current: 110, adc_transmit_voltage: 130,
   bit_result: 0, error_status_word: 2281701376, heading_stdev: 0, internal_timestamp: 3607318878.64,
   mpt_hundredths: 0, mpt_minutes: 0, mpt_seconds: 0, particle_object: AdcpsEngineering,
-  particle_type: adcp_engineering, pitch_stdev: 0, port_timestamp: 3607318920.264,
+  particle_type: adcp_engineering, pitch_stdev: 0, port_timestamp: 3607318917.975,
   pressure_variance: 208, roll_stdev: 0, speed_of_sound: 1495, transmit_pulse_length: 71}
 - _index: 24
   bin_1_distance: 161
@@ -1028,7 +1028,7 @@ data:
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 5, 2, 2, 2, 5, 5, 5, 10, 12, 7, 7, 17, 17, 0, 0]
   pitch: 318
-  port_timestamp: 3607329720.255
+  port_timestamp: 3607329717.969
   pressure: 25291
   roll: -477
   salinity: 35
@@ -1052,7 +1052,7 @@ data:
   adc_pressure_minus: 64, adc_pressure_plus: 97, adc_transmit_current: 111, adc_transmit_voltage: 130,
   bit_result: 0, error_status_word: 2281701376, heading_stdev: 0, internal_timestamp: 3607329678.64,
   mpt_hundredths: 0, mpt_minutes: 0, mpt_seconds: 0, particle_object: AdcpsEngineering,
-  particle_type: adcp_engineering, pitch_stdev: 0, port_timestamp: 3607329720.255,
+  particle_type: adcp_engineering, pitch_stdev: 0, port_timestamp: 3607329717.969,
   pressure_variance: 299, roll_stdev: 0, speed_of_sound: 1495, transmit_pulse_length: 71}
 - _index: 26
   bin_1_distance: 161
@@ -1113,7 +1113,7 @@ data:
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 2, 5, 5, 2, 0, 0, 0, 0]
   pitch: 318
-  port_timestamp: 3607340520.248
+  port_timestamp: 3607340517.959
   pressure: 26101
   roll: -480
   salinity: 35
@@ -1135,7 +1135,7 @@ data:
   adc_pressure_minus: 63, adc_pressure_plus: 97, adc_transmit_current: 110, adc_transmit_voltage: 130,
   bit_result: 0, error_status_word: 2281701376, heading_stdev: 0, internal_timestamp: 3607340478.64,
   mpt_hundredths: 0, mpt_minutes: 0, mpt_seconds: 0, particle_object: AdcpsEngineering,
-  particle_type: adcp_engineering, pitch_stdev: 0, port_timestamp: 3607340520.248,
+  particle_type: adcp_engineering, pitch_stdev: 0, port_timestamp: 3607340517.959,
   pressure_variance: 185, roll_stdev: 0, speed_of_sound: 1495, transmit_pulse_length: 71}
 - _index: 28
   bin_1_distance: 161
@@ -1196,7 +1196,7 @@ data:
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0]
   pitch: 318
-  port_timestamp: 3607351320.238
+  port_timestamp: 3607351317.949
   pressure: 25566
   roll: -480
   salinity: 35
@@ -1219,7 +1219,7 @@ data:
   adc_pressure_minus: 63, adc_pressure_plus: 97, adc_transmit_current: 110, adc_transmit_voltage: 130,
   bit_result: 0, error_status_word: 2281701376, heading_stdev: 0, internal_timestamp: 3607351278.64,
   mpt_hundredths: 0, mpt_minutes: 0, mpt_seconds: 0, particle_object: AdcpsEngineering,
-  particle_type: adcp_engineering, pitch_stdev: 0, port_timestamp: 3607351320.238,
+  particle_type: adcp_engineering, pitch_stdev: 0, port_timestamp: 3607351317.949,
   pressure_variance: 246, roll_stdev: 0, speed_of_sound: 1494, transmit_pulse_length: 71}
 - _index: 30
   bin_1_distance: 161
@@ -1280,7 +1280,7 @@ data:
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 2, 0, 0, 0, 0, 5, 2, 0, 0, 5, 0, 0, 0, 0, 0]
   pitch: 319
-  port_timestamp: 3607362120.23
+  port_timestamp: 3607362117.941
   pressure: 24304
   roll: -481
   salinity: 35
@@ -1304,6 +1304,6 @@ data:
   adc_pressure_minus: 65, adc_pressure_plus: 96, adc_transmit_current: 110, adc_transmit_voltage: 130,
   bit_result: 0, error_status_word: 2281701376, heading_stdev: 0, internal_timestamp: 3607362078.64,
   mpt_hundredths: 0, mpt_minutes: 0, mpt_seconds: 0, particle_object: AdcpsEngineering,
-  particle_type: adcp_engineering, pitch_stdev: 0, port_timestamp: 3607362120.23,
+  particle_type: adcp_engineering, pitch_stdev: 0, port_timestamp: 3607362117.941,
   pressure_variance: 342, roll_stdev: 0, speed_of_sound: 1494, transmit_pulse_length: 71}
 header: {particle_object: MULTIPLE, particle_type: MULTIPLE}
