@@ -9,71 +9,21 @@
 This file contains code for the zplsc_c parser and code to produce data particles.
 
 The ZPLSC sensor, series C, provides acoustic return measurements from the water column.
-The revcovered data files (*.01A) are binary recovered from the CF flash memory..
+The revcovered data files (*.01A) are binary recovered from the CF flash memory.
 The file may contain record data for multiple phases and bursts of measurements.
 Mal-formed sensor data records produce no particles.
 
 All data are in unsigned integer format, with exception of the first 2 delimiter characters.
-The sensor data record has the following format:
+The sensor data record has a header followed by the scientific data.  The format of the header
+is defined in the AzfpProfileHeader class below.
 
-Field   Bytes    Description
------   ----     -------   -----------
- 0       2       Profile Data Delimiter ('\xfd\x02')
- 1       2       Burst #
- 2       2       Instrument Serial #
- 3       2       Ping Status
- 4       4       Burst Interval (seconds)
- 5       2       Year
- 6       2       Month
- 7       2       Day
- 8       2       Hour
- 9       2       Minutes
-10       2       Second
-11       2       Hundredths of a second
-12       8(2x4)  Digitization Rate (channels 1-4) (64000, 40000 or 20000)
-13       8(2x4)  # of samples skipped at start of ping (channels 1-4)
-14       8(2x4)  # of bins (channels 1-4)
-15       8(2x4)  Range samples per bin (channels 1-4)
-16       2       # of pings per profile
-17       2       Flag that indicates if pings are averaged in time
-18       2       # of pings that have been aquired in this burst
-19       2       Ping period in seconds
-20       2       First ping - # of the first averaged ping or ping # if not averaged
-21       2       Last ping - # of the last averaged ping or ping # if not averaged
-22       4(1x4)  1 = averaged data (5 bytes), 0 = not averaged (2 bytes)
-23       2       Error number if an error occurred
-24       1       Phase used to acquire this profile
-25       1       1 if an over run occurred
-26       1       Number of channels (1, 2, 3 or 4)
-27       1       Gain channel 1 - gain 0, 1, 2, 3 (Obsolete)
-28       1       Gain channel 2 - gain 0, 1, 2, 3 (Obsolete)
-29       1       Gain channel 3 - gain 0, 1, 2, 3 (Obsolete)
-30       1       Gain channel 4 - gain 0, 1, 2, 3 (Obsolete)
-31       1       Spare
-32       2       Pulse length channel 1 (uS)
-33       2       Pulse length channel 2 (uS)
-34       2       Pulse length channel 3 (uS)
-35       2       Pulse length channel 4 (uS)
-36       2       Board # the data came from for channel 1
-37       2       Board # the data came from for channel 2
-38       2       Board # the data came from for channel 3
-39       2       Board # the data came from for channel 4
-40       2       Board frequency for channel 1 (Hz)
-41       2       Board frequency for channel 2 (Hz)
-42       2       Board frequency for channel 3 (Hz)
-43       2       Board frequency for channel 4 (Hz)
-44       2       Sensor Flag to indicate if pressure/temperature sensor is available
-45       2       Tilt X (counts)
-46       2       Tilt Y (counts)
-47       2       Battery (counts)
-48       2       Pressure (counts)
-49       2       Temperature (counts)
-50       2       AD channel 6
-51       2       AD channel 7
-52       # Bins  Data Channel 1
-53       # Bins  Data Channel 2
-54       # Bins  Data Channel 3
-55       # Bins  Data Channel 4
+The format of the scientific data is as follows:
+Bytes    Description
+------   ---------------
+# Bins   Data Channel 1
+# Bins   Data Channel 2
+# Bins   Data Channel 3
+# Bins   Data Channel 4
 
 Data that is stored as 16 bit digitized data is stored as consecutive 16 bit values.
 The number is defined by the # of bins or NumBins.
@@ -89,6 +39,7 @@ Initial Release
 
 import struct
 import exceptions
+from ctypes import *
 from mi.core.exceptions import SampleException, RecoverableSampleException
 from mi.core.instrument.dataset_data_particle import DataParticle, DataParticleKey
 from mi.core.log import get_logger, get_logging_metaclass
@@ -104,7 +55,6 @@ __license__ = 'Apache 2.0'
 
 
 PROFILE_DATA_DELIMITER = '\xfd\x02'
-ZPLSC_C_METADATA_STRUCT = struct.Struct('>2s3HI7H4H4H4H4H6H4BH8B4H4H4H8H')
 ZPLSC_C_DELIMITER_STRUCT = struct.Struct('>2s')
 
 
@@ -159,15 +109,49 @@ class ZplscCRecoveredDataParticle(DataParticle):
                 for name, value in self.raw_data.iteritems()]
 
 
-def find_next_record(index, data):
-    """
-    :param index: Current index
-    :param data: Data read in from the file
-    :return: Index of the next record found
-    """
-    while ZPLSC_C_DELIMITER_STRUCT.unpack(data[index:index+2])[0] != PROFILE_DATA_DELIMITER:
-        index += 1
-    return index
+class AzfpProfileHeader(BigEndianStructure):
+    _fields_ = [
+        ('delimiter', c_char*2),            # Profile Data Delimiter ('\xfd\x02')
+        ('burst_num', c_ushort),            # Burst number
+        ('serial_num', c_ushort),           # Instrument Serial number
+        ('ping_status', c_ushort),          # Ping Status
+        ('burst_interval', c_uint),         # Burst Interval (seconds)
+        ('year', c_ushort),                 # Year
+        ('month', c_ushort),                # Month
+        ('day', c_ushort),                  # Day
+        ('hour', c_ushort),                 # Hour
+        ('minute', c_ushort),               # Minute
+        ('second', c_ushort),               # Second
+        ('hundredths', c_ushort),           # Hundreths of a second
+        ('digitization_rate', c_ushort*4),  # Digitization Rate (channels 1-4) (64000, 40000 or 20000)
+        ('num_skip_samples', c_ushort*4),   # Number of samples skipped at start of ping (channels 1-4)
+        ('num_bins', c_ushort*4),           # Number of bins (channels 1-4)
+        ('range_samples', c_ushort*4),      # Range samples per bin (channels 1-4)
+        ('num_pings_profile', c_ushort),    # Number of pings per profile
+        ('is_averaged_time', c_ushort),     # Indicates if pings are averaged in time
+        ('num_pings_burst', c_ushort),      # Number of pings that have been acquired in this burst
+        ('ping_period', c_ushort),          # Ping period in seconds
+        ('first_ping', c_ushort),           # First ping number (if averaged, first averaged ping number)
+        ('second_ping', c_ushort),          # Last ping number (if averaged, last averaged ping number)
+        ('is_averaged_data', c_ubyte*4),    # 1 = averaged data (5 bytes), 0 = not averaged (2 bytes)
+        ('error_num', c_ushort),            # Error number if an error occurred
+        ('phase', c_ubyte),                 # Phase used to acquire this profile
+        ('is_overrun', c_ubyte),            # 1 if an over run occurred
+        ('num_channels', c_ubyte),          # Number of channels (1, 2, 3 or 4)
+        ('gain', c_ubyte*4),                # Gain (channels 1-4) 0, 1, 2, 3 (Obsolete)
+        ('spare', c_ubyte),                 # Spare
+        ('pulse_length', c_ushort*4),       # Pulse length (channels 1-4) (uS)
+        ('board_num', c_ushort*4),          # Board number of the data (channels 1-4)
+        ('frequency', c_ushort*4),          # Board frequency (channels 1-4)
+        ('is_sensor_available', c_ushort),  # Indicate if pressure/temperature sensor is available
+        ('tilt_x', c_ushort),               # Tilt X (counts)
+        ('tilt_y', c_ushort),               # Tilt Y (counts)
+        ('battery_voltage', c_ushort),      # Battery voltage (counts)
+        ('pressure', c_ushort),             # Pressure (counts)
+        ('temperature', c_ushort),          # Temperature (counts)
+        ('ad_channel_6', c_ushort),         # AD channel 6
+        ('ad_channel_7', c_ushort)          # AD channel 7
+        ]
 
 
 class ZplscCParser(SimpleParser):
@@ -177,79 +161,56 @@ class ZplscCParser(SimpleParser):
         self._gen = None
 
     def parse_file(self):
-        # Read the entire contents of the data file
-        data = self._stream_handle.read()
-
-        index = 0
-        while index < len(data):
-            # Get the metadata protion of the next record.
-            record = ZPLSC_C_METADATA_STRUCT.unpack(data[index:index+ZPLSC_C_METADATA_STRUCT.size])
-            index += ZPLSC_C_METADATA_STRUCT.size
-
-            bins_chan = [0, 0, 0, 0]
-            data_type_chan = [0, 0, 0, 0]
-            freq_chan = [0, 0, 0, 0]
+        ph = AzfpProfileHeader()
+        while self._stream_handle.readinto(ph):
             chan_values = [[], [], [], []]
 
-            # Parse the metadata portion of the record.
-            delimiter, burst_num, serial_num, _, _, year, month, day, hour, minute, second, hundredths,\
-                _, _, _, _, \
-                _, _, _, _, \
-                bins_chan[0], bins_chan[1], bins_chan[2], bins_chan[3], \
-                _, _, _, _, \
-                _, _, _, _, _, _, \
-                data_type_chan[0], data_type_chan[1], data_type_chan[2], data_type_chan[3], \
-                _, phase, _, num_channels, \
-                _, _, _, _, \
-                _, \
-                _, _, _, _, \
-                _, _, _, _, \
-                freq_chan[0], freq_chan[1], freq_chan[2], freq_chan[3], \
-                _, \
-                tilt_x, tilt_y, battery_voltage, temperature, pressure, \
-                _, _ = record
+            if ph.delimiter == PROFILE_DATA_DELIMITER:
+                # Parse the data values portion of the record.
+                for chan in range(ph.num_channels):
+                    num_bins = ph.num_bins[chan]
 
-            # Parse the data values portion of the record.
-            if delimiter == PROFILE_DATA_DELIMITER:
-                for chan in range(num_channels):
-                    struct_format = '>' + str(bins_chan[chan]) + 'I'
+                    if ph.is_averaged_data[chan] == 1:
+                        num_data_bytes = 4
+                    else:
+                        num_data_bytes = 2
+
+                    struct_format = '>' + str(num_bins) + 'I'
                     data_struct = struct.Struct(struct_format)
-                    chan_values[chan] = data_struct.unpack(data[index:index+data_struct.size])
-                    index += data_struct.size
+                    data = self._stream_handle.read(num_bins*num_data_bytes)
+                    chan_values[chan] = data_struct.unpack(data)
 
                     # If the data type is for averaged data, read away the overflow bytes.
-                    if data_type_chan[chan] == 1:
-                        struct_format = '>' + str(bins_chan[chan]) + 'B'
-                        data_struct = struct.Struct(struct_format)
-                        index += data_struct.size
+                    if ph.is_averaged_data[chan] == 1:
+                        self._stream_handle.read(num_bins)
 
                 # Convert the date and time parameters to a epoch time from 01-01-1900.
                 try:
-                    timestamp = (datetime(year, month, day, hour, minute, second, (hundredths * 10000)) -
-                                 datetime(1900, 1, 1)).total_seconds()
+                    timestamp = (datetime(ph.year, ph.month, ph.day, ph.hour, ph.minute, ph.second,
+                                          (ph.hundredths * 10000)) - datetime(1900, 1, 1)).total_seconds()
+
                 except exceptions.ValueError as ex:
                     self._exception_callback('Transition timestamp has invalid format: %s' % ex.message)
-                    index = find_next_record(index, data)
                     continue
 
                 # Format the data in a particle data dictionary
                 zp_data = {
                     ZplscCParticleKey.TRANS_TIMESTAMP: timestamp,
-                    ZplscCParticleKey.SERIAL_NUMBER: str(serial_num),
-                    ZplscCParticleKey.PHASE: phase,
-                    ZplscCParticleKey.BURST_NUMBER: burst_num,
-                    ZplscCParticleKey.TILT_X: tilt_x,
-                    ZplscCParticleKey.TILT_Y: tilt_y,
-                    ZplscCParticleKey.BATTERY_VOLTAGE: battery_voltage,
-                    ZplscCParticleKey.TEMPERATURE: temperature,
-                    ZplscCParticleKey.PRESSURE: pressure,
-                    ZplscCParticleKey.FREQ_CHAN_1: freq_chan[0],
+                    ZplscCParticleKey.SERIAL_NUMBER: str(ph.serial_num),
+                    ZplscCParticleKey.PHASE: ph.phase,
+                    ZplscCParticleKey.BURST_NUMBER: ph.burst_num,
+                    ZplscCParticleKey.TILT_X: ph.tilt_x,
+                    ZplscCParticleKey.TILT_Y: ph.tilt_y,
+                    ZplscCParticleKey.BATTERY_VOLTAGE: ph.battery_voltage,
+                    ZplscCParticleKey.PRESSURE: ph.pressure,
+                    ZplscCParticleKey.TEMPERATURE: ph.temperature,
+                    ZplscCParticleKey.FREQ_CHAN_1: ph.frequency[0],
                     ZplscCParticleKey.VALS_CHAN_1: list(chan_values[0]),
-                    ZplscCParticleKey.FREQ_CHAN_2: freq_chan[1],
+                    ZplscCParticleKey.FREQ_CHAN_2: ph.frequency[1],
                     ZplscCParticleKey.VALS_CHAN_2: list(chan_values[1]),
-                    ZplscCParticleKey.FREQ_CHAN_3: freq_chan[2],
+                    ZplscCParticleKey.FREQ_CHAN_3: ph.frequency[2],
                     ZplscCParticleKey.VALS_CHAN_3: list(chan_values[2]),
-                    ZplscCParticleKey.FREQ_CHAN_4: freq_chan[3],
+                    ZplscCParticleKey.FREQ_CHAN_4: ph.frequency[3],
                     ZplscCParticleKey.VALS_CHAN_4: list(chan_values[3])
                 }
 
@@ -265,9 +226,18 @@ class ZplscCParser(SimpleParser):
                     self._exception_callback(ex)
 
             else:
-                # The profile data delimiter was invalid.  Set the exception callback and
-                # find the delimiter for the next profile data.
-                self._exception_callback('Profile delimiter invalid: received: %s%s ; expected %s%s' %
-                                         (hex(ord(delimiter[0])), hex(ord(delimiter[1])),
-                                          hex(ord(PROFILE_DATA_DELIMITER[0])), hex(ord(PROFILE_DATA_DELIMITER[1]))))
-                index = find_next_record(index, data)
+                # The profile data delimiter was invalid.  Set the exception callback
+                delimiter_received = ''
+                for index in range(len(ph.delimiter)):
+                    delimiter_received += hex(ord(ph.delimiter[index]))
+
+                delimiter_expected = ''
+                for index in range(len(ph.delimiter)):
+                    delimiter_expected += hex(ord(PROFILE_DATA_DELIMITER[index]))
+
+                self._exception_callback('Profile delimiter invalid: received: %s ; expected %s' %
+                                         (delimiter_received, delimiter_expected))
+                return
+
+            # Clear the profile data structure
+            ph = AzfpProfileHeader()

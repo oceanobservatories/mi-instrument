@@ -136,7 +136,7 @@ class ZplscCParserUnitTestCase(ParserUnitTestCase):
             # In a single read, get all particles for this file.
             result = parser.get_records(10)
 
-            self.assertEqual(len(result), 8)
+            self.assertEqual(len(result), 5)
             self.assert_particles(result, '15100520-Test-Corrupt.01A.yml', RESOURCE_PATH)
 
             self.assertEqual(len(self.exception_callback_value), 2)
@@ -152,7 +152,7 @@ class ZplscCParserUnitTestCase(ParserUnitTestCase):
         for integration testing, i.e. a yml file.
         """
 
-        with open(self.file_path('20150407.zplsc_var_channels.log')) as in_file:
+        with open(self.file_path('15100520-Test.01A')) as in_file:
 
             parser = self.create_zplsc_c_parser(in_file)
 
