@@ -21,7 +21,7 @@ log = get_logger()
 
 MODULE_NAME = 'mi.dataset.parser.zplsc_c'
 CLASS_NAME = 'ZplscCRecoveredDataParticle'
-PARTICLE_TYPE = 'zplsc_c_instrument'
+PARTICLE_TYPE = 'zplsc_c_recovered'
 
 
 @attr('UNIT', group='mi')
@@ -98,6 +98,27 @@ class ZplscCParserUnitTestCase(ParserUnitTestCase):
 
         log.debug('===== END TEST TELEM  =====')
 
+    def test_large_recovered(self):
+        """
+        Read a large file and pull out a data particle.
+        Verify that the results are those we expected.
+        """
+
+        log.debug('===== START LARGE RECOVERED  =====')
+
+        with open(self.file_path('16100100-Test.01A'), 'rb') as in_file:
+
+            parser = self.create_zplsc_c_parser(in_file)
+
+            # In a single read, get all particles for this file.
+            result = parser.get_records(60)
+
+            self.assertEqual(len(result), 60)
+            self.assert_particles(result, '16100100-Test.01A.yml', RESOURCE_PATH)
+            self.assertListEqual(self.exception_callback_value, [])
+
+        log.debug('===== END LARGE RECOVERED  =====')
+
     def test_variable_length_channels(self):
         """
         The raw data binary file used in the test_recovered test above was modifed.
@@ -123,11 +144,11 @@ class ZplscCParserUnitTestCase(ParserUnitTestCase):
 
         log.debug('===== END TEST VARIABLE NUM OF CHANNELS =====')
 
-    def test_bad_data(self):
+    def test_bad_timestamp(self):
         """
         Ensure that bad data is skipped when it exists.
         """
-        log.debug('===== START TEST BAD DATA  =====')
+        log.debug('===== START TEST BAD TIMESTAMP  =====')
 
         with open(self.file_path('15100520-Test-Corrupt.01A')) as in_file:
 
@@ -136,14 +157,36 @@ class ZplscCParserUnitTestCase(ParserUnitTestCase):
             # In a single read, get all particles for this file.
             result = parser.get_records(10)
 
-            self.assertEqual(len(result), 5)
+            self.assertEqual(len(result), 8)
             self.assert_particles(result, '15100520-Test-Corrupt.01A.yml', RESOURCE_PATH)
 
             self.assertEqual(len(self.exception_callback_value), 2)
             for i in range(len(self.exception_callback_value)):
                 log.error('Exception: %s', self.exception_callback_value[i])
 
-        log.debug('===== END TEST BAD DATA  =====')
+        log.debug('===== END TEST BAD TIMESTAMP  =====')
+
+    def test_bad_delimiter(self):
+        """
+        Ensure that bad data is skipped when it exists.
+        """
+        log.debug('===== START TEST BAD DELIMITER  =====')
+
+        with open(self.file_path('15100520-Test-Corrupt-1.01A')) as in_file:
+
+            parser = self.create_zplsc_c_parser(in_file)
+
+            # In a single read, get all particles for this file.
+            result = parser.get_records(10)
+
+            self.assertEqual(len(result), 9)
+            self.assert_particles(result, '15100520-Test-Corrupt-1.01A.yml', RESOURCE_PATH)
+
+            self.assertEqual(len(self.exception_callback_value), 1)
+            for i in range(len(self.exception_callback_value)):
+                log.error('Exception: %s', self.exception_callback_value[i])
+
+        log.debug('===== END TEST BAD DELIMITER  =====')
 
     def create_large_yml(self):
         """
@@ -152,17 +195,12 @@ class ZplscCParserUnitTestCase(ParserUnitTestCase):
         for integration testing, i.e. a yml file.
         """
 
-        with open(self.file_path('15100520-Test.01A')) as in_file:
+        with open(self.file_path('16100100-Test.01A')) as in_file:
 
             parser = self.create_zplsc_c_parser(in_file)
-
-            date, name, ext = in_file.name.split('.')
-            date = date.split('/')[-1]
-            out_file = '.'.join([date, name, 'yml'])
-            log.debug(out_file)
-
-            # In a single read, get all particles in this file.
             result = parser.get_records(1000)
+
+            out_file = '.'.join([in_file.name, 'yml'])
 
             self.particle_to_yml(result, out_file)
 
@@ -183,11 +221,17 @@ class ZplscCParserUnitTestCase(ParserUnitTestCase):
                 fid.write('  - _index: %d\n' % (index+1))
                 fid.write('    internal_timestamp: %.7f\n' % particle_dict.get('internal_timestamp'))
                 fid.write('    port_timestamp: %.7f\n' % particle_dict.get('port_timestamp'))
-                for key, value in particle_dict.get('values').iteritems():
+
+                values_dict = {}
+                for value in particle_dict.get('values'):
+                    values_dict[value.get('value_id')] = value.get('value')
+
+                for key in sorted(values_dict.iterkeys()):
+                    value = values_dict[key]
                     if value is None:
                         fid.write('    %s: %s\n' % (key, 'Null'))
                     elif isinstance(value, float):
-                        fid.write('    %s: %2.1f\n' % (key, value))
+                        fid.write('    %s: %15.4f\n' % (key, value))
                     elif isinstance(value, str):
                         fid.write("    %s: '%s'\n" % (key, value))
                     else:

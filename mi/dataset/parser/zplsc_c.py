@@ -55,7 +55,6 @@ __license__ = 'Apache 2.0'
 
 
 PROFILE_DATA_DELIMITER = '\xfd\x02'
-ZPLSC_C_DELIMITER_STRUCT = struct.Struct('>2s')
 
 
 class DataParticleType(BaseEnum):
@@ -75,6 +74,7 @@ class ZplscCParticleKey(BaseEnum):
     BATTERY_VOLTAGE = "zplsc_c_battery_voltage_counts"
     TEMPERATURE = "zplsc_c_temperature_counts"
     PRESSURE = "zplsc_c_pressure_counts"
+    IS_AVERAGED_DATA = "zplsc_c_is_averaged_data"
     FREQ_CHAN_1 = "zplsc_c_frequency_channel_1"
     VALS_CHAN_1 = "zplsc_c_values_channel_1"
     FREQ_CHAN_2 = "zplsc_c_frequency_channel_2"
@@ -110,8 +110,8 @@ class ZplscCRecoveredDataParticle(DataParticle):
 
 
 class AzfpProfileHeader(BigEndianStructure):
+    _pack_ = 1
     _fields_ = [
-        ('delimiter', c_char*2),            # Profile Data Delimiter ('\xfd\x02')
         ('burst_num', c_ushort),            # Burst number
         ('serial_num', c_ushort),           # Instrument Serial number
         ('ping_status', c_ushort),          # Ping Status
@@ -128,7 +128,7 @@ class AzfpProfileHeader(BigEndianStructure):
         ('num_bins', c_ushort*4),           # Number of bins (channels 1-4)
         ('range_samples', c_ushort*4),      # Range samples per bin (channels 1-4)
         ('num_pings_profile', c_ushort),    # Number of pings per profile
-        ('is_averaged_time', c_ushort),     # Indicates if pings are averaged in time
+        ('is_averaged_pings', c_ushort),    # Indicates if pings are averaged in time
         ('num_pings_burst', c_ushort),      # Number of pings that have been acquired in this burst
         ('ping_period', c_ushort),          # Ping period in seconds
         ('first_ping', c_ushort),           # First ping number (if averaged, first averaged ping number)
@@ -160,84 +160,101 @@ class ZplscCParser(SimpleParser):
         self._particle_type = None
         self._gen = None
 
+    def find_next_record(self):
+        good_delimiter = True
+        delimiter = self._stream_handle.read(2)
+        while delimiter not in [PROFILE_DATA_DELIMITER, '']:
+            good_delimiter = False
+            delimiter = delimiter[1:2]
+            delimiter += self._stream_handle.read(1)
+
+        if not good_delimiter:
+            self._exception_callback('Invalid record delimiter found.')
+
+    def parse_record(self, ph):
+        """
+        :param ph: Profile Header for the current data record being parsed.
+        """
+        chan_values = [[], [], [], []]
+        overflow_values = [[], [], [], []]
+
+        # if ph.delimiter == PROFILE_DATA_DELIMITER:
+        # Parse the data values portion of the record.
+        for chan in range(ph.num_channels):
+            num_bins = ph.num_bins[chan]
+
+            # Set the data structure format for the scientific data, based on whether
+            # the data is averaged or not, then construct the data structure, then read
+            # the data bytes for the current channel and unpack them based on the structure.
+            if ph.is_averaged_data[chan] == 1:
+                data_struct_format = '>' + str(num_bins) + 'I'
+            else:
+                data_struct_format = '>' + str(num_bins) + 'H'
+            data_struct = struct.Struct(data_struct_format)
+            data = self._stream_handle.read(data_struct.size)
+            chan_values[chan] = data_struct.unpack(data)
+
+            # If the data type is for averaged data, calculate the averaged data by multiplying
+            # the overflow data by 0xFFFF and adding to the sum (the data read above).
+            if ph.is_averaged_data[chan]:
+                overflow_struct_format = '>' + str(num_bins) + 'B'
+                overflow_struct = struct.Struct(overflow_struct_format)
+                overflow_data = self._stream_handle.read(num_bins)
+                overflow_values[chan] = overflow_struct.unpack(overflow_data)
+                overflow_values[chan] = [ovfl_data * 0xFFFF for ovfl_data in overflow_values[chan]]
+                chan_values[chan] = [sum_data + ovfl_data for sum_data, ovfl_data in
+                                     zip(chan_values[chan], overflow_values[chan])]
+
+        # Convert the date and time parameters to a epoch time from 01-01-1900.
+        timestamp = (datetime(ph.year, ph.month, ph.day, ph.hour, ph.minute, ph.second,
+                              (ph.hundredths * 10000)) - datetime(1900, 1, 1)).total_seconds()
+
+        # Format the data in a particle data dictionary
+        zp_data = {
+            ZplscCParticleKey.TRANS_TIMESTAMP: timestamp,
+            ZplscCParticleKey.SERIAL_NUMBER: str(ph.serial_num),
+            ZplscCParticleKey.PHASE: ph.phase,
+            ZplscCParticleKey.BURST_NUMBER: ph.burst_num,
+            ZplscCParticleKey.TILT_X: ph.tilt_x,
+            ZplscCParticleKey.TILT_Y: ph.tilt_y,
+            ZplscCParticleKey.BATTERY_VOLTAGE: ph.battery_voltage,
+            ZplscCParticleKey.PRESSURE: ph.pressure,
+            ZplscCParticleKey.TEMPERATURE: ph.temperature,
+            ZplscCParticleKey.IS_AVERAGED_DATA: list(ph.is_averaged_data),
+            ZplscCParticleKey.FREQ_CHAN_1: ph.frequency[0],
+            ZplscCParticleKey.VALS_CHAN_1: list(chan_values[0]),
+            ZplscCParticleKey.FREQ_CHAN_2: ph.frequency[1],
+            ZplscCParticleKey.VALS_CHAN_2: list(chan_values[1]),
+            ZplscCParticleKey.FREQ_CHAN_3: ph.frequency[2],
+            ZplscCParticleKey.VALS_CHAN_3: list(chan_values[2]),
+            ZplscCParticleKey.FREQ_CHAN_4: ph.frequency[3],
+            ZplscCParticleKey.VALS_CHAN_4: list(chan_values[3])
+        }
+
+        # Create the data particle
+        particle = self._extract_sample(
+            ZplscCRecoveredDataParticle, None, zp_data, timestamp, DataParticleKey.PORT_TIMESTAMP)
+        if particle is not None:
+            log.trace('Parsed particle: %s' % particle.generate_dict())
+            self._record_buffer.append(particle)
+
     def parse_file(self):
         ph = AzfpProfileHeader()
+        self.find_next_record()
         while self._stream_handle.readinto(ph):
-            chan_values = [[], [], [], []]
-
-            if ph.delimiter == PROFILE_DATA_DELIMITER:
-                # Parse the data values portion of the record.
-                for chan in range(ph.num_channels):
-                    num_bins = ph.num_bins[chan]
-
-                    if ph.is_averaged_data[chan] == 1:
-                        num_data_bytes = 4
-                    else:
-                        num_data_bytes = 2
-
-                    struct_format = '>' + str(num_bins) + 'I'
-                    data_struct = struct.Struct(struct_format)
-                    data = self._stream_handle.read(num_bins*num_data_bytes)
-                    chan_values[chan] = data_struct.unpack(data)
-
-                    # If the data type is for averaged data, read away the overflow bytes.
-                    if ph.is_averaged_data[chan] == 1:
-                        self._stream_handle.read(num_bins)
-
-                # Convert the date and time parameters to a epoch time from 01-01-1900.
-                try:
-                    timestamp = (datetime(ph.year, ph.month, ph.day, ph.hour, ph.minute, ph.second,
-                                          (ph.hundredths * 10000)) - datetime(1900, 1, 1)).total_seconds()
-
-                except exceptions.ValueError as ex:
-                    self._exception_callback('Transition timestamp has invalid format: %s' % ex.message)
-                    continue
-
-                # Format the data in a particle data dictionary
-                zp_data = {
-                    ZplscCParticleKey.TRANS_TIMESTAMP: timestamp,
-                    ZplscCParticleKey.SERIAL_NUMBER: str(ph.serial_num),
-                    ZplscCParticleKey.PHASE: ph.phase,
-                    ZplscCParticleKey.BURST_NUMBER: ph.burst_num,
-                    ZplscCParticleKey.TILT_X: ph.tilt_x,
-                    ZplscCParticleKey.TILT_Y: ph.tilt_y,
-                    ZplscCParticleKey.BATTERY_VOLTAGE: ph.battery_voltage,
-                    ZplscCParticleKey.PRESSURE: ph.pressure,
-                    ZplscCParticleKey.TEMPERATURE: ph.temperature,
-                    ZplscCParticleKey.FREQ_CHAN_1: ph.frequency[0],
-                    ZplscCParticleKey.VALS_CHAN_1: list(chan_values[0]),
-                    ZplscCParticleKey.FREQ_CHAN_2: ph.frequency[1],
-                    ZplscCParticleKey.VALS_CHAN_2: list(chan_values[1]),
-                    ZplscCParticleKey.FREQ_CHAN_3: ph.frequency[2],
-                    ZplscCParticleKey.VALS_CHAN_3: list(chan_values[2]),
-                    ZplscCParticleKey.FREQ_CHAN_4: ph.frequency[3],
-                    ZplscCParticleKey.VALS_CHAN_4: list(chan_values[3])
-                }
-
-                try:
-                    # Create the data particle
-                    particle = self._extract_sample(
-                        ZplscCRecoveredDataParticle, None, zp_data, timestamp, DataParticleKey.PORT_TIMESTAMP)
-                    if particle is not None:
-                        log.trace('Parsed particle: %s' % particle.generate_dict())
-                        self._record_buffer.append(particle)
-
-                except (SampleException, RecoverableSampleException) as ex:
-                    self._exception_callback(ex)
-
-            else:
-                # The profile data delimiter was invalid.  Set the exception callback
-                delimiter_received = ''
-                for index in range(len(ph.delimiter)):
-                    delimiter_received += hex(ord(ph.delimiter[index]))
-
-                delimiter_expected = ''
-                for index in range(len(ph.delimiter)):
-                    delimiter_expected += hex(ord(PROFILE_DATA_DELIMITER[index]))
-
-                self._exception_callback('Profile delimiter invalid: received: %s ; expected %s' %
-                                         (delimiter_received, delimiter_expected))
+            try:
+                # Pass in the profile header; it is needed to parse the data.
+                self.parse_record(ph)
+            except (IOError, OSError) as ex:
+                self._exception_callback('Reading stream handle: %s: %s\n' % (self._stream_handle.name, ex.message))
                 return
+            except struct.error as ex:
+                self._exception_callback('Unpacking the data from the data structure: %s\n' % ex.message)
+            except exceptions.ValueError as ex:
+                self._exception_callback('Transition timestamp has invalid format: %s' % ex.message)
+            except (SampleException, RecoverableSampleException) as ex:
+                self._exception_callback('Creating data particle: %s' % ex.message)
 
-            # Clear the profile data structure
+            # Clear the profile header data structure and find the next record.
             ph = AzfpProfileHeader()
+            self.find_next_record()
