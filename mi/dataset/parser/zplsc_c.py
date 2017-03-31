@@ -55,7 +55,6 @@ __license__ = 'Apache 2.0'
 
 
 PROFILE_DATA_DELIMITER = '\xfd\x02'
-ZPLSC_C_DELIMITER_STRUCT = struct.Struct('>2s')
 
 
 class DataParticleType(BaseEnum):
@@ -128,7 +127,7 @@ class AzfpProfileHeader(BigEndianStructure):
         ('num_bins', c_ushort*4),           # Number of bins (channels 1-4)
         ('range_samples', c_ushort*4),      # Range samples per bin (channels 1-4)
         ('num_pings_profile', c_ushort),    # Number of pings per profile
-        ('is_averaged_time', c_ushort),     # Indicates if pings are averaged in time
+        ('is_averaged_pings', c_ushort),    # Indicates if pings are averaged in time
         ('num_pings_burst', c_ushort),      # Number of pings that have been acquired in this burst
         ('ping_period', c_ushort),          # Ping period in seconds
         ('first_ping', c_ushort),           # First ping number (if averaged, first averaged ping number)
@@ -164,34 +163,71 @@ class ZplscCParser(SimpleParser):
         ph = AzfpProfileHeader()
         while self._stream_handle.readinto(ph):
             chan_values = [[], [], [], []]
+            overflow_values = [[], [], [], []]
 
             if ph.delimiter == PROFILE_DATA_DELIMITER:
                 # Parse the data values portion of the record.
                 for chan in range(ph.num_channels):
                     num_bins = ph.num_bins[chan]
 
+                    # Set the data word length, in bytes, and the structure format for the
+                    # scientific data, based on whether the data is averaged or not.
                     if ph.is_averaged_data[chan] == 1:
                         num_data_bytes = 4
+                        data_struct_format = '>' + str(num_bins) + 'I'
                     else:
                         num_data_bytes = 2
+                        data_struct_format = '>' + str(num_bins) + 'H'
 
-                    struct_format = '>' + str(num_bins) + 'I'
-                    data_struct = struct.Struct(struct_format)
-                    data = self._stream_handle.read(num_bins*num_data_bytes)
-                    chan_values[chan] = data_struct.unpack(data)
+                    # Read the scienticfic data from the stream for the current channel.
+                    try:
+                        data = self._stream_handle.read(num_bins*num_data_bytes)
+                    except exceptions.Exception as ex:
+                        self._exception_callback('Reading from stream handle: %s: %s\n' %
+                                                 (self._stream_handle.name, ex.message))
+                        break
 
-                    # If the data type is for averaged data, read away the overflow bytes.
+                    # Format the data into the byte boundry and unpack the data values for
+                    # this channel into a list.
+                    data_struct = struct.Struct(data_struct_format)
+                    try:
+                        chan_values[chan] = data_struct.unpack(data)
+                    except exceptions.Exception as ex:
+                        self._exception_callback('Unpacking the data of %d bytes for Channel %d: %s\n' %
+                                                 (len(data), chan+1, ex.message))
+                        break
+
+                    # If the data type is for averaged data, read overflow bytes.
                     if ph.is_averaged_data[chan] == 1:
-                        self._stream_handle.read(num_bins)
+                        try:
+                            overflow_data = self._stream_handle.read(num_bins)
+                        except exceptions.Exception as ex:
+                            self._exception_callback('Reading from stream handle: %s: %s' %
+                                                     (self._stream_handle.name, ex.message))
+                            break
+
+                        # If the data type is for averaged data, calculate the averaged data by
+                        # multiplying the overflow data by 0xFFFF and adding to the sum (the data
+                        # read above.
+                        try:
+                            overflow_struct_format = '>' + str(num_bins) + 'B'
+                            overflow_struct = struct.Struct(overflow_struct_format)
+                            overflow_values[chan] = overflow_struct.unpack(overflow_data)
+                            overflow_values[chan] = [ovfl_data * 0xFFFF for ovfl_data in overflow_values[chan]]
+                            chan_values[chan] = [sum_data + ovfl_data for sum_data, ovfl_data in
+                                                 zip(chan_values[chan], overflow_values[chan])]
+                        except exceptions.Exception as ex:
+                            self._exception_callback('Reading from stream handle: %s: %s' %
+                                                     (self._stream_handle.name, ex.message))
+                            break
 
                 # Convert the date and time parameters to a epoch time from 01-01-1900.
                 try:
                     timestamp = (datetime(ph.year, ph.month, ph.day, ph.hour, ph.minute, ph.second,
                                           (ph.hundredths * 10000)) - datetime(1900, 1, 1)).total_seconds()
-
                 except exceptions.ValueError as ex:
                     self._exception_callback('Transition timestamp has invalid format: %s' % ex.message)
-                    continue
+                    break
 
                 # Format the data in a particle data dictionary
                 zp_data = {
@@ -237,7 +273,8 @@ class ZplscCParser(SimpleParser):
 
                 self._exception_callback('Profile delimiter invalid: received: %s ; expected %s' %
                                          (delimiter_received, delimiter_expected))
-                return
 
-            # Clear the profile data structure
+                break
+
+            # Clear the profile header data structure
             ph = AzfpProfileHeader()
