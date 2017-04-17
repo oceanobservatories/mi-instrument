@@ -111,3 +111,49 @@ VEL3D_C       nortek.vector.ooicore
 VELPT         nortek.aquadopp.ooicore
 ZPLSC         kut.ek60.ooicore
 ```
+
+
+# Release Instructions
+
+Deploying a release of the mi-instrument package involves the following steppes:
+
+1. update version
+1. push changes to repository (mi-instrument)
+1. tag release
+1. build anaconda package
+
+## Update Version
+
+Release notes (RELEASE_NOTES) should include the Version and number on a line by itself, followed by a list of issues 
+with a brief description. Prepend updates to the beginning of the file. E.g.:
+
+```
+Version 1.2.3
+
+* Issue #12345 - Fix ctdbp parser to read new format xyz
+```
+
+The setup file (setup.py) must be updated with the appropriate version:
+
+```python
+version = '1.2.3'
+```
+
+## Tag Release
+
+Set the new tag:
+
+```
+git tag -a v0.4.0
+git push upstream master --tags
+```
+
+Get the current tags from remote repository (to see the currently available tags):
+
+```
+git fetch upstream --tags
+```
+
+## Build Anaconda Package
+
+See the [ooi-config](https://github.com/oceanobservatories/ooi-config) repository for instructions. 
