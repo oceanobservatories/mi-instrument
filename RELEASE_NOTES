@@ -1,6 +1,10 @@
-NEXT RELEASE
+Version 0.4.0
 
-* Cleanup for pending merge with mi-instrument
+* Issue #10398 - No Recovered parser/ingest queue for ZPLSC
+* Issue #12137 - Fixed adcpt_acfgm_dcl_pd0 Unit Tests
+* Issue #12118 - ZPLSC_C Telemetered Stream Has Extraneous Parameters
+* Issue #11920 - Fixed bug in OMS alert processing
+* Merged mi-dataset
 
 Added the following drivers:
 
