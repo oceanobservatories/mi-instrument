@@ -504,12 +504,10 @@ class DriverUnitTest(InstrumentDriverUnitTestCase, BotptTestMixinSub):
         ts = self.get_ntp_timestamp()
 
         for sample in self._samples:
-            chunker.add_chunk(sample, ts)
-            (timestamp, result) = chunker.get_next_data()
-            self.assertEqual(result, sample)
-            self.assertEqual(timestamp, ts)
-            (timestamp, result) = chunker.get_next_data()
-            self.assertEqual(result, None)
+            self.assert_chunker_sample(chunker, sample)
+            self.assert_chunker_sample_with_noise(chunker, sample)
+            self.assert_chunker_fragmented_sample(chunker, sample)
+            self.assert_chunker_combined_sample(chunker, sample)
 
     def test_status_handler(self):
         """
