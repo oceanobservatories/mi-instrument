@@ -14,61 +14,77 @@ This is the repository that contains the implemention for all marine integration
 including drivers and transforms. 
 ```
 
-# INSTALL prerequisite software
-## Install homebrew
+# Get the code!
+## Clone this repository
+### Read only checkout
+    $ git clone git://github.com/oceanobservatories/mi-instrument
+### Read / write checkout
+    $ git clone git@github.com:<your_github_uname>/mi-instrument
 
-    /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-    brew doctor
+# OSX/Homebrew Instructions
+## INSTALL prerequisite software
+### Install homebrew
+
+    https://brew.sh/
     brew tap homebrew/science
 
-## Install python 2.7
+### Install python 2.7
 
     brew install python --framework --universal
 
-## Install git
+### Install git
 
     brew install git
 
-## Install libraries
+### Install libraries
 
     brew install libevent libyaml zeromq rabbitmq hdf5 pkg-config netcdf freetype spatialindex udunits
 
-## Install pip/virtualenv
+### Install pip/virtualenv
 
-    easy_install pip
-    pip install virtualenv
-    pip install virtualenvwrapper
-    
-## Modify ~/.bash_profile
+    pip install -U pip
+    pip install virtualenv virtualenvwrapper
+
+### Modify ~/.bash_profile
 
     add this to the end:
        export WORKON_HOME=$HOME/virtenvs
-       . /usr/local/share/python/virtualenvwrapper.sh
+       . /usr/local/bin/virtualenvwrapper.sh
        
     source ~/.bash_profile
        
-## Create a virtualenv
+### Create a virtualenv
 
     mkvirtualenv --no-site-packages --python=python2.7 ooi
 
+### Install requirements
+    workon ooi
+    pip install numpy cython
+    pip install -r requirements.txt
 
-# INSTALL
+# OSX/Anaconda Instructions
+## Install Anaconda/Miniconda 2
 
-Download the lastest source from github.
+https://conda.io/miniconda.html
 
-## Read only checkout
-    $ git clone git://github.com/ooici/marine-integrations
+## Create conda env
 
-## Read / write checkout
-    $ git clone git@github.com:<your_github_uname>/marine-integrations
+    conda env create -f conda_env_other.yml
+    source activate mi
 
-## Install requirements
-    $ workon ooi
-    $ python install -r requirements.txt
-    
-## Execute unit tests
-    $ nosetests -a UNIT
+# Linux/Anaconda Instructions
+## Install Anaconda/Miniconda 2
 
+https://conda.io/miniconda.html
+
+## Create conda env
+
+    conda env create -f conda_env_linux64.yml
+    source activate mi
+
+# Run the tests
+
+    nosetests -a UNIT --processes=4 --process-timeout=360
 
 # Table of Contents
 
