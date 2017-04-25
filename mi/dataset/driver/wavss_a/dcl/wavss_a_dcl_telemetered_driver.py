@@ -16,7 +16,7 @@ __author__ = 'Emily Hahn'
 __license__ = 'Apache 2.0'
 
 
-@version("15.7.1")
+@version("15.7.2")
 class WavssADclTelemeteredDriver:
 
     def __init__(self, source_file_path, particle_data_handler, parser_config):

@@ -1,6 +1,7 @@
-NEXT RELEASE
+# Version 0.4.1
 
-* Issue #12229 BOTPT transducer temperature parameter values being truncated
+* Issue #11462 - wavss_a_dcl - 
+* Issue #12229 - BOTPT transducer temperature parameter values being truncated
 
 # Version 0.4.0
 
