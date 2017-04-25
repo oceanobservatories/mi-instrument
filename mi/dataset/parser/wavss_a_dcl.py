@@ -5,117 +5,22 @@
 @brief A parser for the wavss series a instrument through a DCL
 """
 
-
-import re
 import numpy as np
+import operator
 
 from mi.core.common import BaseEnum
 from mi.core.log import get_logger
-from mi.core.instrument.dataset_data_particle import DataParticle
-from mi.core.exceptions import SampleException, RecoverableSampleException
+from mi.core.instrument.dataset_data_particle import DataParticle, DataParticleKey, DataParticleValue
+from mi.core.exceptions import RecoverableSampleException, SampleEncodingException
 
 from mi.dataset.dataset_parser import SimpleParser
 
-from mi.dataset.parser.common_regexes import INT_REGEX
 from mi.dataset.parser.utilities import dcl_controller_timestamp_to_utc_time
+
 log = get_logger()
 
 __author__ = 'Emily Hahn'
 __license__ = 'Apache 2.0'
-
-FLOAT_REGEX = r'(?:[+-]?\d*\.\d*(?:[Ee][+-]?\d+)?|[+-]?[nN][aA][nN])'  # includes scientific notation & Nans
-FLOAT_GROUP_REGEX = r'(' + FLOAT_REGEX + ')'
-INT_GROUP_REGEX = r'(' + INT_REGEX + ')'
-END_OF_LINE_REGEX = r'(?:\r\n|\n)?'  # end of file might be missing terminator so make optional
-END_OF_SAMPLE_REGEX = r'\*[A-Fa-f0-9]{2}' + END_OF_LINE_REGEX
-DCL_TIMESTAMP_REGEX = r'(\d{4}/\d{2}/\d{2} \d{2}:\d{2}:\d{2}.\d{3})'
-
-DATE_REGEX = '(\d{8})'
-TIME_REGEX = '(\d{6})'
-SERIAL_REGEX = '(\d+)'
-DATE_TIME_SERIAL_REGEX = DATE_REGEX + ',' + TIME_REGEX + ',' + SERIAL_REGEX + \
-                         r',buoyID,,,'  # includes ignored buoyID text and empty lat lon
-
-# wave statistics sample regex
-TSPWA_REGEX = (DCL_TIMESTAMP_REGEX + ' \$TSPWA,' +
-               DATE_TIME_SERIAL_REGEX +
-               INT_GROUP_REGEX + ',' +     # number of zero crossings
-               FLOAT_GROUP_REGEX + ',' +   # average wave height
-               FLOAT_GROUP_REGEX + ',' +   # mean spectral period
-               FLOAT_GROUP_REGEX + ',' +   # maximum wave height
-               FLOAT_GROUP_REGEX + ',' +   # significant wave height
-               FLOAT_GROUP_REGEX + ',' +   # significant period
-               FLOAT_GROUP_REGEX + ',' +   # h10
-               FLOAT_GROUP_REGEX + ',' +   # t10
-               FLOAT_GROUP_REGEX + ',' +   # mean wave period
-               FLOAT_GROUP_REGEX + ',' +   # peak period
-               FLOAT_GROUP_REGEX + ',' +   # tp5
-               FLOAT_GROUP_REGEX + ',' +   # hmo
-               FLOAT_GROUP_REGEX + ',' +   # mean direction
-               FLOAT_GROUP_REGEX +         # mean spread
-               END_OF_SAMPLE_REGEX)
-
-TSPWA_MATCHER = re.compile(TSPWA_REGEX)
-
-# non-directional spectral sample regex
-TSPNA_REGEX = (DCL_TIMESTAMP_REGEX + ' \$TSPNA,' +
-               DATE_TIME_SERIAL_REGEX +
-               INT_GROUP_REGEX + ',' +      # number of bands
-               FLOAT_GROUP_REGEX + ',' +    # initial frequency
-               FLOAT_GROUP_REGEX + ',' +    # frequency spacing
-               '(' + FLOAT_REGEX + ',)*' +  # match a varying number of comma separated floats
-               FLOAT_GROUP_REGEX +          # match the last float without a comma
-               END_OF_SAMPLE_REGEX)
-TSPNA_MATCHER = re.compile(TSPNA_REGEX)
-
-# mean directional spectra sample regex
-TSPMA_REGEX = (DCL_TIMESTAMP_REGEX + ' \$TSPMA,' +
-               DATE_TIME_SERIAL_REGEX +
-               INT_GROUP_REGEX + ',' +        # number of bands
-               FLOAT_GROUP_REGEX + ',' +      # initial frequency
-               FLOAT_GROUP_REGEX + ',' +      # frequency spacing
-               FLOAT_GROUP_REGEX + ',' +      # mean average direction
-               FLOAT_GROUP_REGEX + ',' +      # spread direction
-               '(' + FLOAT_REGEX + ',)*' +    # match a varying number of comma separated floats
-               FLOAT_GROUP_REGEX +            # match the last float without a comma
-               END_OF_SAMPLE_REGEX)
-TSPMA_MATCHER = re.compile(TSPMA_REGEX)
-
-# heave north east motion sample regex
-TSPHA_REGEX = (DCL_TIMESTAMP_REGEX + ' \$TSPHA,' +
-               DATE_TIME_SERIAL_REGEX +
-               INT_GROUP_REGEX + ',' +        # number of time samples
-               FLOAT_GROUP_REGEX + ',' +      # initial time
-               FLOAT_GROUP_REGEX + ',' +      # time spacing
-               INT_GROUP_REGEX + ',' +        # solution found
-               '(' + FLOAT_REGEX + ',)*' +    # match a varying number of comma separated floats
-               FLOAT_GROUP_REGEX +            # match the last float without a comma
-               END_OF_SAMPLE_REGEX)
-TSPHA_MATCHER = re.compile(TSPHA_REGEX)
-
-# fourier sample regex
-TSPFB_REGEX = (DCL_TIMESTAMP_REGEX + ' \$TSPFB,' +
-               DATE_TIME_SERIAL_REGEX +
-               INT_GROUP_REGEX + ',' +        # number of bands
-               FLOAT_GROUP_REGEX + ',' +      # initial frequency
-               FLOAT_GROUP_REGEX + ',' +      # frequency spacing
-               INT_GROUP_REGEX + ',' +        # number of directional bands
-               FLOAT_GROUP_REGEX + ',' +      # directional initial frequency
-               FLOAT_GROUP_REGEX + ',' +      # directional frequency spacing
-               '((?:' + FLOAT_REGEX + ',)*' + FLOAT_REGEX + ')' +  # match a varying number of comma separated floats
-               END_OF_SAMPLE_REGEX)
-TSPFB_MATCHER = re.compile(TSPFB_REGEX)
-
-# status message, this is ignored
-TSPSA_REGEX = (DCL_TIMESTAMP_REGEX + ' \$TSPSA,' +
-               DATE_TIME_SERIAL_REGEX +
-               r'([+\-0-9.Ee,]+)' +           # match a varying number of comma separated floats and ints
-               END_OF_SAMPLE_REGEX)
-TSPSA_MATCHER = re.compile(TSPSA_REGEX)
-
-# log status message, this is ignored
-LOG_STATUS_REGEX = DCL_TIMESTAMP_REGEX + ' \[wavss:DLOGP\d+\]:.*' + END_OF_LINE_REGEX
-LOG_STATUS_MATCHER = re.compile(LOG_STATUS_REGEX)
 
 
 class DataParticleType(BaseEnum):
@@ -131,25 +36,20 @@ class DataParticleType(BaseEnum):
     WAVSS_A_DCL_FOURIER_RECOVERED = "wavss_a_dcl_fourier_recovered"
 
 
-# particle maps consists of tuples containing the name of parameter, index into regex group, encoding type
-DCL_TIMESTAMP_GROUP = 1
-# the first 4 parameters in all samples are the same
-COMMON_PARTICLE_MAP = [
-    ('dcl_controller_timestamp', DCL_TIMESTAMP_GROUP, str),
-    ('date_string', 2, str),
-    ('time_string', 3, str),
-    ('serial_number', 4, str)
-]
+def list_encoder_factory(type_callable):
+    """
+    Creates a function encoder that iterates on the elements of a list to apply the specified type_callable format.
+    :param type_callable:  type to apply to data
+    :return:  function that applies type_callable to a supplied list of data
+    """
 
-# common particle map used by non-directional, directional, and fourier
-FREQ_SPACING_GROUP = 7
-BANDS_PARTICLE_MAP = [
-    ('number_bands', 5, int),
-    ('initial_frequency', 6, float),
-    ('frequency_spacing', FREQ_SPACING_GROUP, float)
-]
+    def inner(data):
+        return [type_callable(x) for x in data]
 
-NUMBER_COUNT_GROUP = 5  # number of bands and time samples
+    return inner
+
+
+float_list_encoder = list_encoder_factory(float)
 
 
 # the arrays are not defined in groups, so make keys instead of maps
@@ -165,50 +65,124 @@ class ArrayParticleKeys(BaseEnum):
 
 
 class WavssADclCommonDataParticle(DataParticle):
+    """
+    WAVSS common DCL particle class - basis for each WAVSS particle
+    """
+
+    # particle maps consists of tuples containing the name of parameter and encoding type
+    # common particle map used by non-directional, directional, and fourier
+    band_parameter_types = [
+        ('number_bands', int),
+        ('initial_frequency', float),
+        ('frequency_spacing', float)
+    ]
+
+    def __init__(self, raw_data,
+                 port_timestamp=None,
+                 internal_timestamp=None,
+                 preferred_timestamp=DataParticleKey.PORT_TIMESTAMP,
+                 quality_flag=DataParticleValue.OK,
+                 new_sequence=None):
+
+        self.dcl_data = None
+
+        super(WavssADclCommonDataParticle, self).__init__(
+            raw_data, port_timestamp, internal_timestamp, preferred_timestamp, quality_flag, new_sequence)
+
+    @staticmethod
+    def extract_dcl_parts(line):
+        """
+        Dissect the DCL into it's constituent parts: DCL timestamp, instrument data (payload), and checksum.
+        
+        Must have initialized the particle with data string.
+        :return:  
+          timestamp - DCL timestamp in NTP time format (int)
+          data - instrument data (string)
+          checksum - checksum value (int)
+        """
+        timestamp = None
+        data = None
+        checksum = None
+
+        parts = line.split(None, 2)
+        if len(parts) == 3:  # standard format with date and time leaders
+            dcl_date, dcl_time, parts = parts
+            dcl_timestamp = " ".join([dcl_date, dcl_time])
+            timestamp = dcl_controller_timestamp_to_utc_time(dcl_timestamp)
+        else:
+            parts = line
+        if parts[0] == '$':  # data segment must begin with $ leader
+            parts = parts.rsplit('*', 1)
+            if len(parts) == 2:
+                data, checksum = parts
+                checksum = int(checksum, 16)
+        return timestamp, data, checksum
+
+    @staticmethod
+    def compute_checksum(data):
+        """
+        Perform DCL checksum (XOR) on the data line
+        :param data:  string to sum (starting with '$' which is not included in sum)
+        :return:  checksum value
+        """
+        return reduce(operator.xor, bytearray(data[1:]))
 
     def _build_parsed_values(self):
         """
         Set the timestamp and encode the common particles from the raw data using COMMON_PARTICLE_MAP
         """
-        # the timestamp comes from the DCL logger timestamp, parse the string into a datetime
-        utc_time = dcl_controller_timestamp_to_utc_time(self.raw_data.group(DCL_TIMESTAMP_GROUP))
-        self.set_internal_timestamp(unix_time=utc_time)
+        utc_time, self.dcl_data, checksum = self.extract_dcl_parts(self.raw_data)
+        if utc_time:
+            # TODO self.set_port_timestamp(unix_time=utc_time)
+            self.set_internal_timestamp(unix_time=utc_time)
 
-        return [self._encode_value(name, self.raw_data.group(group), function)
-                for name, group, function in COMMON_PARTICLE_MAP]
+        if not self.dcl_data:
+            raise RecoverableSampleException('Missing DCL data segment')
 
-    @staticmethod
-    def string_to_float_array(input_string):
-        """
-        Convert a string of comma separated floats to an array of floating point values
-        @param input_string a string containing a set of comma separated floats
-        @return returns an array of floating point values
-        """
-        string_array = input_string.split(',')
-        return map(float, string_array)
+        if not checksum or checksum != self.compute_checksum(self.dcl_data):
+            self.contents[DataParticleKey.QUALITY_FLAG] = DataParticleValue.CHECKSUM_FAILED
 
+        csv = self.dcl_data.split(',')
+        if len(csv) < 7:
+            raise RecoverableSampleException('DCL format error: missing items from common wavss header')
+        self.marker, self.date, self.time, self.serial_number, self.buoy_id, self.latitude, self.longitude = csv[:7]
 
-# --------------- Statistics Data Particles -------------------------------------------------------------
+        self.payload = csv[7:]
 
-STATISTICS_PARTICLE_MAP = [
-    ('number_zero_crossings', 5, int),
-    ('average_wave_height', 6, float),
-    ('mean_spectral_period', 7, float),
-    ('max_wave_height', 8, float),
-    ('significant_wave_height', 9, float),
-    ('significant_period', 10, float),
-    ('wave_height_10', 11, float),
-    ('wave_period_10', 12, float),
-    ('mean_wave_period', 13, float),
-    ('peak_wave_period', 14, float),
-    ('wave_period_tp5', 15, float),
-    ('wave_height_hmo', 16, float),
-    ('mean_direction', 17, float),
-    ('mean_spread', 18, float)
-]
+        parts = self.raw_data.split()  # TODO - remove
+        dcl_timestamp_string = " ".join(parts[:2])  # TODO - remove
+
+        return [
+            self._encode_value('dcl_controller_timestamp', dcl_timestamp_string, str),  # TODO - remove
+            self._encode_value('date_string', self.date, str),  # TODO - remove
+            self._encode_value('time_string', self.time, str),  # TODO - remove
+            self._encode_value('serial_number', self.serial_number, str)]
 
 
 class WavssADclStatisticsDataParticle(WavssADclCommonDataParticle):
+    """
+    Wave Statistics Particle
+    
+    Sample data:
+    2014/08/25 15:09:10.100 $TSPWA,20140825,150910,05781,buoyID,,,29,0.00,8.4,0.00,0.00,14.7,0.00,22.8,8.6,28.6,...
+    """
+
+    parameter_types = [
+        ('number_zero_crossings', int),
+        ('average_wave_height', float),
+        ('mean_spectral_period', float),
+        ('max_wave_height', float),
+        ('significant_wave_height', float),
+        ('significant_period', float),
+        ('wave_height_10', float),
+        ('wave_period_10', float),
+        ('mean_wave_period', float),
+        ('peak_wave_period', float),
+        ('wave_period_tp5', float),
+        ('wave_height_hmo', float),
+        ('mean_direction', float),
+        ('mean_spread', float)
+    ]
 
     def _build_parsed_values(self):
         """
@@ -216,9 +190,13 @@ class WavssADclStatisticsDataParticle(WavssADclCommonDataParticle):
         """
         particle_parameters = super(WavssADclStatisticsDataParticle, self)._build_parsed_values()
 
+        if len(self.payload) != len(self.parameter_types):
+            raise RecoverableSampleException('unexpected number of statistic parameters (got %d, expected %d)' %
+                                             (len(self.payload), len(self.parameter_types)))
+
         # append the statistics specific parameters
-        for name, group, function in STATISTICS_PARTICLE_MAP:
-            particle_parameters.append(self._encode_value(name, self.raw_data.group(group), function))
+        for value, (name, ptype) in zip(self.payload, self.parameter_types):
+            particle_parameters.append(self._encode_value(name, value, ptype))
 
         return particle_parameters
 
@@ -231,11 +209,13 @@ class WavssADclStatisticsRecoveredDataParticle(WavssADclStatisticsDataParticle):
     _data_particle_type = DataParticleType.WAVSS_A_DCL_STATISTICS_RECOVERED
 
 
-# --------------- Non Directional Data Particles -------------------------------------------------------------
-END_NON_DIR_ARRAY_GROUP = 9
-
-
 class WavssADclNonDirectionalDataParticle(WavssADclCommonDataParticle):
+    """
+    Non Directional Data Particles
+    
+    Sample Data:
+    2014/08/25 15:16:42.432 $TSPNA,20140825,151642,05781,buoyID,,,123,0.030,0.005,7.459E-07,...
+    """
 
     def _build_parsed_values(self):
         """
@@ -244,17 +224,27 @@ class WavssADclNonDirectionalDataParticle(WavssADclCommonDataParticle):
         """
         particle_parameters = super(WavssADclNonDirectionalDataParticle, self)._build_parsed_values()
 
-        # append the band description parameters
-        for name, group, function in BANDS_PARTICLE_MAP:
-            particle_parameters.append(self._encode_value(name, self.raw_data.group(group), function))
+        band_len = len(self.band_parameter_types)
+        if len(self.payload) < (band_len + 2):
+            raise RecoverableSampleException('missing bands particle map header data')
 
-        # append the non-directional PSD array, from the end of the frequency spacing group to the last floating point
-        #  match
-        non_dir_data = self.raw_data.group(0)[self.raw_data.end(FREQ_SPACING_GROUP) + 1:
-                                              self.raw_data.end(END_NON_DIR_ARRAY_GROUP)]
+        bands_header = self.payload[:band_len]
+        psd_payload = self.payload[band_len:]
+        num_bands = int(self.payload[0])
+
+        expected_payload_len = band_len + num_bands
+        if len(self.payload) != expected_payload_len:
+            raise RecoverableSampleException('unexpected number of non-directional parameters (got %d, expected %d)' %
+                                             (len(self.payload), expected_payload_len))
+
+        # append the band description parameters
+        for value, (name, ptype) in zip(bands_header, self.band_parameter_types):
+            particle_parameters.append(self._encode_value(name, value, ptype))
+
+        # append the non-directional PSD array, from the end of the frequency spacing group to the last floating
+        # point match
         particle_parameters.append(self._encode_value(ArrayParticleKeys.PSD_NON_DIRECTIONAL,
-                                                      non_dir_data,
-                                                      WavssADclCommonDataParticle.string_to_float_array))
+                                                      psd_payload, list_encoder_factory(float)))
 
         return particle_parameters
 
@@ -267,20 +257,22 @@ class WavssADclNonDirectionalRecoveredDataParticle(WavssADclNonDirectionalDataPa
     _data_particle_type = DataParticleType.WAVSS_A_DCL_NON_DIRECTIONAL_RECOVERED
 
 
-# --------------- Mean Directional Data Particles -------------------------------------------------------------
-
 # the required number of bands for the 3 mean directional arrays, padding is added if not enough bands are sent
 MEAN_DIR_NUMBER_BANDS = 123
-SPREAD_DIR_GROUP = 9
-END_MEAN_DIR_ARRAY_GROUP = 11
-
-MEAN_DIRECTION_PARTICLE_MAP = [
-    ('mean_direction', 8, float),
-    ('spread_direction', SPREAD_DIR_GROUP, float)
-]
 
 
 class WavssADclMeanDirectionalDataParticle(WavssADclCommonDataParticle):
+    """
+    Mean Directional Spectra Message particle
+    
+    Sample data:
+    2014/08/25 15:16:42.654 $TSPMA,20140825,151642,05781,buoyID,,,86,0.030,0.005,214.05,60.54,7.459E-07,197.1,59.5,...
+    """
+
+    parameter_types = [
+        ('mean_direction', float),
+        ('spread_direction', float)
+    ]
 
     def _build_parsed_values(self):
         """
@@ -289,39 +281,47 @@ class WavssADclMeanDirectionalDataParticle(WavssADclCommonDataParticle):
         """
         particle_parameters = super(WavssADclMeanDirectionalDataParticle, self)._build_parsed_values()
 
+        band_len = len(self.band_parameter_types)
+        if len(self.payload) < (band_len + 2):
+            raise RecoverableSampleException('missing bands particle map header data')
+
+        bands_header = self.payload[:band_len]
+        num_bands = int(self.payload[0])
+
+        expected_payload_len = band_len + num_bands * 3 + 2
+        if len(self.payload) != expected_payload_len:
+            raise RecoverableSampleException('unexpected number of mean-directional parameters (got %d, expected %d)' %
+                                             (len(self.payload), expected_payload_len))
+
         # append the band description parameters
-        for name, group, function in BANDS_PARTICLE_MAP:
-            particle_parameters.append(self._encode_value(name, self.raw_data.group(group), function))
+        for value, (name, ptype) in zip(bands_header, self.band_parameter_types):
+            particle_parameters.append(self._encode_value(name, value, ptype))
 
         # append the mean directional specific parameters
-        for name, group, function in MEAN_DIRECTION_PARTICLE_MAP:
-            particle_parameters.append(self._encode_value(name, self.raw_data.group(group), function))
+        mean_header = self.payload[band_len:]
 
-        number_bands = int(self.raw_data.group(NUMBER_COUNT_GROUP))
-
-        # split the array of floats
-        data_str = self.raw_data.group(0)[self.raw_data.end(SPREAD_DIR_GROUP) + 1:
-                                          self.raw_data.end(END_MEAN_DIR_ARRAY_GROUP)]
-        flt_array = WavssADclCommonDataParticle.string_to_float_array(data_str)
+        for value, (name, ptype) in zip(mean_header, self.parameter_types):
+            particle_parameters.append(self._encode_value(name, value, ptype))
 
         # split up the array into 3 arrays each number of bands in length, taking each 3rd item, size of array
         # checked in wavss parser
-        psd = flt_array[0:number_bands*3:3]
-        mean_dir = flt_array[1:number_bands*3:3]
-        dir_spread = flt_array[2:number_bands*3:3]
+        spectra_payload = self.payload[band_len + 2:]
+        psd = spectra_payload[0:num_bands * 3:3]
+        mean_dir = spectra_payload[1:num_bands * 3:3]
+        dir_spread = spectra_payload[2:num_bands * 3:3]
 
         # to match with non-directional data, the mean directional arrays must be padded with NaNs so they are
         # the same size
-        for i in range(number_bands, MEAN_DIR_NUMBER_BANDS):
+        for i in xrange(num_bands, MEAN_DIR_NUMBER_BANDS):
             psd.append(np.nan)
             mean_dir.append(np.nan)
             dir_spread.append(np.nan)
 
         # append and encode the particle mean directional arrays
-        particle_parameters.append(self._encode_value(ArrayParticleKeys.PSD_MEAN_DIRECTIONAL, psd, list))
-        particle_parameters.append(self._encode_value(ArrayParticleKeys.MEAN_DIRECTION_ARRAY, mean_dir, list))
-        particle_parameters.append(self._encode_value(ArrayParticleKeys.DIRECTIONAL_SPREAD_ARRAY, dir_spread,
-                                                      list))
+        particle_parameters.extend((
+            self._encode_value(ArrayParticleKeys.PSD_MEAN_DIRECTIONAL, psd, float_list_encoder),
+            self._encode_value(ArrayParticleKeys.MEAN_DIRECTION_ARRAY, mean_dir, float_list_encoder),
+            self._encode_value(ArrayParticleKeys.DIRECTIONAL_SPREAD_ARRAY, dir_spread, float_list_encoder)))
 
         return particle_parameters
 
@@ -334,19 +334,30 @@ class WavssADclMeanDirectionalRecoveredDataParticle(WavssADclMeanDirectionalData
     _data_particle_type = DataParticleType.WAVSS_A_DCL_MEAN_DIRECTIONAL_RECOVERED
 
 
-# --------------- Motion Data Particles -------------------------------------------------------------
-SOLUTION_FOUND_GROUP = 8
-END_MOTION_ARRAY_GROUP = 10
-
-MOTION_PARTICLE_MAP = [
-    ('number_time_samples', 5, int),
-    ('initial_time', 6, float),
-    ('time_spacing', 7, float),
-    ('solution_found', SOLUTION_FOUND_GROUP, int),
-]
-
-
 class WavssADclMotionDataParticle(WavssADclCommonDataParticle):
+    """
+    Motion Data Particle
+
+    Sample data:
+    2014/08/25 15:16:42.765 $TSPHA,20140825,151642,05781,buoyID,,,344,15.659,0.783,0,0.00,0.00,0.00,0.00, ...
+    """
+
+    parameter_types = [
+        ('number_time_samples', int),
+        ('initial_time', float),
+        ('time_spacing', float),
+        ('solution_found', int),
+    ]
+
+    def __init__(self, raw_data,
+                 port_timestamp=None,
+                 internal_timestamp=None,
+                 preferred_timestamp=DataParticleKey.PORT_TIMESTAMP,
+                 quality_flag=DataParticleValue.OK,
+                 new_sequence=None):
+
+        super(WavssADclCommonDataParticle, self).__init__(
+            raw_data, port_timestamp, internal_timestamp, preferred_timestamp, quality_flag, new_sequence)
 
     def _build_parsed_values(self):
         """
@@ -355,26 +366,34 @@ class WavssADclMotionDataParticle(WavssADclCommonDataParticle):
         """
         particle_parameters = super(WavssADclMotionDataParticle, self)._build_parsed_values()
 
+        band_len = len(self.parameter_types)
+        if len(self.payload) < (band_len + 2):
+            raise RecoverableSampleException('missing bands particle map header data')
+
+        num_bands = int(self.payload[0])
+
+        expected_payload_len = band_len + num_bands * 3
+        if len(self.payload) != expected_payload_len:
+            raise RecoverableSampleException('unexpected number of motion parameters (got %d, expected %d)' %
+                                             (len(self.payload), expected_payload_len))
+
         # append the motion description parameters
-        for name, group, function in MOTION_PARTICLE_MAP:
-            particle_parameters.append(self._encode_value(name, self.raw_data.group(group), function))
-
-        number_samples = int(self.raw_data.group(NUMBER_COUNT_GROUP))
-
-        data_array = self.raw_data.group(0)[self.raw_data.end(SOLUTION_FOUND_GROUP) + 1:
-                                            self.raw_data.end(END_MOTION_ARRAY_GROUP)]
-        flt_array = WavssADclCommonDataParticle.string_to_float_array(data_array)
+        motion_header = self.payload[:band_len]
+        for value, (name, ptype) in zip(motion_header, self.parameter_types):
+            particle_parameters.append(self._encode_value(name, value, ptype))
 
         # split up the large array into 3 smaller arrays, heave1, north1, east1, heave2, north2, east2, etc.
         # size of array is pre-checked in wavss parser
-        heave = flt_array[0:number_samples*3:3]
-        north = flt_array[1:number_samples*3:3]
-        east = flt_array[2:number_samples*3:3]
+        motion_payload = self.payload[band_len:]
+        heave = motion_payload[0:num_bands * 3:3]
+        north = motion_payload[1:num_bands * 3:3]
+        east = motion_payload[2:num_bands * 3:3]
 
         # append and encode the motion offset arrays
-        particle_parameters.append(self._encode_value(ArrayParticleKeys.HEAVE_OFFSET_ARRAY, heave, list))
-        particle_parameters.append(self._encode_value(ArrayParticleKeys.NORTH_OFFSET_ARRAY, north, list))
-        particle_parameters.append(self._encode_value(ArrayParticleKeys.EAST_OFFSET_ARRAY, east, list))
+        particle_parameters.extend((
+            self._encode_value(ArrayParticleKeys.HEAVE_OFFSET_ARRAY, heave, float_list_encoder),
+            self._encode_value(ArrayParticleKeys.NORTH_OFFSET_ARRAY, north, float_list_encoder),
+            self._encode_value(ArrayParticleKeys.EAST_OFFSET_ARRAY, east, float_list_encoder)))
 
         return particle_parameters
 
@@ -387,18 +406,19 @@ class WavssADclMotionRecoveredDataParticle(WavssADclMotionDataParticle):
     _data_particle_type = DataParticleType.WAVSS_A_DCL_MOTION_RECOVERED
 
 
-# --------------- Fourier Data Particles -------------------------------------------------------------
-
-DIR_FREQ_SPACING_GROUP = 10
-END_FOURIER_ARRAY_GROUP = 11
-FOURIER_PARTICLE_MAP = [
-    ('number_directional_bands', 8, int),
-    ('initial_directional_frequency', 9, float),
-    ('directional_frequency_spacing', DIR_FREQ_SPACING_GROUP, float)
-]
-
-
 class WavssADclFourierDataParticle(WavssADclCommonDataParticle):
+    """
+    Fourier Data Particle
+
+    Sample data:
+    2014/08/25 15:16:42.543 $TSPFB,20140825,151642,05781,buoyID,,,123,0.030,0.005,86,0.030,0.005,-0.43981,-0.13496, ...
+    """
+
+    parameter_types = [
+        ('number_directional_bands', int),
+        ('initial_directional_frequency', float),
+        ('directional_frequency_spacing', float)
+    ]
 
     def _build_parsed_values(self):
         """
@@ -407,31 +427,37 @@ class WavssADclFourierDataParticle(WavssADclCommonDataParticle):
         """
         particle_parameters = super(WavssADclFourierDataParticle, self)._build_parsed_values()
 
+        band_len = len(self.band_parameter_types)
+        if len(self.payload) < (band_len + 2):
+            raise RecoverableSampleException('missing bands particle map header data')
+
+        bands_header = self.payload[:band_len]
+        num_bands = int(bands_header[0])
+
+        expected_payload_len = len(self.band_parameter_types) + len(self.parameter_types) + 4 * (num_bands - 2)
+        if len(self.payload) != expected_payload_len:
+            raise RecoverableSampleException('unexpected number of fourier parameters (got %d, expected %d)' %
+                                             (len(self.payload), expected_payload_len))
+
         # append the band description parameters
-        for name, group, function in BANDS_PARTICLE_MAP:
-            particle_parameters.append(self._encode_value(name, self.raw_data.group(group), function))
+        for value, (name, ptype) in zip(bands_header, self.band_parameter_types):
+            particle_parameters.append(self._encode_value(name, value, ptype))
 
         # append the mean directional specific parameters
-        for name, group, function in FOURIER_PARTICLE_MAP:
-            particle_parameters.append(self._encode_value(name, self.raw_data.group(group), function))
+        fourier_payload = self.payload[band_len:]
+        fourier_header = fourier_payload[:len(self.parameter_types)]
+        fourier_data = fourier_payload[len(self.parameter_types):]
+        for value, (name, ptype) in zip(fourier_header, self.parameter_types):
+            particle_parameters.append(self._encode_value(name, value, ptype))
 
-        number_bands = int(self.raw_data.group(NUMBER_COUNT_GROUP))
-
-        data_array = self.raw_data.group(0)[self.raw_data.end(DIR_FREQ_SPACING_GROUP) + 1:
-                                            self.raw_data.end(END_FOURIER_ARRAY_GROUP)]
-        flt_array = WavssADclCommonDataParticle.string_to_float_array(data_array)
+        flt_array = float_list_encoder(fourier_data)
 
         # reshape the fourier array to 4 x number_bands-2, size of array is checked in wavss parser
-        np_flt_array = np.vstack(flt_array)
-        flt_array = np_flt_array.reshape((number_bands - 2), 4)
-        # convert each array back to a list for json since it will not recognize numpy arrays
-        list_flt_array = []
-        for i in range(0, len(flt_array)):
-            list_flt_array.append(list(flt_array[i]))
+        data = np.array(flt_array).reshape((num_bands - 2), 4).tolist()
 
         # append and encode the fourier coefficients array
         particle_parameters.append(self._encode_value(ArrayParticleKeys.FOURIER_COEFFICIENT_2D_ARRAY,
-                                                      list_flt_array, list))
+                                                      data, list))
 
         return particle_parameters
 
@@ -472,84 +498,67 @@ class WavssADclParser(SimpleParser):
 
     def parse_file(self):
 
-        # read the first line in the file
-        line = self._stream_handle.readline()
+        for line in self._stream_handle:
+            if '$TSPWA' in line:
+                self.extract_particle(self.statistics_particle_class, line)
+            elif '$TSPMA' in line:
+                self.extract_particle(self.mean_directional_particle_class, line)
+            elif '$TSPNA' in line:
+                self.extract_particle(self.non_directional_particle_class, line)
+            elif '$TSPHA' in line:
+                self.extract_particle(self.motion_particle_class, line)
+            elif '$TSPFB' in line:
+                self.extract_particle(self.fourier_particle_class, line)
 
-        while line:
-
-            tspwa_match = TSPWA_MATCHER.match(line)
-            tspma_match = TSPMA_MATCHER.match(line)
-            tspna_match = TSPNA_MATCHER.match(line)
-            tspha_match = TSPHA_MATCHER.match(line)
-            tspfb_match = TSPFB_MATCHER.match(line)
-            num_csv = len(line.split(','))
-
-            if tspwa_match:
-                # this is a wave statistics sample
-                self.extract_particle(self.statistics_particle_class, tspwa_match)
-
-            elif tspma_match:
-                # this is a mean directional sample
-                num_bands = int(tspma_match.group(NUMBER_COUNT_GROUP))
-
-                if num_csv != (12 + 3*num_bands):
-                    self.recov_exception("TSPMA does not contain 12 + 3*%d comma separated values, has %d" %
-                                         (num_bands, num_csv))
-
-                else:
-                    self.extract_particle(self.mean_directional_particle_class, tspma_match)
-
-            elif tspna_match:
-                # this is a non directional sample
-                num_bands = int(tspna_match.group(NUMBER_COUNT_GROUP))
-
-                if num_csv != (10 + num_bands):
-                    self.recov_exception("TSPNA does not contain 10 + %d comma separated values, has %d" %
-                                         (num_bands, num_csv))
-
-                else:
-                    self.extract_particle(self.non_directional_particle_class, tspna_match)
-
-            elif tspha_match:
-                # this is a heave north east / motion sample
-                num_time = int(tspha_match.group(NUMBER_COUNT_GROUP))
-
-                if num_csv != (11 + 3*num_time):
-                    self.recov_exception("TSPHA doesn't contain 11 + 3*%d comma separated values, has %d" %
-                                         (num_time, num_csv))
-
-                else:
-                    self.extract_particle(self.motion_particle_class, tspha_match)
-
-            elif tspfb_match:
-                # this is a fourier sample
-                num_bands = int(tspfb_match.group(NUMBER_COUNT_GROUP))
-
-                if num_csv != (13 + 4*(num_bands - 2)):
-                    self.recov_exception("TSPFB doesn't contain 13 + 4*(%d - 2) comma separated values, has %d" %
-                                         (num_bands, num_csv))
-
-                else:
-                    self.extract_particle(self.fourier_particle_class, tspfb_match)
-
-            else:
-                log_match = LOG_STATUS_MATCHER.match(line)
-                tspsa_match = TSPSA_MATCHER.match(line)
-
-                if not (log_match or tspsa_match):
-                    self.recov_exception("Wavss encountered unexpected data line '%s'" % line)
-
-            # read the next line in the file
-            line = self._stream_handle.readline()
-
-    def extract_particle(self, particle_class, match):
+    def extract_particle(self, particle_class, line):
         """
         Extract a particle of the specified class and append it to the record buffer
         @param particle_class: particle class to extract
-        @param match: regex match to pass in as raw data
+        @param line: raw data input line
         """
-        particle = self._extract_sample(particle_class, None, match, None)
-        self._record_buffer.append(particle)
+        particle = self._extract_sample(particle_class, None, line, None)
+        if particle:
+            self._record_buffer.append(particle)
+
+    def _extract_sample(self, particle_class, regex, raw_data, timestamp,
+                        preferred_ts=DataParticleKey.INTERNAL_TIMESTAMP):
+        """
+        Extract sample from a response line if present and publish
+        parsed particle
+
+        @param particle_class  The class to instantiate for this specific
+            data particle. Parameterizing this allows for simple, standard
+            behavior from this routine
+        @param regex  The regular expression that matches a data sample if regex
+                      is none then process every line
+        @param raw_data  data to input into this particle.
+        @param timestamp  the internal timestamp
+        @param preferred_ts  the preferred timestamp (default: INTERNAL_TIMESTAMP)
+        @return  raw particle if a sample was found, else None
+
+        Changed to not return a particle in the case where an exception occurs and there is an exception callback
+        defined. (c.f. 12252)
+        """
+        try:
+            if regex is None or regex.match(raw_data):
+                particle = particle_class(raw_data, internal_timestamp=timestamp,
+                                          preferred_timestamp=preferred_ts)
+
+                # need to actually parse the particle fields to find out of there are errors
+                particle.generate_dict()
+                encoding_errors = particle.get_encoding_errors()
+                if encoding_errors:
+                    log.warn("Failed to encode: %s", encoding_errors)
+                    raise SampleEncodingException("Failed to encode: %s" % encoding_errors)
+                return particle
+
+        except (RecoverableSampleException, SampleEncodingException) as e:
+            log.error("Sample exception detected: %s raw data: %s", e, raw_data)
+            if self._exception_callback:
+                self._exception_callback(e)
+            else:
+                raise e
+        return
 
     def recov_exception(self, error_message):
         """

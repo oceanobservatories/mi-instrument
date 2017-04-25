@@ -171,6 +171,25 @@ class DataParticle(object):
 
         self.contents[DataParticleKey.INTERNAL_TIMESTAMP] = float(timestamp)
 
+    def set_port_timestamp(self, timestamp=None, unix_time=None):
+        """
+        Set the port timestamp
+        @param timestamp: NTP timestamp to set
+        @param unix_time: Unix time as returned from time.time()
+        @raise InstrumentParameterException if timestamp or unix_time not supplied
+        """
+        if timestamp is None and unix_time is None:
+            raise InstrumentParameterException("timestamp or unix_time required")
+
+        if unix_time is not None:
+            timestamp = ntplib.system_to_ntp_time(unix_time)
+
+        # Do we want this to happen here or in down stream processes?
+        if not self._check_timestamp(timestamp):
+            raise InstrumentParameterException("invalid timestamp")
+
+        self.contents[DataParticleKey.PORT_TIMESTAMP] = float(timestamp)
+
     def set_value(self, id, value):
         """
         Set a content value, restricted as necessary
