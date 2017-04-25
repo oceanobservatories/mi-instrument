@@ -26,6 +26,38 @@ __license__ = 'Apache 2.0'
 
 @attr('UNIT', group='mi')
 class WavssADclParserUnitTestCase(ParserUnitTestCase):
+    def test_checksum_valid(self):
+        line = '2014/08/25 15:09:10.100 $TSPWA,20140825,150910,05781,buoyID,,,29,0.00,8.4,0.00,0.00,14.7,0.00,22.8,' \
+               '8.6,28.6,28.6,0.00,203.3,66.6*5B'
+        statistics = WavssADclStatisticsDataParticle(line, None, None, None)
+        _, data, checksum = statistics.extract_dcl_parts(line)
+        computed_checksum = statistics.compute_checksum(data)
+        self.assertEqual(checksum, computed_checksum, 'valid string failed checksum')
+
+    def test_checksum_missing_date(self):
+        line = '$TSPWA,20140825,150910,05781,buoyID,,,29,0.00,8.4,0.00,0.00,14.7,0.00,22.8,' \
+               '8.6,28.6,28.6,0.00,203.3,66.6*5B'
+        statistics = WavssADclStatisticsDataParticle(line, None, None, None)
+        _, data, checksum = statistics.extract_dcl_parts(line)
+        computed_checksum = statistics.compute_checksum(data)
+        self.assertEqual(checksum, computed_checksum, 'missing date failed checksum')
+
+    def test_checksum_truncated_data(self):
+        line = '2014/08/25 15:09:10.100 $TSPWA,20140825,'
+
+        statistics = WavssADclStatisticsDataParticle(line, None, None, None)
+        _, data, checksum = statistics.extract_dcl_parts(line)
+        self.assertIsNone(checksum, 'missing checksum value matched')
+
+    def test_checksum_incorrect(self):
+        line = '2014/08/25 15:09:10.100 $TSPWA,20140825,150910,05781,buoyID,,,29,0.00,8.4,0.00,0.00,14.7,0.00,' \
+               '22.8,8.6,28.6,28.6,0.00,203.3,66.6*5C'
+
+        statistics = WavssADclStatisticsDataParticle(line, None, None, None)
+        _, data, checksum = statistics.extract_dcl_parts(line)
+        computed_checksum = statistics.compute_checksum(data)
+        self.assertNotEqual(checksum, computed_checksum, 'invalid checksum value matched')
+
     def test_checksum(self):
         valid = '2014/08/25 15:09:10.100 $TSPWA,20140825,150910,05781,buoyID,,,29,0.00,8.4,0.00,0.00,14.7,0.00,22.8,' \
                 '8.6,28.6,28.6,0.00,203.3,66.6*5B'
@@ -41,7 +73,7 @@ class WavssADclParserUnitTestCase(ParserUnitTestCase):
                          [invalid, False, 'invalid checksum value matched']]
         for line, result, message in result_matrix:
             statistics = WavssADclStatisticsDataParticle(line, None, None, None)
-            self.assertEqual(statistics.check_sum(), result, message)
+            self.assertEqual(statistics.check_sum_old(), result, message)
             if line is invalid:
                 statistics._build_parsed_values()
                 self.assertEqual(statistics.contents['quality_flag'], DataParticleValue.CHECKSUM_FAILED)

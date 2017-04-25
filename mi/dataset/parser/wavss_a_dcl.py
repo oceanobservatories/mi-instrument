@@ -89,7 +89,45 @@ class WavssADclCommonDataParticle(DataParticle):
         super(WavssADclCommonDataParticle, self).__init__(
             raw_data, port_timestamp, internal_timestamp, preferred_timestamp, quality_flag, new_sequence)
 
-    def check_sum(self):
+    @staticmethod
+    def extract_dcl_parts(line):
+        """
+        Dissect the DCL into it's constituent parts: DCL timestamp, instrument data (payload), and checksum.
+        
+        Must have initialized the particle with data string.
+        :return:  
+          timestamp - DCL timestamp in NTP time format (int)
+          data - instrument data (string)
+          checksum - checksum value (int)
+        """
+        timestamp = None
+        data = None
+        checksum = None
+
+        parts = line.split(None, 2)
+        if len(parts) == 3:  # standard format with date and time leaders
+            dcl_date, dcl_time, parts = parts
+            dcl_timestamp = " ".join([dcl_date, dcl_time])
+            timestamp = dcl_controller_timestamp_to_utc_time(dcl_timestamp)
+        else:
+            parts = line
+        if parts[0] == '$':  # data segment must begin with $ leader
+            parts = parts.rsplit('*', 1)
+            if len(parts) == 2:
+                data, checksum = parts
+                checksum = int(checksum, 16)
+        return timestamp, data, checksum
+
+    @staticmethod
+    def compute_checksum(data):
+        """
+        Perform DCL checksum (XOR) on the data line
+        :param data:  string to sum (starting with '$' which is not included in sum)
+        :return:  checksum value
+        """
+        return reduce(operator.xor, bytearray(data[1:]))
+
+    def check_sum_old(self):
         """
         Extract the data segment and checksum from the raw data string, then make sure that
         checksum matches provided value.
@@ -114,45 +152,32 @@ class WavssADclCommonDataParticle(DataParticle):
         """
         Set the timestamp and encode the common particles from the raw data using COMMON_PARTICLE_MAP
         """
-        parts = self.raw_data.split()
-        if len(parts) != 3:
-            raise RecoverableSampleException('DCL format error: must contain date, time and data segments')
+        utc_time, self.dcl_data, checksum = self.extract_dcl_parts(self.raw_data)
+        if utc_time:
+            # TODO self.set_port_timestamp(unix_time=utc_time)
+            self.set_internal_timestamp(unix_time=utc_time)
 
-        # the timestamp comes from the DCL logger timestamp, parse the string into a datetime
-        dcl_timestamp = " ".join(parts[:2])
-        utc_time = dcl_controller_timestamp_to_utc_time(dcl_timestamp)
-        # TODO self.set_port_timestamp(unix_time=utc_time)
-        self.set_internal_timestamp(unix_time=utc_time)
-
-        if not self.check_sum():
-            self.contents[DataParticleKey.QUALITY_FLAG] = DataParticleValue.CHECKSUM_FAILED
-
-        if self.dcl_data is None:
+        if not self.dcl_data:
             raise RecoverableSampleException('Missing DCL data segment')
+
+        if not checksum or checksum != self.compute_checksum(self.dcl_data):
+            self.contents[DataParticleKey.QUALITY_FLAG] = DataParticleValue.CHECKSUM_FAILED
 
         csv = self.dcl_data.split(',')
         if len(csv) < 7:
             raise RecoverableSampleException('DCL format error: missing items from common wavss header')
         self.marker, self.date, self.time, self.serial_number, self.buoy_id, self.latitude, self.longitude = csv[:7]
-        # TODO self.set_internal_timestamp(dcl_controller_timestamp_to_utc_time(" ".join(date, time)))
 
         self.payload = csv[7:]
 
-        return [
-            self._encode_value('dcl_controller_timestamp', dcl_timestamp, str),
-            self._encode_value('date_string', self.date, str),
-            self._encode_value('time_string', self.time, str),
-            self._encode_value('serial_number', self.serial_number, str)]
+        parts = self.raw_data.split()  # TODO - remove
+        dcl_timestamp_string = " ".join(parts[:2])  # TODO - remove
 
-    @staticmethod
-    def string_to_float_array(input_string):
-        """
-        Convert a string of comma separated floats to an array of floating point values
-        @param input_string a string containing a set of comma separated floats
-        @return returns an array of floating point values
-        """
-        string_array = input_string.split(',')
-        return map(float, string_array)
+        return [
+            self._encode_value('dcl_controller_timestamp', dcl_timestamp_string, str),  # TODO - remove
+            self._encode_value('date_string', self.date, str),  # TODO - remove
+            self._encode_value('time_string', self.time, str),  # TODO - remove
+            self._encode_value('serial_number', self.serial_number, str)]
 
 
 class WavssADclStatisticsDataParticle(WavssADclCommonDataParticle):
