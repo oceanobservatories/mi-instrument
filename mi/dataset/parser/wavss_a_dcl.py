@@ -127,27 +127,6 @@ class WavssADclCommonDataParticle(DataParticle):
         """
         return reduce(operator.xor, bytearray(data[1:]))
 
-    def check_sum_old(self):
-        """
-        Extract the data segment and checksum from the raw data string, then make sure that
-        checksum matches provided value.
-        :return: True if the current particle data matches provided checksum (after the '*').
-        """
-        parts = self.raw_data.split(None, 2)
-        if len(parts) == 3:  # standard format with date and time leaders
-            _, _, parts = parts
-        else:
-            parts = self.raw_data
-        if parts[0] != '$':  # data segment must begin with $ leader
-            return False
-        parts = parts.rsplit('*', 1)
-        if len(parts) != 2:  # no checksum delimiter - cannot process
-            return False
-        self.dcl_data, chk_sum = parts
-        if self.dcl_data is None or chk_sum is None:
-            return False
-        return reduce(operator.xor, bytearray(self.dcl_data[1:])) == int(chk_sum, 16)
-
     def _build_parsed_values(self):
         """
         Set the timestamp and encode the common particles from the raw data using COMMON_PARTICLE_MAP
@@ -333,7 +312,7 @@ class WavssADclMeanDirectionalDataParticle(WavssADclCommonDataParticle):
 
         # to match with non-directional data, the mean directional arrays must be padded with NaNs so they are
         # the same size
-        for i in range(num_bands, MEAN_DIR_NUMBER_BANDS):
+        for i in xrange(num_bands, MEAN_DIR_NUMBER_BANDS):
             psd.append(np.nan)
             mean_dir.append(np.nan)
             dir_spread.append(np.nan)

@@ -58,26 +58,6 @@ class WavssADclParserUnitTestCase(ParserUnitTestCase):
         computed_checksum = statistics.compute_checksum(data)
         self.assertNotEqual(checksum, computed_checksum, 'invalid checksum value matched')
 
-    def test_checksum(self):
-        valid = '2014/08/25 15:09:10.100 $TSPWA,20140825,150910,05781,buoyID,,,29,0.00,8.4,0.00,0.00,14.7,0.00,22.8,' \
-                '8.6,28.6,28.6,0.00,203.3,66.6*5B'
-        no_date = '$TSPWA,20140825,150910,05781,buoyID,,,29,0.00,8.4,0.00,0.00,14.7,0.00,22.8,' \
-                  '8.6,28.6,28.6,0.00,203.3,66.6*5B'
-        partial = '2014/08/25 15:09:10.100 $TSPWA,20140825,'
-        invalid = '2014/08/25 15:09:10.100 $TSPWA,20140825,150910,05781,buoyID,,,29,0.00,8.4,0.00,0.00,14.7,0.00,' \
-                  '22.8,8.6,28.6,28.6,0.00,203.3,66.6*5C'
-
-        result_matrix = [[valid, True, 'valid string failed checksum'],
-                         [no_date, True, 'missing date failed checksum'],
-                         [partial, False, 'missing checksum value matched'],
-                         [invalid, False, 'invalid checksum value matched']]
-        for line, result, message in result_matrix:
-            statistics = WavssADclStatisticsDataParticle(line, None, None, None)
-            self.assertEqual(statistics.check_sum_old(), result, message)
-            if line is invalid:
-                statistics._build_parsed_values()
-                self.assertEqual(statistics.contents['quality_flag'], DataParticleValue.CHECKSUM_FAILED)
-
     def test_parse_tspwa(self):
         line = '2014/08/25 15:09:10.100 $TSPWA,20140825,150910,05781,buoyID,,,29,0.00,8.4,0.00,0.00,14.7,0.00,22.8,' \
                '8.6,28.6,28.6,0.00,203.3,66.6*5B'
