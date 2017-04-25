@@ -1,4 +1,5 @@
-# testing
+# testin
+# testing pull
 [![Build Status](https://travis-ci.org/oceanobservatories/mi-instrument.svg?branch=master)](https://travis-ci.org/oceanobservatories/mi-instrument)
 [![codecov](https://codecov.io/gh/oceanobservatories/mi-instrument/branch/master/graph/badge.svg)](https://codecov.io/gh/oceanobservatories/mi-instrument)
 
