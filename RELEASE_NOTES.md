@@ -1,3 +1,7 @@
+NEXT RELEASE
+
+* Issue #12229 BOTPT transducer temperature parameter values being truncated
+
 # Version 0.4.0
 
 * Issue #10398 - No Recovered parser/ingest queue for ZPLSC

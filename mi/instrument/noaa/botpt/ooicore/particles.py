@@ -194,6 +194,7 @@ class IrisSampleParticle(BotptDataParticle):
         (?P<y_tilt>     %(float)s       ),
         (?P<temp>       %(float)s       ),
         (?P<serial>     %(word)s        )
+        [%(newline)s]
         ''' % common_regex_items
         return pattern
 
@@ -225,6 +226,7 @@ class HeatSampleParticle(BotptDataParticle):
         (?P<x_tilt>     %(int)s       ),
         (?P<y_tilt>     %(int)s       ),
         (?P<temp>       %(int)s       )
+        [%(newline)s]
         ''' % common_regex_items
         return pattern
 
@@ -261,6 +263,7 @@ class LilySampleParticle(BotptDataParticle):
         (?P<temp>       %(float)s       ),
         (?P<volts>      %(float)s       ),
         (?P<serial>     %(word)s        )
+        [%(newline)s]
         ''' % common_regex_items
         return pattern
 
@@ -294,7 +297,7 @@ class NanoSampleParticle(BotptDataParticle):
         (?P<date_time>  %(date_time)s   ),
         (?P<pressure>   %(float)s       ), # PSI
         (?P<temp>       %(float)s       )  # deg C
-        %(newline)s
+        [%(newline)s]
         ''' % common_regex_items
         return pattern
 
@@ -341,6 +344,7 @@ class LilyLevelingParticle(BotptDataParticle):
         (?P<temp>       %(float)s       ),
         (?P<volts>      %(float)s|,\D*%(float)s ),  # leveling status stuffed here, mangled
         (?P<serial>     %(word)s        )
+        [%(newline)s]
         ''' % common_regex_items
         return pattern
 
