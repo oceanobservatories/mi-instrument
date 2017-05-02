@@ -1,0 +1,13 @@
+header:
+  particle_object: CtdmoGhqrRecoveredHostInstrumentDataParticle
+  particle_type: ctdmo_ghqr_instrument_host_recovered
+
+data:
+  - _index:  1
+    internal_timestamp: 3509310738
+    sio_controller_timestamp: 1364402432
+    inductive_id: 55
+    temperature: 4660
+    conductivity: 354185
+    pressure: 4368
+    ctd_time: 353637138
