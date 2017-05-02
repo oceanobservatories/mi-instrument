@@ -45,10 +45,10 @@ log = get_logger()
 from mi.dataset.test.test_parser import ParserUnitTestCase
 from mi.dataset.driver.ctdmo_ghqr.sio.resource import RESOURCE_PATH
 from mi.dataset.parser.ctdmo_ghqr_sio import \
-    CtdmoGhqrSioRecoveredCoParser, \
+    CtdmoGhqrSioRecoveredCoAndCtParser, \
     CtdmoGhqrRecoveredCtParser, \
     CtdmoGhqrSioTelemeteredParser, \
-    INDUCTIVE_ID_KEY
+    INDUCTIVE_ID_KEY, CtdmoGhqrRecoveredHostInstrumentDataParticle, DataParticleType
 
 from mi.dataset.dataset_parser import DataSetDriverConfigKeys
 from mi.core.exceptions import DatasetParserException, UnexpectedDataException
@@ -56,6 +56,7 @@ from mi.core.exceptions import DatasetParserException, UnexpectedDataException
 
 @attr('UNIT', group='mi')
 class CtdmoGhqrSioParserUnitTestCase(ParserUnitTestCase):
+
 
     def setUp(self):
         ParserUnitTestCase.setUp(self)
@@ -169,26 +170,40 @@ class CtdmoGhqrSioParserUnitTestCase(ParserUnitTestCase):
             self.assertEqual(len(self.exception_callback_value), 1)
             self.assert_(isinstance(self.exception_callback_value[0], UnexpectedDataException))
 
-    def test_rec_co_big_giant_input(self):
+    def test_rec_co_and_ct_big_giant_input(self):
         """
         Read a large file and verify that all expected particles can be read.
         Verification is not done at this time, but will be done during
         integration and qualification testing.
         File used for this test has 250 total CO particles.
         """
-        in_file = open(os.path.join(RESOURCE_PATH, 'CTD02100.DAT'), 'rb')
-        parser = CtdmoGhqrSioRecoveredCoParser(self.config_rec_co, in_file, self.exception_callback)
+        with open(os.path.join(RESOURCE_PATH, 'CTD02100.DAT'), 'rb') as in_file:
+            parser = CtdmoGhqrSioRecoveredCoAndCtParser(self.config_rec_co, in_file, self.exception_callback)
 
-        number_expected_results = 250
+            number_expected_CO_results = 250
+            number_expected_CT_results = 1
+            particle_CO=[]
+            particle_CT = []
 
-        # In a single read, get all particles in this file.
-        result = parser.get_records(number_expected_results)
-        self.assertEqual(len(result), number_expected_results)
+            # In a single read, get all particles in this file.
+            result = parser.get_records(500)
 
-        self.assert_particles(result, 'CTD02100.yml', RESOURCE_PATH)
+            for particle in result:
+                if (particle._data_particle_type == DataParticleType.REC_CO_PARTICLE):
+                    particle_CO.append(particle)
 
-        in_file.close()
-        self.assertEqual(self.exception_callback_value, [])
+                if (particle._data_particle_type == DataParticleType.REC_CT_HOST_PARTICLE):
+                    particle_CT.append(particle)
+
+            self.assertEqual(len(particle_CO), number_expected_CO_results)
+
+            self.assertEqual(len(particle_CT), number_expected_CT_results)
+
+            self.assert_particles(particle_CO, 'CTD02100.yml', RESOURCE_PATH)
+
+            self.assert_particles(particle_CT, 'CTD02100_CT.yml', RESOURCE_PATH)
+
+            self.assertEqual(self.exception_callback_value, [])
 
     def test_rec_co_get_many(self):
         """
@@ -196,86 +211,141 @@ class CtdmoGhqrSioParserUnitTestCase(ParserUnitTestCase):
         Verify that the results are those we expected.
         File used for this test has 2 CO SIO blocks.
         """
-        in_file = open(os.path.join(RESOURCE_PATH, 'CTD02002.DAT'), 'rb')
-        parser = CtdmoGhqrSioRecoveredCoParser(self.config_rec_co, in_file, self.exception_callback)
+        with open(os.path.join(RESOURCE_PATH, 'CTD02002.DAT'), 'rb') as in_file:
+            parser = CtdmoGhqrSioRecoveredCoAndCtParser(self.config_rec_co, in_file, self.exception_callback)
 
-        particles = parser.get_records(6)
-        particles2 = parser.get_records(6)
+            particle_CO=[]
+            particle2_CO=[]
 
-        particles.extend(particles2)
+            result = parser.get_records(99)
 
-        self.assertEqual(len(particles), 10)
-        self.assert_particles(particles, 'CTD02002.yml', RESOURCE_PATH)
+            for particle in result:
+                if (particle._data_particle_type == DataParticleType.REC_CO_PARTICLE):
+                    particle_CO.append(particle)
+                    particle2_CO.append(particle)
 
-        in_file.close()
-        self.assertEqual(self.exception_callback_value, [])
+            particle_CO.extend(particle2_CO)
 
-    def test_rec_co_long_stream(self):
+            self.assertEqual(len(particle2_CO), 10)
+
+            self.assert_particles(particle2_CO, 'CTD02002.yml', RESOURCE_PATH)
+
+            self.assertEqual(self.exception_callback_value, [])
+
+    def test_rec_co_and_ct_long_stream(self):
         """
         Read test data and pull out all particles from a file at once.
-        File used for this test has 3 CO SIO blocks and a total of 19 CO records.
+        File used for this test has 3 CO SIO blocks and a total of 19 CO records
+        and 1 CT block and total of CT 2 records.
         """
-        in_file = open(os.path.join(RESOURCE_PATH, 'CTD02004.DAT'), 'rb')
-        parser = CtdmoGhqrSioRecoveredCoParser(self.config_rec_co, in_file, self.exception_callback)
+        with open(os.path.join(RESOURCE_PATH, 'CTD02004.DAT'), 'rb') as in_file:
+            parser = CtdmoGhqrSioRecoveredCoAndCtParser(self.config_rec_co, in_file, self.exception_callback)
 
-        particles = parser.get_records(19)
-        self.assertEqual(len(particles), 19)
+            number_expected_CO_results = 19
+            number_expected_CT_results = 2
+            particle_CO=[]
+            particle_CT =[]
 
-        # there should be no more particles in the file, ensure no more are returned
-        particles2 = parser.get_records(19)
-        self.assertEqual(len(particles2), 0)
+            # In a single read, get all particles in this file.
+            result = parser.get_records(99)
 
-        self.assert_particles(particles, 'CTD02004.yml', RESOURCE_PATH)
+            for particle in result:
+                if (particle._data_particle_type == DataParticleType.REC_CO_PARTICLE):
+                    particle_CO.append(particle)
 
-        in_file.close()
-        self.assertEqual(self.exception_callback_value, [])
+                if (particle._data_particle_type == DataParticleType.REC_CT_HOST_PARTICLE):
+                    particle_CT.append(particle)
+
+            self.assertEqual(len(particle_CO), number_expected_CO_results)
+
+            self.assertEqual(len(particle_CT), number_expected_CT_results)
+
+            # there should be no more particles in the file, ensure no more are returned
+            particles2 = parser.get_records(99)
+            self.assertEqual(len(particles2), 0)
+
+            self.assert_particles(particle_CO, 'CTD02004.yml', RESOURCE_PATH)
+
+            self.assert_particles(particle_CT, 'CTD02004_CT.yml', RESOURCE_PATH)
+
+            self.assertEqual(self.exception_callback_value, [])
 
     def test_rec_co_no_records(self):
         """
         Read a Recovered CO data file that has no CO records.
         Verify that no particles are generated.
         """
-        in_file = open(os.path.join(RESOURCE_PATH, 'CTD02000.DAT'), 'rb')
-        parser = CtdmoGhqrSioRecoveredCoParser(self.config_rec_co, in_file, self.exception_callback)
+        with open (os.path.join(RESOURCE_PATH, 'CTD02000.DAT'), 'rb') as in_file:
+            parser = CtdmoGhqrSioRecoveredCoAndCtParser(self.config_rec_co, in_file, self.exception_callback)
 
-        # Not expecting any particles.
-        expected_results = []
+            # Not expecting any particles.
+            expected_results = []
 
-        # Try to get one particle and verify we didn't get any.
-        result = parser.get_records(1)
-        self.assertEqual(result, expected_results)
+            # Try to get particles and verify we didn't get any CO records.
+            result = parser.get_records(99)
 
-        in_file.close()
-        self.assertEqual(self.exception_callback_value, [])
+            for particle in result:
+                self.assertNotEqual(particle._data_particle_type, DataParticleType.REC_CO_PARTICLE)
 
-    def test_rec_co_simple(self):
+            self.assertEqual(self.exception_callback_value, [])
+
+    def test_rec_co_and_ct_simple(self):
         """
-        Read Recovered CO data from the file and pull out data particles
+        Read Recovered CO and CT data from the file and pull out data particles
         one at a time. Verify that the results are those we expected.
         """
         with open(os.path.join(RESOURCE_PATH, 'CTD02001.DAT'), 'rb') as in_file:
 
-            parser = CtdmoGhqrSioRecoveredCoParser(self.config_rec_co, in_file, self.exception_callback)
+            parser = CtdmoGhqrSioRecoveredCoAndCtParser(self.config_rec_co, in_file, self.exception_callback)
 
-            particles = parser.get_records(7)
+            number_expected_CO_results = 6
+            number_expected_CT_results = 1
+            particle_CO = []
+            particle_CT = []
 
-            self.assertEqual(len(particles), 6)
+            # In a single read, get all particles in this file.
+            result = parser.get_records(99)
 
-            self.assert_particles(particles, 'CTD02001.yml', RESOURCE_PATH)
+            for particle in result:
+                if (particle._data_particle_type == DataParticleType.REC_CO_PARTICLE):
+                    particle_CO.append(particle)
 
-        self.assertEqual(self.exception_callback_value, [])
+                if (particle._data_particle_type == DataParticleType.REC_CT_HOST_PARTICLE):
+                    particle_CT.append(particle)
 
-    def test_co_real(self):
+            self.assertEqual(len(particle_CO), number_expected_CO_results)
+
+            self.assertEqual(len(particle_CT), number_expected_CT_results)
+
+            self.assert_particles(particle_CO, 'CTD02001.yml', RESOURCE_PATH)
+
+            self.assert_particles(particle_CT, 'CTD02001_CT.yml', RESOURCE_PATH)
+
+            self.assertEqual(self.exception_callback_value, [])
+
+    def test_co_and_ct_real(self):
         """
-        Test with a real rather than generated CO file
+        Test with a real rather than generated CO and CT file
         """
         with open(os.path.join(RESOURCE_PATH, 'CTD15906.DAT'), 'rb') as in_file:
 
-            parser = CtdmoGhqrSioRecoveredCoParser(self.config_rec_co, in_file, self.exception_callback)
+            parser = CtdmoGhqrSioRecoveredCoAndCtParser(
+                self.config_rec_co, in_file, self.exception_callback)
 
-            # only 1 CO block with 12 records in real file
-            particles = parser.get_records(14)
-            self.assertEqual(len(particles), 12)
+            result = parser.get_records(24*9+50)
+
+            particles_CO = []
+            particles_CT = []
+
+            for particle in result:
+                if (particle._data_particle_type == DataParticleType.REC_CO_PARTICLE):
+                    particles_CO.append(particle)
+
+                if (particle._data_particle_type == DataParticleType.REC_CT_HOST_PARTICLE):
+                    particles_CT.append(particle)
+
+            self.assertEqual(len(particles_CO), 12)
+            self.assertEqual(len(particles_CT), 24*9)
 
         self.assertEqual(self.exception_callback_value, [])
 
