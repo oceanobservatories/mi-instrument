@@ -1,0 +1,6 @@
+2015/01/03 00:28:09.621 [ctdbp3:DLOGP6]:Logger started: Idle state, without initialize
+2015/01/03 00:30:16.457 [ctdbp3:DLOGP6]:Instrument Started [Power On]
+2015/01/03 00:30:23.395 [ctdbp3:DLOGP6]: 12.3772,  3.73234,    1.087, 0, 0, 0, 03 Jan 2015 00:30:16
+2015/01/03 00:30:23.498 [ctdbp3:DLOGP6]:S>
+2015/01/03 00:30:23.510 [ctdbp3:DLOGP6]:!!! Low Battery  !!!
+2015/01/03 00:31:06.537 [ctdbp3:DLOGP6]:Instrument Stopped [Power Off]
