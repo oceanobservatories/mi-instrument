@@ -325,6 +325,7 @@ class CtdmoGhqrRecoveredHostInstrumentDataParticle(DataParticle):
         SECONDS_1900_TO_2000 = (datetime.datetime(2000, 1, 1) - datetime.datetime(1900, 1, 1)).total_seconds()
 
         header_timestamp, inductive_id, data = self.raw_data
+
         temp = int(data[:5], 16)
         cond = int(data[5:10], 16)
         pressure, secs = struct.unpack('<HI', binascii.a2b_hex(data[10:22]))
@@ -473,6 +474,7 @@ def parse_ct_data(particle_class, chunk, sio_header_timestamp, extract_sample, i
     """
     particles = []
     had_error = (False, 0)
+
     sample_list = chunk.split()
     for item in sample_list:
         try:

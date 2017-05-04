@@ -197,7 +197,6 @@ class CtdmoGhqrSioParserUnitTestCase(ParserUnitTestCase):
             self.assertEqual(len(particle_co), number_expected_co_results)
             self.assertEqual(len(particle_ct), number_expected_ct_results)
             self.assert_particles(particle_co, 'CTD02100.yml', RESOURCE_PATH)
-            self.assert_particles(particle_ct, 'CTD02100_CT.yml', RESOURCE_PATH)
             self.assertEqual(self.exception_callback_value, [])
 
     def test_rec_co_get_many(self):
