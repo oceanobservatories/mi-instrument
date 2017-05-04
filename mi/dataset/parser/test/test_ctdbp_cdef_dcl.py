@@ -90,7 +90,7 @@ class CtdbpCdefDclParserUnitTestCase(ParserUnitTestCase):
 
             particles = parser.get_records(1)
 
-            # Make sure we obtained 1 particles
+            # Make sure we obtained 1 particle
             self.assertTrue(len(particles) == 1)
             self.assert_particles(particles, '20140930.ctdbp1_1rec_corr.yml', RESOURCE_PATH)
 
@@ -382,7 +382,6 @@ class CtdbpCdefDclParserUnitTestCase(ParserUnitTestCase):
         one at a time. Verify that the results are those we expected.
         """
         log.debug('===== START TEST bug 11367 =====')
-        
         # test along the telemetered path, current config
         with open(os.path.join(RESOURCE_PATH, '20161005.ctdbp2.log'), 'rU') as file_handle:
             parser = CtdbpCdefDclParser(True,
@@ -394,9 +393,7 @@ class CtdbpCdefDclParserUnitTestCase(ParserUnitTestCase):
             # Make sure we obtained 24 particles
             self.assertTrue(len(particles) == 24)
             self.assertEquals(len(self.exception_callback_value), 0)
-        
         log.debug('===== END TEST bug 11367 =====')
-
 
     # ticket #9809
     def test_ctdbp_cdef_dcl_flort_d(self):
@@ -442,7 +439,7 @@ class CtdbpCdefDclParserUnitTestCase(ParserUnitTestCase):
 
             # Make sure we obtained expected particle(s)
             self.assertEquals(len(particles), num_expected_particles)
-            self.assert_particles(particles, "20150103.ctdbp3_1recCtdID_w_LowBattery.yml", RESOURCE_PATH) 
+            self.assert_particles(particles, "20150103.ctdbp3_1recCtdID_w_LowBattery.yml", RESOURCE_PATH)
 
         """
         test 3 recs with no CTD ID
@@ -461,7 +458,7 @@ class CtdbpCdefDclParserUnitTestCase(ParserUnitTestCase):
 
             # Make sure we obtained expected particle(s)
             self.assertEquals(len(particles), num_expected_particles)
-            self.assert_particles(particles, "20161009.ctdbp3_3rec_noCtdId.yml", RESOURCE_PATH) 
+            self.assert_particles(particles, "20161009.ctdbp3_3rec_noCtdId.yml", RESOURCE_PATH)
 
         """
         test 3 recs, 1 with hash separator, no CTD ID
@@ -481,8 +478,7 @@ class CtdbpCdefDclParserUnitTestCase(ParserUnitTestCase):
 
             # Make sure we obtained expected particle(s)
             self.assertEquals(len(particles), num_expected_particles)
-            self.assert_particles(particles, "20141017.ctdbp3_3rec_w_1hash.yml", RESOURCE_PATH) 
-
+            self.assert_particles(particles, "20141017.ctdbp3_3rec_w_1hash.yml", RESOURCE_PATH)
 
         """
         test 3 recs with negative pressure
@@ -501,8 +497,7 @@ class CtdbpCdefDclParserUnitTestCase(ParserUnitTestCase):
 
             # Make sure we obtained expected particle(s)
             self.assertEquals(len(particles), num_expected_particles)
-            self.assert_particles(particles, "20141002.ctdbp3_3Rec_negPressure.yml", RESOURCE_PATH) 
-
+            self.assert_particles(particles, "20141002.ctdbp3_3Rec_negPressure.yml", RESOURCE_PATH)
 
         """
         test 18 recs with one damaged data line
@@ -520,12 +515,10 @@ class CtdbpCdefDclParserUnitTestCase(ParserUnitTestCase):
 
             # Make sure we obtained expected particle(s)
             self.assertEquals(len(particles), num_expected_particles)
-            self.assert_particles(particles, "20161025.ctdbp3_damagedRec.yml", RESOURCE_PATH) 
-
-
+            self.assert_particles(particles, "20161025.ctdbp3_damagedRec.yml", RESOURCE_PATH)
 
         """
-        test large file, 24 recs 
+        test large file, 24 recs
         """
         with open(os.path.join(RESOURCE_PATH, '20140928.ctdbp3_24rec.log'), 'r') as file_handle:
 
@@ -540,9 +533,7 @@ class CtdbpCdefDclParserUnitTestCase(ParserUnitTestCase):
 
             # Make sure we obtained expected particle(s)
             self.assertEquals(len(particles), num_expected_particles)
-            self.assert_particles(particles, "20140928.ctdbp3_24rec.yml", RESOURCE_PATH) 
-
-
+            self.assert_particles(particles, "20140928.ctdbp3_24rec.yml", RESOURCE_PATH)
 
         """
         test 3 recs with negative pressure
@@ -561,11 +552,9 @@ class CtdbpCdefDclParserUnitTestCase(ParserUnitTestCase):
 
             # Make sure we obtained expected particle(s)
             self.assertEquals(len(particles), num_expected_particles)
-            self.assert_particles(particles, "20141002.ctdbp3_3Rec_negPressure.yml", RESOURCE_PATH) 
-
+            self.assert_particles(particles, "20141002.ctdbp3_3Rec_negPressure.yml", RESOURCE_PATH)
 
         log.debug('===== END TEST CTDBP WITH FLORT =====')
-
 
     """
     These 2 methods were copied and adapted from /test_zplsc_c.py to facilitate
@@ -594,9 +583,9 @@ class CtdbpCdefDclParserUnitTestCase(ParserUnitTestCase):
 
     def particle_to_yml(self, particles, filename, mode='w'):
         """
-        This is added as a testing helper, not actually as part of the 
-        parser tests.  Since the same particles will be used for the 
-        driver test it is helpful to write them to .yml in the same form 
+        This is added as a testing helper, not actually as part of the
+        parser tests.  Since the same particles will be used for the
+        driver test it is helpful to write them to .yml in the same form
         they need in the results.yml file here.
         """
         PARTICLE_NAME = 'CtdbpCdefDclTelemeteredDataParticle'
@@ -609,7 +598,7 @@ class CtdbpCdefDclParserUnitTestCase(ParserUnitTestCase):
             fid.write("    particle_object: MULTIPLE\n")
             fid.write("    particle_type: MULTIPLE\n\n")
             fid.write('data:\n')
-            for index in range(len(particles)):
+            for index in xrange(len(particles)):
                 particle_dict = particles[index].generate_dict()
                 fid.write('  - _index: %d\n' % (index+1))
                 fid.write("    particle_object: %s\n" % PARTICLE_NAME)
