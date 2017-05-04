@@ -10,7 +10,7 @@ from mi.core.log import get_logger
 
 from mi.dataset.dataset_parser import DataSetDriverConfigKeys
 from mi.dataset.dataset_driver import DataSetDriver
-from mi.dataset.parser.ctdmo_ghqr_sio import CtdmoGhqrSioRecoveredCoParser
+from mi.dataset.parser.ctdmo_ghqr_sio import CtdmoGhqrSioRecoveredCoAndCtParser
 from mi.core.versioning import version
 
 
@@ -36,7 +36,7 @@ def parse(unused, source_file_path, particle_data_handler):
             DataSetDriverConfigKeys.PARTICLE_CLASS: ['CtdmoGhqrSioRecoveredOffsetDataParticle']
         }
 
-        parser = CtdmoGhqrSioRecoveredCoParser(parser_config, stream_handle, exception_callback)
+        parser = CtdmoGhqrSioRecoveredCoAndCtParser(parser_config, stream_handle, exception_callback)
 
         # create and instance of the concrete driver class defined below
         driver = DataSetDriver(parser, particle_data_handler)

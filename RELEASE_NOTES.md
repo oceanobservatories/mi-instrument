@@ -1,3 +1,8 @@
+# Version 0.4.2
+
+* Issue #12191 - Need to parse CTDMO recovered_host instrument data (ctdmo_ghqr)
+Added parser to parse CTDMO recovered_host instrument data
+
 # Version 0.4.1
 
 * Issue #11462 - wavss_a_dcl - 
