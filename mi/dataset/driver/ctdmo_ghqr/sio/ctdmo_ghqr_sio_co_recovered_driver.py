@@ -14,7 +14,7 @@ from mi.dataset.parser.ctdmo_ghqr_sio import CtdmoGhqrSioRecoveredCoAndCtParser
 from mi.core.versioning import version
 
 
-@version("15.6.1")
+@version("15.7.0")
 def parse(unused, source_file_path, particle_data_handler):
     """
     This is the method called by Uframe
