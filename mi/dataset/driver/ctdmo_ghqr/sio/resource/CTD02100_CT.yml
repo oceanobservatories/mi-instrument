@@ -1,6 +1,10 @@
 header:
   particle_object: CtdmoGhqrRecoveredHostInstrumentDataParticle
+<<<<<<< HEAD
   particle_type: ctdmo_ghqr_sio_mule_instrument
+=======
+  particle_type: ctdmo_ghqr_instrument_recovered
+>>>>>>> d034222014953971c36ac91db78f4ba1770f7d22
 
 data:
   - _index:  1
