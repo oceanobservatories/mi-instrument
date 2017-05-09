@@ -191,7 +191,7 @@ class CtdmoGhqrSioParserUnitTestCase(ParserUnitTestCase):
             for particle in result:
                 if particle._data_particle_type == DataParticleType.REC_CO_PARTICLE:
                     particle_co.append(particle)
-                if particle._data_particle_type == DataParticleType.REC_CT_HOST_PARTICLE:
+                if particle._data_particle_type == DataParticleType.REC_CT_PARTICLE:
                     particle_ct.append(particle)
 
             self.assertEqual(len(particle_co), number_expected_co_results)
@@ -242,7 +242,7 @@ class CtdmoGhqrSioParserUnitTestCase(ParserUnitTestCase):
             for particle in result:
                 if particle._data_particle_type == DataParticleType.REC_CO_PARTICLE:
                     particle_co.append(particle)
-                if particle._data_particle_type == DataParticleType.REC_CT_HOST_PARTICLE:
+                if particle._data_particle_type == DataParticleType.REC_CT_PARTICLE:
                     particle_ct.append(particle)
 
             self.assertEqual(len(particle_co), number_expected_co_results)
@@ -292,7 +292,7 @@ class CtdmoGhqrSioParserUnitTestCase(ParserUnitTestCase):
             for particle in result:
                 if particle._data_particle_type == DataParticleType.REC_CO_PARTICLE:
                     particle_co.append(particle)
-                if particle._data_particle_type == DataParticleType.REC_CT_HOST_PARTICLE:
+                if particle._data_particle_type == DataParticleType.REC_CT_PARTICLE:
                     particle_ct.append(particle)
 
             self.assertEqual(len(particle_co), number_expected_co_results)
@@ -317,7 +317,7 @@ class CtdmoGhqrSioParserUnitTestCase(ParserUnitTestCase):
             for particle in result:
                 if particle._data_particle_type == DataParticleType.REC_CO_PARTICLE:
                     particles_co.append(particle)
-                if particle._data_particle_type == DataParticleType.REC_CT_HOST_PARTICLE:
+                if particle._data_particle_type == DataParticleType.REC_CT_PARTICLE:
                     particles_ct.append(particle)
 
             self.assertEqual(len(particles_co), 12)

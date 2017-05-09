@@ -174,7 +174,6 @@ class DataParticleType(BaseEnum):
     REC_CT_PARTICLE = 'ctdmo_ghqr_instrument_recovered'
     TEL_CO_PARTICLE = 'ctdmo_ghqr_sio_offset'
     TEL_CT_PARTICLE = 'ctdmo_ghqr_sio_mule_instrument'
-    REC_CT_HOST_PARTICLE = 'ctdmo_ghqr_instrument_host_recovered'
 
 
 class CtdmoInstrumentDataParticleKey(BaseEnum):
@@ -313,7 +312,7 @@ class CtdmoGhqrRecoveredHostInstrumentDataParticle(DataParticle):
     """
     Class for generating Instrument Data Particles from Recovered data.
     """
-    _data_particle_type = DataParticleType.REC_CT_HOST_PARTICLE
+    _data_particle_type = DataParticleType.REC_CT_PARTICLE
 
     def _build_parsed_values(self):
         """
