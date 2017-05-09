@@ -170,11 +170,16 @@ def generate_particle_timestamp(time_2000):
 
 
 class DataParticleType(BaseEnum):
+    """
+    Recovered_host CTDMO instrument data is identical to the telemetered data.
+    so, for Recovered_host CTDMO instrument data, we are using 'ctdmo_ghqr_sio_mule_instrument'
+    ( TEL_CT_PARTICLE) data stream.
+    """
     REC_CO_PARTICLE = 'ctdmo_ghqr_offset_recovered'
     REC_CT_PARTICLE = 'ctdmo_ghqr_instrument_recovered'
     TEL_CO_PARTICLE = 'ctdmo_ghqr_sio_offset'
     TEL_CT_PARTICLE = 'ctdmo_ghqr_sio_mule_instrument'
-    REC_CT_HOST_PARTICLE = 'ctdmo_ghqr_instrument_host_recovered'
+    REC_HOST_CT_PARTICLE = 'ctdmo_ghqr_sio_mule_instrument'
 
 
 class CtdmoInstrumentDataParticleKey(BaseEnum):
@@ -313,7 +318,7 @@ class CtdmoGhqrRecoveredHostInstrumentDataParticle(DataParticle):
     """
     Class for generating Instrument Data Particles from Recovered data.
     """
-    _data_particle_type = DataParticleType.REC_CT_HOST_PARTICLE
+    _data_particle_type = DataParticleType.REC_HOST_CT_PARTICLE
 
     def _build_parsed_values(self):
         """
