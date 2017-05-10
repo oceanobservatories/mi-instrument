@@ -3,6 +3,9 @@
 * Issue #12191 - Need to parse CTDMO recovered_host instrument data (ctdmo_ghqr)
 Added parser to parse CTDMO recovered_host instrument data
 
+Added the following drivers:
+* /mi/dataset/driver/ctdmo_ghqr/sio/ctdmo_ghqr_sio_ct_recovered_driver.py
+
 # Version 0.4.1
 
 * Issue #11462 - wavss_a_dcl - 
