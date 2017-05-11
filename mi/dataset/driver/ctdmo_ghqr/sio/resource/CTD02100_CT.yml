@@ -5,6 +5,7 @@ header:
 data:
   - _index:  1
     internal_timestamp: 3509310738
+    port_timestamp: 1364402432
     sio_controller_timestamp: 1364402432
     inductive_id: 55
     temperature: 4660

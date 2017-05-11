@@ -335,7 +335,12 @@ class CtdmoGhqrRecoveredHostInstrumentDataParticle(DataParticle):
         cond = int(data[5:10], 16)
         pressure, secs = struct.unpack('<HI', binascii.a2b_hex(data[10:22]))
         self.set_internal_timestamp(timestamp=secs + SECONDS_1900_TO_2000)
+        port_timestamp = float (convert_hex_ascii_to_int(header_timestamp))
+        self.set_port_timestamp(timestamp = port_timestamp)
 
+        """
+        Here, sio_controller_timestamp is deprecated, use port timestamp instead
+        """
         particle = [
             self._encode_value(CtdmoInstrumentDataParticleKey.CONTROLLER_TIMESTAMP,
                                header_timestamp,
