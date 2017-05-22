@@ -97,8 +97,6 @@ METADATA_PATTERN += ANY_CHARS_REGEX         # followed by text
 METADATA_PATTERN += END_METADATA            # followed by ']'
 METADATA_PATTERN += ANY_CHARS_REGEX         # followed by more text
 METADATA_PATTERN += END_OF_LINE_REGEX   # metadata record ends with a newline
-print "METADATA_PATTERN is next <"
-print METADATA_PATTERN
 METADATA_MATCHER = re.compile(METADATA_PATTERN)
 
 # FLORT Sensor data record:
@@ -115,8 +113,6 @@ SENSOR_DATA_PATTERN += UINT + TAB               # measurement wavelength cdom
 SENSOR_DATA_PATTERN += UINT + TAB               # raw signal cdom
 SENSOR_DATA_PATTERN += UINT                     # raw internal temperature
 SENSOR_DATA_PATTERN += END_OF_LINE_REGEX    # sensor data ends with a newline
-print "SENSOR_DATA_PATTERN is next <"
-print SENSOR_DATA_PATTERN
 SENSOR_DATA_MATCHER = re.compile(SENSOR_DATA_PATTERN)
 
 # SENSOR_DATA_MATCHER produces the following groups.
@@ -187,8 +183,6 @@ CTDBP_FLORT_PATTERN += ONE_OR_MORE_WHITESPACE_REGEX
 CTDBP_FLORT_PATTERN += CTDBP_FLORT_DATE_TIME  # sensor date_time
 CTDBP_FLORT_PATTERN += ZERO_OR_MORE_WHITESPACE_REGEX
 CTDBP_FLORT_PATTERN += END_OF_LINE_REGEX   # sensor data ends with a newline
-print "CTDBP_FLORT_PATTERN is next <"
-print CTDBP_FLORT_PATTERN
 CTDBP_FLORT_MATCHER = re.compile(CTDBP_FLORT_PATTERN)
 
 # Combined CTDBP_FLORT_MATCHER produces the following groups.
