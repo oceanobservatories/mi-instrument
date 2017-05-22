@@ -17,9 +17,9 @@ CO, aka offset data.
 For telemetered data, both types (CT, CO) of data are in SIO Mule files.
 For recovered data, the CT data is stored in a separate file.
 Additionally, both CT and CO data are stored in another file (SIO Controller file),
-but only the CO data in the SIO Controller file is processed here,
-with the CT data being ignored.
+both CO and CT data in the SIO Controller file is processed here.
 """
+import datetime
 
 __author__ = 'Emily Hahn'
 __license__ = 'Apache 2.0'
@@ -48,7 +48,7 @@ from mi.core.exceptions import \
     SampleException, \
     UnexpectedDataException
 
-from mi.core.instrument.dataset_data_particle import DataParticle, DataParticleKey, DataParticleValue
+from mi.core.instrument.dataset_data_particle import DataParticle
 
 ID_INSTRUMENT = 'CT'    # ID for instrument (science) data
 ID_OFFSET = 'CO'        # ID for time offset data
@@ -99,7 +99,7 @@ REC_CT_GROUP_PRESSURE = 3
 REC_CT_GROUP_PRESSURE_TEMP = 4
 REC_CT_GROUP_TIME = 5
 
-# Telemetered CT Data record (binary):
+#  Telemetered CT Data record (binary):
 TEL_CT_RECORD_END = b'\x0D'           # records separated by a new line
 TEL_CT_SAMPLE_BYTES = 13              # includes record separator
 
@@ -170,10 +170,16 @@ def generate_particle_timestamp(time_2000):
 
 
 class DataParticleType(BaseEnum):
+    """
+    Recovered_host CTDMO instrument data is identical to the telemetered data.
+    so, for Recovered_host CTDMO instrument data, we are using 'ctdmo_ghqr_sio_mule_instrument'
+    ( TEL_CT_PARTICLE) data stream.
+    """
     REC_CO_PARTICLE = 'ctdmo_ghqr_offset_recovered'
     REC_CT_PARTICLE = 'ctdmo_ghqr_instrument_recovered'
     TEL_CO_PARTICLE = 'ctdmo_ghqr_sio_offset'
     TEL_CT_PARTICLE = 'ctdmo_ghqr_sio_mule_instrument'
+    REC_HOST_CT_PARTICLE = 'ctdmo_ghqr_sio_mule_instrument'
 
 
 class CtdmoInstrumentDataParticleKey(BaseEnum):
@@ -195,7 +201,7 @@ class CtdmoGhqrRecoveredInstrumentDataParticle(DataParticle):
 
     def _build_parsed_values(self):
         """
-        Build parsed values for Telemetered Recovered Data Particle.
+        Build parsed values for Telemetered Data Particle.
         Take something in the hex ASCII data values and turn it into a
         particle with the appropriate tag.
         @throws SampleException If there is a problem with sample creation
@@ -303,6 +309,57 @@ class CtdmoGhqrSioTelemeteredInstrumentDataParticle(DataParticle):
             self._encode_value(CtdmoInstrumentDataParticleKey.CTD_TIME,
                                reversed_hex_time,
                                convert_hex_ascii_to_int)
+        ]
+
+        return particle
+
+
+class CtdmoGhqrRecoveredHostInstrumentDataParticle(DataParticle):
+    """
+    Class for generating Instrument Data Particles from Recovered data.
+    """
+    _data_particle_type = DataParticleType.REC_HOST_CT_PARTICLE
+
+    def _build_parsed_values(self):
+        """
+        Build parsed values for Recovered Instrument Data Particle.
+        Take something in the hex data values and turn it into a
+        particle with the appropriate tag.
+        @throws SampleException If there is a problem with sample creation
+        """
+        SECONDS_1900_TO_2000 = (datetime.datetime(2000, 1, 1) - datetime.datetime(1900, 1, 1)).total_seconds()
+
+        header_timestamp, inductive_id, data = self.raw_data
+
+        temp = int(data[:5], 16)
+        cond = int(data[5:10], 16)
+        pressure, secs = struct.unpack('<HI', binascii.a2b_hex(data[10:22]))
+        self.set_internal_timestamp(timestamp=secs + SECONDS_1900_TO_2000)
+        port_timestamp = float (convert_hex_ascii_to_int(header_timestamp))
+        self.set_port_timestamp(unix_time = port_timestamp)
+
+        """
+        Here, sio_controller_timestamp is deprecated, use port timestamp instead
+        """
+        particle = [
+            self._encode_value(CtdmoInstrumentDataParticleKey.CONTROLLER_TIMESTAMP,
+                               header_timestamp,
+                               convert_hex_ascii_to_int),
+            self._encode_value(CtdmoInstrumentDataParticleKey.INDUCTIVE_ID,
+                               inductive_id,
+                               int),
+            self._encode_value(CtdmoInstrumentDataParticleKey.TEMPERATURE,
+                               temp,
+                               int),
+            self._encode_value(CtdmoInstrumentDataParticleKey.CONDUCTIVITY,
+                               cond,
+                               int),
+            self._encode_value(CtdmoInstrumentDataParticleKey.PRESSURE,
+                               pressure,
+                               int),
+            self._encode_value(CtdmoInstrumentDataParticleKey.CTD_TIME,
+                               secs,
+                               int)
         ]
 
         return particle
@@ -420,10 +477,30 @@ def parse_co_data(particle_class, chunk, sio_header_timestamp, extract_sample):
     return particles, had_error
 
 
-class CtdmoGhqrSioRecoveredCoParser(SioParser):
+def parse_ct_data(particle_class, chunk, sio_header_timestamp, extract_sample, inductive_id):
+    """
+    This function parses a CT record and returns a list of samples.
+    The CT input record is the same for both recovered and telemetered data.
+    """
+    particles = []
+    had_error = (False, 0)
+
+    sample_list = chunk.split()
+    for item in sample_list:
+        try:
+            binascii.a2b_hex(item)
+            sample = extract_sample(particle_class, None, (sio_header_timestamp, inductive_id, item), None)
+            particles.append(sample)
+        except ValueError:
+            had_error = (True, 0)
+
+    return particles, had_error
+
+
+class CtdmoGhqrSioRecoveredCoAndCtParser(SioParser):
 
     """
-    Parser for Ctdmo recovered CO data.
+    Parser for Ctdmo recovered CO and CT data.
     """
 
     def handle_non_data(self, non_data, non_end, start):
@@ -438,7 +515,7 @@ class CtdmoGhqrSioRecoveredCoParser(SioParser):
 
     def parse_chunks(self):
         """
-        Parse chunks for the Recovered CO parser.
+        Parse chunks for the Recovered CO and CT parser.
         Parse out any pending data chunks in the chunker. If
         it is a valid data piece, build a particle, update the position and
         timestamp. Go until the chunker has no more valid data.
@@ -469,6 +546,21 @@ class CtdmoGhqrSioRecoveredCoParser(SioParser):
                               binascii.b2a_hex(chunk), had_error[1])
                     self._exception_callback(SampleException(
                         'unknown data found in CO chunk at %d, leaving out the rest' % had_error[1]))
+
+                result_particles.extend(particles)
+
+            if header_match.group(SIO_HEADER_GROUP_ID) == ID_INSTRUMENT:
+                header_str = header_match.group(0)
+                inductive_id = header_str[8:10]
+                (particles, had_error) = parse_ct_data(CtdmoGhqrRecoveredHostInstrumentDataParticle,
+                                                       chunk[chunk_idx:-1], header_timestamp,
+                                                       self._extract_sample, inductive_id)
+
+                if had_error[0]:
+                    log.error('unknown data found in CT chunk %s at %d, leaving out the rest',
+                              binascii.b2a_hex(chunk), had_error[1])
+                    self._exception_callback(SampleException(
+                        'unknown data found in CT chunk at %d, leaving out the rest' % had_error[1]))
 
                 result_particles.extend(particles)
 

@@ -1,10 +1,9 @@
 #!/usr/bin/env python
-
 """
-@package mi.dataset.driver.ctdmo_ghqr.sio.ctdmo_ghqr_sio_co_recovered
-@file mi-dataset/mi/dataset/driver/ctdmo_ghqr/sio/ctdmo_ghqr_sio_co_recovered_driver.py
-@author Emily Hahn
-@brief Driver for the ctdmo_ghqr_sio instrument co recovered data
+@package mi.dataset.driver.ctdmo_ghqr.sio
+@file mi-dataset/mi/dataset/driver/ctdmo_ghqr/sio/ctdmo_ghqr_sio_ct_recovered_driver.py
+@author Vipul Lakhani
+@brief Driver for the ctdmo_ghqr_sio instrument ct recovered data
 """
 from mi.core.log import get_logger
 
@@ -33,7 +32,7 @@ def parse(unused, source_file_path, particle_data_handler):
 
         parser_config = {
             DataSetDriverConfigKeys.PARTICLE_MODULE: 'mi.dataset.parser.ctdmo_ghqr_sio',
-            DataSetDriverConfigKeys.PARTICLE_CLASS: ['CtdmoGhqrSioRecoveredOffsetDataParticle']
+            DataSetDriverConfigKeys.PARTICLE_CLASS: ['CtdmoGhqrRecoveredHostInstrumentDataParticle']
         }
 
         parser = CtdmoGhqrSioRecoveredCoAndCtParser(parser_config, stream_handle, exception_callback)

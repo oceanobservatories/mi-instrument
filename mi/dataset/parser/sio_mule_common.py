@@ -27,7 +27,7 @@ from mi.dataset.dataset_parser import BufferLoadingParser
 #   Data
 #   End of block
 
-SIO_TIMESTAMP_NUM_BYTES=8
+SIO_TIMESTAMP_NUM_BYTES = 8
 
 # SIO block sentinels:
 SIO_HEADER_START = b'\x01'
@@ -38,19 +38,19 @@ SIO_BLOCK_END = b'\x03'
 INSTRUMENT_IDS = b'(CT|AD|FL|DO|PH|PS|CS|WA|WC|WE|CO|PS|CS)'
 
 # SIO controller header:
-SIO_HEADER_REGEX = SIO_HEADER_START     # Start of SIO Header (start of SIO block)
-SIO_HEADER_REGEX += INSTRUMENT_IDS      # Any 1 of the Instrument IDs
-SIO_HEADER_REGEX += b'[0-9]{5}'         # Controller ID
-SIO_HEADER_REGEX += b'[0-9]{2}'         # Number of Instrument / Inductive ID
-SIO_HEADER_REGEX += b'_'                # Spacer (0x5F)
-SIO_HEADER_REGEX += b'([0-9a-fA-F]{4})' # Number of Data Bytes (hex)
-SIO_HEADER_REGEX += b'[0-9A-Za-z]'      # MFLM Processing Flag (coded value)
-SIO_HEADER_REGEX += b'([0-9a-fA-F]{8})' # POSIX Timestamp of Controller (hex)
-SIO_HEADER_REGEX += b'_'                # Spacer (0x5F)
-SIO_HEADER_REGEX += b'([0-9a-fA-F]{2})' # Block Number (hex)
-SIO_HEADER_REGEX += b'_'                # Spacer (0x5F)
-SIO_HEADER_REGEX += b'([0-9a-fA-F]{4})' # CRC Checksum (hex)
-SIO_HEADER_REGEX += SIO_HEADER_END      # End of SIO Header (binary data follows)
+SIO_HEADER_REGEX = SIO_HEADER_START      # Start of SIO Header (start of SIO block)
+SIO_HEADER_REGEX += INSTRUMENT_IDS       # Any 1 of the Instrument IDs
+SIO_HEADER_REGEX += b'[0-9]{5}'          # Controller ID
+SIO_HEADER_REGEX += b'[0-9]{2}'          # Number of Instrument / Inductive ID
+SIO_HEADER_REGEX += b'_'                 # Spacer (0x5F)
+SIO_HEADER_REGEX += b'([0-9a-fA-F]{4})'  # Number of Data Bytes (hex)
+SIO_HEADER_REGEX += b'[0-9A-Za-z]'       # MFLM Processing Flag (coded value)
+SIO_HEADER_REGEX += b'([0-9a-fA-F]{8})'  # POSIX Timestamp of Controller (hex)
+SIO_HEADER_REGEX += b'_'                 # Spacer (0x5F)
+SIO_HEADER_REGEX += b'([0-9a-fA-F]{2})'  # Block Number (hex)
+SIO_HEADER_REGEX += b'_'                 # Spacer (0x5F)
+SIO_HEADER_REGEX += b'([0-9a-fA-F]{4})'  # CRC Checksum (hex)
+SIO_HEADER_REGEX += SIO_HEADER_END       # End of SIO Header (binary data follows)
 SIO_HEADER_MATCHER = re.compile(SIO_HEADER_REGEX)
 
 # The SIO_HEADER_MATCHER produces the following groups:
