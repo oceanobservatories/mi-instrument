@@ -1,0 +1,167 @@
+header:
+    particle_object: MULTIPLE
+    particle_type: MULTIPLE
+
+data:
+  - _index: 1
+    particle_object: FlortDjDclTelemeteredInstrumentDataParticle
+    particle_type: flort_dj_dcl_instrument
+    internal_timestamp: 3686347820.0000000
+    port_timestamp: 3686347826.1770000
+    raw_signal_beta: 1184
+    raw_signal_chl: 178
+    raw_signal_cdom: 91
+    date_time_string: '25 Oct 2016 01:30:20'
+  - _index: 2
+    particle_object: FlortDjDclTelemeteredInstrumentDataParticle
+    particle_type: flort_dj_dcl_instrument
+    internal_timestamp: 3686351427.0000000
+    port_timestamp: 3686351432.8310003
+    raw_signal_beta: 1218
+    raw_signal_chl: 154
+    raw_signal_cdom: 92
+    date_time_string: '25 Oct 2016 02:30:27'
+  - _index: 3
+    particle_object: FlortDjDclTelemeteredInstrumentDataParticle
+    particle_type: flort_dj_dcl_instrument
+    internal_timestamp: 3686355020.0000000
+    port_timestamp: 3686355026.1510000
+    raw_signal_beta: 1278
+    raw_signal_chl: 151
+    raw_signal_cdom: 94
+    date_time_string: '25 Oct 2016 03:30:20'
+  - _index: 4
+    particle_object: FlortDjDclTelemeteredInstrumentDataParticle
+    particle_type: flort_dj_dcl_instrument
+    internal_timestamp: 3686358621.0000000
+    port_timestamp: 3686358627.6160002
+    raw_signal_beta: 1271
+    raw_signal_chl: 143
+    raw_signal_cdom: 93
+    date_time_string: '25 Oct 2016 04:30:21'
+  - _index: 5
+    particle_object: FlortDjDclTelemeteredInstrumentDataParticle
+    particle_type: flort_dj_dcl_instrument
+    internal_timestamp: 3686362221.0000000
+    port_timestamp: 3686362227.3970003
+    raw_signal_beta: 1362
+    raw_signal_chl: 145
+    raw_signal_cdom: 92
+    date_time_string: '25 Oct 2016 05:30:21'
+  - _index: 6
+    particle_object: FlortDjDclTelemeteredInstrumentDataParticle
+    particle_type: flort_dj_dcl_instrument
+    internal_timestamp: 3686365820.0000000
+    port_timestamp: 3686365826.4480000
+    raw_signal_beta: 2053
+    raw_signal_chl: 143
+    raw_signal_cdom: 90
+    date_time_string: '25 Oct 2016 06:30:20'
+  - _index: 7
+    particle_object: FlortDjDclTelemeteredInstrumentDataParticle
+    particle_type: flort_dj_dcl_instrument
+    internal_timestamp: 3686376620.0000000
+    port_timestamp: 3686376626.5559998
+    raw_signal_beta: 619
+    raw_signal_chl: 120
+    raw_signal_cdom: 84
+    date_time_string: '25 Oct 2016 09:30:20'
+  - _index: 8
+    particle_object: FlortDjDclTelemeteredInstrumentDataParticle
+    particle_type: flort_dj_dcl_instrument
+    internal_timestamp: 3686380220.0000000
+    port_timestamp: 3686380226.2080002
+    raw_signal_beta: 566
+    raw_signal_chl: 119
+    raw_signal_cdom: 86
+    date_time_string: '25 Oct 2016 10:30:20'
+  - _index: 9
+    particle_object: FlortDjDclTelemeteredInstrumentDataParticle
+    particle_type: flort_dj_dcl_instrument
+    internal_timestamp: 3686387421.0000000
+    port_timestamp: 3686387427.2360001
+    raw_signal_beta: 616
+    raw_signal_chl: 121
+    raw_signal_cdom: 87
+    date_time_string: '25 Oct 2016 12:30:21'
+  - _index: 10
+    particle_object: FlortDjDclTelemeteredInstrumentDataParticle
+    particle_type: flort_dj_dcl_instrument
+    internal_timestamp: 3686391020.0000000
+    port_timestamp: 3686391026.6980000
+    raw_signal_beta: 603
+    raw_signal_chl: 116
+    raw_signal_cdom: 90
+    date_time_string: '25 Oct 2016 13:30:20'
+  - _index: 11
+    particle_object: FlortDjDclTelemeteredInstrumentDataParticle
+    particle_type: flort_dj_dcl_instrument
+    internal_timestamp: 3686394621.0000000
+    port_timestamp: 3686394627.2909999
+    raw_signal_beta: 945
+    raw_signal_chl: 154
+    raw_signal_cdom: 93
+    date_time_string: '25 Oct 2016 14:30:21'
+  - _index: 12
+    particle_object: FlortDjDclTelemeteredInstrumentDataParticle
+    particle_type: flort_dj_dcl_instrument
+    internal_timestamp: 3686398221.0000000
+    port_timestamp: 3686398227.2700000
+    raw_signal_beta: 650
+    raw_signal_chl: 136
+    raw_signal_cdom: 90
+    date_time_string: '25 Oct 2016 15:30:21'
+  - _index: 13
+    particle_object: FlortDjDclTelemeteredInstrumentDataParticle
+    particle_type: flort_dj_dcl_instrument
+    internal_timestamp: 3686401820.0000000
+    port_timestamp: 3686401826.3710003
+    raw_signal_beta: 2123
+    raw_signal_chl: 145
+    raw_signal_cdom: 88
+    date_time_string: '25 Oct 2016 16:30:20'
+  - _index: 14
+    particle_object: FlortDjDclTelemeteredInstrumentDataParticle
+    particle_type: flort_dj_dcl_instrument
+    internal_timestamp: 3686409021.0000000
+    port_timestamp: 3686409027.1140003
+    raw_signal_beta: 1553
+    raw_signal_chl: 120
+    raw_signal_cdom: 92
+    date_time_string: '25 Oct 2016 18:30:21'
+  - _index: 15
+    particle_object: FlortDjDclTelemeteredInstrumentDataParticle
+    particle_type: flort_dj_dcl_instrument
+    internal_timestamp: 3686412620.0000000
+    port_timestamp: 3686412626.5920000
+    raw_signal_beta: 1986
+    raw_signal_chl: 117
+    raw_signal_cdom: 93
+    date_time_string: '25 Oct 2016 19:30:20'
+  - _index: 16
+    particle_object: FlortDjDclTelemeteredInstrumentDataParticle
+    particle_type: flort_dj_dcl_instrument
+    internal_timestamp: 3686416221.0000000
+    port_timestamp: 3686416226.8579998
+    raw_signal_beta: 1506
+    raw_signal_chl: 118
+    raw_signal_cdom: 88
+    date_time_string: '25 Oct 2016 20:30:21'
+  - _index: 17
+    particle_object: FlortDjDclTelemeteredInstrumentDataParticle
+    particle_type: flort_dj_dcl_instrument
+    internal_timestamp: 3686419821.0000000
+    port_timestamp: 3686419827.4080000
+    raw_signal_beta: 1353
+    raw_signal_chl: 131
+    raw_signal_cdom: 87
+    date_time_string: '25 Oct 2016 21:30:21'
+  - _index: 18
+    particle_object: FlortDjDclTelemeteredInstrumentDataParticle
+    particle_type: flort_dj_dcl_instrument
+    internal_timestamp: 3686427030.0000000
+    port_timestamp: 3686427036.0970001
+    raw_signal_beta: 1567
+    raw_signal_chl: 166
+    raw_signal_cdom: 90
+    date_time_string: '25 Oct 2016 23:30:30'

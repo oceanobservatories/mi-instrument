@@ -6,6 +6,13 @@
 @author Jeff Roy
 @brief Test code for a ctdbp_cdef_dcl data parser
 
+Change History:
+
+Date         Ticket#    Engineer     Description
+------------ ---------- -----------  --------------------------
+4/28/17      #9809      janeenP      Added functionality for combined CTDBP
+                                     with FLORT
+
 """
 
 import os
@@ -89,6 +96,7 @@ class CtdbpCdefDclParserUnitTestCase(ParserUnitTestCase):
 
             particles = parser.get_records(1)
             # Make sure we obtained 2 particles
+
             self.assertTrue(len(particles) == 1)
             self.assert_particles(particles, '20140930.ctdbp1_1rec_corr.yml', RESOURCE_PATH)
 
@@ -142,6 +150,7 @@ class CtdbpCdefDclParserUnitTestCase(ParserUnitTestCase):
                                         file_handle,
                                         self.exception_callback)
             particles = parser.get_records(14)
+            
             # Make sure we obtained 14 particles
             self.assertTrue(len(particles) == 14)
             self.assert_particles(particles, "20140918.ctdbp_many_uncorr_t.yml", RESOURCE_PATH)
@@ -214,7 +223,7 @@ class CtdbpCdefDclParserUnitTestCase(ParserUnitTestCase):
                                         self.exception_callback)
 
             particles = parser.get_records(291)
-            # Make sure we obtained 3389 particles
+            # Make sure we obtained 291 particles
             self.assertTrue(len(particles) == 291)
 
         with open(os.path.join(RESOURCE_PATH, '20140930.ctdbp1_corr1stVariant.log'), 'rU') as file_handle:
@@ -223,7 +232,7 @@ class CtdbpCdefDclParserUnitTestCase(ParserUnitTestCase):
                                         self.exception_callback)
 
             particles = parser.get_records(18)
-            # Make sure we obtained 3389 particles
+            # Make sure we obtained 18 particles
             self.assertTrue(len(particles) == 18)
 
         with open(os.path.join(RESOURCE_PATH, '20140930.ctdbp1_corr2ndVariant.log'), 'rU') as file_handle:
@@ -362,6 +371,7 @@ class CtdbpCdefDclParserUnitTestCase(ParserUnitTestCase):
         Read data from a file and pull out data particles
         one at a time. Verify that the results are those we expected.
         """
+        log.debug('===== START TEST bug 11367 =====')
         # test along the telemetered path, current config
         with open(os.path.join(RESOURCE_PATH, '20161005.ctdbp2.log'), 'rU') as file_handle:
             parser = CtdbpCdefDclParser(True,
@@ -370,7 +380,225 @@ class CtdbpCdefDclParserUnitTestCase(ParserUnitTestCase):
 
             particles = parser.get_records(25)
 
-            # Make sure we obtained 1 particle
+            # Make sure we obtained 24 particles
             self.assertTrue(len(particles) == 24)
             self.assertEquals(len(self.exception_callback_value), 0)
+        log.debug('===== END TEST bug 11367 =====')
 
+    # ticket #9809
+    def test_ctdbp_cdef_dcl_flort_d(self):
+        """
+        Verify that data records from a ctdbp with a flort_d plugged in
+        will produce expected data particles for the ctdbp and ignore the
+        flort data.
+        """
+        log.debug('===== START TEST CTDBP WITH FLORT =====')
+
+        """
+        test with control data only and CTD ID
+        2015/12/11 01:29:19.067 [ctdbp3:DLOGP6]:Instrument Started [Power On]
+        """
+        with open(os.path.join(RESOURCE_PATH, '20151211.ctdbp3_controlOnly.log'), 'rU') as file_handle:
+
+            num_particles_to_request = 10
+            num_expected_particles = 0
+
+            parser = CtdbpCdefDclParser(True,
+                                        file_handle,
+                                        self.exception_callback)
+
+            particles = parser.get_records(num_particles_to_request)
+
+            self.assertEquals(len(particles), num_expected_particles)
+            self.assertEquals(len(self.exception_callback_value), 0)
+
+        """
+        test 1 rec with CTD ID
+        2015/01/03 00:30:23.395 [ctdbp3:DLOGP6]: 12.3772,  3.73234,    1.087, 0, 0, 0, 03 Jan 2015 00:30:16
+        """
+        with open(os.path.join(RESOURCE_PATH, '20150103.ctdbp3_1recCtdID_w_LowBattery.log'), 'r') as file_handle:
+
+            num_particles_to_request = 10
+            num_expected_particles = 1
+
+            parser = CtdbpCdefDclParser(True,
+                                        file_handle,
+                                        self.exception_callback)
+
+            particles = parser.get_records(num_particles_to_request)
+
+            # Make sure we obtained expected particle(s)
+            self.assertEquals(len(particles), num_expected_particles)
+            self.assert_particles(particles, "20150103.ctdbp3_1recCtdID_w_LowBattery.yml", RESOURCE_PATH)
+
+        """
+        test 3 recs with no CTD ID
+        2016/10/09 00:30:26.290  13.3143,  3.56698,    1.088, 1672, 278, 84, 09 Oct 2016 00:30:20
+        """
+        with open(os.path.join(RESOURCE_PATH, '20161009.ctdbp3_3rec_noCtdId.log'), 'r') as file_handle:
+
+            num_particles_to_request = 10
+            num_expected_particles = 3
+
+            parser = CtdbpCdefDclParser(True,
+                                        file_handle,
+                                        self.exception_callback)
+
+            particles = parser.get_records(num_particles_to_request)
+
+            # Make sure we obtained expected particle(s)
+            self.assertEquals(len(particles), num_expected_particles)
+            self.assert_particles(particles, "20161009.ctdbp3_3rec_noCtdId.yml", RESOURCE_PATH)
+
+        """
+        test 3 recs, 1 with hash separator, no CTD ID
+        2014/10/17 21:30:23.684 # 14.7850,  3.96796,    0.981, 740, 222, 73,
+        17 Oct 2014 21:30:17
+        """
+        with open(os.path.join(RESOURCE_PATH, '20141017.ctdbp3_3rec_w_1hash.log'), 'r') as file_handle:
+
+            num_particles_to_request = 10
+            num_expected_particles = 3
+
+            parser = CtdbpCdefDclParser(True,
+                                        file_handle,
+                                        self.exception_callback)
+
+            particles = parser.get_records(num_particles_to_request)
+
+            # Make sure we obtained expected particle(s)
+            self.assertEquals(len(particles), num_expected_particles)
+            self.assert_particles(particles, "20141017.ctdbp3_3rec_w_1hash.yml", RESOURCE_PATH)
+
+        """
+        test 3 recs with negative pressure
+        2014/10/02 00:30:28.063 [ctdbp3:DLOGP6]: 20.9286,  0.00003,   -0.011, 4130, 1244, 4130, 02 Oct 2014 00:30:23
+        """
+        with open(os.path.join(RESOURCE_PATH, '20141002.ctdbp3_3Rec_negPressure.log'), 'r') as file_handle:
+
+            num_particles_to_request = 10
+            num_expected_particles = 3
+
+            parser = CtdbpCdefDclParser(True,
+                                        file_handle,
+                                        self.exception_callback)
+
+            particles = parser.get_records(num_particles_to_request)
+
+            # Make sure we obtained expected particle(s)
+            self.assertEquals(len(particles), num_expected_particles)
+            self.assert_particles(particles, "20141002.ctdbp3_3Rec_negPressure.yml", RESOURCE_PATH)
+
+        """
+        test 18 recs with one damaged data line
+        """
+        with open(os.path.join(RESOURCE_PATH, '20161025.ctdbp3_damagedRec.log'), 'r') as file_handle:
+
+            num_particles_to_request = 20
+            num_expected_particles = 18
+
+            parser = CtdbpCdefDclParser(True,
+                                        file_handle,
+                                        self.exception_callback)
+
+            particles = parser.get_records(num_particles_to_request)
+
+            # Make sure we obtained expected particle(s)
+            self.assertEquals(len(particles), num_expected_particles)
+            self.assert_particles(particles, "20161025.ctdbp3_damagedRec.yml", RESOURCE_PATH)
+
+        """
+        test large file, 24 recs
+        """
+        with open(os.path.join(RESOURCE_PATH, '20140928.ctdbp3_24rec.log'), 'r') as file_handle:
+
+            num_particles_to_request = 30
+            num_expected_particles = 24
+
+            parser = CtdbpCdefDclParser(True,
+                                        file_handle,
+                                        self.exception_callback)
+
+            particles = parser.get_records(num_particles_to_request)
+
+            # Make sure we obtained expected particle(s)
+            self.assertEquals(len(particles), num_expected_particles)
+            self.assert_particles(particles, "20140928.ctdbp3_24rec.yml", RESOURCE_PATH)
+
+        """
+        test 3 recs with negative pressure
+        2014/10/02 00:30:28.063 [ctdbp3:DLOGP6]: 20.9286,  0.00003,   -0.011, 4130, 1244, 4130, 02 Oct 2014 00:30:23
+        """
+        with open(os.path.join(RESOURCE_PATH, '20141002.ctdbp3_3Rec_negPressure.log'), 'r') as file_handle:
+
+            num_particles_to_request = 10
+            num_expected_particles = 3
+
+            parser = CtdbpCdefDclParser(True,
+                                        file_handle,
+                                        self.exception_callback)
+
+            particles = parser.get_records(num_particles_to_request)
+
+            # Make sure we obtained expected particle(s)
+            self.assertEquals(len(particles), num_expected_particles)
+            self.assert_particles(particles, "20141002.ctdbp3_3Rec_negPressure.yml", RESOURCE_PATH)
+
+        log.debug('===== END TEST CTDBP WITH FLORT =====')
+
+    """
+    These 2 methods were copied and adapted from /test_zplsc_c.py to facilitate
+    the generation of large .yml results files for checking large datasets.
+    """
+    def create_large_yml(self):
+        """
+        Create a large yml file corresponding to an actual recovered dataset.
+        This is not an actual test - it allows us to create what we need
+        for integration testing, i.e. a yml file.
+        """
+        log.debug('===== create_large_yml =====')
+
+        with open(os.path.join(RESOURCE_PATH, '20161025.ctdbp3_damagedRec.log'), 'rU') as in_file:
+            log.debug('===== in_file name  %s  =====', in_file)
+
+            parser = CtdbpCdefDclParser(True,
+                                        in_file,
+                                        self.exception_callback)
+            result = parser.get_records(1000)
+
+            out_file = '.'.join([in_file.name, 'yml'])
+            log.debug('===== out_file name  %s  =====', out_file)
+
+            self.particle_to_yml(result, out_file)
+
+    def particle_to_yml(self, particles, filename, mode='w'):
+        """
+        This is added as a testing helper, not actually as part of the
+        parser tests.  Since the same particles will be used for the
+        driver test it is helpful to write them to .yml in the same form
+        they need in the results.yml file here.
+        """
+        PARTICLE_NAME = 'CtdbpCdefDclTelemeteredDataParticle'
+        PARTICLE_TYPE = 'ctdbp_cdef_dcl_instrument'
+
+        # open write append, if you want to start from scratch manually delete this file
+        log.debug('===== write file name  %s  =====', filename)
+        with open(os.path.join(RESOURCE_PATH, filename), mode) as fid:
+            fid.write('header:\n')
+            fid.write("    particle_object: MULTIPLE\n")
+            fid.write("    particle_type: MULTIPLE\n\n")
+            fid.write('data:\n')
+            for index in xrange(len(particles)):
+                particle_dict = particles[index].generate_dict()
+                fid.write('  - _index: %d\n' % (index+1))
+                fid.write("    particle_object: %s\n" % PARTICLE_NAME)
+                fid.write("    particle_type: %s\n" % PARTICLE_TYPE)
+                fid.write('    internal_timestamp: %.3f\n' % particle_dict.get('internal_timestamp'))
+                values_dict = {}
+                for value in particle_dict.get('values'):
+                    values_dict[value.get('value_id')] = value.get('value')
+                fid.write("    dcl_controller_timestamp: %s\n" % values_dict.get('dcl_controller_timestamp'))
+                fid.write('    temp: %.4f\n' % values_dict.get('temp'))
+                fid.write('    conductivity: %.5f\n' % values_dict.get('conductivity'))
+                fid.write('    pressure: %.3f\n' % values_dict.get('pressure'))
+                fid.write("    date_time_string: %s\n" % values_dict.get('date_time_string'))

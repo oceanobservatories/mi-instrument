@@ -1,0 +1,167 @@
+header:
+    particle_object: MULTIPLE
+    particle_type: MULTIPLE
+
+data:
+  - _index: 1
+    particle_object: CtdbpCdefDclTelemeteredDataParticle
+    particle_type: ctdbp_cdef_dcl_instrument
+    internal_timestamp: 3686347826.177
+    dcl_controller_timestamp: 2016/10/25 01:30:26.177
+    temp: 12.9117
+    conductivity: 3.34930
+    pressure: 1.010
+    date_time_string: 25 Oct 2016 01:30:20
+  - _index: 2
+    particle_object: CtdbpCdefDclTelemeteredDataParticle
+    particle_type: ctdbp_cdef_dcl_instrument
+    internal_timestamp: 3686351432.831
+    dcl_controller_timestamp: 2016/10/25 02:30:32.831
+    temp: 12.8999
+    conductivity: 3.34443
+    pressure: 0.989
+    date_time_string: 25 Oct 2016 02:30:27
+  - _index: 3
+    particle_object: CtdbpCdefDclTelemeteredDataParticle
+    particle_type: ctdbp_cdef_dcl_instrument
+    internal_timestamp: 3686355026.151
+    dcl_controller_timestamp: 2016/10/25 03:30:26.151
+    temp: 12.8696
+    conductivity: 3.36571
+    pressure: 1.071
+    date_time_string: 25 Oct 2016 03:30:20
+  - _index: 4
+    particle_object: CtdbpCdefDclTelemeteredDataParticle
+    particle_type: ctdbp_cdef_dcl_instrument
+    internal_timestamp: 3686358627.616
+    dcl_controller_timestamp: 2016/10/25 04:30:27.616
+    temp: 12.8419
+    conductivity: 3.36738
+    pressure: 1.046
+    date_time_string: 25 Oct 2016 04:30:21
+  - _index: 5
+    particle_object: CtdbpCdefDclTelemeteredDataParticle
+    particle_type: ctdbp_cdef_dcl_instrument
+    internal_timestamp: 3686362227.397
+    dcl_controller_timestamp: 2016/10/25 05:30:27.397
+    temp: 12.8480
+    conductivity: 3.37837
+    pressure: 1.110
+    date_time_string: 25 Oct 2016 05:30:21
+  - _index: 6
+    particle_object: CtdbpCdefDclTelemeteredDataParticle
+    particle_type: ctdbp_cdef_dcl_instrument
+    internal_timestamp: 3686365826.448
+    dcl_controller_timestamp: 2016/10/25 06:30:26.448
+    temp: 12.8586
+    conductivity: 3.43063
+    pressure: 1.224
+    date_time_string: 25 Oct 2016 06:30:20
+  - _index: 7
+    particle_object: CtdbpCdefDclTelemeteredDataParticle
+    particle_type: ctdbp_cdef_dcl_instrument
+    internal_timestamp: 3686376626.556
+    dcl_controller_timestamp: 2016/10/25 09:30:26.556
+    temp: 12.8210
+    conductivity: 3.45436
+    pressure: 1.060
+    date_time_string: 25 Oct 2016 09:30:20
+  - _index: 8
+    particle_object: CtdbpCdefDclTelemeteredDataParticle
+    particle_type: ctdbp_cdef_dcl_instrument
+    internal_timestamp: 3686380226.208
+    dcl_controller_timestamp: 2016/10/25 10:30:26.208
+    temp: 12.8210
+    conductivity: 3.43466
+    pressure: 1.081
+    date_time_string: 25 Oct 2016 10:30:20
+  - _index: 9
+    particle_object: CtdbpCdefDclTelemeteredDataParticle
+    particle_type: ctdbp_cdef_dcl_instrument
+    internal_timestamp: 3686387427.236
+    dcl_controller_timestamp: 2016/10/25 12:30:27.236
+    temp: 12.8369
+    conductivity: 3.37568
+    pressure: 1.097
+    date_time_string: 25 Oct 2016 12:30:21
+  - _index: 10
+    particle_object: CtdbpCdefDclTelemeteredDataParticle
+    particle_type: ctdbp_cdef_dcl_instrument
+    internal_timestamp: 3686391026.698
+    dcl_controller_timestamp: 2016/10/25 13:30:26.698
+    temp: 12.8502
+    conductivity: 3.36110
+    pressure: 1.339
+    date_time_string: 25 Oct 2016 13:30:20
+  - _index: 11
+    particle_object: CtdbpCdefDclTelemeteredDataParticle
+    particle_type: ctdbp_cdef_dcl_instrument
+    internal_timestamp: 3686394627.291
+    dcl_controller_timestamp: 2016/10/25 14:30:27.291
+    temp: 12.8480
+    conductivity: 3.27505
+    pressure: 1.227
+    date_time_string: 25 Oct 2016 14:30:21
+  - _index: 12
+    particle_object: CtdbpCdefDclTelemeteredDataParticle
+    particle_type: ctdbp_cdef_dcl_instrument
+    internal_timestamp: 3686398227.270
+    dcl_controller_timestamp: 2016/10/25 15:30:27.270
+    temp: 12.8711
+    conductivity: 3.34731
+    pressure: 1.192
+    date_time_string: 25 Oct 2016 15:30:21
+  - _index: 13
+    particle_object: CtdbpCdefDclTelemeteredDataParticle
+    particle_type: ctdbp_cdef_dcl_instrument
+    internal_timestamp: 3686401826.371
+    dcl_controller_timestamp: 2016/10/25 16:30:26.371
+    temp: 12.8896
+    conductivity: 3.36719
+    pressure: 1.122
+    date_time_string: 25 Oct 2016 16:30:20
+  - _index: 14
+    particle_object: CtdbpCdefDclTelemeteredDataParticle
+    particle_type: ctdbp_cdef_dcl_instrument
+    internal_timestamp: 3686409027.114
+    dcl_controller_timestamp: 2016/10/25 18:30:27.114
+    temp: 12.9057
+    conductivity: 3.33721
+    pressure: 1.118
+    date_time_string: 25 Oct 2016 18:30:21
+  - _index: 15
+    particle_object: CtdbpCdefDclTelemeteredDataParticle
+    particle_type: ctdbp_cdef_dcl_instrument
+    internal_timestamp: 3686412626.592
+    dcl_controller_timestamp: 2016/10/25 19:30:26.592
+    temp: 12.9211
+    conductivity: 3.33364
+    pressure: 1.089
+    date_time_string: 25 Oct 2016 19:30:20
+  - _index: 16
+    particle_object: CtdbpCdefDclTelemeteredDataParticle
+    particle_type: ctdbp_cdef_dcl_instrument
+    internal_timestamp: 3686416226.858
+    dcl_controller_timestamp: 2016/10/25 20:30:26.858
+    temp: 12.9507
+    conductivity: 3.31705
+    pressure: 1.174
+    date_time_string: 25 Oct 2016 20:30:21
+  - _index: 17
+    particle_object: CtdbpCdefDclTelemeteredDataParticle
+    particle_type: ctdbp_cdef_dcl_instrument
+    internal_timestamp: 3686419827.408
+    dcl_controller_timestamp: 2016/10/25 21:30:27.408
+    temp: 12.9747
+    conductivity: 3.29493
+    pressure: 1.163
+    date_time_string: 25 Oct 2016 21:30:21
+  - _index: 18
+    particle_object: CtdbpCdefDclTelemeteredDataParticle
+    particle_type: ctdbp_cdef_dcl_instrument
+    internal_timestamp: 3686427036.097
+    dcl_controller_timestamp: 2016/10/25 23:30:36.097
+    temp: 12.9494
+    conductivity: 3.29380
+    pressure: 1.081
+    date_time_string: 25 Oct 2016 23:30:30
