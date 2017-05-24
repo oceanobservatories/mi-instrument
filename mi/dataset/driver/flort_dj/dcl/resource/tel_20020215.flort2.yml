@@ -5,7 +5,7 @@ data:
   - _index: 1
     particle_object: FlortDjDclTelemeteredInstrumentDataParticle
     particle_type: flort_dj_dcl_instrument
-    internal_timestamp: 3191245637.1700001
+    internal_timestamp: 3222738437.0889997
     port_timestamp: 3222738437.0889997
     date_string: '02/15/01'
     dcl_controller_timestamp: '2002/02/15 05:07:17.089'
@@ -20,7 +20,7 @@ data:
   - _index: 2
     particle_object: FlortDjDclTelemeteredInstrumentDataParticle
     particle_type: flort_dj_dcl_instrument
-    internal_timestamp: 3191245639.1900001
+    internal_timestamp: 3222738439.4470000
     port_timestamp: 3222738439.4470000
     date_string: '02/15/01'
     dcl_controller_timestamp: '2002/02/15 05:07:19.447'
@@ -35,7 +35,7 @@ data:
   - _index: 3
     particle_object: FlortDjDclTelemeteredInstrumentDataParticle
     particle_type: flort_dj_dcl_instrument
-    internal_timestamp: 3191245641.2100000
+    internal_timestamp: 3222738441.8049998
     port_timestamp: 3222738441.8049998
     date_string: '02/15/01'
     dcl_controller_timestamp: '2002/02/15 05:07:21.805'
@@ -50,7 +50,7 @@ data:
   - _index: 4
     particle_object: FlortDjDclTelemeteredInstrumentDataParticle
     particle_type: flort_dj_dcl_instrument
-    internal_timestamp: 3191245644.2399998
+    internal_timestamp: 3222738444.1630001
     port_timestamp: 3222738444.1630001
     date_string: '02/15/01'
     dcl_controller_timestamp: '2002/02/15 05:07:24.163'
@@ -65,7 +65,7 @@ data:
   - _index: 5
     particle_object: FlortDjDclTelemeteredInstrumentDataParticle
     particle_type: flort_dj_dcl_instrument
-    internal_timestamp: 3191245646.2600002
+    internal_timestamp: 3222738446.5209999
     port_timestamp: 3222738446.5209999
     date_string: '02/15/01'
     dcl_controller_timestamp: '2002/02/15 05:07:26.521'
@@ -80,7 +80,7 @@ data:
   - _index: 6
     particle_object: FlortDjDclTelemeteredInstrumentDataParticle
     particle_type: flort_dj_dcl_instrument
-    internal_timestamp: 3191245648.2800002
+    internal_timestamp: 3222738448.8789997
     port_timestamp: 3222738448.8789997
     date_string: '02/15/01'
     dcl_controller_timestamp: '2002/02/15 05:07:28.879'
@@ -95,7 +95,7 @@ data:
   - _index: 7
     particle_object: FlortDjDclTelemeteredInstrumentDataParticle
     particle_type: flort_dj_dcl_instrument
-    internal_timestamp: 3191245651.3099999
+    internal_timestamp: 3222738451.2370000
     port_timestamp: 3222738451.2370000
     date_string: '02/15/01'
     dcl_controller_timestamp: '2002/02/15 05:07:31.237'
@@ -110,7 +110,7 @@ data:
   - _index: 8
     particle_object: FlortDjDclTelemeteredInstrumentDataParticle
     particle_type: flort_dj_dcl_instrument
-    internal_timestamp: 3191245653.3299999
+    internal_timestamp: 3222738453.5950003
     port_timestamp: 3222738453.5950003
     date_string: '02/15/01'
     dcl_controller_timestamp: '2002/02/15 05:07:33.595'
@@ -125,7 +125,7 @@ data:
   - _index: 9
     particle_object: FlortDjDclTelemeteredInstrumentDataParticle
     particle_type: flort_dj_dcl_instrument
-    internal_timestamp: 3191245655.3499999
+    internal_timestamp: 3222738455.9530001
     port_timestamp: 3222738455.9530001
     date_string: '02/15/01'
     dcl_controller_timestamp: '2002/02/15 05:07:35.953'
@@ -140,7 +140,7 @@ data:
   - _index: 10
     particle_object: FlortDjDclTelemeteredInstrumentDataParticle
     particle_type: flort_dj_dcl_instrument
-    internal_timestamp: 3191245658.3800001
+    internal_timestamp: 3222738458.3109999
     port_timestamp: 3222738458.3109999
     date_string: '02/15/01'
     dcl_controller_timestamp: '2002/02/15 05:07:38.311'
@@ -155,7 +155,7 @@ data:
   - _index: 11
     particle_object: FlortDjDclTelemeteredInstrumentDataParticle
     particle_type: flort_dj_dcl_instrument
-    internal_timestamp: 3191245660.4000001
+    internal_timestamp: 3222738460.6690001
     port_timestamp: 3222738460.6690001
     date_string: '02/15/01'
     dcl_controller_timestamp: '2002/02/15 05:07:40.669'
@@ -170,7 +170,7 @@ data:
   - _index: 12
     particle_object: FlortDjDclTelemeteredInstrumentDataParticle
     particle_type: flort_dj_dcl_instrument
-    internal_timestamp: 3191245663.4299998
+    internal_timestamp: 3222738463.0270000
     port_timestamp: 3222738463.0270000
     date_string: '02/15/01'
     dcl_controller_timestamp: '2002/02/15 05:07:43.027'
@@ -185,7 +185,7 @@ data:
   - _index: 13
     particle_object: FlortDjDclTelemeteredInstrumentDataParticle
     particle_type: flort_dj_dcl_instrument
-    internal_timestamp: 3191245665.4499998
+    internal_timestamp: 3222738465.3850002
     port_timestamp: 3222738465.3850002
     date_string: '02/15/01'
     dcl_controller_timestamp: '2002/02/15 05:07:45.385'
@@ -200,7 +200,7 @@ data:
   - _index: 14
     particle_object: FlortDjDclTelemeteredInstrumentDataParticle
     particle_type: flort_dj_dcl_instrument
-    internal_timestamp: 3191245667.4699998
+    internal_timestamp: 3222738467.7430000
     port_timestamp: 3222738467.7430000
     date_string: '02/15/01'
     dcl_controller_timestamp: '2002/02/15 05:07:47.743'
@@ -215,7 +215,7 @@ data:
   - _index: 15
     particle_object: FlortDjDclTelemeteredInstrumentDataParticle
     particle_type: flort_dj_dcl_instrument
-    internal_timestamp: 3191245670.5000000
+    internal_timestamp: 3222738470.1009998
     port_timestamp: 3222738470.1009998
     date_string: '02/15/01'
     dcl_controller_timestamp: '2002/02/15 05:07:50.101'
@@ -230,7 +230,7 @@ data:
   - _index: 16
     particle_object: FlortDjDclTelemeteredInstrumentDataParticle
     particle_type: flort_dj_dcl_instrument
-    internal_timestamp: 3191245679.5900002
+    internal_timestamp: 3222738479.5330000
     port_timestamp: 3222738479.5330000
     date_string: '02/15/01'
     dcl_controller_timestamp: '2002/02/15 05:07:59.533'
@@ -245,7 +245,7 @@ data:
   - _index: 17
     particle_object: FlortDjDclTelemeteredInstrumentDataParticle
     particle_type: flort_dj_dcl_instrument
-    internal_timestamp: 3191245681.0100002
+    internal_timestamp: 3222738481.8909998
     port_timestamp: 3222738481.8909998
     date_string: '02/15/01'
     dcl_controller_timestamp: '2002/02/15 05:08:01.891'
@@ -260,7 +260,7 @@ data:
   - _index: 18
     particle_object: FlortDjDclTelemeteredInstrumentDataParticle
     particle_type: flort_dj_dcl_instrument
-    internal_timestamp: 3191245684.0400000
+    internal_timestamp: 3222738484.2490001
     port_timestamp: 3222738484.2490001
     date_string: '02/15/01'
     dcl_controller_timestamp: '2002/02/15 05:08:04.249'
@@ -275,7 +275,7 @@ data:
   - _index: 19
     particle_object: FlortDjDclTelemeteredInstrumentDataParticle
     particle_type: flort_dj_dcl_instrument
-    internal_timestamp: 3191245686.0599999
+    internal_timestamp: 3222738486.6069999
     port_timestamp: 3222738486.6069999
     date_string: '02/15/01'
     dcl_controller_timestamp: '2002/02/15 05:08:06.607'
@@ -290,7 +290,7 @@ data:
   - _index: 20
     particle_object: FlortDjDclTelemeteredInstrumentDataParticle
     particle_type: flort_dj_dcl_instrument
-    internal_timestamp: 3191245688.0799999
+    internal_timestamp: 3222738488.9650002
     port_timestamp: 3222738488.9650002
     date_string: '02/15/01'
     dcl_controller_timestamp: '2002/02/15 05:08:08.965'
@@ -305,7 +305,7 @@ data:
   - _index: 21
     particle_object: FlortDjDclTelemeteredInstrumentDataParticle
     particle_type: flort_dj_dcl_instrument
-    internal_timestamp: 3191245691.1100001
+    internal_timestamp: 3222738491.3230000
     port_timestamp: 3222738491.3230000
     date_string: '02/15/01'
     dcl_controller_timestamp: '2002/02/15 05:08:11.323'
@@ -320,7 +320,7 @@ data:
   - _index: 22
     particle_object: FlortDjDclTelemeteredInstrumentDataParticle
     particle_type: flort_dj_dcl_instrument
-    internal_timestamp: 3191245693.1300001
+    internal_timestamp: 3222738493.6809998
     port_timestamp: 3222738493.6809998
     date_string: '02/15/01'
     dcl_controller_timestamp: '2002/02/15 05:08:13.681'
@@ -335,7 +335,7 @@ data:
   - _index: 23
     particle_object: FlortDjDclTelemeteredInstrumentDataParticle
     particle_type: flort_dj_dcl_instrument
-    internal_timestamp: 3191245696.1599998
+    internal_timestamp: 3222738496.0390000
     port_timestamp: 3222738496.0390000
     date_string: '02/15/01'
     dcl_controller_timestamp: '2002/02/15 05:08:16.039'
@@ -350,7 +350,7 @@ data:
   - _index: 24
     particle_object: FlortDjDclTelemeteredInstrumentDataParticle
     particle_type: flort_dj_dcl_instrument
-    internal_timestamp: 3191245698.1799998
+    internal_timestamp: 3222738498.3969998
     port_timestamp: 3222738498.3969998
     date_string: '02/15/01'
     dcl_controller_timestamp: '2002/02/15 05:08:18.397'
@@ -365,7 +365,7 @@ data:
   - _index: 25
     particle_object: FlortDjDclTelemeteredInstrumentDataParticle
     particle_type: flort_dj_dcl_instrument
-    internal_timestamp: 3191245700.1999998
+    internal_timestamp: 3222738500.7550001
     port_timestamp: 3222738500.7550001
     date_string: '02/15/01'
     dcl_controller_timestamp: '2002/02/15 05:08:20.755'
@@ -380,7 +380,7 @@ data:
   - _index: 26
     particle_object: FlortDjDclTelemeteredInstrumentDataParticle
     particle_type: flort_dj_dcl_instrument
-    internal_timestamp: 3191245703.2300000
+    internal_timestamp: 3222738503.1129999
     port_timestamp: 3222738503.1129999
     date_string: '02/15/01'
     dcl_controller_timestamp: '2002/02/15 05:08:23.113'
@@ -395,7 +395,7 @@ data:
   - _index: 27
     particle_object: FlortDjDclTelemeteredInstrumentDataParticle
     particle_type: flort_dj_dcl_instrument
-    internal_timestamp: 3191245705.2500000
+    internal_timestamp: 3222738505.4709997
     port_timestamp: 3222738505.4709997
     date_string: '02/15/01'
     dcl_controller_timestamp: '2002/02/15 05:08:25.471'
@@ -410,7 +410,7 @@ data:
   - _index: 28
     particle_object: FlortDjDclTelemeteredInstrumentDataParticle
     particle_type: flort_dj_dcl_instrument
-    internal_timestamp: 3191245707.2700000
+    internal_timestamp: 3222738507.8290000
     port_timestamp: 3222738507.8290000
     date_string: '02/15/01'
     dcl_controller_timestamp: '2002/02/15 05:08:27.829'
@@ -425,7 +425,7 @@ data:
   - _index: 29
     particle_object: FlortDjDclTelemeteredInstrumentDataParticle
     particle_type: flort_dj_dcl_instrument
-    internal_timestamp: 3191245710.3000002
+    internal_timestamp: 3222738510.1870003
     port_timestamp: 3222738510.1870003
     date_string: '02/15/01'
     dcl_controller_timestamp: '2002/02/15 05:08:30.187'
@@ -440,7 +440,7 @@ data:
   - _index: 30
     particle_object: FlortDjDclTelemeteredInstrumentDataParticle
     particle_type: flort_dj_dcl_instrument
-    internal_timestamp: 3191245712.3200002
+    internal_timestamp: 3222738512.5450001
     port_timestamp: 3222738512.5450001
     date_string: '02/15/01'
     dcl_controller_timestamp: '2002/02/15 05:08:32.545'
