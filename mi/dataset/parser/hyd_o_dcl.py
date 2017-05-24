@@ -16,7 +16,7 @@ from mi.core.exceptions import SampleException
 
 from mi.dataset.dataset_parser import SimpleParser
 from mi.dataset.parser.common_regexes import FLOAT_REGEX
-from mi.dataset.parser.utilities import dcl_controller_timestamp_to_utc_time
+from mi.dataset.parser.utilities import dcl_controller_timestamp_to_ntp_time
 
 DCL_TIMESTAMP_REGEX = r'(\d{4}/\d{2}/\d{2} \d{2}:\d{2}:\d{2}.\d{3})'
 
@@ -39,9 +39,20 @@ PARTICLE_MAP = [
 
 class HydODclCommonDataParticle(DataParticle):
     def _build_parsed_values(self):
-        # the timestamp comes from the DCL logger timestamp, parse the string into a datetime
-        utc_time = dcl_controller_timestamp_to_utc_time(self.raw_data.group(DCL_TIMESTAMP_GROUP))
-        self.set_internal_timestamp(unix_time=utc_time)
+
+        # DCL controller timestamp  is the port timestamp
+        dcl_controller_timestamp = self.raw_data.group(DCL_TIMESTAMP_GROUP)
+        elapsed_seconds_useconds = dcl_controller_timestamp_to_ntp_time(dcl_controller_timestamp)
+        self.set_port_timestamp(elapsed_seconds_useconds)
+
+        """
+        Rawdata(payload) does not contain any instrument timestamp,
+        So,we are using DCL controller timestamp(DCL logger timestamp) as the internal timestamp
+        In this case port timestamp and internal timestamp are same
+        """
+        instrument_timestamp = self.raw_data.group(DCL_TIMESTAMP_GROUP)
+        elapsed_seconds_useconds = dcl_controller_timestamp_to_ntp_time(instrument_timestamp)
+        self.set_internal_timestamp(elapsed_seconds_useconds)
 
         return [self._encode_value(name, self.raw_data.group(idx), function)
                 for name, idx, function in PARTICLE_MAP]

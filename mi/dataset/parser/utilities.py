@@ -1,7 +1,7 @@
 """
 @package mi.dataset.parser
 @file mi-dataset/mi/dataset/parser/utilities.py
-@author Joe Padula
+@author Joe Padula, vipul lakhani
 @brief Utilities that can be used by any parser
 Release notes:
 
@@ -121,6 +121,25 @@ def timestamp_yyyymmddhhmmss_to_ntp_time(timestamp_str):
 
     return (timestamp - datetime(1900, 1, 1)).total_seconds()
 
+def timestamp_yyyy_mm_dd_hh_mm_ss_to_ntp_time(timestamp_str):
+    """
+    Converts a timestamp string, in the YYYY/MM/DD HH:MM:SS format, to NTP time.
+    :param timestamp_str: a timestamp string in the format YYYY/MM/DD HH:MM:SS
+    :return: Time (float64) in seconds from epoch 01-01-1900.
+    """
+
+    timestamp = datetime.strptime(timestamp_str, "%Y/%m/%d %H:%M:%S")
+
+    return (timestamp - datetime(1900, 1, 1)).total_seconds()
+
+def timestamp_ddmmyyyyhhmmss_to_ntp_time(timestamp_str):
+    """
+    Converts a timestamp string, in the DD Mon YYYY HH:MM:SS format, to NTP time.
+    :param timestamp_str: a timestamp string in the format DD Mon YYYY HH:MM:SS
+    :return: Time (float64) in seconds from epoch 01-01-1900.
+    """
+    timestamp = datetime.strptime(timestamp_str, "%d %b %Y %H:%M:%S")
+    return (timestamp - datetime(1900, 1, 1)).total_seconds()
 
 def timestamp_yymmddhhmmsshh_to_ntp_time(timestamp_str):
     """
@@ -134,6 +153,17 @@ def timestamp_yymmddhhmmsshh_to_ntp_time(timestamp_str):
 
     return (timestamp - datetime(1900, 1, 1)).total_seconds() + frac
 
+def timestamp_mmddyyhhmmss_to_ntp_time(timestamp_str):
+    """
+    Converts a timestamp string, in the MMDDYYHHMMSS format, to NTP time.
+    :param timestamp_str: a timestamp string in the format MM/DD/YY HH:MM:SS
+    :return: Time (float64) in seconds from epoch 01-01-1900.
+    """
+
+    timestamp = datetime.strptime(timestamp_str, "%m/%d/%y %H:%M:%S")
+    frac = int(timestamp_str[-2:]) / 100.0
+
+    return (timestamp - datetime(1900, 1, 1)).total_seconds() + frac
 
 def mac_timestamp_to_utc_timestamp(mac_timestamp):
     """
@@ -206,3 +236,37 @@ def sum_hex_digits(ascii_hex_str):
 
     # Return the resultant summation as hex
     return hex(x)
+
+
+def particle_to_yml(particles, filename, mode='w+'):
+    """
+    This function write particles to .yml file and create .yml file for testing
+    """
+    # open write append, if you want to start from scratch manually delete this file
+    with open(filename, mode) as fid:
+        fid.write('header:\n')
+        fid.write("    particle_object: 'MULTIPLE'\n")
+        fid.write("    particle_type: 'MULTIPLE'\n")
+        fid.write('data:\n')
+        for index in range(len(particles)):
+            particle_dict = particles[index].generate_dict()
+            fid.write('  - _index: %d\n' % (index+1))
+            fid.write('    particle_object: %s\n' % particles[index].__class__.__name__)
+            fid.write('    particle_type: %s\n' % particle_dict.get('stream_name'))
+            fid.write('    internal_timestamp: %.7f\n' % particle_dict.get('internal_timestamp'))
+            fid.write('    port_timestamp: %.7f\n' % particle_dict.get('port_timestamp'))
+
+            values_dict = {}
+            for value in particle_dict.get('values'):
+                values_dict[value.get('value_id')] = value.get('value')
+
+            for key in sorted(values_dict.iterkeys()):
+                value = values_dict[key]
+                if value is None:
+                    fid.write('    %s: %s\n' % (key, 'Null'))
+                elif isinstance(value, float):
+                    fid.write('    %s: %15.5f\n' % (key, value))
+                elif isinstance(value, str):
+                    fid.write("    %s: '%s'\n" % (key, value))
+                else:
+                    fid.write('    %s: %s\n' % (key, value))

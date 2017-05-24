@@ -82,9 +82,16 @@ class RteODclParserDataAbstractParticle(DataParticle):
         @throws SampleException If there is a problem with sample creation
         """
 
-        # The particle timestamp is the DCL Controller timestamp.
-        utc_time = dcl_controller_timestamp_to_utc_time(self.raw_data.group('rte_time'))
-        self.set_internal_timestamp(unix_time=utc_time)
+        # DCL controller timestamp  is the port timestamp
+        dcl_controller_timestamp = dcl_controller_timestamp_to_utc_time(self.raw_data.group('rte_time'))
+        self.set_port_timestamp(unix_time=dcl_controller_timestamp)
+
+        """
+        Rawdata(payload) does not contain any instrument timestamp,
+        So,we are using DCL controller timestamp(DCL logger timestamp) as the internal timestamp
+        In this case port timestamp and internal timestamp are same
+        """
+        self.set_internal_timestamp(unix_time=dcl_controller_timestamp)
 
         return [self._encode_value(name, self.raw_data.group(name), function)
                 for name, function in DATA_PARTICLE_MAP]

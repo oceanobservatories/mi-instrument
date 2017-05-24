@@ -9,6 +9,7 @@ Release notes:
 
 initial release
 """
+
 __author__ = 'cgoodrich'
 __license__ = 'Apache 2.0'
 
@@ -23,6 +24,7 @@ from mi.core.common import BaseEnum
 from mi.dataset.dataset_parser import SimpleParser, DataSetDriverConfigKeys
 from mi.core.instrument.dataset_data_particle import DataParticle
 from mi.dataset.parser.common_regexes import SPACE_REGEX, DATE_YYYY_MM_DD_REGEX, TIME_HR_MIN_SEC_MSEC_REGEX
+from mi.dataset.parser.utilities import dcl_controller_timestamp_to_ntp_time
 """
 Composition of a properly formed line of data:
 
@@ -70,6 +72,7 @@ END_DATA_REGEX = r'(: ?[+-]?[0-9]+ [0-9A-Fa-f]+)'
 END_DATA_MATCHER = re.compile(END_DATA_REGEX)
 
 # Regex group indices
+DCL_CONTROLLER_TIMESTAMP = 0
 YEAR_GROUP = 2
 MONTH_GROUP = 3
 DAY_GROUP = 4
@@ -127,6 +130,20 @@ class FuelCellEngDclDataCommonParticle(DataParticle):
     }
 
     def _build_parsed_values(self):
+
+        #DCL controller timestamp  is the port timestamp
+        dcl_controller_timestamp = self.raw_data[DCL_CONTROLLER_TIMESTAMP]
+        elapsed_seconds_useconds = dcl_controller_timestamp_to_ntp_time(dcl_controller_timestamp)
+        self.set_port_timestamp(elapsed_seconds_useconds)
+
+        """
+        Rawdata(payload) does not contain any instrument timestamp,
+        So,we are using DCL controller timestamp(DCL wrapper timestamp) as the internal timestamp
+        In this case port timestamp and internal timestamp are same
+        """
+        instrument_timestamp = self.raw_data[DCL_CONTROLLER_TIMESTAMP]
+        elapsed_seconds_useconds = dcl_controller_timestamp_to_ntp_time(instrument_timestamp)
+        self.set_internal_timestamp(elapsed_seconds_useconds)
 
         particle_parameters = [self._encode_value('dcl_controller_timestamp',
                                                   self.raw_data[0], str)]

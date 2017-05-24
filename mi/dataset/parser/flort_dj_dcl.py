@@ -40,7 +40,8 @@ from mi.dataset.parser.common_regexes import \
     DATE_YYYY_MM_DD_REGEX
 
 from mi.dataset.parser.utilities import \
-    dcl_controller_timestamp_to_ntp_time
+    dcl_controller_timestamp_to_ntp_time, \
+    timestamp_mmddyyhhmmss_to_ntp_time
 
 log = get_logger()
 
@@ -157,11 +158,15 @@ class FlortDjDclInstrumentDataParticle(DataParticle):
         # an index into the match groups (which is what has been stored in raw_data),
         # and a function to use for data conversion.
 
-        # The particle timestamp is the DCL Controller timestamp.
+        # The port timestamp is the DCL Controller timestamp.
         # Convert the DCL controller timestamp string to NTP time (in seconds and microseconds).
-        dcl_controller_timestamp = self.raw_data[SENSOR_GROUP_TIMESTAMP]
-        elapsed_seconds_useconds = dcl_controller_timestamp_to_ntp_time(dcl_controller_timestamp)
-        self.set_internal_timestamp(elapsed_seconds_useconds)
+        header_timestamp = dcl_controller_timestamp_to_ntp_time(self.raw_data[SENSOR_GROUP_TIMESTAMP])
+        self.set_port_timestamp(timestamp=header_timestamp)
+
+        # The internal timestamp is the Instrument time.
+        date_time_string = self.raw_data[SENSOR_GROUP_SENSOR_DATE] + " " + self.raw_data[SENSOR_GROUP_SENSOR_TIME]
+        instrument_timestamp = timestamp_mmddyyhhmmss_to_ntp_time(date_time_string)
+        self.set_internal_timestamp(timestamp=instrument_timestamp)
 
         return [self._encode_value(name, self.raw_data[group], function)
                 for name, group, function in INSTRUMENT_PARTICLE_MAP]

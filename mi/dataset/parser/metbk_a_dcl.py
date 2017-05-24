@@ -36,6 +36,7 @@ from mi.dataset.parser.dcl_file_common import DclInstrumentDataParticle, \
     START_METADATA, END_METADATA
 
 from mi.dataset.parser.common_regexes import END_OF_LINE_REGEX, FLOAT_REGEX, ANY_CHARS_REGEX
+from mi.dataset.parser.utilities import dcl_controller_timestamp_to_ntp_time
 
 log = get_logger()
 
@@ -126,6 +127,12 @@ class MetbkADclInstrumentDataParticle(DclInstrumentDataParticle):
             raw_data,
             INSTRUMENT_PARTICLE_MAP,
             *args, **kwargs)
+
+        #rawdata(payload) does not contain any instrument timestamp,
+        #So,we are using DCL controller timestamp(DCL wrapper timestamp) as the internal timestamp
+        dcl_controller_timestamp = self.raw_data[SENSOR_GROUP_TIMESTAMP]
+        elapsed_seconds_useconds = dcl_controller_timestamp_to_ntp_time(dcl_controller_timestamp)
+        self.set_internal_timestamp(elapsed_seconds_useconds)
 
 
 class MetbkADclRecoveredInstrumentDataParticle(MetbkADclInstrumentDataParticle):

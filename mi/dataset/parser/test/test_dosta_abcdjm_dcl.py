@@ -64,6 +64,7 @@ from mi.dataset.parser.dosta_abcdjm_dcl import \
     DostaAbcdjmDclTelemeteredParser, \
     DostaAbcdjmDclRecoveredInstrumentDataParticle, \
     DostaAbcdjmDclTelemeteredInstrumentDataParticle
+from mi.dataset.parser.utilities import particle_to_yml
 from mi.dataset.test.test_parser import ParserUnitTestCase
 
 log = get_logger()
@@ -260,6 +261,10 @@ class DostaAbcdjmDclParserUnitTestCase(ParserUnitTestCase):
         in_file = open(os.path.join(RESOURCE_PATH, filename), mode='r')
         return in_file
 
+    def file_path(self, filename):
+        log.debug('resource path = %s, file name = %s', RESOURCE_PATH, filename)
+        return os.path.join(RESOURCE_PATH, filename)
+
     def test_big_giant_input(self):
         """
         Read a large file and verify that all expected particles can be read.
@@ -311,8 +316,8 @@ class DostaAbcdjmDclParserUnitTestCase(ParserUnitTestCase):
         # In a single read, get all particles for this file.
         result = parser.get_records(len(expected_particle))
         self.assertEqual(result, expected_particle)
-
         self.assertEqual(self.exception_callback_value, [])
+
         in_file.close()
 
         log.debug('===== START TEST GET MANY TELEMETERED =====')
@@ -328,10 +333,9 @@ class DostaAbcdjmDclParserUnitTestCase(ParserUnitTestCase):
         # In a single read, get all particles for this file.
         result = parser.get_records(len(expected_particle))
         self.assertEqual(result, expected_particle)
-
         self.assertEqual(self.exception_callback_value, [])
-        in_file.close()
 
+        in_file.close()
         log.debug('===== END TEST GET MANY =====')
 
     def test_invalid_metadata_records(self):
@@ -374,10 +378,9 @@ class DostaAbcdjmDclParserUnitTestCase(ParserUnitTestCase):
         # In a single read, get all particles for this file.
         result = parser.get_records(len(expected_particle))
         self.assertEqual(result, expected_particle)
-
         self.assertEqual(len(self.exception_callback_value), 6)
-        in_file.close()
 
+        in_file.close()
         log.debug('===== END TEST INVALID METADATA =====')
 
     def test_invalid_sensor_data_records(self):
@@ -398,7 +401,6 @@ class DostaAbcdjmDclParserUnitTestCase(ParserUnitTestCase):
         self.assertEqual(len(self.exception_callback_value), expected_exceptions)
 
         in_file.close()
-
         self.exception_callback_value = []  # reset exceptions
 
         log.debug('===== START TEST INVALID SENSOR DATA TELEMETERED =====')
@@ -411,7 +413,6 @@ class DostaAbcdjmDclParserUnitTestCase(ParserUnitTestCase):
         self.assertEqual(len(self.exception_callback_value), expected_exceptions)
 
         in_file.close()
-
         log.debug('===== END TEST INVALID SENSOR DATA =====')
 
     def test_no_sensor_data(self):
@@ -437,7 +438,6 @@ class DostaAbcdjmDclParserUnitTestCase(ParserUnitTestCase):
         # Try to get a record and verify that none are produced.
         result = parser.get_records(1)
         self.assertEqual(result, [])
-
         self.assertEquals(self.exception_callback_value, [])
         in_file.close()
 
@@ -479,7 +479,6 @@ class DostaAbcdjmDclParserUnitTestCase(ParserUnitTestCase):
 
         self.assertEquals(self.exception_callback_value, [])
         in_file.close()
-
         log.debug('===== END TEST SIMPLE =====')
 
     def test_many_with_yml(self):
@@ -494,30 +493,25 @@ class DostaAbcdjmDclParserUnitTestCase(ParserUnitTestCase):
 
         in_file = self.open_file(FILE1)
         parser = self.create_rec_parser(in_file)
-
         particles = parser.get_records(num_particles)
-
         log.debug("Num particles: %d", len(particles))
 
         self.assert_particles(particles, "rec_20010121.dosta1.yml", RESOURCE_PATH)
         self.assertEquals(self.exception_callback_value, [])
 
         in_file.close()
-
         log.debug('===== START TEST MANY WITH YML TELEMETERED =====')
 
         in_file = self.open_file(FILE1)
         parser = self.create_tel_parser(in_file)
 
         particles = parser.get_records(num_particles)
-
         log.debug("Num particles: %d", len(particles))
 
         self.assert_particles(particles, "tel_20010121.dosta1.yml", RESOURCE_PATH)
         self.assertEquals(self.exception_callback_value, [])
 
         in_file.close()
-
         log.debug('===== END TEST MANY WITH YML =====')
 
     def test_Bug_4433(self):
@@ -530,9 +524,7 @@ class DostaAbcdjmDclParserUnitTestCase(ParserUnitTestCase):
         num_particles = 10000
 
         in_file = self.open_file('20150330.dosta1.log')
-
         parser = self.create_rec_parser(in_file)
-
         particles = parser.get_records(num_particles)
 
         log.debug("Num particles: %d", len(particles))

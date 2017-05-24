@@ -31,6 +31,7 @@ Release notes:
 
 Initial Release
 """
+from mi.dataset.parser.utilities import dcl_controller_timestamp_to_ntp_time
 
 __author__ = 'Sung Ahn'
 __license__ = 'Apache 2.0'
@@ -198,6 +199,10 @@ class AdcptAcfgmPd8InstrumentDataParticle(DclInstrumentDataParticle):
         super(AdcptAcfgmPd8InstrumentDataParticle, self).__init__(
             raw_data, PD8_DATA_MAP, *args, **kwargs)
 
+         # Instrument timestamp is the internal timestamp
+        instrument_timestamp = self.raw_data[SENSOR_TIME_SENSOR_DATE_TIME]
+        elapsed_seconds_useconds = dcl_controller_timestamp_to_ntp_time(instrument_timestamp)
+        self.set_internal_timestamp(elapsed_seconds_useconds)
 
 class AdcptAcfgmPd8DclInstrumentParticle(AdcptAcfgmPd8InstrumentDataParticle):
     """

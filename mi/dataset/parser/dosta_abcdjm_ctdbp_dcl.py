@@ -40,7 +40,9 @@ from mi.core.exceptions import \
 
 from mi.dataset.dataset_parser import SimpleParser
 
-from mi.dataset.parser.utilities import dcl_controller_timestamp_to_utc_time
+from mi.dataset.parser.utilities import \
+    dcl_controller_timestamp_to_ntp_time, \
+    timestamp_ddmmyyyyhhmmss_to_ntp_time
 
 from mi.dataset.parser.common_regexes import \
     ANY_CHARS_REGEX, \
@@ -168,9 +170,15 @@ class DostaAbcdjmCtdbpDclDataParticle(DataParticle):
                                                               quality_flag,
                                                               new_sequence)
 
-        # The particle timestamp is the DCL Controller timestamp.
-        utc_time = dcl_controller_timestamp_to_utc_time(self.raw_data.group('dcl_controller_timestamp'))
-        self.set_internal_timestamp(unix_time=utc_time)
+        #DCL controller timestamp  is the port timestamp
+        dcl_controller_timestamp = self.raw_data.group('dcl_controller_timestamp')
+        elapsed_seconds_useconds = dcl_controller_timestamp_to_ntp_time(dcl_controller_timestamp)
+        self.set_port_timestamp(elapsed_seconds_useconds)
+
+        #Instrument timestamp is the internal timestamp
+        instrument_timestamp = self.raw_data.group('date_time_string')
+        instrument_timestamp = timestamp_ddmmyyyyhhmmss_to_ntp_time(instrument_timestamp)
+        self.set_internal_timestamp(instrument_timestamp)
 
     def _build_parsed_values(self):
         """

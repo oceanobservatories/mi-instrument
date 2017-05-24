@@ -55,6 +55,10 @@ from mi.dataset.parser.common_regexes import FLOAT_REGEX, \
 
 from mi.dataset.parser.dcl_file_common import TIMESTAMP
 
+from mi.dataset.parser.utilities import \
+    dcl_controller_timestamp_to_ntp_time, \
+    timestamp_ddmmyyyyhhmmss_to_ntp_time
+
 # Basic patterns
 FLOAT = r'(' + FLOAT_REGEX + ')'    # generic float
 WHITESPACE = r'(\s*)'                # any whitespace
@@ -211,12 +215,13 @@ class PresfAbcDclParserTideDataParticle(DataParticle):
                                                                 quality_flag,
                                                                 new_sequence)
 
-        # The particle timestamp is the DCL Controller timestamp.
-        # The individual fields have already been extracted by the parser.
+        # DCL Controller timestamp is the port timestamp
+        dcl_controller_timestamp = dcl_controller_timestamp_to_ntp_time(self.raw_data.group(TIDE_GROUP_DCL_TIMESTAMP))
+        self.set_port_timestamp(dcl_controller_timestamp)
 
-        utc_time = utilities.dcl_controller_timestamp_to_utc_time(self.raw_data.group(TIDE_GROUP_DCL_TIMESTAMP))
-
-        self.set_internal_timestamp(unix_time=utc_time)
+        # Instrument timestamp  is the internal timestamp
+        instrument_timestamp = timestamp_ddmmyyyyhhmmss_to_ntp_time(self.raw_data.group(TIDE_GROUP_DATA_TIME_STRING))
+        self.set_internal_timestamp(instrument_timestamp)
     
     def _build_parsed_values(self):
         """
@@ -247,13 +252,13 @@ class PresfAbcDclParserWaveDataParticle(DataParticle):
                                                                 quality_flag,
                                                                 new_sequence)
 
-        # The particle timestamp is the DCL Controller timestamp.
-        # The individual fields have already been extracted by the parser.
-        dcl_timestamp = self.raw_data[PresfAbcDclWaveParticleKey.DCL_CONTROLLER_START_TIMESTAMP]
+        # DCL Controller timestamp is the port timestamp
+        dcl_controller_timestamp = dcl_controller_timestamp_to_ntp_time(self.raw_data[PresfAbcDclWaveParticleKey.DCL_CONTROLLER_START_TIMESTAMP])
+        self.set_port_timestamp(dcl_controller_timestamp)
 
-        utc_time = utilities.dcl_controller_timestamp_to_utc_time(dcl_timestamp)
-
-        self.set_internal_timestamp(unix_time=utc_time)
+        # Instrument timestamp  is the internal timestamp
+        instrument_timestamp = timestamp_ddmmyyyyhhmmss_to_ntp_time(self.raw_data[PresfAbcDclWaveParticleKey.DATE_TIME_STRING])
+        self.set_internal_timestamp(instrument_timestamp)
 
     # noinspection PyListCreation
     def _build_parsed_values(self):

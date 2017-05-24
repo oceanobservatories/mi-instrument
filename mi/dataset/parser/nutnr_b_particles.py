@@ -1,3 +1,4 @@
+
 __author__ = 'mworden'
 
 """
@@ -171,6 +172,9 @@ class NutnrBDclInstrumentDataParticle(DataParticle):
         # where each entry is a tuple containing the particle field name,
         # an index into raw_data and a function to use for data conversion.
 
+        #DCL controller timestamp is the port timestamp
+        self.set_port_timestamp(self.get_value(DataParticleKey.INTERNAL_TIMESTAMP))
+
         return [self._encode_value(name, value, function)
                 for name, value, function in self.raw_data]
 
@@ -203,6 +207,9 @@ class NutnrBDclMetadataDataParticle(DataParticle):
         # in the Metadata Particle Mapping table,
         # where each entry is a tuple containing the particle field name,
         # an index into raw_data and a function to use for data conversion.
+
+        #DCL controller timestamp is the port timestamp
+        self.set_port_timestamp(self.get_value(DataParticleKey.INTERNAL_TIMESTAMP))
 
         return [self._encode_value(name, value, function)
                 for name, value, function in self.raw_data]

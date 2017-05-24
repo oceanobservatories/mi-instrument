@@ -58,6 +58,7 @@ SENSOR_GROUP_SECOND = 6
 SENSOR_GROUP_MILLISECOND = 7
 
 
+
 class DclInstrumentDataParticle(DataParticle):
     """
     Class for generating the dcl instrument particle.
@@ -67,13 +68,13 @@ class DclInstrumentDataParticle(DataParticle):
 
         super(DclInstrumentDataParticle, self).__init__(raw_data, *args, **kwargs)
 
-        # The particle timestamp is the DCL Controller timestamp.
-        # Convert the DCL controller timestamp string to NTP time (in seconds and microseconds).
+        #DCL controller timestamp  is the port timestamp
         dcl_controller_timestamp = self.raw_data[SENSOR_GROUP_TIMESTAMP]
         elapsed_seconds_useconds = dcl_controller_timestamp_to_ntp_time(dcl_controller_timestamp)
-        self.set_internal_timestamp(elapsed_seconds_useconds)
+        self.set_port_timestamp(elapsed_seconds_useconds)
 
         self.instrument_particle_map = instrument_particle_map
+
 
     def _build_parsed_values(self):
         """

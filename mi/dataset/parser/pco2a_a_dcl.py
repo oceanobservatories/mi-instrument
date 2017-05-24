@@ -43,6 +43,8 @@ from mi.dataset.parser.dcl_file_common import DclInstrumentDataParticle, \
 from mi.dataset.parser.common_regexes import END_OF_LINE_REGEX, SPACE_REGEX, \
     FLOAT_REGEX, UNSIGNED_INT_REGEX, TIME_HR_MIN_SEC_REGEX, ANY_CHARS_REGEX
 
+from mi.dataset.parser.utilities import timestamp_yyyy_mm_dd_hh_mm_ss_to_ntp_time
+
 # Basic patterns
 UINT = '('+UNSIGNED_INT_REGEX+')'   # unsigned integer as a group
 FLOAT = '('+FLOAT_REGEX+')'         # floating point as a captured group
@@ -175,6 +177,11 @@ class Pco2aADclInstrumentDataParticleAir(DclInstrumentDataParticle):
         super(Pco2aADclInstrumentDataParticleAir, self).__init__(
             raw_data, INSTRUMENT_PARTICLE_AIR_MAP, *args, **kwargs)
 
+         # Instrument timestamp is the internal timestamp
+        instrument_timestamp = self.raw_data[SENSOR_GROUP_SENSOR_DATE_TIME]
+        elapsed_seconds_useconds = timestamp_yyyy_mm_dd_hh_mm_ss_to_ntp_time(instrument_timestamp)
+        self.set_internal_timestamp(elapsed_seconds_useconds)
+
 
 class Pco2aADclInstrumentDataParticleWater(DclInstrumentDataParticle):
     """
@@ -186,6 +193,11 @@ class Pco2aADclInstrumentDataParticleWater(DclInstrumentDataParticle):
 
         super(Pco2aADclInstrumentDataParticleWater, self).__init__(
             raw_data, INSTRUMENT_PARTICLE_WATER_MAP, *args, **kwargs)
+
+         # Instrument timestamp is the internal timestamp
+        instrument_timestamp = self.raw_data[SENSOR_GROUP_SENSOR_DATE_TIME]
+        elapsed_seconds_useconds = timestamp_yyyy_mm_dd_hh_mm_ss_to_ntp_time(instrument_timestamp)
+        self.set_internal_timestamp(elapsed_seconds_useconds)
 
 
 class Pco2aADclTelemeteredInstrumentDataParticleAir(Pco2aADclInstrumentDataParticleAir):

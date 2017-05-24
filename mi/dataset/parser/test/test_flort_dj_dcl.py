@@ -49,6 +49,7 @@ from mi.dataset.parser.flort_dj_dcl import \
     FlortDjDclParser, \
     FlortDjDclRecoveredInstrumentDataParticle, \
     FlortDjDclTelemeteredInstrumentDataParticle
+from mi.dataset.parser.utilities import particle_to_yml
 from mi.dataset.test.test_parser import ParserUnitTestCase
 
 
@@ -187,6 +188,10 @@ class FlortDjDclParserUnitTestCase(ParserUnitTestCase):
         my_file = open(os.path.join(RESOURCE_PATH, filename), mode='r')
         return my_file
 
+    def file_path(self, filename):
+        log.debug('resource path = %s, file name = %s', RESOURCE_PATH, filename)
+        return os.path.join(RESOURCE_PATH, filename)
+
     def setUp(self):
         ParserUnitTestCase.setUp(self)
 
@@ -213,8 +218,8 @@ class FlortDjDclParserUnitTestCase(ParserUnitTestCase):
             # In a single read, get all particles in this file.
             number_expected_results = RECORDS_FILE6
             result = parser.get_records(number_expected_results)
-            self.assertEqual(len(result), number_expected_results)
 
+            self.assertEqual(len(result), number_expected_results)
             self.assertEqual(self.exception_callback_value, [])
 
         log.debug('===== START TEST BIG GIANT INPUT TELEMETERED =====')
@@ -224,8 +229,8 @@ class FlortDjDclParserUnitTestCase(ParserUnitTestCase):
             # In a single read, get all particles in this file.
             number_expected_results = RECORDS_FILE7
             result = parser.get_records(number_expected_results)
-            self.assertEqual(len(result), number_expected_results)
 
+            self.assertEqual(len(result), number_expected_results)
             self.assertEqual(self.exception_callback_value, [])
 
         log.debug('===== END TEST BIG GIANT INPUT =====')
@@ -249,8 +254,8 @@ class FlortDjDclParserUnitTestCase(ParserUnitTestCase):
 
             # In a single read, get all particles for this file.
             result = parser.get_records(len(expected_particle))
-            self.assertEqual(result, expected_particle)
 
+            self.assertEqual(result, expected_particle)
             self.assertEqual(self.exception_callback_value, [])
 
         log.debug('===== START TEST GET MANY TELEMETERED =====')
@@ -266,8 +271,8 @@ class FlortDjDclParserUnitTestCase(ParserUnitTestCase):
 
             # In a single read, get all particles for this file.
             result = parser.get_records(len(expected_particle))
-            self.assertEqual(result, expected_particle)
 
+            self.assertEqual(result, expected_particle)
             self.assertEqual(self.exception_callback_value, [])
 
         log.debug('===== END TEST GET MANY =====')
@@ -284,6 +289,7 @@ class FlortDjDclParserUnitTestCase(ParserUnitTestCase):
 
             # Try to get records and verify that none are returned.
             result = parser.get_records(1)
+
             self.assertEqual(result, [])
             self.assertEqual(len(self.exception_callback_value), EXCEPTIONS_FILE8)
 
@@ -296,6 +302,7 @@ class FlortDjDclParserUnitTestCase(ParserUnitTestCase):
 
             # Try to get records and verify that none are returned.
             result = parser.get_records(1)
+
             self.assertEqual(result, [])
             self.assertEqual(len(self.exception_callback_value), EXCEPTIONS_FILE8)
 
@@ -312,8 +319,8 @@ class FlortDjDclParserUnitTestCase(ParserUnitTestCase):
 
             # Try to get a record and verify that none are produced.
             result = parser.get_records(1)
-            self.assertEqual(result, [])
 
+            self.assertEqual(result, [])
             self.assertEqual(self.exception_callback_value, [])
 
         log.debug('===== START TEST NO SENSOR DATA TELEMETERED =====')
@@ -322,8 +329,8 @@ class FlortDjDclParserUnitTestCase(ParserUnitTestCase):
 
             # Try to get a record and verify that none are produced.
             result = parser.get_records(1)
-            self.assertEqual(result, [])
 
+            self.assertEqual(result, [])
             self.assertEqual(self.exception_callback_value, [])
 
         log.debug('===== END TEST NO SENSOR DATA =====')
@@ -342,7 +349,6 @@ class FlortDjDclParserUnitTestCase(ParserUnitTestCase):
             parser = FlortDjDclParser(self.rec_config, in_file, self.exception_callback)
 
             particles = parser.get_records(num_particles)
-
             log.debug("Num particles: %d", len(particles))
 
             self.assert_particles(particles, "rec_20020215.flort2.yml", RESOURCE_PATH)
@@ -354,7 +360,6 @@ class FlortDjDclParserUnitTestCase(ParserUnitTestCase):
             parser = FlortDjDclParser(self.tel_config, in_file, self.exception_callback)
 
             particles = parser.get_records(num_particles)
-
             log.debug("Num particles: %d", len(particles))
 
             self.assert_particles(particles, "tel_20020215.flort2.yml", RESOURCE_PATH)
@@ -372,7 +377,6 @@ class FlortDjDclParserUnitTestCase(ParserUnitTestCase):
             parser = FlortDjDclParser(self.rec_config, in_file, self.exception_callback)
 
             particles = parser.get_records(5)
-
             log.debug("Num particles: %d", len(particles))
 
             self.assertEquals(len(particles), 3)

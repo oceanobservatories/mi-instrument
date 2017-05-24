@@ -40,7 +40,7 @@ from mi.dataset.parser.common_regexes import \
     TIME_HR_MIN_SEC_MSEC_REGEX
 
 from mi.dataset.parser.utilities import \
-    dcl_controller_timestamp_to_ntp_time
+    dcl_controller_timestamp_to_ntp_time, timestamp_ddmmyyyyhhmmss_to_ntp_time
 
 from mi.core.common import BaseEnum
 from mi.core.exceptions import UnexpectedDataException
@@ -194,11 +194,15 @@ class SpkirAbjDclInstrumentDataParticle(DataParticle):
                                                                 quality_flag,
                                                                 new_sequence)
 
-        # The particle timestamp is the DCL Controller timestamp.
-        # Convert the DCL controller timestamp string to NTP time (in seconds and microseconds).
-        dcl_controller_timestamp = self.raw_data[SENSOR_GROUP_TIMESTAMP]
-        elapsed_seconds_useconds = dcl_controller_timestamp_to_ntp_time(dcl_controller_timestamp)
-        self.set_internal_timestamp(elapsed_seconds_useconds)
+        # DCL Controller timestamp is the port timestamp
+        dcl_controller_timestamp = dcl_controller_timestamp_to_ntp_time(self.raw_data[SENSOR_GROUP_TIMESTAMP])
+        self.set_port_timestamp(dcl_controller_timestamp)
+        """
+        Rawdata(payload) does not contain any instrument timestamp,
+        So,we are using DCL controller timestamp(DCL logger timestamp) as the internal timestamp
+        In this case port timestamp and internal timestamp are same
+        """
+        self.set_internal_timestamp(dcl_controller_timestamp)
 
     def _build_parsed_values(self):
         """

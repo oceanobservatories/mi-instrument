@@ -49,6 +49,7 @@ from mi.dataset.parser.spkir_abj_dcl import \
     SpkirAbjDclTelemeteredParser, \
     SpkirAbjDclRecoveredInstrumentDataParticle, \
     SpkirAbjDclTelemeteredInstrumentDataParticle
+from mi.dataset.parser.utilities import particle_to_yml
 from mi.dataset.test.test_parser import ParserUnitTestCase
 
 log = get_logger()
@@ -338,6 +339,10 @@ class SpkirAbjDclParserUnitTestCase(ParserUnitTestCase):
         fid = open(os.path.join(RESOURCE_PATH, filename), mode='rb')
         return fid
 
+    def file_path(self, filename):
+        log.debug('resource path = %s, file name = %s', RESOURCE_PATH, filename)
+        return os.path.join(RESOURCE_PATH, filename)
+
     def rec_exception_callback(self, exception):
         """ Call back method to watch what comes in via the exception callback """
         self.rec_exception_callback_value = exception
@@ -388,8 +393,8 @@ class SpkirAbjDclParserUnitTestCase(ParserUnitTestCase):
         # In a single read, get all particles in this file.
         number_expected_results = EXPECTED_FILE6
         result = parser.get_records(number_expected_results)
-        self.assertEqual(len(result), number_expected_results)
 
+        self.assertEqual(len(result), number_expected_results)
         in_file.close()
         self.assertEqual(self.rec_exception_callback_value, None)
 
@@ -400,8 +405,8 @@ class SpkirAbjDclParserUnitTestCase(ParserUnitTestCase):
         # In a single read, get all particles in this file.
         number_expected_results = EXPECTED_FILE7
         result = parser.get_records(number_expected_results)
-        self.assertEqual(len(result), number_expected_results)
 
+        self.assertEqual(len(result), number_expected_results)
         in_file.close()
         self.assertEqual(self.tel_exception_callback_value, None)
 
@@ -424,8 +429,8 @@ class SpkirAbjDclParserUnitTestCase(ParserUnitTestCase):
 
         # In a single read, get all particles for this file.
         result = parser.get_records(len(expected_particle))
-        self.assertEqual(result, expected_particle)
 
+        self.assertEqual(result, expected_particle)
         self.assertEqual(self.rec_exception_callback_value, None)
         in_file.close()
 
@@ -441,8 +446,8 @@ class SpkirAbjDclParserUnitTestCase(ParserUnitTestCase):
 
         # In a single read, get all particles for this file.
         result = parser.get_records(len(expected_particle))
-        self.assertEqual(result, expected_particle)
 
+        self.assertEqual(result, expected_particle)
         self.assertEqual(self.tel_exception_callback_value, None)
         in_file.close()
 
@@ -456,21 +461,19 @@ class SpkirAbjDclParserUnitTestCase(ParserUnitTestCase):
         log.debug('===== START TEST INVALID SENSOR DATA RECOVERED =====')
         in_file = self.open_file(FILE8)
         parser = self.create_rec_parser(in_file)
-
         # Try to get records and verify that none are returned.
         result = parser.get_records(1)
-        self.assertEqual(result, [])
 
+        self.assertEqual(result, [])
         in_file.close()
 
         log.debug('===== START TEST INVALID SENSOR DATA TELEMETERED =====')
         in_file = self.open_file(FILE8)
         parser = self.create_tel_parser(in_file)
-
         # Try to get records and verify that none are returned.
         result = parser.get_records(1)
-        self.assertEqual(result, [])
 
+        self.assertEqual(result, [])
         in_file.close()
 
         log.debug('===== END TEST INVALID SENSOR DATA =====')
@@ -486,19 +489,18 @@ class SpkirAbjDclParserUnitTestCase(ParserUnitTestCase):
 
         # Try to get a record and verify that none are produced.
         result = parser.get_records(1)
-        self.assertEqual(result, [])
 
+        self.assertEqual(result, [])
         self.assertEqual(self.rec_exception_callback_value, None)
         in_file.close()
 
         log.debug('===== START TEST NO SENSOR DATA TELEMETERED =====')
         in_file = self.open_file(FILE1)
         parser = self.create_tel_parser(in_file)
-
         # Try to get a record and verify that none are produced.
         result = parser.get_records(1)
-        self.assertEqual(result, [])
 
+        self.assertEqual(result, [])
         self.assertEqual(self.tel_exception_callback_value, None)
         in_file.close()
 
@@ -555,8 +557,11 @@ class SpkirAbjDclParserUnitTestCase(ParserUnitTestCase):
 
         in_file = self.open_file(FILE2)
         parser = self.create_rec_parser(in_file)
-
         particles = parser.get_records(num_particles)
+
+        # creating .yml file
+        out_file = 'rec_20020113.spkir2.yml'
+        particle_to_yml(particles, self.file_path(out_file))
 
         log.debug("Num particles: %d", len(particles))
 
@@ -569,7 +574,6 @@ class SpkirAbjDclParserUnitTestCase(ParserUnitTestCase):
 
         in_file = self.open_file(FILE2)
         parser = self.create_tel_parser(in_file)
-
         particles = parser.get_records(num_particles)
 
         log.debug("Num particles: %d", len(particles))

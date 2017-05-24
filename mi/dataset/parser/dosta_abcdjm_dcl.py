@@ -167,10 +167,18 @@ class DostaAbcdjmDclInstrumentDataParticle(DataParticle):
                                                                    quality_flag,
                                                                    new_sequence)
 
-        # The particle timestamp is the DCL Controller timestamp.
-        # Convert the DCL controller timestamp string to NTP time (in seconds and microseconds).
+        #DCL controller timestamp  is the port timestamp
         dcl_controller_timestamp = self.raw_data[SENSOR_GROUP_TIMESTAMP]
         elapsed_seconds_useconds = dcl_controller_timestamp_to_ntp_time(dcl_controller_timestamp)
+        self.set_port_timestamp(elapsed_seconds_useconds)
+
+        """
+        Rawdata(payload) does not contain any instrument timestamp,
+        So,we are using DCL controller timestamp(DCL wrapper timestamp) as the internal timestamp
+        In this case port timestamp and internal timestamp are same
+        """
+        instrument_timestamp = self.raw_data[SENSOR_GROUP_TIMESTAMP]
+        elapsed_seconds_useconds = dcl_controller_timestamp_to_ntp_time(instrument_timestamp)
         self.set_internal_timestamp(elapsed_seconds_useconds)
 
     def _build_parsed_values(self):

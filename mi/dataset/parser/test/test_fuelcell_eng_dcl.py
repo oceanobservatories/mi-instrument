@@ -9,6 +9,7 @@ Release notes:
 
 initial release
 """
+from mi.dataset.parser.utilities import particle_to_yml
 
 __author__ = 'cgoodrich'
 
@@ -64,6 +65,10 @@ class FuelCellEngDclParserUnitTestCase(ParserUnitTestCase):
             DataSetDriverConfigKeys.PARTICLE_CLASSES_DICT: {}
         }
 
+    def file_path(self, filename):
+        log.debug('resource path = %s, file name = %s', RESOURCE_PATH, filename)
+        return os.path.join(RESOURCE_PATH, filename)
+
     def test_simple(self):
         """
         Read file and verify that all expected particles can be read.
@@ -86,7 +91,6 @@ class FuelCellEngDclParserUnitTestCase(ParserUnitTestCase):
             particles = parser.get_records(num_particles_to_request)
 
             self.assertEquals(len(particles), num_expected_particles)
-
             self.assert_particles(particles, 'recovered_20141207s.pwrsys.yml', RESOURCE_PATH)
 
         # Test the telemetered version
@@ -100,7 +104,6 @@ class FuelCellEngDclParserUnitTestCase(ParserUnitTestCase):
             particles = parser.get_records(num_particles_to_request)
 
             self.assertEquals(len(particles), num_expected_particles)
-
             self.assert_particles(particles, 'telemetered_20141207s.pwrsys.yml', RESOURCE_PATH)
 
         log.debug('===== END TEST SIMPLE =====')

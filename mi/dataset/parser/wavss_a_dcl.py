@@ -15,7 +15,9 @@ from mi.core.exceptions import RecoverableSampleException, SampleEncodingExcepti
 
 from mi.dataset.dataset_parser import SimpleParser
 
-from mi.dataset.parser.utilities import dcl_controller_timestamp_to_utc_time
+from mi.dataset.parser.utilities import \
+    dcl_controller_timestamp_to_utc_time, \
+    timestamp_yyyymmddhhmmss_to_ntp_time
 
 log = get_logger()
 
@@ -133,8 +135,8 @@ class WavssADclCommonDataParticle(DataParticle):
         """
         utc_time, self.dcl_data, checksum = self.extract_dcl_parts(self.raw_data)
         if utc_time:
-            # TODO self.set_port_timestamp(unix_time=utc_time)
-            self.set_internal_timestamp(unix_time=utc_time)
+            # DCL controller timestamp  is the port timestamp
+            self.set_port_timestamp(unix_time=utc_time)
 
         if not self.dcl_data:
             raise RecoverableSampleException('Missing DCL data segment')
@@ -146,6 +148,10 @@ class WavssADclCommonDataParticle(DataParticle):
         if len(csv) < 7:
             raise RecoverableSampleException('DCL format error: missing items from common wavss header')
         self.marker, self.date, self.time, self.serial_number, self.buoy_id, self.latitude, self.longitude = csv[:7]
+
+        # Instrument timestamp  is the internal timestamp
+        instrument_timestamp = timestamp_yyyymmddhhmmss_to_ntp_time(self.date + self.time)
+        self.set_internal_timestamp(instrument_timestamp)
 
         self.payload = csv[7:]
 

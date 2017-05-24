@@ -17,6 +17,7 @@ from mi.dataset.parser.phsen_abcdef_dcl import PhsenAbcdefDclMetadataTelemetered
     PhsenAbcdefDclInstrumentTelemeteredDataParticle
 from mi.dataset.parser.phsen_abcdef_dcl import PhsenAbcdefDclParser, PhsenAbcdefDclMetadataRecoveredDataParticle, \
     PhsenAbcdefDclInstrumentRecoveredDataParticle
+from mi.dataset.parser.utilities import particle_to_yml
 from mi.dataset.test.test_parser import ParserUnitTestCase
 
 log = get_logger()
@@ -111,6 +112,10 @@ class PhsenAbcdefDclParserUnitTestCase(ParserUnitTestCase):
         self.rec_exception_callback_value = exception
         self.rec_exceptions_detected += 1
 
+    def file_path(self, filename):
+        log.debug('resource path = %s, file name = %s', RESOURCE_PATH, filename)
+        return os.path.join(RESOURCE_PATH, filename)
+
     def tel_exception_callback(self, exception):
         """ Call back method to watch what comes in via the exception callback """
         self.tel_exception_callback_value = exception
@@ -151,51 +156,6 @@ class PhsenAbcdefDclParserUnitTestCase(ParserUnitTestCase):
         self.tel_exceptions_detected = 0
         self.maxDiff = None
 
-    def create_yml(self):
-        """
-        This is added as a testing helper, not actually as part of the parser tests. This utility creates a yml file
-        """
-
-        fid = open(os.path.join(RESOURCE_PATH, INPUT_LOG_FILE_02), 'r')
-        # self.stream_handle = fid
-
-        # Create YML for data
-        parser = self.create_tel_parser(fid)
-        particles = parser.get_records(12)
-        self.particle_to_yml(particles, 'phsen_dcl_large-TELEMETERED.yml')
-
-        fid.close()
-
-    def particle_to_yml(self, particles, filename, mode='w'):
-        """
-        This is added as a testing helper, not actually as part of the parser tests. Since the same particles
-        will be used for the driver test it is helpful to write them to .yml in the same form they need in the
-        results.yml files here.
-        """
-        # open write append, if you want to start from scratch manually delete this fid
-        fid = open(os.path.join(RESOURCE_PATH, filename), mode)
-
-        fid.write('header:\n')
-        fid.write("    particle_object: 'MULTIPLE'\n")
-        fid.write("    particle_type: 'MULTIPLE'\n")
-        fid.write('data:\n')
-        for i in range(0, len(particles)):
-            particle_dict = particles[i].generate_dict()
-            fid.write('  - _index: %d\n' % (i+1))
-
-            fid.write('    particle_object: %s\n' % particles[i].__class__.__name__)
-            fid.write('    particle_type: %s\n' % particle_dict.get('stream_name'))
-            fid.write('    internal_timestamp: %f\n' % particle_dict.get('internal_timestamp'))
-
-            for val in particle_dict.get('values'):
-                if isinstance(val.get('value'), float):
-                    fid.write('    %s: %16.16f\n' % (val.get('value_id'), val.get('value')))
-                elif isinstance(val.get('value'), str):
-                    fid.write("    %s: '%s'\n" % (val.get('value_id'), val.get('value')))
-                else:
-                    fid.write('    %s: %s\n' % (val.get('value_id'), val.get('value')))
-        fid.close()
-
     def test_bad_checksum_recovered(self):
         """
         Verifies the 2 particles (1 instrument, 1 control) from a log file where both particle
@@ -210,6 +170,11 @@ class PhsenAbcdefDclParserUnitTestCase(ParserUnitTestCase):
         in_file = self.open_file(input_file)
         parser = self.create_rec_parser(in_file)
         particles = parser.get_records(total_records)
+
+        # creating .yml file
+        out_file = INPUT_LOG_FILE_03_YML_RECOVERED
+        particle_to_yml(particles, self.file_path(out_file))
+
         self.assertEqual(len(particles), expected_particles)
         self.assert_particles(particles, INPUT_LOG_FILE_03_YML_RECOVERED, RESOURCE_PATH)
         self.assertEqual(self.rec_exceptions_detected, expected_exceptions)
@@ -229,6 +194,7 @@ class PhsenAbcdefDclParserUnitTestCase(ParserUnitTestCase):
         in_file = self.open_file(input_file)
         parser = self.create_tel_parser(in_file)
         particles = parser.get_records(total_records)
+
         self.assertEqual(len(particles), expected_particles)
         self.assert_particles(particles, INPUT_LOG_FILE_03_YML_TELEMETERED, RESOURCE_PATH)
         self.assertEqual(self.tel_exceptions_detected, expected_exceptions)
@@ -388,6 +354,7 @@ class PhsenAbcdefDclParserUnitTestCase(ParserUnitTestCase):
         in_file = self.open_file(input_file)
         parser = self.create_tel_parser(in_file)
         particles = parser.get_records(total_records)
+
         self.assertEqual(len(particles), expected_particles)
         self.assert_particles(particles, INPUT_LOG_FILE_09_YML_TELEMETERED, RESOURCE_PATH)
         self.assertEqual(self.tel_exceptions_detected, expected_exceptions)
@@ -407,6 +374,7 @@ class PhsenAbcdefDclParserUnitTestCase(ParserUnitTestCase):
         in_file = self.open_file(input_file)
         parser = self.create_rec_parser(in_file)
         particles = parser.get_records(total_records)
+
         self.assertEqual(len(particles), expected_particles)
         self.assert_particles(particles, INPUT_LOG_FILE_09_YML_RECOVERED, RESOURCE_PATH)
         self.assertEqual(self.rec_exceptions_detected, expected_exceptions)
@@ -425,6 +393,7 @@ class PhsenAbcdefDclParserUnitTestCase(ParserUnitTestCase):
         in_file = self.open_file(input_file)
         parser = self.create_tel_parser(in_file)
         particles = parser.get_records(total_records)
+
         self.assertEqual(len(particles), expected_particles)
         self.assert_particles(particles, INPUT_LOG_FILE_05_YML_TELEMETERED, RESOURCE_PATH)
         self.assertEqual(self.tel_exceptions_detected, expected_exceptions)
@@ -443,6 +412,7 @@ class PhsenAbcdefDclParserUnitTestCase(ParserUnitTestCase):
         in_file = self.open_file(input_file)
         parser = self.create_rec_parser(in_file)
         particles = parser.get_records(total_records)
+
         self.assertEqual(len(particles), expected_particles)
         self.assert_particles(particles, INPUT_LOG_FILE_05_YML_RECOVERED, RESOURCE_PATH)
         self.assertEqual(self.rec_exceptions_detected, expected_exceptions)
@@ -461,6 +431,7 @@ class PhsenAbcdefDclParserUnitTestCase(ParserUnitTestCase):
         in_file = self.open_file(input_file)
         parser = self.create_tel_parser(in_file)
         particles = parser.get_records(total_records)
+
         self.assertEqual(len(particles), expected_particles)
         self.assert_particles(particles, INPUT_LOG_FILE_02_YML_TELEMETERED, RESOURCE_PATH)
         self.assertEqual(self.tel_exceptions_detected, expected_exceptions)
@@ -479,6 +450,7 @@ class PhsenAbcdefDclParserUnitTestCase(ParserUnitTestCase):
         in_file = self.open_file(input_file)
         parser = self.create_rec_parser(in_file)
         particles = parser.get_records(total_records)
+
         self.assertEqual(len(particles), expected_particles)
         self.assert_particles(particles, INPUT_LOG_FILE_02_YML_RECOVERED, RESOURCE_PATH)
         self.assertEqual(self.rec_exceptions_detected, expected_exceptions)
@@ -497,6 +469,7 @@ class PhsenAbcdefDclParserUnitTestCase(ParserUnitTestCase):
         in_file = self.open_file(input_file)
         parser = self.create_tel_parser(in_file)
         particles = parser.get_records(total_records)
+
         self.assertEqual(len(particles), expected_particles)
         self.assert_particles(particles, INPUT_LOG_FILE_01_YML_TELEMETERED, RESOURCE_PATH)
         self.assertEqual(self.tel_exceptions_detected, expected_exceptions)
@@ -515,6 +488,7 @@ class PhsenAbcdefDclParserUnitTestCase(ParserUnitTestCase):
         in_file = self.open_file(input_file)
         parser = self.create_rec_parser(in_file)
         particles = parser.get_records(total_records)
+
         self.assertEqual(len(particles), expected_particles)
         self.assert_particles(particles, INPUT_LOG_FILE_01_YML_RECOVERED, RESOURCE_PATH)
         self.assertEqual(self.rec_exceptions_detected, expected_exceptions)

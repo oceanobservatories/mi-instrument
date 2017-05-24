@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+from mi.dataset.parser.utilities import particle_to_yml
 
 __author__ = 'Joe Padula'
 
@@ -64,6 +65,10 @@ class Pco2wAbcDclParserUnitTestCase(ParserUnitTestCase):
             }
         }
 
+    def file_path(self, filename):
+        log.debug('resource path = %s, file name = %s', RESOURCE_PATH, filename)
+        return os.path.join(RESOURCE_PATH, filename)
+
     def test_happy_path_single(self):
         """
         Read a file and verify that a single record can be read.
@@ -80,7 +85,6 @@ class Pco2wAbcDclParserUnitTestCase(ParserUnitTestCase):
                                        self.exception_callback)
 
             particles = parser.get_records(1)
-
             log.debug("Num particles: %d", len(particles))
 
             self.assert_particles(particles, "rec_single.yml", RESOURCE_PATH)
@@ -94,7 +98,6 @@ class Pco2wAbcDclParserUnitTestCase(ParserUnitTestCase):
                                        self.exception_callback)
 
             particles = parser.get_records(14)
-
             log.debug("Num particles: %d", len(particles))
 
             self.assert_particles(particles, "tel_single.yml", RESOURCE_PATH)
@@ -120,7 +123,6 @@ class Pco2wAbcDclParserUnitTestCase(ParserUnitTestCase):
                                        self.exception_callback)
 
             particles = parser.get_records(num_particles)
-
             log.debug("Num particles: %d", len(particles))
 
             self.assert_particles(particles, "happy_path_rec.yml", RESOURCE_PATH)
@@ -134,7 +136,6 @@ class Pco2wAbcDclParserUnitTestCase(ParserUnitTestCase):
                                        self.exception_callback)
 
             particles = parser.get_records(num_particles)
-
             log.debug("Num particles: %d", len(particles))
 
             self.assert_particles(particles, "happy_path_tel.yml", RESOURCE_PATH)
@@ -164,11 +165,8 @@ class Pco2wAbcDclParserUnitTestCase(ParserUnitTestCase):
             particles = parser.get_records(num_particles_to_request)
 
             self.assertEquals(len(particles), num_expected_particles)
-
             self.assert_particles(particles, "invalid_metadata_timestamp.yml", RESOURCE_PATH)
-
             log.debug('Exceptions : %s', self.exception_callback_value)
-
             self.assert_(isinstance(self.exception_callback_value[0], RecoverableSampleException))
 
         log.debug('===== END TEST INVALID METADATA TIMESTAMP =====')
@@ -196,11 +194,8 @@ class Pco2wAbcDclParserUnitTestCase(ParserUnitTestCase):
             particles = parser.get_records(num_particles_to_request)
 
             self.assertEquals(len(particles), num_expected_particles)
-
             self.assert_particles(particles, "invalid_record_type.yml", RESOURCE_PATH)
-
             log.debug('Exceptions : %s', self.exception_callback_value)
-
             self.assert_(isinstance(self.exception_callback_value[0], RecoverableSampleException))
 
         log.debug('===== END TEST INVALID RECORD TYPE =====')
@@ -227,11 +222,8 @@ class Pco2wAbcDclParserUnitTestCase(ParserUnitTestCase):
             particles = parser.get_records(num_particles_to_request)
 
             self.assertEquals(len(particles), num_expected_particles)
-
             self.assert_particles(particles, "power_record_missing_timestamp.yml", RESOURCE_PATH)
-
             log.debug('Exceptions : %s', self.exception_callback_value)
-
             self.assert_(isinstance(self.exception_callback_value[0], RecoverableSampleException))
 
         log.debug('===== END TEST POWER RECORD MISSING TIMESTAMP =====')
@@ -258,7 +250,6 @@ class Pco2wAbcDclParserUnitTestCase(ParserUnitTestCase):
             particles = parser.get_records(num_particles_to_request)
 
             self.assertEquals(len(particles), num_expected_particles)
-
             self.assertEquals(self.exception_callback_value, [])
 
         log.debug('===== END TEST NO PARTICLES =====')
@@ -289,7 +280,6 @@ class Pco2wAbcDclParserUnitTestCase(ParserUnitTestCase):
             particles = parser.get_records(num_particles_to_request)
 
             self.assertEquals(len(particles), num_expected_particles)
-
             self.assert_particles(particles, "incorrect_data_length.yml", RESOURCE_PATH)
 
         log.debug('Exceptions : %s', self.exception_callback_value)
@@ -324,9 +314,7 @@ class Pco2wAbcDclParserUnitTestCase(ParserUnitTestCase):
             particles = parser.get_records(num_particles_to_request)
 
             self.assertEquals(len(particles), num_expected_particles)
-
             self.assert_particles(particles, "invalid_checksum.yml", RESOURCE_PATH)
-
             # No exception should be thrown
             self.assertEquals(self.exception_callback_value, [])
 
@@ -356,9 +344,7 @@ class Pco2wAbcDclParserUnitTestCase(ParserUnitTestCase):
             particles = parser.get_records(num_particles_to_request)
 
             log.info(len(particles))
-
             self.assertEquals(len(particles), num_expected_particles)
-
             self.assertEquals(self.exception_callback_value, [])
 
         log.debug('===== END TEST REAL FILE =====')

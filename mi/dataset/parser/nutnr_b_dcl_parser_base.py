@@ -334,6 +334,7 @@ class NutnrBDclParser(Parser):
         # Save the input frame types
         self._frame_types = frame_types
 
+
     def _extract_metadata_unix_timestamp(self, idle_match):
         """
         This function will create a timestamp to be used as the internal

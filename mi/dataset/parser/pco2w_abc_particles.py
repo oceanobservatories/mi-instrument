@@ -5,7 +5,9 @@ from mi.core.log import get_logger
 log = get_logger()
 from mi.core.common import BaseEnum
 from mi.core.instrument.dataset_data_particle import DataParticle, DataParticleKey
-from mi.dataset.parser.utilities import mac_timestamp_to_utc_timestamp
+from mi.dataset.parser.utilities import \
+    mac_timestamp_to_utc_timestamp, \
+    dcl_controller_timestamp_to_ntp_time
 
 
 class Pco2wAbcParticleClassKey (BaseEnum):
@@ -113,6 +115,13 @@ class Pco2wAbcDclBaseDataParticle(Pco2wAbcBaseDataParticle):
         """
 
         particle_parameters = super(Pco2wAbcDclBaseDataParticle, self)._build_parsed_values()
+
+        dcl_controller_timestamp = self.raw_data[Pco2wAbcDataParticleKey.DCL_CONTROLLER_TIMESTAMP]
+        elapsed_seconds_useconds = dcl_controller_timestamp_to_ntp_time(dcl_controller_timestamp)
+        self.set_port_timestamp(elapsed_seconds_useconds)
+
+        instrument_timestamp = self.raw_data[Pco2wAbcDataParticleKey.RECORD_TIME]
+        self.set_internal_timestamp(instrument_timestamp)
 
         particle_parameters.append(
             self._encode_value(Pco2wAbcDataParticleKey.DCL_CONTROLLER_TIMESTAMP,

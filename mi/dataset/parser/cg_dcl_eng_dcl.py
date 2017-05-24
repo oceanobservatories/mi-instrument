@@ -741,7 +741,14 @@ class CgDclEngDclDataParticle(DataParticle):
         for key in self.raw_data.keys():
 
             if key == CgDclEngDclParserDataParticleKey.HEADER_TIMESTAMP:
-
+                # DCL controller timestamp  is the port timestamp
+                self.set_port_timestamp(
+                    utilities.dcl_controller_timestamp_to_ntp_time(self.raw_data[key]))
+                """
+                Rawdata(payload) does not contain any instrument timestamp,
+                So,we are using DCL controller timestamp(DCL logger timestamp) as the internal timestamp
+                In this case port timestamp and internal timestamp are same
+                """
                 self.set_internal_timestamp(
                     utilities.dcl_controller_timestamp_to_ntp_time(self.raw_data[key]))
 
@@ -805,7 +812,14 @@ class CgDclEngDclPpsDataParticle(CgDclEngDclDataParticle):
         for key in self.raw_data.keys():
 
             if key == CgDclEngDclParserDataParticleKey.HEADER_TIMESTAMP:
-
+                # DCL controller timestamp  is the port timestamp
+                self.set_port_timestamp(
+                    utilities.dcl_controller_timestamp_to_ntp_time(self.raw_data[key]))
+                """
+                Rawdata(payload) does not contain any instrument timestamp,
+                So,we are using DCL controller timestamp(DCL logger timestamp) as the internal timestamp
+                In this case port timestamp and internal timestamp are same
+                """
                 self.set_internal_timestamp(
                     utilities.dcl_controller_timestamp_to_ntp_time(self.raw_data[key]))
 
@@ -857,7 +871,14 @@ class CgDclEngDclSupervDataParticle(CgDclEngDclDataParticle):
         for key in sorted(self.raw_data.keys()):
 
             if key == CgDclEngDclParserDataParticleKey.HEADER_TIMESTAMP:
-
+                # DCL controller timestamp  is the port timestamp
+                self.set_port_timestamp(
+                    utilities.dcl_controller_timestamp_to_ntp_time(self.raw_data[key]))
+                """
+                Rawdata(payload) does not contain any instrument timestamp,
+                So,we are using DCL controller timestamp(DCL logger timestamp) as the internal timestamp
+                In this case port timestamp and internal timestamp are same
+                """
                 self.set_internal_timestamp(
                     utilities.dcl_controller_timestamp_to_ntp_time(self.raw_data[key]))
 
@@ -935,7 +956,14 @@ class CgDclEngDclDlogStatusDataParticle(CgDclEngDclDataParticle):
         for key in self.raw_data.keys():
 
             if key == CgDclEngDclParserDataParticleKey.HEADER_TIMESTAMP:
-
+                # DCL controller timestamp  is the port timestamp
+                self.set_port_timestamp(
+                    utilities.dcl_controller_timestamp_to_ntp_time(self.raw_data[key]))
+                """
+                Rawdata(payload) does not contain any instrument timestamp,
+                So,we are using DCL controller timestamp(DCL logger timestamp) as the internal timestamp
+                In this case port timestamp and internal timestamp are same
+                """
                 self.set_internal_timestamp(
                     utilities.dcl_controller_timestamp_to_ntp_time(self.raw_data[key]))
 
@@ -982,7 +1010,14 @@ class CgDclEngDclStatusDataParticle(CgDclEngDclDataParticle):
         for key in self.raw_data.keys():
 
             if key == CgDclEngDclParserDataParticleKey.HEADER_TIMESTAMP:
-
+                # DCL controller timestamp  is the port timestamp
+                self.set_port_timestamp(
+                    utilities.dcl_controller_timestamp_to_ntp_time(self.raw_data[key]))
+                """
+                Rawdata(payload) does not contain any instrument timestamp,
+                So,we are using DCL controller timestamp(DCL logger timestamp) as the internal timestamp
+                In this case port timestamp and internal timestamp are same
+                """
                 self.set_internal_timestamp(
                     utilities.dcl_controller_timestamp_to_ntp_time(self.raw_data[key]))
 

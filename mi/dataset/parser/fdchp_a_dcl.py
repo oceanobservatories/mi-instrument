@@ -14,6 +14,8 @@ from mi.core.exceptions import SampleException, UnexpectedDataException
 from mi.core.instrument.dataset_data_particle import DataParticle
 
 from mi.dataset.dataset_parser import SimpleParser
+from mi.dataset.parser.utilities import dcl_controller_timestamp_to_ntp_time
+
 log = get_logger()
 
 __author__ = 'Emily Hahn'
@@ -130,13 +132,17 @@ class FdchpADclCommonParticle(DataParticle):
             self._encode_value('status_datacollection', self.raw_data[4], str)
         ]
 
-        # loop through unpack dictionary and encode floats
-        for name, index in self.UNPACK_DICT.iteritems():
-            parameters.append(self._encode_value(name, self.raw_data[index], float))
+        # The port timestamp is the DCL Controller timestamp.
+        dcl_controller_timestamp = dcl_controller_timestamp_to_ntp_time(self.raw_data[1])
+        self.set_port_timestamp(dcl_controller_timestamp)
 
         # use the floating point unix timestamp in time_datacollection as the internal timestamp
         unix_ts = float(self.raw_data[self.UNPACK_DICT.get('time_datacollection')])
         self.set_internal_timestamp(unix_time=unix_ts)
+
+        # loop through unpack dictionary and encode floats
+        for name, index in self.UNPACK_DICT.iteritems():
+            parameters.append(self._encode_value(name, self.raw_data[index], float))
 
         return parameters
 

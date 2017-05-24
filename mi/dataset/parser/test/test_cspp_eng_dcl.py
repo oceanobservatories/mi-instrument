@@ -16,6 +16,7 @@ from mi.core.exceptions import RecoverableSampleException
 from mi.core.log import get_logger
 from mi.dataset.driver.cspp_eng.dcl.resource import RESOURCE_PATH
 from mi.dataset.parser.cspp_eng_dcl import CsppEngDclParser
+from mi.dataset.parser.utilities import particle_to_yml
 from mi.dataset.test.test_parser import ParserUnitTestCase
 
 
@@ -32,6 +33,10 @@ class CsppEngDclParserUnitTestCase(ParserUnitTestCase):
     cspp_eng_dcl Parser unit test suite
     """
 
+    def file_path(self, filename):
+        log.debug('resource path = %s, file name = %s', RESOURCE_PATH, filename)
+        return os.path.join(RESOURCE_PATH, filename)
+
     def test_simple(self):
         """
         Read data from a file and pull out data particles
@@ -45,8 +50,12 @@ class CsppEngDclParserUnitTestCase(ParserUnitTestCase):
             parser = CsppEngDclParser({},
                                       file_handle,
                                       self.exception_callback)
-
             particles = parser.get_records(10)
+
+            # creating .yml file
+            out_file = 'all_responses.yml'
+            particle_to_yml(particles, self.file_path(out_file))
+
             self.assert_particles(particles, 'all_responses.yml', RESOURCE_PATH)
             self.assertEqual(self.exception_callback_value, [])
 
@@ -61,8 +70,8 @@ class CsppEngDclParserUnitTestCase(ParserUnitTestCase):
             parser = CsppEngDclParser({},
                                       file_handle,
                                       self.exception_callback)
-
             particles = parser.get_records(10)
+
             self.assert_particles(particles, 'all_responses.yml', RESOURCE_PATH)
             self.assertEqual(len(self.exception_callback_value), 1)
             self.assertIsInstance(self.exception_callback_value[0], RecoverableSampleException)
@@ -78,8 +87,8 @@ class CsppEngDclParserUnitTestCase(ParserUnitTestCase):
             parser = CsppEngDclParser({},
                                       file_handle,
                                       self.exception_callback)
-
             particles = parser.get_records(10)
+
             self.assertEqual(len(particles), 3)
             self.assertEqual(len(self.exception_callback_value), 1)
             self.assertIsInstance(self.exception_callback_value[0], RecoverableSampleException)
@@ -96,8 +105,8 @@ class CsppEngDclParserUnitTestCase(ParserUnitTestCase):
             parser = CsppEngDclParser({},
                                       file_handle,
                                       self.exception_callback)
-
             particles = parser.get_records(10)
+
             self.assertEqual(len(particles), 3)
             self.assertEqual(len(self.exception_callback_value), 1)
             self.assertIsInstance(self.exception_callback_value[0], RecoverableSampleException)
@@ -112,8 +121,8 @@ class CsppEngDclParserUnitTestCase(ParserUnitTestCase):
             parser = CsppEngDclParser({},
                                       file_handle,
                                       self.exception_callback)
-
             particles = parser.get_records(10)
+
             self.assertEqual(len(particles), 1)
             self.assertEqual(self.exception_callback_value, [])
 
@@ -127,8 +136,8 @@ class CsppEngDclParserUnitTestCase(ParserUnitTestCase):
             parser = CsppEngDclParser({},
                                       file_handle,
                                       self.exception_callback)
-
             particles = parser.get_records(10)
+
             self.assertEqual(len(particles), 1)
             self.assertEqual(self.exception_callback_value, [])
             self.assertEqual(particles[0]._values[1].get('value'), None)
@@ -145,8 +154,8 @@ class CsppEngDclParserUnitTestCase(ParserUnitTestCase):
             parser = CsppEngDclParser({},
                                       file_handle,
                                       self.exception_callback)
-
             particles = parser.get_records(10)
+
             self.assert_particles(particles, 'no_date.yml', RESOURCE_PATH)
             self.assertEqual(self.exception_callback_value, [])
 

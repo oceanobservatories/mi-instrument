@@ -35,6 +35,7 @@ import os
 from nose.plugins.attrib import attr
 
 from mi.core.log import get_logger
+from mi.dataset.parser.utilities import particle_to_yml
 
 from mi.dataset.test.test_parser import ParserUnitTestCase
 from mi.dataset.dataset_parser import DataSetDriverConfigKeys
@@ -94,6 +95,10 @@ class MetbkADclParserUnitTestCase(ParserUnitTestCase):
     def setUp(self):
         ParserUnitTestCase.setUp(self)
 
+    def file_path(self, filename):
+        log.debug('resource path = %s, file name = %s', RESOURCE_PATH, filename)
+        return os.path.join(RESOURCE_PATH, filename)
+
     def test_big_giant_input(self):
         """
         Read a large file and verify that all expected particles can be read.
@@ -138,9 +143,12 @@ class MetbkADclParserUnitTestCase(ParserUnitTestCase):
         # In a single read, get all particles for this file.
         result = parser.get_records(RECORDS_FILE_0_863)
 
+        # creating .yml file
+        out_file = YML_0_863
+        particle_to_yml(result, self.file_path(out_file))
+
         # self.assertEqual(result, expected_particle)
         self.assert_particles(result, YML_0_863, RESOURCE_PATH)
-
         self.assertListEqual(self.exception_callback_value, [])
         in_file.close()
 
@@ -150,11 +158,11 @@ class MetbkADclParserUnitTestCase(ParserUnitTestCase):
 
         # In a single read, get all particles for this file.
         result = parser.get_records(RECORDS_FILE_7_1061)
+
         self.assert_particles(result, YML_7_1061, RESOURCE_PATH)
-
         self.assertListEqual(self.exception_callback_value, [])
-        in_file.close()
 
+        in_file.close()
         log.debug('===== END TEST GET MANY =====')
 
     def test_invalid_sensor_data_records(self):
@@ -174,7 +182,6 @@ class MetbkADclParserUnitTestCase(ParserUnitTestCase):
         self.assertEqual(len(self.exception_callback_value), EXCEPTIONS_FILE_4_0)
 
         in_file.close()
-
         log.debug('===== END TEST INVALID SENSOR DATA =====')
 
     def test_no_sensor_data(self):
@@ -189,10 +196,9 @@ class MetbkADclParserUnitTestCase(ParserUnitTestCase):
         # Try to get a record and verify that none are produced.
         result = parser.get_records(TOTAL_RECORDS_FILE_7_0)
         self.assertEqual(result, [])
-
         self.assertListEqual(self.exception_callback_value, [])
-        in_file.close()
 
+        in_file.close()
         log.debug('===== END TEST NO SENSOR DATA =====')
 
     def test_simple(self):
@@ -206,11 +212,11 @@ class MetbkADclParserUnitTestCase(ParserUnitTestCase):
 
         # In a single read, get all particles for this file.
         result = parser.get_records(RECORDS_FILE_4_1430)
+
         self.assert_particles(result, YML_4_1430, RESOURCE_PATH)
-
         self.assertListEqual(self.exception_callback_value, [])
-        in_file.close()
 
+        in_file.close()
         log.debug('===== END TEST SIMPLE =====')
 
     def test_bug_9692(self):
@@ -223,8 +229,8 @@ class MetbkADclParserUnitTestCase(ParserUnitTestCase):
 
         # In a single read, get all particles for this file.
         result = parser.get_records(5)
-        self.assertEqual(len(result), 4)
 
+        self.assertEqual(len(result), 4)
         self.assertListEqual(self.exception_callback_value, [])
         in_file.close()
 

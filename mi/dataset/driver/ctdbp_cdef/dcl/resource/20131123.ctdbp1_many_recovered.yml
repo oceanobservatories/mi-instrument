@@ -1,222 +1,244 @@
 header:
-  particle_object: 'MULTIPLE'
-  particle_type: 'MULTIPLE'
-
+    particle_object: 'MULTIPLE'
+    particle_type: 'MULTIPLE'
 data:
   - _index: 1
     particle_object: CtdbpCdefDclRecoveredDataParticle
     particle_type: ctdbp_cdef_dcl_instrument_recovered
-    internal_timestamp: 3594153625.236
-    dcl_controller_timestamp: '2013/11/23 00:00:25.236'
-    temp: 13.7971
-    conductivity: 4.01241
-    pressure: 6.536
+    internal_timestamp: 3594153621.0000000
+    port_timestamp: 3594153625.2360001
+    conductivity:         4.01241
     date_time_string: '23 Nov 2013 00:00:21'
+    dcl_controller_timestamp: '2013/11/23 00:00:25.236'
+    pressure:         6.53600
+    temp:        13.79710
   - _index: 2
     particle_object: CtdbpCdefDclRecoveredDataParticle
     particle_type: ctdbp_cdef_dcl_instrument_recovered
-    internal_timestamp: 3594153635.229
-    dcl_controller_timestamp: '2013/11/23 00:00:35.229'
-    temp: 13.7946
-    conductivity: 4.01205
-    pressure: 6.486
+    internal_timestamp: 3594153631.0000000
+    port_timestamp: 3594153635.2290001
+    conductivity:         4.01205
     date_time_string: '23 Nov 2013 00:00:31'
+    dcl_controller_timestamp: '2013/11/23 00:00:35.229'
+    pressure:         6.48600
+    temp:        13.79460
   - _index: 3
     particle_object: CtdbpCdefDclRecoveredDataParticle
     particle_type: ctdbp_cdef_dcl_instrument_recovered
-    internal_timestamp: 3594153645.229
-    dcl_controller_timestamp: '2013/11/23 00:00:45.229'
-    temp: 13.7881
-    conductivity: 4.01122
-    pressure: 6.983
+    internal_timestamp: 3594153641.0000000
+    port_timestamp: 3594153645.2290001
+    conductivity:         4.01122
     date_time_string: '23 Nov 2013 00:00:41'
+    dcl_controller_timestamp: '2013/11/23 00:00:45.229'
+    pressure:         6.98300
+    temp:        13.78810
   - _index: 4
     particle_object: CtdbpCdefDclRecoveredDataParticle
     particle_type: ctdbp_cdef_dcl_instrument_recovered
-    internal_timestamp: 3594153655.230
-    dcl_controller_timestamp: '2013/11/23 00:00:55.230'
-    temp: 13.7911
-    conductivity: 4.01171
-    pressure: 7.525
+    internal_timestamp: 3594153651.0000000
+    port_timestamp: 3594153655.2300000
+    conductivity:         4.01171
     date_time_string: '23 Nov 2013 00:00:51'
+    dcl_controller_timestamp: '2013/11/23 00:00:55.230'
+    pressure:         7.52500
+    temp:        13.79110
   - _index: 5
     particle_object: CtdbpCdefDclRecoveredDataParticle
     particle_type: ctdbp_cdef_dcl_instrument_recovered
-    internal_timestamp: 3594153665.229
-    dcl_controller_timestamp: '2013/11/23 00:01:05.229'
-    temp: 13.7897
-    conductivity: 4.01157
-    pressure: 6.910
+    internal_timestamp: 3594153661.0000000
+    port_timestamp: 3594153665.2290001
+    conductivity:         4.01157
     date_time_string: '23 Nov 2013 00:01:01'
+    dcl_controller_timestamp: '2013/11/23 00:01:05.229'
+    pressure:         6.91000
+    temp:        13.78970
   - _index: 6
     particle_object: CtdbpCdefDclRecoveredDataParticle
     particle_type: ctdbp_cdef_dcl_instrument_recovered
-    internal_timestamp: 3594153675.229
-    dcl_controller_timestamp: '2013/11/23 00:01:15.229'
-    temp: 13.7902
-    conductivity: 4.01166
-    pressure: 6.967
+    internal_timestamp: 3594153671.0000000
+    port_timestamp: 3594153675.2290001
+    conductivity:         4.01166
     date_time_string: '23 Nov 2013 00:01:11'
+    dcl_controller_timestamp: '2013/11/23 00:01:15.229'
+    pressure:         6.96700
+    temp:        13.79020
   - _index: 7
     particle_object: CtdbpCdefDclRecoveredDataParticle
     particle_type: ctdbp_cdef_dcl_instrument_recovered
-    internal_timestamp: 3594153685.229
-    dcl_controller_timestamp: '2013/11/23 00:01:25.229'
-    temp: 13.7955
-    conductivity: 4.01218
-    pressure: 7.482
+    internal_timestamp: 3594153681.0000000
+    port_timestamp: 3594153685.2290001
+    conductivity:         4.01218
     date_time_string: '23 Nov 2013 00:01:21'
+    dcl_controller_timestamp: '2013/11/23 00:01:25.229'
+    pressure:         7.48200
+    temp:        13.79550
   - _index: 8
     particle_object: CtdbpCdefDclRecoveredDataParticle
     particle_type: ctdbp_cdef_dcl_instrument_recovered
-    internal_timestamp: 3594153695.230
-    dcl_controller_timestamp: '2013/11/23 00:01:35.230'
-    temp: 13.7974
-    conductivity: 4.01244
-    pressure: 7.174
+    internal_timestamp: 3594153691.0000000
+    port_timestamp: 3594153695.2300000
+    conductivity:         4.01244
     date_time_string: '23 Nov 2013 00:01:31'
+    dcl_controller_timestamp: '2013/11/23 00:01:35.230'
+    pressure:         7.17400
+    temp:        13.79740
   - _index: 9
     particle_object: CtdbpCdefDclRecoveredDataParticle
     particle_type: ctdbp_cdef_dcl_instrument_recovered
-    internal_timestamp: 3594153705.230999947
-    dcl_controller_timestamp: '2013/11/23 00:01:45.231'
-    temp: 13.7989
-    conductivity: 4.01265
-    pressure: 7.056
+    internal_timestamp: 3594153701.0000000
+    port_timestamp: 3594153705.2309999
+    conductivity:         4.01265
     date_time_string: '23 Nov 2013 00:01:41'
+    dcl_controller_timestamp: '2013/11/23 00:01:45.231'
+    pressure:         7.05600
+    temp:        13.79890
   - _index: 10
     particle_object: CtdbpCdefDclRecoveredDataParticle
     particle_type: ctdbp_cdef_dcl_instrument_recovered
-    internal_timestamp: 3594153715.230
-    dcl_controller_timestamp: '2013/11/23 00:01:55.230'
-    temp: 13.7973
-    conductivity: 4.01245
-    pressure: 7.403
+    internal_timestamp: 3594153711.0000000
+    port_timestamp: 3594153715.2300000
+    conductivity:         4.01245
     date_time_string: '23 Nov 2013 00:01:51'
+    dcl_controller_timestamp: '2013/11/23 00:01:55.230'
+    pressure:         7.40300
+    temp:        13.79730
   - _index: 11
     particle_object: CtdbpCdefDclRecoveredDataParticle
     particle_type: ctdbp_cdef_dcl_instrument_recovered
-    internal_timestamp: 3594153725.229
-    dcl_controller_timestamp: '2013/11/23 00:02:05.229'
-    temp: 13.7950
-    conductivity: 4.01219
-    pressure: 6.989
+    internal_timestamp: 3594153721.0000000
+    port_timestamp: 3594153725.2290001
+    conductivity:         4.01219
     date_time_string: '23 Nov 2013 00:02:01'
+    dcl_controller_timestamp: '2013/11/23 00:02:05.229'
+    pressure:         6.98900
+    temp:        13.79500
   - _index: 12
     particle_object: CtdbpCdefDclRecoveredDataParticle
     particle_type: ctdbp_cdef_dcl_instrument_recovered
-    internal_timestamp: 3594153735.229
-    dcl_controller_timestamp: '2013/11/23 00:02:15.229'
-    temp: 13.7948
-    conductivity: 4.01208
-    pressure: 6.389
+    internal_timestamp: 3594153731.0000000
+    port_timestamp: 3594153735.2290001
+    conductivity:         4.01208
     date_time_string: '23 Nov 2013 00:02:11'
+    dcl_controller_timestamp: '2013/11/23 00:02:15.229'
+    pressure:         6.38900
+    temp:        13.79480
   - _index: 13
     particle_object: CtdbpCdefDclRecoveredDataParticle
     particle_type: ctdbp_cdef_dcl_instrument_recovered
-    internal_timestamp: 3594153926.236
-    dcl_controller_timestamp: '2013/11/23 00:05:26.236'
-    temp: 13.8085
-    conductivity: 4.01400
-    pressure: 6.943
+    internal_timestamp: 3594153922.0000000
+    port_timestamp: 3594153926.2360001
+    conductivity:         4.01400
     date_time_string: '23 Nov 2013 00:05:22'
+    dcl_controller_timestamp: '2013/11/23 00:05:26.236'
+    pressure:         6.94300
+    temp:        13.80850
   - _index: 14
     particle_object: CtdbpCdefDclRecoveredDataParticle
     particle_type: ctdbp_cdef_dcl_instrument_recovered
-    internal_timestamp: 3594153936.230
-    dcl_controller_timestamp: '2013/11/23 00:05:36.230'
-    temp: 13.8029
-    conductivity: 4.01330
-    pressure: 7.045
+    internal_timestamp: 3594153932.0000000
+    port_timestamp: 3594153936.2300000
+    conductivity:         4.01330
     date_time_string: '23 Nov 2013 00:05:32'
+    dcl_controller_timestamp: '2013/11/23 00:05:36.230'
+    pressure:         7.04500
+    temp:        13.80290
   - _index: 15
     particle_object: CtdbpCdefDclRecoveredDataParticle
     particle_type: ctdbp_cdef_dcl_instrument_recovered
-    internal_timestamp: 3594153946.230
-    dcl_controller_timestamp: '2013/11/23 00:05:46.230'
-    temp: 13.8097
-    conductivity: 4.01407
-    pressure: 7.205
+    internal_timestamp: 3594153942.0000000
+    port_timestamp: 3594153946.2300000
+    conductivity:         4.01407
     date_time_string: '23 Nov 2013 00:05:42'
+    dcl_controller_timestamp: '2013/11/23 00:05:46.230'
+    pressure:         7.20500
+    temp:        13.80970
   - _index: 16
     particle_object: CtdbpCdefDclRecoveredDataParticle
     particle_type: ctdbp_cdef_dcl_instrument_recovered
-    internal_timestamp: 3594153956.229
-    dcl_controller_timestamp: '2013/11/23 00:05:56.229'
-    temp: 13.8069
-    conductivity: 4.01395
-    pressure: 7.058
+    internal_timestamp: 3594153952.0000000
+    port_timestamp: 3594153956.2290001
+    conductivity:         4.01395
     date_time_string: '23 Nov 2013 00:05:52'
+    dcl_controller_timestamp: '2013/11/23 00:05:56.229'
+    pressure:         7.05800
+    temp:        13.80690
   - _index: 17
     particle_object: CtdbpCdefDclRecoveredDataParticle
     particle_type: ctdbp_cdef_dcl_instrument_recovered
-    internal_timestamp: 3594153966.230
-    dcl_controller_timestamp: '2013/11/23 00:06:06.230'
-    temp: 13.8023
-    conductivity: 4.01332
-    pressure: 6.465
+    internal_timestamp: 3594153962.0000000
+    port_timestamp: 3594153966.2300000
+    conductivity:         4.01332
     date_time_string: '23 Nov 2013 00:06:02'
+    dcl_controller_timestamp: '2013/11/23 00:06:06.230'
+    pressure:         6.46500
+    temp:        13.80230
   - _index: 18
     particle_object: CtdbpCdefDclRecoveredDataParticle
     particle_type: ctdbp_cdef_dcl_instrument_recovered
-    internal_timestamp: 3594153976.230999947
-    dcl_controller_timestamp: '2013/11/23 00:06:16.231'
-    temp: 13.7962
-    conductivity: 4.01255
-    pressure: 7.235
+    internal_timestamp: 3594153972.0000000
+    port_timestamp: 3594153976.2309999
+    conductivity:         4.01255
     date_time_string: '23 Nov 2013 00:06:12'
+    dcl_controller_timestamp: '2013/11/23 00:06:16.231'
+    pressure:         7.23500
+    temp:        13.79620
   - _index: 19
     particle_object: CtdbpCdefDclRecoveredDataParticle
     particle_type: ctdbp_cdef_dcl_instrument_recovered
-    internal_timestamp: 3594153986.230
-    dcl_controller_timestamp: '2013/11/23 00:06:26.230'
-    temp: 13.7954
-    conductivity: 4.01225
-    pressure: 6.799
+    internal_timestamp: 3594153982.0000000
+    port_timestamp: 3594153986.2300000
+    conductivity:         4.01225
     date_time_string: '23 Nov 2013 00:06:22'
+    dcl_controller_timestamp: '2013/11/23 00:06:26.230'
+    pressure:         6.79900
+    temp:        13.79540
   - _index: 20
     particle_object: CtdbpCdefDclRecoveredDataParticle
     particle_type: ctdbp_cdef_dcl_instrument_recovered
-    internal_timestamp: 3594153996.241000175
-    dcl_controller_timestamp: '2013/11/23 00:06:36.241'
-    temp: 13.7970
-    conductivity: 4.01250
-    pressure: 6.937
+    internal_timestamp: 3594153992.0000000
+    port_timestamp: 3594153996.2410002
+    conductivity:         4.01250
     date_time_string: '23 Nov 2013 00:06:32'
+    dcl_controller_timestamp: '2013/11/23 00:06:36.241'
+    pressure:         6.93700
+    temp:        13.79700
   - _index: 21
     particle_object: CtdbpCdefDclRecoveredDataParticle
     particle_type: ctdbp_cdef_dcl_instrument_recovered
-    internal_timestamp: 3594154006.230
-    dcl_controller_timestamp: '2013/11/23 00:06:46.230'
-    temp: 13.8024
-    conductivity: 4.01317
-    pressure: 7.459
+    internal_timestamp: 3594154002.0000000
+    port_timestamp: 3594154006.2300000
+    conductivity:         4.01317
     date_time_string: '23 Nov 2013 00:06:42'
+    dcl_controller_timestamp: '2013/11/23 00:06:46.230'
+    pressure:         7.45900
+    temp:        13.80240
   - _index: 22
     particle_object: CtdbpCdefDclRecoveredDataParticle
     particle_type: ctdbp_cdef_dcl_instrument_recovered
-    internal_timestamp: 3594154016.230
-    dcl_controller_timestamp: '2013/11/23 00:06:56.230'
-    temp: 13.8024
-    conductivity: 4.01312
-    pressure: 6.782
+    internal_timestamp: 3594154012.0000000
+    port_timestamp: 3594154016.2300000
+    conductivity:         4.01312
     date_time_string: '23 Nov 2013 00:06:52'
+    dcl_controller_timestamp: '2013/11/23 00:06:56.230'
+    pressure:         6.78200
+    temp:        13.80240
   - _index: 23
     particle_object: CtdbpCdefDclRecoveredDataParticle
     particle_type: ctdbp_cdef_dcl_instrument_recovered
-    internal_timestamp: 3594154026.229
-    dcl_controller_timestamp: '2013/11/23 00:07:06.229'
-    temp: 13.8024
-    conductivity: 4.01313
-    pressure: 6.553
+    internal_timestamp: 3594154022.0000000
+    port_timestamp: 3594154026.2290001
+    conductivity:         4.01313
     date_time_string: '23 Nov 2013 00:07:02'
+    dcl_controller_timestamp: '2013/11/23 00:07:06.229'
+    pressure:         6.55300
+    temp:        13.80240
   - _index: 24
     particle_object: CtdbpCdefDclRecoveredDataParticle
     particle_type: ctdbp_cdef_dcl_instrument_recovered
-    internal_timestamp: 3594154036.230
-    dcl_controller_timestamp: '2013/11/23 00:07:16.230'
-    temp: 13.7949
-    conductivity: 4.01236
-    pressure: 6.790
+    internal_timestamp: 3594154032.0000000
+    port_timestamp: 3594154036.2300000
+    conductivity:         4.01236
     date_time_string: '23 Nov 2013 00:07:12'
-
+    dcl_controller_timestamp: '2013/11/23 00:07:16.230'
+    pressure:         6.79000
+    temp:        13.79490

@@ -14,6 +14,7 @@ from mi.core.exceptions import RecoverableSampleException
 from mi.core.log import get_logger
 from mi.dataset.driver.presf_abc.dcl.resource import RESOURCE_PATH
 from mi.dataset.parser.presf_abc_dcl import PresfAbcDclParser
+from mi.dataset.parser.utilities import particle_to_yml
 from mi.dataset.test.test_parser import ParserUnitTestCase
 
 log = get_logger()
@@ -30,6 +31,10 @@ class PresfAbcDclParserUnitTestCase(ParserUnitTestCase):
     presf_abc_dcl Parser unit test suite
     """
 
+    def file_path(self, filename):
+        log.debug('resource path = %s, file name = %s', RESOURCE_PATH, filename)
+        return os.path.join(RESOURCE_PATH, filename)
+
     def test_simple(self):
         """
         Read data from a file and pull out data particles
@@ -40,31 +45,29 @@ class PresfAbcDclParserUnitTestCase(ParserUnitTestCase):
         with open(os.path.join(RESOURCE_PATH, '20140417.presf3.log'), 'r') as file_handle:
 
             parser = PresfAbcDclParser(file_handle, self.exception_callback, True)
-            
             # file has one tide particle and one wave particle
             particles = parser.get_records(2)
+
+            # creating .yml file
+            out_file = '20140417.presf3_telem.yml'
+            particle_to_yml(particles, self.file_path(out_file))
                 
             # Make sure there were no errors
             self.assertTrue(len(self.exception_callback_value) == 0)
-
             # Make sure we obtained 2 particles
             self.assertTrue(len(particles) == 2)
-       
             self.assert_particles(particles, '20140417.presf3_telem.yml', RESOURCE_PATH)
 
         with open(os.path.join(RESOURCE_PATH, '20140417.presf3.log'), 'r') as file_handle:
 
             parser = PresfAbcDclParser(file_handle, self.exception_callback, False)
-            
             # file has one tide particle and one wave particle
             particles = parser.get_records(2)
                 
             # Make sure there were no errors
             self.assertTrue(len(self.exception_callback_value) == 0)
-
             # Make sure we obtained 2 particles
             self.assertTrue(len(particles) == 2)
-       
             self.assert_particles(particles, '20140417.presf3_recov.yml', RESOURCE_PATH)
 
         log.debug('===== END TEST SIMPLE =====')
@@ -79,29 +82,23 @@ class PresfAbcDclParserUnitTestCase(ParserUnitTestCase):
         with open(os.path.join(RESOURCE_PATH, '20140105_trim.presf.log'), 'r') as file_handle:
 
             parser = PresfAbcDclParser(file_handle, self.exception_callback, True)
-            
             particles = parser.get_records(20)
                 
             # Make sure there were no errors
             self.assertTrue(len(self.exception_callback_value) == 0)
-
             # Make sure we obtained 20 particles
             self.assertTrue(len(particles) == 20)
-    
             self.assert_particles(particles, "20140105_trim.presf_telem.yml", RESOURCE_PATH)
 
         with open(os.path.join(RESOURCE_PATH, '20140105_trim.presf.log'), 'r') as file_handle:
 
             parser = PresfAbcDclParser(file_handle, self.exception_callback, False)
-            
             particles = parser.get_records(20)
                 
             # Make sure there were no errors
             self.assertTrue(len(self.exception_callback_value) == 0)
-
             # Make sure we obtained 20 particles
             self.assertTrue(len(particles) == 20)
-    
             self.assert_particles(particles, "20140105_trim.presf_recov.yml", RESOURCE_PATH)
 
         log.debug('===== END TEST MANY =====')
@@ -114,12 +111,10 @@ class PresfAbcDclParserUnitTestCase(ParserUnitTestCase):
         with open(os.path.join(RESOURCE_PATH, '20140105.presf.log'), 'r') as file_handle:
 
             parser = PresfAbcDclParser(file_handle, self.exception_callback, True)
-    
             particles = parser.get_records(48)
                 
             # Make sure there were no errors
             self.assertTrue(len(self.exception_callback_value) == 0)
-
             # Make sure we obtained 20 particles
             self.assertTrue(len(particles) == 48)
 
@@ -137,11 +132,9 @@ class PresfAbcDclParserUnitTestCase(ParserUnitTestCase):
             num_expected_particles = 19
 
             parser = PresfAbcDclParser(file_handle, self.exception_callback, True)
-
             particles = parser.get_records(num_particles_to_request)
 
             self.assertEquals(len(particles), num_expected_particles)
-
             self.assert_particles(particles, "20140105_invts.presf_telem.yml", RESOURCE_PATH)
 
             for i in range(len(self.exception_callback_value)):
@@ -153,11 +146,9 @@ class PresfAbcDclParserUnitTestCase(ParserUnitTestCase):
             num_expected_particles = 19
 
             parser = PresfAbcDclParser(file_handle, self.exception_callback, False)
-
             particles = parser.get_records(num_particles_to_request)
 
             self.assertEquals(len(particles), num_expected_particles)
-
             self.assert_particles(particles, "20140105_invts.presf_recov.yml", RESOURCE_PATH)
 
             for i in range(len(self.exception_callback_value)):
@@ -178,11 +169,9 @@ class PresfAbcDclParserUnitTestCase(ParserUnitTestCase):
             num_expected_particles = 18
 
             parser = PresfAbcDclParser(file_handle, self.exception_callback, True)
-
             particles = parser.get_records(num_particles_to_request)
             
             self.assertEquals(len(particles), num_expected_particles)
-
             self.assert_particles(particles, "20140105_invwv.presf_telem.yml", RESOURCE_PATH)
 
             for i in range(len(self.exception_callback_value)):
@@ -194,11 +183,9 @@ class PresfAbcDclParserUnitTestCase(ParserUnitTestCase):
             num_expected_particles = 18
 
             parser = PresfAbcDclParser(file_handle, self.exception_callback, False)
-
             particles = parser.get_records(num_particles_to_request)
 
             self.assertEquals(len(particles), num_expected_particles)
-
             self.assert_particles(particles, "20140105_invwv.presf_recov.yml", RESOURCE_PATH)
 
             for i in range(len(self.exception_callback_value)):
@@ -219,14 +206,11 @@ class PresfAbcDclParserUnitTestCase(ParserUnitTestCase):
             num_expected_particles = 0
 
             parser = PresfAbcDclParser(file_handle, self.exception_callback, True)
-
             particles = parser.get_records(num_particles_to_request)
 
             # Make sure there were no errors
             self.assertTrue(len(self.exception_callback_value) == 0)
-
             self.assertEquals(len(particles), num_expected_particles)
-
             self.assertEqual(len(self.exception_callback_value), 0)
 
         log.debug('===== END TEST NO PARTICLES =====')
@@ -241,13 +225,11 @@ class PresfAbcDclParserUnitTestCase(ParserUnitTestCase):
         with open(os.path.join(RESOURCE_PATH, '20141204.presf.log'), 'r') as file_handle:
 
             parser = PresfAbcDclParser(file_handle, self.exception_callback, True)
-
             # file has one tide particle and one wave particle
             particles = parser.get_records(20)
 
             # Make sure there was one error due to the "time out"
             self.assertTrue(len(self.exception_callback_value) == 1)
-
             # Make sure we obtained 0 particles
             self.assertEquals(len(particles), 0)
 

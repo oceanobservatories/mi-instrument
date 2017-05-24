@@ -5,100 +5,106 @@ data:
   - _index: 1
     particle_object: Pco2wAbcDclPowerRecoveredDataParticle
     particle_type: pco2w_abc_dcl_power_recovered
-    internal_timestamp: 3608413240.102000
-    record_type: 17
-    record_time: 3482269311
+    internal_timestamp: 3482269311.0000000
+    port_timestamp: 3608413240.1020002
     dcl_controller_timestamp: '2014/05/07 01:00:40.102'
-    unique_id: 194
     passed_checksum: 1
+    record_time: 3482269311
+    record_type: 17
+    unique_id: 194
   - _index: 2
     particle_object: Pco2wAbcDclPowerRecoveredDataParticle
     particle_type: pco2w_abc_dcl_power_recovered
-    internal_timestamp: 3608413240.402000
-    record_type: 17
-    record_time: 3482269311
+    internal_timestamp: 3482269311.0000000
+    port_timestamp: 3608413240.4020000
     dcl_controller_timestamp: '2014/05/07 01:00:40.402'
-    unique_id: 194
     passed_checksum: 0
+    record_time: 3482269311
+    record_type: 17
+    unique_id: 194
   - _index: 3
     particle_object: Pco2wAbcDclInstrumentRecoveredDataParticle
     particle_type: pco2w_abc_dcl_instrument_recovered
-    internal_timestamp: 3608413533.702000
-    record_type: 4
-    record_time: 3482269603
+    internal_timestamp: 3482269603.0000000
+    port_timestamp: 3608413533.7019997
     dcl_controller_timestamp: '2014/05/07 01:05:33.702'
-    unique_id: 194
+    light_measurements: [68, 76, 3343, 579, 1968, 507, 2504, 3709, 68, 75, 3342, 578, 1970, 507]
     passed_checksum: 1
-    voltage_battery: 3163
+    record_time: 3482269603
+    record_type: 4
     thermistor_raw: 2019
-    light_measurements: [  68, 76, 3343, 579, 1968, 507, 2504, 3709, 68, 75, 3342, 578, 1970, 507 ]
+    unique_id: 194
+    voltage_battery: 3163
   - _index: 4
     particle_object: Pco2wAbcDclInstrumentBlankRecoveredDataParticle
     particle_type: pco2w_abc_dcl_instrument_blank_recovered
-    internal_timestamp: 3608456780.390000
-    record_type: 5
-    record_time: 3482312848
+    internal_timestamp: 3482312848.0000000
+    port_timestamp: 3608456780.3900003
+    blank_light_measurements: [64, 76, 3340, 564, 1969, 522, 2439, 3854, 69, 78, 3344, 566, 1970, 522]
     dcl_controller_timestamp: '2014/05/07 13:06:20.390'
-    unique_id: 194
     passed_checksum: 1
-    voltage_battery: 3146
+    record_time: 3482312848
+    record_type: 5
     thermistor_raw: 2018
-    blank_light_measurements: [  64, 76, 3340, 564, 1969, 522, 2439, 3854, 69, 78, 3344, 566, 1970, 522 ]
+    unique_id: 194
+    voltage_battery: 3146
   - _index: 5
     particle_object: Pco2wAbcDclMetadataRecoveredDataParticle
     particle_type: pco2w_abc_dcl_metadata_recovered
-    internal_timestamp: 3619399981.971000
-    record_type: 133
-    record_time: 3466990381
-    dcl_controller_timestamp: '2014/09/11 04:53:01.971'
-    unique_id: 182
-    passed_checksum: 1
-    clock_active: 1
-    recording_active: 0
-    record_end_on_time: 0
-    record_memory_full: 0
-    record_end_on_error: 0
-    data_download_ok: 0
-    flash_memory_open: 1
-    battery_low_prestart: 0
-    battery_low_measurement: 0
+    internal_timestamp: 3466990381.0000000
+    port_timestamp: 3619399981.9709997
     battery_low_blank: 0
     battery_low_external: 0
+    battery_low_measurement: 0
+    battery_low_prestart: 0
+    clock_active: 1
+    data_download_ok: 0
+    dcl_controller_timestamp: '2014/09/11 04:53:01.971'
     external_device1_fault: 0
     external_device2_fault: 0
     external_device3_fault: 0
     flash_erased: 0
-    power_on_invalid: 0
+    flash_memory_open: 1
+    num_bytes_stored: 2609
     num_data_records: 11
     num_error_records: 0
-    num_bytes_stored: 2609
-    voltage_battery: !!null
+    passed_checksum: 1
+    power_on_invalid: 0
+    record_end_on_error: 0
+    record_end_on_time: 0
+    record_memory_full: 0
+    record_time: 3466990381
+    record_type: 133
+    recording_active: 0
+    unique_id: 182
+    voltage_battery: Null
   - _index: 6
     particle_object: Pco2wAbcDclMetadataRecoveredDataParticle
     particle_type: pco2w_abc_dcl_metadata_recovered
-    internal_timestamp: 3619399981.972000
-    record_type: 193
-    record_time: 3466990381
-    dcl_controller_timestamp: '2014/09/11 04:53:01.972'
-    unique_id: 182
-    passed_checksum: 1
-    clock_active: 1
-    recording_active: 0
-    record_end_on_time: 0
-    record_memory_full: 0
-    record_end_on_error: 0
-    data_download_ok: 0
-    flash_memory_open: 1
-    battery_low_prestart: 0
-    battery_low_measurement: 0
+    internal_timestamp: 3466990381.0000000
+    port_timestamp: 3619399981.9720001
     battery_low_blank: 0
     battery_low_external: 0
+    battery_low_measurement: 0
+    battery_low_prestart: 0
+    clock_active: 1
+    data_download_ok: 0
+    dcl_controller_timestamp: '2014/09/11 04:53:01.972'
     external_device1_fault: 0
     external_device2_fault: 0
     external_device3_fault: 0
     flash_erased: 0
-    power_on_invalid: 0
+    flash_memory_open: 1
+    num_bytes_stored: 2609
     num_data_records: 11
     num_error_records: 0
-    num_bytes_stored: 2609
+    passed_checksum: 1
+    power_on_invalid: 0
+    record_end_on_error: 0
+    record_end_on_time: 0
+    record_memory_full: 0
+    record_time: 3466990381
+    record_type: 193
+    recording_active: 0
+    unique_id: 182
     voltage_battery: 5

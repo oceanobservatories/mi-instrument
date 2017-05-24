@@ -5,2319 +5,2419 @@ data:
   - _index: 1
     particle_object: CgDclEngDclSupervTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_superv
-    internal_timestamp: 3596486407.540000
+    internal_timestamp: 3596486407.5400000
+    port_timestamp: 3596486407.5400000
     active_leak_detect_channels: 3
     active_swgf_channels: 7
-    bmp085_pressure:         14.50000
-    bmp085_temp:         21.90000
+    bmp085_pressure:        14.50000
+    bmp085_temp:        21.90000
     board_type: 'dcl'
+    channel_error_status: [0, 0, 0, 0, 0, 0, 0, 0]
+    channel_i: [0.0, 0.0, 0.0, 0.0, 0.0, 24.4, 88.0, 0.0]
+    channel_state: [0, 0, 0, 1, 0, 1, 1, 0]
+    channel_v: [0.0, 0.0, 0.0, 12.0, 0.0, 11.9, 24.0, 1.1]
     dpb_mode: 2
     dpb_voltage_mode: 4
-    error_vmain_out_tolerance: 0
-    error_imain_out_tolerance: 0
-    error_dcl_iso_swgf_lim_exceeded: 0
-    error_dcl_rtn_swfg_lim_exceeded: 0
-    error_vmain_swgf_lim_exceeded: 1
-    error_gmain_swgf_lim_exceeded: 1
-    error_sensor_iso_swgf_lim_exceeded: 1
-    error_snsr_com_swgf_lim_exceeded: 0
-    error_leak_detect_c1_lim_exceeded: 0
-    error_leak_detect_c2_lim_exceeded: 0
-    error_channel_overcurrent_fault: 0
     error_channel_1_not_responding: 0
     error_channel_2_not_responding: 0
     error_channel_3_not_responding: 0
+    error_channel_overcurrent_fault: 0
+    error_dcl_iso_swgf_lim_exceeded: 0
+    error_dcl_rtn_swfg_lim_exceeded: 0
+    error_gmain_swgf_lim_exceeded: 1
+    error_imain_out_tolerance: 0
+    error_leak_detect_c1_lim_exceeded: 0
+    error_leak_detect_c2_lim_exceeded: 0
+    error_sensor_iso_swgf_lim_exceeded: 1
+    error_snsr_com_swgf_lim_exceeded: 0
+    error_vmain_out_tolerance: 0
+    error_vmain_swgf_lim_exceeded: 1
     header_timestamp: '2013/12/20 00:00:07.540'
-    imain_current:        627.00000
-    imain_dpb_in:        474.10000
+    imain_current:       627.00000
+    imain_dpb_in:       474.10000
     leak_detect_c1_v: 1245
     leak_detect_c2_v: 1235
-    murata_12v_temp:         25.00000
-    murata_24v_temp:         25.00000
-    out_12v_i:         32.00000
-    out_12v_v:         12.00000
-    out_24v_i:        134.00000
-    out_24v_v:         24.20000
+    murata_12v_temp:        25.00000
+    murata_24v_temp:        25.00000
+    out_12v_i:        32.00000
+    out_12v_v:        12.00000
+    out_24v_i:       134.00000
+    out_24v_v:        24.20000
     pwr_board_mode: 2
-    sht25_humidity:         23.80000
-    sht25_temp:         19.80000
-    swgf_c1_max_leakage:          5.60000
-    swgf_c2_max_leakage:        418.50000
-    swgf_c3_max_leakage:       -304.80000
-    vicor_12v_bcm_temp:         44.70000
-    vmain_backplane_bus_voltage:         23.30000
-    vmain_dpb_in:         23.20000
-    channel_state: [0, 0, 0, 1, 0, 1, 1, 0]
-    channel_v: [0.0, 0.0, 0.0, 12.0, 0.0, 11.9, 24.0, 1.1]
-    channel_i: [0.0, 0.0, 0.0, 0.0, 0.0, 24.4, 88.0, 0.0]
-    channel_error_status: [0, 0, 0, 0, 0, 0, 0, 0]
+    sht25_humidity:        23.80000
+    sht25_temp:        19.80000
+    swgf_c1_max_leakage:         5.60000
+    swgf_c2_max_leakage:       418.50000
+    swgf_c3_max_leakage:      -304.80000
+    vicor_12v_bcm_temp:        44.70000
+    vmain_backplane_bus_voltage:        23.30000
+    vmain_dpb_in:        23.20000
   - _index: 2
     particle_object: CgDclEngDclSupervTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_superv
-    internal_timestamp: 3596486409.550000
+    internal_timestamp: 3596486409.5500002
+    port_timestamp: 3596486409.5500002
     active_leak_detect_channels: 3
     active_swgf_channels: 7
-    bmp085_pressure:         14.50000
-    bmp085_temp:         21.90000
+    bmp085_pressure:        14.50000
+    bmp085_temp:        21.90000
     board_type: 'dcl'
+    channel_error_status: [0, 0, 0, 0, 0, 0, 0, 0]
+    channel_i: [0.0, 0.0, 0.0, 4.9, 0.0, 24.4, 83.1, 19.6]
+    channel_state: [0, 0, 0, 1, 0, 1, 1, 1]
+    channel_v: [0.0, 0.0, 0.0, 12.0, 0.0, 11.9, 24.0, 12.0]
     dpb_mode: 2
     dpb_voltage_mode: 4
-    error_vmain_out_tolerance: 0
-    error_imain_out_tolerance: 0
-    error_dcl_iso_swgf_lim_exceeded: 0
-    error_dcl_rtn_swfg_lim_exceeded: 0
-    error_vmain_swgf_lim_exceeded: 1
-    error_gmain_swgf_lim_exceeded: 1
-    error_sensor_iso_swgf_lim_exceeded: 1
-    error_snsr_com_swgf_lim_exceeded: 0
-    error_leak_detect_c1_lim_exceeded: 0
-    error_leak_detect_c2_lim_exceeded: 0
-    error_channel_overcurrent_fault: 0
     error_channel_1_not_responding: 0
     error_channel_2_not_responding: 0
     error_channel_3_not_responding: 0
+    error_channel_overcurrent_fault: 0
+    error_dcl_iso_swgf_lim_exceeded: 0
+    error_dcl_rtn_swfg_lim_exceeded: 0
+    error_gmain_swgf_lim_exceeded: 1
+    error_imain_out_tolerance: 0
+    error_leak_detect_c1_lim_exceeded: 0
+    error_leak_detect_c2_lim_exceeded: 0
+    error_sensor_iso_swgf_lim_exceeded: 1
+    error_snsr_com_swgf_lim_exceeded: 0
+    error_vmain_out_tolerance: 0
+    error_vmain_swgf_lim_exceeded: 1
     header_timestamp: '2013/12/20 00:00:09.550'
-    imain_current:        632.00000
-    imain_dpb_in:        476.10000
+    imain_current:       632.00000
+    imain_dpb_in:       476.10000
     leak_detect_c1_v: 1250
     leak_detect_c2_v: 1238
-    murata_12v_temp:         25.30000
-    murata_24v_temp:         25.00000
-    out_12v_i:         54.00000
-    out_12v_v:         12.00000
-    out_24v_i:        128.00000
-    out_24v_v:         24.20000
+    murata_12v_temp:        25.30000
+    murata_24v_temp:        25.00000
+    out_12v_i:        54.00000
+    out_12v_v:        12.00000
+    out_24v_i:       128.00000
+    out_24v_v:        24.20000
     pwr_board_mode: 2
-    sht25_humidity:         23.80000
-    sht25_temp:         19.80000
-    swgf_c1_max_leakage:          5.60000
-    swgf_c2_max_leakage:        418.50000
-    swgf_c3_max_leakage:       -304.80000
-    vicor_12v_bcm_temp:         44.70000
-    vmain_backplane_bus_voltage:         23.60000
-    vmain_dpb_in:         23.50000
-    channel_state: [0, 0, 0, 1, 0, 1, 1, 1]
-    channel_v: [0.0, 0.0, 0.0, 12.0, 0.0, 11.9, 24.0, 12.0]
-    channel_i: [0.0, 0.0, 0.0, 4.9, 0.0, 24.4, 83.1, 19.6]
-    channel_error_status: [0, 0, 0, 0, 0, 0, 0, 0]
+    sht25_humidity:        23.80000
+    sht25_temp:        19.80000
+    swgf_c1_max_leakage:         5.60000
+    swgf_c2_max_leakage:       418.50000
+    swgf_c3_max_leakage:      -304.80000
+    vicor_12v_bcm_temp:        44.70000
+    vmain_backplane_bus_voltage:        23.60000
+    vmain_dpb_in:        23.50000
   - _index: 3
     particle_object: CgDclEngDclCpuUptimeTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_cpu_uptime
-    internal_timestamp: 3596486438.968000
-    uptime_string: '28 days 08:55:16'
+    internal_timestamp: 3596486438.9679999
+    port_timestamp: 3596486438.9679999
+    header_timestamp: '2013/12/20 00:00:38.968'
+    load_val_1:         0.29000
+    load_val_2:         0.19000
+    load_val_3:         0.17000
     mem_free: 23148
     num_processes: 81
-    load_val_3:          0.17000
-    load_val_2:          0.19000
-    load_val_1:          0.29000
-    header_timestamp: '2013/12/20 00:00:38.968'
+    uptime_string: '28 days 08:55:16'
   - _index: 4
     particle_object: CgDclEngDclMsgCountsTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_msg_counts
-    internal_timestamp: 3596486439.045000
-    pps_counts: 30
-    superv_counts: 147
-    ntp_counts: 0
+    internal_timestamp: 3596486439.0450001
+    port_timestamp: 3596486439.0450001
+    dlog_mgr_counts: 10
     gps_counts: 602
     header_timestamp: '2013/12/20 00:00:39.045'
-    dlog_mgr_counts: 10
+    ntp_counts: 0
+    pps_counts: 30
+    superv_counts: 147
   - _index: 5
     particle_object: CgDclEngDclGpsTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_gps
-    internal_timestamp: 3596486439.047000
-    latitude_alt_format: '4008.2123 N'
-    gps_true_course:         45.90000
-    gps_speed:          0.60000
-    longitude:        -70.76970
-    gps_quality: 2
-    gps_num_satellites: 9
-    header_timestamp: '2013/12/20 00:00:39.047'
-    message_sent_timestamp: '2013/12/20 00:00:38.814'
-    gps_hdop:          0.90000
+    internal_timestamp: 3596486439.0469999
+    port_timestamp: 3596486439.0469999
     date_of_fix: '201213'
-    latitude:         40.13687
+    gps_altitude:         6.60000
+    gps_hdop:         0.90000
+    gps_num_satellites: 9
+    gps_quality: 2
+    gps_speed:         0.60000
+    gps_true_course:        45.90000
+    header_timestamp: '2013/12/20 00:00:39.047'
+    latitude:        40.13687
+    latitude_alt_format: '4008.2123 N'
+    longitude:       -70.76970
     longitude_alt_format: '07046.1821 W'
-    gps_altitude:          6.60000
+    message_sent_timestamp: '2013/12/20 00:00:38.814'
     time_of_fix: '000038'
   - _index: 6
     particle_object: CgDclEngDclPpsTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_pps
-    internal_timestamp: 3596486439.048000
-    delta_min: 0
+    internal_timestamp: 3596486439.0480003
+    port_timestamp: 3596486439.0480003
     bad_pulses: 0
-    nmea_lock: 1
-    header_timestamp: '2013/12/20 00:00:39.048'
-    message_sent_timestamp: '2013/12/20 00:00:32.000'
     delta: 999996
     delta_max: 21
+    delta_min: 0
+    header_timestamp: '2013/12/20 00:00:39.048'
+    message_sent_timestamp: '2013/12/20 00:00:32.000'
+    nmea_lock: 1
   - _index: 7
     particle_object: CgDclEngDclSupervTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_superv
-    internal_timestamp: 3596486439.049000
+    internal_timestamp: 3596486439.0489998
+    port_timestamp: 3596486439.0489998
     active_leak_detect_channels: 3
     active_swgf_channels: 7
-    bmp085_pressure:         14.50000
-    bmp085_temp:         22.00000
+    bmp085_pressure:        14.50000
+    bmp085_temp:        22.00000
     board_type: 'dcl'
+    channel_error_status: [0, 0, 0, 0, 0, 0, 0, 0]
+    channel_i: [0.0, 0.0, 0.0, 4.9, 0.0, 24.4, 44.0, 39.1]
+    channel_state: [0, 0, 0, 1, 0, 1, 1, 1]
+    channel_v: [0.0, 0.0, 0.0, 12.0, 0.0, 11.9, 24.0, 12.0]
     dpb_mode: 2
     dpb_voltage_mode: 4
-    error_vmain_out_tolerance: 0
-    error_imain_out_tolerance: 0
-    error_dcl_iso_swgf_lim_exceeded: 0
-    error_dcl_rtn_swfg_lim_exceeded: 0
-    error_vmain_swgf_lim_exceeded: 1
-    error_gmain_swgf_lim_exceeded: 1
-    error_sensor_iso_swgf_lim_exceeded: 1
-    error_snsr_com_swgf_lim_exceeded: 0
-    error_leak_detect_c1_lim_exceeded: 0
-    error_leak_detect_c2_lim_exceeded: 0
-    error_channel_overcurrent_fault: 0
     error_channel_1_not_responding: 0
     error_channel_2_not_responding: 0
     error_channel_3_not_responding: 0
+    error_channel_overcurrent_fault: 0
+    error_dcl_iso_swgf_lim_exceeded: 0
+    error_dcl_rtn_swfg_lim_exceeded: 0
+    error_gmain_swgf_lim_exceeded: 1
+    error_imain_out_tolerance: 0
+    error_leak_detect_c1_lim_exceeded: 0
+    error_leak_detect_c2_lim_exceeded: 0
+    error_sensor_iso_swgf_lim_exceeded: 1
+    error_snsr_com_swgf_lim_exceeded: 0
+    error_vmain_out_tolerance: 0
+    error_vmain_swgf_lim_exceeded: 1
     header_timestamp: '2013/12/20 00:00:39.049'
-    imain_current:        594.00000
-    imain_dpb_in:        444.10000
+    imain_current:       594.00000
+    imain_dpb_in:       444.10000
     leak_detect_c1_v: 1252
     leak_detect_c2_v: 1228
-    murata_12v_temp:         25.30000
-    murata_24v_temp:         24.80000
-    out_12v_i:         72.00000
-    out_12v_v:         12.00000
-    out_24v_i:         90.00000
-    out_24v_v:         24.20000
+    murata_12v_temp:        25.30000
+    murata_24v_temp:        24.80000
+    out_12v_i:        72.00000
+    out_12v_v:        12.00000
+    out_24v_i:        90.00000
+    out_24v_v:        24.20000
     pwr_board_mode: 2
-    sht25_humidity:         23.80000
-    sht25_temp:         19.80000
-    swgf_c1_max_leakage:          5.60000
-    swgf_c2_max_leakage:        418.50000
-    swgf_c3_max_leakage:       -304.80000
-    vicor_12v_bcm_temp:         45.30000
-    vmain_backplane_bus_voltage:         23.70000
-    vmain_dpb_in:         23.60000
-    channel_state: [0, 0, 0, 1, 0, 1, 1, 1]
-    channel_v: [0.0, 0.0, 0.0, 12.0, 0.0, 11.9, 24.0, 12.0]
-    channel_i: [0.0, 0.0, 0.0, 4.9, 0.0, 24.4, 44.0, 39.1]
-    channel_error_status: [0, 0, 0, 0, 0, 0, 0, 0]
+    sht25_humidity:        23.80000
+    sht25_temp:        19.80000
+    swgf_c1_max_leakage:         5.60000
+    swgf_c2_max_leakage:       418.50000
+    swgf_c3_max_leakage:      -304.80000
+    vicor_12v_bcm_temp:        45.30000
+    vmain_backplane_bus_voltage:        23.70000
+    vmain_dpb_in:        23.60000
   - _index: 8
     particle_object: CgDclEngDclDlogMgrTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_dlog_mgr
-    internal_timestamp: 3596486439.050000
-    dlog_mgr_hlt: 0
-    header_timestamp: '2013/12/20 00:00:39.050'
-    dlog_mgr_map: '000D0DDD'
-    dlog_mgr_fld: 0
+    internal_timestamp: 3596486439.0500002
+    port_timestamp: 3596486439.0500002
     datalogger_timestamp: '2013/12/20 00:00:33.543'
     dlog_mgr_act: 4
+    dlog_mgr_fld: 0
+    dlog_mgr_hlt: 0
+    dlog_mgr_map: '000D0DDD'
     dlog_mgr_str: 4
+    header_timestamp: '2013/12/20 00:00:39.050'
   - _index: 9
     particle_object: CgDclEngDclDlogStatusTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_dlog_status
-    internal_timestamp: 3596486439.051000
-    bytes_logged: 164340
-    instrument_identifier: 'velpt1'
-    bad_records: 0
-    time_last_communicated: null
-    bytes_sent: 16
-    header_timestamp: '2013/12/20 00:00:39.051'
-    message_sent_timestamp: '2013/12/20 00:00:18.007'
-    good_records: 3921
-    time_received_last_data: 1387497409
+    internal_timestamp: 3596486439.0510001
+    port_timestamp: 3596486439.0510001
     bad_bytes: 0
+    bad_records: 0
+    bytes_logged: 164340
     bytes_received: 164352
+    bytes_sent: 16
     datalogger_state: 'DAQ'
+    good_records: 3921
+    header_timestamp: '2013/12/20 00:00:39.051'
+    instrument_identifier: 'velpt1'
+    message_sent_timestamp: '2013/12/20 00:00:18.007'
+    time_last_communicated: Null
+    time_received_last_data: 1387497409
   - _index: 10
     particle_object: CgDclEngDclDlogStatusTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_dlog_status
-    internal_timestamp: 3596486439.052000
-    bytes_logged: 782131
-    instrument_identifier: 'phsen1'
-    bad_records: 0
-    time_last_communicated: null
-    bytes_sent: 1368
-    header_timestamp: '2013/12/20 00:00:39.052'
-    message_sent_timestamp: '2013/12/20 00:00:38.965'
-    good_records: 18613
-    time_received_last_data: 1387497638
+    internal_timestamp: 3596486439.0520000
+    port_timestamp: 3596486439.0520000
     bad_bytes: 0
+    bad_records: 0
+    bytes_logged: 782131
     bytes_received: 79517428
+    bytes_sent: 1368
     datalogger_state: 'DAQ'
+    good_records: 18613
+    header_timestamp: '2013/12/20 00:00:39.052'
+    instrument_identifier: 'phsen1'
+    message_sent_timestamp: '2013/12/20 00:00:38.965'
+    time_last_communicated: Null
+    time_received_last_data: 1387497638
   - _index: 11
     particle_object: CgDclEngDclDlogStatusTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_dlog_status
-    internal_timestamp: 3596486439.054000
-    bytes_logged: 10187038
-    instrument_identifier: 'nutnr'
-    bad_records: 801
-    time_last_communicated: null
-    bytes_sent: 11258
-    header_timestamp: '2013/12/20 00:00:39.054'
-    message_sent_timestamp: '2013/12/19 23:59:56.790'
-    good_records: 111643
-    time_received_last_data: 1387496879
+    internal_timestamp: 3596486439.0539999
+    port_timestamp: 3596486439.0539999
     bad_bytes: 137774
+    bad_records: 801
+    bytes_logged: 10187038
     bytes_received: 14163670
+    bytes_sent: 11258
     datalogger_state: 'IDLE'
+    good_records: 111643
+    header_timestamp: '2013/12/20 00:00:39.054'
+    instrument_identifier: 'nutnr'
+    message_sent_timestamp: '2013/12/19 23:59:56.790'
+    time_last_communicated: Null
+    time_received_last_data: 1387496879
   - _index: 12
     particle_object: CgDclEngDclDlogStatusTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_dlog_status
-    internal_timestamp: 3596486439.055000
-    bytes_logged: 75119350
-    instrument_identifier: 'spkir'
-    bad_records: 0
-    time_last_communicated: null
-    bytes_sent: 16342
-    header_timestamp: '2013/12/20 00:00:39.055'
-    message_sent_timestamp: '2013/12/20 00:00:32.530'
-    good_records: 880755
-    time_received_last_data: 1387497632
+    internal_timestamp: 3596486439.0550003
+    port_timestamp: 3596486439.0550003
     bad_bytes: 0
+    bad_records: 0
+    bytes_logged: 75119350
     bytes_received: 52853537
+    bytes_sent: 16342
     datalogger_state: 'DAQ'
+    good_records: 880755
+    header_timestamp: '2013/12/20 00:00:39.055'
+    instrument_identifier: 'spkir'
+    message_sent_timestamp: '2013/12/20 00:00:32.530'
+    time_last_communicated: Null
+    time_received_last_data: 1387497632
   - _index: 13
     particle_object: CgDclEngDclStatusTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_status
-    internal_timestamp: 3596486439.130000
-    ntp_jitter: null
-    sync_type: ''
-    ntp_offset: null
-    message_sent_type: 'NTP'
+    internal_timestamp: 3596486439.1300001
+    port_timestamp: 3596486439.1300001
     header_timestamp: '2013/12/20 00:00:39.130'
     message_sent_timestamp: '2013/12/20 00:00:39.056'
+    message_sent_type: 'NTP'
+    ntp_jitter: Null
+    ntp_offset: Null
+    sync_type: ''
   - _index: 14
     particle_object: CgDclEngDclErrorTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_error
-    internal_timestamp: 3596486489.621000
-    message_text: 'DLOGP7 Command [(NULL)] Received no recognized response'
+    internal_timestamp: 3596486489.6210003
+    port_timestamp: 3596486489.6210003
     header_timestamp: '2013/12/20 00:01:29.621'
     log_type: 'ERR'
+    message_text: 'DLOGP7 Command [(NULL)] Received no recognized response'
   - _index: 15
     particle_object: CgDclEngDclSupervTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_superv
-    internal_timestamp: 3596486539.689000
+    internal_timestamp: 3596486539.6890001
+    port_timestamp: 3596486539.6890001
     active_leak_detect_channels: 3
     active_swgf_channels: 7
-    bmp085_pressure:         14.50000
-    bmp085_temp:         22.30000
+    bmp085_pressure:        14.50000
+    bmp085_temp:        22.30000
     board_type: 'dcl'
+    channel_error_status: [0, 0, 0, 0, 0, 0, 0, 0]
+    channel_i: [0.0, 0.0, 0.0, 4.9, 0.0, 24.4, 449.7, 0.0]
+    channel_state: [0, 0, 0, 1, 0, 1, 1, 0]
+    channel_v: [0.0, 0.0, 0.0, 11.9, 0.0, 11.9, 24.0, 0.0]
     dpb_mode: 2
     dpb_voltage_mode: 4
-    error_vmain_out_tolerance: 0
-    error_imain_out_tolerance: 0
-    error_dcl_iso_swgf_lim_exceeded: 0
-    error_dcl_rtn_swfg_lim_exceeded: 0
-    error_vmain_swgf_lim_exceeded: 1
-    error_gmain_swgf_lim_exceeded: 1
-    error_sensor_iso_swgf_lim_exceeded: 1
-    error_snsr_com_swgf_lim_exceeded: 0
-    error_leak_detect_c1_lim_exceeded: 0
-    error_leak_detect_c2_lim_exceeded: 0
-    error_channel_overcurrent_fault: 0
     error_channel_1_not_responding: 0
     error_channel_2_not_responding: 0
     error_channel_3_not_responding: 0
+    error_channel_overcurrent_fault: 0
+    error_dcl_iso_swgf_lim_exceeded: 0
+    error_dcl_rtn_swfg_lim_exceeded: 0
+    error_gmain_swgf_lim_exceeded: 1
+    error_imain_out_tolerance: 0
+    error_leak_detect_c1_lim_exceeded: 0
+    error_leak_detect_c2_lim_exceeded: 0
+    error_sensor_iso_swgf_lim_exceeded: 1
+    error_snsr_com_swgf_lim_exceeded: 0
+    error_vmain_out_tolerance: 0
+    error_vmain_swgf_lim_exceeded: 1
     header_timestamp: '2013/12/20 00:02:19.689'
-    imain_current:        998.00000
-    imain_dpb_in:        858.20000
+    imain_current:       998.00000
+    imain_dpb_in:       858.20000
     leak_detect_c1_v: 1248
     leak_detect_c2_v: 1235
-    murata_12v_temp:         25.00000
-    murata_24v_temp:         25.00000
-    out_12v_i:         34.00000
-    out_12v_v:         12.00000
-    out_24v_i:        528.10000
-    out_24v_v:         24.10000
+    murata_12v_temp:        25.00000
+    murata_24v_temp:        25.00000
+    out_12v_i:        34.00000
+    out_12v_v:        12.00000
+    out_24v_i:       528.10000
+    out_24v_v:        24.10000
     pwr_board_mode: 2
-    sht25_humidity:         23.80000
-    sht25_temp:         19.90000
-    swgf_c1_max_leakage:          5.60000
-    swgf_c2_max_leakage:        418.50000
-    swgf_c3_max_leakage:       -304.80000
-    vicor_12v_bcm_temp:         46.50000
-    vmain_backplane_bus_voltage:         23.50000
-    vmain_dpb_in:         23.40000
-    channel_state: [0, 0, 0, 1, 0, 1, 1, 0]
-    channel_v: [0.0, 0.0, 0.0, 11.9, 0.0, 11.9, 24.0, 0.0]
-    channel_i: [0.0, 0.0, 0.0, 4.9, 0.0, 24.4, 449.7, 0.0]
-    channel_error_status: [0, 0, 0, 0, 0, 0, 0, 0]
+    sht25_humidity:        23.80000
+    sht25_temp:        19.90000
+    swgf_c1_max_leakage:         5.60000
+    swgf_c2_max_leakage:       418.50000
+    swgf_c3_max_leakage:      -304.80000
+    vicor_12v_bcm_temp:        46.50000
+    vmain_backplane_bus_voltage:        23.50000
+    vmain_dpb_in:        23.40000
   - _index: 16
     particle_object: CgDclEngDclSupervTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_superv
-    internal_timestamp: 3596486599.734000
+    internal_timestamp: 3596486599.7340002
+    port_timestamp: 3596486599.7340002
     active_leak_detect_channels: 3
     active_swgf_channels: 7
-    bmp085_pressure:         14.50000
-    bmp085_temp:         22.40000
+    bmp085_pressure:        14.50000
+    bmp085_temp:        22.40000
     board_type: 'dcl'
+    channel_error_status: [0, 0, 0, 0, 0, 0, 0, 0]
+    channel_i: [0.0, 0.0, 0.0, 4.9, 0.0, 24.4, 0.0, 0.0]
+    channel_state: [0, 0, 0, 1, 0, 1, 0, 0]
+    channel_v: [0.0, 0.0, 0.0, 12.0, 0.0, 12.0, 0.0, 0.0]
     dpb_mode: 2
     dpb_voltage_mode: 3
-    error_vmain_out_tolerance: 0
-    error_imain_out_tolerance: 0
-    error_dcl_iso_swgf_lim_exceeded: 0
-    error_dcl_rtn_swfg_lim_exceeded: 0
-    error_vmain_swgf_lim_exceeded: 1
-    error_gmain_swgf_lim_exceeded: 1
-    error_sensor_iso_swgf_lim_exceeded: 1
-    error_snsr_com_swgf_lim_exceeded: 0
-    error_leak_detect_c1_lim_exceeded: 0
-    error_leak_detect_c2_lim_exceeded: 0
-    error_channel_overcurrent_fault: 0
     error_channel_1_not_responding: 0
     error_channel_2_not_responding: 0
     error_channel_3_not_responding: 0
+    error_channel_overcurrent_fault: 0
+    error_dcl_iso_swgf_lim_exceeded: 0
+    error_dcl_rtn_swfg_lim_exceeded: 0
+    error_gmain_swgf_lim_exceeded: 1
+    error_imain_out_tolerance: 0
+    error_leak_detect_c1_lim_exceeded: 0
+    error_leak_detect_c2_lim_exceeded: 0
+    error_sensor_iso_swgf_lim_exceeded: 1
+    error_snsr_com_swgf_lim_exceeded: 0
+    error_vmain_out_tolerance: 0
+    error_vmain_swgf_lim_exceeded: 1
     header_timestamp: '2013/12/20 00:03:19.734'
-    imain_current:        369.00000
-    imain_dpb_in:        250.10000
+    imain_current:       369.00000
+    imain_dpb_in:       250.10000
     leak_detect_c1_v: 1257
     leak_detect_c2_v: 1245
-    murata_12v_temp:         25.60000
-    murata_24v_temp:         25.60000
-    out_12v_i:         30.00000
-    out_12v_v:         12.00000
-    out_24v_i:          0.00000
-    out_24v_v:          0.00000
+    murata_12v_temp:        25.60000
+    murata_24v_temp:        25.60000
+    out_12v_i:        30.00000
+    out_12v_v:        12.00000
+    out_24v_i:         0.00000
+    out_24v_v:         0.00000
     pwr_board_mode: 2
-    sht25_humidity:         23.30000
-    sht25_temp:         20.50000
-    swgf_c1_max_leakage:        -14.50000
-    swgf_c2_max_leakage:        432.30000
-    swgf_c3_max_leakage:       -573.40000
-    vicor_12v_bcm_temp:         47.10000
-    vmain_backplane_bus_voltage:         24.30000
-    vmain_dpb_in:         24.20000
-    channel_state: [0, 0, 0, 1, 0, 1, 0, 0]
-    channel_v: [0.0, 0.0, 0.0, 12.0, 0.0, 12.0, 0.0, 0.0]
-    channel_i: [0.0, 0.0, 0.0, 4.9, 0.0, 24.4, 0.0, 0.0]
-    channel_error_status: [0, 0, 0, 0, 0, 0, 0, 0]
+    sht25_humidity:        23.30000
+    sht25_temp:        20.50000
+    swgf_c1_max_leakage:       -14.50000
+    swgf_c2_max_leakage:       432.30000
+    swgf_c3_max_leakage:      -573.40000
+    vicor_12v_bcm_temp:        47.10000
+    vmain_backplane_bus_voltage:        24.30000
+    vmain_dpb_in:        24.20000
   - _index: 17
     particle_object: CgDclEngDclErrorTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_error
-    internal_timestamp: 3596486607.788000
-    message_text: 'DLOGP7 Command [G] Received no recognized response'
+    internal_timestamp: 3596486607.7880001
+    port_timestamp: 3596486607.7880001
     header_timestamp: '2013/12/20 00:03:27.788'
     log_type: 'ERR'
+    message_text: 'DLOGP7 Command [G] Received no recognized response'
   - _index: 18
     particle_object: CgDclEngDclSupervTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_superv
-    internal_timestamp: 3596486706.092000
+    internal_timestamp: 3596486706.0920000
+    port_timestamp: 3596486706.0920000
     active_leak_detect_channels: 3
     active_swgf_channels: 7
-    bmp085_pressure:         14.50000
-    bmp085_temp:         22.30000
+    bmp085_pressure:        14.50000
+    bmp085_temp:        22.30000
     board_type: 'dcl'
+    channel_error_status: [0, 0, 0, 0, 0, 0, 0, 1]
+    channel_i: [0.0, 0.0, 0.0, 4.9, 0.0, 24.4, 0.0, 0.0]
+    channel_state: [0, 0, 0, 1, 0, 1, 0, 0]
+    channel_v: [0.0, 0.0, 0.0, 12.0, 0.0, 12.0, 0.0, 1.1]
     dpb_mode: 2
     dpb_voltage_mode: 3
-    error_vmain_out_tolerance: 0
-    error_imain_out_tolerance: 0
-    error_dcl_iso_swgf_lim_exceeded: 0
-    error_dcl_rtn_swfg_lim_exceeded: 0
-    error_vmain_swgf_lim_exceeded: 1
-    error_gmain_swgf_lim_exceeded: 1
-    error_sensor_iso_swgf_lim_exceeded: 1
-    error_snsr_com_swgf_lim_exceeded: 0
-    error_leak_detect_c1_lim_exceeded: 0
-    error_leak_detect_c2_lim_exceeded: 0
-    error_channel_overcurrent_fault: 1
     error_channel_1_not_responding: 0
     error_channel_2_not_responding: 0
     error_channel_3_not_responding: 0
+    error_channel_overcurrent_fault: 1
+    error_dcl_iso_swgf_lim_exceeded: 0
+    error_dcl_rtn_swfg_lim_exceeded: 0
+    error_gmain_swgf_lim_exceeded: 1
+    error_imain_out_tolerance: 0
+    error_leak_detect_c1_lim_exceeded: 0
+    error_leak_detect_c2_lim_exceeded: 0
+    error_sensor_iso_swgf_lim_exceeded: 1
+    error_snsr_com_swgf_lim_exceeded: 0
+    error_vmain_out_tolerance: 0
+    error_vmain_swgf_lim_exceeded: 1
     header_timestamp: '2013/12/20 00:05:06.092'
-    imain_current:        386.00000
-    imain_dpb_in:        252.10000
+    imain_current:       386.00000
+    imain_dpb_in:       252.10000
     leak_detect_c1_v: 1250
     leak_detect_c2_v: 1235
-    murata_12v_temp:         25.60000
-    murata_24v_temp:         25.30000
-    out_12v_i:         30.00000
-    out_12v_v:         12.00000
-    out_24v_i:          0.00000
-    out_24v_v:          0.00000
+    murata_12v_temp:        25.60000
+    murata_24v_temp:        25.30000
+    out_12v_i:        30.00000
+    out_12v_v:        12.00000
+    out_24v_i:         0.00000
+    out_24v_v:         0.00000
     pwr_board_mode: 2
-    sht25_humidity:         23.30000
-    sht25_temp:         20.40000
-    swgf_c1_max_leakage:        -14.50000
-    swgf_c2_max_leakage:        432.30000
-    swgf_c3_max_leakage:       -573.40000
-    vicor_12v_bcm_temp:         45.90000
-    vmain_backplane_bus_voltage:         24.00000
-    vmain_dpb_in:         23.90000
-    channel_state: [0, 0, 0, 1, 0, 1, 0, 0]
-    channel_v: [0.0, 0.0, 0.0, 12.0, 0.0, 12.0, 0.0, 1.1]
-    channel_i: [0.0, 0.0, 0.0, 4.9, 0.0, 24.4, 0.0, 0.0]
-    channel_error_status: [0, 0, 0, 0, 0, 0, 0, 1]
+    sht25_humidity:        23.30000
+    sht25_temp:        20.40000
+    swgf_c1_max_leakage:       -14.50000
+    swgf_c2_max_leakage:       432.30000
+    swgf_c3_max_leakage:      -573.40000
+    vicor_12v_bcm_temp:        45.90000
+    vmain_backplane_bus_voltage:        24.00000
+    vmain_dpb_in:        23.90000
   - _index: 19
     particle_object: CgDclEngDclSupervTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_superv
-    internal_timestamp: 3596486707.877000
+    internal_timestamp: 3596486707.8769999
+    port_timestamp: 3596486707.8769999
     active_leak_detect_channels: 3
     active_swgf_channels: 7
-    bmp085_pressure:         14.50000
-    bmp085_temp:         22.30000
+    bmp085_pressure:        14.50000
+    bmp085_temp:        22.30000
     board_type: 'dcl'
+    channel_error_status: [0, 0, 0, 0, 0, 0, 0, 1]
+    channel_i: [0.0, 0.0, 0.0, 4.9, 0.0, 24.4, 0.0, 234.6]
+    channel_state: [0, 0, 0, 1, 0, 1, 0, 1]
+    channel_v: [0.0, 0.0, 0.0, 11.9, 0.0, 11.9, 0.0, 12.0]
     dpb_mode: 2
     dpb_voltage_mode: 3
-    error_vmain_out_tolerance: 0
-    error_imain_out_tolerance: 0
-    error_dcl_iso_swgf_lim_exceeded: 0
-    error_dcl_rtn_swfg_lim_exceeded: 0
-    error_vmain_swgf_lim_exceeded: 1
-    error_gmain_swgf_lim_exceeded: 1
-    error_sensor_iso_swgf_lim_exceeded: 1
-    error_snsr_com_swgf_lim_exceeded: 0
-    error_leak_detect_c1_lim_exceeded: 0
-    error_leak_detect_c2_lim_exceeded: 0
-    error_channel_overcurrent_fault: 1
     error_channel_1_not_responding: 0
     error_channel_2_not_responding: 0
     error_channel_3_not_responding: 0
+    error_channel_overcurrent_fault: 1
+    error_dcl_iso_swgf_lim_exceeded: 0
+    error_dcl_rtn_swfg_lim_exceeded: 0
+    error_gmain_swgf_lim_exceeded: 1
+    error_imain_out_tolerance: 0
+    error_leak_detect_c1_lim_exceeded: 0
+    error_leak_detect_c2_lim_exceeded: 0
+    error_sensor_iso_swgf_lim_exceeded: 1
+    error_snsr_com_swgf_lim_exceeded: 0
+    error_vmain_out_tolerance: 0
+    error_vmain_swgf_lim_exceeded: 1
     header_timestamp: '2013/12/20 00:05:07.877'
-    imain_current:        537.00000
-    imain_dpb_in:        400.10000
+    imain_current:       537.00000
+    imain_dpb_in:       400.10000
     leak_detect_c1_v: 1250
     leak_detect_c2_v: 1233
-    murata_12v_temp:         25.80000
-    murata_24v_temp:         25.60000
-    out_12v_i:        276.10000
-    out_12v_v:         12.00000
-    out_24v_i:          0.00000
-    out_24v_v:          0.00000
+    murata_12v_temp:        25.80000
+    murata_24v_temp:        25.60000
+    out_12v_i:       276.10000
+    out_12v_v:        12.00000
+    out_24v_i:         0.00000
+    out_24v_v:         0.00000
     pwr_board_mode: 2
-    sht25_humidity:         23.30000
-    sht25_temp:         20.40000
-    swgf_c1_max_leakage:        -14.50000
-    swgf_c2_max_leakage:        432.30000
-    swgf_c3_max_leakage:       -573.40000
-    vicor_12v_bcm_temp:         45.90000
-    vmain_backplane_bus_voltage:         23.80000
-    vmain_dpb_in:         23.80000
-    channel_state: [0, 0, 0, 1, 0, 1, 0, 1]
-    channel_v: [0.0, 0.0, 0.0, 11.9, 0.0, 11.9, 0.0, 12.0]
-    channel_i: [0.0, 0.0, 0.0, 4.9, 0.0, 24.4, 0.0, 234.6]
-    channel_error_status: [0, 0, 0, 0, 0, 0, 0, 1]
+    sht25_humidity:        23.30000
+    sht25_temp:        20.40000
+    swgf_c1_max_leakage:       -14.50000
+    swgf_c2_max_leakage:       432.30000
+    swgf_c3_max_leakage:      -573.40000
+    vicor_12v_bcm_temp:        45.90000
+    vmain_backplane_bus_voltage:        23.80000
+    vmain_dpb_in:        23.80000
   - _index: 20
     particle_object: CgDclEngDclCpuUptimeTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_cpu_uptime
-    internal_timestamp: 3596486739.682000
-    uptime_string: '28 days 09:00:17'
+    internal_timestamp: 3596486739.6820002
+    port_timestamp: 3596486739.6820002
+    header_timestamp: '2013/12/20 00:05:39.682'
+    load_val_1:         0.57000
+    load_val_2:         0.44000
+    load_val_3:         0.27000
     mem_free: 23036
     num_processes: 81
-    load_val_3:          0.27000
-    load_val_2:          0.44000
-    load_val_1:          0.57000
-    header_timestamp: '2013/12/20 00:05:39.682'
+    uptime_string: '28 days 09:00:17'
   - _index: 21
     particle_object: CgDclEngDclMsgCountsTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_msg_counts
-    internal_timestamp: 3596486739.802000
-    pps_counts: 30
-    superv_counts: 147
-    ntp_counts: 0
+    internal_timestamp: 3596486739.8020000
+    port_timestamp: 3596486739.8020000
+    dlog_mgr_counts: 9
     gps_counts: 600
     header_timestamp: '2013/12/20 00:05:39.802'
-    dlog_mgr_counts: 9
+    ntp_counts: 0
+    pps_counts: 30
+    superv_counts: 147
   - _index: 22
     particle_object: CgDclEngDclGpsTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_gps
-    internal_timestamp: 3596486739.804000
-    latitude_alt_format: '4008.2145 N'
-    gps_true_course:        140.40000
-    gps_speed:          2.30000
-    longitude:        -70.76972
-    gps_quality: 2
-    gps_num_satellites: 9
-    header_timestamp: '2013/12/20 00:05:39.804'
-    message_sent_timestamp: '2013/12/20 00:05:38.822'
-    gps_hdop:          0.90000
+    internal_timestamp: 3596486739.8039999
+    port_timestamp: 3596486739.8039999
     date_of_fix: '201213'
-    latitude:         40.13691
+    gps_altitude:         7.90000
+    gps_hdop:         0.90000
+    gps_num_satellites: 9
+    gps_quality: 2
+    gps_speed:         2.30000
+    gps_true_course:       140.40000
+    header_timestamp: '2013/12/20 00:05:39.804'
+    latitude:        40.13691
+    latitude_alt_format: '4008.2145 N'
+    longitude:       -70.76972
     longitude_alt_format: '07046.1834 W'
-    gps_altitude:          7.90000
+    message_sent_timestamp: '2013/12/20 00:05:38.822'
     time_of_fix: '000538'
   - _index: 23
     particle_object: CgDclEngDclPpsTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_pps
-    internal_timestamp: 3596486739.806000
-    delta_min: 0
+    internal_timestamp: 3596486739.8059998
+    port_timestamp: 3596486739.8059998
     bad_pulses: 0
-    nmea_lock: 1
-    header_timestamp: '2013/12/20 00:05:39.806'
-    message_sent_timestamp: '2013/12/20 00:05:32.000'
     delta: 999949
     delta_max: -106
+    delta_min: 0
+    header_timestamp: '2013/12/20 00:05:39.806'
+    message_sent_timestamp: '2013/12/20 00:05:32.000'
+    nmea_lock: 1
   - _index: 24
     particle_object: CgDclEngDclSupervTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_superv
-    internal_timestamp: 3596486739.807000
+    internal_timestamp: 3596486739.8070002
+    port_timestamp: 3596486739.8070002
     active_leak_detect_channels: 3
     active_swgf_channels: 7
-    bmp085_pressure:         14.50000
-    bmp085_temp:         22.30000
+    bmp085_pressure:        14.50000
+    bmp085_temp:        22.30000
     board_type: 'dcl'
+    channel_error_status: [0, 0, 0, 0, 0, 0, 0, 1]
+    channel_i: [0.0, 0.0, 0.0, 4.9, 0.0, 24.4, 0.0, 63.5]
+    channel_state: [0, 0, 0, 1, 0, 1, 0, 1]
+    channel_v: [0.0, 0.0, 0.0, 12.0, 0.0, 11.9, 0.0, 12.0]
     dpb_mode: 2
     dpb_voltage_mode: 3
-    error_vmain_out_tolerance: 0
-    error_imain_out_tolerance: 0
-    error_dcl_iso_swgf_lim_exceeded: 0
-    error_dcl_rtn_swfg_lim_exceeded: 0
-    error_vmain_swgf_lim_exceeded: 1
-    error_gmain_swgf_lim_exceeded: 1
-    error_sensor_iso_swgf_lim_exceeded: 1
-    error_snsr_com_swgf_lim_exceeded: 0
-    error_leak_detect_c1_lim_exceeded: 0
-    error_leak_detect_c2_lim_exceeded: 0
-    error_channel_overcurrent_fault: 1
     error_channel_1_not_responding: 0
     error_channel_2_not_responding: 0
     error_channel_3_not_responding: 0
+    error_channel_overcurrent_fault: 1
+    error_dcl_iso_swgf_lim_exceeded: 0
+    error_dcl_rtn_swfg_lim_exceeded: 0
+    error_gmain_swgf_lim_exceeded: 1
+    error_imain_out_tolerance: 0
+    error_leak_detect_c1_lim_exceeded: 0
+    error_leak_detect_c2_lim_exceeded: 0
+    error_sensor_iso_swgf_lim_exceeded: 1
+    error_snsr_com_swgf_lim_exceeded: 0
+    error_vmain_out_tolerance: 0
+    error_vmain_swgf_lim_exceeded: 1
     header_timestamp: '2013/12/20 00:05:39.807'
-    imain_current:        428.00000
-    imain_dpb_in:        292.10000
+    imain_current:       428.00000
+    imain_dpb_in:       292.10000
     leak_detect_c1_v: 1248
     leak_detect_c2_v: 1233
-    murata_12v_temp:         25.30000
-    murata_24v_temp:         25.30000
-    out_12v_i:         94.00000
-    out_12v_v:         12.00000
-    out_24v_i:          0.00000
-    out_24v_v:          0.00000
+    murata_12v_temp:        25.30000
+    murata_24v_temp:        25.30000
+    out_12v_i:        94.00000
+    out_12v_v:        12.00000
+    out_24v_i:         0.00000
+    out_24v_v:         0.00000
     pwr_board_mode: 2
-    sht25_humidity:         23.80000
-    sht25_temp:         19.90000
-    swgf_c1_max_leakage:        -14.50000
-    swgf_c2_max_leakage:        432.30000
-    swgf_c3_max_leakage:       -573.40000
-    vicor_12v_bcm_temp:         45.90000
-    vmain_backplane_bus_voltage:         24.00000
-    vmain_dpb_in:         23.90000
-    channel_state: [0, 0, 0, 1, 0, 1, 0, 1]
-    channel_v: [0.0, 0.0, 0.0, 12.0, 0.0, 11.9, 0.0, 12.0]
-    channel_i: [0.0, 0.0, 0.0, 4.9, 0.0, 24.4, 0.0, 63.5]
-    channel_error_status: [0, 0, 0, 0, 0, 0, 0, 1]
+    sht25_humidity:        23.80000
+    sht25_temp:        19.90000
+    swgf_c1_max_leakage:       -14.50000
+    swgf_c2_max_leakage:       432.30000
+    swgf_c3_max_leakage:      -573.40000
+    vicor_12v_bcm_temp:        45.90000
+    vmain_backplane_bus_voltage:        24.00000
+    vmain_dpb_in:        23.90000
   - _index: 25
     particle_object: CgDclEngDclDlogMgrTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_dlog_mgr
-    internal_timestamp: 3596486739.809000
-    dlog_mgr_hlt: 0
-    header_timestamp: '2013/12/20 00:05:39.809'
-    dlog_mgr_map: '000D0DDD'
-    dlog_mgr_fld: 0
+    internal_timestamp: 3596486739.8090000
+    port_timestamp: 3596486739.8090000
     datalogger_timestamp: '2013/12/20 00:05:21.544'
     dlog_mgr_act: 4
+    dlog_mgr_fld: 0
+    dlog_mgr_hlt: 0
+    dlog_mgr_map: '000D0DDD'
     dlog_mgr_str: 4
+    header_timestamp: '2013/12/20 00:05:39.809'
   - _index: 26
     particle_object: CgDclEngDclDlogStatusTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_dlog_status
-    internal_timestamp: 3596486739.819000
-    bytes_logged: 164340
-    instrument_identifier: 'velpt1'
-    bad_records: 0
-    time_last_communicated: null
-    bytes_sent: 16
-    header_timestamp: '2013/12/20 00:05:39.819'
-    message_sent_timestamp: '2013/12/20 00:05:38.530'
-    good_records: 3921
-    time_received_last_data: 1387497409
+    internal_timestamp: 3596486739.8190002
+    port_timestamp: 3596486739.8190002
     bad_bytes: 0
+    bad_records: 0
+    bytes_logged: 164340
     bytes_received: 164352
+    bytes_sent: 16
     datalogger_state: 'DAQ'
+    good_records: 3921
+    header_timestamp: '2013/12/20 00:05:39.819'
+    instrument_identifier: 'velpt1'
+    message_sent_timestamp: '2013/12/20 00:05:38.530'
+    time_last_communicated: Null
+    time_received_last_data: 1387497409
   - _index: 27
     particle_object: CgDclEngDclDlogStatusTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_dlog_status
-    internal_timestamp: 3596486739.821000
-    bytes_logged: 782131
-    instrument_identifier: 'phsen1'
-    bad_records: 0
-    time_last_communicated: null
-    bytes_sent: 1368
-    header_timestamp: '2013/12/20 00:05:39.821'
-    message_sent_timestamp: '2013/12/20 00:05:17.965'
-    good_records: 18613
-    time_received_last_data: 1387497917
+    internal_timestamp: 3596486739.8210001
+    port_timestamp: 3596486739.8210001
     bad_bytes: 0
+    bad_records: 0
+    bytes_logged: 782131
     bytes_received: 79526914
+    bytes_sent: 1368
     datalogger_state: 'DAQ'
+    good_records: 18613
+    header_timestamp: '2013/12/20 00:05:39.821'
+    instrument_identifier: 'phsen1'
+    message_sent_timestamp: '2013/12/20 00:05:17.965'
+    time_last_communicated: Null
+    time_received_last_data: 1387497917
   - _index: 28
     particle_object: CgDclEngDclDlogStatusTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_dlog_status
-    internal_timestamp: 3596486739.825000
-    bytes_logged: 10190703
-    instrument_identifier: 'nutnr'
-    bad_records: 801
-    time_last_communicated: null
-    bytes_sent: 11262
-    header_timestamp: '2013/12/20 00:05:39.825'
-    message_sent_timestamp: '2013/12/20 00:05:37.781'
-    good_records: 111684
-    time_received_last_data: 1387497780
+    internal_timestamp: 3596486739.8249998
+    port_timestamp: 3596486739.8249998
     bad_bytes: 137774
+    bad_records: 801
+    bytes_logged: 10190703
     bytes_received: 14168863
+    bytes_sent: 11262
     datalogger_state: 'IDLE'
+    good_records: 111684
+    header_timestamp: '2013/12/20 00:05:39.825'
+    instrument_identifier: 'nutnr'
+    message_sent_timestamp: '2013/12/20 00:05:37.781'
+    time_last_communicated: Null
+    time_received_last_data: 1387497780
   - _index: 29
     particle_object: CgDclEngDclDlogStatusTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_dlog_status
-    internal_timestamp: 3596486739.828000
-    bytes_logged: 75127217
-    instrument_identifier: 'spkir'
-    bad_records: 0
-    time_last_communicated: null
-    bytes_sent: 16344
-    header_timestamp: '2013/12/20 00:05:39.828'
-    message_sent_timestamp: '2013/12/20 00:05:16.952'
-    good_records: 880847
-    time_received_last_data: 1387497916
+    internal_timestamp: 3596486739.8280001
+    port_timestamp: 3596486739.8280001
     bad_bytes: 0
+    bad_records: 0
+    bytes_logged: 75127217
     bytes_received: 52859058
+    bytes_sent: 16344
     datalogger_state: 'DAQ'
+    good_records: 880847
+    header_timestamp: '2013/12/20 00:05:39.828'
+    instrument_identifier: 'spkir'
+    message_sent_timestamp: '2013/12/20 00:05:16.952'
+    time_last_communicated: Null
+    time_received_last_data: 1387497916
   - _index: 30
     particle_object: CgDclEngDclStatusTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_status
-    internal_timestamp: 3596486739.948000
-    ntp_jitter: null
-    sync_type: ''
-    ntp_offset: null
-    message_sent_type: 'NTP'
+    internal_timestamp: 3596486739.9480000
+    port_timestamp: 3596486739.9480000
     header_timestamp: '2013/12/20 00:05:39.948'
     message_sent_timestamp: '2013/12/20 00:05:39.861'
+    message_sent_type: 'NTP'
+    ntp_jitter: Null
+    ntp_offset: Null
+    sync_type: ''
   - _index: 31
     particle_object: CgDclEngDclSupervTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_superv
-    internal_timestamp: 3596486840.004000
+    internal_timestamp: 3596486840.0039997
+    port_timestamp: 3596486840.0039997
     active_leak_detect_channels: 3
     active_swgf_channels: 7
-    bmp085_pressure:         14.50000
-    bmp085_temp:         22.20000
+    bmp085_pressure:        14.50000
+    bmp085_temp:        22.20000
     board_type: 'dcl'
+    channel_error_status: [0, 0, 0, 0, 0, 0, 0, 0]
+    channel_i: [0.0, 0.0, 0.0, 9.8, 0.0, 24.4, 0.0, 0.0]
+    channel_state: [0, 0, 0, 1, 0, 1, 0, 0]
+    channel_v: [0.0, 0.0, 0.0, 12.0, 0.0, 12.0, 0.0, 0.0]
     dpb_mode: 2
     dpb_voltage_mode: 3
-    error_vmain_out_tolerance: 0
-    error_imain_out_tolerance: 0
-    error_dcl_iso_swgf_lim_exceeded: 0
-    error_dcl_rtn_swfg_lim_exceeded: 0
-    error_vmain_swgf_lim_exceeded: 1
-    error_gmain_swgf_lim_exceeded: 1
-    error_sensor_iso_swgf_lim_exceeded: 1
-    error_snsr_com_swgf_lim_exceeded: 0
-    error_leak_detect_c1_lim_exceeded: 0
-    error_leak_detect_c2_lim_exceeded: 0
-    error_channel_overcurrent_fault: 0
     error_channel_1_not_responding: 0
     error_channel_2_not_responding: 0
     error_channel_3_not_responding: 0
+    error_channel_overcurrent_fault: 0
+    error_dcl_iso_swgf_lim_exceeded: 0
+    error_dcl_rtn_swfg_lim_exceeded: 0
+    error_gmain_swgf_lim_exceeded: 1
+    error_imain_out_tolerance: 0
+    error_leak_detect_c1_lim_exceeded: 0
+    error_leak_detect_c2_lim_exceeded: 0
+    error_sensor_iso_swgf_lim_exceeded: 1
+    error_snsr_com_swgf_lim_exceeded: 0
+    error_vmain_out_tolerance: 0
+    error_vmain_swgf_lim_exceeded: 1
     header_timestamp: '2013/12/20 00:07:20.004'
-    imain_current:        375.00000
-    imain_dpb_in:        256.10000
+    imain_current:       375.00000
+    imain_dpb_in:       256.10000
     leak_detect_c1_v: 1250
     leak_detect_c2_v: 1235
-    murata_12v_temp:         25.60000
-    murata_24v_temp:         25.60000
-    out_12v_i:         36.00000
-    out_12v_v:         12.00000
-    out_24v_i:          0.00000
-    out_24v_v:          0.00000
+    murata_12v_temp:        25.60000
+    murata_24v_temp:        25.60000
+    out_12v_i:        36.00000
+    out_12v_v:        12.00000
+    out_24v_i:         0.00000
+    out_24v_v:         0.00000
     pwr_board_mode: 2
-    sht25_humidity:         23.80000
-    sht25_temp:         19.90000
-    swgf_c1_max_leakage:        -14.50000
-    swgf_c2_max_leakage:        432.30000
-    swgf_c3_max_leakage:       -573.40000
-    vicor_12v_bcm_temp:         45.30000
-    vmain_backplane_bus_voltage:         24.20000
-    vmain_dpb_in:         24.10000
-    channel_state: [0, 0, 0, 1, 0, 1, 0, 0]
-    channel_v: [0.0, 0.0, 0.0, 12.0, 0.0, 12.0, 0.0, 0.0]
-    channel_i: [0.0, 0.0, 0.0, 9.8, 0.0, 24.4, 0.0, 0.0]
-    channel_error_status: [0, 0, 0, 0, 0, 0, 0, 0]
+    sht25_humidity:        23.80000
+    sht25_temp:        19.90000
+    swgf_c1_max_leakage:       -14.50000
+    swgf_c2_max_leakage:       432.30000
+    swgf_c3_max_leakage:      -573.40000
+    vicor_12v_bcm_temp:        45.30000
+    vmain_backplane_bus_voltage:        24.20000
+    vmain_dpb_in:        24.10000
   - _index: 32
     particle_object: CgDclEngDclSupervTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_superv
-    internal_timestamp: 3596487006.197000
+    internal_timestamp: 3596487006.1970000
+    port_timestamp: 3596487006.1970000
     active_leak_detect_channels: 3
     active_swgf_channels: 7
-    bmp085_pressure:         14.50000
-    bmp085_temp:         22.10000
+    bmp085_pressure:        14.50000
+    bmp085_temp:        22.10000
     board_type: 'dcl'
+    channel_error_status: [0, 0, 0, 0, 0, 0, 0, 1]
+    channel_i: [0.0, 0.0, 0.0, 9.8, 0.0, 24.4, 0.0, 0.0]
+    channel_state: [0, 0, 0, 1, 0, 1, 0, 0]
+    channel_v: [0.0, 0.0, 0.0, 12.0, 0.0, 12.0, 0.0, 1.1]
     dpb_mode: 2
     dpb_voltage_mode: 3
-    error_vmain_out_tolerance: 0
-    error_imain_out_tolerance: 0
-    error_dcl_iso_swgf_lim_exceeded: 0
-    error_dcl_rtn_swfg_lim_exceeded: 0
-    error_vmain_swgf_lim_exceeded: 1
-    error_gmain_swgf_lim_exceeded: 1
-    error_sensor_iso_swgf_lim_exceeded: 1
-    error_snsr_com_swgf_lim_exceeded: 0
-    error_leak_detect_c1_lim_exceeded: 0
-    error_leak_detect_c2_lim_exceeded: 0
-    error_channel_overcurrent_fault: 1
     error_channel_1_not_responding: 0
     error_channel_2_not_responding: 0
     error_channel_3_not_responding: 0
+    error_channel_overcurrent_fault: 1
+    error_dcl_iso_swgf_lim_exceeded: 0
+    error_dcl_rtn_swfg_lim_exceeded: 0
+    error_gmain_swgf_lim_exceeded: 1
+    error_imain_out_tolerance: 0
+    error_leak_detect_c1_lim_exceeded: 0
+    error_leak_detect_c2_lim_exceeded: 0
+    error_sensor_iso_swgf_lim_exceeded: 1
+    error_snsr_com_swgf_lim_exceeded: 0
+    error_vmain_out_tolerance: 0
+    error_vmain_swgf_lim_exceeded: 1
     header_timestamp: '2013/12/20 00:10:06.197'
-    imain_current:        391.00000
-    imain_dpb_in:        256.10000
+    imain_current:       391.00000
+    imain_dpb_in:       256.10000
     leak_detect_c1_v: 1248
     leak_detect_c2_v: 1233
-    murata_12v_temp:         25.30000
-    murata_24v_temp:         25.00000
-    out_12v_i:         34.00000
-    out_12v_v:         12.00000
-    out_24v_i:          0.00000
-    out_24v_v:          0.00000
+    murata_12v_temp:        25.30000
+    murata_24v_temp:        25.00000
+    out_12v_i:        34.00000
+    out_12v_v:        12.00000
+    out_24v_i:         0.00000
+    out_24v_v:         0.00000
     pwr_board_mode: 2
-    sht25_humidity:         23.80000
-    sht25_temp:         19.90000
-    swgf_c1_max_leakage:         -6.00000
-    swgf_c2_max_leakage:        433.90000
-    swgf_c3_max_leakage:       -304.80000
-    vicor_12v_bcm_temp:         45.30000
-    vmain_backplane_bus_voltage:         24.10000
-    vmain_dpb_in:         24.00000
-    channel_state: [0, 0, 0, 1, 0, 1, 0, 0]
-    channel_v: [0.0, 0.0, 0.0, 12.0, 0.0, 12.0, 0.0, 1.1]
-    channel_i: [0.0, 0.0, 0.0, 9.8, 0.0, 24.4, 0.0, 0.0]
-    channel_error_status: [0, 0, 0, 0, 0, 0, 0, 1]
+    sht25_humidity:        23.80000
+    sht25_temp:        19.90000
+    swgf_c1_max_leakage:        -6.00000
+    swgf_c2_max_leakage:       433.90000
+    swgf_c3_max_leakage:      -304.80000
+    vicor_12v_bcm_temp:        45.30000
+    vmain_backplane_bus_voltage:        24.10000
+    vmain_dpb_in:        24.00000
   - _index: 33
     particle_object: CgDclEngDclSupervTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_superv
-    internal_timestamp: 3596487008.209000
+    internal_timestamp: 3596487008.2090001
+    port_timestamp: 3596487008.2090001
     active_leak_detect_channels: 3
     active_swgf_channels: 7
-    bmp085_pressure:         14.50000
-    bmp085_temp:         22.10000
+    bmp085_pressure:        14.50000
+    bmp085_temp:        22.10000
     board_type: 'dcl'
+    channel_error_status: [0, 0, 0, 0, 0, 0, 0, 1]
+    channel_i: [0.0, 0.0, 0.0, 9.8, 0.0, 24.4, 0.0, 19.6]
+    channel_state: [0, 0, 0, 1, 0, 1, 0, 1]
+    channel_v: [0.0, 0.0, 0.0, 12.0, 0.0, 11.9, 0.0, 12.0]
     dpb_mode: 2
     dpb_voltage_mode: 3
-    error_vmain_out_tolerance: 0
-    error_imain_out_tolerance: 0
-    error_dcl_iso_swgf_lim_exceeded: 0
-    error_dcl_rtn_swfg_lim_exceeded: 0
-    error_vmain_swgf_lim_exceeded: 1
-    error_gmain_swgf_lim_exceeded: 1
-    error_sensor_iso_swgf_lim_exceeded: 1
-    error_snsr_com_swgf_lim_exceeded: 0
-    error_leak_detect_c1_lim_exceeded: 0
-    error_leak_detect_c2_lim_exceeded: 0
-    error_channel_overcurrent_fault: 1
     error_channel_1_not_responding: 0
     error_channel_2_not_responding: 0
     error_channel_3_not_responding: 0
+    error_channel_overcurrent_fault: 1
+    error_dcl_iso_swgf_lim_exceeded: 0
+    error_dcl_rtn_swfg_lim_exceeded: 0
+    error_gmain_swgf_lim_exceeded: 1
+    error_imain_out_tolerance: 0
+    error_leak_detect_c1_lim_exceeded: 0
+    error_leak_detect_c2_lim_exceeded: 0
+    error_sensor_iso_swgf_lim_exceeded: 1
+    error_snsr_com_swgf_lim_exceeded: 0
+    error_vmain_out_tolerance: 0
+    error_vmain_swgf_lim_exceeded: 1
     header_timestamp: '2013/12/20 00:10:08.209'
-    imain_current:        406.00000
-    imain_dpb_in:        270.10000
+    imain_current:       406.00000
+    imain_dpb_in:       270.10000
     leak_detect_c1_v: 1250
     leak_detect_c2_v: 1230
-    murata_12v_temp:         25.30000
-    murata_24v_temp:         25.00000
-    out_12v_i:         56.00000
-    out_12v_v:         12.00000
-    out_24v_i:          0.00000
-    out_24v_v:          0.00000
+    murata_12v_temp:        25.30000
+    murata_24v_temp:        25.00000
+    out_12v_i:        56.00000
+    out_12v_v:        12.00000
+    out_24v_i:         0.00000
+    out_24v_v:         0.00000
     pwr_board_mode: 2
-    sht25_humidity:         23.80000
-    sht25_temp:         19.90000
-    swgf_c1_max_leakage:         -6.00000
-    swgf_c2_max_leakage:        433.90000
-    swgf_c3_max_leakage:       -304.80000
-    vicor_12v_bcm_temp:         45.30000
-    vmain_backplane_bus_voltage:         24.00000
-    vmain_dpb_in:         23.90000
-    channel_state: [0, 0, 0, 1, 0, 1, 0, 1]
-    channel_v: [0.0, 0.0, 0.0, 12.0, 0.0, 11.9, 0.0, 12.0]
-    channel_i: [0.0, 0.0, 0.0, 9.8, 0.0, 24.4, 0.0, 19.6]
-    channel_error_status: [0, 0, 0, 0, 0, 0, 0, 1]
+    sht25_humidity:        23.80000
+    sht25_temp:        19.90000
+    swgf_c1_max_leakage:        -6.00000
+    swgf_c2_max_leakage:       433.90000
+    swgf_c3_max_leakage:      -304.80000
+    vicor_12v_bcm_temp:        45.30000
+    vmain_backplane_bus_voltage:        24.00000
+    vmain_dpb_in:        23.90000
   - _index: 34
     particle_object: CgDclEngDclCpuUptimeTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_cpu_uptime
-    internal_timestamp: 3596487040.248000
-    uptime_string: '28 days 09:05:18'
+    internal_timestamp: 3596487040.2480001
+    port_timestamp: 3596487040.2480001
+    header_timestamp: '2013/12/20 00:10:40.248'
+    load_val_1:         0.02000
+    load_val_2:         0.23000
+    load_val_3:         0.23000
     mem_free: 23056
     num_processes: 81
-    load_val_3:          0.23000
-    load_val_2:          0.23000
-    load_val_1:          0.02000
-    header_timestamp: '2013/12/20 00:10:40.248'
+    uptime_string: '28 days 09:05:18'
   - _index: 35
     particle_object: CgDclEngDclMsgCountsTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_msg_counts
-    internal_timestamp: 3596487040.348000
-    pps_counts: 30
-    superv_counts: 149
-    ntp_counts: 0
+    internal_timestamp: 3596487040.3480000
+    port_timestamp: 3596487040.3480000
+    dlog_mgr_counts: 9
     gps_counts: 602
     header_timestamp: '2013/12/20 00:10:40.348'
-    dlog_mgr_counts: 9
+    ntp_counts: 0
+    pps_counts: 30
+    superv_counts: 149
   - _index: 36
     particle_object: CgDclEngDclGpsTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_gps
-    internal_timestamp: 3596487040.351000
-    latitude_alt_format: '4008.2180 N'
-    gps_true_course:        165.20000
-    gps_speed:          2.60000
-    longitude:        -70.76973
-    gps_quality: 2
-    gps_num_satellites: 8
-    header_timestamp: '2013/12/20 00:10:40.351'
-    message_sent_timestamp: '2013/12/20 00:10:39.829'
-    gps_hdop:          1.00000
+    internal_timestamp: 3596487040.3509998
+    port_timestamp: 3596487040.3509998
     date_of_fix: '201213'
-    latitude:         40.13697
+    gps_altitude:         5.60000
+    gps_hdop:         1.00000
+    gps_num_satellites: 8
+    gps_quality: 2
+    gps_speed:         2.60000
+    gps_true_course:       165.20000
+    header_timestamp: '2013/12/20 00:10:40.351'
+    latitude:        40.13697
+    latitude_alt_format: '4008.2180 N'
+    longitude:       -70.76973
     longitude_alt_format: '07046.1841 W'
-    gps_altitude:          5.60000
+    message_sent_timestamp: '2013/12/20 00:10:39.829'
     time_of_fix: '001039'
   - _index: 37
     particle_object: CgDclEngDclPpsTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_pps
-    internal_timestamp: 3596487040.353000
-    delta_min: 1
+    internal_timestamp: 3596487040.3529997
+    port_timestamp: 3596487040.3529997
     bad_pulses: 0
-    nmea_lock: 1
-    header_timestamp: '2013/12/20 00:10:40.353'
-    message_sent_timestamp: '2013/12/20 00:10:32.000'
     delta: 1000003
     delta_max: 20
+    delta_min: 1
+    header_timestamp: '2013/12/20 00:10:40.353'
+    message_sent_timestamp: '2013/12/20 00:10:32.000'
+    nmea_lock: 1
   - _index: 38
     particle_object: CgDclEngDclSupervTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_superv
-    internal_timestamp: 3596487040.356000
+    internal_timestamp: 3596487040.3559999
+    port_timestamp: 3596487040.3559999
     active_leak_detect_channels: 3
     active_swgf_channels: 7
-    bmp085_pressure:         14.50000
-    bmp085_temp:         22.10000
+    bmp085_pressure:        14.50000
+    bmp085_temp:        22.10000
     board_type: 'dcl'
+    channel_error_status: [0, 0, 0, 0, 0, 0, 0, 1]
+    channel_i: [0.0, 0.0, 0.0, 9.8, 0.0, 24.4, 0.0, 39.1]
+    channel_state: [0, 0, 0, 1, 0, 1, 0, 1]
+    channel_v: [0.0, 0.0, 0.0, 12.0, 0.0, 11.9, 0.0, 12.0]
     dpb_mode: 2
     dpb_voltage_mode: 3
-    error_vmain_out_tolerance: 0
-    error_imain_out_tolerance: 0
-    error_dcl_iso_swgf_lim_exceeded: 0
-    error_dcl_rtn_swfg_lim_exceeded: 0
-    error_vmain_swgf_lim_exceeded: 1
-    error_gmain_swgf_lim_exceeded: 1
-    error_sensor_iso_swgf_lim_exceeded: 1
-    error_snsr_com_swgf_lim_exceeded: 0
-    error_leak_detect_c1_lim_exceeded: 0
-    error_leak_detect_c2_lim_exceeded: 0
-    error_channel_overcurrent_fault: 1
     error_channel_1_not_responding: 0
     error_channel_2_not_responding: 0
     error_channel_3_not_responding: 0
+    error_channel_overcurrent_fault: 1
+    error_dcl_iso_swgf_lim_exceeded: 0
+    error_dcl_rtn_swfg_lim_exceeded: 0
+    error_gmain_swgf_lim_exceeded: 1
+    error_imain_out_tolerance: 0
+    error_leak_detect_c1_lim_exceeded: 0
+    error_leak_detect_c2_lim_exceeded: 0
+    error_sensor_iso_swgf_lim_exceeded: 1
+    error_snsr_com_swgf_lim_exceeded: 0
+    error_vmain_out_tolerance: 0
+    error_vmain_swgf_lim_exceeded: 1
     header_timestamp: '2013/12/20 00:10:40.356'
-    imain_current:        417.00000
-    imain_dpb_in:        282.10000
+    imain_current:       417.00000
+    imain_dpb_in:       282.10000
     leak_detect_c1_v: 1255
     leak_detect_c2_v: 1230
-    murata_12v_temp:         25.30000
-    murata_24v_temp:         24.80000
-    out_12v_i:         72.00000
-    out_12v_v:         12.00000
-    out_24v_i:          0.00000
-    out_24v_v:          0.00000
+    murata_12v_temp:        25.30000
+    murata_24v_temp:        24.80000
+    out_12v_i:        72.00000
+    out_12v_v:        12.00000
+    out_24v_i:         0.00000
+    out_24v_v:         0.00000
     pwr_board_mode: 2
-    sht25_humidity:         23.80000
-    sht25_temp:         19.90000
-    swgf_c1_max_leakage:         -6.00000
-    swgf_c2_max_leakage:        433.90000
-    swgf_c3_max_leakage:       -304.80000
-    vicor_12v_bcm_temp:         43.50000
-    vmain_backplane_bus_voltage:         24.10000
-    vmain_dpb_in:         24.00000
-    channel_state: [0, 0, 0, 1, 0, 1, 0, 1]
-    channel_v: [0.0, 0.0, 0.0, 12.0, 0.0, 11.9, 0.0, 12.0]
-    channel_i: [0.0, 0.0, 0.0, 9.8, 0.0, 24.4, 0.0, 39.1]
-    channel_error_status: [0, 0, 0, 0, 0, 0, 0, 1]
+    sht25_humidity:        23.80000
+    sht25_temp:        19.90000
+    swgf_c1_max_leakage:        -6.00000
+    swgf_c2_max_leakage:       433.90000
+    swgf_c3_max_leakage:      -304.80000
+    vicor_12v_bcm_temp:        43.50000
+    vmain_backplane_bus_voltage:        24.10000
+    vmain_dpb_in:        24.00000
   - _index: 39
     particle_object: CgDclEngDclDlogMgrTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_dlog_mgr
-    internal_timestamp: 3596487040.358000
-    dlog_mgr_hlt: 0
-    header_timestamp: '2013/12/20 00:10:40.358'
-    dlog_mgr_map: '000D0DDD'
-    dlog_mgr_fld: 0
+    internal_timestamp: 3596487040.3579998
+    port_timestamp: 3596487040.3579998
     datalogger_timestamp: '2013/12/20 00:10:09.515'
     dlog_mgr_act: 4
+    dlog_mgr_fld: 0
+    dlog_mgr_hlt: 0
+    dlog_mgr_map: '000D0DDD'
     dlog_mgr_str: 4
+    header_timestamp: '2013/12/20 00:10:40.358'
   - _index: 40
     particle_object: CgDclEngDclDlogStatusTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_dlog_status
-    internal_timestamp: 3596487040.361000
-    bytes_logged: 164340
-    instrument_identifier: 'velpt1'
-    bad_records: 0
-    time_last_communicated: null
-    bytes_sent: 16
-    header_timestamp: '2013/12/20 00:10:40.361'
-    message_sent_timestamp: '2013/12/20 00:10:27.701'
-    good_records: 3921
-    time_received_last_data: 1387497409
+    internal_timestamp: 3596487040.3610001
+    port_timestamp: 3596487040.3610001
     bad_bytes: 0
+    bad_records: 0
+    bytes_logged: 164340
     bytes_received: 164352
+    bytes_sent: 16
     datalogger_state: 'DAQ'
+    good_records: 3921
+    header_timestamp: '2013/12/20 00:10:40.361'
+    instrument_identifier: 'velpt1'
+    message_sent_timestamp: '2013/12/20 00:10:27.701'
+    time_last_communicated: Null
+    time_received_last_data: 1387497409
   - _index: 41
     particle_object: CgDclEngDclDlogStatusTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_dlog_status
-    internal_timestamp: 3596487040.363000
-    bytes_logged: 782131
-    instrument_identifier: 'phsen1'
-    bad_records: 0
-    time_last_communicated: null
-    bytes_sent: 1368
-    header_timestamp: '2013/12/20 00:10:40.363'
-    message_sent_timestamp: '2013/12/20 00:10:27.964'
-    good_records: 18613
-    time_received_last_data: 1387498227
+    internal_timestamp: 3596487040.3629999
+    port_timestamp: 3596487040.3629999
     bad_bytes: 0
+    bad_records: 0
+    bytes_logged: 782131
     bytes_received: 79537454
+    bytes_sent: 1368
     datalogger_state: 'DAQ'
+    good_records: 18613
+    header_timestamp: '2013/12/20 00:10:40.363'
+    instrument_identifier: 'phsen1'
+    message_sent_timestamp: '2013/12/20 00:10:27.964'
+    time_last_communicated: Null
+    time_received_last_data: 1387498227
   - _index: 42
     particle_object: CgDclEngDclDlogStatusTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_dlog_status
-    internal_timestamp: 3596487040.366000
-    bytes_logged: 10190703
-    instrument_identifier: 'nutnr'
-    bad_records: 801
-    time_last_communicated: null
-    bytes_sent: 11262
-    header_timestamp: '2013/12/20 00:10:40.366'
-    message_sent_timestamp: '2013/12/20 00:10:17.783'
-    good_records: 111684
-    time_received_last_data: 1387497780
+    internal_timestamp: 3596487040.3660002
+    port_timestamp: 3596487040.3660002
     bad_bytes: 137774
+    bad_records: 801
+    bytes_logged: 10190703
     bytes_received: 14168863
+    bytes_sent: 11262
     datalogger_state: 'IDLE'
+    good_records: 111684
+    header_timestamp: '2013/12/20 00:10:40.366'
+    instrument_identifier: 'nutnr'
+    message_sent_timestamp: '2013/12/20 00:10:17.783'
+    time_last_communicated: Null
+    time_received_last_data: 1387497780
   - _index: 43
     particle_object: CgDclEngDclDlogStatusTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_dlog_status
-    internal_timestamp: 3596487040.368000
-    bytes_logged: 75137604
-    instrument_identifier: 'spkir'
-    bad_records: 0
-    time_last_communicated: null
-    bytes_sent: 16346
-    header_timestamp: '2013/12/20 00:10:40.368'
-    message_sent_timestamp: '2013/12/20 00:10:31.219'
-    good_records: 880969
-    time_received_last_data: 1387498231
+    internal_timestamp: 3596487040.3680000
+    port_timestamp: 3596487040.3680000
     bad_bytes: 0
+    bad_records: 0
+    bytes_logged: 75137604
     bytes_received: 52866379
+    bytes_sent: 16346
     datalogger_state: 'DAQ'
+    good_records: 880969
+    header_timestamp: '2013/12/20 00:10:40.368'
+    instrument_identifier: 'spkir'
+    message_sent_timestamp: '2013/12/20 00:10:31.219'
+    time_last_communicated: Null
+    time_received_last_data: 1387498231
   - _index: 44
     particle_object: CgDclEngDclStatusTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_status
-    internal_timestamp: 3596487040.437000
-    ntp_jitter: null
-    sync_type: ''
-    ntp_offset: null
-    message_sent_type: 'NTP'
+    internal_timestamp: 3596487040.4370003
+    port_timestamp: 3596487040.4370003
     header_timestamp: '2013/12/20 00:10:40.437'
     message_sent_timestamp: '2013/12/20 00:10:40.371'
+    message_sent_type: 'NTP'
+    ntp_jitter: Null
+    ntp_offset: Null
+    sync_type: ''
   - _index: 45
     particle_object: CgDclEngDclSupervTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_superv
-    internal_timestamp: 3596487138.338000
+    internal_timestamp: 3596487138.3380003
+    port_timestamp: 3596487138.3380003
     active_leak_detect_channels: 3
     active_swgf_channels: 7
-    bmp085_pressure:         14.50000
-    bmp085_temp:         22.10000
+    bmp085_pressure:        14.50000
+    bmp085_temp:        22.10000
     board_type: 'dcl'
+    channel_error_status: [0, 0, 0, 0, 0, 0, 0, 0]
+    channel_i: [0.0, 0.0, 0.0, 4.9, 0.0, 24.4, 0.0, 0.0]
+    channel_state: [0, 0, 0, 1, 0, 1, 0, 0]
+    channel_v: [0.0, 0.0, 0.0, 12.0, 0.0, 12.0, 0.0, 0.0]
     dpb_mode: 2
     dpb_voltage_mode: 3
-    error_vmain_out_tolerance: 0
-    error_imain_out_tolerance: 0
-    error_dcl_iso_swgf_lim_exceeded: 0
-    error_dcl_rtn_swfg_lim_exceeded: 0
-    error_vmain_swgf_lim_exceeded: 1
-    error_gmain_swgf_lim_exceeded: 1
-    error_sensor_iso_swgf_lim_exceeded: 1
-    error_snsr_com_swgf_lim_exceeded: 0
-    error_leak_detect_c1_lim_exceeded: 0
-    error_leak_detect_c2_lim_exceeded: 0
-    error_channel_overcurrent_fault: 0
     error_channel_1_not_responding: 0
     error_channel_2_not_responding: 0
     error_channel_3_not_responding: 0
+    error_channel_overcurrent_fault: 0
+    error_dcl_iso_swgf_lim_exceeded: 0
+    error_dcl_rtn_swfg_lim_exceeded: 0
+    error_gmain_swgf_lim_exceeded: 1
+    error_imain_out_tolerance: 0
+    error_leak_detect_c1_lim_exceeded: 0
+    error_leak_detect_c2_lim_exceeded: 0
+    error_sensor_iso_swgf_lim_exceeded: 1
+    error_snsr_com_swgf_lim_exceeded: 0
+    error_vmain_out_tolerance: 0
+    error_vmain_swgf_lim_exceeded: 1
     header_timestamp: '2013/12/20 00:12:18.338'
-    imain_current:        371.00000
-    imain_dpb_in:        250.10000
+    imain_current:       371.00000
+    imain_dpb_in:       250.10000
     leak_detect_c1_v: 1250
     leak_detect_c2_v: 1235
-    murata_12v_temp:         25.00000
-    murata_24v_temp:         24.80000
-    out_12v_i:         28.00000
-    out_12v_v:         12.00000
-    out_24v_i:          0.00000
-    out_24v_v:          0.00000
+    murata_12v_temp:        25.00000
+    murata_24v_temp:        24.80000
+    out_12v_i:        28.00000
+    out_12v_v:        12.00000
+    out_24v_i:         0.00000
+    out_24v_v:         0.00000
     pwr_board_mode: 2
-    sht25_humidity:         23.80000
-    sht25_temp:         19.80000
-    swgf_c1_max_leakage:         -6.00000
-    swgf_c2_max_leakage:        433.90000
-    swgf_c3_max_leakage:       -304.80000
-    vicor_12v_bcm_temp:         45.30000
-    vmain_backplane_bus_voltage:         24.40000
-    vmain_dpb_in:         24.30000
-    channel_state: [0, 0, 0, 1, 0, 1, 0, 0]
-    channel_v: [0.0, 0.0, 0.0, 12.0, 0.0, 12.0, 0.0, 0.0]
-    channel_i: [0.0, 0.0, 0.0, 4.9, 0.0, 24.4, 0.0, 0.0]
-    channel_error_status: [0, 0, 0, 0, 0, 0, 0, 0]
+    sht25_humidity:        23.80000
+    sht25_temp:        19.80000
+    swgf_c1_max_leakage:        -6.00000
+    swgf_c2_max_leakage:       433.90000
+    swgf_c3_max_leakage:      -304.80000
+    vicor_12v_bcm_temp:        45.30000
+    vmain_backplane_bus_voltage:        24.40000
+    vmain_dpb_in:        24.30000
   - _index: 46
     particle_object: CgDclEngDclSupervTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_superv
-    internal_timestamp: 3596487306.549000
+    internal_timestamp: 3596487306.5489998
+    port_timestamp: 3596487306.5489998
     active_leak_detect_channels: 3
     active_swgf_channels: 7
-    bmp085_pressure:         14.50000
-    bmp085_temp:         22.00000
+    bmp085_pressure:        14.50000
+    bmp085_temp:        22.00000
     board_type: 'dcl'
+    channel_error_status: [0, 0, 0, 0, 0, 0, 0, 0]
+    channel_i: [0.0, 0.0, 0.0, 4.9, 0.0, 24.4, 88.0, 0.0]
+    channel_state: [0, 0, 0, 1, 0, 1, 1, 0]
+    channel_v: [0.0, 0.0, 0.0, 12.0, 0.0, 11.9, 24.0, 1.1]
     dpb_mode: 2
     dpb_voltage_mode: 4
-    error_vmain_out_tolerance: 0
-    error_imain_out_tolerance: 0
-    error_dcl_iso_swgf_lim_exceeded: 0
-    error_dcl_rtn_swfg_lim_exceeded: 0
-    error_vmain_swgf_lim_exceeded: 1
-    error_gmain_swgf_lim_exceeded: 1
-    error_sensor_iso_swgf_lim_exceeded: 1
-    error_snsr_com_swgf_lim_exceeded: 0
-    error_leak_detect_c1_lim_exceeded: 0
-    error_leak_detect_c2_lim_exceeded: 0
-    error_channel_overcurrent_fault: 0
     error_channel_1_not_responding: 0
     error_channel_2_not_responding: 0
     error_channel_3_not_responding: 0
+    error_channel_overcurrent_fault: 0
+    error_dcl_iso_swgf_lim_exceeded: 0
+    error_dcl_rtn_swfg_lim_exceeded: 0
+    error_gmain_swgf_lim_exceeded: 1
+    error_imain_out_tolerance: 0
+    error_leak_detect_c1_lim_exceeded: 0
+    error_leak_detect_c2_lim_exceeded: 0
+    error_sensor_iso_swgf_lim_exceeded: 1
+    error_snsr_com_swgf_lim_exceeded: 0
+    error_vmain_out_tolerance: 0
+    error_vmain_swgf_lim_exceeded: 1
     header_timestamp: '2013/12/20 00:15:06.549'
-    imain_current:        613.00000
-    imain_dpb_in:        474.10000
+    imain_current:       613.00000
+    imain_dpb_in:       474.10000
     leak_detect_c1_v: 1255
     leak_detect_c2_v: 1233
-    murata_12v_temp:         25.00000
-    murata_24v_temp:         25.00000
-    out_12v_i:         34.00000
-    out_12v_v:         12.00000
-    out_24v_i:        134.00000
-    out_24v_v:         24.20000
+    murata_12v_temp:        25.00000
+    murata_24v_temp:        25.00000
+    out_12v_i:        34.00000
+    out_12v_v:        12.00000
+    out_24v_i:       134.00000
+    out_24v_v:        24.20000
     pwr_board_mode: 2
-    sht25_humidity:         23.80000
-    sht25_temp:         19.80000
-    swgf_c1_max_leakage:          9.30000
-    swgf_c2_max_leakage:       -536.70000
-    swgf_c3_max_leakage:       -305.60000
-    vicor_12v_bcm_temp:         44.70000
-    vmain_backplane_bus_voltage:         24.10000
-    vmain_dpb_in:         24.00000
-    channel_state: [0, 0, 0, 1, 0, 1, 1, 0]
-    channel_v: [0.0, 0.0, 0.0, 12.0, 0.0, 11.9, 24.0, 1.1]
-    channel_i: [0.0, 0.0, 0.0, 4.9, 0.0, 24.4, 88.0, 0.0]
-    channel_error_status: [0, 0, 0, 0, 0, 0, 0, 0]
+    sht25_humidity:        23.80000
+    sht25_temp:        19.80000
+    swgf_c1_max_leakage:         9.30000
+    swgf_c2_max_leakage:      -536.70000
+    swgf_c3_max_leakage:      -305.60000
+    vicor_12v_bcm_temp:        44.70000
+    vmain_backplane_bus_voltage:        24.10000
+    vmain_dpb_in:        24.00000
   - _index: 47
     particle_object: CgDclEngDclSupervTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_superv
-    internal_timestamp: 3596487308.570000
+    internal_timestamp: 3596487308.5699997
+    port_timestamp: 3596487308.5699997
     active_leak_detect_channels: 3
     active_swgf_channels: 7
-    bmp085_pressure:         14.50000
-    bmp085_temp:         22.00000
+    bmp085_pressure:        14.50000
+    bmp085_temp:        22.00000
     board_type: 'dcl'
+    channel_error_status: [0, 0, 0, 0, 0, 0, 0, 0]
+    channel_i: [0.0, 0.0, 0.0, 4.9, 0.0, 24.4, 83.1, 234.6]
+    channel_state: [0, 0, 0, 1, 0, 1, 1, 1]
+    channel_v: [0.0, 0.0, 0.0, 11.9, 0.0, 11.9, 24.0, 12.0]
     dpb_mode: 2
     dpb_voltage_mode: 4
-    error_vmain_out_tolerance: 0
-    error_imain_out_tolerance: 0
-    error_dcl_iso_swgf_lim_exceeded: 0
-    error_dcl_rtn_swfg_lim_exceeded: 0
-    error_vmain_swgf_lim_exceeded: 1
-    error_gmain_swgf_lim_exceeded: 1
-    error_sensor_iso_swgf_lim_exceeded: 1
-    error_snsr_com_swgf_lim_exceeded: 0
-    error_leak_detect_c1_lim_exceeded: 0
-    error_leak_detect_c2_lim_exceeded: 0
-    error_channel_overcurrent_fault: 0
     error_channel_1_not_responding: 0
     error_channel_2_not_responding: 0
     error_channel_3_not_responding: 0
+    error_channel_overcurrent_fault: 0
+    error_dcl_iso_swgf_lim_exceeded: 0
+    error_dcl_rtn_swfg_lim_exceeded: 0
+    error_gmain_swgf_lim_exceeded: 1
+    error_imain_out_tolerance: 0
+    error_leak_detect_c1_lim_exceeded: 0
+    error_leak_detect_c2_lim_exceeded: 0
+    error_sensor_iso_swgf_lim_exceeded: 1
+    error_snsr_com_swgf_lim_exceeded: 0
+    error_vmain_out_tolerance: 0
+    error_vmain_swgf_lim_exceeded: 1
     header_timestamp: '2013/12/20 00:15:08.570'
-    imain_current:        737.00000
-    imain_dpb_in:        586.10000
+    imain_current:       737.00000
+    imain_dpb_in:       586.10000
     leak_detect_c1_v: 1245
     leak_detect_c2_v: 1235
-    murata_12v_temp:         24.80000
-    murata_24v_temp:         24.50000
-    out_12v_i:        280.10000
-    out_12v_v:         12.00000
-    out_24v_i:        130.00000
-    out_24v_v:         24.10000
+    murata_12v_temp:        24.80000
+    murata_24v_temp:        24.50000
+    out_12v_i:       280.10000
+    out_12v_v:        12.00000
+    out_24v_i:       130.00000
+    out_24v_v:        24.10000
     pwr_board_mode: 2
-    sht25_humidity:         23.80000
-    sht25_temp:         19.80000
-    swgf_c1_max_leakage:          9.30000
-    swgf_c2_max_leakage:       -536.70000
-    swgf_c3_max_leakage:       -305.60000
-    vicor_12v_bcm_temp:         44.70000
-    vmain_backplane_bus_voltage:         24.00000
-    vmain_dpb_in:         23.90000
-    channel_state: [0, 0, 0, 1, 0, 1, 1, 1]
-    channel_v: [0.0, 0.0, 0.0, 11.9, 0.0, 11.9, 24.0, 12.0]
-    channel_i: [0.0, 0.0, 0.0, 4.9, 0.0, 24.4, 83.1, 234.6]
-    channel_error_status: [0, 0, 0, 0, 0, 0, 0, 0]
+    sht25_humidity:        23.80000
+    sht25_temp:        19.80000
+    swgf_c1_max_leakage:         9.30000
+    swgf_c2_max_leakage:      -536.70000
+    swgf_c3_max_leakage:      -305.60000
+    vicor_12v_bcm_temp:        44.70000
+    vmain_backplane_bus_voltage:        24.00000
+    vmain_dpb_in:        23.90000
   - _index: 48
     particle_object: CgDclEngDclCpuUptimeTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_cpu_uptime
-    internal_timestamp: 3596487340.592000
-    uptime_string: '28 days 09:10:18'
+    internal_timestamp: 3596487340.5920000
+    port_timestamp: 3596487340.5920000
+    header_timestamp: '2013/12/20 00:15:40.592'
+    load_val_1:         0.84000
+    load_val_2:         0.48000
+    load_val_3:         0.31000
     mem_free: 22336
     num_processes: 83
-    load_val_3:          0.31000
-    load_val_2:          0.48000
-    load_val_1:          0.84000
-    header_timestamp: '2013/12/20 00:15:40.592'
+    uptime_string: '28 days 09:10:18'
   - _index: 49
     particle_object: CgDclEngDclMsgCountsTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_msg_counts
-    internal_timestamp: 3596487340.687000
-    pps_counts: 30
-    superv_counts: 148
-    ntp_counts: 0
+    internal_timestamp: 3596487340.6870003
+    port_timestamp: 3596487340.6870003
+    dlog_mgr_counts: 10
     gps_counts: 600
     header_timestamp: '2013/12/20 00:15:40.687'
-    dlog_mgr_counts: 10
+    ntp_counts: 0
+    pps_counts: 30
+    superv_counts: 148
   - _index: 50
     particle_object: CgDclEngDclGpsTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_gps
-    internal_timestamp: 3596487340.689000
-    latitude_alt_format: '4008.2168 N'
-    gps_true_course:        272.40000
-    gps_speed:          3.20000
-    longitude:        -70.76973
-    gps_quality: 2
-    gps_num_satellites: 7
-    header_timestamp: '2013/12/20 00:15:40.689'
-    message_sent_timestamp: '2013/12/20 00:15:39.792'
-    gps_hdop:          1.00000
+    internal_timestamp: 3596487340.6890001
+    port_timestamp: 3596487340.6890001
     date_of_fix: '201213'
-    latitude:         40.13695
+    gps_altitude:         3.60000
+    gps_hdop:         1.00000
+    gps_num_satellites: 7
+    gps_quality: 2
+    gps_speed:         3.20000
+    gps_true_course:       272.40000
+    header_timestamp: '2013/12/20 00:15:40.689'
+    latitude:        40.13695
+    latitude_alt_format: '4008.2168 N'
+    longitude:       -70.76973
     longitude_alt_format: '07046.1837 W'
-    gps_altitude:          3.60000
+    message_sent_timestamp: '2013/12/20 00:15:39.792'
     time_of_fix: '001539'
   - _index: 51
     particle_object: CgDclEngDclPpsTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_pps
-    internal_timestamp: 3596487340.691000
-    delta_min: 1
+    internal_timestamp: 3596487340.6910000
+    port_timestamp: 3596487340.6910000
     bad_pulses: 0
-    nmea_lock: 1
-    header_timestamp: '2013/12/20 00:15:40.691'
-    message_sent_timestamp: '2013/12/20 00:15:32.000'
     delta: 999916
     delta_max: 89
+    delta_min: 1
+    header_timestamp: '2013/12/20 00:15:40.691'
+    message_sent_timestamp: '2013/12/20 00:15:32.000'
+    nmea_lock: 1
   - _index: 52
     particle_object: CgDclEngDclSupervTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_superv
-    internal_timestamp: 3596487340.692000
+    internal_timestamp: 3596487340.6919999
+    port_timestamp: 3596487340.6919999
     active_leak_detect_channels: 3
     active_swgf_channels: 7
-    bmp085_pressure:         14.50000
-    bmp085_temp:         22.00000
+    bmp085_pressure:        14.50000
+    bmp085_temp:        22.00000
     board_type: 'dcl'
+    channel_error_status: [0, 0, 0, 0, 0, 0, 0, 0]
+    channel_i: [0.0, 0.0, 0.0, 4.9, 0.0, 24.4, 44.0, 58.7]
+    channel_state: [0, 0, 0, 1, 0, 1, 1, 1]
+    channel_v: [0.0, 0.0, 0.0, 12.0, 0.0, 11.9, 24.0, 12.0]
     dpb_mode: 2
     dpb_voltage_mode: 4
-    error_vmain_out_tolerance: 0
-    error_imain_out_tolerance: 0
-    error_dcl_iso_swgf_lim_exceeded: 0
-    error_dcl_rtn_swfg_lim_exceeded: 0
-    error_vmain_swgf_lim_exceeded: 1
-    error_gmain_swgf_lim_exceeded: 1
-    error_sensor_iso_swgf_lim_exceeded: 1
-    error_snsr_com_swgf_lim_exceeded: 0
-    error_leak_detect_c1_lim_exceeded: 0
-    error_leak_detect_c2_lim_exceeded: 0
-    error_channel_overcurrent_fault: 0
     error_channel_1_not_responding: 0
     error_channel_2_not_responding: 0
     error_channel_3_not_responding: 0
+    error_channel_overcurrent_fault: 0
+    error_dcl_iso_swgf_lim_exceeded: 0
+    error_dcl_rtn_swfg_lim_exceeded: 0
+    error_gmain_swgf_lim_exceeded: 1
+    error_imain_out_tolerance: 0
+    error_leak_detect_c1_lim_exceeded: 0
+    error_leak_detect_c2_lim_exceeded: 0
+    error_sensor_iso_swgf_lim_exceeded: 1
+    error_snsr_com_swgf_lim_exceeded: 0
+    error_vmain_out_tolerance: 0
+    error_vmain_swgf_lim_exceeded: 1
     header_timestamp: '2013/12/20 00:15:40.692'
-    imain_current:        609.00000
-    imain_dpb_in:        452.10000
+    imain_current:       609.00000
+    imain_dpb_in:       452.10000
     leak_detect_c1_v: 1248
     leak_detect_c2_v: 1235
-    murata_12v_temp:         25.00000
-    murata_24v_temp:         24.80000
-    out_12v_i:         98.00000
-    out_12v_v:         12.00000
-    out_24v_i:         90.00000
-    out_24v_v:         24.20000
+    murata_12v_temp:        25.00000
+    murata_24v_temp:        24.80000
+    out_12v_i:        98.00000
+    out_12v_v:        12.00000
+    out_24v_i:        90.00000
+    out_24v_v:        24.20000
     pwr_board_mode: 2
-    sht25_humidity:         23.80000
-    sht25_temp:         19.80000
-    swgf_c1_max_leakage:          9.30000
-    swgf_c2_max_leakage:       -536.70000
-    swgf_c3_max_leakage:       -305.60000
-    vicor_12v_bcm_temp:         45.90000
-    vmain_backplane_bus_voltage:         24.20000
-    vmain_dpb_in:         24.10000
-    channel_state: [0, 0, 0, 1, 0, 1, 1, 1]
-    channel_v: [0.0, 0.0, 0.0, 12.0, 0.0, 11.9, 24.0, 12.0]
-    channel_i: [0.0, 0.0, 0.0, 4.9, 0.0, 24.4, 44.0, 58.7]
-    channel_error_status: [0, 0, 0, 0, 0, 0, 0, 0]
+    sht25_humidity:        23.80000
+    sht25_temp:        19.80000
+    swgf_c1_max_leakage:         9.30000
+    swgf_c2_max_leakage:      -536.70000
+    swgf_c3_max_leakage:      -305.60000
+    vicor_12v_bcm_temp:        45.90000
+    vmain_backplane_bus_voltage:        24.20000
+    vmain_dpb_in:        24.10000
   - _index: 53
     particle_object: CgDclEngDclDlogMgrTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_dlog_mgr
-    internal_timestamp: 3596487340.694000
-    dlog_mgr_hlt: 0
-    header_timestamp: '2013/12/20 00:15:40.694'
-    dlog_mgr_map: '000D0DDD'
-    dlog_mgr_fld: 0
+    internal_timestamp: 3596487340.6940002
+    port_timestamp: 3596487340.6940002
     datalogger_timestamp: '2013/12/20 00:15:29.490'
     dlog_mgr_act: 4
+    dlog_mgr_fld: 0
+    dlog_mgr_hlt: 0
+    dlog_mgr_map: '000D0DDD'
     dlog_mgr_str: 4
+    header_timestamp: '2013/12/20 00:15:40.694'
   - _index: 54
     particle_object: CgDclEngDclDlogStatusTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_dlog_status
-    internal_timestamp: 3596487340.695000
-    bytes_logged: 164382
-    instrument_identifier: 'velpt1'
-    bad_records: 0
-    time_last_communicated: null
-    bytes_sent: 16
-    header_timestamp: '2013/12/20 00:15:40.695'
-    message_sent_timestamp: '2013/12/20 00:15:18.012'
-    good_records: 3922
-    time_received_last_data: 1387498309
+    internal_timestamp: 3596487340.6949997
+    port_timestamp: 3596487340.6949997
     bad_bytes: 0
+    bad_records: 0
+    bytes_logged: 164382
     bytes_received: 164394
+    bytes_sent: 16
     datalogger_state: 'DAQ'
+    good_records: 3922
+    header_timestamp: '2013/12/20 00:15:40.695'
+    instrument_identifier: 'velpt1'
+    message_sent_timestamp: '2013/12/20 00:15:18.012'
+    time_last_communicated: Null
+    time_received_last_data: 1387498309
   - _index: 55
     particle_object: CgDclEngDclDlogStatusTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_dlog_status
-    internal_timestamp: 3596487340.697000
-    bytes_logged: 782131
-    instrument_identifier: 'phsen1'
-    bad_records: 0
-    time_last_communicated: null
-    bytes_sent: 1368
-    header_timestamp: '2013/12/20 00:15:40.697'
-    message_sent_timestamp: '2013/12/20 00:15:37.964'
-    good_records: 18613
-    time_received_last_data: 1387498537
+    internal_timestamp: 3596487340.6970000
+    port_timestamp: 3596487340.6970000
     bad_bytes: 0
+    bad_records: 0
+    bytes_logged: 782131
     bytes_received: 79547994
+    bytes_sent: 1368
     datalogger_state: 'DAQ'
+    good_records: 18613
+    header_timestamp: '2013/12/20 00:15:40.697'
+    instrument_identifier: 'phsen1'
+    message_sent_timestamp: '2013/12/20 00:15:37.964'
+    time_last_communicated: Null
+    time_received_last_data: 1387498537
   - _index: 56
     particle_object: CgDclEngDclDlogStatusTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_dlog_status
-    internal_timestamp: 3596487340.704000
-    bytes_logged: 10190703
-    instrument_identifier: 'nutnr'
-    bad_records: 801
-    time_last_communicated: null
-    bytes_sent: 11262
-    header_timestamp: '2013/12/20 00:15:40.704'
-    message_sent_timestamp: '2013/12/20 00:14:57.756'
-    good_records: 111684
-    time_received_last_data: 1387497780
+    internal_timestamp: 3596487340.7040000
+    port_timestamp: 3596487340.7040000
     bad_bytes: 137774
+    bad_records: 801
+    bytes_logged: 10190703
     bytes_received: 14168863
+    bytes_sent: 11262
     datalogger_state: 'IDLE'
+    good_records: 111684
+    header_timestamp: '2013/12/20 00:15:40.704'
+    instrument_identifier: 'nutnr'
+    message_sent_timestamp: '2013/12/20 00:14:57.756'
+    time_last_communicated: Null
+    time_received_last_data: 1387497780
   - _index: 57
     particle_object: CgDclEngDclDlogStatusTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_dlog_status
-    internal_timestamp: 3596487340.705000
-    bytes_logged: 75145471
-    instrument_identifier: 'spkir'
-    bad_records: 0
-    time_last_communicated: null
-    bytes_sent: 16348
-    header_timestamp: '2013/12/20 00:15:40.705'
-    message_sent_timestamp: '2013/12/20 00:15:15.450'
-    good_records: 881061
-    time_received_last_data: 1387498515
+    internal_timestamp: 3596487340.7049999
+    port_timestamp: 3596487340.7049999
     bad_bytes: 0
+    bad_records: 0
+    bytes_logged: 75145471
     bytes_received: 52871900
+    bytes_sent: 16348
     datalogger_state: 'DAQ'
+    good_records: 881061
+    header_timestamp: '2013/12/20 00:15:40.705'
+    instrument_identifier: 'spkir'
+    message_sent_timestamp: '2013/12/20 00:15:15.450'
+    time_last_communicated: Null
+    time_received_last_data: 1387498515
   - _index: 58
     particle_object: CgDclEngDclStatusTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_status
-    internal_timestamp: 3596487340.798000
-    ntp_jitter: null
-    sync_type: ''
-    ntp_offset: null
-    message_sent_type: 'NTP'
+    internal_timestamp: 3596487340.7980003
+    port_timestamp: 3596487340.7980003
     header_timestamp: '2013/12/20 00:15:40.798'
     message_sent_timestamp: '2013/12/20 00:15:40.707'
+    message_sent_type: 'NTP'
+    ntp_jitter: Null
+    ntp_offset: Null
+    sync_type: ''
   - _index: 59
     particle_object: CgDclEngDclErrorTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_error
-    internal_timestamp: 3596487388.642000
-    message_text: 'DLOGP7 Command [(NULL)] Received no recognized response'
+    internal_timestamp: 3596487388.6420002
+    port_timestamp: 3596487388.6420002
     header_timestamp: '2013/12/20 00:16:28.642'
     log_type: 'ERR'
+    message_text: 'DLOGP7 Command [(NULL)] Received no recognized response'
   - _index: 60
     particle_object: CgDclEngDclSupervTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_superv
-    internal_timestamp: 3596487438.703000
+    internal_timestamp: 3596487438.7030001
+    port_timestamp: 3596487438.7030001
     active_leak_detect_channels: 3
     active_swgf_channels: 7
-    bmp085_pressure:         14.50000
-    bmp085_temp:         22.30000
+    bmp085_pressure:        14.50000
+    bmp085_temp:        22.30000
     board_type: 'dcl'
+    channel_error_status: [0, 0, 0, 0, 0, 0, 0, 0]
+    channel_i: [0.0, 0.0, 0.0, 4.9, 0.0, 24.4, 464.3, 0.0]
+    channel_state: [0, 0, 0, 1, 0, 1, 1, 0]
+    channel_v: [0.0, 0.0, 0.0, 11.9, 0.0, 11.9, 23.9, 0.0]
     dpb_mode: 2
     dpb_voltage_mode: 4
-    error_vmain_out_tolerance: 0
-    error_imain_out_tolerance: 0
-    error_dcl_iso_swgf_lim_exceeded: 0
-    error_dcl_rtn_swfg_lim_exceeded: 0
-    error_vmain_swgf_lim_exceeded: 1
-    error_gmain_swgf_lim_exceeded: 1
-    error_sensor_iso_swgf_lim_exceeded: 1
-    error_snsr_com_swgf_lim_exceeded: 0
-    error_leak_detect_c1_lim_exceeded: 0
-    error_leak_detect_c2_lim_exceeded: 0
-    error_channel_overcurrent_fault: 0
     error_channel_1_not_responding: 0
     error_channel_2_not_responding: 0
     error_channel_3_not_responding: 0
+    error_channel_overcurrent_fault: 0
+    error_dcl_iso_swgf_lim_exceeded: 0
+    error_dcl_rtn_swfg_lim_exceeded: 0
+    error_gmain_swgf_lim_exceeded: 1
+    error_imain_out_tolerance: 0
+    error_leak_detect_c1_lim_exceeded: 0
+    error_leak_detect_c2_lim_exceeded: 0
+    error_sensor_iso_swgf_lim_exceeded: 1
+    error_snsr_com_swgf_lim_exceeded: 0
+    error_vmain_out_tolerance: 0
+    error_vmain_swgf_lim_exceeded: 1
     header_timestamp: '2013/12/20 00:17:18.703'
-    imain_current:       1015.00000
-    imain_dpb_in:        856.20000
+    imain_current:      1015.00000
+    imain_dpb_in:       856.20000
     leak_detect_c1_v: 1248
     leak_detect_c2_v: 1233
-    murata_12v_temp:         25.00000
-    murata_24v_temp:         25.00000
-    out_12v_i:         34.00000
-    out_12v_v:         12.00000
-    out_24v_i:        528.10000
-    out_24v_v:         24.10000
+    murata_12v_temp:        25.00000
+    murata_24v_temp:        25.00000
+    out_12v_i:        34.00000
+    out_12v_v:        12.00000
+    out_24v_i:       528.10000
+    out_24v_v:        24.10000
     pwr_board_mode: 2
-    sht25_humidity:         23.80000
-    sht25_temp:         20.40000
-    swgf_c1_max_leakage:          9.30000
-    swgf_c2_max_leakage:       -536.70000
-    swgf_c3_max_leakage:       -305.60000
-    vicor_12v_bcm_temp:         45.90000
-    vmain_backplane_bus_voltage:         23.60000
-    vmain_dpb_in:         23.50000
-    channel_state: [0, 0, 0, 1, 0, 1, 1, 0]
-    channel_v: [0.0, 0.0, 0.0, 11.9, 0.0, 11.9, 23.9, 0.0]
-    channel_i: [0.0, 0.0, 0.0, 4.9, 0.0, 24.4, 464.3, 0.0]
-    channel_error_status: [0, 0, 0, 0, 0, 0, 0, 0]
+    sht25_humidity:        23.80000
+    sht25_temp:        20.40000
+    swgf_c1_max_leakage:         9.30000
+    swgf_c2_max_leakage:      -536.70000
+    swgf_c3_max_leakage:      -305.60000
+    vicor_12v_bcm_temp:        45.90000
+    vmain_backplane_bus_voltage:        23.60000
+    vmain_dpb_in:        23.50000
   - _index: 61
     particle_object: CgDclEngDclSupervTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_superv
-    internal_timestamp: 3596487498.742000
+    internal_timestamp: 3596487498.7420001
+    port_timestamp: 3596487498.7420001
     active_leak_detect_channels: 3
     active_swgf_channels: 7
-    bmp085_pressure:         14.50000
-    bmp085_temp:         22.40000
+    bmp085_pressure:        14.50000
+    bmp085_temp:        22.40000
     board_type: 'dcl'
+    channel_error_status: [0, 0, 0, 0, 0, 0, 0, 0]
+    channel_i: [0.0, 0.0, 0.0, 4.9, 0.0, 24.4, 0.0, 0.0]
+    channel_state: [0, 0, 0, 1, 0, 1, 0, 0]
+    channel_v: [0.0, 0.0, 0.0, 12.0, 0.0, 12.0, 0.0, 0.0]
     dpb_mode: 2
     dpb_voltage_mode: 3
-    error_vmain_out_tolerance: 0
-    error_imain_out_tolerance: 0
-    error_dcl_iso_swgf_lim_exceeded: 0
-    error_dcl_rtn_swfg_lim_exceeded: 0
-    error_vmain_swgf_lim_exceeded: 1
-    error_gmain_swgf_lim_exceeded: 1
-    error_sensor_iso_swgf_lim_exceeded: 1
-    error_snsr_com_swgf_lim_exceeded: 0
-    error_leak_detect_c1_lim_exceeded: 0
-    error_leak_detect_c2_lim_exceeded: 0
-    error_channel_overcurrent_fault: 0
     error_channel_1_not_responding: 0
     error_channel_2_not_responding: 0
     error_channel_3_not_responding: 0
+    error_channel_overcurrent_fault: 0
+    error_dcl_iso_swgf_lim_exceeded: 0
+    error_dcl_rtn_swfg_lim_exceeded: 0
+    error_gmain_swgf_lim_exceeded: 1
+    error_imain_out_tolerance: 0
+    error_leak_detect_c1_lim_exceeded: 0
+    error_leak_detect_c2_lim_exceeded: 0
+    error_sensor_iso_swgf_lim_exceeded: 1
+    error_snsr_com_swgf_lim_exceeded: 0
+    error_vmain_out_tolerance: 0
+    error_vmain_swgf_lim_exceeded: 1
     header_timestamp: '2013/12/20 00:18:18.742'
-    imain_current:        378.00000
-    imain_dpb_in:        248.10000
+    imain_current:       378.00000
+    imain_dpb_in:       248.10000
     leak_detect_c1_v: 1252
     leak_detect_c2_v: 1245
-    murata_12v_temp:         25.30000
-    murata_24v_temp:         24.80000
-    out_12v_i:         30.00000
-    out_12v_v:         12.00000
-    out_24v_i:          0.00000
-    out_24v_v:          0.00000
+    murata_12v_temp:        25.30000
+    murata_24v_temp:        24.80000
+    out_12v_i:        30.00000
+    out_12v_v:        12.00000
+    out_24v_i:         0.00000
+    out_24v_v:         0.00000
     pwr_board_mode: 2
-    sht25_humidity:         23.30000
-    sht25_temp:         20.40000
-    swgf_c1_max_leakage:          9.30000
-    swgf_c2_max_leakage:       -524.60000
-    swgf_c3_max_leakage:       -577.00000
-    vicor_12v_bcm_temp:         47.10000
-    vmain_backplane_bus_voltage:         24.40000
-    vmain_dpb_in:         24.30000
-    channel_state: [0, 0, 0, 1, 0, 1, 0, 0]
-    channel_v: [0.0, 0.0, 0.0, 12.0, 0.0, 12.0, 0.0, 0.0]
-    channel_i: [0.0, 0.0, 0.0, 4.9, 0.0, 24.4, 0.0, 0.0]
-    channel_error_status: [0, 0, 0, 0, 0, 0, 0, 0]
+    sht25_humidity:        23.30000
+    sht25_temp:        20.40000
+    swgf_c1_max_leakage:         9.30000
+    swgf_c2_max_leakage:      -524.60000
+    swgf_c3_max_leakage:      -577.00000
+    vicor_12v_bcm_temp:        47.10000
+    vmain_backplane_bus_voltage:        24.40000
+    vmain_dpb_in:        24.30000
   - _index: 62
     particle_object: CgDclEngDclErrorTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_error
-    internal_timestamp: 3596487506.804000
-    message_text: 'DLOGP7 Command [G] Received no recognized response'
+    internal_timestamp: 3596487506.8039999
+    port_timestamp: 3596487506.8039999
     header_timestamp: '2013/12/20 00:18:26.804'
     log_type: 'ERR'
+    message_text: 'DLOGP7 Command [G] Received no recognized response'
   - _index: 63
     particle_object: CgDclEngDclSupervTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_superv
-    internal_timestamp: 3596487604.867000
+    internal_timestamp: 3596487604.8670001
+    port_timestamp: 3596487604.8670001
     active_leak_detect_channels: 3
     active_swgf_channels: 7
-    bmp085_pressure:         14.50000
-    bmp085_temp:         22.30000
+    bmp085_pressure:        14.50000
+    bmp085_temp:        22.30000
     board_type: 'dcl'
+    channel_error_status: [0, 0, 0, 0, 0, 0, 0, 1]
+    channel_i: [0.0, 0.0, 0.0, 4.9, 0.0, 24.4, 0.0, 0.0]
+    channel_state: [0, 0, 0, 1, 0, 1, 0, 0]
+    channel_v: [0.0, 0.0, 0.0, 12.0, 0.0, 12.0, 0.0, 1.1]
     dpb_mode: 2
     dpb_voltage_mode: 3
-    error_vmain_out_tolerance: 0
-    error_imain_out_tolerance: 0
-    error_dcl_iso_swgf_lim_exceeded: 0
-    error_dcl_rtn_swfg_lim_exceeded: 0
-    error_vmain_swgf_lim_exceeded: 1
-    error_gmain_swgf_lim_exceeded: 1
-    error_sensor_iso_swgf_lim_exceeded: 1
-    error_snsr_com_swgf_lim_exceeded: 0
-    error_leak_detect_c1_lim_exceeded: 0
-    error_leak_detect_c2_lim_exceeded: 0
-    error_channel_overcurrent_fault: 1
     error_channel_1_not_responding: 0
     error_channel_2_not_responding: 0
     error_channel_3_not_responding: 0
+    error_channel_overcurrent_fault: 1
+    error_dcl_iso_swgf_lim_exceeded: 0
+    error_dcl_rtn_swfg_lim_exceeded: 0
+    error_gmain_swgf_lim_exceeded: 1
+    error_imain_out_tolerance: 0
+    error_leak_detect_c1_lim_exceeded: 0
+    error_leak_detect_c2_lim_exceeded: 0
+    error_sensor_iso_swgf_lim_exceeded: 1
+    error_snsr_com_swgf_lim_exceeded: 0
+    error_vmain_out_tolerance: 0
+    error_vmain_swgf_lim_exceeded: 1
     header_timestamp: '2013/12/20 00:20:04.867'
-    imain_current:        384.00000
-    imain_dpb_in:        250.10000
+    imain_current:       384.00000
+    imain_dpb_in:       250.10000
     leak_detect_c1_v: 1248
     leak_detect_c2_v: 1233
-    murata_12v_temp:         25.30000
-    murata_24v_temp:         25.30000
-    out_12v_i:         28.00000
-    out_12v_v:         12.00000
-    out_24v_i:          0.00000
-    out_24v_v:          0.00000
+    murata_12v_temp:        25.30000
+    murata_24v_temp:        25.30000
+    out_12v_i:        28.00000
+    out_12v_v:        12.00000
+    out_24v_i:         0.00000
+    out_24v_v:         0.00000
     pwr_board_mode: 2
-    sht25_humidity:         23.30000
-    sht25_temp:         20.40000
-    swgf_c1_max_leakage:          9.30000
-    swgf_c2_max_leakage:       -524.60000
-    swgf_c3_max_leakage:       -577.00000
-    vicor_12v_bcm_temp:         45.90000
-    vmain_backplane_bus_voltage:         24.40000
-    vmain_dpb_in:         24.20000
-    channel_state: [0, 0, 0, 1, 0, 1, 0, 0]
-    channel_v: [0.0, 0.0, 0.0, 12.0, 0.0, 12.0, 0.0, 1.1]
-    channel_i: [0.0, 0.0, 0.0, 4.9, 0.0, 24.4, 0.0, 0.0]
-    channel_error_status: [0, 0, 0, 0, 0, 0, 0, 1]
+    sht25_humidity:        23.30000
+    sht25_temp:        20.40000
+    swgf_c1_max_leakage:         9.30000
+    swgf_c2_max_leakage:      -524.60000
+    swgf_c3_max_leakage:      -577.00000
+    vicor_12v_bcm_temp:        45.90000
+    vmain_backplane_bus_voltage:        24.40000
+    vmain_dpb_in:        24.20000
   - _index: 64
     particle_object: CgDclEngDclSupervTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_superv
-    internal_timestamp: 3596487606.878000
+    internal_timestamp: 3596487606.8780003
+    port_timestamp: 3596487606.8780003
     active_leak_detect_channels: 3
     active_swgf_channels: 7
-    bmp085_pressure:         14.50000
-    bmp085_temp:         22.30000
+    bmp085_pressure:        14.50000
+    bmp085_temp:        22.30000
     board_type: 'dcl'
+    channel_error_status: [0, 0, 0, 0, 0, 0, 0, 1]
+    channel_i: [0.0, 0.0, 0.0, 4.9, 0.0, 24.4, 0.0, 19.6]
+    channel_state: [0, 0, 0, 1, 0, 1, 0, 1]
+    channel_v: [0.0, 0.0, 0.0, 11.9, 0.0, 12.0, 0.0, 12.0]
     dpb_mode: 2
     dpb_voltage_mode: 3
-    error_vmain_out_tolerance: 0
-    error_imain_out_tolerance: 0
-    error_dcl_iso_swgf_lim_exceeded: 0
-    error_dcl_rtn_swfg_lim_exceeded: 0
-    error_vmain_swgf_lim_exceeded: 1
-    error_gmain_swgf_lim_exceeded: 1
-    error_sensor_iso_swgf_lim_exceeded: 1
-    error_snsr_com_swgf_lim_exceeded: 0
-    error_leak_detect_c1_lim_exceeded: 0
-    error_leak_detect_c2_lim_exceeded: 0
-    error_channel_overcurrent_fault: 1
     error_channel_1_not_responding: 0
     error_channel_2_not_responding: 0
     error_channel_3_not_responding: 0
+    error_channel_overcurrent_fault: 1
+    error_dcl_iso_swgf_lim_exceeded: 0
+    error_dcl_rtn_swfg_lim_exceeded: 0
+    error_gmain_swgf_lim_exceeded: 1
+    error_imain_out_tolerance: 0
+    error_leak_detect_c1_lim_exceeded: 0
+    error_leak_detect_c2_lim_exceeded: 0
+    error_sensor_iso_swgf_lim_exceeded: 1
+    error_snsr_com_swgf_lim_exceeded: 0
+    error_vmain_out_tolerance: 0
+    error_vmain_swgf_lim_exceeded: 1
     header_timestamp: '2013/12/20 00:20:06.878'
-    imain_current:        399.00000
-    imain_dpb_in:        264.10000
+    imain_current:       399.00000
+    imain_dpb_in:       264.10000
     leak_detect_c1_v: 1250
     leak_detect_c2_v: 1233
-    murata_12v_temp:         25.60000
-    murata_24v_temp:         25.00000
-    out_12v_i:         50.00000
-    out_12v_v:         12.00000
-    out_24v_i:          0.00000
-    out_24v_v:          0.00000
+    murata_12v_temp:        25.60000
+    murata_24v_temp:        25.00000
+    out_12v_i:        50.00000
+    out_12v_v:        12.00000
+    out_24v_i:         0.00000
+    out_24v_v:         0.00000
     pwr_board_mode: 2
-    sht25_humidity:         23.30000
-    sht25_temp:         20.40000
-    swgf_c1_max_leakage:          9.30000
-    swgf_c2_max_leakage:       -524.60000
-    swgf_c3_max_leakage:       -577.00000
-    vicor_12v_bcm_temp:         45.90000
-    vmain_backplane_bus_voltage:         24.30000
-    vmain_dpb_in:         24.10000
-    channel_state: [0, 0, 0, 1, 0, 1, 0, 1]
-    channel_v: [0.0, 0.0, 0.0, 11.9, 0.0, 12.0, 0.0, 12.0]
-    channel_i: [0.0, 0.0, 0.0, 4.9, 0.0, 24.4, 0.0, 19.6]
-    channel_error_status: [0, 0, 0, 0, 0, 0, 0, 1]
+    sht25_humidity:        23.30000
+    sht25_temp:        20.40000
+    swgf_c1_max_leakage:         9.30000
+    swgf_c2_max_leakage:      -524.60000
+    swgf_c3_max_leakage:      -577.00000
+    vicor_12v_bcm_temp:        45.90000
+    vmain_backplane_bus_voltage:        24.30000
+    vmain_dpb_in:        24.10000
   - _index: 65
     particle_object: CgDclEngDclCpuUptimeTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_cpu_uptime
-    internal_timestamp: 3596487640.915000
-    uptime_string: '28 days 09:15:18'
+    internal_timestamp: 3596487640.9150000
+    port_timestamp: 3596487640.9150000
+    header_timestamp: '2013/12/20 00:20:40.915'
+    load_val_1:         0.18000
+    load_val_2:         0.34000
+    load_val_3:         0.30000
     mem_free: 22996
     num_processes: 81
-    load_val_3:          0.30000
-    load_val_2:          0.34000
-    load_val_1:          0.18000
-    header_timestamp: '2013/12/20 00:20:40.915'
+    uptime_string: '28 days 09:15:18'
   - _index: 66
     particle_object: CgDclEngDclMsgCountsTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_msg_counts
-    internal_timestamp: 3596487640.984000
-    pps_counts: 30
-    superv_counts: 148
-    ntp_counts: 0
+    internal_timestamp: 3596487640.9840002
+    port_timestamp: 3596487640.9840002
+    dlog_mgr_counts: 9
     gps_counts: 602
     header_timestamp: '2013/12/20 00:20:40.984'
-    dlog_mgr_counts: 9
+    ntp_counts: 0
+    pps_counts: 30
+    superv_counts: 148
   - _index: 67
     particle_object: CgDclEngDclGpsTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_gps
-    internal_timestamp: 3596487640.986000
-    latitude_alt_format: '4008.2166 N'
-    gps_true_course:        130.30000
-    gps_speed:          2.10000
-    longitude:        -70.76970
-    gps_quality: 2
-    gps_num_satellites: 8
-    header_timestamp: '2013/12/20 00:20:40.986'
-    message_sent_timestamp: '2013/12/20 00:20:40.791'
-    gps_hdop:          1.00000
+    internal_timestamp: 3596487640.9860001
+    port_timestamp: 3596487640.9860001
     date_of_fix: '201213'
-    latitude:         40.13694
+    gps_altitude:         6.50000
+    gps_hdop:         1.00000
+    gps_num_satellites: 8
+    gps_quality: 2
+    gps_speed:         2.10000
+    gps_true_course:       130.30000
+    header_timestamp: '2013/12/20 00:20:40.986'
+    latitude:        40.13694
+    latitude_alt_format: '4008.2166 N'
+    longitude:       -70.76970
     longitude_alt_format: '07046.1819 W'
-    gps_altitude:          6.50000
+    message_sent_timestamp: '2013/12/20 00:20:40.791'
     time_of_fix: '002040'
   - _index: 68
     particle_object: CgDclEngDclPpsTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_pps
-    internal_timestamp: 3596487640.987000
-    delta_min: 1
+    internal_timestamp: 3596487640.9870000
+    port_timestamp: 3596487640.9870000
     bad_pulses: 0
-    nmea_lock: 1
-    header_timestamp: '2013/12/20 00:20:40.987'
-    message_sent_timestamp: '2013/12/20 00:20:32.000'
     delta: 999999
     delta_max: -22
+    delta_min: 1
+    header_timestamp: '2013/12/20 00:20:40.987'
+    message_sent_timestamp: '2013/12/20 00:20:32.000'
+    nmea_lock: 1
   - _index: 69
     particle_object: CgDclEngDclSupervTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_superv
-    internal_timestamp: 3596487640.988000
+    internal_timestamp: 3596487640.9879999
+    port_timestamp: 3596487640.9879999
     active_leak_detect_channels: 3
     active_swgf_channels: 7
-    bmp085_pressure:         14.50000
-    bmp085_temp:         22.30000
+    bmp085_pressure:        14.50000
+    bmp085_temp:        22.30000
     board_type: 'dcl'
+    channel_error_status: [0, 0, 0, 0, 0, 0, 0, 1]
+    channel_i: [0.0, 0.0, 0.0, 4.9, 0.0, 24.4, 0.0, 39.1]
+    channel_state: [0, 0, 0, 1, 0, 1, 0, 1]
+    channel_v: [0.0, 0.0, 0.0, 12.0, 0.0, 12.0, 0.0, 12.0]
     dpb_mode: 2
     dpb_voltage_mode: 3
-    error_vmain_out_tolerance: 0
-    error_imain_out_tolerance: 0
-    error_dcl_iso_swgf_lim_exceeded: 0
-    error_dcl_rtn_swfg_lim_exceeded: 0
-    error_vmain_swgf_lim_exceeded: 1
-    error_gmain_swgf_lim_exceeded: 1
-    error_sensor_iso_swgf_lim_exceeded: 1
-    error_snsr_com_swgf_lim_exceeded: 0
-    error_leak_detect_c1_lim_exceeded: 0
-    error_leak_detect_c2_lim_exceeded: 0
-    error_channel_overcurrent_fault: 1
     error_channel_1_not_responding: 0
     error_channel_2_not_responding: 0
     error_channel_3_not_responding: 0
+    error_channel_overcurrent_fault: 1
+    error_dcl_iso_swgf_lim_exceeded: 0
+    error_dcl_rtn_swfg_lim_exceeded: 0
+    error_gmain_swgf_lim_exceeded: 1
+    error_imain_out_tolerance: 0
+    error_leak_detect_c1_lim_exceeded: 0
+    error_leak_detect_c2_lim_exceeded: 0
+    error_sensor_iso_swgf_lim_exceeded: 1
+    error_snsr_com_swgf_lim_exceeded: 0
+    error_vmain_out_tolerance: 0
+    error_vmain_swgf_lim_exceeded: 1
     header_timestamp: '2013/12/20 00:20:40.988'
-    imain_current:        407.00000
-    imain_dpb_in:        276.10000
+    imain_current:       407.00000
+    imain_dpb_in:       276.10000
     leak_detect_c1_v: 1250
     leak_detect_c2_v: 1233
-    murata_12v_temp:         25.30000
-    murata_24v_temp:         25.00000
-    out_12v_i:         70.00000
-    out_12v_v:         12.00000
-    out_24v_i:          0.00000
-    out_24v_v:          0.00000
+    murata_12v_temp:        25.30000
+    murata_24v_temp:        25.00000
+    out_12v_i:        70.00000
+    out_12v_v:        12.00000
+    out_24v_i:         0.00000
+    out_24v_v:         0.00000
     pwr_board_mode: 2
-    sht25_humidity:         23.30000
-    sht25_temp:         20.40000
-    swgf_c1_max_leakage:          9.30000
-    swgf_c2_max_leakage:       -524.60000
-    swgf_c3_max_leakage:       -577.00000
-    vicor_12v_bcm_temp:         45.90000
-    vmain_backplane_bus_voltage:         24.50000
-    vmain_dpb_in:         24.40000
-    channel_state: [0, 0, 0, 1, 0, 1, 0, 1]
-    channel_v: [0.0, 0.0, 0.0, 12.0, 0.0, 12.0, 0.0, 12.0]
-    channel_i: [0.0, 0.0, 0.0, 4.9, 0.0, 24.4, 0.0, 39.1]
-    channel_error_status: [0, 0, 0, 0, 0, 0, 0, 1]
+    sht25_humidity:        23.30000
+    sht25_temp:        20.40000
+    swgf_c1_max_leakage:         9.30000
+    swgf_c2_max_leakage:      -524.60000
+    swgf_c3_max_leakage:      -577.00000
+    vicor_12v_bcm_temp:        45.90000
+    vmain_backplane_bus_voltage:        24.50000
+    vmain_dpb_in:        24.40000
   - _index: 70
     particle_object: CgDclEngDclDlogMgrTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_dlog_mgr
-    internal_timestamp: 3596487640.989000
-    dlog_mgr_hlt: 0
-    header_timestamp: '2013/12/20 00:20:40.989'
-    dlog_mgr_map: '000D0DDD'
-    dlog_mgr_fld: 0
+    internal_timestamp: 3596487640.9890003
+    port_timestamp: 3596487640.9890003
     datalogger_timestamp: '2013/12/20 00:20:17.461'
     dlog_mgr_act: 4
+    dlog_mgr_fld: 0
+    dlog_mgr_hlt: 0
+    dlog_mgr_map: '000D0DDD'
     dlog_mgr_str: 4
+    header_timestamp: '2013/12/20 00:20:40.989'
   - _index: 71
     particle_object: CgDclEngDclDlogStatusTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_dlog_status
-    internal_timestamp: 3596487640.990000
-    bytes_logged: 164382
-    instrument_identifier: 'velpt1'
-    bad_records: 0
-    time_last_communicated: null
-    bytes_sent: 16
-    header_timestamp: '2013/12/20 00:20:40.990'
-    message_sent_timestamp: '2013/12/20 00:20:39.047'
-    good_records: 3922
-    time_received_last_data: 1387498309
+    internal_timestamp: 3596487640.9899998
+    port_timestamp: 3596487640.9899998
     bad_bytes: 0
+    bad_records: 0
+    bytes_logged: 164382
     bytes_received: 164394
+    bytes_sent: 16
     datalogger_state: 'DAQ'
+    good_records: 3922
+    header_timestamp: '2013/12/20 00:20:40.990'
+    instrument_identifier: 'velpt1'
+    message_sent_timestamp: '2013/12/20 00:20:39.047'
+    time_last_communicated: Null
+    time_received_last_data: 1387498309
   - _index: 72
     particle_object: CgDclEngDclDlogStatusTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_dlog_status
-    internal_timestamp: 3596487640.991000
-    bytes_logged: 782171
-    instrument_identifier: 'phsen1'
-    bad_records: 0
-    time_last_communicated: null
-    bytes_sent: 1370
-    header_timestamp: '2013/12/20 00:20:40.991'
-    message_sent_timestamp: '2013/12/20 00:20:18.021'
-    good_records: 18614
-    time_received_last_data: 1387498738
+    internal_timestamp: 3596487640.9910002
+    port_timestamp: 3596487640.9910002
     bad_bytes: 0
+    bad_records: 0
+    bytes_logged: 782171
     bytes_received: 79554745
+    bytes_sent: 1370
     datalogger_state: 'DAQ'
+    good_records: 18614
+    header_timestamp: '2013/12/20 00:20:40.991'
+    instrument_identifier: 'phsen1'
+    message_sent_timestamp: '2013/12/20 00:20:18.021'
+    time_last_communicated: Null
+    time_received_last_data: 1387498738
   - _index: 73
     particle_object: CgDclEngDclDlogStatusTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_dlog_status
-    internal_timestamp: 3596487640.992000
-    bytes_logged: 10194592
-    instrument_identifier: 'nutnr'
-    bad_records: 802
-    time_last_communicated: null
-    bytes_sent: 11266
-    header_timestamp: '2013/12/20 00:20:40.992'
-    message_sent_timestamp: '2013/12/20 00:20:36.807'
-    good_records: 111725
-    time_received_last_data: 1387498679
+    internal_timestamp: 3596487640.9920001
+    port_timestamp: 3596487640.9920001
     bad_bytes: 137946
+    bad_records: 802
+    bytes_logged: 10194592
     bytes_received: 14173982
+    bytes_sent: 11266
     datalogger_state: 'IDLE'
+    good_records: 111725
+    header_timestamp: '2013/12/20 00:20:40.992'
+    instrument_identifier: 'nutnr'
+    message_sent_timestamp: '2013/12/20 00:20:36.807'
+    time_last_communicated: Null
+    time_received_last_data: 1387498679
   - _index: 74
     particle_object: CgDclEngDclDlogStatusTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_dlog_status
-    internal_timestamp: 3596487640.993000
-    bytes_logged: 75156026
-    instrument_identifier: 'spkir'
-    bad_records: 0
-    time_last_communicated: null
-    bytes_sent: 16350
-    header_timestamp: '2013/12/20 00:20:40.993'
-    message_sent_timestamp: '2013/12/20 00:20:31.975'
-    good_records: 881185
-    time_received_last_data: 1387498831
+    internal_timestamp: 3596487640.9930000
+    port_timestamp: 3596487640.9930000
     bad_bytes: 0
+    bad_records: 0
+    bytes_logged: 75156026
     bytes_received: 52879341
+    bytes_sent: 16350
     datalogger_state: 'DAQ'
+    good_records: 881185
+    header_timestamp: '2013/12/20 00:20:40.993'
+    instrument_identifier: 'spkir'
+    message_sent_timestamp: '2013/12/20 00:20:31.975'
+    time_last_communicated: Null
+    time_received_last_data: 1387498831
   - _index: 75
     particle_object: CgDclEngDclStatusTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_status
-    internal_timestamp: 3596487641.079000
-    ntp_jitter: null
-    sync_type: ''
-    ntp_offset: null
-    message_sent_type: 'NTP'
+    internal_timestamp: 3596487641.0790000
+    port_timestamp: 3596487641.0790000
     header_timestamp: '2013/12/20 00:20:41.079'
     message_sent_timestamp: '2013/12/20 00:20:40.994'
+    message_sent_type: 'NTP'
+    ntp_jitter: Null
+    ntp_offset: Null
+    sync_type: ''
   - _index: 76
     particle_object: CgDclEngDclSupervTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_superv
-    internal_timestamp: 3596487739.005000
+    internal_timestamp: 3596487739.0050001
+    port_timestamp: 3596487739.0050001
     active_leak_detect_channels: 3
     active_swgf_channels: 7
-    bmp085_pressure:         14.50000
-    bmp085_temp:         22.20000
+    bmp085_pressure:        14.50000
+    bmp085_temp:        22.20000
     board_type: 'dcl'
+    channel_error_status: [0, 0, 0, 0, 0, 0, 0, 0]
+    channel_i: [0.0, 0.0, 0.0, 9.8, 0.0, 24.4, 0.0, 0.0]
+    channel_state: [0, 0, 0, 1, 0, 1, 0, 0]
+    channel_v: [0.0, 0.0, 0.0, 12.0, 0.0, 12.0, 0.0, 0.0]
     dpb_mode: 2
     dpb_voltage_mode: 3
-    error_vmain_out_tolerance: 0
-    error_imain_out_tolerance: 0
-    error_dcl_iso_swgf_lim_exceeded: 0
-    error_dcl_rtn_swfg_lim_exceeded: 0
-    error_vmain_swgf_lim_exceeded: 1
-    error_gmain_swgf_lim_exceeded: 1
-    error_sensor_iso_swgf_lim_exceeded: 1
-    error_snsr_com_swgf_lim_exceeded: 0
-    error_leak_detect_c1_lim_exceeded: 0
-    error_leak_detect_c2_lim_exceeded: 0
-    error_channel_overcurrent_fault: 0
     error_channel_1_not_responding: 0
     error_channel_2_not_responding: 0
     error_channel_3_not_responding: 0
+    error_channel_overcurrent_fault: 0
+    error_dcl_iso_swgf_lim_exceeded: 0
+    error_dcl_rtn_swfg_lim_exceeded: 0
+    error_gmain_swgf_lim_exceeded: 1
+    error_imain_out_tolerance: 0
+    error_leak_detect_c1_lim_exceeded: 0
+    error_leak_detect_c2_lim_exceeded: 0
+    error_sensor_iso_swgf_lim_exceeded: 1
+    error_snsr_com_swgf_lim_exceeded: 0
+    error_vmain_out_tolerance: 0
+    error_vmain_swgf_lim_exceeded: 1
     header_timestamp: '2013/12/20 00:22:19.005'
-    imain_current:        373.00000
-    imain_dpb_in:        254.10000
+    imain_current:       373.00000
+    imain_dpb_in:       254.10000
     leak_detect_c1_v: 1252
     leak_detect_c2_v: 1233
-    murata_12v_temp:         25.30000
-    murata_24v_temp:         25.00000
-    out_12v_i:         34.00000
-    out_12v_v:         12.00000
-    out_24v_i:          0.00000
-    out_24v_v:          0.00000
+    murata_12v_temp:        25.30000
+    murata_24v_temp:        25.00000
+    out_12v_i:        34.00000
+    out_12v_v:        12.00000
+    out_24v_i:         0.00000
+    out_24v_v:         0.00000
     pwr_board_mode: 2
-    sht25_humidity:         23.80000
-    sht25_temp:         19.90000
-    swgf_c1_max_leakage:          9.30000
-    swgf_c2_max_leakage:       -524.60000
-    swgf_c3_max_leakage:       -577.00000
-    vicor_12v_bcm_temp:         45.90000
-    vmain_backplane_bus_voltage:         24.30000
-    vmain_dpb_in:         24.20000
-    channel_state: [0, 0, 0, 1, 0, 1, 0, 0]
-    channel_v: [0.0, 0.0, 0.0, 12.0, 0.0, 12.0, 0.0, 0.0]
-    channel_i: [0.0, 0.0, 0.0, 9.8, 0.0, 24.4, 0.0, 0.0]
-    channel_error_status: [0, 0, 0, 0, 0, 0, 0, 0]
+    sht25_humidity:        23.80000
+    sht25_temp:        19.90000
+    swgf_c1_max_leakage:         9.30000
+    swgf_c2_max_leakage:      -524.60000
+    swgf_c3_max_leakage:      -577.00000
+    vicor_12v_bcm_temp:        45.90000
+    vmain_backplane_bus_voltage:        24.30000
+    vmain_dpb_in:        24.20000
   - _index: 77
     particle_object: CgDclEngDclSupervTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_superv
-    internal_timestamp: 3596487907.210000
+    internal_timestamp: 3596487907.2100000
+    port_timestamp: 3596487907.2100000
     active_leak_detect_channels: 3
     active_swgf_channels: 7
-    bmp085_pressure:         14.50000
-    bmp085_temp:         22.10000
+    bmp085_pressure:        14.50000
+    bmp085_temp:        22.10000
     board_type: 'dcl'
+    channel_error_status: [0, 0, 0, 0, 0, 0, 0, 0]
+    channel_i: [0.0, 0.0, 0.0, 9.8, 0.0, 24.4, 0.0, 234.6]
+    channel_state: [0, 0, 0, 1, 0, 1, 0, 1]
+    channel_v: [0.0, 0.0, 0.0, 11.9, 0.0, 11.9, 0.0, 12.0]
     dpb_mode: 2
     dpb_voltage_mode: 3
-    error_vmain_out_tolerance: 0
-    error_imain_out_tolerance: 0
-    error_dcl_iso_swgf_lim_exceeded: 0
-    error_dcl_rtn_swfg_lim_exceeded: 0
-    error_vmain_swgf_lim_exceeded: 1
-    error_gmain_swgf_lim_exceeded: 1
-    error_sensor_iso_swgf_lim_exceeded: 1
-    error_snsr_com_swgf_lim_exceeded: 0
-    error_leak_detect_c1_lim_exceeded: 0
-    error_leak_detect_c2_lim_exceeded: 0
-    error_channel_overcurrent_fault: 0
     error_channel_1_not_responding: 0
     error_channel_2_not_responding: 0
     error_channel_3_not_responding: 0
+    error_channel_overcurrent_fault: 0
+    error_dcl_iso_swgf_lim_exceeded: 0
+    error_dcl_rtn_swfg_lim_exceeded: 0
+    error_gmain_swgf_lim_exceeded: 1
+    error_imain_out_tolerance: 0
+    error_leak_detect_c1_lim_exceeded: 0
+    error_leak_detect_c2_lim_exceeded: 0
+    error_sensor_iso_swgf_lim_exceeded: 1
+    error_snsr_com_swgf_lim_exceeded: 0
+    error_vmain_out_tolerance: 0
+    error_vmain_swgf_lim_exceeded: 1
     header_timestamp: '2013/12/20 00:25:07.210'
-    imain_current:        539.00000
-    imain_dpb_in:        402.10000
+    imain_current:       539.00000
+    imain_dpb_in:       402.10000
     leak_detect_c1_v: 1250
     leak_detect_c2_v: 1230
-    murata_12v_temp:         25.30000
-    murata_24v_temp:         25.00000
-    out_12v_i:        290.10000
-    out_12v_v:         12.00000
-    out_24v_i:          0.00000
-    out_24v_v:          0.00000
+    murata_12v_temp:        25.30000
+    murata_24v_temp:        25.00000
+    out_12v_i:       290.10000
+    out_12v_v:        12.00000
+    out_24v_i:         0.00000
+    out_24v_v:         0.00000
     pwr_board_mode: 2
-    sht25_humidity:         23.80000
-    sht25_temp:         19.80000
-    swgf_c1_max_leakage:         16.50000
-    swgf_c2_max_leakage:       -546.00000
-    swgf_c3_max_leakage:       -312.10000
-    vicor_12v_bcm_temp:         44.10000
-    vmain_backplane_bus_voltage:         24.00000
-    vmain_dpb_in:         23.90000
-    channel_state: [0, 0, 0, 1, 0, 1, 0, 1]
-    channel_v: [0.0, 0.0, 0.0, 11.9, 0.0, 11.9, 0.0, 12.0]
-    channel_i: [0.0, 0.0, 0.0, 9.8, 0.0, 24.4, 0.0, 234.6]
-    channel_error_status: [0, 0, 0, 0, 0, 0, 0, 0]
+    sht25_humidity:        23.80000
+    sht25_temp:        19.80000
+    swgf_c1_max_leakage:        16.50000
+    swgf_c2_max_leakage:      -546.00000
+    swgf_c3_max_leakage:      -312.10000
+    vicor_12v_bcm_temp:        44.10000
+    vmain_backplane_bus_voltage:        24.00000
+    vmain_dpb_in:        23.90000
   - _index: 78
     particle_object: CgDclEngDclCpuUptimeTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_cpu_uptime
-    internal_timestamp: 3596487941.242000
-    uptime_string: '28 days 09:20:19'
+    internal_timestamp: 3596487941.2420001
+    port_timestamp: 3596487941.2420001
+    header_timestamp: '2013/12/20 00:25:41.242'
+    load_val_1:         0.17000
+    load_val_2:         0.21000
+    load_val_3:         0.24000
     mem_free: 22988
     num_processes: 81
-    load_val_3:          0.24000
-    load_val_2:          0.21000
-    load_val_1:          0.17000
-    header_timestamp: '2013/12/20 00:25:41.242'
+    uptime_string: '28 days 09:20:19'
   - _index: 79
     particle_object: CgDclEngDclMsgCountsTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_msg_counts
-    internal_timestamp: 3596487941.311000
-    pps_counts: 30
-    superv_counts: 149
-    ntp_counts: 0
+    internal_timestamp: 3596487941.3109999
+    port_timestamp: 3596487941.3109999
+    dlog_mgr_counts: 10
     gps_counts: 600
     header_timestamp: '2013/12/20 00:25:41.311'
-    dlog_mgr_counts: 10
+    ntp_counts: 0
+    pps_counts: 30
+    superv_counts: 149
   - _index: 80
     particle_object: CgDclEngDclGpsTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_gps
-    internal_timestamp: 3596487941.313000
-    latitude_alt_format: '4008.2171 N'
-    gps_true_course:        278.00000
-    gps_speed:          1.30000
-    longitude:        -70.76964
-    gps_quality: 2
-    gps_num_satellites: 8
-    header_timestamp: '2013/12/20 00:25:41.313'
-    message_sent_timestamp: '2013/12/20 00:25:40.791'
-    gps_hdop:          1.00000
+    internal_timestamp: 3596487941.3129997
+    port_timestamp: 3596487941.3129997
     date_of_fix: '201213'
-    latitude:         40.13695
+    gps_altitude:         4.70000
+    gps_hdop:         1.00000
+    gps_num_satellites: 8
+    gps_quality: 2
+    gps_speed:         1.30000
+    gps_true_course:       278.00000
+    header_timestamp: '2013/12/20 00:25:41.313'
+    latitude:        40.13695
+    latitude_alt_format: '4008.2171 N'
+    longitude:       -70.76964
     longitude_alt_format: '07046.1785 W'
-    gps_altitude:          4.70000
+    message_sent_timestamp: '2013/12/20 00:25:40.791'
     time_of_fix: '002540'
   - _index: 81
     particle_object: CgDclEngDclPpsTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_pps
-    internal_timestamp: 3596487941.314000
-    delta_min: 0
+    internal_timestamp: 3596487941.3140001
+    port_timestamp: 3596487941.3140001
     bad_pulses: 2
-    nmea_lock: 1
-    header_timestamp: '2013/12/20 00:25:41.314'
-    message_sent_timestamp: '2013/12/20 00:25:32.000'
     delta: 999928
     delta_max: 72
+    delta_min: 0
+    header_timestamp: '2013/12/20 00:25:41.314'
+    message_sent_timestamp: '2013/12/20 00:25:32.000'
+    nmea_lock: 1
   - _index: 82
     particle_object: CgDclEngDclSupervTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_superv
-    internal_timestamp: 3596487941.315000
+    internal_timestamp: 3596487941.3150001
+    port_timestamp: 3596487941.3150001
     active_leak_detect_channels: 3
     active_swgf_channels: 7
-    bmp085_pressure:         14.50000
-    bmp085_temp:         22.00000
+    bmp085_pressure:        14.50000
+    bmp085_temp:        22.00000
     board_type: 'dcl'
+    channel_error_status: [0, 0, 0, 0, 0, 0, 0, 0]
+    channel_i: [0.0, 0.0, 0.0, 9.8, 0.0, 24.4, 0.0, 58.7]
+    channel_state: [0, 0, 0, 1, 0, 1, 0, 1]
+    channel_v: [0.0, 0.0, 0.0, 12.0, 0.0, 11.9, 0.0, 12.0]
     dpb_mode: 2
     dpb_voltage_mode: 3
-    error_vmain_out_tolerance: 0
-    error_imain_out_tolerance: 0
-    error_dcl_iso_swgf_lim_exceeded: 0
-    error_dcl_rtn_swfg_lim_exceeded: 0
-    error_vmain_swgf_lim_exceeded: 1
-    error_gmain_swgf_lim_exceeded: 1
-    error_sensor_iso_swgf_lim_exceeded: 1
-    error_snsr_com_swgf_lim_exceeded: 0
-    error_leak_detect_c1_lim_exceeded: 0
-    error_leak_detect_c2_lim_exceeded: 0
-    error_channel_overcurrent_fault: 0
     error_channel_1_not_responding: 0
     error_channel_2_not_responding: 0
     error_channel_3_not_responding: 0
+    error_channel_overcurrent_fault: 0
+    error_dcl_iso_swgf_lim_exceeded: 0
+    error_dcl_rtn_swfg_lim_exceeded: 0
+    error_gmain_swgf_lim_exceeded: 1
+    error_imain_out_tolerance: 0
+    error_leak_detect_c1_lim_exceeded: 0
+    error_leak_detect_c2_lim_exceeded: 0
+    error_sensor_iso_swgf_lim_exceeded: 1
+    error_snsr_com_swgf_lim_exceeded: 0
+    error_vmain_out_tolerance: 0
+    error_vmain_swgf_lim_exceeded: 1
     header_timestamp: '2013/12/20 00:25:41.315'
-    imain_current:        428.00000
-    imain_dpb_in:        296.10000
+    imain_current:       428.00000
+    imain_dpb_in:       296.10000
     leak_detect_c1_v: 1252
     leak_detect_c2_v: 1233
-    murata_12v_temp:         25.00000
-    murata_24v_temp:         25.00000
-    out_12v_i:         96.00000
-    out_12v_v:         12.00000
-    out_24v_i:          0.00000
-    out_24v_v:          0.00000
+    murata_12v_temp:        25.00000
+    murata_24v_temp:        25.00000
+    out_12v_i:        96.00000
+    out_12v_v:        12.00000
+    out_24v_i:         0.00000
+    out_24v_v:         0.00000
     pwr_board_mode: 2
-    sht25_humidity:         23.80000
-    sht25_temp:         19.80000
-    swgf_c1_max_leakage:         16.50000
-    swgf_c2_max_leakage:       -546.00000
-    swgf_c3_max_leakage:       -312.10000
-    vicor_12v_bcm_temp:         45.30000
-    vmain_backplane_bus_voltage:         24.20000
-    vmain_dpb_in:         24.10000
-    channel_state: [0, 0, 0, 1, 0, 1, 0, 1]
-    channel_v: [0.0, 0.0, 0.0, 12.0, 0.0, 11.9, 0.0, 12.0]
-    channel_i: [0.0, 0.0, 0.0, 9.8, 0.0, 24.4, 0.0, 58.7]
-    channel_error_status: [0, 0, 0, 0, 0, 0, 0, 0]
+    sht25_humidity:        23.80000
+    sht25_temp:        19.80000
+    swgf_c1_max_leakage:        16.50000
+    swgf_c2_max_leakage:      -546.00000
+    swgf_c3_max_leakage:      -312.10000
+    vicor_12v_bcm_temp:        45.30000
+    vmain_backplane_bus_voltage:        24.20000
+    vmain_dpb_in:        24.10000
   - _index: 83
     particle_object: CgDclEngDclDlogMgrTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_dlog_mgr
-    internal_timestamp: 3596487941.316000
-    dlog_mgr_hlt: 0
-    header_timestamp: '2013/12/20 00:25:41.316'
-    dlog_mgr_map: '000D0DDD'
-    dlog_mgr_fld: 0
+    internal_timestamp: 3596487941.3160000
+    port_timestamp: 3596487941.3160000
     datalogger_timestamp: '2013/12/20 00:25:37.465'
     dlog_mgr_act: 4
+    dlog_mgr_fld: 0
+    dlog_mgr_hlt: 0
+    dlog_mgr_map: '000D0DDD'
     dlog_mgr_str: 4
+    header_timestamp: '2013/12/20 00:25:41.316'
   - _index: 84
     particle_object: CgDclEngDclDlogStatusTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_dlog_status
-    internal_timestamp: 3596487941.317000
-    bytes_logged: 164382
-    instrument_identifier: 'velpt1'
-    bad_records: 0
-    time_last_communicated: null
-    bytes_sent: 16
-    header_timestamp: '2013/12/20 00:25:41.317'
-    message_sent_timestamp: '2013/12/20 00:25:27.418'
-    good_records: 3922
-    time_received_last_data: 1387498309
+    internal_timestamp: 3596487941.3169999
+    port_timestamp: 3596487941.3169999
     bad_bytes: 0
+    bad_records: 0
+    bytes_logged: 164382
     bytes_received: 164394
+    bytes_sent: 16
     datalogger_state: 'DAQ'
+    good_records: 3922
+    header_timestamp: '2013/12/20 00:25:41.317'
+    instrument_identifier: 'velpt1'
+    message_sent_timestamp: '2013/12/20 00:25:27.418'
+    time_last_communicated: Null
+    time_received_last_data: 1387498309
   - _index: 85
     particle_object: CgDclEngDclDlogStatusTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_dlog_status
-    internal_timestamp: 3596487941.318000
-    bytes_logged: 783321
-    instrument_identifier: 'phsen1'
-    bad_records: 0
-    time_last_communicated: null
-    bytes_sent: 1370
-    header_timestamp: '2013/12/20 00:25:41.318'
-    message_sent_timestamp: '2013/12/20 00:25:30.963'
-    good_records: 18642
-    time_received_last_data: 1387499130
+    internal_timestamp: 3596487941.3179998
+    port_timestamp: 3596487941.3179998
     bad_bytes: 0
+    bad_records: 0
+    bytes_logged: 783321
     bytes_received: 79562540
+    bytes_sent: 1370
     datalogger_state: 'DAQ'
+    good_records: 18642
+    header_timestamp: '2013/12/20 00:25:41.318'
+    instrument_identifier: 'phsen1'
+    message_sent_timestamp: '2013/12/20 00:25:30.963'
+    time_last_communicated: Null
+    time_received_last_data: 1387499130
   - _index: 86
     particle_object: CgDclEngDclDlogStatusTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_dlog_status
-    internal_timestamp: 3596487941.319000
-    bytes_logged: 10194592
-    instrument_identifier: 'nutnr'
-    bad_records: 802
-    time_last_communicated: null
-    bytes_sent: 11266
-    header_timestamp: '2013/12/20 00:25:41.319'
-    message_sent_timestamp: '2013/12/20 00:25:16.780'
-    good_records: 111725
-    time_received_last_data: 1387498679
+    internal_timestamp: 3596487941.3190002
+    port_timestamp: 3596487941.3190002
     bad_bytes: 137946
+    bad_records: 802
+    bytes_logged: 10194592
     bytes_received: 14173982
+    bytes_sent: 11266
     datalogger_state: 'IDLE'
+    good_records: 111725
+    header_timestamp: '2013/12/20 00:25:41.319'
+    instrument_identifier: 'nutnr'
+    message_sent_timestamp: '2013/12/20 00:25:16.780'
+    time_last_communicated: Null
+    time_received_last_data: 1387498679
   - _index: 87
     particle_object: CgDclEngDclDlogStatusTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_dlog_status
-    internal_timestamp: 3596487941.320000
-    bytes_logged: 75163893
-    instrument_identifier: 'spkir'
-    bad_records: 0
-    time_last_communicated: null
-    bytes_sent: 16352
-    header_timestamp: '2013/12/20 00:25:41.320'
-    message_sent_timestamp: '2013/12/20 00:25:16.137'
-    good_records: 881277
-    time_received_last_data: 1387499116
+    internal_timestamp: 3596487941.3199997
+    port_timestamp: 3596487941.3199997
     bad_bytes: 0
+    bad_records: 0
+    bytes_logged: 75163893
     bytes_received: 52884862
+    bytes_sent: 16352
     datalogger_state: 'DAQ'
+    good_records: 881277
+    header_timestamp: '2013/12/20 00:25:41.320'
+    instrument_identifier: 'spkir'
+    message_sent_timestamp: '2013/12/20 00:25:16.137'
+    time_last_communicated: Null
+    time_received_last_data: 1387499116
   - _index: 88
     particle_object: CgDclEngDclStatusTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_status
-    internal_timestamp: 3596487941.387000
-    ntp_jitter: null
-    sync_type: ''
-    ntp_offset: null
-    message_sent_type: 'NTP'
+    internal_timestamp: 3596487941.3870001
+    port_timestamp: 3596487941.3870001
     header_timestamp: '2013/12/20 00:25:41.387'
     message_sent_timestamp: '2013/12/20 00:25:41.321'
+    message_sent_type: 'NTP'
+    ntp_jitter: Null
+    ntp_offset: Null
+    sync_type: ''
   - _index: 89
     particle_object: CgDclEngDclSupervTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_superv
-    internal_timestamp: 3596488039.332000
+    internal_timestamp: 3596488039.3319998
+    port_timestamp: 3596488039.3319998
     active_leak_detect_channels: 3
     active_swgf_channels: 7
-    bmp085_pressure:         14.50000
-    bmp085_temp:         22.00000
+    bmp085_pressure:        14.50000
+    bmp085_temp:        22.00000
     board_type: 'dcl'
+    channel_error_status: [0, 0, 0, 0, 0, 0, 0, 0]
+    channel_i: [0.0, 0.0, 0.0, 4.9, 0.0, 24.4, 0.0, 0.0]
+    channel_state: [0, 0, 0, 1, 0, 1, 0, 0]
+    channel_v: [0.0, 0.0, 0.0, 12.0, 0.0, 12.0, 0.0, 0.0]
     dpb_mode: 2
     dpb_voltage_mode: 3
-    error_vmain_out_tolerance: 0
-    error_imain_out_tolerance: 0
-    error_dcl_iso_swgf_lim_exceeded: 0
-    error_dcl_rtn_swfg_lim_exceeded: 0
-    error_vmain_swgf_lim_exceeded: 1
-    error_gmain_swgf_lim_exceeded: 1
-    error_sensor_iso_swgf_lim_exceeded: 1
-    error_snsr_com_swgf_lim_exceeded: 0
-    error_leak_detect_c1_lim_exceeded: 0
-    error_leak_detect_c2_lim_exceeded: 0
-    error_channel_overcurrent_fault: 0
     error_channel_1_not_responding: 0
     error_channel_2_not_responding: 0
     error_channel_3_not_responding: 0
+    error_channel_overcurrent_fault: 0
+    error_dcl_iso_swgf_lim_exceeded: 0
+    error_dcl_rtn_swfg_lim_exceeded: 0
+    error_gmain_swgf_lim_exceeded: 1
+    error_imain_out_tolerance: 0
+    error_leak_detect_c1_lim_exceeded: 0
+    error_leak_detect_c2_lim_exceeded: 0
+    error_sensor_iso_swgf_lim_exceeded: 1
+    error_snsr_com_swgf_lim_exceeded: 0
+    error_vmain_out_tolerance: 0
+    error_vmain_swgf_lim_exceeded: 1
     header_timestamp: '2013/12/20 00:27:19.332'
-    imain_current:        372.00000
-    imain_dpb_in:        248.10000
+    imain_current:       372.00000
+    imain_dpb_in:       248.10000
     leak_detect_c1_v: 1252
     leak_detect_c2_v: 1230
-    murata_12v_temp:         25.30000
-    murata_24v_temp:         25.00000
-    out_12v_i:         28.00000
-    out_12v_v:         12.00000
-    out_24v_i:          0.00000
-    out_24v_v:          0.00000
+    murata_12v_temp:        25.30000
+    murata_24v_temp:        25.00000
+    out_12v_i:        28.00000
+    out_12v_v:        12.00000
+    out_24v_i:         0.00000
+    out_24v_v:         0.00000
     pwr_board_mode: 2
-    sht25_humidity:         23.80000
-    sht25_temp:         19.80000
-    swgf_c1_max_leakage:         16.50000
-    swgf_c2_max_leakage:       -546.00000
-    swgf_c3_max_leakage:       -312.10000
-    vicor_12v_bcm_temp:         45.30000
-    vmain_backplane_bus_voltage:         24.40000
-    vmain_dpb_in:         24.30000
-    channel_state: [0, 0, 0, 1, 0, 1, 0, 0]
-    channel_v: [0.0, 0.0, 0.0, 12.0, 0.0, 12.0, 0.0, 0.0]
-    channel_i: [0.0, 0.0, 0.0, 4.9, 0.0, 24.4, 0.0, 0.0]
-    channel_error_status: [0, 0, 0, 0, 0, 0, 0, 0]
+    sht25_humidity:        23.80000
+    sht25_temp:        19.80000
+    swgf_c1_max_leakage:        16.50000
+    swgf_c2_max_leakage:      -546.00000
+    swgf_c3_max_leakage:      -312.10000
+    vicor_12v_bcm_temp:        45.30000
+    vmain_backplane_bus_voltage:        24.40000
+    vmain_dpb_in:        24.30000
   - _index: 90
     particle_object: CgDclEngDclSupervTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_superv
-    internal_timestamp: 3596488207.531000
+    internal_timestamp: 3596488207.5310001
+    port_timestamp: 3596488207.5310001
     active_leak_detect_channels: 3
     active_swgf_channels: 7
-    bmp085_pressure:         14.50000
-    bmp085_temp:         21.90000
+    bmp085_pressure:        14.50000
+    bmp085_temp:        21.90000
     board_type: 'dcl'
+    channel_error_status: [0, 0, 0, 0, 0, 0, 0, 0]
+    channel_i: [0.0, 0.0, 0.0, 4.9, 0.0, 24.4, 88.0, 0.0]
+    channel_state: [0, 0, 0, 1, 0, 1, 1, 0]
+    channel_v: [0.0, 0.0, 0.0, 12.0, 0.0, 11.9, 24.0, 1.1]
     dpb_mode: 2
     dpb_voltage_mode: 4
-    error_vmain_out_tolerance: 0
-    error_imain_out_tolerance: 0
-    error_dcl_iso_swgf_lim_exceeded: 0
-    error_dcl_rtn_swfg_lim_exceeded: 0
-    error_vmain_swgf_lim_exceeded: 1
-    error_gmain_swgf_lim_exceeded: 1
-    error_sensor_iso_swgf_lim_exceeded: 1
-    error_snsr_com_swgf_lim_exceeded: 0
-    error_leak_detect_c1_lim_exceeded: 0
-    error_leak_detect_c2_lim_exceeded: 0
-    error_channel_overcurrent_fault: 0
     error_channel_1_not_responding: 0
     error_channel_2_not_responding: 0
     error_channel_3_not_responding: 0
+    error_channel_overcurrent_fault: 0
+    error_dcl_iso_swgf_lim_exceeded: 0
+    error_dcl_rtn_swfg_lim_exceeded: 0
+    error_gmain_swgf_lim_exceeded: 1
+    error_imain_out_tolerance: 0
+    error_leak_detect_c1_lim_exceeded: 0
+    error_leak_detect_c2_lim_exceeded: 0
+    error_sensor_iso_swgf_lim_exceeded: 1
+    error_snsr_com_swgf_lim_exceeded: 0
+    error_vmain_out_tolerance: 0
+    error_vmain_swgf_lim_exceeded: 1
     header_timestamp: '2013/12/20 00:30:07.531'
-    imain_current:        616.00000
-    imain_dpb_in:        466.10000
+    imain_current:       616.00000
+    imain_dpb_in:       466.10000
     leak_detect_c1_v: 1255
     leak_detect_c2_v: 1235
-    murata_12v_temp:         25.00000
-    murata_24v_temp:         24.80000
-    out_12v_i:         32.00000
-    out_12v_v:         12.00000
-    out_24v_i:        134.00000
-    out_24v_v:         24.20000
+    murata_12v_temp:        25.00000
+    murata_24v_temp:        24.80000
+    out_12v_i:        32.00000
+    out_12v_v:        12.00000
+    out_24v_i:       134.00000
+    out_24v_v:        24.20000
     pwr_board_mode: 2
-    sht25_humidity:         23.80000
-    sht25_temp:         19.80000
-    swgf_c1_max_leakage:          2.40000
-    swgf_c2_max_leakage:       -544.00000
-    swgf_c3_max_leakage:       -311.30000
-    vicor_12v_bcm_temp:         44.70000
-    vmain_backplane_bus_voltage:         23.90000
-    vmain_dpb_in:         23.70000
-    channel_state: [0, 0, 0, 1, 0, 1, 1, 0]
-    channel_v: [0.0, 0.0, 0.0, 12.0, 0.0, 11.9, 24.0, 1.1]
-    channel_i: [0.0, 0.0, 0.0, 4.9, 0.0, 24.4, 88.0, 0.0]
-    channel_error_status: [0, 0, 0, 0, 0, 0, 0, 0]
+    sht25_humidity:        23.80000
+    sht25_temp:        19.80000
+    swgf_c1_max_leakage:         2.40000
+    swgf_c2_max_leakage:      -544.00000
+    swgf_c3_max_leakage:      -311.30000
+    vicor_12v_bcm_temp:        44.70000
+    vmain_backplane_bus_voltage:        23.90000
+    vmain_dpb_in:        23.70000
   - _index: 91
     particle_object: CgDclEngDclSupervTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_superv
-    internal_timestamp: 3596488209.542000
+    internal_timestamp: 3596488209.5419998
+    port_timestamp: 3596488209.5419998
     active_leak_detect_channels: 3
     active_swgf_channels: 7
-    bmp085_pressure:         14.50000
-    bmp085_temp:         21.90000
+    bmp085_pressure:        14.50000
+    bmp085_temp:        21.90000
     board_type: 'dcl'
+    channel_error_status: [0, 0, 0, 0, 0, 0, 0, 0]
+    channel_i: [0.0, 0.0, 0.0, 4.9, 0.0, 24.4, 83.1, 19.6]
+    channel_state: [0, 0, 0, 1, 0, 1, 1, 1]
+    channel_v: [0.0, 0.0, 0.0, 12.0, 0.0, 11.9, 24.0, 12.0]
     dpb_mode: 2
     dpb_voltage_mode: 4
-    error_vmain_out_tolerance: 0
-    error_imain_out_tolerance: 0
-    error_dcl_iso_swgf_lim_exceeded: 0
-    error_dcl_rtn_swfg_lim_exceeded: 0
-    error_vmain_swgf_lim_exceeded: 1
-    error_gmain_swgf_lim_exceeded: 1
-    error_sensor_iso_swgf_lim_exceeded: 1
-    error_snsr_com_swgf_lim_exceeded: 0
-    error_leak_detect_c1_lim_exceeded: 0
-    error_leak_detect_c2_lim_exceeded: 0
-    error_channel_overcurrent_fault: 0
     error_channel_1_not_responding: 0
     error_channel_2_not_responding: 0
     error_channel_3_not_responding: 0
+    error_channel_overcurrent_fault: 0
+    error_dcl_iso_swgf_lim_exceeded: 0
+    error_dcl_rtn_swfg_lim_exceeded: 0
+    error_gmain_swgf_lim_exceeded: 1
+    error_imain_out_tolerance: 0
+    error_leak_detect_c1_lim_exceeded: 0
+    error_leak_detect_c2_lim_exceeded: 0
+    error_sensor_iso_swgf_lim_exceeded: 1
+    error_snsr_com_swgf_lim_exceeded: 0
+    error_vmain_out_tolerance: 0
+    error_vmain_swgf_lim_exceeded: 1
     header_timestamp: '2013/12/20 00:30:09.542'
-    imain_current:        624.00000
-    imain_dpb_in:        474.10000
+    imain_current:       624.00000
+    imain_dpb_in:       474.10000
     leak_detect_c1_v: 1257
     leak_detect_c2_v: 1230
-    murata_12v_temp:         25.00000
-    murata_24v_temp:         24.80000
-    out_12v_i:         54.00000
-    out_12v_v:         12.00000
-    out_24v_i:        128.00000
-    out_24v_v:         24.20000
+    murata_12v_temp:        25.00000
+    murata_24v_temp:        24.80000
+    out_12v_i:        54.00000
+    out_12v_v:        12.00000
+    out_24v_i:       128.00000
+    out_24v_v:        24.20000
     pwr_board_mode: 2
-    sht25_humidity:         23.80000
-    sht25_temp:         19.80000
-    swgf_c1_max_leakage:          2.40000
-    swgf_c2_max_leakage:       -544.00000
-    swgf_c3_max_leakage:       -311.30000
-    vicor_12v_bcm_temp:         44.70000
-    vmain_backplane_bus_voltage:         23.80000
-    vmain_dpb_in:         23.70000
-    channel_state: [0, 0, 0, 1, 0, 1, 1, 1]
-    channel_v: [0.0, 0.0, 0.0, 12.0, 0.0, 11.9, 24.0, 12.0]
-    channel_i: [0.0, 0.0, 0.0, 4.9, 0.0, 24.4, 83.1, 19.6]
-    channel_error_status: [0, 0, 0, 0, 0, 0, 0, 0]
+    sht25_humidity:        23.80000
+    sht25_temp:        19.80000
+    swgf_c1_max_leakage:         2.40000
+    swgf_c2_max_leakage:      -544.00000
+    swgf_c3_max_leakage:      -311.30000
+    vicor_12v_bcm_temp:        44.70000
+    vmain_backplane_bus_voltage:        23.80000
+    vmain_dpb_in:        23.70000
   - _index: 92
     particle_object: CgDclEngDclCpuUptimeTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_cpu_uptime
-    internal_timestamp: 3596488241.455000
-    uptime_string: '28 days 09:25:19'
+    internal_timestamp: 3596488241.4549999
+    port_timestamp: 3596488241.4549999
+    header_timestamp: '2013/12/20 00:30:41.455'
+    load_val_1:         0.13000
+    load_val_2:         0.15000
+    load_val_3:         0.20000
     mem_free: 22976
     num_processes: 81
-    load_val_3:          0.20000
-    load_val_2:          0.15000
-    load_val_1:          0.13000
-    header_timestamp: '2013/12/20 00:30:41.455'
+    uptime_string: '28 days 09:25:19'
   - _index: 93
     particle_object: CgDclEngDclMsgCountsTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_msg_counts
-    internal_timestamp: 3596488241.652000
-    pps_counts: 30
-    superv_counts: 146
-    ntp_counts: 0
+    internal_timestamp: 3596488241.6520000
+    port_timestamp: 3596488241.6520000
+    dlog_mgr_counts: 9
     gps_counts: 600
     header_timestamp: '2013/12/20 00:30:41.652'
-    dlog_mgr_counts: 9
+    ntp_counts: 0
+    pps_counts: 30
+    superv_counts: 146
   - _index: 94
     particle_object: CgDclEngDclGpsTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_gps
-    internal_timestamp: 3596488241.653000
-    latitude_alt_format: '4008.2194 N'
-    gps_true_course:        231.10000
-    gps_speed:          0.00000
-    longitude:        -70.76954
-    gps_quality: 2
-    gps_num_satellites: 8
-    header_timestamp: '2013/12/20 00:30:41.653'
-    message_sent_timestamp: '2013/12/20 00:30:40.776'
-    gps_hdop:          1.00000
+    internal_timestamp: 3596488241.6529999
+    port_timestamp: 3596488241.6529999
     date_of_fix: '201213'
-    latitude:         40.13699
+    gps_altitude:         5.30000
+    gps_hdop:         1.00000
+    gps_num_satellites: 8
+    gps_quality: 2
+    gps_speed:         0.00000
+    gps_true_course:       231.10000
+    header_timestamp: '2013/12/20 00:30:41.653'
+    latitude:        40.13699
+    latitude_alt_format: '4008.2194 N'
+    longitude:       -70.76954
     longitude_alt_format: '07046.1722 W'
-    gps_altitude:          5.30000
+    message_sent_timestamp: '2013/12/20 00:30:40.776'
     time_of_fix: '003040'
   - _index: 95
     particle_object: CgDclEngDclPpsTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_pps
-    internal_timestamp: 3596488241.655000
-    delta_min: 0
+    internal_timestamp: 3596488241.6549997
+    port_timestamp: 3596488241.6549997
     bad_pulses: 2
-    nmea_lock: 1
-    header_timestamp: '2013/12/20 00:30:41.655'
-    message_sent_timestamp: '2013/12/20 00:30:32.000'
     delta: 999991
     delta_max: -9
+    delta_min: 0
+    header_timestamp: '2013/12/20 00:30:41.655'
+    message_sent_timestamp: '2013/12/20 00:30:32.000'
+    nmea_lock: 1
   - _index: 96
     particle_object: CgDclEngDclSupervTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_superv
-    internal_timestamp: 3596488241.657000
+    internal_timestamp: 3596488241.6570001
+    port_timestamp: 3596488241.6570001
     active_leak_detect_channels: 3
     active_swgf_channels: 7
-    bmp085_pressure:         14.50000
-    bmp085_temp:         22.00000
+    bmp085_pressure:        14.50000
+    bmp085_temp:        22.00000
     board_type: 'dcl'
+    channel_error_status: [0, 0, 0, 0, 0, 0, 0, 0]
+    channel_i: [0.0, 0.0, 0.0, 4.9, 0.0, 24.4, 44.0, 39.1]
+    channel_state: [0, 0, 0, 1, 0, 1, 1, 1]
+    channel_v: [0.0, 0.0, 0.0, 12.0, 0.0, 11.9, 24.0, 12.0]
     dpb_mode: 2
     dpb_voltage_mode: 4
-    error_vmain_out_tolerance: 0
-    error_imain_out_tolerance: 0
-    error_dcl_iso_swgf_lim_exceeded: 0
-    error_dcl_rtn_swfg_lim_exceeded: 0
-    error_vmain_swgf_lim_exceeded: 1
-    error_gmain_swgf_lim_exceeded: 1
-    error_sensor_iso_swgf_lim_exceeded: 1
-    error_snsr_com_swgf_lim_exceeded: 0
-    error_leak_detect_c1_lim_exceeded: 0
-    error_leak_detect_c2_lim_exceeded: 0
-    error_channel_overcurrent_fault: 0
     error_channel_1_not_responding: 0
     error_channel_2_not_responding: 0
     error_channel_3_not_responding: 0
+    error_channel_overcurrent_fault: 0
+    error_dcl_iso_swgf_lim_exceeded: 0
+    error_dcl_rtn_swfg_lim_exceeded: 0
+    error_gmain_swgf_lim_exceeded: 1
+    error_imain_out_tolerance: 0
+    error_leak_detect_c1_lim_exceeded: 0
+    error_leak_detect_c2_lim_exceeded: 0
+    error_sensor_iso_swgf_lim_exceeded: 1
+    error_snsr_com_swgf_lim_exceeded: 0
+    error_vmain_out_tolerance: 0
+    error_vmain_swgf_lim_exceeded: 1
     header_timestamp: '2013/12/20 00:30:41.657'
-    imain_current:        593.00000
-    imain_dpb_in:        442.10000
+    imain_current:       593.00000
+    imain_dpb_in:       442.10000
     leak_detect_c1_v: 1250
     leak_detect_c2_v: 1235
-    murata_12v_temp:         25.00000
-    murata_24v_temp:         24.80000
-    out_12v_i:         72.00000
-    out_12v_v:         12.00000
-    out_24v_i:         90.00000
-    out_24v_v:         24.20000
+    murata_12v_temp:        25.00000
+    murata_24v_temp:        24.80000
+    out_12v_i:        72.00000
+    out_12v_v:        12.00000
+    out_24v_i:        90.00000
+    out_24v_v:        24.20000
     pwr_board_mode: 2
-    sht25_humidity:         23.80000
-    sht25_temp:         19.80000
-    swgf_c1_max_leakage:          2.40000
-    swgf_c2_max_leakage:       -544.00000
-    swgf_c3_max_leakage:       -311.30000
-    vicor_12v_bcm_temp:         44.70000
-    vmain_backplane_bus_voltage:         23.90000
-    vmain_dpb_in:         23.80000
-    channel_state: [0, 0, 0, 1, 0, 1, 1, 1]
-    channel_v: [0.0, 0.0, 0.0, 12.0, 0.0, 11.9, 24.0, 12.0]
-    channel_i: [0.0, 0.0, 0.0, 4.9, 0.0, 24.4, 44.0, 39.1]
-    channel_error_status: [0, 0, 0, 0, 0, 0, 0, 0]
+    sht25_humidity:        23.80000
+    sht25_temp:        19.80000
+    swgf_c1_max_leakage:         2.40000
+    swgf_c2_max_leakage:      -544.00000
+    swgf_c3_max_leakage:      -311.30000
+    vicor_12v_bcm_temp:        44.70000
+    vmain_backplane_bus_voltage:        23.90000
+    vmain_dpb_in:        23.80000
   - _index: 97
     particle_object: CgDclEngDclDlogMgrTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_dlog_mgr
-    internal_timestamp: 3596488241.658000
-    dlog_mgr_hlt: 0
-    header_timestamp: '2013/12/20 00:30:41.658'
-    dlog_mgr_map: '000D0DDD'
-    dlog_mgr_fld: 0
+    internal_timestamp: 3596488241.6580000
+    port_timestamp: 3596488241.6580000
     datalogger_timestamp: '2013/12/20 00:30:25.577'
     dlog_mgr_act: 4
+    dlog_mgr_fld: 0
+    dlog_mgr_hlt: 0
+    dlog_mgr_map: '000D0DDD'
     dlog_mgr_str: 4
+    header_timestamp: '2013/12/20 00:30:41.658'
   - _index: 98
     particle_object: CgDclEngDclDlogStatusTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_dlog_status
-    internal_timestamp: 3596488241.660000
-    bytes_logged: 164424
-    instrument_identifier: 'velpt1'
-    bad_records: 0
-    time_last_communicated: null
-    bytes_sent: 16
-    header_timestamp: '2013/12/20 00:30:41.660'
-    message_sent_timestamp: '2013/12/20 00:30:18.148'
-    good_records: 3923
-    time_received_last_data: 1387499209
+    internal_timestamp: 3596488241.6599998
+    port_timestamp: 3596488241.6599998
     bad_bytes: 0
+    bad_records: 0
+    bytes_logged: 164424
     bytes_received: 164436
+    bytes_sent: 16
     datalogger_state: 'DAQ'
+    good_records: 3923
+    header_timestamp: '2013/12/20 00:30:41.660'
+    instrument_identifier: 'velpt1'
+    message_sent_timestamp: '2013/12/20 00:30:18.148'
+    time_last_communicated: Null
+    time_received_last_data: 1387499209
   - _index: 99
     particle_object: CgDclEngDclDlogStatusTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_dlog_status
-    internal_timestamp: 3596488241.661000
-    bytes_logged: 783321
-    instrument_identifier: 'phsen1'
-    bad_records: 0
-    time_last_communicated: null
-    bytes_sent: 1370
-    header_timestamp: '2013/12/20 00:30:41.661'
-    message_sent_timestamp: '2013/12/20 00:30:40.963'
-    good_records: 18642
-    time_received_last_data: 1387499440
+    internal_timestamp: 3596488241.6610003
+    port_timestamp: 3596488241.6610003
     bad_bytes: 0
+    bad_records: 0
+    bytes_logged: 783321
     bytes_received: 79573080
+    bytes_sent: 1370
     datalogger_state: 'DAQ'
+    good_records: 18642
+    header_timestamp: '2013/12/20 00:30:41.661'
+    instrument_identifier: 'phsen1'
+    message_sent_timestamp: '2013/12/20 00:30:40.963'
+    time_last_communicated: Null
+    time_received_last_data: 1387499440
   - _index: 100
     particle_object: CgDclEngDclDlogStatusTelemeteredDataParticle
     particle_type: cg_dcl_eng_dcl_dlog_status
-    internal_timestamp: 3596488241.662000
-    bytes_logged: 10194592
-    instrument_identifier: 'nutnr'
-    bad_records: 802
-    time_last_communicated: null
-    bytes_sent: 11266
-    header_timestamp: '2013/12/20 00:30:41.662'
-    message_sent_timestamp: '2013/12/20 00:29:56.753'
-    good_records: 111725
-    time_received_last_data: 1387498679
+    internal_timestamp: 3596488241.6619997
+    port_timestamp: 3596488241.6619997
     bad_bytes: 137946
+    bad_records: 802
+    bytes_logged: 10194592
     bytes_received: 14173982
+    bytes_sent: 11266
     datalogger_state: 'IDLE'
+    good_records: 111725
+    header_timestamp: '2013/12/20 00:30:41.662'
+    instrument_identifier: 'nutnr'
+    message_sent_timestamp: '2013/12/20 00:29:56.753'
+    time_last_communicated: Null
+    time_received_last_data: 1387498679

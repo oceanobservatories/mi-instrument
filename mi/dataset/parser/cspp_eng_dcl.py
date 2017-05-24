@@ -14,7 +14,7 @@ import re
 import ntplib
 
 from mi.core.log import get_logger
-from mi.core.instrument.dataset_data_particle import DataParticle
+from mi.core.instrument.dataset_data_particle import DataParticle, DataParticleKey
 from mi.core.common import BaseEnum
 from mi.core.exceptions import RecoverableSampleException
 
@@ -102,6 +102,13 @@ class CsppEngDclParticle(DataParticle):
 
         if self._param_map is None:
             raise NotImplemented('self._param_map not defined')
+
+        """
+        DCL controller timestamp  is the port timestamp
+        Rawdata(payload) does not contain any instrument timestamp,
+        In this case port timestamp and internal timestamp are same
+        """
+        self.set_port_timestamp(self.get_value(DataParticleKey.INTERNAL_TIMESTAMP))
 
         return [self._encode_value(name, data, function)
                 for (name, function), data in zip(self._param_map, self.raw_data)]
