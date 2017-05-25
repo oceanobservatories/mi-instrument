@@ -151,7 +151,6 @@ class CtdbpCdefDclParserUnitTestCase(ParserUnitTestCase):
                                         file_handle,
                                         self.exception_callback)
             particles = parser.get_records(14)
-
             # Make sure we obtained 14 particles
             self.assertTrue(len(particles) == 14)
             self.assert_particles(particles, "20140918.ctdbp_many_uncorr_t.yml", RESOURCE_PATH)
@@ -229,7 +228,6 @@ class CtdbpCdefDclParserUnitTestCase(ParserUnitTestCase):
                                         self.exception_callback)
 
             particles = parser.get_records(291)
-            # Make sure we obtained 3389 particles
             self.assertTrue(len(particles) == 291)
 
         with open(os.path.join(RESOURCE_PATH, '20140930.ctdbp1_corr1stVariant.log'), 'rU') as file_handle:
@@ -238,8 +236,6 @@ class CtdbpCdefDclParserUnitTestCase(ParserUnitTestCase):
                                         self.exception_callback)
 
             particles = parser.get_records(18)
-
-            # Make sure we obtained 3389 particles
             self.assertTrue(len(particles) == 18)
 
         with open(os.path.join(RESOURCE_PATH, '20140930.ctdbp1_corr2ndVariant.log'), 'rU') as file_handle:
