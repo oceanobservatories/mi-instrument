@@ -12,8 +12,6 @@ initial release
 
 import re
 
-import datetime
-
 from mi.core.log import get_logger
 from mi.core.common import BaseEnum
 from mi.core.instrument.dataset_data_particle import DataParticle, DataParticleKey
@@ -21,7 +19,8 @@ from mi.core.exceptions import RecoverableSampleException
 from mi.dataset.dataset_parser import SimpleParser
 from mi.dataset.dataset_parser import DataSetDriverConfigKeys
 from mi.dataset.parser.common_regexes import ONE_OR_MORE_WHITESPACE_REGEX
-from mi.dataset.parser.utilities import convert_to_signed_int_16_bit, dcl_controller_timestamp_to_ntp_time
+from mi.dataset.parser.utilities import convert_to_signed_int_16_bit, dcl_time_to_ntp, \
+    seconds_1900_to_yyyy
 
 __author__ = 'Nick Almonte'
 __license__ = 'Apache 2.0'
@@ -29,8 +28,6 @@ __license__ = 'Apache 2.0'
 METADATA_PARTICLE_CLASS_KEY = 'metadata_particle_class'
 # The key for the data particle class
 DATA_PARTICLE_CLASS_KEY = 'data_particle_class'
-
-SECONDS_1900_TO_1904 = (datetime.datetime(1904, 1, 1) - datetime.datetime(1900, 1, 1)).total_seconds()
 
 log = get_logger()
 
@@ -80,11 +77,8 @@ class PhsenAbcdefDclMetadataDataParticle(DataParticle):
 
         @returns result a list of dictionaries of particle data
         """
-
-        # DCL controller timestamp  is the port timestamp
+        # extract dcl_controller_timestamp
         dcl_controller_timestamp = self.raw_data[0]
-        elapsed_seconds_useconds = dcl_controller_timestamp_to_ntp_time(dcl_controller_timestamp)
-        self.set_port_timestamp(elapsed_seconds_useconds)
 
         # extract the working_record string from the raw data tuple
         working_record = self.raw_data[1]
@@ -111,9 +105,9 @@ class PhsenAbcdefDclMetadataDataParticle(DataParticle):
         # convert 8 ascii (hex) chars to int
         record_time_int = int(record_time_ascii_hex, 16)
 
-        # Instrument timestamp  is the internal timestamp
+        # Instrument timestamp  is the internal_timestamp
         instrument_timestamp = record_time_int
-        self.set_internal_timestamp(timestamp=instrument_timestamp + SECONDS_1900_TO_1904)
+        self.set_internal_timestamp(timestamp=instrument_timestamp + seconds_1900_to_yyyy(1904))
 
         # FLAGS
         flags_ascii_hex = working_record[15:19]
@@ -184,17 +178,11 @@ class PhsenAbcdefDclMetadataDataParticle(DataParticle):
 
         # ASSEMBLE THE RESULTANT PARTICLE..
         resultant_particle_data = [{DataParticleKey.VALUE_ID:
-                                    PhsenAbcdefDclMetadataDataParticleKey.DCL_CONTROLLER_TIMESTAMP,
-                                    DataParticleKey.VALUE: dcl_controller_timestamp},
-                                   {DataParticleKey.VALUE_ID:
                                     PhsenAbcdefDclMetadataDataParticleKey.UNIQUE_ID,
                                     DataParticleKey.VALUE: unique_id_int},
                                    {DataParticleKey.VALUE_ID:
                                     PhsenAbcdefDclMetadataDataParticleKey.RECORD_TYPE,
                                     DataParticleKey.VALUE: record_type_int},
-                                   {DataParticleKey.VALUE_ID:
-                                    PhsenAbcdefDclMetadataDataParticleKey.RECORD_TIME,
-                                    DataParticleKey.VALUE: record_time_int},
                                    {DataParticleKey.VALUE_ID:
                                     PhsenAbcdefDclMetadataDataParticleKey.CLOCK_ACTIVE,
                                     DataParticleKey.VALUE: clock_active},
@@ -337,10 +325,8 @@ class PhsenAbcdefDclInstrumentDataParticle(DataParticle):
 
         @returns result a list of dictionaries of particle data
         """
-        # DCL controller timestamp  is the port timestamp
+        # extract dcl_controller_timestamp
         dcl_controller_timestamp = self.raw_data[0]
-        elapsed_seconds_useconds = dcl_controller_timestamp_to_ntp_time(dcl_controller_timestamp)
-        self.set_port_timestamp(elapsed_seconds_useconds)
 
         # extract the working_record string from the raw data tuple
         working_record = self.raw_data[1]
@@ -357,6 +343,10 @@ class PhsenAbcdefDclInstrumentDataParticle(DataParticle):
         record_time_ascii_hex = working_record[7:15]
         # convert 8 ascii (hex) chars to int
         record_time_int = int(record_time_ascii_hex, 16)
+
+        # Instrument timestamp  is the internal_timestamp
+        instrument_timestamp = record_time_int
+        self.set_internal_timestamp(timestamp=instrument_timestamp + seconds_1900_to_yyyy(1904))
 
         thermistor_start_ascii_hex = working_record[15:19]
         # convert 4 ascii (hex) chars to int
@@ -387,23 +377,13 @@ class PhsenAbcdefDclInstrumentDataParticle(DataParticle):
         else:
             checksum_final = 1
 
-        # Instrument timestamp  is the internal timestamp
-        instrument_timestamp = record_time_int
-        self.set_internal_timestamp(timestamp=instrument_timestamp + SECONDS_1900_TO_1904)
-
         # ASSEMBLE THE RESULTANT PARTICLE..
         resultant_particle_data = [{DataParticleKey.VALUE_ID:
-                                    PhsenAbcdefDclInstrumentDataParticleKey.DCL_CONTROLLER_TIMESTAMP,
-                                    DataParticleKey.VALUE: dcl_controller_timestamp},
-                                   {DataParticleKey.VALUE_ID:
                                     PhsenAbcdefDclInstrumentDataParticleKey.UNIQUE_ID,
                                     DataParticleKey.VALUE: unique_id_int},
                                    {DataParticleKey.VALUE_ID:
                                     PhsenAbcdefDclInstrumentDataParticleKey.RECORD_TYPE,
                                     DataParticleKey.VALUE: record_type_int},
-                                   {DataParticleKey.VALUE_ID:
-                                    PhsenAbcdefDclInstrumentDataParticleKey.RECORD_TIME,
-                                    DataParticleKey.VALUE: record_time_int},
                                    {DataParticleKey.VALUE_ID:
                                     PhsenAbcdefDclInstrumentDataParticleKey.THERMISTOR_START,
                                     DataParticleKey.VALUE: thermistor_start_int},
@@ -532,6 +512,9 @@ class PhsenAbcdefDclParser(SimpleParser):
 
         data_type = self._determine_data_type(working_record)
 
+        # DCL controller timestamp  is the port_timestamp
+        port_timestamp = dcl_time_to_ntp(self.latest_dcl_time)
+
         if data_type is not DataTypeEnum.UNKNOWN:
 
             # Create a tuple for the particle composed of the working record and latest DCL time
@@ -548,7 +531,7 @@ class PhsenAbcdefDclParser(SimpleParser):
                     particle = self._extract_sample(self._instrument_data_particle_class,
                                                     None,
                                                     particle_data,
-                                                    self.latest_dcl_time)
+                                                    port_timestamp=port_timestamp)
 
                     self._record_buffer.append(particle)
                 else:
@@ -567,7 +550,7 @@ class PhsenAbcdefDclParser(SimpleParser):
                     particle = self._extract_sample(self._metadata_particle_class,
                                                     None,
                                                     particle_data,
-                                                    self.latest_dcl_time)
+                                                    port_timestamp=port_timestamp)
 
                     self._record_buffer.append(particle)
                 else:

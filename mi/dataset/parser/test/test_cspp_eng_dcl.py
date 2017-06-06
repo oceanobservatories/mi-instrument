@@ -33,9 +33,8 @@ class CsppEngDclParserUnitTestCase(ParserUnitTestCase):
     cspp_eng_dcl Parser unit test suite
     """
 
-    def file_path(self, filename):
-        log.debug('resource path = %s, file name = %s', RESOURCE_PATH, filename)
-        return os.path.join(RESOURCE_PATH, filename)
+    def create_yml(self, particles, filename):
+        particle_to_yml(particles, os.path.join(RESOURCE_PATH, filename))
 
     def test_simple(self):
         """
@@ -51,10 +50,6 @@ class CsppEngDclParserUnitTestCase(ParserUnitTestCase):
                                       file_handle,
                                       self.exception_callback)
             particles = parser.get_records(10)
-
-            # creating .yml file
-            out_file = 'all_responses.yml'
-            particle_to_yml(particles, self.file_path(out_file))
 
             self.assert_particles(particles, 'all_responses.yml', RESOURCE_PATH)
             self.assertEqual(self.exception_callback_value, [])
@@ -173,4 +168,3 @@ class CsppEngDclParserUnitTestCase(ParserUnitTestCase):
             particles = parser.get_records(10)
             self.assertEqual(len(particles), 0)
             self.assertEqual(self.exception_callback_value, [])
-

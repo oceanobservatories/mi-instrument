@@ -64,9 +64,8 @@ class Pco2aADclParserUnitTestCase(ParserUnitTestCase):
         my_file = open(os.path.join(RESOURCE_PATH, filename), mode='r')
         return my_file
 
-    def file_path(self, filename):
-        log.debug('resource path = %s, file name = %s', RESOURCE_PATH, filename)
-        return os.path.join(RESOURCE_PATH, filename)
+    def create_yml(self, particles, filename):
+        particle_to_yml(particles, os.path.join(RESOURCE_PATH, filename))
 
     def setUp(self):
         ParserUnitTestCase.setUp(self)
@@ -100,10 +99,6 @@ class Pco2aADclParserUnitTestCase(ParserUnitTestCase):
         in_file = self.open_file(FILE)
         parser = self.create_parser(TELEMETERED_PARTICLE_CLASSES, in_file)
         result = parser.get_records(RECORDS)
-
-        # creating .yml file
-        out_file = YAML_FILE
-        particle_to_yml(result, self.file_path(out_file))
 
         self.assert_particles(result, YAML_FILE, RESOURCE_PATH)
         self.assertListEqual(self.exception_callback_value, [])

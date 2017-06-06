@@ -95,9 +95,8 @@ class MetbkADclParserUnitTestCase(ParserUnitTestCase):
     def setUp(self):
         ParserUnitTestCase.setUp(self)
 
-    def file_path(self, filename):
-        log.debug('resource path = %s, file name = %s', RESOURCE_PATH, filename)
-        return os.path.join(RESOURCE_PATH, filename)
+    def create_yml(self, particles, filename):
+        particle_to_yml(particles, os.path.join(RESOURCE_PATH, filename))
 
     def test_big_giant_input(self):
         """
@@ -142,10 +141,6 @@ class MetbkADclParserUnitTestCase(ParserUnitTestCase):
 
         # In a single read, get all particles for this file.
         result = parser.get_records(RECORDS_FILE_0_863)
-
-        # creating .yml file
-        out_file = YML_0_863
-        particle_to_yml(result, self.file_path(out_file))
 
         # self.assertEqual(result, expected_particle)
         self.assert_particles(result, YML_0_863, RESOURCE_PATH)
@@ -233,4 +228,3 @@ class MetbkADclParserUnitTestCase(ParserUnitTestCase):
         self.assertEqual(len(result), 4)
         self.assertListEqual(self.exception_callback_value, [])
         in_file.close()
-

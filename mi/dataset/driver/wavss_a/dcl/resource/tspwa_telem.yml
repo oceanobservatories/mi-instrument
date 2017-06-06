@@ -8,8 +8,6 @@ data:
     internal_timestamp: 3615913098.0000000
     port_timestamp: 3615927784.8649998
     average_wave_height:         0.00000
-    date_string: '20140801'
-    dcl_controller_timestamp: '2014/08/02 00:23:04.865'
     max_wave_height:         0.00000
     mean_direction:       243.70000
     mean_spectral_period:         8.50000
@@ -20,7 +18,6 @@ data:
     serial_number: '05311'
     significant_period:        13.40000
     significant_wave_height:         0.00000
-    time_string: '201818'
     wave_height_10:         0.00000
     wave_height_hmo:         0.00000
     wave_period_10:        17.40000

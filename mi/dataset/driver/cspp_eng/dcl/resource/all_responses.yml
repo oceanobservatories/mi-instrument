@@ -5,7 +5,6 @@ data:
   - _index: 1
     particle_object: CsppEngDclProfileParticle
     particle_type: cspp_eng_dcl_profile
-    internal_timestamp: 3653425882.3590002
     port_timestamp: 3653425882.3590002
     cspp_home_depth:  -6640764.00000
     cspp_interval_time: 86400
@@ -20,7 +19,6 @@ data:
   - _index: 2
     particle_object: CsppEngDclSummaryParticle
     particle_type: cspp_eng_dcl_summary
-    internal_timestamp: 3653425905.3239999
     port_timestamp: 3653425905.3239999
     cspp_end_depth:         0.67000
     cspp_file_size: 229257
@@ -39,7 +37,6 @@ data:
   - _index: 3
     particle_object: CsppEngDclModemParticle
     particle_type: cspp_eng_dcl_modem
-    internal_timestamp: 3653425818.7779999
     port_timestamp: 3653425818.7779999
     cspp_dsp_battery_voltage:         2.90000
     cspp_modem_distance:       131.20000
@@ -47,7 +44,6 @@ data:
   - _index: 4
     particle_object: CsppEngDclEngDataParticle
     particle_type: cspp_eng_dcl_eng_data
-    internal_timestamp: 3653425839.2589998
     port_timestamp: 3653425839.2589998
     cspp_current_state: 5
     cspp_date_time: 3653425865

@@ -145,7 +145,7 @@ class AuvCommonParser(SimpleParser):
                             timestamp = compute_timestamp(parts)
                             if timestamp > EARLIEST_TIMESTAMP:  # Check to make sure the timestamp is OK
 
-                                particle = self._extract_sample(particle_class, None, parts, timestamp)
+                                particle = self._extract_sample(particle_class, None, parts, internal_timestamp=timestamp)
                                 self._record_buffer.append(particle)
                         except Exception:
                             msg = 'Could not compute timestamp'

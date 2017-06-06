@@ -5,7 +5,6 @@ data:
   - _index: 1
     particle_object: CgDclEngDclSupervRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_superv_recovered
-    internal_timestamp: 3596486407.5400000
     port_timestamp: 3596486407.5400000
     active_leak_detect_channels: 3
     active_swgf_channels: 7
@@ -32,7 +31,6 @@ data:
     error_snsr_com_swgf_lim_exceeded: 0
     error_vmain_out_tolerance: 0
     error_vmain_swgf_lim_exceeded: 1
-    header_timestamp: '2013/12/20 00:00:07.540'
     imain_current:       627.00000
     imain_dpb_in:       474.10000
     leak_detect_c1_v: 1245
@@ -55,7 +53,6 @@ data:
   - _index: 2
     particle_object: CgDclEngDclSupervRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_superv_recovered
-    internal_timestamp: 3596486409.5500002
     port_timestamp: 3596486409.5500002
     active_leak_detect_channels: 3
     active_swgf_channels: 7
@@ -82,7 +79,6 @@ data:
     error_snsr_com_swgf_lim_exceeded: 0
     error_vmain_out_tolerance: 0
     error_vmain_swgf_lim_exceeded: 1
-    header_timestamp: '2013/12/20 00:00:09.550'
     imain_current:       632.00000
     imain_dpb_in:       476.10000
     leak_detect_c1_v: 1250
@@ -105,9 +101,7 @@ data:
   - _index: 3
     particle_object: CgDclEngDclCpuUptimeRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_cpu_uptime_recovered
-    internal_timestamp: 3596486438.9679999
     port_timestamp: 3596486438.9679999
-    header_timestamp: '2013/12/20 00:00:38.968'
     load_val_1:         0.29000
     load_val_2:         0.19000
     load_val_3:         0.17000
@@ -117,18 +111,16 @@ data:
   - _index: 4
     particle_object: CgDclEngDclMsgCountsRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_msg_counts_recovered
-    internal_timestamp: 3596486439.0450001
     port_timestamp: 3596486439.0450001
     dlog_mgr_counts: 10
     gps_counts: 602
-    header_timestamp: '2013/12/20 00:00:39.045'
     ntp_counts: 0
     pps_counts: 30
     superv_counts: 147
   - _index: 5
     particle_object: CgDclEngDclGpsRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_gps_recovered
-    internal_timestamp: 3596486439.0469999
+    internal_timestamp: 3596486438.8140001
     port_timestamp: 3596486439.0469999
     date_of_fix: '201213'
     gps_altitude:         6.60000
@@ -137,29 +129,24 @@ data:
     gps_quality: 2
     gps_speed:         0.60000
     gps_true_course:        45.90000
-    header_timestamp: '2013/12/20 00:00:39.047'
     latitude:        40.13687
     latitude_alt_format: '4008.2123 N'
     longitude:       -70.76970
     longitude_alt_format: '07046.1821 W'
-    message_sent_timestamp: '2013/12/20 00:00:38.814'
     time_of_fix: '000038'
   - _index: 6
     particle_object: CgDclEngDclPpsRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_pps_recovered
-    internal_timestamp: 3596486439.0480003
+    internal_timestamp: 3596486432.0000000
     port_timestamp: 3596486439.0480003
     bad_pulses: 0
     delta: 999996
     delta_max: 21
     delta_min: 0
-    header_timestamp: '2013/12/20 00:00:39.048'
-    message_sent_timestamp: '2013/12/20 00:00:32.000'
     nmea_lock: 1
   - _index: 7
     particle_object: CgDclEngDclSupervRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_superv_recovered
-    internal_timestamp: 3596486439.0489998
     port_timestamp: 3596486439.0489998
     active_leak_detect_channels: 3
     active_swgf_channels: 7
@@ -186,7 +173,6 @@ data:
     error_snsr_com_swgf_lim_exceeded: 0
     error_vmain_out_tolerance: 0
     error_vmain_swgf_lim_exceeded: 1
-    header_timestamp: '2013/12/20 00:00:39.049'
     imain_current:       594.00000
     imain_dpb_in:       444.10000
     leak_detect_c1_v: 1252
@@ -209,7 +195,6 @@ data:
   - _index: 8
     particle_object: CgDclEngDclDlogMgrRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_dlog_mgr_recovered
-    internal_timestamp: 3596486439.0500002
     port_timestamp: 3596486439.0500002
     datalogger_timestamp: '2013/12/20 00:00:33.543'
     dlog_mgr_act: 4
@@ -217,11 +202,10 @@ data:
     dlog_mgr_hlt: 0
     dlog_mgr_map: '000D0DDD'
     dlog_mgr_str: 4
-    header_timestamp: '2013/12/20 00:00:39.050'
   - _index: 9
     particle_object: CgDclEngDclDlogStatusRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_dlog_status_recovered
-    internal_timestamp: 3596486439.0510001
+    internal_timestamp: 3596486418.0070000
     port_timestamp: 3596486439.0510001
     bad_bytes: 0
     bad_records: 0
@@ -230,15 +214,13 @@ data:
     bytes_sent: 16
     datalogger_state: 'DAQ'
     good_records: 3921
-    header_timestamp: '2013/12/20 00:00:39.051'
     instrument_identifier: 'velpt1'
-    message_sent_timestamp: '2013/12/20 00:00:18.007'
     time_last_communicated: Null
     time_received_last_data: 1387497409
   - _index: 10
     particle_object: CgDclEngDclDlogStatusRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_dlog_status_recovered
-    internal_timestamp: 3596486439.0520000
+    internal_timestamp: 3596486438.9650002
     port_timestamp: 3596486439.0520000
     bad_bytes: 0
     bad_records: 0
@@ -247,15 +229,13 @@ data:
     bytes_sent: 1368
     datalogger_state: 'DAQ'
     good_records: 18613
-    header_timestamp: '2013/12/20 00:00:39.052'
     instrument_identifier: 'phsen1'
-    message_sent_timestamp: '2013/12/20 00:00:38.965'
     time_last_communicated: Null
     time_received_last_data: 1387497638
   - _index: 11
     particle_object: CgDclEngDclDlogStatusRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_dlog_status_recovered
-    internal_timestamp: 3596486439.0539999
+    internal_timestamp: 3596486396.7900000
     port_timestamp: 3596486439.0539999
     bad_bytes: 137774
     bad_records: 801
@@ -264,15 +244,13 @@ data:
     bytes_sent: 11258
     datalogger_state: 'IDLE'
     good_records: 111643
-    header_timestamp: '2013/12/20 00:00:39.054'
     instrument_identifier: 'nutnr'
-    message_sent_timestamp: '2013/12/19 23:59:56.790'
     time_last_communicated: Null
     time_received_last_data: 1387496879
   - _index: 12
     particle_object: CgDclEngDclDlogStatusRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_dlog_status_recovered
-    internal_timestamp: 3596486439.0550003
+    internal_timestamp: 3596486432.5299997
     port_timestamp: 3596486439.0550003
     bad_bytes: 0
     bad_records: 0
@@ -281,18 +259,14 @@ data:
     bytes_sent: 16342
     datalogger_state: 'DAQ'
     good_records: 880755
-    header_timestamp: '2013/12/20 00:00:39.055'
     instrument_identifier: 'spkir'
-    message_sent_timestamp: '2013/12/20 00:00:32.530'
     time_last_communicated: Null
     time_received_last_data: 1387497632
   - _index: 13
     particle_object: CgDclEngDclStatusRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_status_recovered
-    internal_timestamp: 3596486439.1300001
+    internal_timestamp: 3596486439.0559998
     port_timestamp: 3596486439.1300001
-    header_timestamp: '2013/12/20 00:00:39.130'
-    message_sent_timestamp: '2013/12/20 00:00:39.056'
     message_sent_type: 'NTP'
     ntp_jitter: Null
     ntp_offset: Null
@@ -300,15 +274,12 @@ data:
   - _index: 14
     particle_object: CgDclEngDclErrorRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_error_recovered
-    internal_timestamp: 3596486489.6210003
     port_timestamp: 3596486489.6210003
-    header_timestamp: '2013/12/20 00:01:29.621'
     log_type: 'ERR'
     message_text: 'DLOGP7 Command [(NULL)] Received no recognized response'
   - _index: 15
     particle_object: CgDclEngDclSupervRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_superv_recovered
-    internal_timestamp: 3596486539.6890001
     port_timestamp: 3596486539.6890001
     active_leak_detect_channels: 3
     active_swgf_channels: 7
@@ -335,7 +306,6 @@ data:
     error_snsr_com_swgf_lim_exceeded: 0
     error_vmain_out_tolerance: 0
     error_vmain_swgf_lim_exceeded: 1
-    header_timestamp: '2013/12/20 00:02:19.689'
     imain_current:       998.00000
     imain_dpb_in:       858.20000
     leak_detect_c1_v: 1248
@@ -358,7 +328,6 @@ data:
   - _index: 16
     particle_object: CgDclEngDclSupervRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_superv_recovered
-    internal_timestamp: 3596486599.7340002
     port_timestamp: 3596486599.7340002
     active_leak_detect_channels: 3
     active_swgf_channels: 7
@@ -385,7 +354,6 @@ data:
     error_snsr_com_swgf_lim_exceeded: 0
     error_vmain_out_tolerance: 0
     error_vmain_swgf_lim_exceeded: 1
-    header_timestamp: '2013/12/20 00:03:19.734'
     imain_current:       369.00000
     imain_dpb_in:       250.10000
     leak_detect_c1_v: 1257
@@ -408,15 +376,12 @@ data:
   - _index: 17
     particle_object: CgDclEngDclErrorRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_error_recovered
-    internal_timestamp: 3596486607.7880001
     port_timestamp: 3596486607.7880001
-    header_timestamp: '2013/12/20 00:03:27.788'
     log_type: 'ERR'
     message_text: 'DLOGP7 Command [G] Received no recognized response'
   - _index: 18
     particle_object: CgDclEngDclSupervRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_superv_recovered
-    internal_timestamp: 3596486706.0920000
     port_timestamp: 3596486706.0920000
     active_leak_detect_channels: 3
     active_swgf_channels: 7
@@ -443,7 +408,6 @@ data:
     error_snsr_com_swgf_lim_exceeded: 0
     error_vmain_out_tolerance: 0
     error_vmain_swgf_lim_exceeded: 1
-    header_timestamp: '2013/12/20 00:05:06.092'
     imain_current:       386.00000
     imain_dpb_in:       252.10000
     leak_detect_c1_v: 1250
@@ -466,7 +430,6 @@ data:
   - _index: 19
     particle_object: CgDclEngDclSupervRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_superv_recovered
-    internal_timestamp: 3596486707.8769999
     port_timestamp: 3596486707.8769999
     active_leak_detect_channels: 3
     active_swgf_channels: 7
@@ -493,7 +456,6 @@ data:
     error_snsr_com_swgf_lim_exceeded: 0
     error_vmain_out_tolerance: 0
     error_vmain_swgf_lim_exceeded: 1
-    header_timestamp: '2013/12/20 00:05:07.877'
     imain_current:       537.00000
     imain_dpb_in:       400.10000
     leak_detect_c1_v: 1250
@@ -516,9 +478,7 @@ data:
   - _index: 20
     particle_object: CgDclEngDclCpuUptimeRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_cpu_uptime_recovered
-    internal_timestamp: 3596486739.6820002
     port_timestamp: 3596486739.6820002
-    header_timestamp: '2013/12/20 00:05:39.682'
     load_val_1:         0.57000
     load_val_2:         0.44000
     load_val_3:         0.27000
@@ -528,18 +488,16 @@ data:
   - _index: 21
     particle_object: CgDclEngDclMsgCountsRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_msg_counts_recovered
-    internal_timestamp: 3596486739.8020000
     port_timestamp: 3596486739.8020000
     dlog_mgr_counts: 9
     gps_counts: 600
-    header_timestamp: '2013/12/20 00:05:39.802'
     ntp_counts: 0
     pps_counts: 30
     superv_counts: 147
   - _index: 22
     particle_object: CgDclEngDclGpsRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_gps_recovered
-    internal_timestamp: 3596486739.8039999
+    internal_timestamp: 3596486738.8220000
     port_timestamp: 3596486739.8039999
     date_of_fix: '201213'
     gps_altitude:         7.90000
@@ -548,29 +506,24 @@ data:
     gps_quality: 2
     gps_speed:         2.30000
     gps_true_course:       140.40000
-    header_timestamp: '2013/12/20 00:05:39.804'
     latitude:        40.13691
     latitude_alt_format: '4008.2145 N'
     longitude:       -70.76972
     longitude_alt_format: '07046.1834 W'
-    message_sent_timestamp: '2013/12/20 00:05:38.822'
     time_of_fix: '000538'
   - _index: 23
     particle_object: CgDclEngDclPpsRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_pps_recovered
-    internal_timestamp: 3596486739.8059998
+    internal_timestamp: 3596486732.0000000
     port_timestamp: 3596486739.8059998
     bad_pulses: 0
     delta: 999949
     delta_max: -106
     delta_min: 0
-    header_timestamp: '2013/12/20 00:05:39.806'
-    message_sent_timestamp: '2013/12/20 00:05:32.000'
     nmea_lock: 1
   - _index: 24
     particle_object: CgDclEngDclSupervRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_superv_recovered
-    internal_timestamp: 3596486739.8070002
     port_timestamp: 3596486739.8070002
     active_leak_detect_channels: 3
     active_swgf_channels: 7
@@ -597,7 +550,6 @@ data:
     error_snsr_com_swgf_lim_exceeded: 0
     error_vmain_out_tolerance: 0
     error_vmain_swgf_lim_exceeded: 1
-    header_timestamp: '2013/12/20 00:05:39.807'
     imain_current:       428.00000
     imain_dpb_in:       292.10000
     leak_detect_c1_v: 1248
@@ -620,7 +572,6 @@ data:
   - _index: 25
     particle_object: CgDclEngDclDlogMgrRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_dlog_mgr_recovered
-    internal_timestamp: 3596486739.8090000
     port_timestamp: 3596486739.8090000
     datalogger_timestamp: '2013/12/20 00:05:21.544'
     dlog_mgr_act: 4
@@ -628,11 +579,10 @@ data:
     dlog_mgr_hlt: 0
     dlog_mgr_map: '000D0DDD'
     dlog_mgr_str: 4
-    header_timestamp: '2013/12/20 00:05:39.809'
   - _index: 26
     particle_object: CgDclEngDclDlogStatusRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_dlog_status_recovered
-    internal_timestamp: 3596486739.8190002
+    internal_timestamp: 3596486738.5299997
     port_timestamp: 3596486739.8190002
     bad_bytes: 0
     bad_records: 0
@@ -641,15 +591,13 @@ data:
     bytes_sent: 16
     datalogger_state: 'DAQ'
     good_records: 3921
-    header_timestamp: '2013/12/20 00:05:39.819'
     instrument_identifier: 'velpt1'
-    message_sent_timestamp: '2013/12/20 00:05:38.530'
     time_last_communicated: Null
     time_received_last_data: 1387497409
   - _index: 27
     particle_object: CgDclEngDclDlogStatusRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_dlog_status_recovered
-    internal_timestamp: 3596486739.8210001
+    internal_timestamp: 3596486717.9650002
     port_timestamp: 3596486739.8210001
     bad_bytes: 0
     bad_records: 0
@@ -658,15 +606,13 @@ data:
     bytes_sent: 1368
     datalogger_state: 'DAQ'
     good_records: 18613
-    header_timestamp: '2013/12/20 00:05:39.821'
     instrument_identifier: 'phsen1'
-    message_sent_timestamp: '2013/12/20 00:05:17.965'
     time_last_communicated: Null
     time_received_last_data: 1387497917
   - _index: 28
     particle_object: CgDclEngDclDlogStatusRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_dlog_status_recovered
-    internal_timestamp: 3596486739.8249998
+    internal_timestamp: 3596486737.7810001
     port_timestamp: 3596486739.8249998
     bad_bytes: 137774
     bad_records: 801
@@ -675,15 +621,13 @@ data:
     bytes_sent: 11262
     datalogger_state: 'IDLE'
     good_records: 111684
-    header_timestamp: '2013/12/20 00:05:39.825'
     instrument_identifier: 'nutnr'
-    message_sent_timestamp: '2013/12/20 00:05:37.781'
     time_last_communicated: Null
     time_received_last_data: 1387497780
   - _index: 29
     particle_object: CgDclEngDclDlogStatusRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_dlog_status_recovered
-    internal_timestamp: 3596486739.8280001
+    internal_timestamp: 3596486716.9519997
     port_timestamp: 3596486739.8280001
     bad_bytes: 0
     bad_records: 0
@@ -692,18 +636,14 @@ data:
     bytes_sent: 16344
     datalogger_state: 'DAQ'
     good_records: 880847
-    header_timestamp: '2013/12/20 00:05:39.828'
     instrument_identifier: 'spkir'
-    message_sent_timestamp: '2013/12/20 00:05:16.952'
     time_last_communicated: Null
     time_received_last_data: 1387497916
   - _index: 30
     particle_object: CgDclEngDclStatusRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_status_recovered
-    internal_timestamp: 3596486739.9480000
+    internal_timestamp: 3596486739.8610001
     port_timestamp: 3596486739.9480000
-    header_timestamp: '2013/12/20 00:05:39.948'
-    message_sent_timestamp: '2013/12/20 00:05:39.861'
     message_sent_type: 'NTP'
     ntp_jitter: Null
     ntp_offset: Null
@@ -711,7 +651,6 @@ data:
   - _index: 31
     particle_object: CgDclEngDclSupervRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_superv_recovered
-    internal_timestamp: 3596486840.0039997
     port_timestamp: 3596486840.0039997
     active_leak_detect_channels: 3
     active_swgf_channels: 7
@@ -738,7 +677,6 @@ data:
     error_snsr_com_swgf_lim_exceeded: 0
     error_vmain_out_tolerance: 0
     error_vmain_swgf_lim_exceeded: 1
-    header_timestamp: '2013/12/20 00:07:20.004'
     imain_current:       375.00000
     imain_dpb_in:       256.10000
     leak_detect_c1_v: 1250
@@ -761,7 +699,6 @@ data:
   - _index: 32
     particle_object: CgDclEngDclSupervRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_superv_recovered
-    internal_timestamp: 3596487006.1970000
     port_timestamp: 3596487006.1970000
     active_leak_detect_channels: 3
     active_swgf_channels: 7
@@ -788,7 +725,6 @@ data:
     error_snsr_com_swgf_lim_exceeded: 0
     error_vmain_out_tolerance: 0
     error_vmain_swgf_lim_exceeded: 1
-    header_timestamp: '2013/12/20 00:10:06.197'
     imain_current:       391.00000
     imain_dpb_in:       256.10000
     leak_detect_c1_v: 1248
@@ -811,7 +747,6 @@ data:
   - _index: 33
     particle_object: CgDclEngDclSupervRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_superv_recovered
-    internal_timestamp: 3596487008.2090001
     port_timestamp: 3596487008.2090001
     active_leak_detect_channels: 3
     active_swgf_channels: 7
@@ -838,7 +773,6 @@ data:
     error_snsr_com_swgf_lim_exceeded: 0
     error_vmain_out_tolerance: 0
     error_vmain_swgf_lim_exceeded: 1
-    header_timestamp: '2013/12/20 00:10:08.209'
     imain_current:       406.00000
     imain_dpb_in:       270.10000
     leak_detect_c1_v: 1250
@@ -861,9 +795,7 @@ data:
   - _index: 34
     particle_object: CgDclEngDclCpuUptimeRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_cpu_uptime_recovered
-    internal_timestamp: 3596487040.2480001
     port_timestamp: 3596487040.2480001
-    header_timestamp: '2013/12/20 00:10:40.248'
     load_val_1:         0.02000
     load_val_2:         0.23000
     load_val_3:         0.23000
@@ -873,18 +805,16 @@ data:
   - _index: 35
     particle_object: CgDclEngDclMsgCountsRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_msg_counts_recovered
-    internal_timestamp: 3596487040.3480000
     port_timestamp: 3596487040.3480000
     dlog_mgr_counts: 9
     gps_counts: 602
-    header_timestamp: '2013/12/20 00:10:40.348'
     ntp_counts: 0
     pps_counts: 30
     superv_counts: 149
   - _index: 36
     particle_object: CgDclEngDclGpsRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_gps_recovered
-    internal_timestamp: 3596487040.3509998
+    internal_timestamp: 3596487039.8290000
     port_timestamp: 3596487040.3509998
     date_of_fix: '201213'
     gps_altitude:         5.60000
@@ -893,29 +823,24 @@ data:
     gps_quality: 2
     gps_speed:         2.60000
     gps_true_course:       165.20000
-    header_timestamp: '2013/12/20 00:10:40.351'
     latitude:        40.13697
     latitude_alt_format: '4008.2180 N'
     longitude:       -70.76973
     longitude_alt_format: '07046.1841 W'
-    message_sent_timestamp: '2013/12/20 00:10:39.829'
     time_of_fix: '001039'
   - _index: 37
     particle_object: CgDclEngDclPpsRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_pps_recovered
-    internal_timestamp: 3596487040.3529997
+    internal_timestamp: 3596487032.0000000
     port_timestamp: 3596487040.3529997
     bad_pulses: 0
     delta: 1000003
     delta_max: 20
     delta_min: 1
-    header_timestamp: '2013/12/20 00:10:40.353'
-    message_sent_timestamp: '2013/12/20 00:10:32.000'
     nmea_lock: 1
   - _index: 38
     particle_object: CgDclEngDclSupervRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_superv_recovered
-    internal_timestamp: 3596487040.3559999
     port_timestamp: 3596487040.3559999
     active_leak_detect_channels: 3
     active_swgf_channels: 7
@@ -942,7 +867,6 @@ data:
     error_snsr_com_swgf_lim_exceeded: 0
     error_vmain_out_tolerance: 0
     error_vmain_swgf_lim_exceeded: 1
-    header_timestamp: '2013/12/20 00:10:40.356'
     imain_current:       417.00000
     imain_dpb_in:       282.10000
     leak_detect_c1_v: 1255
@@ -965,7 +889,6 @@ data:
   - _index: 39
     particle_object: CgDclEngDclDlogMgrRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_dlog_mgr_recovered
-    internal_timestamp: 3596487040.3579998
     port_timestamp: 3596487040.3579998
     datalogger_timestamp: '2013/12/20 00:10:09.515'
     dlog_mgr_act: 4
@@ -973,11 +896,10 @@ data:
     dlog_mgr_hlt: 0
     dlog_mgr_map: '000D0DDD'
     dlog_mgr_str: 4
-    header_timestamp: '2013/12/20 00:10:40.358'
   - _index: 40
     particle_object: CgDclEngDclDlogStatusRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_dlog_status_recovered
-    internal_timestamp: 3596487040.3610001
+    internal_timestamp: 3596487027.7010002
     port_timestamp: 3596487040.3610001
     bad_bytes: 0
     bad_records: 0
@@ -986,15 +908,13 @@ data:
     bytes_sent: 16
     datalogger_state: 'DAQ'
     good_records: 3921
-    header_timestamp: '2013/12/20 00:10:40.361'
     instrument_identifier: 'velpt1'
-    message_sent_timestamp: '2013/12/20 00:10:27.701'
     time_last_communicated: Null
     time_received_last_data: 1387497409
   - _index: 41
     particle_object: CgDclEngDclDlogStatusRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_dlog_status_recovered
-    internal_timestamp: 3596487040.3629999
+    internal_timestamp: 3596487027.9639997
     port_timestamp: 3596487040.3629999
     bad_bytes: 0
     bad_records: 0
@@ -1003,15 +923,13 @@ data:
     bytes_sent: 1368
     datalogger_state: 'DAQ'
     good_records: 18613
-    header_timestamp: '2013/12/20 00:10:40.363'
     instrument_identifier: 'phsen1'
-    message_sent_timestamp: '2013/12/20 00:10:27.964'
     time_last_communicated: Null
     time_received_last_data: 1387498227
   - _index: 42
     particle_object: CgDclEngDclDlogStatusRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_dlog_status_recovered
-    internal_timestamp: 3596487040.3660002
+    internal_timestamp: 3596487017.7830000
     port_timestamp: 3596487040.3660002
     bad_bytes: 137774
     bad_records: 801
@@ -1020,15 +938,13 @@ data:
     bytes_sent: 11262
     datalogger_state: 'IDLE'
     good_records: 111684
-    header_timestamp: '2013/12/20 00:10:40.366'
     instrument_identifier: 'nutnr'
-    message_sent_timestamp: '2013/12/20 00:10:17.783'
     time_last_communicated: Null
     time_received_last_data: 1387497780
   - _index: 43
     particle_object: CgDclEngDclDlogStatusRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_dlog_status_recovered
-    internal_timestamp: 3596487040.3680000
+    internal_timestamp: 3596487031.2189999
     port_timestamp: 3596487040.3680000
     bad_bytes: 0
     bad_records: 0
@@ -1037,18 +953,14 @@ data:
     bytes_sent: 16346
     datalogger_state: 'DAQ'
     good_records: 880969
-    header_timestamp: '2013/12/20 00:10:40.368'
     instrument_identifier: 'spkir'
-    message_sent_timestamp: '2013/12/20 00:10:31.219'
     time_last_communicated: Null
     time_received_last_data: 1387498231
   - _index: 44
     particle_object: CgDclEngDclStatusRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_status_recovered
-    internal_timestamp: 3596487040.4370003
+    internal_timestamp: 3596487040.3710003
     port_timestamp: 3596487040.4370003
-    header_timestamp: '2013/12/20 00:10:40.437'
-    message_sent_timestamp: '2013/12/20 00:10:40.371'
     message_sent_type: 'NTP'
     ntp_jitter: Null
     ntp_offset: Null
@@ -1056,7 +968,6 @@ data:
   - _index: 45
     particle_object: CgDclEngDclSupervRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_superv_recovered
-    internal_timestamp: 3596487138.3380003
     port_timestamp: 3596487138.3380003
     active_leak_detect_channels: 3
     active_swgf_channels: 7
@@ -1083,7 +994,6 @@ data:
     error_snsr_com_swgf_lim_exceeded: 0
     error_vmain_out_tolerance: 0
     error_vmain_swgf_lim_exceeded: 1
-    header_timestamp: '2013/12/20 00:12:18.338'
     imain_current:       371.00000
     imain_dpb_in:       250.10000
     leak_detect_c1_v: 1250
@@ -1106,7 +1016,6 @@ data:
   - _index: 46
     particle_object: CgDclEngDclSupervRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_superv_recovered
-    internal_timestamp: 3596487306.5489998
     port_timestamp: 3596487306.5489998
     active_leak_detect_channels: 3
     active_swgf_channels: 7
@@ -1133,7 +1042,6 @@ data:
     error_snsr_com_swgf_lim_exceeded: 0
     error_vmain_out_tolerance: 0
     error_vmain_swgf_lim_exceeded: 1
-    header_timestamp: '2013/12/20 00:15:06.549'
     imain_current:       613.00000
     imain_dpb_in:       474.10000
     leak_detect_c1_v: 1255
@@ -1156,7 +1064,6 @@ data:
   - _index: 47
     particle_object: CgDclEngDclSupervRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_superv_recovered
-    internal_timestamp: 3596487308.5699997
     port_timestamp: 3596487308.5699997
     active_leak_detect_channels: 3
     active_swgf_channels: 7
@@ -1183,7 +1090,6 @@ data:
     error_snsr_com_swgf_lim_exceeded: 0
     error_vmain_out_tolerance: 0
     error_vmain_swgf_lim_exceeded: 1
-    header_timestamp: '2013/12/20 00:15:08.570'
     imain_current:       737.00000
     imain_dpb_in:       586.10000
     leak_detect_c1_v: 1245
@@ -1206,9 +1112,7 @@ data:
   - _index: 48
     particle_object: CgDclEngDclCpuUptimeRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_cpu_uptime_recovered
-    internal_timestamp: 3596487340.5920000
     port_timestamp: 3596487340.5920000
-    header_timestamp: '2013/12/20 00:15:40.592'
     load_val_1:         0.84000
     load_val_2:         0.48000
     load_val_3:         0.31000
@@ -1218,18 +1122,16 @@ data:
   - _index: 49
     particle_object: CgDclEngDclMsgCountsRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_msg_counts_recovered
-    internal_timestamp: 3596487340.6870003
     port_timestamp: 3596487340.6870003
     dlog_mgr_counts: 10
     gps_counts: 600
-    header_timestamp: '2013/12/20 00:15:40.687'
     ntp_counts: 0
     pps_counts: 30
     superv_counts: 148
   - _index: 50
     particle_object: CgDclEngDclGpsRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_gps_recovered
-    internal_timestamp: 3596487340.6890001
+    internal_timestamp: 3596487339.7919998
     port_timestamp: 3596487340.6890001
     date_of_fix: '201213'
     gps_altitude:         3.60000
@@ -1238,29 +1140,24 @@ data:
     gps_quality: 2
     gps_speed:         3.20000
     gps_true_course:       272.40000
-    header_timestamp: '2013/12/20 00:15:40.689'
     latitude:        40.13695
     latitude_alt_format: '4008.2168 N'
     longitude:       -70.76973
     longitude_alt_format: '07046.1837 W'
-    message_sent_timestamp: '2013/12/20 00:15:39.792'
     time_of_fix: '001539'
   - _index: 51
     particle_object: CgDclEngDclPpsRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_pps_recovered
-    internal_timestamp: 3596487340.6910000
+    internal_timestamp: 3596487332.0000000
     port_timestamp: 3596487340.6910000
     bad_pulses: 0
     delta: 999916
     delta_max: 89
     delta_min: 1
-    header_timestamp: '2013/12/20 00:15:40.691'
-    message_sent_timestamp: '2013/12/20 00:15:32.000'
     nmea_lock: 1
   - _index: 52
     particle_object: CgDclEngDclSupervRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_superv_recovered
-    internal_timestamp: 3596487340.6919999
     port_timestamp: 3596487340.6919999
     active_leak_detect_channels: 3
     active_swgf_channels: 7
@@ -1287,7 +1184,6 @@ data:
     error_snsr_com_swgf_lim_exceeded: 0
     error_vmain_out_tolerance: 0
     error_vmain_swgf_lim_exceeded: 1
-    header_timestamp: '2013/12/20 00:15:40.692'
     imain_current:       609.00000
     imain_dpb_in:       452.10000
     leak_detect_c1_v: 1248
@@ -1310,7 +1206,6 @@ data:
   - _index: 53
     particle_object: CgDclEngDclDlogMgrRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_dlog_mgr_recovered
-    internal_timestamp: 3596487340.6940002
     port_timestamp: 3596487340.6940002
     datalogger_timestamp: '2013/12/20 00:15:29.490'
     dlog_mgr_act: 4
@@ -1318,11 +1213,10 @@ data:
     dlog_mgr_hlt: 0
     dlog_mgr_map: '000D0DDD'
     dlog_mgr_str: 4
-    header_timestamp: '2013/12/20 00:15:40.694'
   - _index: 54
     particle_object: CgDclEngDclDlogStatusRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_dlog_status_recovered
-    internal_timestamp: 3596487340.6949997
+    internal_timestamp: 3596487318.0120001
     port_timestamp: 3596487340.6949997
     bad_bytes: 0
     bad_records: 0
@@ -1331,15 +1225,13 @@ data:
     bytes_sent: 16
     datalogger_state: 'DAQ'
     good_records: 3922
-    header_timestamp: '2013/12/20 00:15:40.695'
     instrument_identifier: 'velpt1'
-    message_sent_timestamp: '2013/12/20 00:15:18.012'
     time_last_communicated: Null
     time_received_last_data: 1387498309
   - _index: 55
     particle_object: CgDclEngDclDlogStatusRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_dlog_status_recovered
-    internal_timestamp: 3596487340.6970000
+    internal_timestamp: 3596487337.9639997
     port_timestamp: 3596487340.6970000
     bad_bytes: 0
     bad_records: 0
@@ -1348,15 +1240,13 @@ data:
     bytes_sent: 1368
     datalogger_state: 'DAQ'
     good_records: 18613
-    header_timestamp: '2013/12/20 00:15:40.697'
     instrument_identifier: 'phsen1'
-    message_sent_timestamp: '2013/12/20 00:15:37.964'
     time_last_communicated: Null
     time_received_last_data: 1387498537
   - _index: 56
     particle_object: CgDclEngDclDlogStatusRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_dlog_status_recovered
-    internal_timestamp: 3596487340.7040000
+    internal_timestamp: 3596487297.7560000
     port_timestamp: 3596487340.7040000
     bad_bytes: 137774
     bad_records: 801
@@ -1365,15 +1255,13 @@ data:
     bytes_sent: 11262
     datalogger_state: 'IDLE'
     good_records: 111684
-    header_timestamp: '2013/12/20 00:15:40.704'
     instrument_identifier: 'nutnr'
-    message_sent_timestamp: '2013/12/20 00:14:57.756'
     time_last_communicated: Null
     time_received_last_data: 1387497780
   - _index: 57
     particle_object: CgDclEngDclDlogStatusRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_dlog_status_recovered
-    internal_timestamp: 3596487340.7049999
+    internal_timestamp: 3596487315.4499998
     port_timestamp: 3596487340.7049999
     bad_bytes: 0
     bad_records: 0
@@ -1382,18 +1270,14 @@ data:
     bytes_sent: 16348
     datalogger_state: 'DAQ'
     good_records: 881061
-    header_timestamp: '2013/12/20 00:15:40.705'
     instrument_identifier: 'spkir'
-    message_sent_timestamp: '2013/12/20 00:15:15.450'
     time_last_communicated: Null
     time_received_last_data: 1387498515
   - _index: 58
     particle_object: CgDclEngDclStatusRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_status_recovered
-    internal_timestamp: 3596487340.7980003
+    internal_timestamp: 3596487340.7069998
     port_timestamp: 3596487340.7980003
-    header_timestamp: '2013/12/20 00:15:40.798'
-    message_sent_timestamp: '2013/12/20 00:15:40.707'
     message_sent_type: 'NTP'
     ntp_jitter: Null
     ntp_offset: Null
@@ -1401,15 +1285,12 @@ data:
   - _index: 59
     particle_object: CgDclEngDclErrorRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_error_recovered
-    internal_timestamp: 3596487388.6420002
     port_timestamp: 3596487388.6420002
-    header_timestamp: '2013/12/20 00:16:28.642'
     log_type: 'ERR'
     message_text: 'DLOGP7 Command [(NULL)] Received no recognized response'
   - _index: 60
     particle_object: CgDclEngDclSupervRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_superv_recovered
-    internal_timestamp: 3596487438.7030001
     port_timestamp: 3596487438.7030001
     active_leak_detect_channels: 3
     active_swgf_channels: 7
@@ -1436,7 +1317,6 @@ data:
     error_snsr_com_swgf_lim_exceeded: 0
     error_vmain_out_tolerance: 0
     error_vmain_swgf_lim_exceeded: 1
-    header_timestamp: '2013/12/20 00:17:18.703'
     imain_current:      1015.00000
     imain_dpb_in:       856.20000
     leak_detect_c1_v: 1248
@@ -1459,7 +1339,6 @@ data:
   - _index: 61
     particle_object: CgDclEngDclSupervRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_superv_recovered
-    internal_timestamp: 3596487498.7420001
     port_timestamp: 3596487498.7420001
     active_leak_detect_channels: 3
     active_swgf_channels: 7
@@ -1486,7 +1365,6 @@ data:
     error_snsr_com_swgf_lim_exceeded: 0
     error_vmain_out_tolerance: 0
     error_vmain_swgf_lim_exceeded: 1
-    header_timestamp: '2013/12/20 00:18:18.742'
     imain_current:       378.00000
     imain_dpb_in:       248.10000
     leak_detect_c1_v: 1252
@@ -1509,15 +1387,12 @@ data:
   - _index: 62
     particle_object: CgDclEngDclErrorRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_error_recovered
-    internal_timestamp: 3596487506.8039999
     port_timestamp: 3596487506.8039999
-    header_timestamp: '2013/12/20 00:18:26.804'
     log_type: 'ERR'
     message_text: 'DLOGP7 Command [G] Received no recognized response'
   - _index: 63
     particle_object: CgDclEngDclSupervRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_superv_recovered
-    internal_timestamp: 3596487604.8670001
     port_timestamp: 3596487604.8670001
     active_leak_detect_channels: 3
     active_swgf_channels: 7
@@ -1544,7 +1419,6 @@ data:
     error_snsr_com_swgf_lim_exceeded: 0
     error_vmain_out_tolerance: 0
     error_vmain_swgf_lim_exceeded: 1
-    header_timestamp: '2013/12/20 00:20:04.867'
     imain_current:       384.00000
     imain_dpb_in:       250.10000
     leak_detect_c1_v: 1248
@@ -1567,7 +1441,6 @@ data:
   - _index: 64
     particle_object: CgDclEngDclSupervRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_superv_recovered
-    internal_timestamp: 3596487606.8780003
     port_timestamp: 3596487606.8780003
     active_leak_detect_channels: 3
     active_swgf_channels: 7
@@ -1594,7 +1467,6 @@ data:
     error_snsr_com_swgf_lim_exceeded: 0
     error_vmain_out_tolerance: 0
     error_vmain_swgf_lim_exceeded: 1
-    header_timestamp: '2013/12/20 00:20:06.878'
     imain_current:       399.00000
     imain_dpb_in:       264.10000
     leak_detect_c1_v: 1250
@@ -1617,9 +1489,7 @@ data:
   - _index: 65
     particle_object: CgDclEngDclCpuUptimeRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_cpu_uptime_recovered
-    internal_timestamp: 3596487640.9150000
     port_timestamp: 3596487640.9150000
-    header_timestamp: '2013/12/20 00:20:40.915'
     load_val_1:         0.18000
     load_val_2:         0.34000
     load_val_3:         0.30000
@@ -1629,18 +1499,16 @@ data:
   - _index: 66
     particle_object: CgDclEngDclMsgCountsRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_msg_counts_recovered
-    internal_timestamp: 3596487640.9840002
     port_timestamp: 3596487640.9840002
     dlog_mgr_counts: 9
     gps_counts: 602
-    header_timestamp: '2013/12/20 00:20:40.984'
     ntp_counts: 0
     pps_counts: 30
     superv_counts: 148
   - _index: 67
     particle_object: CgDclEngDclGpsRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_gps_recovered
-    internal_timestamp: 3596487640.9860001
+    internal_timestamp: 3596487640.7909999
     port_timestamp: 3596487640.9860001
     date_of_fix: '201213'
     gps_altitude:         6.50000
@@ -1649,29 +1517,24 @@ data:
     gps_quality: 2
     gps_speed:         2.10000
     gps_true_course:       130.30000
-    header_timestamp: '2013/12/20 00:20:40.986'
     latitude:        40.13694
     latitude_alt_format: '4008.2166 N'
     longitude:       -70.76970
     longitude_alt_format: '07046.1819 W'
-    message_sent_timestamp: '2013/12/20 00:20:40.791'
     time_of_fix: '002040'
   - _index: 68
     particle_object: CgDclEngDclPpsRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_pps_recovered
-    internal_timestamp: 3596487640.9870000
+    internal_timestamp: 3596487632.0000000
     port_timestamp: 3596487640.9870000
     bad_pulses: 0
     delta: 999999
     delta_max: -22
     delta_min: 1
-    header_timestamp: '2013/12/20 00:20:40.987'
-    message_sent_timestamp: '2013/12/20 00:20:32.000'
     nmea_lock: 1
   - _index: 69
     particle_object: CgDclEngDclSupervRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_superv_recovered
-    internal_timestamp: 3596487640.9879999
     port_timestamp: 3596487640.9879999
     active_leak_detect_channels: 3
     active_swgf_channels: 7
@@ -1698,7 +1561,6 @@ data:
     error_snsr_com_swgf_lim_exceeded: 0
     error_vmain_out_tolerance: 0
     error_vmain_swgf_lim_exceeded: 1
-    header_timestamp: '2013/12/20 00:20:40.988'
     imain_current:       407.00000
     imain_dpb_in:       276.10000
     leak_detect_c1_v: 1250
@@ -1721,7 +1583,6 @@ data:
   - _index: 70
     particle_object: CgDclEngDclDlogMgrRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_dlog_mgr_recovered
-    internal_timestamp: 3596487640.9890003
     port_timestamp: 3596487640.9890003
     datalogger_timestamp: '2013/12/20 00:20:17.461'
     dlog_mgr_act: 4
@@ -1729,11 +1590,10 @@ data:
     dlog_mgr_hlt: 0
     dlog_mgr_map: '000D0DDD'
     dlog_mgr_str: 4
-    header_timestamp: '2013/12/20 00:20:40.989'
   - _index: 71
     particle_object: CgDclEngDclDlogStatusRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_dlog_status_recovered
-    internal_timestamp: 3596487640.9899998
+    internal_timestamp: 3596487639.0469999
     port_timestamp: 3596487640.9899998
     bad_bytes: 0
     bad_records: 0
@@ -1742,15 +1602,13 @@ data:
     bytes_sent: 16
     datalogger_state: 'DAQ'
     good_records: 3922
-    header_timestamp: '2013/12/20 00:20:40.990'
     instrument_identifier: 'velpt1'
-    message_sent_timestamp: '2013/12/20 00:20:39.047'
     time_last_communicated: Null
     time_received_last_data: 1387498309
   - _index: 72
     particle_object: CgDclEngDclDlogStatusRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_dlog_status_recovered
-    internal_timestamp: 3596487640.9910002
+    internal_timestamp: 3596487618.0209999
     port_timestamp: 3596487640.9910002
     bad_bytes: 0
     bad_records: 0
@@ -1759,15 +1617,13 @@ data:
     bytes_sent: 1370
     datalogger_state: 'DAQ'
     good_records: 18614
-    header_timestamp: '2013/12/20 00:20:40.991'
     instrument_identifier: 'phsen1'
-    message_sent_timestamp: '2013/12/20 00:20:18.021'
     time_last_communicated: Null
     time_received_last_data: 1387498738
   - _index: 73
     particle_object: CgDclEngDclDlogStatusRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_dlog_status_recovered
-    internal_timestamp: 3596487640.9920001
+    internal_timestamp: 3596487636.8070002
     port_timestamp: 3596487640.9920001
     bad_bytes: 137946
     bad_records: 802
@@ -1776,15 +1632,13 @@ data:
     bytes_sent: 11266
     datalogger_state: 'IDLE'
     good_records: 111725
-    header_timestamp: '2013/12/20 00:20:40.992'
     instrument_identifier: 'nutnr'
-    message_sent_timestamp: '2013/12/20 00:20:36.807'
     time_last_communicated: Null
     time_received_last_data: 1387498679
   - _index: 74
     particle_object: CgDclEngDclDlogStatusRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_dlog_status_recovered
-    internal_timestamp: 3596487640.9930000
+    internal_timestamp: 3596487631.9749999
     port_timestamp: 3596487640.9930000
     bad_bytes: 0
     bad_records: 0
@@ -1793,18 +1647,14 @@ data:
     bytes_sent: 16350
     datalogger_state: 'DAQ'
     good_records: 881185
-    header_timestamp: '2013/12/20 00:20:40.993'
     instrument_identifier: 'spkir'
-    message_sent_timestamp: '2013/12/20 00:20:31.975'
     time_last_communicated: Null
     time_received_last_data: 1387498831
   - _index: 75
     particle_object: CgDclEngDclStatusRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_status_recovered
-    internal_timestamp: 3596487641.0790000
+    internal_timestamp: 3596487640.9940000
     port_timestamp: 3596487641.0790000
-    header_timestamp: '2013/12/20 00:20:41.079'
-    message_sent_timestamp: '2013/12/20 00:20:40.994'
     message_sent_type: 'NTP'
     ntp_jitter: Null
     ntp_offset: Null
@@ -1812,7 +1662,6 @@ data:
   - _index: 76
     particle_object: CgDclEngDclSupervRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_superv_recovered
-    internal_timestamp: 3596487739.0050001
     port_timestamp: 3596487739.0050001
     active_leak_detect_channels: 3
     active_swgf_channels: 7
@@ -1839,7 +1688,6 @@ data:
     error_snsr_com_swgf_lim_exceeded: 0
     error_vmain_out_tolerance: 0
     error_vmain_swgf_lim_exceeded: 1
-    header_timestamp: '2013/12/20 00:22:19.005'
     imain_current:       373.00000
     imain_dpb_in:       254.10000
     leak_detect_c1_v: 1252
@@ -1862,7 +1710,6 @@ data:
   - _index: 77
     particle_object: CgDclEngDclSupervRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_superv_recovered
-    internal_timestamp: 3596487907.2100000
     port_timestamp: 3596487907.2100000
     active_leak_detect_channels: 3
     active_swgf_channels: 7
@@ -1889,7 +1736,6 @@ data:
     error_snsr_com_swgf_lim_exceeded: 0
     error_vmain_out_tolerance: 0
     error_vmain_swgf_lim_exceeded: 1
-    header_timestamp: '2013/12/20 00:25:07.210'
     imain_current:       539.00000
     imain_dpb_in:       402.10000
     leak_detect_c1_v: 1250
@@ -1912,9 +1758,7 @@ data:
   - _index: 78
     particle_object: CgDclEngDclCpuUptimeRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_cpu_uptime_recovered
-    internal_timestamp: 3596487941.2420001
     port_timestamp: 3596487941.2420001
-    header_timestamp: '2013/12/20 00:25:41.242'
     load_val_1:         0.17000
     load_val_2:         0.21000
     load_val_3:         0.24000
@@ -1924,18 +1768,16 @@ data:
   - _index: 79
     particle_object: CgDclEngDclMsgCountsRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_msg_counts_recovered
-    internal_timestamp: 3596487941.3109999
     port_timestamp: 3596487941.3109999
     dlog_mgr_counts: 10
     gps_counts: 600
-    header_timestamp: '2013/12/20 00:25:41.311'
     ntp_counts: 0
     pps_counts: 30
     superv_counts: 149
   - _index: 80
     particle_object: CgDclEngDclGpsRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_gps_recovered
-    internal_timestamp: 3596487941.3129997
+    internal_timestamp: 3596487940.7909999
     port_timestamp: 3596487941.3129997
     date_of_fix: '201213'
     gps_altitude:         4.70000
@@ -1944,29 +1786,24 @@ data:
     gps_quality: 2
     gps_speed:         1.30000
     gps_true_course:       278.00000
-    header_timestamp: '2013/12/20 00:25:41.313'
     latitude:        40.13695
     latitude_alt_format: '4008.2171 N'
     longitude:       -70.76964
     longitude_alt_format: '07046.1785 W'
-    message_sent_timestamp: '2013/12/20 00:25:40.791'
     time_of_fix: '002540'
   - _index: 81
     particle_object: CgDclEngDclPpsRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_pps_recovered
-    internal_timestamp: 3596487941.3140001
+    internal_timestamp: 3596487932.0000000
     port_timestamp: 3596487941.3140001
     bad_pulses: 2
     delta: 999928
     delta_max: 72
     delta_min: 0
-    header_timestamp: '2013/12/20 00:25:41.314'
-    message_sent_timestamp: '2013/12/20 00:25:32.000'
     nmea_lock: 1
   - _index: 82
     particle_object: CgDclEngDclSupervRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_superv_recovered
-    internal_timestamp: 3596487941.3150001
     port_timestamp: 3596487941.3150001
     active_leak_detect_channels: 3
     active_swgf_channels: 7
@@ -1993,7 +1830,6 @@ data:
     error_snsr_com_swgf_lim_exceeded: 0
     error_vmain_out_tolerance: 0
     error_vmain_swgf_lim_exceeded: 1
-    header_timestamp: '2013/12/20 00:25:41.315'
     imain_current:       428.00000
     imain_dpb_in:       296.10000
     leak_detect_c1_v: 1252
@@ -2016,7 +1852,6 @@ data:
   - _index: 83
     particle_object: CgDclEngDclDlogMgrRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_dlog_mgr_recovered
-    internal_timestamp: 3596487941.3160000
     port_timestamp: 3596487941.3160000
     datalogger_timestamp: '2013/12/20 00:25:37.465'
     dlog_mgr_act: 4
@@ -2024,11 +1859,10 @@ data:
     dlog_mgr_hlt: 0
     dlog_mgr_map: '000D0DDD'
     dlog_mgr_str: 4
-    header_timestamp: '2013/12/20 00:25:41.316'
   - _index: 84
     particle_object: CgDclEngDclDlogStatusRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_dlog_status_recovered
-    internal_timestamp: 3596487941.3169999
+    internal_timestamp: 3596487927.4180002
     port_timestamp: 3596487941.3169999
     bad_bytes: 0
     bad_records: 0
@@ -2037,15 +1871,13 @@ data:
     bytes_sent: 16
     datalogger_state: 'DAQ'
     good_records: 3922
-    header_timestamp: '2013/12/20 00:25:41.317'
     instrument_identifier: 'velpt1'
-    message_sent_timestamp: '2013/12/20 00:25:27.418'
     time_last_communicated: Null
     time_received_last_data: 1387498309
   - _index: 85
     particle_object: CgDclEngDclDlogStatusRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_dlog_status_recovered
-    internal_timestamp: 3596487941.3179998
+    internal_timestamp: 3596487930.9630003
     port_timestamp: 3596487941.3179998
     bad_bytes: 0
     bad_records: 0
@@ -2054,15 +1886,13 @@ data:
     bytes_sent: 1370
     datalogger_state: 'DAQ'
     good_records: 18642
-    header_timestamp: '2013/12/20 00:25:41.318'
     instrument_identifier: 'phsen1'
-    message_sent_timestamp: '2013/12/20 00:25:30.963'
     time_last_communicated: Null
     time_received_last_data: 1387499130
   - _index: 86
     particle_object: CgDclEngDclDlogStatusRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_dlog_status_recovered
-    internal_timestamp: 3596487941.3190002
+    internal_timestamp: 3596487916.7799997
     port_timestamp: 3596487941.3190002
     bad_bytes: 137946
     bad_records: 802
@@ -2071,15 +1901,13 @@ data:
     bytes_sent: 11266
     datalogger_state: 'IDLE'
     good_records: 111725
-    header_timestamp: '2013/12/20 00:25:41.319'
     instrument_identifier: 'nutnr'
-    message_sent_timestamp: '2013/12/20 00:25:16.780'
     time_last_communicated: Null
     time_received_last_data: 1387498679
   - _index: 87
     particle_object: CgDclEngDclDlogStatusRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_dlog_status_recovered
-    internal_timestamp: 3596487941.3199997
+    internal_timestamp: 3596487916.1370001
     port_timestamp: 3596487941.3199997
     bad_bytes: 0
     bad_records: 0
@@ -2088,18 +1916,14 @@ data:
     bytes_sent: 16352
     datalogger_state: 'DAQ'
     good_records: 881277
-    header_timestamp: '2013/12/20 00:25:41.320'
     instrument_identifier: 'spkir'
-    message_sent_timestamp: '2013/12/20 00:25:16.137'
     time_last_communicated: Null
     time_received_last_data: 1387499116
   - _index: 88
     particle_object: CgDclEngDclStatusRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_status_recovered
-    internal_timestamp: 3596487941.3870001
+    internal_timestamp: 3596487941.3210001
     port_timestamp: 3596487941.3870001
-    header_timestamp: '2013/12/20 00:25:41.387'
-    message_sent_timestamp: '2013/12/20 00:25:41.321'
     message_sent_type: 'NTP'
     ntp_jitter: Null
     ntp_offset: Null
@@ -2107,7 +1931,6 @@ data:
   - _index: 89
     particle_object: CgDclEngDclSupervRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_superv_recovered
-    internal_timestamp: 3596488039.3319998
     port_timestamp: 3596488039.3319998
     active_leak_detect_channels: 3
     active_swgf_channels: 7
@@ -2134,7 +1957,6 @@ data:
     error_snsr_com_swgf_lim_exceeded: 0
     error_vmain_out_tolerance: 0
     error_vmain_swgf_lim_exceeded: 1
-    header_timestamp: '2013/12/20 00:27:19.332'
     imain_current:       372.00000
     imain_dpb_in:       248.10000
     leak_detect_c1_v: 1252
@@ -2157,7 +1979,6 @@ data:
   - _index: 90
     particle_object: CgDclEngDclSupervRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_superv_recovered
-    internal_timestamp: 3596488207.5310001
     port_timestamp: 3596488207.5310001
     active_leak_detect_channels: 3
     active_swgf_channels: 7
@@ -2184,7 +2005,6 @@ data:
     error_snsr_com_swgf_lim_exceeded: 0
     error_vmain_out_tolerance: 0
     error_vmain_swgf_lim_exceeded: 1
-    header_timestamp: '2013/12/20 00:30:07.531'
     imain_current:       616.00000
     imain_dpb_in:       466.10000
     leak_detect_c1_v: 1255
@@ -2207,7 +2027,6 @@ data:
   - _index: 91
     particle_object: CgDclEngDclSupervRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_superv_recovered
-    internal_timestamp: 3596488209.5419998
     port_timestamp: 3596488209.5419998
     active_leak_detect_channels: 3
     active_swgf_channels: 7
@@ -2234,7 +2053,6 @@ data:
     error_snsr_com_swgf_lim_exceeded: 0
     error_vmain_out_tolerance: 0
     error_vmain_swgf_lim_exceeded: 1
-    header_timestamp: '2013/12/20 00:30:09.542'
     imain_current:       624.00000
     imain_dpb_in:       474.10000
     leak_detect_c1_v: 1257
@@ -2257,9 +2075,7 @@ data:
   - _index: 92
     particle_object: CgDclEngDclCpuUptimeRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_cpu_uptime_recovered
-    internal_timestamp: 3596488241.4549999
     port_timestamp: 3596488241.4549999
-    header_timestamp: '2013/12/20 00:30:41.455'
     load_val_1:         0.13000
     load_val_2:         0.15000
     load_val_3:         0.20000
@@ -2269,18 +2085,16 @@ data:
   - _index: 93
     particle_object: CgDclEngDclMsgCountsRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_msg_counts_recovered
-    internal_timestamp: 3596488241.6520000
     port_timestamp: 3596488241.6520000
     dlog_mgr_counts: 9
     gps_counts: 600
-    header_timestamp: '2013/12/20 00:30:41.652'
     ntp_counts: 0
     pps_counts: 30
     superv_counts: 146
   - _index: 94
     particle_object: CgDclEngDclGpsRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_gps_recovered
-    internal_timestamp: 3596488241.6529999
+    internal_timestamp: 3596488240.7760000
     port_timestamp: 3596488241.6529999
     date_of_fix: '201213'
     gps_altitude:         5.30000
@@ -2289,29 +2103,24 @@ data:
     gps_quality: 2
     gps_speed:         0.00000
     gps_true_course:       231.10000
-    header_timestamp: '2013/12/20 00:30:41.653'
     latitude:        40.13699
     latitude_alt_format: '4008.2194 N'
     longitude:       -70.76954
     longitude_alt_format: '07046.1722 W'
-    message_sent_timestamp: '2013/12/20 00:30:40.776'
     time_of_fix: '003040'
   - _index: 95
     particle_object: CgDclEngDclPpsRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_pps_recovered
-    internal_timestamp: 3596488241.6549997
+    internal_timestamp: 3596488232.0000000
     port_timestamp: 3596488241.6549997
     bad_pulses: 2
     delta: 999991
     delta_max: -9
     delta_min: 0
-    header_timestamp: '2013/12/20 00:30:41.655'
-    message_sent_timestamp: '2013/12/20 00:30:32.000'
     nmea_lock: 1
   - _index: 96
     particle_object: CgDclEngDclSupervRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_superv_recovered
-    internal_timestamp: 3596488241.6570001
     port_timestamp: 3596488241.6570001
     active_leak_detect_channels: 3
     active_swgf_channels: 7
@@ -2338,7 +2147,6 @@ data:
     error_snsr_com_swgf_lim_exceeded: 0
     error_vmain_out_tolerance: 0
     error_vmain_swgf_lim_exceeded: 1
-    header_timestamp: '2013/12/20 00:30:41.657'
     imain_current:       593.00000
     imain_dpb_in:       442.10000
     leak_detect_c1_v: 1250
@@ -2361,7 +2169,6 @@ data:
   - _index: 97
     particle_object: CgDclEngDclDlogMgrRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_dlog_mgr_recovered
-    internal_timestamp: 3596488241.6580000
     port_timestamp: 3596488241.6580000
     datalogger_timestamp: '2013/12/20 00:30:25.577'
     dlog_mgr_act: 4
@@ -2369,11 +2176,10 @@ data:
     dlog_mgr_hlt: 0
     dlog_mgr_map: '000D0DDD'
     dlog_mgr_str: 4
-    header_timestamp: '2013/12/20 00:30:41.658'
   - _index: 98
     particle_object: CgDclEngDclDlogStatusRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_dlog_status_recovered
-    internal_timestamp: 3596488241.6599998
+    internal_timestamp: 3596488218.1479998
     port_timestamp: 3596488241.6599998
     bad_bytes: 0
     bad_records: 0
@@ -2382,15 +2188,13 @@ data:
     bytes_sent: 16
     datalogger_state: 'DAQ'
     good_records: 3923
-    header_timestamp: '2013/12/20 00:30:41.660'
     instrument_identifier: 'velpt1'
-    message_sent_timestamp: '2013/12/20 00:30:18.148'
     time_last_communicated: Null
     time_received_last_data: 1387499209
   - _index: 99
     particle_object: CgDclEngDclDlogStatusRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_dlog_status_recovered
-    internal_timestamp: 3596488241.6610003
+    internal_timestamp: 3596488240.9630003
     port_timestamp: 3596488241.6610003
     bad_bytes: 0
     bad_records: 0
@@ -2399,15 +2203,13 @@ data:
     bytes_sent: 1370
     datalogger_state: 'DAQ'
     good_records: 18642
-    header_timestamp: '2013/12/20 00:30:41.661'
     instrument_identifier: 'phsen1'
-    message_sent_timestamp: '2013/12/20 00:30:40.963'
     time_last_communicated: Null
     time_received_last_data: 1387499440
   - _index: 100
     particle_object: CgDclEngDclDlogStatusRecoveredDataParticle
     particle_type: cg_dcl_eng_dcl_dlog_status_recovered
-    internal_timestamp: 3596488241.6619997
+    internal_timestamp: 3596488196.7530003
     port_timestamp: 3596488241.6619997
     bad_bytes: 137946
     bad_records: 802
@@ -2416,8 +2218,6 @@ data:
     bytes_sent: 11266
     datalogger_state: 'IDLE'
     good_records: 111725
-    header_timestamp: '2013/12/20 00:30:41.662'
     instrument_identifier: 'nutnr'
-    message_sent_timestamp: '2013/12/20 00:29:56.753'
     time_last_communicated: Null
     time_received_last_data: 1387498679

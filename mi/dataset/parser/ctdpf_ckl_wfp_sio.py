@@ -223,7 +223,7 @@ class CtdpfCklWfpSioParser(SioParser):
                                          self._decimation_factor)
 
                     sample = self._extract_sample(CtdpfCklWfpSioMetadataParticle,
-                                                  None, self._footer_data, timestamp)
+                                                  None, self._footer_data, internal_timestamp=timestamp)
 
                     if sample is not None:
                         result_particles.append(sample)
@@ -243,7 +243,7 @@ class CtdpfCklWfpSioParser(SioParser):
 
                         self._record_data = (data_fields[0], data_fields[1], data_fields[2])
                         sample = self._extract_sample(CtdpfCklWfpSioDataParticle,
-                                                      None, self._record_data, timestamp)
+                                                      None, self._record_data, internal_timestamp=timestamp)
 
                         if sample is not None:
 

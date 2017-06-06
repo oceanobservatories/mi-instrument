@@ -232,8 +232,10 @@ class ZplscCParser(SimpleParser):
         }
 
         # Create the data particle
-        particle = self._extract_sample(
-            ZplscCRecoveredDataParticle, None, zp_data, timestamp, DataParticleKey.PORT_TIMESTAMP)
+        particle = self._extract_sample(ZplscCRecoveredDataParticle,
+                                        None,
+                                        zp_data,
+                                        internal_timestamp=timestamp)
         if particle is not None:
             log.trace('Parsed particle: %s' % particle.generate_dict())
             self._record_buffer.append(particle)

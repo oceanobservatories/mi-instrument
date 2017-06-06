@@ -110,7 +110,7 @@ class FdchpAParser(SimpleParser):
         record = self._stream_handle.read(RECORD_SIZE)
 
         while record:
-            particle = self._extract_sample(FdchpADataParticle, None, record, None)
+            particle = self._extract_sample(FdchpADataParticle, None, record)
             self._record_buffer.append(particle)
 
             record = self._stream_handle.read(RECORD_SIZE)

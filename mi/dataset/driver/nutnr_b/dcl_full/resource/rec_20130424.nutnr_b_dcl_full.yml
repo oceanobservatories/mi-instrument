@@ -5,10 +5,8 @@ data:
   - _index: 1
     particle_object: NutnrBDclFullRecoveredMetadataDataParticle
     particle_type: nutnr_b_dcl_full_metadata_recovered
-    internal_timestamp: 3575803473.5609999
-    port_timestamp: 3575803473.5609999
+    port_timestamp: 3575803608.9470000
     data_log_file: 'DATA\SCH14178.DAT'
-    dcl_controller_timestamp: '2013/04/24 14:46:48.947'
     lamp_on_time: 1366814792
     lamp_powered_time: 1366814797
     serial_number: '0260'
@@ -18,14 +16,12 @@ data:
   - _index: 2
     particle_object: NutnrBDclDarkFullRecoveredInstrumentDataParticle
     particle_type: nutnr_b_dcl_dark_full_instrument_recovered
-    internal_timestamp: 3575803608.9470000
+    internal_timestamp: 3612869208.9468002
     port_timestamp: 3575803608.9470000
     aux_fitting_1:         0.00000
     aux_fitting_2:         0.00000
     aux_fitting_3:         0.00000
     dark_frame_spectral_channels: [986, 973, 980, 973, 999, 986, 978, 963, 964, 982, 993, 965, 985, 979, 967, 977, 985, 967, 982, 972, 970, 973, 978, 985, 992, 977, 983, 977, 962, 951, 963, 968, 972, 977, 985, 976, 973, 967, 964, 977, 963, 978, 986, 973, 983, 987, 971, 983, 967, 967, 978, 969, 965, 982, 969, 973, 984, 973, 962, 978, 955, 966, 981, 957, 961, 982, 979, 980, 983, 977, 998, 984, 976, 961, 962, 965, 991, 979, 972, 976, 976, 977, 980, 974, 969, 968, 969, 978, 971, 967, 966, 974, 964, 958, 971, 963, 967, 980, 975, 978, 983, 967, 980, 971, 967, 978, 975, 978, 977, 972, 978, 977, 965, 972, 987, 977, 969, 989, 978, 977, 983, 989, 973, 990, 974, 972, 970, 973, 969, 980, 968, 985, 986, 981, 981, 982, 979, 980, 971, 980, 977, 969, 958, 968, 976, 967, 978, 982, 971, 984, 983, 978, 996, 987, 977, 993, 973, 989, 981, 973, 984, 987, 978, 983, 988, 986, 987, 987, 991, 988, 979, 981, 981, 981, 982, 983, 977, 983, 988, 983, 977, 984, 981, 970, 989, 962, 986, 986, 975, 990, 977, 971, 974, 991, 979, 969, 971, 971, 979, 967, 971, 980, 973, 979, 989, 973, 983, 989, 969, 966, 985, 978, 972, 983, 983, 985, 981, 970, 977, 993, 972, 990, 980, 986, 997, 1006, 990, 1002, 982, 989, 985, 985, 965, 967, 973, 973, 995, 979, 983, 1002, 987, 979, 981, 962, 974, 987, 995, 986, 996, 986, 992, 991, 981, 992, 995, 995]
-    date_of_sample: 2014178
-    dcl_controller_timestamp: '2013/04/24 14:46:48.947'
     frame_header: 'SAT'
     frame_type: 'NDF'
     humidity:         8.10000
@@ -40,20 +36,17 @@ data:
     temp_interior:        23.12000
     temp_lamp:        16.93000
     temp_spectrometer:        23.69000
-    time_of_sample:        14.78026
     voltage_analog:         4.97000
     voltage_lamp:        12.02000
     voltage_main:        15.03000
   - _index: 3
     particle_object: NutnrBDclFullRecoveredInstrumentDataParticle
     particle_type: nutnr_b_dcl_full_instrument_recovered
-    internal_timestamp: 3575803610.3160000
+    internal_timestamp: 3612869210.1852002
     port_timestamp: 3575803610.3160000
     aux_fitting_1:       -48.18000
     aux_fitting_2:        73.66000
     aux_fitting_3:        -0.06000
-    date_of_sample: 2014178
-    dcl_controller_timestamp: '2013/04/24 14:46:50.316'
     frame_header: 'SAT'
     frame_type: 'NLF'
     humidity:         8.17000
@@ -69,20 +62,17 @@ data:
     temp_interior:        23.12000
     temp_lamp:        16.67000
     temp_spectrometer:        23.69000
-    time_of_sample:        14.78061
     voltage_analog:         4.96000
     voltage_lamp:        11.99000
     voltage_main:        15.00000
   - _index: 4
     particle_object: NutnrBDclFullRecoveredInstrumentDataParticle
     particle_type: nutnr_b_dcl_full_instrument_recovered
-    internal_timestamp: 3575803611.6540003
+    internal_timestamp: 3612869211.4668002
     port_timestamp: 3575803611.6540003
     aux_fitting_1:       -47.95000
     aux_fitting_2:        73.43000
     aux_fitting_3:        -0.05000
-    date_of_sample: 2014178
-    dcl_controller_timestamp: '2013/04/24 14:46:51.654'
     frame_header: 'SAT'
     frame_type: 'NLF'
     humidity:         8.09000
@@ -98,20 +88,17 @@ data:
     temp_interior:        23.12000
     temp_lamp:        17.00000
     temp_spectrometer:        23.69000
-    time_of_sample:        14.78096
     voltage_analog:         4.96000
     voltage_lamp:        12.02000
     voltage_main:        15.00000
   - _index: 5
     particle_object: NutnrBDclFullRecoveredInstrumentDataParticle
     particle_type: nutnr_b_dcl_full_instrument_recovered
-    internal_timestamp: 3575803612.9349999
+    internal_timestamp: 3612869212.8060002
     port_timestamp: 3575803612.9349999
     aux_fitting_1:       -42.39000
     aux_fitting_2:        64.34000
     aux_fitting_3:        -0.04000
-    date_of_sample: 2014178
-    dcl_controller_timestamp: '2013/04/24 14:46:52.935'
     frame_header: 'SAT'
     frame_type: 'NLF'
     humidity:         8.05000
@@ -127,20 +114,17 @@ data:
     temp_interior:        23.12000
     temp_lamp:        16.79000
     temp_spectrometer:        23.69000
-    time_of_sample:        14.78134
     voltage_analog:         4.96000
     voltage_lamp:        12.00000
     voltage_main:        14.99000
   - _index: 6
     particle_object: NutnrBDclFullRecoveredInstrumentDataParticle
     particle_type: nutnr_b_dcl_full_instrument_recovered
-    internal_timestamp: 3575803614.2729998
+    internal_timestamp: 3612869214.1451998
     port_timestamp: 3575803614.2729998
     aux_fitting_1:       -52.03000
     aux_fitting_2:        80.03000
     aux_fitting_3:        -0.07000
-    date_of_sample: 2014178
-    dcl_controller_timestamp: '2013/04/24 14:46:54.273'
     frame_header: 'SAT'
     frame_type: 'NLF'
     humidity:         8.20000
@@ -156,20 +140,17 @@ data:
     temp_interior:        23.12000
     temp_lamp:        16.64000
     temp_spectrometer:        23.69000
-    time_of_sample:        14.78171
     voltage_analog:         4.97000
     voltage_lamp:        12.02000
     voltage_main:        14.99000
   - _index: 7
     particle_object: NutnrBDclFullRecoveredInstrumentDataParticle
     particle_type: nutnr_b_dcl_full_instrument_recovered
-    internal_timestamp: 3575803615.6180000
+    internal_timestamp: 3612869215.4267998
     port_timestamp: 3575803615.6180000
     aux_fitting_1:       -45.58000
     aux_fitting_2:        69.54000
     aux_fitting_3:        -0.04000
-    date_of_sample: 2014178
-    dcl_controller_timestamp: '2013/04/24 14:46:55.618'
     frame_header: 'SAT'
     frame_type: 'NLF'
     humidity:         8.14000
@@ -185,20 +166,17 @@ data:
     temp_interior:        23.12000
     temp_lamp:        16.90000
     temp_spectrometer:        23.69000
-    time_of_sample:        14.78206
     voltage_analog:         4.97000
     voltage_lamp:        12.01000
     voltage_main:        14.98000
   - _index: 8
     particle_object: NutnrBDclFullRecoveredInstrumentDataParticle
     particle_type: nutnr_b_dcl_full_instrument_recovered
-    internal_timestamp: 3575803616.8900003
+    internal_timestamp: 3612869216.7695999
     port_timestamp: 3575803616.8900003
     aux_fitting_1:       -48.29000
     aux_fitting_2:        73.86000
     aux_fitting_3:        -0.05000
-    date_of_sample: 2014178
-    dcl_controller_timestamp: '2013/04/24 14:46:56.890'
     frame_header: 'SAT'
     frame_type: 'NLF'
     humidity:         7.89000
@@ -214,20 +192,17 @@ data:
     temp_interior:        23.12000
     temp_lamp:        16.99000
     temp_spectrometer:        23.69000
-    time_of_sample:        14.78244
     voltage_analog:         4.98000
     voltage_lamp:        11.99000
     voltage_main:        14.99000
   - _index: 9
     particle_object: NutnrBDclFullRecoveredInstrumentDataParticle
     particle_type: nutnr_b_dcl_full_instrument_recovered
-    internal_timestamp: 3575803618.2069998
+    internal_timestamp: 3612869218.1087999
     port_timestamp: 3575803618.2069998
     aux_fitting_1:       -43.20000
     aux_fitting_2:        65.43000
     aux_fitting_3:        -0.04000
-    date_of_sample: 2014178
-    dcl_controller_timestamp: '2013/04/24 14:46:58.207'
     frame_header: 'SAT'
     frame_type: 'NLF'
     humidity:         8.02000
@@ -243,7 +218,6 @@ data:
     temp_interior:        23.12000
     temp_lamp:        16.91000
     temp_spectrometer:        23.69000
-    time_of_sample:        14.78281
     voltage_analog:         4.96000
     voltage_lamp:        12.00000
     voltage_main:        15.01000

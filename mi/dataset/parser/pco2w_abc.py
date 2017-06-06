@@ -396,7 +396,7 @@ class Pco2wAbcParser(Parser):
                     particle = self._extract_sample(self._metadata_class,
                                                     None,
                                                     metadata_dict,
-                                                    timestamp)
+                                                    internal_timestamp=timestamp)
 
                     log.debug("Appending metadata particle: %s", particle.generate())
                     self._record_buffer.append(particle)
@@ -413,7 +413,7 @@ class Pco2wAbcParser(Parser):
                     particle = self._extract_sample(self._power_class,
                                                     None,
                                                     power_dict,
-                                                    timestamp)
+                                                    internal_timestamp=timestamp)
 
                     log.debug("Appending power particle: %s", particle.generate())
                     self._record_buffer.append(particle)
@@ -430,7 +430,7 @@ class Pco2wAbcParser(Parser):
                     particle = self._extract_sample(self._instrument_class,
                                                     None,
                                                     instrument_dict,
-                                                    timestamp)
+                                                    internal_timestamp=timestamp)
 
                     log.debug("Appending instrument particle: %s", particle.generate())
                     self._record_buffer.append(particle)
@@ -448,7 +448,7 @@ class Pco2wAbcParser(Parser):
                     particle = self._extract_sample(self._instrument_blank_class,
                                                     None,
                                                     instrument_blank_dict,
-                                                    timestamp)
+                                                    internal_timestamp=timestamp)
 
                     log.debug("Appending instrument blank particle: %s", particle.generate())
                     self._record_buffer.append(particle)

@@ -37,9 +37,8 @@ class CtdbpCdefDclParserUnitTestCase(ParserUnitTestCase):
     """
     ctdbp_cdef_dcl Parser unit test suite
     """
-    def file_path(self, filename):
-        log.debug('resource path = %s, file name = %s', RESOURCE_PATH, filename)
-        return os.path.join(RESOURCE_PATH, filename)
+    def create_yml(self, particles, filename):
+        particle_to_yml(particles, os.path.join(RESOURCE_PATH, filename))
 
     def test_simple(self):
         """
@@ -94,7 +93,7 @@ class CtdbpCdefDclParserUnitTestCase(ParserUnitTestCase):
 
             particles = parser.get_records(1)
 
-            # Make sure we obtained 2 particles
+            # Make sure we obtained 1 particles
             self.assertTrue(len(particles) == 1)
             self.assert_particles(particles, '20140930.ctdbp1_1rec_corr.yml', RESOURCE_PATH)
 
@@ -153,6 +152,7 @@ class CtdbpCdefDclParserUnitTestCase(ParserUnitTestCase):
             particles = parser.get_records(14)
             # Make sure we obtained 14 particles
             self.assertTrue(len(particles) == 14)
+
             self.assert_particles(particles, "20140918.ctdbp_many_uncorr_t.yml", RESOURCE_PATH)
 
         # test with corrected Endurance data, recovered

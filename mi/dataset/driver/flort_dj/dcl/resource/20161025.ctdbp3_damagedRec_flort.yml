@@ -7,7 +7,6 @@ data:
     particle_type: flort_dj_dcl_instrument
     internal_timestamp: 3686347820.0000000
     port_timestamp: 3686347826.1770000
-    date_time_string: '25 Oct 2016 01:30:20'
     raw_signal_beta: 1184
     raw_signal_cdom: 91
     raw_signal_chl: 178
@@ -16,7 +15,6 @@ data:
     particle_type: flort_dj_dcl_instrument
     internal_timestamp: 3686351427.0000000
     port_timestamp: 3686351432.8310003
-    date_time_string: '25 Oct 2016 02:30:27'
     raw_signal_beta: 1218
     raw_signal_cdom: 92
     raw_signal_chl: 154
@@ -25,7 +23,6 @@ data:
     particle_type: flort_dj_dcl_instrument
     internal_timestamp: 3686355020.0000000
     port_timestamp: 3686355026.1510000
-    date_time_string: '25 Oct 2016 03:30:20'
     raw_signal_beta: 1278
     raw_signal_cdom: 94
     raw_signal_chl: 151
@@ -34,7 +31,6 @@ data:
     particle_type: flort_dj_dcl_instrument
     internal_timestamp: 3686358621.0000000
     port_timestamp: 3686358627.6160002
-    date_time_string: '25 Oct 2016 04:30:21'
     raw_signal_beta: 1271
     raw_signal_cdom: 93
     raw_signal_chl: 143
@@ -43,7 +39,6 @@ data:
     particle_type: flort_dj_dcl_instrument
     internal_timestamp: 3686362221.0000000
     port_timestamp: 3686362227.3970003
-    date_time_string: '25 Oct 2016 05:30:21'
     raw_signal_beta: 1362
     raw_signal_cdom: 92
     raw_signal_chl: 145
@@ -52,7 +47,6 @@ data:
     particle_type: flort_dj_dcl_instrument
     internal_timestamp: 3686365820.0000000
     port_timestamp: 3686365826.4480000
-    date_time_string: '25 Oct 2016 06:30:20'
     raw_signal_beta: 2053
     raw_signal_cdom: 90
     raw_signal_chl: 143
@@ -61,7 +55,6 @@ data:
     particle_type: flort_dj_dcl_instrument
     internal_timestamp: 3686376620.0000000
     port_timestamp: 3686376626.5559998
-    date_time_string: '25 Oct 2016 09:30:20'
     raw_signal_beta: 619
     raw_signal_cdom: 84
     raw_signal_chl: 120
@@ -70,7 +63,6 @@ data:
     particle_type: flort_dj_dcl_instrument
     internal_timestamp: 3686380220.0000000
     port_timestamp: 3686380226.2080002
-    date_time_string: '25 Oct 2016 10:30:20'
     raw_signal_beta: 566
     raw_signal_cdom: 86
     raw_signal_chl: 119
@@ -79,7 +71,6 @@ data:
     particle_type: flort_dj_dcl_instrument
     internal_timestamp: 3686387421.0000000
     port_timestamp: 3686387427.2360001
-    date_time_string: '25 Oct 2016 12:30:21'
     raw_signal_beta: 616
     raw_signal_cdom: 87
     raw_signal_chl: 121
@@ -88,7 +79,6 @@ data:
     particle_type: flort_dj_dcl_instrument
     internal_timestamp: 3686391020.0000000
     port_timestamp: 3686391026.6980000
-    date_time_string: '25 Oct 2016 13:30:20'
     raw_signal_beta: 603
     raw_signal_cdom: 90
     raw_signal_chl: 116
@@ -97,7 +87,6 @@ data:
     particle_type: flort_dj_dcl_instrument
     internal_timestamp: 3686394621.0000000
     port_timestamp: 3686394627.2909999
-    date_time_string: '25 Oct 2016 14:30:21'
     raw_signal_beta: 945
     raw_signal_cdom: 93
     raw_signal_chl: 154
@@ -106,7 +95,6 @@ data:
     particle_type: flort_dj_dcl_instrument
     internal_timestamp: 3686398221.0000000
     port_timestamp: 3686398227.2700000
-    date_time_string: '25 Oct 2016 15:30:21'
     raw_signal_beta: 650
     raw_signal_cdom: 90
     raw_signal_chl: 136
@@ -115,7 +103,6 @@ data:
     particle_type: flort_dj_dcl_instrument
     internal_timestamp: 3686401820.0000000
     port_timestamp: 3686401826.3710003
-    date_time_string: '25 Oct 2016 16:30:20'
     raw_signal_beta: 2123
     raw_signal_cdom: 88
     raw_signal_chl: 145
@@ -124,7 +111,6 @@ data:
     particle_type: flort_dj_dcl_instrument
     internal_timestamp: 3686409021.0000000
     port_timestamp: 3686409027.1140003
-    date_time_string: '25 Oct 2016 18:30:21'
     raw_signal_beta: 1553
     raw_signal_cdom: 92
     raw_signal_chl: 120
@@ -133,7 +119,6 @@ data:
     particle_type: flort_dj_dcl_instrument
     internal_timestamp: 3686412620.0000000
     port_timestamp: 3686412626.5920000
-    date_time_string: '25 Oct 2016 19:30:20'
     raw_signal_beta: 1986
     raw_signal_cdom: 93
     raw_signal_chl: 117
@@ -142,7 +127,6 @@ data:
     particle_type: flort_dj_dcl_instrument
     internal_timestamp: 3686416221.0000000
     port_timestamp: 3686416226.8579998
-    date_time_string: '25 Oct 2016 20:30:21'
     raw_signal_beta: 1506
     raw_signal_cdom: 88
     raw_signal_chl: 118
@@ -151,7 +135,6 @@ data:
     particle_type: flort_dj_dcl_instrument
     internal_timestamp: 3686419821.0000000
     port_timestamp: 3686419827.4080000
-    date_time_string: '25 Oct 2016 21:30:21'
     raw_signal_beta: 1353
     raw_signal_cdom: 87
     raw_signal_chl: 131
@@ -160,7 +143,6 @@ data:
     particle_type: flort_dj_dcl_instrument
     internal_timestamp: 3686427030.0000000
     port_timestamp: 3686427036.0970001
-    date_time_string: '25 Oct 2016 23:30:30'
     raw_signal_beta: 1567
     raw_signal_cdom: 90
     raw_signal_chl: 166

@@ -153,7 +153,7 @@ class DostaAbcdjmCtdbpParser(SimpleParser):
             match = ENDURANCE_DATA_MATCHER.match(line)
 
             if match is not None:
-                particle = self._extract_sample(DostaAbcdjmCtdbpInstrumentDataParticle, None, match, None)
+                particle = self._extract_sample(DostaAbcdjmCtdbpInstrumentDataParticle, None, match)
 
                 if particle is not None:
                     self._record_buffer.append(particle)

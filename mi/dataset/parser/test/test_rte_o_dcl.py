@@ -37,9 +37,8 @@ class RteODclParserUnitTestCase(ParserUnitTestCase):
             DataSetDriverConfigKeys.PARTICLE_CLASS: 'RteODclParserDataParticle'
             }
 
-    def file_path(self, filename):
-        log.debug('resource path = %s, file name = %s', RESOURCE_PATH, filename)
-        return os.path.join(RESOURCE_PATH, filename)
+    def create_yml(self, particles, filename):
+        particle_to_yml(particles, os.path.join(RESOURCE_PATH, filename))
 
     def test_bad_data(self):
         """
@@ -76,10 +75,6 @@ class RteODclParserUnitTestCase(ParserUnitTestCase):
             parser = RteODclParser(config, file_handle, self.exception_callback)
             particles = parser.get_records(5)
 
-            # creating .yml file
-            out_file = 'four_samp_rte_recov.result.yml'
-            particle_to_yml(particles, self.file_path(out_file))
-
             self.assertEqual(len(particles), 4)
             self.assertListEqual(self.exception_callback_value, [])
             self.assert_particles(particles, 'four_samp_rte_recov.result.yml', RESOURCE_PATH)
@@ -93,6 +88,3 @@ class RteODclParserUnitTestCase(ParserUnitTestCase):
             self.assertEqual(len(particles), 2)
             self.assertListEqual(self.exception_callback_value, [])
             self.assert_particles(particles, 'first_rte.result.yml', RESOURCE_PATH)
-
-
-

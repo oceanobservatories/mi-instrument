@@ -303,13 +303,11 @@ class NutnrJCsppParser(SimpleParser):
         if frame_type == 'SLB':  # light frame
             data_particle = self._extract_sample(self._light_particle_class,
                                                  None,
-                                                 data_match,
-                                                 None)
+                                                 data_match)
         elif frame_type == 'SDB':  # dark frame
             data_particle = self._extract_sample(self._dark_particle_class,
                                                  None,
-                                                 data_match,
-                                                 None)
+                                                 data_match)
         else:
             log.warn('got invalid frame type %s', frame_type)
             self._exception_callback(RecoverableSampleException('got invalid frame type %s' % frame_type))
@@ -327,8 +325,7 @@ class NutnrJCsppParser(SimpleParser):
                     metadata_particle = self._extract_sample(self._metadata_particle_class,
                                                              None,
                                                              (copy.copy(self._header_state),
-                                                              data_match),
-                                                             None)
+                                                              data_match))
                     if metadata_particle:
                         # We're going to insert the metadata particle so that it is
                         # the first in the list and set the position to 0, as it cannot

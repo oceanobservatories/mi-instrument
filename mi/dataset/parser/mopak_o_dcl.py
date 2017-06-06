@@ -247,7 +247,7 @@ class MopakODclParser(SimpleParser):
             if record_type == ACCEL_ID:
                 data = self._stream_handle.read(ACCEL_BYTES)
                 if self.compare_checksum(data):
-                    particle = self._extract_sample(self._accel_particle_class, None, data, None)
+                    particle = self._extract_sample(self._accel_particle_class, None, data)
                     fields = struct.unpack('>I', data[37:41])
                     position += ACCEL_BYTES
                 else:
@@ -260,7 +260,7 @@ class MopakODclParser(SimpleParser):
                 data = self._stream_handle.read(RATE_BYTES)
                 if self.compare_checksum(data):
                     # particle-ize the data block received, return the record
-                    particle = self._extract_sample(self._rate_particle_class, None, data, None)
+                    particle = self._extract_sample(self._rate_particle_class, None, data)
                     fields = struct.unpack('>I', data[25:29])
                     position += RATE_BYTES
                 else:

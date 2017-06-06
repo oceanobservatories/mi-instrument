@@ -8,8 +8,6 @@ data:
     internal_timestamp: 3606742800.0000000
     port_timestamp: 3606746351.3230000
     absolute_pressure:        14.66120
-    date_time_string: '17 Apr 2014 17:00:00'
-    dcl_controller_timestamp: '2014/04/17 17:59:11.323'
     pressure_temp:        11.38000
     seawater_temperature:        11.52480
   - _index: 2
@@ -18,7 +16,4 @@ data:
     internal_timestamp: 3606746357.0000000
     port_timestamp: 3606746352.3340001
     absolute_pressure_burst: [14.6498, 14.6482, 14.6482, 14.6482, 14.6511, 14.6511, 14.6566, 14.6538, 14.6566, 14.6566, 14.6544, 14.6544, 14.649, 14.6462, 14.6407, 14.6352, 14.6297, 14.627, 14.627, 14.6324]
-    date_time_string: '17 Apr 2014 17:59:17'
-    dcl_controller_end_timestamp: '2014/04/17 17:59:17.666'
-    dcl_controller_start_timestamp: '2014/04/17 17:59:12.334'
     ptemp_frequency:    171226.96800

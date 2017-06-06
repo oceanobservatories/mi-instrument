@@ -31,7 +31,6 @@ Release notes:
 
 Initial Release
 """
-from mi.dataset.parser.utilities import dcl_controller_timestamp_to_ntp_time
 
 __author__ = 'Sung Ahn'
 __license__ = 'Apache 2.0'
@@ -50,6 +49,10 @@ from mi.dataset.dataset_parser import SimpleParser
 
 from mi.dataset.parser.common_regexes import FLOAT_REGEX, UNSIGNED_INT_REGEX, INT_REGEX, \
     SPACE_REGEX, ANY_CHARS_REGEX, ASCII_HEX_CHAR_REGEX
+
+from mi.dataset.parser.utilities import dcl_time_to_ntp
+
+from mi.core.instrument.data_particle import DataParticleKey
 
 # Basic patterns
 UINT = '(' + UNSIGNED_INT_REGEX + ')'   # unsigned integer as a group
@@ -160,8 +163,6 @@ def float_or_dash(val):
 # The following is used for DclInstrumentDataParticle._build_parsed_values() and defined as below:
 # (parameter name, index into parsed_data[], encoding function)
 PD8_DATA_MAP = [
-    ('dcl_controller_timestamp',            0,  str),       # Last timestamp from the DCL controller
-    ('instrument_timestamp',                8,  str),
     ('ensemble_number',                     9, int),
     ('heading',                             10, float),
     ('pitch',                               11, float),
@@ -199,10 +200,6 @@ class AdcptAcfgmPd8InstrumentDataParticle(DclInstrumentDataParticle):
         super(AdcptAcfgmPd8InstrumentDataParticle, self).__init__(
             raw_data, PD8_DATA_MAP, *args, **kwargs)
 
-         # Instrument timestamp is the internal timestamp
-        instrument_timestamp = self.raw_data[SENSOR_TIME_SENSOR_DATE_TIME]
-        elapsed_seconds_useconds = dcl_controller_timestamp_to_ntp_time(instrument_timestamp)
-        self.set_internal_timestamp(elapsed_seconds_useconds)
 
 class AdcptAcfgmPd8DclInstrumentParticle(AdcptAcfgmPd8InstrumentDataParticle):
     """
@@ -256,9 +253,13 @@ class AdcptAcfgmPd8Parser(SimpleParser):
 
             # Save timestamp from the DCL controller log and it's parts
             parsed_data = list(matches[SENSOR_GROUP_TIMESTAMP:SENSOR_TIME_SENSOR_DATE_TIME])
+            port_timestamp = matches[SENSOR_GROUP_TIMESTAMP]
+            port_timestamp = dcl_time_to_ntp(port_timestamp)
 
             # Get instrument_timestamp & ensemble_number
             parsed_data.append(matches[SENSOR_TIME_SENSOR_DATE_TIME])
+            instrument_timestamp = matches[SENSOR_TIME_SENSOR_DATE_TIME]
+            internal_timestamp = dcl_time_to_ntp(instrument_timestamp)
             parsed_data.append(matches[SENSOR_TIME_ENSEMBLE])
 
             line = self._stream_handle.readline()  # READ NEXT LINE
@@ -316,10 +317,12 @@ class AdcptAcfgmPd8Parser(SimpleParser):
 
                         # Get number of cells
                         parsed_data.append(sensor_data_list[-1][0])
+
                         particle = self._extract_sample(self._particle_class,
                                                         None,
                                                         parsed_data,
-                                                        None)
+                                                        port_timestamp=port_timestamp,
+                                                        internal_timestamp=internal_timestamp)
                         if particle is not None:
                             self._record_buffer.append(particle)
 

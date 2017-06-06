@@ -303,6 +303,6 @@ class CamdsHtmlParser(SimpleParser):
 
             # extract timestamp and use for creation of the particle
             timestamp, _ = data_dict.pop(CamdsHTMLDataKey.TIMESTAMP)
-            record = self._extract_sample(self._particle_class, None, data_dict, timestamp)
+            record = self._extract_sample(self._particle_class, None, data_dict, internal_timestamp=timestamp)
             self._record_buffer.append(record)
         self._file_parsed = True

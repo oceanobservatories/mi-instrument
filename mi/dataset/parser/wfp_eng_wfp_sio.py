@@ -227,7 +227,7 @@ class WfpEngWfpSioParser(SioParser):
         sample = self._extract_sample(WfpEngWfpSioParserDataStartTimeParticle, None,
                                       self._current_controller_timestamp +
                                       sensor_profile_start_time_data,
-                                      float(ntplib.system_to_ntp_time(timestamp)))
+                                      internal_timestamp=float(ntplib.system_to_ntp_time(timestamp)))
 
         if sample:
             log.trace("Sample found: %s", sample.generate())
@@ -265,7 +265,7 @@ class WfpEngWfpSioParser(SioParser):
                 sample = self._extract_sample(WfpEngWfpSioParserDataStatusParticle, None,
                                               self._current_controller_timestamp +
                                               profile_eng_data[start_index_augmented:parse_end_point],
-                                              float(ntplib.system_to_ntp_time(timestamp)))
+                                              internal_timestamp=float(ntplib.system_to_ntp_time(timestamp)))
 
                 # Set the new end point
                 parse_end_point = start_index_augmented
@@ -281,7 +281,7 @@ class WfpEngWfpSioParser(SioParser):
                 sample = self._extract_sample(WfpEngWfpSioParserDataStatusParticle, None,
                                               self._current_controller_timestamp +
                                               profile_eng_data[start_index_normal:parse_end_point],
-                                              float(ntplib.system_to_ntp_time(timestamp)))
+                                              internal_timestamp=float(ntplib.system_to_ntp_time(timestamp)))
 
                 parse_end_point = start_index_normal
 
@@ -296,7 +296,7 @@ class WfpEngWfpSioParser(SioParser):
                 sample = self._extract_sample(WfpEngWfpSioParserDataEngineeringParticle, None,
                                               profile_eng_data[
                                               global_recovered_eng_rec_index:parse_end_point],
-                                              float(ntplib.system_to_ntp_time(timestamp)))
+                                              internal_timestamp=float(ntplib.system_to_ntp_time(timestamp)))
 
                 # Set the new end point
                 parse_end_point = global_recovered_eng_rec_index

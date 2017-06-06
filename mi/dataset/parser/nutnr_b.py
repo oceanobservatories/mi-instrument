@@ -242,7 +242,7 @@ class NutnrBParser(Parser):
         particle = self._extract_sample(NutnrBMetadataRecoveredDataParticle,
                                         None,
                                         metadata_tuple,
-                                        timestamp)
+                                        internal_timestamp=timestamp)
         if particle is not None:
             log.debug("Metadata Particle: %s", particle.generate())
             self._record_buffer.append(particle)
@@ -368,7 +368,7 @@ class NutnrBParser(Parser):
         particle = self._extract_sample(particle_class,
                                         None,
                                         instrument_tuple,
-                                        timestamp)
+                                        internal_timestamp=timestamp)
 
         if particle is not None:
             log.debug("Instrument Particle: %s", particle.generate())

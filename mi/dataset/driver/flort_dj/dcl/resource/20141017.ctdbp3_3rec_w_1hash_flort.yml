@@ -7,7 +7,6 @@ data:
     particle_type: flort_dj_dcl_instrument
     internal_timestamp: 3622566616.0000000
     port_timestamp: 3622566622.4330001
-    date_time_string: '17 Oct 2014 20:30:16'
     raw_signal_beta: 798
     raw_signal_cdom: 73
     raw_signal_chl: 207
@@ -16,7 +15,6 @@ data:
     particle_type: flort_dj_dcl_instrument
     internal_timestamp: 3622570217.0000000
     port_timestamp: 3622570223.6840000
-    date_time_string: '17 Oct 2014 21:30:17'
     raw_signal_beta: 740
     raw_signal_cdom: 73
     raw_signal_chl: 222
@@ -25,7 +23,6 @@ data:
     particle_type: flort_dj_dcl_instrument
     internal_timestamp: 3622573822.0000000
     port_timestamp: 3622573828.5000000
-    date_time_string: '17 Oct 2014 22:30:22'
     raw_signal_beta: 669
     raw_signal_cdom: 72
     raw_signal_chl: 209

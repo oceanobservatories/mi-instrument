@@ -7,6 +7,7 @@
 @brief Parser for the cg_dcl_eng_dcl dataset parser
 """
 
+
 __author__ = 'mworden'
 __license__ = 'Apache 2.0'
 
@@ -22,7 +23,7 @@ from mi.dataset.parser.common_regexes import END_OF_LINE_REGEX, \
     DATE_YYYY_MM_DD_REGEX, TIME_HR_MIN_SEC_MSEC_REGEX, INT_REGEX, \
     TIME_HR_MIN_SEC_REGEX, FLOAT_REGEX, ASCII_HEX_CHAR_REGEX
 
-from mi.dataset.parser import utilities
+from mi.dataset.parser.utilities import dcl_time_to_ntp
 
 
 class CgDclEngDclParticleClassTypes(BaseEnum):
@@ -741,18 +742,16 @@ class CgDclEngDclDataParticle(DataParticle):
         for key in self.raw_data.keys():
 
             if key == CgDclEngDclParserDataParticleKey.HEADER_TIMESTAMP:
-                # DCL controller timestamp  is the port timestamp
-                self.set_port_timestamp(
-                    utilities.dcl_controller_timestamp_to_ntp_time(self.raw_data[key]))
-                """
-                Rawdata(payload) does not contain any instrument timestamp,
-                So,we are using DCL controller timestamp(DCL logger timestamp) as the internal timestamp
-                In this case port timestamp and internal timestamp are same
-                """
-                self.set_internal_timestamp(
-                    utilities.dcl_controller_timestamp_to_ntp_time(self.raw_data[key]))
+                # DCL controller timestamp  is the port_timestamp
+                self.set_port_timestamp(dcl_time_to_ntp(self.raw_data[key]))
 
-            result.append(self._encode_value(key, self.raw_data[key], ENCODING_RULES_DICT[key]))
+            elif key == CgDclEngDclParserDataParticleKey.MESSAGE_SENT_TIMESTAMP:
+                # instrument timestamp  is the internal_timestamp
+                self.set_internal_timestamp(dcl_time_to_ntp(self.raw_data[key]))
+                self.contents[DataParticleKey.PREFERRED_TIMESTAMP] = DataParticleKey.INTERNAL_TIMESTAMP
+
+            else:
+                result.append(self._encode_value(key, self.raw_data[key], ENCODING_RULES_DICT[key]))
 
         return result
 
@@ -812,29 +811,28 @@ class CgDclEngDclPpsDataParticle(CgDclEngDclDataParticle):
         for key in self.raw_data.keys():
 
             if key == CgDclEngDclParserDataParticleKey.HEADER_TIMESTAMP:
-                # DCL controller timestamp  is the port timestamp
-                self.set_port_timestamp(
-                    utilities.dcl_controller_timestamp_to_ntp_time(self.raw_data[key]))
-                """
-                Rawdata(payload) does not contain any instrument timestamp,
-                So,we are using DCL controller timestamp(DCL logger timestamp) as the internal timestamp
-                In this case port timestamp and internal timestamp are same
-                """
-                self.set_internal_timestamp(
-                    utilities.dcl_controller_timestamp_to_ntp_time(self.raw_data[key]))
+                # DCL controller timestamp  is the port_timestamp
+                self.set_port_timestamp(dcl_time_to_ntp(self.raw_data[key]))
 
-            if key == CgDclEngDclParserDataParticleKey.NMEA_LOCK:
-
-                if self.raw_data[key] in ['TRUE', 'True', 'true']:
-                    value = 1
-                else:
-                    value = 0
+            elif key == CgDclEngDclParserDataParticleKey.MESSAGE_SENT_TIMESTAMP:
+                # instrument timestamp  is the internal_timestamp
+                self.set_internal_timestamp(dcl_time_to_ntp(self.raw_data[key]))
+                self.contents[DataParticleKey.PREFERRED_TIMESTAMP] = DataParticleKey.INTERNAL_TIMESTAMP
 
             else:
 
-                value = self.raw_data[key]
+                if key == CgDclEngDclParserDataParticleKey.NMEA_LOCK:
 
-            result.append(self._encode_value(key, value, ENCODING_RULES_DICT[key]))
+                    if self.raw_data[key] in ['TRUE', 'True', 'true']:
+                        value = 1
+                    else:
+                        value = 0
+
+                else:
+
+                    value = self.raw_data[key]
+
+                result.append(self._encode_value(key, value, ENCODING_RULES_DICT[key]))
 
         return result
 
@@ -871,20 +869,17 @@ class CgDclEngDclSupervDataParticle(CgDclEngDclDataParticle):
         for key in sorted(self.raw_data.keys()):
 
             if key == CgDclEngDclParserDataParticleKey.HEADER_TIMESTAMP:
-                # DCL controller timestamp  is the port timestamp
-                self.set_port_timestamp(
-                    utilities.dcl_controller_timestamp_to_ntp_time(self.raw_data[key]))
-                """
-                Rawdata(payload) does not contain any instrument timestamp,
-                So,we are using DCL controller timestamp(DCL logger timestamp) as the internal timestamp
-                In this case port timestamp and internal timestamp are same
-                """
-                self.set_internal_timestamp(
-                    utilities.dcl_controller_timestamp_to_ntp_time(self.raw_data[key]))
+                # DCL controller timestamp  is the port_timestamp
+                self.set_port_timestamp(dcl_time_to_ntp(self.raw_data[key]))
 
-            if key == ERROR_BITS_PARAM:
+            elif key == CgDclEngDclParserDataParticleKey.MESSAGE_SENT_TIMESTAMP:
+                # instrument timestamp  is the internal_timestamp
+                self.set_internal_timestamp(dcl_time_to_ntp(self.raw_data[key]))
+                self.contents[DataParticleKey.PREFERRED_TIMESTAMP] = DataParticleKey.INTERNAL_TIMESTAMP
 
-                error_bits  = format(int(self.raw_data[key], 16), '016b')
+            elif key == ERROR_BITS_PARAM:
+
+                error_bits = format(int(self.raw_data[key], 16), '016b')
 
                 for bit_field, bit in zip(ERROR_BITS, reversed(error_bits)):
 
@@ -956,18 +951,15 @@ class CgDclEngDclDlogStatusDataParticle(CgDclEngDclDataParticle):
         for key in self.raw_data.keys():
 
             if key == CgDclEngDclParserDataParticleKey.HEADER_TIMESTAMP:
-                # DCL controller timestamp  is the port timestamp
-                self.set_port_timestamp(
-                    utilities.dcl_controller_timestamp_to_ntp_time(self.raw_data[key]))
-                """
-                Rawdata(payload) does not contain any instrument timestamp,
-                So,we are using DCL controller timestamp(DCL logger timestamp) as the internal timestamp
-                In this case port timestamp and internal timestamp are same
-                """
-                self.set_internal_timestamp(
-                    utilities.dcl_controller_timestamp_to_ntp_time(self.raw_data[key]))
+                # DCL controller timestamp  is the port_timestamp
+                self.set_port_timestamp(dcl_time_to_ntp(self.raw_data[key]))
 
-            if key == CgDclEngDclParserDataParticleKey.TIME_LAST_COMMUNICATED and \
+            elif key == CgDclEngDclParserDataParticleKey.MESSAGE_SENT_TIMESTAMP:
+                # instrument timestamp  is the internal_timestamp
+                self.set_internal_timestamp(dcl_time_to_ntp(self.raw_data[key]))
+                self.contents[DataParticleKey.PREFERRED_TIMESTAMP] = DataParticleKey.INTERNAL_TIMESTAMP
+
+            elif key == CgDclEngDclParserDataParticleKey.TIME_LAST_COMMUNICATED and \
                             self.raw_data[key] is None:
 
                 result.append({
@@ -1010,18 +1002,15 @@ class CgDclEngDclStatusDataParticle(CgDclEngDclDataParticle):
         for key in self.raw_data.keys():
 
             if key == CgDclEngDclParserDataParticleKey.HEADER_TIMESTAMP:
-                # DCL controller timestamp  is the port timestamp
-                self.set_port_timestamp(
-                    utilities.dcl_controller_timestamp_to_ntp_time(self.raw_data[key]))
-                """
-                Rawdata(payload) does not contain any instrument timestamp,
-                So,we are using DCL controller timestamp(DCL logger timestamp) as the internal timestamp
-                In this case port timestamp and internal timestamp are same
-                """
-                self.set_internal_timestamp(
-                    utilities.dcl_controller_timestamp_to_ntp_time(self.raw_data[key]))
+                # DCL controller timestamp  is the port_timestamp
+                self.set_port_timestamp(dcl_time_to_ntp(self.raw_data[key]))
 
-            if key in [CgDclEngDclParserDataParticleKey.NTP_OFFSET, CgDclEngDclParserDataParticleKey.NTP_JITTER] and \
+            elif key == CgDclEngDclParserDataParticleKey.MESSAGE_SENT_TIMESTAMP:
+                # instrument timestamp  is the internal_timestamp
+                self.set_internal_timestamp(dcl_time_to_ntp(self.raw_data[key]))
+                self.contents[DataParticleKey.PREFERRED_TIMESTAMP] = DataParticleKey.INTERNAL_TIMESTAMP
+
+            elif key in [CgDclEngDclParserDataParticleKey.NTP_OFFSET, CgDclEngDclParserDataParticleKey.NTP_JITTER] and \
                             self.raw_data[key] is None:
 
                 result.append({
@@ -1066,7 +1055,6 @@ class CgDclEngDclParser(SimpleParser):
         super(CgDclEngDclParser, self).__init__(config,
                                                 stream_handle,
                                                 exception_callback)
-
 
         try:
             particle_classes_dict = config[DataSetDriverConfigKeys.PARTICLE_CLASSES_DICT]
@@ -1123,17 +1111,14 @@ class CgDclEngDclParser(SimpleParser):
 
                     sample = self._extract_sample(self._msg_counts_particle_class,
                                                   None,
-                                                  msg_counts_match.groupdict(),
-                                                  None)
+                                                  msg_counts_match.groupdict())
 
                 elif cpu_uptime_match is not None:
                     log.trace("cpu_uptime_match: %s", cpu_uptime_match.groupdict())
 
                     sample = self._extract_sample(self._cpu_uptime_particle_class,
                                                   None,
-                                                  cpu_uptime_match.groupdict(),
-                                                  None)
-
+                                                  cpu_uptime_match.groupdict())
                 else:
                     message = "Invalid MSG Log record, Line: " + line
                     log.error(message)
@@ -1148,8 +1133,7 @@ class CgDclEngDclParser(SimpleParser):
 
                     sample = self._extract_sample(self._error_particle_class,
                                                   None,
-                                                  error_match.groupdict(),
-                                                  None)
+                                                  error_match.groupdict())
                 else:
                     message = "Invalid ERR, ALM or WNG Log record, Line: " + line
                     log.error(message)
@@ -1158,8 +1142,8 @@ class CgDclEngDclParser(SimpleParser):
             elif re.match(DAT_LOG_TYPE_REGEX, line):
 
                 gps_match = re.match(GPS_REGEX, line)
-                pps_match =  re.match(PPS_REGEX, line)
-                superv_match =  re.match(SUPERV_REGEX, line)
+                pps_match = re.match(PPS_REGEX, line)
+                superv_match = re.match(SUPERV_REGEX, line)
                 dlog_mgr_match = re.match(DLOG_MGR_REGEX, line)
                 dlog_status_match = re.match(DLOG_STATUS_REGEX, line)
                 d_status_ntp_match = re.match(D_STATUS_NTP_REGEX, line)
@@ -1170,56 +1154,49 @@ class CgDclEngDclParser(SimpleParser):
 
                     sample = self._extract_sample(self._gps_particle_class,
                                                   None,
-                                                  gps_match.groupdict(),
-                                                  None)
+                                                  gps_match.groupdict())
 
                 elif pps_match is not None:
                     log.trace("pps_match: %s", pps_match.groupdict())
 
                     sample = self._extract_sample(self._pps_particle_class,
                                                   None,
-                                                  pps_match.groupdict(),
-                                                  None)
+                                                  pps_match.groupdict())
 
                 elif superv_match is not None:
                     log.trace("superv_match: %s", superv_match.groupdict())
 
                     sample = self._extract_sample(self._superv_particle_class,
                                                   None,
-                                                  superv_match.groupdict(),
-                                                  None)
+                                                  superv_match.groupdict())
 
                 elif dlog_mgr_match is not None:
                     log.trace("dlog_mgr_match: %s", dlog_mgr_match.groupdict())
 
                     sample = self._extract_sample(self._dlog_mgr_particle_class,
                                                   None,
-                                                  dlog_mgr_match.groupdict(),
-                                                  None)
+                                                  dlog_mgr_match.groupdict())
 
                 elif dlog_status_match is not None:
                     log.trace("dlog_status_match: %s", dlog_status_match.groupdict())
 
                     sample = self._extract_sample(self._dlog_status_particle_class,
                                                   None,
-                                                  dlog_status_match.groupdict(),
-                                                  None)
+                                                  dlog_status_match.groupdict())
 
                 elif d_status_ntp_match is not None:
                     log.trace("d_status_ntp_match: %s", d_status_ntp_match.groupdict())
 
                     sample = self._extract_sample(self._status_particle_class,
                                                   None,
-                                                  d_status_ntp_match.groupdict(),
-                                                  None)
+                                                  d_status_ntp_match.groupdict())
 
                 elif dlog_aarm_match is not None:
                     log.trace("sea_state_match: %s", dlog_aarm_match.groupdict())
 
                     sample = self._extract_sample(self._dlog_aarm_particle_class,
                                                   None,
-                                                  dlog_aarm_match.groupdict(),
-                                                  None)
+                                                  dlog_aarm_match.groupdict())
 
                 else:
                     message = "Invalid DAT Log record, Line: " + line
@@ -1237,5 +1214,3 @@ class CgDclEngDclParser(SimpleParser):
 
         # Set an indication that the file was fully parsed
         self._file_parsed = True
-
-

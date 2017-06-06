@@ -56,7 +56,9 @@ class CgParserUnitTestCase(ParserUnitTestCase):
         fid.close()
         utime_grp = re.search(r'Platform.utime=(.+?)(\r\n?|\n)', data)
         self.timestamp_a = ntplib.system_to_ntp_time(float(utime_grp.group(1)))
-        self.particle_a = CgStcEngStcParserDataParticle(data, internal_timestamp=self.timestamp_a)
+        self.particle_a = CgStcEngStcParserDataParticle(data,
+                                                        internal_timestamp=self.timestamp_a,
+                                                        preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         self.comparison_list = [{DataParticleKey.VALUE_ID: CgStcEngStcParserDataParticleKey.CG_ENG_PLATFORM_TIME,
                                  DataParticleKey.VALUE: '2013/10/04 16:07:02.253'},

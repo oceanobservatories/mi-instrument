@@ -7,6 +7,4 @@ data:
     particle_type: dosta_abcdjm_ctdbp_dcl_instrument_recovered
     internal_timestamp: 3621025816.0000000
     port_timestamp: 3621025822.4560003
-    date_time_string: '30 Sep 2014 00:30:16'
-    dcl_controller_timestamp: '2014/09/30 00:30:22.456'
     dosta_ln_optode_oxygen:       271.65900

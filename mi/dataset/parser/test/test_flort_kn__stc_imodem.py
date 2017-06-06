@@ -11,6 +11,7 @@ from StringIO import StringIO
 
 from nose.plugins.attrib import attr
 
+from mi.core.instrument.data_particle import DataParticleKey
 from mi.core.log import get_logger
 
 log = get_logger()
@@ -99,27 +100,32 @@ class Flort_kn__stc_imodemParserUnitTestCase(ParserUnitTestCase):
         log.debug("Converted timestamp #1: %s", self.timestamp1_eng)
         self.particle_a_eng = Flort_kn_stc_imodemParserDataParticleTelemetered(
             'R\x9d\xac\x1d\x00\x00\x00\x00A:6\xe3\x00\x00\x00\x00\x00\x00\x00\x00\x01\x03\x00h\x00N',
-            internal_timestamp=self.timestamp1_eng)
+            internal_timestamp=self.timestamp1_eng,
+            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         self.timestamp2_eng = self.timestamp_to_ntp('R\x9d\xac!')
         self.particle_b_eng = Flort_kn_stc_imodemParserDataParticleTelemetered(
             'R\x9d\xac!C\t\xf2\xf7A9A!\x00\x00\x00\x00\x00\x00\x00\x00\x00\xf2\x00c\x00O',
-            internal_timestamp=self.timestamp2_eng)
+            internal_timestamp=self.timestamp2_eng,
+            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         self.timestamp3_eng = self.timestamp_to_ntp('R\x9d\xac&')
         self.particle_c_eng = Flort_kn_stc_imodemParserDataParticleTelemetered(
             "R\x9d\xac&C\xbc\x9f\xa7A7'\xbb\x00\x00\x00\x00\x00\x00\x00\x00\x00\xc2\x00^\x00O",
-            internal_timestamp=self.timestamp3_eng)
+            internal_timestamp=self.timestamp3_eng,
+            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         self.timestamp4_eng = self.timestamp_to_ntp('R\x9d\xac*')
         self.particle_d_eng = Flort_kn_stc_imodemParserDataParticleTelemetered(
             'R\x9d\xac*C\xc5\xad\x08A6\xd5\xd0\x00\x00\x00\x00\x00\x00\x00\x00\x00\xb4\x00n\x00O',
-            internal_timestamp=self.timestamp4_eng)
+            internal_timestamp=self.timestamp4_eng,
+            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         self.timestamp_last_eng = self.timestamp_to_ntp('R\x9d\xac\xcf')
         self.particle_last_eng = Flort_kn_stc_imodemParserDataParticleTelemetered(
             'R\x9d\xac\xcfA\xfa\xb2:A5\x0b\x0fA\xf2\x8f\\\x00\x00\x00\x00\x00\xaf\x00m\x00P',
-            internal_timestamp=self.timestamp_last_eng)
+            internal_timestamp=self.timestamp_last_eng,
+            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         # uncomment the following to generate particles in yml format for driver testing results files
         self.particle_to_yml(self.particle_a_eng)

@@ -46,12 +46,11 @@ class AdcptAcfgmPd8ParserUnitTestCase(ParserUnitTestCase):
         my_file = open(os.path.join(RESOURCE_PATH, filename), mode='rU')
         return my_file
 
-    def file_path(self, filename):
-        log.debug('resource path = %s, file name = %s', RESOURCE_PATH, filename)
-        return os.path.join(RESOURCE_PATH, filename)
-
     def setUp(self):
         ParserUnitTestCase.setUp(self)
+
+    def create_yml(self, particles, filename):
+        particle_to_yml(particles, os.path.join(RESOURCE_PATH, filename))
 
     def test_parse_input(self):
         """
@@ -79,10 +78,6 @@ class AdcptAcfgmPd8ParserUnitTestCase(ParserUnitTestCase):
 
         # In a single read, get all particles for this file.
         result = parser.get_records(23)
-
-        # creating .yml file
-        out_file = '20131201.adcp_mod_recov.yml'
-        particle_to_yml(result, self.file_path(out_file))
 
         self.assertEqual(len(result), 23)
         self.assert_particles(result, '20131201.adcp_mod_recov.yml', RESOURCE_PATH)
@@ -206,4 +201,3 @@ class AdcptAcfgmPd8ParserUnitTestCase(ParserUnitTestCase):
         self.assertListEqual(self.exception_callback_value, [])
 
         in_file.close()
-

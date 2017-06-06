@@ -104,7 +104,6 @@ class PhsenAbcdefDclParserUnitTestCase(ParserUnitTestCase):
                                     file_handle, self.tel_exception_callback)
 
     def open_file(self, filename):
-
         return open(os.path.join(RESOURCE_PATH, filename), mode='r')
 
     def rec_exception_callback(self, exception):
@@ -112,9 +111,8 @@ class PhsenAbcdefDclParserUnitTestCase(ParserUnitTestCase):
         self.rec_exception_callback_value = exception
         self.rec_exceptions_detected += 1
 
-    def file_path(self, filename):
-        log.debug('resource path = %s, file name = %s', RESOURCE_PATH, filename)
-        return os.path.join(RESOURCE_PATH, filename)
+    def create_yml(self, particles, filename):
+        particle_to_yml(particles, os.path.join(RESOURCE_PATH, filename))
 
     def tel_exception_callback(self, exception):
         """ Call back method to watch what comes in via the exception callback """
@@ -170,10 +168,6 @@ class PhsenAbcdefDclParserUnitTestCase(ParserUnitTestCase):
         in_file = self.open_file(input_file)
         parser = self.create_rec_parser(in_file)
         particles = parser.get_records(total_records)
-
-        # creating .yml file
-        out_file = INPUT_LOG_FILE_03_YML_RECOVERED
-        particle_to_yml(particles, self.file_path(out_file))
 
         self.assertEqual(len(particles), expected_particles)
         self.assert_particles(particles, INPUT_LOG_FILE_03_YML_RECOVERED, RESOURCE_PATH)

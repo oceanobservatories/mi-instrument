@@ -37,12 +37,14 @@ from mi.dataset.parser.common_regexes import \
     DATE_YYYY_MM_DD_REGEX, \
     TIME_HR_MIN_SEC_MSEC_REGEX
 
-from mi.dataset.parser.utilities import dcl_controller_timestamp_to_ntp_time
+from mi.dataset.parser.utilities import dcl_time_to_ntp
 
 from mi.core.common import BaseEnum
 from mi.core.exceptions import UnexpectedDataException
 
-from mi.core.instrument.dataset_data_particle import DataParticle, DataParticleKey, DataParticleValue
+from mi.core.instrument.dataset_data_particle import \
+    DataParticle, \
+    DataParticleKey
 
 # Basic patterns
 ANY_CHARS = r'.*'              # any characters excluding a newline
@@ -123,7 +125,6 @@ SENSOR_GROUP_RAW_TEMPERATURE = 19
 # Column 2 - group number (index into raw_data)
 # Column 3 - data encoding function (conversion required - int, float, etc)
 INSTRUMENT_PARTICLE_MAP = [
-    ('dcl_controller_timestamp',       SENSOR_GROUP_TIMESTAMP,           str),
     ('product_number',                 SENSOR_GROUP_PRODUCT,             int),
     ('serial_number',                  SENSOR_GROUP_SERIAL,              str),
     ('estimated_oxygen_concentration', SENSOR_GROUP_OXYGEN_CONTENT,      float),
@@ -153,33 +154,8 @@ class DostaAbcdjmDclInstrumentDataParticle(DataParticle):
     Class for generating the Dosta instrument particle.
     """
 
-    def __init__(self, raw_data,
-                 port_timestamp=None,
-                 internal_timestamp=None,
-                 preferred_timestamp=DataParticleKey.PORT_TIMESTAMP,
-                 quality_flag=DataParticleValue.OK,
-                 new_sequence=None):
-
-        super(DostaAbcdjmDclInstrumentDataParticle, self).__init__(raw_data,
-                                                                   port_timestamp,
-                                                                   internal_timestamp,
-                                                                   preferred_timestamp,
-                                                                   quality_flag,
-                                                                   new_sequence)
-
-        #DCL controller timestamp  is the port timestamp
-        dcl_controller_timestamp = self.raw_data[SENSOR_GROUP_TIMESTAMP]
-        elapsed_seconds_useconds = dcl_controller_timestamp_to_ntp_time(dcl_controller_timestamp)
-        self.set_port_timestamp(elapsed_seconds_useconds)
-
-        """
-        Rawdata(payload) does not contain any instrument timestamp,
-        So,we are using DCL controller timestamp(DCL wrapper timestamp) as the internal timestamp
-        In this case port timestamp and internal timestamp are same
-        """
-        instrument_timestamp = self.raw_data[SENSOR_GROUP_TIMESTAMP]
-        elapsed_seconds_useconds = dcl_controller_timestamp_to_ntp_time(instrument_timestamp)
-        self.set_internal_timestamp(elapsed_seconds_useconds)
+    def __init__(self, raw_data, *args, **kwargs):
+        super(DostaAbcdjmDclInstrumentDataParticle, self).__init__(raw_data, *args, **kwargs)
 
     def _build_parsed_values(self):
         """
@@ -243,10 +219,16 @@ class DostaAbcdjmDclParser(SimpleParser):
 
             if match is not None:
                 log.debug('record found')
+
+                # DCL controller timestamp  is the port_timestamp
+                port_timestamp = dcl_time_to_ntp(match.groups()[SENSOR_GROUP_TIMESTAMP])
+
                 data_particle = self._extract_sample(self._particle_class,
                                                      None,
                                                      match.groups(),
-                                                     None)
+                                                     port_timestamp=port_timestamp,
+                                                     preferred_ts=DataParticleKey.PORT_TIMESTAMP)
+
                 self._record_buffer.append(data_particle)
 
             else:

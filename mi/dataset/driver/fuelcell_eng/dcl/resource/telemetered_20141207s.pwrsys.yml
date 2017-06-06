@@ -5,7 +5,6 @@ data:
   - _index: 1
     particle_object: FuelCellEngDclDataParticleTelemetered
     particle_type: fuelcell_eng_dcl_telemetered
-    internal_timestamp: 3626899201.7220001
     port_timestamp: 3626899201.7220001
     air_pump_pwm_drive_percent: 21
     air_pump_tach_count: 15435
@@ -16,7 +15,6 @@ data:
     control_board_temperature: 479
     coolant_pump_pwm_drive_percent: 0
     datalog_manager_version: 4112
-    dcl_controller_timestamp: '2014/12/07 00:00:01.722'
     fuel_cell_current: 13445
     fuel_cell_error_mask: 2097216
     fuel_cell_h2_pressure: 9818
@@ -38,7 +36,6 @@ data:
   - _index: 2
     particle_object: FuelCellEngDclDataParticleTelemetered
     particle_type: fuelcell_eng_dcl_telemetered
-    internal_timestamp: 3626899261.7399998
     port_timestamp: 3626899261.7399998
     air_pump_pwm_drive_percent: 21
     air_pump_tach_count: 15778
@@ -49,7 +46,6 @@ data:
     control_board_temperature: 479
     coolant_pump_pwm_drive_percent: 0
     datalog_manager_version: 4112
-    dcl_controller_timestamp: '2014/12/07 00:01:01.740'
     fuel_cell_current: 13474
     fuel_cell_error_mask: 2097216
     fuel_cell_h2_pressure: 10147
@@ -71,7 +67,6 @@ data:
   - _index: 3
     particle_object: FuelCellEngDclDataParticleTelemetered
     particle_type: fuelcell_eng_dcl_telemetered
-    internal_timestamp: 3626899321.7060003
     port_timestamp: 3626899321.7060003
     air_pump_pwm_drive_percent: 21
     air_pump_tach_count: 15778
@@ -82,7 +77,6 @@ data:
     control_board_temperature: 479
     coolant_pump_pwm_drive_percent: 100
     datalog_manager_version: 4112
-    dcl_controller_timestamp: '2014/12/07 00:02:01.706'
     fuel_cell_current: 13465
     fuel_cell_error_mask: 2097216
     fuel_cell_h2_pressure: 10819
@@ -104,7 +98,6 @@ data:
   - _index: 4
     particle_object: FuelCellEngDclDataParticleTelemetered
     particle_type: fuelcell_eng_dcl_telemetered
-    internal_timestamp: 3626899381.6960001
     port_timestamp: 3626899381.6960001
     air_pump_pwm_drive_percent: 21
     air_pump_tach_count: 15435
@@ -115,7 +108,6 @@ data:
     control_board_temperature: 478
     coolant_pump_pwm_drive_percent: 0
     datalog_manager_version: 4112
-    dcl_controller_timestamp: '2014/12/07 00:03:01.696'
     fuel_cell_current: 13466
     fuel_cell_error_mask: 2097216
     fuel_cell_h2_pressure: 8613
@@ -137,7 +129,6 @@ data:
   - _index: 5
     particle_object: FuelCellEngDclDataParticleTelemetered
     particle_type: fuelcell_eng_dcl_telemetered
-    internal_timestamp: 3626899441.7040000
     port_timestamp: 3626899441.7040000
     air_pump_pwm_drive_percent: 21
     air_pump_tach_count: 15435
@@ -148,7 +139,6 @@ data:
     control_board_temperature: 479
     coolant_pump_pwm_drive_percent: 0
     datalog_manager_version: 4112
-    dcl_controller_timestamp: '2014/12/07 00:04:01.704'
     fuel_cell_current: 13486
     fuel_cell_error_mask: 2097216
     fuel_cell_h2_pressure: 9992
@@ -170,7 +160,6 @@ data:
   - _index: 6
     particle_object: FuelCellEngDclDataParticleTelemetered
     particle_type: fuelcell_eng_dcl_telemetered
-    internal_timestamp: 3626899501.6980000
     port_timestamp: 3626899501.6980000
     air_pump_pwm_drive_percent: 21
     air_pump_tach_count: 15778
@@ -181,7 +170,6 @@ data:
     control_board_temperature: 479
     coolant_pump_pwm_drive_percent: 100
     datalog_manager_version: 4112
-    dcl_controller_timestamp: '2014/12/07 00:05:01.698'
     fuel_cell_current: 13456
     fuel_cell_error_mask: 2097216
     fuel_cell_h2_pressure: 11120
@@ -203,7 +191,6 @@ data:
   - _index: 7
     particle_object: FuelCellEngDclDataParticleTelemetered
     particle_type: fuelcell_eng_dcl_telemetered
-    internal_timestamp: 3626899561.7040000
     port_timestamp: 3626899561.7040000
     air_pump_pwm_drive_percent: 21
     air_pump_tach_count: 15435
@@ -214,7 +201,6 @@ data:
     control_board_temperature: 479
     coolant_pump_pwm_drive_percent: 0
     datalog_manager_version: 4112
-    dcl_controller_timestamp: '2014/12/07 00:06:01.704'
     fuel_cell_current: 13480
     fuel_cell_error_mask: 2097216
     fuel_cell_h2_pressure: 9327
@@ -236,7 +222,6 @@ data:
   - _index: 8
     particle_object: FuelCellEngDclDataParticleTelemetered
     particle_type: fuelcell_eng_dcl_telemetered
-    internal_timestamp: 3626899621.7040000
     port_timestamp: 3626899621.7040000
     air_pump_pwm_drive_percent: 21
     air_pump_tach_count: 15092
@@ -247,7 +232,6 @@ data:
     control_board_temperature: 479
     coolant_pump_pwm_drive_percent: 0
     datalog_manager_version: 4112
-    dcl_controller_timestamp: '2014/12/07 00:07:01.704'
     fuel_cell_current: 13510
     fuel_cell_error_mask: 2097216
     fuel_cell_h2_pressure: 10105
@@ -269,7 +253,6 @@ data:
   - _index: 9
     particle_object: FuelCellEngDclDataParticleTelemetered
     particle_type: fuelcell_eng_dcl_telemetered
-    internal_timestamp: 3626899681.7060003
     port_timestamp: 3626899681.7060003
     air_pump_pwm_drive_percent: 20
     air_pump_tach_count: 15435
@@ -280,7 +263,6 @@ data:
     control_board_temperature: 479
     coolant_pump_pwm_drive_percent: 100
     datalog_manager_version: 4112
-    dcl_controller_timestamp: '2014/12/07 00:08:01.706'
     fuel_cell_current: 13408
     fuel_cell_error_mask: 2097216
     fuel_cell_h2_pressure: 10861
@@ -302,7 +284,6 @@ data:
   - _index: 10
     particle_object: FuelCellEngDclDataParticleTelemetered
     particle_type: fuelcell_eng_dcl_telemetered
-    internal_timestamp: 3626899741.7049999
     port_timestamp: 3626899741.7049999
     air_pump_pwm_drive_percent: 21
     air_pump_tach_count: 15435
@@ -313,7 +294,6 @@ data:
     control_board_temperature: 478
     coolant_pump_pwm_drive_percent: 0
     datalog_manager_version: 4112
-    dcl_controller_timestamp: '2014/12/07 00:09:01.705'
     fuel_cell_current: 13490
     fuel_cell_error_mask: 2097216
     fuel_cell_h2_pressure: 8662
@@ -335,7 +315,6 @@ data:
   - _index: 11
     particle_object: FuelCellEngDclDataParticleTelemetered
     particle_type: fuelcell_eng_dcl_telemetered
-    internal_timestamp: 3626921107.1730003
     port_timestamp: 3626921107.1730003
     air_pump_pwm_drive_percent: 0
     air_pump_tach_count: 0
@@ -346,7 +325,6 @@ data:
     control_board_temperature: 175
     coolant_pump_pwm_drive_percent: 0
     datalog_manager_version: 4112
-    dcl_controller_timestamp: '2014/12/07 06:05:07.173'
     fuel_cell_current: 71
     fuel_cell_error_mask: 1209029490
     fuel_cell_h2_pressure: 224
@@ -368,7 +346,6 @@ data:
   - _index: 12
     particle_object: FuelCellEngDclDataParticleTelemetered
     particle_type: fuelcell_eng_dcl_telemetered
-    internal_timestamp: 3626921167.1730003
     port_timestamp: 3626921167.1730003
     air_pump_pwm_drive_percent: 0
     air_pump_tach_count: 0
@@ -379,7 +356,6 @@ data:
     control_board_temperature: 184
     coolant_pump_pwm_drive_percent: 0
     datalog_manager_version: 4112
-    dcl_controller_timestamp: '2014/12/07 06:06:07.173'
     fuel_cell_current: 71
     fuel_cell_error_mask: 1209029490
     fuel_cell_h2_pressure: 297
@@ -401,7 +377,6 @@ data:
   - _index: 13
     particle_object: FuelCellEngDclDataParticleTelemetered
     particle_type: fuelcell_eng_dcl_telemetered
-    internal_timestamp: 3626921227.1780000
     port_timestamp: 3626921227.1780000
     air_pump_pwm_drive_percent: 0
     air_pump_tach_count: 0
@@ -412,7 +387,6 @@ data:
     control_board_temperature: 188
     coolant_pump_pwm_drive_percent: 0
     datalog_manager_version: 4112
-    dcl_controller_timestamp: '2014/12/07 06:07:07.178'
     fuel_cell_current: 7
     fuel_cell_error_mask: 1209029490
     fuel_cell_h2_pressure: 306
@@ -434,7 +408,6 @@ data:
   - _index: 14
     particle_object: FuelCellEngDclDataParticleTelemetered
     particle_type: fuelcell_eng_dcl_telemetered
-    internal_timestamp: 3626921287.1710000
     port_timestamp: 3626921287.1710000
     air_pump_pwm_drive_percent: 0
     air_pump_tach_count: 0
@@ -445,7 +418,6 @@ data:
     control_board_temperature: 192
     coolant_pump_pwm_drive_percent: 0
     datalog_manager_version: 4112
-    dcl_controller_timestamp: '2014/12/07 06:08:07.171'
     fuel_cell_current: 0
     fuel_cell_error_mask: 1209029490
     fuel_cell_h2_pressure: 297
@@ -467,7 +439,6 @@ data:
   - _index: 15
     particle_object: FuelCellEngDclDataParticleTelemetered
     particle_type: fuelcell_eng_dcl_telemetered
-    internal_timestamp: 3626921347.1710000
     port_timestamp: 3626921347.1710000
     air_pump_pwm_drive_percent: 0
     air_pump_tach_count: 0
@@ -478,7 +449,6 @@ data:
     control_board_temperature: 195
     coolant_pump_pwm_drive_percent: 0
     datalog_manager_version: 4112
-    dcl_controller_timestamp: '2014/12/07 06:09:07.171'
     fuel_cell_current: 0
     fuel_cell_error_mask: 1209029490
     fuel_cell_h2_pressure: 306
@@ -500,7 +470,6 @@ data:
   - _index: 16
     particle_object: FuelCellEngDclDataParticleTelemetered
     particle_type: fuelcell_eng_dcl_telemetered
-    internal_timestamp: 3626921407.1879997
     port_timestamp: 3626921407.1879997
     air_pump_pwm_drive_percent: 0
     air_pump_tach_count: 0
@@ -511,7 +480,6 @@ data:
     control_board_temperature: 197
     coolant_pump_pwm_drive_percent: 0
     datalog_manager_version: 4112
-    dcl_controller_timestamp: '2014/12/07 06:10:07.188'
     fuel_cell_current: 0
     fuel_cell_error_mask: 1209029490
     fuel_cell_h2_pressure: 315
@@ -533,7 +501,6 @@ data:
   - _index: 17
     particle_object: FuelCellEngDclDataParticleTelemetered
     particle_type: fuelcell_eng_dcl_telemetered
-    internal_timestamp: 3626921467.1689997
     port_timestamp: 3626921467.1689997
     air_pump_pwm_drive_percent: 0
     air_pump_tach_count: 0
@@ -544,7 +511,6 @@ data:
     control_board_temperature: 200
     coolant_pump_pwm_drive_percent: 0
     datalog_manager_version: 4112
-    dcl_controller_timestamp: '2014/12/07 06:11:07.169'
     fuel_cell_current: 0
     fuel_cell_error_mask: 1209029490
     fuel_cell_h2_pressure: 324
@@ -566,7 +532,6 @@ data:
   - _index: 18
     particle_object: FuelCellEngDclDataParticleTelemetered
     particle_type: fuelcell_eng_dcl_telemetered
-    internal_timestamp: 3626921527.1689997
     port_timestamp: 3626921527.1689997
     air_pump_pwm_drive_percent: 0
     air_pump_tach_count: 0
@@ -577,7 +542,6 @@ data:
     control_board_temperature: 202
     coolant_pump_pwm_drive_percent: 0
     datalog_manager_version: 4112
-    dcl_controller_timestamp: '2014/12/07 06:12:07.169'
     fuel_cell_current: 0
     fuel_cell_error_mask: 1209029490
     fuel_cell_h2_pressure: 322
@@ -599,7 +563,6 @@ data:
   - _index: 19
     particle_object: FuelCellEngDclDataParticleTelemetered
     particle_type: fuelcell_eng_dcl_telemetered
-    internal_timestamp: 3626921587.1680002
     port_timestamp: 3626921587.1680002
     air_pump_pwm_drive_percent: 0
     air_pump_tach_count: 0
@@ -610,7 +573,6 @@ data:
     control_board_temperature: 204
     coolant_pump_pwm_drive_percent: 0
     datalog_manager_version: 4112
-    dcl_controller_timestamp: '2014/12/07 06:13:07.168'
     fuel_cell_current: 0
     fuel_cell_error_mask: 1209029490
     fuel_cell_h2_pressure: 330
@@ -632,7 +594,6 @@ data:
   - _index: 20
     particle_object: FuelCellEngDclDataParticleTelemetered
     particle_type: fuelcell_eng_dcl_telemetered
-    internal_timestamp: 3626921647.1680002
     port_timestamp: 3626921647.1680002
     air_pump_pwm_drive_percent: 0
     air_pump_tach_count: 0
@@ -643,7 +604,6 @@ data:
     control_board_temperature: 201
     coolant_pump_pwm_drive_percent: 0
     datalog_manager_version: 4112
-    dcl_controller_timestamp: '2014/12/07 06:14:07.168'
     fuel_cell_current: 0
     fuel_cell_error_mask: 1209029490
     fuel_cell_h2_pressure: 329

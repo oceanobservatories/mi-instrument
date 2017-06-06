@@ -91,7 +91,7 @@ class PpsdnASubconParser(SimpleParser):
 
             try:
                 # Extract a particle and append it to the record buffer
-                particle = self._extract_sample(PpsdnASubconInstrumentDataParticle, None, row, None)
+                particle = self._extract_sample(PpsdnASubconInstrumentDataParticle, None, row)
                 self._record_buffer.append(particle)
             except:
                 log.warn("Data cannot be parsed: %r", row)

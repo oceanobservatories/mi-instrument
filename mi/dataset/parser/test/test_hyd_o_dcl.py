@@ -13,16 +13,14 @@ from mi.dataset.parser.utilities import particle_to_yml
 from mi.dataset.test.test_parser import ParserUnitTestCase
 from mi.dataset.parser.hyd_o_dcl import HydODclParser
 
-
 __author__ = 'Emily Hahn'
 __license__ = 'Apache 2.0'
 
 
 @attr('UNIT', group='mi')
 class HydODclParserUnitTestCase(ParserUnitTestCase):
-
-    def file_path(self, filename):
-        return os.path.join(RESOURCE_PATH, filename)
+    def create_yml(self, particles, filename):
+        particle_to_yml(particles, os.path.join(RESOURCE_PATH, filename))
 
     def test_simple_telem(self):
         """

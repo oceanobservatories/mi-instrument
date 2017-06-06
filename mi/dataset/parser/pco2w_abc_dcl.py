@@ -7,14 +7,13 @@ Release notes:
 
 initial release
 """
+
 __author__ = 'Joe Padula'
 __license__ = 'Apache 2.0'
 
 import re
-from mi.dataset.parser.utilities import dcl_controller_timestamp_to_utc_time, \
-    dcl_controller_timestamp_to_ntp_time
-
-import ntplib
+from mi.dataset.parser.utilities import \
+    dcl_time_to_ntp
 
 from mi.core.exceptions import RecoverableSampleException
 from mi.core.log import get_logger
@@ -23,6 +22,8 @@ from mi.dataset.parser.pco2w_abc import Pco2wAbcParser
 log = get_logger()
 from mi.dataset.parser.pco2w_abc_particles import Pco2wAbcDataParticleKey
 from mi.dataset.parser.common_regexes import ONE_OR_MORE_WHITESPACE_REGEX, ASCII_HEX_CHAR_REGEX
+
+from mi.core.instrument.data_particle import DataParticleKey
 
 # A regex to match a date in format YYYY/MM/DD, example 2014/05/07
 DATE_REGEX = r'\d{4}/\d{2}/\d{2}'
@@ -305,14 +306,14 @@ class Pco2wAbcDclParser(Pco2wAbcParser):
         return passed_checksum
 
     @staticmethod
-    def _generate_internal_timestamp(record_dict):
+    def _generate_port_timestamp(record_dict):
         """
-        Generates the internal timestamp from the given DCL Controller Timestamp.
+        Generates the port_timestamp from the given DCL Controller Timestamp.
         :param record_dict: dictionary containing the dcl controller timestamp str parameter
-        :return: the internal timestamp
+        :return: the port_timestamp
         """
 
-        return float(dcl_controller_timestamp_to_ntp_time(
+        return float(dcl_time_to_ntp(
             record_dict[Pco2wAbcDataParticleKey.DCL_CONTROLLER_TIMESTAMP]))
 
     @staticmethod
@@ -577,7 +578,7 @@ class Pco2wAbcDclParser(Pco2wAbcParser):
                 particle = self._extract_sample(self._metadata_class,
                                                 None,
                                                 metadata_dict,
-                                                Pco2wAbcDclParser._generate_internal_timestamp(metadata_dict))
+                                                port_timestamp=Pco2wAbcDclParser._generate_port_timestamp(metadata_dict))
 
                 log.trace("Appending metadata particle: %s", particle.generate())
                 self._record_buffer.append(particle)
@@ -593,7 +594,7 @@ class Pco2wAbcDclParser(Pco2wAbcParser):
                 particle = self._extract_sample(self._power_class,
                                                 None,
                                                 power_dict,
-                                                Pco2wAbcDclParser._generate_internal_timestamp(power_dict))
+                                                port_timestamp=Pco2wAbcDclParser._generate_port_timestamp(power_dict))
 
                 log.trace("Appending power particle: %s", particle.generate())
                 self._record_buffer.append(particle)
@@ -609,7 +610,7 @@ class Pco2wAbcDclParser(Pco2wAbcParser):
                 particle = self._extract_sample(self._instrument_class,
                                                 None,
                                                 instrument_dict,
-                                                Pco2wAbcDclParser._generate_internal_timestamp(instrument_dict))
+                                                port_timestamp=Pco2wAbcDclParser._generate_port_timestamp(instrument_dict))
 
                 log.trace("Appending instrument particle: %s", particle.generate())
                 self._record_buffer.append(particle)
@@ -625,7 +626,7 @@ class Pco2wAbcDclParser(Pco2wAbcParser):
                 particle = self._extract_sample(self._instrument_blank_class,
                                                 None,
                                                 instrument_blank_dict,
-                                                Pco2wAbcDclParser._generate_internal_timestamp(instrument_blank_dict))
+                                                port_timestamp=Pco2wAbcDclParser._generate_port_timestamp(instrument_blank_dict))
 
                 log.trace("Appending instrument blank particle: %s", particle.generate())
                 self._record_buffer.append(particle)

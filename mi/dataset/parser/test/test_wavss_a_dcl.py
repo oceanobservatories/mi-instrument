@@ -7,8 +7,6 @@
 
 import os
 from nose.plugins.attrib import attr
-
-from mi.core.instrument.data_particle import DataParticleValue
 from mi.core.log import get_logger
 from mi.core.exceptions import RecoverableSampleException
 from mi.dataset.driver.wavss_a.dcl.resource import RESOURCE_PATH
@@ -28,9 +26,8 @@ __license__ = 'Apache 2.0'
 @attr('UNIT', group='mi')
 class WavssADclParserUnitTestCase(ParserUnitTestCase):
 
-    def file_path(self, filename):
-        log.debug('resource path = %s, file name = %s', RESOURCE_PATH, filename)
-        return os.path.join(RESOURCE_PATH, filename)
+    def create_yml(self, particles, filename):
+        particle_to_yml(particles, os.path.join(RESOURCE_PATH, filename))
 
     def test_checksum_valid(self):
         line = '2014/08/25 15:09:10.100 $TSPWA,20140825,150910,05781,buoyID,,,29,0.00,8.4,0.00,0.00,14.7,0.00,22.8,' \
@@ -70,11 +67,6 @@ class WavssADclParserUnitTestCase(ParserUnitTestCase):
         statistics = WavssADclStatisticsDataParticle(line, None, None, None)
         particle = statistics._build_parsed_values()
         my_dict = {x['value_id']: x['value'] for x in particle}
-
-        # TODO - remove
-        self.assertEqual(my_dict['dcl_controller_timestamp'], '2014/08/25 15:09:10.100')
-        self.assertEqual(my_dict['date_string'], '20140825')
-        self.assertEqual(my_dict['time_string'], '150910')
 
         self.assertEqual(my_dict['serial_number'], '05781')
         self.assertEqual(my_dict['number_zero_crossings'], 29)
@@ -336,6 +328,7 @@ class WavssADclParserUnitTestCase(ParserUnitTestCase):
             parser = WavssADclParser(file_handle, self.exception_callback, is_telemetered=True)
             particles = parser.get_records(1)
 
+            self.assert_particles(particles, "tspma_telem_nans.yml", RESOURCE_PATH)
             self.assertEqual(self.exception_callback_value, [])
 
     def test_tspma_telem(self):

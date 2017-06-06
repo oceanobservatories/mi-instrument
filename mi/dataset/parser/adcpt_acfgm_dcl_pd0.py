@@ -112,7 +112,7 @@ class AdcptAcfgmDclPd0Parser(Parser):
         log.debug('PARSE_FILE create %s particles', len(self._record_buffer))
 
     def _create_particles(self, pd0, ts):
-        utc_time = utilities.dcl_controller_timestamp_to_utc_time(ts)
+        utc_time = utilities.dcl_time_to_utc(ts)
         utc_time = ntplib.system_to_ntp_time(utc_time)
         velocity = adcp_pd0.VelocityEarth(pd0, port_timestamp=utc_time,
                                           preferred_timestamp=DataParticleKey.PORT_TIMESTAMP)

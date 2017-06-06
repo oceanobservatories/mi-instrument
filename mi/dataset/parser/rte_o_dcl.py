@@ -14,10 +14,10 @@ import re
 
 from mi.core.log import get_logger
 from mi.core.common import BaseEnum
-from mi.core.instrument.dataset_data_particle import DataParticle
+from mi.core.instrument.dataset_data_particle import DataParticle, DataParticleKey
 from mi.core.exceptions import RecoverableSampleException
 from mi.dataset.dataset_parser import SimpleParser
-from mi.dataset.parser.utilities import dcl_controller_timestamp_to_utc_time
+from mi.dataset.parser.utilities import dcl_time_to_ntp
 from mi.dataset.parser.common_regexes import \
     UNSIGNED_INT_REGEX, \
     FLOAT_REGEX, \
@@ -47,11 +47,19 @@ NEW_DATA_REGEX += r'RTE Hits (?P<rte_hits>' + UNSIGNED_INT_REGEX + r'), '
 NEW_DATA_REGEX += r'RTE State = (?P<rte_state>' + UNSIGNED_INT_REGEX + r')'
 NEW_DATA_MATCHER = re.compile(NEW_DATA_REGEX)
 
+# NEW_DATA_MATCHER produces the following groups.
+DCL_TIMESTAMP = 0
+RTE_COULOMBUS = 1
+RTE_AVG_Q_CURRENT = 2
+RTE_AVG_VOLTAGE = 3
+RTE_AVG_SUPPLY_VOLTAGE = 5
+RTE_HITS = 6
+RTE_STATE = 7
+
 # This table is used in the generation of the data particle.
 # Column 1 - particle parameter name & match group name
 # Column 2 - data encoding function (conversion required - int, float, etc)
 DATA_PARTICLE_MAP = [
-    ('rte_time', str),
     ('rte_coulombs', float),
     ('rte_avg_q_current', float),
     ('rte_avg_voltage', float),
@@ -81,18 +89,6 @@ class RteODclParserDataAbstractParticle(DataParticle):
         a particle with the appropriate tag.
         @throws SampleException If there is a problem with sample creation
         """
-
-        # DCL controller timestamp  is the port timestamp
-        dcl_controller_timestamp = dcl_controller_timestamp_to_utc_time(self.raw_data.group('rte_time'))
-        self.set_port_timestamp(unix_time=dcl_controller_timestamp)
-
-        """
-        Rawdata(payload) does not contain any instrument timestamp,
-        So,we are using DCL controller timestamp(DCL logger timestamp) as the internal timestamp
-        In this case port timestamp and internal timestamp are same
-        """
-        self.set_internal_timestamp(unix_time=dcl_controller_timestamp)
-
         return [self._encode_value(name, self.raw_data.group(name), function)
                 for name, function in DATA_PARTICLE_MAP]
 
@@ -125,9 +121,15 @@ class RteODclParser(SimpleParser):
 
             data_match = NEW_DATA_MATCHER.match(line)
             if data_match:
+                # DCL controller timestamp  is the port_timestamp
+                port_timestamp = dcl_time_to_ntp(data_match.groups()[DCL_TIMESTAMP])
 
                 # particle-ize the data block received, return the record
-                data_particle = self._extract_sample(self._particle_class, None, data_match, None)
+                data_particle = self._extract_sample(self._particle_class,
+                                                     None,
+                                                     data_match,
+                                                     port_timestamp=port_timestamp,
+                                                     preferred_ts = DataParticleKey.PORT_TIMESTAMP)
                 # increment state for this chunk even if we don't get a particle
                 self._record_buffer.append(data_particle)
 
@@ -140,8 +142,3 @@ class RteODclParser(SimpleParser):
                     # something in the data didn't match a required regex, so raise an exception and press on.
                     message = "Error while decoding parameters in data: [%s]" % line
                     self._exception_callback(RecoverableSampleException(message))
-
-
-
-
-

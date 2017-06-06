@@ -174,7 +174,7 @@ class GlobalWfpEFileParser(WfpEFileParser):
                 sample = self._extract_sample(self._particle_class,
                                               None,
                                               chunk,
-                                              ntp_time)
+                                              internal_timestamp=ntp_time)
                 if sample:
                     # create particle
                     log.trace("Extracting sample chunk 0x%s with read_state: %s", binascii.b2a_hex(chunk),

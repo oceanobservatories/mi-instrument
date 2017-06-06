@@ -5,64 +5,48 @@ data:
   - _index: 1
     particle_object: HydODclTelemeteredDataParticle
     particle_type: hyd_o_dcl_instrument
-    internal_timestamp: 3618777695.8920002
     port_timestamp: 3618777695.8920002
-    dcl_controller_timestamp: '2014/09/04 00:01:35.892'
     hyd_percent:        -0.12000
     hyd_raw:        -0.12000
   - _index: 2
     particle_object: HydODclTelemeteredDataParticle
     particle_type: hyd_o_dcl_instrument
-    internal_timestamp: 3618777707.9000001
     port_timestamp: 3618777707.9000001
-    dcl_controller_timestamp: '2014/09/04 00:01:47.900'
     hyd_percent:        -0.13000
     hyd_raw:        -0.13000
   - _index: 3
     particle_object: HydODclTelemeteredDataParticle
     particle_type: hyd_o_dcl_instrument
-    internal_timestamp: 3618777719.9070001
     port_timestamp: 3618777719.9070001
-    dcl_controller_timestamp: '2014/09/04 00:01:59.907'
     hyd_percent:        -0.16000
     hyd_raw:        -0.16000
   - _index: 4
     particle_object: HydODclTelemeteredDataParticle
     particle_type: hyd_o_dcl_instrument
-    internal_timestamp: 3618777731.9140000
     port_timestamp: 3618777731.9140000
-    dcl_controller_timestamp: '2014/09/04 00:02:11.914'
     hyd_percent:        -0.14000
     hyd_raw:        -0.14000
   - _index: 5
     particle_object: HydODclTelemeteredDataParticle
     particle_type: hyd_o_dcl_instrument
-    internal_timestamp: 3618777743.9230003
     port_timestamp: 3618777743.9230003
-    dcl_controller_timestamp: '2014/09/04 00:02:23.923'
     hyd_percent:        -0.14000
     hyd_raw:        -0.14000
   - _index: 6
     particle_object: HydODclTelemeteredDataParticle
     particle_type: hyd_o_dcl_instrument
-    internal_timestamp: 3618777755.9300003
     port_timestamp: 3618777755.9300003
-    dcl_controller_timestamp: '2014/09/04 00:02:35.930'
     hyd_percent:        -0.13000
     hyd_raw:        -0.13000
   - _index: 7
     particle_object: HydODclTelemeteredDataParticle
     particle_type: hyd_o_dcl_instrument
-    internal_timestamp: 3618777767.9470000
     port_timestamp: 3618777767.9470000
-    dcl_controller_timestamp: '2014/09/04 00:02:47.947'
     hyd_percent:        -0.17000
     hyd_raw:        -0.17000
   - _index: 8
     particle_object: HydODclTelemeteredDataParticle
     particle_type: hyd_o_dcl_instrument
-    internal_timestamp: 3618777779.9549999
     port_timestamp: 3618777779.9549999
-    dcl_controller_timestamp: '2014/09/04 00:02:59.955'
     hyd_percent:        -0.15000
     hyd_raw:        -0.15000

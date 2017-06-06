@@ -5,10 +5,8 @@ data:
   - _index: 1
     particle_object: FlortDjDclTelemeteredInstrumentDataParticle
     particle_type: flort_dj_dcl_instrument
-    internal_timestamp: 3222738437.0889997
+    internal_timestamp: 3191245637.1700001
     port_timestamp: 3222738437.0889997
-    date_string: '02/15/01'
-    dcl_controller_timestamp: '2002/02/15 05:07:17.089'
     measurement_wavelength_beta: 0
     measurement_wavelength_cdom: 4
     measurement_wavelength_chl: 2
@@ -16,14 +14,11 @@ data:
     raw_signal_beta: 1
     raw_signal_cdom: 5
     raw_signal_chl: 3
-    time_string: '17:07:17'
   - _index: 2
     particle_object: FlortDjDclTelemeteredInstrumentDataParticle
     particle_type: flort_dj_dcl_instrument
-    internal_timestamp: 3222738439.4470000
+    internal_timestamp: 3191245639.1900001
     port_timestamp: 3222738439.4470000
-    date_string: '02/15/01'
-    dcl_controller_timestamp: '2002/02/15 05:07:19.447'
     measurement_wavelength_beta: 2259
     measurement_wavelength_cdom: 2263
     measurement_wavelength_chl: 2261
@@ -31,14 +26,11 @@ data:
     raw_signal_beta: 2260
     raw_signal_cdom: 2264
     raw_signal_chl: 2262
-    time_string: '17:07:19'
   - _index: 3
     particle_object: FlortDjDclTelemeteredInstrumentDataParticle
     particle_type: flort_dj_dcl_instrument
-    internal_timestamp: 3222738441.8049998
+    internal_timestamp: 3191245641.2100000
     port_timestamp: 3222738441.8049998
-    date_string: '02/15/01'
-    dcl_controller_timestamp: '2002/02/15 05:07:21.805'
     measurement_wavelength_beta: 4518
     measurement_wavelength_cdom: 4522
     measurement_wavelength_chl: 4520
@@ -46,14 +38,11 @@ data:
     raw_signal_beta: 4519
     raw_signal_cdom: 4523
     raw_signal_chl: 4521
-    time_string: '17:07:21'
   - _index: 4
     particle_object: FlortDjDclTelemeteredInstrumentDataParticle
     particle_type: flort_dj_dcl_instrument
-    internal_timestamp: 3222738444.1630001
+    internal_timestamp: 3191245644.2399998
     port_timestamp: 3222738444.1630001
-    date_string: '02/15/01'
-    dcl_controller_timestamp: '2002/02/15 05:07:24.163'
     measurement_wavelength_beta: 6777
     measurement_wavelength_cdom: 6781
     measurement_wavelength_chl: 6779
@@ -61,14 +50,11 @@ data:
     raw_signal_beta: 6778
     raw_signal_cdom: 6782
     raw_signal_chl: 6780
-    time_string: '17:07:24'
   - _index: 5
     particle_object: FlortDjDclTelemeteredInstrumentDataParticle
     particle_type: flort_dj_dcl_instrument
-    internal_timestamp: 3222738446.5209999
+    internal_timestamp: 3191245646.2600002
     port_timestamp: 3222738446.5209999
-    date_string: '02/15/01'
-    dcl_controller_timestamp: '2002/02/15 05:07:26.521'
     measurement_wavelength_beta: 9036
     measurement_wavelength_cdom: 9040
     measurement_wavelength_chl: 9038
@@ -76,14 +62,11 @@ data:
     raw_signal_beta: 9037
     raw_signal_cdom: 9041
     raw_signal_chl: 9039
-    time_string: '17:07:26'
   - _index: 6
     particle_object: FlortDjDclTelemeteredInstrumentDataParticle
     particle_type: flort_dj_dcl_instrument
-    internal_timestamp: 3222738448.8789997
+    internal_timestamp: 3191245648.2800002
     port_timestamp: 3222738448.8789997
-    date_string: '02/15/01'
-    dcl_controller_timestamp: '2002/02/15 05:07:28.879'
     measurement_wavelength_beta: 11295
     measurement_wavelength_cdom: 11299
     measurement_wavelength_chl: 11297
@@ -91,14 +74,11 @@ data:
     raw_signal_beta: 11296
     raw_signal_cdom: 11300
     raw_signal_chl: 11298
-    time_string: '17:07:28'
   - _index: 7
     particle_object: FlortDjDclTelemeteredInstrumentDataParticle
     particle_type: flort_dj_dcl_instrument
-    internal_timestamp: 3222738451.2370000
+    internal_timestamp: 3191245651.3099999
     port_timestamp: 3222738451.2370000
-    date_string: '02/15/01'
-    dcl_controller_timestamp: '2002/02/15 05:07:31.237'
     measurement_wavelength_beta: 13554
     measurement_wavelength_cdom: 13558
     measurement_wavelength_chl: 13556
@@ -106,14 +86,11 @@ data:
     raw_signal_beta: 13555
     raw_signal_cdom: 13559
     raw_signal_chl: 13557
-    time_string: '17:07:31'
   - _index: 8
     particle_object: FlortDjDclTelemeteredInstrumentDataParticle
     particle_type: flort_dj_dcl_instrument
-    internal_timestamp: 3222738453.5950003
+    internal_timestamp: 3191245653.3299999
     port_timestamp: 3222738453.5950003
-    date_string: '02/15/01'
-    dcl_controller_timestamp: '2002/02/15 05:07:33.595'
     measurement_wavelength_beta: 15813
     measurement_wavelength_cdom: 15817
     measurement_wavelength_chl: 15815
@@ -121,14 +98,11 @@ data:
     raw_signal_beta: 15814
     raw_signal_cdom: 15818
     raw_signal_chl: 15816
-    time_string: '17:07:33'
   - _index: 9
     particle_object: FlortDjDclTelemeteredInstrumentDataParticle
     particle_type: flort_dj_dcl_instrument
-    internal_timestamp: 3222738455.9530001
+    internal_timestamp: 3191245655.3499999
     port_timestamp: 3222738455.9530001
-    date_string: '02/15/01'
-    dcl_controller_timestamp: '2002/02/15 05:07:35.953'
     measurement_wavelength_beta: 18072
     measurement_wavelength_cdom: 18076
     measurement_wavelength_chl: 18074
@@ -136,14 +110,11 @@ data:
     raw_signal_beta: 18073
     raw_signal_cdom: 18077
     raw_signal_chl: 18075
-    time_string: '17:07:35'
   - _index: 10
     particle_object: FlortDjDclTelemeteredInstrumentDataParticle
     particle_type: flort_dj_dcl_instrument
-    internal_timestamp: 3222738458.3109999
+    internal_timestamp: 3191245658.3800001
     port_timestamp: 3222738458.3109999
-    date_string: '02/15/01'
-    dcl_controller_timestamp: '2002/02/15 05:07:38.311'
     measurement_wavelength_beta: 20331
     measurement_wavelength_cdom: 20335
     measurement_wavelength_chl: 20333
@@ -151,14 +122,11 @@ data:
     raw_signal_beta: 20332
     raw_signal_cdom: 20336
     raw_signal_chl: 20334
-    time_string: '17:07:38'
   - _index: 11
     particle_object: FlortDjDclTelemeteredInstrumentDataParticle
     particle_type: flort_dj_dcl_instrument
-    internal_timestamp: 3222738460.6690001
+    internal_timestamp: 3191245660.4000001
     port_timestamp: 3222738460.6690001
-    date_string: '02/15/01'
-    dcl_controller_timestamp: '2002/02/15 05:07:40.669'
     measurement_wavelength_beta: 22590
     measurement_wavelength_cdom: 22594
     measurement_wavelength_chl: 22592
@@ -166,14 +134,11 @@ data:
     raw_signal_beta: 22591
     raw_signal_cdom: 22595
     raw_signal_chl: 22593
-    time_string: '17:07:40'
   - _index: 12
     particle_object: FlortDjDclTelemeteredInstrumentDataParticle
     particle_type: flort_dj_dcl_instrument
-    internal_timestamp: 3222738463.0270000
+    internal_timestamp: 3191245663.4299998
     port_timestamp: 3222738463.0270000
-    date_string: '02/15/01'
-    dcl_controller_timestamp: '2002/02/15 05:07:43.027'
     measurement_wavelength_beta: 24849
     measurement_wavelength_cdom: 24853
     measurement_wavelength_chl: 24851
@@ -181,14 +146,11 @@ data:
     raw_signal_beta: 24850
     raw_signal_cdom: 24854
     raw_signal_chl: 24852
-    time_string: '17:07:43'
   - _index: 13
     particle_object: FlortDjDclTelemeteredInstrumentDataParticle
     particle_type: flort_dj_dcl_instrument
-    internal_timestamp: 3222738465.3850002
+    internal_timestamp: 3191245665.4499998
     port_timestamp: 3222738465.3850002
-    date_string: '02/15/01'
-    dcl_controller_timestamp: '2002/02/15 05:07:45.385'
     measurement_wavelength_beta: 27108
     measurement_wavelength_cdom: 27112
     measurement_wavelength_chl: 27110
@@ -196,14 +158,11 @@ data:
     raw_signal_beta: 27109
     raw_signal_cdom: 27113
     raw_signal_chl: 27111
-    time_string: '17:07:45'
   - _index: 14
     particle_object: FlortDjDclTelemeteredInstrumentDataParticle
     particle_type: flort_dj_dcl_instrument
-    internal_timestamp: 3222738467.7430000
+    internal_timestamp: 3191245667.4699998
     port_timestamp: 3222738467.7430000
-    date_string: '02/15/01'
-    dcl_controller_timestamp: '2002/02/15 05:07:47.743'
     measurement_wavelength_beta: 29367
     measurement_wavelength_cdom: 29371
     measurement_wavelength_chl: 29369
@@ -211,14 +170,11 @@ data:
     raw_signal_beta: 29368
     raw_signal_cdom: 29372
     raw_signal_chl: 29370
-    time_string: '17:07:47'
   - _index: 15
     particle_object: FlortDjDclTelemeteredInstrumentDataParticle
     particle_type: flort_dj_dcl_instrument
-    internal_timestamp: 3222738470.1009998
+    internal_timestamp: 3191245670.5000000
     port_timestamp: 3222738470.1009998
-    date_string: '02/15/01'
-    dcl_controller_timestamp: '2002/02/15 05:07:50.101'
     measurement_wavelength_beta: 31626
     measurement_wavelength_cdom: 31630
     measurement_wavelength_chl: 31628
@@ -226,14 +182,11 @@ data:
     raw_signal_beta: 31627
     raw_signal_cdom: 31631
     raw_signal_chl: 31629
-    time_string: '17:07:50'
   - _index: 16
     particle_object: FlortDjDclTelemeteredInstrumentDataParticle
     particle_type: flort_dj_dcl_instrument
-    internal_timestamp: 3222738479.5330000
+    internal_timestamp: 3191245679.5900002
     port_timestamp: 3222738479.5330000
-    date_string: '02/15/01'
-    dcl_controller_timestamp: '2002/02/15 05:07:59.533'
     measurement_wavelength_beta: 33885
     measurement_wavelength_cdom: 33889
     measurement_wavelength_chl: 33887
@@ -241,14 +194,11 @@ data:
     raw_signal_beta: 33886
     raw_signal_cdom: 33890
     raw_signal_chl: 33888
-    time_string: '17:07:59'
   - _index: 17
     particle_object: FlortDjDclTelemeteredInstrumentDataParticle
     particle_type: flort_dj_dcl_instrument
-    internal_timestamp: 3222738481.8909998
+    internal_timestamp: 3191245681.0100002
     port_timestamp: 3222738481.8909998
-    date_string: '02/15/01'
-    dcl_controller_timestamp: '2002/02/15 05:08:01.891'
     measurement_wavelength_beta: 36144
     measurement_wavelength_cdom: 36148
     measurement_wavelength_chl: 36146
@@ -256,14 +206,11 @@ data:
     raw_signal_beta: 36145
     raw_signal_cdom: 36149
     raw_signal_chl: 36147
-    time_string: '17:08:01'
   - _index: 18
     particle_object: FlortDjDclTelemeteredInstrumentDataParticle
     particle_type: flort_dj_dcl_instrument
-    internal_timestamp: 3222738484.2490001
+    internal_timestamp: 3191245684.0400000
     port_timestamp: 3222738484.2490001
-    date_string: '02/15/01'
-    dcl_controller_timestamp: '2002/02/15 05:08:04.249'
     measurement_wavelength_beta: 38403
     measurement_wavelength_cdom: 38407
     measurement_wavelength_chl: 38405
@@ -271,14 +218,11 @@ data:
     raw_signal_beta: 38404
     raw_signal_cdom: 38408
     raw_signal_chl: 38406
-    time_string: '17:08:04'
   - _index: 19
     particle_object: FlortDjDclTelemeteredInstrumentDataParticle
     particle_type: flort_dj_dcl_instrument
-    internal_timestamp: 3222738486.6069999
+    internal_timestamp: 3191245686.0599999
     port_timestamp: 3222738486.6069999
-    date_string: '02/15/01'
-    dcl_controller_timestamp: '2002/02/15 05:08:06.607'
     measurement_wavelength_beta: 40662
     measurement_wavelength_cdom: 40666
     measurement_wavelength_chl: 40664
@@ -286,14 +230,11 @@ data:
     raw_signal_beta: 40663
     raw_signal_cdom: 40667
     raw_signal_chl: 40665
-    time_string: '17:08:06'
   - _index: 20
     particle_object: FlortDjDclTelemeteredInstrumentDataParticle
     particle_type: flort_dj_dcl_instrument
-    internal_timestamp: 3222738488.9650002
+    internal_timestamp: 3191245688.0799999
     port_timestamp: 3222738488.9650002
-    date_string: '02/15/01'
-    dcl_controller_timestamp: '2002/02/15 05:08:08.965'
     measurement_wavelength_beta: 42921
     measurement_wavelength_cdom: 42925
     measurement_wavelength_chl: 42923
@@ -301,14 +242,11 @@ data:
     raw_signal_beta: 42922
     raw_signal_cdom: 42926
     raw_signal_chl: 42924
-    time_string: '17:08:08'
   - _index: 21
     particle_object: FlortDjDclTelemeteredInstrumentDataParticle
     particle_type: flort_dj_dcl_instrument
-    internal_timestamp: 3222738491.3230000
+    internal_timestamp: 3191245691.1100001
     port_timestamp: 3222738491.3230000
-    date_string: '02/15/01'
-    dcl_controller_timestamp: '2002/02/15 05:08:11.323'
     measurement_wavelength_beta: 45180
     measurement_wavelength_cdom: 45184
     measurement_wavelength_chl: 45182
@@ -316,14 +254,11 @@ data:
     raw_signal_beta: 45181
     raw_signal_cdom: 45185
     raw_signal_chl: 45183
-    time_string: '17:08:11'
   - _index: 22
     particle_object: FlortDjDclTelemeteredInstrumentDataParticle
     particle_type: flort_dj_dcl_instrument
-    internal_timestamp: 3222738493.6809998
+    internal_timestamp: 3191245693.1300001
     port_timestamp: 3222738493.6809998
-    date_string: '02/15/01'
-    dcl_controller_timestamp: '2002/02/15 05:08:13.681'
     measurement_wavelength_beta: 47439
     measurement_wavelength_cdom: 47443
     measurement_wavelength_chl: 47441
@@ -331,14 +266,11 @@ data:
     raw_signal_beta: 47440
     raw_signal_cdom: 47444
     raw_signal_chl: 47442
-    time_string: '17:08:13'
   - _index: 23
     particle_object: FlortDjDclTelemeteredInstrumentDataParticle
     particle_type: flort_dj_dcl_instrument
-    internal_timestamp: 3222738496.0390000
+    internal_timestamp: 3191245696.1599998
     port_timestamp: 3222738496.0390000
-    date_string: '02/15/01'
-    dcl_controller_timestamp: '2002/02/15 05:08:16.039'
     measurement_wavelength_beta: 49698
     measurement_wavelength_cdom: 49702
     measurement_wavelength_chl: 49700
@@ -346,14 +278,11 @@ data:
     raw_signal_beta: 49699
     raw_signal_cdom: 49703
     raw_signal_chl: 49701
-    time_string: '17:08:16'
   - _index: 24
     particle_object: FlortDjDclTelemeteredInstrumentDataParticle
     particle_type: flort_dj_dcl_instrument
-    internal_timestamp: 3222738498.3969998
+    internal_timestamp: 3191245698.1799998
     port_timestamp: 3222738498.3969998
-    date_string: '02/15/01'
-    dcl_controller_timestamp: '2002/02/15 05:08:18.397'
     measurement_wavelength_beta: 51957
     measurement_wavelength_cdom: 51961
     measurement_wavelength_chl: 51959
@@ -361,14 +290,11 @@ data:
     raw_signal_beta: 51958
     raw_signal_cdom: 51962
     raw_signal_chl: 51960
-    time_string: '17:08:18'
   - _index: 25
     particle_object: FlortDjDclTelemeteredInstrumentDataParticle
     particle_type: flort_dj_dcl_instrument
-    internal_timestamp: 3222738500.7550001
+    internal_timestamp: 3191245700.1999998
     port_timestamp: 3222738500.7550001
-    date_string: '02/15/01'
-    dcl_controller_timestamp: '2002/02/15 05:08:20.755'
     measurement_wavelength_beta: 54216
     measurement_wavelength_cdom: 54220
     measurement_wavelength_chl: 54218
@@ -376,14 +302,11 @@ data:
     raw_signal_beta: 54217
     raw_signal_cdom: 54221
     raw_signal_chl: 54219
-    time_string: '17:08:20'
   - _index: 26
     particle_object: FlortDjDclTelemeteredInstrumentDataParticle
     particle_type: flort_dj_dcl_instrument
-    internal_timestamp: 3222738503.1129999
+    internal_timestamp: 3191245703.2300000
     port_timestamp: 3222738503.1129999
-    date_string: '02/15/01'
-    dcl_controller_timestamp: '2002/02/15 05:08:23.113'
     measurement_wavelength_beta: 56475
     measurement_wavelength_cdom: 56479
     measurement_wavelength_chl: 56477
@@ -391,14 +314,11 @@ data:
     raw_signal_beta: 56476
     raw_signal_cdom: 56480
     raw_signal_chl: 56478
-    time_string: '17:08:23'
   - _index: 27
     particle_object: FlortDjDclTelemeteredInstrumentDataParticle
     particle_type: flort_dj_dcl_instrument
-    internal_timestamp: 3222738505.4709997
+    internal_timestamp: 3191245705.2500000
     port_timestamp: 3222738505.4709997
-    date_string: '02/15/01'
-    dcl_controller_timestamp: '2002/02/15 05:08:25.471'
     measurement_wavelength_beta: 58734
     measurement_wavelength_cdom: 58738
     measurement_wavelength_chl: 58736
@@ -406,14 +326,11 @@ data:
     raw_signal_beta: 58735
     raw_signal_cdom: 58739
     raw_signal_chl: 58737
-    time_string: '17:08:25'
   - _index: 28
     particle_object: FlortDjDclTelemeteredInstrumentDataParticle
     particle_type: flort_dj_dcl_instrument
-    internal_timestamp: 3222738507.8290000
+    internal_timestamp: 3191245707.2700000
     port_timestamp: 3222738507.8290000
-    date_string: '02/15/01'
-    dcl_controller_timestamp: '2002/02/15 05:08:27.829'
     measurement_wavelength_beta: 60993
     measurement_wavelength_cdom: 60997
     measurement_wavelength_chl: 60995
@@ -421,14 +338,11 @@ data:
     raw_signal_beta: 60994
     raw_signal_cdom: 60998
     raw_signal_chl: 60996
-    time_string: '17:08:27'
   - _index: 29
     particle_object: FlortDjDclTelemeteredInstrumentDataParticle
     particle_type: flort_dj_dcl_instrument
-    internal_timestamp: 3222738510.1870003
+    internal_timestamp: 3191245710.3000002
     port_timestamp: 3222738510.1870003
-    date_string: '02/15/01'
-    dcl_controller_timestamp: '2002/02/15 05:08:30.187'
     measurement_wavelength_beta: 63252
     measurement_wavelength_cdom: 63256
     measurement_wavelength_chl: 63254
@@ -436,14 +350,11 @@ data:
     raw_signal_beta: 63253
     raw_signal_cdom: 63257
     raw_signal_chl: 63255
-    time_string: '17:08:30'
   - _index: 30
     particle_object: FlortDjDclTelemeteredInstrumentDataParticle
     particle_type: flort_dj_dcl_instrument
-    internal_timestamp: 3222738512.5450001
+    internal_timestamp: 3191245712.3200002
     port_timestamp: 3222738512.5450001
-    date_string: '02/15/01'
-    dcl_controller_timestamp: '2002/02/15 05:08:32.545'
     measurement_wavelength_beta: 65511
     measurement_wavelength_cdom: 65515
     measurement_wavelength_chl: 65513
@@ -451,4 +362,3 @@ data:
     raw_signal_beta: 65512
     raw_signal_cdom: 65516
     raw_signal_chl: 65514
-    time_string: '17:08:32'

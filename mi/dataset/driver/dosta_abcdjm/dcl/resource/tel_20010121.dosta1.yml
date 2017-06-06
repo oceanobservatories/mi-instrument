@@ -5,12 +5,10 @@ data:
   - _index: 1
     particle_object: DostaAbcdjmDclTelemeteredInstrumentDataParticle
     particle_type: dosta_abcdjm_dcl_instrument
-    internal_timestamp: 3189035162.3290000
     port_timestamp: 3189035162.3290000
     blue_amplitude:         0.00000
     blue_phase:         0.00000
     calibrated_phase:         0.00000
-    dcl_controller_timestamp: '2001/01/21 03:06:02.329'
     estimated_oxygen_concentration:         0.00000
     estimated_oxygen_saturation:         0.00000
     optode_temperature:         0.00000
@@ -23,12 +21,10 @@ data:
   - _index: 2
     particle_object: DostaAbcdjmDclTelemeteredInstrumentDataParticle
     particle_type: dosta_abcdjm_dcl_instrument
-    internal_timestamp: 3189035175.9080000
     port_timestamp: 3189035175.9080000
     blue_amplitude:        75.00000
     blue_phase:         4.50000
     calibrated_phase:         4.50000
-    dcl_controller_timestamp: '2001/01/21 03:06:15.908'
     estimated_oxygen_concentration:        25.00000
     estimated_oxygen_saturation:         6.00000
     optode_temperature:         5.00000
@@ -41,12 +37,10 @@ data:
   - _index: 3
     particle_object: DostaAbcdjmDclTelemeteredInstrumentDataParticle
     particle_type: dosta_abcdjm_dcl_instrument
-    internal_timestamp: 3189035189.4870000
     port_timestamp: 3189035189.4870000
     blue_amplitude:       150.00000
     blue_phase:         9.00000
     calibrated_phase:         9.00000
-    dcl_controller_timestamp: '2001/01/21 03:06:29.487'
     estimated_oxygen_concentration:        50.00000
     estimated_oxygen_saturation:        12.00000
     optode_temperature:        10.00000
@@ -59,12 +53,10 @@ data:
   - _index: 4
     particle_object: DostaAbcdjmDclTelemeteredInstrumentDataParticle
     particle_type: dosta_abcdjm_dcl_instrument
-    internal_timestamp: 3189035203.0660000
     port_timestamp: 3189035203.0660000
     blue_amplitude:       225.00000
     blue_phase:        13.50000
     calibrated_phase:        13.50000
-    dcl_controller_timestamp: '2001/01/21 03:06:43.066'
     estimated_oxygen_concentration:        75.00000
     estimated_oxygen_saturation:        18.00000
     optode_temperature:        15.00000
@@ -77,12 +69,10 @@ data:
   - _index: 5
     particle_object: DostaAbcdjmDclTelemeteredInstrumentDataParticle
     particle_type: dosta_abcdjm_dcl_instrument
-    internal_timestamp: 3189035216.6450000
     port_timestamp: 3189035216.6450000
     blue_amplitude:       300.00000
     blue_phase:        18.00000
     calibrated_phase:        18.00000
-    dcl_controller_timestamp: '2001/01/21 03:06:56.645'
     estimated_oxygen_concentration:       100.00000
     estimated_oxygen_saturation:        24.00000
     optode_temperature:        20.00000
@@ -95,12 +85,10 @@ data:
   - _index: 6
     particle_object: DostaAbcdjmDclTelemeteredInstrumentDataParticle
     particle_type: dosta_abcdjm_dcl_instrument
-    internal_timestamp: 3189035230.2240000
     port_timestamp: 3189035230.2240000
     blue_amplitude:       375.00000
     blue_phase:        22.50000
     calibrated_phase:        22.50000
-    dcl_controller_timestamp: '2001/01/21 03:07:10.224'
     estimated_oxygen_concentration:       125.00000
     estimated_oxygen_saturation:        30.00000
     optode_temperature:        25.00000
@@ -113,12 +101,10 @@ data:
   - _index: 7
     particle_object: DostaAbcdjmDclTelemeteredInstrumentDataParticle
     particle_type: dosta_abcdjm_dcl_instrument
-    internal_timestamp: 3189035243.8030000
     port_timestamp: 3189035243.8030000
     blue_amplitude:       450.00000
     blue_phase:        27.00000
     calibrated_phase:        27.00000
-    dcl_controller_timestamp: '2001/01/21 03:07:23.803'
     estimated_oxygen_concentration:       150.00000
     estimated_oxygen_saturation:        36.00000
     optode_temperature:        30.00000
@@ -131,12 +117,10 @@ data:
   - _index: 8
     particle_object: DostaAbcdjmDclTelemeteredInstrumentDataParticle
     particle_type: dosta_abcdjm_dcl_instrument
-    internal_timestamp: 3189035257.3820000
     port_timestamp: 3189035257.3820000
     blue_amplitude:       525.00000
     blue_phase:        31.50000
     calibrated_phase:        31.50000
-    dcl_controller_timestamp: '2001/01/21 03:07:37.382'
     estimated_oxygen_concentration:       175.00000
     estimated_oxygen_saturation:        42.00000
     optode_temperature:        35.00000
@@ -149,12 +133,10 @@ data:
   - _index: 9
     particle_object: DostaAbcdjmDclTelemeteredInstrumentDataParticle
     particle_type: dosta_abcdjm_dcl_instrument
-    internal_timestamp: 3189035270.9610000
     port_timestamp: 3189035270.9610000
     blue_amplitude:       600.00000
     blue_phase:        36.00000
     calibrated_phase:        36.00000
-    dcl_controller_timestamp: '2001/01/21 03:07:50.961'
     estimated_oxygen_concentration:       200.00000
     estimated_oxygen_saturation:        48.00000
     optode_temperature:        40.00000
@@ -167,12 +149,10 @@ data:
   - _index: 10
     particle_object: DostaAbcdjmDclTelemeteredInstrumentDataParticle
     particle_type: dosta_abcdjm_dcl_instrument
-    internal_timestamp: 3189035284.5400000
     port_timestamp: 3189035284.5400000
     blue_amplitude:       675.00000
     blue_phase:        40.50000
     calibrated_phase:        40.50000
-    dcl_controller_timestamp: '2001/01/21 03:08:04.540'
     estimated_oxygen_concentration:       225.00000
     estimated_oxygen_saturation:        54.00000
     optode_temperature:        45.00000
@@ -185,12 +165,10 @@ data:
   - _index: 11
     particle_object: DostaAbcdjmDclTelemeteredInstrumentDataParticle
     particle_type: dosta_abcdjm_dcl_instrument
-    internal_timestamp: 3189035298.1190000
     port_timestamp: 3189035298.1190000
     blue_amplitude:       750.00000
     blue_phase:        45.00000
     calibrated_phase:        45.00000
-    dcl_controller_timestamp: '2001/01/21 03:08:18.119'
     estimated_oxygen_concentration:       250.00000
     estimated_oxygen_saturation:        60.00000
     optode_temperature:        50.00000
@@ -203,12 +181,10 @@ data:
   - _index: 12
     particle_object: DostaAbcdjmDclTelemeteredInstrumentDataParticle
     particle_type: dosta_abcdjm_dcl_instrument
-    internal_timestamp: 3189035311.6980000
     port_timestamp: 3189035311.6980000
     blue_amplitude:       825.00000
     blue_phase:        49.50000
     calibrated_phase:        49.50000
-    dcl_controller_timestamp: '2001/01/21 03:08:31.698'
     estimated_oxygen_concentration:       275.00000
     estimated_oxygen_saturation:        66.00000
     optode_temperature:        55.00000
@@ -221,12 +197,10 @@ data:
   - _index: 13
     particle_object: DostaAbcdjmDclTelemeteredInstrumentDataParticle
     particle_type: dosta_abcdjm_dcl_instrument
-    internal_timestamp: 3189035325.2770000
     port_timestamp: 3189035325.2770000
     blue_amplitude:       900.00000
     blue_phase:        54.00000
     calibrated_phase:        54.00000
-    dcl_controller_timestamp: '2001/01/21 03:08:45.277'
     estimated_oxygen_concentration:       300.00000
     estimated_oxygen_saturation:        72.00000
     optode_temperature:        60.00000
@@ -239,12 +213,10 @@ data:
   - _index: 14
     particle_object: DostaAbcdjmDclTelemeteredInstrumentDataParticle
     particle_type: dosta_abcdjm_dcl_instrument
-    internal_timestamp: 3189035338.8559999
     port_timestamp: 3189035338.8559999
     blue_amplitude:       975.00000
     blue_phase:        58.50000
     calibrated_phase:        58.50000
-    dcl_controller_timestamp: '2001/01/21 03:08:58.856'
     estimated_oxygen_concentration:       325.00000
     estimated_oxygen_saturation:        78.00000
     optode_temperature:        65.00000
@@ -257,12 +229,10 @@ data:
   - _index: 15
     particle_object: DostaAbcdjmDclTelemeteredInstrumentDataParticle
     particle_type: dosta_abcdjm_dcl_instrument
-    internal_timestamp: 3189035352.4349999
     port_timestamp: 3189035352.4349999
     blue_amplitude:      1050.00000
     blue_phase:        63.00000
     calibrated_phase:        63.00000
-    dcl_controller_timestamp: '2001/01/21 03:09:12.435'
     estimated_oxygen_concentration:       350.00000
     estimated_oxygen_saturation:        84.00000
     optode_temperature:        70.00000
@@ -275,12 +245,10 @@ data:
   - _index: 16
     particle_object: DostaAbcdjmDclTelemeteredInstrumentDataParticle
     particle_type: dosta_abcdjm_dcl_instrument
-    internal_timestamp: 3189035366.0139999
     port_timestamp: 3189035366.0139999
     blue_amplitude:      1125.00000
     blue_phase:        67.50000
     calibrated_phase:        67.50000
-    dcl_controller_timestamp: '2001/01/21 03:09:26.014'
     estimated_oxygen_concentration:       375.00000
     estimated_oxygen_saturation:        90.00000
     optode_temperature:        75.00000
@@ -293,12 +261,10 @@ data:
   - _index: 17
     particle_object: DostaAbcdjmDclTelemeteredInstrumentDataParticle
     particle_type: dosta_abcdjm_dcl_instrument
-    internal_timestamp: 3189035379.5929999
     port_timestamp: 3189035379.5929999
     blue_amplitude:      1200.00000
     blue_phase:        72.00000
     calibrated_phase:        72.00000
-    dcl_controller_timestamp: '2001/01/21 03:09:39.593'
     estimated_oxygen_concentration:       400.00000
     estimated_oxygen_saturation:        96.00000
     optode_temperature:        80.00000
@@ -311,12 +277,10 @@ data:
   - _index: 18
     particle_object: DostaAbcdjmDclTelemeteredInstrumentDataParticle
     particle_type: dosta_abcdjm_dcl_instrument
-    internal_timestamp: 3189035393.1719999
     port_timestamp: 3189035393.1719999
     blue_amplitude:      1275.00000
     blue_phase:        76.50000
     calibrated_phase:        76.50000
-    dcl_controller_timestamp: '2001/01/21 03:09:53.172'
     estimated_oxygen_concentration:       425.00000
     estimated_oxygen_saturation:       102.00000
     optode_temperature:        85.00000
@@ -329,12 +293,10 @@ data:
   - _index: 19
     particle_object: DostaAbcdjmDclTelemeteredInstrumentDataParticle
     particle_type: dosta_abcdjm_dcl_instrument
-    internal_timestamp: 3189035406.7509999
     port_timestamp: 3189035406.7509999
     blue_amplitude:      1350.00000
     blue_phase:        81.00000
     calibrated_phase:        81.00000
-    dcl_controller_timestamp: '2001/01/21 03:10:06.751'
     estimated_oxygen_concentration:       450.00000
     estimated_oxygen_saturation:       108.00000
     optode_temperature:        90.00000
@@ -347,12 +309,10 @@ data:
   - _index: 20
     particle_object: DostaAbcdjmDclTelemeteredInstrumentDataParticle
     particle_type: dosta_abcdjm_dcl_instrument
-    internal_timestamp: 3189035420.3299999
     port_timestamp: 3189035420.3299999
     blue_amplitude:      1425.00000
     blue_phase:        85.50000
     calibrated_phase:        85.50000
-    dcl_controller_timestamp: '2001/01/21 03:10:20.330'
     estimated_oxygen_concentration:       475.00000
     estimated_oxygen_saturation:       114.00000
     optode_temperature:        95.00000
@@ -365,12 +325,10 @@ data:
   - _index: 21
     particle_object: DostaAbcdjmDclTelemeteredInstrumentDataParticle
     particle_type: dosta_abcdjm_dcl_instrument
-    internal_timestamp: 3189035433.9089999
     port_timestamp: 3189035433.9089999
     blue_amplitude:      1500.00000
     blue_phase:        90.00000
     calibrated_phase:        90.00000
-    dcl_controller_timestamp: '2001/01/21 03:10:33.909'
     estimated_oxygen_concentration:       500.00000
     estimated_oxygen_saturation:       120.00000
     optode_temperature:       100.00000

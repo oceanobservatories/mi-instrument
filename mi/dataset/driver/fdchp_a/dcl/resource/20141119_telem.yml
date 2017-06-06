@@ -8,13 +8,11 @@ data:
     internal_timestamp: 3625416060.0009999
     port_timestamp: 3625417295.0279999
     buoyance_flux:         0.02000
-    dcl_controller_timestamp: '2014/11/19 20:21:35.028'
     eng_wave_motion:         0.02000
     heading:         0.59000
     heading_max:         0.61000
     heading_min:         0.59000
     heading_std:         0.00000
-    instrument_start_timestamp: '2014/11/19 20:00:12.337'
     pitch:        -0.02000
     pitch_max:        -0.02000
     pitch_min:        -0.03000
@@ -27,8 +25,6 @@ data:
     speed_of_sound_max:       278.72000
     speed_of_sound_min:       276.96000
     speed_of_sound_std:         0.25000
-    status_datacollection: '000001'
-    time_datacollection: 1416427260.00100
     u_corr:         0.53000
     u_corr_std:         0.53000
     uw_momentum_flux:         0.06000
@@ -81,13 +77,11 @@ data:
     internal_timestamp: 3625419600.0489998
     port_timestamp: 3625420835.4099998
     buoyance_flux:        -0.01000
-    dcl_controller_timestamp: '2014/11/19 21:20:35.410'
     eng_wave_motion:         0.03000
     heading:         0.60000
     heading_max:         0.60000
     heading_min:         0.59000
     heading_std:         0.00000
-    instrument_start_timestamp: '2014/11/19 20:58:40.598'
     pitch:        -0.02000
     pitch_max:        -0.02000
     pitch_min:        -0.03000
@@ -100,8 +94,6 @@ data:
     speed_of_sound_max:       278.44000
     speed_of_sound_min:       277.08000
     speed_of_sound_std:         0.21000
-    status_datacollection: '000001'
-    time_datacollection: 1416430800.04900
     u_corr:         0.33000
     u_corr_std:         0.33000
     uw_momentum_flux:         0.05000
@@ -154,13 +146,11 @@ data:
     internal_timestamp: 3625423200.0200000
     port_timestamp: 3625424435.4860001
     buoyance_flux:        -0.01000
-    dcl_controller_timestamp: '2014/11/19 22:20:35.486'
     eng_wave_motion:         0.02000
     heading:         0.60000
     heading_max:         0.60000
     heading_min:         0.59000
     heading_std:         0.00000
-    instrument_start_timestamp: '2014/11/19 21:58:41.978'
     pitch:        -0.02000
     pitch_max:        -0.02000
     pitch_min:        -0.03000
@@ -173,8 +163,6 @@ data:
     speed_of_sound_max:       278.64000
     speed_of_sound_min:       277.23000
     speed_of_sound_std:         0.21000
-    status_datacollection: '000001'
-    time_datacollection: 1416434400.02000
     u_corr:         0.54000
     u_corr_std:         0.54000
     uw_momentum_flux:         0.05000
@@ -227,13 +215,11 @@ data:
     internal_timestamp: 3625426800.0679998
     port_timestamp: 3625428034.8829999
     buoyance_flux:         0.00000
-    dcl_controller_timestamp: '2014/11/19 23:20:34.883'
     eng_wave_motion:         0.02000
     heading:         0.61000
     heading_max:         0.63000
     heading_min:         0.60000
     heading_std:         0.01000
-    instrument_start_timestamp: '2014/11/19 22:58:42.367'
     pitch:        -0.02000
     pitch_max:        -0.02000
     pitch_min:        -0.03000
@@ -246,8 +232,6 @@ data:
     speed_of_sound_max:       278.81000
     speed_of_sound_min:       277.16000
     speed_of_sound_std:         0.26000
-    status_datacollection: '000001'
-    time_datacollection: 1416438000.06800
     u_corr:         0.08000
     u_corr_std:         0.08000
     uw_momentum_flux:         0.10000

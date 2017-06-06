@@ -10,13 +10,14 @@ __license__ = 'Apache 2.0'
 import re
 
 from mi.core.log import get_logger
+
 log = get_logger()
-from mi.core.instrument.dataset_data_particle import DataParticle
+from mi.core.instrument.dataset_data_particle import DataParticle, DataParticleKey
 from mi.core.exceptions import SampleException
 
 from mi.dataset.dataset_parser import SimpleParser
 from mi.dataset.parser.common_regexes import FLOAT_REGEX
-from mi.dataset.parser.utilities import dcl_controller_timestamp_to_ntp_time
+from mi.dataset.parser.utilities import dcl_time_to_ntp
 
 DCL_TIMESTAMP_REGEX = r'(\d{4}/\d{2}/\d{2} \d{2}:\d{2}:\d{2}.\d{3})'
 
@@ -28,10 +29,11 @@ DATA_LINE_MATCHER = re.compile(DATA_LINE_REGEX)
 IGNORE_LINE_REGEX = DCL_TIMESTAMP_REGEX + ' \[hyd\d*:DLOGP\d+\]:.*'
 IGNORE_LINE_MATCHER = re.compile(IGNORE_LINE_REGEX)
 
-DCL_TIMESTAMP_GROUP = 1
+DCL_TIMESTAMP_GROUP = 0
+
 # map for unpacking the particle
+# DCL timestamp is at index 1
 PARTICLE_MAP = [
-    ('dcl_controller_timestamp', DCL_TIMESTAMP_GROUP, str),
     ('hyd_raw', 2, float),
     ('hyd_percent', 3, float)
 ]
@@ -39,21 +41,6 @@ PARTICLE_MAP = [
 
 class HydODclCommonDataParticle(DataParticle):
     def _build_parsed_values(self):
-
-        # DCL controller timestamp  is the port timestamp
-        dcl_controller_timestamp = self.raw_data.group(DCL_TIMESTAMP_GROUP)
-        elapsed_seconds_useconds = dcl_controller_timestamp_to_ntp_time(dcl_controller_timestamp)
-        self.set_port_timestamp(elapsed_seconds_useconds)
-
-        """
-        Rawdata(payload) does not contain any instrument timestamp,
-        So,we are using DCL controller timestamp(DCL logger timestamp) as the internal timestamp
-        In this case port timestamp and internal timestamp are same
-        """
-        instrument_timestamp = self.raw_data.group(DCL_TIMESTAMP_GROUP)
-        elapsed_seconds_useconds = dcl_controller_timestamp_to_ntp_time(instrument_timestamp)
-        self.set_internal_timestamp(elapsed_seconds_useconds)
-
         return [self._encode_value(name, self.raw_data.group(idx), function)
                 for name, idx, function in PARTICLE_MAP]
 
@@ -100,8 +87,18 @@ class HydODclParser(SimpleParser):
 
             if data_match:
                 # found a data line, extract this particle
-                particle = self._extract_sample(self.particle_class, None, data_match, None)
+                # DCL controller timestamp  is the port_timestamp
+                dcl_controller_timestamp = data_match.groups()[DCL_TIMESTAMP_GROUP]
+                port_timestamp = dcl_time_to_ntp(dcl_controller_timestamp)
+
+                particle = self._extract_sample(self.particle_class,
+                                                None,
+                                                data_match,
+                                                port_timestamp=port_timestamp,
+                                                preferred_ts=DataParticleKey.PORT_TIMESTAMP)
+
                 self._record_buffer.append(particle)
+
             elif not ignore_match:
                 # we found a line with an unknown format, call an exception
                 error_message = 'Found line with unknown format %s' % line

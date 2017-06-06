@@ -231,8 +231,7 @@ class CtdbpPDclCommonParser(SimpleParser):
 
                 data_particle = self._extract_sample(self._particle_class,
                                                      None,
-                                                     match,
-                                                     None)
+                                                     match)
                 self._record_buffer.append(data_particle)
 
             else:

@@ -150,7 +150,7 @@ class DostaLnWfpSioParser(SioParser):
                         sample = self._extract_sample(DostaLnWfpSioDataParticle,
                                                       None,
                                                       e_record,
-                                                      timestamp)
+                                                      internal_timestamp=timestamp)
                         result_particles.append(sample)
 
             (timestamp, chunk) = self._chunker.get_next_data()

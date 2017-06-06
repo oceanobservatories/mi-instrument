@@ -8,8 +8,6 @@ data:
     internal_timestamp: 3621025816.0000000
     port_timestamp: 3621025822.4560003
     conductivity:         0.00004
-    date_time_string: '30 Sep 2014 00:30:16'
-    dcl_controller_timestamp: '2014/09/30 00:30:22.456'
     pressure:        -0.06300
     temp:        19.73980
   - _index: 2
@@ -18,8 +16,6 @@ data:
     internal_timestamp: 3621029414.0000000
     port_timestamp: 3621029419.7519999
     conductivity:         0.00004
-    date_time_string: '30 Sep 2014 01:30:14'
-    dcl_controller_timestamp: '2014/09/30 01:30:19.752'
     pressure:        -0.05600
     temp:        20.19780
   - _index: 3
@@ -28,8 +24,6 @@ data:
     internal_timestamp: 3621033014.0000000
     port_timestamp: 3621033019.9150000
     conductivity:         0.00004
-    date_time_string: '30 Sep 2014 02:30:14'
-    dcl_controller_timestamp: '2014/09/30 02:30:19.915'
     pressure:        -0.04800
     temp:        20.57820
   - _index: 4
@@ -38,8 +32,6 @@ data:
     internal_timestamp: 3621036613.0000000
     port_timestamp: 3621036618.8909998
     conductivity:         0.00004
-    date_time_string: '30 Sep 2014 03:30:13'
-    dcl_controller_timestamp: '2014/09/30 03:30:18.891'
     pressure:        -0.04500
     temp:        20.78880
   - _index: 5
@@ -48,8 +40,6 @@ data:
     internal_timestamp: 3621040212.0000000
     port_timestamp: 3621040218.2030001
     conductivity:         0.00004
-    date_time_string: '30 Sep 2014 04:30:12'
-    dcl_controller_timestamp: '2014/09/30 04:30:18.203'
     pressure:        -0.03700
     temp:        20.89560
   - _index: 6
@@ -58,7 +48,5 @@ data:
     internal_timestamp: 3621047412.0000000
     port_timestamp: 3621047417.9800000
     conductivity:         0.00004
-    date_time_string: '30 Sep 2014 06:30:12'
-    dcl_controller_timestamp: '2014/09/30 06:30:17.980'
     pressure:        -0.03100
     temp:        20.93120

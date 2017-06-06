@@ -16,8 +16,8 @@ from mi.core.exceptions import RecoverableSampleException, SampleEncodingExcepti
 from mi.dataset.dataset_parser import SimpleParser
 
 from mi.dataset.parser.utilities import \
-    dcl_controller_timestamp_to_utc_time, \
-    timestamp_yyyymmddhhmmss_to_ntp_time
+    dcl_time_to_utc, \
+    timestamp_yyyymmddhhmmss_to_ntp
 
 log = get_logger()
 
@@ -82,7 +82,7 @@ class WavssADclCommonDataParticle(DataParticle):
     def __init__(self, raw_data,
                  port_timestamp=None,
                  internal_timestamp=None,
-                 preferred_timestamp=DataParticleKey.PORT_TIMESTAMP,
+                 preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP,
                  quality_flag=DataParticleValue.OK,
                  new_sequence=None):
 
@@ -110,7 +110,7 @@ class WavssADclCommonDataParticle(DataParticle):
         if len(parts) == 3:  # standard format with date and time leaders
             dcl_date, dcl_time, parts = parts
             dcl_timestamp = " ".join([dcl_date, dcl_time])
-            timestamp = dcl_controller_timestamp_to_utc_time(dcl_timestamp)
+            timestamp = dcl_time_to_utc(dcl_timestamp)
         else:
             parts = line
         if parts[0] == '$':  # data segment must begin with $ leader
@@ -135,7 +135,7 @@ class WavssADclCommonDataParticle(DataParticle):
         """
         utc_time, self.dcl_data, checksum = self.extract_dcl_parts(self.raw_data)
         if utc_time:
-            # DCL controller timestamp  is the port timestamp
+            # DCL controller timestamp  is the port_timestamp
             self.set_port_timestamp(unix_time=utc_time)
 
         if not self.dcl_data:
@@ -149,20 +149,13 @@ class WavssADclCommonDataParticle(DataParticle):
             raise RecoverableSampleException('DCL format error: missing items from common wavss header')
         self.marker, self.date, self.time, self.serial_number, self.buoy_id, self.latitude, self.longitude = csv[:7]
 
-        # Instrument timestamp  is the internal timestamp
-        instrument_timestamp = timestamp_yyyymmddhhmmss_to_ntp_time(self.date + self.time)
+        # Instrument timestamp  is the internal_timestamp
+        instrument_timestamp = timestamp_yyyymmddhhmmss_to_ntp(self.date + self.time)
         self.set_internal_timestamp(instrument_timestamp)
 
         self.payload = csv[7:]
 
-        parts = self.raw_data.split()  # TODO - remove
-        dcl_timestamp_string = " ".join(parts[:2])  # TODO - remove
-
-        return [
-            self._encode_value('dcl_controller_timestamp', dcl_timestamp_string, str),  # TODO - remove
-            self._encode_value('date_string', self.date, str),  # TODO - remove
-            self._encode_value('time_string', self.time, str),  # TODO - remove
-            self._encode_value('serial_number', self.serial_number, str)]
+        return [self._encode_value('serial_number', self.serial_number, str)]
 
 
 class WavssADclStatisticsDataParticle(WavssADclCommonDataParticle):
@@ -358,7 +351,7 @@ class WavssADclMotionDataParticle(WavssADclCommonDataParticle):
     def __init__(self, raw_data,
                  port_timestamp=None,
                  internal_timestamp=None,
-                 preferred_timestamp=DataParticleKey.PORT_TIMESTAMP,
+                 preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP,
                  quality_flag=DataParticleValue.OK,
                  new_sequence=None):
 
@@ -522,11 +515,11 @@ class WavssADclParser(SimpleParser):
         @param particle_class: particle class to extract
         @param line: raw data input line
         """
-        particle = self._extract_sample(particle_class, None, line, None)
+        particle = self._extract_sample(particle_class, None, line)
         if particle:
             self._record_buffer.append(particle)
 
-    def _extract_sample(self, particle_class, regex, raw_data, timestamp,
+    def _extract_sample(self, particle_class, regex, raw_data, port_timestamp=None, internal_timestamp=None,
                         preferred_ts=DataParticleKey.INTERNAL_TIMESTAMP):
         """
         Extract sample from a response line if present and publish
@@ -538,7 +531,7 @@ class WavssADclParser(SimpleParser):
         @param regex  The regular expression that matches a data sample if regex
                       is none then process every line
         @param raw_data  data to input into this particle.
-        @param timestamp  the internal timestamp
+        @param port_timestamp
         @param preferred_ts  the preferred timestamp (default: INTERNAL_TIMESTAMP)
         @return  raw particle if a sample was found, else None
 
@@ -547,7 +540,7 @@ class WavssADclParser(SimpleParser):
         """
         try:
             if regex is None or regex.match(raw_data):
-                particle = particle_class(raw_data, internal_timestamp=timestamp,
+                particle = particle_class(raw_data, port_timestamp=port_timestamp,
                                           preferred_timestamp=preferred_ts)
 
                 # need to actually parse the particle fields to find out of there are errors

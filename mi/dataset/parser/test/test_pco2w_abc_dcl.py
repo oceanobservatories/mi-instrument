@@ -65,9 +65,8 @@ class Pco2wAbcDclParserUnitTestCase(ParserUnitTestCase):
             }
         }
 
-    def file_path(self, filename):
-        log.debug('resource path = %s, file name = %s', RESOURCE_PATH, filename)
-        return os.path.join(RESOURCE_PATH, filename)
+    def create_yml(self, particles, filename):
+        particle_to_yml(particles, os.path.join(RESOURCE_PATH, filename))
 
     def test_happy_path_single(self):
         """

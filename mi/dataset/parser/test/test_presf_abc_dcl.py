@@ -31,9 +31,8 @@ class PresfAbcDclParserUnitTestCase(ParserUnitTestCase):
     presf_abc_dcl Parser unit test suite
     """
 
-    def file_path(self, filename):
-        log.debug('resource path = %s, file name = %s', RESOURCE_PATH, filename)
-        return os.path.join(RESOURCE_PATH, filename)
+    def create_yml(self, particles, filename):
+        particle_to_yml(particles, os.path.join(RESOURCE_PATH, filename))
 
     def test_simple(self):
         """
@@ -47,10 +46,6 @@ class PresfAbcDclParserUnitTestCase(ParserUnitTestCase):
             parser = PresfAbcDclParser(file_handle, self.exception_callback, True)
             # file has one tide particle and one wave particle
             particles = parser.get_records(2)
-
-            # creating .yml file
-            out_file = '20140417.presf3_telem.yml'
-            particle_to_yml(particles, self.file_path(out_file))
                 
             # Make sure there were no errors
             self.assertTrue(len(self.exception_callback_value) == 0)
@@ -83,7 +78,7 @@ class PresfAbcDclParserUnitTestCase(ParserUnitTestCase):
 
             parser = PresfAbcDclParser(file_handle, self.exception_callback, True)
             particles = parser.get_records(20)
-                
+
             # Make sure there were no errors
             self.assertTrue(len(self.exception_callback_value) == 0)
             # Make sure we obtained 20 particles
@@ -232,6 +227,3 @@ class PresfAbcDclParserUnitTestCase(ParserUnitTestCase):
             self.assertTrue(len(self.exception_callback_value) == 1)
             # Make sure we obtained 0 particles
             self.assertEquals(len(particles), 0)
-
-
-

@@ -8,13 +8,14 @@
 
 import re
 
+import ntplib
 from mi.core.log import get_logger
 from mi.core.common import BaseEnum
 from mi.core.exceptions import SampleException, UnexpectedDataException
-from mi.core.instrument.dataset_data_particle import DataParticle
+from mi.core.instrument.dataset_data_particle import DataParticle, DataParticleKey
 
 from mi.dataset.dataset_parser import SimpleParser
-from mi.dataset.parser.utilities import dcl_controller_timestamp_to_ntp_time
+from mi.dataset.parser.utilities import dcl_time_to_ntp
 
 log = get_logger()
 
@@ -44,6 +45,9 @@ START_N_CHARS = 33
 # the expected number of comma separated values in the data line
 N_FIELDS = 66
 
+DCL_CONTROLLER_TIMESTAMP = 1
+DATA_COLLECTION_TIME = 2
+
 
 class DataParticleType(BaseEnum):
     TELEMETERED = 'fdchp_a_dcl_instrument'
@@ -53,9 +57,9 @@ class DataParticleType(BaseEnum):
 class FdchpADclCommonParticle(DataParticle):
 
     # dictionary for unpacking float fields which map directly to a parameters (string -> float)
+    # index 1 is dcl_controller_timestamp strring
+    # index 2 is data collection time string
     UNPACK_DICT = {
-        # start at index 2 since stored and dcl timestamp are first
-        'time_datacollection': 2,
         'v_num_datacollection': 3,
         # index 4 is a string
         'wind_u_avg': 5,
@@ -125,22 +129,8 @@ class FdchpADclCommonParticle(DataParticle):
 
     def _build_parsed_values(self):
 
-        parameters = [
-            # start timestamp may not have been provided, allow it to be set to None
-            self._encode_value('instrument_start_timestamp', self.raw_data[0], self.str_or_none),
-            self._encode_value('dcl_controller_timestamp', self.raw_data[1], str),
-            self._encode_value('status_datacollection', self.raw_data[4], str)
-        ]
-
-        # The port timestamp is the DCL Controller timestamp.
-        dcl_controller_timestamp = dcl_controller_timestamp_to_ntp_time(self.raw_data[1])
-        self.set_port_timestamp(dcl_controller_timestamp)
-
-        # use the floating point unix timestamp in time_datacollection as the internal timestamp
-        unix_ts = float(self.raw_data[self.UNPACK_DICT.get('time_datacollection')])
-        self.set_internal_timestamp(unix_time=unix_ts)
-
         # loop through unpack dictionary and encode floats
+        parameters = list()
         for name, index in self.UNPACK_DICT.iteritems():
             parameters.append(self._encode_value(name, self.raw_data[index], float))
 
@@ -214,8 +204,22 @@ class FdchpADclParser(SimpleParser):
                     # create an array of the fields to parse in the particle
                     raw_data = [stored_start_timestamp, dcl_timestamp]
                     raw_data.extend(fields)
+
+                    # DCL controller timestamp  is the port_timestamp
+                    port_timestamp = dcl_time_to_ntp(raw_data[DCL_CONTROLLER_TIMESTAMP])
+
+                    # datacollection time is the internal_timestamp
+                    unix_ts = float(raw_data[DATA_COLLECTION_TIME])
+                    internal_timestamp = ntplib.system_to_ntp_time(unix_ts)
+
                     # extract this particle
-                    particle = self._extract_sample(self.particle_class, None, raw_data, None)
+                    particle = self._extract_sample(self.particle_class,
+                                                    None,
+                                                    raw_data,
+                                                    port_timestamp=port_timestamp,
+                                                    internal_timestamp=internal_timestamp,
+                                                    preferred_ts=DataParticleKey.PORT_TIMESTAMP)
+
                     self._record_buffer.append(particle)
                     stored_start_timestamp = None
 

@@ -5,10 +5,8 @@ data:
   - _index: 1
     particle_object: SpkirAbjDclRecoveredInstrumentDataParticle
     particle_type: spkir_abj_dcl_instrument_recovered
-    internal_timestamp: 3219880027.3380003
     port_timestamp: 3219880027.3380003
     channel_array: [0, 1, 2, 3, 4, 5, 6]
-    dcl_controller_timestamp: '2002/01/13 03:07:07.338'
     frame_counter: 0
     instrument_id: 'SATDI1'
     internal_temperature: 0
@@ -21,10 +19,8 @@ data:
   - _index: 2
     particle_object: SpkirAbjDclRecoveredInstrumentDataParticle
     particle_type: spkir_abj_dcl_instrument_recovered
-    internal_timestamp: 3219880040.9169998
     port_timestamp: 3219880040.9169998
     channel_array: [357913940, 357913941, 357913942, 357913943, 357913944, 357913945, 357913946]
-    dcl_controller_timestamp: '2002/01/13 03:07:20.917'
     frame_counter: 21
     instrument_id: 'SATDI1'
     internal_temperature: 5461
@@ -37,10 +33,8 @@ data:
   - _index: 3
     particle_object: SpkirAbjDclRecoveredInstrumentDataParticle
     particle_type: spkir_abj_dcl_instrument_recovered
-    internal_timestamp: 3219880054.4960003
     port_timestamp: 3219880054.4960003
     channel_array: [715827880, 715827881, 715827882, 715827883, 715827884, 715827885, 715827886]
-    dcl_controller_timestamp: '2002/01/13 03:07:34.496'
     frame_counter: 42
     instrument_id: 'SATDI1'
     internal_temperature: 10922
@@ -53,10 +47,8 @@ data:
   - _index: 4
     particle_object: SpkirAbjDclRecoveredInstrumentDataParticle
     particle_type: spkir_abj_dcl_instrument_recovered
-    internal_timestamp: 3219880068.0749998
     port_timestamp: 3219880068.0749998
     channel_array: [1073741820, 1073741821, 1073741822, 1073741823, 1073741824, 1073741825, 1073741826]
-    dcl_controller_timestamp: '2002/01/13 03:07:48.075'
     frame_counter: 63
     instrument_id: 'SATDI1'
     internal_temperature: 16383
@@ -69,10 +61,8 @@ data:
   - _index: 5
     particle_object: SpkirAbjDclRecoveredInstrumentDataParticle
     particle_type: spkir_abj_dcl_instrument_recovered
-    internal_timestamp: 3219880081.6540003
     port_timestamp: 3219880081.6540003
     channel_array: [1431655760, 1431655761, 1431655762, 1431655763, 1431655764, 1431655765, 1431655766]
-    dcl_controller_timestamp: '2002/01/13 03:08:01.654'
     frame_counter: 84
     instrument_id: 'SATDI1'
     internal_temperature: 21844
@@ -85,10 +75,8 @@ data:
   - _index: 6
     particle_object: SpkirAbjDclRecoveredInstrumentDataParticle
     particle_type: spkir_abj_dcl_instrument_recovered
-    internal_timestamp: 3219880095.2329998
     port_timestamp: 3219880095.2329998
     channel_array: [1789569700, 1789569701, 1789569702, 1789569703, 1789569704, 1789569705, 1789569706]
-    dcl_controller_timestamp: '2002/01/13 03:08:15.233'
     frame_counter: 105
     instrument_id: 'SATDI1'
     internal_temperature: 27305
@@ -101,10 +89,8 @@ data:
   - _index: 7
     particle_object: SpkirAbjDclRecoveredInstrumentDataParticle
     particle_type: spkir_abj_dcl_instrument_recovered
-    internal_timestamp: 3219880108.8120003
     port_timestamp: 3219880108.8120003
     channel_array: [2147483640, 2147483641, 2147483642, 2147483643, 2147483644, 2147483645, 2147483646]
-    dcl_controller_timestamp: '2002/01/13 03:08:28.812'
     frame_counter: 126
     instrument_id: 'SATDI1'
     internal_temperature: 32766
@@ -117,10 +103,8 @@ data:
   - _index: 8
     particle_object: SpkirAbjDclRecoveredInstrumentDataParticle
     particle_type: spkir_abj_dcl_instrument_recovered
-    internal_timestamp: 3219880122.3909998
     port_timestamp: 3219880122.3909998
     channel_array: [2505397580, 2505397581, 2505397582, 2505397583, 2505397584, 2505397585, 2505397586]
-    dcl_controller_timestamp: '2002/01/13 03:08:42.391'
     frame_counter: 147
     instrument_id: 'SATDI1'
     internal_temperature: 38227
@@ -133,10 +117,8 @@ data:
   - _index: 9
     particle_object: SpkirAbjDclRecoveredInstrumentDataParticle
     particle_type: spkir_abj_dcl_instrument_recovered
-    internal_timestamp: 3219880135.9700003
     port_timestamp: 3219880135.9700003
     channel_array: [2863311520, 2863311521, 2863311522, 2863311523, 2863311524, 2863311525, 2863311526]
-    dcl_controller_timestamp: '2002/01/13 03:08:55.970'
     frame_counter: 168
     instrument_id: 'SATDI1'
     internal_temperature: 43688
@@ -149,10 +131,8 @@ data:
   - _index: 10
     particle_object: SpkirAbjDclRecoveredInstrumentDataParticle
     particle_type: spkir_abj_dcl_instrument_recovered
-    internal_timestamp: 3219880149.5489998
     port_timestamp: 3219880149.5489998
     channel_array: [3221225460, 3221225461, 3221225462, 3221225463, 3221225464, 3221225465, 3221225466]
-    dcl_controller_timestamp: '2002/01/13 03:09:09.549'
     frame_counter: 189
     instrument_id: 'SATDI1'
     internal_temperature: 49149
@@ -165,10 +145,8 @@ data:
   - _index: 11
     particle_object: SpkirAbjDclRecoveredInstrumentDataParticle
     particle_type: spkir_abj_dcl_instrument_recovered
-    internal_timestamp: 3219880163.1280003
     port_timestamp: 3219880163.1280003
     channel_array: [3579139400, 3579139401, 3579139402, 3579139403, 3579139404, 3579139405, 3579139406]
-    dcl_controller_timestamp: '2002/01/13 03:09:23.128'
     frame_counter: 210
     instrument_id: 'SATDI1'
     internal_temperature: 54610
@@ -181,10 +159,8 @@ data:
   - _index: 12
     particle_object: SpkirAbjDclRecoveredInstrumentDataParticle
     particle_type: spkir_abj_dcl_instrument_recovered
-    internal_timestamp: 3219880176.7069998
     port_timestamp: 3219880176.7069998
     channel_array: [3937053340, 3937053341, 3937053342, 3937053343, 3937053344, 3937053345, 3937053346]
-    dcl_controller_timestamp: '2002/01/13 03:09:36.707'
     frame_counter: 231
     instrument_id: 'SATDI1'
     internal_temperature: 60071
@@ -197,10 +173,8 @@ data:
   - _index: 13
     particle_object: SpkirAbjDclRecoveredInstrumentDataParticle
     particle_type: spkir_abj_dcl_instrument_recovered
-    internal_timestamp: 3219880190.2860003
     port_timestamp: 3219880190.2860003
     channel_array: [4294967280, 4294967281, 4294967282, 4294967283, 4294967284, 4294967285, 4294967286]
-    dcl_controller_timestamp: '2002/01/13 03:09:50.286'
     frame_counter: 252
     instrument_id: 'SATDI1'
     internal_temperature: 65532

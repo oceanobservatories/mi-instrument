@@ -342,7 +342,7 @@ class Vel3dKWfpParser(SimpleParser):
                     record_time = times[INDEX_TIME_ON]
                     ntp_time = ntplib.system_to_ntp_time(record_time)
 
-                    particle = self._extract_sample(Vel3dKWfpMetadataParticle, None, times, ntp_time)
+                    particle = self._extract_sample(Vel3dKWfpMetadataParticle, None, times, internal_timestamp=ntp_time)
                     self._record_buffer.append(particle)
                     break
 
@@ -403,7 +403,7 @@ class Vel3dKWfpParser(SimpleParser):
                     particle_fields = struct.unpack_from(string_format, payload)
                     particle_type = Vel3dKWfpStringParticle
 
-                particle = self._extract_sample(particle_type, None, particle_fields, ntp_time)
+                particle = self._extract_sample(particle_type, None, particle_fields, internal_timestamp=ntp_time)
                 self._record_buffer.append(particle)
 
             else:  # invalid header

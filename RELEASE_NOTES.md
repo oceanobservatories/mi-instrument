@@ -1,35 +1,40 @@
 # Version 0.4.3
 
-* Issue #12253 Parsers are not setting port timestamp
-* Modified DCL parser,
-*  so that they set instrument timestamp using timestamp from the encapsulated data
-*  and set the port timestamp using DCL controller timestamp from the DCL wrapper
+* Issue #12253 Parsers are not setting port_timestamp and #12254 Extraneous data in DCL parser particles
+* Modified DCL parser:
+    - port_timestamp will be set from the DCL header timestamp value
+    - dcl_controller_timestamp - should set the port_timestamp (already in particle) instead of using a string
+    - internal_timestamp will be set from the instrument payload
+    - date_string - should use internal_timestamp (already in particle) instead of using a string
+    - all timestamp string values will not be set (removed)
 
-* Modified below DCL parser:
-    adcpt_acfgm_dcl_pd0    
-    adcpt_acfgm_dcl_pd8    
-    ctdbp_cdef_dcl
-    dcl_file_common
-    metbk_a_dcl    
-    pco2a_a_dcl    
-    dosta_abcdjm_dcl  
-    dosta_abcdjm_ctdbp_dcl
-    fdchp_a_dcl
-    flort_dj_dcl        
-    fuelcell_eng_dcl  
-    hyd_o_dcl
-    pco2w_abc_dcl        
-    pco2w_abc_particles    
-    phsen_abcdef_dcl
-    presf_abc_dcl    
-    rte_o_dcl
-    spkir_abj_dcl    
-    wavss_a_dcl.
-    zplsc_c_dcl.
-    parsercg_dcl_eng_dcl
-    cspp_eng_dcl
-    nutnr_b_dcl_conc
-    nutnr_b_dcl_full
+* Modified DCL parsers are:
+    adcpt_acfgm_dcl_pd0    			
+    adcpt_acfgm_dcl_pd8    			
+    ctdbp_cdef_dcl 				  		
+    dcl_file_common 				 		
+    metbk_a_dcl 				  		
+    pco2a_a_dcl    				
+    dosta_abcdjm_dcl  					
+    dosta_abcdjm_ctdbp_dcl 		
+    fdchp_a_dcl 					
+    flort_dj_dcl      					
+    fuelcell_eng_dcl  				
+    hyd_o_dcl							
+    pco2w_abc_dcl    				  	
+    pco2w_abc_particles    			
+    phsen_abcdef_dcl 				  
+    presf_abc_dcl  				  
+    rte_o_dcl 					
+    spkir_abj_dcl    				
+    wavss_a_dcl.  				
+    zplsc_c_dcl.  				 
+    nutnr_b_dcl_conc 					
+    nutnr_b_dcl_full 					
+    nutnr_b_dcl_parser_base		
+    nutnr_b_particles				
+    cg_dcl_eng_dcl				
+    cspp_eng_dcl 				
 
 # Version 0.4.2
 

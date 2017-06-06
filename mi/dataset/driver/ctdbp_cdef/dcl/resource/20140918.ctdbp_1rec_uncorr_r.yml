@@ -8,7 +8,5 @@ data:
     internal_timestamp: 3619987339.0000000
     port_timestamp: 3619987345.3380003
     conductivity:         3.62531
-    date_time_string: '18 Sep 2014 00:02:19'
-    dcl_controller_timestamp: '2014/09/18 00:02:25.338'
     pressure:        12.20300
     temp:         8.19900

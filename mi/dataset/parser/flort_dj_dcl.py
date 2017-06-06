@@ -41,26 +41,23 @@ import re
 from mi.core.log import get_logger
 from mi.core.common import BaseEnum
 from mi.core.exceptions import UnexpectedDataException
-from mi.core.exceptions import RecoverableSampleException
-from mi.core.instrument.dataset_data_particle import DataParticle
+from mi.core.instrument.dataset_data_particle import \
+    DataParticle, \
+    DataParticleKey
 
 from mi.dataset.dataset_parser import SimpleParser
-
 from mi.dataset.parser.common_regexes import \
     DATE_YYYY_MM_DD_REGEX, \
     ANY_CHARS_REGEX, \
     SPACE_REGEX, \
-    UNSIGNED_INT_REGEX, \
     FLOAT_REGEX, \
     ONE_OR_MORE_WHITESPACE_REGEX, \
     END_OF_LINE_REGEX
 
 from mi.dataset.parser.utilities import \
-    dcl_controller_timestamp_to_ntp_time, \
-    formatted_timestamp_utc_time
-
-
-
+    dcl_time_to_ntp, \
+    formatted_timestamp_utc_time, \
+    timestamp_mmddyyhhmmss_to_ntp
 
 log = get_logger()
 
@@ -68,21 +65,20 @@ __author__ = 'Steve Myerson'
 __license__ = 'Apache 2.0'
 
 # Basic patterns
-UINT = r'(\d*)'                     # unsigned integer as a group
+UINT = r'(\d*)'  # unsigned integer as a group
 TAB = '\t'
 START_GROUP = '('
 END_GROUP = ')'
-COLON = ':'                         # simple colon
-COMMA = ','                         # simple comma
-HASH = '#'                          # hash symbol
+COLON = ':'  # simple colon
+COMMA = ','  # simple comma
+HASH = '#'  # hash symbol
 ZERO_OR_MORE_WHITESPACE_REGEX = r'\s*'
-
 
 # Timestamp at the start of each record: YYYY/MM/DD HH:MM:SS.mmm
 # Metadata fields:  [text] more text
 TIME = r'(\d{2}):(\d{2}):(\d{2})\.\d{3}'  # Time: HH:MM:SS.mmm
-SENSOR_DATE = r'(\d{2}/\d{2}/\d{2})'      # Sensor Date: MM/DD/YY
-SENSOR_TIME = r'(\d{2}:\d{2}:\d{2})'      # Sensor Time: HH:MM:SS
+SENSOR_DATE = r'(\d{2}/\d{2}/\d{2})'  # Sensor Date: MM/DD/YY
+SENSOR_TIME = r'(\d{2}:\d{2}:\d{2})'  # Sensor Time: HH:MM:SS
 
 # CTDBP date_time DD MON YYYY HH:MM:SS
 CTDBP_FLORT_DATE_TIME = r'(\d{2} \D{3} \d{4} \d{2}:\d{2}:\d{2})'
@@ -95,27 +91,27 @@ END_METADATA = r'\]'
 # Metadata record:
 #   Timestamp [Text]MoreText newline
 METADATA_PATTERN = TIMESTAMP + SPACE_REGEX  # dcl controller timestamp
-METADATA_PATTERN += START_METADATA          # Metadata record starts with '['
-METADATA_PATTERN += ANY_CHARS_REGEX         # followed by text
-METADATA_PATTERN += END_METADATA            # followed by ']'
-METADATA_PATTERN += ANY_CHARS_REGEX         # followed by more text
-METADATA_PATTERN += END_OF_LINE_REGEX   # metadata record ends with a newline
+METADATA_PATTERN += START_METADATA  # Metadata record starts with '['
+METADATA_PATTERN += ANY_CHARS_REGEX  # followed by text
+METADATA_PATTERN += END_METADATA  # followed by ']'
+METADATA_PATTERN += ANY_CHARS_REGEX  # followed by more text
+METADATA_PATTERN += END_OF_LINE_REGEX  # metadata record ends with a newline
 METADATA_MATCHER = re.compile(METADATA_PATTERN)
 
 # FLORT Sensor data record:
 #   Timestamp Date<tab>Time<tab>SensorData
 #   where SensorData are tab-separated unsigned integer numbers
-SENSOR_DATA_PATTERN = TIMESTAMP + SPACE_REGEX   # dcl controller timestamp
-SENSOR_DATA_PATTERN += SENSOR_DATE + TAB        # sensor date
-SENSOR_DATA_PATTERN += SENSOR_TIME + TAB        # sensor time
-SENSOR_DATA_PATTERN += UINT + TAB               # measurement wavelength beta
-SENSOR_DATA_PATTERN += UINT + TAB               # raw signal beta
-SENSOR_DATA_PATTERN += UINT + TAB               # measurement wavelength chl
-SENSOR_DATA_PATTERN += UINT + TAB               # raw signal chl
-SENSOR_DATA_PATTERN += UINT + TAB               # measurement wavelength cdom
-SENSOR_DATA_PATTERN += UINT + TAB               # raw signal cdom
-SENSOR_DATA_PATTERN += UINT                     # raw internal temperature
-SENSOR_DATA_PATTERN += END_OF_LINE_REGEX    # sensor data ends with a newline
+SENSOR_DATA_PATTERN = TIMESTAMP + SPACE_REGEX  # dcl controller timestamp
+SENSOR_DATA_PATTERN += SENSOR_DATE + TAB  # sensor date
+SENSOR_DATA_PATTERN += SENSOR_TIME + TAB  # sensor time
+SENSOR_DATA_PATTERN += UINT + TAB  # measurement wavelength beta
+SENSOR_DATA_PATTERN += UINT + TAB  # raw signal beta
+SENSOR_DATA_PATTERN += UINT + TAB  # measurement wavelength chl
+SENSOR_DATA_PATTERN += UINT + TAB  # raw signal chl
+SENSOR_DATA_PATTERN += UINT + TAB  # measurement wavelength cdom
+SENSOR_DATA_PATTERN += UINT + TAB  # raw signal cdom
+SENSOR_DATA_PATTERN += UINT  # raw internal temperature
+SENSOR_DATA_PATTERN += END_OF_LINE_REGEX  # sensor data ends with a newline
 SENSOR_DATA_MATCHER = re.compile(SENSOR_DATA_PATTERN)
 
 # SENSOR_DATA_MATCHER produces the following groups.
@@ -143,16 +139,13 @@ SENSOR_GROUP_INTERNAL_TEMPERATURE = 15
 # Column 2 - group number (index into raw_data)
 # Column 3 - data encoding function (conversion required - int, float, etc)
 INSTRUMENT_PARTICLE_MAP = [
-    ('dcl_controller_timestamp',    SENSOR_GROUP_TIMESTAMP,             str),
-    ('date_string',                 SENSOR_GROUP_SENSOR_DATE,           str),
-    ('time_string',                 SENSOR_GROUP_SENSOR_TIME,           str),
-    ('measurement_wavelength_beta', SENSOR_GROUP_WAVELENGTH_BETA,       int),
-    ('raw_signal_beta',             SENSOR_GROUP_RAW_SIGNAL_BETA,       int),
-    ('measurement_wavelength_chl',  SENSOR_GROUP_WAVELENGTH_CHL,        int),
-    ('raw_signal_chl',              SENSOR_GROUP_RAW_SIGNAL_CHL,        int),
-    ('measurement_wavelength_cdom', SENSOR_GROUP_WAVELENGTH_CDOM,       int),
-    ('raw_signal_cdom',             SENSOR_GROUP_RAW_SIGNAL_CDOM,       int),
-    ('raw_internal_temp',           SENSOR_GROUP_INTERNAL_TEMPERATURE,  int)
+    ('measurement_wavelength_beta', SENSOR_GROUP_WAVELENGTH_BETA, int),
+    ('raw_signal_beta', SENSOR_GROUP_RAW_SIGNAL_BETA, int),
+    ('measurement_wavelength_chl', SENSOR_GROUP_WAVELENGTH_CHL, int),
+    ('raw_signal_chl', SENSOR_GROUP_RAW_SIGNAL_CHL, int),
+    ('measurement_wavelength_cdom', SENSOR_GROUP_WAVELENGTH_CDOM, int),
+    ('raw_signal_cdom', SENSOR_GROUP_RAW_SIGNAL_CDOM, int),
+    ('raw_internal_temp', SENSOR_GROUP_INTERNAL_TEMPERATURE, int)
 ]
 
 # Combined CTDBP_FLORT Sensor data record:
@@ -165,9 +158,9 @@ INSTRUMENT_PARTICLE_MAP = [
 #         Date is DD MMM YYYY format
 #         Time is HH:MM:SS format
 LOGGER_ID = START_METADATA + ANY_CHARS_REGEX + END_METADATA
-LOGGER_ID += COLON                          # [ id_string ]:
+LOGGER_ID += COLON  # [ id_string ]:
 
-CTDBP_FLORT_PATTERN = TIMESTAMP             # dcl controller timestamp
+CTDBP_FLORT_PATTERN = TIMESTAMP  # dcl controller timestamp
 CTDBP_FLORT_PATTERN += ONE_OR_MORE_WHITESPACE_REGEX
 CTDBP_FLORT_PATTERN += '(?:' + HASH + '|' + LOGGER_ID + ')?'  # logger id or #
 CTDBP_FLORT_PATTERN += ZERO_OR_MORE_WHITESPACE_REGEX
@@ -177,15 +170,15 @@ CTDBP_FLORT_PATTERN += FLOAT_REGEX + COMMA  # pressure (omitted)
 CTDBP_FLORT_PATTERN += ONE_OR_MORE_WHITESPACE_REGEX
 CTDBP_FLORT_PATTERN += FLOAT_REGEX + COMMA  # conductivity (omitted)
 CTDBP_FLORT_PATTERN += ONE_OR_MORE_WHITESPACE_REGEX
-CTDBP_FLORT_PATTERN += UINT + COMMA         # raw backscatter
+CTDBP_FLORT_PATTERN += UINT + COMMA  # raw backscatter
 CTDBP_FLORT_PATTERN += ONE_OR_MORE_WHITESPACE_REGEX
-CTDBP_FLORT_PATTERN += UINT + COMMA         # raw chlorophyl
+CTDBP_FLORT_PATTERN += UINT + COMMA  # raw chlorophyl
 CTDBP_FLORT_PATTERN += ONE_OR_MORE_WHITESPACE_REGEX
-CTDBP_FLORT_PATTERN += UINT + COMMA         # raw cdom
+CTDBP_FLORT_PATTERN += UINT + COMMA  # raw cdom
 CTDBP_FLORT_PATTERN += ONE_OR_MORE_WHITESPACE_REGEX
 CTDBP_FLORT_PATTERN += CTDBP_FLORT_DATE_TIME  # sensor date_time
 CTDBP_FLORT_PATTERN += ZERO_OR_MORE_WHITESPACE_REGEX
-CTDBP_FLORT_PATTERN += END_OF_LINE_REGEX   # sensor data ends with a newline
+CTDBP_FLORT_PATTERN += END_OF_LINE_REGEX  # sensor data ends with a newline
 CTDBP_FLORT_MATCHER = re.compile(CTDBP_FLORT_PATTERN)
 
 # Combined CTDBP_FLORT_MATCHER produces the following groups.
@@ -202,11 +195,9 @@ CTDBP_FLORT_GROUP_DATE_TIME = 10
 # Column 2 - group number (index into raw_data)
 # Column 3 - data encoding function (conversion required - int, float, etc)
 CTDBP_FLORT_PARTICLE_MAP = [
-    ('dcl_controller_timestamp',    SENSOR_GROUP_TIMESTAMP,             str),
-    ('raw_signal_beta',             CTDBP_FLORT_GROUP_RAW_BACKSCATTER,  int),
-    ('raw_signal_chl',              CTDBP_FLORT_GROUP_RAW_CHL,          int),
-    ('raw_signal_cdom',             CTDBP_FLORT_GROUP_RAW_CDOM,         int),
-    ('date_time_string',            CTDBP_FLORT_GROUP_DATE_TIME,        str)
+    ('raw_signal_beta', CTDBP_FLORT_GROUP_RAW_BACKSCATTER, int),
+    ('raw_signal_chl', CTDBP_FLORT_GROUP_RAW_CHL, int),
+    ('raw_signal_cdom', CTDBP_FLORT_GROUP_RAW_CDOM, int)
 ]
 
 
@@ -232,50 +223,13 @@ class FlortDjDclInstrumentDataParticle(DataParticle):
         # where each entry is a tuple containing the particle field name,
         # an index into the match groups (which is what has been stored
         # in raw_data), and a function to use for data conversion.
-        #
-        # Convert the DCL controller timestamp string to NTP time
-        # (in seconds and microseconds).
-        try:
-            controller_time = self.raw_data[SENSOR_GROUP_TIMESTAMP]
-            elapsed_seconds_useconds = dcl_controller_timestamp_to_ntp_time(
-                controller_time)
 
-            if self._data_particle_map == INSTRUMENT_PARTICLE_MAP:
-                # For valid FLORT DJ DCL data
-                # The particle timestamp is the DCL Controller timestamp
-                dcl_controller_timestamp = controller_time
-                self.set_internal_timestamp(elapsed_seconds_useconds)
-                self.set_port_timestamp(elapsed_seconds_useconds)
-                map_start = 0
-            else:
-                # _data_particle_map is CTDBP_FLORT_PARTICLE_MAP
-                # set the temporal parameters for the combined CTDBP FLORT data
-                # the DCL controller timestamp is used for the port_timestamp
-                # the dcl_controller_timestamp is not set
-                # format the date time string for the particle timestamp
-                self.set_port_timestamp(elapsed_seconds_useconds)
-                utc_time = formatted_timestamp_utc_time(
-                    self.raw_data[CTDBP_FLORT_GROUP_DATE_TIME],
-                    "%d %b %Y %H:%M:%S")
-                ntp_time = ntplib.system_to_ntp_time(utc_time)
-                self.set_internal_timestamp(ntp_time)
-                map_start = 1
-
-            #  encode the remaining groups into the particle based on
-            #  which particle map was used to set up the data groupings
-            return [self._encode_value(name, self.raw_data[group], function)
-                    for name, group, function in
-                    self._data_particle_map[map_start:]]
-
-        except (ValueError, TypeError, IndexError) as ex:
-            message = ("Error(%s) while decoding parameters in data: [%s]" %
-                      (ex, self.raw_data))
-            log.warn("Warning: %s", message)
-            raise RecoverableSampleException(message)
+        return [self._encode_value(name, self.raw_data[group], function)
+                for name, group, function in self._data_particle_map]
 
 
 class FlortDjDclRecoveredInstrumentDataParticle(
-        FlortDjDclInstrumentDataParticle):
+                FlortDjDclInstrumentDataParticle):
     """
     Class for generating Offset Data Particles from Recovered data.
     """
@@ -283,7 +237,7 @@ class FlortDjDclRecoveredInstrumentDataParticle(
 
 
 class FlortDjDclTelemeteredInstrumentDataParticle(
-        FlortDjDclInstrumentDataParticle):
+                FlortDjDclInstrumentDataParticle):
     """
     Class for generating Offset Data Particles from Telemetered data.
     """
@@ -291,7 +245,6 @@ class FlortDjDclTelemeteredInstrumentDataParticle(
 
 
 class FlortDjDclParser(SimpleParser):
-
     """
     Parser for Flort_dj_dcl data.
     In addition to the standard constructor parameters,
@@ -311,23 +264,47 @@ class FlortDjDclParser(SimpleParser):
             # If this is a valid sensor data record,
             # use the extracted fields to generate a particle.
             sensor_match = SENSOR_DATA_MATCHER.match(line)
-            self._particle_class._data_particle_map = INSTRUMENT_PARTICLE_MAP
-            if sensor_match is None:
+
+            if sensor_match is not None:
+                self._particle_class._data_particle_map = INSTRUMENT_PARTICLE_MAP
+                log.debug('FLORT DJ match found')
+            else:
                 log.debug('FLORT DJ match NOT found')
                 # check for a match against the FLORT D data in a combined
                 # CTDBP FLORT instrument record
                 sensor_match = CTDBP_FLORT_MATCHER.match(line)
-                self._particle_class._data_particle_map = \
-                    CTDBP_FLORT_PARTICLE_MAP
-                log.debug('check for CTDBP/FLORT match')
+
+                if sensor_match is not None:
+                    self._particle_class._data_particle_map = CTDBP_FLORT_PARTICLE_MAP
+                    log.debug('check for CTDBP/FLORT match')
 
             if sensor_match is not None:
                 # FLORT data matched against one of the patterns
                 log.debug('record found')
+
+                # DCL Controller timestamp is the port_timestamp
+                dcl_controller_timestamp = sensor_match.groups()[SENSOR_GROUP_TIMESTAMP]
+                port_timestamp = dcl_time_to_ntp(dcl_controller_timestamp)
+
+                if self._particle_class._data_particle_map == INSTRUMENT_PARTICLE_MAP:
+                    # For valid FLORT DJ data, Instrument timestamp is the internal_timestamp
+                    instrument_timestamp = sensor_match.groups()[SENSOR_GROUP_SENSOR_DATE] \
+                                           + ' ' + sensor_match.groups()[SENSOR_GROUP_SENSOR_TIME]
+                    internal_timestamp = timestamp_mmddyyhhmmss_to_ntp(instrument_timestamp)
+                else:
+                    # _data_particle_map is CTDBP_FLORT_PARTICLE_MAP
+                    utc_time = formatted_timestamp_utc_time(sensor_match.groups()[CTDBP_FLORT_GROUP_DATE_TIME],
+                                                            "%d %b %Y %H:%M:%S")
+                    instrument_timestamp = ntplib.system_to_ntp_time(utc_time)
+                    internal_timestamp = instrument_timestamp
+
+                # using port_timestamp as preferred_ts because internal_timestamp is not accurate
                 particle = self._extract_sample(self._particle_class,
                                                 None,
                                                 sensor_match.groups(),
-                                                None)
+                                                port_timestamp=port_timestamp,
+                                                internal_timestamp=internal_timestamp,
+                                                preferred_ts=DataParticleKey.PORT_TIMESTAMP)
                 # increment state for this chunk even if we don't
                 # get a particle
                 self._record_buffer.append(particle)
@@ -343,5 +320,4 @@ class FlortDjDclParser(SimpleParser):
                 if meta_match is None:
                     error_message = 'Unknown data found in chunk %s' % line
                     log.warn(error_message)
-                    self._exception_callback(UnexpectedDataException
-                                            (error_message))
+                    self._exception_callback(UnexpectedDataException(error_message))

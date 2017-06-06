@@ -8,8 +8,6 @@ data:
     internal_timestamp: 3597868828.0000000
     port_timestamp: 3597869122.5939999
     absolute_pressure:       208.80570
-    date_time_string: '05 Jan 2014 00:00:28'
-    dcl_controller_timestamp: '2014/01/05 00:05:22.594'
     pressure_temp:        14.00400
     seawater_temperature:        13.86330
   - _index: 2
@@ -18,9 +16,6 @@ data:
     internal_timestamp: 3597869130.0000000
     port_timestamp: 3597869123.6040001
     absolute_pressure_burst: [208.8438, 208.8346, 208.8244, 208.8148, 208.8069, 208.7991, 208.8004, 208.8049, 208.8111, 208.8189, 208.8267, 208.8388, 208.8445, 208.8462, 208.8425, 208.8325, 208.8168, 208.8004, 208.7873, 208.7773]
-    date_time_string: '05 Jan 2014 00:05:30'
-    dcl_controller_end_timestamp: '2014/01/05 00:05:44.707'
-    dcl_controller_start_timestamp: '2014/01/05 00:05:23.604'
     ptemp_frequency:    171756.00000
   - _index: 3
     particle_object: PresfAbcDclRecoveredTideDataParticle
@@ -28,8 +23,6 @@ data:
     internal_timestamp: 3597872428.0000000
     port_timestamp: 3597872722.5889997
     absolute_pressure:       209.19910
-    date_time_string: '05 Jan 2014 01:00:28'
-    dcl_controller_timestamp: '2014/01/05 01:05:22.589'
     pressure_temp:        13.99000
     seawater_temperature:        13.84450
   - _index: 4
@@ -38,9 +31,6 @@ data:
     internal_timestamp: 3597872730.0000000
     port_timestamp: 3597872723.5990000
     absolute_pressure_burst: [209.1599, 209.1439, 209.15, 209.1641, 209.1876, 209.2136, 209.235, 209.2491, 209.2512, 209.2454, 209.2272, 209.2094, 209.1933, 209.1797, 209.1719, 209.1739, 209.1797, 209.1855, 209.1995, 209.2074]
-    date_time_string: '05 Jan 2014 01:05:30'
-    dcl_controller_end_timestamp: '2014/01/05 01:05:44.683'
-    dcl_controller_start_timestamp: '2014/01/05 01:05:23.599'
     ptemp_frequency:    171756.06200
   - _index: 5
     particle_object: PresfAbcDclRecoveredTideDataParticle
@@ -48,8 +38,6 @@ data:
     internal_timestamp: 3597876027.0000000
     port_timestamp: 3597876321.5850000
     absolute_pressure:       209.45310
-    date_time_string: '05 Jan 2014 02:00:27'
-    dcl_controller_timestamp: '2014/01/05 02:05:21.585'
     pressure_temp:        14.00400
     seawater_temperature:        13.83730
   - _index: 6
@@ -58,9 +46,6 @@ data:
     internal_timestamp: 3597876329.0000000
     port_timestamp: 3597876322.5939999
     absolute_pressure_burst: [209.4457, 209.4482, 209.4462, 209.4405, 209.4368, 209.4306, 209.4306, 209.4247, 209.4306, 209.4383, 209.4482, 209.4623, 209.4722, 209.478, 209.4842, 209.4801, 209.4743, 209.4644, 209.4544, 209.4482]
-    date_time_string: '05 Jan 2014 02:05:29'
-    dcl_controller_end_timestamp: '2014/01/05 02:05:43.678'
-    dcl_controller_start_timestamp: '2014/01/05 02:05:22.594'
     ptemp_frequency:    171755.82800
   - _index: 7
     particle_object: PresfAbcDclRecoveredTideDataParticle
@@ -68,8 +53,6 @@ data:
     internal_timestamp: 3597879627.0000000
     port_timestamp: 3597879921.5780001
     absolute_pressure:       209.50210
-    date_time_string: '05 Jan 2014 03:00:27'
-    dcl_controller_timestamp: '2014/01/05 03:05:21.578'
     pressure_temp:        13.98100
     seawater_temperature:        13.82460
   - _index: 8
@@ -78,9 +61,6 @@ data:
     internal_timestamp: 3597879929.0000000
     port_timestamp: 3597879922.5880003
     absolute_pressure_burst: [209.4386, 209.4368, 209.4551, 209.4727, 209.491, 209.5165, 209.5306, 209.5382, 209.5404, 209.5284, 209.5145, 209.4925, 209.4727, 209.4566, 209.4529, 209.4551, 209.4665, 209.491, 209.5108, 209.5321]
-    date_time_string: '05 Jan 2014 03:05:29'
-    dcl_controller_end_timestamp: '2014/01/05 03:05:43.672'
-    dcl_controller_start_timestamp: '2014/01/05 03:05:22.588'
     ptemp_frequency:    171755.89000
   - _index: 9
     particle_object: PresfAbcDclRecoveredTideDataParticle
@@ -88,8 +68,6 @@ data:
     internal_timestamp: 3597883228.0000000
     port_timestamp: 3597883522.5720000
     absolute_pressure:       209.35320
-    date_time_string: '05 Jan 2014 04:00:28'
-    dcl_controller_timestamp: '2014/01/05 04:05:22.572'
     pressure_temp:        13.96000
     seawater_temperature:        13.81110
   - _index: 10
@@ -98,9 +76,6 @@ data:
     internal_timestamp: 3597883530.0000000
     port_timestamp: 3597883523.5819998
     absolute_pressure_burst: [209.3247, 209.3293, 209.3313, 209.3412, 209.347, 209.3491, 209.3511, 209.3491, 209.347, 209.3433, 209.3392, 209.3371, 209.3334, 209.3334, 209.3313, 209.3293, 209.3313, 209.3272, 209.3214, 209.3194]
-    date_time_string: '05 Jan 2014 04:05:30'
-    dcl_controller_end_timestamp: '2014/01/05 04:05:44.665'
-    dcl_controller_start_timestamp: '2014/01/05 04:05:23.582'
     ptemp_frequency:    171755.64000
   - _index: 11
     particle_object: PresfAbcDclRecoveredTideDataParticle
@@ -108,8 +83,6 @@ data:
     internal_timestamp: 3597886829.0000000
     port_timestamp: 3597887123.5640001
     absolute_pressure:       209.02800
-    date_time_string: '05 Jan 2014 05:00:29'
-    dcl_controller_timestamp: '2014/01/05 05:05:23.564'
     pressure_temp:        13.96000
     seawater_temperature:        13.81050
   - _index: 12
@@ -118,9 +91,6 @@ data:
     internal_timestamp: 3597887131.0000000
     port_timestamp: 3597887124.5739999
     absolute_pressure_burst: [209.0053, 208.9986, 208.9946, 208.9929, 208.9904, 208.9929, 208.9966, 208.9986, 208.9983, 209.0008, 208.9986, 208.9986, 209.0008, 209.0003, 209.0065, 209.0065, 209.0085, 209.0122, 209.0107, 209.0107]
-    date_time_string: '05 Jan 2014 05:05:31'
-    dcl_controller_end_timestamp: '2014/01/05 05:05:45.658'
-    dcl_controller_start_timestamp: '2014/01/05 05:05:24.574'
     ptemp_frequency:    171755.71800
   - _index: 13
     particle_object: PresfAbcDclRecoveredTideDataParticle
@@ -128,8 +98,6 @@ data:
     internal_timestamp: 3597890427.0000000
     port_timestamp: 3597890721.5580001
     absolute_pressure:       208.63640
-    date_time_string: '05 Jan 2014 06:00:27'
-    dcl_controller_timestamp: '2014/01/05 06:05:21.558'
     pressure_temp:        14.00400
     seawater_temperature:        13.92940
   - _index: 14
@@ -138,9 +106,6 @@ data:
     internal_timestamp: 3597890729.0000000
     port_timestamp: 3597890722.5669999
     absolute_pressure_burst: [208.5386, 208.5379, 208.5494, 208.5713, 208.5973, 208.623, 208.6488, 208.6624, 208.6686, 208.6587, 208.6389, 208.6163, 208.5854, 208.5594, 208.5478, 208.5457, 208.5556, 208.5733, 208.599, 208.6269]
-    date_time_string: '05 Jan 2014 06:05:29'
-    dcl_controller_end_timestamp: '2014/01/05 06:05:43.651'
-    dcl_controller_start_timestamp: '2014/01/05 06:05:22.567'
     ptemp_frequency:    171756.06200
   - _index: 15
     particle_object: PresfAbcDclRecoveredTideDataParticle
@@ -148,8 +113,6 @@ data:
     internal_timestamp: 3597894029.0000000
     port_timestamp: 3597894323.5530000
     absolute_pressure:       208.29190
-    date_time_string: '05 Jan 2014 07:00:29'
-    dcl_controller_timestamp: '2014/01/05 07:05:23.553'
     pressure_temp:        14.07400
     seawater_temperature:        13.94230
   - _index: 16
@@ -158,9 +121,6 @@ data:
     internal_timestamp: 3597894331.0000000
     port_timestamp: 3597894324.5620003
     absolute_pressure_burst: [208.3075, 208.2983, 208.2845, 208.2746, 208.2629, 208.2448, 208.2333, 208.239, 208.2469, 208.253, 208.2687, 208.2906, 208.3005, 208.3045, 208.3045, 208.3025, 208.2906, 208.2746, 208.2647, 208.2588]
-    date_time_string: '05 Jan 2014 07:05:31'
-    dcl_controller_end_timestamp: '2014/01/05 07:05:45.658'
-    dcl_controller_start_timestamp: '2014/01/05 07:05:24.562'
     ptemp_frequency:    171756.60900
   - _index: 17
     particle_object: PresfAbcDclRecoveredTideDataParticle
@@ -168,8 +128,6 @@ data:
     internal_timestamp: 3597897626.0000000
     port_timestamp: 3597897920.5439997
     absolute_pressure:       208.06160
-    date_time_string: '05 Jan 2014 08:00:26'
-    dcl_controller_timestamp: '2014/01/05 08:05:20.544'
     pressure_temp:        14.09600
     seawater_temperature:        13.93010
   - _index: 18
@@ -178,9 +136,6 @@ data:
     internal_timestamp: 3597897928.0000000
     port_timestamp: 3597897921.5539999
     absolute_pressure_burst: [208.0312, 208.0255, 208.0233, 208.0176, 208.0114, 208.0114, 208.0134, 208.0196, 208.0295, 208.0332, 208.0394, 208.0473, 208.0473, 208.0411, 208.0354, 208.0354, 208.0332, 208.0275, 208.0295, 208.0332]
-    date_time_string: '05 Jan 2014 08:05:28'
-    dcl_controller_end_timestamp: '2014/01/05 08:05:42.638'
-    dcl_controller_start_timestamp: '2014/01/05 08:05:21.554'
     ptemp_frequency:    171756.78100
   - _index: 19
     particle_object: PresfAbcDclRecoveredTideDataParticle
@@ -188,8 +143,6 @@ data:
     internal_timestamp: 3597901229.0000000
     port_timestamp: 3597901523.5380001
     absolute_pressure:       208.00290
-    date_time_string: '05 Jan 2014 09:00:29'
-    dcl_controller_timestamp: '2014/01/05 09:05:23.538'
     pressure_temp:        14.07400
     seawater_temperature:        13.92390
   - _index: 20
@@ -198,7 +151,4 @@ data:
     internal_timestamp: 3597901531.0000000
     port_timestamp: 3597901524.5469999
     absolute_pressure_burst: [208.0307, 208.0208, 208.0109, 207.9973, 207.9853, 207.9775, 207.9754, 207.9754, 207.9832, 207.9973, 208.0129, 208.0228, 208.0348, 208.0426, 208.0406, 208.0327, 208.0228, 208.0129, 207.9989, 207.9853]
-    date_time_string: '05 Jan 2014 09:05:31'
-    dcl_controller_end_timestamp: '2014/01/05 09:05:45.631'
-    dcl_controller_start_timestamp: '2014/01/05 09:05:24.547'
     ptemp_frequency:    171756.60900
