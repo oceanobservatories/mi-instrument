@@ -20,7 +20,7 @@ from mi.dataset.dataset_parser import SimpleParser
 from mi.dataset.dataset_parser import DataSetDriverConfigKeys
 from mi.dataset.parser.common_regexes import ONE_OR_MORE_WHITESPACE_REGEX
 from mi.dataset.parser.utilities import convert_to_signed_int_16_bit, dcl_time_to_ntp, \
-    seconds_1900_to_yyyy
+    time_1904_to_ntp
 
 __author__ = 'Nick Almonte'
 __license__ = 'Apache 2.0'
@@ -107,7 +107,7 @@ class PhsenAbcdefDclMetadataDataParticle(DataParticle):
 
         # Instrument timestamp  is the internal_timestamp
         instrument_timestamp = record_time_int
-        self.set_internal_timestamp(timestamp=instrument_timestamp + seconds_1900_to_yyyy(1904))
+        self.set_internal_timestamp(timestamp=instrument_timestamp + time_1904_to_ntp(1904))
 
         # FLAGS
         flags_ascii_hex = working_record[15:19]
@@ -345,8 +345,7 @@ class PhsenAbcdefDclInstrumentDataParticle(DataParticle):
         record_time_int = int(record_time_ascii_hex, 16)
 
         # Instrument timestamp  is the internal_timestamp
-        instrument_timestamp = record_time_int
-        self.set_internal_timestamp(timestamp=instrument_timestamp + seconds_1900_to_yyyy(1904))
+        self.set_internal_timestamp(timestamp=time_1904_to_ntp(int(record_time_ascii_hex, 16)))
 
         thermistor_start_ascii_hex = working_record[15:19]
         # convert 4 ascii (hex) chars to int

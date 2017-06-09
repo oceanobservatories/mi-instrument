@@ -82,7 +82,7 @@ class WavssADclCommonDataParticle(DataParticle):
     def __init__(self, raw_data,
                  port_timestamp=None,
                  internal_timestamp=None,
-                 preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP,
+                 preferred_timestamp=DataParticleKey.PORT_TIMESTAMP,
                  quality_flag=DataParticleValue.OK,
                  new_sequence=None):
 
@@ -351,7 +351,7 @@ class WavssADclMotionDataParticle(WavssADclCommonDataParticle):
     def __init__(self, raw_data,
                  port_timestamp=None,
                  internal_timestamp=None,
-                 preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP,
+                 preferred_timestamp=DataParticleKey.PORT_TIMESTAMP,
                  quality_flag=DataParticleValue.OK,
                  new_sequence=None):
 
@@ -520,7 +520,7 @@ class WavssADclParser(SimpleParser):
             self._record_buffer.append(particle)
 
     def _extract_sample(self, particle_class, regex, raw_data, port_timestamp=None, internal_timestamp=None,
-                        preferred_ts=DataParticleKey.INTERNAL_TIMESTAMP):
+                        preferred_ts=DataParticleKey.PORT_TIMESTAMP):
         """
         Extract sample from a response line if present and publish
         parsed particle

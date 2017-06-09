@@ -14,7 +14,7 @@ import re
 
 from mi.core.log import get_logger
 
-from mi.core.instrument.dataset_data_particle import DataParticle
+from mi.core.instrument.dataset_data_particle import DataParticle, DataParticleKey
 from mi.core.exceptions import UnexpectedDataException, InstrumentParameterException
 
 from mi.dataset.dataset_parser import SimpleParser, DataSetDriverConfigKeys
@@ -144,7 +144,8 @@ class DclFileCommonParser(SimpleParser):
             if sensor_match is not None:
                 particle = self._extract_sample(particle_class,
                                                 None,
-                                                sensor_match.groups())
+                                                sensor_match.groups(),
+                                                preferred_ts=DataParticleKey.PORT_TIMESTAMP)
                 self._record_buffer.append(particle)
 
             # It's not a sensor data record, see if it's a metadata record.

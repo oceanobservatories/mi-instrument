@@ -322,7 +322,8 @@ class AdcptAcfgmPd8Parser(SimpleParser):
                                                         None,
                                                         parsed_data,
                                                         port_timestamp=port_timestamp,
-                                                        internal_timestamp=internal_timestamp)
+                                                        internal_timestamp=internal_timestamp,
+                                                        preferred_ts=DataParticleKey.PORT_TIMESTAMP)
                         if particle is not None:
                             self._record_buffer.append(particle)
 

@@ -201,7 +201,7 @@ class PresfAbcDclParserTideDataParticle(DataParticle):
     def __init__(self, raw_data,
                  port_timestamp=None,
                  internal_timestamp=None,
-                 preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP,
+                 preferred_timestamp=DataParticleKey.PORT_TIMESTAMP,
                  quality_flag=DataParticleValue.OK,
                  new_sequence=None):
         super(PresfAbcDclParserTideDataParticle, self).__init__(raw_data,
@@ -237,7 +237,7 @@ class PresfAbcDclParserWaveDataParticle(DataParticle):
     def __init__(self, raw_data,
                  port_timestamp=None,
                  internal_timestamp=None,
-                 preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP,
+                 preferred_timestamp=DataParticleKey.PORT_TIMESTAMP,
                  quality_flag=DataParticleValue.OK,
                  new_sequence=None):
         super(PresfAbcDclParserWaveDataParticle, self).__init__(raw_data,
@@ -358,7 +358,8 @@ class PresfAbcDclParser(SimpleParser):
                 # we have a tide record, create a particle
                 particle = self._extract_sample(self._tide_particle_class,
                                                 None,
-                                                test_tide)
+                                                test_tide,
+                                                preferred_ts=DataParticleKey.PORT_TIMESTAMP)
                 self._record_buffer.append(particle)
                 continue  # read next line
 
@@ -437,7 +438,8 @@ class PresfAbcDclParser(SimpleParser):
 
                     particle = self._extract_sample(self._wave_particle_class,
                                                     None,
-                                                    wave_data)
+                                                    wave_data,
+                                                    preferred_ts=DataParticleKey.PORT_TIMESTAMP)
 
                     self._record_buffer.append(particle)
 

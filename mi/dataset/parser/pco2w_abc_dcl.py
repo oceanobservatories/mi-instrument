@@ -578,7 +578,8 @@ class Pco2wAbcDclParser(Pco2wAbcParser):
                 particle = self._extract_sample(self._metadata_class,
                                                 None,
                                                 metadata_dict,
-                                                port_timestamp=Pco2wAbcDclParser._generate_port_timestamp(metadata_dict))
+                                                port_timestamp=Pco2wAbcDclParser._generate_port_timestamp(metadata_dict),
+                                                preferred_ts=DataParticleKey.PORT_TIMESTAMP)
 
                 log.trace("Appending metadata particle: %s", particle.generate())
                 self._record_buffer.append(particle)
@@ -594,7 +595,8 @@ class Pco2wAbcDclParser(Pco2wAbcParser):
                 particle = self._extract_sample(self._power_class,
                                                 None,
                                                 power_dict,
-                                                port_timestamp=Pco2wAbcDclParser._generate_port_timestamp(power_dict))
+                                                port_timestamp=Pco2wAbcDclParser._generate_port_timestamp(power_dict),
+                                                preferred_ts=DataParticleKey.PORT_TIMESTAMP)
 
                 log.trace("Appending power particle: %s", particle.generate())
                 self._record_buffer.append(particle)
@@ -610,7 +612,8 @@ class Pco2wAbcDclParser(Pco2wAbcParser):
                 particle = self._extract_sample(self._instrument_class,
                                                 None,
                                                 instrument_dict,
-                                                port_timestamp=Pco2wAbcDclParser._generate_port_timestamp(instrument_dict))
+                                                port_timestamp=Pco2wAbcDclParser._generate_port_timestamp(instrument_dict),
+                                                preferred_ts=DataParticleKey.PORT_TIMESTAMP)
 
                 log.trace("Appending instrument particle: %s", particle.generate())
                 self._record_buffer.append(particle)
@@ -626,7 +629,8 @@ class Pco2wAbcDclParser(Pco2wAbcParser):
                 particle = self._extract_sample(self._instrument_blank_class,
                                                 None,
                                                 instrument_blank_dict,
-                                                port_timestamp=Pco2wAbcDclParser._generate_port_timestamp(instrument_blank_dict))
+                                                port_timestamp=Pco2wAbcDclParser._generate_port_timestamp(instrument_blank_dict),
+                                                preferred_ts=DataParticleKey.PORT_TIMESTAMP)
 
                 log.trace("Appending instrument blank particle: %s", particle.generate())
                 self._record_buffer.append(particle)

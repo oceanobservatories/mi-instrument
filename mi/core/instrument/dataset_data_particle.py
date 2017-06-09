@@ -120,7 +120,7 @@ class DataParticle(object):
         t1 = self.contents[DataParticleKey.INTERNAL_TIMESTAMP]
         t2 = arg.contents[DataParticleKey.INTERNAL_TIMESTAMP]
 
-        if (t1 is None) and (t2 is None):
+        if (t1 is None) or (t2 is None):
             tdiff = allowed_diff
         else:
             tdiff = abs(t1 - t2)
