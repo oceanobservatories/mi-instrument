@@ -44,7 +44,7 @@ __author__ = 'Ronald Ronquillo'
 __license__ = 'Apache 2.0'
 
 # Basic patterns
-FLOAT = '(' + FLOAT_REGEX + ')'  # floating point as a captured group
+FLOAT = '('+FLOAT_REGEX+')'  # floating point as a captured group
 
 # Metadata record:
 #   Timestamp [Text]MoreText newline

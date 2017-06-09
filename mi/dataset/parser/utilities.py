@@ -70,7 +70,7 @@ def zulu_timestamp_to_ntp_time(zulu_timestamp_str):
 def julian_time_to_ntp(julian_timestamp_str):
     """
     Converts a julian formatted timestamp timestamp string to NTP time.
-    :param julian_timestamp_str: a julian formatted timestamp string
+    :param julian_timestamp_str: a julian formatted timestamp string (julian_timestamp_str = 200412)
     :return: NTP time in seconds
     """
 
@@ -79,12 +79,12 @@ def julian_time_to_ntp(julian_timestamp_str):
     return (timestamp - datetime(1900, 1, 1)).total_seconds()
 
 
-def seconds_1900_to_yyyy(year_in_yyyy):
+def time_1904_to_ntp(time_1904):
     """
-    :param year_in_yyyy: time string
-    :return: seconds from jan 1 1900 to year_in_yyyy
+    :param time_1904: time in 1904 ( example time_1904 = 3601587612.0)
+    :return: ntp (timestamp in number of seconds since Jan 1, 1900)
     """
-    return (datetime(year_in_yyyy, 1, 1) - datetime(1900, 1, 1)).total_seconds()
+    return time_1904 + (datetime(1904, 1, 1) - datetime(1900, 1, 1)).total_seconds()
 
 
 def time_2000_to_ntp(time_2000):
@@ -172,9 +172,8 @@ def timestamp_yymmddhhmmsshh_to_ntp(timestamp_str):
     """
 
     timestamp = datetime.strptime(timestamp_str[:-2], "%y%m%d%H%M%S")
-    frac = int(timestamp_str[-2:]) / 100.0
 
-    return (timestamp - datetime(1900, 1, 1)).total_seconds() + frac
+    return (timestamp - datetime(1900, 1, 1)).total_seconds()
 
 
 def timestamp_mmddyyhhmmss_to_ntp(timestamp_str):
@@ -185,9 +184,8 @@ def timestamp_mmddyyhhmmss_to_ntp(timestamp_str):
     """
 
     timestamp = datetime.strptime(timestamp_str, "%m/%d/%y %H:%M:%S")
-    frac = int(timestamp_str[-2:]) / 100.0
 
-    return (timestamp - datetime(1900, 1, 1)).total_seconds() + frac
+    return (timestamp - datetime(1900, 1, 1)).total_seconds()
 
 
 def mac_timestamp_to_utc_timestamp(mac_timestamp):

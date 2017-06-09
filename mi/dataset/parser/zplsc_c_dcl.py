@@ -321,7 +321,8 @@ class ZplscCDclParser(SimpleParser):
                                                 None,
                                                 data_dict,
                                                 internal_timestamp=internal_timestamp,
-                                                port_timestamp=port_timestamp)
+                                                port_timestamp=port_timestamp,
+                                                preferred_ts=DataParticleKey.PORT_TIMESTAMP)
                 if particle is not None:
                     log.trace('Parsed particle: %s' % particle.generate_dict())
                     self._record_buffer.append(particle)

@@ -221,7 +221,8 @@ class DostaAbcdjmCtdbpDclParser(SimpleParser):
                                                      None,
                                                      match,
                                                      port_timestamp=port_timestamp,
-                                                     internal_timestamp=internal_timestamp)
+                                                     internal_timestamp=internal_timestamp,
+                                                     preferred_ts=DataParticleKey.PORT_TIMESTAMP)
 
                 self._record_buffer.append(data_particle)
 

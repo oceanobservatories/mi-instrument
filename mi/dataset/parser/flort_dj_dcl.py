@@ -40,7 +40,9 @@ import re
 
 from mi.core.log import get_logger
 from mi.core.common import BaseEnum
-from mi.core.exceptions import UnexpectedDataException
+from mi.core.exceptions import \
+    UnexpectedDataException, \
+    RecoverableSampleException
 from mi.core.instrument.dataset_data_particle import \
     DataParticle, \
     DataParticleKey
@@ -224,8 +226,14 @@ class FlortDjDclInstrumentDataParticle(DataParticle):
         # an index into the match groups (which is what has been stored
         # in raw_data), and a function to use for data conversion.
 
-        return [self._encode_value(name, self.raw_data[group], function)
-                for name, group, function in self._data_particle_map]
+        try:
+            return [self._encode_value(name, self.raw_data[group], function)
+                    for name, group, function in self._data_particle_map]
+
+        except (ValueError, TypeError, IndexError) as ex:
+            message = ("Error(%s) while decoding parameters in data: [%s]" % (ex, self.raw_data))
+            log.warn("Warning: %s", message)
+            raise RecoverableSampleException(message)
 
 
 class FlortDjDclRecoveredInstrumentDataParticle(

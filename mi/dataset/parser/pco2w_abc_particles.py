@@ -7,7 +7,7 @@ from mi.core.common import BaseEnum
 from mi.core.instrument.dataset_data_particle import DataParticle, DataParticleKey
 from mi.dataset.parser.utilities import \
     mac_timestamp_to_utc_timestamp, \
-    seconds_1900_to_yyyy
+    time_1904_to_ntp
 
 
 class Pco2wAbcParticleClassKey(BaseEnum):
@@ -115,7 +115,7 @@ class Pco2wAbcDclBaseDataParticle(Pco2wAbcBaseDataParticle):
         particle_parameters = super(Pco2wAbcDclBaseDataParticle, self)._build_parsed_values()
 
         instrument_timestamp = self.raw_data[Pco2wAbcDataParticleKey.RECORD_TIME]
-        self.set_internal_timestamp(instrument_timestamp + seconds_1900_to_yyyy(1904))
+        self.set_internal_timestamp(time_1904_to_ntp(instrument_timestamp))
 
         particle_parameters.append(
             self._encode_value(Pco2wAbcDataParticleKey.UNIQUE_ID,

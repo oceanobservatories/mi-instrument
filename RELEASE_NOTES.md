@@ -1,4 +1,4 @@
-# Version 0.4.3
+# Version 0.5.0
 
 * Issue #12253 Parsers are not setting port_timestamp and #12254 Extraneous data in DCL parser particles
 * Modified DCL parser:
@@ -27,8 +27,8 @@
     presf_abc_dcl  				  
     rte_o_dcl 					
     spkir_abj_dcl    				
-    wavss_a_dcl.  				
-    zplsc_c_dcl.  				 
+    wavss_a_dcl
+    zplsc_c_dcl
     nutnr_b_dcl_conc 					
     nutnr_b_dcl_full 					
     nutnr_b_dcl_parser_base		
