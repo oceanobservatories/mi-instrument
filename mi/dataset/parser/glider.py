@@ -1035,7 +1035,7 @@ class GliderParser(SimpleParser):
                 # create the timestamp
                 timestamp = ntplib.system_to_ntp_time(float(data_dict[GliderParticleKey.M_PRESENT_TIME]))
                 # create the particle
-                self._record_buffer.append(self._extract_sample(self._particle_class, None, data_dict, timestamp))
+                self._record_buffer.append(self._extract_sample(self._particle_class, None, data_dict, internal_timestamp=timestamp))
 
     @staticmethod
     def _has_science_data(data_dict, particle_class):
@@ -1106,17 +1106,17 @@ class GliderEngineeringParser(GliderParser):
             # check for the presence of engineering data in the raw data row before continuing
             # This is the glider_eng* particle
             if GliderParser._has_science_data(data_dict, self._particle_class):
-                self._record_buffer.append(self._extract_sample(self._particle_class, None, data_dict, timestamp))
+                self._record_buffer.append(self._extract_sample(self._particle_class, None, data_dict, internal_timestamp=timestamp))
 
             # check for the presence of GPS data in the raw data row before continuing
             # This is the glider_gps_position particle
             if GliderParser._has_science_data(data_dict, self._gps_class):
-                self._record_buffer.append(self._extract_sample(self._gps_class, None, data_dict, timestamp))
+                self._record_buffer.append(self._extract_sample(self._gps_class, None, data_dict, internal_timestamp=timestamp))
 
             # check for the presence of science particle data in the raw data row before continuing
             # This is the glider_eng_sci* particle
             if GliderParser._has_science_data(data_dict, self._science_class):
-                self._record_buffer.append(self._extract_sample(self._science_class, None, data_dict, timestamp))
+                self._record_buffer.append(self._extract_sample(self._science_class, None, data_dict, internal_timestamp=timestamp))
 
     def handle_metadata_particle(self, timestamp):
         """
@@ -1130,4 +1130,4 @@ class GliderEngineeringParser(GliderParser):
                             'glider_eng_fileopen_time': self._header_dict.get('fileopen_time')}
 
         self._metadata_sent = True
-        return self._extract_sample(self._metadata_class, None, header_data_dict, timestamp)
+        return self._extract_sample(self._metadata_class, None, header_data_dict, internal_timestamp=timestamp)

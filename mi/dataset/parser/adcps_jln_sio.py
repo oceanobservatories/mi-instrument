@@ -318,8 +318,7 @@ class AdcpsJlnSioParser(SioParser):
                             # particle-ize the data block received, return the record
                             sample = self._extract_sample(AdcpsJlnSioDataParticle, None,
                                                           header_match.group(SIO_HEADER_GROUP_TIMESTAMP) +
-                                                          data_match.group(0),
-                                                          None)
+                                                          data_match.group(0))
                             if sample:
                                 # create particle
                                 result_particles.append(sample)

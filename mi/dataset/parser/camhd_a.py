@@ -104,7 +104,7 @@ class CamhdAParser(SimpleParser):
 
             # Extract a particle and append it to the record buffer
             particle = self._extract_sample(CamhdAInstrumentDataParticle, None, match.group('Path'),
-                                            time_stamp)
+                                            internal_timestamp=time_stamp)
             log.debug('Parsed particle: %s', particle.generate_dict())
             self._record_buffer.append(particle)
 

@@ -1,4 +1,3 @@
-
 """
 @package mi.dataset.parser.presf_abc_dcl
 @file marine-integrations/mi/dataset/parser/presf_abc_dcl.py
@@ -36,6 +35,7 @@ __license__ = 'Apache 2.0'
 import re
 
 from mi.core.log import get_logger
+
 log = get_logger()
 
 from mi.core.common import BaseEnum
@@ -48,69 +48,71 @@ from mi.core.exceptions import RecoverableSampleException
 
 from mi.dataset.dataset_parser import SimpleParser
 
-from mi.dataset.parser import utilities
-
 from mi.dataset.parser.common_regexes import FLOAT_REGEX, \
     ANY_CHARS_REGEX, END_OF_LINE_REGEX
 
 from mi.dataset.parser.dcl_file_common import TIMESTAMP
 
+from mi.dataset.parser.utilities import \
+    dcl_time_to_ntp, \
+    timestamp_ddmmyyyyhhmmss_to_ntp
+
 # Basic patterns
-FLOAT = r'(' + FLOAT_REGEX + ')'    # generic float
-WHITESPACE = r'(\s*)'                # any whitespace
-COMMA = ','                          # simple comma
-TAB = '\t'                           # simple tab
+FLOAT = r'(' + FLOAT_REGEX + ')'  # generic float
+WHITESPACE = r'(\s*)'  # any whitespace
+COMMA = ','  # simple comma
+TAB = '\t'  # simple tab
 
 # Timestamp at the start of each record: YYYY/MM/DD HH:MM:SS.mmm
 # Metadata fields:  [text] more text
 # Sensor data has tab-delimited fields (date, time, integers)
 # All records end with one of the newlines.
-DATE_TIME_STR = r'(\d{2} [a-zA-Z]{3} \d{4} \d{2}:\d{2}:\d{2})'              # DateTimeStr:   DD Mon YYYY HH:MM:SS
-START_METADATA = r'\['                                                # metadata delimited by []'s
+DATE_TIME_STR = r'(\d{2} [a-zA-Z]{3} \d{4} \d{2}:\d{2}:\d{2})'  # DateTimeStr:   DD Mon YYYY HH:MM:SS
+START_METADATA = r'\['  # metadata delimited by []'s
 END_METADATA = r'\]'
 
 # Metadata record:
 #   Timestamp [Text]MoreText newline
-STATUSDATA_PATTERN = TIMESTAMP + WHITESPACE                           # dcl controller timestamp
-STATUSDATA_PATTERN += START_METADATA                                  # Metadata record starts with '['
-STATUSDATA_PATTERN += ANY_CHARS_REGEX                                       # followed by text
-STATUSDATA_PATTERN += END_METADATA                                    # followed by ']'
-STATUSDATA_PATTERN += ANY_CHARS_REGEX                                       # followed by more text
-STATUSDATA_PATTERN += END_OF_LINE_REGEX                                        # metadata record ends newline
+STATUSDATA_PATTERN = TIMESTAMP + WHITESPACE  # dcl controller timestamp
+STATUSDATA_PATTERN += START_METADATA  # Metadata record starts with '['
+STATUSDATA_PATTERN += ANY_CHARS_REGEX  # followed by text
+STATUSDATA_PATTERN += END_METADATA  # followed by ']'
+STATUSDATA_PATTERN += ANY_CHARS_REGEX  # followed by more text
+STATUSDATA_PATTERN += END_OF_LINE_REGEX  # metadata record ends newline
 STATUSDATA_MATCHER = re.compile(STATUSDATA_PATTERN)
 
 # match a single line TIDE record
-TIDE_REGEX = TIMESTAMP + WHITESPACE                                 # dcl controller timestamp
-TIDE_REGEX += 'tide:' + WHITESPACE                                  # record type
-TIDE_REGEX += 'start time =' + WHITESPACE + DATE_TIME_STR + COMMA   # timestamp
-TIDE_REGEX += WHITESPACE + 'p =' + WHITESPACE + FLOAT + COMMA       # pressure
-TIDE_REGEX += WHITESPACE + 'pt =' + WHITESPACE + FLOAT + COMMA      # pressure temp
-TIDE_REGEX += WHITESPACE + 't =' + WHITESPACE + FLOAT               # temp
+TIDE_REGEX = TIMESTAMP + WHITESPACE  # dcl controller timestamp
+TIDE_REGEX += 'tide:' + WHITESPACE  # record type
+TIDE_REGEX += 'start time =' + WHITESPACE + DATE_TIME_STR + COMMA  # timestamp
+TIDE_REGEX += WHITESPACE + 'p =' + WHITESPACE + FLOAT + COMMA  # pressure
+TIDE_REGEX += WHITESPACE + 'pt =' + WHITESPACE + FLOAT + COMMA  # pressure temp
+TIDE_REGEX += WHITESPACE + 't =' + WHITESPACE + FLOAT  # temp
 TIDE_REGEX += END_OF_LINE_REGEX
 TIDE_MATCHER = re.compile(TIDE_REGEX)
 
 # match the single start line of a wave record
-WAVE_START_REGEX = TIMESTAMP + WHITESPACE                           # dcl controller timestamp
-WAVE_START_REGEX += 'wave:' + WHITESPACE                            # record type
-WAVE_START_REGEX += 'start time =' + WHITESPACE + DATE_TIME_STR     # timestamp
-WAVE_START_REGEX += END_OF_LINE_REGEX                                        #
+WAVE_START_REGEX = TIMESTAMP + WHITESPACE  # dcl controller timestamp
+WAVE_START_REGEX += 'wave:' + WHITESPACE  # record type
+WAVE_START_REGEX += 'start time =' + WHITESPACE + DATE_TIME_STR  # timestamp
+WAVE_START_REGEX += END_OF_LINE_REGEX  #
 WAVE_START_MATCHER = re.compile(WAVE_START_REGEX)
 
 # match a wave ptfreq record
-WAVE_PTFREQ_REGEX = TIMESTAMP + WHITESPACE                          # dcl controller timestamp
-WAVE_PTFREQ_REGEX += 'wave:' + WHITESPACE                           # record type
-WAVE_PTFREQ_REGEX += 'ptfreq =' + WHITESPACE + FLOAT                # pressure temp
+WAVE_PTFREQ_REGEX = TIMESTAMP + WHITESPACE  # dcl controller timestamp
+WAVE_PTFREQ_REGEX += 'wave:' + WHITESPACE  # record type
+WAVE_PTFREQ_REGEX += 'ptfreq =' + WHITESPACE + FLOAT  # pressure temp
 WAVE_PTFREQ_REGEX += END_OF_LINE_REGEX
 WAVE_PTFREQ_MATCHER = re.compile(WAVE_PTFREQ_REGEX)
 
 # match a wave continuation line
-WAVE_CONT_REGEX = TIMESTAMP + WHITESPACE + FLOAT                    # dcl controller timestamp
+WAVE_CONT_REGEX = TIMESTAMP + WHITESPACE + FLOAT  # dcl controller timestamp
 WAVE_CONT_REGEX += END_OF_LINE_REGEX
 WAVE_CONT_MATCHER = re.compile(WAVE_CONT_REGEX)
 
 # match the single end line of a wave record
-WAVE_END_REGEX = TIMESTAMP + WHITESPACE                             # dcl controller timestamp
-WAVE_END_REGEX += 'wave: end burst'                                 # record type
+WAVE_END_REGEX = TIMESTAMP + WHITESPACE  # dcl controller timestamp
+WAVE_END_REGEX += 'wave: end burst'  # record type
 WAVE_END_REGEX += END_OF_LINE_REGEX
 WAVE_END_MATCHER = re.compile(WAVE_END_REGEX)
 
@@ -151,11 +153,9 @@ WAVE_END_GROUP_DCL_TIMESTAMP = 1
 # Column 2 - group number (index into raw_data)
 # Column 3 - data encoding function (conversion required - int, float, etc)
 TIDE_PARTICLE_MAP = [
-    ('dcl_controller_timestamp',    TIDE_GROUP_DCL_TIMESTAMP,            str),
-    ('date_time_string',            TIDE_GROUP_DATA_TIME_STRING,         str),
-    ('absolute_pressure',           TIDE_GROUP_ABSOLUTE_PRESSURE,        float),
-    ('pressure_temp',               TIDE_GROUP_PRESSURE_TEMPERATURE,     float),
-    ('seawater_temperature',        TIDE_GROUP_SEAWATER_TEMPERATURE,     float)
+    ('absolute_pressure', TIDE_GROUP_ABSOLUTE_PRESSURE, float),
+    ('pressure_temp', TIDE_GROUP_PRESSURE_TEMPERATURE, float),
+    ('seawater_temperature', TIDE_GROUP_SEAWATER_TEMPERATURE, float)
 ]
 
 
@@ -165,6 +165,7 @@ class PresfAbcDclWaveParticleKey(BaseEnum):
     DATE_TIME_STRING = 'date_time_string'
     PTEMP_FREQUENCY = 'ptemp_frequency'
     ABSOLUTE_PRESSURE_BURST = 'absolute_pressure_burst'
+
 
 # The following two keys are keys to be used with the PARTICLE_CLASSES_DICT
 # The key for the tide particle class
@@ -181,7 +182,7 @@ class DataParticleType(BaseEnum):
 
 
 class StateKey(BaseEnum):
-    POSITION = 'position'       # holds the file position
+    POSITION = 'position'  # holds the file position
 
 
 class DataTypeKey(BaseEnum):
@@ -203,7 +204,6 @@ class PresfAbcDclParserTideDataParticle(DataParticle):
                  preferred_timestamp=DataParticleKey.PORT_TIMESTAMP,
                  quality_flag=DataParticleValue.OK,
                  new_sequence=None):
-
         super(PresfAbcDclParserTideDataParticle, self).__init__(raw_data,
                                                                 port_timestamp,
                                                                 internal_timestamp,
@@ -211,13 +211,14 @@ class PresfAbcDclParserTideDataParticle(DataParticle):
                                                                 quality_flag,
                                                                 new_sequence)
 
-        # The particle timestamp is the DCL Controller timestamp.
-        # The individual fields have already been extracted by the parser.
+        # DCL Controller timestamp is the port_timestamp
+        dcl_controller_timestamp = dcl_time_to_ntp(self.raw_data.group(TIDE_GROUP_DCL_TIMESTAMP))
+        self.set_port_timestamp(dcl_controller_timestamp)
 
-        utc_time = utilities.dcl_controller_timestamp_to_utc_time(self.raw_data.group(TIDE_GROUP_DCL_TIMESTAMP))
+        # Instrument timestamp  is the internal_timestamp
+        instrument_timestamp = timestamp_ddmmyyyyhhmmss_to_ntp(self.raw_data.group(TIDE_GROUP_DATA_TIME_STRING))
+        self.set_internal_timestamp(instrument_timestamp)
 
-        self.set_internal_timestamp(unix_time=utc_time)
-    
     def _build_parsed_values(self):
         """
         Take something in the data format and turn it into
@@ -239,7 +240,6 @@ class PresfAbcDclParserWaveDataParticle(DataParticle):
                  preferred_timestamp=DataParticleKey.PORT_TIMESTAMP,
                  quality_flag=DataParticleValue.OK,
                  new_sequence=None):
-
         super(PresfAbcDclParserWaveDataParticle, self).__init__(raw_data,
                                                                 port_timestamp,
                                                                 internal_timestamp,
@@ -247,13 +247,15 @@ class PresfAbcDclParserWaveDataParticle(DataParticle):
                                                                 quality_flag,
                                                                 new_sequence)
 
-        # The particle timestamp is the DCL Controller timestamp.
-        # The individual fields have already been extracted by the parser.
-        dcl_timestamp = self.raw_data[PresfAbcDclWaveParticleKey.DCL_CONTROLLER_START_TIMESTAMP]
+        # DCL Controller timestamp is the port_timestamp
+        dcl_controller_timestamp = dcl_time_to_ntp \
+            (self.raw_data[PresfAbcDclWaveParticleKey.DCL_CONTROLLER_START_TIMESTAMP])
+        self.set_port_timestamp(dcl_controller_timestamp)
 
-        utc_time = utilities.dcl_controller_timestamp_to_utc_time(dcl_timestamp)
-
-        self.set_internal_timestamp(unix_time=utc_time)
+        # Instrument timestamp  is the internal_timestamp
+        instrument_timestamp = timestamp_ddmmyyyyhhmmss_to_ntp \
+            (self.raw_data[PresfAbcDclWaveParticleKey.DATE_TIME_STRING])
+        self.set_internal_timestamp(instrument_timestamp)
 
     # noinspection PyListCreation
     def _build_parsed_values(self):
@@ -264,16 +266,6 @@ class PresfAbcDclParserWaveDataParticle(DataParticle):
         """
 
         result = []
-        
-        result.append(self._encode_value(PresfAbcDclWaveParticleKey.DCL_CONTROLLER_START_TIMESTAMP,
-                                         self.raw_data[PresfAbcDclWaveParticleKey.DCL_CONTROLLER_START_TIMESTAMP],
-                                         str))
-        result.append(self._encode_value(PresfAbcDclWaveParticleKey.DCL_CONTROLLER_END_TIMESTAMP,
-                                         self.raw_data[PresfAbcDclWaveParticleKey.DCL_CONTROLLER_END_TIMESTAMP],
-                                         str))
-        result.append(self._encode_value(PresfAbcDclWaveParticleKey.DATE_TIME_STRING,
-                                         self.raw_data[PresfAbcDclWaveParticleKey.DATE_TIME_STRING],
-                                         str))
         result.append(self._encode_value(PresfAbcDclWaveParticleKey.PTEMP_FREQUENCY,
                                          self.raw_data[PresfAbcDclWaveParticleKey.PTEMP_FREQUENCY], float))
         result.append(self._encode_value(PresfAbcDclWaveParticleKey.ABSOLUTE_PRESSURE_BURST,
@@ -315,6 +307,7 @@ class PresfAbcDclTelemeteredWaveDataParticle(PresfAbcDclParserWaveDataParticle):
 class PresfAbcDclParser(SimpleParser):
     """
     """
+
     def __init__(self,
                  stream_handle,
                  exception_callback,
@@ -366,7 +359,7 @@ class PresfAbcDclParser(SimpleParser):
                 particle = self._extract_sample(self._tide_particle_class,
                                                 None,
                                                 test_tide,
-                                                None)
+                                                preferred_ts=DataParticleKey.PORT_TIMESTAMP)
                 self._record_buffer.append(particle)
                 continue  # read next line
 
@@ -395,7 +388,7 @@ class PresfAbcDclParser(SimpleParser):
             if test_ptfreq:
                 # we got the ptfreq line, make sure we expected it
                 if wave_data[PresfAbcDclWaveParticleKey.DCL_CONTROLLER_START_TIMESTAMP] is not None and \
-                        wave_data[PresfAbcDclWaveParticleKey.PTEMP_FREQUENCY] is None:
+                                wave_data[PresfAbcDclWaveParticleKey.PTEMP_FREQUENCY] is None:
                     # save value
                     wave_data[PresfAbcDclWaveParticleKey.PTEMP_FREQUENCY] = \
                         test_ptfreq.group(WAVE_PTFREQ_GROUP_PTEMP_FREQUENCY)
@@ -413,7 +406,7 @@ class PresfAbcDclParser(SimpleParser):
             if test_wcont:
                 # we got a wave burst continuation, make sure we expected one
                 if wave_data[PresfAbcDclWaveParticleKey.DCL_CONTROLLER_START_TIMESTAMP] is not None and \
-                        wave_data[PresfAbcDclWaveParticleKey.PTEMP_FREQUENCY] is not None:
+                                wave_data[PresfAbcDclWaveParticleKey.PTEMP_FREQUENCY] is not None:
                     # append the value to the data
                     wave_data[PresfAbcDclWaveParticleKey.ABSOLUTE_PRESSURE_BURST].append(
                         test_wcont.group(WAVE_CONT_GROUP_ABSOLUTE_PRESSURE))
@@ -446,7 +439,7 @@ class PresfAbcDclParser(SimpleParser):
                     particle = self._extract_sample(self._wave_particle_class,
                                                     None,
                                                     wave_data,
-                                                    None)
+                                                    preferred_ts=DataParticleKey.PORT_TIMESTAMP)
 
                     self._record_buffer.append(particle)
 
@@ -456,9 +449,3 @@ class PresfAbcDclParser(SimpleParser):
 
             # if we got here the line does not match any of the expected patterns
             self._exception_callback(RecoverableSampleException("Found unexpected data in line  %s" % line))
-
-
-
-
-
-

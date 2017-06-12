@@ -24,6 +24,7 @@ from mi.core.exceptions import \
 from mi.core.log import get_logger
 from mi.dataset.driver.ctdbp_cdef.dcl.resource import RESOURCE_PATH
 from mi.dataset.parser.ctdbp_cdef_dcl import CtdbpCdefDclParser
+from mi.dataset.parser.utilities import particle_to_yml
 from mi.dataset.test.test_parser import ParserUnitTestCase
 
 
@@ -36,6 +37,8 @@ class CtdbpCdefDclParserUnitTestCase(ParserUnitTestCase):
     """
     ctdbp_cdef_dcl Parser unit test suite
     """
+    def create_yml(self, particles, filename):
+        particle_to_yml(particles, os.path.join(RESOURCE_PATH, filename))
 
     def test_simple(self):
         """
@@ -64,9 +67,9 @@ class CtdbpCdefDclParserUnitTestCase(ParserUnitTestCase):
 
             particles = parser.get_records(1)
 
-        # Make sure we obtained 1 particle
-        self.assertTrue(len(particles) == 1)
-        self.assert_particles(particles, '20140918.ctdbp_1rec_uncorr_r.yml', RESOURCE_PATH)
+            # Make sure we obtained 1 particle
+            self.assertTrue(len(particles) == 1)
+            self.assert_particles(particles, '20140918.ctdbp_1rec_uncorr_r.yml', RESOURCE_PATH)
 
         # test the corrected Endurance file format, use the recovered path
         log.debug('===== TEST SIMPLE: CORR ENDURANCE V1 =====')
@@ -90,7 +93,7 @@ class CtdbpCdefDclParserUnitTestCase(ParserUnitTestCase):
 
             particles = parser.get_records(1)
 
-            # Make sure we obtained 1 particle
+            # Make sure we obtained 1 particles
             self.assertTrue(len(particles) == 1)
             self.assert_particles(particles, '20140930.ctdbp1_1rec_corr.yml', RESOURCE_PATH)
 
@@ -116,10 +119,9 @@ class CtdbpCdefDclParserUnitTestCase(ParserUnitTestCase):
             # grab a record from the recovered path
             particles = parser.get_records(1)
 
-        # Make sure we obtained 1 particle
-        self.assertTrue(len(particles) == 1)
-
-        self.assert_particles(particles, '20131123.ctdbp1_1rec_r.yml', RESOURCE_PATH)
+            # Make sure we obtained 1 particle
+            self.assertTrue(len(particles) == 1)
+            self.assert_particles(particles, '20131123.ctdbp1_1rec_r.yml', RESOURCE_PATH)
 
         # test the corrected file format, use the recovered path
         with open(os.path.join(RESOURCE_PATH, '20131123.ctdbp1_1rec_c.log'), 'rU') as file_handle:
@@ -132,7 +134,6 @@ class CtdbpCdefDclParserUnitTestCase(ParserUnitTestCase):
 
             # Make sure we obtained 2 particles
             self.assertTrue(len(particles) == 1)
-
             self.assert_particles(particles, '20131123.ctdbp1_1rec_r.yml', RESOURCE_PATH)
         log.debug('===== END TEST SIMPLE =====')
 
@@ -149,10 +150,10 @@ class CtdbpCdefDclParserUnitTestCase(ParserUnitTestCase):
                                         file_handle,
                                         self.exception_callback)
             particles = parser.get_records(14)
+            # Make sure we obtained 14 particles
+            self.assertTrue(len(particles) == 14)
 
-        # Make sure we obtained 14 particles
-        self.assertTrue(len(particles) == 14)
-        self.assert_particles(particles, "20140918.ctdbp_many_uncorr_t.yml", RESOURCE_PATH)
+            self.assert_particles(particles, "20140918.ctdbp_many_uncorr_t.yml", RESOURCE_PATH)
 
         # test with corrected Endurance data, recovered
         with open(os.path.join(RESOURCE_PATH, '20140930.ctdbp1_corr1stVariant_many.log'), 'rU') as file_handle:
@@ -161,6 +162,7 @@ class CtdbpCdefDclParserUnitTestCase(ParserUnitTestCase):
                                         self.exception_callback)
 
             particles = parser.get_records(7)
+
             # Make sure we obtained 7 particles
             self.assertTrue(len(particles) == 7)
             self.assert_particles(particles, "20140930.ctdbp1_many_corr.yml", RESOURCE_PATH)
@@ -172,6 +174,7 @@ class CtdbpCdefDclParserUnitTestCase(ParserUnitTestCase):
                                         self.exception_callback)
 
             particles = parser.get_records(7)
+
             # Make sure we obtained 7 particles
             self.assertTrue(len(particles) == 7)
             self.assert_particles(particles, "20140930.ctdbp1_many_corr.yml", RESOURCE_PATH)
@@ -194,6 +197,7 @@ class CtdbpCdefDclParserUnitTestCase(ParserUnitTestCase):
                                         self.exception_callback)
 
             particles = parser.get_records(24)
+
             # Make sure we obtained 24 particles
             self.assertTrue(len(particles) == 24)
             self.assert_particles(particles, "20131123.ctdbp1_many_recovered.yml", RESOURCE_PATH)
@@ -204,6 +208,7 @@ class CtdbpCdefDclParserUnitTestCase(ParserUnitTestCase):
                                         file_handle,
                                         self.exception_callback)
             particles = parser.get_records(24)
+
             # Make sure we obtained 24 particles
             self.assertTrue(len(particles) == 24)
             self.assert_particles(particles, "20131123.ctdbp1_many_recovered.yml", RESOURCE_PATH)
@@ -223,8 +228,6 @@ class CtdbpCdefDclParserUnitTestCase(ParserUnitTestCase):
                                         self.exception_callback)
 
             particles = parser.get_records(291)
-
-            # Make sure we obtained 291 particles
             self.assertTrue(len(particles) == 291)
 
         with open(os.path.join(RESOURCE_PATH, '20140930.ctdbp1_corr1stVariant.log'), 'rU') as file_handle:
@@ -233,8 +236,6 @@ class CtdbpCdefDclParserUnitTestCase(ParserUnitTestCase):
                                         self.exception_callback)
 
             particles = parser.get_records(18)
-
-            # Make sure we obtained 18 particles
             self.assertTrue(len(particles) == 18)
 
         with open(os.path.join(RESOURCE_PATH, '20140930.ctdbp1_corr2ndVariant.log'), 'rU') as file_handle:
@@ -243,7 +244,6 @@ class CtdbpCdefDclParserUnitTestCase(ParserUnitTestCase):
                                         self.exception_callback)
 
             particles = parser.get_records(18)
-
             # Make sure we obtained 3389 particles
             self.assertTrue(len(particles) == 18)
 
@@ -255,7 +255,6 @@ class CtdbpCdefDclParserUnitTestCase(ParserUnitTestCase):
                                         self.exception_callback)
 
             particles = parser.get_records(3389)
-
             # Make sure we obtained 3389 particles
             self.assertTrue(len(particles) == 3389)
 
@@ -296,7 +295,6 @@ class CtdbpCdefDclParserUnitTestCase(ParserUnitTestCase):
             particles = parser.get_records(num_particles_to_request)
 
             self.assertEquals(len(particles), num_expected_particles)
-
             self.assert_particles(particles, "20140930.ctdbp1_many_corr_broken.yml", RESOURCE_PATH)
             self.assert_(isinstance(self.exception_callback_value[0], RecoverableSampleException))
 
@@ -313,7 +311,6 @@ class CtdbpCdefDclParserUnitTestCase(ParserUnitTestCase):
             particles = parser.get_records(num_particles_to_request)
 
             self.assertEquals(len(particles), num_expected_particles)
-
             self.assert_particles(particles, "20131123.ctdbp1_many_recovered_1inval.yml", RESOURCE_PATH)
 
             for i in range(len(self.exception_callback_value)):
@@ -332,7 +329,6 @@ class CtdbpCdefDclParserUnitTestCase(ParserUnitTestCase):
             particles = parser.get_records(num_particles_to_request)
 
             self.assertEquals(len(particles), num_expected_particles)
-
             self.assert_particles(particles, "20131123.ctdbp1_many_recovered_1inval.yml", RESOURCE_PATH)
 
             for i in range(len(self.exception_callback_value)):
@@ -371,7 +367,6 @@ class CtdbpCdefDclParserUnitTestCase(ParserUnitTestCase):
                                         self.exception_callback)
 
             particles = parser.get_records(num_particles_to_request)
-
             self.assertEquals(len(particles), num_expected_particles)
 
         log.debug('===== END TEST NO PARTICLES =====')
@@ -453,7 +448,6 @@ class CtdbpCdefDclParserUnitTestCase(ParserUnitTestCase):
             parser = CtdbpCdefDclParser(True,
                                         file_handle,
                                         self.exception_callback)
-
             particles = parser.get_records(num_particles_to_request)
 
             # Make sure we obtained expected particle(s)
@@ -555,60 +549,3 @@ class CtdbpCdefDclParserUnitTestCase(ParserUnitTestCase):
             self.assert_particles(particles, "20141002.ctdbp3_3Rec_negPressure.yml", RESOURCE_PATH)
 
         log.debug('===== END TEST CTDBP WITH FLORT =====')
-
-    """
-    These 2 methods were copied and adapted from /test_zplsc_c.py to facilitate
-    the generation of large .yml results files for checking large datasets.
-    """
-    def create_large_yml(self):
-        """
-        Create a large yml file corresponding to an actual recovered dataset.
-        This is not an actual test - it allows us to create what we need
-        for integration testing, i.e. a yml file.
-        """
-        log.debug('===== create_large_yml =====')
-
-        with open(os.path.join(RESOURCE_PATH, '20161025.ctdbp3_damagedRec.log'), 'rU') as in_file:
-            log.debug('===== in_file name  %s  =====', in_file)
-
-            parser = CtdbpCdefDclParser(True,
-                                        in_file,
-                                        self.exception_callback)
-            result = parser.get_records(1000)
-
-            out_file = '.'.join([in_file.name, 'yml'])
-            log.debug('===== out_file name  %s  =====', out_file)
-
-            self.particle_to_yml(result, out_file)
-
-    def particle_to_yml(self, particles, filename, mode='w'):
-        """
-        This is added as a testing helper, not actually as part of the
-        parser tests.  Since the same particles will be used for the
-        driver test it is helpful to write them to .yml in the same form
-        they need in the results.yml file here.
-        """
-        PARTICLE_NAME = 'CtdbpCdefDclTelemeteredDataParticle'
-        PARTICLE_TYPE = 'ctdbp_cdef_dcl_instrument'
-
-        # open write append, if you want to start from scratch manually delete this file
-        log.debug('===== write file name  %s  =====', filename)
-        with open(os.path.join(RESOURCE_PATH, filename), mode) as fid:
-            fid.write('header:\n')
-            fid.write("    particle_object: MULTIPLE\n")
-            fid.write("    particle_type: MULTIPLE\n\n")
-            fid.write('data:\n')
-            for index in xrange(len(particles)):
-                particle_dict = particles[index].generate_dict()
-                fid.write('  - _index: %d\n' % (index+1))
-                fid.write("    particle_object: %s\n" % PARTICLE_NAME)
-                fid.write("    particle_type: %s\n" % PARTICLE_TYPE)
-                fid.write('    internal_timestamp: %.3f\n' % particle_dict.get('internal_timestamp'))
-                values_dict = {}
-                for value in particle_dict.get('values'):
-                    values_dict[value.get('value_id')] = value.get('value')
-                fid.write("    dcl_controller_timestamp: %s\n" % values_dict.get('dcl_controller_timestamp'))
-                fid.write('    temp: %.4f\n' % values_dict.get('temp'))
-                fid.write('    conductivity: %.5f\n' % values_dict.get('conductivity'))
-                fid.write('    pressure: %.3f\n' % values_dict.get('pressure'))
-                fid.write("    date_time_string: %s\n" % values_dict.get('date_time_string'))

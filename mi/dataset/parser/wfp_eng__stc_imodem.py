@@ -82,7 +82,8 @@ class WfpEngStcImodemParser(WfpEFileParser):
             log.debug(self._start_data_particle_class)
             sample = self._extract_sample(self._start_data_particle_class,
                                           None,
-                                          header, self._timestamp)
+                                          header,
+                                          internal_timestamp=self._timestamp)
 
             if sample:
                 # create particle
@@ -109,7 +110,7 @@ class WfpEngStcImodemParser(WfpEFileParser):
             self._timestamp = float(ntplib.system_to_ntp_time(timestamp))
             log.debug(self._status_data_particle_class)
             sample = self._extract_sample(self._status_data_particle_class, None,
-                                          record, self._timestamp)
+                                          record, internal_timestamp=self._timestamp)
             self._increment_state(STATUS_BYTES)
         else:
             # The record data must be an engineering data record since it was not a profile status record
@@ -121,7 +122,7 @@ class WfpEngStcImodemParser(WfpEFileParser):
             log.trace("Converting record timestamp %f to ntp timestamp %f", timestamp, self._timestamp)
             log.debug(self._engineering_data_particle_class)
             sample = self._extract_sample(self._engineering_data_particle_class, None,
-                                          record, self._timestamp)
+                                          record, internal_timestamp=self._timestamp)
             self._increment_state(SAMPLE_BYTES)
 
         if sample:

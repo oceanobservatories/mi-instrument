@@ -434,7 +434,7 @@ class Vel3dKWfpStcParser(SimpleParser):
 
                 particle = self._extract_sample(
                     Vel3dKWfpStcInstrumentParticle,
-                    None, velocity_fields, ntp_time)
+                    None, velocity_fields, internal_timestamp=ntp_time)
 
                 self._record_buffer.append(particle)
 
@@ -458,7 +458,7 @@ class Vel3dKWfpStcParser(SimpleParser):
 
         particle = self._extract_sample(
             Vel3dKWfpStcMetadataParticle,
-            None, metadata_fields_tuple, ntp_time)
+            None, metadata_fields_tuple, internal_timestamp=ntp_time)
 
         self._record_buffer.append(particle)
 

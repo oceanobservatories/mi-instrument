@@ -425,7 +425,7 @@ class PhsenAbcdefImodemParser(SimpleParser):
             particle = self._extract_sample(self._metadata_particle_class,
                                             None,
                                             particle_data,
-                                            ntp_timestamp)
+                                            internal_timestamp=ntp_timestamp)
             if particle is not None:
                 log.trace("Appending metadata particle to record buffer: %s", particle.generate())
                 self._record_buffer.append(particle)
@@ -768,7 +768,7 @@ class PhsenAbcdefImodemParser(SimpleParser):
                         self._control_particle_class,
                         None,
                         control_dict,
-                        PhsenAbcdefImodemParser._generate_internal_timestamp(control_dict))
+                        internal_timestamp=PhsenAbcdefImodemParser._generate_internal_timestamp(control_dict))
 
                     log.trace("Appending control particle: %s", particle.generate())
                     self._record_buffer.append(particle)
@@ -796,7 +796,7 @@ class PhsenAbcdefImodemParser(SimpleParser):
                         self._instrument_particle_class,
                         None,
                         instrument_dict,
-                        PhsenAbcdefImodemParser._generate_internal_timestamp(instrument_dict))
+                        internal_timestamp=PhsenAbcdefImodemParser._generate_internal_timestamp(instrument_dict))
 
                     log.trace("Appending instrument particle: %s", particle.generate())
                     self._record_buffer.append(particle)

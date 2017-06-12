@@ -131,7 +131,7 @@ class SioEngSioParser(SioParser):
                     log.debug('utc timestamp %s', datetime.utcfromtimestamp(posix_time))
                     timestamp = ntplib.system_to_ntp_time(float(posix_time))
                     # particle-ize the data block received, return the record
-                    sample = self._extract_sample(self._particle_class, None, data_match, timestamp)
+                    sample = self._extract_sample(self._particle_class, None, data_match, internal_timestamp=timestamp)
                     if sample:
                         # create particle
                         result_particles.append(sample)

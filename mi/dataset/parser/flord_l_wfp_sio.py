@@ -96,7 +96,7 @@ class FlordLWfpSioParser(SioParser):
                 sample = self._extract_sample(FlordLWfpSioDataParticle,
                                               None,
                                               e_record,
-                                              self._timestamp)
+                                              internal_timestamp=self._timestamp)
                 if sample:
                     # create particle
                     self._result_particles.append(sample)

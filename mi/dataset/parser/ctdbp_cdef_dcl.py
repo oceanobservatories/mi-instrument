@@ -51,7 +51,9 @@ from mi.core.exceptions import \
 
 from mi.dataset.dataset_parser import SimpleParser
 
-from mi.dataset.parser.utilities import dcl_controller_timestamp_to_utc_time
+from mi.dataset.parser.utilities import  \
+    dcl_time_to_ntp, \
+    timestamp_ddmmyyyyhhmmss_to_ntp
 
 from mi.dataset.parser.common_regexes import \
     ANY_CHARS_REGEX, \
@@ -171,11 +173,9 @@ CTDBP_FLORT_MATCHER = re.compile(CTDBP_FLORT_REGEX)
 # Column 1 - particle parameter name & match group name
 # Column 2 - data encoding function (conversion required - int, float, etc)
 DATA_PARTICLE_MAP = [
-    ('dcl_controller_timestamp', str),
     ('temp', float),
     ('conductivity', float),
     ('pressure', float),
-    ('date_time_string', str)
 ]
 
 
@@ -192,7 +192,7 @@ class CtdbpCdefDclDataParticle(DataParticle):
     def __init__(self, raw_data,
                  port_timestamp=None,
                  internal_timestamp=None,
-                 preferred_timestamp=DataParticleKey.PORT_TIMESTAMP,
+                 preferred_timestamp=None,
                  quality_flag=DataParticleValue.OK,
                  new_sequence=None):
 
@@ -202,10 +202,6 @@ class CtdbpCdefDclDataParticle(DataParticle):
                                                        preferred_timestamp,
                                                        quality_flag,
                                                        new_sequence)
-
-        # The particle timestamp is the DCL Controller timestamp.
-        utc_time = dcl_controller_timestamp_to_utc_time(self.raw_data.group('dcl_controller_timestamp'))
-        self.set_internal_timestamp(unix_time=utc_time)
 
     def _build_parsed_values(self):
         """
@@ -270,10 +266,20 @@ class CtdbpCdefDclParser(SimpleParser):
 
             if match is not None:
                 log.debug('record found')
+
+                # DCL Controller timestamp is the port_timestamp
+                port_timestamp = dcl_time_to_ntp(match.group('dcl_controller_timestamp'))
+
+                # Instrument timestamp is the internal_timestamp
+                internal_timestamp = timestamp_ddmmyyyyhhmmss_to_ntp(match.group('date_time_string'))
+
                 data_particle = self._extract_sample(self._particle_class,
                                                      None,
                                                      match,
-                                                     None)
+                                                     port_timestamp=port_timestamp,
+                                                     internal_timestamp=internal_timestamp,
+                                                     preferred_ts=DataParticleKey.PORT_TIMESTAMP)
+
                 self._record_buffer.append(data_particle)
 
             else:

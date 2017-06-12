@@ -1,25 +1,19 @@
 header:
-  particle_object: 'MULTIPLE'
-  particle_type: 'MULTIPLE'
-
+    particle_object: 'MULTIPLE'
+    particle_type: 'MULTIPLE'
 data:
   - _index: 1
     particle_object: PresfAbcDclTelemeteredTideDataParticle
     particle_type: presf_abc_dcl_tide_measurement
-    internal_timestamp: 3606746351.322999954
-    dcl_controller_timestamp: '2014/04/17 17:59:11.323'
-    date_time_string: '17 Apr 2014 17:00:00'
-    absolute_pressure: 14.6612
-    pressure_temp: 11.380
-    seawater_temperature: 11.5248
+    internal_timestamp: 3606742800.0000000
+    port_timestamp: 3606746351.3230000
+    absolute_pressure:        14.66120
+    pressure_temp:        11.38000
+    seawater_temperature:        11.52480
   - _index: 2
     particle_object: PresfAbcDclTelemeteredWaveDataParticle
     particle_type: presf_abc_dcl_wave_burst
-    internal_timestamp: 3606746352.334000111
-    dcl_controller_start_timestamp: '2014/04/17 17:59:12.334'
-    dcl_controller_end_timestamp: '2014/04/17 17:59:17.666'
-    date_time_string: '17 Apr 2014 17:59:17'
-    ptemp_frequency: 171226.968
-    absolute_pressure_burst: [14.6498, 14.6482, 14.6482, 14.6482, 14.6511, 
-14.6511, 14.6566, 14.6538, 14.6566, 14.6566, 14.6544, 14.6544, 14.6490, 
-14.6462, 14.6407, 14.6352, 14.6297, 14.6270, 14.6270, 14.6324] 
+    internal_timestamp: 3606746357.0000000
+    port_timestamp: 3606746352.3340001
+    absolute_pressure_burst: [14.6498, 14.6482, 14.6482, 14.6482, 14.6511, 14.6511, 14.6566, 14.6538, 14.6566, 14.6566, 14.6544, 14.6544, 14.649, 14.6462, 14.6407, 14.6352, 14.6297, 14.627, 14.627, 14.6324]
+    ptemp_frequency:    171226.96800

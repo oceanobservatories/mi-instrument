@@ -16,6 +16,7 @@ from mi.core.exceptions import RecoverableSampleException
 from mi.core.log import get_logger
 from mi.dataset.driver.dosta_abcdjm.ctdbp.dcl.resource import RESOURCE_PATH
 from mi.dataset.parser.dosta_abcdjm_ctdbp_dcl import DostaAbcdjmCtdbpDclParser
+from mi.dataset.parser.utilities import particle_to_yml
 from mi.dataset.test.test_parser import ParserUnitTestCase
 
 log = get_logger()
@@ -30,6 +31,9 @@ class DostaDCtdbpDclCeParserUnitTestCase(ParserUnitTestCase):
     """
     dosta_d_ctdbp_dcl Parser unit test suite
     """
+
+    def create_yml(self, particles, filename):
+        particle_to_yml(particles, os.path.join(RESOURCE_PATH, filename))
 
     def test_simple(self):
         """
@@ -46,7 +50,6 @@ class DostaDCtdbpDclCeParserUnitTestCase(ParserUnitTestCase):
 
             particles = parser.get_records(1)
 
-            # Make sure we obtained 1 particles
             self.assertTrue(len(particles) == 1)
             self.assert_particles(particles, '20140930.dosta1_1rec_corr.yml', RESOURCE_PATH)
 
@@ -59,7 +62,6 @@ class DostaDCtdbpDclCeParserUnitTestCase(ParserUnitTestCase):
 
             particles = parser.get_records(1)
 
-            # Make sure we obtained 1 particles
             self.assertTrue(len(particles) == 1)
             self.assert_particles(particles, '20140930.dosta1_1tel_corr.yml', RESOURCE_PATH)
 
@@ -71,7 +73,6 @@ class DostaDCtdbpDclCeParserUnitTestCase(ParserUnitTestCase):
 
             # file has one tide particle and one wave particle
             particles = parser.get_records(1)
-
             # Make sure we obtained no particles
             self.assertTrue(len(particles) == 0)
 
@@ -85,7 +86,6 @@ class DostaDCtdbpDclCeParserUnitTestCase(ParserUnitTestCase):
 
             # Get a single data record using the telemetered path
             particles = parser.get_records(1)
-
             # Make sure we obtained 1 particle
             self.assertTrue(len(particles) == 0)
         log.debug('===== END TEST SIMPLE =====')
@@ -103,7 +103,7 @@ class DostaDCtdbpDclCeParserUnitTestCase(ParserUnitTestCase):
                                                file_handle,
                                                self.exception_callback)
             particles = parser.get_records(14)
-            # Make sure we obtained 7 particles
+
             self.assertTrue(len(particles) == 7)
             self.assert_particles(particles, "20140930.ctdbp1_many_corr.yml", RESOURCE_PATH)
 
@@ -112,7 +112,7 @@ class DostaDCtdbpDclCeParserUnitTestCase(ParserUnitTestCase):
                                                file_handle,
                                                self.exception_callback)
             particles = parser.get_records(14)
-            # Make sure we obtained 7 particles
+
             self.assertTrue(len(particles) == 7)
             self.assert_particles(particles, "20140930.ctdbp1_many_corr.yml", RESOURCE_PATH)
 
@@ -137,7 +137,6 @@ class DostaDCtdbpDclCeParserUnitTestCase(ParserUnitTestCase):
             particles = parser.get_records(num_particles_to_request)
 
             self.assertEquals(len(particles), num_expected_particles)
-
             self.assert_particles(particles, "20140930.dosta1_many_corr_broken.yml", RESOURCE_PATH)
 
             for i in range(len(self.exception_callback_value)):

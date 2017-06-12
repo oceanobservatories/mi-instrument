@@ -1,304 +1,319 @@
 header:
-    particle_object: ZplscCInstrumentDataParticle
-    particle_type: zplsc_c_instrument
+    particle_object: 'MULTIPLE'
+    particle_type: 'MULTIPLE'
 data:
   - _index: 1
-    internal_timestamp: 3637355700.47
-    port_timestamp: 3637355706.0769
-    zplsc_c_transmission_timestamp: 3637355701.0
-    serial_number: '55078'
-    zplsc_c_phase: 1
+    particle_object: ZplscCInstrumentDataParticle
+    particle_type: zplsc_c_instrument
+    internal_timestamp: 3637355701.0000000
+    port_timestamp: 3637355706.0769997
     burst_number: 5
-    zplsc_c_tilt_x: 21.8
-    zplsc_c_tilt_y: 45.7
-    zplsc_c_battery_voltage: 10.0
-    zplsc_c_temperature: 8.0
-    zplsc_c_pressure: 99.0
+    serial_number: '55078'
+    zplsc_c_battery_voltage:        10.00000
     zplsc_c_frequency_channel_1: 38
-    zplsc_c_values_channel_1: [59216, 41056, 44832, 36688, 36672, 36336, 33600, 39832, 30656, 31656, 33000, 32200, 28872, 33768, 30688, 34624, 32680, 48296, 40936]
     zplsc_c_frequency_channel_2: Null
-    zplsc_c_values_channel_2: Null
     zplsc_c_frequency_channel_3: Null
-    zplsc_c_values_channel_3: Null
     zplsc_c_frequency_channel_4: Null
+    zplsc_c_phase: 1
+    zplsc_c_pressure:        99.00000
+    zplsc_c_temperature:         8.00000
+    zplsc_c_tilt_x:        21.80000
+    zplsc_c_tilt_y:        45.70000
+    zplsc_c_values_channel_1: [59216, 41056, 44832, 36688, 36672, 36336, 33600, 39832, 30656, 31656, 33000, 32200, 28872, 33768, 30688, 34624, 32680, 48296, 40936]
+    zplsc_c_values_channel_2: Null
+    zplsc_c_values_channel_3: Null
     zplsc_c_values_channel_4: Null
   - _index: 2
-    internal_timestamp: 3637359300.45
-    port_timestamp: 3637359306.0889
-    zplsc_c_transmission_timestamp: 3637359301.0
-    serial_number: '55078'
-    zplsc_c_phase: 1
+    particle_object: ZplscCInstrumentDataParticle
+    particle_type: zplsc_c_instrument
+    internal_timestamp: 3637359301.0000000
+    port_timestamp: 3637359306.0889997
     burst_number: 9
-    zplsc_c_tilt_x: 21.8
-    zplsc_c_tilt_y: 45.7
-    zplsc_c_battery_voltage: 10.0
-    zplsc_c_temperature: 8.0
-    zplsc_c_pressure: 99.0
+    serial_number: '55078'
+    zplsc_c_battery_voltage:        10.00000
     zplsc_c_frequency_channel_1: 38
-    zplsc_c_values_channel_1: [59600, 38528, 37888, 35592, 36056, 36400, 37600, 32616, 30320, 33040, 35096, 32784, 30800, 30544, 32792, 34480, 33664, 57616, 50512]
     zplsc_c_frequency_channel_2: 125
-    zplsc_c_values_channel_2: [56976, 36568, 36544, 35520, 36960, 36992, 36224, 35952, 35136, 34880, 34624, 34920, 34304, 34312, 34160, 34368, 34264, 52880, 46192]
     zplsc_c_frequency_channel_3: Null
-    zplsc_c_values_channel_3: Null
     zplsc_c_frequency_channel_4: Null
+    zplsc_c_phase: 1
+    zplsc_c_pressure:        99.00000
+    zplsc_c_temperature:         8.00000
+    zplsc_c_tilt_x:        21.80000
+    zplsc_c_tilt_y:        45.70000
+    zplsc_c_values_channel_1: [59600, 38528, 37888, 35592, 36056, 36400, 37600, 32616, 30320, 33040, 35096, 32784, 30800, 30544, 32792, 34480, 33664, 57616, 50512]
+    zplsc_c_values_channel_2: [56976, 36568, 36544, 35520, 36960, 36992, 36224, 35952, 35136, 34880, 34624, 34920, 34304, 34312, 34160, 34368, 34264, 52880, 46192]
+    zplsc_c_values_channel_3: Null
     zplsc_c_values_channel_4: Null
   - _index: 3
-    internal_timestamp: 3637362900.42
+    particle_object: ZplscCInstrumentDataParticle
+    particle_type: zplsc_c_instrument
+    internal_timestamp: 3637362901.0000000
     port_timestamp: 3637362906.1009998
-    zplsc_c_transmission_timestamp: 3637362901.0
-    serial_number: '55078'
-    zplsc_c_phase: 1
     burst_number: 13
-    zplsc_c_tilt_x: 21.8
-    zplsc_c_tilt_y: 45.7
-    zplsc_c_battery_voltage: 10.0
-    zplsc_c_temperature: 8.0
-    zplsc_c_pressure: 99.0
+    serial_number: '55078'
+    zplsc_c_battery_voltage:        10.00000
     zplsc_c_frequency_channel_1: 38
-    zplsc_c_values_channel_1: [59744, 38848, 33344, 37056, 33904, 37776, 35664, 33832, 33112, 33768, 33688, 32944, 33088, 31088, 33504, 33240, 34896, 60168, 49472]
     zplsc_c_frequency_channel_2: 125
-    zplsc_c_values_channel_2: [56808, 36416, 34688, 34992, 36896, 36744, 36352, 35824, 35120, 35488, 34560, 34648, 34584, 34512, 34320, 34048, 35648, 59352, 41928]
     zplsc_c_frequency_channel_3: 200
-    zplsc_c_values_channel_3: [56216, 35248, 27584, 31744, 35544, 37192, 34832, 32680, 30096, 31080, 29792, 28840, 29536, 25216, 24432, 26568, 30600, 55400, 37248]
     zplsc_c_frequency_channel_4: Null
+    zplsc_c_phase: 1
+    zplsc_c_pressure:        99.00000
+    zplsc_c_temperature:         8.00000
+    zplsc_c_tilt_x:        21.80000
+    zplsc_c_tilt_y:        45.70000
+    zplsc_c_values_channel_1: [59744, 38848, 33344, 37056, 33904, 37776, 35664, 33832, 33112, 33768, 33688, 32944, 33088, 31088, 33504, 33240, 34896, 60168, 49472]
+    zplsc_c_values_channel_2: [56808, 36416, 34688, 34992, 36896, 36744, 36352, 35824, 35120, 35488, 34560, 34648, 34584, 34512, 34320, 34048, 35648, 59352, 41928]
+    zplsc_c_values_channel_3: [56216, 35248, 27584, 31744, 35544, 37192, 34832, 32680, 30096, 31080, 29792, 28840, 29536, 25216, 24432, 26568, 30600, 55400, 37248]
     zplsc_c_values_channel_4: Null
   - _index: 4
-    internal_timestamp: 3637366500.39
+    particle_object: ZplscCInstrumentDataParticle
+    particle_type: zplsc_c_instrument
+    internal_timestamp: 3637366501.0000000
     port_timestamp: 3637366506.1129999
-    zplsc_c_transmission_timestamp: 3637366501.0
-    serial_number: '55078'
-    zplsc_c_phase: 1
     burst_number: 17
-    zplsc_c_tilt_x: 21.7
-    zplsc_c_tilt_y: 45.7
-    zplsc_c_battery_voltage: 10.0
-    zplsc_c_temperature: 8.0
-    zplsc_c_pressure: 99.0
+    serial_number: '55078'
+    zplsc_c_battery_voltage:        10.00000
     zplsc_c_frequency_channel_1: 38
-    zplsc_c_values_channel_1: [34048, 38448, 38472, 41328, 35416, 35760, 35488, 33520, 33896, 34112, 29904, 33600, 31528, 31944, 33112, 62288, 49928]
     zplsc_c_frequency_channel_2: 125
-    zplsc_c_values_channel_2: [36056, 34064, 36288, 35744, 38224, 37000, 36880, 35184, 35504, 34328, 34288, 34768, 34216, 34416, 34304, 35560, 58984, 46592]
     zplsc_c_frequency_channel_3: 200
-    zplsc_c_values_channel_3: [56240, 33952, 30696, 33160, 32880, 38128, 36016, 35416, 32944, 30824, 29552, 29952, 27392, 27496, 25776, 25816, 29400, 57248, 42448]
     zplsc_c_frequency_channel_4: 455
+    zplsc_c_phase: 1
+    zplsc_c_pressure:        99.00000
+    zplsc_c_temperature:         8.00000
+    zplsc_c_tilt_x:        21.70000
+    zplsc_c_tilt_y:        45.70000
+    zplsc_c_values_channel_1: [34048, 38448, 38472, 41328, 35416, 35760, 35488, 33520, 33896, 34112, 29904, 33600, 31528, 31944, 33112, 62288, 49928]
+    zplsc_c_values_channel_2: [36056, 34064, 36288, 35744, 38224, 37000, 36880, 35184, 35504, 34328, 34288, 34768, 34216, 34416, 34304, 35560, 58984, 46592]
+    zplsc_c_values_channel_3: [56240, 33952, 30696, 33160, 32880, 38128, 36016, 35416, 32944, 30824, 29552, 29952, 27392, 27496, 25776, 25816, 29400, 57248, 42448]
     zplsc_c_values_channel_4: [55440, 26288, 23104, 21072, 22784, 25568, 24928, 24328, 21440, 21888, 20672, 20544, 20520, 20512, 20592, 20584, 20584, 41584, 24944, 24944]
   - _index: 5
-    internal_timestamp: 3637370100.35
+    particle_object: ZplscCInstrumentDataParticle
+    particle_type: zplsc_c_instrument
+    internal_timestamp: 3637370101.0000000
     port_timestamp: 3637370106.1250000
-    zplsc_c_transmission_timestamp: 3637370101.0
-    serial_number: '55078'
-    zplsc_c_phase: 1
     burst_number: 21
-    zplsc_c_tilt_x: 21.8
-    zplsc_c_tilt_y: 45.7
-    zplsc_c_battery_voltage: 10.0
-    zplsc_c_temperature: 8.0
-    zplsc_c_pressure: 99.0
+    serial_number: '55078'
+    zplsc_c_battery_voltage:        10.00000
     zplsc_c_frequency_channel_1: 38
-    zplsc_c_values_channel_1: Null
     zplsc_c_frequency_channel_2: 125
-    zplsc_c_values_channel_2: [57000, 38664, 36712, 37440, 37152, 38608, 39560, 37584, 36496, 35568, 34944, 34368, 34632, 34720, 34096, 34592, 34512, 59400, 45352]
     zplsc_c_frequency_channel_3: 200
-    zplsc_c_values_channel_3: [56232, 36616, 34840, 33496, 34528, 35504, 36808, 35176, 33880, 29808, 30256, 29296, 26112, 28992, 25520, 24368, 27160, 57048, 44336]
     zplsc_c_frequency_channel_4: 455
+    zplsc_c_phase: 1
+    zplsc_c_pressure:        99.00000
+    zplsc_c_temperature:         8.00000
+    zplsc_c_tilt_x:        21.80000
+    zplsc_c_tilt_y:        45.70000
+    zplsc_c_values_channel_1: Null
+    zplsc_c_values_channel_2: [57000, 38664, 36712, 37440, 37152, 38608, 39560, 37584, 36496, 35568, 34944, 34368, 34632, 34720, 34096, 34592, 34512, 59400, 45352]
+    zplsc_c_values_channel_3: [56232, 36616, 34840, 33496, 34528, 35504, 36808, 35176, 33880, 29808, 30256, 29296, 26112, 28992, 25520, 24368, 27160, 57048, 44336]
     zplsc_c_values_channel_4: Null
   - _index: 6
-    internal_timestamp: 3637373700.31
+    particle_object: ZplscCInstrumentDataParticle
+    particle_type: zplsc_c_instrument
+    internal_timestamp: 3637373701.0000000
     port_timestamp: 3637373706.1370001
-    zplsc_c_transmission_timestamp: 3637373701.0
-    serial_number: '55078'
-    zplsc_c_phase: 1
     burst_number: 25
-    zplsc_c_tilt_x: 21.7
-    zplsc_c_tilt_y: 45.7
-    zplsc_c_battery_voltage: 10.0
-    zplsc_c_temperature: 7.9
-    zplsc_c_pressure: 99.0
+    serial_number: '55078'
+    zplsc_c_battery_voltage:        10.00000
     zplsc_c_frequency_channel_1: 38
-    zplsc_c_values_channel_1: [59888, 43552, 43656, 41504, 41408, 40064, 40792, 39704, 36808, 37216, 33600, 30312, 31552, 32944, 29776, 32536, 34912, 58472, 49736]
     zplsc_c_frequency_channel_2: 125
-    zplsc_c_values_channel_2: [57952, 41072, 41952, 39792, 38384, 38360, 36328, 36432, 35968, 35376, 35720, 34352, 34944, 34312, 33968, 33888, 35928, 58832, 44816]
     zplsc_c_frequency_channel_3: 200
-    zplsc_c_values_channel_3: [56960, 39280, 39896, 37384, 34848, 35136, 33520, 33992, 33680, 33576, 32584, 28616, 26544, 27920, 26240, 26848, 31904, 53032, 43864]
     zplsc_c_frequency_channel_4: 455
+    zplsc_c_phase: 1
+    zplsc_c_pressure:        99.00000
+    zplsc_c_temperature:         7.90000
+    zplsc_c_tilt_x:        21.70000
+    zplsc_c_tilt_y:        45.70000
+    zplsc_c_values_channel_1: [59888, 43552, 43656, 41504, 41408, 40064, 40792, 39704, 36808, 37216, 33600, 30312, 31552, 32944, 29776, 32536, 34912, 58472, 49736]
+    zplsc_c_values_channel_2: [57952, 41072, 41952, 39792, 38384, 38360, 36328, 36432, 35968, 35376, 35720, 34352, 34944, 34312, 33968, 33888, 35928, 58832, 44816]
+    zplsc_c_values_channel_3: [56960, 39280, 39896, 37384, 34848, 35136, 33520, 33992, 33680, 33576, 32584, 28616, 26544, 27920, 26240, 26848, 31904, 53032, 43864]
     zplsc_c_values_channel_4: [55496, 27552, 25744, 23448, 22664, 21584, 21936, 23896, 24776, 22704, 21960, 20592, 20528, 20488, 20496, 20560, 20544, 41536, 28480]
   - _index: 7
-    internal_timestamp: 3637377300.27
+    particle_object: ZplscCInstrumentDataParticle
+    particle_type: zplsc_c_instrument
+    internal_timestamp: 3637377301.0000000
     port_timestamp: 3637377306.1479998
-    zplsc_c_transmission_timestamp: 3637377301.0
-    serial_number: '55078'
-    zplsc_c_phase: 1
     burst_number: 29
-    zplsc_c_tilt_x: 21.8
-    zplsc_c_tilt_y: 45.7
-    zplsc_c_battery_voltage: 10.0
-    zplsc_c_temperature: 7.9
-    zplsc_c_pressure: 99.0
+    serial_number: '55078'
+    zplsc_c_battery_voltage:        10.00000
     zplsc_c_frequency_channel_1: 38
-    zplsc_c_values_channel_1: [59856, 42160, 43072, 43840, 42368, 40624, 38856, 36480, 34648, 36048, 34136, 31600, 32336, 30848, 30592, 30896, 30704, 57840, 51680]
     zplsc_c_frequency_channel_2: 125
-    zplsc_c_values_channel_2: [57088, 38704, 40936, 40192, 39248, 37776, 38424, 37088, 35816, 35656, 35032, 34688, 34656, 34344, 34344, 34560, 34064, 56448, 51864]
     zplsc_c_frequency_channel_3: 200
-    zplsc_c_values_channel_3: [56296, 38096, 39216, 37720, 35888, 35208, 35848, 35528, 34576, 32288, 29136, 29104, 27104, 26456, 28000, 26712, 27944, 55064, 51408]
     zplsc_c_frequency_channel_4: 455
+    zplsc_c_phase: 1
+    zplsc_c_pressure:        99.00000
+    zplsc_c_temperature:         7.90000
+    zplsc_c_tilt_x:        21.80000
+    zplsc_c_tilt_y:        45.70000
+    zplsc_c_values_channel_1: [59856, 42160, 43072, 43840, 42368, 40624, 38856, 36480, 34648, 36048, 34136, 31600, 32336, 30848, 30592, 30896, 30704, 57840, 51680]
+    zplsc_c_values_channel_2: [57088, 38704, 40936, 40192, 39248, 37776, 38424, 37088, 35816, 35656, 35032, 34688, 34656, 34344, 34344, 34560, 34064, 56448, 51864]
+    zplsc_c_values_channel_3: [56296, 38096, 39216, 37720, 35888, 35208, 35848, 35528, 34576, 32288, 29136, 29104, 27104, 26456, 28000, 26712, 27944, 55064, 51408]
     zplsc_c_values_channel_4: [55424, 27488, 24216, 24104, 23344, 22088, 23704, 24952, 25112, 21272, 20608, 20608, 20568, 20568, 20560, 20576, 20544, 38424, 34016]
   - _index: 8
-    internal_timestamp: 3637380900.23
+    particle_object: ZplscCInstrumentDataParticle
+    particle_type: zplsc_c_instrument
+    internal_timestamp: 3637380901.0000000
     port_timestamp: 3637380906.1599998
-    zplsc_c_transmission_timestamp: 3637380901.0
-    serial_number: '55078'
-    zplsc_c_phase: 1
     burst_number: 33
-    zplsc_c_tilt_x: 21.7
-    zplsc_c_tilt_y: 45.7
-    zplsc_c_battery_voltage: 10.0
-    zplsc_c_temperature: 7.9
-    zplsc_c_pressure: 99.0
+    serial_number: '55078'
+    zplsc_c_battery_voltage:        10.00000
     zplsc_c_frequency_channel_1: 38
-    zplsc_c_values_channel_1: [59624, 41504, 41392, 44736, 42304, 40856, 37696, 35312, 32800, 36144, 33472, 31872, 32792, 31000, 31984, 32400, 30000, 56808, 54016]
     zplsc_c_frequency_channel_2: 125
-    zplsc_c_values_channel_2: [56944, 37968, 39504, 39376, 42272, 39568, 37360, 36672, 36336, 36232, 34824, 34784, 34256, 33936, 34648, 34088, 34064, 58200, 50824]
     zplsc_c_frequency_channel_3: 200
-    zplsc_c_values_channel_3: [56152, 34376, 38592, 38336, 37632, 36400, 36384, 35088, 33056, 31888, 30568, 27440, 26136, 26816, 25216, 27328, 28760, 52040, 50352]
     zplsc_c_frequency_channel_4: 455
+    zplsc_c_phase: 1
+    zplsc_c_pressure:        99.00000
+    zplsc_c_temperature:         7.90000
+    zplsc_c_tilt_x:        21.70000
+    zplsc_c_tilt_y:        45.70000
+    zplsc_c_values_channel_1: [59624, 41504, 41392, 44736, 42304, 40856, 37696, 35312, 32800, 36144, 33472, 31872, 32792, 31000, 31984, 32400, 30000, 56808, 54016]
+    zplsc_c_values_channel_2: [56944, 37968, 39504, 39376, 42272, 39568, 37360, 36672, 36336, 36232, 34824, 34784, 34256, 33936, 34648, 34088, 34064, 58200, 50824]
+    zplsc_c_values_channel_3: [56152, 34376, 38592, 38336, 37632, 36400, 36384, 35088, 33056, 31888, 30568, 27440, 26136, 26816, 25216, 27328, 28760, 52040, 50352]
     zplsc_c_values_channel_4: [55384, 27312, 23136, 25248, 24352, 26016, 25520, 23856, 22976, 21824, 20656, 20496, 20504, 20488, 20544, 20552, 20488, 38272, 32968]
   - _index: 9
-    internal_timestamp: 3637384500.19
+    particle_object: ZplscCInstrumentDataParticle
+    particle_type: zplsc_c_instrument
+    internal_timestamp: 3637384501.0000000
     port_timestamp: 3637384506.1710000
-    zplsc_c_transmission_timestamp: 3637384501.0
-    serial_number: '55078'
-    zplsc_c_phase: 1
     burst_number: 37
-    zplsc_c_tilt_x: 21.8
-    zplsc_c_tilt_y: 45.7
-    zplsc_c_battery_voltage: 10.0
-    zplsc_c_temperature: 8.0
-    zplsc_c_pressure: 99.0
+    serial_number: '55078'
+    zplsc_c_battery_voltage:        10.00000
     zplsc_c_frequency_channel_1: 38
-    zplsc_c_values_channel_1: [59608, 40976, 41448, 43976, 42008, 42288, 36448, 33136, 34960, 35392, 31696, 31944, 31104, 29072, 29960, 31472, 29856, 59344, 55640]
     zplsc_c_frequency_channel_2: 125
-    zplsc_c_values_channel_2: [56920, 37728, 38912, 39048, 38848, 40048, 37848, 35928, 35824, 35304, 34576, 34208, 34480, 34152, 34088, 34496, 34280, 55968, 54608]
     zplsc_c_frequency_channel_3: 200
-    zplsc_c_values_channel_3: [56136, 35832, 37744, 34464, 37312, 37336, 34992, 32648, 32456, 30088, 29744, 27216, 27968, 26472, 26896, 26928, 25648, 52208, 50608]
     zplsc_c_frequency_channel_4: 455
+    zplsc_c_phase: 1
+    zplsc_c_pressure:        99.00000
+    zplsc_c_temperature:         8.00000
+    zplsc_c_tilt_x:        21.80000
+    zplsc_c_tilt_y:        45.70000
+    zplsc_c_values_channel_1: [59608, 40976, 41448, 43976, 42008, 42288, 36448, 33136, 34960, 35392, 31696, 31944, 31104, 29072, 29960, 31472, 29856, 59344, 55640]
+    zplsc_c_values_channel_2: [56920, 37728, 38912, 39048, 38848, 40048, 37848, 35928, 35824, 35304, 34576, 34208, 34480, 34152, 34088, 34496, 34280, 55968, 54608]
+    zplsc_c_values_channel_3: [56136, 35832, 37744, 34464, 37312, 37336, 34992, 32648, 32456, 30088, 29744, 27216, 27968, 26472, 26896, 26928, 25648, 52208, 50608]
     zplsc_c_values_channel_4: [55376, 26800, 22568, 24024, 24600, 25416, 24880, 23728, 22760, 20520, 20584, 20520, 20608, 20496, 20552, 20568, 20504, 38088, 35112]
   - _index: 10
-    internal_timestamp: 3637388100.15
+    particle_object: ZplscCInstrumentDataParticle
+    particle_type: zplsc_c_instrument
+    internal_timestamp: 3637388101.0000000
     port_timestamp: 3637388106.1830001
-    zplsc_c_transmission_timestamp: 3637388101.0
-    serial_number: '55078'
-    zplsc_c_phase: 1
     burst_number: 41
-    zplsc_c_tilt_x: 21.7
-    zplsc_c_tilt_y: 45.7
-    zplsc_c_battery_voltage: 10.0
-    zplsc_c_temperature: 8.0
-    zplsc_c_pressure: 99.0
+    serial_number: '55078'
+    zplsc_c_battery_voltage:        10.00000
     zplsc_c_frequency_channel_1: 38
-    zplsc_c_values_channel_1: [58984, 38952, 38664, 43496, 43312, 41904, 38784, 35216, 33032, 37528, 34144, 30800, 31120, 29936, 29120, 28400, 29832, 56384, 55448]
     zplsc_c_frequency_channel_2: 125
-    zplsc_c_values_channel_2: [57112, 39696, 36816, 39024, 39512, 40336, 38128, 36624, 36128, 35288, 35152, 34736, 34600, 34416, 33944, 34480, 34320, 55320, 50752]
     zplsc_c_frequency_channel_3: 200
-    zplsc_c_values_channel_3: [56112, 37104, 32840, 37520, 36960, 37120, 34696, 34176, 35184, 33288, 30720, 27672, 25584, 24752, 23904, 26416, 26160, 52976, 50144]
     zplsc_c_frequency_channel_4: 455
+    zplsc_c_phase: 1
+    zplsc_c_pressure:        99.00000
+    zplsc_c_temperature:         8.00000
+    zplsc_c_tilt_x:        21.70000
+    zplsc_c_tilt_y:        45.70000
+    zplsc_c_values_channel_1: [58984, 38952, 38664, 43496, 43312, 41904, 38784, 35216, 33032, 37528, 34144, 30800, 31120, 29936, 29120, 28400, 29832, 56384, 55448]
+    zplsc_c_values_channel_2: [57112, 39696, 36816, 39024, 39512, 40336, 38128, 36624, 36128, 35288, 35152, 34736, 34600, 34416, 33944, 34480, 34320, 55320, 50752]
+    zplsc_c_values_channel_3: [56112, 37104, 32840, 37520, 36960, 37120, 34696, 34176, 35184, 33288, 30720, 27672, 25584, 24752, 23904, 26416, 26160, 52976, 50144]
     zplsc_c_values_channel_4: [55408, 28352, 23408, 22912, 23392, 23488, 25232, 24032, 24232, 21120, 20800, 20528, 20480, 20528, 20568, 20496, 20496, 35848, 36608]
   - _index: 11
-    internal_timestamp: 3637391700.12
+    particle_object: ZplscCInstrumentDataParticle
+    particle_type: zplsc_c_instrument
+    internal_timestamp: 3637391701.0000000
     port_timestamp: 3637391706.1970000
-    zplsc_c_transmission_timestamp: 3637391701.0
-    serial_number: '55078'
-    zplsc_c_phase: 1
     burst_number: 45
-    zplsc_c_tilt_x: 21.7
-    zplsc_c_tilt_y: 45.7
-    zplsc_c_battery_voltage: 10.0
-    zplsc_c_temperature: 8.0
-    zplsc_c_pressure: 99.0
+    serial_number: '55078'
+    zplsc_c_battery_voltage:        10.00000
     zplsc_c_frequency_channel_1: 38
-    zplsc_c_values_channel_1: [60040, 36672, 40448, 42160, 42240, 38624, 37472, 36824, 36320, 33888, 33168, 33648, 31472, 31568, 30304, 29704, 32208, 56104, 53424]
     zplsc_c_frequency_channel_2: 125
-    zplsc_c_values_channel_2: [56856, 36368, 38128, 39448, 40464, 38688, 37600, 36416, 37184, 35400, 34992, 35232, 34256, 34192, 34136, 34432, 34088, 57928, 56872]
     zplsc_c_frequency_channel_3: 200
-    zplsc_c_values_channel_3: [56200, 33536, 34664, 37072, 36704, 36512, 36880, 35592, 33536, 31888, 28936, 29184, 27552, 26640, 24576, 25808, 27600, 52824, 50440]
     zplsc_c_frequency_channel_4: 455
+    zplsc_c_phase: 1
+    zplsc_c_pressure:        99.00000
+    zplsc_c_temperature:         8.00000
+    zplsc_c_tilt_x:        21.70000
+    zplsc_c_tilt_y:        45.70000
+    zplsc_c_values_channel_1: [60040, 36672, 40448, 42160, 42240, 38624, 37472, 36824, 36320, 33888, 33168, 33648, 31472, 31568, 30304, 29704, 32208, 56104, 53424]
+    zplsc_c_values_channel_2: [56856, 36368, 38128, 39448, 40464, 38688, 37600, 36416, 37184, 35400, 34992, 35232, 34256, 34192, 34136, 34432, 34088, 57928, 56872]
+    zplsc_c_values_channel_3: [56200, 33536, 34664, 37072, 36704, 36512, 36880, 35592, 33536, 31888, 28936, 29184, 27552, 26640, 24576, 25808, 27600, 52824, 50440]
     zplsc_c_values_channel_4: [55344, 26928, 23456, 23680, 25968, 24000, 23856, 24160, 22232, 22296, 20656, 20584, 20528, 20504, 20520, 20480, 20544, 36872, 34856]
   - _index: 12
-    internal_timestamp: 3637395300.08
+    particle_object: ZplscCInstrumentDataParticle
+    particle_type: zplsc_c_instrument
+    internal_timestamp: 3637395301.0000000
     port_timestamp: 3637395306.2040000
-    zplsc_c_transmission_timestamp: 3637395301.0
-    serial_number: '55078'
-    zplsc_c_phase: 1
     burst_number: 49
-    zplsc_c_tilt_x: 21.8
-    zplsc_c_tilt_y: 45.7
-    zplsc_c_battery_voltage: 10.0
-    zplsc_c_temperature: 8.0
-    zplsc_c_pressure: 99.0
+    serial_number: '55078'
+    zplsc_c_battery_voltage:        10.00000
     zplsc_c_frequency_channel_1: 38
-    zplsc_c_values_channel_1: [60256, 38488, 38672, 40336, 40776, 37584, 36448, 37272, 33024, 34608, 33680, 32584, 32216, 34904, 30168, 30216, 30640, 54544, 53464]
     zplsc_c_frequency_channel_2: 125
-    zplsc_c_values_channel_2: [57920, 34176, 37744, 39208, 39600, 37744, 37000, 38064, 36568, 35672, 35760, 35288, 34904, 35328, 34696, 34568, 34352, 55432, 49856]
     zplsc_c_frequency_channel_3: 200
-    zplsc_c_values_channel_3: [57432, 32416, 34720, 36608, 37600, 37616, 35160, 34480, 32336, 33512, 31504, 29144, 28888, 32272, 29392, 28288, 28416, 51328, 49264]
     zplsc_c_frequency_channel_4: 455
+    zplsc_c_phase: 1
+    zplsc_c_pressure:        99.00000
+    zplsc_c_temperature:         8.00000
+    zplsc_c_tilt_x:        21.80000
+    zplsc_c_tilt_y:        45.70000
+    zplsc_c_values_channel_1: [60256, 38488, 38672, 40336, 40776, 37584, 36448, 37272, 33024, 34608, 33680, 32584, 32216, 34904, 30168, 30216, 30640, 54544, 53464]
+    zplsc_c_values_channel_2: [57920, 34176, 37744, 39208, 39600, 37744, 37000, 38064, 36568, 35672, 35760, 35288, 34904, 35328, 34696, 34568, 34352, 55432, 49856]
+    zplsc_c_values_channel_3: [57432, 32416, 34720, 36608, 37600, 37616, 35160, 34480, 32336, 33512, 31504, 29144, 28888, 32272, 29392, 28288, 28416, 51328, 49264]
     zplsc_c_values_channel_4: [55440, 26592, 23568, 22608, 24104, 25704, 24136, 23888, 22488, 21552, 20936, 20688, 20520, 20496, 20496, 20520, 20432, 40016, 30448]
   - _index: 13
-    internal_timestamp: 3637398900.05
+    particle_object: ZplscCInstrumentDataParticle
+    particle_type: zplsc_c_instrument
+    internal_timestamp: 3637398901.0000000
     port_timestamp: 3637398907.4489999
-    zplsc_c_transmission_timestamp: 3637398901.0
-    serial_number: '55078'
-    zplsc_c_phase: 1
     burst_number: 53
-    zplsc_c_tilt_x: 21.8
-    zplsc_c_tilt_y: 45.7
-    zplsc_c_battery_voltage: 10.0
-    zplsc_c_temperature: 8.0
-    zplsc_c_pressure: 99.0
+    serial_number: '55078'
+    zplsc_c_battery_voltage:        10.00000
     zplsc_c_frequency_channel_1: 38
-    zplsc_c_values_channel_1: [59968, 35080, 38784, 42064, 42728, 40488, 39304, 38976, 36824, 34736, 37144, 38560, 37296, 36232, 37952, 34656, 34752, 57232, 50752]
     zplsc_c_frequency_channel_2: 125
-    zplsc_c_values_channel_2: [56976, 35920, 35864, 38704, 39872, 39080, 37384, 38592, 35552, 35144, 35904, 35736, 34752, 35432, 35928, 35016, 34840, 56016, 45208]
     zplsc_c_frequency_channel_3: 200
-    zplsc_c_values_channel_3: [56168, 33296, 31856, 34920, 37168, 36648, 35312, 33200, 31536, 31256, 33888, 33896, 31048, 30976, 29552, 28224, 29192, 54824, 46288]
     zplsc_c_frequency_channel_4: 455
+    zplsc_c_phase: 1
+    zplsc_c_pressure:        99.00000
+    zplsc_c_temperature:         8.00000
+    zplsc_c_tilt_x:        21.80000
+    zplsc_c_tilt_y:        45.70000
+    zplsc_c_values_channel_1: [59968, 35080, 38784, 42064, 42728, 40488, 39304, 38976, 36824, 34736, 37144, 38560, 37296, 36232, 37952, 34656, 34752, 57232, 50752]
+    zplsc_c_values_channel_2: [56976, 35920, 35864, 38704, 39872, 39080, 37384, 38592, 35552, 35144, 35904, 35736, 34752, 35432, 35928, 35016, 34840, 56016, 45208]
+    zplsc_c_values_channel_3: [56168, 33296, 31856, 34920, 37168, 36648, 35312, 33200, 31536, 31256, 33888, 33896, 31048, 30976, 29552, 28224, 29192, 54824, 46288]
     zplsc_c_values_channel_4: [55456, 26312, 24472, 22752, 24048, 24328, 24512, 24032, 23152, 21040, 22208, 20520, 20640, 20448, 20528, 20488, 20560, 40144, 28632]
   - _index: 14
-    internal_timestamp: 3637402500.0
+    particle_object: ZplscCInstrumentDataParticle
+    particle_type: zplsc_c_instrument
+    internal_timestamp: 3637402501.0000000
     port_timestamp: 3637402506.2259998
-    zplsc_c_transmission_timestamp: 3637402501.0
-    serial_number: '55078'
-    zplsc_c_phase: 1
     burst_number: 57
-    zplsc_c_tilt_x: 21.7
-    zplsc_c_tilt_y: 45.7
-    zplsc_c_battery_voltage: 10.0
-    zplsc_c_temperature: 8.0
-    zplsc_c_pressure: 99.0
+    serial_number: '55078'
+    zplsc_c_battery_voltage:        10.00000
     zplsc_c_frequency_channel_1: 38
-    zplsc_c_values_channel_1: [60104, 41040, 40064, 38936, 40640, 37872, 38800, 37392, 35160, 38064, 34504, 33344, 33000, 31816, 33584, 32944, 32728, 57728, 50496]
     zplsc_c_frequency_channel_2: 125
-    zplsc_c_values_channel_2: [56944, 40584, 38760, 40680, 38352, 39368, 37760, 36416, 37144, 37488, 35952, 36064, 34800, 34392, 35328, 35152, 34888, 59016, 42720]
     zplsc_c_frequency_channel_3: 200
-    zplsc_c_values_channel_3: [56288, 39272, 36120, 37480, 37960, 35560, 34768, 34240, 32976, 34240, 31624, 30480, 28912, 29536, 28928, 29160, 29328, 55000, 40904]
     zplsc_c_frequency_channel_4: 455
+    zplsc_c_phase: 1
+    zplsc_c_pressure:        99.00000
+    zplsc_c_temperature:         8.00000
+    zplsc_c_tilt_x:        21.70000
+    zplsc_c_tilt_y:        45.70000
+    zplsc_c_values_channel_1: [60104, 41040, 40064, 38936, 40640, 37872, 38800, 37392, 35160, 38064, 34504, 33344, 33000, 31816, 33584, 32944, 32728, 57728, 50496]
+    zplsc_c_values_channel_2: [56944, 40584, 38760, 40680, 38352, 39368, 37760, 36416, 37144, 37488, 35952, 36064, 34800, 34392, 35328, 35152, 34888, 59016, 42720]
+    zplsc_c_values_channel_3: [56288, 39272, 36120, 37480, 37960, 35560, 34768, 34240, 32976, 34240, 31624, 30480, 28912, 29536, 28928, 29160, 29328, 55000, 40904]
     zplsc_c_values_channel_4: [55408, 26952, 24216, 22736, 25288, 24024, 23576, 24776, 23112, 22960, 21776, 21264, 20648, 20504, 20448, 20464, 20480, 41104, 21296]
   - _index: 15
-    internal_timestamp: 3637406099.96
+    particle_object: ZplscCInstrumentDataParticle
+    particle_type: zplsc_c_instrument
+    internal_timestamp: 3637406101.0000000
     port_timestamp: 3637406106.2390003
-    zplsc_c_transmission_timestamp: 3637406101.0
-    serial_number: '55078'
-    zplsc_c_phase: 1
     burst_number: 61
-    zplsc_c_tilt_x: 21.7
-    zplsc_c_tilt_y: 45.7
-    zplsc_c_battery_voltage: 10.0
-    zplsc_c_temperature: 8.0
-    zplsc_c_pressure: 99.0
+    serial_number: '55078'
+    zplsc_c_battery_voltage:        10.00000
     zplsc_c_frequency_channel_1: 38
-    zplsc_c_values_channel_1: [60032, 34016, 38088, 38368, 39528, 35432, 38504, 38720, 37416, 38104, 37216, 35296, 35520, 34704, 35224, 34816, 35728, 55216, 48840]
     zplsc_c_frequency_channel_2: 125
-    zplsc_c_values_channel_2: [56912, 34288, 38248, 36608, 37640, 38464, 37400, 38048, 37232, 37296, 36560, 35408, 35112, 35248, 35296, 34608, 35736, 56920, 43824]
     zplsc_c_frequency_channel_3: 200
-    zplsc_c_values_channel_3: [56160, 31304, 33192, 34152, 36400, 35984, 34736, 34072, 34432, 32872, 32000, 30560, 30208, 28032, 31504, 31664, 35024, 55640, 39856]
     zplsc_c_frequency_channel_4: 455
+    zplsc_c_phase: 1
+    zplsc_c_pressure:        99.00000
+    zplsc_c_temperature:         8.00000
+    zplsc_c_tilt_x:        21.70000
+    zplsc_c_tilt_y:        45.70000
+    zplsc_c_values_channel_1: [60032, 34016, 38088, 38368, 39528, 35432, 38504, 38720, 37416, 38104, 37216, 35296, 35520, 34704, 35224, 34816, 35728, 55216, 48840]
+    zplsc_c_values_channel_2: [56912, 34288, 38248, 36608, 37640, 38464, 37400, 38048, 37232, 37296, 36560, 35408, 35112, 35248, 35296, 34608, 35736, 56920, 43824]
+    zplsc_c_values_channel_3: [56160, 31304, 33192, 34152, 36400, 35984, 34736, 34072, 34432, 32872, 32000, 30560, 30208, 28032, 31504, 31664, 35024, 55640, 39856]
     zplsc_c_values_channel_4: [55456, 25440, 22848, 21680, 24728, 26352, 24040, 23552, 22024, 23120, 21400, 21000, 20800, 20496, 20496, 20480, 21448, 39200, 23408]

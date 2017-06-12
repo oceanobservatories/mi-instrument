@@ -9,20 +9,20 @@ Release notes:
 
 initial release
 """
+
 __author__ = 'cgoodrich'
 __license__ = 'Apache 2.0'
 
 import re
-import calendar
-import ntplib
-
 from mi.core.log import get_logger
 log = get_logger()
+
 from mi.core.exceptions import RecoverableSampleException, ConfigurationException
 from mi.core.common import BaseEnum
 from mi.dataset.dataset_parser import SimpleParser, DataSetDriverConfigKeys
-from mi.core.instrument.dataset_data_particle import DataParticle
+from mi.core.instrument.dataset_data_particle import DataParticle, DataParticleKey
 from mi.dataset.parser.common_regexes import SPACE_REGEX, DATE_YYYY_MM_DD_REGEX, TIME_HR_MIN_SEC_MSEC_REGEX
+from mi.dataset.parser.utilities import dcl_time_to_ntp
 """
 Composition of a properly formed line of data:
 
@@ -70,6 +70,7 @@ END_DATA_REGEX = r'(: ?[+-]?[0-9]+ [0-9A-Fa-f]+)'
 END_DATA_MATCHER = re.compile(END_DATA_REGEX)
 
 # Regex group indices
+DCL_TIMESTAMP = 0
 YEAR_GROUP = 2
 MONTH_GROUP = 3
 DAY_GROUP = 4
@@ -128,9 +129,7 @@ class FuelCellEngDclDataCommonParticle(DataParticle):
 
     def _build_parsed_values(self):
 
-        particle_parameters = [self._encode_value('dcl_controller_timestamp',
-                                                  self.raw_data[0], str)]
-
+        particle_parameters = []
         # Loop through the unpack dictionary and encode integers
         for name, index in self.UNPACK_DICT.iteritems():
             particle_parameters.append(self._encode_value(name, self.raw_data[index], int))
@@ -235,18 +234,6 @@ class FuelCellEngDclParser(SimpleParser):
         else:
             return False
 
-    @staticmethod
-    def get_timestamp(my_tuple):
-        """
-        Convert the date and time from the record to a Unix timestamp
-        :param my_tuple: The timestamp as a tuple
-        :return: the NTP timestamp
-        """
-        timestamp = my_tuple[:6]+(0, 0, 0)
-        elapsed_seconds = calendar.timegm(timestamp) + int(my_tuple[6])/1000.0
-
-        return float(ntplib.system_to_ntp_time(elapsed_seconds))
-
     def parse_file(self):
         """
         Parser for velpt_ab_dcl data.
@@ -305,20 +292,18 @@ class FuelCellEngDclParser(SimpleParser):
                                 the_fields = actual_data.split(',')
 
                                 if self.good_field(the_fields):
-                                    timestamp = self.get_timestamp((int(found_date_time_group.group(YEAR_GROUP)),
-                                                                    int(found_date_time_group.group(MONTH_GROUP)),
-                                                                    int(found_date_time_group.group(DAY_GROUP)),
-                                                                    int(found_date_time_group.group(HOUR_GROUP)),
-                                                                    int(found_date_time_group.group(MINUTE_GROUP)),
-                                                                    int(found_date_time_group.group(SECONDS_GROUP)),
-                                                                    int(found_date_time_group.group(MILLISECONDS_GROUP))))
+                                    # DCL controller timestamp  is the port_timestamp
+                                    dcl_controller_timestamp = date_time_group
+                                    port_timestamp = dcl_time_to_ntp(dcl_controller_timestamp)
 
                                     raw_data = [date_time_group]
                                     raw_data.extend(the_fields)
+
                                     particle = self._extract_sample(self._fuelcell_data_class,
                                                                     None,
                                                                     raw_data,
-                                                                    timestamp)
+                                                                    port_timestamp=port_timestamp,
+                                                                    preferred_ts=DataParticleKey.PORT_TIMESTAMP)
 
                                     self._record_buffer.append(particle)
 

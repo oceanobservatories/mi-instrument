@@ -1,7 +1,6 @@
 header:
-    particle_object: MULTIPLE
-    particle_type: MULTIPLE
-
+    particle_object: 'MULTIPLE'
+    particle_type: 'MULTIPLE'
 data:
   - _index: 1
     particle_object: FlortDjDclTelemeteredInstrumentDataParticle
@@ -9,6 +8,5 @@ data:
     internal_timestamp: 3629233816.0000000
     port_timestamp: 3629233823.3950000
     raw_signal_beta: 0
-    raw_signal_chl: 0
     raw_signal_cdom: 0
-    date_time_string: '03 Jan 2015 00:30:16'
+    raw_signal_chl: 0

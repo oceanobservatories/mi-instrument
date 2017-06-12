@@ -55,7 +55,7 @@ class CtdpfCklWfpParser(WfpCFileCommonParser):
         @param raw_data raw data to parse, in this case a tuple of the time string to parse and the number of records
         @param timestamp timestamp in NTP64
         """
-        sample = self._extract_sample(self._metadata_particle_class, None, raw_data, timestamp)
+        sample = self._extract_sample(self._metadata_particle_class, None, raw_data, internal_timestamp=timestamp)
         return sample
 
     def extract_data_particle(self, raw_data, timestamp):
@@ -64,5 +64,5 @@ class CtdpfCklWfpParser(WfpCFileCommonParser):
         @param raw_data the raw data to parse
         @param timestamp the timestamp in NTP64
         """
-        sample = self._extract_sample(self._instrument_data_particle_class, None, raw_data, timestamp)
+        sample = self._extract_sample(self._instrument_data_particle_class, None, raw_data, internal_timestamp=timestamp)
         return sample

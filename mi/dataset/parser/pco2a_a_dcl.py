@@ -32,26 +32,31 @@ __license__ = 'Apache 2.0'
 import re
 
 from mi.core.log import get_logger
+
 log = get_logger()
 
 from mi.core.common import BaseEnum
 
 from mi.dataset.parser.dcl_file_common import DclInstrumentDataParticle, \
-    DclFileCommonParser, SENSOR_GROUP_TIMESTAMP, TIMESTAMP,\
+    DclFileCommonParser, TIMESTAMP, \
     START_METADATA, END_METADATA, START_GROUP, END_GROUP
 
 from mi.dataset.parser.common_regexes import END_OF_LINE_REGEX, SPACE_REGEX, \
     FLOAT_REGEX, UNSIGNED_INT_REGEX, TIME_HR_MIN_SEC_REGEX, ANY_CHARS_REGEX
 
+from mi.dataset.parser.utilities import timestamp_yyyy_mm_dd_hh_mm_ss_to_ntp
+
+from mi.core.instrument.data_particle import DataParticleKey
+
 # Basic patterns
-UINT = '('+UNSIGNED_INT_REGEX+')'   # unsigned integer as a group
-FLOAT = '('+FLOAT_REGEX+')'         # floating point as a captured group
+UINT = '(' + UNSIGNED_INT_REGEX + ')'  # unsigned integer as a group
+FLOAT = '(' + FLOAT_REGEX + ')'  # floating point as a captured group
 W_CHAR = r'(W)'
 A_CHAR = r'(A)'
 COMMA = ','
 SHARP = '#'
 CHAR_M = ' *M'
-EXTRA_CR = '\s*?'                 # account for random <CR> found in some live files.
+EXTRA_CR = '\s*?'  # account for random <CR> found in some live files.
 
 # Timestamp at the start of each record: YYYY/MM/DD HH:MM:SS.mmm
 # Metadata fields:  [text] more text
@@ -61,12 +66,12 @@ SENSOR_DATE = r'(\d{4}/\d{2}/\d{2})'  # Sensor Date: MM/DD/YY
 
 # Metadata record:
 #   Timestamp [Text]MoreText newline
-METADATA_PATTERN = TIMESTAMP + SPACE_REGEX      # dcl controller timestamp
-METADATA_PATTERN += START_METADATA              # Metadata record starts with '['
-METADATA_PATTERN += ANY_CHARS_REGEX             # followed by text
-METADATA_PATTERN += END_METADATA                # followed by ']'
-METADATA_PATTERN += ANY_CHARS_REGEX             # followed by more text
-METADATA_PATTERN += END_OF_LINE_REGEX           # metadata record ends with LF
+METADATA_PATTERN = TIMESTAMP + SPACE_REGEX  # dcl controller timestamp
+METADATA_PATTERN += START_METADATA  # Metadata record starts with '['
+METADATA_PATTERN += ANY_CHARS_REGEX  # followed by text
+METADATA_PATTERN += END_METADATA  # followed by ']'
+METADATA_PATTERN += ANY_CHARS_REGEX  # followed by more text
+METADATA_PATTERN += END_OF_LINE_REGEX  # metadata record ends with LF
 METADATA_MATCHER = re.compile(METADATA_PATTERN)
 
 # Sensor data record:
@@ -75,22 +80,21 @@ METADATA_MATCHER = re.compile(METADATA_PATTERN)
 SENSOR_DATA_PATTERN = TIMESTAMP + SPACE_REGEX  # dcl controller timestamp
 SENSOR_DATA_PATTERN += SHARP + START_GROUP + SENSOR_DATE + SPACE_REGEX  # sensor date
 SENSOR_DATA_PATTERN += TIME_HR_MIN_SEC_REGEX + END_GROUP + COMMA + CHAR_M + COMMA  # sensor time
-SENSOR_DATA_PATTERN += UINT + COMMA         # measurement wavelength beta
-SENSOR_DATA_PATTERN += UINT + COMMA         # raw signal beta
-SENSOR_DATA_PATTERN += FLOAT + COMMA        # measurement wavelength chl
-SENSOR_DATA_PATTERN += FLOAT + COMMA        # raw signal chl
-SENSOR_DATA_PATTERN += FLOAT + COMMA        # measurement wavelength cdom
-SENSOR_DATA_PATTERN += FLOAT + COMMA        # raw signal cdom
-SENSOR_DATA_PATTERN += UINT + COMMA         # raw signal beta
-SENSOR_DATA_PATTERN += FLOAT + COMMA        # raw signal cdom
-SENSOR_DATA_PATTERN += FLOAT + COMMA        # raw signal cdom
+SENSOR_DATA_PATTERN += UINT + COMMA  # measurement wavelength beta
+SENSOR_DATA_PATTERN += UINT + COMMA  # raw signal beta
+SENSOR_DATA_PATTERN += FLOAT + COMMA  # measurement wavelength chl
+SENSOR_DATA_PATTERN += FLOAT + COMMA  # raw signal chl
+SENSOR_DATA_PATTERN += FLOAT + COMMA  # measurement wavelength cdom
+SENSOR_DATA_PATTERN += FLOAT + COMMA  # raw signal cdom
+SENSOR_DATA_PATTERN += UINT + COMMA  # raw signal beta
+SENSOR_DATA_PATTERN += FLOAT + COMMA  # raw signal cdom
+SENSOR_DATA_PATTERN += FLOAT + COMMA  # raw signal cdom
 
 SENSOR_DATA_PATTERN_AIR = SENSOR_DATA_PATTERN + A_CHAR + EXTRA_CR + END_OF_LINE_REGEX
 SENSOR_DATA_MATCHER_AIR = re.compile(SENSOR_DATA_PATTERN_AIR)
 
 SENSOR_DATA_PATTERN_WATER = SENSOR_DATA_PATTERN + W_CHAR + EXTRA_CR + END_OF_LINE_REGEX
 SENSOR_DATA_MATCHER_WATER = re.compile(SENSOR_DATA_PATTERN_WATER)
-
 
 # Manual test is below
 # >>me = re.match(r"((\d{4})/(\d{2})/(\d{2}) (\d{2}):(\d{2}):(\d{2})\.(\d{3})) #((\d{4}/\d{2}/\d{2})
@@ -121,8 +125,6 @@ SENSOR_GROUP_SOURCE_TEMP = 21
 SENSOR_GROUP_SAMPLE_TYPE = 22
 
 INSTRUMENT_PARTICLE_AIR_MAP = [
-    ('dcl_controller_timestamp', SENSOR_GROUP_TIMESTAMP, str),
-    ('date_time_string', SENSOR_GROUP_SENSOR_DATE_TIME, str),
     ('zero_a2d', SENSOR_GROUP_ZERO_A2D, int),
     ('current_a2d', SENSOR_GROUP_CURRENT_A2D, int),
     ('measured_air_co2', SENSOR_GROUP_CO2, float),
@@ -135,8 +137,6 @@ INSTRUMENT_PARTICLE_AIR_MAP = [
 ]
 
 INSTRUMENT_PARTICLE_WATER_MAP = [
-    ('dcl_controller_timestamp', SENSOR_GROUP_TIMESTAMP, str),
-    ('date_time_string', SENSOR_GROUP_SENSOR_DATE_TIME, str),
     ('zero_a2d', SENSOR_GROUP_ZERO_A2D, int),
     ('current_a2d', SENSOR_GROUP_CURRENT_A2D, int),
     ('measured_water_co2', SENSOR_GROUP_CO2, float),
@@ -171,9 +171,16 @@ class Pco2aADclInstrumentDataParticleAir(DclInstrumentDataParticle):
     data_matcher = SENSOR_DATA_MATCHER_AIR
 
     def __init__(self, raw_data, *args, **kwargs):
-
         super(Pco2aADclInstrumentDataParticleAir, self).__init__(
             raw_data, INSTRUMENT_PARTICLE_AIR_MAP, *args, **kwargs)
+
+        # instrument_timestamp is the internal_timestamp
+        instrument_timestamp = self.raw_data[SENSOR_GROUP_SENSOR_DATE_TIME]
+        elapsed_seconds_useconds = timestamp_yyyy_mm_dd_hh_mm_ss_to_ntp(instrument_timestamp)
+        self.set_internal_timestamp(elapsed_seconds_useconds)
+
+        # instrument clock is not accurate so, use port_timestamp as the preferred_ts
+        self.contents[DataParticleKey.PREFERRED_TIMESTAMP] = DataParticleKey.PORT_TIMESTAMP
 
 
 class Pco2aADclInstrumentDataParticleWater(DclInstrumentDataParticle):
@@ -183,9 +190,16 @@ class Pco2aADclInstrumentDataParticleWater(DclInstrumentDataParticle):
     data_matcher = SENSOR_DATA_MATCHER_WATER
 
     def __init__(self, raw_data, *args, **kwargs):
-
         super(Pco2aADclInstrumentDataParticleWater, self).__init__(
             raw_data, INSTRUMENT_PARTICLE_WATER_MAP, *args, **kwargs)
+
+        # Instrument timestamp is the internal timestamp
+        instrument_timestamp = self.raw_data[SENSOR_GROUP_SENSOR_DATE_TIME]
+        elapsed_seconds_useconds = timestamp_yyyy_mm_dd_hh_mm_ss_to_ntp(instrument_timestamp)
+        self.set_internal_timestamp(elapsed_seconds_useconds)
+
+        # instrument clock is not accurate so, use port_timestamp as the preferred_ts
+        self.contents[DataParticleKey.PREFERRED_TIMESTAMP] = DataParticleKey.PORT_TIMESTAMP
 
 
 class Pco2aADclTelemeteredInstrumentDataParticleAir(Pco2aADclInstrumentDataParticleAir):
@@ -225,7 +239,6 @@ class Pco2aADclParser(DclFileCommonParser):
                  config,
                  stream_handle,
                  exception_callback):
-
         super(Pco2aADclParser, self).__init__(config,
                                               stream_handle,
                                               exception_callback,

@@ -172,7 +172,10 @@ class WinchCsppParser(SimpleParser):
                 time_stamp = ntplib.system_to_ntp_time(unix_time)
 
                 # Generate a Winch CSPP particle using the group dictionary and add it to the internal buffer
-                particle = self._extract_sample(WinchCsppDataParticle, None, match.groupdict(), time_stamp)
+                particle = self._extract_sample(WinchCsppDataParticle,
+                                                None,
+                                                match.groupdict(),
+                                                internal_timestamp=time_stamp)
                 if particle is not None:
                     self._record_buffer.append(particle)
 

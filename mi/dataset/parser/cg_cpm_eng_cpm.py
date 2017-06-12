@@ -1739,7 +1739,7 @@ class CgCpmEngCpmParser(SimpleParser):
 
         # Let's attempt to extract the single record expected in the file and append it to the record
         # buffer.
-        record = self._extract_sample(self._particle_class, None, param_rules_and_values_dict, None)
+        record = self._extract_sample(self._particle_class, None, param_rules_and_values_dict)
         self._record_buffer.append(record)
 
         # Set an indication that the file was fully parsed

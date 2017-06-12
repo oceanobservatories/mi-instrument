@@ -301,7 +301,7 @@ class AdcptMLog9Parser(SimpleParser):
 
                     else:
                         # Extract a particle and append it to the record buffer
-                        particle = self._extract_sample(AdcptMLog9InstrumentDataParticle, None, parsed_data, None)
+                        particle = self._extract_sample(AdcptMLog9InstrumentDataParticle, None, parsed_data)
                         self._record_buffer.append(particle)
 
                 # Throw an exception if there was an error decoding the data

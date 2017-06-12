@@ -311,7 +311,7 @@ class AdcpsJlnStcParser(SimpleParser):
             header_footer = header_match.group(0) + footer_match.group(0)
 
             particle = self._extract_sample(self._metadata_class, None,
-                                            header_footer, self._timestamp)
+                                            header_footer, internal_timestamp=self._timestamp)
 
             self._record_buffer.append(particle)
 
@@ -355,8 +355,7 @@ class AdcpsJlnStcParser(SimpleParser):
 
                     particle = self._extract_sample(self._instrument_class,
                                                     None,
-                                                    data_finder_match,
-                                                    None)
+                                                    data_finder_match)
 
                     self._record_buffer.append(particle)
                 else:

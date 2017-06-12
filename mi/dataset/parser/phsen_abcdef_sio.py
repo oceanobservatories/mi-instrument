@@ -393,7 +393,7 @@ class PhsenAbcdefSioParser(SioParser):
                         log.debug('Found data match in chunk %s at index %d', chunk[1:32], index)
                         # particle-ize the data block received, return the record
                         sample = self._extract_sample(PhsenAbcdefSioDataParticle, None,
-                                                      (header_match.group(3), data_match), None)
+                                                      (header_match.group(3), data_match))
                         result_particles.append(sample)
 
                         index += len(data_match.group(0))
@@ -402,7 +402,7 @@ class PhsenAbcdefSioParser(SioParser):
                         log.debug('Found control match in chunk %s at index %d', chunk[1:32], index)
                         # particle-ize the data block received, return the record
                         sample = self._extract_sample(PhsenAbcdefSioControlDataParticle, None,
-                                                      (header_match.group(3), control_match), None)
+                                                      (header_match.group(3), control_match))
                         result_particles.append(sample)
 
                         index += len(control_match.group(0))

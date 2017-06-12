@@ -315,5 +315,5 @@ class AdcptMDspecParser(SimpleParser):
         ]
 
         # Extract a particle and append it to the record buffer
-        particle = self._extract_sample(AdcptMDspecInstrumentDataParticle, None, parsed_data, None)
+        particle = self._extract_sample(AdcptMDspecInstrumentDataParticle, None, parsed_data)
         self._record_buffer.append(particle)

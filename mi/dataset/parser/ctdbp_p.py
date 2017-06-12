@@ -109,7 +109,7 @@ class CtdbpPCommonDataParticle(DataParticle):
         # Calculate the internal timestamp.  CTD Time is sceonds from 1/1/2000.
         # Internal timestamp is seconds from 1/1/1900
         ctd_time = int(self.raw_data.group('ctd_time'), 16)
-        ntp_time = utilities.time_2000_to_ntp_time(ctd_time)
+        ntp_time = utilities.time_2000_to_ntp(ctd_time)
         self.set_internal_timestamp(timestamp=ntp_time)
 
     def _build_parsed_values(self):
@@ -166,8 +166,7 @@ class CtdbpPCommonParser(SimpleParser):
                 if data_match is not None:
                     data_particle = self._extract_sample(self._particle_class,
                                                          None,
-                                                         data_match,
-                                                         None)
+                                                         data_match)
                     self._record_buffer.append(data_particle)
                 else:
                     # something in the data didn't match a required regex, so raise an exception and press on.

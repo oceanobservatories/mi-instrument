@@ -187,7 +187,7 @@ class NutnrbParser(BufferLoadingParser):
 
             if data_match:
                 # particle-ize the data block received, return the record
-                sample = self._extract_sample(self._particle_class, DATA_MATCHER, chunk, self._timestamp)
+                sample = self._extract_sample(self._particle_class, DATA_MATCHER, chunk, internal_timestamp=self._timestamp)
                 if sample:
                     # create particle
                     self._increment_state(end)

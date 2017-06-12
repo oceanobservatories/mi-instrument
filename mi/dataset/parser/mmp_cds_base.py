@@ -132,7 +132,7 @@ class MmpCdsParser(SimpleParser):
                     # derived MmpCdsParser
 
                     try:
-                        data_particle = self._extract_sample(self._particle_class, None, unpacked_data, None)
+                        data_particle = self._extract_sample(self._particle_class, None, unpacked_data)
                         self._record_buffer.append(data_particle)
                     except SampleException:
                         log.debug(UNEXPECTED_UNPACKED_MSGPACK_FORMAT_MSG)

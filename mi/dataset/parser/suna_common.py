@@ -165,10 +165,10 @@ class SunaParser(SimpleParser):
 
                     if frame_type.startswith('SL'):  # light frame
 
-                        particle = self._extract_sample(self.light_particle_class, None, fields, timestamp)
+                        particle = self._extract_sample(self.light_particle_class, None, fields, internal_timestamp=timestamp)
                         self._record_buffer.append(particle)
                     elif frame_type.startswith('SD'):   # dark frame
-                        particle = self._extract_sample(self.dark_particle_class, None, fields, timestamp)
+                        particle = self._extract_sample(self.dark_particle_class, None, fields, internal_timestamp=timestamp)
                         self._record_buffer.append(particle)
                     else:  # unexpected frame type
                         msg = 'got invalid frame type %sd' % frame_type

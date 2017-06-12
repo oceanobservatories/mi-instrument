@@ -70,8 +70,9 @@ from mi.core.exceptions import RecoverableSampleException
 from mi.core.instrument.dataset_data_particle import DataParticle, DataParticleKey
 from mi.core.log import get_logging_metaclass
 from mi.dataset.dataset_parser import SimpleParser
-from mi.dataset.parser.utilities import dcl_controller_timestamp_to_ntp_time, timestamp_yyyymmddhhmmss_to_ntp_time, \
-    timestamp_yymmddhhmmsshh_to_ntp_time
+from mi.dataset.parser.utilities import \
+    dcl_time_to_ntp, \
+    timestamp_yyyymmddhhmmss_to_ntp
 from mi.dataset.parser.common_regexes import UNSIGNED_INT_REGEX, END_OF_LINE_REGEX, \
     DATE_YYYY_MM_DD_REGEX, TIME_HR_MIN_SEC_MSEC_REGEX
 
@@ -218,7 +219,6 @@ ZPLSC_C_DATA_RULES = [
 # The following is used to encode values for the data particle and is defined as below:
 # (parameter name, count (or count reference), encoding function)
 ZPLSC_C_PARTICLE_RULES = [
-    (ZplscCParticleKey.TRANS_TIMESTAMP,  1,  timestamp_yyyymmddhhmmss_to_ntp_time),
     (ZplscCParticleKey.SERIAL_NUMBER,    1,  str),
     (ZplscCParticleKey.PHASE,            1,  int),
     (ZplscCParticleKey.BURST_NUMBER,     1,  int),
@@ -259,9 +259,6 @@ class ZplscCInstrumentDataParticle(DataParticle):
         # Generate a particle by calling encode_value for each entry in the Instrument
         # Particle Mapping table, where each entry is a tuple containing the particle
         # field name, count(or count reference) and a function to use for data conversion.
-
-        port_timestamp = dcl_controller_timestamp_to_ntp_time(self.raw_data[ZplscCDataKey.DCL_TIMESTAMP])
-        self.contents[DataParticleKey.PORT_TIMESTAMP] = port_timestamp
 
         return [{DataParticleKey.VALUE_ID: name, DataParticleKey.VALUE: None}
                 if self.raw_data[name] is None else
@@ -311,13 +308,21 @@ class ZplscCDclParser(SimpleParser):
                     log.error('Erroneous data found in line %s: %s', number, line)
                     continue
 
-                # Convert the Burst timestamp into the Internal timestamp
-                internal_timestamp = timestamp_yymmddhhmmsshh_to_ntp_time(data_dict[ZplscCDataKey.BURST_DATE])
+                dcl_timestamp = data_dict[ZplscCDataKey.DCL_TIMESTAMP]
+                # dcl_timestamp is the port_timestamp
+                port_timestamp = dcl_time_to_ntp(dcl_timestamp)
 
-                # Extract a particle, setting the internal timestamp to the burst timestamp and the preferred timestamp
-                # to the port timestamp. Then append it to the record buffer.
-                particle = self._extract_sample(
-                    ZplscCInstrumentDataParticle, None, data_dict, internal_timestamp, DataParticleKey.PORT_TIMESTAMP)
+                transmission_timestamp = data_dict[ZplscCParticleKey.TRANS_TIMESTAMP]
+                # transmission_timestamp is the the internal_timestamp
+                internal_timestamp = timestamp_yyyymmddhhmmss_to_ntp(transmission_timestamp)
+
+                # Extract a particle and append it to the record buffer.
+                particle = self._extract_sample(ZplscCInstrumentDataParticle,
+                                                None,
+                                                data_dict,
+                                                internal_timestamp=internal_timestamp,
+                                                port_timestamp=port_timestamp,
+                                                preferred_ts=DataParticleKey.PORT_TIMESTAMP)
                 if particle is not None:
                     log.trace('Parsed particle: %s' % particle.generate_dict())
                     self._record_buffer.append(particle)
