@@ -14,6 +14,7 @@ import ntplib
 from nose.plugins.attrib import attr
 
 from mi.core.exceptions import UnexpectedDataException
+from mi.core.instrument.data_particle import DataParticleKey
 from mi.core.log import get_logger
 from mi.dataset.dataset_parser import DataSetDriverConfigKeys
 from mi.dataset.driver.dosta_ln.wfp_sio.resource import RESOURCE_PATH
@@ -40,26 +41,30 @@ class DostaLnWfpSioParserUnitTestCase(ParserUnitTestCase):
         self.particle_1a = DostaLnWfpSioDataParticle(
             b'\x52\x04\xCC\x2D\x00\x00\x00\x00\x41\x3B\x6F\xD2\x00\x00\x00'
             b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x37\x00\x60\x02\x3E',
-            internal_timestamp=self.timestamp_1a)
+            internal_timestamp=self.timestamp_1a,
+            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         self.timestamp_1b = self.timestamp_to_ntp(b'\x52\x04\xCD\x70')
         self.particle_1b = DostaLnWfpSioDataParticle(
             b'\x52\x04\xCD\x70\x43\x66\x2F\x90\x41\x32\xDE\x01\x45\x7D\xA7'
             b'\x85\x43\x13\x9F\x7D\x3F\xBF\xBE\x77\x00\x37\x00\x61\x02\x3C',
-            internal_timestamp=self.timestamp_1b)
+            internal_timestamp=self.timestamp_1b,
+            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         self.timestamp_1c = self.timestamp_to_ntp(b'\x52\x04\xCE\xB0')
         self.particle_1c = DostaLnWfpSioDataParticle(
             b'\x52\x04\xCE\xB0\x43\x6D\xEA\x30\x41\x2F\xE5\xC9\x45\x78\x56'
             b'\x66\x43\x12\x94\x39\x3F\xBF\x9D\xB2\x00\x37\x00\x73\x02\x3B',
-            internal_timestamp=self.timestamp_1c)
+            internal_timestamp=self.timestamp_1c,
+            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         self.timestamp_1d = self.timestamp_to_ntp(b'\x52\x04\xCF\xF0')
 
         self.particle_1d = DostaLnWfpSioDataParticle(
             b'\x52\x04\xCF\xF0\x43\x6E\x7C\x78\x41\x2E\xF4\xF1\x45\x73\x1B'
             b'\x0A\x43\x11\x9F\x7D\x3F\xBF\x7C\xEE\x00\x37\x00\x5E\x02\x3B',
-            internal_timestamp=self.timestamp_1d)
+            internal_timestamp=self.timestamp_1d,
+            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
     def timestamp_to_ntp(self, hex_timestamp):
         fields = struct.unpack('>I', hex_timestamp)

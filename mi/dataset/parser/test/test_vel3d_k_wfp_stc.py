@@ -14,6 +14,7 @@ import ntplib
 from nose.plugins.attrib import attr
 
 from mi.core.exceptions import SampleException
+from mi.core.instrument.data_particle import DataParticleKey
 from mi.core.log import get_logger
 from mi.dataset.dataset_parser import DataSetDriverConfigKeys
 from mi.dataset.driver.vel3d_k.wfp_stc.resource import RESOURCE_PATH
@@ -135,32 +136,39 @@ class Vel3dKWfpStcParserUnitTestCase(ParserUnitTestCase):
         # This parser stores the groups from the data matcher in raw_data.
         #
         ntp_time = ntplib.system_to_ntp_time(1380470402.0)
-        self.expected_particle1 = Vel3dKWfpStcInstrumentParticle(
-            VELOCITY_1_GROUPS, internal_timestamp=ntp_time)
+        self.expected_particle1 = Vel3dKWfpStcInstrumentParticle(VELOCITY_1_GROUPS,
+                                                                 internal_timestamp=ntp_time,
+                                                                 preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         ntp_time = ntplib.system_to_ntp_time(1380470402.5)
-        self.expected_particle2 = Vel3dKWfpStcInstrumentParticle(
-            VELOCITY_2_GROUPS, internal_timestamp=ntp_time)
+        self.expected_particle2 = Vel3dKWfpStcInstrumentParticle(VELOCITY_2_GROUPS,
+                                                                 internal_timestamp=ntp_time,
+                                                                 preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         ntp_time = ntplib.system_to_ntp_time(1380470403.0)
-        self.expected_particle3 = Vel3dKWfpStcInstrumentParticle(
-            VELOCITY_1_GROUPS, internal_timestamp=ntp_time)
+        self.expected_particle3 = Vel3dKWfpStcInstrumentParticle(VELOCITY_1_GROUPS,
+                                                                 internal_timestamp=ntp_time,
+                                                                 preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         ntp_time = ntplib.system_to_ntp_time(1380470403.5)
-        self.expected_particle4 = Vel3dKWfpStcInstrumentParticle(
-            VELOCITY_2_GROUPS, internal_timestamp=ntp_time)
+        self.expected_particle4 = Vel3dKWfpStcInstrumentParticle(VELOCITY_2_GROUPS,
+                                                                 internal_timestamp=ntp_time,
+                                                                 preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         ntp_time = ntplib.system_to_ntp_time(1380470402.0)
-        self.expected_time1 = Vel3dKWfpStcMetadataParticle(
-            TIME_1_GROUPS, internal_timestamp=ntp_time)
+        self.expected_time1 = Vel3dKWfpStcMetadataParticle(TIME_1_GROUPS,
+                                                           internal_timestamp=ntp_time,
+                                                           preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         ntp_time = ntplib.system_to_ntp_time(1380470402.0)
-        self.expected_time2 = Vel3dKWfpStcMetadataParticle(
-            TIME_2_GROUPS, internal_timestamp=ntp_time)
+        self.expected_time2 = Vel3dKWfpStcMetadataParticle(TIME_2_GROUPS,
+                                                           internal_timestamp=ntp_time,
+                                                           preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         ntp_time = ntplib.system_to_ntp_time(1380470402.0)
-        self.expected_time8 = Vel3dKWfpStcMetadataParticle(
-            TIME_8_GROUPS, internal_timestamp=ntp_time)
+        self.expected_time8 = Vel3dKWfpStcMetadataParticle(TIME_8_GROUPS,
+                                                           internal_timestamp=ntp_time,
+                                                           preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
     def verify_contents(self, actual_particle, expected_particle):
         # log.debug('EXP %s XXX', dir(expected_particle))

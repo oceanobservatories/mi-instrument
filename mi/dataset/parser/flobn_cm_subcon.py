@@ -203,7 +203,7 @@ class FlobnMSubconTemperatureParser(SimpleParser):
             log.debug("Read in line: %r", row)
             try:
                 # Extract a particle and append it to the record buffer
-                particle = self._extract_sample(FlobnMAmbientTemperatureDataParticle, None, row, None)
+                particle = self._extract_sample(FlobnMAmbientTemperatureDataParticle, None, row)
                 self._record_buffer.append(particle)
             except:
                 log.warn("Data cannot be parsed: %r", row)
@@ -222,43 +222,43 @@ class FlobnMSubconParser(SimpleParser):
             try:
                 #chop data into chunks for parsing
                 log.debug("Part of line1: %r", row[1:3])
-                particle = self._extract_sample(FlobnMPositionX1DataParticle, None, row[1:3], None)
+                particle = self._extract_sample(FlobnMPositionX1DataParticle, None, row[1:3])
                 self._record_buffer.append(particle)
                 log.debug("Part of line2: %r", row[3:5])
-                particle = self._extract_sample(FlobnMPositionX2DataParticle, None, row[3:5], None)
+                particle = self._extract_sample(FlobnMPositionX2DataParticle, None, row[3:5])
                 self._record_buffer.append(particle)
 
                 log.debug("Part of line3: %r", row[5:7])
-                particle = self._extract_sample(FlobnMPositionY1DataParticle, None, row[5:7], None)
+                particle = self._extract_sample(FlobnMPositionY1DataParticle, None, row[5:7])
                 self._record_buffer.append(particle)
                 log.debug("Part of line4: %r", row[7:9])
-                particle = self._extract_sample(FlobnMPositionY2DataParticle, None, row[7:9], None)
+                particle = self._extract_sample(FlobnMPositionY2DataParticle, None, row[7:9])
                 self._record_buffer.append(particle)
 
                 log.debug("Part of line5: %r", row[9:17])
-                particle = self._extract_sample(FlobnMPositionZ1DataParticle, None, row[9:17], None)
+                particle = self._extract_sample(FlobnMPositionZ1DataParticle, None, row[9:17])
                 self._record_buffer.append(particle)
                 log.debug("Part of line6: %r", row[17:25])
-                particle = self._extract_sample(FlobnMPositionZ2DataParticle, None, row[17:25], None)
+                particle = self._extract_sample(FlobnMPositionZ2DataParticle, None, row[17:25])
                 self._record_buffer.append(particle)
                 log.debug("Part of line7: %r", row[25:33])
-                particle = self._extract_sample(FlobnMPositionZ3DataParticle, None, row[25:33], None)
+                particle = self._extract_sample(FlobnMPositionZ3DataParticle, None, row[25:33])
                 self._record_buffer.append(particle)
                 log.debug("Part of line8: %r", row[33:41])
-                particle = self._extract_sample(FlobnMPositionZ4DataParticle, None, row[33:41], None)
+                particle = self._extract_sample(FlobnMPositionZ4DataParticle, None, row[33:41])
                 self._record_buffer.append(particle)
                 log.debug("Part of line9: %r", row[41:49])
-                particle = self._extract_sample(FlobnMPositionZ5DataParticle, None, row[41:49], None)
+                particle = self._extract_sample(FlobnMPositionZ5DataParticle, None, row[41:49])
                 self._record_buffer.append(particle)
 
                 log.debug("Part of line10: %r", row[49:51])
-                particle = self._extract_sample(FlobnMDirectionXFlowRateDataParticle, None, row[49:51], None)
+                particle = self._extract_sample(FlobnMDirectionXFlowRateDataParticle, None, row[49:51])
                 self._record_buffer.append(particle)
                 log.debug("Part of line11: %r", row[51:53])
-                particle = self._extract_sample(FlobnMDirectionYFlowRateDataParticle, None, row[51:53], None)
+                particle = self._extract_sample(FlobnMDirectionYFlowRateDataParticle, None, row[51:53])
                 self._record_buffer.append(particle)
                 log.debug("Part of line12: %r", row[53:])
-                particle = self._extract_sample(FlobnMDirectionZFlowRateDataParticle, None, row[53:], None)
+                particle = self._extract_sample(FlobnMDirectionZFlowRateDataParticle, None, row[53:])
                 self._record_buffer.append(particle)
 
             except:
@@ -281,9 +281,9 @@ class FlobnCSubconParser(SimpleParser):
 
             try:
                 # Extract a particle and append it to the record buffer
-                particle = self._extract_sample(FlobnCUpperCoilDataParticle, None, row[1:14], None)
+                particle = self._extract_sample(FlobnCUpperCoilDataParticle, None, row[1:14])
                 self._record_buffer.append(particle)
-                particle = self._extract_sample(FlobnCLowerCoilDataParticle, None, row[14:], None)
+                particle = self._extract_sample(FlobnCLowerCoilDataParticle, None, row[14:])
                 self._record_buffer.append(particle)
 
             except:

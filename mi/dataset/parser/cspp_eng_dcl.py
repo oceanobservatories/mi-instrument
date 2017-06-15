@@ -14,7 +14,10 @@ import re
 import ntplib
 
 from mi.core.log import get_logger
-from mi.core.instrument.dataset_data_particle import DataParticle
+from mi.core.instrument.dataset_data_particle import \
+    DataParticle, \
+    DataParticleKey
+
 from mi.core.common import BaseEnum
 from mi.core.exceptions import RecoverableSampleException
 
@@ -23,7 +26,7 @@ from mi.dataset.parser.common_regexes import END_OF_LINE_REGEX, \
     DATE_YYYY_MM_DD_REGEX, TIME_HR_MIN_SEC_MSEC_REGEX, \
     ONE_OR_MORE_WHITESPACE_REGEX, ANY_CHARS_REGEX, \
     ASCII_HEX_CHAR_REGEX, FLOAT_REGEX, SPACE_REGEX as SPACE
-from mi.dataset.parser.utilities import dcl_controller_timestamp_to_ntp_time, formatted_timestamp_utc_time
+from mi.dataset.parser.utilities import dcl_time_to_ntp, formatted_timestamp_utc_time
 
 log = get_logger()
 
@@ -318,11 +321,13 @@ class CsppEngDclParser(SimpleParser):
 
                     else:
                         # Create particle and add to buffer
-                        timestamp = dcl_controller_timestamp_to_ntp_time(timestamp_str)
+                        timestamp = dcl_time_to_ntp(timestamp_str)
                         data_particle = self._extract_sample(particle_class,
                                                              None,
                                                              fields[7:],
-                                                             timestamp)
+                                                             port_timestamp=timestamp,
+                                                             preferred_ts=DataParticleKey.PORT_TIMESTAMP)
+
                         self._record_buffer.append(data_particle)
                 else:
                     message = 'checksum failed on line %s' % line
@@ -334,22 +339,25 @@ class CsppEngDclParser(SimpleParser):
         # only send modem particle if we have a timestamp
         # and at least one parameter
         if first_timestamp and (distance or dsp_bat or xmit_bat):
-            timestamp = dcl_controller_timestamp_to_ntp_time(first_timestamp)
+            timestamp = dcl_time_to_ntp(first_timestamp)
             data_particle = self._extract_sample(CsppEngDclModemParticle,
                                                  None,
                                                  [distance, dsp_bat, xmit_bat],
-                                                 timestamp)
+                                                 port_timestamp=timestamp,
+                                                 preferred_ts=DataParticleKey.PORT_TIMESTAMP)
+
             self._record_buffer.append(data_particle)
 
         if any(self._eng_data):  # Publish CsppEngDclEngDataParticle if we have any data
             if date_timestamp:  # preference is DATE timestamp
-                timestamp = dcl_controller_timestamp_to_ntp_time(date_timestamp)
+                timestamp = dcl_time_to_ntp(date_timestamp)
             else:
-                timestamp = dcl_controller_timestamp_to_ntp_time(first_timestamp)
+                timestamp = dcl_time_to_ntp(first_timestamp)
 
             data_particle = self._extract_sample(CsppEngDclEngDataParticle,
                                                  None,
                                                  self._eng_data,
-                                                 timestamp)
-            self._record_buffer.append(data_particle)
+                                                 port_timestamp=timestamp,
+                                                 preferred_ts=DataParticleKey.PORT_TIMESTAMP)
 
+            self._record_buffer.append(data_particle)

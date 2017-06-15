@@ -673,7 +673,7 @@ class Vel3dCdDclParser(SimpleParser):
         :param data: The raw data to pass into the particle
         :param timestamp: The timestamp to pass into the particle
         """
-        particle = self._extract_sample(class_type, None, data, timestamp)
+        particle = self._extract_sample(class_type, None, data, internal_timestamp=timestamp)
         self._record_buffer.append(particle)
 
 

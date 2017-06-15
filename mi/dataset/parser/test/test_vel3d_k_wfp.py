@@ -14,6 +14,7 @@ import ntplib
 from nose.plugins.attrib import attr
 
 from mi.core.exceptions import SampleException, RecoverableSampleException
+from mi.core.instrument.data_particle import DataParticleKey
 from mi.core.log import get_logger
 from mi.dataset.dataset_parser import DataSetDriverConfigKeys
 from mi.dataset.driver.vel3d_k.wfp.resource import RESOURCE_PATH
@@ -206,6 +207,7 @@ TIME_4_FIELDS = (1393266602, 1393266947)
 # The list of generated tests are the suggested tests, but there may
 # be other tests needed to fully test your parser
 
+
 @attr('UNIT', group='mi')
 class Vel3dKWfpParserUnitTestCase(ParserUnitTestCase):
     """
@@ -220,36 +222,45 @@ class Vel3dKWfpParserUnitTestCase(ParserUnitTestCase):
         # These records are at time t=0
         time_stamp = TIME_ON
         ntp_time = ntplib.system_to_ntp_time(time_stamp)
-        self.expected_particle1 = Vel3dKWfpInstrumentParticle(
-            RECORD_1_FIELDS, internal_timestamp=ntp_time)
-        self.expected_particle2_header_checksum = Vel3dKWfpInstrumentParticle(
-            RECORD_2_FIELDS, internal_timestamp=ntp_time)
-        self.expected_time = Vel3dKWfpMetadataParticle(
-            TIME_1_FIELDS, internal_timestamp=ntp_time)
-        self.expected_string_particle = Vel3dKWfpStringParticle(
-            STRING_FIELDS, internal_timestamp=ntp_time)
+        self.expected_particle1 = Vel3dKWfpInstrumentParticle(RECORD_1_FIELDS,
+                                                              internal_timestamp=ntp_time,
+                                                              preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
+        self.expected_particle2_header_checksum = Vel3dKWfpInstrumentParticle(RECORD_2_FIELDS,
+                                                                              internal_timestamp=ntp_time,
+                                                                              preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
+        self.expected_time = Vel3dKWfpMetadataParticle(TIME_1_FIELDS,
+                                                       internal_timestamp=ntp_time,
+                                                       preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
+        self.expected_string_particle = Vel3dKWfpStringParticle(STRING_FIELDS,
+                                                                internal_timestamp=ntp_time,
+                                                                preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         # These records are at time t=1
         time_stamp += SAMPLE_RATE
         ntp_time = ntplib.system_to_ntp_time(time_stamp)
-        self.expected_particle2 = Vel3dKWfpInstrumentParticle(
-            RECORD_2_FIELDS, internal_timestamp=ntp_time)
-        self.expected_particle3_missing = Vel3dKWfpInstrumentParticle(
-            RECORD_3_FIELDS, internal_timestamp=ntp_time)
+        self.expected_particle2 = Vel3dKWfpInstrumentParticle(RECORD_2_FIELDS,
+                                                              internal_timestamp=ntp_time,
+                                                              preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
+        self.expected_particle3_missing = Vel3dKWfpInstrumentParticle(RECORD_3_FIELDS,
+                                                                      internal_timestamp=ntp_time,
+                                                                      preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         # These records are at time t=2
         time_stamp += SAMPLE_RATE
         ntp_time = ntplib.system_to_ntp_time(time_stamp)
-        self.expected_particle3 = Vel3dKWfpInstrumentParticle(
-            RECORD_3_FIELDS, internal_timestamp=ntp_time)
-        self.expected_particle4_missing = Vel3dKWfpInstrumentParticle(
-            RECORD_4_FIELDS, internal_timestamp=ntp_time)
+        self.expected_particle3 = Vel3dKWfpInstrumentParticle(RECORD_3_FIELDS,
+                                                              internal_timestamp=ntp_time,
+                                                              preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
+        self.expected_particle4_missing = Vel3dKWfpInstrumentParticle(RECORD_4_FIELDS,
+                                                                      internal_timestamp=ntp_time,
+                                                                      preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         # These records are at time t=3
         time_stamp += SAMPLE_RATE
         ntp_time = ntplib.system_to_ntp_time(time_stamp)
-        self.expected_particle4 = Vel3dKWfpInstrumentParticle(
-            RECORD_4_FIELDS, internal_timestamp=ntp_time)
+        self.expected_particle4 = Vel3dKWfpInstrumentParticle(RECORD_4_FIELDS,
+                                                              internal_timestamp=ntp_time,
+                                                              preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
     def create_parser(self, file_handle):
         """

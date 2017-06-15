@@ -21,12 +21,12 @@ from mi.dataset.parser.nutnr_b_particles import \
     NutnrBDclDarkFullRecoveredInstrumentDataParticle, \
     NutnrBDclFullTelemeteredInstrumentDataParticle, \
     NutnrBDclDarkFullTelemeteredInstrumentDataParticle, \
-    NutnrBDclFullRecoveredMetadataDataParticle,  \
+    NutnrBDclFullRecoveredMetadataDataParticle, \
     NutnrBDclFullTelemeteredMetadataDataParticle
+from mi.dataset.parser.utilities import particle_to_yml
 from mi.dataset.test.test_parser import ParserUnitTestCase
 
 log = get_logger()
-
 
 MODULE_NAME = 'mi.dataset.parser.nutnr_b_particles'
 
@@ -94,6 +94,9 @@ class NutnrBDclFullParserUnitTestCase(ParserUnitTestCase):
     def open_file(self, filename):
         return open(os.path.join(RESOURCE_PATH, filename), mode='r')
 
+    def create_yml(self, particles, filename):
+        particle_to_yml(particles, os.path.join(RESOURCE_PATH, filename))
+
     def rec_state_callback(self, state, file_ingested):
         """ Call back method to watch what comes in via the position callback """
         self.rec_state_callback_value = state
@@ -157,10 +160,10 @@ class NutnrBDclFullParserUnitTestCase(ParserUnitTestCase):
         log.debug('===== START TEST HAPPY PATH =====')
 
         for input_file, expected_particles, rec_yml_file, tel_yml_file in HAPPY_PATH_TABLE:
-
             in_file = self.open_file(input_file)
             parser = self.create_rec_parser(in_file)
             particles = parser.get_records(expected_particles)
+
             self.assert_particles(particles, rec_yml_file, RESOURCE_PATH)
             self.assertEqual(self.rec_exceptions_detected, 0)
             in_file.close()
@@ -168,6 +171,7 @@ class NutnrBDclFullParserUnitTestCase(ParserUnitTestCase):
             in_file = self.open_file(input_file)
             parser = self.create_tel_parser(in_file)
             particles = parser.get_records(expected_particles)
+
             self.assert_particles(particles, tel_yml_file, RESOURCE_PATH)
             self.assertEqual(self.tel_exceptions_detected, 0)
             in_file.close()
@@ -190,6 +194,7 @@ class NutnrBDclFullParserUnitTestCase(ParserUnitTestCase):
         in_file = self.open_file(input_file)
         parser = self.create_rec_parser(in_file)
         particles = parser.get_records(total_records)
+
         self.assertEqual(len(particles), expected_particles)
         self.assert_particles(particles, REC_YML_INVALID_FIELDS, RESOURCE_PATH)
         self.assertEqual(self.rec_exceptions_detected, expected_exceptions)
@@ -198,6 +203,7 @@ class NutnrBDclFullParserUnitTestCase(ParserUnitTestCase):
         in_file = self.open_file(input_file)
         parser = self.create_tel_parser(in_file)
         particles = parser.get_records(total_records)
+
         self.assertEqual(len(particles), expected_particles)
         self.assert_particles(particles, TEL_YML_INVALID_FIELDS, RESOURCE_PATH)
         self.assertEqual(self.tel_exceptions_detected, expected_exceptions)
@@ -223,6 +229,7 @@ class NutnrBDclFullParserUnitTestCase(ParserUnitTestCase):
         in_file = self.open_file(input_file)
         parser = self.create_rec_parser(in_file)
         particles = parser.get_records(total_records)
+
         self.assertEqual(len(particles), expected_particles)
         self.assertEqual(self.rec_exceptions_detected, expected_exceptions)
         in_file.close()
@@ -259,7 +266,7 @@ class NutnrBDclFullParserUnitTestCase(ParserUnitTestCase):
         meta_particles = 0
         for particle in particles:
             if isinstance(particle, NutnrBDclFullRecoveredInstrumentDataParticle) or \
-               isinstance(particle, NutnrBDclDarkFullRecoveredInstrumentDataParticle):
+                    isinstance(particle, NutnrBDclDarkFullRecoveredInstrumentDataParticle):
 
                 inst_particles += 1
             elif isinstance(particle, NutnrBDclFullRecoveredMetadataDataParticle):
@@ -280,7 +287,7 @@ class NutnrBDclFullParserUnitTestCase(ParserUnitTestCase):
         meta_particles = 0
         for particle in particles:
             if isinstance(particle, NutnrBDclFullTelemeteredInstrumentDataParticle) or \
-               isinstance(particle, NutnrBDclDarkFullTelemeteredInstrumentDataParticle):
+                    isinstance(particle, NutnrBDclDarkFullTelemeteredInstrumentDataParticle):
 
                 inst_particles += 1
             elif isinstance(particle, NutnrBDclFullTelemeteredMetadataDataParticle):

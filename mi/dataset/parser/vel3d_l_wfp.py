@@ -365,7 +365,7 @@ class Vel3dLParser(Parser):
                 # Timestamp is None since the particle generation handles that.
 
                 sample = self._extract_sample(particle_class, None,
-                                              fields[x][1], None)
+                                              fields[x][1])
                 if sample:
                     # Add the particle to the list of particles
                     samples.append(sample)

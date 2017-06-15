@@ -40,7 +40,7 @@ from mi.dataset.parser.common_regexes import \
     TIME_HR_MIN_SEC_MSEC_REGEX
 
 from mi.dataset.parser.utilities import \
-    dcl_controller_timestamp_to_ntp_time
+    dcl_time_to_ntp
 
 from mi.core.common import BaseEnum
 from mi.core.exceptions import UnexpectedDataException
@@ -156,7 +156,6 @@ CHECKSUM_PASSED = 1                # particle value if the checksum matches
 # Column 2 - index into raw_data
 # Column 3 - data encoding function (conversion required - int, float, etc)
 INSTRUMENT_PARTICLE_MAP = [
-    ('dcl_controller_timestamp',  PARTICLE_GROUP_TIMESTAMP,       str),
     ('instrument_id',             PARTICLE_GROUP_ID,              str),
     ('serial_number',             PARTICLE_GROUP_SERIAL,          str),
     ('timer',                     PARTICLE_GROUP_TIMER,           float),
@@ -193,12 +192,6 @@ class SpkirAbjDclInstrumentDataParticle(DataParticle):
                                                                 preferred_timestamp,
                                                                 quality_flag,
                                                                 new_sequence)
-
-        # The particle timestamp is the DCL Controller timestamp.
-        # Convert the DCL controller timestamp string to NTP time (in seconds and microseconds).
-        dcl_controller_timestamp = self.raw_data[SENSOR_GROUP_TIMESTAMP]
-        elapsed_seconds_useconds = dcl_controller_timestamp_to_ntp_time(dcl_controller_timestamp)
-        self.set_internal_timestamp(elapsed_seconds_useconds)
 
     def _build_parsed_values(self):
         """
@@ -319,10 +312,14 @@ class SpkirAbjDclParser(SimpleParser):
                 checksum_status
             )
 
+            # DCL Controller timestamp is the port_timestamp
+            port_timestamp = dcl_time_to_ntp(groups[SENSOR_GROUP_TIMESTAMP])
+
             particle = self._extract_sample(self.particle_class,
                                             None,
                                             particle_data,
-                                            None)
+                                            port_timestamp=port_timestamp,
+                                            preferred_ts=DataParticleKey.PORT_TIMESTAMP)
 
             self._record_buffer.append(particle)
 

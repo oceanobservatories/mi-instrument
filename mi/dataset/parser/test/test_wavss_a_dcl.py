@@ -7,11 +7,10 @@
 
 import os
 from nose.plugins.attrib import attr
-
-from mi.core.instrument.data_particle import DataParticleValue
 from mi.core.log import get_logger
 from mi.core.exceptions import RecoverableSampleException
 from mi.dataset.driver.wavss_a.dcl.resource import RESOURCE_PATH
+from mi.dataset.parser.utilities import particle_to_yml
 from mi.dataset.test.test_parser import ParserUnitTestCase
 from mi.dataset.parser.wavss_a_dcl import WavssADclParser, WavssADclFourierDataParticle, WavssADclMotionDataParticle, \
     WavssADclMeanDirectionalDataParticle
@@ -26,6 +25,10 @@ __license__ = 'Apache 2.0'
 
 @attr('UNIT', group='mi')
 class WavssADclParserUnitTestCase(ParserUnitTestCase):
+
+    def create_yml(self, particles, filename):
+        particle_to_yml(particles, os.path.join(RESOURCE_PATH, filename))
+
     def test_checksum_valid(self):
         line = '2014/08/25 15:09:10.100 $TSPWA,20140825,150910,05781,buoyID,,,29,0.00,8.4,0.00,0.00,14.7,0.00,22.8,' \
                '8.6,28.6,28.6,0.00,203.3,66.6*5B'
@@ -64,11 +67,6 @@ class WavssADclParserUnitTestCase(ParserUnitTestCase):
         statistics = WavssADclStatisticsDataParticle(line, None, None, None)
         particle = statistics._build_parsed_values()
         my_dict = {x['value_id']: x['value'] for x in particle}
-
-        # TODO - remove
-        self.assertEqual(my_dict['dcl_controller_timestamp'], '2014/08/25 15:09:10.100')
-        self.assertEqual(my_dict['date_string'], '20140825')
-        self.assertEqual(my_dict['time_string'], '150910')
 
         self.assertEqual(my_dict['serial_number'], '05781')
         self.assertEqual(my_dict['number_zero_crossings'], 29)
@@ -304,11 +302,9 @@ class WavssADclParserUnitTestCase(ParserUnitTestCase):
         """
         with open(os.path.join(RESOURCE_PATH, 'tspwa.wavss.log'), 'r') as file_handle:
             parser = WavssADclParser(file_handle, self.exception_callback, is_telemetered=True)
-
             particles = parser.get_records(1)
 
             self.assert_particles(particles, "tspwa_telem.yml", RESOURCE_PATH)
-
             self.assertEqual(self.exception_callback_value, [])
 
     def test_tspna_telem(self):
@@ -318,7 +314,6 @@ class WavssADclParserUnitTestCase(ParserUnitTestCase):
         # this file also is missing a newline at the end of the file which tests the case of a missing line terminator
         with open(os.path.join(RESOURCE_PATH, 'tspna.wavss.log'), 'r') as file_handle:
             parser = WavssADclParser(file_handle, self.exception_callback, is_telemetered=True)
-
             particles = parser.get_records(1)
 
             self.assert_particles(particles, "tspna_telem.yml", RESOURCE_PATH)
@@ -331,9 +326,9 @@ class WavssADclParserUnitTestCase(ParserUnitTestCase):
         # this file also is missing a newline at the end of the file which tests the case of a missing line terminator
         with open(os.path.join(RESOURCE_PATH, 'tspna_with_nan.wavss.log'), 'r') as file_handle:
             parser = WavssADclParser(file_handle, self.exception_callback, is_telemetered=True)
-
             particles = parser.get_records(1)
 
+            self.assert_particles(particles, "tspma_telem_nans.yml", RESOURCE_PATH)
             self.assertEqual(self.exception_callback_value, [])
 
     def test_tspma_telem(self):
@@ -342,7 +337,6 @@ class WavssADclParserUnitTestCase(ParserUnitTestCase):
         """
         with open(os.path.join(RESOURCE_PATH, 'tspma.wavss.log'), 'r') as file_handle:
             parser = WavssADclParser(file_handle, self.exception_callback, is_telemetered=True)
-
             particles = parser.get_records(1)
 
             self.assert_particles(particles, "tspma_telem.yml", RESOURCE_PATH)
@@ -354,7 +348,6 @@ class WavssADclParserUnitTestCase(ParserUnitTestCase):
         """
         with open(os.path.join(RESOURCE_PATH, 'tspha.wavss.log'), 'r') as file_handle:
             parser = WavssADclParser(file_handle, self.exception_callback, is_telemetered=True)
-
             particles = parser.get_records(1)
 
             self.assert_particles(particles, "tspha_telem.yml", RESOURCE_PATH)
@@ -366,7 +359,6 @@ class WavssADclParserUnitTestCase(ParserUnitTestCase):
         """
         with open(os.path.join(RESOURCE_PATH, 'tspfb.wavss.log'), 'r') as file_handle:
             parser = WavssADclParser(file_handle, self.exception_callback, is_telemetered=True)
-
             particles = parser.get_records(1)
 
             self.assert_particles(particles, "tspfb_telem.yml", RESOURCE_PATH)
@@ -378,19 +370,16 @@ class WavssADclParserUnitTestCase(ParserUnitTestCase):
         """
         with open(os.path.join(RESOURCE_PATH, '20140825.wavss.log'), 'r') as file_handle:
             parser = WavssADclParser(file_handle, self.exception_callback, is_telemetered=True)
-
             particles = parser.get_records(6)
 
             self.assert_particles(particles, "20140825_telem.yml", RESOURCE_PATH)
 
         with open(os.path.join(RESOURCE_PATH, '20140825.wavss.log'), 'r') as file_handle:
             parser = WavssADclParser(file_handle, self.exception_callback, is_telemetered=False)
-
             particles = parser.get_records(6)
 
             self.assert_particles(particles, "20140825_recov.yml", RESOURCE_PATH)
-
-        self.assertEqual(self.exception_callback_value, [])
+            self.assertEqual(self.exception_callback_value, [])
 
     def test_tspwa_with_dplog(self):
         """
@@ -398,7 +387,6 @@ class WavssADclParserUnitTestCase(ParserUnitTestCase):
         """
         with open(os.path.join(RESOURCE_PATH, '20140804.wavss.log'), 'r') as file_handle:
             parser = WavssADclParser(file_handle, self.exception_callback, is_telemetered=True)
-
             # request more particles than are available
             particles = parser.get_records(26)
 
@@ -412,7 +400,6 @@ class WavssADclParserUnitTestCase(ParserUnitTestCase):
         """
         with open(os.path.join(RESOURCE_PATH, 'bad_num_samples.wavss.log'), 'r') as file_handle:
             parser = WavssADclParser(file_handle, self.exception_callback, is_telemetered=True)
-
             n_test = 4  # number of particles to test
             particles = parser.get_records(n_test)
 
@@ -429,10 +416,10 @@ class WavssADclParserUnitTestCase(ParserUnitTestCase):
         """
         with open(os.path.join(RESOURCE_PATH, 'unexpected.wavss.log'), 'r') as file_handle:
             parser = WavssADclParser(file_handle, self.exception_callback, is_telemetered=True)
-
             # there are 4 lines in the file, 3rd, has error, TSPSA record is ignored
             n_test = 4
             particles = parser.get_records(n_test)
+
             self.assertEqual(len(particles), 2)
             self.assertEqual(len(self.exception_callback_value), 1)
             self.assert_(isinstance(self.exception_callback_value[0], RecoverableSampleException))
@@ -445,7 +432,6 @@ class WavssADclParserUnitTestCase(ParserUnitTestCase):
         """
         with open(os.path.join(RESOURCE_PATH, '20150314.wavss.log'), 'r') as file_handle:
             parser = WavssADclParser(file_handle, self.exception_callback, is_telemetered=True)
-
             particles = parser.get_records(200)
 
             self.assertEqual(len(particles), 120)
@@ -453,7 +439,6 @@ class WavssADclParserUnitTestCase(ParserUnitTestCase):
 
         with open(os.path.join(RESOURCE_PATH, '20150315.wavss.log'), 'r') as file_handle:
             parser = WavssADclParser(file_handle, self.exception_callback, is_telemetered=False)
-
             particles = parser.get_records(200)
 
             self.assertEqual(len(particles), 120)
@@ -467,7 +452,6 @@ class WavssADclParserUnitTestCase(ParserUnitTestCase):
         """
         with open(os.path.join(RESOURCE_PATH, '20150730.wavss.log'), 'r') as file_handle:
             parser = WavssADclParser(file_handle, self.exception_callback, is_telemetered=True)
-
             tspwa_records = 24
             tspna_records = 24
             tspfb_records = 24

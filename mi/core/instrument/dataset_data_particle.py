@@ -17,9 +17,7 @@ from mi.core.common import BaseEnum
 from mi.core.exceptions import SampleException, ReadOnlyException, NotImplementedException, InstrumentParameterException
 from mi.core.log import get_logger
 
-
 log = get_logger()
-
 
 __author__ = 'Steve Foley'
 __license__ = 'Apache 2.0'
@@ -79,7 +77,7 @@ class DataParticle(object):
     def __init__(self, raw_data,
                  port_timestamp=None,
                  internal_timestamp=None,
-                 preferred_timestamp=DataParticleKey.PORT_TIMESTAMP,
+                 preferred_timestamp=None,
                  quality_flag=DataParticleValue.OK,
                  new_sequence=None):
         """ Build a particle seeded with appropriate information
@@ -121,7 +119,12 @@ class DataParticle(object):
 
         t1 = self.contents[DataParticleKey.INTERNAL_TIMESTAMP]
         t2 = arg.contents[DataParticleKey.INTERNAL_TIMESTAMP]
-        tdiff = abs(t1 - t2)
+
+        if (t1 is None) or (t2 is None):
+            tdiff = allowed_diff
+        else:
+            tdiff = abs(t1 - t2)
+
         if tdiff > allowed_diff:
             log.debug('Timestamp %s does not match %s', t1, t2)
             return False
@@ -166,7 +169,7 @@ class DataParticle(object):
             timestamp = ntplib.system_to_ntp_time(unix_time)
 
         # Do we want this to happen here or in down stream processes?
-        #if(not self._check_timestamp(timestamp)):
+        # if(not self._check_timestamp(timestamp)):
         #    raise InstrumentParameterException("invalid timestamp")
 
         self.contents[DataParticleKey.INTERNAL_TIMESTAMP] = float(timestamp)
@@ -301,7 +304,7 @@ class DataParticle(object):
             return False
 
         # is it sufficiently in the future to be unreasonable?
-        if timestamp > ntplib.system_to_ntp_time(time.time()+(86400*365)):
+        if timestamp > ntplib.system_to_ntp_time(time.time() + (86400 * 365)):
             return False
         else:
             return True
@@ -321,7 +324,7 @@ class DataParticle(object):
 
         # This should be handled downstream.  Don't want to not publish data because
         # the port agent stopped putting out timestamps
-        #if self.contents[self.contents[DataParticleKey.PREFERRED_TIMESTAMP]] == None:
+        # if self.contents[self.contents[DataParticleKey.PREFERRED_TIMESTAMP]] == None:
         #    raise SampleException("Preferred timestamp, %s, is not defined" %
         #                          self.contents[DataParticleKey.PREFERRED_TIMESTAMP])
 
@@ -347,11 +350,13 @@ class DataParticle(object):
         """
         return self._encoding_errors
 
+
 class RawDataParticleKey(BaseEnum):
     PAYLOAD = "raw"
     LENGTH = "length"
     TYPE = "type"
     CHECKSUM = "checksum"
+
 
 class RawDataParticle(DataParticle):
     """
@@ -404,18 +409,18 @@ class RawDataParticle(DataParticle):
             pass
 
         result = [{
-                      DataParticleKey.VALUE_ID: RawDataParticleKey.PAYLOAD,
-                      DataParticleKey.VALUE: payload,
-                      DataParticleKey.BINARY: True},
-                  {
-                      DataParticleKey.VALUE_ID: RawDataParticleKey.LENGTH,
-                      DataParticleKey.VALUE: length},
-                  {
-                      DataParticleKey.VALUE_ID: RawDataParticleKey.TYPE,
-                      DataParticleKey.VALUE: type},
-                  {
-                      DataParticleKey.VALUE_ID: RawDataParticleKey.CHECKSUM,
-                      DataParticleKey.VALUE: checksum},
+            DataParticleKey.VALUE_ID: RawDataParticleKey.PAYLOAD,
+            DataParticleKey.VALUE: payload,
+            DataParticleKey.BINARY: True},
+            {
+                DataParticleKey.VALUE_ID: RawDataParticleKey.LENGTH,
+                DataParticleKey.VALUE: length},
+            {
+                DataParticleKey.VALUE_ID: RawDataParticleKey.TYPE,
+                DataParticleKey.VALUE: type},
+            {
+                DataParticleKey.VALUE_ID: RawDataParticleKey.CHECKSUM,
+                DataParticleKey.VALUE: checksum},
         ]
 
         return result

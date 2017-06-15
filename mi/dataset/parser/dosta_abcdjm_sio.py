@@ -248,8 +248,7 @@ class DostaAbcdjmSioParser(SioParser):
                         # which is stored in header_match.group(3)
                         metadata_sample = self._extract_sample(self._metadata_particle_class,
                                                                None,
-                                                               (header_match.group(3), data_match),
-                                                               None)
+                                                               (header_match.group(3), data_match))
                         if metadata_sample:
                             result_particles.append(metadata_sample)
                             self.metadata_sent = True
@@ -258,8 +257,7 @@ class DostaAbcdjmSioParser(SioParser):
                     # prepend the timestamp from sio mule header to the dosta raw data ,
                     # which is stored in header_match.group(3)
                     sample = self._extract_sample(self._data_particle_class, None,
-                                                  (header_match.group(3), data_match),
-                                                  None)
+                                                  (header_match.group(3), data_match))
                     if sample:
                         # create particle
                         result_particles.append(sample)

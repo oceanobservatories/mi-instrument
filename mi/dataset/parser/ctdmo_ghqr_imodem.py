@@ -25,7 +25,7 @@ from mi.core.log import get_logger
 log = get_logger()
 from mi.core.instrument.dataset_data_particle import DataParticle
 from mi.core.exceptions import ConfigurationException, UnexpectedDataException
-from mi.dataset.parser.utilities import time_2000_to_ntp_time, \
+from mi.dataset.parser.utilities import time_2000_to_ntp, \
     formatted_timestamp_utc_time
 from mi.dataset.parser.common_regexes import END_OF_LINE_REGEX, \
     FLOAT_REGEX, ASCII_HEX_CHAR_REGEX
@@ -200,7 +200,7 @@ class CtdmoGhqrImodemInstrumentDataParticle(DataParticle):
                 if key == CtdmoGhqrImodemDataParticleKey.CTD_TIME:
 
                     # Need to use the CTD time for the internal timestamp
-                    ctd_time = time_2000_to_ntp_time(val)
+                    ctd_time = time_2000_to_ntp(val)
                     self.set_internal_timestamp(timestamp=ctd_time)
 
         return result
@@ -346,7 +346,7 @@ class CtdmoGhqrImodemParser(SimpleParser):
         particle = self._extract_sample(self.metadata_particle_class,
                                         None,
                                         particle_data,
-                                        ntp_time)
+                                        internal_timestamp=ntp_time)
         if particle is not None:
             log.debug("Appending metadata particle to record buffer")
             self._record_buffer.append(particle)
@@ -361,8 +361,7 @@ class CtdmoGhqrImodemParser(SimpleParser):
         # tuple and ntp timestamp
         particle = self._extract_sample(self.instrument_particle_class,
                                         None,
-                                        inst_match.groupdict(),
-                                        None)
+                                        inst_match.groupdict())
         if particle is not None:
             log.debug("Appending instrument particle to record buffer")
             self._record_buffer.append(particle)

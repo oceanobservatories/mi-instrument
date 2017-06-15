@@ -213,7 +213,7 @@ class PresfAbcTideDataParticle(DataParticle):
 
         # The particle timestamp is the time of the tide measurement.
         tm_start_time = self.raw_data[PresfAbcTideParticleKey.TM_START_TIME]
-        ntp_time = utilities.time_2000_to_ntp_time(tm_start_time)
+        ntp_time = utilities.time_2000_to_ntp(tm_start_time)
         self.set_internal_timestamp(timestamp=ntp_time)
 
         return result
@@ -262,7 +262,7 @@ class PresfAbcWaveDataParticle(DataParticle):
 
         # The particle timestamp is the time of the start fo the wave burst.
         wm_start_time = self.raw_data[PresfAbcWaveParticleKey.WM_START_TIME]
-        ntp_time = utilities.time_2000_to_ntp_time(wm_start_time)
+        ntp_time = utilities.time_2000_to_ntp(wm_start_time)
         self.set_internal_timestamp(timestamp=ntp_time)
 
         return result
@@ -397,8 +397,7 @@ class PresfAbcParser(SimpleParser):
 
             particle = self._extract_sample(self._tide_particle_class,
                                             None,
-                                            tide_data,
-                                            None)
+                                            tide_data)
             self._record_buffer.append(particle)
 
         else:
@@ -475,8 +474,7 @@ class PresfAbcParser(SimpleParser):
                 # Create the data particle and add it to the buffer.
                 particle = self._extract_sample(self._wave_particle_class,
                                                 None,
-                                                wave_data,
-                                                None)
+                                                wave_data)
                 self._record_buffer.append(particle)
 
             else:

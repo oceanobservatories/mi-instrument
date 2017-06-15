@@ -274,20 +274,20 @@ class PhsenRecoveredParser(SimpleParser):
             if record_type == PH_TYPE and count == PH_FIELDS:
                 # particle-ize the data block received, return the record
                 particle = self._extract_sample(PhsenRecoveredInstrumentDataParticle,
-                                                None, fields, None)
+                                                None, fields)
 
                 self._record_buffer.append(particle)
 
             elif record_type in BATTERY_DATA_CONTROL_TYPE and count == BATTERY_DATA_CONTROL_FIELDS:
                 # particle-ize the data block received, return the record
                 particle = self._extract_sample(PhsenRecoveredMetadataDataParticle,
-                                                None, fields, None)
+                                                None, fields)
 
                 self._record_buffer.append(particle)
 
             elif record_type in CONTROL_TYPE and count == CONTROL_FIELDS:
                 particle = self._extract_sample(PhsenRecoveredMetadataDataParticle,
-                                                None, fields, None)
+                                                None, fields)
 
                 self._record_buffer.append(particle)
 

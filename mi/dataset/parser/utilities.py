@@ -1,17 +1,17 @@
 """
 @package mi.dataset.parser
 @file mi-dataset/mi/dataset/parser/utilities.py
-@author Joe Padula
+@author Joe Padula, vipul lakhani
 @brief Utilities that can be used by any parser
 Release notes:
 
 initial release
 """
-
 from datetime import datetime
 import time
 import ntplib
 import calendar
+
 
 from mi.core.log import get_logger
 
@@ -67,7 +67,27 @@ def zulu_timestamp_to_ntp_time(zulu_timestamp_str):
     return float(ntplib.system_to_ntp_time(utc_time))
 
 
-def time_2000_to_ntp_time(time_2000):
+def julian_time_to_ntp(julian_timestamp_str):
+    """
+    Converts a julian formatted timestamp timestamp string to NTP time.
+    :param julian_timestamp_str: a julian formatted timestamp string (julian_timestamp_str = 200412)
+    :return: NTP time in seconds
+    """
+
+    timestamp = datetime.strptime(julian_timestamp_str, "%Y%j")
+
+    return (timestamp - datetime(1900, 1, 1)).total_seconds()
+
+
+def time_1904_to_ntp(time_1904):
+    """
+    :param time_1904: time in 1904 ( example time_1904 = 3601587612.0)
+    :return: ntp (timestamp in number of seconds since Jan 1, 1900)
+    """
+    return time_1904 + (datetime(1904, 1, 1) - datetime(1900, 1, 1)).total_seconds()
+
+
+def time_2000_to_ntp(time_2000):
     """
     :param time_2000: a timestamp in epoch 2000
     :return: timestamp in epoch 1900
@@ -81,7 +101,7 @@ def time_2000_to_ntp_time(time_2000):
     return time_2000 + zulu_timestamp_to_ntp_time("2000-01-01T00:00:00.00Z")
 
 
-def dcl_controller_timestamp_to_utc_time(dcl_controller_timestamp_str):
+def dcl_time_to_utc(dcl_controller_timestamp_str):
     """
     Converts a DCL controller timestamp string to UTC time.
     :param dcl_controller_timestamp_str: a DCL controller timestamp string
@@ -98,19 +118,19 @@ def dcl_controller_timestamp_to_utc_time(dcl_controller_timestamp_str):
     return calendar.timegm(tt) + frac_of_sec
 
 
-def dcl_controller_timestamp_to_ntp_time(dcl_controller_timestamp_str):
+def dcl_time_to_ntp(dcl_controller_timestamp_str):
     """
     Converts a DCL controller timestamp string to NTP time.
     :param dcl_controller_timestamp_str: a DCL controller timestamp string
     :return: NTP time (float64) in seconds and microseconds precision
     """
 
-    utc_time = dcl_controller_timestamp_to_utc_time(dcl_controller_timestamp_str)
+    utc_time = dcl_time_to_utc(dcl_controller_timestamp_str)
 
     return float(ntplib.system_to_ntp_time(utc_time))
 
 
-def timestamp_yyyymmddhhmmss_to_ntp_time(timestamp_str):
+def timestamp_yyyymmddhhmmss_to_ntp(timestamp_str):
     """
     Converts a timestamp string, in the YYYYMMDDHHMMSS format, to NTP time.
     :param timestamp_str: a timestamp string in the format YYYYMMDDHHMMSS
@@ -122,17 +142,38 @@ def timestamp_yyyymmddhhmmss_to_ntp_time(timestamp_str):
     return (timestamp - datetime(1900, 1, 1)).total_seconds()
 
 
-def timestamp_yymmddhhmmsshh_to_ntp_time(timestamp_str):
+def timestamp_yyyy_mm_dd_hh_mm_ss_to_ntp(timestamp_str):
     """
-    Converts a timestamp string, in the YYMMDDHHMMSSHH format, to NTP time.
-    :param timestamp_str: a timestamp string in the format YYMMDDHHMMSSHH
+    Converts a timestamp string, in the YYYY/MM/DD HH:MM:SS format, to NTP time.
+    :param timestamp_str: a timestamp string in the format YYYY/MM/DD HH:MM:SS
     :return: Time (float64) in seconds from epoch 01-01-1900.
     """
 
-    timestamp = datetime.strptime(timestamp_str[:-2], "%y%m%d%H%M%S")
-    frac = int(timestamp_str[-2:]) / 100.0
+    timestamp = datetime.strptime(timestamp_str, "%Y/%m/%d %H:%M:%S")
 
-    return (timestamp - datetime(1900, 1, 1)).total_seconds() + frac
+    return (timestamp - datetime(1900, 1, 1)).total_seconds()
+
+
+def timestamp_ddmmyyyyhhmmss_to_ntp(timestamp_str):
+    """
+    Converts a timestamp string, in the DD Mon YYYY HH:MM:SS format, to NTP time.
+    :param timestamp_str: a timestamp string in the format DD Mon YYYY HH:MM:SS
+    :return: Time (float64) in seconds from epoch 01-01-1900.
+    """
+    timestamp = datetime.strptime(timestamp_str, "%d %b %Y %H:%M:%S")
+    return (timestamp - datetime(1900, 1, 1)).total_seconds()
+
+
+def timestamp_mmddyyhhmmss_to_ntp(timestamp_str):
+    """
+    Converts a timestamp string, in the MMDDYYHHMMSS format, to NTP time.
+    :param timestamp_str: a timestamp string in the format MM/DD/YY HH:MM:SS
+    :return: Time (float64) in seconds from epoch 01-01-1900.
+    """
+
+    timestamp = datetime.strptime(timestamp_str, "%m/%d/%y %H:%M:%S")
+
+    return (timestamp - datetime(1900, 1, 1)).total_seconds()
 
 
 def mac_timestamp_to_utc_timestamp(mac_timestamp):
@@ -206,3 +247,40 @@ def sum_hex_digits(ascii_hex_str):
 
     # Return the resultant summation as hex
     return hex(x)
+
+
+def particle_to_yml(particles, filename, mode='w+'):
+    """
+    This function write particles to .yml file and create .yml file for testing
+    """
+    # open write append, if you want to start from scratch manually delete this file
+    with open(filename, mode) as fid:
+        fid.write('header:\n')
+        fid.write("    particle_object: 'MULTIPLE'\n")
+        fid.write("    particle_type: 'MULTIPLE'\n")
+        fid.write('data:\n')
+        for index in range(len(particles)):
+            particle_dict = particles[index].generate_dict()
+            fid.write('  - _index: %d\n' % (index+1))
+            fid.write('    particle_object: %s\n' % particles[index].__class__.__name__)
+            fid.write('    particle_type: %s\n' % particle_dict.get('stream_name'))
+            if particle_dict.get('internal_timestamp') is not None:
+                fid.write('    internal_timestamp: %.7f\n' % particle_dict.get('internal_timestamp'))
+
+            if particle_dict.get('port_timestamp') is not None:
+                fid.write('    port_timestamp: %.7f\n' % particle_dict.get('port_timestamp'))
+
+            values_dict = {}
+            for value in particle_dict.get('values'):
+                values_dict[value.get('value_id')] = value.get('value')
+
+            for key in sorted(values_dict.iterkeys()):
+                value = values_dict[key]
+                if value is None:
+                    fid.write('    %s: %s\n' % (key, 'Null'))
+                elif isinstance(value, float):
+                    fid.write('    %s: %15.5f\n' % (key, value))
+                elif isinstance(value, str):
+                    fid.write("    %s: '%s'\n" % (key, value))
+                else:
+                    fid.write('    %s: %s\n' % (key, value))

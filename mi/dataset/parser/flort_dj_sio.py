@@ -167,8 +167,7 @@ class FlortDjSioParser(SioParser):
                     # prepend the timestamp from sio mule header to the flort raw data,
                     # which is stored in header_match.group(3)
                     sample = self._extract_sample(self._particle_class, None,
-                                                  header_match.group(3) + data_match.group(0),
-                                                  None)
+                                                  header_match.group(3) + data_match.group(0))
                     if sample:
                         # create particle
                         result_particles.append(sample)

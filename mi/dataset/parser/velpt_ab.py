@@ -402,7 +402,7 @@ class VelptAbParser(SimpleParser):
         particle = self._extract_sample(self._instrument_metadata_class,
                                         None,
                                         instrument_metadata_dict,
-                                        timestamp)
+                                        internal_timestamp=timestamp)
 
         self._record_buffer.append(particle)
 
@@ -476,7 +476,7 @@ class VelptAbParser(SimpleParser):
         particle = self._extract_sample(self._velocity_data_class,
                                         None,
                                         velocity_data_dict,
-                                        timestamp)
+                                        internal_timestamp=timestamp)
 
         self._record_buffer.append(particle)
 
@@ -512,7 +512,7 @@ class VelptAbParser(SimpleParser):
             particle = self._extract_sample(self._metadata_class,
                                             None,
                                             diagnostics_header_dict,
-                                            timestamp)
+                                            internal_timestamp=timestamp)
             self._diagnostic_header_published = True
 
             self._record_buffer.append(particle)
@@ -529,7 +529,7 @@ class VelptAbParser(SimpleParser):
         particle = self._extract_sample(self._diagnostics_class,
                                         None,
                                         self._diagnostics_data_dict,
-                                        timestamp)
+                                        internal_timestamp=timestamp)
 
         self._record_buffer.append(particle)
 

@@ -311,16 +311,14 @@ class Pco2wAbcImodemParser(SimpleParser):
                     light_measurements
                 particle = self._extract_sample(self._instrument_class,
                                                 None,
-                                                instrument_data_dict,
-                                                None)
+                                                instrument_data_dict)
             else:
                 instrument_data_dict[
                     Pco2wAbcDataParticleKey.BLANK_LIGHT_MEASUREMENTS] = \
                     light_measurements
                 particle = self._extract_sample(self._instrument_blank_class,
                                                 None,
-                                                instrument_data_dict,
-                                                None)
+                                                instrument_data_dict)
 
             self._record_buffer.append(particle)
 
@@ -351,8 +349,7 @@ class Pco2wAbcImodemParser(SimpleParser):
 
             particle = self._extract_sample(self._power_class,
                                             None,
-                                            power_data_dict,
-                                            None)
+                                            power_data_dict)
 
             self._record_buffer.append(particle)
 
@@ -430,8 +427,7 @@ class Pco2wAbcImodemParser(SimpleParser):
 
             particle = self._extract_sample(self._control_class,
                                             None,
-                                            control_data_dict,
-                                            None)
+                                            control_data_dict)
 
             self._record_buffer.append(particle)
 
@@ -518,7 +514,7 @@ class Pco2wAbcImodemParser(SimpleParser):
 
             particle = self._extract_sample(
                 self._metadata_class, None,
-                self._metadata_dict, ntp_timestamp)
+                self._metadata_dict, internal_timestamp=ntp_timestamp)
 
             self._record_buffer.append(particle)
 

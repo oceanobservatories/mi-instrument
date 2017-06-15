@@ -51,6 +51,12 @@ from mi.dataset.parser.nutnr_b_particles import \
     NutnrBDclFullTelemeteredInstrumentDataParticle, \
     NutnrBDataParticleKey
 
+from mi.core.instrument.data_particle import DataParticleKey
+
+from mi.dataset.parser.utilities import julian_time_to_ntp
+
+HOURS_TO_SECONDS_CONVERSION = 3600.00
+
 
 class NutnrBDclFullParser(NutnrBDclParser):
     """
@@ -87,8 +93,14 @@ class NutnrBDclFullParser(NutnrBDclParser):
         instrument match data found from parsing an input file.
         """
 
-        # Obtain the ntp timestamp
-        ntp_timestamp = self._extract_instrument_ntp_timestamp(inst_match)
+        # Obtain the port_timestamp
+        port_timestamp = self._extract_dcl_controller_ntp_timestamp(inst_match)
+
+        # obtain internal_timestamp
+        instrument_timestamp = (inst_match.group(InstrumentDataMatchGroups.INST_GROUP_JULIAN_DATE))
+        internal_timestamp = julian_time_to_ntp(instrument_timestamp) + \
+                             (float(inst_match.group(InstrumentDataMatchGroups.INST_GROUP_TIME_OF_DAY))
+                              * HOURS_TO_SECONDS_CONVERSION)
 
         frame_type = inst_match.group(InstrumentDataMatchGroups.INST_GROUP_FRAME_TYPE)
 
@@ -109,9 +121,6 @@ class NutnrBDclFullParser(NutnrBDclParser):
 
         # Create the instrument data list of tuples from the instrument match data
         instrument_data_tuple = [
-            (NutnrBDataParticleKey.DCL_CONTROLLER_TIMESTAMP,
-             inst_match.group(InstrumentDataMatchGroups.INST_GROUP_DCL_TIMESTAMP),
-             str),
             (NutnrBDataParticleKey.FRAME_HEADER,
              inst_match.group(InstrumentDataMatchGroups.INST_GROUP_FRAME_HEADER),
              str),
@@ -121,12 +130,6 @@ class NutnrBDclFullParser(NutnrBDclParser):
             (NutnrBDataParticleKey.SERIAL_NUMBER,
              inst_match.group(InstrumentDataMatchGroups.INST_GROUP_SERIAL_NUMBER),
              str),
-            (NutnrBDataParticleKey.DATE_OF_SAMPLE,
-             inst_match.group(InstrumentDataMatchGroups.INST_GROUP_JULIAN_DATE),
-             int),
-            (NutnrBDataParticleKey.TIME_OF_SAMPLE,
-             inst_match.group(InstrumentDataMatchGroups.INST_GROUP_TIME_OF_DAY),
-             float),
             (NutnrBDataParticleKey.NITRATE_CONCENTRATION,
              inst_match.group(InstrumentDataMatchGroups.INST_GROUP_NITRATE),
              float),
@@ -188,7 +191,9 @@ class NutnrBDclFullParser(NutnrBDclParser):
         particle = self._extract_sample(particle_class,
                                         None,
                                         instrument_data_tuple,
-                                        ntp_timestamp)
+                                        port_timestamp=port_timestamp,
+                                        internal_timestamp=internal_timestamp,
+                                        preferred_ts=DataParticleKey.PORT_TIMESTAMP)
 
         return particle
 

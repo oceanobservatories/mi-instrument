@@ -104,7 +104,7 @@ class Parad_k_stc_Parser(WfpEFileParser):
             timestamp = int(fields[0])
             self._timestamp = float(ntplib.system_to_ntp_time(timestamp))
             # PARAD_K Data
-            sample = self._extract_sample(particle_type, None, record, self._timestamp)
+            sample = self._extract_sample(particle_type, None, record, internal_timestamp=self._timestamp)
             if sample:
                 # create particle
                 self._increment_state(SAMPLE_BYTES)

@@ -331,6 +331,6 @@ class AdcptMFCoeffParser(SimpleParser):
 
         # Extract a particle and append it to the record buffer
         particle = self._extract_sample(AdcptMFCoeffInstrumentDataParticle,
-                                        None, parsed_dict, time_stamp)
+                                        None, parsed_dict, internal_timestamp=time_stamp)
         log.trace('Parsed particle: %s' % particle.generate_dict())
         self._record_buffer.append(particle)

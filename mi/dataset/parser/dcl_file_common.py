@@ -14,14 +14,13 @@ import re
 
 from mi.core.log import get_logger
 
-from mi.core.instrument.dataset_data_particle import DataParticle
+from mi.core.instrument.dataset_data_particle import DataParticle, DataParticleKey
 from mi.core.exceptions import UnexpectedDataException, InstrumentParameterException
 
 from mi.dataset.dataset_parser import SimpleParser, DataSetDriverConfigKeys
 from mi.dataset.parser.common_regexes import END_OF_LINE_REGEX, SPACE_REGEX, \
     ANY_CHARS_REGEX, DATE_YYYY_MM_DD_REGEX, TIME_HR_MIN_SEC_MSEC_REGEX
-
-from mi.dataset.parser.utilities import dcl_controller_timestamp_to_ntp_time
+from mi.dataset.parser.utilities import dcl_time_to_ntp
 
 __author__ = 'Ronald Ronquillo'
 __license__ = 'Apache 2.0'
@@ -67,11 +66,9 @@ class DclInstrumentDataParticle(DataParticle):
 
         super(DclInstrumentDataParticle, self).__init__(raw_data, *args, **kwargs)
 
-        # The particle timestamp is the DCL Controller timestamp.
-        # Convert the DCL controller timestamp string to NTP time (in seconds and microseconds).
-        dcl_controller_timestamp = self.raw_data[SENSOR_GROUP_TIMESTAMP]
-        elapsed_seconds_useconds = dcl_controller_timestamp_to_ntp_time(dcl_controller_timestamp)
-        self.set_internal_timestamp(elapsed_seconds_useconds)
+        # DCL Controller timestamp is the port_timestamp
+        port_timestamp = dcl_time_to_ntp(self.raw_data[SENSOR_GROUP_TIMESTAMP])
+        self.set_port_timestamp(port_timestamp)
 
         self.instrument_particle_map = instrument_particle_map
 
@@ -148,7 +145,7 @@ class DclFileCommonParser(SimpleParser):
                 particle = self._extract_sample(particle_class,
                                                 None,
                                                 sensor_match.groups(),
-                                                None)
+                                                preferred_ts=DataParticleKey.PORT_TIMESTAMP)
                 self._record_buffer.append(particle)
 
             # It's not a sensor data record, see if it's a metadata record.

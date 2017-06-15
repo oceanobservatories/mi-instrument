@@ -32,15 +32,16 @@ from mi.core.log import get_logger
 from mi.core.common import BaseEnum
 from mi.core.instrument.dataset_data_particle import \
     DataParticle, \
-    DataParticleKey, \
-    DataParticleValue
+    DataParticleKey
 
 from mi.core.exceptions import \
     RecoverableSampleException
 
 from mi.dataset.dataset_parser import SimpleParser
 
-from mi.dataset.parser.utilities import dcl_controller_timestamp_to_utc_time
+from mi.dataset.parser.utilities import \
+    dcl_time_to_ntp, \
+    timestamp_ddmmyyyyhhmmss_to_ntp
 
 from mi.dataset.parser.common_regexes import \
     ANY_CHARS_REGEX, \
@@ -137,9 +138,7 @@ PIONEER_MATCHER = re.compile(PIONEER_REGEX)
 # Column 1 - particle parameter name & match group name
 # Column 2 - data encoding function (conversion required - int, float, etc)
 DATA_PARTICLE_MAP = [
-    ('dcl_controller_timestamp', str),
-    ('dosta_ln_optode_oxygen', float),
-    ('date_time_string', str)
+    ('dosta_ln_optode_oxygen', float)
 ]
 
 
@@ -154,23 +153,8 @@ class DostaAbcdjmCtdbpDclDataParticle(DataParticle):
     Class for parsing data from the data set
     """
 
-    def __init__(self, raw_data,
-                 port_timestamp=None,
-                 internal_timestamp=None,
-                 preferred_timestamp=DataParticleKey.PORT_TIMESTAMP,
-                 quality_flag=DataParticleValue.OK,
-                 new_sequence=None):
-
-        super(DostaAbcdjmCtdbpDclDataParticle, self).__init__(raw_data,
-                                                              port_timestamp,
-                                                              internal_timestamp,
-                                                              preferred_timestamp,
-                                                              quality_flag,
-                                                              new_sequence)
-
-        # The particle timestamp is the DCL Controller timestamp.
-        utc_time = dcl_controller_timestamp_to_utc_time(self.raw_data.group('dcl_controller_timestamp'))
-        self.set_internal_timestamp(unix_time=utc_time)
+    def __init__(self, raw_data, *args, **kwargs):
+        super(DostaAbcdjmCtdbpDclDataParticle, self).__init__(raw_data, *args, **kwargs)
 
     def _build_parsed_values(self):
         """
@@ -226,10 +210,20 @@ class DostaAbcdjmCtdbpDclParser(SimpleParser):
 
             if match is not None:
                 log.debug('record found')
+
+                # DCL Controller timestamp is the port_timestamp
+                port_timestamp = dcl_time_to_ntp(match.group('dcl_controller_timestamp'))
+
+                # Instrument timestamp is the internal_timestamp
+                internal_timestamp = timestamp_ddmmyyyyhhmmss_to_ntp(match.group('date_time_string'))
+
                 data_particle = self._extract_sample(self._particle_class,
                                                      None,
                                                      match,
-                                                     None)
+                                                     port_timestamp=port_timestamp,
+                                                     internal_timestamp=internal_timestamp,
+                                                     preferred_ts=DataParticleKey.PORT_TIMESTAMP)
+
                 self._record_buffer.append(data_particle)
 
             else:

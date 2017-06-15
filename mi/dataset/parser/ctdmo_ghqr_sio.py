@@ -685,7 +685,7 @@ class CtdmoGhqrRecoveredCtParser(SimpleParser):
                                           ct_match.group(REC_CT_GROUP_CONDUCTIVITY),
                                           ct_match.group(REC_CT_GROUP_PRESSURE),
                                           ct_match.group(REC_CT_GROUP_PRESSURE_TEMP),
-                                          ct_match.group(REC_CT_GROUP_TIME)), None)
+                                          ct_match.group(REC_CT_GROUP_TIME)))
 
         #
         # If there wasn't a match, the input data is messed up.
@@ -790,7 +790,7 @@ class CtdmoGhqrSioTelemeteredParser(SioParser):
                                               (sio_header_timestamp,
                                                ct_match.group(TEL_CT_GROUP_ID),
                                                ct_match.group(TEL_CT_GROUP_SCIENCE_DATA),
-                                               ct_match.group(TEL_CT_GROUP_TIME)), None)
+                                               ct_match.group(TEL_CT_GROUP_TIME)))
                 if sample is not None:
                     #
                     # Add this particle to the list of particles generated

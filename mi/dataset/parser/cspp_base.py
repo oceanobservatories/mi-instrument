@@ -274,8 +274,7 @@ class CsppParser(SimpleParser):
         # Extract the data record particle
         data_particle = self._extract_sample(self._data_particle_class,
                                              None,
-                                             data_match,
-                                             None)
+                                             data_match)
 
         # If we created a data particle, let's append the particle to the result particles
         # to return and increment the state data positioning
@@ -290,8 +289,7 @@ class CsppParser(SimpleParser):
                     metadata_particle = self._extract_sample(self._metadata_particle_class,
                                                              None,
                                                              (copy.copy(self._header_state),
-                                                              data_match),
-                                                             None)
+                                                              data_match))
                     if metadata_particle:
                         # We're going to insert the metadata particle so that it is
                         # the first in the list and set the position to 0, as it cannot

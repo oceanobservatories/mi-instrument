@@ -13,6 +13,7 @@ import os
 from nose.plugins.attrib import attr
 
 from mi.core.exceptions import SampleException
+from mi.core.instrument.data_particle import DataParticleKey
 from mi.core.log import get_logger
 from mi.dataset.dataset_parser import DataSetDriverConfigKeys
 from mi.dataset.driver.vel3d_l.wfp.resource import RESOURCE_PATH
@@ -1025,118 +1026,155 @@ class Vel3dLWfpParserUnitTestCase(ParserUnitTestCase):
         This function creates the recovered data expected particle results.
         """
 
-        self.rec_expected_particle_1_1 = Vel3dLWfpInstrumentRecoveredParticle(
-            REC_EXPECTED_FIELDS_RECORD_1_1, internal_timestamp=3281994123.0)
+        self.rec_expected_particle_1_1 = Vel3dLWfpInstrumentRecoveredParticle\
+            (REC_EXPECTED_FIELDS_RECORD_1_1, internal_timestamp=3281994123.0,
+             preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         self.rec_expected_particle_2_1 = Vel3dLWfpInstrumentRecoveredParticle(
-            REC_EXPECTED_FIELDS_RECORD_2_1, internal_timestamp=3284762584.0)
+            REC_EXPECTED_FIELDS_RECORD_2_1, internal_timestamp=3284762584.0,
+            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         self.rec_expected_particle_2_2 = Vel3dLWfpInstrumentRecoveredParticle(
-            REC_EXPECTED_FIELDS_RECORD_2_2, internal_timestamp=3287358245.0)
+            REC_EXPECTED_FIELDS_RECORD_2_2, internal_timestamp=3287358245.0,
+            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         self.rec_expected_particle_3_1 = Vel3dLWfpInstrumentRecoveredParticle(
-            REC_EXPECTED_FIELDS_RECORD_3_1, internal_timestamp=3290126706.0)
+            REC_EXPECTED_FIELDS_RECORD_3_1, internal_timestamp=3290126706.0,
+            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         self.rec_expected_particle_3_2 = Vel3dLWfpInstrumentRecoveredParticle(
-            REC_EXPECTED_FIELDS_RECORD_3_2, internal_timestamp=3292808767.0)
+            REC_EXPECTED_FIELDS_RECORD_3_2, internal_timestamp=3292808767.0,
+            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         self.rec_expected_particle_3_3 = Vel3dLWfpInstrumentRecoveredParticle(
-            REC_EXPECTED_FIELDS_RECORD_3_3, internal_timestamp=3295577228.0)
+            REC_EXPECTED_FIELDS_RECORD_3_3, internal_timestamp=3295577228.0,
+            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         self.rec_expected_particle_4_1 = Vel3dLWfpInstrumentRecoveredParticle(
-            REC_EXPECTED_FIELDS_RECORD_4_1, internal_timestamp=3298259289.0)
+            REC_EXPECTED_FIELDS_RECORD_4_1, internal_timestamp=3298259289.0,
+            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         self.rec_expected_particle_4_2 = Vel3dLWfpInstrumentRecoveredParticle(
-            REC_EXPECTED_FIELDS_RECORD_4_2, internal_timestamp=3301027750.0)
+            REC_EXPECTED_FIELDS_RECORD_4_2, internal_timestamp=3301027750.0,
+            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         self.rec_expected_particle_4_3 = Vel3dLWfpInstrumentRecoveredParticle(
-            REC_EXPECTED_FIELDS_RECORD_4_3, internal_timestamp=3303796211.0)
+            REC_EXPECTED_FIELDS_RECORD_4_3, internal_timestamp=3303796211.0,
+            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         self.rec_expected_particle_4_4 = Vel3dLWfpInstrumentRecoveredParticle(
-            REC_EXPECTED_FIELDS_RECORD_4_4, internal_timestamp=3306478272.0)
+            REC_EXPECTED_FIELDS_RECORD_4_4, internal_timestamp=3306478272.0,
+            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         self.rec_expected_particle_1_meta = Vel3dLWfpMetadataRecoveredParticle(
-            REC_EXPECTED_FIELDS_RECORD_1_META, internal_timestamp=3599815519.0)
+            REC_EXPECTED_FIELDS_RECORD_1_META, internal_timestamp=3599815519.0,
+            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         self.rec_expected_particle_2_meta = Vel3dLWfpMetadataRecoveredParticle(
-            REC_EXPECTED_FIELDS_RECORD_2_META, internal_timestamp=3583891131.0)
+            REC_EXPECTED_FIELDS_RECORD_2_META, internal_timestamp=3583891131.0,
+            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         self.rec_expected_particle_3_meta = Vel3dLWfpMetadataRecoveredParticle(
-            REC_EXPECTED_FIELDS_RECORD_3_META, internal_timestamp=3599815521.0)
+            REC_EXPECTED_FIELDS_RECORD_3_META, internal_timestamp=3599815521.0,
+            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         self.rec_expected_particle_4_meta = Vel3dLWfpMetadataRecoveredParticle(
-            REC_EXPECTED_FIELDS_RECORD_4_META, internal_timestamp=3599815522.0)
+            REC_EXPECTED_FIELDS_RECORD_4_META, internal_timestamp=3599815522.0,
+            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         #
         self.rec_expected_particle_10_1 = Vel3dLWfpInstrumentRecoveredParticle(
-            REC_EXPECTED_FIELDS_RECORD_10_1, internal_timestamp=3187386123.0)
+            REC_EXPECTED_FIELDS_RECORD_10_1, internal_timestamp=3187386123.0,
+            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         self.rec_expected_particle_10_2 = Vel3dLWfpInstrumentRecoveredParticle(
-            REC_EXPECTED_FIELDS_RECORD_10_2, internal_timestamp=3190154584.0)
+            REC_EXPECTED_FIELDS_RECORD_10_2, internal_timestamp=3190154584.0,
+            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         self.rec_expected_particle_10_3 = Vel3dLWfpInstrumentRecoveredParticle(
-            REC_EXPECTED_FIELDS_RECORD_10_3, internal_timestamp=3192663845.0)
+            REC_EXPECTED_FIELDS_RECORD_10_3, internal_timestamp=3192663845.0,
+            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         self.rec_expected_particle_10_4 = Vel3dLWfpInstrumentRecoveredParticle(
-            REC_EXPECTED_FIELDS_RECORD_10_4, internal_timestamp=3195432306.0)
+            REC_EXPECTED_FIELDS_RECORD_10_4, internal_timestamp=3195432306.0,
+            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         self.rec_expected_particle_10_5 = Vel3dLWfpInstrumentRecoveredParticle(
-            REC_EXPECTED_FIELDS_RECORD_10_5, internal_timestamp=3198114367.0)
+            REC_EXPECTED_FIELDS_RECORD_10_5, internal_timestamp=3198114367.0,
+            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         self.rec_expected_particle_10_6 = Vel3dLWfpInstrumentRecoveredParticle(
-            REC_EXPECTED_FIELDS_RECORD_10_6, internal_timestamp=3200882828.0)
+            REC_EXPECTED_FIELDS_RECORD_10_6, internal_timestamp=3200882828.0,
+            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         self.rec_expected_particle_10_7 = Vel3dLWfpInstrumentRecoveredParticle(
-            REC_EXPECTED_FIELDS_RECORD_10_7, internal_timestamp=3203564889.0)
+            REC_EXPECTED_FIELDS_RECORD_10_7, internal_timestamp=3203564889.0,
+            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         self.rec_expected_particle_10_8 = Vel3dLWfpInstrumentRecoveredParticle(
-            REC_EXPECTED_FIELDS_RECORD_10_8, internal_timestamp=3206333350.0)
+            REC_EXPECTED_FIELDS_RECORD_10_8, internal_timestamp=3206333350.0,
+            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         self.rec_expected_particle_10_9 = Vel3dLWfpInstrumentRecoveredParticle(
-            REC_EXPECTED_FIELDS_RECORD_10_9, internal_timestamp=3209101811.0)
+            REC_EXPECTED_FIELDS_RECORD_10_9, internal_timestamp=3209101811.0,
+            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         self.rec_expected_particle_10_10 = Vel3dLWfpInstrumentRecoveredParticle(
-            REC_EXPECTED_FIELDS_RECORD_10_10, internal_timestamp=3211783872.0)
+            REC_EXPECTED_FIELDS_RECORD_10_10, internal_timestamp=3211783872.0,
+            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         self.rec_expected_particle_10_meta = Vel3dLWfpMetadataRecoveredParticle(
-            REC_EXPECTED_FIELDS_RECORD_10_META, internal_timestamp=3599815519.0)
+            REC_EXPECTED_FIELDS_RECORD_10_META, internal_timestamp=3599815519.0,
+            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         # The following are for the multiple block file.
         self.rec_expected_particle_2_10_1_1 = Vel3dLWfpInstrumentRecoveredParticle(
-            REC_EXPECTED_FIELDS_RECORD_2_10_1_1, internal_timestamp=3218922123.0)
+            REC_EXPECTED_FIELDS_RECORD_2_10_1_1, internal_timestamp=3218922123.0,
+            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         self.rec_expected_particle_2_10_1_2 = Vel3dLWfpInstrumentRecoveredParticle(
-            REC_EXPECTED_FIELDS_RECORD_2_10_1_2, internal_timestamp=3221690584.0)
+            REC_EXPECTED_FIELDS_RECORD_2_10_1_2, internal_timestamp=3221690584.0,
+            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         self.rec_expected_particle_2_10_1_3 = Vel3dLWfpInstrumentRecoveredParticle(
-            REC_EXPECTED_FIELDS_RECORD_2_10_1_3, internal_timestamp=3224199845.0)
+            REC_EXPECTED_FIELDS_RECORD_2_10_1_3, internal_timestamp=3224199845.0,
+            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         self.rec_expected_particle_2_10_1_4 = Vel3dLWfpInstrumentRecoveredParticle(
-            REC_EXPECTED_FIELDS_RECORD_2_10_1_4, internal_timestamp=3226968306.0)
+            REC_EXPECTED_FIELDS_RECORD_2_10_1_4, internal_timestamp=3226968306.0,
+            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         self.rec_expected_particle_2_10_2_1 = Vel3dLWfpInstrumentRecoveredParticle(
-            REC_EXPECTED_FIELDS_RECORD_2_10_2_1, internal_timestamp=3229650367.0)
+            REC_EXPECTED_FIELDS_RECORD_2_10_2_1, internal_timestamp=3229650367.0,
+            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         self.rec_expected_particle_2_10_2_2 = Vel3dLWfpInstrumentRecoveredParticle(
-            REC_EXPECTED_FIELDS_RECORD_2_10_2_2, internal_timestamp=3232418828.0)
+            REC_EXPECTED_FIELDS_RECORD_2_10_2_2, internal_timestamp=3232418828.0,
+            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         self.rec_expected_particle_2_10_2_3 = Vel3dLWfpInstrumentRecoveredParticle(
-            REC_EXPECTED_FIELDS_RECORD_2_10_2_3, internal_timestamp=3235100889.0)
+            REC_EXPECTED_FIELDS_RECORD_2_10_2_3, internal_timestamp=3235100889.0,
+            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         self.rec_expected_particle_2_10_2_4 = Vel3dLWfpInstrumentRecoveredParticle(
-            REC_EXPECTED_FIELDS_RECORD_2_10_2_4, internal_timestamp=3237869350.0)
+            REC_EXPECTED_FIELDS_RECORD_2_10_2_4, internal_timestamp=3237869350.0,
+            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         self.rec_expected_particle_2_10_2_5 = Vel3dLWfpInstrumentRecoveredParticle(
-            REC_EXPECTED_FIELDS_RECORD_2_10_2_5, internal_timestamp=3240637811.0)
+            REC_EXPECTED_FIELDS_RECORD_2_10_2_5, internal_timestamp=3240637811.0,
+            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         self.rec_expected_particle_2_10_2_6 = Vel3dLWfpInstrumentRecoveredParticle(
-            REC_EXPECTED_FIELDS_RECORD_2_10_2_6, internal_timestamp=3243319872.0)
+            REC_EXPECTED_FIELDS_RECORD_2_10_2_6, internal_timestamp=3243319872.0,
+            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         self.rec_expected_particle_2_10_1_meta = Vel3dLWfpMetadataRecoveredParticle(
-            REC_EXPECTED_FIELDS_RECORD_2_10_1_META, internal_timestamp=3599815519.0)
+            REC_EXPECTED_FIELDS_RECORD_2_10_1_META, internal_timestamp=3599815519.0,
+            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         self.rec_expected_particle_2_10_2_meta = Vel3dLWfpMetadataRecoveredParticle(
-            REC_EXPECTED_FIELDS_RECORD_2_10_2_META, internal_timestamp=3599815520.0)
+            REC_EXPECTED_FIELDS_RECORD_2_10_2_META, internal_timestamp=3599815520.0,
+            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
     def create_tel_expected_results(self):
         """
@@ -1145,143 +1183,189 @@ class Vel3dLWfpParserUnitTestCase(ParserUnitTestCase):
         # The first number refers to the SIO record number.
         # The second number refers to the FSI record within the SIO block.
         self.tel_expected_particle_1_1 = Vel3dLWfpInstrumentParticle(
-            TEL_EXPECTED_FIELDS_RECORD_1_1, internal_timestamp=3597613323.0)
+            TEL_EXPECTED_FIELDS_RECORD_1_1, internal_timestamp=3597613323.0,
+            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         self.tel_expected_particle_2_1 = Vel3dLWfpInstrumentParticle(
-            TEL_EXPECTED_FIELDS_RECORD_2_1, internal_timestamp=3600381784.0)
+            TEL_EXPECTED_FIELDS_RECORD_2_1, internal_timestamp=3600381784.0,
+            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         self.tel_expected_particle_2_2 = Vel3dLWfpInstrumentParticle(
-            TEL_EXPECTED_FIELDS_RECORD_2_2, internal_timestamp=3602891045.0)
+            TEL_EXPECTED_FIELDS_RECORD_2_2, internal_timestamp=3602891045.0,
+            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         self.tel_expected_particle_3_1 = Vel3dLWfpInstrumentParticle(
-            TEL_EXPECTED_FIELDS_RECORD_3_1, internal_timestamp=3605659506.0)
+            TEL_EXPECTED_FIELDS_RECORD_3_1, internal_timestamp=3605659506.0,
+            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         self.tel_expected_particle_3_2 = Vel3dLWfpInstrumentParticle(
-            TEL_EXPECTED_FIELDS_RECORD_3_2, internal_timestamp=3608341567.0)
+            TEL_EXPECTED_FIELDS_RECORD_3_2, internal_timestamp=3608341567.0,
+            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         self.tel_expected_particle_3_3 = Vel3dLWfpInstrumentParticle(
-            TEL_EXPECTED_FIELDS_RECORD_3_3, internal_timestamp=3611110028.0)
+            TEL_EXPECTED_FIELDS_RECORD_3_3, internal_timestamp=3611110028.0,
+            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         self.tel_expected_particle_4_1 = Vel3dLWfpInstrumentParticle(
-            TEL_EXPECTED_FIELDS_RECORD_4_1, internal_timestamp=3613792089.0)
+            TEL_EXPECTED_FIELDS_RECORD_4_1, internal_timestamp=3613792089.0,
+            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         self.tel_expected_particle_4_2 = Vel3dLWfpInstrumentParticle(
-            TEL_EXPECTED_FIELDS_RECORD_4_2, internal_timestamp=3616560550.0)
+            TEL_EXPECTED_FIELDS_RECORD_4_2, internal_timestamp=3616560550.0,
+            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         self.tel_expected_particle_4_3 = Vel3dLWfpInstrumentParticle(
-            TEL_EXPECTED_FIELDS_RECORD_4_3, internal_timestamp=3619329011.0)
+            TEL_EXPECTED_FIELDS_RECORD_4_3, internal_timestamp=3619329011.0,
+            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         self.tel_expected_particle_4_4 = Vel3dLWfpInstrumentParticle(
-            TEL_EXPECTED_FIELDS_RECORD_4_4, internal_timestamp=3622011072.0)
+            TEL_EXPECTED_FIELDS_RECORD_4_4, internal_timestamp=3622011072.0,
+            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         self.tel_expected_particle_1_meta = Vel3dLWfpSioMuleMetadataParticle(
-            TEL_EXPECTED_FIELDS_RECORD_1_META, internal_timestamp=3583891131.0)
+            TEL_EXPECTED_FIELDS_RECORD_1_META, internal_timestamp=3583891131.0,
+            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         self.tel_expected_particle_2_meta = Vel3dLWfpSioMuleMetadataParticle(
-            TEL_EXPECTED_FIELDS_RECORD_2_META, internal_timestamp=3583891131.0)
+            TEL_EXPECTED_FIELDS_RECORD_2_META, internal_timestamp=3583891131.0,
+            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         self.tel_expected_particle_3_meta = Vel3dLWfpSioMuleMetadataParticle(
-            TEL_EXPECTED_FIELDS_RECORD_3_META, internal_timestamp=3583891131.0)
+            TEL_EXPECTED_FIELDS_RECORD_3_META, internal_timestamp=3583891131.0,
+            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         self.tel_expected_particle_4_meta = Vel3dLWfpSioMuleMetadataParticle(
-            TEL_EXPECTED_FIELDS_RECORD_4_META, internal_timestamp=3583891131.0)
+            TEL_EXPECTED_FIELDS_RECORD_4_META, internal_timestamp=3583891131.0,
+            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         self.tel_expected_particle_10_1 = Vel3dLWfpInstrumentParticle(
-            TEL_EXPECTED_FIELDS_RECORD_10_1, internal_timestamp=3502918923.0)
+            TEL_EXPECTED_FIELDS_RECORD_10_1, internal_timestamp=3502918923.0,
+            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         self.tel_expected_particle_10_2 = Vel3dLWfpInstrumentParticle(
-            TEL_EXPECTED_FIELDS_RECORD_10_2, internal_timestamp=3505687384.0)
+            TEL_EXPECTED_FIELDS_RECORD_10_2, internal_timestamp=3505687384.0,
+            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         self.tel_expected_particle_10_3 = Vel3dLWfpInstrumentParticle(
-            TEL_EXPECTED_FIELDS_RECORD_10_3, internal_timestamp=3508196645.0)
+            TEL_EXPECTED_FIELDS_RECORD_10_3, internal_timestamp=3508196645.0,
+            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         self.tel_expected_particle_10_4 = Vel3dLWfpInstrumentParticle(
-            TEL_EXPECTED_FIELDS_RECORD_10_4, internal_timestamp=3510965106.0)
+            TEL_EXPECTED_FIELDS_RECORD_10_4, internal_timestamp=3510965106.0,
+            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         self.tel_expected_particle_10_5 = Vel3dLWfpInstrumentParticle(
-            TEL_EXPECTED_FIELDS_RECORD_10_5, internal_timestamp=3513647167.0)
+            TEL_EXPECTED_FIELDS_RECORD_10_5, internal_timestamp=3513647167.0,
+            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         self.tel_expected_particle_10_6 = Vel3dLWfpInstrumentParticle(
-            TEL_EXPECTED_FIELDS_RECORD_10_6, internal_timestamp=3516415628.0)
+            TEL_EXPECTED_FIELDS_RECORD_10_6, internal_timestamp=3516415628.0,
+            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         self.tel_expected_particle_10_7 = Vel3dLWfpInstrumentParticle(
-            TEL_EXPECTED_FIELDS_RECORD_10_7, internal_timestamp=3519097689.0)
+            TEL_EXPECTED_FIELDS_RECORD_10_7, internal_timestamp=3519097689.0,
+            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         self.tel_expected_particle_10_8 = Vel3dLWfpInstrumentParticle(
-            TEL_EXPECTED_FIELDS_RECORD_10_8, internal_timestamp=3521866150.0)
+            TEL_EXPECTED_FIELDS_RECORD_10_8, internal_timestamp=3521866150.0,
+            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         self.tel_expected_particle_10_9 = Vel3dLWfpInstrumentParticle(
-            TEL_EXPECTED_FIELDS_RECORD_10_9, internal_timestamp=3524634611.0)
+            TEL_EXPECTED_FIELDS_RECORD_10_9, internal_timestamp=3524634611.0,
+            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         self.tel_expected_particle_10_10 = Vel3dLWfpInstrumentParticle(
-            TEL_EXPECTED_FIELDS_RECORD_10_10, internal_timestamp=3527316672.0)
+            TEL_EXPECTED_FIELDS_RECORD_10_10, internal_timestamp=3527316672.0,
+            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         self.tel_expected_particle_10_meta = Vel3dLWfpSioMuleMetadataParticle(
-            TEL_EXPECTED_FIELDS_RECORD_10_META, internal_timestamp=3583891131.0)
+            TEL_EXPECTED_FIELDS_RECORD_10_META, internal_timestamp=3583891131.0,
+            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         # The following are for the multiple SIO block file.
         self.tel_expected_particle_2_10_1_1 = Vel3dLWfpInstrumentParticle(
-            TEL_EXPECTED_FIELDS_RECORD_2_10_1_1, internal_timestamp=3534454923.0)
+            TEL_EXPECTED_FIELDS_RECORD_2_10_1_1, internal_timestamp=3534454923.0,
+            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         self.tel_expected_particle_2_10_1_2 = Vel3dLWfpInstrumentParticle(
-            TEL_EXPECTED_FIELDS_RECORD_2_10_1_2, internal_timestamp=3537223384.0)
+            TEL_EXPECTED_FIELDS_RECORD_2_10_1_2, internal_timestamp=3537223384.0,
+            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         self.tel_expected_particle_2_10_1_3 = Vel3dLWfpInstrumentParticle(
-            TEL_EXPECTED_FIELDS_RECORD_2_10_1_3, internal_timestamp=3539819045.0)
+            TEL_EXPECTED_FIELDS_RECORD_2_10_1_3, internal_timestamp=3539819045.0,
+            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         self.tel_expected_particle_2_10_1_4 = Vel3dLWfpInstrumentParticle(
-            TEL_EXPECTED_FIELDS_RECORD_2_10_1_4, internal_timestamp=3542587506.0)
+            TEL_EXPECTED_FIELDS_RECORD_2_10_1_4, internal_timestamp=3542587506.0,
+            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         self.tel_expected_particle_2_10_2_1 = Vel3dLWfpInstrumentParticle(
-            TEL_EXPECTED_FIELDS_RECORD_2_10_2_1, internal_timestamp=3545269567.0)
+            TEL_EXPECTED_FIELDS_RECORD_2_10_2_1, internal_timestamp=3545269567.0,
+            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         self.tel_expected_particle_2_10_2_2 = Vel3dLWfpInstrumentParticle(
-            TEL_EXPECTED_FIELDS_RECORD_2_10_2_2, internal_timestamp=3548038028.0)
+            TEL_EXPECTED_FIELDS_RECORD_2_10_2_2, internal_timestamp=3548038028.0,
+            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         self.tel_expected_particle_2_10_2_3 = Vel3dLWfpInstrumentParticle(
-            TEL_EXPECTED_FIELDS_RECORD_2_10_2_3, internal_timestamp=3550720089.0)
+            TEL_EXPECTED_FIELDS_RECORD_2_10_2_3, internal_timestamp=3550720089.0,
+            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         self.tel_expected_particle_2_10_2_4 = Vel3dLWfpInstrumentParticle(
-            TEL_EXPECTED_FIELDS_RECORD_2_10_2_4, internal_timestamp=3553488550.0)
+            TEL_EXPECTED_FIELDS_RECORD_2_10_2_4, internal_timestamp=3553488550.0,
+            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         self.tel_expected_particle_2_10_2_5 = Vel3dLWfpInstrumentParticle(
-            TEL_EXPECTED_FIELDS_RECORD_2_10_2_5, internal_timestamp=3556257011.0)
+            TEL_EXPECTED_FIELDS_RECORD_2_10_2_5, internal_timestamp=3556257011.0,
+            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         self.tel_expected_particle_2_10_2_6 = Vel3dLWfpInstrumentParticle(
-            TEL_EXPECTED_FIELDS_RECORD_2_10_2_6, internal_timestamp=3558939072.0)
+            TEL_EXPECTED_FIELDS_RECORD_2_10_2_6, internal_timestamp=3558939072.0,
+            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         self.tel_expected_particle_2_10_1_meta = Vel3dLWfpSioMuleMetadataParticle(
-            TEL_EXPECTED_FIELDS_RECORD_2_10_1_META, internal_timestamp=3583891131.0)
+            TEL_EXPECTED_FIELDS_RECORD_2_10_1_META, internal_timestamp=3583891131.0,
+            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         self.tel_expected_particle_2_10_2_meta = Vel3dLWfpSioMuleMetadataParticle(
-            TEL_EXPECTED_FIELDS_RECORD_2_10_2_META, internal_timestamp=3583891131.0)
+            TEL_EXPECTED_FIELDS_RECORD_2_10_2_META, internal_timestamp=3583891131.0,
+            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         self.tel_expected_particle_sio_ps_wa_wa_2_1 = Vel3dLWfpInstrumentParticle(
-            TEL_EXPECTED_FIELDS_SIO_PS_WA_WA_2_1, internal_timestamp=3571355045.0)
+            TEL_EXPECTED_FIELDS_SIO_PS_WA_WA_2_1, internal_timestamp=3571355045.0,
+            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         self.tel_expected_particle_sio_ps_wa_wa_2_2 = Vel3dLWfpInstrumentParticle(
-            TEL_EXPECTED_FIELDS_SIO_PS_WA_WA_2_2, internal_timestamp=3574123506.0)
+            TEL_EXPECTED_FIELDS_SIO_PS_WA_WA_2_2, internal_timestamp=3574123506.0,
+            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         self.tel_expected_particle_sio_ps_wa_wa_2_3 = Vel3dLWfpInstrumentParticle(
-            TEL_EXPECTED_FIELDS_SIO_PS_WA_WA_2_3, internal_timestamp=3576805567.0)
+            TEL_EXPECTED_FIELDS_SIO_PS_WA_WA_2_3, internal_timestamp=3576805567.0,
+            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         self.tel_expected_particle_sio_ps_wa_wa_2_meta = Vel3dLWfpSioMuleMetadataParticle(
-            TEL_EXPECTED_FIELDS_SIO_PS_WA_WA_2_META, internal_timestamp=3583891131.0)
+            TEL_EXPECTED_FIELDS_SIO_PS_WA_WA_2_META, internal_timestamp=3583891131.0,
+            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         self.tel_expected_particle_sio_ps_wa_wa_3_1 = Vel3dLWfpInstrumentParticle(
-            TEL_EXPECTED_FIELDS_SIO_PS_WA_WA_3_1, internal_timestamp=3579574028.0)
+            TEL_EXPECTED_FIELDS_SIO_PS_WA_WA_3_1, internal_timestamp=3579574028.0,
+            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         self.tel_expected_particle_sio_ps_wa_wa_3_2 = Vel3dLWfpInstrumentParticle(
-            TEL_EXPECTED_FIELDS_SIO_PS_WA_WA_3_2, internal_timestamp=3582256089.0)
+            TEL_EXPECTED_FIELDS_SIO_PS_WA_WA_3_2, internal_timestamp=3582256089.0,
+            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         self.tel_expected_particle_sio_ps_wa_wa_3_3 = Vel3dLWfpInstrumentParticle(
-            TEL_EXPECTED_FIELDS_SIO_PS_WA_WA_3_3, internal_timestamp=3585024550.0)
+            TEL_EXPECTED_FIELDS_SIO_PS_WA_WA_3_3, internal_timestamp=3585024550.0,
+            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         self.tel_expected_particle_sio_ps_wa_wa_3_4 = Vel3dLWfpInstrumentParticle(
-            TEL_EXPECTED_FIELDS_SIO_PS_WA_WA_3_4, internal_timestamp=3587793011.0)
+            TEL_EXPECTED_FIELDS_SIO_PS_WA_WA_3_4, internal_timestamp=3587793011.0,
+            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         self.tel_expected_particle_sio_ps_wa_wa_3_meta = Vel3dLWfpSioMuleMetadataParticle(
-            TEL_EXPECTED_FIELDS_SIO_PS_WA_WA_3_META, internal_timestamp=3583891131.0)
+            TEL_EXPECTED_FIELDS_SIO_PS_WA_WA_3_META, internal_timestamp=3583891131.0,
+            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
     def create_rec_parser(self, file_handle):
         """

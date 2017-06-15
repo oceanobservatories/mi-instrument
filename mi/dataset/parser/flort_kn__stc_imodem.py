@@ -90,7 +90,7 @@ class Flort_kn_stc_imodemParser(WfpEFileParser):
             timestamp = int(fields[0])
             self._timestamp = float(ntplib.system_to_ntp_time(timestamp))
             log.debug("Converting record timestamp %f to ntp timestamp %f", timestamp, self._timestamp)
-            sample = self._extract_sample(self._particle_class, None, record, self._timestamp)
+            sample = self._extract_sample(self._particle_class, None, record, internal_timestamp=self._timestamp)
             if sample:
                 # create particle
                 log.trace("Extracting sample %s with read_state: %s", sample, self._read_state)

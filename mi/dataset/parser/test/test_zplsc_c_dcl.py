@@ -14,6 +14,7 @@ from nose.plugins.attrib import attr
 from mi.core.log import get_logger
 from mi.dataset.dataset_parser import DataSetDriverConfigKeys
 from mi.dataset.driver.zplsc_c.dcl.resource import RESOURCE_PATH
+from mi.dataset.parser.utilities import particle_to_yml
 from mi.dataset.parser.zplsc_c_dcl import ZplscCDclParser
 from mi.dataset.test.test_parser import ParserUnitTestCase
 
@@ -39,6 +40,9 @@ class ZplscCDclParserUnitTestCase(ParserUnitTestCase):
     def file_path(self, filename):
         log.debug('resource path = %s, file name = %s', RESOURCE_PATH, filename)
         return os.path.join(RESOURCE_PATH, filename)
+
+    def create_yml(self, particles, filename):
+        particle_to_yml(particles, os.path.join(RESOURCE_PATH, filename))
 
     def rec_exception_callback(self, exception):
         """
@@ -142,55 +146,6 @@ class ZplscCDclParserUnitTestCase(ParserUnitTestCase):
                 log.debug('Exception: %s', self.exception_callback_value[i])
 
         log.debug('===== END TEST BAD DATA  =====')
-
-    def create_large_yml(self):
-        """
-        Create a large yml file corresponding to an actual recovered dataset.
-        This is not an actual test - it allows us to create what we need
-        for integration testing, i.e. a yml file.
-        """
-
-        with open(self.file_path('20150407.zplsc_var_channels.log')) as in_file:
-
-            parser = self.create_zplsc_c_dcl_parser(in_file)
-
-            date, name, ext = in_file.name.split('.')
-            date = date.split('/')[-1]
-            out_file = '.'.join([date, name, 'yml'])
-            log.debug(out_file)
-
-            # In a single read, get all particles in this file.
-            result = parser.get_records(1000)
-
-            self.particle_to_yml(result, out_file)
-
-    def particle_to_yml(self, particles, filename, mode='w'):
-        """
-        This is added as a testing helper, not actually as part of the parser tests.
-        Since the same particles will be used for the driver test it is helpful to
-        write them to .yml in the same form they need in the results.yml file here.
-        """
-        # open write append, if you want to start from scratch manually delete this file
-        with open(self.file_path(filename), mode) as fid:
-            fid.write('header:\n')
-            fid.write("    particle_object: %s\n" % CLASS_NAME)
-            fid.write("    particle_type: %s\n" % PARTICLE_TYPE)
-            fid.write('data:\n')
-            for i in range(0, len(particles)):
-                particle_dict = particles[i].generate_dict()
-                fid.write('  - _index: %d\n' % (i+1))
-                # fid.write('    particle_object: %s\n' % particles[i].__class__.__name__)
-                # fid.write('    particle_type: %s\n' % particle_dict.get('stream_name'))
-                fid.write('    internal_timestamp: %.7f\n' % particle_dict.get('internal_timestamp'))
-                for val in particle_dict.get('values'):
-                    if val.get('value') is None:
-                        fid.write('    %s: %s\n' % (val.get('value_id'), 'Null'))
-                    elif isinstance(val.get('value'), float):
-                        fid.write('    %s: %2.1f\n' % (val.get('value_id'), val.get('value')))
-                    elif isinstance(val.get('value'), str):
-                        fid.write("    %s: '%s'\n" % (val.get('value_id'), val.get('value')))
-                    else:
-                        fid.write('    %s: %s\n' % (val.get('value_id'), val.get('value')))
 
     def test_bug_9692(self):
         """

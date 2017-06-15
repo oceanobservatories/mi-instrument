@@ -9,6 +9,7 @@
 This file contains code for the base nutnr_b_dcl parser and regex code used
 to produce the particles.
 """
+from mi.core.instrument.data_particle import DataParticleKey
 
 __author__ = 'Steve Myerson (Raytheon), Mark Worden'
 __license__ = 'Apache 2.0'
@@ -26,8 +27,8 @@ from mi.core.exceptions import RecoverableSampleException, NotImplementedExcepti
 from mi.dataset.dataset_parser import Parser
 
 from mi.dataset.parser.nutnr_b_particles import NutnrBDataParticleKey
-from mi.dataset.parser.utilities import dcl_controller_timestamp_to_utc_time, \
-    dcl_controller_timestamp_to_ntp_time
+from mi.dataset.parser.utilities import dcl_time_to_utc, \
+    dcl_time_to_ntp
 
 from mi.core.common import BaseEnum
 
@@ -131,8 +132,8 @@ SEPARATOR = ','
 
 # Instrument data records:
 #   Record-Timestamp SAT<NDC or NLC>Serial-Number,<comma separated data>
-#2014/06/27 14:46:48.947 SATNDF0260,2014178,14.780263,0.00,0.00,0.00,0.00,0.000000,23.12,23.69,16.93,165422,8.10,12.02,4.97,15.03,240.67,2.22,982.20,977.88,986,973,980,973,999,986,978,963,964,982,
-#993,965,985,979,967,977,985,967,982,972,970,973,978,985,992,977,983,977,962,951,963,968,972,977,985,976,973,967,964,977,963,978,986,973,983,987,971,983,967,
+# 2014/06/27 14:46:48.947 SATNDF0260,2014178,14.780263,0.00,0.00,0.00,0.00,0.000000,23.12,23.69,16.93,165422,8.10,12.02,4.97,15.03,240.67,2.22,982.20,977.88,986,973,980,973,999,986,978,963,964,982,
+# 993,965,985,979,967,977,985,967,982,972,970,973,978,985,992,977,983,977,962,951,963,968,972,977,985,976,973,967,964,977,963,978,986,973,983,987,971,983,967,
 
 INST_COMMON_REGEX = '([0-9a-zA-Z]{4})'                      # serial number
 INST_COMMON_REGEX += SEPARATOR
@@ -336,34 +337,33 @@ class NutnrBDclParser(Parser):
 
     def _extract_metadata_unix_timestamp(self, idle_match):
         """
-        This function will create a timestamp to be used as the internal
-        timestamp for the metadata particle is generated.
+        This function will create a timestamp to be used as the port_timestamp
+        for the metadata particle is generated.
         """
 
-        # calculate the metadata particle internal timestamp
+        # calculate the metadata particle port_timestamp
         # from the DCL timestamp.
 
-        utc_time = dcl_controller_timestamp_to_utc_time(idle_match.group(
+        utc_time = dcl_time_to_utc(idle_match.group(
             MetaDataMatchGroups.META_GROUP_DCL_TIMESTAMP))
 
         return utc_time
 
-    def _extract_instrument_ntp_timestamp(self, inst_match):
+    def _extract_dcl_controller_ntp_timestamp(self, inst_match):
         """
-        This function will create a timestamp to be used as the internal
-        timestamp for the instrument particle is generated.
+        This function will create a timestamp to be used as the port_timestamp
+        for the instrument particle is generated.
         """
 
-        # calculate the instrument particle internal timestamp
+        # calculate the instrument particle port_timestamp
         # from the DCL timestamp.
-
-        return dcl_controller_timestamp_to_ntp_time(inst_match.group(
+        return dcl_time_to_ntp(inst_match.group(
             InstrumentDataMatchGroups.INST_GROUP_DCL_TIMESTAMP))
 
     def _process_idle_metadata_record(self, idle_match):
         """
         This function processes an Idle State metadata record.
-        It will create a timestamp to be used as the internal timestamp for the
+        It will create a timestamp to be used as the port_timestamp for the
         metadata particle is generated.
         """
 
@@ -392,8 +392,12 @@ class NutnrBDclParser(Parser):
 
         else:
 
-            #generate one metadata record if it has not already been done
+            # generate one metadata record if it has not already been done
             if self._metadata_state == ALL_METADATA_RECEIVED and self._metadata_particle_generated_for_block is False:
+
+                # Obtain the port_timestamp
+                port_timestamp = dcl_time_to_ntp \
+                    (inst_match.group(InstrumentDataMatchGroups.INST_GROUP_DCL_TIMESTAMP))
 
                 # Fields for the metadata particle must be
                 # in the same order as the RAW_INDEX_META_xxx values.
@@ -401,13 +405,11 @@ class NutnrBDclParser(Parser):
                 # are from the instrument data record.
                 # Other data comes from the various metadata records
                 # which has been accumulated in the Metadata State Table.
+
                 meta_fields = [value
                                for state, matcher, value in METADATA_STATE_TABLE]
 
                 metadata_tuple = [
-                    (NutnrBDataParticleKey.DCL_CONTROLLER_TIMESTAMP,
-                     inst_match.group(InstrumentDataMatchGroups.INST_GROUP_DCL_TIMESTAMP),
-                     str),
                     (NutnrBDataParticleKey.SERIAL_NUMBER,
                      inst_match.group(InstrumentDataMatchGroups.INST_GROUP_SERIAL_NUMBER),
                      str),
@@ -433,7 +435,8 @@ class NutnrBDclParser(Parser):
                 particle = self._extract_sample(self._metadata_particle_class,
                                                 None,
                                                 metadata_tuple,
-                                                self._metadata_timestamp)
+                                                port_timestamp=port_timestamp,
+                                                preferred_ts=DataParticleKey.PORT_TIMESTAMP)
 
                 if particle is not None:
                     self._record_buffer.append(particle)

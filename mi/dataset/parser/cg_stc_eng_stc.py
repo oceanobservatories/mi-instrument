@@ -1280,7 +1280,7 @@ class CgStcEngStcParser(Parser):
             if utime_grp and utime_grp.group(1):
                 self._timestamp = ntplib.system_to_ntp_time(float(utime_grp.group(1)))
                 log.debug("extracting sample with timestamp %f", self._timestamp)
-                sample = self._extract_sample(self._particle_class, None, self._eng_str, self._timestamp)
+                sample = self._extract_sample(self._particle_class, None, self._eng_str, internal_timestamp=self._timestamp)
                 if sample:
                     record_list.append(sample)
             else:

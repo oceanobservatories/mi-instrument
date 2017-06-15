@@ -350,7 +350,7 @@ class OptaaDjDclParser(SimpleParser):
 
                         # create the metadata particle
                         meta_particle = self._extract_sample(self.metadata_particle_class,
-                                                             None, metadata, self.ntp_time)
+                                                             None, metadata, internal_timestamp=self.ntp_time)
                         self._record_buffer.append(meta_particle)
 
                         # Adjust the ntp_time at power-up by
@@ -377,7 +377,7 @@ class OptaaDjDclParser(SimpleParser):
 
                     # create the instrument particle
                     data_particle = self._extract_sample(self.instrument_particle_class,
-                                                         None, instrument_data, self.ntp_time + time_since_power_up)
+                                                         None, instrument_data, internal_timestamp=self.ntp_time + time_since_power_up)
                     self._record_buffer.append(data_particle)
 
                 else:  # bad checksum

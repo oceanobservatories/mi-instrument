@@ -9,9 +9,9 @@ from nose.plugins.attrib import attr
 
 from mi.core.exceptions import SampleException
 from mi.dataset.driver.hyd_o.dcl.resource import RESOURCE_PATH
+from mi.dataset.parser.utilities import particle_to_yml
 from mi.dataset.test.test_parser import ParserUnitTestCase
 from mi.dataset.parser.hyd_o_dcl import HydODclParser
-
 
 __author__ = 'Emily Hahn'
 __license__ = 'Apache 2.0'
@@ -19,6 +19,8 @@ __license__ = 'Apache 2.0'
 
 @attr('UNIT', group='mi')
 class HydODclParserUnitTestCase(ParserUnitTestCase):
+    def create_yml(self, particles, filename):
+        particle_to_yml(particles, os.path.join(RESOURCE_PATH, filename))
 
     def test_simple_telem(self):
         """
@@ -30,7 +32,6 @@ class HydODclParserUnitTestCase(ParserUnitTestCase):
             particles = parser.get_records(8)
 
             self.assert_particles(particles, "first_telem.yml", RESOURCE_PATH)
-
             self.assertEqual(self.exception_callback_value, [])
 
     def test_simple_recov(self):
@@ -43,7 +44,6 @@ class HydODclParserUnitTestCase(ParserUnitTestCase):
             particles = parser.get_records(8)
 
             self.assert_particles(particles, "first_recov.yml", RESOURCE_PATH)
-
             self.assertEqual(self.exception_callback_value, [])
 
     def test_long_telem(self):
@@ -55,8 +55,8 @@ class HydODclParserUnitTestCase(ParserUnitTestCase):
 
             # there are 813 lines in the file, but 70 are ignored so we should get 743 particles
             particles = parser.get_records(813)
-            self.assertEquals(len(particles), 743)
 
+            self.assertEquals(len(particles), 743)
             self.assertEqual(self.exception_callback_value, [])
 
     def test_bad_format_telem(self):
@@ -67,11 +67,10 @@ class HydODclParserUnitTestCase(ParserUnitTestCase):
             parser = HydODclParser(file_handle, self.exception_callback, is_telemetered=True)
 
             particles = parser.get_records(10)
-            self.assertEquals(len(particles), 8)
 
+            self.assertEquals(len(particles), 8)
             # particles in the file should still match the good data in first.hyd1.log, just skipping the bad lines
             self.assert_particles(particles, "first_telem.yml", RESOURCE_PATH)
-
             # confirm we get two exceptions, one for each bad line
             self.assertEqual(len(self.exception_callback_value), 2)
             self.assertIsInstance(self.exception_callback_value[0], SampleException)
@@ -85,6 +84,6 @@ class HydODclParserUnitTestCase(ParserUnitTestCase):
             parser = HydODclParser(file_handle, self.exception_callback, is_telemetered=True)
 
             particles = parser.get_records(10)
-            self.assertEquals(len(particles), 0)
 
+            self.assertEquals(len(particles), 0)
             self.assertEqual(self.exception_callback_value, [])

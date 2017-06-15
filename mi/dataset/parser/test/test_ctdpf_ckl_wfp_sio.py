@@ -13,6 +13,7 @@ from StringIO import StringIO
 import ntplib
 from nose.plugins.attrib import attr
 
+from mi.core.instrument.data_particle import DataParticleKey
 from mi.core.log import get_logger
 from mi.dataset.dataset_parser import DataSetDriverConfigKeys
 from mi.dataset.driver.ctdpf_ckl.wfp_sio.resource import RESOURCE_PATH
@@ -158,19 +159,24 @@ class CtdpfCklWfpSioMuleParserUnitTestCase(ParserUnitTestCase):
 
         self.start_timestamp = self.calc_timestamp(start_time, time_increment, 0)
         self.particle_meta = CtdpfCklWfpSioMetadataParticle(EXPECTED_TIME_STAMP,
-                                                            internal_timestamp=self.start_timestamp)
+                                                            internal_timestamp=self.start_timestamp,
+                                                            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
         self.particle_meta_ndf = CtdpfCklWfpSioMetadataParticle(EXPECTED_TIME_STAMP_ndf,
-                                                                internal_timestamp=self.start_timestamp)
+                                                                internal_timestamp=self.start_timestamp,
+                                                                preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
         self.particle_a = CtdpfCklWfpSioDataParticle(EXPECTED_VALUES_1,
-                                                     internal_timestamp=self.start_timestamp)
+                                                     internal_timestamp=self.start_timestamp,
+                                                     preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         self.timestamp_2 = self.calc_timestamp(start_time, time_increment, 1)
         self.particle_b = CtdpfCklWfpSioDataParticle(EXPECTED_VALUES_2,
-                                                     internal_timestamp=self.timestamp_2)
+                                                     internal_timestamp=self.timestamp_2,
+                                                     preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         timestamp_3 = self.calc_timestamp(start_time, time_increment, 2)
         self.particle_c = CtdpfCklWfpSioDataParticle(EXPECTED_VALUES_3,
-                                                     internal_timestamp=timestamp_3)
+                                                     internal_timestamp=timestamp_3,
+                                                     preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
     def calc_timestamp(self, start, increment, sample_idx):
         new_time = start + (increment * sample_idx)

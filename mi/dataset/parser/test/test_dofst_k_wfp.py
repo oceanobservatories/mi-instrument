@@ -14,6 +14,7 @@ import ntplib
 from nose.plugins.attrib import attr
 
 from mi.core.exceptions import SampleException
+from mi.core.instrument.data_particle import DataParticleKey
 from mi.core.log import get_logger
 from mi.dataset.dataset_parser import DataSetDriverConfigKeys
 from mi.dataset.driver.dofst_k.wfp.resource import RESOURCE_PATH
@@ -121,38 +122,54 @@ class DofstKWfpParserUnitTestCase(ParserUnitTestCase):
         TDP = DofstKWfpTelemeteredDataParticle
 
         self.recov_particle_meta = RMP((b"\x52\x4e\x75\x82\x52\x4e\x76\x9a", 3.0),
-                                       internal_timestamp=self.start_timestamp)
+                                       internal_timestamp=self.start_timestamp,
+                                       preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
         self.recov_particle_meta_long = RMP((b"\x52\x4e\x75\x82\x52\x4e\x76\x9a", 270.0),
-                                            internal_timestamp=self.start_timestamp_long)
+                                            internal_timestamp=self.start_timestamp_long,
+                                            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
         self.recov_particle_a = RDP(b"\x00\x1a\x88\x03\xe3\x3b\x00\x03\xeb\x0a\xc8",
-                                    internal_timestamp=self.start_timestamp)
+                                    internal_timestamp=self.start_timestamp,
+                                    preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
         self.recov_particle_a_long = RDP(b"\x00\x1a\x88\x03\xe3\x3b\x00\x03\xeb\x0a\xc8",
-                                         internal_timestamp=self.start_timestamp_long)
+                                         internal_timestamp=self.start_timestamp_long,
+                                         preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
         self.recov_particle_b = RDP(b"\x00\x1a\x8c\x03\xe2\xc0\x00\x03\xeb\x0a\x81",
-                                    internal_timestamp=self.timestamp_2)
+                                    internal_timestamp=self.timestamp_2,
+                                    preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
         self.recov_particle_b_long = RDP(b"\x00\x1a\x8c\x03\xe2\xc0\x00\x03\xeb\x0a\x81",
-                                         internal_timestamp=self.timestamp_2_long)
+                                         internal_timestamp=self.timestamp_2_long,
+                                         preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
         self.recov_particle_c = RDP(b"\x00\x1a\x90\x03\xe1\x5b\x00\x03\xeb\x0a\x65",
-                                    internal_timestamp=timestamp_3)
+                                    internal_timestamp=timestamp_3,
+                                    preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
         self.recov_particle_last = RDP(b"\x00\x1a\x8f\x03\xe5\x91\x00\x03\xeb\x0bS",
-                                       internal_timestamp=timestamp_last)
+                                       internal_timestamp=timestamp_last,
+                                       preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         self.telem_particle_meta = TMP((b"\x52\x4e\x75\x82\x52\x4e\x76\x9a", 3.0),
-                                       internal_timestamp=self.start_timestamp)
+                                       internal_timestamp=self.start_timestamp,
+                                       preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
         self.telem_particle_meta_long = TMP((b"\x52\x4e\x75\x82\x52\x4e\x76\x9a", 270.0),
-                                            internal_timestamp=self.start_timestamp_long)
+                                            internal_timestamp=self.start_timestamp_long,
+                                            preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
         self.telem_particle_a = TDP(b"\x00\x1a\x88\x03\xe3\x3b\x00\x03\xeb\x0a\xc8",
-                                    internal_timestamp=self.start_timestamp)
+                                    internal_timestamp=self.start_timestamp,
+                                    preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
         self.telem_particle_a_long = TDP(b"\x00\x1a\x88\x03\xe3\x3b\x00\x03\xeb\x0a\xc8",
-                                         internal_timestamp=self.start_timestamp_long)
+                                         internal_timestamp=self.start_timestamp_long,
+                                         preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
         self.telem_particle_b = TDP(b"\x00\x1a\x8c\x03\xe2\xc0\x00\x03\xeb\x0a\x81",
-                                    internal_timestamp=self.timestamp_2)
+                                    internal_timestamp=self.timestamp_2,
+                                    preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
         self.telem_particle_b_long = TDP(b"\x00\x1a\x8c\x03\xe2\xc0\x00\x03\xeb\x0a\x81",
-                                         internal_timestamp=self.timestamp_2_long)
+                                         internal_timestamp=self.timestamp_2_long,
+                                         preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
         self.telem_particle_c = TDP(b"\x00\x1a\x90\x03\xe1\x5b\x00\x03\xeb\x0a\x65",
-                                    internal_timestamp=timestamp_3)
+                                    internal_timestamp=timestamp_3,
+                                    preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
         self.telem_particle_last = TDP(b"\x00\x1a\x8f\x03\xe5\x91\x00\x03\xeb\x0bS",
-                                       internal_timestamp=timestamp_last)
+                                       internal_timestamp=timestamp_last,
+                                       preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
         self.file_ingested_value = None
         self.state_callback_value = None
