@@ -1385,7 +1385,6 @@ class InstrumentDriverUnitTestCase(InstrumentDriverTestCase):
 
         # Verify the data particle
         log.debug("Non raw particles: %r ", particles)
-        self.assertEqual(len(particles), 1)
         particle_assert_method(particles.pop(), verify_values)
 
     def assert_particle_published(self, driver, sample_data, particle_assert_method, verify_values=False):
