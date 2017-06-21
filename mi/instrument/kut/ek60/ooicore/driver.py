@@ -550,7 +550,7 @@ class Protocol(CommandResponseInstrumentProtocol):
 
         self._chunker = StringChunker(self.sieve_function)
 
-        log.info('processing particles with processing pool %d workers', POOL_SIZE)
+        log.info('processing particles with %d workers', POOL_SIZE)
         self._process_particles = True
         self._pending_particles = deque()
         self._processing_pool = multiprocessing.Pool(POOL_SIZE)
