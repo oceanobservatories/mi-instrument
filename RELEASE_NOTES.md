@@ -1,3 +1,7 @@
+# Version 0.5.01
+
+* Issue #12499 Modifying playback so it can be run via ingest request
+
 # Version 0.5.0
 
 * Issue #12253 Parsers are not setting port_timestamp and #12254 Extraneous data in DCL parser particles
