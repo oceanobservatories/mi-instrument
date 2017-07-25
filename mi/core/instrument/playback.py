@@ -123,13 +123,12 @@ class PlaybackPacket(Packet):
 
 
 class PlaybackWrapper(object):
-    def __init__(self, module, refdes, event_url, particle_url, reader_klass, allowed, files, max_events):
+    def __init__(self, module, refdes, event_url, particle_url, reader_klass, allowed, files, max_events, handler=None):
         version = DriverWrapper.get_version(module)
         headers = {'sensor': refdes, 'deliveryType': 'streamed', 'version': version, 'module': module}
         self.max_events = max_events
-        self.event_publisher = Publisher.from_url(event_url, headers)
-        self.particle_publisher = Publisher.from_url(particle_url, headers, allowed, max_events)
-
+        self.event_publisher = Publisher.from_url(event_url, handler, headers)
+        self.particle_publisher = Publisher.from_url(particle_url, handler, headers, allowed, max_events)
         self.protocol = self.construct_protocol(module)
         self.reader = reader_klass(files, self.got_data)
 
