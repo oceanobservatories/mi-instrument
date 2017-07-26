@@ -153,7 +153,7 @@ class PlaybackWrapper(object):
 
     def zplsc_playback(self):
         for index, filename in enumerate(self.reader.read()):
-            if filename is not None:
+            if filename:
                 self.set_header_filename(filename)
                 log.info("filename is :%s", filename)
                 if hasattr(self.protocol, 'got_filename'):
@@ -356,7 +356,7 @@ def main():
     if allowed is not None:
         allowed = [_.strip() for _ in allowed.split(',')]
     max_events = options.get('--max_events')
-    if max_events is None or max_events == '':
+    if not max_events:
         max_events = Publisher.DEFAULT_MAX_EVENTS
     else:
         max_events = int(max_events)
