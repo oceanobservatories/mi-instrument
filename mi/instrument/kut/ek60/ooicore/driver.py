@@ -1091,3 +1091,6 @@ class Protocol(CommandResponseInstrumentProtocol):
         if match:
             # Queue up this file for processing
             self._pending_particles.append((match.group('Filepath'), timestamp))
+
+def create_playback_protocol(callback):
+    return Protocol(None, None, callback)
