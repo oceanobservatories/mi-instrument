@@ -1,3 +1,8 @@
+# Version 0.5.1
+
+* Issue #12167 Modify ZPLSC cabled driver to produce time series data
+  Changed the ZPLSC cabled driver to only produce time series data (and not echograms plot)
+
 # Version 0.5.0
 
 * Issue #12253 Parsers are not setting port_timestamp and #12254 Extraneous data in DCL parser particles
