@@ -155,7 +155,7 @@ class PlaybackWrapper(object):
         for index, filename in enumerate(self.reader.read()):
             if filename:
                 self.set_header_filename(filename)
-                log.info("filename is :%s", filename)
+                log.info("filename is: %s", filename)
                 if hasattr(self.protocol, 'got_filename'):
                     self.protocol.got_filename(filename)
 
