@@ -1,0 +1,28 @@
+header:
+    particle_object: 'MULTIPLE'
+    particle_type: 'MULTIPLE'
+data:
+  - _index: 1
+    particle_object: CtdbpCdefDclRecoveredDataParticle
+    particle_type: ctdbp_cdef_dcl_instrument_recovered
+    internal_timestamp: 3621112222.0000000
+    port_timestamp: 3621112227.7830000
+    conductivity:         0.00003
+    pressure:        -0.01900
+    temp:        20.47120
+  - _index: 2
+    particle_object: CtdbpCdefDclRecoveredDataParticle
+    particle_type: ctdbp_cdef_dcl_instrument_recovered
+    internal_timestamp: 3621191420.0000000
+    port_timestamp: 3621191425.7709999
+    conductivity:         0.00003
+    pressure:        -0.00900
+    temp:        20.08140
+  - _index: 3
+    particle_object: CtdbpCdefDclRecoveredDataParticle
+    particle_type: ctdbp_cdef_dcl_instrument_recovered
+    internal_timestamp: 3621195021.0000000
+    port_timestamp: 3621195026.6970000
+    conductivity:         0.00003
+    pressure:        -0.00800
+    temp:        20.55620

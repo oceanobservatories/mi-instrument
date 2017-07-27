@@ -1,0 +1,36 @@
+header:
+    particle_object: 'MULTIPLE'
+    particle_type: 'MULTIPLE'
+data:
+  - _index: 1
+    particle_object: FlortDjDclRecoveredInstrumentDataParticle
+    particle_type: flort_dj_dcl_instrument_recovered
+    internal_timestamp: 3637787416.0000000
+    port_timestamp: 3637787423.6800003
+    raw_signal_beta: 844
+    raw_signal_cdom: 74
+    raw_signal_chl: 370
+  - _index: 2
+    particle_object: FlortDjDclRecoveredInstrumentDataParticle
+    particle_type: flort_dj_dcl_instrument_recovered
+    internal_timestamp: 3637791015.0000000
+    port_timestamp: 3637791023.1599998
+    raw_signal_beta: 726
+    raw_signal_cdom: 239
+    raw_signal_chl: 368
+  - _index: 3
+    particle_object: FlortDjDclRecoveredInstrumentDataParticle
+    particle_type: flort_dj_dcl_instrument_recovered
+    internal_timestamp: 3637794615.0000000
+    port_timestamp: 3637794622.8450003
+    raw_signal_beta: 703
+    raw_signal_cdom: 99
+    raw_signal_chl: 427
+  - _index: 4
+    particle_object: FlortDjDclRecoveredInstrumentDataParticle
+    particle_type: flort_dj_dcl_instrument_recovered
+    internal_timestamp: 3637798214.0000000
+    port_timestamp: 3637798222.1170001
+    raw_signal_beta: 0
+    raw_signal_cdom: 0
+    raw_signal_chl: 0

@@ -1,0 +1,6 @@
+
+ subsite  | node  | sensor       | bin        | method      | time                 | deployment | internal_timestamp | port_timestamp       | preferred_timestamp | quality_flag | conductivity | date_time_string | dcl_controller_timestamp | pressure | temp
+----------+-------+--------------+------------+-------------+----------------------+------------+--------------------+----------------------+---------------------+--------------+--------------+------------------+--------------------------+----------+--------
+ CE06ISSM | SBD17 | 06-CTDBPC000 | 3686428800 | telemetered | 3686506231.368999958 |          5 |         3686506225 | 3686506231.368999958 |      port_timestamp |           ok |      3.28307 |             null |                     null |    0.985 | 12.906
+
+(1 rows)

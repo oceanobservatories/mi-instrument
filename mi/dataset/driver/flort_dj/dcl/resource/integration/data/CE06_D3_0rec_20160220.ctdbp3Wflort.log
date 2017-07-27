@@ -1,0 +1,12 @@
+2016/02/20 00:27:25.056 [ctdbp3:DLOGP6]:Logger started: Idle state, without initialize
+2016/02/20 00:29:24.978 [ctdbp3:DLOGP6]:Instrument Started [Power On]
+2016/02/20 00:30:05.854 [ctdbp3:DLOGP6]:SBE 16plus
+2016/02/20 00:30:06.146 [ctdbp3:DLOGP6]:S>
+2016/02/20 00:30:06.157 [ctdbp3:DLOGP6]:!!! Low Battery  !!!
+2016/02/20 00:30:07.480 [ctdbp3:DLOGP6]:SBE 16plus
+2016/02/20 00:30:07.598 [ctdbp3:DLOGP6]:S>
+2016/02/20 00:30:07.609 [ctdbp3:DLOGP6]:!!! Low Battery  !!!
+2016/02/20 00:30:30.526 [ctdbp3:DLOGP6]:SBE 16plus
+2016/02/20 00:30:30.656 [ctdbp3:DLOGP6]:S>
+2016/02/20 00:30:30.657 [ctdbp3:DLOGP6]:!!! Low Battery  !!!
+2016/02/20 00:31:05.817 [ctdbp3:DLOGP6]:Instrument Stopped [Power Off]

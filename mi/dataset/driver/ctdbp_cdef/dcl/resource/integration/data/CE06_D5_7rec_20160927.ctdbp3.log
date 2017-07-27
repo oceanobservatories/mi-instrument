@@ -1,0 +1,27 @@
+2016/09/27 16:47:58.863 [ctdbp3:DLOGP6]:Logger started: Idle state, without initialize
+2016/09/27 17:30:03.500 [ctdbp3:DLOGP6]:Instrument Started [Power On]
+2016/09/27 17:30:27.009  14.6181,  3.85568,    1.164, 727, 228, 83, 27 Sep 2016 17:30:21
+2016/09/27 17:31:02.202 [ctdbp3:DLOGP6]:Instrument Stopped [Power Off]
+2016/09/27 18:30:04.789 [ctdbp3:DLOGP6]:Instrument Started [Power On]
+2016/09/27 18:30:28.291  14.6318,  3.85918,    1.226, 637, 179, 83, 27 Sep 2016 18:30:23
+2016/09/27 18:31:03.494 [ctdbp3:DLOGP6]:Instrument Stopped [Power Off]
+2016/09/27 19:28:05.184 [ctdbp3:DLOGP6]:Logger started: Idle state, without initialize
+2016/09/27 19:30:03.643 [ctdbp3:DLOGP6]:Instrument Started [Power On]
+2016/09/27 19:30:27.155  14.6834,  3.86364,    1.191, 589, 196, 78, 27 Sep 2016 19:30:22
+2016/09/27 19:31:02.387 [ctdbp3:DLOGP6]:Instrument Stopped [Power Off]
+2016/09/27 20:28:04.058 [ctdbp3:DLOGP6]:Logger started: Idle state, without initialize
+2016/09/27 20:30:02.985 [ctdbp3:DLOGP6]:Instrument Started [Power On]
+2016/09/27 20:30:26.493  14.7828,  3.87224,    1.164, 585, 222, 82, 27 Sep 2016 20:30:21
+2016/09/27 20:31:01.695 [ctdbp3:DLOGP6]:Instrument Stopped [Power Off]
+2016/09/27 21:28:03.199 [ctdbp3:DLOGP6]:Logger started: Idle state, without initialize
+2016/09/27 21:30:02.259 [ctdbp3:DLOGP6]:Instrument Started [Power On]
+2016/09/27 21:30:25.772  14.7956,  3.87753,    1.149, 1125, 316, 85, 27 Sep 2016 21:30:20
+2016/09/27 21:31:00.968 [ctdbp3:DLOGP6]:Instrument Stopped [Power Off]
+2016/09/27 22:28:05.129 [ctdbp3:DLOGP6]:Logger started: Idle state, without initialize
+2016/09/27 22:30:04.517 [ctdbp3:DLOGP6]:Instrument Started [Power On]
+2016/09/27 22:30:28.025  14.7422,  3.87221,    1.160, 1590, 385, 88, 27 Sep 2016 22:30:22
+2016/09/27 22:31:03.221 [ctdbp3:DLOGP6]:Instrument Stopped [Power Off]
+2016/09/27 23:28:08.571 [ctdbp3:DLOGP6]:Logger started: Idle state, without initialize
+2016/09/27 23:30:14.524 [ctdbp3:DLOGP6]:Instrument Started on second attempt [Power On]
+2016/09/27 23:30:29.231  14.6939,  3.88162,    1.119, 1019, 423, 84, 27 Sep 2016 23:30:24
+2016/09/27 23:31:04.434 [ctdbp3:DLOGP6]:Instrument Stopped [Power Off]

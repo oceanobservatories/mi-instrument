@@ -1,0 +1,52 @@
+header:
+    particle_object: 'MULTIPLE'
+    particle_type: 'MULTIPLE'
+data:
+  - _index: 1
+    particle_object: CtdbpCdefDclRecoveredDataParticle
+    particle_type: ctdbp_cdef_dcl_instrument_recovered
+    internal_timestamp: 3621954620.0000000
+    port_timestamp: 3621954626.3750000
+    conductivity:         3.97383
+    pressure:         1.07200
+    temp:        14.65410
+  - _index: 2
+    particle_object: CtdbpCdefDclRecoveredDataParticle
+    particle_type: ctdbp_cdef_dcl_instrument_recovered
+    internal_timestamp: 3621958220.0000000
+    port_timestamp: 3621958227.1689997
+    conductivity:         3.97836
+    pressure:         1.09800
+    temp:        14.66130
+  - _index: 3
+    particle_object: CtdbpCdefDclRecoveredDataParticle
+    particle_type: ctdbp_cdef_dcl_instrument_recovered
+    internal_timestamp: 3621961820.0000000
+    port_timestamp: 3621961826.6619997
+    conductivity:         3.96657
+    pressure:         1.07900
+    temp:        14.48710
+  - _index: 4
+    particle_object: CtdbpCdefDclRecoveredDataParticle
+    particle_type: ctdbp_cdef_dcl_instrument_recovered
+    internal_timestamp: 3621965420.0000000
+    port_timestamp: 3621965427.0920000
+    conductivity:         3.94523
+    pressure:         1.10000
+    temp:        14.21190
+  - _index: 5
+    particle_object: CtdbpCdefDclRecoveredDataParticle
+    particle_type: ctdbp_cdef_dcl_instrument_recovered
+    internal_timestamp: 3621969021.0000000
+    port_timestamp: 3621969027.7650003
+    conductivity:         3.96219
+    pressure:         1.10000
+    temp:        14.40850
+  - _index: 6
+    particle_object: CtdbpCdefDclRecoveredDataParticle
+    particle_type: ctdbp_cdef_dcl_instrument_recovered
+    internal_timestamp: 3621972620.0000000
+    port_timestamp: 3621972626.4150000
+    conductivity:         3.96882
+    pressure:         1.05500
+    temp:        14.47660

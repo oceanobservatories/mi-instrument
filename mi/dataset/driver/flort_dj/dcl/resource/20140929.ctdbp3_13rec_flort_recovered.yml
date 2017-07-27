@@ -1,0 +1,108 @@
+header:
+    particle_object: 'MULTIPLE'
+    particle_type: 'MULTIPLE'
+data:
+  - _index: 1
+    particle_object: FlortDjDclRecoveredInstrumentDataParticle
+    particle_type: flort_dj_dcl_instrument_recovered
+    internal_timestamp: 3620939421.0000000
+    port_timestamp: 3620939426.0019999
+    raw_signal_beta: 4130
+    raw_signal_cdom: 4130
+    raw_signal_chl: 1250
+  - _index: 2
+    particle_object: FlortDjDclRecoveredInstrumentDataParticle
+    particle_type: flort_dj_dcl_instrument_recovered
+    internal_timestamp: 3620946623.0000000
+    port_timestamp: 3620946628.2430000
+    raw_signal_beta: 4130
+    raw_signal_cdom: 4130
+    raw_signal_chl: 1250
+  - _index: 3
+    particle_object: FlortDjDclRecoveredInstrumentDataParticle
+    particle_type: flort_dj_dcl_instrument_recovered
+    internal_timestamp: 3620953822.0000000
+    port_timestamp: 3620953827.4089999
+    raw_signal_beta: 4130
+    raw_signal_cdom: 4130
+    raw_signal_chl: 1248
+  - _index: 4
+    particle_object: FlortDjDclRecoveredInstrumentDataParticle
+    particle_type: flort_dj_dcl_instrument_recovered
+    internal_timestamp: 3620961023.0000000
+    port_timestamp: 3620961028.8450003
+    raw_signal_beta: 4130
+    raw_signal_cdom: 4130
+    raw_signal_chl: 1252
+  - _index: 5
+    particle_object: FlortDjDclRecoveredInstrumentDataParticle
+    particle_type: flort_dj_dcl_instrument_recovered
+    internal_timestamp: 3620964624.0000000
+    port_timestamp: 3620964629.6400003
+    raw_signal_beta: 4130
+    raw_signal_cdom: 4130
+    raw_signal_chl: 1250
+  - _index: 6
+    particle_object: FlortDjDclRecoveredInstrumentDataParticle
+    particle_type: flort_dj_dcl_instrument_recovered
+    internal_timestamp: 3620975422.0000000
+    port_timestamp: 3620975427.2360001
+    raw_signal_beta: 4130
+    raw_signal_cdom: 4130
+    raw_signal_chl: 1249
+  - _index: 7
+    particle_object: FlortDjDclRecoveredInstrumentDataParticle
+    particle_type: flort_dj_dcl_instrument_recovered
+    internal_timestamp: 3620982623.0000000
+    port_timestamp: 3620982627.9580002
+    raw_signal_beta: 4130
+    raw_signal_cdom: 4130
+    raw_signal_chl: 1249
+  - _index: 8
+    particle_object: FlortDjDclRecoveredInstrumentDataParticle
+    particle_type: flort_dj_dcl_instrument_recovered
+    internal_timestamp: 3620989823.0000000
+    port_timestamp: 3620989828.5220003
+    raw_signal_beta: 4130
+    raw_signal_cdom: 4130
+    raw_signal_chl: 1250
+  - _index: 9
+    particle_object: FlortDjDclRecoveredInstrumentDataParticle
+    particle_type: flort_dj_dcl_instrument_recovered
+    internal_timestamp: 3620997022.0000000
+    port_timestamp: 3620997027.4130001
+    raw_signal_beta: 4130
+    raw_signal_cdom: 4130
+    raw_signal_chl: 1252
+  - _index: 10
+    particle_object: FlortDjDclRecoveredInstrumentDataParticle
+    particle_type: flort_dj_dcl_instrument_recovered
+    internal_timestamp: 3621007817.0000000
+    port_timestamp: 3621007822.4650002
+    raw_signal_beta: 4130
+    raw_signal_cdom: 4130
+    raw_signal_chl: 1257
+  - _index: 11
+    particle_object: FlortDjDclRecoveredInstrumentDataParticle
+    particle_type: flort_dj_dcl_instrument_recovered
+    internal_timestamp: 3621011417.0000000
+    port_timestamp: 3621011421.9560003
+    raw_signal_beta: 4130
+    raw_signal_cdom: 4130
+    raw_signal_chl: 1257
+  - _index: 12
+    particle_object: FlortDjDclRecoveredInstrumentDataParticle
+    particle_type: flort_dj_dcl_instrument_recovered
+    internal_timestamp: 3621015018.0000000
+    port_timestamp: 3621015023.7490001
+    raw_signal_beta: 4130
+    raw_signal_cdom: 4130
+    raw_signal_chl: 1259
+  - _index: 13
+    particle_object: FlortDjDclRecoveredInstrumentDataParticle
+    particle_type: flort_dj_dcl_instrument_recovered
+    internal_timestamp: 3621018617.0000000
+    port_timestamp: 3621018622.6589999
+    raw_signal_beta: 4130
+    raw_signal_cdom: 4130
+    raw_signal_chl: 1258

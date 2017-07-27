@@ -1,0 +1,12 @@
+
+ subsite  | node  | sensor       | bin        | method      | time                  | deployment | internal_timestamp | port_timestamp        | preferred_timestamp | quality_flag | conductivity | date_time_string | dcl_controller_timestamp | pressure | temp
+----------+-------+--------------+------------+-------------+-----------------------+------------+--------------------+-----------------------+---------------------+--------------+--------------+------------------+--------------------------+----------+---------
+ CE06ISSM | SBD17 | 06-CTDBPC000 | 3683923200 | telemetered | 3683986227.0089998245 |          5 |         3683986221 | 3683986227.0089998245 |      port_timestamp |           ok |      3.85568 |             null |                     null |    1.164 | 14.6181
+ CE06ISSM | SBD17 | 06-CTDBPC000 | 3683923200 | telemetered | 3683989828.2909998894 |          5 |         3683989823 | 3683989828.2909998894 |      port_timestamp |           ok |      3.85918 |             null |                     null |    1.226 | 14.6318
+ CE06ISSM | SBD17 | 06-CTDBPC000 | 3683923200 | telemetered |  3683993427.154999733 |          5 |         3683993422 |  3683993427.154999733 |      port_timestamp |           ok |      3.86364 |             null |                     null |    1.191 | 14.6834
+ CE06ISSM | SBD17 | 06-CTDBPC000 | 3683923200 | telemetered | 3683997026.4930000305 |          5 |         3683997021 | 3683997026.4930000305 |      port_timestamp |           ok |      3.87224 |             null |                     null |    1.164 | 14.7828
+ CE06ISSM | SBD17 | 06-CTDBPC000 | 3683923200 | telemetered | 3684000625.7720003128 |          5 |         3684000620 | 3684000625.7720003128 |      port_timestamp |           ok |      3.87753 |             null |                     null |    1.149 | 14.7956
+ CE06ISSM | SBD17 | 06-CTDBPC000 | 3683923200 | telemetered | 3684004228.0250000954 |          5 |         3684004222 | 3684004228.0250000954 |      port_timestamp |           ok |      3.87221 |             null |                     null |     1.16 | 14.7422
+ CE06ISSM | SBD17 | 06-CTDBPC000 | 3683923200 | telemetered | 3684007829.2309999466 |          5 |         3684007824 | 3684007829.2309999466 |      port_timestamp |           ok |      3.88162 |             null |                     null |    1.119 | 14.6939
+
+(7 rows)
