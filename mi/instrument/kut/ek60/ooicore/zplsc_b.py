@@ -60,7 +60,6 @@ class ZplscBParticleKey(BaseEnum):
     Class that defines fields that need to be extracted from the data
     """
     FILE_TIME = "zplsc_timestamp"               # raw file timestamp
-    ECHOGRAM_PATH = "filepath"                  # output echogram plot .png/s path and filename
     CHANNEL = "zplsc_channel"
     TRANSDUCER_DEPTH = "zplsc_transducer_depth"  # five digit floating point number (%.5f, in meters)
     FREQUENCY = "zplsc_frequency"               # six digit fixed point integer (in Hz)
@@ -71,19 +70,18 @@ class ZplscBParticleKey(BaseEnum):
     SOUND_VELOCITY = "zplsc_sound_velocity"     # five digit floating point number (%.5f, in m/s)
     ABSORPTION_COEF = "zplsc_absorption_coeff"  # four digit floating point number (%.4f, dB/m)
     TEMPERATURE = "zplsc_temperature"           # three digit floating point number (%.3f, in degC)
-    FREQ_CHAN_1 = "zplsc_b_frequency_channel_1"
-    VALS_CHAN_1 = "zplsc_b_values_channel_1"
-    FREQ_CHAN_2 = "zplsc_b_frequency_channel_2"
-    VALS_CHAN_2 = "zplsc_b_values_channel_2"
-    FREQ_CHAN_3 = "zplsc_b_frequency_channel_3"
-    VALS_CHAN_3 = "zplsc_b_values_channel_3"
+    FREQ_CHAN_1 = "zplsc_frequency_channel_1"
+    VALS_CHAN_1 = "zplsc_values_channel_1"
+    FREQ_CHAN_2 = "zplsc_frequency_channel_2"
+    VALS_CHAN_2 = "zplsc_values_channel_2"
+    FREQ_CHAN_3 = "zplsc_frequency_channel_3"
+    VALS_CHAN_3 = "zplsc_values_channel_3"
 
 
 # The following is used for _build_parsed_values() and defined as below:
 # (parameter name, encoding function)
 METADATA_ENCODING_RULES = [
     (ZplscBParticleKey.FILE_TIME, str),
-    (ZplscBParticleKey.ECHOGRAM_PATH, str),
     (ZplscBParticleKey.CHANNEL, lambda x: [int(y) for y in x]),
     (ZplscBParticleKey.TRANSDUCER_DEPTH, lambda x: [float(y) for y in x]),
     (ZplscBParticleKey.FREQUENCY, lambda x: [float(y) for y in x]),
@@ -179,7 +177,7 @@ class DataParticleType(BaseEnum):
     Class that defines the data particles generated from the zplsc_b data
     """
     METADATA = 'zplsc_metadata'  # instrument data particle
-    RAWDATA = 'zplsc_rawdata'   # sample data particle
+    RAWDATA = 'zplsc_echogram_data'   # sample data particle
 
 
 class ZplscBSampleDataParticle (DataParticle):
@@ -201,8 +199,8 @@ class ZplscBSampleDataParticle (DataParticle):
         # where each entry is a tuple containing the particle field name
         # and a function to use for data conversion.
 
-        return [self._encode_value(name, self.raw_data[name], function)
-                for name, function in RAWDATA_ENCODING_RULES]
+        return [self._encode_value(name, self.raw_data[name], _function)
+                for name, _function in RAWDATA_ENCODING_RULES]
 
 
 class ZplscBInstrumentDataParticle(DataParticle):
@@ -222,13 +220,12 @@ class ZplscBInstrumentDataParticle(DataParticle):
         # where each entry is a tuple containing the particle field name
         # and a function to use for data conversion.
 
-        return [self._encode_value(name, self.raw_data[name], function)
-                for name, function in METADATA_ENCODING_RULES]
+        return [self._encode_value(name, self.raw_data[name], _function)
+                for name, _function in METADATA_ENCODING_RULES]
 
 
-def append_metadata(metadata, file_time, file_path, channel, sample_data):
+def append_metadata(metadata, file_time, channel, sample_data):
     metadata[ZplscBParticleKey.FILE_TIME] = file_time
-    metadata[ZplscBParticleKey.ECHOGRAM_PATH] = file_path
     metadata[ZplscBParticleKey.CHANNEL].append(channel)
     metadata[ZplscBParticleKey.TRANSDUCER_DEPTH].append(sample_data['transducer_depth'][0])
     metadata[ZplscBParticleKey.FREQUENCY].append(sample_data['frequency'][0])
@@ -372,7 +369,6 @@ def parse_particles_file(input_file_path, output_file_path=None):
     If omitted outputs are written to path of input file
     """
     log.info('Begin processing data: %r', input_file_path)
-    image_path = generate_image_file_path(input_file_path, output_file_path)
     file_time = extract_file_time(input_file_path)
 
     with open(input_file_path, 'rb') as input_file:
@@ -427,10 +423,9 @@ def parse_particles_file(input_file_path, output_file_path=None):
                         # if this is our first set of data, create our metadata particle and store
                         # the frequency / bin_size data
                         if not power_data_dict:
-                            relpath = generate_relative_file_path(image_path)
                             first_ping_metadata = defaultdict(list)
                             for channel, sample_data in sample_data_temp_dict.iteritems():
-                                append_metadata(first_ping_metadata, file_time, relpath,
+                                append_metadata(first_ping_metadata, file_time,
                                                 channel, sample_data)
 
                                 frequency = sample_data['frequency'][0]
