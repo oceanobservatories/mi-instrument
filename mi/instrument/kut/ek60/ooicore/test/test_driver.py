@@ -437,7 +437,6 @@ class DriverTestMixinSub(DriverTestMixin):
 
     _metadata_dict = {
         ZplscBParticleKey.FILE_TIME: {'type': str, 'value': '20141212152500'},
-        ZplscBParticleKey.ECHOGRAM_PATH: {'type': str, 'value': output_file},
         ZplscBParticleKey.CHANNEL: {'type': list, 'value': [1, 2, 3]},
         ZplscBParticleKey.TRANSDUCER_DEPTH: {'type': list, 'value': [0.0, 0.0, 0.0]},
         ZplscBParticleKey.FREQUENCY: {'type': list, 'value': [120000.0, 38000.0, 200000.0]},
@@ -497,10 +496,10 @@ class DriverTestMixinSub(DriverTestMixin):
         sample_dict = self.convert_data_particle_to_dict(data_particle)
         stream_name = sample_dict[DataParticleKey.STREAM_NAME].lower()
 
-        if stream_name == 'zplsc_rawdata':
+        if stream_name == DataParticleType.RAWDATA:
             param_dict = self._rawdata_dict
             verify_values = False
-        elif stream_name == 'zplsc_metadata':
+        elif stream_name == DataParticleType.METADATA:
             param_dict = self._metadata_dict
             self.assertEqual(len(data_particle), 1)
 
