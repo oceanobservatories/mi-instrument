@@ -1,3 +1,16 @@
+# Version 0.5.2
+
+* Issue #12435 FLOR - Consolidate Streams
+
+   -flort_kn_stc_imodem_instrument,flort_kn_stc_imodem_instrument_recovered,flort_dj_dcl_instrument,
+    flort_dj_dcl_instrument_recovered,flort_dj_cspp_instrument,flort_dj_sio_instrument, and
+    flort_dj_sio_instrument_recovered streams are consolidated into one stream called "flort_sample"
+
+   -flort_m_glider_instrument and flort_m_glider_recovered streams are consolidated into one stream called "flort_m_sample"
+
+   -flort_kn_auv_instrument and flort_kn_auv_instrument_recovered streams are consolidated into one stream
+    called "flort_kn_sample"
+
 # Version 0.5.1
 
 * Issue #12167 Modify ZPLSC cabled driver to produce time series data

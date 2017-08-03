@@ -393,8 +393,6 @@ class FlortMenuParticle(FlordMenuParticle):
 
 
 class FlordSampleParticleKey(BaseEnum):
-    date_string = 'date_string'
-    time_string = 'time_string'
     wave_beta = 'measurement_wavelength_beta'
     raw_sig_beta = 'raw_signal_beta'
     wave_chl = 'measurement_wavelength_chl'
@@ -493,9 +491,7 @@ class FlordSampleParticle(DataParticle):
         record_time = datetime.datetime(year, month, day, hours, mins, secs)
         self.set_internal_timestamp(timestamp=(record_time - self.ntp_epoch).total_seconds())
 
-        result = [{DataParticleKey.VALUE_ID: FlortSampleParticleKey.date_string, DataParticleKey.VALUE: date_str},
-                  {DataParticleKey.VALUE_ID: FlortSampleParticleKey.time_string, DataParticleKey.VALUE: time_str},
-                  {DataParticleKey.VALUE_ID: FlortSampleParticleKey.wave_beta, DataParticleKey.VALUE: wave_beta},
+        result = [{DataParticleKey.VALUE_ID: FlortSampleParticleKey.wave_beta, DataParticleKey.VALUE: wave_beta},
                   {DataParticleKey.VALUE_ID: FlortSampleParticleKey.raw_sig_beta, DataParticleKey.VALUE: raw_sig_beta},
                   {DataParticleKey.VALUE_ID: FlortSampleParticleKey.wave_chl, DataParticleKey.VALUE: wave_chl},
                   {DataParticleKey.VALUE_ID: FlortSampleParticleKey.raw_sig_chl, DataParticleKey.VALUE: raw_sig_chl},
@@ -591,9 +587,7 @@ class FlortSampleParticle(DataParticle):
         record_time = datetime.datetime(year, month, day, hours, mins, secs)
         self.set_internal_timestamp(timestamp=(record_time - self.ntp_epoch).total_seconds())
 
-        result = [{DataParticleKey.VALUE_ID: FlortSampleParticleKey.date_string, DataParticleKey.VALUE: date_str},
-                  {DataParticleKey.VALUE_ID: FlortSampleParticleKey.time_string, DataParticleKey.VALUE: time_str},
-                  {DataParticleKey.VALUE_ID: FlortSampleParticleKey.wave_beta, DataParticleKey.VALUE: wave_beta},
+        result = [{DataParticleKey.VALUE_ID: FlortSampleParticleKey.wave_beta, DataParticleKey.VALUE: wave_beta},
                   {DataParticleKey.VALUE_ID: FlortSampleParticleKey.raw_sig_beta, DataParticleKey.VALUE: raw_sig_beta},
                   {DataParticleKey.VALUE_ID: FlortSampleParticleKey.wave_chl, DataParticleKey.VALUE: wave_chl},
                   {DataParticleKey.VALUE_ID: FlortSampleParticleKey.raw_sig_chl, DataParticleKey.VALUE: raw_sig_chl},
