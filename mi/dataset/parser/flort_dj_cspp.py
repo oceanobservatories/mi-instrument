@@ -21,7 +21,7 @@ log = get_logger()
 from mi.core.common import BaseEnum
 import re
 
-from mi.core.instrument.dataset_data_particle import DataParticle
+from mi.core.instrument.dataset_data_particle import DataParticle, DataParticleKey
 
 from mi.dataset.parser.common_regexes import INT_REGEX, FLOAT_REGEX, MULTIPLE_TAB_REGEX, END_OF_LINE_REGEX
 
@@ -30,6 +30,8 @@ from mi.dataset.parser.cspp_base import \
     CsppMetadataDataParticle, \
     MetadataRawDataKey, \
     Y_OR_N_REGEX, encode_y_or_n
+
+from mi.dataset.parser.utilities import timestamp_mmddyyhhmmss_to_ntp
 
 # A regex to match a date in MM/DD/YY format
 FORMATTED_DATE_REGEX = r'\d{2}/\d{2}/\d{2}'
@@ -83,9 +85,9 @@ class DataParticleType(BaseEnum):
     The data particle types that a flort_dj_cspp parser could generate
     """
     METADATA_RECOVERED = 'flort_dj_cspp_metadata_recovered'
-    INSTRUMENT_RECOVERED = 'flort_dj_cspp_instrument_recovered'
+    INSTRUMENT_RECOVERED = 'flort_sample'
     METADATA_TELEMETERED = 'flort_dj_cspp_metadata'
-    INSTRUMENT_TELEMETERED = 'flort_dj_cspp_instrument'
+    INSTRUMENT_TELEMETERED = 'flort_sample'
 
 
 class FlortDjCsppParserDataParticleKey(BaseEnum):
@@ -107,11 +109,8 @@ class FlortDjCsppParserDataParticleKey(BaseEnum):
 
 # A group of instrument data particle encoding rules used to simplify encoding using a loop
 INSTRUMENT_PARTICLE_ENCODING_RULES = [
-    (FlortDjCsppParserDataParticleKey.PROFILER_TIMESTAMP, DataMatchesGroupNumber.PROFILER_TIMESTAMP, numpy.float),
     (FlortDjCsppParserDataParticleKey.PRESSURE, DataMatchesGroupNumber.PRESSURE, float),
     (FlortDjCsppParserDataParticleKey.SUSPECT_TIMESTAMP, DataMatchesGroupNumber.SUSPECT_TIMESTAMP, encode_y_or_n),
-    (FlortDjCsppParserDataParticleKey.DATE, DataMatchesGroupNumber.DATE, str),
-    (FlortDjCsppParserDataParticleKey.TIME, DataMatchesGroupNumber.TIME, str),
     (FlortDjCsppParserDataParticleKey.BETA, DataMatchesGroupNumber.BETA, int),
     (FlortDjCsppParserDataParticleKey.RAW_BETA, DataMatchesGroupNumber.RAW_BETA, int),
     (FlortDjCsppParserDataParticleKey.CHLOROPHYLL, DataMatchesGroupNumber.CHLOROPHYLL, int),
@@ -142,9 +141,14 @@ class FlortDjCsppMetadataDataParticle(CsppMetadataDataParticle):
 
         data_match = self.raw_data[MetadataRawDataKey.DATA_MATCH]
 
-        internal_timestamp_unix = numpy.float(data_match.group(
+        port_timestamp_unix = numpy.float(data_match.group(
             DataMatchesGroupNumber.PROFILER_TIMESTAMP))
-        self.set_internal_timestamp(unix_time=internal_timestamp_unix)
+        self.set_port_timestamp(unix_time=float(port_timestamp_unix))
+
+        self.contents[DataParticleKey.PREFERRED_TIMESTAMP] = DataParticleKey.PORT_TIMESTAMP
+
+        timestamp_str= data_match.group(DataMatchesGroupNumber.DATE) + " " + data_match.group(DataMatchesGroupNumber.TIME)
+        self.set_internal_timestamp(timestamp=timestamp_mmddyyhhmmss_to_ntp(timestamp_str))
 
         return results
 
@@ -185,10 +189,14 @@ class FlortDjCsppInstrumentDataParticle(DataParticle):
 
             results.append(self._encode_value(name, self.raw_data.group(index), encoding))
 
-        # # Set the internal timestamp
-        internal_timestamp_unix = numpy.float(self.raw_data.group(
+        port_timestamp_unix = numpy.float(self.raw_data.group(
             DataMatchesGroupNumber.PROFILER_TIMESTAMP))
-        self.set_internal_timestamp(unix_time=internal_timestamp_unix)
+        self.set_port_timestamp(unix_time=float(port_timestamp_unix))
+
+        self.contents[DataParticleKey.PREFERRED_TIMESTAMP] = DataParticleKey.PORT_TIMESTAMP
+
+        timestamp_str= self.raw_data.group(DataMatchesGroupNumber.DATE) + " " + self.raw_data.group(DataMatchesGroupNumber.TIME)
+        self.set_internal_timestamp(timestamp=timestamp_mmddyyhhmmss_to_ntp(timestamp_str))
 
         return results
 
