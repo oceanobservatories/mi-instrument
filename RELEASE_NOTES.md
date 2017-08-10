@@ -1,25 +1,6 @@
-# Version 0.5.2
+# Version 0.5.01
 
-* Issue #12435 FLOR - Consolidate Streams:
-    * flort_sample now replaces:
-        * flort_kn_stc_imodem_instrument
-        * flort_kn_stc_imodem_instrument_recovered
-        * flort_dj_dcl_instrument
-        * flort_dj_dcl_instrument_recovered
-        * flort_dj_cspp_instrument
-        * flort_dj_sio_instrument
-        * flort_dj_sio_instrument_recovered
-    * flort_m_sample now replaces:
-         * flort_m_glider_instrument
-         * flort_m_glider_recovered
-    * flort_kn_sample now replaces:
-         * flort_kn_auv_instrument
-         * flort_kn_auv_instrument_recovered
-
-# Version 0.5.1
-
-* Issue #12167 Modify ZPLSC cabled driver to produce time series data
-  Changed the ZPLSC cabled driver to only produce time series data (and not echograms plot)
+* Issue #12499 Modifying playback so it can be run via ingest request
 
 # Version 0.5.0
 
