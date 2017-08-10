@@ -4,7 +4,7 @@ header:
 data:
   - _index: 1
     particle_object: FlortDjDclRecoveredInstrumentDataParticle
-    particle_type: flort_sample
+    particle_type: flort_dj_dcl_instrument_recovered
     internal_timestamp: 3191245637.0000000
     port_timestamp: 3222738437.0889997
     measurement_wavelength_beta: 0
@@ -16,7 +16,7 @@ data:
     raw_signal_chl: 3
   - _index: 2
     particle_object: FlortDjDclRecoveredInstrumentDataParticle
-    particle_type: flort_sample
+    particle_type: flort_dj_dcl_instrument_recovered
     internal_timestamp: 3191245639.0000000
     port_timestamp: 3222738439.4470000
     measurement_wavelength_beta: 2259
@@ -28,7 +28,7 @@ data:
     raw_signal_chl: 2262
   - _index: 3
     particle_object: FlortDjDclRecoveredInstrumentDataParticle
-    particle_type: flort_sample
+    particle_type: flort_dj_dcl_instrument_recovered
     internal_timestamp: 3191245641.0000000
     port_timestamp: 3222738441.8049998
     measurement_wavelength_beta: 4518
@@ -40,7 +40,7 @@ data:
     raw_signal_chl: 4521
   - _index: 4
     particle_object: FlortDjDclRecoveredInstrumentDataParticle
-    particle_type: flort_sample
+    particle_type: flort_dj_dcl_instrument_recovered
     internal_timestamp: 3191245644.0000000
     port_timestamp: 3222738444.1630001
     measurement_wavelength_beta: 6777
@@ -52,7 +52,7 @@ data:
     raw_signal_chl: 6780
   - _index: 5
     particle_object: FlortDjDclRecoveredInstrumentDataParticle
-    particle_type: flort_sample
+    particle_type: flort_dj_dcl_instrument_recovered
     internal_timestamp: 3191245646.0000000
     port_timestamp: 3222738446.5209999
     measurement_wavelength_beta: 9036
@@ -64,7 +64,7 @@ data:
     raw_signal_chl: 9039
   - _index: 6
     particle_object: FlortDjDclRecoveredInstrumentDataParticle
-    particle_type: flort_sample
+    particle_type: flort_dj_dcl_instrument_recovered
     internal_timestamp: 3191245648.0000000
     port_timestamp: 3222738448.8789997
     measurement_wavelength_beta: 11295
@@ -76,7 +76,7 @@ data:
     raw_signal_chl: 11298
   - _index: 7
     particle_object: FlortDjDclRecoveredInstrumentDataParticle
-    particle_type: flort_sample
+    particle_type: flort_dj_dcl_instrument_recovered
     internal_timestamp: 3191245651.0000000
     port_timestamp: 3222738451.2370000
     measurement_wavelength_beta: 13554
@@ -88,7 +88,7 @@ data:
     raw_signal_chl: 13557
   - _index: 8
     particle_object: FlortDjDclRecoveredInstrumentDataParticle
-    particle_type: flort_sample
+    particle_type: flort_dj_dcl_instrument_recovered
     internal_timestamp: 3191245653.0000000
     port_timestamp: 3222738453.5950003
     measurement_wavelength_beta: 15813
@@ -100,7 +100,7 @@ data:
     raw_signal_chl: 15816
   - _index: 9
     particle_object: FlortDjDclRecoveredInstrumentDataParticle
-    particle_type: flort_sample
+    particle_type: flort_dj_dcl_instrument_recovered
     internal_timestamp: 3191245655.0000000
     port_timestamp: 3222738455.9530001
     measurement_wavelength_beta: 18072
@@ -112,7 +112,7 @@ data:
     raw_signal_chl: 18075
   - _index: 10
     particle_object: FlortDjDclRecoveredInstrumentDataParticle
-    particle_type: flort_sample
+    particle_type: flort_dj_dcl_instrument_recovered
     internal_timestamp: 3191245658.0000000
     port_timestamp: 3222738458.3109999
     measurement_wavelength_beta: 20331
@@ -124,7 +124,7 @@ data:
     raw_signal_chl: 20334
   - _index: 11
     particle_object: FlortDjDclRecoveredInstrumentDataParticle
-    particle_type: flort_sample
+    particle_type: flort_dj_dcl_instrument_recovered
     internal_timestamp: 3191245660.0000000
     port_timestamp: 3222738460.6690001
     measurement_wavelength_beta: 22590
@@ -136,7 +136,7 @@ data:
     raw_signal_chl: 22593
   - _index: 12
     particle_object: FlortDjDclRecoveredInstrumentDataParticle
-    particle_type: flort_sample
+    particle_type: flort_dj_dcl_instrument_recovered
     internal_timestamp: 3191245663.0000000
     port_timestamp: 3222738463.0270000
     measurement_wavelength_beta: 24849
@@ -148,7 +148,7 @@ data:
     raw_signal_chl: 24852
   - _index: 13
     particle_object: FlortDjDclRecoveredInstrumentDataParticle
-    particle_type: flort_sample
+    particle_type: flort_dj_dcl_instrument_recovered
     internal_timestamp: 3191245665.0000000
     port_timestamp: 3222738465.3850002
     measurement_wavelength_beta: 27108
@@ -160,7 +160,7 @@ data:
     raw_signal_chl: 27111
   - _index: 14
     particle_object: FlortDjDclRecoveredInstrumentDataParticle
-    particle_type: flort_sample
+    particle_type: flort_dj_dcl_instrument_recovered
     internal_timestamp: 3191245667.0000000
     port_timestamp: 3222738467.7430000
     measurement_wavelength_beta: 29367
@@ -172,7 +172,7 @@ data:
     raw_signal_chl: 29370
   - _index: 15
     particle_object: FlortDjDclRecoveredInstrumentDataParticle
-    particle_type: flort_sample
+    particle_type: flort_dj_dcl_instrument_recovered
     internal_timestamp: 3191245670.0000000
     port_timestamp: 3222738470.1009998
     measurement_wavelength_beta: 31626
@@ -184,7 +184,7 @@ data:
     raw_signal_chl: 31629
   - _index: 16
     particle_object: FlortDjDclRecoveredInstrumentDataParticle
-    particle_type: flort_sample
+    particle_type: flort_dj_dcl_instrument_recovered
     internal_timestamp: 3191245679.0000000
     port_timestamp: 3222738479.5330000
     measurement_wavelength_beta: 33885
@@ -196,7 +196,7 @@ data:
     raw_signal_chl: 33888
   - _index: 17
     particle_object: FlortDjDclRecoveredInstrumentDataParticle
-    particle_type: flort_sample
+    particle_type: flort_dj_dcl_instrument_recovered
     internal_timestamp: 3191245681.0000000
     port_timestamp: 3222738481.8909998
     measurement_wavelength_beta: 36144
@@ -208,7 +208,7 @@ data:
     raw_signal_chl: 36147
   - _index: 18
     particle_object: FlortDjDclRecoveredInstrumentDataParticle
-    particle_type: flort_sample
+    particle_type: flort_dj_dcl_instrument_recovered
     internal_timestamp: 3191245684.0000000
     port_timestamp: 3222738484.2490001
     measurement_wavelength_beta: 38403
@@ -220,7 +220,7 @@ data:
     raw_signal_chl: 38406
   - _index: 19
     particle_object: FlortDjDclRecoveredInstrumentDataParticle
-    particle_type: flort_sample
+    particle_type: flort_dj_dcl_instrument_recovered
     internal_timestamp: 3191245686.0000000
     port_timestamp: 3222738486.6069999
     measurement_wavelength_beta: 40662
@@ -232,7 +232,7 @@ data:
     raw_signal_chl: 40665
   - _index: 20
     particle_object: FlortDjDclRecoveredInstrumentDataParticle
-    particle_type: flort_sample
+    particle_type: flort_dj_dcl_instrument_recovered
     internal_timestamp: 3191245688.0000000
     port_timestamp: 3222738488.9650002
     measurement_wavelength_beta: 42921
@@ -244,7 +244,7 @@ data:
     raw_signal_chl: 42924
   - _index: 21
     particle_object: FlortDjDclRecoveredInstrumentDataParticle
-    particle_type: flort_sample
+    particle_type: flort_dj_dcl_instrument_recovered
     internal_timestamp: 3191245691.0000000
     port_timestamp: 3222738491.3230000
     measurement_wavelength_beta: 45180
@@ -256,7 +256,7 @@ data:
     raw_signal_chl: 45183
   - _index: 22
     particle_object: FlortDjDclRecoveredInstrumentDataParticle
-    particle_type: flort_sample
+    particle_type: flort_dj_dcl_instrument_recovered
     internal_timestamp: 3191245693.0000000
     port_timestamp: 3222738493.6809998
     measurement_wavelength_beta: 47439
@@ -268,7 +268,7 @@ data:
     raw_signal_chl: 47442
   - _index: 23
     particle_object: FlortDjDclRecoveredInstrumentDataParticle
-    particle_type: flort_sample
+    particle_type: flort_dj_dcl_instrument_recovered
     internal_timestamp: 3191245696.0000000
     port_timestamp: 3222738496.0390000
     measurement_wavelength_beta: 49698
@@ -280,7 +280,7 @@ data:
     raw_signal_chl: 49701
   - _index: 24
     particle_object: FlortDjDclRecoveredInstrumentDataParticle
-    particle_type: flort_sample
+    particle_type: flort_dj_dcl_instrument_recovered
     internal_timestamp: 3191245698.0000000
     port_timestamp: 3222738498.3969998
     measurement_wavelength_beta: 51957
@@ -292,7 +292,7 @@ data:
     raw_signal_chl: 51960
   - _index: 25
     particle_object: FlortDjDclRecoveredInstrumentDataParticle
-    particle_type: flort_sample
+    particle_type: flort_dj_dcl_instrument_recovered
     internal_timestamp: 3191245700.0000000
     port_timestamp: 3222738500.7550001
     measurement_wavelength_beta: 54216
@@ -304,7 +304,7 @@ data:
     raw_signal_chl: 54219
   - _index: 26
     particle_object: FlortDjDclRecoveredInstrumentDataParticle
-    particle_type: flort_sample
+    particle_type: flort_dj_dcl_instrument_recovered
     internal_timestamp: 3191245703.0000000
     port_timestamp: 3222738503.1129999
     measurement_wavelength_beta: 56475
@@ -316,7 +316,7 @@ data:
     raw_signal_chl: 56478
   - _index: 27
     particle_object: FlortDjDclRecoveredInstrumentDataParticle
-    particle_type: flort_sample
+    particle_type: flort_dj_dcl_instrument_recovered
     internal_timestamp: 3191245705.0000000
     port_timestamp: 3222738505.4709997
     measurement_wavelength_beta: 58734
@@ -328,7 +328,7 @@ data:
     raw_signal_chl: 58737
   - _index: 28
     particle_object: FlortDjDclRecoveredInstrumentDataParticle
-    particle_type: flort_sample
+    particle_type: flort_dj_dcl_instrument_recovered
     internal_timestamp: 3191245707.0000000
     port_timestamp: 3222738507.8290000
     measurement_wavelength_beta: 60993
@@ -340,7 +340,7 @@ data:
     raw_signal_chl: 60996
   - _index: 29
     particle_object: FlortDjDclRecoveredInstrumentDataParticle
-    particle_type: flort_sample
+    particle_type: flort_dj_dcl_instrument_recovered
     internal_timestamp: 3191245710.0000000
     port_timestamp: 3222738510.1870003
     measurement_wavelength_beta: 63252
@@ -352,7 +352,7 @@ data:
     raw_signal_chl: 63255
   - _index: 30
     particle_object: FlortDjDclRecoveredInstrumentDataParticle
-    particle_type: flort_sample
+    particle_type: flort_dj_dcl_instrument_recovered
     internal_timestamp: 3191245712.0000000
     port_timestamp: 3222738512.5450001
     measurement_wavelength_beta: 65511

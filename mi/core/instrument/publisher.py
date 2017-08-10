@@ -140,7 +140,7 @@ class Publisher(object):
         return events
 
     @staticmethod
-    def from_url(url, handler=None, headers=None, allowed=None, max_events=None, **kwargs):
+    def from_url(url, headers=None, allowed=None, max_events=None, **kwargs):
         if headers is None:
             headers = {}
 
@@ -183,9 +183,6 @@ class Publisher(object):
         elif result.scheme == 'xarray':
             from file_publisher import XarrayPublisher
             return XarrayPublisher(allowed, **kwargs)
-        
-        elif result.scheme == 'ingest':
-            return IngestEnginePublisher(handler, allowed, **kwargs)
 
         if publisher:
             if queue is None:
@@ -194,6 +191,7 @@ class Publisher(object):
 
 
 class LogPublisher(Publisher):
+
     def _publish(self, events, headers):
         for e in events:
             log.info('Publish event: %r', e)
@@ -208,15 +206,3 @@ class CountPublisher(Publisher):
         count = len(events)
         self.total += count
         log.info('Publish %d events (%d total)', count, self.total)
-
-class IngestEnginePublisher(Publisher):
-    """ Publisher used to send particle data to Ingest Engine via a ParticleDataHandler """
-    def __init__(self, handler, *args, **kwargs):
-        super(IngestEnginePublisher, self).__init__(*args, **kwargs)
-        self.handler = handler
-        self.temp = {}
-
-    def _publish(self, events, headers):
-        for e in events:
-            stream = e['value']['stream_name']
-            self.handler.addParticleSample(stream, json.dumps(e['value']))

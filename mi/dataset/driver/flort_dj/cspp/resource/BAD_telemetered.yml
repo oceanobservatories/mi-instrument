@@ -5,54 +5,59 @@ data:
   - _index: 1
     particle_object: FlortDjCsppMetadataTelemeteredDataParticle
     particle_type: flort_dj_cspp_metadata
-    internal_timestamp: 3606736924.0000000
-    port_timestamp: 3606762499.9499998
+    internal_timestamp: 3606762499.950000
+    last_character_controller_id: '1'
     day_of_year_number: 107
     fraction_of_day: 9364
-    last_character_controller_id: '1'
-    preprocessing_software_version: '1.11'
     processing_time: '07/18/2014 12:23:15'
     source_file: 'D:\Storage\Programs\OOI\Group 5\Correspondence\07_18_14 sample files\files\11079364.PPB'
+    preprocessing_software_version: '1.11'
     start_date: '04/17/2014'
   - _index: 2
     particle_object: FlortDjCsppInstrumentTelemeteredDataParticle
-    particle_type: flort_sample
-    internal_timestamp: 3606736924.0000000
-    port_timestamp: 3606762499.9499998
-    measurement_wavelength_beta: 700
-    measurement_wavelength_cdom: 460
-    measurement_wavelength_chl: 695
-    pressure_depth:        19.75600
-    raw_internal_temp: 67
-    raw_signal_beta: 585
-    raw_signal_cdom: 67
-    raw_signal_chl: 191
+    particle_type: flort_dj_cspp_instrument
+    internal_timestamp: 3606762499.950000
+    profiler_timestamp: 1397773699.9500000476837158
+    pressure_depth: 19.7560000000000002
     suspect_timestamp: 1
+    date_string: '04/17/14'
+    time_string: '15:22:04'
+    measurement_wavelength_beta: 700
+    raw_signal_beta: 585
+    measurement_wavelength_chl: 695
+    raw_signal_chl: 191
+    measurement_wavelength_cdom: 460
+    raw_signal_cdom: 67
+    raw_internal_temp: 67
   - _index: 3
     particle_object: FlortDjCsppInstrumentTelemeteredDataParticle
-    particle_type: flort_sample
-    internal_timestamp: 3606736935.0000000
-    port_timestamp: 3606762511.3140001
-    measurement_wavelength_beta: 700
-    measurement_wavelength_cdom: 460
-    measurement_wavelength_chl: 695
-    pressure_depth:        19.26600
-    raw_internal_temp: 67
-    raw_signal_beta: 622
-    raw_signal_cdom: 67
-    raw_signal_chl: 192
+    particle_type: flort_dj_cspp_instrument
+    internal_timestamp: 3606762511.314000
+    profiler_timestamp: 1397773711.3139998912811279
+    pressure_depth: 19.2659999999999982
     suspect_timestamp: 1
+    date_string: '04/17/14'
+    time_string: '15:22:15'
+    measurement_wavelength_beta: 700
+    raw_signal_beta: 622
+    measurement_wavelength_chl: 695
+    raw_signal_chl: 192
+    measurement_wavelength_cdom: 460
+    raw_signal_cdom: 67
+    raw_internal_temp: 67
   - _index: 4
     particle_object: FlortDjCsppInstrumentTelemeteredDataParticle
-    particle_type: flort_sample
-    internal_timestamp: 3606736936.0000000
-    port_timestamp: 3606762512.4489999
-    measurement_wavelength_beta: 700
-    measurement_wavelength_cdom: 460
-    measurement_wavelength_chl: 695
-    pressure_depth:        19.25300
-    raw_internal_temp: 67
-    raw_signal_beta: 566
-    raw_signal_cdom: 67
-    raw_signal_chl: 190
+    particle_type: flort_dj_cspp_instrument
+    internal_timestamp: 3606762512.449000
+    profiler_timestamp: 1397773712.4489998817443848
+    pressure_depth: 19.2530000000000001
     suspect_timestamp: 1
+    date_string: '04/17/14'
+    time_string: '15:22:16'
+    measurement_wavelength_beta: 700
+    raw_signal_beta: 566
+    measurement_wavelength_chl: 695
+    raw_signal_chl: 190
+    measurement_wavelength_cdom: 460
+    raw_signal_cdom: 67
+    raw_internal_temp: 67

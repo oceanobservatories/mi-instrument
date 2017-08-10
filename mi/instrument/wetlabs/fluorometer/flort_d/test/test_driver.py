@@ -202,6 +202,8 @@ class DriverTestMixinSub(DriverTestMixin):
     }
 
     _flortD_sample_parameters = {
+        FlortSampleParticleKey.date_string: {TYPE: unicode, VALUE: '07/16/13', REQUIRED: True},
+        FlortSampleParticleKey.time_string: {TYPE: unicode, VALUE: '09:33:06', REQUIRED: True},
         FlortSampleParticleKey.wave_beta: {TYPE: int, VALUE: 700, REQUIRED: True},
         FlortSampleParticleKey.raw_sig_beta: {TYPE: int, VALUE: 4130, REQUIRED: True},
         FlortSampleParticleKey.wave_chl: {TYPE: int, VALUE: 695, REQUIRED: True},

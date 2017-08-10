@@ -1,26 +1,3 @@
-# Version 0.5.2
-
-* Issue #12435 FLOR - Consolidate Streams:
-    * flort_sample now replaces:
-        * flort_kn_stc_imodem_instrument
-        * flort_kn_stc_imodem_instrument_recovered
-        * flort_dj_dcl_instrument
-        * flort_dj_dcl_instrument_recovered
-        * flort_dj_cspp_instrument
-        * flort_dj_sio_instrument
-        * flort_dj_sio_instrument_recovered
-    * flort_m_sample now replaces:
-         * flort_m_glider_instrument
-         * flort_m_glider_recovered
-    * flort_kn_sample now replaces:
-         * flort_kn_auv_instrument
-         * flort_kn_auv_instrument_recovered
-
-# Version 0.5.1
-
-* Issue #12167 Modify ZPLSC cabled driver to produce time series data
-  Changed the ZPLSC cabled driver to only produce time series data (and not echograms plot)
-
 # Version 0.5.0
 
 * Issue #12253 Parsers are not setting port_timestamp and #12254 Extraneous data in DCL parser particles
@@ -32,32 +9,32 @@
     - all timestamp string values will not be set (removed)
 
 * Modified DCL parsers are:
-    - adcpt_acfgm_dcl_pd0    			
-    - adcpt_acfgm_dcl_pd8    			
-    - ctdbp_cdef_dcl 				  		
-    - dcl_file_common 				 		
-    - metbk_a_dcl 				  		
-    - pco2a_a_dcl    				
-    - dosta_abcdjm_dcl  					
-    - dosta_abcdjm_ctdbp_dcl 		
-    - fdchp_a_dcl 					
-    - flort_dj_dcl      					
-    - fuelcell_eng_dcl  				
-    - hyd_o_dcl							
-    - pco2w_abc_dcl    				  	
-    - pco2w_abc_particles    			
-    - phsen_abcdef_dcl 				  
-    - presf_abc_dcl  				  
-    - rte_o_dcl 					
-    - spkir_abj_dcl    				
-    - wavss_a_dcl
-    - zplsc_c_dcl
-    - nutnr_b_dcl_conc 					
-    - nutnr_b_dcl_full 					
-    - nutnr_b_dcl_parser_base		
-    - nutnr_b_particles				
-    - cg_dcl_eng_dcl				
-    - cspp_eng_dcl 				
+    adcpt_acfgm_dcl_pd0    			
+    adcpt_acfgm_dcl_pd8    			
+    ctdbp_cdef_dcl 				  		
+    dcl_file_common 				 		
+    metbk_a_dcl 				  		
+    pco2a_a_dcl    				
+    dosta_abcdjm_dcl  					
+    dosta_abcdjm_ctdbp_dcl 		
+    fdchp_a_dcl 					
+    flort_dj_dcl      					
+    fuelcell_eng_dcl  				
+    hyd_o_dcl							
+    pco2w_abc_dcl    				  	
+    pco2w_abc_particles    			
+    phsen_abcdef_dcl 				  
+    presf_abc_dcl  				  
+    rte_o_dcl 					
+    spkir_abj_dcl    				
+    wavss_a_dcl
+    zplsc_c_dcl
+    nutnr_b_dcl_conc 					
+    nutnr_b_dcl_full 					
+    nutnr_b_dcl_parser_base		
+    nutnr_b_particles				
+    cg_dcl_eng_dcl				
+    cspp_eng_dcl 				
 
 # Version 0.4.2
 

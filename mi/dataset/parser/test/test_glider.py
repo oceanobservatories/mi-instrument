@@ -13,7 +13,6 @@ from nose.plugins.attrib import attr
 
 from mi.core.exceptions import ConfigurationException
 from mi.core.log import get_logger
-from mi.dataset.parser.utilities import particle_to_yml
 
 from mi.dataset.test.test_parser import ParserUnitTestCase
 from mi.dataset.driver.moas.gl.ctdgv.resource import RESOURCE_PATH as CTDGV_RESOURCE_PATH
