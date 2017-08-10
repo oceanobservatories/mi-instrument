@@ -35,9 +35,13 @@ from mi.core.instrument.instrument_protocol import CommandResponseInstrumentProt
 from mi.core.instrument.protocol_param_dict import ParameterDictType
 from mi.core.log import get_logger
 from mi.core.log import get_logging_metaclass
-from mi.instrument.kut.ek60.ooicore.zplsc_b import DataParticleType as ZplscBDataParticleType
+from mi.instrument.kut.ek60.ooicore.zplsc_b import DataParticleType as \
+    ZplscBDataParticleType, \
+    ZplscBSampleDataParticle, \
+    ZplscBParticleKey
+
 from mi.instrument.kut.ek60.ooicore.zplsc_b import FILE_NAME_REGEX, \
-    parse_echogram_file, \
+    parse_particles_file, \
     ZplscBInstrumentDataParticle
 
 __author__ = 'Richard Han & Craig Risien'
@@ -149,6 +153,7 @@ class DataParticleType(BaseEnum):
     RAW = CommonDataParticleType.RAW
     ZPLSC_STATUS = 'zplsc_status'
     METADATA = ZplscBDataParticleType.METADATA
+    RAWDATA = ZplscBDataParticleType.RAWDATA
 
 
 class ProtocolState(BaseEnum):
@@ -545,41 +550,40 @@ class Protocol(CommandResponseInstrumentProtocol):
 
         self._chunker = StringChunker(self.sieve_function)
 
-        log.info('Creating echogram processing pool with %d workers', POOL_SIZE)
-        self._process_echograms = True
-        self._pending_echograms = deque()
+        log.info('processing particles with %d workers', POOL_SIZE)
+        self._process_particles = True
+        self._pending_particles = deque()
         self._processing_pool = multiprocessing.Pool(POOL_SIZE)
 
-        self._echogram_thread = Thread(target=self.echogram_thread)
-        self._echogram_thread.setDaemon(True)
-        self._echogram_thread.start()
+        self._particles_thread = Thread(target=self.particles_thread)
+        self._particles_thread.setDaemon(True)
+        self._particles_thread.start()
 
-    def echogram_thread(self):
-        log.info('Starting echogram generation thread.')
+    def particles_thread(self):
+        log.info('Starting particles generation thread.')
         processing_pool = self._processing_pool
         try:
             futures = {}
 
-            while self._process_echograms or futures:
+            while self._process_particles or futures:
                 # Pull all processing requests from our request deque
                 # Unless we have been instructed to terminate
-                while True and self._process_echograms:
+                while True and self._process_particles:
                     try:
-                        filepath, timestamp = self._pending_echograms.popleft()
+                        filepath, timestamp = self._pending_particles.popleft()
                         log.info('Received RAW file to process: %r %r', filepath, timestamp)
                         # Schedule for processing
-                        # parse_echogram_file takes the filepath and
-                        # creates the echogram image files.  It returns a
+                        # parse_datagram_file takes the filepath and returns a
                         # tuple containing the metadata and timestamp for creation
                         # of the particle
-                        futures[(filepath, timestamp)] = processing_pool.apply_async(parse_echogram_file, (filepath,))
+                        futures[(filepath, timestamp)] = processing_pool.apply_async(parse_particles_file, (filepath,))
                     except IndexError:
                         break
 
                 # Grab our keys here, to avoid mutating the dictionary while iterating
                 future_keys = sorted(futures)
                 if future_keys:
-                    log.debug('Awaiting completion of %d echograms', len(future_keys))
+                    log.debug('Awaiting completion of %d particles', len(future_keys))
 
                 for key in future_keys:
                     future = futures[key]
@@ -597,18 +601,37 @@ class Protocol(CommandResponseInstrumentProtocol):
                             continue
 
                         if result is not None:
-                            metadata, internal_timestamp = result
+                            metadata, internal_timestamp, data_times, power_data_dict, frequencies = result
 
                             filepath, timestamp = key
-                            log.info('Completed echogram with filepath: %r timestamp: %r', filepath, timestamp)
+                            log.info('Completed particles with filepath: %r timestamp: %r', filepath, timestamp)
 
-                            particle = ZplscBInstrumentDataParticle(metadata, port_timestamp=timestamp,
+                            metadata_particle = ZplscBInstrumentDataParticle(metadata, port_timestamp=timestamp,
                                                                     internal_timestamp=internal_timestamp,
                                                                     preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
-                            parsed_sample = particle.generate()
+                            parsed_sample = metadata_particle.generate()
 
                             if self._driver_event:
                                 self._driver_event(DriverAsyncEvent.SAMPLE, parsed_sample)
+
+                            for counter, data_timestamp in enumerate(data_times):
+                                zp_data = {
+                                    ZplscBParticleKey.FREQ_CHAN_1: frequencies[1],
+                                    ZplscBParticleKey.VALS_CHAN_1: list(power_data_dict[1][counter]),
+                                    ZplscBParticleKey.FREQ_CHAN_2: frequencies[2],
+                                    ZplscBParticleKey.VALS_CHAN_2: list(power_data_dict[2][counter]),
+                                    ZplscBParticleKey.FREQ_CHAN_3: frequencies[3],
+                                    ZplscBParticleKey.VALS_CHAN_3: list(power_data_dict[3][counter]),
+                                }
+
+                                sample_particle = ZplscBSampleDataParticle(zp_data, port_timestamp=timestamp,
+                                                                    internal_timestamp=data_timestamp,
+                                                                    preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
+
+                                parsed_sample_particles = sample_particle.generate()
+
+                                if self._driver_event:
+                                    self._driver_event(DriverAsyncEvent.SAMPLE, parsed_sample_particles)
 
                 time.sleep(1)
 
@@ -620,11 +643,11 @@ class Protocol(CommandResponseInstrumentProtocol):
     def shutdown(self):
         log.info('Shutting down ZPLSC protocol')
         super(Protocol, self).shutdown()
-        # Do not add any more echograms to the processing queue
-        self._process_echograms = False
-        # Await completed processing of all echograms for a maximum of 10 minutes
-        log.info('Joining echogram_thread')
-        self._echogram_thread.join(timeout=600)
+        # Do not add any more datagrams to the processing queue
+        self._process_particles = False
+        # Await completed processing of all datagrams for a maximum of 10 minutes
+        log.info('Joining particles_thread')
+        self._particles_thread.join(timeout=600)
         log.info('Completed ZPLSC protocol shutdown')
 
     def _build_param_dict(self):
@@ -685,7 +708,7 @@ class Protocol(CommandResponseInstrumentProtocol):
             str,
             type=ParameterDictType.STRING,
             display_name="FTP Port",
-            description="Location on the OOI infrastructure where .raw files and echogram images will be stored.",
+            description="Location on the OOI infrastructure where .raw files stored.",
             startup_param=True,
             default_value=DEFAULT_PORT)
 
@@ -1067,4 +1090,7 @@ class Protocol(CommandResponseInstrumentProtocol):
 
         if match:
             # Queue up this file for processing
-            self._pending_echograms.append((match.group('Filepath'), timestamp))
+            self._pending_particles.append((match.group('Filepath'), timestamp))
+
+def create_playback_protocol(callback):
+    return Protocol(None, None, callback)

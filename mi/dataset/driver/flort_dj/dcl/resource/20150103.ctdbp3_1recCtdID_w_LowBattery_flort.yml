@@ -4,7 +4,7 @@ header:
 data:
   - _index: 1
     particle_object: FlortDjDclTelemeteredInstrumentDataParticle
-    particle_type: flort_dj_dcl_instrument
+    particle_type: flort_sample
     internal_timestamp: 3629233816.0000000
     port_timestamp: 3629233823.3950000
     raw_signal_beta: 0

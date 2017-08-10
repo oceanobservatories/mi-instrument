@@ -13,32 +13,32 @@
     - all timestamp string values will not be set (removed)
 
 * Modified DCL parsers are:
-    adcpt_acfgm_dcl_pd0    			
-    adcpt_acfgm_dcl_pd8    			
-    ctdbp_cdef_dcl 				  		
-    dcl_file_common 				 		
-    metbk_a_dcl 				  		
-    pco2a_a_dcl    				
-    dosta_abcdjm_dcl  					
-    dosta_abcdjm_ctdbp_dcl 		
-    fdchp_a_dcl 					
-    flort_dj_dcl      					
-    fuelcell_eng_dcl  				
-    hyd_o_dcl							
-    pco2w_abc_dcl    				  	
-    pco2w_abc_particles    			
-    phsen_abcdef_dcl 				  
-    presf_abc_dcl  				  
-    rte_o_dcl 					
-    spkir_abj_dcl    				
-    wavss_a_dcl
-    zplsc_c_dcl
-    nutnr_b_dcl_conc 					
-    nutnr_b_dcl_full 					
-    nutnr_b_dcl_parser_base		
-    nutnr_b_particles				
-    cg_dcl_eng_dcl				
-    cspp_eng_dcl 				
+    - adcpt_acfgm_dcl_pd0    			
+    - adcpt_acfgm_dcl_pd8    			
+    - ctdbp_cdef_dcl 				  		
+    - dcl_file_common 				 		
+    - metbk_a_dcl 				  		
+    - pco2a_a_dcl    				
+    - dosta_abcdjm_dcl  					
+    - dosta_abcdjm_ctdbp_dcl 		
+    - fdchp_a_dcl 					
+    - flort_dj_dcl      					
+    - fuelcell_eng_dcl  				
+    - hyd_o_dcl							
+    - pco2w_abc_dcl    				  	
+    - pco2w_abc_particles    			
+    - phsen_abcdef_dcl 				  
+    - presf_abc_dcl  				  
+    - rte_o_dcl 					
+    - spkir_abj_dcl    				
+    - wavss_a_dcl
+    - zplsc_c_dcl
+    - nutnr_b_dcl_conc 					
+    - nutnr_b_dcl_full 					
+    - nutnr_b_dcl_parser_base		
+    - nutnr_b_particles				
+    - cg_dcl_eng_dcl				
+    - cspp_eng_dcl 				
 
 # Version 0.4.2
 

@@ -116,13 +116,13 @@ class FlortKnAuvInstrumentParticle(AuvCommonParticle):
 class FlortKnAuvInstrumentTelemParticle(FlortKnAuvInstrumentParticle):
 
     # set the data_particle_type for the DataParticle class
-    _data_particle_type = "flort_kn_auv_instrument"
+    _data_particle_type = "flort_kn_sample"
 
 
 class FlortKnAuvInstrumentRecovParticle(FlortKnAuvInstrumentParticle):
 
     # set the data_particle_type for the DataParticle class
-    _data_particle_type = "flort_kn_auv_instrument_recovered"
+    _data_particle_type = "flort_kn_sample"
 
 
 FLORT_KN_AUV_INSTRUMENT_ID = '1118'  # message ID of flort_kn instrument records

@@ -69,6 +69,7 @@ https://conda.io/miniconda.html
 
 ## Create conda env
 
+    cd into mi-instrument and then type the command below:
     conda env create -f conda_env_other.yml
     source activate mi
 

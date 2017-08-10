@@ -176,6 +176,17 @@ def timestamp_mmddyyhhmmss_to_ntp(timestamp_str):
     return (timestamp - datetime(1900, 1, 1)).total_seconds()
 
 
+def timestamp_ddmmyyhhmmss_to_ntp(timestamp_str):
+    """
+    Converts a timestamp string, in the DDMMYYHHMMSS format, to NTP time.
+    :param timestamp_str: a timestamp string in the format DD/MM/YY HH:MM:SS
+    :return: Time (float64) in seconds from epoch 01-01-1900.
+    """
+
+    timestamp = datetime.strptime(timestamp_str, "%d/%m/%y %H:%M:%S")
+
+    return (timestamp - datetime(1900, 1, 1)).total_seconds()
+
 def mac_timestamp_to_utc_timestamp(mac_timestamp):
     """
     :param mac_timestamp: A mac based timestamp
