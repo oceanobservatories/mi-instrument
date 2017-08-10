@@ -139,6 +139,8 @@ class FlordDriverTestMixinSub(DriverTestMixinSub):
     }
 
     _flordD_sample_parameters = {
+        FlordSampleParticleKey.date_string: {TYPE: unicode, VALUE: '07/16/13', REQUIRED: True},
+        FlordSampleParticleKey.time_string: {TYPE: unicode, VALUE: '09:33:06', REQUIRED: True},
         FlordSampleParticleKey.wave_beta: {TYPE: int, VALUE: 700, REQUIRED: True},
         FlordSampleParticleKey.raw_sig_beta: {TYPE: int, VALUE: 4130, REQUIRED: True},
         FlordSampleParticleKey.wave_chl: {TYPE: int, VALUE: 695, REQUIRED: True},

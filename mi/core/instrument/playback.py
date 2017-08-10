@@ -9,7 +9,6 @@ Usage:
     playback datalog <module> <refdes> <event_url> <particle_url> [--allowed=<particles>]  [--max_events=<events>] <files>...
     playback ascii <module> <refdes> <event_url> <particle_url> [--allowed=<particles>] [--max_events=<events>] <files>...
     playback chunky <module> <refdes> <event_url> <particle_url> [--allowed=<particles>] [--max_events=<events>] <files>...
-    playback zplsc <module> <refdes> <event_url> <particle_url> [--allowed=<particles>] [--max_events=<events>] <files>...
 
 Options:
     -h, --help          Show this screen
@@ -150,20 +149,6 @@ class PlaybackWrapper(object):
         if hasattr(self.particle_publisher, 'write'):
             self.particle_publisher.write()
 
-    def zplsc_playback(self):
-        for index, filename in enumerate(self.reader.read()):
-            if filename:
-                self.set_header_filename(filename)
-                log.info("filename is: %s", filename)
-                if hasattr(self.protocol, 'got_filename'):
-                    self.protocol.got_filename(filename)
-
-        pub_index = 0
-        while True:
-            self.publish()
-            pub_index = pub_index + 1
-            log.info("publish index is: %d", pub_index)
-
     def got_data(self, packet):
         try:
             self.protocol.got_data(packet)
@@ -233,7 +218,6 @@ class DatalogReader(object):
             raise Exception('Not all files found')
         self._filehandle = None
         self.target_types = [PacketType.FROM_INSTRUMENT, PacketType.PA_CONFIG]
-        self.file_name_list = []
 
     def read(self):
         while True:
@@ -246,7 +230,6 @@ class DatalogReader(object):
                 log.info('Begin reading: %r', name)
                 # yield the filename so we can pass it through to the driver
                 yield name
-                self.file_name_list.append(name)
                 self._filehandle = open(name, 'r')
 
             if not self._process_packet():
@@ -326,23 +309,6 @@ class ChunkyDatalogReader(DatalogReader):
         return False
 
 
-class ZplscReader(DatalogReader):
-    def __init__(self, files, callback):
-        super(ZplscReader, self).__init__(files, callback)
-
-    def _process_packet(self):
-
-        for name in self.file_name_list:
-            data = 'downloaded file:' + name + '\n'
-            header = PacketHeader(packet_type=PacketType.FROM_INSTRUMENT,
-                                  payload_size=len(data), packet_time=0)
-            header.set_checksum(data)
-            packet = PlaybackPacket(payload=data, header=header)
-            self.callback(packet)
-
-        return False
-
-
 def main():
     options = docopt(__doc__)
 
@@ -355,10 +321,10 @@ def main():
     if allowed is not None:
         allowed = [_.strip() for _ in allowed.split(',')]
     max_events = options.get('--max_events')
-    if not max_events:
+    if max_events is None or max_events=='':
         max_events = Publisher.DEFAULT_MAX_EVENTS
     else:
-        max_events = int(max_events)
+        max_events=int(max_events)
 
     # when running with the profiler, files will be a string
     # coerce to list
@@ -371,17 +337,11 @@ def main():
         reader = DigiDatalogAsciiReader
     elif options['chunky']:
         reader = ChunkyDatalogReader
-    elif options['zplsc']:
-        reader = ZplscReader
-        zplsc_reader = True
     else:
         reader = None
 
     wrapper = PlaybackWrapper(module, refdes, event_url, particle_url, reader, allowed, files, max_events)
-    if zplsc_reader:
-        wrapper.zplsc_playback()
-    else:
-        wrapper.playback()
+    wrapper.playback()
 
 if __name__ == '__main__':
     main()

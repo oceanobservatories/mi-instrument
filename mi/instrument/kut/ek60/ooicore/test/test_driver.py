@@ -437,6 +437,7 @@ class DriverTestMixinSub(DriverTestMixin):
 
     _metadata_dict = {
         ZplscBParticleKey.FILE_TIME: {'type': str, 'value': '20141212152500'},
+        ZplscBParticleKey.ECHOGRAM_PATH: {'type': str, 'value': output_file},
         ZplscBParticleKey.CHANNEL: {'type': list, 'value': [1, 2, 3]},
         ZplscBParticleKey.TRANSDUCER_DEPTH: {'type': list, 'value': [0.0, 0.0, 0.0]},
         ZplscBParticleKey.FREQUENCY: {'type': list, 'value': [120000.0, 38000.0, 200000.0]},
@@ -447,15 +448,6 @@ class DriverTestMixinSub(DriverTestMixin):
         ZplscBParticleKey.SOUND_VELOCITY: {'type': list, 'value': np.array([1493.8888, 1493.8888, 1493.8888])},
         ZplscBParticleKey.ABSORPTION_COEF: {'type': list, 'value': np.array([0.03744, 0.00979, 0.052688])},
         ZplscBParticleKey.TEMPERATURE: {'type': list, 'value': [10.0, 10.0, 10.0]}
-    }
-
-    _rawdata_dict = {
-        ZplscBParticleKey.VALS_CHAN_1: {'type': list, 'value': []},
-        ZplscBParticleKey.FREQ_CHAN_1: {'type': float, 'value': 120000.0},
-        ZplscBParticleKey.VALS_CHAN_2: {'type': list, 'value': []},
-        ZplscBParticleKey.FREQ_CHAN_2: {'type': float, 'value': 38000.0},
-        ZplscBParticleKey.VALS_CHAN_3: {'type': list, 'value': []},
-        ZplscBParticleKey.FREQ_CHAN_3: {'type': float, 'value': 200000.0}
     }
 
     def assert_particle_sample(self, data_particle, verify_values=False):
@@ -492,19 +484,8 @@ class DriverTestMixinSub(DriverTestMixin):
         @param data_particle:
         @param verify_values: bool, should we verify parameter values
         """
-
-        sample_dict = self.convert_data_particle_to_dict(data_particle)
-        stream_name = sample_dict[DataParticleKey.STREAM_NAME].lower()
-
-        if stream_name == DataParticleType.RAWDATA:
-            param_dict = self._rawdata_dict
-            verify_values = False
-        elif stream_name == DataParticleType.METADATA:
-            param_dict = self._metadata_dict
-            self.assertEqual(len(data_particle), 1)
-
-        self.assert_data_particle_header(data_particle, stream_name)
-        self.assert_data_particle_parameters(data_particle, param_dict, verify_values)
+        self.assert_data_particle_header(data_particle, DataParticleType.METADATA)
+        self.assert_data_particle_parameters(data_particle, self._metadata_dict, verify_values)
 
 
 ###############################################################################
@@ -650,7 +631,7 @@ class DriverUnitTest(InstrumentDriverUnitTestCase, DriverTestMixinSub):
         self.push_data_to_driver(driver, self._test_file_notice)
         self.clear_data_particle_queue()
 
-        self.assert_particle_published_async(self.assert_file_data, False)
+        self.assert_particle_published_async(self.assert_file_data, True)
 
 
 ###############################################################################

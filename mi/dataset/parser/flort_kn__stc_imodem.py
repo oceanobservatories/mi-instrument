@@ -26,8 +26,8 @@ from mi.dataset.parser.WFP_E_file_common import WfpEFileParser, StateKey, SAMPLE
 
 
 class DataParticleType(BaseEnum):
-    FLORT_KN_INSTRUMENT_TELEMETERED = 'flort_sample'
-    FLORT_KN_INSTRUMENT_RECOVERED = 'flort_sample'
+    FLORT_KN_INSTRUMENT_TELEMETERED = 'flort_kn_stc_imodem_instrument'
+    FLORT_KN_INSTRUMENT_RECOVERED = 'flort_kn_stc_imodem_instrument_recovered'
 
 class Flort_kn__stc_imodemParserDataParticleKey(BaseEnum):
     TIMESTAMP = 'wfp_timestamp'
@@ -54,7 +54,8 @@ class Flort_kn_stc_imodemParserDataParticleAbstract(DataParticle):
 
         fields_prof = struct.unpack('>I f f f f h h h', self.raw_data)
 
-        result = [self._encode_value(Flort_kn__stc_imodemParserDataParticleKey.RAW_SIGNAL_BETA, fields_prof[5], int),
+        result = [self._encode_value(Flort_kn__stc_imodemParserDataParticleKey.TIMESTAMP, fields_prof[0], int),
+                  self._encode_value(Flort_kn__stc_imodemParserDataParticleKey.RAW_SIGNAL_BETA, fields_prof[5], int),
                   self._encode_value(Flort_kn__stc_imodemParserDataParticleKey.RAW_SIGNAL_CHL, fields_prof[6], int),
                   self._encode_value(Flort_kn__stc_imodemParserDataParticleKey.RAW_SIGNAL_CDOM, fields_prof[7], int)]
 

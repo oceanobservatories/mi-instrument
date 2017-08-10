@@ -17,7 +17,6 @@ from mi.dataset.dataset_parser import DataSetDriverConfigKeys
 from mi.dataset.driver.flort_dj.sio.resource import RESOURCE_PATH
 from mi.dataset.parser.flort_dj_sio import FlortDjSioParser, \
     FlortdRecoveredParserDataParticle
-from mi.dataset.parser.utilities import particle_to_yml
 from mi.dataset.test.test_parser import ParserUnitTestCase
 
 log = get_logger()
@@ -127,8 +126,6 @@ class FlortDjSioParserUnitTestCase(ParserUnitTestCase):
         result.extend(self.parser.get_records(10))
         result.extend(self.parser.get_records(5))
 
-        particle_to_yml(result, os.path.join(RESOURCE_PATH, 'node59p1_0.flort.yml'))
-
         self.stream_handle.close()
         self.assert_particles(result, "node59p1_0.flort.yml", RESOURCE_PATH)
 
@@ -166,9 +163,6 @@ class FlortDjSioParserUnitTestCase(ParserUnitTestCase):
         self.build_telem_parser()
 
         result = self.parser.get_records(18)
-
-        particle_to_yml(result, os.path.join(RESOURCE_PATH, 'node59p1_0_dash.flort.yml'))
-
         self.assert_particles(result, "node59p1_0_dash.flort.yml", RESOURCE_PATH)
 
         # make sure there were no exceptions
@@ -182,9 +176,6 @@ class FlortDjSioParserUnitTestCase(ParserUnitTestCase):
         self.build_telem_parser()
 
         particles = self.parser.get_records(18)
-
-        particle_to_yml(particles, os.path.join(RESOURCE_PATH, 'node59p1_0.flort.yml'))
-
         self.assert_particles(particles, "node59p1_0.flort.yml", RESOURCE_PATH)
 
         # confirm no exceptions occurred
@@ -221,9 +212,6 @@ class FlortDjSioParserUnitTestCase(ParserUnitTestCase):
 
         # get 20 particles
         particles = self.parser.get_records(96)
-
-        particle_to_yml(particles, os.path.join(RESOURCE_PATH, 'FLO15908.yml'))
-
         self.assert_particles(particles, "FLO15908.yml", RESOURCE_PATH)
 
         # confirm no exceptions occurred
@@ -248,8 +236,6 @@ class FlortDjSioParserUnitTestCase(ParserUnitTestCase):
 
         self.assertEquals(len(particles), num_expected_particles)
 
-        particle_to_yml(particles, os.path.join(RESOURCE_PATH, 'flo_bad_header.yml'))
-
         self.assert_particles(particles, "flo_bad_header.yml", RESOURCE_PATH)
 
         log.debug('Exceptions : %s', self.exception_callback_value)
@@ -257,3 +243,46 @@ class FlortDjSioParserUnitTestCase(ParserUnitTestCase):
         self.assert_(isinstance(self.exception_callback_value[0], UnexpectedDataException))
 
         log.debug('===== END TEST BAD HEADER =====')
+
+    def particle_to_yml(self, particles, filename, mode='w'):
+        """
+        This is added as a testing helper, not actually as part of the parser tests. Since the same particles
+        will be used for the driver test it is helpful to write them to .yml in the same form they need in the
+        results.yml fids here.
+        """
+        # open write append, if you want to start from scratch manually delete this fid
+        fid = open(os.path.join(RESOURCE_PATH, filename), mode)
+
+        fid.write('header:\n')
+        fid.write("    particle_object: 'MULTIPLE'\n")
+        fid.write("    particle_type: 'MULTIPLE'\n")
+        fid.write('data:\n')
+
+        for i in range(0, len(particles)):
+            particle_dict = particles[i].generate_dict()
+
+            fid.write('  - _index: %d\n' % (i+1))
+
+            fid.write('    particle_object: %s\n' % particles[i].__class__.__name__)
+            fid.write('    particle_type: %s\n' % particle_dict.get('stream_name'))
+            fid.write('    internal_timestamp: %f\n' % particle_dict.get('internal_timestamp'))
+
+            for val in particle_dict.get('values'):
+                if isinstance(val.get('value'), float):
+                    fid.write('    %s: %16.16f\n' % (val.get('value_id'), val.get('value')))
+                elif isinstance(val.get('value'), str):
+                    fid.write('    %s: \'%s\'\n' % (val.get('value_id'), val.get('value')))
+                else:
+                    fid.write('    %s: %s\n' % (val.get('value_id'), val.get('value')))
+        fid.close()
+
+    def create_yml(self):
+        """
+        This utility creates a yml file
+        """
+        self.stream_handle = open(os.path.join(RESOURCE_PATH, 'FLO15908.DAT'))
+        self.build_recov_parser()
+        particles = self.parser.get_records(96)
+
+        self.particle_to_yml(particles, 'FLO15908.yml')
+        self.stream_handle.close()

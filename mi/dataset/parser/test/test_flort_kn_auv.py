@@ -18,7 +18,6 @@ from nose.plugins.attrib import attr
 from mi.core.log import get_logger
 from mi.dataset.driver.flort_kn.auv.resource import RESOURCE_PATH
 from mi.dataset.parser.flort_kn_auv import FlortKnAuvParser
-from mi.dataset.parser.utilities import particle_to_yml
 from mi.dataset.test.test_parser import ParserUnitTestCase
 
 log = get_logger()

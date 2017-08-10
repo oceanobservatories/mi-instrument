@@ -22,7 +22,6 @@ from mi.dataset.parser.flort_dj_cspp import \
     FlortDjCsppInstrumentRecoveredDataParticle, FlortDjCsppMetadataTelemeteredDataParticle, \
     FlortDjCsppInstrumentTelemeteredDataParticle
 from mi.dataset.test.test_parser import ParserUnitTestCase
-from mi.dataset.parser.utilities import particle_to_yml
 
 
 log = get_logger()
@@ -68,8 +67,6 @@ class FlortDjCsppParserUnitTestCase(ParserUnitTestCase):
 
         particles = parser.get_records(20)
 
-        particle_to_yml(particles, os.path.join(RESOURCE_PATH, 'first_data_20_recovered.yml'))
-
         self.assert_particles(particles, 'first_data_20_recovered.yml', RESOURCE_PATH)
 
         self.assertEqual(len(self.exception_callback_value), 0)
@@ -89,8 +86,6 @@ class FlortDjCsppParserUnitTestCase(ParserUnitTestCase):
 
         particles = parser.get_records(20)
 
-        particle_to_yml(particles, os.path.join(RESOURCE_PATH, 'first_data_20_telemetered.yml'))
-
         self.assert_particles(particles, 'first_data_20_telemetered.yml', RESOURCE_PATH)
 
         self.assertEqual(len(self.exception_callback_value), 0)
@@ -109,8 +104,6 @@ class FlortDjCsppParserUnitTestCase(ParserUnitTestCase):
                                    self.exception_callback)
 
         particles = parser.get_records(1000)
-
-        particle_to_yml(particles, os.path.join(RESOURCE_PATH, 'first_data_recovered.yml'))
 
         self.assertTrue(len(particles) == 193)
 
@@ -132,8 +125,6 @@ class FlortDjCsppParserUnitTestCase(ParserUnitTestCase):
                                    self.exception_callback)
 
         particles = parser.get_records(1000)
-
-        particle_to_yml(particles, os.path.join(RESOURCE_PATH, 'first_data_telemetered.yml'))
 
         self.assertTrue(len(particles) == 193)
 
@@ -158,8 +149,6 @@ class FlortDjCsppParserUnitTestCase(ParserUnitTestCase):
 
         particles = parser.get_records(4)
 
-        particle_to_yml(particles, os.path.join(RESOURCE_PATH, 'BAD_recovered.yml'))
-
         self.assert_particles(particles, 'BAD_recovered.yml', RESOURCE_PATH)
 
         self.assertIsInstance(self.exception_callback_value[0], RecoverableSampleException)
@@ -180,8 +169,6 @@ class FlortDjCsppParserUnitTestCase(ParserUnitTestCase):
                                    self.exception_callback)
 
         particles = parser.get_records(4)
-
-        particle_to_yml(particles, os.path.join(RESOURCE_PATH, 'BAD_telemetered.yml'))
 
         self.assert_particles(particles, 'BAD_telemetered.yml', RESOURCE_PATH)
 
