@@ -1,4 +1,4 @@
-# Version 0.5.01
+# Version 0.5.3
 
 * Issue #12499 modified playback to be callable via ingest engine and ingest requests
 
