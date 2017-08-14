@@ -4,7 +4,7 @@ header:
 data:
   - _index: 1
     particle_object: FlortDjDclTelemeteredInstrumentDataParticle
-    particle_type: flort_dj_dcl_instrument
+    particle_type: flort_sample
     internal_timestamp: 3684961820.0000000
     port_timestamp: 3684961826.2900000
     raw_signal_beta: 1672
@@ -12,7 +12,7 @@ data:
     raw_signal_chl: 278
   - _index: 2
     particle_object: FlortDjDclTelemeteredInstrumentDataParticle
-    particle_type: flort_dj_dcl_instrument
+    particle_type: flort_sample
     internal_timestamp: 3684965421.0000000
     port_timestamp: 3684965427.0460000
     raw_signal_beta: 1735
@@ -20,7 +20,7 @@ data:
     raw_signal_chl: 229
   - _index: 3
     particle_object: FlortDjDclTelemeteredInstrumentDataParticle
-    particle_type: flort_dj_dcl_instrument
+    particle_type: flort_sample
     internal_timestamp: 3684969022.0000000
     port_timestamp: 3684969027.8150001
     raw_signal_beta: 1733

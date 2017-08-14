@@ -20,10 +20,12 @@ from mi.core.instrument.dataset_data_particle import DataParticle, DataParticleK
 from mi.dataset.parser.sio_mule_common import SioParser, SIO_HEADER_MATCHER
 from mi.core.exceptions import RecoverableSampleException, UnexpectedDataException
 
+from mi.dataset.parser.utilities import timestamp_ddmmyyhhmmss_to_ntp, timestamp_mmddyyhhmmss_to_ntp
+
 
 class DataParticleType(BaseEnum):
-    SAMPLE = 'flort_dj_sio_instrument'
-    SAMPLE_RECOVERED = 'flort_dj_sio_instrument_recovered'
+    SAMPLE = 'flort_sample'
+    SAMPLE_RECOVERED = 'flort_sample'
 
 
 class FlortdParserDataParticleKey(BaseEnum):
@@ -78,7 +80,12 @@ class FlortdCommonParserDataParticle(DataParticle):
 
         # use the timestamp from the sio header as internal timestamp
         sec_since_1970 = int(self.raw_data[:8], 16)
-        self.set_internal_timestamp(unix_time=sec_since_1970)
+        self.set_port_timestamp(unix_time=float(sec_since_1970))
+
+        #format of internal time stamp (date string and time string) is not consistant
+        # internal_timestamp_str = self._data_match.group(1) + "  " +  self._data_match.group(2)
+        # internal_timestamp = timestamp_mmddyyhhmmss_to_ntp(internal_timestamp_str)
+        # self.set_internal_timestamp(timestamp=internal_timestamp)
 
     def _build_parsed_values(self):
         """
@@ -89,11 +96,7 @@ class FlortdCommonParserDataParticle(DataParticle):
         # match the data inside the wrapper
         result = []
         if self._data_match:
-            result = [self._encode_value(FlortdParserDataParticleKey.CONTROLLER_TIMESTAMP, self.raw_data[:8],
-                                         FlortdParserDataParticle.encode_int_16),
-                      self._encode_value(FlortdParserDataParticleKey.DATE_STRING, self._data_match.group(1), str),
-                      self._encode_value(FlortdParserDataParticleKey.TIME_STRING, self._data_match.group(2), str),
-                      self._encode_value(FlortdParserDataParticleKey.MEASUREMENT_WAVELENGTH_BETA,
+            result = [self._encode_value(FlortdParserDataParticleKey.MEASUREMENT_WAVELENGTH_BETA,
                                          self._data_match.group(3),
                                          FlortdParserDataParticle.encode_int_or_dash),
                       self._encode_value(FlortdParserDataParticleKey.RAW_SIGNAL_BETA, self._data_match.group(4),
@@ -167,7 +170,7 @@ class FlortDjSioParser(SioParser):
                     # prepend the timestamp from sio mule header to the flort raw data,
                     # which is stored in header_match.group(3)
                     sample = self._extract_sample(self._particle_class, None,
-                                                  header_match.group(3) + data_match.group(0))
+                                                  header_match.group(3) + data_match.group(0), preferred_ts=DataParticleKey.PORT_TIMESTAMP)
                     if sample:
                         # create particle
                         result_particles.append(sample)
