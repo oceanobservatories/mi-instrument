@@ -1,3 +1,7 @@
+# Version 0.5.3
+
+* Issue #12499 modified playback to be callable via ingest engine and ingest requests
+
 # Version 0.5.2
 
 * Issue #12435 FLOR - Consolidate Streams:
