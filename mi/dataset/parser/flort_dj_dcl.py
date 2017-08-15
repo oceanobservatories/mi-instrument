@@ -204,8 +204,8 @@ CTDBP_FLORT_PARTICLE_MAP = [
 
 
 class DataParticleType(BaseEnum):
-    REC_INSTRUMENT_PARTICLE = 'flort_dj_dcl_instrument_recovered'
-    TEL_INSTRUMENT_PARTICLE = 'flort_dj_dcl_instrument'
+    REC_INSTRUMENT_PARTICLE = 'flort_sample'
+    TEL_INSTRUMENT_PARTICLE = 'flort_sample'
 
 
 class FlortDjDclInstrumentDataParticle(DataParticle):
