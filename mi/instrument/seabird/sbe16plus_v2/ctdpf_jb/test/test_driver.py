@@ -130,6 +130,7 @@ class SeaBird19plusMixin(SeaBird16plusMixin):
     #  Instrument output (driver input) Definitions
     ###
     VALID_SAMPLE = "04570F0A1E910828FC47BC59F199952C64C9" + NEWLINE
+    VALID_SAMPLE_NO_OPTODE = "08440E168C850BEF2636F1" + NEWLINE
 
     VALID_GETHD_RESPONSE =  "" + \
 "<HardwareData DeviceType = 'SBE19plus' SerialNumber = '01906914'>" + NEWLINE + \
@@ -350,6 +351,16 @@ class SeaBird19plusMixin(SeaBird16plusMixin):
         SBE19DataParticleKey.OXYGEN: {TYPE: int, VALUE: 2909385, REQUIRED: True },
     }
 
+    _no_optode_parameters = {
+        SBE19DataParticleKey.TEMP: {TYPE: int, VALUE: 541710, REQUIRED: True},
+        SBE19DataParticleKey.CONDUCTIVITY: {TYPE: int, VALUE: 1477765, REQUIRED: True},
+        SBE19DataParticleKey.PRESSURE: {TYPE: int, VALUE: 782118, REQUIRED: True},
+        SBE19DataParticleKey.PRESSURE_TEMP: {TYPE: int, VALUE: 14065, REQUIRED: True},
+        SBE19DataParticleKey.VOLT0: {TYPE: int, VALUE: 0, REQUIRED: False},
+        SBE19DataParticleKey.VOLT1: {TYPE: int, VALUE: 0, REQUIRED: False},
+        SBE19DataParticleKey.OXYGEN: {TYPE: int, VALUE: 0, REQUIRED: False},
+    }
+
     _configuration_parameters = {
         SBE19ConfigurationParticleKey.SERIAL_NUMBER: {TYPE: unicode, VALUE: '01906914', REQUIRED: True},
         SBE19ConfigurationParticleKey.SCANS_TO_AVERAGE: {TYPE: int, VALUE: 4, REQUIRED: True},
@@ -529,6 +540,16 @@ class SeaBird19plusMixin(SeaBird16plusMixin):
         self.assert_data_particle_header(data_particle, DataParticleType.CTD_PARSED, require_instrument_timestamp=False)
         self.assert_data_particle_parameters(data_particle, self._sample_parameters, verify_values)
 
+    def assert_particle_no_optode(self, data_particle, verify_values=False):
+        """
+        Verify sample particle (without optode)
+        @param data_particle:  SBE19DataParticle data particle
+        @param verify_values:  bool, should we verify parameter values
+        """
+        self.assert_data_particle_keys(SBE19DataParticleKey, self._no_optode_parameters)
+        self.assert_data_particle_header(data_particle, DataParticleType.CTD_PARSED, require_instrument_timestamp=False)
+        self.assert_data_particle_parameters(data_particle, self._no_optode_parameters, verify_values)
+
     def assert_particle_hardware(self, data_particle, verify_values = False):
         """
         Verify hardware particle
@@ -619,6 +640,7 @@ class Sbe16plus19UnitTestCase(Sbe16plusUnitTestCase, SeaBird19plusMixin):
         chunker = StringChunker(SBE19Protocol.sieve_function)
 
         self.assert_chunker_sample(chunker, self.VALID_SAMPLE)
+        self.assert_chunker_sample(chunker, self.VALID_SAMPLE_NO_OPTODE)
         self.assert_chunker_sample_with_noise(chunker, self.VALID_SAMPLE)
         self.assert_chunker_fragmented_sample(chunker, self.VALID_SAMPLE)
         self.assert_chunker_combined_sample(chunker, self.VALID_SAMPLE)
@@ -660,6 +682,7 @@ class Sbe16plus19UnitTestCase(Sbe16plusUnitTestCase, SeaBird19plusMixin):
 
         # Start validating data particles
         self.assert_particle_published(driver, self.VALID_SAMPLE, self.assert_particle_sample, True)
+        self.assert_particle_published(driver, self.VALID_SAMPLE_NO_OPTODE, self.assert_particle_no_optode, True)
         self.assert_particle_published(driver, self.VALID_GETHD_RESPONSE, self.assert_particle_hardware, True)
         self.assert_particle_published(driver, self.VALID_GETCC_RESPONSE, self.assert_particle_calibration, True)
         self.assert_particle_published(driver, self.VALID_GETSD_RESPONSE, self.assert_particle_status, True)

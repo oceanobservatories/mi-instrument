@@ -790,9 +790,7 @@ class SBE19DataParticle(Sbe16plusBaseParticle):
         pattern += r'([0-9A-F]{6})'  # conductivity
         pattern += r'([0-9A-F]{6})'  # pressure
         pattern += r'([0-9A-F]{4})'  # pressure temp
-        pattern += r'([0-9A-F]{4})'  # volt0
-        pattern += r'([0-9A-F]{4})'  # volt1
-        pattern += r'([0-9A-F]{6})'  # oxygen
+        pattern += r'([0-9A-F]{0,14})'  # volt0, volt1, oxygen
         pattern += NEWLINE
         return pattern
 
@@ -822,9 +820,7 @@ class SBE19DataParticle(Sbe16plusBaseParticle):
             conductivity = self.hex2value(match.group(2))
             pressure = self.hex2value(match.group(3))
             pressure_temp = self.hex2value(match.group(4))
-            volt0 = self.hex2value(match.group(5))
-            volt1 = self.hex2value(match.group(6))
-            oxygen = self.hex2value(match.group(7))
+            optode = match.group(5)
 
         except ValueError:
             raise SampleException("ValueError while converting data: [%s]" %
@@ -837,13 +833,17 @@ class SBE19DataParticle(Sbe16plusBaseParticle):
                   {DataParticleKey.VALUE_ID: SBE19DataParticleKey.PRESSURE,
                    DataParticleKey.VALUE: pressure},
                   {DataParticleKey.VALUE_ID: SBE19DataParticleKey.PRESSURE_TEMP,
-                   DataParticleKey.VALUE: pressure_temp},
-                  {DataParticleKey.VALUE_ID: SBE19DataParticleKey.VOLT0,
-                   DataParticleKey.VALUE: volt0},
-                  {DataParticleKey.VALUE_ID: SBE19DataParticleKey.VOLT1,
-                   DataParticleKey.VALUE: volt1},
-                  {DataParticleKey.VALUE_ID: SBE19DataParticleKey.OXYGEN,
-                   DataParticleKey.VALUE: oxygen}]
+                   DataParticleKey.VALUE: pressure_temp}]
+
+        if optode:
+            volt0 = self.hex2value(optode[:4])
+            optode = optode[4:]
+            volt1 = self.hex2value(optode[:4])
+            optode = optode[4:]
+            oxygen = self.hex2value(optode)
+            result.append({DataParticleKey.VALUE_ID: SBE19DataParticleKey.VOLT0, DataParticleKey.VALUE: volt0})
+            result.append({DataParticleKey.VALUE_ID: SBE19DataParticleKey.VOLT1, DataParticleKey.VALUE: volt1})
+            result.append({DataParticleKey.VALUE_ID: SBE19DataParticleKey.OXYGEN, DataParticleKey.VALUE: oxygen})
 
         return result
 
