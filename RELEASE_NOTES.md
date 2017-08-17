@@ -1,3 +1,7 @@
+# Version 0.5.4
+
+* Issue #12574 update ctdpf_jb driver to parse CTD data with missing optode sensor data (CTDPFB304)
+
 # Version 0.5.3
 
 * Issue #12499 modified playback to be callable via ingest engine and ingest requests
