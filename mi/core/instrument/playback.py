@@ -378,9 +378,9 @@ def main():
         reader = None
 
     wrapper = PlaybackWrapper(module, refdes, event_url, particle_url, reader, allowed, files, max_events)
-    if zplsc_reader:
+    try:
         wrapper.zplsc_playback()
-    else:
+    except:
         wrapper.playback()
 
 if __name__ == '__main__':
