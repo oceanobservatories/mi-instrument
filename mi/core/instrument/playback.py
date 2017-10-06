@@ -364,7 +364,9 @@ def main():
     # coerce to list
     if isinstance(files, basestring):
         files = [files]
-
+        
+    zplsc_reader = False
+    
     if options['datalog']:
         reader = DatalogReader
     elif options['ascii']:
@@ -378,9 +380,9 @@ def main():
         reader = None
 
     wrapper = PlaybackWrapper(module, refdes, event_url, particle_url, reader, allowed, files, max_events)
-    try:
+    if zplsc_reader:
         wrapper.zplsc_playback()
-    except:
+    else:
         wrapper.playback()
 
 if __name__ == '__main__':
