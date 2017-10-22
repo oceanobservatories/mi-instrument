@@ -2,7 +2,7 @@
 
 """
 @package mi.dataset.parser.test.test_zplsc_c
-@file mi-dataset/mi/dataset/parser/test/test_zplsc_c.py
+@file mi-instrument/mi/dataset/parser/test/test_zplsc_c.py
 @author Rene Gelinas
 @brief Test code for a zplsc_c data parser
 """
@@ -21,7 +21,8 @@ log = get_logger()
 
 MODULE_NAME = 'mi.dataset.parser.zplsc_c'
 CLASS_NAME = 'ZplscCRecoveredDataParticle'
-PARTICLE_TYPE = 'zplsc_c_recovered'
+# PARTICLE_TYPE = 'zplsc_c_recovered'
+PARTICLE_TYPE = 'zplsc_echogram_data'
 
 
 @attr('UNIT', group='mi')
@@ -36,7 +37,8 @@ class ZplscCParserUnitTestCase(ParserUnitTestCase):
         """
         return ZplscCParser(self.config, file_handle, self.rec_exception_callback)
 
-    def file_path(self, filename):
+    @staticmethod
+    def file_path(filename):
         log.debug('resource path = %s, file name = %s', RESOURCE_PATH, filename)
         return os.path.join(RESOURCE_PATH, filename)
 
@@ -121,7 +123,7 @@ class ZplscCParserUnitTestCase(ParserUnitTestCase):
 
     def test_variable_length_channels(self):
         """
-        The raw data binary file used in the test_recovered test above was modifed.
+        The raw data binary file used in the test_recovered test above was modified.
         The channel data for the first two records have been modified by removing a
         random number of values from the four "channel values" lists.  The new number
         of bins is updated in the "number of bins" parameter for those records.  The
@@ -188,14 +190,20 @@ class ZplscCParserUnitTestCase(ParserUnitTestCase):
 
         log.debug('===== END TEST BAD DELIMITER  =====')
 
-    def create_large_yml(self):
+    def test_create_yml(self):
+        self.create_large_yml('15100520-Test-Corrupt-1.01A')
+
+    def create_large_yml(self, raw_data_file_name):
         """
         Create a large yml file corresponding to an actual recovered dataset.
         This is not an actual test - it allows us to create what we need
         for integration testing, i.e. a yml file.
+
+        :param raw_data_file_name: Raw data file from which to extract data
+                                    to create the yml file.
         """
 
-        with open(self.file_path('16100100-Test.01A')) as in_file:
+        with open(self.file_path(raw_data_file_name)) as in_file:
 
             parser = self.create_zplsc_c_parser(in_file)
             result = parser.get_records(1000)
