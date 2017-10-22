@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
 """
-@package mi.dataset.parser.zplsc_b
-@file marine-integrations/mi/dataset/parser/zplsc_b.py
+@package mi.instrument.kut.ek60.ooicore.zplsc_b
+@file mi-instrument/mi/instrument/kut/ek60/ooicore/zplsc_b.py
 @author Ronald Ronquillo & Richard Han & vipul lakhani
 @brief Parser for the zplsc_b dataset driver
 

@@ -1,3 +1,7 @@
+# Version 0.5.5
+
+* Issue #12323 - Added support for UI generated ZPLSC C-Series echograms.
+
 # Version 0.5.4
 
 * Issue #12574 update ctdpf_jb driver to parse CTD data with missing optode sensor data (CTDPFB304)
