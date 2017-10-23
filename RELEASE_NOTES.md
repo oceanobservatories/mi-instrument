@@ -1,3 +1,6 @@
+# Version 0.5.5
+* Issue #12832 Fixed update playback.py to assign 'zplsc_reader' variable before being referenced
+ 
 # Version 0.5.4
 
 * Issue #12574 update ctdpf_jb driver to parse CTD data with missing optode sensor data (CTDPFB304)
