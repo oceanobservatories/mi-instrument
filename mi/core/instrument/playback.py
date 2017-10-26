@@ -364,7 +364,9 @@ def main():
     # coerce to list
     if isinstance(files, basestring):
         files = [files]
-
+        
+    zplsc_reader = False
+    
     if options['datalog']:
         reader = DatalogReader
     elif options['ascii']:
