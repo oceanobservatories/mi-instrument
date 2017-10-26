@@ -22,7 +22,6 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
 __author__ = 'Craig Risien, Rene Gelinas'
-__license__ = 'Apache 2.0'
 
 REF_TIME = date2num(datetime(1900, 1, 1, 0, 0, 0))
 
