@@ -1,4 +1,9 @@
+# Version 0.5.6
+
+* Issue #12323 - Added support for UI generated ZPLSC C-Series echograms.
+
 # Version 0.5.5
+
 * Issue #12832 Fixed update playback.py to assign 'zplsc_reader' variable before being referenced
  
 # Version 0.5.4

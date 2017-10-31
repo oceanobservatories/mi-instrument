@@ -607,8 +607,9 @@ class Protocol(CommandResponseInstrumentProtocol):
                             log.info('Completed particles with filepath: %r timestamp: %r', filepath, timestamp)
 
                             metadata_particle = ZplscBInstrumentDataParticle(metadata, port_timestamp=timestamp,
-                                                                    internal_timestamp=internal_timestamp,
-                                                                    preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
+                                                                             internal_timestamp=internal_timestamp,
+                                                                             preferred_timestamp=
+                                                                             DataParticleKey.INTERNAL_TIMESTAMP)
                             parsed_sample = metadata_particle.generate()
 
                             if self._driver_event:
