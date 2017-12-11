@@ -1,3 +1,7 @@
+# Version 0.5.7
+
+* Issue #12833 - Added support for offline process generated ZPLSC-C echograms.
+
 # Version 0.5.6
 
 * Issue #12323 - Added support for UI generated ZPLSC C-Series echograms.
