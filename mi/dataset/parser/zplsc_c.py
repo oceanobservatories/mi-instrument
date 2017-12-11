@@ -166,7 +166,7 @@ class AzfpProfileHeader(BigEndianStructure):
 def generate_image_file_path(filepath, output_path=None):
     # Extract the file time from the file name
     absolute_path = os.path.abspath(filepath)
-    filename = os.path.basename(absolute_path)
+    filename = os.path.basename(absolute_path).upper()
     directory_name = os.path.dirname(absolute_path)
 
     output_path = directory_name if output_path is None else output_path
@@ -374,7 +374,7 @@ class ZplscCParser(SimpleParser):
 
         log.info('Completed processing all data. Generating echogram: %r', input_file_path)
 
-        plot = ZPLSCCPlot(data_times, sv_dict, frequencies, depth_range, -150, -10)
+        plot = ZPLSCCPlot(data_times, sv_dict, frequencies, depth_range)
         plot.generate_plots()
         plot.write_image(image_path)
 

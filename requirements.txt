@@ -25,5 +25,6 @@ sqlalchemy
 tqdm
 twisted
 xarray
+docopt
 
 git+https://github.com/oceanobservatories/ooi_port_agent@v0.0.42
