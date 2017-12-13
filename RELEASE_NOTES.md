@@ -1,3 +1,6 @@
+# Version 0.5.6
+* Issue #12289 Added DO driver to generate stable dissolved oxygen stream from CTD with attached DO
+ 
 # Version 0.5.5
 * Issue #12832 Fixed update playback.py to assign 'zplsc_reader' variable before being referenced
  
