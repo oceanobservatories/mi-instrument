@@ -1275,62 +1275,6 @@ class CommandResponseInstrumentProtocol(InstrumentProtocol):
                 if count >= no_tries:
                     raise InstrumentProtocolException('Incorrect prompt.')
 
-
-class NoCommandInstrumentProtocol(CommandResponseInstrumentProtocol):
-    """
-    Read-only instrument interface.
-    """
-
-    def __init__(self, prompts, newline, driver_event):
-        """
-        Constructor.
-        @param prompts Enum class containing possible device prompts used for
-        command response logic.
-        @param newline The device newline.
-        @driver_event The callback for asynchronous driver events.
-        """
-
-        # Construct superclass.
-        CommandResponseInstrumentProtocol.__init__(self, prompts, newline, driver_event)
-
-    def _do_cmd_resp(self, cmd, *args, **kwargs):
-        return None
-
-    def _do_cmd_no_resp(self, cmd, *args, **kwargs):
-        return None
-
-    def _do_cmd_direct(self, cmd):
-        return None
-
-    ########################################################################
-    # Wakeup helpers.
-    ########################################################################
-
-    def _wakeup(self, timeout, delay=1):
-        """
-        Clear buffers and send a wakeup command to the instrument
-        @param timeout The timeout to wake the device.
-        @param delay The time to wait between consecutive wakeups.
-        @throw InstrumentTimeoutException if the device could not be woken.
-        """
-        pass
-
-    def _wakeup_until(self, timeout, desired_prompt, delay=1, no_tries=5):
-        """
-        Continue waking device until a specific prompt appears or a number
-        of tries has occurred. Desired prompt must be in the instrument's
-        prompt list.
-        @param timeout The timeout to wake the device.
-        @desired_prompt Continue waking until this prompt is seen.
-        @delay Time to wake between consecutive wakeups.
-        @no_tries Maximum number of wakeup tries to see desired prompt.
-        @raises InstrumentTimeoutException if device could not be woken.
-        @raises InstrumentProtocolException if the desired prompt is not seen in the
-        maximum number of attempts.
-        """
-        pass
-
-
 class MenuInstrumentProtocol(CommandResponseInstrumentProtocol):
     """
     Base class for menu-based instrument interfaces that can use a cmd/response approach to

@@ -196,3 +196,4 @@ class DriverUnitTest(InstrumentDriverUnitTestCase, UtilMixin):
         driver = InstrumentDriver(self._got_data_event_callback)
         self.assert_capabilities(driver, capabilities)
 
+

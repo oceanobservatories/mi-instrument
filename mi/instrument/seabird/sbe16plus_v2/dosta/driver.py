@@ -6,6 +6,7 @@
 """
 
 import re
+import time
 
 from mi.core.log import get_logger
 from mi.core.common import BaseEnum
@@ -305,3 +306,4 @@ class Protocol(CommandResponseInstrumentProtocol):
 
 def create_playback_protocol(callback):
     return Protocol(None, None, callback)
+

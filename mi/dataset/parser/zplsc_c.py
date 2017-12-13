@@ -39,6 +39,8 @@ Initial Release
 
 import struct
 import exceptions
+import os
+import numpy as np
 from ctypes import *
 from mi.core.exceptions import SampleException, RecoverableSampleException
 from mi.core.instrument.dataset_data_particle import DataParticle, DataParticleKey
@@ -46,6 +48,8 @@ from mi.core.log import get_logger, get_logging_metaclass
 from mi.dataset.dataset_parser import SimpleParser
 from mi.core.common import BaseEnum
 from datetime import datetime
+from mi.dataset.driver.zplsc_c.zplsc_c_echogram import ZPLSCCPlot
+from mi.dataset.driver.zplsc_c.zplsc_c_echogram import ZPLSCCEchogram
 
 log = get_logger()
 METACLASS = get_logging_metaclass('trace')
@@ -54,11 +58,12 @@ __author__ = 'Rene Gelinas'
 __license__ = 'Apache 2.0'
 
 
-PROFILE_DATA_DELIMITER = '\xfd\x02'
+PROFILE_DATA_DELIMITER = '\xfd\x02'  # Byte Offset 0 and 1
 
 
 class DataParticleType(BaseEnum):
-    ZPLSC_C_PARTICLE_TYPE = 'zplsc_c_recovered'
+    # ZPLSC_C_PARTICLE_TYPE = 'zplsc_c_recovered'
+    ZPLSC_C_PARTICLE_TYPE = 'zplsc_echogram_data'
 
 
 class ZplscCParticleKey(BaseEnum):
@@ -75,14 +80,18 @@ class ZplscCParticleKey(BaseEnum):
     TEMPERATURE = "zplsc_c_temperature_counts"
     PRESSURE = "zplsc_c_pressure_counts"
     IS_AVERAGED_DATA = "zplsc_c_is_averaged_data"
-    FREQ_CHAN_1 = "zplsc_c_frequency_channel_1"
-    VALS_CHAN_1 = "zplsc_c_values_channel_1"
-    FREQ_CHAN_2 = "zplsc_c_frequency_channel_2"
-    VALS_CHAN_2 = "zplsc_c_values_channel_2"
-    FREQ_CHAN_3 = "zplsc_c_frequency_channel_3"
-    VALS_CHAN_3 = "zplsc_c_values_channel_3"
-    FREQ_CHAN_4 = "zplsc_c_frequency_channel_4"
-    VALS_CHAN_4 = "zplsc_c_values_channel_4"
+    FREQ_CHAN_1 = "zplsc_frequency_channel_1"
+    VALS_CHAN_1 = "zplsc_values_channel_1"
+    DEPTH_CHAN_1 = "zplsc_depth_range_channel_1"
+    FREQ_CHAN_2 = "zplsc_frequency_channel_2"
+    VALS_CHAN_2 = "zplsc_values_channel_2"
+    DEPTH_CHAN_2 = "zplsc_depth_range_channel_2"
+    FREQ_CHAN_3 = "zplsc_frequency_channel_3"
+    VALS_CHAN_3 = "zplsc_values_channel_3"
+    DEPTH_CHAN_3 = "zplsc_depth_range_channel_3"
+    FREQ_CHAN_4 = "zplsc_frequency_channel_4"
+    VALS_CHAN_4 = "zplsc_values_channel_4"
+    DEPTH_CHAN_4 = "zplsc_depth_range_channel_4"
 
 
 class ZplscCRecoveredDataParticle(DataParticle):
@@ -110,48 +119,76 @@ class ZplscCRecoveredDataParticle(DataParticle):
 
 
 class AzfpProfileHeader(BigEndianStructure):
-    _pack_ = 1
-    _fields_ = [
-        ('burst_num', c_ushort),            # Burst number
-        ('serial_num', c_ushort),           # Instrument Serial number
-        ('ping_status', c_ushort),          # Ping Status
-        ('burst_interval', c_uint),         # Burst Interval (seconds)
-        ('year', c_ushort),                 # Year
-        ('month', c_ushort),                # Month
-        ('day', c_ushort),                  # Day
-        ('hour', c_ushort),                 # Hour
-        ('minute', c_ushort),               # Minute
-        ('second', c_ushort),               # Second
-        ('hundredths', c_ushort),           # Hundreths of a second
-        ('digitization_rate', c_ushort*4),  # Digitization Rate (channels 1-4) (64000, 40000 or 20000)
-        ('num_skip_samples', c_ushort*4),   # Number of samples skipped at start of ping (channels 1-4)
-        ('num_bins', c_ushort*4),           # Number of bins (channels 1-4)
-        ('range_samples', c_ushort*4),      # Range samples per bin (channels 1-4)
-        ('num_pings_profile', c_ushort),    # Number of pings per profile
-        ('is_averaged_pings', c_ushort),    # Indicates if pings are averaged in time
-        ('num_pings_burst', c_ushort),      # Number of pings that have been acquired in this burst
-        ('ping_period', c_ushort),          # Ping period in seconds
-        ('first_ping', c_ushort),           # First ping number (if averaged, first averaged ping number)
-        ('second_ping', c_ushort),          # Last ping number (if averaged, last averaged ping number)
-        ('is_averaged_data', c_ubyte*4),    # 1 = averaged data (5 bytes), 0 = not averaged (2 bytes)
-        ('error_num', c_ushort),            # Error number if an error occurred
-        ('phase', c_ubyte),                 # Phase used to acquire this profile
-        ('is_overrun', c_ubyte),            # 1 if an over run occurred
-        ('num_channels', c_ubyte),          # Number of channels (1, 2, 3 or 4)
-        ('gain', c_ubyte*4),                # Gain (channels 1-4) 0, 1, 2, 3 (Obsolete)
-        ('spare', c_ubyte),                 # Spare
-        ('pulse_length', c_ushort*4),       # Pulse length (channels 1-4) (uS)
-        ('board_num', c_ushort*4),          # Board number of the data (channels 1-4)
-        ('frequency', c_ushort*4),          # Board frequency (channels 1-4)
-        ('is_sensor_available', c_ushort),  # Indicate if pressure/temperature sensor is available
-        ('tilt_x', c_ushort),               # Tilt X (counts)
-        ('tilt_y', c_ushort),               # Tilt Y (counts)
-        ('battery_voltage', c_ushort),      # Battery voltage (counts)
-        ('pressure', c_ushort),             # Pressure (counts)
-        ('temperature', c_ushort),          # Temperature (counts)
-        ('ad_channel_6', c_ushort),         # AD channel 6
-        ('ad_channel_7', c_ushort)          # AD channel 7
+    _pack_ = 1                              # 124 bytes in the header (includes the 2 byte delimiter)
+    _fields_ = [                            # V Byte Offset (from delimiter)
+        ('burst_num', c_ushort),            # 002 - Burst number
+        ('serial_num', c_ushort),           # 004 - Instrument Serial number
+        ('ping_status', c_ushort),          # 006 - Ping Status
+        ('burst_interval', c_uint),         # 008 - Burst Interval (seconds)
+        ('year', c_ushort),                 # 012 - Year
+        ('month', c_ushort),                # 014 - Month
+        ('day', c_ushort),                  # 016 - Day
+        ('hour', c_ushort),                 # 018 - Hour
+        ('minute', c_ushort),               # 020 - Minute
+        ('second', c_ushort),               # 022 - Second
+        ('hundredths', c_ushort),           # 024 - Hundreths of a second
+        ('digitization_rate', c_ushort*4),  # 026 - Digitization Rate (channels 1-4) (64000, 40000 or 20000)
+        ('lockout_index', c_ushort*4),      # 034 - The sample number of samples skipped at start of ping (channels 1-4)
+        ('num_bins', c_ushort*4),           # 042 - Number of bins (channels 1-4)
+        ('range_samples', c_ushort*4),      # 050 - Range samples per bin (channels 1-4)
+        ('num_pings_profile', c_ushort),    # 058 - Number of pings per profile
+        ('is_averaged_pings', c_ushort),    # 060 - Indicates if pings are averaged in time
+        ('num_pings_burst', c_ushort),      # 062 - Number of pings that have been acquired in this burst
+        ('ping_period', c_ushort),          # 064 - Ping period in seconds
+        ('first_ping', c_ushort),           # 066 - First ping number (if averaged, first averaged ping number)
+        ('second_ping', c_ushort),          # 068 - Last ping number (if averaged, last averaged ping number)
+        ('is_averaged_data', c_ubyte*4),    # 070 - 1 = averaged data (5 bytes), 0 = not averaged (2 bytes)
+        ('error_num', c_ushort),            # 074 - Error number if an error occurred
+        ('phase', c_ubyte),                 # 076 - Phase used to acquire this profile
+        ('is_overrun', c_ubyte),            # 077 - 1 if an over run occurred
+        ('num_channels', c_ubyte),          # 078 - Number of channels (1, 2, 3 or 4)
+        ('gain', c_ubyte*4),                # 079 - Gain (channels 1-4) 0, 1, 2, 3 (Obsolete)
+        ('spare', c_ubyte),                 # 083 - Spare
+        ('pulse_length', c_ushort*4),       # 084 - Pulse length (channels 1-4) (uS)
+        ('board_num', c_ushort*4),          # 092 - Board number of the data (channels 1-4)
+        ('frequency', c_ushort*4),          # 100 - Board frequency (channels 1-4)
+        ('is_sensor_available', c_ushort),  # 108 - Indicate if pressure/temperature sensor is available
+        ('tilt_x', c_ushort),               # 110 - Tilt X (counts)
+        ('tilt_y', c_ushort),               # 112 - Tilt Y (counts)
+        ('battery_voltage', c_ushort),      # 114 - Battery voltage (counts)
+        ('pressure', c_ushort),             # 116 - Pressure (counts)
+        ('temperature', c_ushort),          # 118 - Temperature (counts)
+        ('ad_channel_6', c_ushort),         # 120 - AD channel 6
+        ('ad_channel_7', c_ushort)          # 122 - AD channel 7
         ]
+
+
+def generate_image_file_path(filepath, output_path=None):
+    # Extract the file time from the file name
+    absolute_path = os.path.abspath(filepath)
+    filename = os.path.basename(absolute_path)
+    directory_name = os.path.dirname(absolute_path)
+
+    output_path = directory_name if output_path is None else output_path
+    image_file = filename.replace('.01A', '.png')
+    return os.path.join(output_path, image_file)
+
+
+class ZplscCCalibrationCoefficients(object):
+    # TODO: This class should be replaced by methods to get the CCs from the system.
+    DS = list()
+
+    # Freq 38kHz
+    DS.append(2.280000038445e-2)
+
+    # Freq 125kHz
+    DS.append(2.280000038445e-2)
+
+    # Freq 200kHz
+    DS.append(2.250000089407e-2)
+
+    # Freq 455kHz
+    DS.append(2.300000004470e-2)
 
 
 class ZplscCParser(SimpleParser):
@@ -159,6 +196,11 @@ class ZplscCParser(SimpleParser):
         super(ZplscCParser, self).__init__(config, stream_handle, exception_callback)
         self._particle_type = None
         self._gen = None
+        self.ph = None  # The profile header of the current record being processed.
+        self.cc = ZplscCCalibrationCoefficients()
+        self.is_first_record = True
+        self.hourly_avg_temp = 0
+        self.zplsc_echogram = ZPLSCCEchogram()
 
     def find_next_record(self):
         good_delimiter = True
@@ -169,24 +211,23 @@ class ZplscCParser(SimpleParser):
             delimiter += self._stream_handle.read(1)
 
         if not good_delimiter:
-            self._exception_callback('Invalid record delimiter found.')
+            self._exception_callback('Invalid record delimiter found.\n')
 
-    def parse_record(self, ph):
+    def parse_record(self):
         """
-        :param ph: Profile Header for the current data record being parsed.
+        Parse one profile data record of the zplsc-c data file.
         """
         chan_values = [[], [], [], []]
         overflow_values = [[], [], [], []]
 
-        # if ph.delimiter == PROFILE_DATA_DELIMITER:
         # Parse the data values portion of the record.
-        for chan in range(ph.num_channels):
-            num_bins = ph.num_bins[chan]
+        for chan in range(self.ph.num_channels):
+            num_bins = self.ph.num_bins[chan]
 
             # Set the data structure format for the scientific data, based on whether
-            # the data is averaged or not, then construct the data structure, then read
-            # the data bytes for the current channel and unpack them based on the structure.
-            if ph.is_averaged_data[chan] == 1:
+            # the data is averaged or not. Construct the data structure and read the
+            # data bytes for the current channel. Unpack the data based on the structure.
+            if self.ph.is_averaged_data[chan]:
                 data_struct_format = '>' + str(num_bins) + 'I'
             else:
                 data_struct_format = '>' + str(num_bins) + 'H'
@@ -194,69 +235,147 @@ class ZplscCParser(SimpleParser):
             data = self._stream_handle.read(data_struct.size)
             chan_values[chan] = data_struct.unpack(data)
 
-            # If the data type is for averaged data, calculate the averaged data by multiplying
-            # the overflow data by 0xFFFF and adding to the sum (the data read above).
-            if ph.is_averaged_data[chan]:
+            # If the data type is for averaged data, calculate the averaged data taking the
+            # the linear sum channel values and overflow values and using calculations from
+            # ASL MatLab code.
+            if self.ph.is_averaged_data[chan]:
                 overflow_struct_format = '>' + str(num_bins) + 'B'
                 overflow_struct = struct.Struct(overflow_struct_format)
                 overflow_data = self._stream_handle.read(num_bins)
                 overflow_values[chan] = overflow_struct.unpack(overflow_data)
-                overflow_values[chan] = [ovfl_data * 0xFFFF for ovfl_data in overflow_values[chan]]
-                chan_values[chan] = [sum_data + ovfl_data for sum_data, ovfl_data in
-                                     zip(chan_values[chan], overflow_values[chan])]
+
+                if self.ph.is_averaged_pings:
+                    divisor = self.ph.num_pings_profile * self.ph.range_samples[chan]
+                else:
+                    divisor = self.ph.range_samples[chan]
+
+                linear_sum_values = np.array(chan_values[chan])
+                linear_overflow_values = np.array(overflow_values[chan])
+
+                values = (linear_sum_values + (linear_overflow_values * 0xFFFFFFFF))/divisor
+                values = (np.log10(values) - 2.5) * (8*0xFFFF) * self.cc.DS[chan]
+                values[np.isinf(values)] = 0
+                chan_values[chan] = values
 
         # Convert the date and time parameters to a epoch time from 01-01-1900.
-        timestamp = (datetime(ph.year, ph.month, ph.day, ph.hour, ph.minute, ph.second,
-                              (ph.hundredths * 10000)) - datetime(1900, 1, 1)).total_seconds()
+        timestamp = (datetime(self.ph.year, self.ph.month, self.ph.day,
+                              self.ph.hour, self.ph.minute, self.ph.second,
+                              (self.ph.hundredths * 10000)) - datetime(1900, 1, 1)).total_seconds()
 
-        # Format the data in a particle data dictionary
-        zp_data = {
+        sound_speed, depth_range, sea_absorb = self.zplsc_echogram.compute_echogram_metadata(self.ph)
+
+        chan_values = self.zplsc_echogram.compute_backscatter(self.ph, chan_values, sound_speed, depth_range,
+                                                              sea_absorb)
+
+        zplsc_particle_data = {
             ZplscCParticleKey.TRANS_TIMESTAMP: timestamp,
-            ZplscCParticleKey.SERIAL_NUMBER: str(ph.serial_num),
-            ZplscCParticleKey.PHASE: ph.phase,
-            ZplscCParticleKey.BURST_NUMBER: ph.burst_num,
-            ZplscCParticleKey.TILT_X: ph.tilt_x,
-            ZplscCParticleKey.TILT_Y: ph.tilt_y,
-            ZplscCParticleKey.BATTERY_VOLTAGE: ph.battery_voltage,
-            ZplscCParticleKey.PRESSURE: ph.pressure,
-            ZplscCParticleKey.TEMPERATURE: ph.temperature,
-            ZplscCParticleKey.IS_AVERAGED_DATA: list(ph.is_averaged_data),
-            ZplscCParticleKey.FREQ_CHAN_1: ph.frequency[0],
+            ZplscCParticleKey.SERIAL_NUMBER: str(self.ph.serial_num),
+            ZplscCParticleKey.PHASE: self.ph.phase,
+            ZplscCParticleKey.BURST_NUMBER: self.ph.burst_num,
+            ZplscCParticleKey.TILT_X: self.ph.tilt_x,
+            ZplscCParticleKey.TILT_Y: self.ph.tilt_y,
+            ZplscCParticleKey.BATTERY_VOLTAGE: self.ph.battery_voltage,
+            ZplscCParticleKey.PRESSURE: self.ph.pressure,
+            ZplscCParticleKey.TEMPERATURE: self.ph.temperature,
+            ZplscCParticleKey.IS_AVERAGED_DATA: list(self.ph.is_averaged_data),
+            ZplscCParticleKey.FREQ_CHAN_1: float(self.ph.frequency[0]),
             ZplscCParticleKey.VALS_CHAN_1: list(chan_values[0]),
-            ZplscCParticleKey.FREQ_CHAN_2: ph.frequency[1],
+            ZplscCParticleKey.DEPTH_CHAN_1: list(depth_range[0]),
+            ZplscCParticleKey.FREQ_CHAN_2: float(self.ph.frequency[1]),
             ZplscCParticleKey.VALS_CHAN_2: list(chan_values[1]),
-            ZplscCParticleKey.FREQ_CHAN_3: ph.frequency[2],
+            ZplscCParticleKey.DEPTH_CHAN_2: list(depth_range[1]),
+            ZplscCParticleKey.FREQ_CHAN_3: float(self.ph.frequency[2]),
             ZplscCParticleKey.VALS_CHAN_3: list(chan_values[2]),
-            ZplscCParticleKey.FREQ_CHAN_4: ph.frequency[3],
-            ZplscCParticleKey.VALS_CHAN_4: list(chan_values[3])
+            ZplscCParticleKey.DEPTH_CHAN_3: list(depth_range[2]),
+            ZplscCParticleKey.FREQ_CHAN_4: float(self.ph.frequency[3]),
+            ZplscCParticleKey.VALS_CHAN_4: list(chan_values[3]),
+            ZplscCParticleKey.DEPTH_CHAN_4: list(depth_range[3])
         }
 
-        # Create the data particle
-        particle = self._extract_sample(ZplscCRecoveredDataParticle,
-                                        None,
-                                        zp_data,
-                                        internal_timestamp=timestamp)
-        if particle is not None:
-            log.trace('Parsed particle: %s' % particle.generate_dict())
-            self._record_buffer.append(particle)
+        return zplsc_particle_data, timestamp, chan_values, depth_range
 
     def parse_file(self):
-        ph = AzfpProfileHeader()
+        self.ph = AzfpProfileHeader()
         self.find_next_record()
-        while self._stream_handle.readinto(ph):
+        while self._stream_handle.readinto(self.ph):
             try:
-                # Pass in the profile header; it is needed to parse the data.
-                self.parse_record(ph)
+                # Parse the current record
+                zplsc_particle_data, timestamp, _, _ = self.parse_record()
+
+                # Create the data particle
+                particle = self._extract_sample(ZplscCRecoveredDataParticle, None, zplsc_particle_data, timestamp,
+                                                timestamp, DataParticleKey.PORT_TIMESTAMP)
+                if particle is not None:
+                    log.trace('Parsed particle: %s' % particle.generate_dict())
+                    self._record_buffer.append(particle)
+
             except (IOError, OSError) as ex:
                 self._exception_callback('Reading stream handle: %s: %s\n' % (self._stream_handle.name, ex.message))
                 return
             except struct.error as ex:
-                self._exception_callback('Unpacking the data from the data structure: %s\n' % ex.message)
+                self._exception_callback('Unpacking the data from the data structure: %s' % ex.message)
             except exceptions.ValueError as ex:
                 self._exception_callback('Transition timestamp has invalid format: %s' % ex.message)
             except (SampleException, RecoverableSampleException) as ex:
                 self._exception_callback('Creating data particle: %s' % ex.message)
 
             # Clear the profile header data structure and find the next record.
-            ph = AzfpProfileHeader()
+            self.ph = AzfpProfileHeader()
             self.find_next_record()
+
+    def create_echogram(self):
+        """
+        Parse the *.O1A zplsc_c data file and create the echogram from this data.
+        """
+
+        sv_dict = {}
+        data_times = []
+        frequencies = {}
+        depth_range = []
+
+        input_file_path = self._stream_handle.name
+        log.info('Begin processing echogram data: %r', input_file_path)
+        image_path = generate_image_file_path(input_file_path, None)
+
+        self.ph = AzfpProfileHeader()
+        self.find_next_record()
+        while self._stream_handle.readinto(self.ph):
+            try:
+                _, timestamp, chan_data, depth_range = self.parse_record()
+
+                if not sv_dict:
+                    range_chan_data = range(len(chan_data))
+                    sv_dict = {channel: [] for channel in range_chan_data}
+                    frequencies = {channel: float(self.ph.frequency[channel]) for channel in range_chan_data}
+
+                for channel in sv_dict:
+                    sv_dict[channel].append(chan_data[channel])
+
+                data_times.append(timestamp)
+
+            except (IOError, OSError) as ex:
+                self._exception_callback(ex)
+                return
+            except struct.error as ex:
+                self._exception_callback(ex)
+            except exceptions.ValueError as ex:
+                self._exception_callback(ex)
+            except (SampleException, RecoverableSampleException) as ex:
+                self._exception_callback(ex)
+
+            # Clear the profile header data structure and find the next record.
+            self.ph = AzfpProfileHeader()
+            self.find_next_record()
+
+        data_times = np.array(data_times)
+
+        for channel in sv_dict:
+            sv_dict[channel] = np.array(sv_dict[channel])
+
+        log.info('Completed processing all data. Generating echogram: %r', input_file_path)
+
+        plot = ZPLSCCPlot(data_times, sv_dict, frequencies, depth_range, -150, -10)
+        plot.generate_plots()
+        plot.write_image(image_path)
+
+        log.info('Completed generating echogram: %r', input_file_path)
