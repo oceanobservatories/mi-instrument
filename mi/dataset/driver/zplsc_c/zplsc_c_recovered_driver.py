@@ -2,9 +2,9 @@
 
 """
 @package mi.dataset.driver.zplsc_c
-@file mi-dataset/mi/dataset/driver/zplsc_c/dcl/zplsc_c_dcl_recovered_driver.py
+@file mi-dataset/mi/dataset/driver/zplsc_c/zplsc_c_recovered_driver.py
 @author Rene Gelinas
-@brief DCL driver for the zplsc_c instrument for the recovered data.
+@brief Driver for the zplsc_c instrument for the recovered data.
 Release notes:
 Initial Release
 """
@@ -15,7 +15,7 @@ from mi.dataset.parser.zplsc_c import ZplscCParser
 from mi.core.versioning import version
 
 
-@version("1.0.0")
+@version("1.1.0")
 def parse(unused, source_file_path, particle_data_handler):
     """
     This is the method called by Uframe
