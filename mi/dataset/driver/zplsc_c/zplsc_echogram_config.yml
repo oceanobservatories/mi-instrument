@@ -1,4 +1,4 @@
-zplsc_echrogram_directory: ~/ZPLSC_Echograms
+zplsc_echogram_directory: ~/ZPLSC_Echograms
 zplsc_subsites:
   - CE01ISSM
   - CE06ISSM

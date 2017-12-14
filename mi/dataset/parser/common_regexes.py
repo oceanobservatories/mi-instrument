@@ -37,11 +37,8 @@ ASCII_HEX_CHAR_REGEX = r'[0-9A-Fa-f]'
 # A regex used to match a date in the format YYYY/MM/DD
 DATE_YYYY_MM_DD_REGEX = r'(\d{4})/(\d{2})/(\d{2})'
 
-# A regex used to match a date in the format YYYY-MM-DD
-DATE2_YYYY_MM_DD_REGEX = r'(\d{4})-?(\d{2})-?(\d{2})'
-
-# A regex used to match a date in the format YYYY-MM
-DATE2_YYYY_MM_REGEX = r'(\d{4})-?(\d{2})'
+# A regex used to match a date in the format YYYY-MM-DD, YYYY/MM/DD, YYYYMMDD and YYYY-MM, YYYY/MM and YYYYMM
+DATE2_YYYY_MM_DD_REGEX = r'(\d{4})[-\/]?(\d{2})[-\/]?(\d{2})?'
 
 # A regex used to match time in the format of HH:MM:SS.mmm
 TIME_HR_MIN_SEC_MSEC_REGEX = r'(\d{2}):(\d{2}):(\d{2})\.(\d{3})'

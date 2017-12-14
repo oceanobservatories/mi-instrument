@@ -18,6 +18,7 @@ Arguments:
     deployments   Single or a list of deployment numbers. (ex: 4 or "4 5")
     dates         Single or a list of dates of the desired 24 hour echograms.
                   (Ex: 2016-10-01 for one day or 2016-11 for the entire month or "2016-10-01 2016-11")
+                  (Note: The date can also be in these formats: YYYY/MM/DD, YYYY/MM, YYYYMMDD or YYYYMM)
 
 Options:
     -h --help     Print this help message
@@ -35,14 +36,14 @@ import threading
 import urllib
 import urllib2
 import errno
-from os import mkdir, system, makedirs
-from os.path import exists, expanduser, join, isdir
+import os
+import os.path
 from datetime import date, timedelta
 
 from mi.logging import log
 from mi.dataset.parser.zplsc_c import ZplscCParser
 from mi.dataset.dataset_parser import DataSetDriverConfigKeys
-from mi.dataset.parser.common_regexes import DATE2_YYYY_MM_DD_REGEX, DATE2_YYYY_MM_REGEX
+from mi.dataset.parser.common_regexes import DATE2_YYYY_MM_DD_REGEX
 
 __author__ = 'Rene Gelinas'
 
@@ -56,10 +57,8 @@ CONFIG = {
 }
 
 RAW_DATA_URL = r'https://rawdata.oceanobservatories.org/files'
-DCL_PATH = r'instrmts/dcl37'
-DCL_PATH2 = r'instruments/dcl37'
-DCL_PATH3 = r'instrmt/dcl37'
-RECOVERED_DIR = r'#SUBSITE_LC#_zplsc_#SERIAL_NUM#_recovered_'
+DCL_PATHS = [r'instrmt/dcl37', r'instrmts/dcl37', r'instruments/dcl37']
+RECOVERED_DIR = r'%s_zplsc_%s_recovered_'
 DATA_PATH = r'DATA'
 RECOVERED_DATE_FMT = r'YYYY-MM-DD'
 
@@ -72,7 +71,6 @@ BASE_ECHOGRAM_DIRECTORY = r'~/ZPLSC_ECHOGRAMS/'
 TEMP_DIR = r'TEMP_ZPLSC_DATA'
 
 DATE_YYYY_MM_DD_REGEX_MATCHER = re.compile(DATE2_YYYY_MM_DD_REGEX + '$')
-DATE_YYYY_MM_REGEX_MATCHER = re.compile(DATE2_YYYY_MM_REGEX + '$')
 
 SERIAL_NUM_DIR_RE = r'(ZPLSC_sn(\d*))\/?'
 SERIAL_NUM_DIR_MATCHER = re.compile(SERIAL_NUM_DIR_RE)
@@ -123,7 +121,7 @@ class ZPLSCEchogramGenerator(object):
     @staticmethod
     def rec_exception_callback(exception):
         """
-        Call back method to for exceptions
+        Callback function to log exceptions and continue.
 
         @param exception - Exception that occurred
         """
@@ -133,7 +131,11 @@ class ZPLSCEchogramGenerator(object):
     @staticmethod
     def get_dir_contents(url):
         """
-        From the URL path passed return the contents of the remote directory.
+        This method will return the contents of the remote directory, based
+        on the URL path passed.
+
+        The method will raise the HTTPError exception if there is an issue
+        reading the URL passed in.
 
         :param url: The URL of the directory for which the contents are returned.
         :return: dir_contents: The contents of the remote URL directory.
@@ -156,12 +158,11 @@ class ZPLSCEchogramGenerator(object):
         datetime object. Also, determine and set whether the entire month
         of echograms will be generated.
 
-        :param echogram_dates: List of d
-        ates in string format.
+        :param echogram_dates: List of dates in string format.
         :return: parsed_dates: List of dates in the datetime object format.
         """
 
-        parsed_dates = dict()
+        parsed_dates = {}
 
         if echogram_dates is not None:
             for echogram_date in echogram_dates:
@@ -169,7 +170,11 @@ class ZPLSCEchogramGenerator(object):
                 if date_regex:
                     year = int(date_regex.group(1))
                     month = int(date_regex.group(2))
-                    day = int(date_regex.group(3))
+
+                    if date_regex.lastindex == 3:
+                        day = int(date_regex.group(3))
+                    else:
+                        day = 1
 
                     converted_date = date(year, month, day)
 
@@ -177,22 +182,9 @@ class ZPLSCEchogramGenerator(object):
                     parsed_dates[converted_date] = False
 
                 else:
-                    date_regex = DATE_YYYY_MM_REGEX_MATCHER.match(echogram_date)
-
-                    if date_regex:
-                        year = int(date_regex.group(1))
-                        month = int(date_regex.group(2))
-                        day = 1
-
-                        converted_date = date(year, month, day)
-
-                        # Indicate this date is an entire month.
-                        parsed_dates[converted_date] = True
-
-                    else:
-                        log.error('Incorrect date format: %s: Correct format is YYYY-MM-DD or YYYY-MM', date)
-                        parsed_dates = False
-                        break
+                    log.error('Incorrect date format: %s: Correct format is YYYY[-/]MM-DD or YYYY[-/]MM', date)
+                    parsed_dates = False
+                    break
 
         return parsed_dates
 
@@ -212,7 +204,12 @@ class ZPLSCEchogramGenerator(object):
         valid_input = True
 
         # Get the configuration parameters.
-        zplsc_config = yaml.load(open(ZPLSC_CONFIG_FILE))
+        zplsc_config = None
+        with open(ZPLSC_CONFIG_FILE, 'r') as config_file:
+            try:
+                zplsc_config = yaml.load(config_file)
+            except yaml.YAMLError as ex:
+                log.error('Error loading the configuration file: %s: %s', ex.message)
         zplsc_subsites = zplsc_config['zplsc_subsites']
 
         # If no subsites were passed in, set the list of subsites to all in the config file.
@@ -248,11 +245,7 @@ class ZPLSCEchogramGenerator(object):
                 log.error('Invalid start date: %s', echogram_dates)
                 valid_input = False
 
-        zplsc_echrogram_directory = zplsc_config['zplsc_echrogram_directory']
-        if not zplsc_echrogram_directory:
-            self.base_echogram_directory = BASE_ECHOGRAM_DIRECTORY
-        else:
-            self.base_echogram_directory = zplsc_echrogram_directory
+        self.base_echogram_directory = zplsc_config.get('zplsc_echogram_directory', BASE_ECHOGRAM_DIRECTORY)
 
         return valid_input
 
@@ -274,11 +267,8 @@ class ZPLSCEchogramGenerator(object):
         date_dir = year + month
 
         # Get the URL for the ZPLSC raw data of the given instrument.
-        raw_data_url = join(date_dirs_url, date_dir)
-        try:
-            all_files_list = self.get_dir_contents(raw_data_url)
-        except urllib2.HTTPError:
-            raise
+        raw_data_url = os.path.join(date_dirs_url, date_dir)
+        all_files_list = self.get_dir_contents(raw_data_url)
 
         # Generate the list of the 24 1-hour raw data files for the given date.
         filename_re = '(' + raw_datafile_prefix + '.*?' + RAW_FILE_EXT + ').*'
@@ -295,66 +285,71 @@ class ZPLSCEchogramGenerator(object):
         concatenated file and the file name of the echogram that will be
         generated.
 
+        This method will raise an exception if there is an issue creating
+        the local ZPLSC Echogram directory.
+
         :param date_dirs_url: The URL of the raw data server where the 24 1-hour files reside.
         :param data_date: The date of the raw data for the echogram to be generated.
-        :return: zplsc_24_datafile: The 34-hour concatenated raw data file
+        :return: zplsc_24_datafile: The 24-hour concatenated raw data file
                  zplsc_echogram_file_path: The file path for the echogram to be generated.
         """
 
-        zplsc_24_datafile = ''
         zplsc_echogram_file_path = None
 
         filenames_list, raw_data_url, raw_datafile_prefix = self.get_data_filenames(date_dirs_url, data_date)
-        if len(filenames_list) == 24:
-            # Download the 24 1-hour raw data files to a temporary local directory.
-            for raw_data_file in filenames_list:
-                remote_raw_data_file = join(raw_data_url, raw_data_file)
-                local_raw_data = join(self.temp_directory, raw_data_file)
-                try:
-                    urllib.urlretrieve(remote_raw_data_file, local_raw_data)
-                except urllib.ContentTooShortError as ex:
-                    log.error('Error retrieving: %s: %s', remote_raw_data_file, ex.message)
-                    continue
+        if len(filenames_list) != 24:
+            return '', None
 
-            # Concatenate the 24 1-hour raw data files to 1 24-hour raw data file and return the filename.
-            zplsc_24_datafilename = self.zplsc_24_datafile_prefix + raw_datafile_prefix
-            zplsc_24_datafile = join(self.temp_directory, zplsc_24_datafilename) + RAW_FILE_EXT
-            system('cat ' + join(self.temp_directory, raw_datafile_prefix) + '*' + RAW_FILE_EXT + ' > ' +
-                   zplsc_24_datafile)
+        # Download the 24 1-hour raw data files to a temporary local directory.
+        for raw_data_file in filenames_list:
+            remote_raw_data_file = os.path.join(raw_data_url, raw_data_file)
+            local_raw_data = os.path.join(self.temp_directory, raw_data_file)
+            try:
+                urllib.urlretrieve(remote_raw_data_file, local_raw_data)
+            except urllib.ContentTooShortError as ex:
+                log.error('Error retrieving: %s: %s', remote_raw_data_file, ex.message)
+                continue
 
-            # Generate the ZPLSC Echogram filename.
-            echogram_path_idx = string.find(raw_data_url, RAW_DATA_URL)
-            if echogram_path_idx >= 0:
-                base_directory = expanduser(self.base_echogram_directory)
-                path_structure = raw_data_url[echogram_path_idx+len(RAW_DATA_URL)+1:]
-                zplsc_echogram_file_path = join(base_directory, path_structure)
+        # Concatenate the 24 1-hour raw data files to 1 24-hour raw data file and return the filename.
+        zplsc_24_datafilename = self.zplsc_24_datafile_prefix + raw_datafile_prefix
+        zplsc_24_datafile = os.path.join(self.temp_directory, zplsc_24_datafilename) + RAW_FILE_EXT
+        os.system('cat ' + os.path.join(self.temp_directory, raw_datafile_prefix) + '*' + RAW_FILE_EXT + ' > ' +
+                  zplsc_24_datafile)
 
-                # Create the ZPLSC Echogram directory structure if it doesn't exist.
-                try:
-                    makedirs(zplsc_echogram_file_path)
-                except OSError as ex:
-                    if ex.errno == errno.EEXIST and isdir(zplsc_echogram_file_path):
-                        pass
-                    else:
-                        raise
+        # Generate the ZPLSC Echogram filename.
+        echogram_path_idx = string.find(raw_data_url, RAW_DATA_URL)
+        if echogram_path_idx >= 0:
+            base_directory = os.path.expanduser(self.base_echogram_directory)
+            path_structure = raw_data_url[echogram_path_idx+len(RAW_DATA_URL)+1:]
+            zplsc_echogram_file_path = os.path.join(base_directory, path_structure)
+
+            # Create the ZPLSC Echogram directory structure if it doesn't exist.
+            try:
+                os.makedirs(zplsc_echogram_file_path)
+            except OSError as ex:
+                if ex.errno == errno.EEXIST and os.path.isdir(zplsc_echogram_file_path):
+                    pass
+                else:
+                    log.error('Error creating local ZPLSC Echogram storage directory: %s', ex.message)
+                    raise
 
         return zplsc_24_datafile, zplsc_echogram_file_path
 
-    def get_latest_echogram_date(self, date_dirs_url, date_dirs_list):
+    def get_latest_echogram_date(self, date_dirs_url, date_dirs):
         """
         This method will return the list of raw data files, in the format - YYMMDDHHMM,
         of the latest, complete set of 24 1-hour raw data files.
 
         :param date_dirs_url: The URL to the directory of the YYYYMM sub-directories.
-        :param date_dirs_list: The list of YYYYMM sub-directories
+        :param date_dirs: The list of YYYYMM sub-directories
         :return: latest_echogram_date: The date of the latest complete set of 24 1-hour raw data files.
         """
 
         latest_echogram_date = None
         latest_echogram_date_found = False
 
-        for date_dir in date_dirs_list:
-            raw_data_files_url = join(date_dirs_url, date_dir[0]+date_dir[1])
+        for date_dir in date_dirs:
+            raw_data_files_url = os.path.join(date_dirs_url, date_dir[0]+date_dir[1])
 
             # Get all the year/month/day/hour raw data files date for this year/month directory.
             try:
@@ -363,11 +358,11 @@ class ZPLSCEchogramGenerator(object):
                 continue
 
             # Create a list of the last hour of each day of the month and sort them in reverse order
-            hour_23_data_file_list = HOUR_23_RAW_DATA_FILE_RE_MATCHER.findall(raw_data_files_response)
-            hour_23_data_file_list = sorted(hour_23_data_file_list, key=lambda x: x[1], reverse=True)
+            hour_23_data_files = HOUR_23_RAW_DATA_FILE_RE_MATCHER.findall(raw_data_files_response)
+            hour_23_data_files = sorted(hour_23_data_files, key=lambda x: x[1], reverse=True)
 
             # For each day that has a file of the last hour of the day, check the number of files for that day.
-            for data_file in hour_23_data_file_list:
+            for data_file in hour_23_data_files:
                 latest_echogram_date_re = data_file[0] + data_file[1] + r'\d{2}\.?.*'
                 latest_echogram_date_re_matcher = re.compile(latest_echogram_date_re)
                 latest_echogram_date_list = latest_echogram_date_re_matcher.findall(raw_data_files_response)
@@ -398,84 +393,70 @@ class ZPLSCEchogramGenerator(object):
                  date_dirs_url: The path to the date directories.
         """
 
-        echogram_dates = dict()
-        date_dirs_url = ''
+        # echogram_dates = {}
+        # date_dirs_url = ''
 
         # Generate the portion of the URL up to the DCL directory to get the all the instrument sub-directories.
-        deployment_path = join(RAW_DATA_URL, subsite.upper(), 'R%05d' % deployment)
-        dcl_path = join(deployment_path, DCL_PATH)
-        try:
-            instrument_dirs = self.get_dir_contents(dcl_path)
-        except urllib2.HTTPError:
-            log.info('Could not find "%s": searching for "%s"', DCL_PATH, DCL_PATH2)
-
-            # Check the alternate directory structure.
-            dcl_path = join(deployment_path, DCL_PATH2)
+        deployment_url = os.path.join(RAW_DATA_URL, subsite.upper(), 'R%05d' % deployment)
+        dcl_url = ''
+        instrument_dirs = ''
+        for dcl_path in DCL_PATHS:
+            dcl_url = os.path.join(deployment_url, dcl_path)
             try:
-                instrument_dirs = self.get_dir_contents(dcl_path)
-            except urllib2.HTTPError:
-                log.info('Could not find "%s": searching for "%s"', DCL_PATH2, DCL_PATH3)
+                instrument_dirs = self.get_dir_contents(dcl_url)
+                break
 
-                # Check the alternate directory structure.
-                dcl_path = join(deployment_path, DCL_PATH3)
-                try:
-                    instrument_dirs = self.get_dir_contents(dcl_path)
-                except urllib2.HTTPError:
+            except urllib2.HTTPError:
+                log.info('Could not find path: %s: checking alternate path', dcl_path)
+                if dcl_path is DCL_PATHS[-1]:
                     raise
 
         # Generate the portion of the URL up to the ZPLSC Instrument serial number.
         serial_num_found = SERIAL_NUM_DIR_MATCHER.search(instrument_dirs)
         if serial_num_found is None:
             log.warning('Could not find ZPLSC data for subsite: %s and deployment: %s', subsite, deployment)
+            raise ValueError
 
-        else:
-            self.serial_num = serial_num_found.group(2)
-            serial_num_url = join(dcl_path, SERIAL_NUM_DIR_MATCHER.search(instrument_dirs).group(1))
-            try:
-                sub_dirs = self.get_dir_contents(serial_num_url)
-            except urllib2.HTTPError:
-                raise
+        self.serial_num = serial_num_found.group(2)
+        serial_num_url = os.path.join(dcl_url, SERIAL_NUM_DIR_MATCHER.search(instrument_dirs).group(1))
+        sub_dirs = self.get_dir_contents(serial_num_url)
 
-            # Generate the portion of the URL that contains the recovered data path.
-            recovered_path = RECOVERED_DIR.replace('#SUBSITE_LC#', subsite.lower())
-            recovered_path = recovered_path.replace('#SERIAL_NUM#', self.serial_num)
-            start_idx = sub_dirs.find(recovered_path)
+        # Generate the portion of the URL that contains the recovered data path.
+        recovered_path = RECOVERED_DIR % (subsite.lower(), self.serial_num)
+        start_idx = sub_dirs.find(recovered_path)
 
-            # If this is the directory structure that has the recovered directory, add it to the URL.
-            date_dirs_url = serial_num_url
-            if start_idx != -1:
-                end_idx = start_idx + len(recovered_path) + len(RECOVERED_DATE_FMT)
-                recovered_path = join(sub_dirs[start_idx:end_idx], DATA_PATH)
+        # If this is the directory structure that has the recovered directory, add it to the URL.
+        date_dirs_url = serial_num_url
+        if start_idx != -1:
+            end_idx = start_idx + len(recovered_path) + len(RECOVERED_DATE_FMT)
+            recovered_path = os.path.join(sub_dirs[start_idx:end_idx], DATA_PATH)
 
-                # Create the raw data URL with the recovered path
-                date_dirs_url = join(serial_num_url, recovered_path)
+            # Create the raw data URL with the recovered path
+            date_dirs_url = os.path.join(serial_num_url, recovered_path)
 
-            # If no dates were entered on the command line, get the entire  list of date directories.
-            echogram_dates = self.echogram_dates
-            if not echogram_dates:
-                # Get all the year/month date subdirectories for this subsite and deployment.
-                try:
-                    date_dirs_response = self.get_dir_contents(date_dirs_url)
-                except urllib2.HTTPError:
-                    raise
+        # If no dates were entered on the command line, get the entire  list of date directories.
+        echogram_dates = self.echogram_dates
+        if not echogram_dates:
+            # Get all the year/month date subdirectories for this subsite and deployment.
+            date_dirs_response = self.get_dir_contents(date_dirs_url)
 
-                # Generate the list of the date directories.
-                echogram_dates = dict()
-                date_dirs_list = DATE_DIR_RE_MATCHER.findall(date_dirs_response)
-                date_dirs_list = sorted(date_dirs_list, key=lambda x: (x[0], x[1]), reverse=True)
+            # Generate the list of the date directories.
+            echogram_dates = {}
+            date_dirs_list = DATE_DIR_RE_MATCHER.findall(date_dirs_response)
+            date_dirs_list = sorted(date_dirs_list, key=lambda x: (x[0], x[1]), reverse=True)
 
-                # If in process mode, get the latest date that has 24 1-hour data files for echogram generation.
-                if self.process_mode:
-                    echogram_dates[self.get_latest_echogram_date(date_dirs_url, date_dirs_list)] = False
+            # If in process mode, get the latest date that has 24 1-hour data files for echogram generation.
+            if self.process_mode:
+                echogram_dates[self.get_latest_echogram_date(date_dirs_url, date_dirs_list)] = False
 
-                # Otherwise, get all the year/month date subdirectories for this subsite and deployment.
-                else:
-                    for date_dir in date_dirs_list:
-                        year = int(date_dir[0])
-                        month = int(date_dir[1])
+            # Otherwise, get all the year/month date subdirectories for this subsite and deployment.
+            else:
+                for date_dir in date_dirs_list:
+                    year = int(date_dir[0])
+                    month = int(date_dir[1])
 
-                        # Save the date and indicate that the entire month should be generated.
-                        echogram_dates[date(year, month, 1)] = True
+                    # Save the date and indicate that the entire month should be generated.
+                    echogram_dates[date(year, month, 1)] = True
 
         return echogram_dates, date_dirs_url
 
@@ -488,15 +469,15 @@ class ZPLSCEchogramGenerator(object):
         :return: deployments: The list of deployment directories.
         """
 
+        # Generate a temporary deployment list to maintain the integrity of the
+        # original list for subsequent subsite processing.
         deployments = [deployment for deployment in self.deployments]
         if not deployments:
             # Generate the portion of the URL up to the subsite directory.
-            subsite_url = join(RAW_DATA_URL, subsite.upper())
-            try:
-                # Get the all the deployment sub-directories under the subsite directory.
-                deployment_dirs = self.get_dir_contents(subsite_url)
-            except urllib2.HTTPError:
-                raise
+            subsite_url = os.path.join(RAW_DATA_URL, subsite.upper())
+
+            # Get the all the deployment sub-directories under the subsite directory.
+            deployment_dirs = self.get_dir_contents(subsite_url)
 
             # Generate the list of the 24 1-hour raw data files for the given date.
             deployment_list = DEPLOYMENT_DIR_MATCHER.findall(deployment_dirs)
@@ -521,8 +502,9 @@ class ZPLSCEchogramGenerator(object):
         """
 
         # If the temporary directory exists, purge it.
-        if exists(self.temp_directory):
-            system('rm -f ' + join(self.temp_directory, '*'))
+        if os.path.exists(self.temp_directory):
+            for temp_file in os.listdir(self.temp_directory):
+                os.remove(os.path.join(self.temp_directory, temp_file))
 
     def generate_zplsc_echograms(self):
         """
@@ -535,9 +517,9 @@ class ZPLSCEchogramGenerator(object):
         """
 
         # Create the temporary data file directory.
-        self.temp_directory = join(expanduser(USER_HOME), TEMP_DIR)
-        if not exists(self.temp_directory):
-            mkdir(self.temp_directory)
+        self.temp_directory = os.path.join(os.path.expanduser(USER_HOME), TEMP_DIR)
+        if not os.path.exists(self.temp_directory):
+            os.mkdir(self.temp_directory)
 
         # Create the echograms for the zplsc instruments of each subsite.
         for subsite in self.subsites:
@@ -565,13 +547,10 @@ class ZPLSCEchogramGenerator(object):
                             echogram_date = date_dir + timedelta(days=day)
 
                             # Aggregate the 24 raw data files for the given instrument to 1 24-hour data file.
-                            try:
-                                zplsc_24_datafile, zplsc_echogram_file_path = self.aggregate_raw_data(date_dirs_url,
-                                                                                                      echogram_date)
-                                if not zplsc_24_datafile:
-                                    continue
-
-                            except urllib2.HTTPError:
+                            zplsc_24_datafile, zplsc_echogram_file_path = self.aggregate_raw_data(date_dirs_url,
+                                                                                                  echogram_date)
+                            if not zplsc_24_datafile:
+                                log.warning('Unable to aggregate raw data files for: %s', echogram_date)
                                 continue
 
                             # Send the 24-hour raw data file to the zplsc C Series parser to generate the echogram.
@@ -579,18 +558,15 @@ class ZPLSCEchogramGenerator(object):
                                 parser = ZplscCParser(CONFIG, file_handle, self.rec_exception_callback)
                                 parser.create_echogram(zplsc_echogram_file_path)
 
-                            self.purge_temporary_files()
+                            if not self.keep_temp_files:
+                                self.purge_temporary_files()
 
                     else:
                         # Aggregate the 24 raw data files for the given instrument to 1 24-hour data file.
-                        try:
-                            zplsc_24_datafile, zplsc_echogram_file_path = self.aggregate_raw_data(date_dirs_url,
-                                                                                                  date_dir)
+                        zplsc_24_datafile, zplsc_echogram_file_path = self.aggregate_raw_data(date_dirs_url, date_dir)
 
-                            if not zplsc_24_datafile:
-                                continue
-
-                        except urllib2.HTTPError:
+                        if not zplsc_24_datafile:
+                            log.warning('Unable to aggregate raw data files for: %s', date_dir)
                             continue
 
                         # Send the 24-hour raw data file to the zplsc C Series parser to generate the echogram.
@@ -598,7 +574,8 @@ class ZPLSCEchogramGenerator(object):
                             parser = ZplscCParser(CONFIG, file_handle, self.rec_exception_callback)
                             parser.create_echogram(zplsc_echogram_file_path)
 
-                        self.purge_temporary_files()
+                        if not self.keep_temp_files:
+                            self.purge_temporary_files()
 
         # Remove the temporary data file directory and its content.
         if not self.keep_temp_files:
@@ -612,10 +589,10 @@ class ZPLSCEchogramGenerator(object):
 def main():
     # Get the command line arguments
     options = docopt.docopt(__doc__)
-    subsites = options['<subsites>']
-    deployments = options['<deployments>']
-    dates = options['<dates>']
-    keep_temp_files = options['--keep']
+    subsites = options.get('<subsites>')
+    deployments = options.get('<deployments>')
+    dates = options.get('<dates>')
+    keep_temp_files = options.get('--keep')
 
     if subsites is not None:
         subsites = subsites.split(" ")
