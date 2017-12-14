@@ -6,29 +6,22 @@
 """
 
 import re
-import time
 
-from mi.core.log import get_logger
 from mi.core.common import BaseEnum
+from mi.core.log import get_logger
+from mi.core.util import hex2value
 
 from mi.core.instrument.chunker import StringChunker
-from mi.core.instrument.data_particle import DataParticleKey
-from mi.core.instrument.data_particle import CommonDataParticleType
+from mi.core.instrument.data_particle import CommonDataParticleType, DataParticle, DataParticleKey
 from mi.core.instrument.driver_dict import DriverDictKey
-from mi.core.instrument.instrument_driver import DriverAsyncEvent
-from mi.core.instrument.instrument_driver import DriverEvent
-from mi.core.instrument.instrument_driver import DriverProtocolState
+from mi.core.instrument.instrument_driver import DriverAsyncEvent, DriverEvent, DriverProtocolState
 from mi.core.instrument.instrument_driver import SingleConnectionInstrumentDriver
 from mi.core.instrument.instrument_fsm import ThreadSafeFSM
 from mi.core.instrument.instrument_protocol import CommandResponseInstrumentProtocol
 
 from mi.core.exceptions import SampleException
 
-from mi.instrument.seabird.sbe16plus_v2.ctdpf_jb.driver import Parameter
-from mi.instrument.seabird.sbe16plus_v2.ctdpf_jb.driver import SBE19DataParticle
-
-from mi.instrument.seabird.sbe16plus_v2.driver import Prompt, Sbe16plusBaseParticle, NEWLINE
-from mi.core.instrument.protocol_param_dict import ParameterDictType, ParameterDictVisibility
+from mi.instrument.seabird.sbe16plus_v2.driver import Prompt, NEWLINE
 
 
 __author__ = 'Dan Mergens'
@@ -63,42 +56,35 @@ class Capability(BaseEnum):
 ########################################
 class DataParticleType(BaseEnum):
     RAW = CommonDataParticleType.RAW
-    DO_SAMPLE = 'do_sample'
+    DO_SAMPLE = 'do_stable_sample'
 
 
-class DostaDataParticle(SBE19DataParticle):
-    """
-    This data particle is identical to the corresponding one for CTDPF-Optode, except for the stream
-    name, which we specify here
-    """
-    _data_particle_type = DataParticleType.DO_SAMPLE
-
-
-class DoSampleParticleKey(DataParticleKey):
+class DoSampleParticleKey(BaseEnum):
     OXYGEN = "oxygen"
     OXY_CALPHASE = "oxy_calphase"
     OXY_TEMP = "oxy_temp"
     EXT_VOLT0 = "ext_volt0"
 
 
-class DoSampleParticle(Sbe16plusBaseParticle):
+class DoSampleParticle(DataParticle):
     """
-    Class for handling the DO sample coming from CTDBP-N/O series as well
-    as CTDPF-A/B series instruments.
+    Class for handling the DO stable sample coming from CTDBP-N/O, CTDPF-A/B or CTDPF-SBE43.
 
     Sample:
-       #04570F0A1E910828FC47BC59F199952C64C9
+       04570F0A1E910828FC47BC59F199952C64C9 - CTDBP-NO, CTDPF-AB
+       04570F0A1E910828FC47BC59F1 - CTDPF-SBE43
 
     Format:
-       #ttttttccccccppppppvvvvvvvvvvvvoooooo
+       ttttttccccccppppppTTTTvvvvwwwwoooooo
+       ttttttccccccppppppTTTTvvvv
 
        Temperature = tttttt
        Conductivity = cccccc
        quartz pressure = pppppp
-       quartz pressure temperature compensation = vvvv
-       First external voltage = vvvv
-       Second external voltage = vvvv
-       Oxygen = oooooo
+       quartz pressure temperature compensation = TTTT
+       First external voltage = vvvv (ext_volt0 or oxy_calphase)
+       Second external voltage = wwww (oxy_temp)
+       Oxygen = oooooo (oxygen)
     """
     _data_particle_type = DataParticleType.DO_SAMPLE
 
@@ -111,7 +97,7 @@ class DoSampleParticle(Sbe16plusBaseParticle):
         """
         pattern = r'#? *'  # pattern may or may not start with a '
         pattern += r'([0-9A-F]{22})'  # temp, cond, pres, pres temp
-        pattern += r'([0-9A-F]{0,14})'  # volt0, volt1, oxygen
+        pattern += r'(?P<optode>[0-9A-F]{0,14})'  # volt0, volt1, oxygen
         pattern += NEWLINE
         return pattern
 
@@ -129,24 +115,21 @@ class DoSampleParticle(Sbe16plusBaseParticle):
         if not match:
             raise SampleException("No regex match of parsed sample data: [%s]" % self.raw_data)
 
-        try:
-            optode = match.group(5)
-
-        except ValueError:
-            raise SampleException("ValueError while converting data: [%s]" % self.raw_data)
+        optode = match.group('optode')
 
         result = []
 
-        if optode:
-            oxy_calphase = self.hex2value(optode[:4])
-            optode = optode[4:]
-            oxy_temp = None
-            oxygen = None
+        if len(optode) == 4:  # SBE43 with attached optode (only has one optode value)
+            volt0 = hex2value(optode)  # PD1377
 
-            if optode:
-                oxy_temp = self.hex2value(optode[:4])
-                optode = optode[4:]
-                oxygen = self.hex2value(optode)
+            result = [{DataParticleKey.VALUE_ID: DoSampleParticleKey.EXT_VOLT0,
+                       DataParticleKey.VALUE: volt0},
+                      ]
+
+        elif len(optode) == 14:  # CTDBP-NO with attached optode - e.g. '59F199952C64C9'
+            oxy_calphase = hex2value(optode[:4])  # 59F1 - PD835
+            oxy_temp = hex2value(optode[4:8])  # 9995 - PD197
+            oxygen = hex2value(optode[8:])  # 2C64C9 - PD386
 
             result = [{DataParticleKey.VALUE_ID: DoSampleParticleKey.OXY_CALPHASE,
                        DataParticleKey.VALUE: oxy_calphase},
@@ -230,7 +213,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         matchers = []
         return_list = []
 
-        matchers.append(DostaDataParticle.regex_compiled())
+        matchers.append(DoSampleParticle.regex_compiled())
         for matcher in matchers:
             for match in matcher.finditer(raw_data):
                 return_list.append((match.start(), match.end()))
@@ -241,30 +224,31 @@ class Protocol(CommandResponseInstrumentProtocol):
         self._cmd_dict.add(Capability.DISCOVER, display_name='Discover', timeout=1)
 
     def _build_param_dict(self):
-        self._param_dict.add(Parameter.OPTODE,
-                             r'OPTODE>(.*)</OPTODE',
-                             lambda match: True if match.group(1) == 'yes' else False,
-                             self._true_false_to_string,
-                             type=ParameterDictType.BOOL,
-                             display_name="Optode Attached",
-                             description="Enable optode: (true | false)",
-                             range={'True': True, 'False': False},
-                             startup_param=True,
-                             direct_access=True,
-                             default_value=True,
-                             visibility=ParameterDictVisibility.IMMUTABLE)
-        self._param_dict.add(Parameter.VOLT1,
-                             r'ExtVolt1>(.*)</ExtVolt1',
-                             lambda match: True if match.group(1) == 'yes' else False,
-                             self._true_false_to_string,
-                             type=ParameterDictType.BOOL,
-                             display_name="Volt 1",
-                             description="Enable external voltage 1: (true | false)",
-                             range={'True': True, 'False': False},
-                             startup_param=True,
-                             direct_access=True,
-                             default_value=True,
-                             visibility=ParameterDictVisibility.IMMUTABLE)
+        pass
+        # self._param_dict.add(Parameter.OPTODE,
+        #                      r'OPTODE>(.*)</OPTODE',
+        #                      lambda match: True if match.group(1) == 'yes' else False,
+        #                      self._true_false_to_string,
+        #                      type=ParameterDictType.BOOL,
+        #                      display_name="Optode Attached",
+        #                      description="Enable optode: (true | false)",
+        #                      range={'True': True, 'False': False},
+        #                      startup_param=True,
+        #                      direct_access=True,
+        #                      default_value=True,
+        #                      visibility=ParameterDictVisibility.IMMUTABLE)
+        # self._param_dict.add(Parameter.VOLT1,
+        #                      r'ExtVolt1>(.*)</ExtVolt1',
+        #                      lambda match: True if match.group(1) == 'yes' else False,
+        #                      self._true_false_to_string,
+        #                      type=ParameterDictType.BOOL,
+        #                      display_name="Volt 1",
+        #                      description="Enable external voltage 1: (true | false)",
+        #                      range={'True': True, 'False': False},
+        #                      startup_param=True,
+        #                      direct_access=True,
+        #                      default_value=True,
+        #                      visibility=ParameterDictVisibility.IMMUTABLE)
 
     def _got_chunk(self, chunk, timestamp):
         """
@@ -272,7 +256,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         The base class got_data has gotten a chunk from the chunker.  Pass it to extract_sample
         with the appropriate particle objects and REGEXes.
         """
-        if self._extract_sample(DostaDataParticle, DostaDataParticle.regex_compiled(), chunk, timestamp):
+        if self._extract_sample(DoSampleParticle, DoSampleParticle.regex_compiled(), chunk, timestamp):
             self._sampling = True
             return
 
@@ -281,6 +265,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         Apparently VENDOR_SW_COMPATIBLE is required (TODO - move to the base class)
         """
         self._driver_dict.add(DriverDictKey.VENDOR_SW_COMPATIBLE, False)
+
     ####################
     # Command Handlers
     ####################

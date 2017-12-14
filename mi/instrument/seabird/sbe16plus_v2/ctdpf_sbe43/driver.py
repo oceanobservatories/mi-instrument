@@ -9,10 +9,10 @@ SBE Driver
 """
 
 import re
-import time
 
 from mi.core.log import get_logger
 from mi.core.common import BaseEnum, Units
+from mi.core.util import hex2value
 from mi.core.instrument.instrument_protocol import CommandResponseInstrumentProtocol
 from mi.core.instrument.data_particle import DataParticleKey
 from mi.core.instrument.instrument_fsm import ThreadSafeFSM
@@ -142,11 +142,11 @@ class SBE43DataParticle(Sbe16plusBaseParticle):
                                   self.raw_data)
 
         try:
-            temperature = self.hex2value(match.group(1))
-            conductivity = self.hex2value(match.group(2))
-            pressure = self.hex2value(match.group(3))
-            pressure_temp = self.hex2value(match.group(4))
-            volt0 = self.hex2value(match.group(5))
+            temperature = hex2value(match.group(1))
+            conductivity = hex2value(match.group(2))
+            pressure = hex2value(match.group(3))
+            pressure_temp = hex2value(match.group(4))
+            volt0 = hex2value(match.group(5))
 
         except ValueError:
             raise SampleException("ValueError while converting data: [%s]" %

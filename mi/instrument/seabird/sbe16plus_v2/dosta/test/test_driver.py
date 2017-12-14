@@ -9,9 +9,6 @@ USAGE:
    * From the IDK
        $ bin/test_driver
        $ bin/test_driver -u
-       $ bin/test_driver -i
-       $ bin/test_driver -q
-
 """
 __author__ = 'Dan Mergens'
 __license__ = 'Apache 2.0'
@@ -102,11 +99,6 @@ class UtilMixin(DriverTestMixin):
     STATES = ParameterTestConfigKey.STATES
 
     ###
-    #  Instrument output (driver input) Definitions
-    ###
-    VALID_SAMPLE = "04570F0A1E910828FC47BC59F199952C64C9" + NEWLINE
-
-    ###
     #  Parameter and Type Definitions
     ###
     _driver_capabilities = {
@@ -115,26 +107,46 @@ class UtilMixin(DriverTestMixin):
 
     _driver_parameters = {
         # DOSTA specific parameters
-        Parameter.OPTODE: {TYPE: bool, READONLY: True, DA: True, STARTUP: True, DEFAULT: True, VALUE: True},
-        Parameter.VOLT1: {TYPE: bool, READONLY: True, DA: True, STARTUP: True, DEFAULT: True, VALUE: True},
+        # Parameter.OPTODE: {TYPE: bool, READONLY: True, DA: True, STARTUP: True, DEFAULT: True, VALUE: True},
+        # Parameter.VOLT1: {TYPE: bool, READONLY: True, DA: True, STARTUP: True, DEFAULT: True, VALUE: True},
     }
 
-    _do_sample = {
-        DoSampleParticleKey.EXT_VOLT0: {TYPE: int, VALUE: 23025, REQUIRED: True},
-        DoSampleParticleKey.OXY_CALPHASE: {TYPE: int, VALUE: 39317, REQUIRED: True},
+    VALID_CTDBP_NO_SAMPLE = "04570F0A1E910828FC47BC59F199952C64C9" + NEWLINE
+
+    _ctdbp_no_sample = {
+        DoSampleParticleKey.EXT_VOLT0: {TYPE: int, VALUE: 0, REQUIRED: False},
+        DoSampleParticleKey.OXY_CALPHASE: {TYPE: int, VALUE: 23025, REQUIRED: True},
         DoSampleParticleKey.OXYGEN: {TYPE: int, VALUE: 2909385, REQUIRED: True},
         DoSampleParticleKey.OXY_TEMP: {TYPE: int, VALUE: 39317, REQUIRED: True},  # VOLT1
     }
 
-    def assert_particle_sample(self, data_particle, verify_values=False):
+    VALID_CTDPF_SBE43_SAMPLE = "04570F0A1E910828FC47BC59F1" + NEWLINE
+    _sbe43_sample = {
+        DoSampleParticleKey.EXT_VOLT0: {TYPE: int, VALUE: 23025, REQUIRED: True},
+        DoSampleParticleKey.OXY_CALPHASE: {TYPE: int, VALUE: 0, REQUIRED: False},
+        DoSampleParticleKey.OXYGEN: {TYPE: int, VALUE: 0, REQUIRED: False},
+        DoSampleParticleKey.OXY_TEMP: {TYPE: int, VALUE: 0, REQUIRED: False},  # VOLT1
+    }
+
+    def assert_ctdbp_no_particle_sample(self, data_particle, verify_values=False):
         """
         Verify sample particle
         @param data_particle:  SBE19DataParticle data particle
         @param verify_values:  bool, should we verify parameter values
         """
-        self.assert_data_particle_keys(DoSampleParticleKey, self._do_sample)
+        self.assert_data_particle_keys(DoSampleParticleKey, self._ctdbp_no_sample)
         self.assert_data_particle_header(data_particle, DataParticleType.DO_SAMPLE, require_instrument_timestamp=False)
-        self.assert_data_particle_parameters(data_particle, self._do_sample, verify_values)
+        self.assert_data_particle_parameters(data_particle, self._ctdbp_no_sample, verify_values)
+
+    def assert_sbe43_particle_sample(self, data_particle, verify_values=False):
+        """
+        Verify sample particle
+        @param data_particle:  SBE19DataParticle data particle
+        @param verify_values:  bool, should we verify parameter values
+        """
+        self.assert_data_particle_keys(DoSampleParticleKey, self._sbe43_sample)
+        self.assert_data_particle_header(data_particle, DataParticleType.DO_SAMPLE, require_instrument_timestamp=False)
+        self.assert_data_particle_parameters(data_particle, self._sbe43_sample, verify_values)
 
 
 ###############################################################################
@@ -166,10 +178,15 @@ class DriverUnitTest(InstrumentDriverUnitTestCase, UtilMixin):
         """
         chunker = StringChunker(Protocol.sieve_function)
 
-        self.assert_chunker_sample(chunker, self.VALID_SAMPLE)
-        self.assert_chunker_sample_with_noise(chunker, self.VALID_SAMPLE)
-        self.assert_chunker_fragmented_sample(chunker, self.VALID_SAMPLE)
-        self.assert_chunker_combined_sample(chunker, self.VALID_SAMPLE)
+        self.assert_chunker_sample(chunker, self.VALID_CTDBP_NO_SAMPLE)
+        self.assert_chunker_sample_with_noise(chunker, self.VALID_CTDBP_NO_SAMPLE)
+        self.assert_chunker_fragmented_sample(chunker, self.VALID_CTDBP_NO_SAMPLE)
+        self.assert_chunker_combined_sample(chunker, self.VALID_CTDBP_NO_SAMPLE)
+
+        self.assert_chunker_sample(chunker, self.VALID_CTDPF_SBE43_SAMPLE)
+        self.assert_chunker_sample_with_noise(chunker, self.VALID_CTDPF_SBE43_SAMPLE)
+        self.assert_chunker_fragmented_sample(chunker, self.VALID_CTDPF_SBE43_SAMPLE)
+        self.assert_chunker_combined_sample(chunker, self.VALID_CTDPF_SBE43_SAMPLE)
 
     def test_got_data(self):
         """
@@ -182,7 +199,8 @@ class DriverUnitTest(InstrumentDriverUnitTestCase, UtilMixin):
         self.assert_raw_particle_published(driver, True)
 
         # Start validating data particles
-        self.assert_particle_published(driver, self.VALID_SAMPLE, self.assert_particle_sample, True)
+        self.assert_particle_published(driver, self.VALID_CTDBP_NO_SAMPLE, self.assert_ctdbp_no_particle_sample, True)
+        self.assert_particle_published(driver, self.VALID_CTDPF_SBE43_SAMPLE, self.assert_sbe43_particle_sample, True)
 
     def test_capabilities(self):
         """
@@ -195,5 +213,3 @@ class DriverUnitTest(InstrumentDriverUnitTestCase, UtilMixin):
 
         driver = InstrumentDriver(self._got_data_event_callback)
         self.assert_capabilities(driver, capabilities)
-
-
