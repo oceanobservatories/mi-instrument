@@ -49,7 +49,7 @@ def hex2value(hex_value, divisor=None):
     if not isinstance(hex_value, basestring):
         raise ValueError("hex value not a string")
 
-    if divisor is not None and divisor == 0:
+    if divisor == 0:
         raise ValueError("divisor can not be 0")
 
     value = int(hex_value, 16)
