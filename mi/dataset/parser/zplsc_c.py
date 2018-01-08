@@ -166,7 +166,7 @@ class AzfpProfileHeader(BigEndianStructure):
 def generate_image_file_path(filepath, output_path=None):
     # Extract the file time from the file name
     absolute_path = os.path.abspath(filepath)
-    filename = os.path.basename(absolute_path)
+    filename = os.path.basename(absolute_path).upper()
     directory_name = os.path.dirname(absolute_path)
 
     output_path = directory_name if output_path is None else output_path
@@ -323,9 +323,12 @@ class ZplscCParser(SimpleParser):
             self.ph = AzfpProfileHeader()
             self.find_next_record()
 
-    def create_echogram(self):
+    def create_echogram(self, echogram_file_path=None):
         """
         Parse the *.O1A zplsc_c data file and create the echogram from this data.
+
+        :param echogram_file_path: Path to store the echogram locally.
+        :return:
         """
 
         sv_dict = {}
@@ -335,7 +338,7 @@ class ZplscCParser(SimpleParser):
 
         input_file_path = self._stream_handle.name
         log.info('Begin processing echogram data: %r', input_file_path)
-        image_path = generate_image_file_path(input_file_path, None)
+        image_path = generate_image_file_path(input_file_path, echogram_file_path)
 
         self.ph = AzfpProfileHeader()
         self.find_next_record()
@@ -372,10 +375,10 @@ class ZplscCParser(SimpleParser):
         for channel in sv_dict:
             sv_dict[channel] = np.array(sv_dict[channel])
 
-        log.info('Completed processing all data. Generating echogram: %r', input_file_path)
+        log.info('Completed processing all data: %r - Generating echogram: %r', input_file_path, image_path)
 
-        plot = ZPLSCCPlot(data_times, sv_dict, frequencies, depth_range, -150, -10)
+        plot = ZPLSCCPlot(data_times, sv_dict, frequencies, depth_range)
         plot.generate_plots()
         plot.write_image(image_path)
 
-        log.info('Completed generating echogram: %r', input_file_path)
+        log.info('Completed generating echogram: %r', image_path)

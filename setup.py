@@ -5,7 +5,7 @@ try:
 except ImportError:
     from distutils.core import setup
 
-version = '0.5.6'
+version = '0.5.7'
 
 setup(name='mi-instrument',
       version=version,
@@ -31,6 +31,7 @@ setup(name='mi-instrument',
               'oms_extractor=mi.platform.rsn.oms_extractor:main',
               'shovel=mi.core.shovel:main',
               'oms_aa_server=mi.platform.rsn.oms_alert_alarm_server:main',
+              'zplsc_echogram=mi.dataset.driver.zplsc_c.zplsc_echogram_generator:main',
           ],
       },
       )

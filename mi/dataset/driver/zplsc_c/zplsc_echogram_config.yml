@@ -1,0 +1,9 @@
+zplsc_echogram_directory: ~/ZPLSC_Echograms
+zplsc_subsites:
+  - CE01ISSM
+  - CE06ISSM
+  - CE07SHSM
+  - CE09OSSM
+  - CP01CNSM
+  - CP03ISSM
+  - CP04OSSM

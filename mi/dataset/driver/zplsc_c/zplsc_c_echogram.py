@@ -132,7 +132,7 @@ class ZPLSCCPlot(object):
         yticks = np.linspace(0, max_depth, self.num_yticks)
 
         # create range vector (depth in meters)
-        yticklabels = np.round(np.linspace(depth_range[-1], depth_range[0], self.num_yticks)).astype(int)
+        yticklabels = np.round(np.linspace(depth_range[0][-1], depth_range[0][0], self.num_yticks)).astype(int)
 
         self.fig, self.ax = plt.subplots(len(self.frequency_dict), sharex=True, sharey=True)
         self.fig.subplots_adjust(hspace=self.interplot_spacing)
