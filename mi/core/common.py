@@ -46,7 +46,11 @@ class Config(object):
         if files:
             content = []
             for file in files:
-                infile = open(file, 'r')
+                try:
+                    infile = open(file, 'r')
+                except IOError as ex:
+                    print ('Config file does not exist: %s', file)
+                    continue
                 c = infile.read()
                 infile.close()
                 content.append(c)
