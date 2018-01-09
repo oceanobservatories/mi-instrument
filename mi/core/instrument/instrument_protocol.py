@@ -1275,7 +1275,6 @@ class CommandResponseInstrumentProtocol(InstrumentProtocol):
                 if count >= no_tries:
                     raise InstrumentProtocolException('Incorrect prompt.')
 
-
 class MenuInstrumentProtocol(CommandResponseInstrumentProtocol):
     """
     Base class for menu-based instrument interfaces that can use a cmd/response approach to
@@ -1511,3 +1510,5 @@ class MenuInstrumentProtocol(CommandResponseInstrumentProtocol):
         :param data: data to process
         """
         CommandResponseInstrumentProtocol.got_data(self, data)
+
+
