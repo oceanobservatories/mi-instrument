@@ -1,3 +1,7 @@
+# Version 0.5.8
+
+* Issue #13083 - Restored feature in zplsc_b parser to generate an echogram.
+
 # Version 0.5.7
 
 * Issue #12833 - Added support for offline process generated ZPLSC-C echograms.
