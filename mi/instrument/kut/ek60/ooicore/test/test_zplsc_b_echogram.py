@@ -2,7 +2,7 @@
 
 import os
 import urllib
-from mi.instrument.kut.ek60.ooicore.zplsc_b import parse_datagram_file_wrapper
+from mi.instrument.kut.ek60.ooicore.zplsc_b import parse_echogram_file_wrapper
 
 # Get the path of this test file.
 local_path = os.path.abspath(os.path.dirname(__file__))
@@ -17,5 +17,5 @@ local_raw_data_file = os.path.join(local_path, raw_file_name)
 urllib.urlretrieve(remote_raw_data_file, local_raw_data_file)
 
 # Create the ZPLSC-B Series echogram
-parse_datagram_file_wrapper(local_raw_data_file)
+parse_echogram_file_wrapper(local_raw_data_file)
 

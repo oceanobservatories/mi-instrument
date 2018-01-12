@@ -11,7 +11,7 @@ import re
 
 from mi.core.log import get_logger, get_logging_metaclass
 from mi.core.common import BaseEnum, Units
-from mi.core.util import dict_equal
+from mi.core.util import dict_equal, hex2value
 from mi.core.instrument.instrument_fsm import ThreadSafeFSM
 from mi.core.instrument.data_particle import CommonDataParticleType
 from mi.core.instrument.chunker import StringChunker
@@ -24,7 +24,6 @@ from mi.core.instrument.protocol_param_dict import ParameterDictType
 from mi.core.instrument.instrument_driver import SingleConnectionInstrumentDriver
 from mi.core.instrument.instrument_driver import DriverParameter
 from mi.core.instrument.instrument_driver import DriverProtocolState
-from mi.core.instrument.instrument_driver import ResourceAgentState
 from mi.core.instrument.instrument_driver import DriverAsyncEvent
 from mi.core.instrument.instrument_driver import DriverEvent
 
@@ -365,27 +364,6 @@ class Sbe16plusBaseParticle(DataParticle):
     # Static helpers.
     ########################################################################
     @staticmethod
-    def hex2value(hex_value, divisor=None):
-        """
-        Convert a SBE hex value to a value.  Some hex values are converted
-        from raw counts to volts using a divisor.  If passed the value
-        will be calculated, otherwise return an int.
-        @param hex_value: string to convert
-        @param divisor: conversion value
-        @return: int or float of the converted value
-        """
-        if not isinstance(hex_value, basestring):
-            raise InstrumentParameterException("hex value not a string")
-
-        if divisor is not None and divisor == 0:
-            raise InstrumentParameterException("divisor can not be 0")
-
-        value = int(hex_value, 16)
-        if divisor is not None:
-            return float(value) / divisor
-        return value
-
-    @staticmethod
     def yesno2bool(value):
         """
         convert a yes no response to a bool
@@ -489,11 +467,11 @@ class SBE16DataParticle(Sbe16plusBaseParticle):
                                   self.raw_data)
 
         try:
-            temperature = self.hex2value(match.group(1))
-            conductivity = self.hex2value(match.group(2))
-            pressure = self.hex2value(match.group(3))
-            pressure_temp = self.hex2value(match.group(4))
-            elapse_time = self.hex2value(match.group(5))
+            temperature = hex2value(match.group(1))
+            conductivity = hex2value(match.group(2))
+            pressure = hex2value(match.group(3))
+            pressure_temp = hex2value(match.group(4))
+            elapse_time = hex2value(match.group(5))
 
             self.set_internal_timestamp(unix_time=self.sbetime2unixtime(elapse_time))
         except ValueError:

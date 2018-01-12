@@ -18,6 +18,7 @@ from mi.core.instrument.driver_dict import DriverDictKey
 from mi.core.instrument.protocol_param_dict import ParameterDictType, ParameterDictVisibility
 from mi.core.log import get_logger, get_logging_metaclass
 from mi.core.common import BaseEnum, Units
+from mi.core.util import hex2value
 from mi.core.instrument.instrument_protocol import CommandResponseInstrumentProtocol
 from mi.core.instrument.instrument_fsm import ThreadSafeFSM
 from mi.core.instrument.instrument_driver import SingleConnectionInstrumentDriver, DriverConfigKey
@@ -206,14 +207,14 @@ class THSPHParticle(DataParticle):
                                   self.raw_data)
 
         try:
-            electrode1 = self.hex2value(match.group(1))
-            electrode2 = self.hex2value(match.group(2))
-            h2electrode = self.hex2value(match.group(3))
-            s2electrode = self.hex2value(match.group(4))
-            thermocouple1 = self.hex2value(match.group(5))
-            thermocouple2 = self.hex2value(match.group(6))
-            ref_thermistor = self.hex2value(match.group(7))
-            board_thermistor = self.hex2value(match.group(8))
+            electrode1 = hex2value(match.group(1))
+            electrode2 = hex2value(match.group(2))
+            h2electrode = hex2value(match.group(3))
+            s2electrode = hex2value(match.group(4))
+            thermocouple1 = hex2value(match.group(5))
+            thermocouple2 = hex2value(match.group(6))
+            ref_thermistor = hex2value(match.group(7))
+            board_thermistor = hex2value(match.group(8))
 
         except ValueError:
             raise SampleException("ValueError while converting data: [%s]" %
@@ -237,18 +238,6 @@ class THSPHParticle(DataParticle):
                    DataParticleKey.VALUE: board_thermistor}]
 
         return result
-
-    def hex2value(self, hex_value):
-        """
-        Convert a ADC hex value to an int value.
-        @param hex_value: string to convert
-        @return: int of the converted value
-        """
-        if not isinstance(hex_value, basestring):
-            raise InstrumentParameterException("hex value not a string")
-
-        value = int(hex_value, 16)
-        return value
 
 
 ###############################################################################
@@ -453,6 +442,7 @@ class THSPHProtocol(CommandResponseInstrumentProtocol):
     ########################################################################
     # Unknown State handlers.
     ########################################################################
+    # noinspection PyUnusedLocal
     def _handler_unknown_enter(self, *args, **kwargs):
 
         # Tell driver superclass to send a state change event.
@@ -465,6 +455,7 @@ class THSPHProtocol(CommandResponseInstrumentProtocol):
         """
         pass
 
+    # noinspection PyUnusedLocal, PyMethodMayBeStatic
     def _handler_unknown_discover(self, *args, **kwargs):
         """
         Discover current state; Change next state to be COMMAND state.
@@ -477,6 +468,7 @@ class THSPHProtocol(CommandResponseInstrumentProtocol):
     ########################################################################
     # Command State handlers.
     ########################################################################
+    # noinspection PyUnusedLocal
     def _handler_command_acquire_sample(self, *args, **kwargs):
         """
         Get device status
@@ -491,6 +483,7 @@ class THSPHProtocol(CommandResponseInstrumentProtocol):
 
         return next_state, (next_state, particles)
 
+    # noinspection PyUnusedLocal
     def _handler_command_enter(self, *args, **kwargs):
         # Tell driver superclass to send a state change event.
         # Superclass will query the state.
@@ -514,6 +507,7 @@ class THSPHProtocol(CommandResponseInstrumentProtocol):
         # TODO - update return signature to match other handlers - next_state, (next_state, result)
         return next_state, result
 
+    # noinspection PyUnusedLocal
     def _handler_command_set(self, *args, **kwargs):
         """
         Perform a set command.
@@ -583,6 +577,7 @@ class THSPHProtocol(CommandResponseInstrumentProtocol):
 
             self._param_dict.set_value(key, val)
 
+    # noinspection PyUnusedLocal, PyMethodMayBeStatic
     def _handler_command_start_autosample(self, *args, **kwargs):
         """
         Switch into autosample mode.
@@ -594,6 +589,7 @@ class THSPHProtocol(CommandResponseInstrumentProtocol):
         result = []
         return next_state, (next_state, result)
 
+    # noinspection PyMethodMayBeStatic
     def _handler_command_start_direct(self):
         """
         Start direct access
@@ -605,6 +601,7 @@ class THSPHProtocol(CommandResponseInstrumentProtocol):
     #######################################################################
     # Autosample State handlers.
     ########################################################################
+    # noinspection PyUnusedLocal
     def _handler_autosample_enter(self, *args, **kwargs):
         """
         Enter autosample state  Because this is an instrument that must be
@@ -654,6 +651,7 @@ class THSPHProtocol(CommandResponseInstrumentProtocol):
         if not self._scheduler:
             self.initialize_scheduler()
 
+    # noinspection PyUnusedLocal, PyMethodMayBeStatic
     def _handler_autosample_exit(self, *args, **kwargs):
         """
         Exit auto sample state. Remove the auto sample task
@@ -663,6 +661,7 @@ class THSPHProtocol(CommandResponseInstrumentProtocol):
 
         return next_state, (next_state, result)
 
+    # noinspection PyUnusedLocal
     def _handler_autosample_stop_autosample(self, *args, **kwargs):
         """
         Remove the auto sample task. Exit Auto sample state
@@ -679,6 +678,7 @@ class THSPHProtocol(CommandResponseInstrumentProtocol):
     # Direct access handlers.
     ########################################################################
 
+    # noinspection PyUnusedLocal
     def _handler_direct_access_enter(self, *args, **kwargs):
         """
         Enter direct access state.
@@ -706,6 +706,7 @@ class THSPHProtocol(CommandResponseInstrumentProtocol):
 
         return next_state, (next_state, result)
 
+    # noinspection PyMethodMayBeStatic
     def _handler_direct_access_stop_direct(self):
         next_state = ProtocolState.COMMAND
         result = []
@@ -734,5 +735,3 @@ class THSPHProtocol(CommandResponseInstrumentProtocol):
         @param response_timeout The time to look for response to a wakeup attempt.
         """
         pass
-
-

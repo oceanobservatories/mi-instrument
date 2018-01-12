@@ -1,4 +1,4 @@
-# Version 0.5.8
+# Version 0.5.9
 
 * Issue #12427 Update ADCP Parsers and Consolidate ADCP streams:
     * stream adcp_velocity_earth replaces:
@@ -12,6 +12,10 @@
         * vadcp_4beam_system_configuration
     * stream adcp_system_configuration_5 replaces:
         * vadcp_5thbeam_system_configuration
+        
+# Version 0.5.8
+
+* Issue #13083 - Restored feature in zplsc_b parser to generate an echogram.
 
 # Version 0.5.7
 
@@ -19,6 +23,7 @@
 
 # Version 0.5.6
 
+* Issue #12289 - Added DO driver to generate stable dissolved oxygen stream from CTD with attached DO
 * Issue #12323 - Added support for UI generated ZPLSC C-Series echograms.
 
 # Version 0.5.5

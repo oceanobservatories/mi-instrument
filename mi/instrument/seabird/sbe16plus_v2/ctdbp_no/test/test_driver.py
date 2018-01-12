@@ -20,7 +20,8 @@ import time
 
 from nose.plugins.attrib import attr
 
-from mi.core.log import get_logger ; log = get_logger()
+from mi.core.log import get_logger
+
 from mi.core.time_tools import timegm_to_float
 
 from mi.idk.unit_test import InstrumentDriverTestCase
@@ -52,6 +53,8 @@ from mi.instrument.seabird.sbe16plus_v2.driver import NEWLINE
 from mi.instrument.seabird.sbe16plus_v2.test.test_driver import Sbe16plusUnitTestCase, Sbe16plusQualTestCase, \
     Sbe16plusIntegrationTestCase, SeaBird16plusMixin
 
+log = get_logger()
+
 ###
 #   Driver parameters for the tests
 ###
@@ -59,33 +62,35 @@ InstrumentDriverTestCase.initialize(
     driver_module='mi.instrument.seabird.sbe16plus_v2.ctdbp_no.driver',
     driver_class="InstrumentDriver",
 
-    instrument_agent_resource_id = 'JI22B5',
-    instrument_agent_name = 'seabird_sbe16plus_v2_ctdbp_no',
-    instrument_agent_packet_config = DataParticleType(),
+    instrument_agent_resource_id='JI22B5',
+    instrument_agent_name='seabird_sbe16plus_v2_ctdbp_no',
+    instrument_agent_packet_config=DataParticleType(),
 
-    driver_startup_config = {DriverConfigKey.PARAMETERS:
-            {Parameter.PTYPE: 3,
-             Parameter.VOLT0: True,
-             Parameter.VOLT1: True,
-             Parameter.VOLT2: False,
-             Parameter.VOLT3: False,
-             Parameter.VOLT4: False,
-             Parameter.VOLT5: False,
-             Parameter.SBE38: False,
-             Parameter.WETLABS: False,
-             Parameter.GTD: False,
-             Parameter.DUAL_GTD: False,
-             Parameter.SBE63: False,
-             Parameter.OPTODE: True,
-             Parameter.OUTPUT_FORMAT: 0,
-             Parameter.NUM_AVG_SAMPLES: 4,
-             Parameter.MIN_COND_FREQ: 500,
-             Parameter.PUMP_DELAY: 60,
-             Parameter.AUTO_RUN: False,
-             Parameter.IGNORE_SWITCH: True,}}
+    driver_startup_config={DriverConfigKey.PARAMETERS: {
+        Parameter.PTYPE: 3,
+        Parameter.VOLT0: True,
+        Parameter.VOLT1: True,
+        Parameter.VOLT2: False,
+        Parameter.VOLT3: False,
+        Parameter.VOLT4: False,
+        Parameter.VOLT5: False,
+        Parameter.SBE38: False,
+        Parameter.WETLABS: False,
+        Parameter.GTD: False,
+        Parameter.DUAL_GTD: False,
+        Parameter.SBE63: False,
+        Parameter.OPTODE: True,
+        Parameter.OUTPUT_FORMAT: 0,
+        Parameter.NUM_AVG_SAMPLES: 4,
+        Parameter.MIN_COND_FREQ: 500,
+        Parameter.PUMP_DELAY: 60,
+        Parameter.AUTO_RUN: False,
+        Parameter.IGNORE_SWITCH: True, }}
 )
 
-#################################### RULES ####################################
+
+###############################################################################
+#                                    RULES                                    #
 #                                                                             #
 # Common capabilities in the base class                                       #
 #                                                                             #
@@ -111,237 +116,241 @@ InstrumentDriverTestCase.initialize(
 # methods for validating data particles.									  #
 ###############################################################################
 class SBE16NOMixin(SeaBird16plusMixin):
-
     InstrumentDriver = InstrumentDriver
 
     # Create some short names for the parameter test config
-    TYPE      = ParameterTestConfigKey.TYPE
-    READONLY  = ParameterTestConfigKey.READONLY
-    STARTUP   = ParameterTestConfigKey.STARTUP
-    DA        = ParameterTestConfigKey.DIRECT_ACCESS
-    VALUE     = ParameterTestConfigKey.VALUE
-    REQUIRED  = ParameterTestConfigKey.REQUIRED
-    DEFAULT   = ParameterTestConfigKey.DEFAULT
-    STATES    = ParameterTestConfigKey.STATES
+    TYPE = ParameterTestConfigKey.TYPE
+    READONLY = ParameterTestConfigKey.READONLY
+    STARTUP = ParameterTestConfigKey.STARTUP
+    DA = ParameterTestConfigKey.DIRECT_ACCESS
+    VALUE = ParameterTestConfigKey.VALUE
+    REQUIRED = ParameterTestConfigKey.REQUIRED
+    DEFAULT = ParameterTestConfigKey.DEFAULT
+    STATES = ParameterTestConfigKey.STATES
 
     ###
     #  Instrument output (driver input) Definitions
     ###
     VALID_SAMPLE = "04570F0A1E910828FC47BC59F199952C64C9" + NEWLINE
 
-    VALID_GETHD_RESPONSE =  "" + \
-"<HardwareData DeviceType = 'SBE19plus' SerialNumber = '01907230'>" + NEWLINE + \
-"   <Manufacturer>Sea-Bird Electronics, Inc.</Manufacturer>" + NEWLINE + \
-"   <FirmwareVersion>2.5.2</FirmwareVersion>" + NEWLINE + \
-"   <FirmwareDate>12 Mar 2013 11:50</FirmwareDate>" + NEWLINE + \
-"   <CommandSetVersion>1.3</CommandSetVersion>" + NEWLINE + \
-"   <PCBAssembly PCBSerialNum = '49565' AssemblyNum = '41054H'/>" + NEWLINE + \
-"   <PCBAssembly PCBSerialNum = '43360' AssemblyNum = '41580B'/>" + NEWLINE + \
-"   <PCBAssembly PCBSerialNum = '49357' AssemblyNum = '41606'/>" + NEWLINE + \
-"   <PCBAssembly PCBSerialNum = '38072' AssemblyNum = '41057A'/>" + NEWLINE + \
-"   <MfgDate>29-Oct-2012</MfgDate>" + NEWLINE + \
-"   <InternalSensors>" + NEWLINE + \
-"      <Sensor id = 'Main Temperature'>" + NEWLINE + \
-"         <type>temperature0</type>" + NEWLINE + \
-"         <SerialNumber>01907230</SerialNumber>" + NEWLINE + \
-"      </Sensor>" + NEWLINE + \
-"      <Sensor id = 'Main Conductivity'>" + NEWLINE + \
-"         <type>conductivity-0</type>" + NEWLINE + \
-"         <SerialNumber>01907230</SerialNumber>" + NEWLINE + \
-"      </Sensor>" + NEWLINE + \
-"      <Sensor id = 'Main Pressure'>" + NEWLINE + \
-"         <type>quartzTC-0</type>" + NEWLINE + \
-"         <SerialNumber>124969</SerialNumber>" + NEWLINE + \
-"      </Sensor>" + NEWLINE + \
-"   </InternalSensors>" + NEWLINE + \
-"   <ExternalSensors>" + NEWLINE + \
-"      <Sensor id = 'volt 0'>" + NEWLINE + \
-"         <type>not assigned</type>" + NEWLINE + \
-"         <SerialNumber>not assigned</SerialNumber>" + NEWLINE + \
-"      </Sensor>" + NEWLINE + \
-"      <Sensor id = 'volt 1'>" + NEWLINE + \
-"         <type>not assigned</type>" + NEWLINE + \
-"         <SerialNumber>not assigned</SerialNumber>" + NEWLINE + \
-"      </Sensor>" + NEWLINE + \
-"      <Sensor id = 'volt 2'>" + NEWLINE + \
-"         <type>not assigned</type>" + NEWLINE + \
-"         <SerialNumber>not assigned</SerialNumber>" + NEWLINE + \
-"      </Sensor>" + NEWLINE + \
-"      <Sensor id = 'volt 3'>" + NEWLINE + \
-"         <type>not assigned</type>" + NEWLINE + \
-"         <SerialNumber>not assigned</SerialNumber>" + NEWLINE + \
-"      </Sensor>" + NEWLINE + \
-"      <Sensor id = 'volt 4'>" + NEWLINE + \
-"         <type>not assigned</type>" + NEWLINE + \
-"         <SerialNumber>not assigned</SerialNumber>" + NEWLINE + \
-"      </Sensor>" + NEWLINE + \
-"      <Sensor id = 'volt 5'>" + NEWLINE + \
-"         <type>not assigned</type>" + NEWLINE + \
-"         <SerialNumber>not assigned</SerialNumber>" + NEWLINE + \
-"      </Sensor>" + NEWLINE + \
-"      <Sensor id = 'serial'>" + NEWLINE + \
-"         <type>not assigned</type>" + NEWLINE + \
-"         <SerialNumber>not assigned</SerialNumber>" + NEWLINE + \
-"      </Sensor>" + NEWLINE + \
-"   </ExternalSensors>" + NEWLINE + \
-"</HardwareData>" + NEWLINE
+    VALID_GETHD_RESPONSE = \
+        "" + \
+        "<HardwareData DeviceType = 'SBE19plus' SerialNumber = '01907230'>" + NEWLINE + \
+        "   <Manufacturer>Sea-Bird Electronics, Inc.</Manufacturer>" + NEWLINE + \
+        "   <FirmwareVersion>2.5.2</FirmwareVersion>" + NEWLINE + \
+        "   <FirmwareDate>12 Mar 2013 11:50</FirmwareDate>" + NEWLINE + \
+        "   <CommandSetVersion>1.3</CommandSetVersion>" + NEWLINE + \
+        "   <PCBAssembly PCBSerialNum = '49565' AssemblyNum = '41054H'/>" + NEWLINE + \
+        "   <PCBAssembly PCBSerialNum = '43360' AssemblyNum = '41580B'/>" + NEWLINE + \
+        "   <PCBAssembly PCBSerialNum = '49357' AssemblyNum = '41606'/>" + NEWLINE + \
+        "   <PCBAssembly PCBSerialNum = '38072' AssemblyNum = '41057A'/>" + NEWLINE + \
+        "   <MfgDate>29-Oct-2012</MfgDate>" + NEWLINE + \
+        "   <InternalSensors>" + NEWLINE + \
+        "      <Sensor id = 'Main Temperature'>" + NEWLINE + \
+        "         <type>temperature0</type>" + NEWLINE + \
+        "         <SerialNumber>01907230</SerialNumber>" + NEWLINE + \
+        "      </Sensor>" + NEWLINE + \
+        "      <Sensor id = 'Main Conductivity'>" + NEWLINE + \
+        "         <type>conductivity-0</type>" + NEWLINE + \
+        "         <SerialNumber>01907230</SerialNumber>" + NEWLINE + \
+        "      </Sensor>" + NEWLINE + \
+        "      <Sensor id = 'Main Pressure'>" + NEWLINE + \
+        "         <type>quartzTC-0</type>" + NEWLINE + \
+        "         <SerialNumber>124969</SerialNumber>" + NEWLINE + \
+        "      </Sensor>" + NEWLINE + \
+        "   </InternalSensors>" + NEWLINE + \
+        "   <ExternalSensors>" + NEWLINE + \
+        "      <Sensor id = 'volt 0'>" + NEWLINE + \
+        "         <type>not assigned</type>" + NEWLINE + \
+        "         <SerialNumber>not assigned</SerialNumber>" + NEWLINE + \
+        "      </Sensor>" + NEWLINE + \
+        "      <Sensor id = 'volt 1'>" + NEWLINE + \
+        "         <type>not assigned</type>" + NEWLINE + \
+        "         <SerialNumber>not assigned</SerialNumber>" + NEWLINE + \
+        "      </Sensor>" + NEWLINE + \
+        "      <Sensor id = 'volt 2'>" + NEWLINE + \
+        "         <type>not assigned</type>" + NEWLINE + \
+        "         <SerialNumber>not assigned</SerialNumber>" + NEWLINE + \
+        "      </Sensor>" + NEWLINE + \
+        "      <Sensor id = 'volt 3'>" + NEWLINE + \
+        "         <type>not assigned</type>" + NEWLINE + \
+        "         <SerialNumber>not assigned</SerialNumber>" + NEWLINE + \
+        "      </Sensor>" + NEWLINE + \
+        "      <Sensor id = 'volt 4'>" + NEWLINE + \
+        "         <type>not assigned</type>" + NEWLINE + \
+        "         <SerialNumber>not assigned</SerialNumber>" + NEWLINE + \
+        "      </Sensor>" + NEWLINE + \
+        "      <Sensor id = 'volt 5'>" + NEWLINE + \
+        "         <type>not assigned</type>" + NEWLINE + \
+        "         <SerialNumber>not assigned</SerialNumber>" + NEWLINE + \
+        "      </Sensor>" + NEWLINE + \
+        "      <Sensor id = 'serial'>" + NEWLINE + \
+        "         <type>not assigned</type>" + NEWLINE + \
+        "         <SerialNumber>not assigned</SerialNumber>" + NEWLINE + \
+        "      </Sensor>" + NEWLINE + \
+        "   </ExternalSensors>" + NEWLINE + \
+        "</HardwareData>" + NEWLINE
 
-    VALID_GETCC_RESPONSE =  "" + \
-"<CalibrationCoefficients DeviceType = 'SBE19plus' SerialNumber = '01907230'>" + NEWLINE + \
-"   <Calibration format = 'TEMP1' id = 'Main Temperature'>" + NEWLINE + \
-"      <SerialNum>01907230</SerialNum>" + NEWLINE + \
-"      <CalDate>07-Dec-13</CalDate>" + NEWLINE + \
-"      <TA0>1.272723e-03</TA0>" + NEWLINE + \
-"      <TA1>2.687218e-04</TA1>" + NEWLINE + \
-"      <TA2>-4.735777e-07</TA2>" + NEWLINE + \
-"      <TA3>1.522571e-07</TA3>" + NEWLINE + \
-"      <TOFFSET>0.000000e+00</TOFFSET>" + NEWLINE + \
-"   </Calibration>" + NEWLINE + \
-"   <Calibration format = 'WBCOND0' id = 'Main Conductivity'>" + NEWLINE + \
-"      <SerialNum>01907230</SerialNum>" + NEWLINE + \
-"      <CalDate>07-Dec-13</CalDate>" + NEWLINE + \
-"      <G>-9.931677e-01</G>" + NEWLINE + \
-"      <H>1.391189e-01</H>" + NEWLINE + \
-"      <I>-4.457962e-04</I>" + NEWLINE + \
-"      <J>5.145191e-05</J>" + NEWLINE + \
-"      <CPCOR>-9.570000e-08</CPCOR>" + NEWLINE + \
-"      <CTCOR>3.250000e-06</CTCOR>" + NEWLINE + \
-"      <CSLOPE>1.000000e+00</CSLOPE>" + NEWLINE + \
-"   </Calibration>" + NEWLINE + \
-"   <Calibration format = 'QUARTZ0' id = 'Main Pressure'>" + NEWLINE + \
-"      <SerialNum>124969</SerialNum>" + NEWLINE + \
-"      <CalDate>05-Dec-13</CalDate>" + NEWLINE + \
-"      <PC1>9.913353e+02</PC1>" + NEWLINE + \
-"      <PC2>1.013600e-05</PC2>" + NEWLINE + \
-"      <PC3>-1.182100e-04</PC3>" + NEWLINE + \
-"      <PD1>3.107200e-02</PD1>" + NEWLINE + \
-"      <PD2>0.000000e+00</PD2>" + NEWLINE + \
-"      <PT1>2.767451e+01</PT1>" + NEWLINE + \
-"      <PT2>-1.080330e-04</PT2>" + NEWLINE + \
-"      <PT3>1.036700e-06</PT3>" + NEWLINE + \
-"      <PT4>1.687490e-09</PT4>" + NEWLINE + \
-"      <PSLOPE>1.000000e+00</PSLOPE>" + NEWLINE + \
-"      <POFFSET>0.000000e+00</POFFSET>" + NEWLINE + \
-"      <PRANGE>2.000000e+02</PRANGE>" + NEWLINE + \
-"   </Calibration>" + NEWLINE + \
-"   <Calibration format = 'VOLT0' id = 'Volt 0'>" + NEWLINE + \
-"      <OFFSET>-4.719895e-02</OFFSET>" + NEWLINE + \
-"      <SLOPE>1.248055e+00</SLOPE>" + NEWLINE + \
-"   </Calibration>" + NEWLINE + \
-"   <Calibration format = 'VOLT0' id = 'Volt 1'>" + NEWLINE + \
-"      <OFFSET>-4.677263e-02</OFFSET>" + NEWLINE + \
-"      <SLOPE>1.249706e+00</SLOPE>" + NEWLINE + \
-"   </Calibration>" + NEWLINE + \
-"   <Calibration format = 'VOLT0' id = 'Volt 2'>" + NEWLINE + \
-"      <OFFSET>-4.673579e-02</OFFSET>" + NEWLINE + \
-"      <SLOPE>1.247281e+00</SLOPE>" + NEWLINE + \
-"   </Calibration>" + NEWLINE + \
-"   <Calibration format = 'VOLT0' id = 'Volt 3'>" + NEWLINE + \
-"      <OFFSET>-4.665053e-02</OFFSET>" + NEWLINE + \
-"      <SLOPE>1.248687e+00</SLOPE>" + NEWLINE + \
-"   </Calibration>" + NEWLINE + \
-"   <Calibration format = 'VOLT0' id = 'Volt 4'>" + NEWLINE + \
-"      <OFFSET>-4.620527e-02</OFFSET>" + NEWLINE + \
-"      <SLOPE>1.248225e+00</SLOPE>" + NEWLINE + \
-"   </Calibration>" + NEWLINE + \
-"   <Calibration format = 'VOLT0' id = 'Volt 5'>" + NEWLINE + \
-"      <OFFSET>-4.645263e-02</OFFSET>" + NEWLINE + \
-"      <SLOPE>1.249040e+00</SLOPE>" + NEWLINE + \
-"   </Calibration>" + NEWLINE + \
-"   <Calibration format = 'FREQ0' id = 'external frequency channel'>" + NEWLINE + \
-"      <EXTFREQSF>9.999944e-01</EXTFREQSF>" + NEWLINE + \
-"   </Calibration>" + NEWLINE + \
-"</CalibrationCoefficients>" + NEWLINE
+    VALID_GETCC_RESPONSE = \
+        "" + \
+        "<CalibrationCoefficients DeviceType = 'SBE19plus' SerialNumber = '01907230'>" + NEWLINE + \
+        "   <Calibration format = 'TEMP1' id = 'Main Temperature'>" + NEWLINE + \
+        "      <SerialNum>01907230</SerialNum>" + NEWLINE + \
+        "      <CalDate>07-Dec-13</CalDate>" + NEWLINE + \
+        "      <TA0>1.272723e-03</TA0>" + NEWLINE + \
+        "      <TA1>2.687218e-04</TA1>" + NEWLINE + \
+        "      <TA2>-4.735777e-07</TA2>" + NEWLINE + \
+        "      <TA3>1.522571e-07</TA3>" + NEWLINE + \
+        "      <TOFFSET>0.000000e+00</TOFFSET>" + NEWLINE + \
+        "   </Calibration>" + NEWLINE + \
+        "   <Calibration format = 'WBCOND0' id = 'Main Conductivity'>" + NEWLINE + \
+        "      <SerialNum>01907230</SerialNum>" + NEWLINE + \
+        "      <CalDate>07-Dec-13</CalDate>" + NEWLINE + \
+        "      <G>-9.931677e-01</G>" + NEWLINE + \
+        "      <H>1.391189e-01</H>" + NEWLINE + \
+        "      <I>-4.457962e-04</I>" + NEWLINE + \
+        "      <J>5.145191e-05</J>" + NEWLINE + \
+        "      <CPCOR>-9.570000e-08</CPCOR>" + NEWLINE + \
+        "      <CTCOR>3.250000e-06</CTCOR>" + NEWLINE + \
+        "      <CSLOPE>1.000000e+00</CSLOPE>" + NEWLINE + \
+        "   </Calibration>" + NEWLINE + \
+        "   <Calibration format = 'QUARTZ0' id = 'Main Pressure'>" + NEWLINE + \
+        "      <SerialNum>124969</SerialNum>" + NEWLINE + \
+        "      <CalDate>05-Dec-13</CalDate>" + NEWLINE + \
+        "      <PC1>9.913353e+02</PC1>" + NEWLINE + \
+        "      <PC2>1.013600e-05</PC2>" + NEWLINE + \
+        "      <PC3>-1.182100e-04</PC3>" + NEWLINE + \
+        "      <PD1>3.107200e-02</PD1>" + NEWLINE + \
+        "      <PD2>0.000000e+00</PD2>" + NEWLINE + \
+        "      <PT1>2.767451e+01</PT1>" + NEWLINE + \
+        "      <PT2>-1.080330e-04</PT2>" + NEWLINE + \
+        "      <PT3>1.036700e-06</PT3>" + NEWLINE + \
+        "      <PT4>1.687490e-09</PT4>" + NEWLINE + \
+        "      <PSLOPE>1.000000e+00</PSLOPE>" + NEWLINE + \
+        "      <POFFSET>0.000000e+00</POFFSET>" + NEWLINE + \
+        "      <PRANGE>2.000000e+02</PRANGE>" + NEWLINE + \
+        "   </Calibration>" + NEWLINE + \
+        "   <Calibration format = 'VOLT0' id = 'Volt 0'>" + NEWLINE + \
+        "      <OFFSET>-4.719895e-02</OFFSET>" + NEWLINE + \
+        "      <SLOPE>1.248055e+00</SLOPE>" + NEWLINE + \
+        "   </Calibration>" + NEWLINE + \
+        "   <Calibration format = 'VOLT0' id = 'Volt 1'>" + NEWLINE + \
+        "      <OFFSET>-4.677263e-02</OFFSET>" + NEWLINE + \
+        "      <SLOPE>1.249706e+00</SLOPE>" + NEWLINE + \
+        "   </Calibration>" + NEWLINE + \
+        "   <Calibration format = 'VOLT0' id = 'Volt 2'>" + NEWLINE + \
+        "      <OFFSET>-4.673579e-02</OFFSET>" + NEWLINE + \
+        "      <SLOPE>1.247281e+00</SLOPE>" + NEWLINE + \
+        "   </Calibration>" + NEWLINE + \
+        "   <Calibration format = 'VOLT0' id = 'Volt 3'>" + NEWLINE + \
+        "      <OFFSET>-4.665053e-02</OFFSET>" + NEWLINE + \
+        "      <SLOPE>1.248687e+00</SLOPE>" + NEWLINE + \
+        "   </Calibration>" + NEWLINE + \
+        "   <Calibration format = 'VOLT0' id = 'Volt 4'>" + NEWLINE + \
+        "      <OFFSET>-4.620527e-02</OFFSET>" + NEWLINE + \
+        "      <SLOPE>1.248225e+00</SLOPE>" + NEWLINE + \
+        "   </Calibration>" + NEWLINE + \
+        "   <Calibration format = 'VOLT0' id = 'Volt 5'>" + NEWLINE + \
+        "      <OFFSET>-4.645263e-02</OFFSET>" + NEWLINE + \
+        "      <SLOPE>1.249040e+00</SLOPE>" + NEWLINE + \
+        "   </Calibration>" + NEWLINE + \
+        "   <Calibration format = 'FREQ0' id = 'external frequency channel'>" + NEWLINE + \
+        "      <EXTFREQSF>9.999944e-01</EXTFREQSF>" + NEWLINE + \
+        "   </Calibration>" + NEWLINE + \
+        "</CalibrationCoefficients>" + NEWLINE
 
-    VALID_GETCD_RESPONSE =  "" + \
-"<ConfigurationData DeviceType = 'SBE19plus' SerialNumber = '01907230'>" + NEWLINE + \
-"   <ProfileMode>" + NEWLINE + \
-"      <ScansToAverage>4</ScansToAverage>" + NEWLINE + \
-"      <MinimumCondFreq>500</MinimumCondFreq>" + NEWLINE + \
-"      <PumpDelay>60</PumpDelay>" + NEWLINE + \
-"      <AutoRun>no</AutoRun>" + NEWLINE + \
-"      <IgnoreSwitch>yes</IgnoreSwitch>" + NEWLINE + \
-"   </ProfileMode>" + NEWLINE + \
-"   <Battery>" + NEWLINE + \
-"      <Type>alkaline</Type>" + NEWLINE + \
-"      <CutOff>7.5</CutOff>" + NEWLINE + \
-"   </Battery>" + NEWLINE + \
-"   <DataChannels>" + NEWLINE + \
-"      <ExtVolt0>yes</ExtVolt0>" + NEWLINE + \
-"      <ExtVolt1>yes</ExtVolt1>" + NEWLINE + \
-"      <ExtVolt2>no</ExtVolt2>" + NEWLINE + \
-"      <ExtVolt3>no</ExtVolt3>" + NEWLINE + \
-"      <ExtVolt4>no</ExtVolt4>" + NEWLINE + \
-"      <ExtVolt5>no</ExtVolt5>" + NEWLINE + \
-"      <SBE38>no</SBE38>" + NEWLINE + \
-"      <WETLABS>no</WETLABS>" + NEWLINE + \
-"      <OPTODE>yes</OPTODE>" + NEWLINE + \
-"      <SBE63>no</SBE63>" + NEWLINE + \
-"      <GTD>no</GTD>" + NEWLINE + \
-"   </DataChannels>" + NEWLINE + \
-"   <EchoCharacters>yes</EchoCharacters>" + NEWLINE + \
-"   <OutputExecutedTag>no</OutputExecutedTag>" + NEWLINE + \
-"   <OutputFormat>raw HEX</OutputFormat>" + NEWLINE + \
-"</ConfigurationData>" + NEWLINE
+    VALID_GETCD_RESPONSE = \
+        "" + \
+        "<ConfigurationData DeviceType = 'SBE19plus' SerialNumber = '01907230'>" + NEWLINE + \
+        "   <ProfileMode>" + NEWLINE + \
+        "      <ScansToAverage>4</ScansToAverage>" + NEWLINE + \
+        "      <MinimumCondFreq>500</MinimumCondFreq>" + NEWLINE + \
+        "      <PumpDelay>60</PumpDelay>" + NEWLINE + \
+        "      <AutoRun>no</AutoRun>" + NEWLINE + \
+        "      <IgnoreSwitch>yes</IgnoreSwitch>" + NEWLINE + \
+        "   </ProfileMode>" + NEWLINE + \
+        "   <Battery>" + NEWLINE + \
+        "      <Type>alkaline</Type>" + NEWLINE + \
+        "      <CutOff>7.5</CutOff>" + NEWLINE + \
+        "   </Battery>" + NEWLINE + \
+        "   <DataChannels>" + NEWLINE + \
+        "      <ExtVolt0>yes</ExtVolt0>" + NEWLINE + \
+        "      <ExtVolt1>yes</ExtVolt1>" + NEWLINE + \
+        "      <ExtVolt2>no</ExtVolt2>" + NEWLINE + \
+        "      <ExtVolt3>no</ExtVolt3>" + NEWLINE + \
+        "      <ExtVolt4>no</ExtVolt4>" + NEWLINE + \
+        "      <ExtVolt5>no</ExtVolt5>" + NEWLINE + \
+        "      <SBE38>no</SBE38>" + NEWLINE + \
+        "      <WETLABS>no</WETLABS>" + NEWLINE + \
+        "      <OPTODE>yes</OPTODE>" + NEWLINE + \
+        "      <SBE63>no</SBE63>" + NEWLINE + \
+        "      <GTD>no</GTD>" + NEWLINE + \
+        "   </DataChannels>" + NEWLINE + \
+        "   <EchoCharacters>yes</EchoCharacters>" + NEWLINE + \
+        "   <OutputExecutedTag>no</OutputExecutedTag>" + NEWLINE + \
+        "   <OutputFormat>raw HEX</OutputFormat>" + NEWLINE + \
+        "</ConfigurationData>" + NEWLINE
 
-    VALID_GETSD_RESPONSE =  "" + \
-"<StatusData DeviceType = 'SBE19plus' SerialNumber = '01907230'>" + NEWLINE + \
-"   <DateTime>2014-05-08T21:58:38</DateTime>" + NEWLINE + \
-"   <LoggingState>not logging</LoggingState>" + NEWLINE + \
-"   <EventSummary numEvents = '3'/>" + NEWLINE + \
-"   <Power>" + NEWLINE + \
-"      <vMain>12.9</vMain>" + NEWLINE + \
-"      <vLith>8.5</vLith>" + NEWLINE + \
-"      <iMain>51.1</iMain>" + NEWLINE + \
-"      <iPump> 0.4</iPump>" + NEWLINE + \
-"      <iExt01> 0.4</iExt01>" + NEWLINE + \
-"      <iSerial>46.9</iSerial>" + NEWLINE + \
-"   </Power>" + NEWLINE + \
-"   <MemorySummary>" + NEWLINE + \
-"      <Bytes>1224</Bytes>" + NEWLINE + \
-"      <Samples>68</Samples>" + NEWLINE + \
-"      <SamplesFree>3655384</SamplesFree>" + NEWLINE + \
-"      <SampleLength>18</SampleLength>" + NEWLINE + \
-"      <Profiles>4</Profiles>" + NEWLINE + \
-"   </MemorySummary>" + NEWLINE + \
-"</StatusData>" + NEWLINE
+    VALID_GETSD_RESPONSE = \
+        "" + \
+        "<StatusData DeviceType = 'SBE19plus' SerialNumber = '01907230'>" + NEWLINE + \
+        "   <DateTime>2014-05-08T21:58:38</DateTime>" + NEWLINE + \
+        "   <LoggingState>not logging</LoggingState>" + NEWLINE + \
+        "   <EventSummary numEvents = '3'/>" + NEWLINE + \
+        "   <Power>" + NEWLINE + \
+        "      <vMain>12.9</vMain>" + NEWLINE + \
+        "      <vLith>8.5</vLith>" + NEWLINE + \
+        "      <iMain>51.1</iMain>" + NEWLINE + \
+        "      <iPump> 0.4</iPump>" + NEWLINE + \
+        "      <iExt01> 0.4</iExt01>" + NEWLINE + \
+        "      <iSerial>46.9</iSerial>" + NEWLINE + \
+        "   </Power>" + NEWLINE + \
+        "   <MemorySummary>" + NEWLINE + \
+        "      <Bytes>1224</Bytes>" + NEWLINE + \
+        "      <Samples>68</Samples>" + NEWLINE + \
+        "      <SamplesFree>3655384</SamplesFree>" + NEWLINE + \
+        "      <SampleLength>18</SampleLength>" + NEWLINE + \
+        "      <Profiles>4</Profiles>" + NEWLINE + \
+        "   </MemorySummary>" + NEWLINE + \
+        "</StatusData>" + NEWLINE
 
-    VALID_SEND_OPTODE_RESPONSE = "" + \
-'Optode RX = Analog Output	4831	134	CalPhase' + NEWLINE + \
-'Optode RX = CalPhase[Deg]	4831	134	30.050' + NEWLINE + \
-'S>sendoptode=get enable temperature' + NEWLINE + \
-'Sending Optode: get enable temperature' + NEWLINE + NEWLINE + \
-'Optode RX = Enable Temperature	4831	134	No' + NEWLINE + \
-'S>sendoptode=get enable text' + NEWLINE + \
-'Sending Optode: get enable text' + NEWLINE + NEWLINE + \
-'Optode RX = Enable Text 	4831	134	No' + NEWLINE + \
-'S>sendoptode=get enable humiditycomp' + NEWLINE + \
-'Sending Optode: get enable humiditycomp' + NEWLINE + NEWLINE + \
-'Optode RX = Enable HumidityComp	 4831	134	Yes' + NEWLINE + \
-'S>sendoptode=get enable airsaturation' + NEWLINE + \
-'Sending Optode: get enable airsaturation' + NEWLINE + NEWLINE + \
-'Optode RX = Enable AirSaturation	4831	134	No' + NEWLINE + \
-'S>sendoptode=get enable rawdata' + NEWLINE + \
-'Sending Optode: get enable rawdata' + NEWLINE + NEWLINE + \
-'Optode RX = Enable Rawdata	4831	134	No' + NEWLINE + \
-'S>sendoptode=get interval' + NEWLINE + \
-'Sending Optode: get interval' + NEWLINE + NEWLINE + \
-'Optode RX = Interval	4831	134	5.000' + NEWLINE + \
-'S>sendoptode=get mode' + NEWLINE + \
-'Sending Optode: get mode' + NEWLINE + NEWLINE + \
-'Optode RX = Mode	4831	134	Smart Sensor Terminal' + NEWLINE
+    VALID_SEND_OPTODE_RESPONSE = \
+        "" + \
+        'Optode RX = Analog Output	4831	134	CalPhase' + NEWLINE + \
+        'Optode RX = CalPhase[Deg]	4831	134	30.050' + NEWLINE + \
+        'S>sendoptode=get enable temperature' + NEWLINE + \
+        'Sending Optode: get enable temperature' + NEWLINE + NEWLINE + \
+        'Optode RX = Enable Temperature	4831	134	No' + NEWLINE + \
+        'S>sendoptode=get enable text' + NEWLINE + \
+        'Sending Optode: get enable text' + NEWLINE + NEWLINE + \
+        'Optode RX = Enable Text 	4831	134	No' + NEWLINE + \
+        'S>sendoptode=get enable humiditycomp' + NEWLINE + \
+        'Sending Optode: get enable humiditycomp' + NEWLINE + NEWLINE + \
+        'Optode RX = Enable HumidityComp	 4831	134	Yes' + NEWLINE + \
+        'S>sendoptode=get enable airsaturation' + NEWLINE + \
+        'Sending Optode: get enable airsaturation' + NEWLINE + NEWLINE + \
+        'Optode RX = Enable AirSaturation	4831	134	No' + NEWLINE + \
+        'S>sendoptode=get enable rawdata' + NEWLINE + \
+        'Sending Optode: get enable rawdata' + NEWLINE + NEWLINE + \
+        'Optode RX = Enable Rawdata	4831	134	No' + NEWLINE + \
+        'S>sendoptode=get interval' + NEWLINE + \
+        'Sending Optode: get interval' + NEWLINE + NEWLINE + \
+        'Optode RX = Interval	4831	134	5.000' + NEWLINE + \
+        'S>sendoptode=get mode' + NEWLINE + \
+        'Sending Optode: get mode' + NEWLINE + NEWLINE + \
+        'Optode RX = Mode	4831	134	Smart Sensor Terminal' + NEWLINE
 
     ###
     #  Parameter and Type Definitions
     ###
     _sample_parameters = {
-        SBE19DataParticleKey.TEMP: {TYPE: int, VALUE: 284431, REQUIRED: True },
-        SBE19DataParticleKey.CONDUCTIVITY: {TYPE: int, VALUE: 663185, REQUIRED: True },
-        SBE19DataParticleKey.PRESSURE: {TYPE: int, VALUE: 534780, REQUIRED: True },
-        SBE19DataParticleKey.PRESSURE_TEMP: {TYPE: int, VALUE: 18364, REQUIRED: True },
-        SBE19DataParticleKey.VOLT0: {TYPE: int, VALUE: 23025, REQUIRED: True },
-        SBE19DataParticleKey.VOLT1: {TYPE: int, VALUE: 39317, REQUIRED: True },
-        SBE19DataParticleKey.OXYGEN: {TYPE: int, VALUE: 2909385, REQUIRED: True },
+        SBE19DataParticleKey.TEMP: {TYPE: int, VALUE: 284431, REQUIRED: True},
+        SBE19DataParticleKey.CONDUCTIVITY: {TYPE: int, VALUE: 663185, REQUIRED: True},
+        SBE19DataParticleKey.PRESSURE: {TYPE: int, VALUE: 534780, REQUIRED: True},
+        SBE19DataParticleKey.PRESSURE_TEMP: {TYPE: int, VALUE: 18364, REQUIRED: True},
+        SBE19DataParticleKey.VOLT0: {TYPE: int, VALUE: 23025, REQUIRED: True},
+        SBE19DataParticleKey.VOLT1: {TYPE: int, VALUE: 39317, REQUIRED: True},
+        SBE19DataParticleKey.OXYGEN: {TYPE: int, VALUE: 2909385, REQUIRED: True},
 
     }
 
@@ -393,11 +402,14 @@ class SBE16NOMixin(SeaBird16plusMixin):
         SBE16NOHardwareParticleKey.FIRMWARE_VERSION: {TYPE: unicode, VALUE: '2.5.2', REQUIRED: True},
         SBE16NOHardwareParticleKey.FIRMWARE_DATE: {TYPE: unicode, VALUE: '12 Mar 2013 11:50', REQUIRED: True},
         SBE16NOHardwareParticleKey.COMMAND_SET_VERSION: {TYPE: unicode, VALUE: '1.3', REQUIRED: True},
-        SBE16NOHardwareParticleKey.PCB_SERIAL_NUMBER: {TYPE: list, VALUE: ['49565', '43360', '49357', '38072'], REQUIRED: True},
-        SBE16NOHardwareParticleKey.ASSEMBLY_NUMBER: {TYPE: list, VALUE: ['41054H', '41580B', '41606', '41057A'], REQUIRED: True},
+        SBE16NOHardwareParticleKey.PCB_SERIAL_NUMBER: {TYPE: list, VALUE: ['49565', '43360', '49357', '38072'],
+                                                       REQUIRED: True},
+        SBE16NOHardwareParticleKey.ASSEMBLY_NUMBER: {TYPE: list, VALUE: ['41054H', '41580B', '41606', '41057A'],
+                                                     REQUIRED: True},
         SBE16NOHardwareParticleKey.MANUFACTURE_DATE: {TYPE: unicode, VALUE: '29-Oct-2012', REQUIRED: True},
         SBE16NOHardwareParticleKey.TEMPERATURE_SENSOR_SERIAL_NUMBER: {TYPE: unicode, VALUE: '01907230', REQUIRED: True},
-        SBE16NOHardwareParticleKey.CONDUCTIVITY_SENSOR_SERIAL_NUMBER: {TYPE: unicode, VALUE: '01907230', REQUIRED: True},
+        SBE16NOHardwareParticleKey.CONDUCTIVITY_SENSOR_SERIAL_NUMBER: {TYPE: unicode, VALUE: '01907230',
+                                                                       REQUIRED: True},
         SBE16NOHardwareParticleKey.PRESSURE_SENSOR_SERIAL_NUMBER: {TYPE: unicode, VALUE: '124969', REQUIRED: True},
         SBE16NOHardwareParticleKey.PRESSURE_SENSOR_TYPE: {TYPE: unicode, VALUE: 'quartzTC-0', REQUIRED: True},
         SBE16NOHardwareParticleKey.VOLT0_TYPE: {TYPE: unicode, VALUE: 'not assigned', REQUIRED: True},
@@ -408,14 +420,14 @@ class SBE16NOMixin(SeaBird16plusMixin):
 
     _calibration_parameters = {
         SBE16NOCalibrationParticleKey.SERIAL_NUMBER: {TYPE: unicode, VALUE: '01907230', REQUIRED: True},
-        SBE16NOCalibrationParticleKey.TEMP_SENSOR_SERIAL_NUMBER: {TYPE: unicode, VALUE: '01907230', REQUIRED: True },
+        SBE16NOCalibrationParticleKey.TEMP_SENSOR_SERIAL_NUMBER: {TYPE: unicode, VALUE: '01907230', REQUIRED: True},
         SBE16NOCalibrationParticleKey.TEMP_CAL_DATE: {TYPE: unicode, VALUE: "07-Dec-13", REQUIRED: True},
         SBE16NOCalibrationParticleKey.TA0: {TYPE: float, VALUE: 1.272723e-03, REQUIRED: True},
         SBE16NOCalibrationParticleKey.TA1: {TYPE: float, VALUE: 2.687218e-04, REQUIRED: True},
         SBE16NOCalibrationParticleKey.TA2: {TYPE: float, VALUE: -4.735777e-07, REQUIRED: True},
         SBE16NOCalibrationParticleKey.TA3: {TYPE: float, VALUE: 1.522571e-07, REQUIRED: True},
         SBE16NOCalibrationParticleKey.TOFFSET: {TYPE: float, VALUE: 0.0, REQUIRED: True},
-        SBE16NOCalibrationParticleKey.COND_SENSOR_SERIAL_NUMBER: {TYPE: unicode, VALUE: '01907230', REQUIRED: True },
+        SBE16NOCalibrationParticleKey.COND_SENSOR_SERIAL_NUMBER: {TYPE: unicode, VALUE: '01907230', REQUIRED: True},
         SBE16NOCalibrationParticleKey.COND_CAL_DATE: {TYPE: unicode, VALUE: '07-Dec-13', REQUIRED: True},
         SBE16NOCalibrationParticleKey.CONDG: {TYPE: float, VALUE: -9.931677e-01, REQUIRED: True},
         SBE16NOCalibrationParticleKey.CONDH: {TYPE: float, VALUE: 1.391189e-01, REQUIRED: True},
@@ -424,20 +436,20 @@ class SBE16NOMixin(SeaBird16plusMixin):
         SBE16NOCalibrationParticleKey.CPCOR: {TYPE: float, VALUE: -9.570000e-08, REQUIRED: True},
         SBE16NOCalibrationParticleKey.CTCOR: {TYPE: float, VALUE: 3.250000e-06, REQUIRED: True},
         SBE16NOCalibrationParticleKey.CSLOPE: {TYPE: float, VALUE: 1.0, REQUIRED: True},
-        SBE16NOCalibrationParticleKey.PRES_SERIAL_NUMBER: {TYPE: unicode, VALUE: '124969', REQUIRED: True },
-        SBE16NOCalibrationParticleKey.PRES_CAL_DATE: {TYPE: unicode, VALUE: '05-Dec-13', REQUIRED: True },
-        SBE16NOCalibrationParticleKey.PC1: {TYPE: float, VALUE: 9.913353e+02, REQUIRED: True },
-        SBE16NOCalibrationParticleKey.PC2: {TYPE: float, VALUE:1.013600e-05, REQUIRED: True },
-        SBE16NOCalibrationParticleKey.PC3: {TYPE: float, VALUE: -1.182100e-04, REQUIRED: True },
-        SBE16NOCalibrationParticleKey.PD1: {TYPE: float, VALUE: 3.107200e-02, REQUIRED: True },
-        SBE16NOCalibrationParticleKey.PD2: {TYPE: float, VALUE: 0.000000e+00, REQUIRED: True },
-        SBE16NOCalibrationParticleKey.PT1: {TYPE: float, VALUE: 2.767451e+01, REQUIRED: True },
-        SBE16NOCalibrationParticleKey.PT2: {TYPE: float, VALUE: -1.080330e-04, REQUIRED: True },
-        SBE16NOCalibrationParticleKey.PT3: {TYPE: float, VALUE: 1.036700e-06, REQUIRED: True },
-        SBE16NOCalibrationParticleKey.PT4: {TYPE: float, VALUE: 1.687490e-09, REQUIRED: True },
-        SBE16NOCalibrationParticleKey.PSLOPE: {TYPE: float, VALUE: 1.000000e+00, REQUIRED: True },
-        SBE16NOCalibrationParticleKey.POFFSET: {TYPE: float, VALUE: 0.000000e+00, REQUIRED: True },
-        SBE16NOCalibrationParticleKey.PRES_RANGE: {TYPE: int, VALUE: 2.000000e+02, REQUIRED: True },
+        SBE16NOCalibrationParticleKey.PRES_SERIAL_NUMBER: {TYPE: unicode, VALUE: '124969', REQUIRED: True},
+        SBE16NOCalibrationParticleKey.PRES_CAL_DATE: {TYPE: unicode, VALUE: '05-Dec-13', REQUIRED: True},
+        SBE16NOCalibrationParticleKey.PC1: {TYPE: float, VALUE: 9.913353e+02, REQUIRED: True},
+        SBE16NOCalibrationParticleKey.PC2: {TYPE: float, VALUE: 1.013600e-05, REQUIRED: True},
+        SBE16NOCalibrationParticleKey.PC3: {TYPE: float, VALUE: -1.182100e-04, REQUIRED: True},
+        SBE16NOCalibrationParticleKey.PD1: {TYPE: float, VALUE: 3.107200e-02, REQUIRED: True},
+        SBE16NOCalibrationParticleKey.PD2: {TYPE: float, VALUE: 0.000000e+00, REQUIRED: True},
+        SBE16NOCalibrationParticleKey.PT1: {TYPE: float, VALUE: 2.767451e+01, REQUIRED: True},
+        SBE16NOCalibrationParticleKey.PT2: {TYPE: float, VALUE: -1.080330e-04, REQUIRED: True},
+        SBE16NOCalibrationParticleKey.PT3: {TYPE: float, VALUE: 1.036700e-06, REQUIRED: True},
+        SBE16NOCalibrationParticleKey.PT4: {TYPE: float, VALUE: 1.687490e-09, REQUIRED: True},
+        SBE16NOCalibrationParticleKey.PSLOPE: {TYPE: float, VALUE: 1.000000e+00, REQUIRED: True},
+        SBE16NOCalibrationParticleKey.POFFSET: {TYPE: float, VALUE: 0.000000e+00, REQUIRED: True},
+        SBE16NOCalibrationParticleKey.PRES_RANGE: {TYPE: int, VALUE: 2.000000e+02, REQUIRED: True},
         SBE16NOCalibrationParticleKey.EXT_VOLT0_OFFSET: {TYPE: float, VALUE: -4.719895e-02, REQUIRED: True},
         SBE16NOCalibrationParticleKey.EXT_VOLT0_SLOPE: {TYPE: float, VALUE: 1.248055e+00, REQUIRED: True},
         SBE16NOCalibrationParticleKey.EXT_VOLT1_OFFSET: {TYPE: float, VALUE: -4.677263e-02, REQUIRED: True},
@@ -468,38 +480,38 @@ class SBE16NOMixin(SeaBird16plusMixin):
 
     _driver_parameters = {
         # Parameters defined in the IOS
-        Parameter.PTYPE : {TYPE: int, READONLY: True, DA: True, STARTUP: True, DEFAULT: 3, VALUE: 3},
-        Parameter.VOLT0 : {TYPE: bool, READONLY: True, DA: True, STARTUP: True, DEFAULT: True, VALUE: True},
-        Parameter.VOLT1 : {TYPE: bool, READONLY: True, DA: True, STARTUP: True, DEFAULT: True, VALUE: True},
-        Parameter.VOLT2 : {TYPE: bool, READONLY: True, DA: True, STARTUP: True, DEFAULT: False, VALUE: False},
-        Parameter.VOLT3 : {TYPE: bool, READONLY: True, DA: True, STARTUP: True, DEFAULT: False, VALUE: False},
-        Parameter.VOLT4 : {TYPE: bool, READONLY: True, DA: True, STARTUP: True, DEFAULT: False, VALUE: False},
-        Parameter.VOLT5 : {TYPE: bool, READONLY: True, DA: True, STARTUP: True, DEFAULT: False, VALUE: False},
-        Parameter.SBE38 : {TYPE: bool, READONLY: True, DA: True, STARTUP: True, DEFAULT: False, VALUE: False},
-        Parameter.WETLABS : {TYPE: bool, READONLY: True, DA: True, STARTUP: True, DEFAULT: False, VALUE: False},
-        Parameter.GTD : {TYPE: bool, READONLY: True, DA: True, STARTUP: True, DEFAULT: False, VALUE: False},
-        Parameter.DUAL_GTD : {TYPE: bool, READONLY: True, DA: True, STARTUP: True, DEFAULT: False, VALUE: False},
-        Parameter.SBE63 : {TYPE: bool, READONLY: True, DA: True, STARTUP: True, DEFAULT: False, VALUE: False},
-        Parameter.OPTODE : {TYPE: bool, READONLY: True, DA: True, STARTUP: True, DEFAULT: True, VALUE: True},
-        Parameter.OUTPUT_FORMAT : {TYPE: int, READONLY: True, DA: True, STARTUP: True, DEFAULT: 0, VALUE: 0},
-        Parameter.NUM_AVG_SAMPLES : {TYPE: int, READONLY: False, DA: True, STARTUP: True, DEFAULT: 4, VALUE: 4},
-        Parameter.MIN_COND_FREQ : {TYPE: int, READONLY: True, DA: True, STARTUP: True, DEFAULT: 500, VALUE: 500},
-        Parameter.PUMP_DELAY : {TYPE: int, READONLY: False, DA: True, STARTUP: True, DEFAULT: 60, VALUE: 60},
-        Parameter.AUTO_RUN : {TYPE: bool, READONLY: True, DA: True, STARTUP: True, DEFAULT: False, VALUE: False},
-        Parameter.IGNORE_SWITCH : {TYPE: bool, READONLY: True, DA: True, STARTUP: True, DEFAULT: True, VALUE: True},
-        Parameter.LOGGING : {TYPE: bool, READONLY: True, DA: False, STARTUP: False},
+        Parameter.PTYPE: {TYPE: int, READONLY: True, DA: True, STARTUP: True, DEFAULT: 3, VALUE: 3},
+        Parameter.VOLT0: {TYPE: bool, READONLY: True, DA: True, STARTUP: True, DEFAULT: True, VALUE: True},
+        Parameter.VOLT1: {TYPE: bool, READONLY: True, DA: True, STARTUP: True, DEFAULT: True, VALUE: True},
+        Parameter.VOLT2: {TYPE: bool, READONLY: True, DA: True, STARTUP: True, DEFAULT: False, VALUE: False},
+        Parameter.VOLT3: {TYPE: bool, READONLY: True, DA: True, STARTUP: True, DEFAULT: False, VALUE: False},
+        Parameter.VOLT4: {TYPE: bool, READONLY: True, DA: True, STARTUP: True, DEFAULT: False, VALUE: False},
+        Parameter.VOLT5: {TYPE: bool, READONLY: True, DA: True, STARTUP: True, DEFAULT: False, VALUE: False},
+        Parameter.SBE38: {TYPE: bool, READONLY: True, DA: True, STARTUP: True, DEFAULT: False, VALUE: False},
+        Parameter.WETLABS: {TYPE: bool, READONLY: True, DA: True, STARTUP: True, DEFAULT: False, VALUE: False},
+        Parameter.GTD: {TYPE: bool, READONLY: True, DA: True, STARTUP: True, DEFAULT: False, VALUE: False},
+        Parameter.DUAL_GTD: {TYPE: bool, READONLY: True, DA: True, STARTUP: True, DEFAULT: False, VALUE: False},
+        Parameter.SBE63: {TYPE: bool, READONLY: True, DA: True, STARTUP: True, DEFAULT: False, VALUE: False},
+        Parameter.OPTODE: {TYPE: bool, READONLY: True, DA: True, STARTUP: True, DEFAULT: True, VALUE: True},
+        Parameter.OUTPUT_FORMAT: {TYPE: int, READONLY: True, DA: True, STARTUP: True, DEFAULT: 0, VALUE: 0},
+        Parameter.NUM_AVG_SAMPLES: {TYPE: int, READONLY: False, DA: True, STARTUP: True, DEFAULT: 4, VALUE: 4},
+        Parameter.MIN_COND_FREQ: {TYPE: int, READONLY: True, DA: True, STARTUP: True, DEFAULT: 500, VALUE: 500},
+        Parameter.PUMP_DELAY: {TYPE: int, READONLY: False, DA: True, STARTUP: True, DEFAULT: 60, VALUE: 60},
+        Parameter.AUTO_RUN: {TYPE: bool, READONLY: True, DA: True, STARTUP: True, DEFAULT: False, VALUE: False},
+        Parameter.IGNORE_SWITCH: {TYPE: bool, READONLY: True, DA: True, STARTUP: True, DEFAULT: True, VALUE: True},
+        Parameter.LOGGING: {TYPE: bool, READONLY: True, DA: False, STARTUP: False},
     }
 
     _driver_capabilities = {
         Capability.DISCOVER: {STATES: [ProtocolState.UNKNOWN]},
-        Capability.ACQUIRE_SAMPLE : {STATES: [ProtocolState.COMMAND]},
-        Capability.START_AUTOSAMPLE : {STATES: [ProtocolState.COMMAND]},
-        Capability.STOP_AUTOSAMPLE : {STATES: [ProtocolState.AUTOSAMPLE]},
-        Capability.CLOCK_SYNC : {STATES: [ProtocolState.COMMAND]},
-        Capability.ACQUIRE_STATUS : {STATES: [ProtocolState.COMMAND, ProtocolState.AUTOSAMPLE]},
+        Capability.ACQUIRE_SAMPLE: {STATES: [ProtocolState.COMMAND]},
+        Capability.START_AUTOSAMPLE: {STATES: [ProtocolState.COMMAND]},
+        Capability.STOP_AUTOSAMPLE: {STATES: [ProtocolState.AUTOSAMPLE]},
+        Capability.CLOCK_SYNC: {STATES: [ProtocolState.COMMAND]},
+        Capability.ACQUIRE_STATUS: {STATES: [ProtocolState.COMMAND, ProtocolState.AUTOSAMPLE]},
     }
 
-    def assert_driver_parameters(self, current_parameters, verify_values = False):
+    def assert_driver_parameters(self, current_parameters, verify_values=False):
         """
         Verify that all driver parameters are correct and potentially verify values.
         @param current_parameters: driver parameters read from the driver instance
@@ -507,7 +519,7 @@ class SBE16NOMixin(SeaBird16plusMixin):
         """
         self.assert_parameters(current_parameters, self._driver_parameters, verify_values)
 
-    def assert_particle_sample(self, data_particle, verify_values = False):
+    def assert_particle_sample(self, data_particle, verify_values=False):
         """
         Verify sample particle
         @param data_particle:  SBE19DataParticle data particle
@@ -517,7 +529,7 @@ class SBE16NOMixin(SeaBird16plusMixin):
         self.assert_data_particle_header(data_particle, DataParticleType.CTD_PARSED, require_instrument_timestamp=False)
         self.assert_data_particle_parameters(data_particle, self._sample_parameters, verify_values)
 
-    def assert_particle_hardware(self, data_particle, verify_values = False):
+    def assert_particle_hardware(self, data_particle, verify_values=False):
         """
         Verify hardware particle
         @param data_particle:  SBE19HardwareParticle data particle
@@ -527,7 +539,7 @@ class SBE16NOMixin(SeaBird16plusMixin):
         self.assert_data_particle_header(data_particle, DataParticleType.DEVICE_HARDWARE)
         self.assert_data_particle_parameters(data_particle, self._hardware_parameters, verify_values)
 
-    def assert_particle_calibration(self, data_particle, verify_values = False):
+    def assert_particle_calibration(self, data_particle, verify_values=False):
         """
         Verify sample particle
         @param data_particle:  SBE19CalibrationParticle calibration particle
@@ -537,7 +549,7 @@ class SBE16NOMixin(SeaBird16plusMixin):
         self.assert_data_particle_header(data_particle, DataParticleType.DEVICE_CALIBRATION)
         self.assert_data_particle_parameters(data_particle, self._calibration_parameters, verify_values)
 
-    def assert_particle_status(self, data_particle, verify_values = False):
+    def assert_particle_status(self, data_particle, verify_values=False):
         """
         Verify status particle
         @param data_particle:  SBE19StatusParticle status particle
@@ -547,7 +559,7 @@ class SBE16NOMixin(SeaBird16plusMixin):
         self.assert_data_particle_header(data_particle, DataParticleType.DEVICE_STATUS)
         self.assert_data_particle_parameters(data_particle, self._status_parameters, verify_values)
 
-    def assert_particle_configuration(self, data_particle, verify_values = False):
+    def assert_particle_configuration(self, data_particle, verify_values=False):
         """
         Verify configuration particle
         @param data_particle:  SBE19ConfigurationParticle configuration particle
@@ -557,7 +569,7 @@ class SBE16NOMixin(SeaBird16plusMixin):
         self.assert_data_particle_header(data_particle, DataParticleType.DEVICE_CONFIGURATION)
         self.assert_data_particle_parameters(data_particle, self._configuration_parameters, verify_values)
 
-    def assert_particle_send_optode(self, data_particle, verify_values = False):
+    def assert_particle_send_optode(self, data_particle, verify_values=False):
         """
         Verify send optode particle
         @param data_particle:  SBE19EventCounterParticle event counter particle
@@ -566,6 +578,7 @@ class SBE16NOMixin(SeaBird16plusMixin):
         self.assert_data_particle_keys(OptodeSettingsParticleKey, self._send_optode_parameters)
         self.assert_data_particle_header(data_particle, DataParticleType.OPTODE_SETTINGS)
         self.assert_data_particle_parameters(data_particle, self._send_optode_parameters, verify_values)
+
 
 ###############################################################################
 #                                UNIT TESTS                                   #
@@ -580,7 +593,6 @@ class Sbe16plus16NOUnitTestCase(Sbe16plusUnitTestCase, SBE16NOMixin):
         """
         self.assert_enum_has_no_duplicates(SendOptodeCommand())
         self.assert_enum_has_no_duplicates(DataParticleType())
-
 
     def test_driver_schema(self):
         """
@@ -682,7 +694,6 @@ class Sbe16plus16NOUnitTestCase(Sbe16plusUnitTestCase, SBE16NOMixin):
 ###############################################################################
 @attr('INT', group='mi')
 class SBE16NOIntTestCase(Sbe16plusIntegrationTestCase, SBE16NOMixin):
-
     def test_connection(self):
         self.assert_initialize_driver()
 
@@ -801,24 +812,24 @@ class SBE16NOIntTestCase(Sbe16plusIntegrationTestCase, SBE16NOMixin):
         # what the startup values should be
         get_values = {
             Parameter.PTYPE: 3,
-             Parameter.VOLT0: True,
-             Parameter.VOLT1: True,
-             Parameter.VOLT2: False,
-             Parameter.VOLT3: False,
-             Parameter.VOLT4: False,
-             Parameter.VOLT5: False,
-             Parameter.SBE38: False,
-             Parameter.WETLABS: False,
-             Parameter.GTD: False,
-             Parameter.DUAL_GTD: False,
-             Parameter.SBE63: False,
-             Parameter.OPTODE: True,
-             Parameter.OUTPUT_FORMAT: 0,
-             Parameter.NUM_AVG_SAMPLES: 4,
-             Parameter.MIN_COND_FREQ: 500,
-             Parameter.PUMP_DELAY: 60,
-             Parameter.AUTO_RUN: False,
-             Parameter.IGNORE_SWITCH: True,
+            Parameter.VOLT0: True,
+            Parameter.VOLT1: True,
+            Parameter.VOLT2: False,
+            Parameter.VOLT3: False,
+            Parameter.VOLT4: False,
+            Parameter.VOLT5: False,
+            Parameter.SBE38: False,
+            Parameter.WETLABS: False,
+            Parameter.GTD: False,
+            Parameter.DUAL_GTD: False,
+            Parameter.SBE63: False,
+            Parameter.OPTODE: True,
+            Parameter.OUTPUT_FORMAT: 0,
+            Parameter.NUM_AVG_SAMPLES: 4,
+            Parameter.MIN_COND_FREQ: 500,
+            Parameter.PUMP_DELAY: 60,
+            Parameter.AUTO_RUN: False,
+            Parameter.IGNORE_SWITCH: True,
         }
 
         # Change the values of these parameters to something before the
@@ -838,19 +849,24 @@ class SBE16NOIntTestCase(Sbe16plusIntegrationTestCase, SBE16NOMixin):
         self.assert_startup_parameters(self.assert_driver_parameters)
         self.assert_current_state(ProtocolState.AUTOSAMPLE)
 
-        #stop autosampling
+        # stop autosampling
         self.assert_driver_command(ProtocolEvent.STOP_AUTOSAMPLE, state=ProtocolState.COMMAND, delay=5)
 
     def test_status(self):
         self.assert_initialize_driver()
 
         # test acquire_status particles
-        self.assert_particle_generation(ProtocolEvent.ACQUIRE_STATUS, DataParticleType.DEVICE_STATUS, self.assert_particle_status)
-        self.assert_particle_generation(ProtocolEvent.ACQUIRE_STATUS, DataParticleType.DEVICE_HARDWARE, self.assert_particle_hardware)
-        self.assert_particle_generation(ProtocolEvent.ACQUIRE_STATUS, DataParticleType.DEVICE_CONFIGURATION, self.assert_particle_configuration)
-        self.assert_particle_generation(ProtocolEvent.ACQUIRE_STATUS, DataParticleType.DEVICE_CALIBRATION, self.assert_particle_calibration)
+        self.assert_particle_generation(ProtocolEvent.ACQUIRE_STATUS, DataParticleType.DEVICE_STATUS,
+                                        self.assert_particle_status)
+        self.assert_particle_generation(ProtocolEvent.ACQUIRE_STATUS, DataParticleType.DEVICE_HARDWARE,
+                                        self.assert_particle_hardware)
+        self.assert_particle_generation(ProtocolEvent.ACQUIRE_STATUS, DataParticleType.DEVICE_CONFIGURATION,
+                                        self.assert_particle_configuration)
+        self.assert_particle_generation(ProtocolEvent.ACQUIRE_STATUS, DataParticleType.DEVICE_CALIBRATION,
+                                        self.assert_particle_calibration)
 
-        self.assert_particle_generation(ProtocolEvent.ACQUIRE_STATUS, DataParticleType.OPTODE_SETTINGS, self.assert_particle_send_optode)
+        self.assert_particle_generation(ProtocolEvent.ACQUIRE_STATUS, DataParticleType.OPTODE_SETTINGS,
+                                        self.assert_particle_send_optode)
 
     def test_polled(self):
         """
@@ -859,7 +875,8 @@ class SBE16NOIntTestCase(Sbe16plusIntegrationTestCase, SBE16NOMixin):
         self.assert_initialize_driver()
 
         # test acquire_sample data particle
-        self.assert_particle_generation(ProtocolEvent.ACQUIRE_SAMPLE, DataParticleType.CTD_PARSED, self.assert_particle_sample)
+        self.assert_particle_generation(ProtocolEvent.ACQUIRE_SAMPLE, DataParticleType.CTD_PARSED,
+                                        self.assert_particle_sample)
 
     def test_autosample(self):
         """
@@ -874,10 +891,14 @@ class SBE16NOIntTestCase(Sbe16plusIntegrationTestCase, SBE16NOMixin):
         self.assert_driver_command(ProtocolEvent.START_AUTOSAMPLE, state=ProtocolState.AUTOSAMPLE, delay=1)
         self.assert_async_particle_generation(DataParticleType.CTD_PARSED, self.assert_particle_sample, timeout=60)
 
-        self.assert_particle_generation(ProtocolEvent.ACQUIRE_STATUS, DataParticleType.DEVICE_STATUS, self.assert_particle_status)
-        self.assert_particle_generation(ProtocolEvent.ACQUIRE_STATUS, DataParticleType.DEVICE_HARDWARE, self.assert_particle_hardware)
-        self.assert_particle_generation(ProtocolEvent.ACQUIRE_STATUS, DataParticleType.DEVICE_CONFIGURATION, self.assert_particle_configuration)
-        self.assert_particle_generation(ProtocolEvent.ACQUIRE_STATUS, DataParticleType.DEVICE_CALIBRATION, self.assert_particle_calibration)
+        self.assert_particle_generation(ProtocolEvent.ACQUIRE_STATUS, DataParticleType.DEVICE_STATUS,
+                                        self.assert_particle_status)
+        self.assert_particle_generation(ProtocolEvent.ACQUIRE_STATUS, DataParticleType.DEVICE_HARDWARE,
+                                        self.assert_particle_hardware)
+        self.assert_particle_generation(ProtocolEvent.ACQUIRE_STATUS, DataParticleType.DEVICE_CONFIGURATION,
+                                        self.assert_particle_configuration)
+        self.assert_particle_generation(ProtocolEvent.ACQUIRE_STATUS, DataParticleType.DEVICE_CALIBRATION,
+                                        self.assert_particle_calibration)
 
         self.assert_driver_command(ProtocolEvent.STOP_AUTOSAMPLE, state=ProtocolState.COMMAND, delay=1)
 
@@ -887,12 +908,10 @@ class SBE16NOIntTestCase(Sbe16plusIntegrationTestCase, SBE16NOMixin):
         """
         self.assert_initialize_driver()
 
-
         # Verify that the event got scheduled
         self.assert_async_particle_generation(DataParticleType.DEVICE_STATUS, self.assert_particle_status, timeout=60)
 
         # Reset the interval
-
 
         # Verify that the event got scheduled
         self.assert_async_particle_generation(DataParticleType.DEVICE_STATUS, self.assert_particle_status, timeout=30)
@@ -903,7 +922,8 @@ class SBE16NOIntTestCase(Sbe16plusIntegrationTestCase, SBE16NOMixin):
         failed = False
 
         try:
-            self.assert_async_particle_generation(DataParticleType.DEVICE_STATUS, self.assert_particle_status, timeout=100)
+            self.assert_async_particle_generation(DataParticleType.DEVICE_STATUS, self.assert_particle_status,
+                                                  timeout=100)
 
             # We should never get here, failed should remain False
             failed = True
@@ -923,7 +943,7 @@ class SBE16NOIntTestCase(Sbe16plusIntegrationTestCase, SBE16NOMixin):
         self.assert_driver_command(ProtocolEvent.START_AUTOSAMPLE, state=ProtocolState.AUTOSAMPLE, delay=1)
         self.assert_current_state(ProtocolState.AUTOSAMPLE)
 
-        #verify that the event got scheduled
+        # verify that the event got scheduled
         self.assert_async_particle_generation(DataParticleType.DEVICE_STATUS, self.assert_particle_status, timeout=90)
 
         self.assert_driver_command(ProtocolEvent.STOP_AUTOSAMPLE)
@@ -957,7 +977,7 @@ class SBE16NOIntTestCase(Sbe16plusIntegrationTestCase, SBE16NOMixin):
         """
         self.assert_initialize_driver()
 
-        #Set the clock sync interval to 90 seconds
+        # Set the clock sync interval to 90 seconds
         # Verification: Search log for 'clock sync interval: 90'
 
         # Get into autosample mode
@@ -979,7 +999,6 @@ class SBE16NOIntTestCase(Sbe16plusIntegrationTestCase, SBE16NOMixin):
 ###############################################################################
 @attr('QUAL', group='mi')
 class SBE16NOQualTestCase(Sbe16plusQualTestCase, SBE16NOMixin):
-
     def setUp(self):
         Sbe16plusQualTestCase.setUp(self)
 
@@ -1001,7 +1020,7 @@ class SBE16NOQualTestCase(Sbe16plusQualTestCase, SBE16NOMixin):
         self.assert_direct_access_start_telnet()
         self.tcp_client.send_data("%soutputformat=1%s" % (NEWLINE, NEWLINE))
 
-        #need to sleep as the instrument needs time to apply the new param value
+        # need to sleep as the instrument needs time to apply the new param value
         time.sleep(5)
 
         # Verify the param value got changed on the instrument
@@ -1026,19 +1045,19 @@ class SBE16NOQualTestCase(Sbe16plusQualTestCase, SBE16NOMixin):
         self.assert_direct_access_start_telnet()
         self.assertTrue(self.tcp_client)
 
-        #start logging
+        # start logging
         self.tcp_client.send_data("%sstartnow%s" % (NEWLINE, NEWLINE))
         time.sleep(2)
 
-        #verify we're logging
+        # verify we're logging
         self.tcp_client.send_data("%sGetSD%s" % (NEWLINE, NEWLINE))
         self.tcp_client.expect("<LoggingState>logging</LoggingState>")
 
-        #Assert if stopping DA while autosampling, discover will put driver into Autosample state
+        # Assert if stopping DA while autosampling, discover will put driver into Autosample state
         self.assert_direct_access_stop_telnet()
         self.assert_state_change(ResourceAgentState.STREAMING, ProtocolState.AUTOSAMPLE, timeout=10)
 
-        #now stop autosampling
+        # now stop autosampling
         self.assert_stop_autosample()
 
     def test_direct_access_telnet_timeout(self):
@@ -1074,13 +1093,19 @@ class SBE16NOQualTestCase(Sbe16plusQualTestCase, SBE16NOMixin):
         """
         self.assert_enter_command_mode()
 
-        self.assert_particle_polled(ProtocolEvent.ACQUIRE_SAMPLE, self.assert_particle_sample, DataParticleType.CTD_PARSED, sample_count=1, timeout=30)
+        self.assert_particle_polled(ProtocolEvent.ACQUIRE_SAMPLE, self.assert_particle_sample,
+                                    DataParticleType.CTD_PARSED, sample_count=1, timeout=30)
 
-        self.assert_particle_polled(ProtocolEvent.ACQUIRE_STATUS, self.assert_particle_status, DataParticleType.DEVICE_STATUS, sample_count=1, timeout=90)
-        self.assert_particle_polled(ProtocolEvent.ACQUIRE_STATUS, self.assert_particle_hardware, DataParticleType.DEVICE_HARDWARE, sample_count=1, timeout=90)
-        self.assert_particle_polled(ProtocolEvent.ACQUIRE_STATUS, self.assert_particle_configuration, DataParticleType.DEVICE_CONFIGURATION, sample_count=1, timeout=90)
-        self.assert_particle_polled(ProtocolEvent.ACQUIRE_STATUS, self.assert_particle_calibration, DataParticleType.DEVICE_CALIBRATION, sample_count=1, timeout=90)
-        self.assert_particle_polled(ProtocolEvent.ACQUIRE_STATUS, self.assert_particle_send_optode, DataParticleType.OPTODE_SETTINGS, sample_count=1, timeout=90)
+        self.assert_particle_polled(ProtocolEvent.ACQUIRE_STATUS, self.assert_particle_status,
+                                    DataParticleType.DEVICE_STATUS, sample_count=1, timeout=90)
+        self.assert_particle_polled(ProtocolEvent.ACQUIRE_STATUS, self.assert_particle_hardware,
+                                    DataParticleType.DEVICE_HARDWARE, sample_count=1, timeout=90)
+        self.assert_particle_polled(ProtocolEvent.ACQUIRE_STATUS, self.assert_particle_configuration,
+                                    DataParticleType.DEVICE_CONFIGURATION, sample_count=1, timeout=90)
+        self.assert_particle_polled(ProtocolEvent.ACQUIRE_STATUS, self.assert_particle_calibration,
+                                    DataParticleType.DEVICE_CALIBRATION, sample_count=1, timeout=90)
+        self.assert_particle_polled(ProtocolEvent.ACQUIRE_STATUS, self.assert_particle_send_optode,
+                                    DataParticleType.OPTODE_SETTINGS, sample_count=1, timeout=90)
 
     def test_autosample(self):
         """
@@ -1091,20 +1116,29 @@ class SBE16NOQualTestCase(Sbe16plusQualTestCase, SBE16NOMixin):
         self.assert_start_autosample()
         self.assert_particle_async(DataParticleType.CTD_PARSED, self.assert_particle_sample)
 
-        self.assert_particle_polled(ProtocolEvent.ACQUIRE_STATUS, self.assert_particle_status, DataParticleType.DEVICE_STATUS, sample_count=1, timeout=30)
-        self.assert_particle_polled(ProtocolEvent.ACQUIRE_STATUS, self.assert_particle_hardware, DataParticleType.DEVICE_HARDWARE, sample_count=1, timeout=30)
-        self.assert_particle_polled(ProtocolEvent.ACQUIRE_STATUS, self.assert_particle_configuration, DataParticleType.DEVICE_CONFIGURATION, sample_count=1, timeout=30)
-        self.assert_particle_polled(ProtocolEvent.ACQUIRE_STATUS, self.assert_particle_calibration, DataParticleType.DEVICE_CALIBRATION, sample_count=1, timeout=30)
+        self.assert_particle_polled(ProtocolEvent.ACQUIRE_STATUS, self.assert_particle_status,
+                                    DataParticleType.DEVICE_STATUS, sample_count=1, timeout=30)
+        self.assert_particle_polled(ProtocolEvent.ACQUIRE_STATUS, self.assert_particle_hardware,
+                                    DataParticleType.DEVICE_HARDWARE, sample_count=1, timeout=30)
+        self.assert_particle_polled(ProtocolEvent.ACQUIRE_STATUS, self.assert_particle_configuration,
+                                    DataParticleType.DEVICE_CONFIGURATION, sample_count=1, timeout=30)
+        self.assert_particle_polled(ProtocolEvent.ACQUIRE_STATUS, self.assert_particle_calibration,
+                                    DataParticleType.DEVICE_CALIBRATION, sample_count=1, timeout=30)
 
         # Stop autosample and do run a couple commands.
         self.assert_stop_autosample()
 
-        self.assert_particle_polled(ProtocolEvent.ACQUIRE_STATUS, self.assert_particle_status, DataParticleType.DEVICE_STATUS, sample_count=1, timeout=90)
-        self.assert_particle_polled(ProtocolEvent.ACQUIRE_STATUS, self.assert_particle_hardware, DataParticleType.DEVICE_HARDWARE, sample_count=1, timeout=90)
-        self.assert_particle_polled(ProtocolEvent.ACQUIRE_STATUS, self.assert_particle_configuration, DataParticleType.DEVICE_CONFIGURATION, sample_count=1, timeout=90)
-        self.assert_particle_polled(ProtocolEvent.ACQUIRE_STATUS, self.assert_particle_calibration, DataParticleType.DEVICE_CALIBRATION, sample_count=1, timeout=90)
+        self.assert_particle_polled(ProtocolEvent.ACQUIRE_STATUS, self.assert_particle_status,
+                                    DataParticleType.DEVICE_STATUS, sample_count=1, timeout=90)
+        self.assert_particle_polled(ProtocolEvent.ACQUIRE_STATUS, self.assert_particle_hardware,
+                                    DataParticleType.DEVICE_HARDWARE, sample_count=1, timeout=90)
+        self.assert_particle_polled(ProtocolEvent.ACQUIRE_STATUS, self.assert_particle_configuration,
+                                    DataParticleType.DEVICE_CONFIGURATION, sample_count=1, timeout=90)
+        self.assert_particle_polled(ProtocolEvent.ACQUIRE_STATUS, self.assert_particle_calibration,
+                                    DataParticleType.DEVICE_CALIBRATION, sample_count=1, timeout=90)
 
-        self.assert_particle_polled(ProtocolEvent.ACQUIRE_STATUS, self.assert_particle_send_optode, DataParticleType.OPTODE_SETTINGS, sample_count=1, timeout=90)
+        self.assert_particle_polled(ProtocolEvent.ACQUIRE_STATUS, self.assert_particle_send_optode,
+                                    DataParticleType.OPTODE_SETTINGS, sample_count=1, timeout=90)
 
         # Restart autosample and gather a couple samples
         self.assert_sample_autosample(self.assert_particle_sample, DataParticleType.CTD_PARSED)
@@ -1122,16 +1156,18 @@ class SBE16NOQualTestCase(Sbe16plusQualTestCase, SBE16NOMixin):
         self.assert_reset()
         self.assert_discover(ResourceAgentState.COMMAND)
 
-        # get the time from the driver
+        # Get the time from the driver
         check_new_params = self.instrument_agent_client.get_resource([Parameter.DATE_TIME])
 
-        # convert driver's time from formatted date/time string to seconds integer
-        instrument_time = timegm_to_float(time.strptime(check_new_params.get(Parameter.DATE_TIME).lower(), "%d %b %Y %H:%M:%S"))
+        # Convert driver's time from formatted date/time string to seconds integer
+        instrument_time = timegm_to_float(
+            time.strptime(check_new_params.get(Parameter.DATE_TIME).lower(), "%d %b %Y %H:%M:%S"))
 
-        # need to convert local machine's time to date/time string and back to seconds to 'drop' the DST attribute so test passes
-        # get time from local machine
+        # Need to convert local machine's time to date/time string and back to seconds to 'drop' the DST attribute so
+        # test passes
+        # Get time from local machine
         lt = time.strftime("%d %b %Y %H:%M:%S", time.gmtime(timegm_to_float(time.localtime())))
-        # convert local time from formatted date/time string to seconds integer to drop DST
+        # Convert local time from formatted date/time string to seconds integer to drop DST
         local_time = timegm_to_float(time.strptime(lt, "%d %b %Y %H:%M:%S"))
 
         # Now verify that the time matches to within 10 seconds
@@ -1144,19 +1180,19 @@ class SBE16NOQualTestCase(Sbe16plusQualTestCase, SBE16NOMixin):
         """
         self.assert_enter_command_mode()
 
-        #attempt to change some parameters
+        # attempt to change some parameters
         self.assert_set_parameter(Parameter.NUM_AVG_SAMPLES, 2)
         self.assert_set_parameter(Parameter.PUMP_DELAY, 55)
 
-        #get parameters and verify values
+        # get parameters and verify values
         self.assert_get_parameter(Parameter.NUM_AVG_SAMPLES, 2)
         self.assert_get_parameter(Parameter.PUMP_DELAY, 55)
 
-        #set parameters back to their default values
+        # set parameters back to their default values
         self.assert_set_parameter(Parameter.NUM_AVG_SAMPLES, 4)
         self.assert_set_parameter(Parameter.PUMP_DELAY, 60)
 
-        #get parameters and verify values
+        # get parameters and verify values
         self.assert_get_parameter(Parameter.NUM_AVG_SAMPLES, 4)
         self.assert_get_parameter(Parameter.PUMP_DELAY, 60)
 
@@ -1178,7 +1214,7 @@ class SBE16NOQualTestCase(Sbe16plusQualTestCase, SBE16NOMixin):
                 ProtocolEvent.CLOCK_SYNC,
                 ProtocolEvent.ACQUIRE_STATUS,
                 ProtocolEvent.START_AUTOSAMPLE,
-                ],
+            ],
             AgentCapabilityType.RESOURCE_INTERFACE: None,
             AgentCapabilityType.RESOURCE_PARAMETER: self._driver_parameters.keys()
         }
@@ -1190,10 +1226,10 @@ class SBE16NOQualTestCase(Sbe16plusQualTestCase, SBE16NOMixin):
         ##################
 
         capabilities[AgentCapabilityType.AGENT_COMMAND] = self._common_agent_commands(ResourceAgentState.STREAMING)
-        capabilities[AgentCapabilityType.RESOURCE_COMMAND] =  [
+        capabilities[AgentCapabilityType.RESOURCE_COMMAND] = [
             ProtocolEvent.STOP_AUTOSAMPLE,
             ProtocolEvent.ACQUIRE_STATUS,
-            ]
+        ]
 
         self.assert_start_autosample()
         self.assert_capabilities(capabilities)

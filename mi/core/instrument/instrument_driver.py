@@ -670,19 +670,6 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
             log.debug("Getting metadata from protocol...")
             return self._protocol.get_config_metadata_dict()
 
-    def get_direct_config(self):
-        """
-        Note - must override if instrument driver has more than one instrument configuration.
-        :return: list of dictionaries containing direct access configuration and commands
-        """
-        config = {}
-        if self._protocol:
-            config = self._protocol.get_direct_config()
-            config['ip'] = self._port_agent_config.get('host', 'uft20')
-            config['data'] = self._port_agent_config.get('ports', {}).get('da')
-            config['sniffer'] = self._port_agent_config.get('ports', {}).get('sniff')
-        return [config]
-
     def restore_direct_access_params(self, config):
         """
         Restore the correct values out of the full config that is given when
@@ -1263,3 +1250,5 @@ class SingleConnectionInstrumentDriver(InstrumentDriver):
         if self._protocol:
             self._protocol.shutdown()
             self._protocol = None
+
+
