@@ -1,16 +1,16 @@
 # Version 0.5.8
 
-* Issue #12427 Update ADCP Parsers and Consolidate ADCP stream:
-    * stream "adcp_velocity_earth" replaces:
+* Issue #12427 Update ADCP Parsers and Consolidate ADCP streams:
+    * stream adcp_velocity_earth replaces:
         * adcp_velocity_glider
         * adcp_velocity_inst
-    * stream "adcp_velocity_beam" replaces:
+    * stream adcp_velocity_beam replaces:
         * adcp_pd0_beam_parsed
         * vadcp_5thbeam_pd0_beam_parsed
         * vadcp_pd0_beam_parsed
-    * stream "adcp_system_configuration" replaces:
+    * stream adcp_system_configuration replaces:
         * vadcp_4beam_system_configuration
-    * stream "adcp_system_configuration_5" replaces:
+    * stream adcp_system_configuration_5 replaces:
         * vadcp_5thbeam_system_configuration
 
 # Version 0.5.7
