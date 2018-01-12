@@ -7,6 +7,12 @@ from datetime import datetime, timedelta
 import sys
 from tqdm import tqdm
 
+
+"""
+Usage: python_analysis <root> [sensor]
+root: directory containing raw instrument files (entire tree will be searched)
+sensor: [optional] specifies the instrument type to search (e.g. 'ADCP')
+"""
 __author__ = 'petercable'
 
 datere = re.compile('(\d{8}T\d{4}_UTC)')

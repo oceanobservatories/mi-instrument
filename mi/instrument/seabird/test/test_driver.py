@@ -18,7 +18,8 @@ __license__ = 'Apache 2.0'
 
 import time
 
-from mi.core.log import get_logger ; log = get_logger()
+from mi.core.log import get_logger
+from mi.core.util import hex2value
 
 from nose.plugins.attrib import attr
 from mi.idk.unit_test import InstrumentDriverUnitTestCase
@@ -27,12 +28,14 @@ from mi.idk.unit_test import InstrumentDriverQualificationTestCase
 from mi.idk.unit_test import InstrumentDriverPublicationTestCase
 
 from mi.instrument.seabird.driver import SeaBirdParticle
-from mi.core.exceptions import InstrumentParameterException
 from mi.core.instrument.instrument_driver import DriverEvent
 from mi.core.time_tools import get_timestamp_delayed
 from mi.core.time_tools import timegm_to_float
 
+log = get_logger()
 DEFAULT_CLOCK_DIFF = 5
+
+
 ###############################################################################
 #                                UNIT TESTS                                   #
 #         Unit tests test the method calls and parameters using Mock.         #
@@ -50,29 +53,29 @@ class SeaBirdUnitTest(InstrumentDriverUnitTestCase):
 
     def test_hex2value(self):
         """
-        Verify the hex2value method works as expected.
+        Verify the hex2value method works as expected. - TODO move to mi.core.util.test
         """
-        value = SeaBirdParticle.hex2value("F")
+        value = hex2value("F")
         self.assertIsInstance(value, int)
         self.assertEqual(value, 15)
 
-        value = SeaBirdParticle.hex2value("F", 2)
+        value = hex2value("F", 2)
         self.assertIsInstance(value, float)
         self.assertEqual(value, 7.5)
 
-        value = SeaBirdParticle.hex2value("0xF")
+        value = hex2value("0xF")
         self.assertIsInstance(value, int)
         self.assertEqual(value, 15)
 
-        value = SeaBirdParticle.hex2value("0x1000")
+        value = hex2value("0x1000")
         self.assertIsInstance(value, int)
         self.assertEqual(value, 4096)
 
-        with self.assertRaises(InstrumentParameterException):
-            SeaBirdParticle.hex2value("F", 0)
+        with self.assertRaises(ValueError):
+            hex2value("F", 0)
 
-        with self.assertRaises(InstrumentParameterException):
-            SeaBirdParticle.hex2value(1, 0)
+        with self.assertRaises(ValueError):
+            hex2value(1, 0)
 
     def test_sbetime2unixtime(self):
         """
@@ -103,7 +106,8 @@ class SeaBirdIntegrationTest(InstrumentDriverIntegrationTestCase):
     def setUp(self):
         InstrumentDriverIntegrationTestCase.setUp(self)
 
-    def assert_set_clock(self, time_param, time_override=None, time_format = "%d %b %Y %H:%M:%S", tolerance=DEFAULT_CLOCK_DIFF):
+    def assert_set_clock(self, time_param, time_override=None, time_format="%d %b %Y %H:%M:%S",
+                         tolerance=DEFAULT_CLOCK_DIFF):
         """
         Verify that we can set the clock
         @param time_param: driver parameter
@@ -122,7 +126,7 @@ class SeaBirdIntegrationTest(InstrumentDriverIntegrationTestCase):
         self.assert_set(time_param, set_time, no_get=True, startup=True)
         self.assertTrue(self._is_time_set(time_param, set_time, time_format, tolerance))
 
-    def _is_time_set(self, time_param, expected_time, time_format = "%d %b %Y %H:%M:%S", tolerance=DEFAULT_CLOCK_DIFF):
+    def _is_time_set(self, time_param, expected_time, time_format="%d %b %Y %H:%M:%S", tolerance=DEFAULT_CLOCK_DIFF):
         """
         Verify is what we expect it to be within a given tolerance
         @param time_param: driver parameter
@@ -150,7 +154,8 @@ class SeaBirdIntegrationTest(InstrumentDriverIntegrationTestCase):
         # Verify the clock is set within the tolerance
         return abs(converted_time - timegm_to_float(expected_time_struct)) <= tolerance
 
-    def assert_clock_set(self, time_param, sync_clock_cmd = DriverEvent.ACQUIRE_STATUS, timeout = 60, tolerance=DEFAULT_CLOCK_DIFF):
+    def assert_clock_set(self, time_param, sync_clock_cmd=DriverEvent.ACQUIRE_STATUS, timeout=60,
+                         tolerance=DEFAULT_CLOCK_DIFF):
         """
         Verify the clock is set to at least the current date
         """
@@ -168,6 +173,7 @@ class SeaBirdIntegrationTest(InstrumentDriverIntegrationTestCase):
             time.sleep(5)
             self.assertLess(time.time(), timeout_time, msg="Timeout waiting for clock sync event")
 
+
 ###############################################################################
 #                            QUALIFICATION TESTS                              #
 # Device specific qualification tests are for                                 #
@@ -177,6 +183,7 @@ class SeaBirdIntegrationTest(InstrumentDriverIntegrationTestCase):
 class SeaBirdQualificationTest(InstrumentDriverQualificationTestCase):
     def setUp(self):
         InstrumentDriverQualificationTestCase.setUp(self)
+
 
 ###############################################################################
 #                             PUBLICATION  TESTS                              #

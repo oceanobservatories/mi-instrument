@@ -14,6 +14,7 @@ import time
 from mi.core.log import get_logger
 from mi.core.common import BaseEnum
 from mi.core.common import Units
+from mi.core.util import hex2value
 from mi.core.instrument.instrument_protocol import CommandResponseInstrumentProtocol
 from mi.core.instrument.data_particle import DataParticleKey
 from mi.core.instrument.instrument_fsm import ThreadSafeFSM
@@ -816,10 +817,10 @@ class SBE19DataParticle(Sbe16plusBaseParticle):
                                   self.raw_data)
 
         try:
-            temperature = self.hex2value(match.group(1))
-            conductivity = self.hex2value(match.group(2))
-            pressure = self.hex2value(match.group(3))
-            pressure_temp = self.hex2value(match.group(4))
+            temperature = hex2value(match.group(1))
+            conductivity = hex2value(match.group(2))
+            pressure = hex2value(match.group(3))
+            pressure_temp = hex2value(match.group(4))
             optode = match.group(5)
 
         except ValueError:
@@ -836,11 +837,11 @@ class SBE19DataParticle(Sbe16plusBaseParticle):
                    DataParticleKey.VALUE: pressure_temp}]
 
         if optode:
-            volt0 = self.hex2value(optode[:4])
+            volt0 = hex2value(optode[:4])
             optode = optode[4:]
-            volt1 = self.hex2value(optode[:4])
+            volt1 = hex2value(optode[:4])
             optode = optode[4:]
-            oxygen = self.hex2value(optode)
+            oxygen = hex2value(optode)
             result.append({DataParticleKey.VALUE_ID: SBE19DataParticleKey.VOLT0, DataParticleKey.VALUE: volt0})
             result.append({DataParticleKey.VALUE_ID: SBE19DataParticleKey.VOLT1, DataParticleKey.VALUE: volt1})
             result.append({DataParticleKey.VALUE_ID: SBE19DataParticleKey.OXYGEN, DataParticleKey.VALUE: oxygen})
