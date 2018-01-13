@@ -101,7 +101,6 @@ def read_config_header(chunk):
     values.pop(4)  # drop the spare field
 
     # strip the trailing zero byte padding from the strings
-    # for i in [0, 1, 2, 3]:
     for i in xrange(4):
         values[i] = values[i].strip('\x00')
 
@@ -158,6 +157,7 @@ class ZPLSPlot(object):
     upper_percentile = 95
 
     def __init__(self, data_times, power_data_dict, frequency_dict, bin_size):
+        self.fig = None
         self.power_data_dict = self._transpose_and_flip(power_data_dict)
         self.min_db, self.max_db = self._get_power_range(power_data_dict)
         self.frequency_dict = frequency_dict
@@ -172,18 +172,19 @@ class ZPLSPlot(object):
         Generate plots for all transducers in data set
         """
         freq_to_channel = {v: k for k, v in self.frequency_dict.iteritems()}
-        data_axes = None
+        data_axes = []
         for index, frequency in enumerate(sorted(freq_to_channel)):
             channel = freq_to_channel[frequency]
             td_f = self.frequency_dict[channel]
             title = 'Power: Transducer #%d: Frequency: %0.1f kHz' % (channel, td_f / 1000)
-            data_axes = self._generate_plot(self.ax[index], self.power_data_dict[channel], title,
-                                            self.min_db, self.max_db)
+            data_axes.append(self._generate_plot(self.ax[index], self.power_data_dict[channel], title,
+                                                 self.min_db[channel], self.max_db[channel]))
 
         if data_axes:
-            self._display_x_labels(self.ax[2], self.data_times)
+            self._display_x_labels(self.ax[-1], self.data_times)
             self.fig.tight_layout(rect=[0, 0.0, 0.97, 1.0])
-            self._display_colorbar(self.fig, data_axes)
+            for index in range(len(data_axes)):
+                self._display_colorbar(self.fig, data_axes[index], index)
 
     def write_image(self, filename):
         self.fig.savefig(filename)
@@ -196,9 +197,12 @@ class ZPLSPlot(object):
         # create range vector (depth in meters)
         yticklabels = np.round(np.linspace(0, max_depth * bin_size, self.num_yticks)).astype(int)
 
-        self.fig, self.ax = plt.subplots(len(self.frequency_dict), sharex=True, sharey=True)
+        self.fig, self.ax = plt.subplots(len(self.frequency_dict), sharex='all', sharey='all')
         self.fig.subplots_adjust(hspace=self.interplot_spacing)
         self.fig.set_size_inches(40, 19)
+
+        if not isinstance(self.ax, np.ndarray):
+            self.ax = [self.ax]
 
         for axes in self.ax:
             axes.grid(False)
@@ -211,12 +215,33 @@ class ZPLSPlot(object):
             axes.spines['bottom'].set_visible(False)
             axes.spines['left'].set_visible(False)
 
+    def _display_colorbar(self, fig, data_axes, order):
+        # Add a colorbar to the specified figure using the data from the given axes
+        num_freqs = len(self.frequency_dict)
+        plot_bottom = 0.09
+        verticle_space = 0.009
+
+        # Calculate the position of the colorbar
+        left = 0.965
+        bottom = plot_bottom + ((num_freqs-order-1) * (verticle_space + (0.9/num_freqs)))
+        width = 0.01
+        height = 0.8/num_freqs
+
+        ax = fig.add_axes([left, bottom, width, height])
+        cb = fig.colorbar(data_axes, cax=ax, use_gridspec=True)
+        cb.set_label('dB', fontsize=ZPLSPlot.font_size_large)
+        cb.ax.tick_params(labelsize=ZPLSPlot.font_size_small)
+
     @staticmethod
     def _get_power_range(power_dict):
-        # Calculate the power data range across all channels
-        all_power_data = np.concatenate(power_dict.values())
-        max_db = np.nanpercentile(all_power_data, ZPLSPlot.upper_percentile)
-        min_db = np.nanpercentile(all_power_data, ZPLSPlot.lower_percentile)
+        # Calculate the power data range across each channel
+        max_db = {}
+        min_db = {}
+        for channel, channel_data in power_dict.iteritems():
+            all_power_data = np.concatenate(channel_data)
+            max_db[channel] = np.nanpercentile(all_power_data, ZPLSPlot.upper_percentile)
+            min_db[channel] = np.nanpercentile(all_power_data, ZPLSPlot.lower_percentile)
+
         return min_db, max_db
 
     @staticmethod
@@ -234,7 +259,6 @@ class ZPLSPlot(object):
         Generate a ZPLS plot for an individual channel
         :param ax:  matplotlib axis to receive the plot image
         :param power_data:  Transducer data array
-        :param data_times:  Transducer internal time array
         :param title:  plot title
         :param min_db: minimum power level
         :param max_db: maximum power level
@@ -264,11 +288,3 @@ class ZPLSPlot(object):
         ax.set_xticks(xticks)
         ax.set_xticklabels(xticklabels, rotation=45, horizontalalignment='center', fontsize=ZPLSPlot.font_size_small)
         ax.set_xlim(0, time_length)
-
-    @staticmethod
-    def _display_colorbar(fig, data_axes):
-        # Add a colorbar to the specified figure using the data from the given axes
-        ax = fig.add_axes([0.965, 0.12, 0.01, 0.775])
-        cb = fig.colorbar(data_axes, cax=ax, use_gridspec=True)
-        cb.set_label('dB', fontsize=ZPLSPlot.font_size_large)
-        cb.ax.tick_params(labelsize=ZPLSPlot.font_size_small)
