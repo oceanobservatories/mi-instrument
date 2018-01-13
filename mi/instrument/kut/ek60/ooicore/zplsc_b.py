@@ -431,8 +431,7 @@ def parse_particles_file(input_file_path, output_file_path=None):
                             relpath = generate_relative_file_path(image_path)
                             first_ping_metadata = defaultdict(list)
                             for channel, sample_data in sample_data_temp_dict.iteritems():
-                                append_metadata(first_ping_metadata, file_time, relpath,
-                                                channel, sample_data)
+                                append_metadata(first_ping_metadata, file_time, relpath, channel, sample_data)
 
                                 frequency = sample_data['frequency'][0]
                                 frequencies[channel] = frequency
@@ -460,12 +459,15 @@ def parse_particles_file(input_file_path, output_file_path=None):
             # Read the next block for regex search
             raw = input_file.read(BLOCK_SIZE)
 
+        log.info('Completed processing data: %r', input_file_path)
+
         data_times = np.array(data_times)
-        # Convert to numpy array and decompress power data to dB
+
         for channel in power_data_dict:
+            # Convert to numpy array and decompress power data to dB
             power_data_dict[channel] = np.array(power_data_dict[channel]) * 10. * numpy.log10(2) / 256.
 
-        log.info('Completed processing data. Generating echogram: %r', image_path)
+        log.info('Begin generating echogram: %r', image_path)
 
         plot = ZPLSPlot(data_times, power_data_dict, frequencies, bin_size)
         plot.generate_plots()
