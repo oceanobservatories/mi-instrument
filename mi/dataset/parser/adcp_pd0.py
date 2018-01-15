@@ -217,8 +217,6 @@ class AdcpDataParticleType(BaseEnum):
     Stream types of data particles
     """
     VELOCITY_EARTH = 'adcp_velocity_earth'
-    VELOCITY_INST = 'adcp_velocity_inst'
-    VELOCITY_GLIDER = 'adcp_velocity_glider'
     PD0_ENGINEERING = 'adcp_engineering'
     PD0_CONFIG = 'adcp_config'
     PD0_ERROR_STATUS = 'adcp_error_status'
@@ -309,31 +307,11 @@ class VelocityEarth(VelocityBase):
 
 
 class VelocityGlider(VelocityEarth):
-    _data_particle_type = AdcpDataParticleType.VELOCITY_GLIDER
+    _data_particle_type = AdcpDataParticleType.VELOCITY_EARTH
 
 
-class VelocityInst(VelocityBase):
-    _data_particle_type = AdcpDataParticleType.VELOCITY_INST
-
-    def _build_parsed_values(self):
-        """
-        Add the fields specific to Instrument coordinate values
-        """
-        record = self.raw_data
-        fields = self._build_base_values()
-
-        fields.extend([
-            # INSTRUMENT VELOCITIES
-            (AdcpPd0ParsedKey.WATER_VELOCITY_FORWARD, record.velocities.beam1),
-            (AdcpPd0ParsedKey.WATER_VELOCITY_STARBOARD, record.velocities.beam2),
-            (AdcpPd0ParsedKey.WATER_VELOCITY_VERTICAL, record.velocities.beam3),
-            (AdcpPd0ParsedKey.ERROR_VELOCITY, record.velocities.beam4),
-            (AdcpPd0ParsedKey.PERCENT_GOOD_3BEAM, record.percent_good.beam1),
-            (AdcpPd0ParsedKey.PERCENT_TRANSFORMS_REJECT, record.percent_good.beam2),
-            (AdcpPd0ParsedKey.PERCENT_BAD_BEAMS, record.percent_good.beam3),
-            (AdcpPd0ParsedKey.PERCENT_GOOD_4BEAM, record.percent_good.beam4)])
-
-        return [{DataParticleKey.VALUE_ID: key, DataParticleKey.VALUE: value} for key, value in fields]
+class VelocityInst(VelocityEarth):
+    _data_particle_type = AdcpDataParticleType.VELOCITY_EARTH
 
 
 class EngineeringBase(Pd0Base):

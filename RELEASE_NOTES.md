@@ -1,3 +1,18 @@
+# Version 0.5.9
+
+* Issue #12427 Update ADCP Parsers and Consolidate ADCP streams:
+   * stream adcp_velocity_earth replaces:
+       * adcp_velocity_glider  (mi/dataset/parser/adcp_pd0.py)
+       * adcp_velocity_inst    (mi/dataset/parser/adcp_pd0.py)  
+   * stream adcp_velocity_beam replaces:
+       * adcp_pd0_beam_parsed  (mi/instrument/teledyne/workhorse/particles.py)
+       * vadcp_5thbeam_pd0_beam_parsed  (mi/instrument/teledyne/workhorse/particles.py)
+       * vadcp_pd0_beam_parsed  (mi/instrument/teledyne/workhorse/particles.py)
+   * stream adcp_system_configuration replaces:
+       * vadcp_4beam_system_configuration  (mi/instrument/teledyne/workhorse/particles.py)
+   * stream adcp_system_configuration_5 replaces:
+       * vadcp_5thbeam_system_configuration  (mi/instrument/teledyne/workhorse/particles.py)
+
 # Version 0.5.8
 
 * Issue #13083 - Restored feature in zplsc_b parser to generate an echogram.

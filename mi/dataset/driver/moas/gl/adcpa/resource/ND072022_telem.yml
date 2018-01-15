@@ -1,96 +1,167 @@
+header:
+    particle_object: 'MULTIPLE'
+    particle_type: 'MULTIPLE'
 data:
-- _index: 1
-  bin_1_distance: 297
-  cell_length: 200
-  correlation_magnitude_beam1: [16, 9, 9, 8, 10, 10, 10, 8, 10, 8, 8, 9, 8, 8, 8,
-    8, 10, 7, 8, 7, 8, 9, 10, 8, 9, 7, 8, 0, 0, 0]
-  correlation_magnitude_beam2: [10, 10, 10, 10, 9, 8, 7, 8, 10, 9, 8, 8, 10, 10, 8,
-    8, 9, 9, 7, 9, 9, 9, 10, 9, 7, 8, 8, 9, 9, 8]
-  correlation_magnitude_beam3: [18, 7, 8, 8, 8, 10, 9, 8, 9, 8, 10, 9, 8, 8, 7, 10,
-    8, 9, 8, 9, 9, 8, 8, 7, 7, 10, 0, 0, 0, 0]
-  correlation_magnitude_beam4: [16, 16, 7, 9, 9, 9, 9, 10, 8, 9, 9, 9, 9, 7, 9, 9,
-    11, 10, 10, 9, 7, 9, 8, 8, 10, 9, 9, 8, 8, 8]
-  echo_intensity_beam1: [60, 59, 60, 60, 60, 60, 60, 60, 60, 59, 59, 60, 60, 60, 60,
-    59, 60, 60, 60, 60, 60, 59, 60, 60, 59, 60, 60, 60, 60, 60]
-  echo_intensity_beam2: [61, 60, 60, 60, 59, 60, 60, 60, 60, 59, 60, 59, 60, 60, 59,
-    60, 60, 60, 60, 60, 60, 60, 59, 59, 59, 60, 60, 60, 60, 60]
-  echo_intensity_beam3: [61, 60, 60, 59, 60, 60, 60, 60, 60, 60, 60, 60, 59, 59, 59,
-    60, 60, 60, 60, 60, 60, 59, 60, 60, 60, 60, 60, 60, 59, 60]
-  echo_intensity_beam4: [56, 54, 54, 54, 54, 54, 54, 54, 54, 54, 54, 54, 55, 54, 54,
-    55, 54, 54, 55, 55, 54, 54, 54, 54, 55, 55, 55, 54, 55, 55]
-  ensemble_number: 1
-  error_velocity: [-32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
-    -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
-    -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
-    -32768, -32768]
-  heading: 7830
-  internal_timestamp: 3605890958.53
-  num_cells: 30
-  particle_object: VelocityGlider
-  particle_type: adcp_velocity_glider
-  percent_bad_beams: [100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100,
-    100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100,
-    100, 100]
-  percent_good_3beam: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-  percent_good_4beam: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-  percent_transforms_reject: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-  pitch: 10
-  pressure: 0
-  roll: 970
-  salinity: 35
-  sysconfig_vertical_orientation: 0
-  temperature: 2023
-  transducer_depth: 0
-  water_velocity_east: [-32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
-    -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
-    -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
-    -32768, -32768]
-  water_velocity_north: [-32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
-    -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
-    -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
-    -32768, -32768]
-  water_velocity_up: [-32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
-    -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
-    -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768,
-    -32768, -32768]
-- {_index: 2, blank_after_transmit: 88, cell_length: 200, coord_transform_beams: 1,
-  coord_transform_mapping: 1, coord_transform_tilts: 1, coord_transform_type: 3, data_flag: 0,
-  error_vel_threshold: 2000, false_target_threshold: 50, firmware_revision: 12, firmware_version: 34,
-  heading_alignment: 0, heading_bias: 0, internal_timestamp: 3605890958.53, lag_length: 26,
-  low_corr_threshold: 64, num_beams: 4, num_cells: 30, num_code_repetitions: 9, particle_object: GliderConfig,
-  particle_type: adcp_config, percent_good_min: 0, pings_per_ensemble: 10, reference_layer_start: 80,
-  reference_layer_stop: 160, sensor_available_conductivity: 0, sensor_available_depth: 0,
-  sensor_available_heading: 0, sensor_available_pitch: 0, sensor_available_roll: 0,
-  sensor_available_speed: 0, sensor_available_temperature: 0, sensor_available_temperature_eu: 0,
-  sensor_source_conductivity: 0, sensor_source_depth: 0, sensor_source_heading: 0,
-  sensor_source_pitch: 0, sensor_source_roll: 0, sensor_source_speed: 1, sensor_source_temperature: 1,
-  sensor_source_temperature_eu: 0, serial_number: '648292', signal_processing_mode: 1,
-  sysconfig_beam_angle: 2, sysconfig_beam_config: 4, sysconfig_beam_pattern: 1, sysconfig_frequency: 600,
-  sysconfig_head_attached: 1, sysconfig_sensor_config: 0, sysconfig_vertical_orientation: 0,
-  system_bandwidth: 0, time_per_ping_hundredths: 0, time_per_ping_minutes: 0, time_per_ping_seconds: 0,
-  transmit_lag_distance: 22}
-- {_index: 3, adc_transmit_voltage: 11, bit_result: 337, heading_stdev: 0, internal_timestamp: 3605890958.53,
-  mpt_hundredths: 95, mpt_minutes: 51, mpt_seconds: 0, particle_object: GliderEngineering,
-  particle_type: adcp_engineering, pitch_stdev: 1, pressure_variance: 0, roll_stdev: 99,
-  speed_of_sound: 1521, transmit_pulse_length: 197}
-- {_index: 4, bt_beam1_correlation: 0, bt_beam1_eval_amp: 0, bt_beam1_percent_good: 0,
-  bt_beam1_range: 0, bt_beam1_ref_correlation: 0, bt_beam1_ref_intensity: 60, bt_beam1_ref_percent_good: 0,
-  bt_beam1_rssi_amplitude: 0, bt_beam2_correlation: 0, bt_beam2_eval_amp: 0, bt_beam2_percent_good: 0,
-  bt_beam2_range: 0, bt_beam2_ref_correlation: 0, bt_beam2_ref_intensity: 60, bt_beam2_ref_percent_good: 0,
-  bt_beam2_rssi_amplitude: 0, bt_beam3_correlation: 0, bt_beam3_eval_amp: 0, bt_beam3_percent_good: 0,
-  bt_beam3_range: 0, bt_beam3_ref_correlation: 0, bt_beam3_ref_intensity: 59, bt_beam3_ref_percent_good: 100,
-  bt_beam3_rssi_amplitude: 0, bt_beam4_correlation: 0, bt_beam4_eval_amp: 0, bt_beam4_percent_good: 0,
-  bt_beam4_range: 0, bt_beam4_ref_correlation: 0, bt_beam4_ref_intensity: 54, bt_beam4_ref_percent_good: 0,
-  bt_beam4_rssi_amplitude: 0, bt_eastward_ref_layer_velocity: -32768, bt_eastward_velocity: -32768,
-  bt_error_ref_layer_velocity: -32768, bt_error_velocity: -32768, bt_gain: 0, bt_northward_ref_layer_velocity: -32768,
-  bt_northward_velocity: -32768, bt_ref_layer_far: 160, bt_ref_layer_min: 20, bt_ref_layer_near: 80,
-  bt_upward_ref_layer_velocity: -32768, bt_upward_velocity: -32768, internal_timestamp: 3605890958.53,
-  particle_object: EarthBottom, particle_type: adcp_bottom_track_earth}
-- {_index: 5, bt_corr_magnitude_min: 220, bt_delay_before_reacquire: 0, bt_error_velocity_max: 1000,
-  bt_eval_magnitude_min: 24, bt_max_depth: 800, bt_mode: 8, bt_percent_good_min: 0,
-  bt_pings_per_ensemble: 5, internal_timestamp: 3605890958.53, particle_object: BottomConfig,
-  particle_type: adcp_bottom_track_config}
-header: {particle_object: MULTIPLE, particle_type: MULTIPLE}
+  - _index: 1
+    particle_object: VelocityGlider
+    particle_type: adcp_velocity_earth
+    internal_timestamp: 3605890958.5300002
+    bin_1_distance: 297
+    cell_length: 200
+    correlation_magnitude_beam1: [16, 9, 9, 8, 10, 10, 10, 8, 10, 8, 8, 9, 8, 8, 8, 8, 10, 7, 8, 7, 8, 9, 10, 8, 9, 7, 8, 0, 0, 0]
+    correlation_magnitude_beam2: [10, 10, 10, 10, 9, 8, 7, 8, 10, 9, 8, 8, 10, 10, 8, 8, 9, 9, 7, 9, 9, 9, 10, 9, 7, 8, 8, 9, 9, 8]
+    correlation_magnitude_beam3: [18, 7, 8, 8, 8, 10, 9, 8, 9, 8, 10, 9, 8, 8, 7, 10, 8, 9, 8, 9, 9, 8, 8, 7, 7, 10, 0, 0, 0, 0]
+    correlation_magnitude_beam4: [16, 16, 7, 9, 9, 9, 9, 10, 8, 9, 9, 9, 9, 7, 9, 9, 11, 10, 10, 9, 7, 9, 8, 8, 10, 9, 9, 8, 8, 8]
+    echo_intensity_beam1: [60, 59, 60, 60, 60, 60, 60, 60, 60, 59, 59, 60, 60, 60, 60, 59, 60, 60, 60, 60, 60, 59, 60, 60, 59, 60, 60, 60, 60, 60]
+    echo_intensity_beam2: [61, 60, 60, 60, 59, 60, 60, 60, 60, 59, 60, 59, 60, 60, 59, 60, 60, 60, 60, 60, 60, 60, 59, 59, 59, 60, 60, 60, 60, 60]
+    echo_intensity_beam3: [61, 60, 60, 59, 60, 60, 60, 60, 60, 60, 60, 60, 59, 59, 59, 60, 60, 60, 60, 60, 60, 59, 60, 60, 60, 60, 60, 60, 59, 60]
+    echo_intensity_beam4: [56, 54, 54, 54, 54, 54, 54, 54, 54, 54, 54, 54, 55, 54, 54, 55, 54, 54, 55, 55, 54, 54, 54, 54, 55, 55, 55, 54, 55, 55]
+    ensemble_number: 1
+    error_velocity: [-32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768]
+    heading: 7830
+    num_cells: 30
+    percent_bad_beams: [100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100]
+    percent_good_3beam: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    percent_good_4beam: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    percent_transforms_reject: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    pitch: 10
+    pressure: 0
+    roll: 970
+    salinity: 35
+    sysconfig_vertical_orientation: 0
+    temperature: 2023
+    transducer_depth: 0
+    water_velocity_east: [-32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768]
+    water_velocity_north: [-32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768]
+    water_velocity_up: [-32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768, -32768]
+  - _index: 2
+    particle_object: GliderConfig
+    particle_type: adcp_config
+    internal_timestamp: 3605890958.5300002
+    blank_after_transmit: 88
+    cell_length: 200
+    coord_transform_beams: 1
+    coord_transform_mapping: 1
+    coord_transform_tilts: 1
+    coord_transform_type: 3
+    data_flag: 0
+    error_vel_threshold: 2000
+    false_target_threshold: 50
+    firmware_revision: 12
+    firmware_version: 34
+    heading_alignment: 0
+    heading_bias: 0
+    lag_length: 26
+    low_corr_threshold: 64
+    num_beams: 4
+    num_cells: 30
+    num_code_repetitions: 9
+    percent_good_min: 0
+    pings_per_ensemble: 10
+    reference_layer_start: 80
+    reference_layer_stop: 160
+    sensor_available_conductivity: 0
+    sensor_available_depth: 0
+    sensor_available_heading: 0
+    sensor_available_pitch: 0
+    sensor_available_roll: 0
+    sensor_available_speed: 0
+    sensor_available_temperature: 0
+    sensor_available_temperature_eu: 0
+    sensor_source_conductivity: 0
+    sensor_source_depth: 0
+    sensor_source_heading: 0
+    sensor_source_pitch: 0
+    sensor_source_roll: 0
+    sensor_source_speed: 1
+    sensor_source_temperature: 1
+    sensor_source_temperature_eu: 0
+    serial_number: '648292'
+    signal_processing_mode: 1
+    sysconfig_beam_angle: 2
+    sysconfig_beam_config: 4
+    sysconfig_beam_pattern: 1
+    sysconfig_frequency: 600
+    sysconfig_head_attached: 1
+    sysconfig_sensor_config: 0
+    sysconfig_vertical_orientation: 0
+    system_bandwidth: 0
+    time_per_ping_hundredths: 0
+    time_per_ping_minutes: 0
+    time_per_ping_seconds: 0
+    transmit_lag_distance: 22
+  - _index: 3
+    particle_object: GliderEngineering
+    particle_type: adcp_engineering
+    internal_timestamp: 3605890958.5300002
+    adc_transmit_voltage: 11
+    bit_result: 337
+    heading_stdev: 0
+    mpt_hundredths: 95
+    mpt_minutes: 51
+    mpt_seconds: 0
+    pitch_stdev: 1
+    pressure_variance: 0
+    roll_stdev: 99
+    speed_of_sound: 1521
+    transmit_pulse_length: 197
+  - _index: 4
+    particle_object: EarthBottom
+    particle_type: adcp_bottom_track_earth
+    internal_timestamp: 3605890958.5300002
+    bt_beam1_correlation: 0
+    bt_beam1_eval_amp: 0
+    bt_beam1_percent_good: 0
+    bt_beam1_range: 0
+    bt_beam1_ref_correlation: 0
+    bt_beam1_ref_intensity: 60
+    bt_beam1_ref_percent_good: 0
+    bt_beam1_rssi_amplitude: 0
+    bt_beam2_correlation: 0
+    bt_beam2_eval_amp: 0
+    bt_beam2_percent_good: 0
+    bt_beam2_range: 0
+    bt_beam2_ref_correlation: 0
+    bt_beam2_ref_intensity: 60
+    bt_beam2_ref_percent_good: 0
+    bt_beam2_rssi_amplitude: 0
+    bt_beam3_correlation: 0
+    bt_beam3_eval_amp: 0
+    bt_beam3_percent_good: 0
+    bt_beam3_range: 0
+    bt_beam3_ref_correlation: 0
+    bt_beam3_ref_intensity: 59
+    bt_beam3_ref_percent_good: 100
+    bt_beam3_rssi_amplitude: 0
+    bt_beam4_correlation: 0
+    bt_beam4_eval_amp: 0
+    bt_beam4_percent_good: 0
+    bt_beam4_range: 0
+    bt_beam4_ref_correlation: 0
+    bt_beam4_ref_intensity: 54
+    bt_beam4_ref_percent_good: 0
+    bt_beam4_rssi_amplitude: 0
+    bt_eastward_ref_layer_velocity: -32768
+    bt_eastward_velocity: -32768
+    bt_error_ref_layer_velocity: -32768
+    bt_error_velocity: -32768
+    bt_gain: 0
+    bt_northward_ref_layer_velocity: -32768
+    bt_northward_velocity: -32768
+    bt_ref_layer_far: 160
+    bt_ref_layer_min: 20
+    bt_ref_layer_near: 80
+    bt_upward_ref_layer_velocity: -32768
+    bt_upward_velocity: -32768
+  - _index: 5
+    particle_object: BottomConfig
+    particle_type: adcp_bottom_track_config
+    internal_timestamp: 3605890958.5300002
+    bt_corr_magnitude_min: 220
+    bt_delay_before_reacquire: 0
+    bt_error_velocity_max: 1000
+    bt_eval_magnitude_min: 24
+    bt_max_depth: 800
+    bt_mode: 8
+    bt_percent_good_min: 0
+    bt_pings_per_ensemble: 5
