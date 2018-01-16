@@ -1,3 +1,7 @@
+# Version 0.5.9
+
+* Issue #12584 - Added individual colobars for each frequency's echogram.
+
 # Version 0.5.8
 
 * Issue #12584 - Added individual colobars for each frequency's echogram.
