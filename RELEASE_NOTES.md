@@ -1,6 +1,6 @@
 # Version <Next Release>
 
-* Issue #13098 - Added individual colorbars for each fequency's echogram.
+* Issue #13098 - Added individual colorbars for each frequency's echogram.
 
 # Version 0.5.9
 
