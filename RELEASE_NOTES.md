@@ -15,6 +15,7 @@
 
 # Version 0.5.8
 
+* Issue #12584 - Added individual colobars for each frequency's echogram.
 * Issue #13083 - Restored feature in zplsc_b parser to generate an echogram.
 
 # Version 0.5.7
