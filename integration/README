@@ -1,0 +1,12 @@
+List of instrument drivers for which automatic integration tests have 
+been created.
+
+driver                      Path to conf file
+---------------------       ------------------------------------------------
+ctdbp_cdef_dcl_telemetered  mi-instrument/mi/dataset/driver/ctdbp_cdef/dcl/resource/integration/test_ctdbp_cdef_dcl.conf
+ctdbp_cdef_dcl_recovered    mi-instrument/mi/dataset/driver/ctdbp_cdef/dcl/resource/integration/test_ctdbp_cdef_dcl_recovered.conf
+
+flort_dj_dcl_telemetered    mi-instrument/mi/dataset/driver/flort_dj/dcl/resource/integration/test_flort_dj_dcl.conf
+flort_dj_dcl_recovered      mi-instrument/mi/dataset/driver/flort_dj/dcl/resource/integration/test_flort_dj_dcl_recovered.conf
+
+

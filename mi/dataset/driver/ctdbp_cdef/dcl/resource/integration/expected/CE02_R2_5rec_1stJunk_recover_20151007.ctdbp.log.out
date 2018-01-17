@@ -1,0 +1,10 @@
+
+ subsite  | node  | sensor       | bin        | method    | time                  | deployment | internal_timestamp | port_timestamp        | preferred_timestamp | quality_flag | conductivity | date_time_string | dcl_controller_timestamp | pressure | temp
+----------+-------+--------------+------------+-----------+-----------------------+------------+--------------------+-----------------------+---------------------+--------------+--------------+------------------+--------------------------+----------+---------
+ CE02SHSM | RID27 | 03-CTDBPC000 | 3653164800 | recovered | 3653232329.0760002136 |          2 |         3653232328 | 3653232329.0760002136 |      port_timestamp |           ok |        2e-05 |             null |                     null |    0.053 | 13.3701
+ CE02SHSM | RID27 | 03-CTDBPC000 | 3653164800 | recovered | 3653232339.0760002136 |          2 |         3653232338 | 3653232339.0760002136 |      port_timestamp |           ok |        2e-05 |             null |                     null |    0.052 | 13.3652
+ CE02SHSM | RID27 | 03-CTDBPC000 | 3653164800 | recovered | 3653232349.0889997482 |          2 |         3653232348 | 3653232349.0889997482 |      port_timestamp |           ok |        2e-05 |             null |                     null |    0.051 | 13.3637
+ CE02SHSM | RID27 | 03-CTDBPC000 | 3653164800 | recovered | 3653232359.0760002136 |          2 |         3653232358 | 3653232359.0760002136 |      port_timestamp |           ok |        2e-05 |             null |                     null |    0.052 | 13.3652
+ CE02SHSM | RID27 | 03-CTDBPC000 | 3653164800 | recovered | 3653232369.0760002136 |          2 |         3653232368 | 3653232369.0760002136 |      port_timestamp |           ok |        3e-05 |             null |                     null |    0.051 | 13.3663
+
+(5 rows)

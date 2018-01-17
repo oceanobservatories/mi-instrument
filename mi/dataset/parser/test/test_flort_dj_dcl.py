@@ -438,5 +438,46 @@ class FlortDjDclParserUnitTestCase(ParserUnitTestCase):
             self.assertEquals(len(particles), num_expected_particles)
             self.assert_particles(particles, "20140928.ctdbp3_24rec_flort.yml", RESOURCE_PATH)
         log.debug('===== END TEST CTDBPwFLORT:24 recs =====')
-        log.debug('===== END TESTS ENHANCEMENT 9809  =====')
 
+        """
+        Above tests for #9809 are all for the telemetered data path.
+        Next set of tests are for the recovered path.  Data files are
+        identical format as for telemetered.
+
+        test 4 recs recovered data
+        """
+        log.debug('===== START TEST CTDBPwFLORT:4 recs Recovered =====')
+        with self.open_file('20150412.ctdbp3_4rec_flort_recovered.log') as in_file:
+
+            num_particles_to_request = 10
+            num_expected_particles = 4
+
+            parser = eval(PARSER_NAME)(self.rec_config, in_file,
+                                       self.exception_callback)
+            particles = parser.get_records(num_particles_to_request)
+
+            # Make sure we obtained expected particle(s)
+            self.assertEquals(len(particles), num_expected_particles)
+            self.assert_particles(particles, "20150412.ctdbp3_4rec_flort_recovered.yml", RESOURCE_PATH)
+        log.debug('===== END TEST CTDBPwFLORT:4 recs Recovered =====')
+
+        """
+        test 13 recs recovered data
+        """
+        log.debug('===== START TEST CTDBPwFLORT:13 recs Recovered =====')
+        with self.open_file('20140929.ctdbp3_13rec_flort_recovered.log') as in_file:
+
+            num_particles_to_request = 20
+            num_expected_particles = 13
+
+            parser = eval(PARSER_NAME)(self.rec_config, in_file,
+                                       self.exception_callback)
+            particles = parser.get_records(num_particles_to_request)
+
+            # Make sure we obtained expected particle(s)
+            self.assertEquals(len(particles), num_expected_particles)
+            self.assert_particles(particles, "20140929.ctdbp3_13rec_flort_recovered.yml", RESOURCE_PATH)
+
+        log.debug('===== END TEST CTDBPwFLORT:13 recs Recovered =====')
+
+        log.debug('===== END TESTS ENHANCEMENT 9809  =====')

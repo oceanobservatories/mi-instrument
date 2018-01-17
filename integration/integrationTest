@@ -1,0 +1,174 @@
+#!  /bin/bash
+###
+: <<DOCUMENTATIONXX
+
+    Bash script file to run integration tests and compare the results files 
+    to a set of expected files
+
+    The expected files are text files of the stream cassandra table,
+    after a given test input file has been ingested.
+
+  dependencies:
+     -cassandra, edex_ooi, postgres, qpidd, ingest_engine is running
+     -cqlsh float_precision = 10 & double_precision = 10
+     -miniconda is installed 
+     -mi-instrument environment has been created in miniconda
+     -test input data files are found in driver's resource directory
+             under  /integration/data
+     -expected test results files are found in driver's resource directory
+             under  /integration/expected
+     -uframe-ooi repo  with all cql scripts is available
+     
+     The configuration file path is an input parameter to the script and is
+     sourced below. It contains paths and variables that must be set for 
+     each specific driver/parser as follows:
+          - the integ_path variable for the driver's resource/integration 
+             directory
+          - the table_columns variable must be set to the columns in the
+             stream's cassandra table to compare.  
+          - the list of integration tests to run
+     
+     The path variables within this script should be checked to be sure 
+     the various tools used by the script (i.e. edex server file, etc.) 
+     can be found
+   ---------------------------------------------------------------
+DOCUMENTATIONXX
+
+if [ -f "${1}" ]; then
+    msg="\nUsing <${1}> as the config file for the test\n"; 
+    echo -e "${msg}"
+    source "${1}" 
+    msg="\ninteg_path :<${integ_path}>\n"; 
+    echo -e "${msg}"
+else
+    sample_path="~/uframes/mi-instrument/mi/dataset/driver/flort_dj/dcl/resource/integration/test_flort_dj_dcl.conf"
+    sed --silent -e '/DOCUMENTATIONXX$/,/^DOCUMENTATIONXX$/p' "$0" |
+    sed -e '/DOCUMENTATIONXX$/d'
+    msg="\n*****\tconfig file \n*****\t<${1}>\n*****\tNOT found\n*****\n"; 
+    echo -e "${msg}"
+    msg="Usage:\n$0 <path to configuration file for integration test>\n"; 
+    echo -e "${msg}"
+    msg="for example:\n$0 $sample_path\n"; 
+    echo -e "${msg}"
+    exit -1
+fi
+
+edexdate=`date +%Y%m%d`
+edex_server="$HOME/uframes/ooi/bin/edex-server"
+edex_logs="$HOME/uframes/ooi/uframe-1.0/edex/logs/edex-ooi-${edexdate}.log"
+cql_path="$HOME/uframes/uframe-ooi/util/cql"
+conda_path="$HOME/miniconda2/bin"
+ingest_csv_path="$HOME/uframes/ingestion-csvs"
+
+if [ ! -d "$integ_path" ]; then
+    msg="\n**\tconfig file\n**\t<${1}>\n**\tdoes NOT contain integ_path\n**\n"; 
+    echo -e "${msg}"
+    exit -1
+fi
+
+log=`basename ${1} | sed -e 's/conf/log/g'`
+msg="\nlog name: $log\n"
+echo -e "${msg}"
+
+if [ -f "${log}" ]; then
+    mv ${log} ${log}.sav
+fi
+mkdir -p $integ_path/results
+
+# activate the anaconda environment for mi
+source $conda_path/activate mi
+
+failCnt=0
+passCnt=0
+
+runtest()
+{
+    stream=${1}
+    queue=${2}
+    refid=${3}
+    method=${4}
+    deploy=${5}
+    file=${6}
+    shift 6
+    columns=${*}
+    msg="++ stream: $stream\n++ queue: $queue\n++ refid: $refid"
+    echo -e "${msg}"
+    msg="++ method: $method\n++ deploy: $deploy\n++ file: $file"
+    echo -e "${msg}"
+    msg="++ columns: <${columns}>"
+    echo -e "${msg}"
+
+    ## recreate stream table to start test with empty table
+    $edex_server cqlsh "-f $cql_path/${stream}.cql"
+
+    ## select all columns from empty table, in case of later error
+    $edex_server cqlsh "-k ooi -e 'select * from ooi.${stream};'"
+
+    ## ingest the input data file
+    msg="\n++ ingest call:\n$ingest_csv_path/ingest_file.py Ingest.${queue} $refid $method $deploy $integ_path/data/$file\n"
+    echo -e "${msg}"
+    $ingest_csv_path/ingest_file.py Ingest.${queue} $refid $method $deploy $integ_path/data/$file
+
+    ##  query the cassandra table for specific column data
+    $edex_server cqlsh "-k ooi -e 'select $columns from ooi.${stream};'"
+    
+    ##  and save it to a file in the results directory
+    $edex_server cqlsh "-k ooi -e 'select $columns from ooi.${stream};'" > $integ_path/results/${file}.out
+
+    ##  compare the expected table to the results table, if not identical
+    ##  indicate an error
+    cmp -s $integ_path/expected/${file}.out $integ_path/results/${file}.out
+    RC=$?
+    if [ "$RC" -ne 0 ]; then
+        msg="\n++ ERROR: cmp file failed for expected/${file}.out and"
+        echo -e "${msg}"
+        msg="++ results/${file}.out\nRC=$RC\t\t(1=mismatch; 2=missing file)\n"
+        echo -e "${msg}"
+        failCnt=$(($failCnt + 1))
+    else
+        msg="++ cmp of test results file successful\n"
+        echo -e "${msg}"; echo -e "${msg}" >/dev/tty
+        passCnt=$(($passCnt + 1))
+    fi
+}
+
+#=============================================
+#  redirect output to log starts here
+#
+#  by enclosing the subsequent commands in braces, 
+#  all output is redirected to the log file
+#=============================================
+{
+    msg="++ start test run at --- `date` ---\n"
+    echo -e "${msg}"; echo -e "${msg}" >/dev/tty
+    msg="++ integration path: <${integ_path}>\n"
+    echo -e "${msg}"; echo -e "${msg}" >/dev/tty
+    while read -r line
+    do
+        if [ "${line}"XX != XX ]; then
+            msg="++ test input:\n++ $line"
+            echo -e "${msg}"; echo -e "${msg}" >/dev/tty
+            runtest $line
+            msg="++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+            echo -e "${msg}"; echo -e "${msg}" >/dev/tty
+        fi
+    done <<< "$list"
+    msg="++ End test run at --- `date` ---\n"
+    echo -e "${msg}"; echo -e "${msg}" >/dev/tty
+    msg="\tSuccessfull compares: ${passCnt}\tFailed compares: ${failCnt}"
+    echo -e "${msg}"; echo -e "${msg}" >/dev/tty
+    if [ `grep -s IOException $edex_logs` ]; then
+        msg="\n\t ++ ERROR:    IOExceptions found in:\n\t\t ${edex_logs}"
+        echo -e "${msg}"; echo -e "${msg}" >/dev/tty
+        msg="\n\t ++ List of exceptions found:"
+        echo -e "${msg}"
+        grep IOException $edex_logs
+    else
+        msg="\n\t++ No IOExceptions found in:\n\t\t ${edex_logs}"
+        echo -e "${msg}"; echo -e "${msg}" >/dev/tty
+    fi
+    
+} 1>> ${log} 2>&1
+
+msg="\nSee ${log} for full output of test run"
+echo -e "${msg}"

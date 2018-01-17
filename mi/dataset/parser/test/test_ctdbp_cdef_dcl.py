@@ -548,4 +548,52 @@ class CtdbpCdefDclParserUnitTestCase(ParserUnitTestCase):
             self.assertEquals(len(particles), num_expected_particles)
             self.assert_particles(particles, "20141002.ctdbp3_3Rec_negPressure.yml", RESOURCE_PATH)
 
+        """
+        Above tests for #9809 are all for the telemetered data path.
+        Next set of tests are for the recovered path.  Data files are
+        identical format as for telemetered.
+
+        test 3 recs recovered data
+        """
+
+        with open(os.path.join(RESOURCE_PATH,
+                               '20141001.ctdbp3_3rec_recovered.log'), 'r') as file_handle:
+
+            num_particles_to_request = 10
+            num_expected_particles = 3
+
+            parser = CtdbpCdefDclParser(False,
+                                        file_handle,
+                                        self.exception_callback)
+
+            particles = parser.get_records(num_particles_to_request)
+
+            # Make sure we obtained expected particle(s)
+            self.assertEquals(len(particles), num_expected_particles)
+            self.assert_particles(particles,
+                                  "20141001.ctdbp3_3rec_recovered.yml",
+                                  RESOURCE_PATH)
+
+        """
+        test 6 recs recovered data
+        """
+        with open(os.path.join(RESOURCE_PATH,
+                               '20141010.ctdbp3_6rec_recovered.log'), 'r') as file_handle:
+
+            num_particles_to_request = 10
+            num_expected_particles = 6
+
+            parser = CtdbpCdefDclParser(False,
+                                        file_handle,
+                                        self.exception_callback)
+
+            particles = parser.get_records(num_particles_to_request)
+
+            CtdbpCdefDclParserUnitTestCase.create_yml(self, particles,
+                                                      '20141010.ctdbp3_6rec_recovered.yml')
+
+            # Make sure we obtained expected particle(s)
+            self.assertEquals(len(particles), num_expected_particles)
+            self.assert_particles(particles, "20141010.ctdbp3_6rec_recovered.yml", RESOURCE_PATH)
+
         log.debug('===== END TEST CTDBP WITH FLORT =====')

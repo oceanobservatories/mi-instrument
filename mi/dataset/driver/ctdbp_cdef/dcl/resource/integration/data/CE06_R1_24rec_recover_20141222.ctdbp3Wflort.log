@@ -1,0 +1,146 @@
+2014/12/22 00:28:16.347 [ctdbp3:DLOGP6]:Logger started: Idle state, without initialize
+2014/12/22 00:30:14.933 [ctdbp3:DLOGP6]:Instrument Started [Power On]
+2014/12/22 00:30:21.865 [ctdbp3:DLOGP6]: 11.5937,  3.18790,    1.185, 0, 0, 0, 22 Dec 2014 00:30:17
+2014/12/22 00:30:21.967 [ctdbp3:DLOGP6]:S>
+2014/12/22 00:30:21.979 [ctdbp3:DLOGP6]:!!! Low Battery  !!!
+2014/12/22 00:31:04.992 [ctdbp3:DLOGP6]:Instrument Stopped [Power Off]
+2014/12/22 01:28:11.268 [ctdbp3:DLOGP6]:Logger started: Idle state, without initialize
+2014/12/22 01:30:15.733 [ctdbp3:DLOGP6]:Instrument Started [Power On]
+2014/12/22 01:30:22.692 [ctdbp3:DLOGP6]: 11.5915,  3.18868,    1.172, 0, 0, 0, 22 Dec 2014 01:30:18
+2014/12/22 01:30:22.769 [ctdbp3:DLOGP6]:S>
+2014/12/22 01:30:22.780 [ctdbp3:DLOGP6]:!!! Low Battery  !!!
+2014/12/22 01:31:05.813 [ctdbp3:DLOGP6]:Instrument Stopped [Power Off]
+2014/12/22 02:28:08.094 [ctdbp3:DLOGP6]:Logger started: Idle state, without initialize
+2014/12/22 02:30:16.504 [ctdbp3:DLOGP6]:Instrument Started [Power On]
+2014/12/22 02:30:23.435 [ctdbp3:DLOGP6]: 11.5895,  3.18906,    1.291, 0, 0, 0, 22 Dec 2014 02:30:19
+2014/12/22 02:30:23.539 [ctdbp3:DLOGP6]:S>
+2014/12/22 02:30:23.550 [ctdbp3:DLOGP6]:!!! Low Battery  !!!
+2014/12/22 02:31:04.574 [ctdbp3:DLOGP6]:Instrument Stopped [Power Off]
+2014/12/22 03:28:10.153 [ctdbp3:DLOGP6]:Logger started: Idle state, without initialize
+2014/12/22 03:30:16.533 [ctdbp3:DLOGP6]:Instrument Started [Power On]
+2014/12/22 03:30:23.464 [ctdbp3:DLOGP6]: 11.5835,  3.18834,    1.302, 0, 0, 0, 22 Dec 2014 03:30:19
+2014/12/22 03:30:23.568 [ctdbp3:DLOGP6]:S>
+2014/12/22 03:30:23.579 [ctdbp3:DLOGP6]:!!! Low Battery  !!!
+2014/12/22 03:31:13.561 [ctdbp3:DLOGP6]:Instrument Stopped [Power Off]
+2014/12/22 04:28:09.775 [ctdbp3:DLOGP6]:Logger started: Idle state, without initialize
+2014/12/22 04:30:16.145 [ctdbp3:DLOGP6]:Instrument Started [Power On]
+2014/12/22 04:30:23.076 [ctdbp3:DLOGP6]: 11.5752,  3.18242,    1.328, 0, 0, 0, 22 Dec 2014 04:30:18
+2014/12/22 04:30:23.180 [ctdbp3:DLOGP6]:S>
+2014/12/22 04:30:23.191 [ctdbp3:DLOGP6]:!!! Low Battery  !!!
+2014/12/22 04:31:04.265 [ctdbp3:DLOGP6]:Instrument Stopped [Power Off]
+2014/12/22 05:28:09.002 [ctdbp3:DLOGP6]:Logger started: Idle state, without initialize
+2014/12/22 05:30:15.383 [ctdbp3:DLOGP6]:Instrument Started [Power On]
+2014/12/22 05:30:22.315 [ctdbp3:DLOGP6]: 11.5476,  3.17101,    1.472, 0, 0, 0, 22 Dec 2014 05:30:18
+2014/12/22 05:30:22.419 [ctdbp3:DLOGP6]:S>
+2014/12/22 05:30:22.431 [ctdbp3:DLOGP6]:!!! Low Battery  !!!
+2014/12/22 05:31:05.452 [ctdbp3:DLOGP6]:Instrument Stopped [Power Off]
+2014/12/22 06:28:11.168 [ctdbp3:DLOGP6]:Logger started: Idle state, without initialize
+2014/12/22 06:30:15.491 [ctdbp3:DLOGP6]:Instrument Started [Power On]
+2014/12/22 06:30:22.423 [ctdbp3:DLOGP6]: 11.5325,  3.16126,    1.684, 0, 0, 0, 22 Dec 2014 06:30:18
+2014/12/22 06:30:22.527 [ctdbp3:DLOGP6]:S>
+2014/12/22 06:30:22.588 [ctdbp3:DLOGP6]:!!! Low Battery  !!!
+2014/12/22 06:31:03.611 [ctdbp3:DLOGP6]:Instrument Stopped [Power Off]
+2014/12/22 07:28:11.121 [ctdbp3:DLOGP6]:Logger started: Idle state, without initialize
+2014/12/22 07:30:15.425 [ctdbp3:DLOGP6]:Instrument Started [Power On]
+2014/12/22 07:30:22.356 [ctdbp3:DLOGP6]: 11.5302,  3.16310,    1.865, 0, 0, 0, 22 Dec 2014 07:30:18
+2014/12/22 07:30:22.460 [ctdbp3:DLOGP6]:S>
+2014/12/22 07:30:22.472 [ctdbp3:DLOGP6]:!!! Low Battery  !!!
+2014/12/22 07:31:05.495 [ctdbp3:DLOGP6]:Instrument Stopped [Power Off]
+2014/12/22 08:28:09.423 [ctdbp3:DLOGP6]:Logger started: Idle state, without initialize
+2014/12/22 08:30:16.243 [ctdbp3:DLOGP6]:Instrument Started [Power On]
+2014/12/22 08:30:23.180 [ctdbp3:DLOGP6]: 11.5311,  3.16751,    1.893, 0, 0, 0, 22 Dec 2014 08:30:19
+2014/12/22 08:30:23.278 [ctdbp3:DLOGP6]:S>
+2014/12/22 08:30:23.289 [ctdbp3:DLOGP6]:!!! Low Battery  !!!
+2014/12/22 08:31:04.373 [ctdbp3:DLOGP6]:Instrument Stopped [Power Off]
+2014/12/22 09:28:12.723 [ctdbp3:DLOGP6]:Logger started: Idle state, without initialize
+2014/12/22 09:30:17.040 [ctdbp3:DLOGP6]:Instrument Started [Power On]
+2014/12/22 09:30:23.971 [ctdbp3:DLOGP6]: 11.5226,  3.17042,    1.730, 0, 0, 0, 22 Dec 2014 09:30:19
+2014/12/22 09:30:24.075 [ctdbp3:DLOGP6]:S>
+2014/12/22 09:30:24.087 [ctdbp3:DLOGP6]:!!! Low Battery  !!!
+2014/12/22 09:31:05.100 [ctdbp3:DLOGP6]:Instrument Stopped [Power Off]
+2014/12/22 10:28:11.036 [ctdbp3:DLOGP6]:Logger started: Idle state, without initialize
+2014/12/22 10:30:03.455 [ctdbp3:DLOGP6]:SBE 16plus
+2014/12/22 10:30:16.498 [ctdbp3:DLOGP6]:Instrument Started [Power On]
+2014/12/22 10:30:23.429 [ctdbp3:DLOGP6]: 11.5159,  3.17789,    1.895, 0, 0, 0, 22 Dec 2014 10:30:19
+2014/12/22 10:30:23.533 [ctdbp3:DLOGP6]:S>
+2014/12/22 10:30:23.544 [ctdbp3:DLOGP6]:!!! Low Battery  !!!
+2014/12/22 10:31:04.572 [ctdbp3:DLOGP6]:Instrument Stopped [Power Off]
+2014/12/22 11:28:10.096 [ctdbp3:DLOGP6]:Logger started: Idle state, without initialize
+2014/12/22 11:30:16.336 [ctdbp3:DLOGP6]:Instrument Started [Power On]
+2014/12/22 11:30:23.267 [ctdbp3:DLOGP6]: 11.5721,  3.20941,    1.948, 0, 0, 0, 22 Dec 2014 11:30:19
+2014/12/22 11:30:23.371 [ctdbp3:DLOGP6]:S>
+2014/12/22 11:30:23.383 [ctdbp3:DLOGP6]:!!! Low Battery  !!!
+2014/12/22 11:31:04.396 [ctdbp3:DLOGP6]:Instrument Stopped [Power Off]
+2014/12/22 12:28:09.594 [ctdbp3:DLOGP6]:Logger started: Idle state, without initialize
+2014/12/22 12:30:15.891 [ctdbp3:DLOGP6]:Instrument Started [Power On]
+2014/12/22 12:30:22.821 [ctdbp3:DLOGP6]: 11.4862,  3.14440,    2.200, 0, 0, 0, 22 Dec 2014 12:30:18
+2014/12/22 12:30:22.925 [ctdbp3:DLOGP6]:S>
+2014/12/22 12:30:22.937 [ctdbp3:DLOGP6]:!!! Low Battery  !!!
+2014/12/22 12:31:03.962 [ctdbp3:DLOGP6]:Instrument Stopped [Power Off]
+2014/12/22 13:28:11.859 [ctdbp3:DLOGP6]:Logger started: Idle state, without initialize
+2014/12/22 13:30:16.072 [ctdbp3:DLOGP6]:Instrument Started [Power On]
+2014/12/22 13:30:22.993 [ctdbp3:DLOGP6]: 11.3847,  3.10601,    3.398, 0, 0, 0, 22 Dec 2014 13:30:18
+2014/12/22 13:30:23.097 [ctdbp3:DLOGP6]:S>
+2014/12/22 13:30:23.108 [ctdbp3:DLOGP6]:!!! Low Battery  !!!
+2014/12/22 13:31:06.121 [ctdbp3:DLOGP6]:Instrument Stopped [Power Off]
+2014/12/22 14:28:12.517 [ctdbp3:DLOGP6]:Logger started: Idle state, without initialize
+2014/12/22 14:30:14.693 [ctdbp3:DLOGP6]:Instrument Started [Power On]
+2014/12/22 14:30:21.625 [ctdbp3:DLOGP6]: 11.3664,  3.10769,    2.778, 0, 0, 0, 22 Dec 2014 14:30:17
+2014/12/22 14:30:21.730 [ctdbp3:DLOGP6]:S>
+2014/12/22 14:30:21.740 [ctdbp3:DLOGP6]:!!! Low Battery  !!!
+2014/12/22 14:31:04.772 [ctdbp3:DLOGP6]:Instrument Stopped [Power Off]
+2014/12/22 15:28:08.772 [ctdbp3:DLOGP6]:Logger started: Idle state, without initialize
+2014/12/22 15:30:16.968 [ctdbp3:DLOGP6]:Instrument Started [Power On]
+2014/12/22 15:30:23.900 [ctdbp3:DLOGP6]: 11.3750,  3.10651,    3.498, 0, 0, 0, 22 Dec 2014 15:30:19
+2014/12/22 15:30:24.004 [ctdbp3:DLOGP6]:S>
+2014/12/22 15:30:24.015 [ctdbp3:DLOGP6]:!!! Low Battery  !!!
+2014/12/22 15:31:05.078 [ctdbp3:DLOGP6]:Instrument Stopped [Power Off]
+2014/12/22 16:28:11.022 [ctdbp3:DLOGP6]:Logger started: Idle state, without initialize
+2014/12/22 16:30:15.172 [ctdbp3:DLOGP6]:Instrument Started [Power On]
+2014/12/22 16:30:22.103 [ctdbp3:DLOGP6]: 11.3181,  3.10286,    3.291, 0, 0, 0, 22 Dec 2014 16:30:17
+2014/12/22 16:30:22.207 [ctdbp3:DLOGP6]:S>
+2014/12/22 16:30:22.219 [ctdbp3:DLOGP6]:!!! Low Battery  !!!
+2014/12/22 16:31:05.242 [ctdbp3:DLOGP6]:Instrument Stopped [Power Off]
+2014/12/22 17:28:10.434 [ctdbp3:DLOGP6]:Logger started: Idle state, without initialize
+2014/12/22 17:30:16.569 [ctdbp3:DLOGP6]:Instrument Started [Power On]
+2014/12/22 17:30:23.500 [ctdbp3:DLOGP6]: 11.3567,  3.10938,    3.386, 0, 0, 0, 22 Dec 2014 17:30:19
+2014/12/22 17:30:23.606 [ctdbp3:DLOGP6]:S>
+2014/12/22 17:30:23.618 [ctdbp3:DLOGP6]:!!! Low Battery  !!!
+2014/12/22 17:31:06.639 [ctdbp3:DLOGP6]:Instrument Stopped [Power Off]
+2014/12/22 18:28:12.107 [ctdbp3:DLOGP6]:Logger started: Idle state, without initialize
+2014/12/22 18:30:14.246 [ctdbp3:DLOGP6]:Instrument Started [Power On]
+2014/12/22 18:30:21.177 [ctdbp3:DLOGP6]: 11.3772,  3.11160,    3.413, 0, 0, 0, 22 Dec 2014 18:30:17
+2014/12/22 18:30:21.281 [ctdbp3:DLOGP6]:S>
+2014/12/22 18:30:21.292 [ctdbp3:DLOGP6]:!!! Low Battery  !!!
+2014/12/22 18:31:06.315 [ctdbp3:DLOGP6]:Instrument Stopped [Power Off]
+2014/12/22 19:28:12.449 [ctdbp3:DLOGP6]:Logger started: Idle state, without initialize
+2014/12/22 19:30:15.495 [ctdbp3:DLOGP6]:Instrument Started [Power On]
+2014/12/22 19:30:22.426 [ctdbp3:DLOGP6]: 11.2808,  3.08907,    3.306, 0, 0, 0, 22 Dec 2014 19:30:18
+2014/12/22 19:30:22.530 [ctdbp3:DLOGP6]:S>
+2014/12/22 19:30:22.542 [ctdbp3:DLOGP6]:!!! Low Battery  !!!
+2014/12/22 19:31:05.566 [ctdbp3:DLOGP6]:Instrument Stopped [Power Off]
+2014/12/22 20:28:07.057 [ctdbp3:DLOGP6]:Logger started: Idle state, without initialize
+2014/12/22 20:30:16.211 [ctdbp3:DLOGP6]:Instrument Started [Power On]
+2014/12/22 20:30:23.143 [ctdbp3:DLOGP6]: 11.5182,  3.13710,    3.385, 0, 0, 0, 22 Dec 2014 20:30:19
+2014/12/22 20:30:23.247 [ctdbp3:DLOGP6]:S>
+2014/12/22 20:30:23.258 [ctdbp3:DLOGP6]:!!! Low Battery  !!!
+2014/12/22 20:31:04.282 [ctdbp3:DLOGP6]:Instrument Stopped [Power Off]
+2014/12/22 21:28:12.070 [ctdbp3:DLOGP6]:Logger started: Idle state, without initialize
+2014/12/22 21:30:15.236 [ctdbp3:DLOGP6]:Instrument Started [Power On]
+2014/12/22 21:30:22.174 [ctdbp3:DLOGP6]: 11.5473,  3.13435,    3.319, 0, 0, 0, 22 Dec 2014 21:30:18
+2014/12/22 21:30:22.289 [ctdbp3:DLOGP6]:S>
+2014/12/22 21:30:22.290 [ctdbp3:DLOGP6]:!!! Low Battery  !!!
+2014/12/22 21:31:05.366 [ctdbp3:DLOGP6]:Instrument Stopped [Power Off]
+2014/12/22 22:28:09.339 [ctdbp3:DLOGP6]:Logger started: Idle state, without initialize
+2014/12/22 22:30:03.254 [ctdbp3:DLOGP6]:SBE 16plus
+2014/12/22 22:30:16.302 [ctdbp3:DLOGP6]:Instrument Started [Power On]
+2014/12/22 22:30:23.234 [ctdbp3:DLOGP6]: 11.6567,  3.17870,    2.672, 0, 0, 0, 22 Dec 2014 22:30:19
+2014/12/22 22:30:23.338 [ctdbp3:DLOGP6]:S>
+2014/12/22 22:30:23.349 [ctdbp3:DLOGP6]:!!! Low Battery  !!!
+2014/12/22 22:31:04.382 [ctdbp3:DLOGP6]:Instrument Stopped [Power Off]
+2014/12/22 23:28:09.383 [ctdbp3:DLOGP6]:Logger started: Idle state, without initialize
+2014/12/22 23:30:16.417 [ctdbp3:DLOGP6]:Instrument Started [Power On]
+2014/12/22 23:30:23.348 [ctdbp3:DLOGP6]: 11.6321,  3.17311,    2.743, 0, 0, 0, 22 Dec 2014 23:30:19
+2014/12/22 23:30:23.452 [ctdbp3:DLOGP6]:S>
+2014/12/22 23:30:23.464 [ctdbp3:DLOGP6]:!!! Low Battery  !!!
+2014/12/22 23:31:04.497 [ctdbp3:DLOGP6]:Instrument Stopped [Power Off]

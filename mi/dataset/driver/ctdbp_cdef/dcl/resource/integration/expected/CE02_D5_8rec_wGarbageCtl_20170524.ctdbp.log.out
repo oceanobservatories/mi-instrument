@@ -1,0 +1,13 @@
+
+ subsite  | node  | sensor       | bin        | method      | time                  | deployment | internal_timestamp | port_timestamp        | preferred_timestamp | quality_flag | conductivity | date_time_string | dcl_controller_timestamp | pressure | temp
+----------+-------+--------------+------------+-------------+-----------------------+------------+--------------------+-----------------------+---------------------+--------------+--------------+------------------+--------------------------+----------+---------
+ CE02SHSM | RID27 | 03-CTDBPC000 | 3704572800 | telemetered | 3704590921.2890000343 |          5 |         3704590914 | 3704590921.2890000343 |      port_timestamp |           ok |      3.60285 |             null |                     null |    6.543 | 10.5122
+ CE02SHSM | RID27 | 03-CTDBPC000 | 3704572800 | telemetered | 3704591870.2880001068 |          5 |         3704591863 | 3704591870.2880001068 |      port_timestamp |           ok |      3.60228 |             null |                     null |    6.369 | 10.5086
+ CE02SHSM | RID27 | 03-CTDBPC000 | 3704572800 | telemetered | 3704596323.2899999619 |          5 |         3704596316 | 3704596323.2899999619 |      port_timestamp |           ok |      3.60109 |             null |                     null |    6.229 | 10.4627
+ CE02SHSM | RID27 | 03-CTDBPC000 | 3704572800 | telemetered | 3704596333.2899999619 |          5 |         3704596326 | 3704596333.2899999619 |      port_timestamp |           ok |      3.60092 |             null |                     null |    6.841 | 10.4589
+ CE02SHSM | RID27 | 03-CTDBPC000 | 3704572800 | telemetered | 3704599003.2899999619 |          5 |         3704598996 | 3704599003.2899999619 |      port_timestamp |           ok |      3.59904 |             null |                     null |     6.63 | 10.4193
+ CE02SHSM | RID27 | 03-CTDBPC000 | 3704572800 | telemetered | 3704599033.3029999733 |          5 |         3704599026 | 3704599033.3029999733 |      port_timestamp |           ok |      3.59937 |             null |                     null |    6.507 | 10.4224
+ CE02SHSM | RID27 | 03-CTDBPC000 | 3704572800 | telemetered | 3704599872.2899999619 |          5 |         3704599865 | 3704599872.2899999619 |      port_timestamp |           ok |      3.59998 |             null |                     null |    6.158 | 10.4436
+ CE02SHSM | RID27 | 03-CTDBPC000 | 3704572800 | telemetered | 3704599932.2909998894 |          5 |         3704599925 | 3704599932.2909998894 |      port_timestamp |           ok |       3.5991 |             null |                     null |    7.125 | 10.4255
+
+(8 rows)

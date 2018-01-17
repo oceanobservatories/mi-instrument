@@ -1,0 +1,49 @@
+2016/11/02 00:28:05.553 [ctdbp3:DLOGP6]:Logger started: Idle state, without initialize
+2016/11/02 01:28:04.785 [ctdbp3:DLOGP6]:Logger started: Idle state, without initialize
+2016/11/02 01:30:16.693 [ctdbp3:DLOGP6]:Instrument Started on second attempt [Power On]
+2016/11/02 01:30:40.204 [ctdbp3:DLOGP6]:º’bŠ¢ÊbÂ’b‚’½Ù‚ŠÒš‚Ò’ªÿ
+2016/11/02 01:31:06.651 [ctdbp3:DLOGP6]:Instrument Stopped [Power Off]
+2016/11/02 02:28:05.596 [ctdbp3:DLOGP6]:Logger started: Idle state, without initialize
+2016/11/02 03:28:03.897 [ctdbp3:DLOGP6]:Logger started: Idle state, without initialize
+2016/11/02 03:30:06.794 [ctdbp3:DLOGP6]:Instrument Started [Power On]
+2016/11/02 03:31:08.386 [ctdbp3:DLOGP6]:Instrument Stopped [Power Off]
+2016/11/02 04:28:04.432 [ctdbp3:DLOGP6]:Logger started: Idle state, without initialize
+2016/11/02 04:30:07.313 [ctdbp3:DLOGP6]:Instrument Started [Power On]
+2016/11/02 04:31:08.908 [ctdbp3:DLOGP6]:Instrument Stopped [Power Off]
+2016/11/02 05:28:04.321 [ctdbp3:DLOGP6]:Logger started: Idle state, without initialize
+2016/11/02 06:28:03.680 [ctdbp3:DLOGP6]:Logger started: Idle state, without initialize
+2016/11/02 07:28:02.940 [ctdbp3:DLOGP6]:Logger started: Idle state, without initialize
+2016/11/02 08:28:05.170 [ctdbp3:DLOGP6]:Logger started: Idle state, without initialize
+2016/11/02 09:28:01.850 [ctdbp3:DLOGP6]:Logger started: Idle state, without initialize
+2016/11/02 09:30:04.702 [ctdbp3:DLOGP6]:Instrument Started [Power On]
+2016/11/02 09:30:28.205  13.2056,  3.42804,    1.416, 1811, 149, 88, 02 Nov 2016 09:30:22
+2016/11/02 09:31:03.407 [ctdbp3:DLOGP6]:Instrument Stopped [Power Off]
+2016/11/02 10:28:02.822 [ctdbp3:DLOGP6]:Logger started: Idle state, without initialize
+2016/11/02 11:28:04.789 [ctdbp3:DLOGP6]:Logger started: Idle state, without initialize
+2016/11/02 12:28:03.212 [ctdbp3:DLOGP6]:Logger started: Idle state, without initialize
+2016/11/02 12:30:15.460 [ctdbp3:DLOGP6]:Instrument Started on second attempt [Power On]
+2016/11/02 12:31:08.258 [ctdbp3:DLOGP6]:Instrument Stopped [Power Off]
+2016/11/02 13:28:03.973 [ctdbp3:DLOGP6]:Logger started: Idle state, without initialize
+2016/11/02 14:28:05.283 [ctdbp3:DLOGP6]:Logger started: Idle state, without initialize
+2016/11/02 14:30:08.104 [ctdbp3:DLOGP6]:Instrument Started [Power On]
+2016/11/02 14:30:31.609  13.1755,  3.40763,    1.109, 1488, 148, 90, 02 Nov 2016 14:30:25
+2016/11/02 14:31:06.811 [ctdbp3:DLOGP6]:Instrument Stopped [Power Off]
+2016/11/02 15:28:05.715 [ctdbp3:DLOGP6]:Logger started: Idle state, without initialize
+2016/11/02 15:30:03.584 [ctdbp3:DLOGP6]:Instrument Started [Power On]
+2016/11/02 15:31:05.174 [ctdbp3:DLOGP6]:Instrument Stopped [Power Off]
+2016/11/02 16:28:04.885 [ctdbp3:DLOGP6]:Logger started: Idle state, without initialize
+2016/11/02 16:30:04.228 [ctdbp3:DLOGP6]:Instrument Started [Power On]
+2016/11/02 16:30:27.731  13.3075,  3.46172,    1.198, 467, 134, 80, 02 Nov 2016 16:30:21
+2016/11/02 16:31:02.920 [ctdbp3:DLOGP6]:Instrument Stopped [Power Off]
+2016/11/02 17:28:05.289 [ctdbp3:DLOGP6]:Logger started: Idle state, without initialize
+2016/11/02 17:30:08.131 [ctdbp3:DLOGP6]:Instrument Started [Power On]
+2016/11/02 17:31:09.717 [ctdbp3:DLOGP6]:Instrument Stopped [Power Off]
+2016/11/02 18:28:03.922 [ctdbp3:DLOGP6]:Logger started: Idle state, without initialize
+2016/11/02 19:28:04.055 [ctdbp3:DLOGP6]:Logger started: Idle state, without initialize
+2016/11/02 20:28:04.169 [ctdbp3:DLOGP6]:Logger started: Idle state, without initialize
+2016/11/02 21:28:04.785 [ctdbp3:DLOGP6]:Logger started: Idle state, without initialize
+2016/11/02 22:28:05.152 [ctdbp3:DLOGP6]:Logger started: Idle state, without initialize
+2016/11/02 23:28:03.747 [ctdbp3:DLOGP6]:Logger started: Idle state, without initialize
+2016/11/02 23:30:04.023 [ctdbp3:DLOGP6]:Instrument Started [Power On]
+2016/11/02 23:30:27.526  13.2790,  3.41114,    1.097, 895, 162, 83, 02 Nov 2016 23:30:21
+2016/11/02 23:31:02.726 [ctdbp3:DLOGP6]:Instrument Stopped [Power Off]

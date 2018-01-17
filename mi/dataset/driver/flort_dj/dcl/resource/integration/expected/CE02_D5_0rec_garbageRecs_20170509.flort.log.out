@@ -1,0 +1,5 @@
+
+ subsite | node | sensor | bin | method | time | deployment | id | date_string | dcl_controller_timestamp | driver_timestamp | ingestion_timestamp | internal_timestamp | measurement_wavelength_beta | measurement_wavelength_cdom | measurement_wavelength_chl | port_timestamp | preferred_timestamp | provenance | quality_flag | raw_internal_temp | raw_signal_beta | raw_signal_cdom | raw_signal_chl | time_string
+---------+------+--------+-----+--------+------+------------+----+-------------+--------------------------+------------------+---------------------+--------------------+-----------------------------+-----------------------------+----------------------------+----------------+---------------------+------------+--------------+-------------------+-----------------+-----------------+----------------+-------------
+
+(0 rows)

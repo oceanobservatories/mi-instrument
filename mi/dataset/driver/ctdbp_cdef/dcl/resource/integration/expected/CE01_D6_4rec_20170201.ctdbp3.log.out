@@ -1,0 +1,9 @@
+
+ subsite  | node  | sensor       | bin        | method      | time                  | deployment | internal_timestamp | port_timestamp        | preferred_timestamp | quality_flag | conductivity | date_time_string | dcl_controller_timestamp | pressure | temp
+----------+-------+--------------+------------+-------------+-----------------------+------------+--------------------+-----------------------+---------------------+--------------+--------------+------------------+--------------------------+----------+--------
+ CE01ISSM | SBD17 | 06-CTDBPC000 | 3694896000 | telemetered | 3694923027.4790000916 |          6 |         3694923020 | 3694923027.4790000916 |      port_timestamp |           ok |      3.41524 |             null |                     null |    0.973 | 9.7621
+ CE01ISSM | SBD17 | 06-CTDBPC000 | 3694896000 | telemetered | 3694941026.7939996719 |          6 |         3694941020 | 3694941026.7939996719 |      port_timestamp |           ok |      3.39849 |             null |                     null |    0.992 | 9.6201
+ CE01ISSM | SBD17 | 06-CTDBPC000 | 3694896000 | telemetered | 3694948227.7130002975 |          6 |         3694948221 | 3694948227.7130002975 |      port_timestamp |           ok |      3.39121 |             null |                     null |    0.947 | 9.5608
+ CE01ISSM | SBD17 | 06-CTDBPC000 | 3694896000 | telemetered | 3694955427.5819997787 |          6 |         3694955420 | 3694955427.5819997787 |      port_timestamp |           ok |      3.37394 |             null |                     null |    0.929 | 9.4231
+
+(4 rows)

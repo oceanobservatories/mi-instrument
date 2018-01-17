@@ -1,0 +1,78 @@
+2017/04/20 17:30:50.986 [ctdbp:DLOGP3]:Logger started: Idle state, without initialize
+2017/04/20 17:31:06.402 [ctdbp:DLOGP3]:Instrument Started [Power On]
+2017/04/20 17:31:19.306 # 10.7897,  3.59760,    7.138, 20 Apr 2017 17:31:13
+2017/04/20 17:33:25.783 [ctdbp:DLOGP3]:Instrument Stopped [Power Off]
+2017/04/20 17:45:09.398 [ctdbp:DLOGP3]:Instrument Started [Power On]
+2017/04/20 17:46:12.299 # 10.8084,  3.59906,    7.273, 20 Apr 2017 17:46:06
+2017/04/20 17:48:28.622 [ctdbp:DLOGP3]:Instrument Stopped [Power Off]
+2017/04/20 18:00:08.351 [ctdbp:DLOGP3]:Instrument Started [Power On]
+2017/04/20 18:01:51.299 # 10.7976,  3.59803,    7.929, 20 Apr 2017 18:01:45
+2017/04/20 18:03:27.620 [ctdbp:DLOGP3]:Instrument Stopped [Power Off]
+2017/04/20 18:15:11.595 [ctdbp:DLOGP3]:Instrument Started [Power On]
+2017/04/20 18:15:25.305 # 10.8150,  3.59952,    7.657, 20 Apr 2017 18:15:19
+2017/04/20 18:18:21.785 [ctdbp:DLOGP3]:Instrument Stopped [Power Off]
+2017/04/20 18:30:10.180 [ctdbp:DLOGP3]:Instrument Started [Power On]
+2017/04/20 18:32:43.300 # 10.8419,  3.60202,    7.021, 20 Apr 2017 18:32:37
+2017/04/20 18:33:21.780 [ctdbp:DLOGP3]:Instrument Stopped [Power Off]
+2017/04/20 18:45:09.573 [ctdbp:DLOGP3]:Instrument Started [Power On]
+2017/04/20 18:48:13.300 # 10.8564,  3.60373,    7.384, 20 Apr 2017 18:48:07
+2017/04/20 18:48:21.783 [ctdbp:DLOGP3]:Instrument Stopped [Power Off]
+2017/04/20 19:00:11.547 [ctdbp:DLOGP3]:Instrument Started [Power On]
+2017/04/20 19:02:15.300 # 10.8097,  3.59999,    6.889, 20 Apr 2017 19:02:09
+2017/04/20 19:03:21.776 [ctdbp:DLOGP3]:Instrument Stopped [Power Off]
+2017/04/20 19:15:09.197 [ctdbp:DLOGP3]:Instrument Started [Power On]
+2017/04/20 19:17:22.300 # 10.8677,  3.60480,    7.282, 20 Apr 2017 19:17:16
+2017/04/20 19:18:28.620 [ctdbp:DLOGP3]:Instrument Stopped [Power Off]
+2017/04/20 19:30:11.375 [ctdbp:DLOGP3]:Instrument Started [Power On]
+2017/04/20 19:32:44.300 # 10.8558,  3.60387,    7.060, 20 Apr 2017 19:32:38
+2017/04/20 19:33:20.786 [ctdbp:DLOGP3]:Instrument Stopped [Power Off]
+2017/04/20 19:45:08.691 [ctdbp:DLOGP3]:Instrument Started [Power On]
+2017/04/20 19:45:42.301 # 10.8732,  3.60524,    7.191, 20 Apr 2017 19:45:36
+2017/04/20 19:48:20.781 [ctdbp:DLOGP3]:Instrument Stopped [Power Off]
+2017/04/20 20:00:10.691 [ctdbp:DLOGP3]:Instrument Started [Power On]
+2017/04/20 20:00:34.301 # 10.8611,  3.60412,    7.227, 20 Apr 2017 20:00:28
+2017/04/20 20:03:20.784 [ctdbp:DLOGP3]:Instrument Stopped [Power Off]
+2017/04/20 20:15:10.434 [ctdbp:DLOGP3]:Instrument Started [Power On]
+2017/04/20 20:16:53.302 # 10.9423,  3.61074,    7.102, 20 Apr 2017 20:16:47
+2017/04/20 20:18:21.794 [ctdbp:DLOGP3]:Instrument Stopped [Power Off]
+2017/04/20 20:30:13.483 [ctdbp:DLOGP3]:Instrument Started [Power On]
+2017/04/20 20:33:06.301 # 10.8807,  3.60451,    7.470, 20 Apr 2017 20:33:00
+2017/04/20 20:33:22.801 [ctdbp:DLOGP3]:Instrument Stopped [Power Off]
+2017/04/20 20:45:10.656 [ctdbp:DLOGP3]:Instrument Started [Power On]
+2017/04/20 20:45:24.308 # 10.8866,  3.60665,    7.118, 20 Apr 2017 20:45:18
+2017/04/20 20:48:20.789 [ctdbp:DLOGP3]:Instrument Stopped [Power Off]
+2017/04/20 21:00:08.548 [ctdbp:DLOGP3]:Instrument Started [Power On]
+2017/04/20 21:01:32.302 # 10.9420,  3.61101,    7.141, 20 Apr 2017 21:01:26
+2017/04/20 21:03:28.618 [ctdbp:DLOGP3]:Instrument Stopped [Power Off]
+2017/04/20 21:15:10.070 [ctdbp:DLOGP3]:Instrument Started [Power On]
+2017/04/20 21:17:03.303 # 10.8503,  3.60493,    7.065, 20 Apr 2017 21:16:57
+2017/04/20 21:18:21.794 [ctdbp:DLOGP3]:Instrument Stopped [Power Off]
+2017/04/20 21:30:11.477 [ctdbp:DLOGP3]:Instrument Started [Power On]
+2017/04/20 21:32:24.303 # 10.9303,  3.61105,    7.736, 20 Apr 2017 21:32:18
+2017/04/20 21:33:22.789 [ctdbp:DLOGP3]:Instrument Stopped [Power Off]
+2017/04/20 21:45:10.648 [ctdbp:DLOGP3]:Instrument Started [Power On]
+2017/04/20 21:45:24.309 # 10.9914,  3.61650,    7.467, 20 Apr 2017 21:45:18
+2017/04/20 21:48:22.783 [ctdbp:DLOGP3]:Instrument Stopped [Power Off]
+2017/04/20 22:00:08.634 [ctdbp:DLOGP3]:Instrument Started [Power On]
+2017/04/20 22:02:12.304 # 11.0162,  3.61874,    7.391, 20 Apr 2017 22:02:06
+2017/04/20 22:15:10.542 [ctdbp:DLOGP3]:Instrument Started [Power On]
+2017/04/20 22:17:04.304 # 11.1250,  3.62794,    7.339, 20 Apr 2017 22:16:58
+2017/04/20 22:18:20.792 [ctdbp:DLOGP3]:Instrument Stopped [Power Off]
+2017/04/20 22:30:12.480 [ctdbp:DLOGP3]:Instrument Started [Power On]
+2017/04/20 22:32:55.306 # 10.9921,  3.61791,    6.854, 20 Apr 2017 22:32:49
+2017/04/20 22:33:21.785 [ctdbp:DLOGP3]:Instrument Stopped [Power Off]
+2017/04/20 22:45:07.589 [ctdbp:DLOGP3]:Instrument Started [Power On]
+2017/04/20 22:47:41.305 # 11.1678,  3.63413,    7.582, 20 Apr 2017 22:47:35
+2017/04/20 22:48:27.618 [ctdbp:DLOGP3]:Instrument Stopped [Power Off]
+2017/04/20 23:00:09.712 [ctdbp:DLOGP3]:Instrument Started [Power On]
+2017/04/20 23:01:43.305 # 10.9814,  3.61864,    7.457, 20 Apr 2017 23:01:37
+2017/04/20 23:03:21.783 [ctdbp:DLOGP3]:Instrument Stopped [Power Off]
+2017/04/20 23:15:09.443 [ctdbp:DLOGP3]:Instrument Started [Power On]
+2017/04/20 23:18:12.305 # 10.9999,  3.62106,    7.606, 20 Apr 2017 23:18:06
+2017/04/20 23:18:28.625 [ctdbp:DLOGP3]:Instrument Stopped [Power Off]
+2017/04/20 23:30:10.071 [ctdbp:DLOGP3]:Instrument Started [Power On]
+2017/04/20 23:33:13.305 # 11.0711,  3.62851,    7.336, 20 Apr 2017 23:33:07
+2017/04/20 23:33:21.792 [ctdbp:DLOGP3]:Instrument Stopped [Power Off]
+2017/04/20 23:45:09.636 [ctdbp:DLOGP3]:Instrument Started [Power On]
+2017/04/20 23:46:43.306 # 11.0338,  3.62629,    7.257, 20 Apr 2017 23:46:37
+2017/04/20 23:48:21.786 [ctdbp:DLOGP3]:Instrument Stopped [Power Off]

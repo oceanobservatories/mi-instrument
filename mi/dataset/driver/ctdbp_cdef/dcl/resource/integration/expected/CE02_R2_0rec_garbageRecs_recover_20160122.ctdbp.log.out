@@ -1,0 +1,5 @@
+
+ subsite | node | sensor | bin | method | time | deployment | id | conductivity | date_time_string | dcl_controller_timestamp | driver_timestamp | ingestion_timestamp | internal_timestamp | port_timestamp | preferred_timestamp | pressure | provenance | quality_flag | temp
+---------+------+--------+-----+--------+------+------------+----+--------------+------------------+--------------------------+------------------+---------------------+--------------------+----------------+---------------------+----------+------------+--------------+------
+
+(0 rows)
