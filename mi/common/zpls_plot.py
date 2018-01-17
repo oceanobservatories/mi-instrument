@@ -6,9 +6,9 @@
 
 Release notes:
 
-This class supports the generation of ZPLS echograms. It needs matplotlib version 1.3.1 for the code to display
-the colorbar on the right side of the figure. If matplotlib version 1.1.1 is used, the colorbar is plotted over
-the figure instead of on the right side of it.
+This class supports the generation of ZPLS echograms. It needs matplotlib version 1.3.1 (or higher) for the code
+to display the colorbar on the right side of the figure. If matplotlib version 1.1.1 is used, the colorbar is
+plotted over the figure instead of on the right side of it.
 """
 
 from datetime import datetime
