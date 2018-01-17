@@ -1,3 +1,7 @@
+# Version <Next Release>
+
+* Issue #13098 - Added individual colorbars for each fequency's echogram.
+
 # Version 0.5.9
 
 * Issue #12427 Update ADCP Parsers and Consolidate ADCP streams:
