@@ -44,8 +44,8 @@ from mi.instrument.kut.ek60.ooicore.zplsc_echogram import SAMPLE_MATCHER, \
     DATAGRAM_HEADER_SIZE, \
     CONFIG_HEADER_SIZE,\
     CONFIG_TRANSDUCER_SIZE, \
-    read_config_header, \
-    ZPLSPlot
+    read_config_header
+from mi.common.zpls_plot import ZPLSPlot
 
 log = get_logger()
 __author__ = 'Ronald Ronquillo'
@@ -467,9 +467,14 @@ def parse_particles_file(input_file_path, output_file_path=None):
             # Convert to numpy array and decompress power data to dB
             power_data_dict[channel] = np.array(power_data_dict[channel]) * 10. * numpy.log10(2) / 256.
 
+        for channel in frequencies:
+            frequencies[channel] = frequencies[channel] / 1000.0
+
+        _, max_depth = power_data_dict[1].shape
+
         log.info('Begin generating echogram: %r', image_path)
 
-        plot = ZPLSPlot(data_times, power_data_dict, frequencies, bin_size)
+        plot = ZPLSPlot(data_times, power_data_dict, frequencies, 0, max_depth * bin_size)
         plot.generate_plots()
         plot.write_image(image_path)
 
