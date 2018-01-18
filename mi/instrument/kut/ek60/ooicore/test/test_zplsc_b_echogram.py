@@ -18,4 +18,3 @@ urllib.urlretrieve(remote_raw_data_file, local_raw_data_file)
 
 # Create the ZPLSC-B Series echogram
 parse_echogram_file_wrapper(local_raw_data_file)
-

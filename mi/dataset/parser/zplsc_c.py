@@ -9,7 +9,7 @@
 This file contains code for the zplsc_c parser and code to produce data particles.
 
 The ZPLSC sensor, series C, provides acoustic return measurements from the water column.
-The revcovered data files (*.01A) are binary recovered from the CF flash memory.
+The recovered data files (*.01A) are binary recovered from the CF flash memory.
 The file may contain record data for multiple phases and bursts of measurements.
 Mal-formed sensor data records produce no particles.
 
@@ -48,7 +48,7 @@ from mi.core.log import get_logger, get_logging_metaclass
 from mi.dataset.dataset_parser import SimpleParser
 from mi.core.common import BaseEnum
 from datetime import datetime
-from mi.dataset.driver.zplsc_c.zplsc_c_echogram import ZPLSCCPlot
+from mi.common.zpls_plot import ZPLSPlot
 from mi.dataset.driver.zplsc_c.zplsc_c_echogram import ZPLSCCEchogram
 
 log = get_logger()
@@ -347,12 +347,12 @@ class ZplscCParser(SimpleParser):
                 _, timestamp, chan_data, depth_range = self.parse_record()
 
                 if not sv_dict:
-                    range_chan_data = range(len(chan_data))
+                    range_chan_data = range(1, len(chan_data)+1)
                     sv_dict = {channel: [] for channel in range_chan_data}
-                    frequencies = {channel: float(self.ph.frequency[channel]) for channel in range_chan_data}
+                    frequencies = {channel: float(self.ph.frequency[channel-1]) for channel in range_chan_data}
 
                 for channel in sv_dict:
-                    sv_dict[channel].append(chan_data[channel])
+                    sv_dict[channel].append(chan_data[channel-1])
 
                 data_times.append(timestamp)
 
@@ -370,14 +370,16 @@ class ZplscCParser(SimpleParser):
             self.ph = AzfpProfileHeader()
             self.find_next_record()
 
+        log.info('Completed processing all data: %r', input_file_path)
+
         data_times = np.array(data_times)
 
         for channel in sv_dict:
             sv_dict[channel] = np.array(sv_dict[channel])
 
-        log.info('Completed processing all data: %r - Generating echogram: %r', input_file_path, image_path)
+        log.info('Begin generating echogram: %r', image_path)
 
-        plot = ZPLSCCPlot(data_times, sv_dict, frequencies, depth_range)
+        plot = ZPLSPlot(data_times, sv_dict, frequencies, depth_range[0][-1], depth_range[0][0])
         plot.generate_plots()
         plot.write_image(image_path)
 
