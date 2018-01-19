@@ -153,3 +153,33 @@ class MetbkADclParser(DclFileCommonParser):
                                               exception_callback,
                                               SENSOR_DATA_MATCHER,
                                               METADATA_MATCHER)
+
+    def parse_file(self):
+        for line in self._stream_handle:
+            a = line.split()
+            timestamp = a[0] + '\t' + a[1]
+            barometric_pressure = a[2]
+            relative_humidity = a[3]
+            air_temperature = a[4]
+            longwave_irradiance = a[5]
+            precipitation = a[6]
+            sea_surface_temperature = a[7]
+            sea_surface_conductivity = a[8]
+            shortwave_irradiance = a[9]
+            eastward_wind_velocity = a[10]
+            northward_wind_velocity = a[11]
+
+            print timestamp + '  ' + barometric_pressure + '  ' + relative_humidity + '  ' + air_temperature + '  ' \
+            + longwave_irradiance + '  ' + precipitation + '  ' + sea_surface_temperature + '  ' + \
+            sea_surface_conductivity + '  ' + shortwave_irradiance + '  ' + eastward_wind_velocity + '  ' + \
+            northward_wind_velocity
+
+            print "Float? = " + str(self.is_float(shortwave_irradiance))
+
+    def is_float(self, val):
+        try:
+            float(val)
+            print "True"
+        except ValueError:
+            return ''
+
