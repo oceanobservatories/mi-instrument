@@ -1,0 +1,46 @@
+header:
+    particle_object: 'MULTIPLE'
+    particle_type: 'MULTIPLE'
+data:
+  - _index: 1
+    particle_object: MetbkADclTelemeteredInstrumentDataParticle
+    particle_type: metbk_a_dcl_instrument
+    port_timestamp: 3719649394.4879999
+    air_temperature: '11.425'
+    barometric_pressure: '1016.46'
+    eastward_wind_velocity: '0.93'
+    longwave_irradiance: '281.4'
+    northward_wind_velocity: '3.7272'
+    precipitation: '25.08'
+    relative_humidity: '76.074'
+    sea_surface_conductivity: '3.7272'
+    sea_surface_temperature: '11.700'
+    shortwave_irradiance: '2.5'
+  - _index: 2
+    particle_object: MetbkADclTelemeteredInstrumentDataParticle
+    particle_type: metbk_a_dcl_instrument
+    port_timestamp: 3719649394.4879999
+    air_temperature: '11.425'
+    barometric_pressure: '1016.46'
+    eastward_wind_velocity: 'Na'
+    longwave_irradiance: '281.4'
+    northward_wind_velocity: '3.7272'
+    precipitation: '25.08'
+    relative_humidity: '76.074'
+    sea_surface_conductivity: '3.7272'
+    sea_surface_temperature: '11.700'
+    shortwave_irradiance: 'Na'
+  - _index: 3
+    particle_object: MetbkADclTelemeteredInstrumentDataParticle
+    particle_type: metbk_a_dcl_instrument
+    port_timestamp: 3719690737.5650001
+    air_temperature: '12.072'
+    barometric_pressure: '[metbk:DLOGP6]:1013.15'
+    eastward_wind_velocity: 'Na'
+    longwave_irradiance: '334.3'
+    northward_wind_velocity: '3.7512'
+    precipitation: '24.69'
+    relative_humidity: '80.265'
+    sea_surface_conductivity: '3.7512'
+    sea_surface_temperature: '11.938'
+    shortwave_irradiance: '77.7'
