@@ -235,33 +235,15 @@ class MetbkADclParserUnitTestCase(ParserUnitTestCase):
 
     def test_bug_13106(self):
         """
-        Test to verify change made to dcl_file_common.py works with DCL
-        timestamps containing seconds >59
+        Test to verify change made to metbk_a_dcl.py works with non-floating point
+        variables and ensure that the values can be outputted.
         """
-        # self.create_yml(MetbkADclTelemeteredInstrumentDataParticle, 'FILE_8_1440.yml')
 
-        # particle_to_yml(TELEMETERED_PARTICLE_CLASS, "FILE_8_1440.yml")
         in_file = self.open_file(FILE_8_1440)
         parser = self.create_parser(TELEMETERED_PARTICLE_CLASS, in_file)
 
         # In a single read, get all particles for this file.
         result = parser.get_records(RECORDS_FILE_8_1440)
-        particle_to_yml(result, '/Users/philtran/OOI/mi-instrument/mi/dataset/driver/metbk_a/dcl/resource/tel_20171114.metbk.yml')
         self.assertEqual(len(result), RECORDS_FILE_8_1440)
-        self.assertListEqual(self.exception_callback_value, [])
-        in_file.close()
-
-    def test_small(self):
-        """
-        Test to verify change made to dcl_file_common.py works with DCL
-        timestamps containing seconds >59
-        """
-        in_file = self.open_file("test.metbk2.log")
-        parser = self.create_parser(TELEMETERED_PARTICLE_CLASS, in_file)
-
-        # In a single read, get all particles for this file.
-        result = parser.get_records(3)
-        particle_to_yml(result, '/Users/philtran/OOI/mi-instrument/mi/dataset/driver/metbk_a/dcl/resource/small_test.yml')
-        self.assertEqual(len(result), 3)
         self.assertListEqual(self.exception_callback_value, [])
         in_file.close()
