@@ -40,9 +40,11 @@ from mi.dataset.parser.utilities import particle_to_yml
 from mi.dataset.test.test_parser import ParserUnitTestCase
 from mi.dataset.dataset_parser import DataSetDriverConfigKeys
 from mi.dataset.driver.metbk_a.dcl.resource import RESOURCE_PATH
-from mi.dataset.parser.metbk_a_dcl import MetbkADclParser
+from mi.dataset.parser.metbk_a_dcl import MetbkADclParser, MetbkADclTelemeteredInstrumentDataParticle
 from mi.dataset.driver.metbk_a.dcl.metbk_dcl_a_driver import MODULE_NAME, \
     RECOVERED_PARTICLE_CLASS, TELEMETERED_PARTICLE_CLASS
+from mi.dataset.parser.utilities import particle_to_yml
+
 
 
 log = get_logger()
@@ -53,6 +55,7 @@ FILE_7_0 = '20140901.metbk2_no_sensor.log'
 FILE_7_1061 = '20140901.metbk2.log'
 FILE_0_863 = '20140902.metbk2.log'
 FILE_0_904 = '20140917.metbk2.log'
+FILE_8_1440 = '20171114.metbk.log'
 
 YML_0_863 = 'rec_20140902.metbk2.yml'
 YML_4_1430 = 'tel_20140805.metbk2.yml'
@@ -64,6 +67,7 @@ RECORDS_FILE_4_1430 = 1430      # number of records expected
 RECORDS_FILE_7_1061 = 1061      # number of records expected
 RECORDS_FILE_0_863 = 863        # number of records expected
 RECORDS_FILE_0_904 = 904        # number of records expected
+RECORDS_FILE_8_1440 = 1440      # number of records expected
 
 TOTAL_RECORDS_FILE_7_0 = 7      # total number of records
 TOTAL_RECORDS_FILE_4_9 = 60     # total number of records
@@ -220,7 +224,7 @@ class MetbkADclParserUnitTestCase(ParserUnitTestCase):
         timestamps containing seconds >59
         """
         in_file = self.open_file("20140805.metbk2A.log")
-        parser = self.create_parser(TELEMETERED_PARTICLE_CLASS, in_file)
+        parser = self.create_parser('MetbkADclTelemeteredInstrumentDataParticle', in_file)
 
         # In a single read, get all particles for this file.
         result = parser.get_records(5)
@@ -234,12 +238,30 @@ class MetbkADclParserUnitTestCase(ParserUnitTestCase):
         Test to verify change made to dcl_file_common.py works with DCL
         timestamps containing seconds >59
         """
+        # self.create_yml(MetbkADclTelemeteredInstrumentDataParticle, 'FILE_8_1440.yml')
+
+        # particle_to_yml(TELEMETERED_PARTICLE_CLASS, "FILE_8_1440.yml")
+        in_file = self.open_file(FILE_8_1440)
+        parser = self.create_parser(TELEMETERED_PARTICLE_CLASS, in_file)
+
+        # In a single read, get all particles for this file.
+        result = parser.get_records(RECORDS_FILE_8_1440)
+        particle_to_yml(result, '/Users/philtran/OOI/mi-instrument/mi/dataset/driver/metbk_a/dcl/resource/tel.20171114.metbk.yml')
+        self.assertEqual(len(result), RECORDS_FILE_8_1440)
+        self.assertListEqual(self.exception_callback_value, [])
+        in_file.close()
+
+    def test_small(self):
+        """
+        Test to verify change made to dcl_file_common.py works with DCL
+        timestamps containing seconds >59
+        """
         in_file = self.open_file("test.metbk2.log")
         parser = self.create_parser(TELEMETERED_PARTICLE_CLASS, in_file)
 
         # In a single read, get all particles for this file.
-        result = parser.get_records(1)
-
-        self.assertEqual(len(result), 1)
+        result = parser.get_records(3)
+        particle_to_yml(result, '/Users/philtran/OOI/mi-instrument/mi/dataset/driver/metbk_a/dcl/resource/small_test.yml')
+        self.assertEqual(len(result), 3)
         self.assertListEqual(self.exception_callback_value, [])
         in_file.close()

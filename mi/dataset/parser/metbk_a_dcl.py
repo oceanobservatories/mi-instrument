@@ -36,6 +36,9 @@ from mi.dataset.parser.dcl_file_common import \
     DclFileCommonParser, SPACES, TIMESTAMP, \
     START_METADATA, END_METADATA
 
+from mi.core.instrument.dataset_data_particle import DataParticle, DataParticleKey
+from mi.core.exceptions import UnexpectedDataException, InstrumentParameterException
+
 from mi.dataset.parser.common_regexes import END_OF_LINE_REGEX, FLOAT_REGEX, ANY_CHARS_REGEX
 
 log = get_logger()
@@ -79,33 +82,22 @@ SENSOR_DATA_MATCHER = re.compile(SENSOR_DATA_PATTERN)
 # The following are indices into groups() produced by SENSOR_DATA_MATCHER
 # incremented after common timestamp values.
 # i.e, match.groups()[INDEX]
-SENSOR_GROUP_BAROMETRIC_PRESSURE = 8
-SENSOR_GROUP_RELATIVE_HUMIDITY = 9
-SENSOR_GROUP_AIR_TEMPERATURE = 10
-SENSOR_GROUP_LONGWAVE_IRRADIANCE = 11
-SENSOR_GROUP_PRECIPITATION = 12
-SENSOR_GROUP_SEA_SURFACE_TEMPERATURE = 13
-SENSOR_GROUP_SEA_SURFACE_CONDUCTIVITY = 14
-SENSOR_GROUP_SHORTWAVE_IRRADIANCE = 15
-SENSOR_GROUP_EASTWARD_WIND_VELOCITY = 16
-SENSOR_GROUP_NORTHWARD_WIND_VELOCITY = 17
+SENSOR_GROUP_BAROMETRIC_PRESSURE = 1
+SENSOR_GROUP_RELATIVE_HUMIDITY = 2
+SENSOR_GROUP_AIR_TEMPERATURE = 3
+SENSOR_GROUP_LONGWAVE_IRRADIANCE = 4
+SENSOR_GROUP_PRECIPITATION = 5
+SENSOR_GROUP_SEA_SURFACE_TEMPERATURE = 6
+SENSOR_GROUP_SEA_SURFACE_CONDUCTIVITY = 7
+SENSOR_GROUP_SHORTWAVE_IRRADIANCE = 8
+SENSOR_GROUP_EASTWARD_WIND_VELOCITY = 9
+SENSOR_GROUP_NORTHWARD_WIND_VELOCITY = 11
 
 # This table is used in the generation of the instrument data particle.
 # Column 1 - particle parameter name
 # Column 2 - group number (index into raw_data)
 # Column 3 - data encoding function (conversion required - int, float, etc)
-INSTRUMENT_PARTICLE_MAP = [
-    ('barometric_pressure', SENSOR_GROUP_BAROMETRIC_PRESSURE, float),
-    ('relative_humidity', SENSOR_GROUP_RELATIVE_HUMIDITY, float),
-    ('air_temperature', SENSOR_GROUP_AIR_TEMPERATURE, float),
-    ('longwave_irradiance', SENSOR_GROUP_LONGWAVE_IRRADIANCE, float),
-    ('precipitation', SENSOR_GROUP_PRECIPITATION, float),
-    ('sea_surface_temperature', SENSOR_GROUP_SEA_SURFACE_TEMPERATURE, float),
-    ('sea_surface_conductivity', SENSOR_GROUP_SEA_SURFACE_CONDUCTIVITY, float),
-    ('shortwave_irradiance', SENSOR_GROUP_SHORTWAVE_IRRADIANCE, float),
-    ('eastward_wind_velocity', SENSOR_GROUP_EASTWARD_WIND_VELOCITY, float),
-    ('northward_wind_velocity', SENSOR_GROUP_NORTHWARD_WIND_VELOCITY, float)
-]
+INSTRUMENT_PARTICLE_MAP = []
 
 
 class DataParticleType(BaseEnum):
@@ -153,33 +145,59 @@ class MetbkADclParser(DclFileCommonParser):
                                               exception_callback,
                                               SENSOR_DATA_MATCHER,
                                               METADATA_MATCHER)
+        self.particle_classes = None
 
     def parse_file(self):
-        for line in self._stream_handle:
-            a = line.split()
-            timestamp = a[0] + '\t' + a[1]
-            barometric_pressure = a[2]
-            relative_humidity = a[3]
-            air_temperature = a[4]
-            longwave_irradiance = a[5]
-            precipitation = a[6]
-            sea_surface_temperature = a[7]
-            sea_surface_conductivity = a[8]
-            shortwave_irradiance = a[9]
-            eastward_wind_velocity = a[10]
-            northward_wind_velocity = a[11]
 
-            print timestamp + '  ' + barometric_pressure + '  ' + relative_humidity + '  ' + air_temperature + '  ' \
-            + longwave_irradiance + '  ' + precipitation + '  ' + sea_surface_temperature + '  ' + \
-            sea_surface_conductivity + '  ' + shortwave_irradiance + '  ' + eastward_wind_velocity + '  ' + \
-            northward_wind_velocity
+        # If not set from config & no InstrumentParameterException error from constructor
+        if self.particle_classes is None:
+            self.particle_classes = (self._particle_class,)
 
-            print "Float? = " + str(self.is_float(shortwave_irradiance))
+        for particle_class in self.particle_classes:
+
+            for line in self._stream_handle:
+                raw_list = line.split()
+                raw_list[0:2] = [' '.join(raw_list[0:2])]                   # Merge the first and second elements to form a timestamp
+
+                if raw_list is not None:
+                    raw_data = tuple(raw_list)
+                    self.construct_instrument_particle_map(raw_data)        # Set them to their proper mappings
+                    particle = self._extract_sample(particle_class,
+                                                    None,
+                                                    raw_data,
+                                                    preferred_ts=DataParticleKey.PORT_TIMESTAMP)
+                    self._record_buffer.append(particle)
+
+    def construct_instrument_particle_map(self, raw_data):
+        barometric_pressure             = raw_data[1]
+        relative_humidity               = raw_data[2]
+        air_temperature                 = raw_data[3]
+        longwave_irradiance             = raw_data[4]
+        precipitation                   = raw_data[5]
+        sea_surface_temperature         = raw_data[6]
+        sea_surface_conductivity        = raw_data[7]
+        shortwave_irradiance            = raw_data[8]
+        eastward_wind_velocity          = raw_data[9]
+        northward_wind_velocity         = raw_data[10]
+
+        global INSTRUMENT_PARTICLE_MAP
+        INSTRUMENT_PARTICLE_MAP = [
+            ('barometric_pressure', SENSOR_GROUP_BAROMETRIC_PRESSURE, self.is_float(barometric_pressure)),
+            ('relative_humidity', SENSOR_GROUP_RELATIVE_HUMIDITY, self.is_float(relative_humidity)),
+            ('air_temperature', SENSOR_GROUP_AIR_TEMPERATURE, self.is_float(air_temperature)),
+            ('longwave_irradiance', SENSOR_GROUP_LONGWAVE_IRRADIANCE, self.is_float(longwave_irradiance)),
+            ('precipitation', SENSOR_GROUP_PRECIPITATION, self.is_float(precipitation)),
+            ('sea_surface_temperature', SENSOR_GROUP_SEA_SURFACE_TEMPERATURE, self.is_float(sea_surface_temperature)),
+            ('sea_surface_conductivity', SENSOR_GROUP_SEA_SURFACE_CONDUCTIVITY, self.is_float(sea_surface_conductivity)),
+            ('shortwave_irradiance', SENSOR_GROUP_SHORTWAVE_IRRADIANCE, self.is_float(shortwave_irradiance)),
+            ('eastward_wind_velocity', SENSOR_GROUP_EASTWARD_WIND_VELOCITY, self.is_float(eastward_wind_velocity)),
+            ('northward_wind_velocity', SENSOR_GROUP_NORTHWARD_WIND_VELOCITY, self.is_float(northward_wind_velocity))
+        ]
 
     def is_float(self, val):
-        try:
-            float(val)
-            print "True"
-        except ValueError:
-            return ''
-
+        if isinstance(val, float):
+            return float
+        elif isinstance(val, str):
+            return str
+        else:
+            return 0
