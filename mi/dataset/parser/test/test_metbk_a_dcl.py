@@ -246,7 +246,7 @@ class MetbkADclParserUnitTestCase(ParserUnitTestCase):
 
         # In a single read, get all particles for this file.
         result = parser.get_records(RECORDS_FILE_8_1440)
-        particle_to_yml(result, '/Users/philtran/OOI/mi-instrument/mi/dataset/driver/metbk_a/dcl/resource/tel.20171114.metbk.yml')
+        particle_to_yml(result, '/Users/philtran/OOI/mi-instrument/mi/dataset/driver/metbk_a/dcl/resource/tel_20171114.metbk.yml')
         self.assertEqual(len(result), RECORDS_FILE_8_1440)
         self.assertListEqual(self.exception_callback_value, [])
         in_file.close()
