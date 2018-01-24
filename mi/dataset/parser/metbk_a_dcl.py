@@ -91,7 +91,7 @@ SENSOR_GROUP_SEA_SURFACE_TEMPERATURE = 6
 SENSOR_GROUP_SEA_SURFACE_CONDUCTIVITY = 7
 SENSOR_GROUP_SHORTWAVE_IRRADIANCE = 8
 SENSOR_GROUP_EASTWARD_WIND_VELOCITY = 9
-SENSOR_GROUP_NORTHWARD_WIND_VELOCITY = 11
+SENSOR_GROUP_NORTHWARD_WIND_VELOCITY = 10
 
 # This table is used in the generation of the instrument data particle.
 # Column 1 - particle parameter name
@@ -115,6 +115,19 @@ class MetbkADclInstrumentDataParticle(DclInstrumentDataParticle):
             raw_data,
             INSTRUMENT_PARTICLE_MAP,
             *args, **kwargs)
+
+    def _build_parsed_values(self):
+        """
+        Build parsed values for Recovered and Telemetered Instrument Data Particle.
+        """
+        data_list = []
+        for name, group, func in INSTRUMENT_PARTICLE_MAP:
+            if isinstance(self.raw_data[group], float):
+                data_list.append(self._encode_value(name, self.raw_data[group], func))
+        return data_list
+
+
+
 
 
 class MetbkADclRecoveredInstrumentDataParticle(MetbkADclInstrumentDataParticle):
@@ -143,11 +156,15 @@ class MetbkADclParser(DclFileCommonParser):
         super(MetbkADclParser, self).__init__(config,
                                               stream_handle,
                                               exception_callback,
-                                              SENSOR_DATA_MATCHER,
-                                              METADATA_MATCHER)
+                                              '',
+                                              '')
         self.particle_classes = None
 
     def parse_file(self):
+        """
+        This method reads the file and parses the data within, and at
+        the end of this method self._record_buffer will be filled with all the particles in the file.
+        """
 
         # If not set from config & no InstrumentParameterException error from constructor
         if self.particle_classes is None:
@@ -156,17 +173,18 @@ class MetbkADclParser(DclFileCommonParser):
         for particle_class in self.particle_classes:
 
             for line in self._stream_handle:
-                raw_list = line.split()
-                raw_list[0:2] = [' '.join(raw_list[0:2])]                   # Merge the first and second elements to form a timestamp
+                raw_data = line.split()
+                raw_data[0:2] = [' '.join(raw_data[0:2])]                   # Merge the first and second elements to form a timestamp
 
-                if raw_list is not None:
-                    raw_data = tuple(raw_list)
-                    self.construct_instrument_particle_map(raw_data)        # Set them to their proper mappings
-                    particle = self._extract_sample(particle_class,
-                                                    None,
-                                                    raw_data,
-                                                    preferred_ts=DataParticleKey.PORT_TIMESTAMP)
-                    self._record_buffer.append(particle)
+                if raw_data is not None:
+                    for i in range(1, len(raw_data)):                       # Ignore 0th element, because that is the timestamp
+                        raw_data[i] = self.select_type(raw_data[i])
+                self.construct_instrument_particle_map(raw_data)
+                particle = self._extract_sample(particle_class,
+                                                None,
+                                                raw_data,
+                                                preferred_ts=DataParticleKey.PORT_TIMESTAMP)
+                self._record_buffer.append(particle)
 
     def construct_instrument_particle_map(self, raw_data):
         barometric_pressure             = raw_data[1]
@@ -181,23 +199,35 @@ class MetbkADclParser(DclFileCommonParser):
         northward_wind_velocity         = raw_data[10]
 
         global INSTRUMENT_PARTICLE_MAP
-        INSTRUMENT_PARTICLE_MAP = [
-            ('barometric_pressure', SENSOR_GROUP_BAROMETRIC_PRESSURE, self.is_float(barometric_pressure)),
-            ('relative_humidity', SENSOR_GROUP_RELATIVE_HUMIDITY, self.is_float(relative_humidity)),
-            ('air_temperature', SENSOR_GROUP_AIR_TEMPERATURE, self.is_float(air_temperature)),
-            ('longwave_irradiance', SENSOR_GROUP_LONGWAVE_IRRADIANCE, self.is_float(longwave_irradiance)),
-            ('precipitation', SENSOR_GROUP_PRECIPITATION, self.is_float(precipitation)),
-            ('sea_surface_temperature', SENSOR_GROUP_SEA_SURFACE_TEMPERATURE, self.is_float(sea_surface_temperature)),
-            ('sea_surface_conductivity', SENSOR_GROUP_SEA_SURFACE_CONDUCTIVITY, self.is_float(sea_surface_conductivity)),
-            ('shortwave_irradiance', SENSOR_GROUP_SHORTWAVE_IRRADIANCE, self.is_float(shortwave_irradiance)),
-            ('eastward_wind_velocity', SENSOR_GROUP_EASTWARD_WIND_VELOCITY, self.is_float(eastward_wind_velocity)),
-            ('northward_wind_velocity', SENSOR_GROUP_NORTHWARD_WIND_VELOCITY, self.is_float(northward_wind_velocity))
-        ]
+        del INSTRUMENT_PARTICLE_MAP[:]      # Clear the list before making a new one
+        INSTRUMENT_PARTICLE_MAP.append(self.add_particle(barometric_pressure, 'barometric_pressure', SENSOR_GROUP_BAROMETRIC_PRESSURE))
+        INSTRUMENT_PARTICLE_MAP.append(self.add_particle(relative_humidity, 'relative_humidity', SENSOR_GROUP_RELATIVE_HUMIDITY))
+        INSTRUMENT_PARTICLE_MAP.append(self.add_particle(air_temperature, 'air_temperature', SENSOR_GROUP_AIR_TEMPERATURE))
+        INSTRUMENT_PARTICLE_MAP.append(self.add_particle(longwave_irradiance, 'longwave_irradiance', SENSOR_GROUP_LONGWAVE_IRRADIANCE))
+        INSTRUMENT_PARTICLE_MAP.append(self.add_particle(precipitation, 'precipitation', SENSOR_GROUP_PRECIPITATION))
+        INSTRUMENT_PARTICLE_MAP.append(self.add_particle(sea_surface_temperature, 'sea_surface_temperature', SENSOR_GROUP_SEA_SURFACE_TEMPERATURE))
+        INSTRUMENT_PARTICLE_MAP.append(self.add_particle(sea_surface_conductivity, 'sea_surface_conductivity', SENSOR_GROUP_SEA_SURFACE_CONDUCTIVITY))
+        INSTRUMENT_PARTICLE_MAP.append(self.add_particle(shortwave_irradiance, 'shortwave_irradiance', SENSOR_GROUP_SHORTWAVE_IRRADIANCE))
+        INSTRUMENT_PARTICLE_MAP.append(self.add_particle(eastward_wind_velocity, 'eastward_wind_velocity', SENSOR_GROUP_EASTWARD_WIND_VELOCITY))
+        INSTRUMENT_PARTICLE_MAP.append(self.add_particle(northward_wind_velocity, 'northward_wind_velocity', SENSOR_GROUP_NORTHWARD_WIND_VELOCITY))
 
-    def is_float(self, val):
-        if isinstance(val, float):
-            return float
-        elif isinstance(val, str):
-            return str
+    @staticmethod
+    def add_particle(raw_data, particle, group):
+        if isinstance(raw_data, float):
+            return particle, group, float
         else:
-            return 0
+            return particle, group, str
+
+    @staticmethod
+    def select_type(raw_list_element):
+        """
+        This method checks to make sure that the current line
+        """
+        if raw_list_element is not isinstance(raw_list_element, float):
+            if re.match(r'\[.*\]:', raw_list_element) is not None:
+                return float(re.sub(r'\[.*\]:', '', raw_list_element))
+            try:
+                return float(raw_list_element)
+            except ValueError:
+                return str(raw_list_element)
+

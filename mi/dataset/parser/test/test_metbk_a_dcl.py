@@ -244,6 +244,23 @@ class MetbkADclParserUnitTestCase(ParserUnitTestCase):
 
         # In a single read, get all particles for this file.
         result = parser.get_records(RECORDS_FILE_8_1440)
+        particle_to_yml(result, '/Users/philtran/OOI/mi-instrument/mi/dataset/driver/metbk_a/dcl/resource/tel_20171114.metbk.yml')
+
         self.assertEqual(len(result), RECORDS_FILE_8_1440)
+        self.assertListEqual(self.exception_callback_value, [])
+        in_file.close()
+
+    def test_small(self):
+        """
+        Test to verify change made to dcl_file_common.py works with DCL
+        timestamps containing seconds >59
+        """
+        in_file = self.open_file("test.metbk2.log")
+        parser = self.create_parser(TELEMETERED_PARTICLE_CLASS, in_file)
+
+        # In a single read, get all particles for this file.
+        result = parser.get_records(3)
+        particle_to_yml(result, '/Users/philtran/OOI/mi-instrument/mi/dataset/driver/metbk_a/dcl/resource/small_test.yml')
+        self.assertEqual(len(result), 3)
         self.assertListEqual(self.exception_callback_value, [])
         in_file.close()
