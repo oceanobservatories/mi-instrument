@@ -1,3 +1,7 @@
+# Version <Next Release>
+
+* Issue #13098 - Added individual colorbars for each frequency's echogram.
+
 # Version 0.5.9
 
 * Issue #12427 Update ADCP Parsers and Consolidate ADCP streams:
@@ -15,6 +19,7 @@
 
 # Version 0.5.8
 
+* Issue #12584 - Added individual colobars for each frequency's echogram.
 * Issue #13083 - Restored feature in zplsc_b parser to generate an echogram.
 
 # Version 0.5.7
