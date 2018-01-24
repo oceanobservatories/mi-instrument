@@ -39,7 +39,7 @@ from mi.core.instrument.dataset_data_particle import DataParticleKey
 
 log = get_logger()
 
-__author__ = 'Ronald Ronquillo'
+__author__ = 'Phillip Tran'
 __license__ = 'Apache 2.0'
 
 # SENSOR_DATA_MATCHER produces the following groups.
