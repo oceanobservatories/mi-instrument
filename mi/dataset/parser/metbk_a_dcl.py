@@ -33,50 +33,14 @@ from mi.core.common import BaseEnum
 
 from mi.dataset.parser.dcl_file_common import \
     DclInstrumentDataParticle, \
-    DclFileCommonParser, SPACES, TIMESTAMP, \
-    START_METADATA, END_METADATA
+    DclFileCommonParser
 
-from mi.core.instrument.dataset_data_particle import DataParticle, DataParticleKey
-from mi.core.exceptions import UnexpectedDataException, InstrumentParameterException
-
-from mi.dataset.parser.common_regexes import END_OF_LINE_REGEX, FLOAT_REGEX, ANY_CHARS_REGEX
+from mi.core.instrument.dataset_data_particle import DataParticleKey
 
 log = get_logger()
 
 __author__ = 'Ronald Ronquillo'
 __license__ = 'Apache 2.0'
-
-# Basic patterns
-FLOAT = '('+FLOAT_REGEX+')'  # floating point as a captured group
-
-# Metadata record:
-#   Timestamp [Text]MoreText newline
-METADATA_PATTERN = TIMESTAMP + SPACES  # dcl controller timestamp
-METADATA_PATTERN += START_METADATA  # Metadata record starts with '['
-METADATA_PATTERN += ANY_CHARS_REGEX  # followed by text
-METADATA_PATTERN += END_METADATA  # followed by ']'
-METADATA_PATTERN += ANY_CHARS_REGEX  # followed by more text
-METADATA_PATTERN += END_OF_LINE_REGEX  # metadata record ends with LF
-METADATA_MATCHER = re.compile(METADATA_PATTERN)
-
-# Sensor data record:
-#   Timestamp Date<tab>Time<tab>SensorData
-#   where SensorData are space-separated floating point numbers
-SENSOR_DATA_PATTERN = TIMESTAMP + SPACES  # dcl controller timestamp
-SENSOR_DATA_PATTERN += FLOAT + SPACES  # Barometric Pressure
-SENSOR_DATA_PATTERN += FLOAT + SPACES  # Relative Humidity
-SENSOR_DATA_PATTERN += FLOAT + SPACES  # Air Temperature
-SENSOR_DATA_PATTERN += FLOAT + SPACES  # Longwave Irradiance
-SENSOR_DATA_PATTERN += FLOAT + SPACES  # Precipitation Level
-SENSOR_DATA_PATTERN += FLOAT + SPACES  # Sea Surface Temperature
-SENSOR_DATA_PATTERN += FLOAT + SPACES  # Sea Surface Conductivity
-SENSOR_DATA_PATTERN += FLOAT + SPACES  # Shortwave Irradiance
-SENSOR_DATA_PATTERN += FLOAT + SPACES  # Eastward Wind Velocity relative to Magnetic North
-SENSOR_DATA_PATTERN += FLOAT + SPACES  # Northward Wind Velocity relative to Magnetic North
-SENSOR_DATA_PATTERN += FLOAT_REGEX + SPACES  # Not Applicable (Don't Care)
-SENSOR_DATA_PATTERN += FLOAT_REGEX  # Not Applicable (Don't Care)
-SENSOR_DATA_PATTERN += END_OF_LINE_REGEX  # sensor data ends with CR-LF
-SENSOR_DATA_MATCHER = re.compile(SENSOR_DATA_PATTERN)
 
 # SENSOR_DATA_MATCHER produces the following groups.
 # The following are indices into groups() produced by SENSOR_DATA_MATCHER
@@ -94,6 +58,7 @@ SENSOR_GROUP_EASTWARD_WIND_VELOCITY = 9
 SENSOR_GROUP_NORTHWARD_WIND_VELOCITY = 10
 
 # This table is used in the generation of the instrument data particle.
+# This will be a list of tuples with the following columns.
 # Column 1 - particle parameter name
 # Column 2 - group number (index into raw_data)
 # Column 3 - data encoding function (conversion required - int, float, etc)
@@ -119,6 +84,8 @@ class MetbkADclInstrumentDataParticle(DclInstrumentDataParticle):
     def _build_parsed_values(self):
         """
         Build parsed values for Recovered and Telemetered Instrument Data Particle.
+        Will only append float values and ignore strings.
+        Returns the list.
         """
         data_list = []
         for name, group, func in INSTRUMENT_PARTICLE_MAP:
@@ -187,6 +154,10 @@ class MetbkADclParser(DclFileCommonParser):
                 self._record_buffer.append(particle)
 
     def construct_instrument_particle_map(self, raw_data):
+        """
+        Breaks raw data list down into their particular particles.
+        Append particle and type into instrument particle map.
+        """
         barometric_pressure             = raw_data[1]
         relative_humidity               = raw_data[2]
         air_temperature                 = raw_data[3]
@@ -213,6 +184,9 @@ class MetbkADclParser(DclFileCommonParser):
 
     @staticmethod
     def add_particle(raw_data, particle, group):
+        """
+        This function will add particle to the instrument particle map
+        """
         if isinstance(raw_data, float):
             return particle, group, float
         else:
@@ -221,10 +195,10 @@ class MetbkADclParser(DclFileCommonParser):
     @staticmethod
     def select_type(raw_list_element):
         """
-        This method checks to make sure that the current line
+        This function will return the float or string value of the particle.
         """
         if raw_list_element is not isinstance(raw_list_element, float):
-            if re.match(r'\[.*\]:', raw_list_element) is not None:
+            if re.match(r'\[.*\]:', raw_list_element) is not None:          # Get rid of the [metbk:DLOGP6]: (or similar) in front of float number
                 return float(re.sub(r'\[.*\]:', '', raw_list_element))
             try:
                 return float(raw_list_element)
