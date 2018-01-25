@@ -36,6 +36,7 @@ from mi.dataset.parser.dcl_file_common import \
     DclFileCommonParser
 
 from mi.core.instrument.dataset_data_particle import DataParticleKey
+from mi.core.exceptions import UnexpectedDataException
 
 log = get_logger()
 
@@ -62,7 +63,18 @@ SENSOR_GROUP_NORTHWARD_WIND_VELOCITY = 10
 # Column 1 - particle parameter name
 # Column 2 - group number (index into raw_data)
 # Column 3 - data encoding function (conversion required - int, float, etc)
-INSTRUMENT_PARTICLE_MAP = []
+INSTRUMENT_PARTICLE_MAP = [
+    ('barometric_pressure', SENSOR_GROUP_BAROMETRIC_PRESSURE, float),
+    ('relative_humidity', SENSOR_GROUP_RELATIVE_HUMIDITY, float),
+    ('air_temperature', SENSOR_GROUP_AIR_TEMPERATURE, float),
+    ('longwave_irradiance', SENSOR_GROUP_LONGWAVE_IRRADIANCE, float),
+    ('precipitation', SENSOR_GROUP_PRECIPITATION, float),
+    ('sea_surface_temperature', SENSOR_GROUP_SEA_SURFACE_TEMPERATURE, float),
+    ('sea_surface_conductivity', SENSOR_GROUP_SEA_SURFACE_CONDUCTIVITY, float),
+    ('shortwave_irradiance', SENSOR_GROUP_SHORTWAVE_IRRADIANCE, float),
+    ('eastward_wind_velocity', SENSOR_GROUP_EASTWARD_WIND_VELOCITY, float),
+    ('northward_wind_velocity', SENSOR_GROUP_NORTHWARD_WIND_VELOCITY, float)
+]
 
 
 class DataParticleType(BaseEnum):
@@ -89,7 +101,7 @@ class MetbkADclInstrumentDataParticle(DclInstrumentDataParticle):
         """
         data_list = []
         for name, group, func in INSTRUMENT_PARTICLE_MAP:
-            if isinstance(self.raw_data[group], float):
+            if isinstance(self.raw_data[group], func):
                 data_list.append(self._encode_value(name, self.raw_data[group], func))
         return data_list
 
@@ -126,6 +138,7 @@ class MetbkADclParser(DclFileCommonParser):
                                               '',
                                               '')
         self.particle_classes = None
+        self.instrument_particle_map = INSTRUMENT_PARTICLE_MAP
 
     def parse_file(self):
         """
@@ -140,68 +153,34 @@ class MetbkADclParser(DclFileCommonParser):
         for particle_class in self.particle_classes:
 
             for line in self._stream_handle:
-                raw_data = line.split()
-                raw_data[0:2] = [' '.join(raw_data[0:2])]                   # Merge the first and second elements to form a timestamp
+                if not re.findall(r'\[.*\]:[a-z|A-Z]+', line):                  # Disregard anything that has a character after [Something]:
+                    line = re.sub(r'\[.*\]:', '', line)
+                    raw_data = line.split()
+                    raw_data[0:2] = [' '.join(raw_data[0:2])]                   # Merge the first and second elements to form a timestamp
+                    if raw_data is not None:
+                        for i in range(1, len(raw_data)):                       # Ignore 0th element, because that is the timestamp
+                            raw_data[i] = self.select_type(raw_data[i])
+                    # self.construct_instrument_particle_map(raw_data)
+                    particle = self._extract_sample(particle_class,
+                                                    None,
+                                                    raw_data,
+                                                    preferred_ts=DataParticleKey.PORT_TIMESTAMP)
+                    self._record_buffer.append(particle)
 
-                if raw_data is not None:
-                    for i in range(1, len(raw_data)):                       # Ignore 0th element, because that is the timestamp
-                        raw_data[i] = self.select_type(raw_data[i])
-                self.construct_instrument_particle_map(raw_data)
-                particle = self._extract_sample(particle_class,
-                                                None,
-                                                raw_data,
-                                                preferred_ts=DataParticleKey.PORT_TIMESTAMP)
-                self._record_buffer.append(particle)
-
-    def construct_instrument_particle_map(self, raw_data):
-        """
-        Breaks raw data list down into their particular particles.
-        Append particle and type into instrument particle map.
-        """
-        barometric_pressure             = raw_data[1]
-        relative_humidity               = raw_data[2]
-        air_temperature                 = raw_data[3]
-        longwave_irradiance             = raw_data[4]
-        precipitation                   = raw_data[5]
-        sea_surface_temperature         = raw_data[6]
-        sea_surface_conductivity        = raw_data[7]
-        shortwave_irradiance            = raw_data[8]
-        eastward_wind_velocity          = raw_data[9]
-        northward_wind_velocity         = raw_data[10]
-
-        global INSTRUMENT_PARTICLE_MAP
-        del INSTRUMENT_PARTICLE_MAP[:]      # Clear the list before making a new one
-        INSTRUMENT_PARTICLE_MAP.append(self.add_particle(barometric_pressure, 'barometric_pressure', SENSOR_GROUP_BAROMETRIC_PRESSURE))
-        INSTRUMENT_PARTICLE_MAP.append(self.add_particle(relative_humidity, 'relative_humidity', SENSOR_GROUP_RELATIVE_HUMIDITY))
-        INSTRUMENT_PARTICLE_MAP.append(self.add_particle(air_temperature, 'air_temperature', SENSOR_GROUP_AIR_TEMPERATURE))
-        INSTRUMENT_PARTICLE_MAP.append(self.add_particle(longwave_irradiance, 'longwave_irradiance', SENSOR_GROUP_LONGWAVE_IRRADIANCE))
-        INSTRUMENT_PARTICLE_MAP.append(self.add_particle(precipitation, 'precipitation', SENSOR_GROUP_PRECIPITATION))
-        INSTRUMENT_PARTICLE_MAP.append(self.add_particle(sea_surface_temperature, 'sea_surface_temperature', SENSOR_GROUP_SEA_SURFACE_TEMPERATURE))
-        INSTRUMENT_PARTICLE_MAP.append(self.add_particle(sea_surface_conductivity, 'sea_surface_conductivity', SENSOR_GROUP_SEA_SURFACE_CONDUCTIVITY))
-        INSTRUMENT_PARTICLE_MAP.append(self.add_particle(shortwave_irradiance, 'shortwave_irradiance', SENSOR_GROUP_SHORTWAVE_IRRADIANCE))
-        INSTRUMENT_PARTICLE_MAP.append(self.add_particle(eastward_wind_velocity, 'eastward_wind_velocity', SENSOR_GROUP_EASTWARD_WIND_VELOCITY))
-        INSTRUMENT_PARTICLE_MAP.append(self.add_particle(northward_wind_velocity, 'northward_wind_velocity', SENSOR_GROUP_NORTHWARD_WIND_VELOCITY))
-
-    @staticmethod
-    def add_particle(raw_data, particle, group):
-        """
-        This function will add particle to the instrument particle map
-        """
-        if isinstance(raw_data, float):
-            return particle, group, float
-        else:
-            return particle, group, str
+                # else:
+                #     # If it's a valid metadata record, ignore it.
+                #     # Otherwise generate warning for unknown data.
+                #     error_message = 'Unknown data found in chunk %s' % line
+                #     log.warn(error_message)
+                #     self._exception_callback(UnexpectedDataException(error_message))
 
     @staticmethod
     def select_type(raw_list_element):
         """
         This function will return the float or string value of the particle.
         """
-        if raw_list_element is not isinstance(raw_list_element, float):
-            if re.match(r'\[.*\]:', raw_list_element) is not None:          # Get rid of the [metbk:DLOGP6]: (or similar) in front of float number
-                return float(re.sub(r'\[.*\]:', '', raw_list_element))
-            try:
-                return float(raw_list_element)
-            except ValueError:
-                return str(raw_list_element)
+        try:
+            return float(raw_list_element)
+        except ValueError:
+            pass
 

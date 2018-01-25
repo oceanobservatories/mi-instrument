@@ -61,7 +61,7 @@ YML_0_863 = 'rec_20140902.metbk2.yml'
 YML_4_1430 = 'tel_20140805.metbk2.yml'
 YML_7_1061 = 'tel_20140901.metbk2.yml'
 YML_0_904 = 'rec_20140917.metbk2.yml'
-
+YML_8_1440 = 'tel_20171114.metbk.yml'
 
 RECORDS_FILE_4_1430 = 1430      # number of records expected
 RECORDS_FILE_7_1061 = 1061      # number of records expected
@@ -115,6 +115,7 @@ class MetbkADclParserUnitTestCase(ParserUnitTestCase):
         # In a single read, get all particles in this file.
         number_expected_results = RECORDS_FILE_0_863
         result = parser.get_records(number_expected_results)
+        particle_to_yml(result, os.path.join(RESOURCE_PATH, YML_0_863))
         self.assertEqual(len(result), number_expected_results)
 
         in_file.close()
@@ -127,6 +128,7 @@ class MetbkADclParserUnitTestCase(ParserUnitTestCase):
         # In a single read, get all particles in this file.
         number_expected_results = RECORDS_FILE_0_904
         result = parser.get_records(number_expected_results)
+        particle_to_yml(result, os.path.join(RESOURCE_PATH, YML_0_904))
         self.assertEqual(len(result), number_expected_results)
 
         in_file.close()
@@ -145,7 +147,7 @@ class MetbkADclParserUnitTestCase(ParserUnitTestCase):
 
         # In a single read, get all particles for this file.
         result = parser.get_records(RECORDS_FILE_0_863)
-
+        particle_to_yml(result, os.path.join(RESOURCE_PATH, YML_0_863))
         # self.assertEqual(result, expected_particle)
         self.assert_particles(result, YML_0_863, RESOURCE_PATH)
         self.assertListEqual(self.exception_callback_value, [])
@@ -157,7 +159,7 @@ class MetbkADclParserUnitTestCase(ParserUnitTestCase):
 
         # In a single read, get all particles for this file.
         result = parser.get_records(RECORDS_FILE_7_1061)
-
+        particle_to_yml(result, os.path.join(RESOURCE_PATH, YML_7_1061))
         self.assert_particles(result, YML_7_1061, RESOURCE_PATH)
         self.assertListEqual(self.exception_callback_value, [])
 
@@ -176,7 +178,7 @@ class MetbkADclParserUnitTestCase(ParserUnitTestCase):
 
         # Try to get records and verify expected number of particles are returned.
         result = parser.get_records(TOTAL_RECORDS_FILE_4_9)
-
+        particle_to_yml(result, os.path.join(RESOURCE_PATH, YML_4_1430))
         self.assertEqual(len(result), RECORDS_FILE_4_9)
         self.assertEqual(len(self.exception_callback_value), EXCEPTIONS_FILE_4_0)
 
@@ -194,6 +196,7 @@ class MetbkADclParserUnitTestCase(ParserUnitTestCase):
 
         # Try to get a record and verify that none are produced.
         result = parser.get_records(TOTAL_RECORDS_FILE_7_0)
+        particle_to_yml(result, os.path.join(RESOURCE_PATH, YML_7_1061))
         self.assertEqual(result, [])
         self.assertListEqual(self.exception_callback_value, [])
 
@@ -210,8 +213,8 @@ class MetbkADclParserUnitTestCase(ParserUnitTestCase):
         parser = self.create_parser(TELEMETERED_PARTICLE_CLASS, in_file)
 
         # In a single read, get all particles for this file.
-        result = parser.get_records(RECORDS_FILE_4_1430)
-
+        result = parser.get_records(1)
+        particle_to_yml(result, os.path.join(RESOURCE_PATH, YML_4_1430))
         self.assert_particles(result, YML_4_1430, RESOURCE_PATH)
         self.assertListEqual(self.exception_callback_value, [])
 
@@ -228,7 +231,7 @@ class MetbkADclParserUnitTestCase(ParserUnitTestCase):
 
         # In a single read, get all particles for this file.
         result = parser.get_records(5)
-
+        particle_to_yml(result, os.path.join(RESOURCE_PATH, "tel_20140805.metbk2A.yml"))
         self.assertEqual(len(result), 4)
         self.assertListEqual(self.exception_callback_value, [])
         in_file.close()
@@ -244,7 +247,8 @@ class MetbkADclParserUnitTestCase(ParserUnitTestCase):
 
         # In a single read, get all particles for this file.
         result = parser.get_records(RECORDS_FILE_8_1440)
-
+        particle_to_yml(result, os.path.join(RESOURCE_PATH, YML_8_1440))
+        self.assert_particles(result, YML_8_1440, RESOURCE_PATH)
         self.assertEqual(len(result), RECORDS_FILE_8_1440)
         self.assertListEqual(self.exception_callback_value, [])
         in_file.close()
@@ -258,8 +262,9 @@ class MetbkADclParserUnitTestCase(ParserUnitTestCase):
         parser = self.create_parser(TELEMETERED_PARTICLE_CLASS, in_file)
 
         # In a single read, get all particles for this file.
-        result = parser.get_records(3)
-
-        self.assertEqual(len(result), 3)
+        result = parser.get_records(5)
+        particle_to_yml(result, os.path.join(RESOURCE_PATH, "small_test.yml"))
+        self.assert_particles(result, "small_test.yml", RESOURCE_PATH)
+        self.assertEqual(len(result), 5)
         self.assertListEqual(self.exception_callback_value, [])
         in_file.close()
