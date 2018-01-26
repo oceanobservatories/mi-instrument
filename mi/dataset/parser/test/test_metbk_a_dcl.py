@@ -40,11 +40,9 @@ from mi.dataset.parser.utilities import particle_to_yml
 from mi.dataset.test.test_parser import ParserUnitTestCase
 from mi.dataset.dataset_parser import DataSetDriverConfigKeys
 from mi.dataset.driver.metbk_a.dcl.resource import RESOURCE_PATH
-from mi.dataset.parser.metbk_a_dcl import MetbkADclParser, MetbkADclTelemeteredInstrumentDataParticle
+from mi.dataset.parser.metbk_a_dcl import MetbkADclParser
 from mi.dataset.driver.metbk_a.dcl.metbk_dcl_a_driver import MODULE_NAME, \
     RECOVERED_PARTICLE_CLASS, TELEMETERED_PARTICLE_CLASS
-from mi.dataset.parser.utilities import particle_to_yml
-
 
 
 log = get_logger()
@@ -63,14 +61,15 @@ YML_7_1061 = 'tel_20140901.metbk2.yml'
 YML_0_904 = 'rec_20140917.metbk2.yml'
 YML_8_1440 = 'tel_20171114.metbk.yml'
 
+
 RECORDS_FILE_4_1430 = 1430      # number of records expected
 RECORDS_FILE_7_1061 = 1061      # number of records expected
 RECORDS_FILE_0_863 = 863        # number of records expected
 RECORDS_FILE_0_904 = 904        # number of records expected
-RECORDS_FILE_8_1440 = 1440      # number of records expected
 
 TOTAL_RECORDS_FILE_7_0 = 7      # total number of records
 TOTAL_RECORDS_FILE_4_9 = 60     # total number of records
+RECORDS_FILE_8_1440 = 1440      # total number of records
 RECORDS_FILE_4_9 = 9            # number of records expected
 EXCEPTIONS_FILE_4_0 = 47        # number of exceptions expected
 
@@ -115,7 +114,6 @@ class MetbkADclParserUnitTestCase(ParserUnitTestCase):
         # In a single read, get all particles in this file.
         number_expected_results = RECORDS_FILE_0_863
         result = parser.get_records(number_expected_results)
-        particle_to_yml(result, os.path.join(RESOURCE_PATH, YML_0_863))
         self.assertEqual(len(result), number_expected_results)
 
         in_file.close()
@@ -128,7 +126,6 @@ class MetbkADclParserUnitTestCase(ParserUnitTestCase):
         # In a single read, get all particles in this file.
         number_expected_results = RECORDS_FILE_0_904
         result = parser.get_records(number_expected_results)
-        particle_to_yml(result, os.path.join(RESOURCE_PATH, YML_0_904))
         self.assertEqual(len(result), number_expected_results)
 
         in_file.close()
@@ -147,7 +144,7 @@ class MetbkADclParserUnitTestCase(ParserUnitTestCase):
 
         # In a single read, get all particles for this file.
         result = parser.get_records(RECORDS_FILE_0_863)
-        particle_to_yml(result, os.path.join(RESOURCE_PATH, YML_0_863))
+
         # self.assertEqual(result, expected_particle)
         self.assert_particles(result, YML_0_863, RESOURCE_PATH)
         self.assertListEqual(self.exception_callback_value, [])
@@ -159,7 +156,7 @@ class MetbkADclParserUnitTestCase(ParserUnitTestCase):
 
         # In a single read, get all particles for this file.
         result = parser.get_records(RECORDS_FILE_7_1061)
-        particle_to_yml(result, os.path.join(RESOURCE_PATH, YML_7_1061))
+
         self.assert_particles(result, YML_7_1061, RESOURCE_PATH)
         self.assertListEqual(self.exception_callback_value, [])
 
@@ -178,7 +175,7 @@ class MetbkADclParserUnitTestCase(ParserUnitTestCase):
 
         # Try to get records and verify expected number of particles are returned.
         result = parser.get_records(TOTAL_RECORDS_FILE_4_9)
-        particle_to_yml(result, os.path.join(RESOURCE_PATH, YML_4_1430))
+
         self.assertEqual(len(result), RECORDS_FILE_4_9)
         self.assertEqual(len(self.exception_callback_value), EXCEPTIONS_FILE_4_0)
 
@@ -196,7 +193,6 @@ class MetbkADclParserUnitTestCase(ParserUnitTestCase):
 
         # Try to get a record and verify that none are produced.
         result = parser.get_records(TOTAL_RECORDS_FILE_7_0)
-        particle_to_yml(result, os.path.join(RESOURCE_PATH, YML_7_1061))
         self.assertEqual(result, [])
         self.assertListEqual(self.exception_callback_value, [])
 
@@ -213,8 +209,8 @@ class MetbkADclParserUnitTestCase(ParserUnitTestCase):
         parser = self.create_parser(TELEMETERED_PARTICLE_CLASS, in_file)
 
         # In a single read, get all particles for this file.
-        result = parser.get_records(1)
-        particle_to_yml(result, os.path.join(RESOURCE_PATH, YML_4_1430))
+        result = parser.get_records(RECORDS_FILE_4_1430)
+
         self.assert_particles(result, YML_4_1430, RESOURCE_PATH)
         self.assertListEqual(self.exception_callback_value, [])
 
@@ -227,11 +223,11 @@ class MetbkADclParserUnitTestCase(ParserUnitTestCase):
         timestamps containing seconds >59
         """
         in_file = self.open_file("20140805.metbk2A.log")
-        parser = self.create_parser('MetbkADclTelemeteredInstrumentDataParticle', in_file)
+        parser = self.create_parser(TELEMETERED_PARTICLE_CLASS, in_file)
 
         # In a single read, get all particles for this file.
         result = parser.get_records(5)
-        particle_to_yml(result, os.path.join(RESOURCE_PATH, "tel_20140805.metbk2A.yml"))
+
         self.assertEqual(len(result), 4)
         self.assertListEqual(self.exception_callback_value, [])
         in_file.close()
@@ -247,7 +243,6 @@ class MetbkADclParserUnitTestCase(ParserUnitTestCase):
 
         # In a single read, get all particles for this file.
         result = parser.get_records(RECORDS_FILE_8_1440)
-        particle_to_yml(result, os.path.join(RESOURCE_PATH, YML_8_1440))
         self.assert_particles(result, YML_8_1440, RESOURCE_PATH)
         self.assertEqual(len(result), RECORDS_FILE_8_1440)
         self.assertListEqual(self.exception_callback_value, [])
@@ -262,9 +257,8 @@ class MetbkADclParserUnitTestCase(ParserUnitTestCase):
         parser = self.create_parser(TELEMETERED_PARTICLE_CLASS, in_file)
 
         # In a single read, get all particles for this file.
-        result = parser.get_records(7)
-        particle_to_yml(result, os.path.join(RESOURCE_PATH, "small_test.yml"))
+        result = parser.get_records(10)
         self.assert_particles(result, "small_test.yml", RESOURCE_PATH)
-        self.assertEqual(len(result), 3)
-        self.assertEqual(len(self.exception_callback_value), 1)
+        self.assertEqual(len(result), 4)
+        self.assertEqual(len(self.exception_callback_value), 3)
         in_file.close()

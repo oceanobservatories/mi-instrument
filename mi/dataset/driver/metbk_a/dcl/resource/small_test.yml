@@ -40,3 +40,15 @@ data:
     sea_surface_conductivity:         3.75120
     sea_surface_temperature:        11.93800
     shortwave_irradiance:        77.70000
+  - _index: 4
+    particle_object: MetbkADclTelemeteredInstrumentDataParticle
+    particle_type: metbk_a_dcl_instrument
+    port_timestamp: 3719690737.5650001
+    air_temperature:        12.07200
+    barometric_pressure:      1013.15000
+    longwave_irradiance:       334.30000
+    precipitation:        24.69000
+    relative_humidity:        80.12300
+    sea_surface_conductivity:         3.75120
+    sea_surface_temperature:        11.93800
+    shortwave_irradiance:        77.70000
