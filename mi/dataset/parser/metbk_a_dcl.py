@@ -105,10 +105,6 @@ class MetbkADclInstrumentDataParticle(DclInstrumentDataParticle):
                 data_list.append(self._encode_value(name, self.raw_data[group], func))
         return data_list
 
-
-
-
-
 class MetbkADclRecoveredInstrumentDataParticle(MetbkADclInstrumentDataParticle):
     """
     Class for generating Offset Data Particles from Recovered data.
@@ -139,6 +135,7 @@ class MetbkADclParser(DclFileCommonParser):
                                               '')
         self.particle_classes = None
         self.instrument_particle_map = INSTRUMENT_PARTICLE_MAP
+        self.raw_data_length = 14
 
     def parse_file(self):
         """
@@ -153,34 +150,41 @@ class MetbkADclParser(DclFileCommonParser):
         for particle_class in self.particle_classes:
 
             for line in self._stream_handle:
-                if not re.findall(r'\[.*\]:[a-z|A-Z]+', line):                  # Disregard anything that has a character after [Something]:
+                if not re.findall(r'.*\[.*\]:\b[^\W\d_]+\b', line) and line is not None:     # Disregard anything that has a word after [metbk2:DLOGP6]:
                     line = re.sub(r'\[.*\]:', '', line)
                     raw_data = line.split()
-                    raw_data[0:2] = [' '.join(raw_data[0:2])]                   # Merge the first and second elements to form a timestamp
+
+                    if len(raw_data) != self.raw_data_length:                       # The raw data should have a length of 14
+                        self.handle_unknown_data(line)
+                        continue
+
+                    if re.findall(r'[a-zA-Z][0-9]|[0-9][a-zA-Z]', line):
+                        self.handle_unknown_data(line)
+                        continue
+
+                    raw_data[0:2] = [' '.join(raw_data[0:2])]                       # Merge the first and second elements to form a timestamp
                     if raw_data is not None:
-                        for i in range(1, len(raw_data)):                       # Ignore 0th element, because that is the timestamp
+                        for i in range(1, len(raw_data)):                           # Ignore 0th element, because that is the timestamp
                             raw_data[i] = self.select_type(raw_data[i])
-                    # self.construct_instrument_particle_map(raw_data)
                     particle = self._extract_sample(particle_class,
                                                     None,
                                                     raw_data,
                                                     preferred_ts=DataParticleKey.PORT_TIMESTAMP)
                     self._record_buffer.append(particle)
 
-                # else:
-                #     # If it's a valid metadata record, ignore it.
-                #     # Otherwise generate warning for unknown data.
-                #     error_message = 'Unknown data found in chunk %s' % line
-                #     log.warn(error_message)
-                #     self._exception_callback(UnexpectedDataException(error_message))
+    def handle_unknown_data(self, line):
+        # Otherwise generate warning for unknown data.
+        error_message = 'Unknown data found in chunk %s' % line
+        log.warn(error_message)
+        self._exception_callback(UnexpectedDataException(error_message))
 
     @staticmethod
     def select_type(raw_list_element):
         """
-        This function will return the float or string value of the particle.
+        This function will return the float value if possible
         """
         try:
             return float(raw_list_element)
         except ValueError:
-            pass
+            return None
 

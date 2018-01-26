@@ -262,9 +262,9 @@ class MetbkADclParserUnitTestCase(ParserUnitTestCase):
         parser = self.create_parser(TELEMETERED_PARTICLE_CLASS, in_file)
 
         # In a single read, get all particles for this file.
-        result = parser.get_records(5)
+        result = parser.get_records(7)
         particle_to_yml(result, os.path.join(RESOURCE_PATH, "small_test.yml"))
         self.assert_particles(result, "small_test.yml", RESOURCE_PATH)
-        self.assertEqual(len(result), 5)
-        self.assertListEqual(self.exception_callback_value, [])
+        self.assertEqual(len(result), 3)
+        self.assertEqual(len(self.exception_callback_value), 1)
         in_file.close()
