@@ -1,9 +1,10 @@
-# Version <Next Release>
+# Version 0.5.10
 
-* Issue #13098 - Added individual colorbars for each frequency's echogram.
+* Issue #13119 - Added support for ZPLSC C Echogram Generator To Access Raw Data Remote Mount
 
 # Version 0.5.9
 
+* Issue #13098 - Added individual colorbars for each frequency's echogram.
 * Issue #12427 Update ADCP Parsers and Consolidate ADCP streams:
    * stream adcp_velocity_earth replaces:
        * adcp_velocity_glider  (mi/dataset/parser/adcp_pd0.py)
