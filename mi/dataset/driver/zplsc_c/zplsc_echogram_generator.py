@@ -135,7 +135,7 @@ class ZPLSCEchogramGenerator(object):
         The method will raise the OSError exception if there is an issue
         reading the path passed in.
 
-        :param reverse_order: If true the the contents are sorted in reverse order.
+        :param reverse_order: If true the contents are sorted in reverse order.
         :param path: The path of the directory for which the contents are returned.
         :return: dir_contents: The contents of the remote directory.
         """
@@ -443,7 +443,7 @@ class ZPLSCEchogramGenerator(object):
                 break
 
         if recovered_dir:
-            # Create the raw data path including the  the recovered path
+            # Create the raw data path including the recovered path
             date_dirs_path = os.path.join(serial_num_dir, recovered_dir, DATA_PATH)
         else:
             log.warning('Could not find ZPLSC recovered data path starting with: %s', recovered_path)
