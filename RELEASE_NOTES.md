@@ -1,10 +1,12 @@
 # Version <Next Release>
 
+* Issue #13098 - Added individual colorbars for each frequency's echogram.
+
+# Version 0.5.11
+
 * Issue #13106 - Overrode parse_file and _build_parsed_values functions
    * Removed global regex variables and instead used python text processing libraries
    * Append only float values
-
-* Issue #13098 - Added individual colorbars for each frequency's echogram.
 
 # Version 0.5.9
 
