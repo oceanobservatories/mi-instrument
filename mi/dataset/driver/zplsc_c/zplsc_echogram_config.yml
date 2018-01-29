@@ -1,3 +1,4 @@
+raw_data_dir: /omc_data/whoi/OMC
 zplsc_echogram_directory: ~/ZPLSC_Echograms
 zplsc_subsites:
   - CE01ISSM
