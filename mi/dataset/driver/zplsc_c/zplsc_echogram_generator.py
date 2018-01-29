@@ -2,8 +2,8 @@
 """
 If no arguments are passed in this application runs as a process that will
 run once a day, looking at all of the ZPLSC-C instruments' latest raw data
-and generate the 24-hour echograms for each instrument.  It will store the
-echogram in a local directory specified in the configuration file.
+files and generate the 24-hour echograms for each instrument.  It will store
+the echogram in a local directory specified in the configuration file.
 
 If arguments are passed in, the application will run once and generate the
 echograms based on the passed arguments.
