@@ -250,8 +250,7 @@ class MetbkADclParserUnitTestCase(ParserUnitTestCase):
 
     def test_small(self):
         """
-        Test to verify change made to dcl_file_common.py works with DCL
-        timestamps containing seconds >59
+        Test to verify various formats in the log and ensure that the data is correct.
         """
         in_file = self.open_file("test.metbk2.log")
         parser = self.create_parser(TELEMETERED_PARTICLE_CLASS, in_file)
