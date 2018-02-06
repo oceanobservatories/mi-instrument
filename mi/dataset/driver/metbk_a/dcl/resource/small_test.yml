@@ -1,0 +1,54 @@
+header:
+    particle_object: 'MULTIPLE'
+    particle_type: 'MULTIPLE'
+data:
+  - _index: 1
+    particle_object: MetbkADclTelemeteredInstrumentDataParticle
+    particle_type: metbk_a_dcl_instrument
+    port_timestamp: 3719649394.4879999
+    air_temperature:        11.42500
+    barometric_pressure:      1016.46000
+    eastward_wind_velocity:         0.93000
+    longwave_irradiance:       281.40000
+    northward_wind_velocity:         9.31000
+    precipitation:        25.08000
+    relative_humidity:        76.07400
+    sea_surface_conductivity:         3.72720
+    sea_surface_temperature:        11.70000
+    shortwave_irradiance:         2.50000
+  - _index: 2
+    particle_object: MetbkADclTelemeteredInstrumentDataParticle
+    particle_type: metbk_a_dcl_instrument
+    port_timestamp: 3719649394.4879999
+    air_temperature:        11.42500
+    barometric_pressure:      1016.46000
+    longwave_irradiance:       281.40000
+    northward_wind_velocity:         9.31000
+    precipitation:        25.08000
+    relative_humidity:        76.07400
+    sea_surface_conductivity:         3.72720
+    sea_surface_temperature:        11.70000
+  - _index: 3
+    particle_object: MetbkADclTelemeteredInstrumentDataParticle
+    particle_type: metbk_a_dcl_instrument
+    port_timestamp: 3719690737.5650001
+    air_temperature:        12.07200
+    barometric_pressure:      1013.15000
+    longwave_irradiance:       334.30000
+    precipitation:        24.69000
+    relative_humidity:        80.26500
+    sea_surface_conductivity:         3.75120
+    sea_surface_temperature:        11.93800
+    shortwave_irradiance:        77.70000
+  - _index: 4
+    particle_object: MetbkADclTelemeteredInstrumentDataParticle
+    particle_type: metbk_a_dcl_instrument
+    port_timestamp: 3719690737.5650001
+    air_temperature:        12.07200
+    barometric_pressure:      1013.15000
+    longwave_irradiance:       334.30000
+    precipitation:        24.69000
+    relative_humidity:        80.12300
+    sea_surface_conductivity:         3.75120
+    sea_surface_temperature:        11.93800
+    shortwave_irradiance:        77.70000

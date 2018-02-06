@@ -2,6 +2,12 @@
 
 * Issue #13119 - Added support for ZPLSC C Echogram Generator To Access Raw Data Remote Mount
 
+# Version 0.5.11
+
+* Issue #13106 - Overrode parse_file and _build_parsed_values functions
+   * Removed global regex variables and instead used python text processing libraries
+   * Append only float values
+
 # Version 0.5.9
 
 * Issue #13098 - Added individual colorbars for each frequency's echogram.

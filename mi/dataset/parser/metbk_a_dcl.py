@@ -33,64 +33,33 @@ from mi.core.common import BaseEnum
 
 from mi.dataset.parser.dcl_file_common import \
     DclInstrumentDataParticle, \
-    DclFileCommonParser, SPACES, TIMESTAMP, \
-    START_METADATA, END_METADATA
+    DclFileCommonParser
 
-from mi.dataset.parser.common_regexes import END_OF_LINE_REGEX, FLOAT_REGEX, ANY_CHARS_REGEX
+from mi.core.instrument.dataset_data_particle import DataParticleKey
+from mi.core.exceptions import UnexpectedDataException
 
 log = get_logger()
 
-__author__ = 'Ronald Ronquillo'
+__author__ = 'Phillip Tran'
 __license__ = 'Apache 2.0'
-
-# Basic patterns
-FLOAT = '('+FLOAT_REGEX+')'  # floating point as a captured group
-
-# Metadata record:
-#   Timestamp [Text]MoreText newline
-METADATA_PATTERN = TIMESTAMP + SPACES  # dcl controller timestamp
-METADATA_PATTERN += START_METADATA  # Metadata record starts with '['
-METADATA_PATTERN += ANY_CHARS_REGEX  # followed by text
-METADATA_PATTERN += END_METADATA  # followed by ']'
-METADATA_PATTERN += ANY_CHARS_REGEX  # followed by more text
-METADATA_PATTERN += END_OF_LINE_REGEX  # metadata record ends with LF
-METADATA_MATCHER = re.compile(METADATA_PATTERN)
-
-# Sensor data record:
-#   Timestamp Date<tab>Time<tab>SensorData
-#   where SensorData are space-separated floating point numbers
-SENSOR_DATA_PATTERN = TIMESTAMP + SPACES  # dcl controller timestamp
-SENSOR_DATA_PATTERN += FLOAT + SPACES  # Barometric Pressure
-SENSOR_DATA_PATTERN += FLOAT + SPACES  # Relative Humidity
-SENSOR_DATA_PATTERN += FLOAT + SPACES  # Air Temperature
-SENSOR_DATA_PATTERN += FLOAT + SPACES  # Longwave Irradiance
-SENSOR_DATA_PATTERN += FLOAT + SPACES  # Precipitation Level
-SENSOR_DATA_PATTERN += FLOAT + SPACES  # Sea Surface Temperature
-SENSOR_DATA_PATTERN += FLOAT + SPACES  # Sea Surface Conductivity
-SENSOR_DATA_PATTERN += FLOAT + SPACES  # Shortwave Irradiance
-SENSOR_DATA_PATTERN += FLOAT + SPACES  # Eastward Wind Velocity relative to Magnetic North
-SENSOR_DATA_PATTERN += FLOAT + SPACES  # Northward Wind Velocity relative to Magnetic North
-SENSOR_DATA_PATTERN += FLOAT_REGEX + SPACES  # Not Applicable (Don't Care)
-SENSOR_DATA_PATTERN += FLOAT_REGEX  # Not Applicable (Don't Care)
-SENSOR_DATA_PATTERN += END_OF_LINE_REGEX  # sensor data ends with CR-LF
-SENSOR_DATA_MATCHER = re.compile(SENSOR_DATA_PATTERN)
 
 # SENSOR_DATA_MATCHER produces the following groups.
 # The following are indices into groups() produced by SENSOR_DATA_MATCHER
 # incremented after common timestamp values.
 # i.e, match.groups()[INDEX]
-SENSOR_GROUP_BAROMETRIC_PRESSURE = 8
-SENSOR_GROUP_RELATIVE_HUMIDITY = 9
-SENSOR_GROUP_AIR_TEMPERATURE = 10
-SENSOR_GROUP_LONGWAVE_IRRADIANCE = 11
-SENSOR_GROUP_PRECIPITATION = 12
-SENSOR_GROUP_SEA_SURFACE_TEMPERATURE = 13
-SENSOR_GROUP_SEA_SURFACE_CONDUCTIVITY = 14
-SENSOR_GROUP_SHORTWAVE_IRRADIANCE = 15
-SENSOR_GROUP_EASTWARD_WIND_VELOCITY = 16
-SENSOR_GROUP_NORTHWARD_WIND_VELOCITY = 17
+SENSOR_GROUP_BAROMETRIC_PRESSURE = 1
+SENSOR_GROUP_RELATIVE_HUMIDITY = 2
+SENSOR_GROUP_AIR_TEMPERATURE = 3
+SENSOR_GROUP_LONGWAVE_IRRADIANCE = 4
+SENSOR_GROUP_PRECIPITATION = 5
+SENSOR_GROUP_SEA_SURFACE_TEMPERATURE = 6
+SENSOR_GROUP_SEA_SURFACE_CONDUCTIVITY = 7
+SENSOR_GROUP_SHORTWAVE_IRRADIANCE = 8
+SENSOR_GROUP_EASTWARD_WIND_VELOCITY = 9
+SENSOR_GROUP_NORTHWARD_WIND_VELOCITY = 10
 
 # This table is used in the generation of the instrument data particle.
+# This will be a list of tuples with the following columns.
 # Column 1 - particle parameter name
 # Column 2 - group number (index into raw_data)
 # Column 3 - data encoding function (conversion required - int, float, etc)
@@ -124,6 +93,17 @@ class MetbkADclInstrumentDataParticle(DclInstrumentDataParticle):
             INSTRUMENT_PARTICLE_MAP,
             *args, **kwargs)
 
+    def _build_parsed_values(self):
+        """
+        Build parsed values for Recovered and Telemetered Instrument Data Particle.
+        Will only append float values and ignore strings.
+        Returns the list.
+        """
+        data_list = []
+        for name, group, func in INSTRUMENT_PARTICLE_MAP:
+            if isinstance(self.raw_data[group], func):
+                data_list.append(self._encode_value(name, self.raw_data[group], func))
+        return data_list
 
 class MetbkADclRecoveredInstrumentDataParticle(MetbkADclInstrumentDataParticle):
     """
@@ -151,5 +131,60 @@ class MetbkADclParser(DclFileCommonParser):
         super(MetbkADclParser, self).__init__(config,
                                               stream_handle,
                                               exception_callback,
-                                              SENSOR_DATA_MATCHER,
-                                              METADATA_MATCHER)
+                                              '',
+                                              '')
+        self.particle_classes = None
+        self.instrument_particle_map = INSTRUMENT_PARTICLE_MAP
+        self.raw_data_length = 14
+
+    def parse_file(self):
+        """
+        This method reads the file and parses the data within, and at
+        the end of this method self._record_buffer will be filled with all the particles in the file.
+        """
+
+        # If not set from config & no InstrumentParameterException error from constructor
+        if self.particle_classes is None:
+            self.particle_classes = (self._particle_class,)
+
+        for particle_class in self.particle_classes:
+
+            for line in self._stream_handle:
+                if not re.findall(r'.*\[.*\]:\b[^\W\d_]+\b', line) and line is not None:     # Disregard anything that has a word after [metbk2:DLOGP6]:
+                    line = re.sub(r'\[.*\]:', '', line)
+                    raw_data = line.split()
+
+                    if len(raw_data) != self.raw_data_length:                       # The raw data should have a length of 14
+                        self.handle_unknown_data(line)
+                        continue
+
+                    if re.findall(r'[a-zA-Z][0-9]|[0-9][a-zA-Z]', line):
+                        self.handle_unknown_data(line)
+                        continue
+
+                    raw_data[0:2] = [' '.join(raw_data[0:2])]                       # Merge the first and second elements to form a timestamp
+                    if raw_data is not None:
+                        for i in range(1, len(raw_data)):                           # Ignore 0th element, because that is the timestamp
+                            raw_data[i] = self.select_type(raw_data[i])
+                    particle = self._extract_sample(particle_class,
+                                                    None,
+                                                    raw_data,
+                                                    preferred_ts=DataParticleKey.PORT_TIMESTAMP)
+                    self._record_buffer.append(particle)
+
+    def handle_unknown_data(self, line):
+        # Otherwise generate warning for unknown data.
+        error_message = 'Unknown data found in chunk %s' % line
+        log.warn(error_message)
+        self._exception_callback(UnexpectedDataException(error_message))
+
+    @staticmethod
+    def select_type(raw_list_element):
+        """
+        This function will return the float value if possible
+        """
+        try:
+            return float(raw_list_element)
+        except ValueError:
+            return None
+

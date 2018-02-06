@@ -53,11 +53,13 @@ FILE_7_0 = '20140901.metbk2_no_sensor.log'
 FILE_7_1061 = '20140901.metbk2.log'
 FILE_0_863 = '20140902.metbk2.log'
 FILE_0_904 = '20140917.metbk2.log'
+FILE_8_1440 = '20171114.metbk.log'
 
 YML_0_863 = 'rec_20140902.metbk2.yml'
 YML_4_1430 = 'tel_20140805.metbk2.yml'
 YML_7_1061 = 'tel_20140901.metbk2.yml'
 YML_0_904 = 'rec_20140917.metbk2.yml'
+YML_8_1440 = 'tel_20171114.metbk.yml'
 
 
 RECORDS_FILE_4_1430 = 1430      # number of records expected
@@ -67,6 +69,7 @@ RECORDS_FILE_0_904 = 904        # number of records expected
 
 TOTAL_RECORDS_FILE_7_0 = 7      # total number of records
 TOTAL_RECORDS_FILE_4_9 = 60     # total number of records
+RECORDS_FILE_8_1440 = 1440      # total number of records
 RECORDS_FILE_4_9 = 9            # number of records expected
 EXCEPTIONS_FILE_4_0 = 47        # number of exceptions expected
 
@@ -227,4 +230,34 @@ class MetbkADclParserUnitTestCase(ParserUnitTestCase):
 
         self.assertEqual(len(result), 4)
         self.assertListEqual(self.exception_callback_value, [])
+        in_file.close()
+
+    def test_bug_13106(self):
+        """
+        Test to verify change made to metbk_a_dcl.py works with non-floating point
+        variables and ensure that the values can be outputted.
+        """
+
+        in_file = self.open_file(FILE_8_1440)
+        parser = self.create_parser(TELEMETERED_PARTICLE_CLASS, in_file)
+
+        # In a single read, get all particles for this file.
+        result = parser.get_records(RECORDS_FILE_8_1440)
+        self.assert_particles(result, YML_8_1440, RESOURCE_PATH)
+        self.assertEqual(len(result), RECORDS_FILE_8_1440)
+        self.assertListEqual(self.exception_callback_value, [])
+        in_file.close()
+
+    def test_small(self):
+        """
+        Test to verify various formats in the log and ensure that the data is correct.
+        """
+        in_file = self.open_file("test.metbk2.log")
+        parser = self.create_parser(TELEMETERED_PARTICLE_CLASS, in_file)
+
+        # In a single read, get all particles for this file.
+        result = parser.get_records(10)
+        self.assert_particles(result, "small_test.yml", RESOURCE_PATH)
+        self.assertEqual(len(result), 4)
+        self.assertEqual(len(self.exception_callback_value), 3)
         in_file.close()
