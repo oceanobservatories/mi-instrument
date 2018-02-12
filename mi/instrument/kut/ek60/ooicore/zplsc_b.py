@@ -292,11 +292,14 @@ def generate_relative_file_path(filepath):
     relative to the reference designator directory.
     """
     filename = os.path.basename(filepath)
-    reference_designator, _ = filename.split('_', 1)
-    delimiter = reference_designator + os.sep
+    try:
+        reference_designator, _ = filename.split('_', 1)
+        delimiter = reference_designator + os.sep
 
-    if delimiter in filepath:
-        return filepath[filepath.index(delimiter):].replace(delimiter, '')
+        if delimiter in filepath:
+            return filepath[filepath.index(delimiter):].replace(delimiter, '')
+    except ValueError:
+        pass
 
     # unable to determine relative path, return just the filename
     return filename
