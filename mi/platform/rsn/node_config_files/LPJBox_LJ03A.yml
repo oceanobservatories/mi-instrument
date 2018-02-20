@@ -1,11 +1,11 @@
 node_meta_data:
   description: LJJBox at Axial Base
   location: Axial Base
-  node_id_name: SN0007-LJ03A
+  node_id_name: SN0011-LJ03A
   node_type: LPJBox
   oms_sample_rate: 5
   reference_designator: RS03AXBS-LJ03A
-  serial_number: SN0007
+  serial_number: SN0011
   read_only_mode: True
 
 node_streams:

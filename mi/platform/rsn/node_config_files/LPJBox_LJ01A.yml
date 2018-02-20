@@ -1,11 +1,11 @@
 node_meta_data:
   description: LPJBox Slope Base
   location: Slope Base
-  node_id_name: SN0003-LJ01A
+  node_id_name: SN0010-LJ01A
   node_type: LPJBox
   oms_sample_rate: 5
   reference_designator: RS01SLBS-LJ01A
-  serial_number: SN0003
+  serial_number: SN0010
   read_only_mode: True
 
 node_streams:
