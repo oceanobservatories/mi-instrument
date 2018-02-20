@@ -1,10 +1,10 @@
 node_meta_data:
   description: Deep Profiler Dock 1B
   location: Endurance
-  node_id_name: SN0203-PD01B
+  node_id_name: SN0204-PD01B
   oms_sample_rate: 10
   reference_designator: CE04OSPD-PD01B
-  serial_number: SN0203
+  serial_number: SN0204
   read_only_mode: True
 
 node_streams:
