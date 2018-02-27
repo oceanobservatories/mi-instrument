@@ -14,6 +14,7 @@ Initial Release
 from mi.dataset.dataset_driver import SimpleDatasetDriver
 from mi.dataset.parser.ctdav_n_auv import CtdavNAuvParser
 from mi.core.versioning import version
+from deprecated import deprecated
 
 
 @version("15.6.1")
@@ -35,6 +36,7 @@ def parse(unused, source_file_path, particle_data_handler):
     return particle_data_handler
 
 
+@deprecated
 class CtdavNAuvTelemeteredDriver(SimpleDatasetDriver):
     """
     Derived adcpa_n_auv driver class
@@ -44,7 +46,6 @@ class CtdavNAuvTelemeteredDriver(SimpleDatasetDriver):
     def _build_parser(self, stream_handle):
 
         parser = CtdavNAuvParser(stream_handle,
-                                 self._exception_callback,
-                                 is_telemetered=True)
+                                 self._exception_callback)
 
         return parser

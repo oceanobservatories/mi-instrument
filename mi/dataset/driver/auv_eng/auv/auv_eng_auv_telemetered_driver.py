@@ -48,5 +48,3 @@ class AuvEngAuvTelemeteredDriver(SimpleDatasetDriver):
                                  is_telemetered=True)
 
         return parser
-
-
