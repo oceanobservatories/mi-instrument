@@ -16,7 +16,7 @@ from mi.dataset.parser.ctdav_nbosi_auv import CtdavNbosiAuvParser
 from mi.core.versioning import version
 
 
-@version("1.0.0")
+@version("0.1.0")
 def parse(unused, source_file_path, particle_data_handler):
     """
     This is the method called by Uframe

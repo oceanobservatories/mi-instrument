@@ -16,6 +16,7 @@ THIS FILE IS DEPRECATED, REPLACED BY mi/dataset/driver/ctdav_n/auv/ctdav_n_auv_d
 from mi.dataset.dataset_driver import SimpleDatasetDriver
 from mi.dataset.parser.ctdav_n_auv import CtdavNAuvParser
 from mi.core.versioning import version
+from deprecated import deprecated
 
 
 @version("15.6.1")
@@ -37,6 +38,7 @@ def parse(unused, source_file_path, particle_data_handler):
     return particle_data_handler
 
 
+@deprecated
 class CtdavNAuvTelemeteredDriver(SimpleDatasetDriver):
     """
     Derived adcpa_n_auv driver class
