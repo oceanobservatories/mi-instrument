@@ -1,3 +1,4 @@
+# THIS FILE IS DEPRECATED, REPLACED BY mi/dataset/driver/ctdav_n/auv/resource/ctdav_n_auv_21.yml
 header:
     particle_object: CtdavNAuvRecoveredParticle
     particle_type: ctdav_n_auv_instrument_recovered
