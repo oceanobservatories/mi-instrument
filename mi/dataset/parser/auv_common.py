@@ -25,13 +25,29 @@ from mi.core.exceptions import RecoverableSampleException, \
 
 EARLIEST_TIMESTAMP = 3471292800.0  # Jan 1, 2010 in NTP float format
 
+# The structure below is a list of tuples used for all CTD AUV instruments.
+# Each tuple consists of parameter name, index into raw data parts list and
+# encoding function.
+CTDAV_AUV_COMMON_PARAM_MAP = [
+    # message ID is typically index 0
+    ('mission_epoch', 1, int),
+    ('auv_latitude', 2, float),
+    ('auv_longitude', 3, float),
+    ('mission_time', 4, int),
+    ('m_depth', 5, float),
+    ('ctdav_n_auv_conductivity', 6, float),
+    ('temperature', 7, float),
+    ('salinity', 8, float),
+    ('speed_of_sound', 9, float)
+]
+
 
 def compute_timestamp(parts):
     """
     This method is required as part of the auv_message_map passed to the
     AuvCommonParser constructor
     This version uses mission_epoch and mission time from parts items 1 and 4
-    Other instruments may need a different mehtod.
+    Other instruments may need a different method.
 
     :param parts: a list of the individual parts of an input record
     :return: a timestamp in the float64 NTP format.
@@ -81,8 +97,8 @@ class AuvCommonParticle(DataParticle):
         parameters = []  # empty list to start
 
         # loop through the map and append the named parameters
-        for name, index, function in self._auv_param_map:
-            parameters.append(self._encode_value(name, self.raw_data[index], function))
+        for name, index, _function in self._auv_param_map:
+            parameters.append(self._encode_value(name, self.raw_data[index], _function))
             # save the epoch and time for the timestamp
 
         return parameters
@@ -127,7 +143,7 @@ class AuvCommonParser(SimpleParser):
             line = line.strip()  # remove the line terminator
             line = line.replace('"', '')  # remove the quote characters from string fields
 
-            for message_id, field_count, compute_timestamp, particle_class in self._auv_message_map:
+            for message_id, field_count, _compute_timestamp, particle_class in self._auv_message_map:
                 # Process records of interest according to map values
 
                 # split it up into parts, limit number of splits because fault messages
@@ -142,13 +158,13 @@ class AuvCommonParser(SimpleParser):
                         self._exception_callback(RecoverableSampleException(msg))
                     else:
                         try:
-                            timestamp = compute_timestamp(parts)
+                            timestamp = _compute_timestamp(parts)
                             if timestamp > EARLIEST_TIMESTAMP:  # Check to make sure the timestamp is OK
 
-                                particle = self._extract_sample(particle_class, None, parts, internal_timestamp=timestamp)
+                                particle = self._extract_sample(particle_class, None, parts,
+                                                                internal_timestamp=timestamp)
                                 self._record_buffer.append(particle)
-                        except Exception:
+                        except ValueError:
                             msg = 'Could not compute timestamp'
                             log.warn(msg)
                             self._exception_callback(RecoverableSampleException(msg))
-

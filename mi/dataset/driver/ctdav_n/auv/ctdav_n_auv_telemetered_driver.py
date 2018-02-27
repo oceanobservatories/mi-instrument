@@ -9,6 +9,8 @@
 Release notes:
 
 Initial Release
+
+THIS FILE IS DEPRECATED, REPLACED BY mi/dataset/driver/ctdav_n/auv/ctdav_n_auv_driver.py
 """
 
 from mi.dataset.dataset_driver import SimpleDatasetDriver
@@ -44,7 +46,6 @@ class CtdavNAuvTelemeteredDriver(SimpleDatasetDriver):
     def _build_parser(self, stream_handle):
 
         parser = CtdavNAuvParser(stream_handle,
-                                 self._exception_callback,
-                                 is_telemetered=True)
+                                 self._exception_callback)
 
         return parser
