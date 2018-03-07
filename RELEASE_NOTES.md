@@ -1,3 +1,7 @@
+# Version 0.5.13
+
+* Issue #13170 - Corrected engineering platform configurations to reflect last deployment
+
 # Version 0.5.12
 
 * Issue #13174 - Modified ZPLSC-B Test Method To Access Raw Data Via Remotely Mounted File System
