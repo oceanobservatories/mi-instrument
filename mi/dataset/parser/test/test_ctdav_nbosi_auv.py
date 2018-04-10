@@ -33,16 +33,11 @@ class CtdavNbosiAuvTestCase(ParserUnitTestCase):
         """
 
         stream_handle = open(os.path.join(RESOURCE_PATH, 'CP05MOAS-A6264_AUVsubset_reduced.csv'), 'rU')
-
         parser = CtdavNbosiAuvParser(stream_handle,
                                      self.exception_callback)
-
         particles = parser.get_records(20)
-
         self.assert_particles(particles, 'ctdav_nbosi_auv.yml', RESOURCE_PATH)
-
         self.assertEqual(self.exception_callback_value, [])
-
         stream_handle.close()
 
     def test_long_stream(self):
@@ -52,14 +47,9 @@ class CtdavNbosiAuvTestCase(ParserUnitTestCase):
         """
 
         stream_handle = open(os.path.join(RESOURCE_PATH, 'CP05MOAS-A6264_AUVsubset.csv'), 'rU')
-
         parser = CtdavNbosiAuvParser(stream_handle,
                                      self.exception_callback)
-
         particles = parser.get_records(10000)
-
         self.assertEqual(len(particles), 10000)
-
         self.assertEqual(self.exception_callback_value, [])
-
         stream_handle.close()

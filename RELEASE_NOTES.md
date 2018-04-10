@@ -1,6 +1,6 @@
 # Version 0.6.0
 
-* Issue #11419 - Added deriver/parser support for the new Neil Brown CTD attached to the AUVs.
+* Issue #11419 - Added driver/parser support for the new Neil Brown CTD attached to the AUVs.
    * Added ctdav_n_auv_driver.py driver and deprecated ctdav_n_auv_recovered(telemetered)_driver(s).py drivers.
    * Added ctdav_nbosi_auv_driver.py driver and ctdav_nbosi_auv.py parser for the new Neil Brown CTD.
    * Added unit tests for the new Neil Brown CTD parser.
