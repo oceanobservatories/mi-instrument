@@ -143,7 +143,7 @@ class AuvCommonParser(SimpleParser):
             line = line.strip()  # remove the line terminator
             line = line.replace('"', '')  # remove the quote characters from string fields
 
-            for message_id, field_count, _compute_timestamp, particle_class in self._auv_message_map:
+            for message_id, field_count, timestamp_func, particle_class in self._auv_message_map:
                 # Process records of interest according to map values
 
                 # split it up into parts, limit number of splits because fault messages
@@ -158,7 +158,7 @@ class AuvCommonParser(SimpleParser):
                         self._exception_callback(RecoverableSampleException(msg))
                     else:
                         try:
-                            timestamp = _compute_timestamp(parts)
+                            timestamp = timestamp_func(parts)
                             if timestamp > EARLIEST_TIMESTAMP:  # Check to make sure the timestamp is OK
 
                                 particle = self._extract_sample(particle_class, None, parts,
