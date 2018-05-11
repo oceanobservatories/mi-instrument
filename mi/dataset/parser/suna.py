@@ -2,6 +2,8 @@ import calendar
 import datetime
 import ntplib
 
+from mi.core.log import get_logger
+from mi.dataset.parser.suna import Method
 from mi.instrument.satlantic.suna_deep.ooicore.driver import SUNASampleDataParticle, SUNASampleDataParticleKey
 from mi.dataset.dataset_parser import Parser
 from mi.core.common import BaseEnum
@@ -9,34 +11,36 @@ from mi.core.instrument.dataset_data_particle import \
     DataParticle, \
     DataParticleKey
 
-GROUP_FRAME_TYPE = 1
-GROUP_SERIAL_NUM = 2
-GROUP_SAMPLE_DATE = 3
-GROUP_SAMPLE_TIME = 4
-GROUP_NITRATE_CONCEN = 5
-GROUP_NITROGEN = 6
-GROUP_ABSORB_254 = 7
-GROUP_ABSORB_350 = 8
-GROUP_BROMIDE_TRACE = 9
-GROUP_SPECTRUM_AVE = 10
-GROUP_FIT_DARK_VALUE = 11
-GROUP_TIME_FACTOR = 12
-GROUP_SPECTRAL_CHANNELS = 13
-GROUP_TEMP_SPECTROMETER = 14
-GROUP_TEMP_INTERIOR = 15
-GROUP_TEMP_LAMP = 16
-GROUP_LAMP_TIME = 17
-GROUP_HUMIDITY = 18
-GROUP_VOLTAGE_MAIN = 19
-GROUP_VOLTAGE_LAMP = 20
-GROUP_VOLTAGE_INT = 21
-GROUP_CURRENT_MAIN = 22
-GROUP_FIT_1 = 23
-GROUP_FIT_2 = 24
-GROUP_FIT_BASE_1 = 25
-GROUP_FIT_BASE_2 = 26
-GROUP_FIT_RMSE = 27
-GROUP_CHECKSUM = 28
+log = get_logger()
+
+GROUP_FRAME_TYPE        = 0
+GROUP_SERIAL_NUM        = 1
+GROUP_SAMPLE_DATE       = 2
+GROUP_SAMPLE_TIME       = 3
+GROUP_NITRATE_CONCEN    = 4
+GROUP_NITROGEN          = 5
+GROUP_ABSORB_254        = 6
+GROUP_ABSORB_350        = 7
+GROUP_BROMIDE_TRACE     = 8
+GROUP_SPECTRUM_AVE      = 9
+GROUP_FIT_DARK_VALUE    = 10
+GROUP_TIME_FACTOR       = 11
+GROUP_SPECTRAL_CHANNELS = 12
+GROUP_TEMP_SPECTROMETER = 13
+GROUP_TEMP_INTERIOR     = 14
+GROUP_TEMP_LAMP         = 15
+GROUP_LAMP_TIME         = 16
+GROUP_HUMIDITY          = 17
+GROUP_VOLTAGE_MAIN      = 18
+GROUP_VOLTAGE_LAMP      = 19
+GROUP_VOLTAGE_INT       = 20
+GROUP_CURRENT_MAIN      = 21
+GROUP_FIT_1             = 22
+GROUP_FIT_2             = 23
+GROUP_FIT_BASE_1        = 24
+GROUP_FIT_BASE_2        = 25
+GROUP_FIT_RMSE          = 26
+GROUP_CHECKSUM          = 27
 
 
 class SUNASampleDataParticleKey(BaseEnum):
@@ -72,27 +76,98 @@ class SUNASampleDataParticleKey(BaseEnum):
 
 class SunaCommon(DataParticle):
 
+    class Method(BaseEnum):
+        dcl = 0
+        telemetered = 1
+        instrument_recovered = 2
+
+    _method = None
+
     def __init__(self, raw_data, *args, **kwargs):
         super(SunaCommon, self).__init__(raw_data, *args, **kwargs)
 
-
-class SunaDclRecoveredParticle(DataParticle):
-
-    def __init__(self, raw_data, *args, **kwargs):
-        super(SunaDclRecoveredParticle, self).__init__(raw_data, *args, **kwargs)
-
         self.raw_data = raw_data
 
+    def _encode_spectral_channels_values(self, name, value_list, encoding_function):
+        """
+        Encode a value using the encoding function, if it fails store the error in a queue
+        """
+        encoded_val = None
+
+        try:
+            encoded_val = [encoding_function(s) for s in value_list]
+        except Exception as e:
+            log.error("Data particle error encoding. Name:%s Value:%s", name, value_list)
+            self._encoding_errors.append({name: value_list})
+        return {DataParticleKey.VALUE_ID: name,
+                DataParticleKey.VALUE: encoded_val}
+
     def _build_parsed_values(self):
-        suna_sample = SUNASampleDataParticle(self.raw_data)
-        return suna_sample._build_parsed_values()
+        data_list = []
+        spectral_channels_list = []
+
+        instrument_map = [
+            (SUNASampleDataParticleKey.FRAME_TYPE,          GROUP_FRAME_TYPE,           str),
+            (SUNASampleDataParticleKey.SERIAL_NUM,          GROUP_SERIAL_NUM,           str),
+            (SUNASampleDataParticleKey.SAMPLE_DATE,         GROUP_SAMPLE_DATE,          int),
+            (SUNASampleDataParticleKey.SAMPLE_TIME,         GROUP_SAMPLE_TIME,          float),
+            (SUNASampleDataParticleKey.NITRATE_CONCEN,      GROUP_NITRATE_CONCEN,       float),
+            (SUNASampleDataParticleKey.NITROGEN,            GROUP_NITROGEN,             float),
+            (SUNASampleDataParticleKey.ABSORB_254,          GROUP_ABSORB_254,           float),
+            (SUNASampleDataParticleKey.ABSORB_350,          GROUP_ABSORB_350,           float),
+            (SUNASampleDataParticleKey.BROMIDE_TRACE,       GROUP_BROMIDE_TRACE,        float),
+            (SUNASampleDataParticleKey.SPECTRUM_AVE,        GROUP_SPECTRUM_AVE,         int),
+            (SUNASampleDataParticleKey.FIT_DARK_VALUE,      GROUP_FIT_DARK_VALUE,       int),
+            (SUNASampleDataParticleKey.TIME_FACTOR,         GROUP_TIME_FACTOR,          int),
+            (SUNASampleDataParticleKey.SPECTRAL_CHANNELS,   GROUP_SPECTRAL_CHANNELS,    int),  # x256
+            (SUNASampleDataParticleKey.TEMP_SPECTROMETER,   GROUP_TEMP_SPECTROMETER,    float),
+            (SUNASampleDataParticleKey.TEMP_INTERIOR,       GROUP_TEMP_INTERIOR,        float),
+            (SUNASampleDataParticleKey.TEMP_LAMP,           GROUP_TEMP_LAMP,            float),
+            (SUNASampleDataParticleKey.LAMP_TIME,           GROUP_LAMP_TIME,            int),
+            (SUNASampleDataParticleKey.HUMIDITY,            GROUP_HUMIDITY,             float),
+            (SUNASampleDataParticleKey.VOLTAGE_MAIN,        GROUP_VOLTAGE_MAIN,         float),
+            (SUNASampleDataParticleKey.VOLTAGE_LAMP,        GROUP_VOLTAGE_LAMP,         float),
+            (SUNASampleDataParticleKey.VOLTAGE_INT,         GROUP_VOLTAGE_INT,          float),
+            (SUNASampleDataParticleKey.CURRENT_MAIN,        GROUP_CURRENT_MAIN,         float),
+            (SUNASampleDataParticleKey.FIT_1,               GROUP_FIT_1,                float),
+            (SUNASampleDataParticleKey.FIT_2,               GROUP_FIT_2,                float),
+            (SUNASampleDataParticleKey.FIT_BASE_1,          GROUP_FIT_BASE_1,           float),
+            (SUNASampleDataParticleKey.FIT_BASE_2,          GROUP_FIT_BASE_2,           float),
+            (SUNASampleDataParticleKey.FIT_RMSE,            GROUP_FIT_RMSE,             float),
+            (SUNASampleDataParticleKey.CHECKSUM,            GROUP_CHECKSUM,             int)
+        ]
+
+        # for name, group, func in instrument_map:
+        #
+        #     if group != GROUP_SPECTRAL_CHANNELS:
+        #         data_list.append(self._encode_value(name, self.raw_data[group], func))
+        #
+        #     elif group == GROUP_SPECTRAL_CHANNELS:
+        #         spectral_channels_list.append(self.raw_data)
+
+        map_length = len(instrument_map)
+        spectral_channel_index = 12
+        temp_spec_index = spectral_channel_index + 255
+
+        for item in enumerate(self.raw_data):
+            print item
+
+
+        # if self.method == self.Method.dcl:
+
+
+class SunaDclRecoveredParticle(SunaCommon):
+    def __init__(self, raw_data, *args, **kwargs):
+        super(SunaDclRecoveredParticle, self).__init__(raw_data, *args, **kwargs)
+        self.raw_data = raw_data
 
 
 class SunaDclRecoveredDataParticle(SunaDclRecoveredParticle):
     _data_particle_type = 'suna_dcl_recovered'
+    _method = Method.dcl
 
 
-class SunaInstrumentRecoveredParticle(DataParticle):
+class SunaInstrumentRecoveredParticle(SunaCommon):
 
     def __init__(self, raw_data, *args, **kwargs):
         super(SunaInstrumentRecoveredParticle, self).__init__(raw_data, *args, **kwargs)
@@ -101,8 +176,8 @@ class SunaInstrumentRecoveredParticle(DataParticle):
 
 
 class SUnaInstrumentRecoveredDataParticle(SunaInstrumentRecoveredParticle):
-
     _data_particle_type = 'suna_instrument_recovered'
+    _method = Method.instrument_recovered
 
 
 class SunaParser(Parser):
@@ -153,7 +228,7 @@ class SunaParser(Parser):
                     raw_data.split(',')[2],
                 )
 
-                particle = self._extract_sample(particle_class, None, raw_data,
+                particle = self._extract_sample(particle_class, None, raw_data.split(','),
                                                 internal_timestamp=timestamp)
 
                 self._record_buffer.append(particle)
