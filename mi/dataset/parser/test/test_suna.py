@@ -60,3 +60,22 @@ class SunaDclParserUnitTestCase(ParserUnitTestCase):
             # self.assertEqual(self._exceptions_detected, 0)
             #
             # log.debug("Exceptions: %d", self._exceptions_detected)
+
+    def test_happy_path_2(self):
+        """
+        Test the happy path of operations where the parser takes the input
+        and spits out a valid data particle given the stream.
+        """
+        log.debug("Running test_happy_path")
+
+        filename = "D2018071_instrument_recovered.CSV"
+
+        with open(os.path.join(RESOURCE_PATH, filename), 'r') as file_handle:
+
+            parser = self.create_parser(RECOVERED_PARTICLE_CLASS, file_handle)
+
+            particles = parser.get_records(1000)
+
+            log.debug("Num particles: %d", len(particles))
+
+            self.assertEqual(len(particles), 9)

@@ -3,7 +3,6 @@ import datetime
 import ntplib
 
 from mi.core.log import get_logger
-from mi.dataset.parser.suna import Method
 from mi.instrument.satlantic.suna_deep.ooicore.driver import SUNASampleDataParticle, SUNASampleDataParticleKey
 from mi.dataset.dataset_parser import Parser
 from mi.core.common import BaseEnum
@@ -107,53 +106,55 @@ class SunaCommon(DataParticle):
         spectral_channels_list = []
 
         instrument_map = [
-            (SUNASampleDataParticleKey.FRAME_TYPE,          GROUP_FRAME_TYPE,           str),
-            (SUNASampleDataParticleKey.SERIAL_NUM,          GROUP_SERIAL_NUM,           str),
-            (SUNASampleDataParticleKey.SAMPLE_DATE,         GROUP_SAMPLE_DATE,          int),
-            (SUNASampleDataParticleKey.SAMPLE_TIME,         GROUP_SAMPLE_TIME,          float),
-            (SUNASampleDataParticleKey.NITRATE_CONCEN,      GROUP_NITRATE_CONCEN,       float),
-            (SUNASampleDataParticleKey.NITROGEN,            GROUP_NITROGEN,             float),
-            (SUNASampleDataParticleKey.ABSORB_254,          GROUP_ABSORB_254,           float),
-            (SUNASampleDataParticleKey.ABSORB_350,          GROUP_ABSORB_350,           float),
-            (SUNASampleDataParticleKey.BROMIDE_TRACE,       GROUP_BROMIDE_TRACE,        float),
-            (SUNASampleDataParticleKey.SPECTRUM_AVE,        GROUP_SPECTRUM_AVE,         int),
-            (SUNASampleDataParticleKey.FIT_DARK_VALUE,      GROUP_FIT_DARK_VALUE,       int),
-            (SUNASampleDataParticleKey.TIME_FACTOR,         GROUP_TIME_FACTOR,          int),
-            (SUNASampleDataParticleKey.SPECTRAL_CHANNELS,   GROUP_SPECTRAL_CHANNELS,    int),  # x256
-            (SUNASampleDataParticleKey.TEMP_SPECTROMETER,   GROUP_TEMP_SPECTROMETER,    float),
-            (SUNASampleDataParticleKey.TEMP_INTERIOR,       GROUP_TEMP_INTERIOR,        float),
-            (SUNASampleDataParticleKey.TEMP_LAMP,           GROUP_TEMP_LAMP,            float),
-            (SUNASampleDataParticleKey.LAMP_TIME,           GROUP_LAMP_TIME,            int),
-            (SUNASampleDataParticleKey.HUMIDITY,            GROUP_HUMIDITY,             float),
-            (SUNASampleDataParticleKey.VOLTAGE_MAIN,        GROUP_VOLTAGE_MAIN,         float),
-            (SUNASampleDataParticleKey.VOLTAGE_LAMP,        GROUP_VOLTAGE_LAMP,         float),
-            (SUNASampleDataParticleKey.VOLTAGE_INT,         GROUP_VOLTAGE_INT,          float),
-            (SUNASampleDataParticleKey.CURRENT_MAIN,        GROUP_CURRENT_MAIN,         float),
-            (SUNASampleDataParticleKey.FIT_1,               GROUP_FIT_1,                float),
-            (SUNASampleDataParticleKey.FIT_2,               GROUP_FIT_2,                float),
-            (SUNASampleDataParticleKey.FIT_BASE_1,          GROUP_FIT_BASE_1,           float),
-            (SUNASampleDataParticleKey.FIT_BASE_2,          GROUP_FIT_BASE_2,           float),
-            (SUNASampleDataParticleKey.FIT_RMSE,            GROUP_FIT_RMSE,             float),
-            (SUNASampleDataParticleKey.CHECKSUM,            GROUP_CHECKSUM,             int)
+            (SUNASampleDataParticleKey.FRAME_TYPE,          str),
+            (SUNASampleDataParticleKey.SERIAL_NUM,          str),
+            (SUNASampleDataParticleKey.SAMPLE_DATE,         int),
+            (SUNASampleDataParticleKey.SAMPLE_TIME,         float),
+            (SUNASampleDataParticleKey.NITRATE_CONCEN,      float),
+            (SUNASampleDataParticleKey.NITROGEN,            float),
+            (SUNASampleDataParticleKey.ABSORB_254,          float),
+            (SUNASampleDataParticleKey.ABSORB_350,          float),
+            (SUNASampleDataParticleKey.BROMIDE_TRACE,       float),
+            (SUNASampleDataParticleKey.SPECTRUM_AVE,        int),
+            (SUNASampleDataParticleKey.FIT_DARK_VALUE,      int),
+            (SUNASampleDataParticleKey.TIME_FACTOR,         int),
+            (SUNASampleDataParticleKey.SPECTRAL_CHANNELS,   int),  # x256
+            (SUNASampleDataParticleKey.TEMP_SPECTROMETER,   float),
+            (SUNASampleDataParticleKey.TEMP_INTERIOR,       float),
+            (SUNASampleDataParticleKey.TEMP_LAMP,           float),
+            (SUNASampleDataParticleKey.LAMP_TIME,           int),
+            (SUNASampleDataParticleKey.HUMIDITY,            float),
+            (SUNASampleDataParticleKey.VOLTAGE_MAIN,        float),
+            (SUNASampleDataParticleKey.VOLTAGE_LAMP,        float),
+            (SUNASampleDataParticleKey.VOLTAGE_INT,         float),
+            (SUNASampleDataParticleKey.CURRENT_MAIN,        float),
+            (SUNASampleDataParticleKey.FIT_1,               float),
+            (SUNASampleDataParticleKey.FIT_2,               float),
+            (SUNASampleDataParticleKey.FIT_BASE_1,          float),
+            (SUNASampleDataParticleKey.FIT_BASE_2,          float),
+            (SUNASampleDataParticleKey.FIT_RMSE,            float),
+            (SUNASampleDataParticleKey.CHECKSUM,            int)
         ]
 
-        # for name, group, func in instrument_map:
-        #
-        #     if group != GROUP_SPECTRAL_CHANNELS:
-        #         data_list.append(self._encode_value(name, self.raw_data[group], func))
-        #
-        #     elif group == GROUP_SPECTRAL_CHANNELS:
-        #         spectral_channels_list.append(self.raw_data)
-
-        map_length = len(instrument_map)
         spectral_channel_index = 12
-        temp_spec_index = spectral_channel_index + 255
+        # index 268
+        temp_spec_index = spectral_channel_index + 256
+        position = 0
+        for i, item in enumerate(self.raw_data):
+            if i == temp_spec_index:
+                data_list.append(self._encode_spectral_channels_values(instrument_map[spectral_channel_index][0],
+                                                                       spectral_channels_list,
+                                                                       instrument_map[spectral_channel_index][1]))
+                position += 1
+            if spectral_channel_index <= i < temp_spec_index:
+                spectral_channels_list.append(item)
 
-        for item in enumerate(self.raw_data):
-            print item
+            else:
+                if item is not '':
+                    data_list.append(self._encode_value(instrument_map[position][0], item, instrument_map[position][1]))
+                    position += 1
 
-
-        # if self.method == self.Method.dcl:
+        return data_list
 
 
 class SunaDclRecoveredParticle(SunaCommon):
@@ -164,7 +165,7 @@ class SunaDclRecoveredParticle(SunaCommon):
 
 class SunaDclRecoveredDataParticle(SunaDclRecoveredParticle):
     _data_particle_type = 'suna_dcl_recovered'
-    _method = Method.dcl
+    _method = SunaCommon.Method.dcl
 
 
 class SunaInstrumentRecoveredParticle(SunaCommon):
@@ -175,9 +176,9 @@ class SunaInstrumentRecoveredParticle(SunaCommon):
         self.raw_data = raw_data
 
 
-class SUnaInstrumentRecoveredDataParticle(SunaInstrumentRecoveredParticle):
+class SunaInstrumentRecoveredDataParticle(SunaInstrumentRecoveredParticle):
     _data_particle_type = 'suna_instrument_recovered'
-    _method = Method.instrument_recovered
+    _method = SunaCommon.Method.instrument_recovered
 
 
 class SunaParser(Parser):
@@ -197,6 +198,7 @@ class SunaParser(Parser):
 
         self._file_parsed = False
         self._record_buffer = []
+        self._raw_data_length = 286
 
     @staticmethod
     def _date_time_sample_values_to_ntp_timestamp(date_sample_str, time_sample_str):
@@ -212,11 +214,14 @@ class SunaParser(Parser):
         return ntp_timestamp
 
     def parse_file(self):
-        particle_class = SunaDclRecoveredDataParticle
-
         for line in self._stream_handle:
+
             # DCL/Telemetered
             if not line.startswith('SATSLF') and 'SATSLF' in line:
+                if len(line.split(',')) != self._raw_data_length:
+                    continue
+
+                particle_class = SunaDclRecoveredDataParticle
                 # Get date and time at the beginning of the line
                 date_time = line.split(',')[0].split()[:2]
 
@@ -228,14 +233,23 @@ class SunaParser(Parser):
                     raw_data.split(',')[2],
                 )
 
-                particle = self._extract_sample(particle_class, None, raw_data.split(','),
+                raw_data = raw_data.split(',')
+
+                raw_data.insert(1, raw_data[0][3:6])
+                raw_data[0] = raw_data[0][0:3]
+                particle = self._extract_sample(particle_class, None, raw_data,
                                                 internal_timestamp=timestamp)
 
                 self._record_buffer.append(particle)
 
             elif line.startswith('SATSLF'):
-                particle_class = SUnaInstrumentRecoveredDataParticle
-                raw_data = line
+                if len(line.split(',')) != self._raw_data_length:
+                    continue
+
+                particle_class = SunaInstrumentRecoveredDataParticle
+                raw_data = line.split(',')
+                raw_data.insert(1, raw_data[0][3:6])
+                raw_data[0] = raw_data[0][0:3]
 
                 particle = self._extract_sample(particle_class, None, raw_data)
                 self._record_buffer.append(particle)
