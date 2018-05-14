@@ -91,12 +91,10 @@ class SunaCommon(DataParticle):
                 spectral_channels_list.append(item)
 
             # Handle all other pieces of data that are not the spectral channels
-            else:
-
-                # CTDs are empty
-                if item is not '':
-                    data_list.append(self._encode_value(instrument_map[position][0], item, instrument_map[position][1]))
-                    position += 1
+            # CTDs are empty
+            elif item:
+                data_list.append(self._encode_value(instrument_map[position][0], item, instrument_map[position][1]))
+                position += 1
 
         return data_list
 
@@ -160,22 +158,21 @@ class SunaParser(Parser):
 
             # DCL/Telemetered
             if not line.startswith('SATSLF') and 'SATSLF' in line or 'SATNDF' in line:
-                if len(line.split(',')) != self._raw_data_length:
+                raw_data = line.split(',')
+                if len(raw_data) != self._raw_data_length:
                     continue
 
                 particle_class = SunaDclRecoveredDataParticle
-                # Get date and time at the beginning of the line
-                date_time = line.split(',')[0].split()[:2]
 
                 # Get rid of the date and time at the beginning of the line. raw_data will start with SATSLF...
-                raw_data = line.split(' ', 2)[2]
+                # And then split it once more to get a list of the data
+                raw_data = line.split(' ', 2)[2].split(',')
 
+                date_time = raw_data[1:3]
                 timestamp = self._date_time_sample_values_to_ntp_timestamp(
-                    raw_data.split(',')[1],
-                    raw_data.split(',')[2],
+                    date_time[0],
+                    date_time[1],
                 )
-
-                raw_data = raw_data.split(',')
 
                 raw_data.insert(1, raw_data[0][3:6])
                 raw_data[0] = raw_data[0][0:3]
@@ -185,11 +182,11 @@ class SunaParser(Parser):
                 self._record_buffer.append(particle)
 
             elif line.startswith('SATSLF') or line.startswith('SATSDF'):
-                if len(line.split(',')) != self._raw_data_length:
+                raw_data = line.split(',')
+                if len(raw_data) != self._raw_data_length:
                     continue
 
                 particle_class = SunaInstrumentRecoveredDataParticle
-                raw_data = line.split(',')
                 raw_data.insert(1, raw_data[0][3:6])
                 raw_data[0] = raw_data[0][0:3]
 
@@ -204,15 +201,15 @@ class SunaParser(Parser):
         """
         particles_to_return = []
 
-        if num_records_requested > 0:
+        if num_records_requested:
 
             # If the file was not read, let's parse it
-            if self._file_parsed is False:
+            if not self._file_parsed:
                 self.parse_file()
 
             # Iterate through the particles returned, and pop them off from the beginning of the record
             # buffer to the end
-            while len(particles_to_return) < num_records_requested and len(self._record_buffer) > 0:
+            while len(particles_to_return) is not num_records_requested and len(self._record_buffer) > 0:
                 particles_to_return.append(self._record_buffer.pop(0))
 
         return particles_to_return
