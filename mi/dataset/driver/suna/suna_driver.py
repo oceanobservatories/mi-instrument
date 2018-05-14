@@ -1,4 +1,3 @@
-from mi.core.log import get_logger
 from mi.dataset.parser.suna import SunaParser
 from mi.dataset.dataset_driver import DataSetDriver
 from mi.dataset.dataset_parser import DataSetDriverConfigKeys
@@ -6,6 +5,7 @@ from mi.dataset.dataset_parser import DataSetDriverConfigKeys
 MODULE_NAME = 'mi.dataset.parser.suna'
 RECOVERED_PARTICLE_CLASS = 'SunaDclRecoveredParticle'
 INSTRUMENT_RECOVERED_PARTICLE_CLASS = 'SunaInstrumentRecoveredParticle'
+
 
 def process(source_file_path, particle_data_handler, particle_class):
 
