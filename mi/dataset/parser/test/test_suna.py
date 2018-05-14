@@ -49,7 +49,6 @@ class SunaDclParserUnitTestCase(ParserUnitTestCase):
             parser = self.create_parser(RECOVERED_PARTICLE_CLASS, file_handle)
 
             particles = parser.get_records(1000)
-            particle_to_yml(particles, os.path.join(RESOURCE_PATH, 'dcl_good.yml'))
             log.debug("Num particles: %d", len(particles))
 
             self.assertEqual(len(particles), 144)
@@ -67,7 +66,6 @@ class SunaDclParserUnitTestCase(ParserUnitTestCase):
             parser = self.create_parser(RECOVERED_PARTICLE_CLASS, file_handle)
 
             particles = parser.get_records(1000)
-            particle_to_yml(particles, os.path.join(RESOURCE_PATH, 'dcl_bad.yml'))
             log.debug("Num particles: %d", len(particles))
 
             self.assertEqual(len(particles), 140)
@@ -85,7 +83,6 @@ class SunaDclParserUnitTestCase(ParserUnitTestCase):
             parser = self.create_parser(RECOVERED_PARTICLE_CLASS, file_handle)
 
             particles = parser.get_records(1000)
-            particle_to_yml(particles, os.path.join(RESOURCE_PATH, 'instrument_recovered_good.yml'))
             log.debug("Num particles: %d", len(particles))
 
             self.assertEqual(len(particles), 39)
@@ -102,8 +99,7 @@ class SunaDclParserUnitTestCase(ParserUnitTestCase):
 
             parser = self.create_parser(RECOVERED_PARTICLE_CLASS, file_handle)
 
-            particles = parser.get_records(100)
-            particle_to_yml(particles, os.path.join(RESOURCE_PATH, '.yml'))
+            particles = parser.get_records(1000)
             log.debug("Num particles: %d", len(particles))
 
             self.assertEqual(len(particles), 35)
