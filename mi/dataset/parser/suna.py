@@ -5,7 +5,6 @@ import ntplib
 from mi.core.log import get_logger
 from mi.instrument.satlantic.suna_deep.ooicore.driver import SUNASampleDataParticleKey
 from mi.dataset.dataset_parser import Parser
-from mi.core.common import BaseEnum
 from mi.core.instrument.dataset_data_particle import \
     DataParticle, \
     DataParticleKey
@@ -14,13 +13,6 @@ log = get_logger()
 
 
 class SunaCommon(DataParticle):
-
-    class Method(BaseEnum):
-        dcl = 0
-        telemetered = 1
-        instrument_recovered = 2
-
-    _method = None
 
     def __init__(self, raw_data, *args, **kwargs):
         super(SunaCommon, self).__init__(raw_data, *args, **kwargs)
@@ -117,7 +109,6 @@ class SunaDclRecoveredParticle(SunaCommon):
 
 class SunaDclRecoveredDataParticle(SunaDclRecoveredParticle):
     _data_particle_type = 'suna_dcl_recovered'
-    _method = SunaCommon.Method.dcl
 
 
 class SunaInstrumentRecoveredParticle(SunaCommon):
@@ -130,7 +121,6 @@ class SunaInstrumentRecoveredParticle(SunaCommon):
 
 class SunaInstrumentRecoveredDataParticle(SunaInstrumentRecoveredParticle):
     _data_particle_type = 'suna_instrument_recovered'
-    _method = SunaCommon.Method.instrument_recovered
 
 
 class SunaParser(Parser):
