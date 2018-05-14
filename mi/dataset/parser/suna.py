@@ -3,7 +3,7 @@ import datetime
 import ntplib
 
 from mi.core.log import get_logger
-from mi.instrument.satlantic.suna_deep.ooicore.driver import SUNASampleDataParticle, SUNASampleDataParticleKey
+from mi.instrument.satlantic.suna_deep.ooicore.driver import SUNASampleDataParticleKey
 from mi.dataset.dataset_parser import Parser
 from mi.core.common import BaseEnum
 from mi.core.instrument.dataset_data_particle import \
@@ -11,66 +11,6 @@ from mi.core.instrument.dataset_data_particle import \
     DataParticleKey
 
 log = get_logger()
-
-GROUP_FRAME_TYPE        = 0
-GROUP_SERIAL_NUM        = 1
-GROUP_SAMPLE_DATE       = 2
-GROUP_SAMPLE_TIME       = 3
-GROUP_NITRATE_CONCEN    = 4
-GROUP_NITROGEN          = 5
-GROUP_ABSORB_254        = 6
-GROUP_ABSORB_350        = 7
-GROUP_BROMIDE_TRACE     = 8
-GROUP_SPECTRUM_AVE      = 9
-GROUP_FIT_DARK_VALUE    = 10
-GROUP_TIME_FACTOR       = 11
-GROUP_SPECTRAL_CHANNELS = 12
-GROUP_TEMP_SPECTROMETER = 13
-GROUP_TEMP_INTERIOR     = 14
-GROUP_TEMP_LAMP         = 15
-GROUP_LAMP_TIME         = 16
-GROUP_HUMIDITY          = 17
-GROUP_VOLTAGE_MAIN      = 18
-GROUP_VOLTAGE_LAMP      = 19
-GROUP_VOLTAGE_INT       = 20
-GROUP_CURRENT_MAIN      = 21
-GROUP_FIT_1             = 22
-GROUP_FIT_2             = 23
-GROUP_FIT_BASE_1        = 24
-GROUP_FIT_BASE_2        = 25
-GROUP_FIT_RMSE          = 26
-GROUP_CHECKSUM          = 27
-
-
-class SUNASampleDataParticleKey(BaseEnum):
-    FRAME_TYPE = "frame_type"
-    SERIAL_NUM = "serial_number"
-    SAMPLE_DATE = "date_of_sample"
-    SAMPLE_TIME = "time_of_sample"
-    NITRATE_CONCEN = "nitrate_concentration"
-    NITROGEN = "nutnr_nitrogen_in_nitrate"
-    ABSORB_254 = "nutnr_absorbance_at_254_nm"
-    ABSORB_350 = "nutnr_absorbance_at_350_nm"
-    BROMIDE_TRACE = "nutnr_bromide_trace"
-    SPECTRUM_AVE = "nutnr_spectrum_average"
-    FIT_DARK_VALUE = "nutnr_dark_value_used_for_fit"
-    TIME_FACTOR = "nutnr_integration_time_factor"
-    SPECTRAL_CHANNELS = "spectral_channels"
-    TEMP_SPECTROMETER = "temp_spectrometer"
-    TEMP_INTERIOR = "temp_interior"
-    TEMP_LAMP = "temp_lamp"
-    LAMP_TIME = "lamp_time"
-    HUMIDITY = "humidity"
-    VOLTAGE_MAIN = "voltage_main"
-    VOLTAGE_LAMP = "voltage_lamp"
-    VOLTAGE_INT = "nutnr_voltage_int"
-    CURRENT_MAIN = "nutnr_current_main"
-    FIT_1 = "aux_fitting_1"
-    FIT_2 = "aux_fitting_2"
-    FIT_BASE_1 = "nutnr_fit_base_1"
-    FIT_BASE_2 = "nutnr_fit_base_2"
-    FIT_RMSE = "nutnr_fit_rmse"
-    CHECKSUM = "checksum"
 
 
 class SunaCommon(DataParticle):
@@ -90,6 +30,7 @@ class SunaCommon(DataParticle):
     def _encode_spectral_channels_values(self, name, value_list, encoding_function):
         """
         Encode a value using the encoding function, if it fails store the error in a queue
+        This function is to encode the list of spectral channels
         """
         encoded_val = None
 
@@ -136,20 +77,31 @@ class SunaCommon(DataParticle):
             (SUNASampleDataParticleKey.CHECKSUM,            int)
         ]
 
+        # spectral channels start at index 12 and end at index 256
         spectral_channel_index = 12
         # index 268
         temp_spec_index = spectral_channel_index + 256
+
+        # will keep track of index, but position will keep track of where it will be mapped (according to the order of
+        # the data layout
         position = 0
         for i, item in enumerate(self.raw_data):
+
+            # Once at the end of the spectral channel, append it to the data_list
             if i == temp_spec_index:
                 data_list.append(self._encode_spectral_channels_values(instrument_map[spectral_channel_index][0],
                                                                        spectral_channels_list,
                                                                        instrument_map[spectral_channel_index][1]))
                 position += 1
+
+            # Handle spectral channels by adding them to a list
             if spectral_channel_index <= i < temp_spec_index:
                 spectral_channels_list.append(item)
 
+            # Handle all other pieces of data that are not the spectral channels
             else:
+
+                # CTDs are empty
                 if item is not '':
                     data_list.append(self._encode_value(instrument_map[position][0], item, instrument_map[position][1]))
                     position += 1
@@ -217,7 +169,7 @@ class SunaParser(Parser):
         for line in self._stream_handle:
 
             # DCL/Telemetered
-            if not line.startswith('SATSLF') and 'SATSLF' in line:
+            if not line.startswith('SATSLF') and 'SATSLF' in line or 'SATNDF' in line:
                 if len(line.split(',')) != self._raw_data_length:
                     continue
 
@@ -242,7 +194,7 @@ class SunaParser(Parser):
 
                 self._record_buffer.append(particle)
 
-            elif line.startswith('SATSLF'):
+            elif line.startswith('SATSLF') or line.startswith('SATSDF'):
                 if len(line.split(',')) != self._raw_data_length:
                     continue
 

@@ -36,46 +36,74 @@ class SunaDclParserUnitTestCase(ParserUnitTestCase):
     def create_yml(self, particles, filename):
         particle_to_yml(particles, os.path.join(RESOURCE_PATH, filename))
 
-    def test_happy_path(self):
+    def test_good_dcl(self):
         """
-        Test the happy path of operations where the parser takes the input
-        and spits out a valid data particle given the stream.
+        Test dcl with good data
         """
         log.debug("Running test_happy_path")
 
-        filename = "20171013.nutnr.log"
+        filename = "dcl_good.log"
 
         with open(os.path.join(RESOURCE_PATH, filename), 'r') as file_handle:
 
             parser = self.create_parser(RECOVERED_PARTICLE_CLASS, file_handle)
 
             particles = parser.get_records(1000)
-
+            particle_to_yml(particles, os.path.join(RESOURCE_PATH, 'dcl_good.yml'))
             log.debug("Num particles: %d", len(particles))
 
             self.assertEqual(len(particles), 144)
 
-            # self.assert_particles(particles, 'happy_path.yml', RESOURCE_PATH)
-            #
-            # self.assertEqual(self._exceptions_detected, 0)
-            #
-            # log.debug("Exceptions: %d", self._exceptions_detected)
-
-    def test_happy_path_2(self):
+    def test_bad_dcl(self):
         """
-        Test the happy path of operations where the parser takes the input
-        and spits out a valid data particle given the stream.
+        Test dcl with some good data, and some bad data (4 of them)
         """
         log.debug("Running test_happy_path")
 
-        filename = "D2018071_instrument_recovered.CSV"
+        filename = "dcl_bad.log"
 
         with open(os.path.join(RESOURCE_PATH, filename), 'r') as file_handle:
 
             parser = self.create_parser(RECOVERED_PARTICLE_CLASS, file_handle)
 
             particles = parser.get_records(1000)
-
+            particle_to_yml(particles, os.path.join(RESOURCE_PATH, 'dcl_bad.yml'))
             log.debug("Num particles: %d", len(particles))
 
-            self.assertEqual(len(particles), 9)
+            self.assertEqual(len(particles), 140)
+
+    def test_good_instrument_recovered(self):
+        """
+        Test instrument recovered with some good data
+        """
+        log.debug("Running test_happy_path")
+
+        filename = "instrument_recovered_good.CSV"
+
+        with open(os.path.join(RESOURCE_PATH, filename), 'r') as file_handle:
+
+            parser = self.create_parser(RECOVERED_PARTICLE_CLASS, file_handle)
+
+            particles = parser.get_records(1000)
+            particle_to_yml(particles, os.path.join(RESOURCE_PATH, 'instrument_recovered_good.yml'))
+            log.debug("Num particles: %d", len(particles))
+
+            self.assertEqual(len(particles), 39)
+
+    def test_bad_instrument_recovered(self):
+        """
+        Test instrument recovered with some bad data (
+        """
+        log.debug("Running test_happy_path")
+
+        filename = "instrument_recovered_bad.CSV"
+
+        with open(os.path.join(RESOURCE_PATH, filename), 'r') as file_handle:
+
+            parser = self.create_parser(RECOVERED_PARTICLE_CLASS, file_handle)
+
+            particles = parser.get_records(100)
+            particle_to_yml(particles, os.path.join(RESOURCE_PATH, '.yml'))
+            log.debug("Num particles: %d", len(particles))
+
+            self.assertEqual(len(particles), 35)
