@@ -8,7 +8,7 @@ from mi.dataset.test.test_parser import ParserUnitTestCase
 from mi.dataset.dataset_parser import DataSetDriverConfigKeys
 from mi.dataset.parser.suna import SunaParser
 
-from mi.dataset.driver.suna.suna_driver import MODULE_NAME, RECOVERED_PARTICLE_CLASS
+from mi.dataset.driver.suna.suna_driver import MODULE_NAME, RECOVERED_PARTICLE_CLASS, INSTRUMENT_RECOVERED_PARTICLE_CLASS
 
 log = get_logger()
 
@@ -80,7 +80,7 @@ class SunaDclParserUnitTestCase(ParserUnitTestCase):
 
         with open(os.path.join(RESOURCE_PATH, filename), 'r') as file_handle:
 
-            parser = self.create_parser(RECOVERED_PARTICLE_CLASS, file_handle)
+            parser = self.create_parser(INSTRUMENT_RECOVERED_PARTICLE_CLASS, file_handle)
 
             particles = parser.get_records(1000)
             log.debug("Num particles: %d", len(particles))
@@ -97,7 +97,7 @@ class SunaDclParserUnitTestCase(ParserUnitTestCase):
 
         with open(os.path.join(RESOURCE_PATH, filename), 'r') as file_handle:
 
-            parser = self.create_parser(RECOVERED_PARTICLE_CLASS, file_handle)
+            parser = self.create_parser(INSTRUMENT_RECOVERED_PARTICLE_CLASS, file_handle)
 
             particles = parser.get_records(1000)
             log.debug("Num particles: %d", len(particles))
