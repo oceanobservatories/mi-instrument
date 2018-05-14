@@ -209,7 +209,7 @@ class SunaParser(Parser):
 
             # Iterate through the particles returned, and pop them off from the beginning of the record
             # buffer to the end
-            while len(particles_to_return) is not num_records_requested and len(self._record_buffer):
+            while len(particles_to_return) is not num_records_requested and self._record_buffer:
                 particles_to_return.append(self._record_buffer.pop(0))
 
         return particles_to_return
