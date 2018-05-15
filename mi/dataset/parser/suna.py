@@ -3,6 +3,7 @@ import datetime
 import ntplib
 
 from mi.core.log import get_logger
+from utilities import dcl_time_to_ntp
 from mi.instrument.satlantic.suna_deep.ooicore.driver import SUNASampleDataParticleKey
 from mi.dataset.dataset_parser import Parser
 from mi.core.instrument.dataset_data_particle import \
@@ -140,19 +141,6 @@ class SunaParser(Parser):
         self._record_buffer = []
         self._raw_data_length = 286
 
-    @staticmethod
-    def _date_time_sample_values_to_ntp_timestamp(date_sample_str, time_sample_str):
-
-        year = int(date_sample_str[0:4])
-        days = int(date_sample_str[4:7])
-
-        hours_float = float(time_sample_str)
-
-        date_time_val = datetime.datetime(year, 1, 1) + datetime.timedelta(days=days-1, hours=hours_float)
-        ntp_timestamp = ntplib.system_to_ntp_time(calendar.timegm(date_time_val.timetuple()))
-
-        return ntp_timestamp
-
     def parse_file(self):
         for line in self._stream_handle:
 
@@ -164,20 +152,18 @@ class SunaParser(Parser):
 
                 particle_class = SunaDclRecoveredDataParticle
 
-                # Get rid of the date and time at the beginning of the line. raw_data will start with SATSLF...
-                # And then split it once more to get a list of the data
-                raw_data = line.split(' ', 2)[2].split(',')
-
-                date_time = raw_data[1:3]
-                timestamp = self._date_time_sample_values_to_ntp_timestamp(
-                    date_time[0],
-                    date_time[1],
-                )
+                # Split first element. Format is "<date> <time> SAT(SLF|NDF)". Take timestamp, and
+                # Date and time are joined and to be processed into port_timestamp
+                # Date and time will be removed from raw_data. raw_data will start with SAT(SLF|NDF)
+                timestamp = raw_data[0].split(' ', 2)
+                raw_data[0] = timestamp[2]
+                port_timestamp = dcl_time_to_ntp(' '.join(timestamp[0:2]))
 
                 raw_data.insert(1, raw_data[0][3:6])
                 raw_data[0] = raw_data[0][0:3]
                 particle = self._extract_sample(particle_class, None, raw_data,
-                                                internal_timestamp=timestamp)
+                                                port_timestamp=port_timestamp,
+                                                preferred_ts=DataParticleKey.PORT_TIMESTAMP)
 
                 self._record_buffer.append(particle)
 
