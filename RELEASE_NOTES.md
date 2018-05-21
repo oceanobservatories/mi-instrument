@@ -1,3 +1,7 @@
+# Version 0.6.1
+
+* Issue #13288 - Added suna parser
+
 # Version 0.6.0
 
    * Added driver/parser support for the new Neil Brown CTD attached to the AUVs.
