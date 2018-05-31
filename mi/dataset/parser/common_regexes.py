@@ -35,7 +35,7 @@ ONE_OR_MORE_WHITESPACE_REGEX = r'\s+'
 ASCII_HEX_CHAR_REGEX = r'[0-9A-Fa-f]'
 
 # A regex used to match a date in the format YYYY/MM/DD
-DATE_YYYY_MM_DD_REGEX = r'(\d{4})/(\d{2})/(\d{2})'
+DATE_YYYY_MM_DD_REGEX = r'(\d{4})\/(\d{2})\/(\d{2})'
 
 # A regex used to match a date in the format YYYY-MM-DD, YYYY/MM/DD, YYYYMMDD and YYYY-MM, YYYY/MM and YYYYMM
 DATE2_YYYY_MM_DD_REGEX = r'(\d{4})[-\/]?(\d{2})[-\/]?(\d{2})?'
