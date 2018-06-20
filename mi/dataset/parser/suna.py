@@ -159,8 +159,8 @@ class SunaParser(Parser):
                 raw_data[0] = timestamp[2]
                 port_timestamp = dcl_time_to_ntp(' '.join(timestamp[0:2]))
 
-                raw_data.insert(1, raw_data[0][3:6])
-                raw_data[0] = raw_data[0][0:3]
+                raw_data.insert(1, raw_data[0][6:])
+                raw_data[0] = raw_data[0][3:6]
                 particle = self._extract_sample(particle_class, None, raw_data,
                                                 port_timestamp=port_timestamp,
                                                 preferred_ts=DataParticleKey.PORT_TIMESTAMP)
@@ -173,8 +173,8 @@ class SunaParser(Parser):
                     continue
 
                 particle_class = SunaInstrumentRecoveredDataParticle
-                raw_data.insert(1, raw_data[0][3:6])
-                raw_data[0] = raw_data[0][0:3]
+                raw_data.insert(1, raw_data[0][6:])
+                raw_data[0] = raw_data[0][3:6]
 
                 particle = self._extract_sample(particle_class, None, raw_data)
                 self._record_buffer.append(particle)
