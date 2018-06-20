@@ -7,7 +7,7 @@ from mi.dataset.driver.suna.resource import RESOURCE_PATH
 from mi.dataset.test.test_parser import ParserUnitTestCase
 from mi.dataset.dataset_parser import DataSetDriverConfigKeys
 from mi.dataset.parser.suna import SunaParser
-from mi.dataset.driver.suna.suna_driver import MODULE_NAME, RECOVERED_PARTICLE_CLASS, \
+from mi.dataset.driver.suna.suna_driver_common import MODULE_NAME, RECOVERED_PARTICLE_CLASS, \
     INSTRUMENT_RECOVERED_PARTICLE_CLASS
 
 log = get_logger()
