@@ -1,3 +1,7 @@
+# Version 0.6.3
+
+* Issue #13288 - Fixed suna parser to work with uFrame, added instrument driver
+
 # Version 0.6.2
 
 * Issue #13245 - Corrected REGEX in the flort_dj_dcl.py parser.
