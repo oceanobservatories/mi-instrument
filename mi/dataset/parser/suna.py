@@ -3,7 +3,7 @@ import datetime
 import ntplib
 
 from mi.core.log import get_logger
-from utilities import dcl_time_to_ntp
+from utilities import dcl_time_to_ntp, julian_time_to_ntp
 from mi.instrument.satlantic.suna_deep.ooicore.driver import SUNASampleDataParticleKey
 from mi.dataset.dataset_parser import Parser
 from mi.core.instrument.dataset_data_particle import \
@@ -176,7 +176,9 @@ class SunaParser(Parser):
                 raw_data.insert(1, raw_data[0][6:])
                 raw_data[0] = raw_data[0][3:6]
 
-                particle = self._extract_sample(particle_class, None, raw_data)
+                internal_timestamp = julian_time_to_ntp(raw_data[2])
+
+                particle = self._extract_sample(particle_class, None, raw_data, internal_timestamp=internal_timestamp)
                 self._record_buffer.append(particle)
 
     def get_records(self, num_records_requested=1):
