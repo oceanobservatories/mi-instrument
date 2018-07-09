@@ -1,3 +1,7 @@
+# Version 0.6.4
+
+* Issue #13288 - Added NTP timestamp to suna
+
 # Version 0.6.3
 
 * Issue #13288 - Fixed suna parser to work with uFrame, added instrument driver
