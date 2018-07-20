@@ -144,17 +144,19 @@ class SunaParser(Parser):
     def parse_file(self):
         for line in self._stream_handle:
 
-            # DCL/Telemetered
-            if not line.startswith('SATSLF') and 'SATSLF' in line or 'SATNDF' in line:
+            # The line will start with the date, and will have SATSLF or SATSDF in the line
+            if (not line.startswith('SATSLF') and 'SATSLF' in line) or \
+                    (not line.startswith('SATSDF') and 'SATSDF' in line):
+
                 raw_data = line.split(',')
                 if len(raw_data) != self._raw_data_length:
                     continue
 
                 particle_class = SunaDclRecoveredDataParticle
 
-                # Split first element. Format is "<date> <time> SAT(SLF|NDF)". Take timestamp, and
+                # Split first element. Format is "<date> <time> SAT(SLF|SDF)". Take timestamp, and
                 # Date and time are joined and to be processed into port_timestamp
-                # Date and time will be removed from raw_data. raw_data will start with SAT(SLF|NDF)
+                # Date and time will be removed from raw_data. raw_data will start with SAT(SLF|SDF)
                 timestamp = raw_data[0].split(' ', 2)
                 raw_data[0] = timestamp[2]
                 port_timestamp = dcl_time_to_ntp(' '.join(timestamp[0:2]))
