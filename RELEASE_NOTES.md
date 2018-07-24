@@ -1,3 +1,7 @@
+# Version 0.6.5
+
+* Issue #13288 - Changed conditional logic. Changed NDF to SDF.
+
 # Version 0.6.4
 
 * Issue #13288 - Added NTP timestamp to suna
