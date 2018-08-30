@@ -26,6 +26,7 @@ from nose.plugins.attrib import attr
 from mi.core.log import get_logger
 from mi.dataset.driver.ctdbp_cdef.resource import RESOURCE_PATH
 from mi.dataset.parser.ctdbp_cdef import CtdbpCdefParser
+from mi.dataset.parser.utilities import particle_to_yml
 from mi.dataset.test.test_parser import ParserUnitTestCase
 
 
@@ -38,6 +39,25 @@ class CtdbpCdefParserUnitTestCase(ParserUnitTestCase):
     """
     ctdbp_cdef Parser unit test suite
     """
+
+    @staticmethod
+    def create_yml(particles, filename):
+        particle_to_yml(particles, os.path.join(RESOURCE_PATH, filename))
+
+    def create_flort_ctdbp_yaml(self):
+        path = RESOURCE_PATH
+        log.info(path)
+
+        with open(os.path.join(RESOURCE_PATH, 'data1_ctdbp_flort_recovered.hex'), 'rU') as file_handle:
+
+            parser = CtdbpCdefParser(file_handle,
+                                     self.exception_callback)
+
+            # In a single read, get all particles in this file.
+            all_records = 150
+            records = parser.get_records(all_records)
+
+            CtdbpCdefParserUnitTestCase.create_yml(records, 'data1_ctdbp_flort_recovered.yml')
 
     def test_simple(self):
         """
@@ -69,6 +89,19 @@ class CtdbpCdefParserUnitTestCase(ParserUnitTestCase):
 
             # In a single read, get all particles in this file.
             number_expected_results = 5
+            result = parser.get_records(number_expected_results)
+            self.assertEqual(len(result), number_expected_results)
+
+            self.assertListEqual(self.exception_callback_value, [])
+
+        # Test with combined FLORT/CTDBP data
+        with open(os.path.join(RESOURCE_PATH, 'simple_test_ctdbp_flort_recovered.hex'), 'rU') as file_handle:
+
+            parser = CtdbpCdefParser(file_handle,
+                                     self.exception_callback)
+
+            # In a single read, get all particles in this file.
+            number_expected_results = 10
             result = parser.get_records(number_expected_results)
             self.assertEqual(len(result), number_expected_results)
 
@@ -109,6 +142,19 @@ class CtdbpCdefParserUnitTestCase(ParserUnitTestCase):
 
             self.assertListEqual(self.exception_callback_value, [])
 
+        # Test with combined FLORT/CTDBP data
+        with open(os.path.join(RESOURCE_PATH, 'data1_ctdbp_flort_recovered.hex'), 'rU') as file_handle:
+
+            parser = CtdbpCdefParser(file_handle,
+                                     self.exception_callback)
+
+            # In a single read, get all particles in this file.
+            number_expected_results = 150
+            result = parser.get_records(number_expected_results)
+            self.assert_particles(result, 'data1_ctdbp_flort_recovered.yml', RESOURCE_PATH)
+
+            self.assertListEqual(self.exception_callback_value, [])
+
         log.debug('===== END YAML TEST =====')
 
     def test_invalid_sensor_data_records(self):
@@ -141,6 +187,22 @@ class CtdbpCdefParserUnitTestCase(ParserUnitTestCase):
             self.assertEqual(result, [])
             self.assertEqual(len(self.exception_callback_value), 11)
 
+        self.exception_callback_value = []  # reset exceptions
+
+        # Test with combined FLORT/CTDBP data
+        with open(os.path.join(RESOURCE_PATH, 'invalid_sensor_data_ctdbp_flort_recovered.hex'), 'rU') as file_handle:
+            parser = CtdbpCdefParser(file_handle,
+                                     self.exception_callback)
+
+            # Try to get records and verify that only valid number is returned.
+            number_total_records = 20
+            number_valid_records = 15
+            result = parser.get_records(number_total_records)
+            self.assertEqual(len(result), number_valid_records)
+            self.assertEqual(len(self.exception_callback_value), 5)
+
+        self.exception_callback_value = []  # reset exceptions
+
         log.debug('===== END TEST INVALID SENSOR DATA =====')
 
     def test_no_sensor_data(self):
@@ -168,6 +230,17 @@ class CtdbpCdefParserUnitTestCase(ParserUnitTestCase):
 
             # Try to get a record and verify that none are produced.
             result = parser.get_records(1)
+            self.assertEqual(result, [])
+
+            self.assertListEqual(self.exception_callback_value, [])
+
+        # Test with combined FLORT/CTDBP data
+        with open(os.path.join(RESOURCE_PATH, 'no_sensor_data_ctdbp_flort_recovered.hex'), 'rU') as file_handle:
+            parser = CtdbpCdefParser(file_handle,
+                                     self.exception_callback)
+
+            # Try to get some records and verify that none are produced.
+            result = parser.get_records(100)
             self.assertEqual(result, [])
 
             self.assertListEqual(self.exception_callback_value, [])

@@ -109,6 +109,31 @@ ENDURANCE_DATA_REGEX += r'(?P<ctd_time>' + ASCII_HEX_CHAR_REGEX + '{8})' + END_O
 
 ENDURANCE_DATA_MATCHER = re.compile(ENDURANCE_DATA_REGEX, re.VERBOSE)
 
+# Regex for data from the Endurance array with the FLORT connected to the CTDBP
+# Each data record is in the following format:
+# ttttttccccccppppppvvvvbbbbllllddddssssssss
+# where each character indicates one hex ascii character.
+# First 6 chars: tttttt = Temperature A/D counts
+# Next 6 chars: cccccc = Conductivity A/D counts
+# Next 6 chars: pppppp = pressure A/D counts
+# Next 4 chars: vvvv = temperature compensation A/D counts
+# Next 4 chars: bbbb = Backscatter in counts (FLORT data omitted from output)
+# Next 4 chars: llll = Chlorophyll in counts (FLORT data omitted from output)
+# Next 4 chars: dddd = CDOM in counts (FLORT data omitted from output)
+# Last 8 chars: ssssssss = seconds since January 1, 2000
+# Total of 42 hex characters and line terminator
+
+CTD_FLORT_DATA_REGEX = r'(?P<temperature>' + ASCII_HEX_CHAR_REGEX + '{6})'
+CTD_FLORT_DATA_REGEX += r'(?P<conductivity>' + ASCII_HEX_CHAR_REGEX + '{6})'
+CTD_FLORT_DATA_REGEX += r'(?P<pressure>' + ASCII_HEX_CHAR_REGEX + '{6})'
+CTD_FLORT_DATA_REGEX += r'(?P<pressure_temp>' + ASCII_HEX_CHAR_REGEX + '{4})'
+CTD_FLORT_DATA_REGEX += r'(?:' + ASCII_HEX_CHAR_REGEX + '{4})'
+CTD_FLORT_DATA_REGEX += r'(?:' + ASCII_HEX_CHAR_REGEX + '{4})'
+CTD_FLORT_DATA_REGEX += r'(?:' + ASCII_HEX_CHAR_REGEX + '{4})'
+CTD_FLORT_DATA_REGEX += r'(?P<ctd_time>' + ASCII_HEX_CHAR_REGEX + '{8})' + END_OF_LINE_REGEX
+
+CTD_FLORT_DATA_MATCHER = re.compile(CTD_FLORT_DATA_REGEX, re.VERBOSE)
+
 
 class DataParticleType(BaseEnum):
     """
@@ -171,12 +196,16 @@ class CtdbpCdefParser(SimpleParser):
             # If this is a valid sensor data record,
             # use the extracted fields to generate a particle.
 
-            # check for match from Pioneer
+            # Check for match from Pioneer
             match = PIONEER_DATA_MATCHER.match(line)
 
-            # check for match from Endurance
+            # Check for match from Endurance with combined DOSTA/CTDBP
             if match is None:
                 match = ENDURANCE_DATA_MATCHER.match(line)
+
+            # Check for match from Endurance with combined FLORT/CTDBP
+            if match is None:
+                match = CTD_FLORT_DATA_MATCHER.match(line)
 
             if match is not None:
                 particle = self._extract_sample(CtdbpCdefInstrumentDataParticle, None, match)

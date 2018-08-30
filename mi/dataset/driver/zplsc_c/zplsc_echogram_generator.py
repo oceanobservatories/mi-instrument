@@ -45,6 +45,7 @@ import os.path
 from datetime import date, timedelta
 
 from mi.logging import log
+from mi.core.versioning import version
 from mi.dataset.parser.zplsc_c import ZplscCParser
 from mi.dataset.dataset_parser import DataSetDriverConfigKeys
 from mi.dataset.parser.common_regexes import DATE2_YYYY_MM_DD_REGEX
@@ -94,6 +95,7 @@ HOUR_23_RAW_DATA_FILE_RE_MATCHER = re.compile(HOUR_23_RAW_DATA_FILE_RE)
 """
 
 
+@version("1.0.0")
 class ZPLSCEchogramGenerator(object):
     """
     The ZPLSC Echogram Generator class will execute one time when command line

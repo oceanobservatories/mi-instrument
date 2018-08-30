@@ -1,3 +1,14 @@
+# Version 0.6.7
+
+* Issue #13568 - Added capability of processing a 1-hour data file
+   * Added option --file - Generate an echogram from a single 1-hour file from the command line
+   * Added option --all - Generate all echograms for all ZPLSC instruments
+   * Added option --process - Runs once/day for all instruments, generating the latest full day echograms
+
+# Version 0.6.6
+
+* Issue #13533 - Added support to parse instrument recovered CTDBP/FLORTD combined data
+
 # Version 0.6.5
 
 * Issue #13288 - Changed conditional logic. Changed NDF to SDF.
