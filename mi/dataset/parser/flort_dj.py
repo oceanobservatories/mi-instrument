@@ -70,13 +70,13 @@ DATA_PARTICLE_MAP = [
 # Each data record is in the following format:
 # ttttttccccccppppppvvvvbbbbllllddddssssssss
 # where each character indicates one hex ascii character.
-# First 6 chars: tttttt = Temperature A/D counts
-# Next 6 chars: cccccc = Conductivity A/D counts
-# Next 6 chars: pppppp = pressure A/D counts
-# Next 4 chars: vvvv = temperature compensation A/D counts
-# Next 4 chars: bbbb = Backscatter in counts (FLORT data omitted from output)
-# Next 4 chars: llll = Chlorophyll in counts (FLORT data omitted from output)
-# Next 4 chars: dddd = CDOM in counts (FLORT data omitted from output)
+# First 6 chars: tttttt = Temperature A/D counts (CTDBP data omitted from output)
+# Next 6 chars: cccccc = Conductivity A/D counts (CTDBP data omitted from output)
+# Next 6 chars: pppppp = pressure A/D counts (CTDBP data omitted from output)
+# Next 4 chars: vvvv = temperature compensation A/D counts (CTDBP data omitted from output)
+# Next 4 chars: bbbb = Backscatter in counts
+# Next 4 chars: llll = Chlorophyll in counts
+# Next 4 chars: dddd = CDOM in counts
 # Last 8 chars: ssssssss = seconds since January 1, 2000
 # Total of 42 hex characters and line terminator
 
