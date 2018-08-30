@@ -1,29 +1,35 @@
 #!/usr/bin/env python
 """
-If no arguments are passed in this application runs as a process that will
+If the option --process is used this application runs as a process that will
 run once a day, looking at all of the ZPLSC-C instruments' latest raw data
 files and generate the 24-hour echograms for each instrument.  It will store
 the echogram in a local directory specified in the configuration file.
 
-If arguments are passed in, the application will run once and generate the
-echograms based on the passed arguments.
+The application will run once and generate the echograms based on the arguments
+passed in.
 
 Usage:
-    zplsc_echogram_generator.py [<subsites>] [<deployments>] [<dates>] [--keep]
-    zplsc_echogram_generator.py (-h | --help)
+    zplsc_echogram <subsites> [<deployments>] [<dates>] [--keep]
+    zplsc_echogram (-p | --process) [--keep]
+    zplsc_echogram (-a | --all) [--keep]
+    zplsc_echogram (-f | --file) <zplsc_datafile>
+    zplsc_echogram (-h | --help)
 
 Arguments:
-    subsites      Single or a list of subsites of ZPLSC instruments (delimit lists by "'s and space separated).
-                  If omitted, all subsites from the config file are used and yesterday's echograms are generated.
-    deployments   Single or a list of deployment numbers. (ex: 4 or "4 5")
-    dates         Single or a list of dates of the desired 24 hour echograms.
-                  (Ex: 2016-10-01 for one day or 2016-11 for the entire month or "2016-10-01 2016-11")
-                  (Note: The date can also be in these formats: YYYY/MM/DD, YYYY/MM, YYYYMMDD or YYYYMM)
+    subsites        Single or a list of subsites of ZPLSC instruments (delimit lists by "'s and space separated).
+                    If omitted, all subsites from the config file are used and yesterday's echograms are generated.
+    deployments     Single or a list of deployment numbers. (ex: 4 or "4 5")
+    dates           Single or a list of dates of the desired 24 hour echograms.
+                    (Ex: 2016-10-01 for one day or 2016-11 for the entire month or "2016-10-01 2016-11")
+                    (Note: The date can also be in these formats: YYYY/MM/DD, YYYY/MM, YYYYMMDD or YYYYMM)
+    zplsc_datafile  Raw ZPLSC data file
 
 Options:
-    -h --help     Print this help message
-    --keep        Keeps the temporary files after the echogram has been created.
-"""
+    -p --process    Starts the process that runs once/day generating echograms for all the ZPLSC subsites.
+    -a --all        Generates echograms for all of the subsites in the configuration file.
+    -f --file       Create a ZPLSC Echogram from the file given in the command.
+    -h --help       Print this help message
+    --keep          Keeps the temporary files after the echogram has been created."""
 
 import docopt
 import yaml
@@ -39,6 +45,7 @@ import os.path
 from datetime import date, timedelta
 
 from mi.logging import log
+from mi.core.versioning import version
 from mi.dataset.parser.zplsc_c import ZplscCParser
 from mi.dataset.dataset_parser import DataSetDriverConfigKeys
 from mi.dataset.parser.common_regexes import DATE2_YYYY_MM_DD_REGEX
@@ -88,6 +95,7 @@ HOUR_23_RAW_DATA_FILE_RE_MATCHER = re.compile(HOUR_23_RAW_DATA_FILE_RE)
 """
 
 
+@version("1.0.0")
 class ZPLSCEchogramGenerator(object):
     """
     The ZPLSC Echogram Generator class will execute one time when command line
@@ -97,10 +105,11 @@ class ZPLSCEchogramGenerator(object):
     instruments from the previous day.
     """
 
-    def __init__(self, _subsites, _deployments=None, _echogram_dates=None, _keep_temp_files=False):
-        self.subsites = []
-        self.deployments = []
-        self.echogram_dates = {}
+    def __init__(self, _subsites, _deployments=None, _echogram_dates=None, _keep_temp_files=False,
+                 _zplsc_datafile=None, _process_mode=False, _all_subsites=False):
+        self.subsites = _subsites
+        self.deployments = _deployments
+        self.echogram_dates = self.parse_dates(_echogram_dates)
         self.keep_temp_files = _keep_temp_files
         self.process_mode = False
         self.zplsc_24_datafile_prefix = ''
@@ -108,9 +117,13 @@ class ZPLSCEchogramGenerator(object):
         self.temp_directory = ''
         self.base_echogram_directory = ''
         self.raw_data_dir = ''
+        self.zplsc_datafile = _zplsc_datafile
+        self.process_mode = _process_mode
+        self.all_subsites = _all_subsites
+        self.zplsc_subsites = []
 
         # Raise an exception if the any of the command line parameters are not valid.
-        if not self.input_is_valid(_subsites, _deployments, _echogram_dates):
+        if not self.input_is_valid():
             raise ValueError
 
     #
@@ -172,14 +185,14 @@ class ZPLSCEchogramGenerator(object):
 
                     if date_regex.lastindex == 3:
                         day = int(date_regex.group(3))
+                        converted_date = date(year, month, day)
+                        # Indicate this date is not an entire month.
+                        parsed_dates[converted_date] = False
                     else:
                         day = 1
-
-                    converted_date = date(year, month, day)
-
-                    # Indicate this date is not an entire month.
-                    parsed_dates[converted_date] = False
-
+                        converted_date = date(year, month, day)
+                        # Indicate this date is an entire month.
+                        parsed_dates[converted_date] = True
                 else:
                     log.error('Incorrect date format: %s: Correct format is YYYY[-/]MM-DD or YYYY[-/]MM', date)
                     parsed_dates = False
@@ -190,13 +203,10 @@ class ZPLSCEchogramGenerator(object):
     #
     # Member Methods
     #
-    def input_is_valid(self, subsites, deployments, echogram_dates):
+    def input_is_valid(self):
         """
         This method validates the command line parameters entered.
 
-        :param subsites: The subsite(s) that the ZPLSC instrument(s) are attached.
-        :param deployments: The command line deployment number of interest.
-        :param echogram_dates: The command line dates of interest.
         :return valid_input:  Boolean indicating whether all the inputs validated.
         """
 
@@ -210,47 +220,48 @@ class ZPLSCEchogramGenerator(object):
                 try:
                     zplsc_config = yaml.load(config_file)
                 except yaml.YAMLError as ex:
-                    log.error('Error loading the configuration file: %s: %s', ex.message)
+                    log.error('Error loading the configuration file: %s: %s', zplsc_config_file, ex.message)
                     valid_input = False
         except IOError as ex:
             log.error('Error opening configuration file: %s: %s', zplsc_config_file, ex.message)
             valid_input = False
 
         if valid_input:
-            zplsc_subsites = zplsc_config['zplsc_subsites']
+            if self.zplsc_datafile is not None and not os.path.isfile(self.zplsc_datafile):
+                    log.error('Invalid data file: %s', self.zplsc_datafile)
+
+        if valid_input:
+            self.zplsc_subsites = zplsc_config['zplsc_subsites']
             self.raw_data_dir = zplsc_config['raw_data_dir']
 
-            # If no subsites were passed in, set the list of subsites to all in the config file.
-            self.subsites = subsites
-            if subsites is None:
-                self.subsites = zplsc_subsites
-                self.process_mode = True
+            # If this is a process run or we are processing all the subsite
+            if self.process_mode or self.all_subsites:
+                self.subsites = self.zplsc_subsites
 
-            # Validate the subsites in the list.
-            for subsite in self.subsites:
-                if subsite not in zplsc_subsites:
-                    log.error('Subsite %s is not in the list of subsites with ZPLSC instrumentation.', subsite)
-                    valid_input = False
-                    break
+            # If we are not generating a 1-hour echogram, validate the subsites in the list.
+            if self.zplsc_datafile is None:
+                for subsite in self.subsites:
+                    if subsite not in self.zplsc_subsites:
+                        log.error('Subsite is not in the list of subsites with ZPLSC instrumentation: %s', subsite)
+                        valid_input = False
+                        break
 
-        if valid_input and deployments is not None:
-            self.deployments = []
-            if not isinstance(deployments, types.ListType):
-                deployments = [deployments]
+        if valid_input and self.deployments:
+            if not isinstance(self.deployments, types.ListType):
+                self.deployments = [self.deployments]
 
-            for deployment in deployments:
+            for index in range(len(self.deployments)):
                 try:
-                    self.deployments.append(int(deployment))
+                    self.deployments[index] = int(self.deployments[index])
 
                 except ValueError as ex:
-                    log.error('Invalid deployment number: %s: %s', deployment, ex.message)
+                    log.error('Invalid deployment number: %s: %s', self.deployments[index], ex.message)
                     valid_input = False
                     break
 
         if valid_input:
-            self.echogram_dates = self.parse_dates(echogram_dates)
             if self.echogram_dates is False:
-                log.error('Invalid start date: %s', echogram_dates)
+                log.error('Invalid echogram date(s)')
                 valid_input = False
 
         if valid_input:
@@ -306,7 +317,11 @@ class ZPLSCEchogramGenerator(object):
 
         zplsc_echogram_file_path = None
 
-        filenames_list, raw_data_path, raw_datafile_prefix = self.get_data_filenames(date_dirs_path, data_date)
+        try:
+            filenames_list, raw_data_path, raw_datafile_prefix = self.get_data_filenames(date_dirs_path, data_date)
+        except OSError:
+            return '', None
+
         if len(filenames_list) != 24:
             return '', None
 
@@ -427,8 +442,8 @@ class ZPLSCEchogramGenerator(object):
                 break
 
         if serial_num_found is None:
-            log.warning('Could not find ZPLSC data for subsite: %s and deployment: %s', subsite, deployment)
-            raise ValueError
+            log.warning('Could not find ZPLSC data for subsite: %s and recovered deployment: %s', subsite, deployment)
+            raise OSError
 
         self.serial_num = serial_num_found.group(1)
         serial_num_dir = os.path.join(dcl_path, serial_num_found.group())
@@ -527,41 +542,88 @@ class ZPLSCEchogramGenerator(object):
         :return:
         """
 
-        # Create the temporary data file directory.
-        self.temp_directory = os.path.join(os.path.expanduser(USER_HOME), TEMP_DIR)
-        if not os.path.exists(self.temp_directory):
-            os.mkdir(self.temp_directory)
+        # If we are creating a 1-hour echogram, generate the echogram.
+        if self.zplsc_datafile is not None:
+            # Send the 1-hour raw data file to the zplsc C Series parser to generate the echogram.
+            with open(self.zplsc_datafile) as file_handle:
+                base_directory = os.path.expanduser(self.base_echogram_directory)
+                path_structure, filename = os.path.split(self.zplsc_datafile)
+                zplsc_echogram_file_path = None
+                for subsite in self.zplsc_subsites:
+                    subsite_index = path_structure.find(subsite)
+                    if subsite_index >= 0:
+                        zplsc_echogram_file_path = os.path.join(base_directory, path_structure[subsite_index:])
+                        # Create the ZPLSC Echogram directory structure if it doesn't exist.
+                        try:
+                            os.makedirs(zplsc_echogram_file_path)
+                        except OSError as ex:
+                            if ex.errno == errno.EEXIST and os.path.isdir(zplsc_echogram_file_path):
+                                pass
+                            else:
+                                log.error('Error creating local ZPLSC Echogram storage directory: %s', ex.message)
+                                raise
+                        break
 
-        # Create the echograms for the zplsc instruments of each subsite.
-        for subsite in self.subsites:
-            zplsc_24_subsite_prefix = subsite + '-'
+                if zplsc_echogram_file_path is not None:
+                    # Get the parser for this file and generate the echogram.
+                    parser = ZplscCParser(CONFIG, file_handle, self.rec_exception_callback)
+                    parser.create_echogram(zplsc_echogram_file_path)
+                else:
+                    log.warning('The subsite is not one of the subsites containing a ZPLSC-C instrument.')
 
-            try:
-                deployments = self.get_deployment_dirs(subsite)
-            except OSError:
-                continue
+        else:  # We are creating 24-hour echograms ...
+            # Create the temporary data file directory.
+            self.temp_directory = os.path.join(os.path.expanduser(USER_HOME), TEMP_DIR)
+            if not os.path.exists(self.temp_directory):
+                os.mkdir(self.temp_directory)
 
-            for deployment in deployments:
-                zplsc_24_deployment_prefix = zplsc_24_subsite_prefix + 'R' + str(deployment) + '-'
+            # Create the echograms for the zplsc instruments of each subsite.
+            for subsite in self.subsites:
+                zplsc_24_subsite_prefix = subsite + '-'
 
                 try:
-                    echogram_dates, date_dirs_path = self.get_date_dirs(subsite, deployment)
+                    deployments = self.get_deployment_dirs(subsite)
                 except OSError:
                     continue
 
-                for date_dir, entire_month in echogram_dates.items():
-                    self.zplsc_24_datafile_prefix = zplsc_24_deployment_prefix + 'sn' + self.serial_num + '-'
+                for deployment in deployments:
+                    zplsc_24_deployment_prefix = zplsc_24_subsite_prefix + 'R' + str(deployment) + '-'
 
-                    if entire_month:
-                        number_of_days_in_the_month = calendar.monthrange(date_dir.year, date_dir.month)[1]
-                        for day in range(number_of_days_in_the_month):
-                            echogram_date = date_dir + timedelta(days=day)
+                    try:
+                        echogram_dates, date_dirs_path = self.get_date_dirs(subsite, deployment)
+                    except OSError:
+                        continue
 
+                    for date_dir, entire_month in echogram_dates.items():
+                        self.zplsc_24_datafile_prefix = zplsc_24_deployment_prefix + 'sn' + self.serial_num + '-'
+
+                        if entire_month:
+                            number_of_days_in_the_month = calendar.monthrange(date_dir.year, date_dir.month)[1]
+                            for day in range(number_of_days_in_the_month):
+                                echogram_date = date_dir + timedelta(days=day)
+
+                                # Aggregate the 24 raw data files for the given instrument to 1 24-hour data file.
+                                zplsc_24_datafile, zplsc_echogram_file_path = self.aggregate_raw_data(date_dirs_path,
+                                                                                                      echogram_date)
+                                if not zplsc_24_datafile:
+                                    log.warning('Unable to aggregate raw data files for %s under %s',
+                                                echogram_date, date_dirs_path)
+                                    continue
+
+                                # Send the 24-hour raw data file to the zplsc C Series parser to generate the echogram.
+                                with open(zplsc_24_datafile) as file_handle:
+                                    parser = ZplscCParser(CONFIG, file_handle, self.rec_exception_callback)
+                                    parser.create_echogram(zplsc_echogram_file_path)
+
+                                if not self.keep_temp_files:
+                                    self.purge_temporary_files()
+
+                        else:
                             # Aggregate the 24 raw data files for the given instrument to 1 24-hour data file.
-                            zplsc_24_datafile, zplsc_echogram_file_path = self.aggregate_raw_data(date_dirs_path,
-                                                                                                  echogram_date)
+                            zplsc_24_datafile, zplsc_echogram_file_path = self.aggregate_raw_data(date_dirs_path, date_dir)
+
                             if not zplsc_24_datafile:
-                                log.warning('Unable to aggregate raw data files for: %s', echogram_date)
+                                log.warning('Unable to aggregate raw data files for %s under %s', date_dir, date_dirs_path)
                                 continue
 
                             # Send the 24-hour raw data file to the zplsc C Series parser to generate the echogram.
@@ -572,29 +634,13 @@ class ZPLSCEchogramGenerator(object):
                             if not self.keep_temp_files:
                                 self.purge_temporary_files()
 
-                    else:
-                        # Aggregate the 24 raw data files for the given instrument to 1 24-hour data file.
-                        zplsc_24_datafile, zplsc_echogram_file_path = self.aggregate_raw_data(date_dirs_path, date_dir)
+            # Remove the temporary data file directory and its content.
+            if not self.keep_temp_files:
+                shutil.rmtree(self.temp_directory)
 
-                        if not zplsc_24_datafile:
-                            log.warning('Unable to aggregate raw data files for: %s', date_dir)
-                            continue
-
-                        # Send the 24-hour raw data file to the zplsc C Series parser to generate the echogram.
-                        with open(zplsc_24_datafile) as file_handle:
-                            parser = ZplscCParser(CONFIG, file_handle, self.rec_exception_callback)
-                            parser.create_echogram(zplsc_echogram_file_path)
-
-                        if not self.keep_temp_files:
-                            self.purge_temporary_files()
-
-        # Remove the temporary data file directory and its content.
-        if not self.keep_temp_files:
-            shutil.rmtree(self.temp_directory)
-
-        # If it's running as a daily process, wait 24 hours and re-run this method
-        if self.process_mode:
-            threading.Timer(SECONDS_IN_DAY, self.generate_zplsc_echograms).start()
+            # If it's running as a daily process, wait 24 hours and re-run this method
+            if self.process_mode:
+                threading.Timer(SECONDS_IN_DAY, self.generate_zplsc_echograms).start()
 
 
 def main():
@@ -604,18 +650,24 @@ def main():
     deployments = options.get('<deployments>')
     dates = options.get('<dates>')
     keep_temp_files = options.get('--keep')
+    process_mode = options.get('--process')
+    all_subsites = options.get('--all')
+    zplsc_datafile = options.get('<zplsc_datafile>')
 
     if subsites is not None:
         subsites = subsites.split(" ")
 
     if deployments is not None:
         deployments = deployments.split(" ")
+    else:
+        deployments = []
 
     if dates is not None:
         dates = dates.split(" ")
 
     try:
-        echogram_generator = ZPLSCEchogramGenerator(subsites, deployments, dates, keep_temp_files)
+        echogram_generator = ZPLSCEchogramGenerator(subsites, deployments, dates, keep_temp_files,
+                                                    zplsc_datafile, process_mode, all_subsites)
         echogram_generator.generate_zplsc_echograms()
         log.info('Echogram processing completed successfully!')
 
