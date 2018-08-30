@@ -1,3 +1,7 @@
+# Version 0.6.6
+
+* Issue #13533 - Added support to parse instrument recovered CTDBP/FLORTD combined data
+
 # Version 0.6.5
 
 * Issue #13288 - Changed conditional logic. Changed NDF to SDF.
