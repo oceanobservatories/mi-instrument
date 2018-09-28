@@ -478,35 +478,35 @@ class Mavs4SampleDataParticle(DataParticle):
 
             self.contents[DataParticleKey.QUALITY_FLAG] = DataParticleValue.INVALID
 
-        result = [{DataParticleKey.VALUE_ID: Mavs4SampleDataParticleKey.DATE_TIME_STRING,
-                   DataParticleKey.VALUE: datetime},
-                  {DataParticleKey.VALUE_ID: Mavs4SampleDataParticleKey.ACOUSTIC_AXIS_VELOCITY_A,
-                   DataParticleKey.VALUE: acoustic_axis_velocity_a},
-                  {DataParticleKey.VALUE_ID: Mavs4SampleDataParticleKey.ACOUSTIC_AXIS_VELOCITY_B,
-                   DataParticleKey.VALUE: acoustic_axis_velocity_b},
-                  {DataParticleKey.VALUE_ID: Mavs4SampleDataParticleKey.ACOUSTIC_AXIS_VELOCITY_C,
-                   DataParticleKey.VALUE: acoustic_axis_velocity_c},
-                  {DataParticleKey.VALUE_ID: Mavs4SampleDataParticleKey.ACOUSTIC_AXIS_VELOCITY_D,
-                   DataParticleKey.VALUE: acoustic_axis_velocity_d},
-                  {DataParticleKey.VALUE_ID: Mavs4SampleDataParticleKey.VELOCITY_FRAME_EAST,
-                   DataParticleKey.VALUE: velocity_frame_east},
-                  {DataParticleKey.VALUE_ID: Mavs4SampleDataParticleKey.VELOCITY_FRAME_NORTH,
-                   DataParticleKey.VALUE: velocity_frame_north},
-                  {DataParticleKey.VALUE_ID: Mavs4SampleDataParticleKey.VELOCITY_FRAME_UP,
-                   DataParticleKey.VALUE: velocity_frame_up},
-                  {DataParticleKey.VALUE_ID: Mavs4SampleDataParticleKey.TEMPERATURE,
-                   DataParticleKey.VALUE: temperature},
-                  {DataParticleKey.VALUE_ID: Mavs4SampleDataParticleKey.COMPASS_MX,
-                   DataParticleKey.VALUE: compass_mx},
-                  {DataParticleKey.VALUE_ID: Mavs4SampleDataParticleKey.COMPASS_MY,
-                   DataParticleKey.VALUE: compass_my},
-                  {DataParticleKey.VALUE_ID: Mavs4SampleDataParticleKey.PITCH,
-                   DataParticleKey.VALUE: pitch},
-                  {DataParticleKey.VALUE_ID: Mavs4SampleDataParticleKey.ROLL,
-                   DataParticleKey.VALUE: roll}]
+        result = []
+
+        self._add_value(result, Mavs4SampleDataParticleKey.DATE_TIME_STRING, datetime)
+        self._add_value(result, Mavs4SampleDataParticleKey.ACOUSTIC_AXIS_VELOCITY_A, acoustic_axis_velocity_a, -0x8000)
+        self._add_value(result, Mavs4SampleDataParticleKey.ACOUSTIC_AXIS_VELOCITY_B, acoustic_axis_velocity_b, -0x8000)
+        self._add_value(result, Mavs4SampleDataParticleKey.ACOUSTIC_AXIS_VELOCITY_C, acoustic_axis_velocity_c, -0x8000)
+        self._add_value(result, Mavs4SampleDataParticleKey.ACOUSTIC_AXIS_VELOCITY_D, acoustic_axis_velocity_d, -0x8000)
+        self._add_value(result, Mavs4SampleDataParticleKey.VELOCITY_FRAME_EAST, velocity_frame_east, 999)
+        self._add_value(result, Mavs4SampleDataParticleKey.VELOCITY_FRAME_NORTH, velocity_frame_north, 999)
+        self._add_value(result, Mavs4SampleDataParticleKey.VELOCITY_FRAME_UP, velocity_frame_up, 999)
+        self._add_value(result, Mavs4SampleDataParticleKey.TEMPERATURE, temperature)
+        self._add_value(result, Mavs4SampleDataParticleKey.COMPASS_MX, compass_mx)
+        self._add_value(result, Mavs4SampleDataParticleKey.COMPASS_MY, compass_my)
+        self._add_value(result, Mavs4SampleDataParticleKey.PITCH, pitch)
+        self._add_value(result, Mavs4SampleDataParticleKey.ROLL, roll)
 
         log.debug('Mavs4SampleDataParticle: particle=%s', result)
+
         return result
+
+    @staticmethod
+    def _add_value(particle, value_id, value, fill_value=None):
+        """
+        Append the parameter value to the particle, if it is not a fill value.
+        """
+        if value != fill_value:
+            particle.append({DataParticleKey.VALUE_ID: value_id, DataParticleKey.VALUE: value})
+        else:
+            log.debug('Mavs4SampleDataParticle: parameter fill value dropped (%s = %s)', value_id, value)
 
 
 class Mavs4StatusDataParticleKey(BaseEnum):

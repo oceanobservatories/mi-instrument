@@ -1,3 +1,7 @@
+# Version 0.6.8
+
+* Issue #11101 - Remove fill values from vel3d_b_sample
+
 # Version 0.6.7
 
 * Issue #13568 - Added capability of processing a 1-hour data file
