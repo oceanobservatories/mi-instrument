@@ -7,13 +7,13 @@
 
 Usage:
     playback datalog <module> <refdes> <event_url> <particle_url> [--allowed=<particles>] [--max_events=<events>]
-    [--timerange=<times>] [--no-dup]  [--m2m] <files>...
+    [--timerange=<times>] [--no-dup]   [--m2m] [--limit=<rangelimit>] <files>...
     playback ascii   <module> <refdes> <event_url> <particle_url> [--allowed=<particles>] [--max_events=<events>]
-    [--timerange=<times>] [--no-dup]   [--m2m] <files>...
+    [--timerange=<times>] [--no-dup]   [--m2m] [--limit=<rangelimit>] <files>...
     playback chunky  <module> <refdes> <event_url> <particle_url> [--allowed=<particles>] [--max_events=<events>]
-    [--timerange=<times>] [--no-dup]   [--m2m] <files>...
+    [--timerange=<times>] [--no-dup]   [--m2m] [--limit=<rangelimit>] <files>...
     playback zplsc   <module> <refdes> <event_url> <particle_url> [--allowed=<particles>] [--max_events=<events>]
-    [--timerange=<times>] [--no-dup]   [--m2m] <files>...
+    [--timerange=<times>] [--no-dup]   [--m2m] [--limit=<rangelimit>] <files>...
 
 Options:
     -h, --help              Show this screen
@@ -366,11 +366,11 @@ class M2mPlayback(MachineToMachine):
         'uframe-3-test':    'https://ooinet-dev-03.oceanobservatories.org',
     }
 
-    def __init__(self, base_url, refdes):
+    def __init__(self, base_url, refdes, limit):
 
         self.refdes = refdes
-        self.limit = 5
         self.timeframe = 'YYYY-MM-DDTHH:MM:SS.SSSSZ'
+        self.limit = limit
 
         with open('api', 'r') as fd:
             api = fd.readlines()
@@ -382,7 +382,8 @@ class M2mPlayback(MachineToMachine):
         MachineToMachine.__init__(self, base_url, api_user, api_key)
 
         self.base_cabled_url = self.inv_url + '/' + '/'.join(self.refdes.split('-', 2)) + '/streamed/'
-        self.limit_url = '?limit=' + str(self.limit)
+
+        self.limit_url = '?limit=' + str(limit)
 
         self.streams_list = []
         self.streamed_data = {}
@@ -400,7 +401,11 @@ class M2mPlayback(MachineToMachine):
         Will acquire JSON data from the list of streams
         """
         for stream in self.streams_list:
-            self.streamed_data[stream] = self.requests(self.base_cabled_url + stream + '/' + self.limit_url)
+            if self.limit:
+                self.streamed_data[stream] = self.requests(self.base_cabled_url + stream + '/' + self.limit_url)
+            else:
+                self.streamed_data[stream] = self.requests(self.base_cabled_url + stream + '/')
+
             self.preferred_timestamp[stream] = self.streamed_data[stream][0]['preferred_timestamp']
 
     def get_times(self):
@@ -424,6 +429,7 @@ def main():
     files = options.get('<files>')
     allowed = options.get('--allowed')
     timerange = options.get('--timerange')
+    limit = options.get('--limit')
     
     if allowed is not None:
         allowed = [_.strip() for _ in allowed.split(',')]
@@ -454,12 +460,12 @@ def main():
         reader = None
 
     # need the timerange, no-dup, and m2m options to perform M2M
-    if timerange and options['--no-dup'] and options['--m2m']:
+    if timerange and options['--no-dup'] and options['--m2m'] and limit:
         timerange = timerange.split(',')
         machine = particle_url.split('@')[1].split('?')[0]
         base_url = M2mPlayback.URLS[machine]
-        m2m_playback = M2mPlayback(base_url, refdes)	
-
+        m2m_playback = M2mPlayback(base_url, refdes, limit)	
+	
     wrapper = PlaybackWrapper(module, refdes, event_url, particle_url, reader, allowed, files, max_events)
 
     if zplsc_reader:
