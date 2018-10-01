@@ -1,5 +1,10 @@
 # Version 0.6.7
 
+* Issue #12167 - Fixed ZPLSC-B cabled data processing in the playback tool
+   * Added a flag to indicate the ZPLSC-B driver has completed the processing of a raw data file.
+   * Used above flag to break out of a infonite loop calling publish.
+   * Added a 1 second delay in the publishing loop, to allow the ZPLSC-B driver to process.
+
 * Issue #13568 - Added capability of processing a 1-hour data file
    * Added option --file - Generate an echogram from a single 1-hour file from the command line
    * Added option --all - Generate all echograms for all ZPLSC instruments

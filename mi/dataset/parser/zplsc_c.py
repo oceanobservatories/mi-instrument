@@ -131,7 +131,7 @@ class AzfpProfileHeader(BigEndianStructure):
         ('hour', c_ushort),                 # 018 - Hour
         ('minute', c_ushort),               # 020 - Minute
         ('second', c_ushort),               # 022 - Second
-        ('hundredths', c_ushort),           # 024 - Hundreths of a second
+        ('hundredths', c_ushort),           # 024 - Hundredths of a second
         ('digitization_rate', c_ushort*4),  # 026 - Digitization Rate (channels 1-4) (64000, 40000 or 20000)
         ('lockout_index', c_ushort*4),      # 034 - The sample number of samples skipped at start of ping (channels 1-4)
         ('num_bins', c_ushort*4),           # 042 - Number of bins (channels 1-4)

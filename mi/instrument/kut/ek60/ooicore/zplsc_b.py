@@ -402,6 +402,7 @@ def parse_particles_file(input_file_path, output_file_path=None):
         # Read binary file a block at a time
         raw = input_file.read(BLOCK_SIZE)
 
+        datagrams_processed = 0
         while len(raw) > 4:
             # We only care for the Sample datagrams, skip over all the other datagrams
             match = SAMPLE_MATCHER.search(raw)
@@ -454,6 +455,11 @@ def parse_particles_file(input_file_path, output_file_path=None):
                 except InvalidTransducer:
                     pass
 
+                # Log progress so the user has has knowledge of the progress.
+                if (datagrams_processed % 5000) == 0:
+                    log.info('Completed processing %r datagrams from: %r', datagrams_processed, input_file_path)
+                datagrams_processed += 1
+
             else:
                 input_file.seek(position + BLOCK_SIZE - 4)
 
@@ -477,10 +483,13 @@ def parse_particles_file(input_file_path, output_file_path=None):
 
         log.info('Begin generating echogram: %r', image_path)
 
-        plot = ZPLSPlot(data_times, power_data_dict, frequencies, 0, max_depth * bin_size)
-        plot.generate_plots()
-        plot.write_image(image_path)
+        try:
+            plot = ZPLSPlot(data_times, power_data_dict, frequencies, 0, max_depth * bin_size)
+            plot.generate_plots()
+            plot.write_image(image_path)
 
-        log.info('Completed generating echogram: %r', image_path)
+            log.info('Completed generating echogram: %r', image_path)
+        except IOError:
+            log.error('Error generating echogram: %r', image_path)
 
         return meta_data, timestamp, data_times, power_data_dict, frequencies
