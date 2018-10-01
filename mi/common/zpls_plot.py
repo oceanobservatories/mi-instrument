@@ -131,10 +131,11 @@ class ZPLSPlot(object):
         return min_db, max_db
 
     @staticmethod
-    def _transpose_and_flip(power_dict):
-        for channel in power_dict:
+    def _transpose_and_flip(original_power_dict):
+        power_dict = {}
+        for channel in original_power_dict:
             # Transpose array data so we have time on the x-axis and depth on the y-axis
-            power_dict[channel] = power_dict[channel].transpose()
+            power_dict[channel] = original_power_dict[channel].transpose()
             # reverse the Y axis (so depth is measured from the surface (at the top) to the ZPLS (at the bottom)
             power_dict[channel] = power_dict[channel][::-1]
         return power_dict

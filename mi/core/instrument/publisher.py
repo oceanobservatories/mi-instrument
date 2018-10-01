@@ -70,6 +70,9 @@ class Publisher(object):
     def set_source(self, source):
         self._headers[self.SOURCE] = source
 
+    def get_max_events(self):
+        return self._max_events
+
     def start(self):
         t = Thread(target=self._run)
         t.setDaemon(True)
@@ -208,6 +211,7 @@ class CountPublisher(Publisher):
         count = len(events)
         self.total += count
         log.info('Publish %d events (%d total)', count, self.total)
+
 
 class IngestEnginePublisher(Publisher):
     """ Publisher used to send particle data to Ingest Engine via a ParticleDataHandler """

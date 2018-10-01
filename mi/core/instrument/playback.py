@@ -155,14 +155,13 @@ class PlaybackWrapper(object):
             if filename:
                 self.set_header_filename(filename)
                 log.info("filename is: %s", filename)
-                if hasattr(self.protocol, 'got_filename'):
-                    self.protocol.got_filename(filename)
 
         pub_index = 0
-        while True:
+        while not self.protocol.is_processing_completed():
             self.publish()
             pub_index = pub_index + 1
-            log.info("publish index is: %d", pub_index)
+            time.sleep(1)
+        self.publish()
 
     def got_data(self, packet):
         try:
@@ -191,8 +190,9 @@ class PlaybackWrapper(object):
     def publish(self):
         for publisher in [self.event_publisher, self.particle_publisher]:
             remaining = publisher.publish()
-            while remaining >= publisher._max_events:
+            while remaining >= publisher.get_max_events():
                 remaining = publisher.publish()
+            publisher.publish()
 
     def handle_event(self, event_type, val=None):
         """
@@ -366,7 +366,8 @@ def main():
         files = [files]
         
     zplsc_reader = False
-    
+    reader = None
+
     if options['datalog']:
         reader = DatalogReader
     elif options['ascii']:
@@ -376,14 +377,13 @@ def main():
     elif options['zplsc']:
         reader = ZplscReader
         zplsc_reader = True
-    else:
-        reader = None
 
     wrapper = PlaybackWrapper(module, refdes, event_url, particle_url, reader, allowed, files, max_events)
     if zplsc_reader:
         wrapper.zplsc_playback()
     else:
         wrapper.playback()
+
 
 if __name__ == '__main__':
     main()

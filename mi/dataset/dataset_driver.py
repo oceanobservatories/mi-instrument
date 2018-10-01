@@ -22,6 +22,12 @@ class ParticleDataHandler(object):
         log.debug("Particle data capture failed")
         self._failure = True
 
+    def is_particle_data_capture_failure(self):
+        return self._failure
+
+    def get_particle_samples(self):
+        return self._samples
+
 
 class DataSetDriver(object):
     """

@@ -550,6 +550,9 @@ class Protocol(CommandResponseInstrumentProtocol):
 
         self._chunker = StringChunker(self.sieve_function)
 
+        # Used by invoking methods (e.g, the playback tool) to know when the processing has completed.
+        self._processing_completed = False
+
         log.info('processing particles with %d workers', POOL_SIZE)
         self._process_particles = True
         self._pending_particles = deque()
@@ -568,7 +571,7 @@ class Protocol(CommandResponseInstrumentProtocol):
             while self._process_particles or futures:
                 # Pull all processing requests from our request deque
                 # Unless we have been instructed to terminate
-                while True and self._process_particles:
+                while self._process_particles:
                     try:
                         filepath, timestamp = self._pending_particles.popleft()
                         log.info('Received RAW file to process: %r %r', filepath, timestamp)
@@ -577,6 +580,8 @@ class Protocol(CommandResponseInstrumentProtocol):
                         # tuple containing the metadata and timestamp for creation
                         # of the particle
                         futures[(filepath, timestamp)] = processing_pool.apply_async(parse_particles_file, (filepath,))
+                        # After receiving a file to process, reset the process completed flag.
+                        self._processing_completed = False
                     except IndexError:
                         break
 
@@ -615,24 +620,30 @@ class Protocol(CommandResponseInstrumentProtocol):
                             if self._driver_event:
                                 self._driver_event(DriverAsyncEvent.SAMPLE, parsed_sample)
 
-                            for counter, data_timestamp in enumerate(data_times):
-                                zp_data = {
-                                    ZplscBParticleKey.FREQ_CHAN_1: frequencies[1],
-                                    ZplscBParticleKey.VALS_CHAN_1: list(power_data_dict[1][counter]),
-                                    ZplscBParticleKey.FREQ_CHAN_2: frequencies[2],
-                                    ZplscBParticleKey.VALS_CHAN_2: list(power_data_dict[2][counter]),
-                                    ZplscBParticleKey.FREQ_CHAN_3: frequencies[3],
-                                    ZplscBParticleKey.VALS_CHAN_3: list(power_data_dict[3][counter]),
-                                }
+                            try:
+                                for counter, data_timestamp in enumerate(data_times):
+                                    zp_data = {
+                                        ZplscBParticleKey.FREQ_CHAN_1: frequencies[1],
+                                        ZplscBParticleKey.VALS_CHAN_1: list(power_data_dict[1][counter]),
+                                        ZplscBParticleKey.FREQ_CHAN_2: frequencies[2],
+                                        ZplscBParticleKey.VALS_CHAN_2: list(power_data_dict[2][counter]),
+                                        ZplscBParticleKey.FREQ_CHAN_3: frequencies[3],
+                                        ZplscBParticleKey.VALS_CHAN_3: list(power_data_dict[3][counter]),
+                                    }
 
-                                sample_particle = ZplscBSampleDataParticle(zp_data, port_timestamp=timestamp,
-                                                                    internal_timestamp=data_timestamp,
-                                                                    preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
+                                    sample_particle = ZplscBSampleDataParticle(zp_data, port_timestamp=timestamp,
+                                                                        internal_timestamp=data_timestamp,
+                                                                        preferred_timestamp=DataParticleKey.INTERNAL_TIMESTAMP)
 
-                                parsed_sample_particles = sample_particle.generate()
+                                    parsed_sample_particles = sample_particle.generate()
 
-                                if self._driver_event:
-                                    self._driver_event(DriverAsyncEvent.SAMPLE, parsed_sample_particles)
+                                    if self._driver_event:
+                                        self._driver_event(DriverAsyncEvent.SAMPLE, parsed_sample_particles)
+                            except Exception as ex:
+                                log.error('Error creating sample data particle for %r: %r', filepath, ex)
+
+                            # Indicate for invoking methods that the file processing has completed.
+                            self._processing_completed = True
 
                 time.sleep(1)
 
@@ -640,6 +651,7 @@ class Protocol(CommandResponseInstrumentProtocol):
             if processing_pool:
                 processing_pool.terminate()
                 processing_pool.join()
+            self._processing_completed = True
 
     def shutdown(self):
         log.info('Shutting down ZPLSC protocol')
@@ -650,6 +662,15 @@ class Protocol(CommandResponseInstrumentProtocol):
         log.info('Joining particles_thread')
         self._particles_thread.join(timeout=600)
         log.info('Completed ZPLSC protocol shutdown')
+
+    def is_processing_completed(self):
+        """
+        Indicates to methods that instantiate this Protocol that the file processing in
+        the particles thread has completed.  The playback tools uses for ingesting ZPLSC
+        B series data.
+        :return: self._processing_completed
+        """
+        return self._processing_completed
 
     def _build_param_dict(self):
         """
@@ -1092,6 +1113,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         if match:
             # Queue up this file for processing
             self._pending_particles.append((match.group('Filepath'), timestamp))
+
 
 def create_playback_protocol(callback):
     return Protocol(None, None, callback)
