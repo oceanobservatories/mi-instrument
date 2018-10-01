@@ -133,7 +133,7 @@ class PlaybackPacket(Packet):
 
 class PlaybackWrapper(object):
     def __init__(self, module, refdes, event_url, particle_url, reader_klass, allowed, files, max_events,
-                 handler=None, times=None, no_dup=None, ):
+                 handler=None):
         version = DriverWrapper.get_version(module)
         headers = {'sensor': refdes, 'deliveryType': 'streamed', 'version': version, 'module': module}
         self.max_events = max_events
@@ -141,8 +141,6 @@ class PlaybackWrapper(object):
         self.particle_publisher = Publisher.from_url(particle_url, handler, headers, allowed, max_events)
         self.protocol = self.construct_protocol(module)
         self.reader = reader_klass(files, self.got_data)
-        self.times = times
-        self.no_dup = no_dup
 
     def set_header_filename(self, filename):
         self.event_publisher.set_source(filename)
@@ -464,8 +462,7 @@ def main():
         timerange = timerange.split(',')
         machine = particle_url.split('@')[1].split('?')[0]
         base_url = M2mPlayback.URLS[machine]
-        m2m_playback = M2mPlayback(base_url, refdes, limit)	
-	
+        m2m_playback = M2mPlayback(base_url, refdes, limit)
     wrapper = PlaybackWrapper(module, refdes, event_url, particle_url, reader, allowed, files, max_events)
 
     if zplsc_reader:
