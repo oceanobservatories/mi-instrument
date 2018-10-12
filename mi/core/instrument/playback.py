@@ -128,8 +128,9 @@ class PlaybackWrapper(object):
         version = DriverWrapper.get_version(module)
         headers = {'sensor': refdes, 'deliveryType': 'streamed', 'version': version, 'module': module}
         self.max_events = max_events
-        self.event_publisher = Publisher.from_url(event_url, handler, headers)
-        self.particle_publisher = Publisher.from_url(particle_url, handler, headers, allowed, max_events)
+        self.event_publisher = Publisher.from_url(event_url, handler=handler, headers=headers)
+        self.particle_publisher = Publisher.from_url(particle_url, handler=handler, headers=headers, allowed=allowed,
+                                                     max_events=max_events)
         self.protocol = self.construct_protocol(module)
         self.reader = reader_klass(files, self.got_data)
 
