@@ -1,3 +1,11 @@
+# Version 0.6.8
+
+* Issue #13598 - Hotfix to correct cabled data ingest
+   * Update for 0.5.3 changed the signature for from_url without updating all usages
+   * WARNING - do not use versions 0.5.3 to 0.6.7 for running any cabled instrument drivers
+   * WARNING - do not use versions 0.5.3 to 0.6.7 for running OMS alert/alarm handler
+   * WARNING - do not use versions 0.5.3 to 0.6.7 for running OMS extractor
+
 # Version 0.6.7
 
 * Issue #13568 - Added capability of processing a 1-hour data file
