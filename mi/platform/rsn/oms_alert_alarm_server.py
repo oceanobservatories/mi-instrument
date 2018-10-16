@@ -113,7 +113,7 @@ def main():
         headers = {'aaServerUri': alert_alarm_server_uri}
 
         try:
-            aa_publisher = Publisher.from_url(qpid_uri, headers)
+            aa_publisher = Publisher.from_url(qpid_uri, headers=headers)
             start_web_service(oms_uri, alert_alarm_server_uri)
 
         except Exception as ex:

@@ -367,8 +367,8 @@ class DriverWrapper(object):
 
         headers = {'sensor': self.refdes, 'deliveryType': 'streamed', 'version': self.version, 'module': driver_module}
         log.info('Publish headers set to: %r', headers)
-        self.event_publisher = Publisher.from_url(self.event_url, headers)
-        self.particle_publisher = Publisher.from_url(self.particle_url, headers)
+        self.event_publisher = Publisher.from_url(self.event_url, headers=headers)
+        self.particle_publisher = Publisher.from_url(self.particle_url, headers=headers)
 
     @staticmethod
     def get_version(driver_module):
