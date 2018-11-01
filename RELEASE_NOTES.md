@@ -1,3 +1,9 @@
+# Version 0.6.9
+
+* Issue #13713 - prevent cg_dcl_eng parser from hanging on ingest
+   * Corrected regex resulting in catastrophic backtracking
+   * Optimized file parsing logic
+
 # Version 0.6.8
 
 * Issue #13598 - Hotfix to correct cabled data ingest

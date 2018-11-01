@@ -13,7 +13,7 @@ Initial Release
 
 from mi.dataset.dataset_parser import DataSetDriverConfigKeys
 from mi.dataset.dataset_driver import SimpleDatasetDriver
-from mi.dataset.parser.cg_dcl_eng_dcl import CgDclEngDclParser, CgDclEngDclParticleClassTypes, \
+from mi.dataset.parser.cg_dcl_eng_dcl import CgDclEngDclParser, ParticleClassTypes, \
     CgDclEngDclMsgCountsRecoveredDataParticle, \
     CgDclEngDclCpuUptimeRecoveredDataParticle, \
     CgDclEngDclErrorRecoveredDataParticle, \
@@ -57,25 +57,25 @@ class CgDclEngDclRecoveredDriver(SimpleDatasetDriver):
             DataSetDriverConfigKeys.PARTICLE_MODULE: 'mi.dataset.parser.cg_dcl_eng_dcl',
             DataSetDriverConfigKeys.PARTICLE_CLASS: None,
             DataSetDriverConfigKeys.PARTICLE_CLASSES_DICT: {
-                CgDclEngDclParticleClassTypes.MSG_COUNTS_PARTICLE_CLASS:
+                ParticleClassTypes.MSG_COUNTS_PARTICLE_CLASS:
                     CgDclEngDclMsgCountsRecoveredDataParticle,
-                CgDclEngDclParticleClassTypes.CPU_UPTIME_PARTICLE_CLASS:
+                ParticleClassTypes.CPU_UPTIME_PARTICLE_CLASS:
                     CgDclEngDclCpuUptimeRecoveredDataParticle,
-                CgDclEngDclParticleClassTypes.ERROR_PARTICLE_CLASS:
+                ParticleClassTypes.ERROR_PARTICLE_CLASS:
                     CgDclEngDclErrorRecoveredDataParticle,
-                CgDclEngDclParticleClassTypes.GPS_PARTICLE_CLASS:
+                ParticleClassTypes.GPS_PARTICLE_CLASS:
                     CgDclEngDclGpsRecoveredDataParticle,
-                CgDclEngDclParticleClassTypes.PPS_PARTICLE_CLASS:
+                ParticleClassTypes.PPS_PARTICLE_CLASS:
                     CgDclEngDclPpsRecoveredDataParticle,
-                CgDclEngDclParticleClassTypes.SUPERV_PARTICLE_CLASS:
+                ParticleClassTypes.SUPERV_PARTICLE_CLASS:
                     CgDclEngDclSupervRecoveredDataParticle,
-                CgDclEngDclParticleClassTypes.DLOG_MGR_PARTICLE_CLASS:
+                ParticleClassTypes.DLOG_MGR_PARTICLE_CLASS:
                     CgDclEngDclDlogMgrRecoveredDataParticle,
-                CgDclEngDclParticleClassTypes.DLOG_STATUS_PARTICLE_CLASS:
+                ParticleClassTypes.DLOG_STATUS_PARTICLE_CLASS:
                     CgDclEngDclDlogStatusRecoveredDataParticle,
-                CgDclEngDclParticleClassTypes.STATUS_PARTICLE_CLASS:
+                ParticleClassTypes.STATUS_PARTICLE_CLASS:
                     CgDclEngDclStatusRecoveredDataParticle,
-                CgDclEngDclParticleClassTypes.DLOG_AARM_PARTICLE_CLASS:
+                ParticleClassTypes.DLOG_AARM_PARTICLE_CLASS:
                     CgDclEngDclDlogAarmRecoveredDataParticle,
             }
 
