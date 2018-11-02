@@ -86,5 +86,3 @@ class CgDclEngDclTelemeteredDriver(SimpleDatasetDriver):
                                    self._exception_callback)
 
         return parser
-
-

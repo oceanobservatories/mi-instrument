@@ -9,11 +9,7 @@ from mi.dataset.dataset_driver import ParticleDataHandler
 from mi.dataset.driver.cg_dcl_eng.dcl.cg_dcl_eng_dcl_telemetered_driver import parse
 from mi.dataset.driver.cg_dcl_eng.dcl.resource import RESOURCE_PATH
 
-<<<<<<< HEAD
 __author__ = 'dmergens'
-=======
-__author__ = 'mworden'
->>>>>>> 592de749f594c712e1d6def6dd1405e44882e62f
 
 
 class DriverTest(unittest.TestCase):
@@ -34,13 +30,9 @@ class DriverTest(unittest.TestCase):
                 # particle key names should match
                 self.assertListEqual(sorted(prev_particles.keys()), sorted(particles.keys()))
                 # compare number of samples across one of the particle keys
-<<<<<<< HEAD
                 for p in prev_particles.keys():
                     log.debug('%s: %d %d', p, len(prev_particles[p]), len(particles[p]))
                     self.assertEqual(len(prev_particles[p]), len(particles[p]))
-=======
-                self.assertEqual(len(sorted(prev_particles.items())[0][1]), len(sorted(particles.items())[0][1]))
->>>>>>> 592de749f594c712e1d6def6dd1405e44882e62f
         else:
             with open(yaml_file, 'w') as stream:
                 log.warn('creating yaml output file for regression testing - commit %s', yaml_file)
@@ -71,11 +63,7 @@ class DriverTest(unittest.TestCase):
         log.debug('SAMPLES: %s', particle_data_handler._samples)
         log.debug('FAILURE: %s', particle_data_handler._failure)
 
-<<<<<<< HEAD
         self.assertEquals(particle_data_handler._failure, True)
-=======
-        self.assertEquals(particle_data_handler._failure, False)
->>>>>>> 592de749f594c712e1d6def6dd1405e44882e62f
         self.assertNoParticleRegression(source_file_path, particle_data_handler)
 
 
