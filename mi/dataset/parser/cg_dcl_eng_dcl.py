@@ -22,6 +22,27 @@ from mi.dataset.parser.common_regexes import END_OF_LINE_REGEX, \
     TIME_HR_MIN_SEC_REGEX, FLOAT_REGEX, ASCII_HEX_CHAR_REGEX
 
 import mi.dataset.parser.utilities
+<<<<<<< HEAD
+=======
+
+
+# TODO - move to mi.core.common
+def build_regex_string(groups, separator='\s+'):
+    """
+    Create a regular expression string from a list of group name and pattern tuples.
+    :param groups:  list of tuples (group name, pattern) - if group name is None, no group is created
+    :param separator:  (optional) separator between items - default: whitespace
+    :return:  regular expression string
+    """
+    regex_list = []
+    for group, string in groups:
+        if group:
+            regex_list.append('(?P<' + group + '>' + string + ')')
+        else:
+            regex_list.append(string)
+
+    return separator.join(regex_list)
+>>>>>>> 592de749f594c712e1d6def6dd1405e44882e62f
 
 
 # TODO - move to mi.core.common
@@ -64,6 +85,7 @@ class ParticleType(BaseEnum):
     Enum for the cg_dcl_eng_dcl particle stream types.
     """
 
+<<<<<<< HEAD
     MSG_COUNTS = 'cg_dcl_eng_dcl_msg_counts'
     MSG_COUNTS_RECOVERED = 'cg_dcl_eng_dcl_msg_counts_recovered'
     CPU_UPTIME = 'cg_dcl_eng_dcl_cpu_uptime'
@@ -84,6 +106,28 @@ class ParticleType(BaseEnum):
     STATUS_RECOVERED = 'cg_dcl_eng_dcl_status_recovered'
     DLOG_AARM = 'cg_dcl_eng_dcl_dlog_aarm'
     DLOG_AARM_RECOVERED = 'cg_dcl_eng_dcl_dlog_aarm_recovered'
+=======
+    CG_DCL_ENG_DCL_MSG_COUNTS_TELEMETERED = 'cg_dcl_eng_dcl_msg_counts'
+    CG_DCL_ENG_DCL_MSG_COUNTS_RECOVERED = 'cg_dcl_eng_dcl_msg_counts_recovered'
+    CG_DCL_ENG_DCL_CPU_UPTIME_TELEMETERED = 'cg_dcl_eng_dcl_cpu_uptime'
+    CG_DCL_ENG_DCL_CPU_UPTIME_RECOVERED = 'cg_dcl_eng_dcl_cpu_uptime_recovered'
+    CG_DCL_ENG_DCL_ERROR_TELEMETERED = 'cg_dcl_eng_dcl_error'
+    CG_DCL_ENG_DCL_ERROR_RECOVERED = 'cg_dcl_eng_dcl_error_recovered'
+    CG_DCL_ENG_DCL_GPS_TELEMETERED = 'cg_dcl_eng_dcl_gps'
+    CG_DCL_ENG_DCL_GPS_RECOVERED = 'cg_dcl_eng_dcl_gps_recovered'
+    CG_DCL_ENG_DCL_PPS_TELEMETERED = 'cg_dcl_eng_dcl_pps'
+    CG_DCL_ENG_DCL_PPS_RECOVERED = 'cg_dcl_eng_dcl_pps_recovered'
+    CG_DCL_ENG_DCL_SUPERV_TELEMETERED = 'cg_dcl_eng_dcl_superv'
+    CG_DCL_ENG_DCL_SUPERV_RECOVERED = 'cg_dcl_eng_dcl_superv_recovered'
+    CG_DCL_ENG_DCL_DLOG_MGR_TELEMETERED = 'cg_dcl_eng_dcl_dlog_mgr'
+    CG_DCL_ENG_DCL_DLOG_MGR_RECOVERED = 'cg_dcl_eng_dcl_dlog_mgr_recovered'
+    CG_DCL_ENG_DCL_DLOG_STATUS_TELEMETERED = 'cg_dcl_eng_dcl_dlog_status'
+    CG_DCL_ENG_DCL_DLOG_STATUS_RECOVERED = 'cg_dcl_eng_dcl_dlog_status_recovered'
+    CG_DCL_ENG_DCL_STATUS_TELEMETERED = 'cg_dcl_eng_dcl_status'
+    CG_DCL_ENG_DCL_STATUS_RECOVERED = 'cg_dcl_eng_dcl_status_recovered'
+    CG_DCL_ENG_DCL_DLOG_AARM_TELEMETERED = 'cg_dcl_eng_dcl_dlog_aarm'
+    CG_DCL_ENG_DCL_DLOG_AARM_RECOVERED = 'cg_dcl_eng_dcl_dlog_aarm_recovered'
+>>>>>>> 592de749f594c712e1d6def6dd1405e44882e62f
 
 
 class ParticleKey(BaseEnum):
@@ -470,6 +514,7 @@ ERROR_REGEX = ERR_ALM_WNG_LOG_TYPE_REGEX + \
 # Example file record:
 # 2013/12/20 01:30:45.503 DAT D_GPS 2013/12/20 01:30:44.848 GPS 40.136760 -70.769495 3.40 070.90 2 9 0.80 0.80 201213
 # 013044 4008.2056 N 07046.1697 W
+<<<<<<< HEAD
 GPS_REGEX_TUPLE = [
     (ParticleKey.HEADER_TIMESTAMP, '\S+\s+\S+'),  # 2013/12/20 01:30:45.503
     (None, 'DAT'),
@@ -491,6 +536,70 @@ GPS_REGEX_TUPLE = [
 ]
 
 GPS_REGEX = build_regex_string(GPS_REGEX_TUPLE)
+=======
+_old_GPS_REGEX = r'(?P<' + ParticleKey.HEADER_TIMESTAMP + '>' + \
+                 DATE_YYYY_MM_DD_REGEX + '\s+' + TIME_HR_MIN_SEC_MSEC_REGEX + \
+                 ')\s+DAT\s+D_GPS\s+(?P<' + ParticleKey.MESSAGE_SENT_TIMESTAMP + \
+                 '>' + DATE_YYYY_MM_DD_REGEX + '\s+' + TIME_HR_MIN_SEC_MSEC_REGEX + \
+                 ')\s+GPS\s+(?P<' + ParticleKey.LATITUDE + \
+                 '>' + FLOAT_REGEX + ')\s+(?P<' + ParticleKey.LONGITUDE + \
+                 '>' + FLOAT_REGEX + ')\s+(?P<' + ParticleKey.GPS_SPEED + \
+                 '>' + FLOAT_REGEX + ')\s+(?P<' + ParticleKey.GPS_TRUE_COURSE + \
+                 '>' + FLOAT_REGEX + ')\s+(?P<' + ParticleKey.GPS_QUALITY + \
+                 '>' + INT_REGEX + ')\s+(?P<' + ParticleKey.GPS_NUM_SATELLITES + \
+                 '>' + INT_REGEX + ')\s+(?P<' + ParticleKey.GPS_HDOP + \
+                 '>' + FLOAT_REGEX + ')\s+(?P<' + ParticleKey.GPS_ALTITUDE + \
+                 '>' + FLOAT_REGEX + ')\s+(?P<' + ParticleKey.DATE_OF_FIX + \
+                 '>\d{6})\s+(?P<' + ParticleKey.TIME_OF_FIX + \
+                 '>\d{6})\s+(?P<' + ParticleKey.LATITUDE_ALT_FORMAT + \
+                 '>' + FLOAT_REGEX + '\s(?:N|S|W|E))\s+(?P<' + \
+                 ParticleKey.LONGITUDE_ALT_FORMAT + \
+                 '>' + FLOAT_REGEX + '\s(?:N|S|W|E))' + END_OF_LINE_REGEX
+
+# 2013/12/20 01:30:45.503 DAT D_GPS 2013/12/20 01:30:44.848 GPS 40.136760 -70.769495 3.40 070.90 2 9 0.80 0.80 201213
+# 013044 4008.2056 N 07046.1697 W
+_simple_GPS_REGEX_GROUPS = [
+    (ParticleKey.HEADER_TIMESTAMP, '\w+\s+\w+'),  # 2013/12/20 01:30:45.503
+    (None, 'DAT'),
+    (None, 'D_GPS'),
+    (ParticleKey.MESSAGE_SENT_TIMESTAMP, '\w+\s+\w+'),  # 2013/12/20 01:30:44.848
+    (None, 'GPS'),
+    (ParticleKey.LATITUDE, '\w+'),  # 40.136760
+    (ParticleKey.LONGITUDE, '\w+'),  # -70.769495
+    (ParticleKey.GPS_SPEED, '\w+'),  # 3.40
+    (ParticleKey.GPS_TRUE_COURSE, '\w+'),  # 070.90
+    (ParticleKey.GPS_QUALITY, '\w+'),  # 2
+    (ParticleKey.GPS_NUM_SATELLITES, '\w+'),  # 9
+    (ParticleKey.GPS_HDOP, '\w+'),  # 0.80
+    (ParticleKey.GPS_ALTITUDE, '\w+'),  # 0.80
+    (ParticleKey.DATE_OF_FIX, '\w+'),  # 201213
+    (ParticleKey.TIME_OF_FIX, '\w+'),  # 013044
+    (ParticleKey.LATITUDE_ALT_FORMAT, '\w+\s\w'),  # 4008.2056 N
+    (ParticleKey.LONGITUDE_ALT_FORMAT, '\w+\s\w'),  # 07046.1697 W
+]
+
+GPS_REGEX_GROUPS = [
+    (ParticleKey.HEADER_TIMESTAMP, DATE_YYYY_MM_DD_REGEX + '\s+' + TIME_HR_MIN_SEC_MSEC_REGEX),  # 2013/12/20 01:30:45.503
+    (None, 'DAT'),
+    (None, 'D_GPS'),
+    (ParticleKey.MESSAGE_SENT_TIMESTAMP, DATE_YYYY_MM_DD_REGEX + '\s+' + TIME_HR_MIN_SEC_MSEC_REGEX),  # 2013/12/20 01:30:44.848
+    (None, 'GPS'),
+    (ParticleKey.LATITUDE, FLOAT_REGEX),  # 40.136760
+    (ParticleKey.LONGITUDE, FLOAT_REGEX),  # -70.769495
+    (ParticleKey.GPS_SPEED, FLOAT_REGEX),  # 3.40
+    (ParticleKey.GPS_TRUE_COURSE, FLOAT_REGEX),  # 070.90
+    (ParticleKey.GPS_QUALITY, INT_REGEX),  # 2
+    (ParticleKey.GPS_NUM_SATELLITES, INT_REGEX),  # 9
+    (ParticleKey.GPS_HDOP, FLOAT_REGEX),  # 0.80
+    (ParticleKey.GPS_ALTITUDE, FLOAT_REGEX),  # 0.80
+    (ParticleKey.DATE_OF_FIX, INT_REGEX),  # 201213
+    (ParticleKey.TIME_OF_FIX, INT_REGEX),  # 013044
+    (ParticleKey.LATITUDE_ALT_FORMAT, FLOAT_REGEX + '\s\w'),  # 4008.2056 N
+    (ParticleKey.LONGITUDE_ALT_FORMAT, FLOAT_REGEX + '\s\w'),  # 07046.1697 W
+]
+
+GPS_REGEX = build_regex_string(GPS_REGEX_GROUPS)
+>>>>>>> 592de749f594c712e1d6def6dd1405e44882e62f
 
 # Regex for particles CG_DCL_ENG_DCL_PPS_TELEMETERED and CG_DCL_ENG_DCL_PPS_RECOVERED
 # Example file record:
@@ -658,8 +767,12 @@ DLOG_MGR_REGEX = r'(?P<' + ParticleKey.HEADER_TIMESTAMP + '>' + \
 
 # Regex for particles CG_DCL_ENG_DCL_DLOG_STATUS_TELEMETERED and CG_DCL_ENG_DCL_DLOG_STATUS_RECOVERED
 # Example file record:
+<<<<<<< HEAD
 # 2014/09/15 00:54:26.910 DAT DLOGP5 istatus: 2014/09/15 00:54:16.477 spkir1 IDLE tx: 598 rx: 1692514 log: 2399666
 # good: 27765 bad: 64 bb: 0 ld: 1410740284 lc: 14107
+=======
+# 2013/12/20 18:57:10.822 DAT DLOG_MGR dmgrstatus: 2013/12/20 18:56:41.177 act:4 str:4 hlt:0 fld:0 map:000D0DDD
+>>>>>>> 592de749f594c712e1d6def6dd1405e44882e62f
 DLOG_STATUS_REGEX = r'(?P<' + ParticleKey.HEADER_TIMESTAMP + '>' + \
                     DATE_YYYY_MM_DD_REGEX + '\s+' + TIME_HR_MIN_SEC_MSEC_REGEX + \
                     ')\s+DAT\s+DLOGP\d\s+istatus:\s+(?P<' + \
@@ -782,6 +895,7 @@ class CgDclEngDclDataParticle(DataParticle):
 
 
 class CgDclEngDclMsgCountsRecoveredDataParticle(CgDclEngDclDataParticle):
+<<<<<<< HEAD
     _data_particle_type = ParticleType.MSG_COUNTS_RECOVERED
 
 
@@ -811,6 +925,37 @@ class CgDclEngDclGpsRecoveredDataParticle(CgDclEngDclDataParticle):
 
 class CgDclEngDclGpsTelemeteredDataParticle(CgDclEngDclDataParticle):
     _data_particle_type = ParticleType.GPS
+=======
+    _data_particle_type = CgDclEngDclDataParticleType.CG_DCL_ENG_DCL_MSG_COUNTS_RECOVERED
+
+
+class CgDclEngDclMsgCountsTelemeteredDataParticle(CgDclEngDclDataParticle):
+    _data_particle_type = CgDclEngDclDataParticleType.CG_DCL_ENG_DCL_MSG_COUNTS_TELEMETERED
+
+
+class CgDclEngDclCpuUptimeRecoveredDataParticle(CgDclEngDclDataParticle):
+    _data_particle_type = CgDclEngDclDataParticleType.CG_DCL_ENG_DCL_CPU_UPTIME_RECOVERED
+
+
+class CgDclEngDclCpuUptimeTelemeteredDataParticle(CgDclEngDclDataParticle):
+    _data_particle_type = CgDclEngDclDataParticleType.CG_DCL_ENG_DCL_CPU_UPTIME_TELEMETERED
+
+
+class CgDclEngDclErrorRecoveredDataParticle(CgDclEngDclDataParticle):
+    _data_particle_type = CgDclEngDclDataParticleType.CG_DCL_ENG_DCL_ERROR_RECOVERED
+
+
+class CgDclEngDclErrorTelemeteredDataParticle(CgDclEngDclDataParticle):
+    _data_particle_type = CgDclEngDclDataParticleType.CG_DCL_ENG_DCL_ERROR_TELEMETERED
+
+
+class CgDclEngDclGpsRecoveredDataParticle(CgDclEngDclDataParticle):
+    _data_particle_type = CgDclEngDclDataParticleType.CG_DCL_ENG_DCL_GPS_RECOVERED
+
+
+class CgDclEngDclGpsTelemeteredDataParticle(CgDclEngDclDataParticle):
+    _data_particle_type = CgDclEngDclDataParticleType.CG_DCL_ENG_DCL_GPS_TELEMETERED
+>>>>>>> 592de749f594c712e1d6def6dd1405e44882e62f
 
 
 class CgDclEngDclPpsDataParticle(CgDclEngDclDataParticle):
@@ -854,11 +999,19 @@ class CgDclEngDclPpsDataParticle(CgDclEngDclDataParticle):
 
 
 class CgDclEngDclPpsRecoveredDataParticle(CgDclEngDclPpsDataParticle):
+<<<<<<< HEAD
     _data_particle_type = ParticleType.PPS_RECOVERED
 
 
 class CgDclEngDclPpsTelemeteredDataParticle(CgDclEngDclPpsDataParticle):
     _data_particle_type = ParticleType.PPS
+=======
+    _data_particle_type = CgDclEngDclDataParticleType.CG_DCL_ENG_DCL_PPS_RECOVERED
+
+
+class CgDclEngDclPpsTelemeteredDataParticle(CgDclEngDclPpsDataParticle):
+    _data_particle_type = CgDclEngDclDataParticleType.CG_DCL_ENG_DCL_PPS_TELEMETERED
+>>>>>>> 592de749f594c712e1d6def6dd1405e44882e62f
 
 
 class CgDclEngDclSupervDataParticle(CgDclEngDclDataParticle):
@@ -928,6 +1081,7 @@ class CgDclEngDclSupervDataParticle(CgDclEngDclDataParticle):
 
 
 class CgDclEngDclSupervRecoveredDataParticle(CgDclEngDclSupervDataParticle):
+<<<<<<< HEAD
     _data_particle_type = ParticleType.SUPERV_RECOVERED
 
 
@@ -941,6 +1095,21 @@ class CgDclEngDclDlogMgrRecoveredDataParticle(CgDclEngDclDataParticle):
 
 class CgDclEngDclDlogMgrTelemeteredDataParticle(CgDclEngDclDataParticle):
     _data_particle_type = ParticleType.DLOG_MGR
+=======
+    _data_particle_type = CgDclEngDclDataParticleType.CG_DCL_ENG_DCL_SUPERV_RECOVERED
+
+
+class CgDclEngDclSupervTelemeteredDataParticle(CgDclEngDclSupervDataParticle):
+    _data_particle_type = CgDclEngDclDataParticleType.CG_DCL_ENG_DCL_SUPERV_TELEMETERED
+
+
+class CgDclEngDclDlogMgrRecoveredDataParticle(CgDclEngDclDataParticle):
+    _data_particle_type = CgDclEngDclDataParticleType.CG_DCL_ENG_DCL_DLOG_MGR_RECOVERED
+
+
+class CgDclEngDclDlogMgrTelemeteredDataParticle(CgDclEngDclDataParticle):
+    _data_particle_type = CgDclEngDclDataParticleType.CG_DCL_ENG_DCL_DLOG_MGR_TELEMETERED
+>>>>>>> 592de749f594c712e1d6def6dd1405e44882e62f
 
 
 class CgDclEngDclDlogStatusDataParticle(CgDclEngDclDataParticle):
@@ -983,11 +1152,19 @@ class CgDclEngDclDlogStatusDataParticle(CgDclEngDclDataParticle):
 
 
 class CgDclEngDclDlogStatusRecoveredDataParticle(CgDclEngDclDlogStatusDataParticle):
+<<<<<<< HEAD
     _data_particle_type = ParticleType.DLOG_STATUS_RECOVERED
 
 
 class CgDclEngDclDlogStatusTelemeteredDataParticle(CgDclEngDclDlogStatusDataParticle):
     _data_particle_type = ParticleType.DLOG_STATUS
+=======
+    _data_particle_type = CgDclEngDclDataParticleType.CG_DCL_ENG_DCL_DLOG_STATUS_RECOVERED
+
+
+class CgDclEngDclDlogStatusTelemeteredDataParticle(CgDclEngDclDlogStatusDataParticle):
+    _data_particle_type = CgDclEngDclDataParticleType.CG_DCL_ENG_DCL_DLOG_STATUS_TELEMETERED
+>>>>>>> 592de749f594c712e1d6def6dd1405e44882e62f
 
 
 class CgDclEngDclStatusDataParticle(CgDclEngDclDataParticle):
@@ -1031,6 +1208,7 @@ class CgDclEngDclStatusDataParticle(CgDclEngDclDataParticle):
 
 
 class CgDclEngDclStatusRecoveredDataParticle(CgDclEngDclStatusDataParticle):
+<<<<<<< HEAD
     _data_particle_type = ParticleType.STATUS_RECOVERED
 
 
@@ -1044,6 +1222,21 @@ class CgDclEngDclDlogAarmRecoveredDataParticle(CgDclEngDclDataParticle):
 
 class CgDclEngDclDlogAarmTelemeteredDataParticle(CgDclEngDclDataParticle):
     _data_particle_type = ParticleType.DLOG_AARM
+=======
+    _data_particle_type = CgDclEngDclDataParticleType.CG_DCL_ENG_DCL_STATUS_RECOVERED
+
+
+class CgDclEngDclStatusTelemeteredDataParticle(CgDclEngDclStatusDataParticle):
+    _data_particle_type = CgDclEngDclDataParticleType.CG_DCL_ENG_DCL_STATUS_TELEMETERED
+
+
+class CgDclEngDclDlogAarmRecoveredDataParticle(CgDclEngDclDataParticle):
+    _data_particle_type = CgDclEngDclDataParticleType.CG_DCL_ENG_DCL_DLOG_AARM_RECOVERED
+
+
+class CgDclEngDclDlogAarmTelemeteredDataParticle(CgDclEngDclDataParticle):
+    _data_particle_type = CgDclEngDclDataParticleType.CG_DCL_ENG_DCL_DLOG_AARM_TELEMETERED
+>>>>>>> 592de749f594c712e1d6def6dd1405e44882e62f
 
 
 class CgDclEngDclParser(SimpleParser):
@@ -1106,6 +1299,7 @@ class CgDclEngDclParser(SimpleParser):
             regex_match = None
 
             log.trace("Line: %s", line)
+<<<<<<< HEAD
             fields = line.split()
 
             # Identify the log message type
@@ -1158,6 +1352,123 @@ class CgDclEngDclParser(SimpleParser):
                         log.warning('unable to extract sample from line: %r', line)
                 except Exception as e:
                     log.exception('exception (%r) extracting sample from line: %r', e, line)
+=======
+            log.error("Line: %s", line)
+
+            # Let's first see if we have a MSG log message
+            if re.match(MSG_LOG_TYPE_REGEX, line):
+
+                msg_counts_match = re.match(MSG_COUNTS_REGEX, line)
+                cpu_uptime_match = re.match(CPU_UPTIME_REGEX, line)
+
+                if msg_counts_match is not None:
+                    log.trace("msg_counts_match: %s", msg_counts_match.groupdict())
+
+                    sample = self._extract_sample(self._msg_counts_particle_class,
+                                                  None,
+                                                  msg_counts_match.groupdict(),
+                                                  preferred_ts=DataParticleKey.PORT_TIMESTAMP)
+
+                elif cpu_uptime_match is not None:
+                    log.trace("cpu_uptime_match: %s", cpu_uptime_match.groupdict())
+
+                    sample = self._extract_sample(self._cpu_uptime_particle_class,
+                                                  None,
+                                                  cpu_uptime_match.groupdict(),
+                                                  preferred_ts=DataParticleKey.PORT_TIMESTAMP)
+                else:
+                    message = "Invalid MSG Log record, Line: " + line
+                    log.error(message)
+                    self._exception_callback(UnexpectedDataException(message))
+
+            elif re.match(ERR_ALM_WNG_LOG_TYPE_REGEX, line):
+
+                error_match = re.match(ERROR_REGEX, line)
+
+                if error_match is not None:
+                    log.trace("error_match: %s", error_match.groupdict())
+
+                    sample = self._extract_sample(self._error_particle_class,
+                                                  None,
+                                                  error_match.groupdict(),
+                                                  preferred_ts=DataParticleKey.PORT_TIMESTAMP)
+                else:
+                    message = "Invalid ERR, ALM or WNG Log record, Line: " + line
+                    log.error(message)
+                    self._exception_callback(UnexpectedDataException(message))
+
+            elif re.match(DAT_LOG_TYPE_REGEX, line):
+
+                # TODO - optimize - determine match from DAT_LOT_TYPE_REGEX
+                gps_match = re.match(GPS_REGEX, line)
+                pps_match = re.match(PPS_REGEX, line)
+                superv_match = re.match(SUPERV_REGEX, line)
+                dlog_mgr_match = re.match(DLOG_MGR_REGEX, line)
+                dlog_status_match = re.match(DLOG_STATUS_REGEX, line)
+                d_status_ntp_match = re.match(D_STATUS_NTP_REGEX, line)
+                dlog_aarm_match = re.match(DLOG_AARM_REGEX, line)
+
+                if gps_match:
+                    log.trace("gps_match: %s", gps_match.groupdict())
+
+                    sample = self._extract_sample(self._gps_particle_class,
+                                                  None,
+                                                  gps_match.groupdict(),
+                                                  preferred_ts=DataParticleKey.PORT_TIMESTAMP)
+
+                elif pps_match:
+                    log.trace("pps_match: %s", pps_match.groupdict())
+
+                    sample = self._extract_sample(self._pps_particle_class,
+                                                  None,
+                                                  pps_match.groupdict(),
+                                                  preferred_ts=DataParticleKey.PORT_TIMESTAMP)
+
+                elif superv_match:
+                    log.trace("superv_match: %s", superv_match.groupdict())
+
+                    sample = self._extract_sample(self._superv_particle_class,
+                                                  None,
+                                                  superv_match.groupdict(),
+                                                  preferred_ts=DataParticleKey.PORT_TIMESTAMP)
+
+                elif dlog_mgr_match:
+                    log.trace("dlog_mgr_match: %s", dlog_mgr_match.groupdict())
+
+                    sample = self._extract_sample(self._dlog_mgr_particle_class,
+                                                  None,
+                                                  dlog_mgr_match.groupdict(),
+                                                  preferred_ts=DataParticleKey.PORT_TIMESTAMP)
+
+                elif dlog_status_match:
+                    log.trace("dlog_status_match: %s", dlog_status_match.groupdict())
+
+                    sample = self._extract_sample(self._dlog_status_particle_class,
+                                                  None,
+                                                  dlog_status_match.groupdict(),
+                                                  preferred_ts=DataParticleKey.PORT_TIMESTAMP)
+
+                elif d_status_ntp_match:
+                    log.trace("d_status_ntp_match: %s", d_status_ntp_match.groupdict())
+
+                    sample = self._extract_sample(self._status_particle_class,
+                                                  None,
+                                                  d_status_ntp_match.groupdict(),
+                                                  preferred_ts=DataParticleKey.PORT_TIMESTAMP)
+
+                elif dlog_aarm_match:
+                    log.trace("sea_state_match: %s", dlog_aarm_match.groupdict())
+
+                    sample = self._extract_sample(self._dlog_aarm_particle_class,
+                                                  None,
+                                                  dlog_aarm_match.groupdict(),
+                                                  preferred_ts=DataParticleKey.PORT_TIMESTAMP)
+
+                else:
+                    message = "Invalid DAT Log record, Line: " + line
+                    log.error(message)
+                    self._exception_callback(UnexpectedDataException(message))
+>>>>>>> 592de749f594c712e1d6def6dd1405e44882e62f
 
             else:
                 log.debug("Non-match .. ignoring line: %r", line)
