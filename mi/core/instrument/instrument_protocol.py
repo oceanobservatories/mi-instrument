@@ -1275,6 +1275,10 @@ class CommandResponseInstrumentProtocol(InstrumentProtocol):
                 if count >= no_tries:
                     raise InstrumentProtocolException('Incorrect prompt.')
 
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
 class MenuInstrumentProtocol(CommandResponseInstrumentProtocol):
     """
     Base class for menu-based instrument interfaces that can use a cmd/response approach to

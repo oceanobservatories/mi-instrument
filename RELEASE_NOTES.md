@@ -95,10 +95,16 @@
 * Issue #12833 - Added support for offline process generated ZPLSC-C echograms.
 
 # Version 0.5.6
+<<<<<<< Updated upstream
 
 * Issue #12289 - Added DO driver to generate stable dissolved oxygen stream from CTD with attached DO
 * Issue #12323 - Added support for UI generated ZPLSC C-Series echograms.
 
+=======
+* Issue #12289 - Added DO driver to generate stable dissolved oxygen stream from CTD with attached DO
+* Issue #12323 - Added support for UI generated ZPLSC C-Series echograms.
+ 
+>>>>>>> Stashed changes
 # Version 0.5.5
 
 * Issue #12832 Fixed update playback.py to assign 'zplsc_reader' variable before being referenced

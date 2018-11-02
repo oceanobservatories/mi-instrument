@@ -35,7 +35,7 @@ class AdcpPd0ParsedKey(BaseEnum):
     Data particles for the Teledyne ADCPs Workhorse PD0 formatted data files
     """
     FIRMWARE_VERSION = 'firmware_version'
-    FIRMWARE_REVISION = 'firmware_revision'
+    # FIRMWARE_REVISION = 'firmware_revision'
     SYSCONFIG_FREQUENCY = 'sysconfig_frequency'
     SYSCONFIG_BEAM_PATTERN = 'sysconfig_beam_pattern'
     SYSCONFIG_SENSOR_CONFIG = 'sysconfig_sensor_config'
@@ -102,9 +102,9 @@ class AdcpPd0ParsedKey(BaseEnum):
     ROLL = 'roll'
     SALINITY = 'salinity'
     TEMPERATURE = 'temperature'
-    MPT_MINUTES = 'mpt_minutes'
+    # MPT_MINUTES = 'mpt_minutes'
     MPT_SECONDS = 'mpt_seconds'
-    MPT_HUNDREDTHS = 'mpt_hundredths'
+    # MPT_HUNDREDTHS = 'mpt_hundredths'
     HEADING_STDEV = 'heading_stdev'
     PITCH_STDEV = 'pitch_stdev'
     ROLL_STDEV = 'roll_stdev'
@@ -332,9 +332,10 @@ class EngineeringBase(Pd0Base):
             (AdcpPd0ParsedKey.TRANSMIT_PULSE_LENGTH, record.fixed_data.transmit_pulse_length),
             # VARIABLE LEADER
             (AdcpPd0ParsedKey.SPEED_OF_SOUND, record.variable_data.speed_of_sound),
-            (AdcpPd0ParsedKey.MPT_MINUTES, record.variable_data.mpt_minutes),
-            (AdcpPd0ParsedKey.MPT_SECONDS, record.variable_data.mpt_seconds),
-            (AdcpPd0ParsedKey.MPT_HUNDREDTHS, record.variable_data.mpt_hundredths),
+            (AdcpPd0ParsedKey.MPT_SECONDS,
+             record.variable_data.mpt_minutes * 60 +
+             record.variable_data.mpt_seconds +
+             record.variable_data.mpt_hundredths / 100.0),
             (AdcpPd0ParsedKey.HEADING_STDEV, record.variable_data.heading_standard_deviation),
             (AdcpPd0ParsedKey.PITCH_STDEV, record.variable_data.pitch_standard_deviation),
             (AdcpPd0ParsedKey.ROLL_STDEV, record.variable_data.roll_standard_deviation),
@@ -417,8 +418,9 @@ class BaseConfig(Pd0Base):
 
         fields = [
             # FIXED LEADER
-            (AdcpPd0ParsedKey.FIRMWARE_VERSION, record.fixed_data.cpu_firmware_version),
-            (AdcpPd0ParsedKey.FIRMWARE_REVISION, record.fixed_data.cpu_firmware_revision),
+            (AdcpPd0ParsedKey.FIRMWARE_VERSION, str('%s.%s' %
+                                                    (record.fixed_data.cpu_firmware_version,
+                                                     record.fixed_data.cpu_firmware_revision))),
             (AdcpPd0ParsedKey.DATA_FLAG, record.fixed_data.simulation_data_flag),
             (AdcpPd0ParsedKey.LAG_LENGTH, record.fixed_data.lag_length),
             (AdcpPd0ParsedKey.NUM_BEAMS, record.fixed_data.number_of_beams),

@@ -172,7 +172,6 @@ class AdcpPd0ParsedKey(BaseEnum):
     PERCENT_TRANSFORMS_REJECT = "percent_transforms_reject"
     PERCENT_BAD_BEAMS = "percent_bad_beams"
     PERCENT_GOOD_4BEAM = "percent_good_4beam"
-    CHECKSUM = "checksum"
 
 
 class Pd0CoordinateTransformType(BaseEnum):

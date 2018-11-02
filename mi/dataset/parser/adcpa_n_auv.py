@@ -58,6 +58,7 @@ class AdcpaNAuvInstrumentParticle(AuvCommonParticle):
 
     # set the data_particle_type for the DataParticle class
     _data_particle_type = "adcpa_n_auv_instrument"
+    _data_particle_type = "adcp_new_stream"
 
     _auv_param_map = ADCPA_N_AUV_PARAM_MAP
     # must provide a parameter map for _build_parsed_values
