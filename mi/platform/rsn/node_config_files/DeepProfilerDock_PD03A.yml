@@ -1,10 +1,10 @@
 node_meta_data:
   description: Deep Profiler Dock 3A
   location: Axial Base
-  node_id_name: SN0106-PD03A
+  node_id_name: SN0203-PD03A
   oms_sample_rate: 10
   reference_designator: RS03AXPD-PD03A
-  serial_number: SN0106
+  serial_number: SN0203
   read_only_mode: True
 
 node_streams:

@@ -1,11 +1,11 @@
 node_meta_data:
   description: Winch Controller Slope Base
   location: Slope Base
-  node_id_name: SN0123-SC01A
+  node_id_name: SN0122-SC01A
   node_type: WinchController
   oms_sample_rate: 5
   reference_designator: RS01SBPS-SC01A
-  serial_number: SN0123
+  serial_number: SN0122
   read_only_mode: True
 
 node_streams:

@@ -1,11 +1,11 @@
 node_meta_data:
   description: LVNode EA Offshore
   location: EA - Offshore Site
-  node_id_name: SN0048-LV01C
+  node_id_name: SN0045-LV01C
   node_type: LVNode
   oms_sample_rate: 5
   reference_designator: CE04OSBP-LV01C
-  serial_number: SN0048
+  serial_number: SN0045
   read_only_mode: True
 
 node_streams:

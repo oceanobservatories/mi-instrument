@@ -1,3 +1,8 @@
+# Version 0.6.9
+
+* Issue #13722 - Platform node deployment update
+   * Updated serial numbers for platform engineering nodes for most recent deployment
+
 # Version 0.6.8
 
 * Issue #13598 - Hotfix to correct cabled data ingest
