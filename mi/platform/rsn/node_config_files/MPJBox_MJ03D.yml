@@ -1,11 +1,11 @@
 node_meta_data:
   description: MPJBox INT2
   location: INT2
-  node_id_name: SN0036-MJ03D
+  node_id_name: SN0029-MJ03D
   node_type: MPJBox
   oms_sample_rate: 5
   reference_designator: RS03INT2-MJ03D
-  serial_number: SN0036
+  serial_number: SN0029
   read_only_mode: True
 
 node_streams:

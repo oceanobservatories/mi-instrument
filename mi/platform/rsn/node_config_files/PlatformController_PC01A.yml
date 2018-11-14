@@ -1,11 +1,11 @@
 node_meta_data:
   description: Platform Controller
   location: N/A
-  node_id_name: SN0104-PC01A
+  node_id_name: SN0101-PC01A
   node_type: PlatformController
   oms_sample_rate: 5
   reference_designator: RS01SBPS-PC01A
-  serial_number: SN0104
+  serial_number: SN0101
   read_only_mode: True
 
 node_streams:
