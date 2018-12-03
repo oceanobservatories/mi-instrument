@@ -3,6 +3,7 @@
 import os
 import unittest
 import yaml
+import ast
 
 from mi.core.log import log
 from mi.dataset.dataset_driver import ParticleDataHandler
@@ -60,6 +61,7 @@ class DriverTest(unittest.TestCase):
                                       source_file_path=source_file_path,
                                       particle_data_handler=particle_data_handler)
 
+        log.setLevel('DEBUG')
         log.debug('SAMPLES: %s', particle_data_handler._samples)
         log.debug('FAILURE: %s', particle_data_handler._failure)
 
@@ -71,5 +73,5 @@ if __name__ == '__main__':
     test = DriverTest('test_one')
     test.test_one()
 
-    test = DriverTest('test_one')
+    test = DriverTest('test_13694')
     test.test_13694()

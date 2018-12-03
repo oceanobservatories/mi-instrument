@@ -13,7 +13,7 @@ __license__ = 'Apache 2.0'
 import re
 
 from mi.core.log import log
-from mi.core.exceptions import ConfigurationException
+from mi.core.exceptions import ConfigurationException, SampleEncodingException
 from mi.core.common import BaseEnum
 from mi.core.instrument.dataset_data_particle import DataParticle, DataParticleKey
 from mi.dataset.dataset_parser import SimpleParser, DataSetDriverConfigKeys
@@ -251,6 +251,20 @@ CHANNEL_8_V = 'channel_8_v'
 CHANNEL_8_I = 'channel_8_i'
 CHANNEL_8_ERROR_STATUS = 'channel_8_error_status'
 
+
+#####################
+# Encoding Functions
+#####################
+def bool_string_to_int(value):
+    """
+    Convert a boolean string to corresponding integer value
+    :param value:  e.g. 'TRUE'
+    :return:  1 if string is 'true', 0 otherwise
+    :throws:  AttributeError if value is not type of string
+    """
+    return 1 if value.lower() == 'true' else 0
+
+
 """
 Encoding rules used in _build_parsed_value methods used build the particles.
 """
@@ -282,7 +296,7 @@ ENCODING_RULES_DICT = {
     ParticleKey.TIME_OF_FIX: str,
     ParticleKey.LATITUDE_ALT_FORMAT: str,
     ParticleKey.LONGITUDE_ALT_FORMAT: str,
-    ParticleKey.NMEA_LOCK: int,
+    ParticleKey.NMEA_LOCK: bool_string_to_int,
     ParticleKey.DELTA: int,
     ParticleKey.DELTA_MIN: int,
     ParticleKey.DELTA_MAX: int,
@@ -399,6 +413,11 @@ ENCODING_RULES_DICT = {
     ParticleKey.TIC_COUNTER: float,
 }
 
+# Verify ranges for the following fields
+KEY_RANGE = {
+    ParticleKey.LATITUDE: (-90, 90),
+    ParticleKey.LONGITUDE: (-360, 360),
+}
 
 # A base regex used to match all cg_dcl_eng_dcl MSG records
 MSG_LOG_TYPE_BASE_REGEX = r'(?P<' + ParticleKey.HEADER_TIMESTAMP + '>' + \
@@ -759,6 +778,25 @@ class CgDclEngDclDataParticle(DataParticle):
     Base data particle for cg_dcl_eng_dcl.
     """
 
+    def _encode_value(self, key, data=None, encoding=None, value_range=None):
+        """
+        Wrapper for base class _encode_value - auto-populates based on key
+
+        :param key:  key name for the particle field
+        :param data:  raw string to be encoded
+        :param encoding:  encoding function
+        :param value_range:  (optional) range tuple to specify required inclusive range
+        :return:
+        """
+        # auto-populate any missing parameters
+        if data is None:
+            data = self.raw_data[key]
+        encoding = encoding if encoding else ENCODING_RULES_DICT.get(key, str)
+        value_range = value_range if value_range else KEY_RANGE.get(key, None)
+
+        # DataParticle is a dict, not an object, so we can't use super()
+        return DataParticle._encode_value(self, key, data, encoding, value_range=value_range)
+
     def _build_parsed_values(self):
         """
         This is the default implementation which many cg_dcl_eng_dcl particles can
@@ -777,7 +815,7 @@ class CgDclEngDclDataParticle(DataParticle):
                 self.set_internal_timestamp(mi.dataset.parser.utilities.dcl_time_to_ntp(self.raw_data[key]))
 
             else:
-                result.append(self._encode_value(key, self.raw_data[key], ENCODING_RULES_DICT[key]))
+                result.append(self._encode_value(key))
 
         return result
 
@@ -814,51 +852,11 @@ class CgDclEngDclGpsTelemeteredDataParticle(CgDclEngDclDataParticle):
     _data_particle_type = ParticleType.GPS
 
 
-class CgDclEngDclPpsDataParticle(CgDclEngDclDataParticle):
-    """
-    Class for building a CgDclEngDclPpsDataParticle
-    """
-
-    def _build_parsed_values(self):
-        """
-        Take something in the data format and turn it into
-        a particle with the appropriate tag.
-        """
-        result = []
-
-        for key in self.raw_data.keys():
-
-            if key == ParticleKey.HEADER_TIMESTAMP:
-                # DCL controller timestamp  is the port_timestamp
-                self.set_port_timestamp(mi.dataset.parser.utilities.dcl_time_to_ntp(self.raw_data[key]))
-
-            elif key == ParticleKey.MESSAGE_SENT_TIMESTAMP:
-                # instrument timestamp  is the internal_timestamp
-                self.set_internal_timestamp(mi.dataset.parser.utilities.dcl_time_to_ntp(self.raw_data[key]))
-
-            else:
-
-                if key == ParticleKey.NMEA_LOCK:
-
-                    if self.raw_data[key].lower() == 'true':
-                        value = 1
-                    else:
-                        value = 0
-
-                else:
-
-                    value = self.raw_data[key]
-
-                result.append(self._encode_value(key, value, ENCODING_RULES_DICT[key]))
-
-        return result
-
-
-class CgDclEngDclPpsRecoveredDataParticle(CgDclEngDclPpsDataParticle):
+class CgDclEngDclPpsRecoveredDataParticle(CgDclEngDclDataParticle):
     _data_particle_type = ParticleType.PPS_RECOVERED
 
 
-class CgDclEngDclPpsTelemeteredDataParticle(CgDclEngDclPpsDataParticle):
+class CgDclEngDclPpsTelemeteredDataParticle(CgDclEngDclDataParticle):
     _data_particle_type = ParticleType.PPS
 
 
@@ -898,7 +896,7 @@ class CgDclEngDclSupervDataParticle(CgDclEngDclDataParticle):
                 for bit_field, bit in zip(ERROR_BITS, reversed(error_bits)):
 
                     if bit_field != ERROR_BIT_NOT_USED:
-                        result.append(self._encode_value(bit_field, bit, ENCODING_RULES_DICT[bit_field]))
+                        result.append(self._encode_value(bit_field, bit))
 
             elif re.match(CHANNEL_STATE_REGEX, key):
 
@@ -913,17 +911,12 @@ class CgDclEngDclSupervDataParticle(CgDclEngDclDataParticle):
 
                 channel_error_statuses.append(ENCODING_RULES_DICT[key](self.raw_data[key]))
             else:
+                result.append(self._encode_value(key))
 
-                result.append(self._encode_value(key, self.raw_data[key], ENCODING_RULES_DICT[key]))
-
-        result.append(self._encode_value(ParticleKey.CHANNEL_STATE,
-                                         channel_states, list))
-        result.append(self._encode_value(ParticleKey.CHANNEL_V,
-                                         channel_vs, list))
-        result.append(self._encode_value(ParticleKey.CHANNEL_I,
-                                         channel_is, list))
-        result.append(self._encode_value(ParticleKey.CHANNEL_ERROR_STATUS,
-                                         channel_error_statuses, list))
+        result.append(self._encode_value(ParticleKey.CHANNEL_STATE, channel_states, list))
+        result.append(self._encode_value(ParticleKey.CHANNEL_V, channel_vs, list))
+        result.append(self._encode_value(ParticleKey.CHANNEL_I, channel_is, list))
+        result.append(self._encode_value(ParticleKey.CHANNEL_ERROR_STATUS, channel_error_statuses, list))
 
         return result
 
@@ -976,8 +969,7 @@ class CgDclEngDclDlogStatusDataParticle(CgDclEngDclDataParticle):
                 })
 
             else:
-
-                result.append(self._encode_value(key, self.raw_data[key], ENCODING_RULES_DICT[key]))
+                result.append(self._encode_value(key))
 
         return result
 
@@ -1024,7 +1016,7 @@ class CgDclEngDclStatusDataParticle(CgDclEngDclDataParticle):
 
             else:
 
-                result.append(self._encode_value(key, self.raw_data[key], ENCODING_RULES_DICT[key]))
+                result.append(self._encode_value(key))
 
         return result
 
@@ -1054,7 +1046,7 @@ class CgDclEngDclParser(SimpleParser):
         # no sieve function since we are not using the chunker here
         super(CgDclEngDclParser, self).__init__(config,
                                                 stream_handle,
-                                                exception_callback)
+                                                exception_callback=None)
 
         try:
             particle_classes_dict = config[DataSetDriverConfigKeys.PARTICLE_CLASSES_DICT]
@@ -1095,52 +1087,55 @@ class CgDclEngDclParser(SimpleParser):
         This method will parse a cg_Dcl_eng_Dcl input file and collect the
         particles.
         """
+        gps_count = 0
 
-        # Read the first line in the file
-        line = self._stream_handle.readline()
-
-        # While a new line in the file exists
-        while line:
+        for line in self._stream_handle:
             particle_class = None
             regex_match = None
 
             log.trace("Line: %s", line)
             fields = line.split()
+            if len(fields) < 6:
+                continue
+
+            l1, l2, l3, l4 = fields[2:6]
 
             # Identify the log message type
-            if fields[2] == 'MSG':
-                if fields[4] == 'STATUS:':  # e.g. 2013/12/20 00:05:39.802 MSG D_STATUS STATUS: ...
-                    regex_match = re.match(MSG_COUNTS_REGEX, line)
-                    particle_class = self._msg_counts_particle_class
-                elif fields[4] == 'CPU':  # 2013/12/20 00:10:40.248 MSG D_STATUS CPU ...
-                    regex_match = re.match(CPU_UPTIME_REGEX, line)
-                    particle_class = self._cpu_uptime_particle_class
-                elif fields[3] == 'D_CTL':
-                    pass  # ignore
-            elif fields[2] in ['ERR', 'ALM', 'WNG']:  # 2013/12/20 01:33:45.515 ALM ...
+            if l1 == 'MSG':
+                if l2 == 'D_STATUS':
+                    if l3 == 'STATUS:':  # e.g. 2013/12/20 00:05:39.802 MSG D_STATUS STATUS: ...
+                        regex_match = re.match(MSG_COUNTS_REGEX, line)
+                        particle_class = self._msg_counts_particle_class
+                    elif l3 == 'CPU':  # 2013/12/20 00:10:40.248 MSG D_STATUS CPU ...
+                        regex_match = re.match(CPU_UPTIME_REGEX, line)
+                        particle_class = self._cpu_uptime_particle_class
+                elif l2 == 'D_CTL':
+                    continue  # ignore
+            elif l1 in ['ERR', 'ALM', 'WNG']:  # 2013/12/20 01:33:45.515 ALM ...
                 regex_match = re.match(ERROR_REGEX, line)
                 particle_class = self._error_particle_class
-            elif fields[2] == 'DAT':
-                if fields[3] == 'D_GPS':  # 2013/12/20 01:30:45.503 DAT D_GPS ...
+            elif l1 == 'DAT':
+                if l2 == 'D_GPS':  # 2013/12/20 01:30:45.503 DAT D_GPS ...
                     regex_match = re.match(GPS_REGEX, line)
+                    gps_count = gps_count + 1
                     particle_class = self._gps_particle_class
-                elif fields[3] == 'D_PPS':  # 2013/12/20 01:30:45.504 DAT D_PPS D_PPS: ...
+                elif l2 == 'D_PPS':  # 2013/12/20 01:30:45.504 DAT D_PPS D_PPS: ...
                     regex_match = re.match(PPS_REGEX, line)
                     particle_class = self._pps_particle_class
-                elif fields[3] == 'SUPERV':  # 2013/12/20 01:20:44.908 DAT SUPERV ...
+                elif l2 == 'SUPERV':  # 2013/12/20 01:20:44.908 DAT SUPERV ...
                     regex_match = re.match(SUPERV_REGEX, line)
                     particle_class = self._superv_particle_class
-                elif fields[3] == 'DLOG_MGR':  # 2013/12/20 18:57:10.822 DAT DLOG_MGR ...
+                elif l2 == 'DLOG_MGR':  # 2013/12/20 18:57:10.822 DAT DLOG_MGR ...
                     regex_match = re.match(DLOG_MGR_REGEX, line)
                     particle_class = self._dlog_mgr_particle_class
-                elif 'DLOGP' in fields[3]:
-                    if fields[4] == 'istatus:':  # 2014/09/15 00:54:26.910 DAT DLOGP5 istatus: ...
+                elif 'DLOGP' in l2:
+                    if l3 == 'istatus:':  # 2014/09/15 00:54:26.910 DAT DLOGP5 istatus: ...
                         regex_match = re.match(DLOG_STATUS_REGEX, line)
                         particle_class = self._dlog_status_particle_class
-                    elif fields[5] == 'CB_AARM':  # 2014/09/15 22:22:50.917 DAT DLOGP1 3DM CB_AARM ...
+                    elif l4 == 'CB_AARM':  # 2014/09/15 22:22:50.917 DAT DLOGP1 3DM CB_AARM ...
                         regex_match = re.match(DLOG_AARM_REGEX, line)
                         particle_class = self._dlog_aarm_particle_class
-                elif fields[4] == 'NTP:':  # 2014/09/15 00:04:20.260 DAT D_STATUS NTP: ...
+                elif l3 == 'NTP:':  # 2014/09/15 00:04:20.260 DAT D_STATUS NTP: ...
                     regex_match = re.match(D_STATUS_NTP_REGEX, line)
                     particle_class = self._status_particle_class
 
@@ -1160,9 +1155,6 @@ class CgDclEngDclParser(SimpleParser):
 
             else:
                 log.debug("Non-match .. ignoring line: %r", line)
-
-            # Read the next line in the file
-            line = self._stream_handle.readline()
 
         # Set an indication that the file was fully parsed
         self._file_parsed = True

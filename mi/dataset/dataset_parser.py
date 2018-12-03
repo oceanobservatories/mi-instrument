@@ -123,8 +123,8 @@ class Parser(object):
 
         try:
             if regex is None or regex.match(raw_data):
-                particle = particle_class(raw_data, port_timestamp=port_timestamp, internal_timestamp=internal_timestamp,
-                                          preferred_timestamp=preferred_ts)
+                particle = particle_class(raw_data, port_timestamp=port_timestamp,
+                                          internal_timestamp=internal_timestamp, preferred_timestamp=preferred_ts)
 
                 # need to actually parse the particle fields to find out of there are errors
                 particle.generate_dict()
