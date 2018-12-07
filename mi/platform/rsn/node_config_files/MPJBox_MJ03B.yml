@@ -1,11 +1,11 @@
 node_meta_data:
   description: MPJbox Ashes
   location: ASHS
-  node_id_name: SN0027-MJ03B
+  node_id_name: SN0033-MJ03B
   node_type: MPJBox
   oms_sample_rate: 5
   reference_designator: RS03ASHS-MJ03B
-  serial_number: SN0027
+  serial_number: SN0033
   read_only_mode: True
 
 node_streams:

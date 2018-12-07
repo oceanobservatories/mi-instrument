@@ -174,3 +174,11 @@ git fetch upstream --tags
 ## Build Anaconda Package
 
 See the [ooi-config](https://github.com/oceanobservatories/ooi-config) repository for instructions. 
+
+# Tools
+
+The following tools are available in the project (WORK IN PROGRESS):
+
+| Name | Description |
+| --- | --- |
+| [zplsc_echogram_generator](mi/dataset/driver/zplsc_c/README.md) | Generates echograms from raw sensor data files. |

@@ -1,11 +1,11 @@
 node_meta_data:
   description: Off Shore BEP
   location: OSBP
-  node_id_name: SN0008-LJ01C
+  node_id_name: SN0005-LJ01C
   node_type: LPJBox
   oms_sample_rate: 5
   reference_designator: CE04OSBP-LJ01C
-  serial_number: SN0008
+  serial_number: SN0005
   read_only_mode: True
 
 node_streams:

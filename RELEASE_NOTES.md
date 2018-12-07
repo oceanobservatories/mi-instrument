@@ -1,8 +1,14 @@
-# Version 0.6.9
+# Version 0.7.0
 
 * Issue #13713 - prevent cg_dcl_eng parser from hanging on ingest
+   * Encoding errors will no longer result in parser exiting prematurely (all parsers)
    * Corrected regex resulting in catastrophic backtracking
    * Optimized file parsing logic
+
+# Version 0.6.9
+
+* Issue #13722 - Platform node deployment update
+   * Updated serial numbers for platform engineering nodes for most recent deployment
 
 # Version 0.6.8
 

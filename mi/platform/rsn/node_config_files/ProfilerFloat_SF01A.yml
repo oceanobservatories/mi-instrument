@@ -1,11 +1,11 @@
 node_meta_data:
   description: Profiler Float
   location: N/A
-  node_id_name: SN0143-SF01A
+  node_id_name: SN0142-SF01A
   node_type: ProfilerFloat
   oms_sample_rate: 5
   reference_designator: RS01SBPS-SF01A
-  serial_number: SN0143
+  serial_number: SN0142
   read_only_mode: True
 
 node_streams:

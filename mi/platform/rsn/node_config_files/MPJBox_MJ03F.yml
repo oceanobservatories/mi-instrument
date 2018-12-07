@@ -1,11 +1,11 @@
 node_meta_data:
   description: MPJBox Central Caldera
   location: CCAL
-  node_id_name: SN0031-MJ03F
+  node_id_name: SN0023-MJ03F
   node_type: MPJBox
   oms_sample_rate: 5
   reference_designator: RS03CCAL-MJ03F
-  serial_number: SN0031
+  serial_number: SN0023
   read_only_mode: True
 
 node_streams:

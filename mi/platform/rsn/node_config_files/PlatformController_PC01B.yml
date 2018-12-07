@@ -1,11 +1,11 @@
 node_meta_data:
   description: Platform Controller
   location: N/A
-  node_id_name: SN0204-PC01B
+  node_id_name: SN0102-PC01B
   node_type: PlatformController
   oms_sample_rate: 5
   reference_designator: CE04OSPS-PC01B
-  serial_number: SN0204
+  serial_number: SN0102
   read_only_mode: True
 
 node_streams:
