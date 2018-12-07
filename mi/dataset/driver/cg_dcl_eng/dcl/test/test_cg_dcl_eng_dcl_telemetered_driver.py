@@ -3,7 +3,8 @@
 import os
 import unittest
 import yaml
-import ast
+# noinspection PyUnresolvedReferences
+import ast  # for debugging (ast.literal)
 
 from mi.core.log import log
 from mi.dataset.dataset_driver import ParticleDataHandler
@@ -39,29 +40,29 @@ class DriverTest(unittest.TestCase):
                 log.warn('creating yaml output file for regression testing - commit %s', yaml_file)
                 yaml.dump(particles, stream, default_flow_style=False)
 
-    def test_one(self):
+    def test_base(self):
         # log.setLevel('DEBUG')
 
         source_file_path = os.path.join(RESOURCE_PATH, '20140915.syslog.log')
 
-        particle_data_handler = ParticleDataHandler()  # does this do anything?
+        particle_data_handler = parse(None,
+                                      source_file_path=source_file_path,
+                                      particle_data_handler=ParticleDataHandler())
 
-        particle_data_handler = parse(None, source_file_path, particle_data_handler)
-
-        log.info("SAMPLES: %s", particle_data_handler._samples)
-        log.info("FAILURE: %s", particle_data_handler._failure)
+        log.debug("SAMPLES: %s", particle_data_handler._samples)
+        log.debug("FAILURE: %s", particle_data_handler._failure)
 
         self.assertEquals(particle_data_handler._failure, False)
         self.assertNoParticleRegression(source_file_path, particle_data_handler)
 
     def test_13694(self):
+        # log.setLevel('DEBUG')
+
         source_file_path = os.path.join(RESOURCE_PATH, '20181010-bad.syslog.log')
-        particle_data_handler = ParticleDataHandler()
         particle_data_handler = parse(None,
                                       source_file_path=source_file_path,
-                                      particle_data_handler=particle_data_handler)
+                                      particle_data_handler=ParticleDataHandler())
 
-        log.setLevel('DEBUG')
         log.debug('SAMPLES: %s', particle_data_handler._samples)
         log.debug('FAILURE: %s', particle_data_handler._failure)
 
@@ -70,8 +71,8 @@ class DriverTest(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    test = DriverTest('test_one')
-    test.test_one()
+    test = DriverTest('test_base')
+    test.test_base()
 
     test = DriverTest('test_13694')
     test.test_13694()

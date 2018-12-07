@@ -19,7 +19,7 @@ from mi.core.instrument.dataset_data_particle import DataParticle, DataParticleK
 from mi.dataset.dataset_parser import SimpleParser, DataSetDriverConfigKeys
 from mi.dataset.parser.common_regexes import END_OF_LINE_REGEX, \
     DATE_YYYY_MM_DD_REGEX, TIME_HR_MIN_SEC_MSEC_REGEX, INT_REGEX, \
-    TIME_HR_MIN_SEC_REGEX, FLOAT_REGEX, ASCII_HEX_CHAR_REGEX
+    TIME_HR_MIN_SEC_REGEX, FLOAT_REGEX, ASCII_HEX_CHAR_REGEX, DCL_TIMESTAMP_REGEX
 
 import mi.dataset.parser.utilities
 
@@ -490,7 +490,7 @@ ERROR_REGEX = ERR_ALM_WNG_LOG_TYPE_REGEX + \
 # 2013/12/20 01:30:45.503 DAT D_GPS 2013/12/20 01:30:44.848 GPS 40.136760 -70.769495 3.40 070.90 2 9 0.80 0.80 201213
 # 013044 4008.2056 N 07046.1697 W
 GPS_REGEX_TUPLE = [
-    (ParticleKey.HEADER_TIMESTAMP, '\S+\s+\S+'),  # 2013/12/20 01:30:45.503
+    (ParticleKey.HEADER_TIMESTAMP, DCL_TIMESTAMP_REGEX),  # 2013/12/20 01:30:45.503
     (None, 'DAT'),
     (None, 'D_GPS'),
     (ParticleKey.MESSAGE_SENT_TIMESTAMP, '\S+\s+\S+'),  # 2013/12/20 01:30:44.848
@@ -505,8 +505,8 @@ GPS_REGEX_TUPLE = [
     (ParticleKey.GPS_ALTITUDE, '\S+'),  # 0.80
     (ParticleKey.DATE_OF_FIX, '\S+'),  # 201213
     (ParticleKey.TIME_OF_FIX, '\S+'),  # 013044
-    (ParticleKey.LATITUDE_ALT_FORMAT, '\S+\s\S'),  # 4008.2056 N
-    (ParticleKey.LONGITUDE_ALT_FORMAT, '\S+\s\S'),  # 07046.1697 W
+    (ParticleKey.LATITUDE_ALT_FORMAT, '\S+\s[NS]'),  # 4008.2056 N
+    (ParticleKey.LONGITUDE_ALT_FORMAT, '\S+\s[WE]$'),  # 07046.1697 W
 ]
 
 GPS_REGEX = build_regex_string(GPS_REGEX_TUPLE)
@@ -1071,6 +1071,31 @@ class CgDclEngDclParser(SimpleParser):
             self._dlog_aarm_particle_class = particle_classes_dict[
                 ParticleClassTypes.DLOG_AARM_PARTICLE_CLASS]
 
+            self._particle_classes = {
+                ParticleClassTypes.MSG_COUNTS_PARTICLE_CLASS: self._msg_counts_particle_class,
+                ParticleClassTypes.CPU_UPTIME_PARTICLE_CLASS: self._cpu_uptime_particle_class,
+                ParticleClassTypes.ERROR_PARTICLE_CLASS: self._error_particle_class,
+                ParticleClassTypes.GPS_PARTICLE_CLASS: self._gps_particle_class,
+                ParticleClassTypes.PPS_PARTICLE_CLASS: self._pps_particle_class,
+                ParticleClassTypes.SUPERV_PARTICLE_CLASS: self._superv_particle_class,
+                ParticleClassTypes.DLOG_MGR_PARTICLE_CLASS: self._dlog_mgr_particle_class,
+                ParticleClassTypes.DLOG_STATUS_PARTICLE_CLASS: self._dlog_status_particle_class,
+                ParticleClassTypes.DLOG_AARM_PARTICLE_CLASS: self._dlog_aarm_particle_class,
+                ParticleClassTypes.STATUS_PARTICLE_CLASS: self._status_particle_class,
+            }
+            self._particle_regex = {
+                ParticleClassTypes.MSG_COUNTS_PARTICLE_CLASS: MSG_COUNTS_REGEX,
+                ParticleClassTypes.CPU_UPTIME_PARTICLE_CLASS: CPU_UPTIME_REGEX,
+                ParticleClassTypes.ERROR_PARTICLE_CLASS: ERROR_REGEX,
+                ParticleClassTypes.GPS_PARTICLE_CLASS: GPS_REGEX,
+                ParticleClassTypes.PPS_PARTICLE_CLASS: PPS_REGEX,
+                ParticleClassTypes.SUPERV_PARTICLE_CLASS: SUPERV_REGEX,
+                ParticleClassTypes.DLOG_MGR_PARTICLE_CLASS: DLOG_MGR_REGEX,
+                ParticleClassTypes.DLOG_STATUS_PARTICLE_CLASS: DLOG_STATUS_REGEX,
+                ParticleClassTypes.DLOG_AARM_PARTICLE_CLASS: DLOG_AARM_REGEX,
+                ParticleClassTypes.STATUS_PARTICLE_CLASS: D_STATUS_NTP_REGEX,
+            }
+
         except (KeyError, AttributeError):
             message = "Invalid cg_dcl_eng_dcl configuration parameters."
             log.error("Error: %s", message)
@@ -1087,11 +1112,8 @@ class CgDclEngDclParser(SimpleParser):
         This method will parse a cg_Dcl_eng_Dcl input file and collect the
         particles.
         """
-        gps_count = 0
-
         for line in self._stream_handle:
             particle_class = None
-            regex_match = None
 
             log.trace("Line: %s", line)
             fields = line.split()
@@ -1100,56 +1122,49 @@ class CgDclEngDclParser(SimpleParser):
 
             l1, l2, l3, l4 = fields[2:6]
 
-            # Identify the log message type
+            # Identify the particle type
             if l1 == 'MSG':
                 if l2 == 'D_STATUS':
                     if l3 == 'STATUS:':  # e.g. 2013/12/20 00:05:39.802 MSG D_STATUS STATUS: ...
-                        regex_match = re.match(MSG_COUNTS_REGEX, line)
-                        particle_class = self._msg_counts_particle_class
+                        particle_class = ParticleClassTypes.MSG_COUNTS_PARTICLE_CLASS
                     elif l3 == 'CPU':  # 2013/12/20 00:10:40.248 MSG D_STATUS CPU ...
-                        regex_match = re.match(CPU_UPTIME_REGEX, line)
-                        particle_class = self._cpu_uptime_particle_class
+                        particle_class = ParticleClassTypes.CPU_UPTIME_PARTICLE_CLASS
                 elif l2 == 'D_CTL':
                     continue  # ignore
             elif l1 in ['ERR', 'ALM', 'WNG']:  # 2013/12/20 01:33:45.515 ALM ...
-                regex_match = re.match(ERROR_REGEX, line)
-                particle_class = self._error_particle_class
+                particle_class = ParticleClassTypes.ERROR_PARTICLE_CLASS
             elif l1 == 'DAT':
                 if l2 == 'D_GPS':  # 2013/12/20 01:30:45.503 DAT D_GPS ...
-                    regex_match = re.match(GPS_REGEX, line)
-                    gps_count = gps_count + 1
-                    particle_class = self._gps_particle_class
+                    particle_class = ParticleClassTypes.GPS_PARTICLE_CLASS
                 elif l2 == 'D_PPS':  # 2013/12/20 01:30:45.504 DAT D_PPS D_PPS: ...
-                    regex_match = re.match(PPS_REGEX, line)
-                    particle_class = self._pps_particle_class
+                    particle_class = ParticleClassTypes.PPS_PARTICLE_CLASS
                 elif l2 == 'SUPERV':  # 2013/12/20 01:20:44.908 DAT SUPERV ...
-                    regex_match = re.match(SUPERV_REGEX, line)
-                    particle_class = self._superv_particle_class
+                    particle_class = ParticleClassTypes.SUPERV_PARTICLE_CLASS
                 elif l2 == 'DLOG_MGR':  # 2013/12/20 18:57:10.822 DAT DLOG_MGR ...
-                    regex_match = re.match(DLOG_MGR_REGEX, line)
-                    particle_class = self._dlog_mgr_particle_class
+                    particle_class = ParticleClassTypes.DLOG_MGR_PARTICLE_CLASS
                 elif 'DLOGP' in l2:
                     if l3 == 'istatus:':  # 2014/09/15 00:54:26.910 DAT DLOGP5 istatus: ...
-                        regex_match = re.match(DLOG_STATUS_REGEX, line)
-                        particle_class = self._dlog_status_particle_class
+                        particle_class = ParticleClassTypes.DLOG_STATUS_PARTICLE_CLASS
                     elif l4 == 'CB_AARM':  # 2014/09/15 22:22:50.917 DAT DLOGP1 3DM CB_AARM ...
-                        regex_match = re.match(DLOG_AARM_REGEX, line)
-                        particle_class = self._dlog_aarm_particle_class
+                        particle_class = ParticleClassTypes.DLOG_AARM_PARTICLE_CLASS
                 elif l3 == 'NTP:':  # 2014/09/15 00:04:20.260 DAT D_STATUS NTP: ...
-                    regex_match = re.match(D_STATUS_NTP_REGEX, line)
-                    particle_class = self._status_particle_class
+                    particle_class = ParticleClassTypes.STATUS_PARTICLE_CLASS
 
             # Extract the particle
-            if particle_class and regex_match:
+            if particle_class:
+                regex_match = re.match(self._particle_regex[particle_class], line)
+                if not regex_match:
+                    log.error('failed to match expected particle regex: %s not in %s',
+                              self._particle_regex[particle_class], line)
+                    continue
                 gdict = regex_match.groupdict()
-                log.trace("regex match: %s", gdict)
 
                 try:
-                    sample = self._extract_sample(particle_class, None, gdict)
+                    sample = self._extract_sample(self._particle_classes[particle_class], None, gdict)
                     if sample:
                         self._record_buffer.append(sample)
                     else:
-                        log.warning('unable to extract sample from line: %r', line)
+                        log.error('failed to extract sample from line: %r', line)
                 except Exception as e:
                     log.exception('exception (%r) extracting sample from line: %r', e, line)
 

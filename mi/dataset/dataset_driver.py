@@ -54,7 +54,7 @@ class DataSetDriver(object):
             except Exception as e:
                 log.error(e)
                 self._particle_data_handler.setParticleDataCaptureFailure()
-                continue
+                break
 
 
 class SimpleDatasetDriver(DataSetDriver):

@@ -58,3 +58,6 @@ THREE_CHAR_DAY_OF_WEEK_REGEX = r'(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun)'
 # Date related regex patterns
 DATE_DAY_REGEX = '\d{2}'
 DATE_YEAR_REGEX = '\d{4}'
+
+DCL_TIMESTAMP_REGEX = '^' + DATE_YYYY_MM_DD_REGEX + '\s+' + TIME_HR_MIN_SEC_MSEC_REGEX
+
