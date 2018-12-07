@@ -227,7 +227,8 @@ class CgParserUnitTestCase(ParserUnitTestCase):
             log.debug("Result: %s", particles)
 
             self.assertEqual(len(particles), 13)
-            self.assertEqual(self._exceptions_detected, 30)
+            # PR 13713 - now preventing exceptions before extracting sample
+            self.assertEqual(self._exceptions_detected, 0)
             self.assert_particles(particles, 'recov.invalid.syslog.yml', RESOURCE_PATH)
 
         self._exceptions_detected = 0
@@ -240,7 +241,7 @@ class CgParserUnitTestCase(ParserUnitTestCase):
             log.debug("Result: %s", particles)
 
             self.assertEqual(len(particles), 13)
-            self.assertEqual(self._exceptions_detected, 30)
+            self.assertEqual(self._exceptions_detected, 0)
             self.assert_particles(particles, 'telem.invalid.syslog.yml', RESOURCE_PATH)
 
         log.debug('===== END TEST INVALID FIELDS =====')
