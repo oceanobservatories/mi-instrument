@@ -1,21 +1,5 @@
 #!/usr/bin/env python
 
-import re
-import struct
-import binascii
-
-from mi.core.log import get_logger
-
-from mi.dataset.parser.sio_mule_common import SioParser, SIO_HEADER_MATCHER, SIO_HEADER_GROUP_ID, \
-    SIO_HEADER_GROUP_TIMESTAMP
-
-from datetime import datetime
-from mi.dataset.parser import utilities
-
-from mi.core.common import BaseEnum
-from mi.core.exceptions import RecoverableSampleException, UnexpectedDataException
-from mi.core.instrument.dataset_data_particle import DataParticle, DataParticleKey, DataParticleValue
-
 """
 @package mi.dataset.parser.adcps_jln_sio
 @file mi/dataset/parser/adcps_jln_sio.py
@@ -26,7 +10,21 @@ from mi.core.instrument.dataset_data_particle import DataParticle, DataParticleK
 __author__ = 'Emily Hahn'
 __license__ = 'Apache 2.0'
 
+import re
+import struct
+import binascii
+
+from mi.core.log import get_logger
 log = get_logger()
+
+from mi.dataset.parser.sio_mule_common import SioParser, SIO_HEADER_MATCHER, SIO_HEADER_GROUP_ID, \
+    SIO_HEADER_GROUP_TIMESTAMP
+
+from mi.dataset.parser import utilities
+
+from mi.core.common import BaseEnum
+from mi.core.exceptions import RecoverableSampleException, UnexpectedDataException
+from mi.core.instrument.dataset_data_particle import DataParticle, DataParticleKey, DataParticleValue
 
 
 class DataParticleType(BaseEnum):
@@ -39,6 +37,13 @@ class AdcpsJlnSioDataParticleKey(BaseEnum):
     UNIT_ID = 'unit_id'
     FIRMWARE_VERSION = 'firmware_version'
     FIRMWARE_REVISION = 'firmware_revision'
+    ADCPS_JLN_YEAR = 'adcps_jln_year'
+    ADCPS_JLN_MONTH = 'adcps_jln_month'
+    ADCPS_JLN_DAY = 'adcps_jln_day'
+    ADCPS_JLN_HOUR = 'adcps_jln_hour'
+    ADCPS_JLN_MINUTE = 'adcps_jln_minute'
+    ADCPS_JLN_SECOND = 'adcps_jln_second'
+    ADCPS_JLN_HSEC = 'adcps_jln_hsec'
     ADCPS_JLN_HEADING = 'adcps_jln_heading'
     ADCPS_JLN_PITCH = 'adcps_jln_pitch'
     ADCPS_JLN_ROLL = 'adcps_jln_roll'
@@ -187,16 +192,6 @@ class AdcpsJlnSioDataParticle(DataParticle):
                 log.warn("Error %s while decoding parameters in data [%s]", ex, match.group(0))
                 raise RecoverableSampleException("Error (%s) while decoding parameters in data: [%s]" %
                                                 (ex, match.group(0)))
-            # format corrections
-            heading = fields[7] / 100.0  # centi-degrees to degrees
-            pitch = fields[8] / 100.0  # centi-degrees to degrees
-            roll = fields[9] / 100.0  # centi-degrees to degrees
-            temperature = fields[10] / 100.0  # centi-degrees Celsius to degrees Celsius
-
-            # internal timestamp
-            date_fields[6] *= 10000  # hundredths to microseconds
-            adcps_timestamp = (datetime(*date_fields) - datetime(1900, 1, 1)).total_seconds()
-            self.set_internal_timestamp(adcps_timestamp)
 
             result = [self._encode_value(AdcpsJlnSioDataParticleKey.CONTROLLER_TIMESTAMP, self.raw_data[0:8],
                                          AdcpsJlnSioDataParticle.encode_int_16),
@@ -204,10 +199,17 @@ class AdcpsJlnSioDataParticle(DataParticle):
                       self._encode_value(AdcpsJlnSioDataParticleKey.UNIT_ID, fields[3], int),
                       self._encode_value(AdcpsJlnSioDataParticleKey.FIRMWARE_VERSION, fields[4], int),
                       self._encode_value(AdcpsJlnSioDataParticleKey.FIRMWARE_REVISION, fields[5], int),
-                      self._encode_value(AdcpsJlnSioDataParticleKey.ADCPS_JLN_HEADING, heading, float),
-                      self._encode_value(AdcpsJlnSioDataParticleKey.ADCPS_JLN_PITCH, pitch, float),
-                      self._encode_value(AdcpsJlnSioDataParticleKey.ADCPS_JLN_ROLL, roll, float),
-                      self._encode_value(AdcpsJlnSioDataParticleKey.ADCPS_JLN_TEMP, temperature, int),
+                      self._encode_value(AdcpsJlnSioDataParticleKey.ADCPS_JLN_YEAR, date_fields[0], int),
+                      self._encode_value(AdcpsJlnSioDataParticleKey.ADCPS_JLN_MONTH, date_fields[1], int),
+                      self._encode_value(AdcpsJlnSioDataParticleKey.ADCPS_JLN_DAY, date_fields[2], int),
+                      self._encode_value(AdcpsJlnSioDataParticleKey.ADCPS_JLN_HOUR, date_fields[3], int),
+                      self._encode_value(AdcpsJlnSioDataParticleKey.ADCPS_JLN_MINUTE, date_fields[4], int),
+                      self._encode_value(AdcpsJlnSioDataParticleKey.ADCPS_JLN_SECOND, date_fields[5], int),
+                      self._encode_value(AdcpsJlnSioDataParticleKey.ADCPS_JLN_HSEC, date_fields[6], int),
+                      self._encode_value(AdcpsJlnSioDataParticleKey.ADCPS_JLN_HEADING, fields[7], int),
+                      self._encode_value(AdcpsJlnSioDataParticleKey.ADCPS_JLN_PITCH, fields[8], int),
+                      self._encode_value(AdcpsJlnSioDataParticleKey.ADCPS_JLN_ROLL, fields[9], int),
+                      self._encode_value(AdcpsJlnSioDataParticleKey.ADCPS_JLN_TEMP, fields[10], int),
                       self._encode_value(AdcpsJlnSioDataParticleKey.ADCPS_JLN_PRESSURE, fields[11], int),
                       self._encode_value(AdcpsJlnSioDataParticleKey.VELOCITY_PO_ERROR_FLAG, fields[12] & 1, int),
                       self._encode_value(AdcpsJlnSioDataParticleKey.VELOCITY_PO_UP_FLAG, (fields[12] & 2) >> 1, int),

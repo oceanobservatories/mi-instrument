@@ -123,7 +123,6 @@ class SBE43Mixin(SeaBird16plusMixin):
     #  Instrument output (driver input) Definitions
     ###
     VALID_SAMPLE = "04570F0A1E910828FC47BC59F1" + NEWLINE
-    VALID_SAMPLE_2 = "08440E168C850BEF2636F1" + NEWLINE
 
     VALID_GETHD_RESPONSE = "" + \
 "<HardwareData DeviceType = 'SBE19plus' SerialNumber = '01906914'>" + NEWLINE + \
@@ -559,7 +558,6 @@ class Sbe16plus43UnitTestCase(Sbe16plusUnitTestCase, SBE43Mixin):
         chunker = StringChunker(SBE43Protocol.sieve_function)
 
         self.assert_chunker_sample(chunker, self.VALID_SAMPLE)
-        self.assert_chunker_sample(chunker, self.VALID_SAMPLE_2)
         self.assert_chunker_sample_with_noise(chunker, self.VALID_SAMPLE)
         self.assert_chunker_fragmented_sample(chunker, self.VALID_SAMPLE)
         self.assert_chunker_combined_sample(chunker, self.VALID_SAMPLE)
