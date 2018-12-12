@@ -361,19 +361,19 @@ class DataParticle(object):
 
             if encoding_function in [int, float]:
                 if vmin and encoded_val < vmin:
-                    log.error('Particle value (%s) below minimum threshold (%s < %s). Value', name, value, vmin)
+                    log.error('Particle value (%s) below minimum threshold (%s < %s)', name, value, vmin)
                     self._encoding_errors.append({name: value})
                 elif vmax and encoded_val > vmax:
-                    log.error('Particle value (%s) exceeds maximum threshold (%s > %s). Value', name, value, vmax)
+                    log.error('Particle value (%s) exceeds maximum threshold (%s > %s)', name, value, vmax)
                     self._encoding_errors.append({name: value})
             elif hasattr(encoded_val, '__len__'):
                 try:
                     if vmin and len(encoded_val) < vmin:
-                        log.error('Particle value (%s) length below minimum threshold (%s < %s). Value',
+                        log.error('Particle value (%s) length below minimum threshold (%s < %s)',
                                   name, value, vmin)
                         self._encoding_errors.append({name: value})
                     elif vmax and len(encoded_val) > vmax:
-                        log.error('Particle value (%s) length exceeds maximum threshold (%s > %s). Value',
+                        log.error('Particle value (%s) length exceeds maximum threshold (%s > %s)',
                                   name, value, vmax)
                         self._encoding_errors.append({name: value})
                 # in the unlikely event that a range was specified and the encoding object created a bogus len()
