@@ -13,7 +13,7 @@ Initial Release
 
 from mi.dataset.dataset_parser import DataSetDriverConfigKeys
 from mi.dataset.dataset_driver import SimpleDatasetDriver
-from mi.dataset.parser.cg_dcl_eng_dcl import CgDclEngDclParser, CgDclEngDclParticleClassTypes, \
+from mi.dataset.parser.cg_dcl_eng_dcl import CgDclEngDclParser, ParticleClassTypes, \
     CgDclEngDclMsgCountsTelemeteredDataParticle, \
     CgDclEngDclCpuUptimeTelemeteredDataParticle, \
     CgDclEngDclErrorTelemeteredDataParticle, \
@@ -57,25 +57,25 @@ class CgDclEngDclTelemeteredDriver(SimpleDatasetDriver):
             DataSetDriverConfigKeys.PARTICLE_MODULE: 'mi.dataset.parser.cg_dcl_eng_dcl',
             DataSetDriverConfigKeys.PARTICLE_CLASS: None,
             DataSetDriverConfigKeys.PARTICLE_CLASSES_DICT: {
-                CgDclEngDclParticleClassTypes.MSG_COUNTS_PARTICLE_CLASS:
+                ParticleClassTypes.MSG_COUNTS_PARTICLE_CLASS:
                     CgDclEngDclMsgCountsTelemeteredDataParticle,
-                CgDclEngDclParticleClassTypes.CPU_UPTIME_PARTICLE_CLASS:
+                ParticleClassTypes.CPU_UPTIME_PARTICLE_CLASS:
                     CgDclEngDclCpuUptimeTelemeteredDataParticle,
-                CgDclEngDclParticleClassTypes.ERROR_PARTICLE_CLASS:
+                ParticleClassTypes.ERROR_PARTICLE_CLASS:
                     CgDclEngDclErrorTelemeteredDataParticle,
-                CgDclEngDclParticleClassTypes.GPS_PARTICLE_CLASS:
+                ParticleClassTypes.GPS_PARTICLE_CLASS:
                     CgDclEngDclGpsTelemeteredDataParticle,
-                CgDclEngDclParticleClassTypes.PPS_PARTICLE_CLASS:
+                ParticleClassTypes.PPS_PARTICLE_CLASS:
                     CgDclEngDclPpsTelemeteredDataParticle,
-                CgDclEngDclParticleClassTypes.SUPERV_PARTICLE_CLASS:
+                ParticleClassTypes.SUPERV_PARTICLE_CLASS:
                     CgDclEngDclSupervTelemeteredDataParticle,
-                CgDclEngDclParticleClassTypes.DLOG_MGR_PARTICLE_CLASS:
+                ParticleClassTypes.DLOG_MGR_PARTICLE_CLASS:
                     CgDclEngDclDlogMgrTelemeteredDataParticle,
-                CgDclEngDclParticleClassTypes.DLOG_STATUS_PARTICLE_CLASS:
+                ParticleClassTypes.DLOG_STATUS_PARTICLE_CLASS:
                     CgDclEngDclDlogStatusTelemeteredDataParticle,
-                CgDclEngDclParticleClassTypes.STATUS_PARTICLE_CLASS:
+                ParticleClassTypes.STATUS_PARTICLE_CLASS:
                     CgDclEngDclStatusTelemeteredDataParticle,
-                CgDclEngDclParticleClassTypes.DLOG_AARM_PARTICLE_CLASS:
+                ParticleClassTypes.DLOG_AARM_PARTICLE_CLASS:
                     CgDclEngDclDlogAarmTelemeteredDataParticle,
             }
 
@@ -86,5 +86,3 @@ class CgDclEngDclTelemeteredDriver(SimpleDatasetDriver):
                                    self._exception_callback)
 
         return parser
-
-

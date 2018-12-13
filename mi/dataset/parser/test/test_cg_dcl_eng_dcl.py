@@ -14,7 +14,7 @@ from mi.core.exceptions import ConfigurationException
 from mi.core.log import get_logger
 from mi.dataset.dataset_parser import DataSetDriverConfigKeys
 from mi.dataset.driver.cg_dcl_eng.dcl.resource import RESOURCE_PATH
-from mi.dataset.parser.cg_dcl_eng_dcl import CgDclEngDclParser, CgDclEngDclParticleClassTypes, \
+from mi.dataset.parser.cg_dcl_eng_dcl import CgDclEngDclParser, ParticleClassTypes, \
     CgDclEngDclMsgCountsRecoveredDataParticle, CgDclEngDclMsgCountsTelemeteredDataParticle, \
     CgDclEngDclCpuUptimeRecoveredDataParticle, CgDclEngDclCpuUptimeTelemeteredDataParticle, \
     CgDclEngDclErrorRecoveredDataParticle, CgDclEngDclErrorTelemeteredDataParticle, \
@@ -46,25 +46,25 @@ class CgParserUnitTestCase(ParserUnitTestCase):
             DataSetDriverConfigKeys.PARTICLE_MODULE: 'mi.dataset.parser.cg_dcl_eng_dcl',
             DataSetDriverConfigKeys.PARTICLE_CLASS: None,
             DataSetDriverConfigKeys.PARTICLE_CLASSES_DICT: {
-                CgDclEngDclParticleClassTypes.MSG_COUNTS_PARTICLE_CLASS:
+                ParticleClassTypes.MSG_COUNTS_PARTICLE_CLASS:
                     CgDclEngDclMsgCountsRecoveredDataParticle,
-                CgDclEngDclParticleClassTypes.CPU_UPTIME_PARTICLE_CLASS:
+                ParticleClassTypes.CPU_UPTIME_PARTICLE_CLASS:
                     CgDclEngDclCpuUptimeRecoveredDataParticle,
-                CgDclEngDclParticleClassTypes.ERROR_PARTICLE_CLASS:
+                ParticleClassTypes.ERROR_PARTICLE_CLASS:
                     CgDclEngDclErrorRecoveredDataParticle,
-                CgDclEngDclParticleClassTypes.GPS_PARTICLE_CLASS:
+                ParticleClassTypes.GPS_PARTICLE_CLASS:
                     CgDclEngDclGpsRecoveredDataParticle,
-                CgDclEngDclParticleClassTypes.PPS_PARTICLE_CLASS:
+                ParticleClassTypes.PPS_PARTICLE_CLASS:
                     CgDclEngDclPpsRecoveredDataParticle,
-                CgDclEngDclParticleClassTypes.SUPERV_PARTICLE_CLASS:
+                ParticleClassTypes.SUPERV_PARTICLE_CLASS:
                     CgDclEngDclSupervRecoveredDataParticle,
-                CgDclEngDclParticleClassTypes.DLOG_MGR_PARTICLE_CLASS:
+                ParticleClassTypes.DLOG_MGR_PARTICLE_CLASS:
                     CgDclEngDclDlogMgrRecoveredDataParticle,
-                CgDclEngDclParticleClassTypes.DLOG_STATUS_PARTICLE_CLASS:
+                ParticleClassTypes.DLOG_STATUS_PARTICLE_CLASS:
                     CgDclEngDclDlogStatusRecoveredDataParticle,
-                CgDclEngDclParticleClassTypes.STATUS_PARTICLE_CLASS:
+                ParticleClassTypes.STATUS_PARTICLE_CLASS:
                     CgDclEngDclStatusRecoveredDataParticle,
-                CgDclEngDclParticleClassTypes.DLOG_AARM_PARTICLE_CLASS:
+                ParticleClassTypes.DLOG_AARM_PARTICLE_CLASS:
                     CgDclEngDclDlogAarmRecoveredDataParticle,
                 }
         }
@@ -73,25 +73,25 @@ class CgParserUnitTestCase(ParserUnitTestCase):
             DataSetDriverConfigKeys.PARTICLE_MODULE: 'mi.dataset.parser.cg_dcl_eng_dcl',
             DataSetDriverConfigKeys.PARTICLE_CLASS: None,
             DataSetDriverConfigKeys.PARTICLE_CLASSES_DICT: {
-                CgDclEngDclParticleClassTypes.MSG_COUNTS_PARTICLE_CLASS:
+                ParticleClassTypes.MSG_COUNTS_PARTICLE_CLASS:
                     CgDclEngDclMsgCountsTelemeteredDataParticle,
-                CgDclEngDclParticleClassTypes.CPU_UPTIME_PARTICLE_CLASS:
+                ParticleClassTypes.CPU_UPTIME_PARTICLE_CLASS:
                     CgDclEngDclCpuUptimeTelemeteredDataParticle,
-                CgDclEngDclParticleClassTypes.ERROR_PARTICLE_CLASS:
+                ParticleClassTypes.ERROR_PARTICLE_CLASS:
                     CgDclEngDclErrorTelemeteredDataParticle,
-                CgDclEngDclParticleClassTypes.GPS_PARTICLE_CLASS:
+                ParticleClassTypes.GPS_PARTICLE_CLASS:
                     CgDclEngDclGpsTelemeteredDataParticle,
-                CgDclEngDclParticleClassTypes.PPS_PARTICLE_CLASS:
+                ParticleClassTypes.PPS_PARTICLE_CLASS:
                     CgDclEngDclPpsTelemeteredDataParticle,
-                CgDclEngDclParticleClassTypes.SUPERV_PARTICLE_CLASS:
+                ParticleClassTypes.SUPERV_PARTICLE_CLASS:
                     CgDclEngDclSupervTelemeteredDataParticle,
-                CgDclEngDclParticleClassTypes.DLOG_MGR_PARTICLE_CLASS:
+                ParticleClassTypes.DLOG_MGR_PARTICLE_CLASS:
                     CgDclEngDclDlogMgrTelemeteredDataParticle,
-                CgDclEngDclParticleClassTypes.DLOG_STATUS_PARTICLE_CLASS:
+                ParticleClassTypes.DLOG_STATUS_PARTICLE_CLASS:
                     CgDclEngDclDlogStatusTelemeteredDataParticle,
-                CgDclEngDclParticleClassTypes.STATUS_PARTICLE_CLASS:
+                ParticleClassTypes.STATUS_PARTICLE_CLASS:
                     CgDclEngDclStatusTelemeteredDataParticle,
-                CgDclEngDclParticleClassTypes.DLOG_AARM_PARTICLE_CLASS:
+                ParticleClassTypes.DLOG_AARM_PARTICLE_CLASS:
                     CgDclEngDclDlogAarmTelemeteredDataParticle,
                 }
         }
@@ -105,23 +105,23 @@ class CgParserUnitTestCase(ParserUnitTestCase):
             DataSetDriverConfigKeys.PARTICLE_MODULE: 'mi.dataset.parser.cg_dcl_eng_dcl',
             DataSetDriverConfigKeys.PARTICLE_CLASS: None,
             DataSetDriverConfigKeys.PARTICLE_CLASSES_DICT: {
-                CgDclEngDclParticleClassTypes.MSG_COUNTS_PARTICLE_CLASS:
+                ParticleClassTypes.MSG_COUNTS_PARTICLE_CLASS:
                     CgDclEngDclMsgCountsRecoveredDataParticle,
-                CgDclEngDclParticleClassTypes.CPU_UPTIME_PARTICLE_CLASS:
+                ParticleClassTypes.CPU_UPTIME_PARTICLE_CLASS:
                     CgDclEngDclCpuUptimeRecoveredDataParticle,
-                CgDclEngDclParticleClassTypes.GPS_PARTICLE_CLASS:
+                ParticleClassTypes.GPS_PARTICLE_CLASS:
                     CgDclEngDclGpsRecoveredDataParticle,
-                CgDclEngDclParticleClassTypes.PPS_PARTICLE_CLASS:
+                ParticleClassTypes.PPS_PARTICLE_CLASS:
                     CgDclEngDclPpsRecoveredDataParticle,
-                CgDclEngDclParticleClassTypes.SUPERV_PARTICLE_CLASS:
+                ParticleClassTypes.SUPERV_PARTICLE_CLASS:
                     CgDclEngDclSupervRecoveredDataParticle,
-                CgDclEngDclParticleClassTypes.DLOG_MGR_PARTICLE_CLASS:
+                ParticleClassTypes.DLOG_MGR_PARTICLE_CLASS:
                     CgDclEngDclDlogMgrRecoveredDataParticle,
-                CgDclEngDclParticleClassTypes.DLOG_STATUS_PARTICLE_CLASS:
+                ParticleClassTypes.DLOG_STATUS_PARTICLE_CLASS:
                     CgDclEngDclDlogStatusRecoveredDataParticle,
-                CgDclEngDclParticleClassTypes.STATUS_PARTICLE_CLASS:
+                ParticleClassTypes.STATUS_PARTICLE_CLASS:
                     CgDclEngDclStatusRecoveredDataParticle,
-                CgDclEngDclParticleClassTypes.DLOG_AARM_PARTICLE_CLASS:
+                ParticleClassTypes.DLOG_AARM_PARTICLE_CLASS:
                     CgDclEngDclDlogAarmRecoveredDataParticle,
                 }
         }
@@ -135,23 +135,23 @@ class CgParserUnitTestCase(ParserUnitTestCase):
             DataSetDriverConfigKeys.PARTICLE_MODULE: 'mi.dataset.parser.cg_dcl_eng_dcl',
             DataSetDriverConfigKeys.PARTICLE_CLASS: None,
             DataSetDriverConfigKeys.PARTICLE_CLASSES_DICT: {
-                CgDclEngDclParticleClassTypes.MSG_COUNTS_PARTICLE_CLASS:
+                ParticleClassTypes.MSG_COUNTS_PARTICLE_CLASS:
                     CgDclEngDclMsgCountsTelemeteredDataParticle,
-                CgDclEngDclParticleClassTypes.CPU_UPTIME_PARTICLE_CLASS:
+                ParticleClassTypes.CPU_UPTIME_PARTICLE_CLASS:
                     CgDclEngDclCpuUptimeTelemeteredDataParticle,
-                CgDclEngDclParticleClassTypes.GPS_PARTICLE_CLASS:
+                ParticleClassTypes.GPS_PARTICLE_CLASS:
                     CgDclEngDclGpsTelemeteredDataParticle,
-                CgDclEngDclParticleClassTypes.ERROR_PARTICLE_CLASS:
+                ParticleClassTypes.ERROR_PARTICLE_CLASS:
                     CgDclEngDclErrorTelemeteredDataParticle,
-                CgDclEngDclParticleClassTypes.PPS_PARTICLE_CLASS:
+                ParticleClassTypes.PPS_PARTICLE_CLASS:
                     CgDclEngDclPpsTelemeteredDataParticle,
-                CgDclEngDclParticleClassTypes.SUPERV_PARTICLE_CLASS:
+                ParticleClassTypes.SUPERV_PARTICLE_CLASS:
                     CgDclEngDclSupervTelemeteredDataParticle,
-                CgDclEngDclParticleClassTypes.DLOG_MGR_PARTICLE_CLASS:
+                ParticleClassTypes.DLOG_MGR_PARTICLE_CLASS:
                     CgDclEngDclDlogMgrTelemeteredDataParticle,
-                CgDclEngDclParticleClassTypes.STATUS_PARTICLE_CLASS:
+                ParticleClassTypes.STATUS_PARTICLE_CLASS:
                     CgDclEngDclStatusTelemeteredDataParticle,
-                CgDclEngDclParticleClassTypes.DLOG_AARM_PARTICLE_CLASS:
+                ParticleClassTypes.DLOG_AARM_PARTICLE_CLASS:
                     CgDclEngDclDlogAarmTelemeteredDataParticle,
                 }
         }
@@ -227,7 +227,8 @@ class CgParserUnitTestCase(ParserUnitTestCase):
             log.debug("Result: %s", particles)
 
             self.assertEqual(len(particles), 13)
-            self.assertEqual(self._exceptions_detected, 30)
+            # PR 13713 - now preventing exceptions before extracting sample
+            self.assertEqual(self._exceptions_detected, 0)
             self.assert_particles(particles, 'recov.invalid.syslog.yml', RESOURCE_PATH)
 
         self._exceptions_detected = 0
@@ -240,7 +241,7 @@ class CgParserUnitTestCase(ParserUnitTestCase):
             log.debug("Result: %s", particles)
 
             self.assertEqual(len(particles), 13)
-            self.assertEqual(self._exceptions_detected, 30)
+            self.assertEqual(self._exceptions_detected, 0)
             self.assert_particles(particles, 'telem.invalid.syslog.yml', RESOURCE_PATH)
 
         log.debug('===== END TEST INVALID FIELDS =====')

@@ -330,17 +330,58 @@ class DataParticle(object):
 
         return True
 
-    def _encode_value(self, name, value, encoding_function):
+    def _encode_value(self, name, value, encoding_function, value_range=None):
         """
         Encode a value using the encoding function, if it fails store the error in a queue
+
+        :param value_range  tuple containing min/max numerical values or min/max lengths
         """
         encoded_val = None
 
+        # noinspection PyBroadException
+        # - custom encoding_function exceptions are not known a priori
         try:
             encoded_val = encoding_function(value)
-        except Exception as e:
-            log.error("Data particle error encoding. Name:%s Value:%s", name, value)
+
+        except ValueError as e:
+            log.error('Unable to convert %s to %s.', encoded_val, encoding_function)
             self._encoding_errors.append({name: value})
+        except Exception as e:
+            log.error('Data particle error encoding. Name: %s Value: %s, Encoding: %s', name, value, encoding_function)
+            self._encoding_errors.append({name: value})
+
+        # optional range checking
+        if value_range:
+            try:
+                vmin, vmax = value_range
+
+            except ValueError as e:  # this only occurs as a programming error and should cause the parser to exit
+                log.exception('_encode_value must have exactly two values for tuple argument value_range')
+                raise ValueError(e)
+
+            if encoding_function in [int, float]:
+                if vmin and encoded_val < vmin:
+                    log.error('Particle value (%s) below minimum threshold (%s < %s)', name, value, vmin)
+                    self._encoding_errors.append({name: value})
+                elif vmax and encoded_val > vmax:
+                    log.error('Particle value (%s) exceeds maximum threshold (%s > %s)', name, value, vmax)
+                    self._encoding_errors.append({name: value})
+            elif hasattr(encoded_val, '__len__'):
+                try:
+                    if vmin and len(encoded_val) < vmin:
+                        log.error('Particle value (%s) length below minimum threshold (%s < %s)',
+                                  name, value, vmin)
+                        self._encoding_errors.append({name: value})
+                    elif vmax and len(encoded_val) > vmax:
+                        log.error('Particle value (%s) length exceeds maximum threshold (%s > %s)',
+                                  name, value, vmax)
+                        self._encoding_errors.append({name: value})
+                # in the unlikely event that a range was specified and the encoding object created a bogus len()
+                # we'll just ignore the range check
+                except TypeError:
+                    log.warning('_encode_value received an encoding function (%s) that claimed to implement len() but '
+                                'does not. Unable to apply range test to %s', encoding_function, name)
+
         return {DataParticleKey.VALUE_ID: name,
                 DataParticleKey.VALUE: encoded_val}
 
