@@ -1,11 +1,11 @@
 node_meta_data:
   description: MPJBox Hydrate Ridge
   location: SUM2
-  node_id_name: SN0024-MJ01B
+  node_id_name: SN0034-MJ01B
   node_type: MPJBox
   oms_sample_rate: 5
   reference_designator: RS01SUM2-MJ01B
-  serial_number: SN0024
+  serial_number: SN0034
   read_only_mode: True
 
 node_streams:
