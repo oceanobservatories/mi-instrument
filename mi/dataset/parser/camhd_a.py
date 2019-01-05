@@ -44,10 +44,14 @@ class CamhdAParticleKey(BaseEnum):
 # CAMHD_A video filename timestamp format
 TIMESTAMP_FORMAT = "%Y%m%d%H%M%S"
 
-# Regex to extract the timestamp from the video filename (path/to/CAMHDA301-YYYYmmddTHHMMSSZ.mp4)
+# Regex to extract the timestamp from the video filename (path/to/CAMHDA301-YYYYmmddTHHMMSSZ.log)
+# FILE_PATH_MATCHER = re.compile(
+#     r'.+/(?P<Path>.+?/\d{4}/\d{2}/\d{2}/.+-(?P<Date>\d{4}\d{2}\d{2})T(?P<Time>\d{2}\d{2}\d{2})Z\.log)'
+# )
 FILE_PATH_MATCHER = re.compile(
-    r'.+/(?P<Path>.+?/\d{4}/\d{2}/\d{2}/.+-(?P<Date>\d{4}\d{2}\d{2})T(?P<Time>\d{2}\d{2}\d{2})Z\.mp4|mov)'
+    r'/.*/.+-(?P<Date>\d{4}\d{2}\d{2})T(?P<Time>\d{2}\d{2}\d{2})Z\.log'
 )
+
 
 class DataParticleType(BaseEnum):
     """
@@ -103,7 +107,7 @@ class CamhdAParser(SimpleParser):
                 utilities.formatted_timestamp_utc_time(file_datetime, TIMESTAMP_FORMAT))
 
             # Extract a particle and append it to the record buffer
-            particle = self._extract_sample(CamhdAInstrumentDataParticle, None, match.group('Path'),
+            particle = self._extract_sample(CamhdAInstrumentDataParticle, None, self._stream_handle.name,
                                             internal_timestamp=time_stamp)
             log.debug('Parsed particle: %s', particle.generate_dict())
             self._record_buffer.append(particle)

@@ -1,0 +1,452 @@
+>open 10.31.50.10
+>start endpoint=10.20.2.125
+STARTED: {"sensor": true, "cmd": "uv -t decklink:0:9 -m 8500 10.20.2.125", "pid": 8245, "time": 1546560016}
+Starting local Ultragrid process
+>lights 50
+LIGHTS: {"intensity": [50, 50], "time": 1546560016}
+>camera zoom=-13
+laser: off
+zoom: -13
+time: 1546560032
+>camera zoom=6
+laser: off
+zoom: -7
+time: 1546560040
+>sleep 5
+>camera zoom=-6
+laser: off
+zoom: -13
+time: 1546560053
+>lookat pan=171 tilt=92 speed=5
+INMOTION: {"time": 1546560053, "pan_flag": 1, "pitch": -12.3, "tilt": 110.9, "tilt_flag": 1, "heading": 55.5, "pan": 171.1, "roll": -7.7}
+INMOTION: {"time": 1546560054, "pan_flag": 1, "pitch": -11.8, "tilt": 108.6, "tilt_flag": 1, "heading": 55.4, "pan": 170.3, "roll": -7.8}
+INMOTION: {"time": 1546560056, "pan_flag": 1, "pitch": -8.5, "tilt": 103.3, "tilt_flag": 1, "heading": 54.0, "pan": 170.0, "roll": -7.7}
+INMOTION: {"time": 1546560057, "pan_flag": 1, "pitch": -2.3, "tilt": 97.0, "tilt_flag": 1, "heading": 52.3, "pan": 170.3, "roll": -7.6}
+INMOTION: {"time": 1546560058, "pan_flag": 0, "pitch": 2.4, "tilt": 93.6, "tilt_flag": 1, "heading": 51.8, "pan": 171.1, "roll": -7.5}
+INMOTION: {"time": 1546560059, "pan_flag": 0, "pitch": 5.1, "tilt": 92.4, "tilt_flag": 1, "heading": 51.2, "pan": 171.1, "roll": -7.5}
+INMOTION: {"time": 1546560061, "pan_flag": 0, "pitch": 5.7, "tilt": 91.7, "tilt_flag": 1, "heading": 51.2, "pan": 171.1, "roll": -7.6}
+INMOTION: {"time": 1546560062, "pan_flag": 0, "pitch": 6.3, "tilt": 91.3, "tilt_flag": 1, "heading": 51.1, "pan": 171.1, "roll": -7.6}
+INMOTION: {"time": 1546560063, "pan_flag": 0, "pitch": 5.8, "tilt": 92.1, "tilt_flag": 1, "heading": 51.2, "pan": 170.7, "roll": -7.6}
+STOPPED: {"time": 1546560065, "pan_flag": 0, "pitch": 5.3, "tilt": 92.4, "tilt_flag": 0, "heading": 51.2, "pan": 170.7, "roll": -7.6}
+pan: 170.7
+tilt: 92.4
+heading: 51.2
+pitch: 5.3
+pan_flag: 0
+tilt_flag: 0
+>twait 01:12
+>lookat pan=143 tilt=52 speed=5
+INMOTION: {"time": 1546560088, "pan_flag": 1, "pitch": 5.4, "tilt": 92.1, "tilt_flag": 1, "heading": 51.2, "pan": 170.7, "roll": -7.6}
+INMOTION: {"time": 1546560089, "pan_flag": 1, "pitch": 5.8, "tilt": 90.2, "tilt_flag": 1, "heading": 50.7, "pan": 168.8, "roll": -7.7}
+INMOTION: {"time": 1546560091, "pan_flag": 1, "pitch": 8.6, "tilt": 84.9, "tilt_flag": 1, "heading": 46.7, "pan": 163.5, "roll": -8.2}
+INMOTION: {"time": 1546560092, "pan_flag": 1, "pitch": 13.7, "tilt": 78.9, "tilt_flag": 1, "heading": 39.8, "pan": 156.7, "roll": -9.1}
+INMOTION: {"time": 1546560093, "pan_flag": 1, "pitch": 18.7, "tilt": 72.2, "tilt_flag": 1, "heading": 32.4, "pan": 149.9, "roll": -10.1}
+INMOTION: {"time": 1546560094, "pan_flag": 1, "pitch": 23.9, "tilt": 65.8, "tilt_flag": 1, "heading": 25.6, "pan": 145.7, "roll": -11.0}
+INMOTION: {"time": 1546560096, "pan_flag": 1, "pitch": 29.6, "tilt": 59.0, "tilt_flag": 1, "heading": 20.8, "pan": 143.5, "roll": -11.9}
+INMOTION: {"time": 1546560097, "pan_flag": 1, "pitch": 35.1, "tilt": 54.5, "tilt_flag": 1, "heading": 18.1, "pan": 143.1, "roll": -12.7}
+INMOTION: {"time": 1546560098, "pan_flag": 1, "pitch": 38.3, "tilt": 52.2, "tilt_flag": 1, "heading": 16.4, "pan": 142.3, "roll": -13.4}
+INMOTION: {"time": 1546560100, "pan_flag": 1, "pitch": 39.2, "tilt": 51.9, "tilt_flag": 1, "heading": 16.0, "pan": 143.1, "roll": -13.6}
+INMOTION: {"time": 1546560101, "pan_flag": 0, "pitch": 40.0, "tilt": 50.7, "tilt_flag": 1, "heading": 16.4, "pan": 143.5, "roll": -13.7}
+INMOTION: {"time": 1546560102, "pan_flag": 0, "pitch": 40.0, "tilt": 51.5, "tilt_flag": 1, "heading": 16.4, "pan": 143.5, "roll": -13.7}
+STOPPED: {"time": 1546560103, "pan_flag": 0, "pitch": 39.6, "tilt": 51.9, "tilt_flag": 0, "heading": 16.4, "pan": 143.5, "roll": -13.7}
+pan: 143.5
+tilt: 51.9
+heading: 16.4
+pitch: 39.6
+pan_flag: 0
+tilt_flag: 0
+>lights 100
+LIGHTS: {"intensity": [100, 100], "time": 1546560104}
+>camera zoom=6
+laser: off
+zoom: -7
+time: 1546560111
+>twait 02:00
+>camera zoom=-13
+laser: off
+zoom: -20
+time: 1546560152
+>lights 50
+LIGHTS: {"intensity": [50, 50], "time": 1546560152}
+>lookat pan=171 tilt=92 speed=5
+INMOTION: {"time": 1546560153, "pan_flag": 1, "pitch": 39.7, "tilt": 51.9, "tilt_flag": 1, "heading": 16.4, "pan": 143.5, "roll": -13.7}
+INMOTION: {"time": 1546560154, "pan_flag": 1, "pitch": 39.2, "tilt": 53.7, "tilt_flag": 1, "heading": 17.2, "pan": 145.4, "roll": -13.5}
+INMOTION: {"time": 1546560155, "pan_flag": 1, "pitch": 36.5, "tilt": 59.0, "tilt_flag": 1, "heading": 21.3, "pan": 150.7, "roll": -12.9}
+INMOTION: {"time": 1546560157, "pan_flag": 1, "pitch": 31.9, "tilt": 65.8, "tilt_flag": 1, "heading": 28.8, "pan": 157.1, "roll": -11.4}
+INMOTION: {"time": 1546560158, "pan_flag": 1, "pitch": 26.8, "tilt": 72.2, "tilt_flag": 1, "heading": 36.4, "pan": 163.9, "roll": -10.0}
+INMOTION: {"time": 1546560159, "pan_flag": 1, "pitch": 21.5, "tilt": 78.9, "tilt_flag": 1, "heading": 43.3, "pan": 168.8, "roll": -8.8}
+INMOTION: {"time": 1546560160, "pan_flag": 1, "pitch": 15.7, "tilt": 84.9, "tilt_flag": 1, "heading": 48.0, "pan": 171.1, "roll": -8.0}
+INMOTION: {"time": 1546560162, "pan_flag": 1, "pitch": 9.9, "tilt": 89.8, "tilt_flag": 1, "heading": 50.5, "pan": 171.9, "roll": -7.6}
+INMOTION: {"time": 1546560163, "pan_flag": 1, "pitch": 6.5, "tilt": 92.1, "tilt_flag": 1, "heading": 52.1, "pan": 172.6, "roll": -7.4}
+INMOTION: {"time": 1546560164, "pan_flag": 1, "pitch": 5.3, "tilt": 92.8, "tilt_flag": 1, "heading": 52.1, "pan": 171.9, "roll": -7.4}
+INMOTION: {"time": 1546560166, "pan_flag": 0, "pitch": 4.5, "tilt": 93.6, "tilt_flag": 1, "heading": 51.9, "pan": 171.1, "roll": -7.5}
+INMOTION: {"time": 1546560167, "pan_flag": 0, "pitch": 4.5, "tilt": 92.8, "tilt_flag": 1, "heading": 51.5, "pan": 171.1, "roll": -7.5}
+STOPPED: {"time": 1546560168, "pan_flag": 0, "pitch": 5.2, "tilt": 92.4, "tilt_flag": 0, "heading": 51.2, "pan": 171.1, "roll": -7.6}
+pan: 171.1
+tilt: 92.4
+heading: 51.2
+pitch: 5.2
+pan_flag: 0
+tilt_flag: 0
+>twait 02:20
+Warning: wait time is in the past
+
+>lookat pan=169 tilt=58 speed=5
+INMOTION: {"time": 1546560169, "pan_flag": 1, "pitch": 5.2, "tilt": 92.4, "tilt_flag": 1, "heading": 51.1, "pan": 171.1, "roll": -7.6}
+INMOTION: {"time": 1546560170, "pan_flag": 1, "pitch": 5.8, "tilt": 90.2, "tilt_flag": 1, "heading": 50.7, "pan": 170.0, "roll": -7.7}
+INMOTION: {"time": 1546560171, "pan_flag": 1, "pitch": 9.1, "tilt": 84.9, "tilt_flag": 1, "heading": 49.0, "pan": 169.2, "roll": -7.8}
+INMOTION: {"time": 1546560173, "pan_flag": 1, "pitch": 15.1, "tilt": 78.5, "tilt_flag": 1, "heading": 46.7, "pan": 168.5, "roll": -8.1}
+INMOTION: {"time": 1546560174, "pan_flag": 1, "pitch": 21.5, "tilt": 72.5, "tilt_flag": 1, "heading": 44.4, "pan": 168.1, "roll": -8.6}
+INMOTION: {"time": 1546560175, "pan_flag": 1, "pitch": 28.0, "tilt": 65.8, "tilt_flag": 1, "heading": 42.7, "pan": 168.8, "roll": -9.1}
+INMOTION: {"time": 1546560176, "pan_flag": 0, "pitch": 34.1, "tilt": 60.9, "tilt_flag": 1, "heading": 41.5, "pan": 169.2, "roll": -9.7}
+INMOTION: {"time": 1546560178, "pan_flag": 0, "pitch": 37.6, "tilt": 58.2, "tilt_flag": 1, "heading": 40.7, "pan": 169.2, "roll": -10.2}
+INMOTION: {"time": 1546560179, "pan_flag": 0, "pitch": 38.7, "tilt": 57.9, "tilt_flag": 1, "heading": 40.4, "pan": 169.2, "roll": -10.4}
+INMOTION: {"time": 1546560180, "pan_flag": 0, "pitch": 39.4, "tilt": 57.1, "tilt_flag": 1, "heading": 40.1, "pan": 169.2, "roll": -10.5}
+INMOTION: {"time": 1546560182, "pan_flag": 0, "pitch": 39.6, "tilt": 57.1, "tilt_flag": 1, "heading": 40.0, "pan": 169.2, "roll": -10.5}
+STOPPED: {"time": 1546560183, "pan_flag": 0, "pitch": 39.1, "tilt": 57.9, "tilt_flag": 0, "heading": 40.3, "pan": 169.2, "roll": -10.4}
+pan: 169.2
+tilt: 57.9
+heading: 40.3
+pitch: 39.1
+pan_flag: 0
+tilt_flag: 0
+>sleep 5
+>camera zoom=6
+laser: off
+zoom: -14
+time: 1546560196
+>sleep 5
+>camera zoom=6
+laser: off
+zoom: -8
+time: 1546560208
+>twait 03:50
+>camera zoom=-13
+laser: off
+zoom: -21
+time: 1546560262
+>lookat pan=171 tilt=92 speed=5
+INMOTION: {"time": 1546560263, "pan_flag": 1, "pitch": 39.0, "tilt": 57.9, "tilt_flag": 1, "heading": 40.1, "pan": 169.2, "roll": -10.4}
+INMOTION: {"time": 1546560264, "pan_flag": 1, "pitch": 38.5, "tilt": 60.1, "tilt_flag": 1, "heading": 40.9, "pan": 170.3, "roll": -10.2}
+INMOTION: {"time": 1546560265, "pan_flag": 1, "pitch": 35.2, "tilt": 65.4, "tilt_flag": 1, "heading": 42.7, "pan": 170.7, "roll": -9.6}
+INMOTION: {"time": 1546560267, "pan_flag": 1, "pitch": 29.2, "tilt": 71.8, "tilt_flag": 1, "heading": 45.3, "pan": 171.9, "roll": -8.8}
+INMOTION: {"time": 1546560268, "pan_flag": 1, "pitch": 22.9, "tilt": 78.5, "tilt_flag": 1, "heading": 47.7, "pan": 171.9, "roll": -8.1}
+INMOTION: {"time": 1546560269, "pan_flag": 0, "pitch": 16.3, "tilt": 84.6, "tilt_flag": 1, "heading": 49.0, "pan": 171.1, "roll": -7.8}
+INMOTION: {"time": 1546560270, "pan_flag": 0, "pitch": 10.1, "tilt": 89.4, "tilt_flag": 1, "heading": 50.5, "pan": 171.1, "roll": -7.6}
+INMOTION: {"time": 1546560272, "pan_flag": 0, "pitch": 6.5, "tilt": 92.1, "tilt_flag": 1, "heading": 51.4, "pan": 171.5, "roll": -7.5}
+INMOTION: {"time": 1546560273, "pan_flag": 0, "pitch": 5.4, "tilt": 92.8, "tilt_flag": 1, "heading": 51.3, "pan": 171.1, "roll": -7.5}
+INMOTION: {"time": 1546560274, "pan_flag": 0, "pitch": 4.7, "tilt": 93.6, "tilt_flag": 1, "heading": 51.5, "pan": 171.5, "roll": -7.5}
+INMOTION: {"time": 1546560275, "pan_flag": 0, "pitch": 4.3, "tilt": 93.2, "tilt_flag": 1, "heading": 51.8, "pan": 171.5, "roll": -7.5}
+STOPPED: {"time": 1546560277, "pan_flag": 0, "pitch": 5.0, "tilt": 92.4, "tilt_flag": 0, "heading": 51.5, "pan": 171.1, "roll": -7.5}
+pan: 171.1
+tilt: 92.4
+heading: 51.5
+pitch: 5.0
+pan_flag: 0
+tilt_flag: 0
+>twait 04:26
+>lookat pan=176 tilt=58 speed=5
+INMOTION: {"time": 1546560282, "pan_flag": 1, "pitch": 5.3, "tilt": 92.4, "tilt_flag": 1, "heading": 51.2, "pan": 171.1, "roll": -7.5}
+INMOTION: {"time": 1546560283, "pan_flag": 1, "pitch": 6.0, "tilt": 90.2, "tilt_flag": 1, "heading": 51.8, "pan": 173.4, "roll": -7.5}
+INMOTION: {"time": 1546560284, "pan_flag": 1, "pitch": 9.8, "tilt": 84.9, "tilt_flag": 1, "heading": 53.1, "pan": 176.0, "roll": -7.1}
+INMOTION: {"time": 1546560286, "pan_flag": 1, "pitch": 16.1, "tilt": 78.9, "tilt_flag": 1, "heading": 52.5, "pan": 176.8, "roll": -7.1}
+INMOTION: {"time": 1546560287, "pan_flag": 1, "pitch": 22.7, "tilt": 72.5, "tilt_flag": 1, "heading": 51.5, "pan": 177.5, "roll": -7.3}
+INMOTION: {"time": 1546560288, "pan_flag": 1, "pitch": 29.3, "tilt": 66.1, "tilt_flag": 1, "heading": 50.1, "pan": 177.5, "roll": -7.8}
+INMOTION: {"time": 1546560290, "pan_flag": 1, "pitch": 35.3, "tilt": 60.9, "tilt_flag": 1, "heading": 48.1, "pan": 177.2, "roll": -8.5}
+INMOTION: {"time": 1546560291, "pan_flag": 0, "pitch": 38.8, "tilt": 58.2, "tilt_flag": 1, "heading": 46.7, "pan": 176.4, "roll": -9.1}
+INMOTION: {"time": 1546560292, "pan_flag": 0, "pitch": 40.1, "tilt": 57.5, "tilt_flag": 1, "heading": 46.4, "pan": 176.4, "roll": -9.2}
+INMOTION: {"time": 1546560293, "pan_flag": 0, "pitch": 40.8, "tilt": 57.1, "tilt_flag": 1, "heading": 46.2, "pan": 176.4, "roll": -9.3}
+STOPPED: {"time": 1546560295, "pan_flag": 0, "pitch": 40.6, "tilt": 57.9, "tilt_flag": 0, "heading": 46.2, "pan": 176.4, "roll": -9.3}
+pan: 176.4
+tilt: 57.9
+heading: 46.2
+pitch: 40.6
+pan_flag: 0
+tilt_flag: 0
+>sleep 5
+>camera zoom=6
+laser: off
+zoom: -15
+time: 1546560308
+>sleep 5
+>camera zoom=6
+laser: off
+zoom: -9
+time: 1546560320
+>twait 05:38
+>camera zoom=-13
+laser: off
+zoom: -22
+time: 1546560370
+>lookat pan=171 tilt=92 speed=5
+INMOTION: {"time": 1546560371, "pan_flag": 1, "pitch": 40.3, "tilt": 57.9, "tilt_flag": 1, "heading": 46.2, "pan": 176.4, "roll": -9.3}
+INMOTION: {"time": 1546560372, "pan_flag": 1, "pitch": 39.5, "tilt": 60.1, "tilt_flag": 1, "heading": 45.7, "pan": 174.5, "roll": -9.4}
+INMOTION: {"time": 1546560373, "pan_flag": 1, "pitch": 35.5, "tilt": 65.4, "tilt_flag": 1, "heading": 44.6, "pan": 171.5, "roll": -9.2}
+INMOTION: {"time": 1546560375, "pan_flag": 1, "pitch": 29.2, "tilt": 71.8, "tilt_flag": 1, "heading": 45.0, "pan": 170.7, "roll": -8.8}
+INMOTION: {"time": 1546560376, "pan_flag": 1, "pitch": 22.6, "tilt": 78.2, "tilt_flag": 1, "heading": 46.4, "pan": 170.0, "roll": -8.3}
+INMOTION: {"time": 1546560377, "pan_flag": 1, "pitch": 16.2, "tilt": 84.6, "tilt_flag": 1, "heading": 48.2, "pan": 171.1, "roll": -7.9}
+INMOTION: {"time": 1546560378, "pan_flag": 0, "pitch": 10.1, "tilt": 89.4, "tilt_flag": 1, "heading": 50.3, "pan": 171.1, "roll": -7.7}
+INMOTION: {"time": 1546560380, "pan_flag": 0, "pitch": 6.6, "tilt": 92.1, "tilt_flag": 1, "heading": 51.2, "pan": 171.1, "roll": -7.6}
+INMOTION: {"time": 1546560381, "pan_flag": 0, "pitch": 5.3, "tilt": 92.8, "tilt_flag": 1, "heading": 51.3, "pan": 171.1, "roll": -7.5}
+INMOTION: {"time": 1546560382, "pan_flag": 0, "pitch": 4.7, "tilt": 93.6, "tilt_flag": 1, "heading": 51.4, "pan": 171.1, "roll": -7.5}
+INMOTION: {"time": 1546560384, "pan_flag": 0, "pitch": 4.4, "tilt": 93.2, "tilt_flag": 1, "heading": 51.6, "pan": 171.1, "roll": -7.5}
+STOPPED: {"time": 1546560385, "pan_flag": 0, "pitch": 5.0, "tilt": 92.4, "tilt_flag": 0, "heading": 51.3, "pan": 171.1, "roll": -7.5}
+pan: 171.1
+tilt: 92.4
+heading: 51.3
+pitch: 5.0
+pan_flag: 0
+tilt_flag: 0
+>twait 06:14
+>lookat pan=180 tilt=70 speed=5
+INMOTION: {"time": 1546560390, "pan_flag": 1, "pitch": 5.2, "tilt": 92.4, "tilt_flag": 1, "heading": 51.2, "pan": 171.1, "roll": -7.6}
+INMOTION: {"time": 1546560391, "pan_flag": 1, "pitch": 5.9, "tilt": 90.2, "tilt_flag": 1, "heading": 52.0, "pan": 173.4, "roll": -7.5}
+INMOTION: {"time": 1546560393, "pan_flag": 1, "pitch": 10.1, "tilt": 84.9, "tilt_flag": 1, "heading": 53.6, "pan": 177.9, "roll": -7.0}
+INMOTION: {"time": 1546560394, "pan_flag": 1, "pitch": 16.8, "tilt": 78.5, "tilt_flag": 1, "heading": 54.9, "pan": 180.2, "roll": -6.6}
+INMOTION: {"time": 1546560395, "pan_flag": 1, "pitch": 23.1, "tilt": 73.7, "tilt_flag": 1, "heading": 54.6, "pan": 180.9, "roll": -6.7}
+INMOTION: {"time": 1546560396, "pan_flag": 1, "pitch": 27.1, "tilt": 70.6, "tilt_flag": 1, "heading": 54.2, "pan": 181.7, "roll": -6.9}
+INMOTION: {"time": 1546560398, "pan_flag": 1, "pitch": 28.9, "tilt": 69.9, "tilt_flag": 1, "heading": 54.1, "pan": 181.3, "roll": -7.0}
+INMOTION: {"time": 1546560399, "pan_flag": 0, "pitch": 29.4, "tilt": 69.1, "tilt_flag": 1, "heading": 53.4, "pan": 180.9, "roll": -7.1}
+INMOTION: {"time": 1546560400, "pan_flag": 0, "pitch": 29.7, "tilt": 69.5, "tilt_flag": 1, "heading": 53.2, "pan": 180.6, "roll": -7.2}
+STOPPED: {"time": 1546560401, "pan_flag": 0, "pitch": 29.1, "tilt": 70.3, "tilt_flag": 0, "heading": 53.2, "pan": 180.6, "roll": -7.2}
+pan: 180.6
+tilt: 70.3
+heading: 53.2
+pitch: 29.1
+pan_flag: 0
+tilt_flag: 0
+>sleep 5
+>camera zoom=6
+laser: off
+zoom: -16
+time: 1546560414
+>sleep 5
+>camera zoom=6
+laser: off
+zoom: -10
+time: 1546560427
+>twait 07:22
+>camera zoom=-13
+laser: off
+zoom: -23
+time: 1546560474
+>lookat pan=171 tilt=92 speed=5
+INMOTION: {"time": 1546560475, "pan_flag": 1, "pitch": 28.9, "tilt": 70.3, "tilt_flag": 1, "heading": 53.1, "pan": 180.6, "roll": -7.2}
+INMOTION: {"time": 1546560476, "pan_flag": 1, "pitch": 28.2, "tilt": 72.2, "tilt_flag": 1, "heading": 52.7, "pan": 178.7, "roll": -7.3}
+INMOTION: {"time": 1546560477, "pan_flag": 1, "pitch": 24.0, "tilt": 77.4, "tilt_flag": 1, "heading": 51.1, "pan": 174.1, "roll": -7.5}
+INMOTION: {"time": 1546560479, "pan_flag": 1, "pitch": 17.4, "tilt": 83.4, "tilt_flag": 1, "heading": 49.4, "pan": 171.5, "roll": -7.7}
+INMOTION: {"time": 1546560480, "pan_flag": 1, "pitch": 10.8, "tilt": 89.1, "tilt_flag": 1, "heading": 50.2, "pan": 170.7, "roll": -7.6}
+INMOTION: {"time": 1546560481, "pan_flag": 1, "pitch": 6.7, "tilt": 92.1, "tilt_flag": 1, "heading": 50.6, "pan": 170.3, "roll": -7.7}
+INMOTION: {"time": 1546560482, "pan_flag": 1, "pitch": 5.4, "tilt": 92.8, "tilt_flag": 1, "heading": 50.9, "pan": 170.7, "roll": -7.6}
+INMOTION: {"time": 1546560484, "pan_flag": 0, "pitch": 4.8, "tilt": 93.6, "tilt_flag": 1, "heading": 51.3, "pan": 171.1, "roll": -7.5}
+INMOTION: {"time": 1546560485, "pan_flag": 0, "pitch": 4.4, "tilt": 93.2, "tilt_flag": 1, "heading": 51.5, "pan": 171.1, "roll": -7.6}
+STOPPED: {"time": 1546560486, "pan_flag": 0, "pitch": 4.9, "tilt": 92.4, "tilt_flag": 0, "heading": 51.3, "pan": 171.1, "roll": -7.6}
+pan: 171.1
+tilt: 92.4
+heading: 51.3
+pitch: 4.9
+pan_flag: 0
+tilt_flag: 0
+>twait 07:57
+>lookat pan=159 tilt=94 speed=5
+INMOTION: {"time": 1546560493, "pan_flag": 1, "pitch": 5.2, "tilt": 92.4, "tilt_flag": 1, "heading": 51.2, "pan": 170.7, "roll": -7.6}
+INMOTION: {"time": 1546560494, "pan_flag": 1, "pitch": 4.8, "tilt": 93.2, "tilt_flag": 1, "heading": 50.9, "pan": 168.8, "roll": -7.6}
+INMOTION: {"time": 1546560496, "pan_flag": 1, "pitch": 3.5, "tilt": 93.9, "tilt_flag": 1, "heading": 48.2, "pan": 163.5, "roll": -8.1}
+INMOTION: {"time": 1546560497, "pan_flag": 1, "pitch": 2.0, "tilt": 94.7, "tilt_flag": 1, "heading": 44.7, "pan": 160.1, "roll": -8.6}
+INMOTION: {"time": 1546560498, "pan_flag": 1, "pitch": 1.1, "tilt": 94.7, "tilt_flag": 0, "heading": 42.8, "pan": 159.4, "roll": -8.9}
+INMOTION: {"time": 1546560499, "pan_flag": 1, "pitch": 1.3, "tilt": 94.3, "tilt_flag": 1, "heading": 42.2, "pan": 158.6, "roll": -9.0}
+INMOTION: {"time": 1546560501, "pan_flag": 1, "pitch": 1.6, "tilt": 93.9, "tilt_flag": 0, "heading": 41.6, "pan": 158.2, "roll": -9.0}
+INMOTION: {"time": 1546560502, "pan_flag": 1, "pitch": 1.7, "tilt": 93.9, "tilt_flag": 0, "heading": 41.7, "pan": 158.6, "roll": -9.0}
+STOPPED: {"time": 1546560503, "pan_flag": 0, "pitch": 1.8, "tilt": 93.9, "tilt_flag": 0, "heading": 42.3, "pan": 159.4, "roll": -8.9}
+pan: 159.4
+tilt: 93.9
+heading: 42.3
+pitch: 1.8
+pan_flag: 0
+tilt_flag: 0
+>sleep 5
+>camera zoom=6
+laser: off
+zoom: -17
+time: 1546560516
+>sleep 5
+>camera zoom=6
+laser: off
+zoom: -11
+time: 1546560529
+>twait 09:02
+>camera zoom=-13
+laser: off
+zoom: -24
+time: 1546560574
+>lookat pan=171 tilt=92 speed=5
+INMOTION: {"time": 1546560575, "pan_flag": 1, "pitch": 1.8, "tilt": 93.9, "tilt_flag": 1, "heading": 42.3, "pan": 159.4, "roll": -8.9}
+INMOTION: {"time": 1546560576, "pan_flag": 1, "pitch": 2.4, "tilt": 93.2, "tilt_flag": 1, "heading": 42.8, "pan": 161.3, "roll": -9.0}
+INMOTION: {"time": 1546560577, "pan_flag": 1, "pitch": 3.7, "tilt": 92.4, "tilt_flag": 1, "heading": 45.5, "pan": 166.6, "roll": -8.4}
+INMOTION: {"time": 1546560579, "pan_flag": 1, "pitch": 5.2, "tilt": 91.7, "tilt_flag": 1, "heading": 49.4, "pan": 170.3, "roll": -7.9}
+INMOTION: {"time": 1546560580, "pan_flag": 1, "pitch": 6.2, "tilt": 91.3, "tilt_flag": 1, "heading": 51.1, "pan": 171.5, "roll": -7.6}
+INMOTION: {"time": 1546560581, "pan_flag": 1, "pitch": 6.0, "tilt": 92.1, "tilt_flag": 1, "heading": 51.8, "pan": 172.2, "roll": -7.5}
+INMOTION: {"time": 1546560582, "pan_flag": 1, "pitch": 5.5, "tilt": 92.4, "tilt_flag": 0, "heading": 52.3, "pan": 172.2, "roll": -7.4}
+INMOTION: {"time": 1546560584, "pan_flag": 1, "pitch": 5.5, "tilt": 92.4, "tilt_flag": 0, "heading": 51.8, "pan": 171.9, "roll": -7.4}
+STOPPED: {"time": 1546560585, "pan_flag": 0, "pitch": 5.4, "tilt": 92.4, "tilt_flag": 0, "heading": 51.3, "pan": 171.1, "roll": -7.5}
+pan: 171.1
+tilt: 92.4
+heading: 51.3
+pitch: 5.4
+pan_flag: 0
+tilt_flag: 0
+>twait 09:35
+>lookat pan=171 tilt=92 speed=5
+STOPPED: {"time": 1546560591, "pan_flag": 0, "pitch": 5.3, "tilt": 92.4, "tilt_flag": 0, "heading": 51.2, "pan": 171.1, "roll": -7.6}
+pan: 171.1
+tilt: 92.4
+heading: 51.2
+pitch: 5.3
+pan_flag: 0
+tilt_flag: 0
+>sleep 5
+>camera zoom=6
+laser: off
+zoom: -18
+time: 1546560604
+>sleep 5
+>camera zoom=6
+laser: off
+zoom: -12
+time: 1546560616
+>twait 10:35
+>camera zoom=-13
+laser: off
+zoom: -25
+time: 1546560667
+>lookat pan=171 tilt=92 speed=5
+STOPPED: {"time": 1546560668, "pan_flag": 0, "pitch": 5.3, "tilt": 92.4, "tilt_flag": 0, "heading": 51.2, "pan": 171.1, "roll": -7.5}
+pan: 171.1
+tilt: 92.4
+heading: 51.2
+pitch: 5.3
+pan_flag: 0
+tilt_flag: 0
+>twait 10:58
+>lookat pan=171 tilt=138 speed=5
+INMOTION: {"time": 1546560674, "pan_flag": 0, "pitch": 5.4, "tilt": 92.4, "tilt_flag": 1, "heading": 51.1, "pan": 171.1, "roll": -7.5}
+INMOTION: {"time": 1546560675, "pan_flag": 0, "pitch": 4.8, "tilt": 94.7, "tilt_flag": 1, "heading": 51.4, "pan": 171.1, "roll": -7.6}
+INMOTION: {"time": 1546560677, "pan_flag": 0, "pitch": 1.2, "tilt": 99.6, "tilt_flag": 1, "heading": 52.5, "pan": 171.1, "roll": -7.5}
+INMOTION: {"time": 1546560678, "pan_flag": 0, "pitch": -4.9, "tilt": 106.7, "tilt_flag": 1, "heading": 54.0, "pan": 171.1, "roll": -7.6}
+INMOTION: {"time": 1546560679, "pan_flag": 0, "pitch": -11.4, "tilt": 113.1, "tilt_flag": 1, "heading": 55.5, "pan": 171.1, "roll": -7.7}
+INMOTION: {"time": 1546560680, "pan_flag": 0, "pitch": -17.8, "tilt": 119.5, "tilt_flag": 1, "heading": 57.0, "pan": 171.1, "roll": -8.0}
+INMOTION: {"time": 1546560682, "pan_flag": 0, "pitch": -24.2, "tilt": 125.9, "tilt_flag": 1, "heading": 58.5, "pan": 171.1, "roll": -8.4}
+INMOTION: {"time": 1546560683, "pan_flag": 0, "pitch": -30.6, "tilt": 132.7, "tilt_flag": 1, "heading": 60.1, "pan": 171.1, "roll": -9.0}
+INMOTION: {"time": 1546560684, "pan_flag": 0, "pitch": -36.1, "tilt": 136.4, "tilt_flag": 1, "heading": 61.4, "pan": 171.1, "roll": -9.7}
+INMOTION: {"time": 1546560685, "pan_flag": 0, "pitch": -39.4, "tilt": 139.0, "tilt_flag": 1, "heading": 62.0, "pan": 171.1, "roll": -10.2}
+INMOTION: {"time": 1546560687, "pan_flag": 0, "pitch": -40.4, "tilt": 139.4, "tilt_flag": 1, "heading": 62.5, "pan": 171.1, "roll": -10.4}
+INMOTION: {"time": 1546560688, "pan_flag": 0, "pitch": -41.0, "tilt": 139.4, "tilt_flag": 1, "heading": 62.3, "pan": 171.1, "roll": -10.4}
+STOPPED: {"time": 1546560689, "pan_flag": 0, "pitch": -40.4, "tilt": 138.7, "tilt_flag": 0, "heading": 62.4, "pan": 171.1, "roll": -10.4}
+pan: 171.1
+tilt: 138.7
+heading: 62.4
+pitch: -40.4
+pan_flag: 0
+tilt_flag: 0
+>lights 75
+LIGHTS: {"intensity": [75, 75], "time": 1546560690}
+>sleep 5
+>camera zoom=6
+laser: off
+zoom: -19
+time: 1546560702
+>twait 11:58
+>camera zoom=-7
+laser: off
+zoom: -26
+time: 1546560743
+>lookat pan=171 tilt=92 speed=5
+INMOTION: {"time": 1546560743, "pan_flag": 0, "pitch": -40.1, "tilt": 138.7, "tilt_flag": 1, "heading": 62.2, "pan": 171.1, "roll": -10.3}
+INMOTION: {"time": 1546560744, "pan_flag": 0, "pitch": -39.5, "tilt": 136.8, "tilt_flag": 1, "heading": 61.9, "pan": 171.1, "roll": -10.2}
+INMOTION: {"time": 1546560746, "pan_flag": 0, "pitch": -36.1, "tilt": 131.5, "tilt_flag": 1, "heading": 61.0, "pan": 171.1, "roll": -9.7}
+INMOTION: {"time": 1546560747, "pan_flag": 0, "pitch": -30.0, "tilt": 125.1, "tilt_flag": 1, "heading": 59.4, "pan": 171.1, "roll": -9.0}
+INMOTION: {"time": 1546560748, "pan_flag": 0, "pitch": -23.6, "tilt": 118.4, "tilt_flag": 1, "heading": 57.9, "pan": 171.1, "roll": -8.4}
+INMOTION: {"time": 1546560749, "pan_flag": 0, "pitch": -17.1, "tilt": 112.4, "tilt_flag": 1, "heading": 56.3, "pan": 171.1, "roll": -8.0}
+INMOTION: {"time": 1546560751, "pan_flag": 0, "pitch": -10.7, "tilt": 105.6, "tilt_flag": 1, "heading": 54.8, "pan": 171.1, "roll": -7.7}
+INMOTION: {"time": 1546560752, "pan_flag": 0, "pitch": -4.5, "tilt": 99.2, "tilt_flag": 1, "heading": 53.4, "pan": 171.1, "roll": -7.6}
+INMOTION: {"time": 1546560753, "pan_flag": 0, "pitch": 1.2, "tilt": 95.1, "tilt_flag": 1, "heading": 52.1, "pan": 171.1, "roll": -7.5}
+INMOTION: {"time": 1546560754, "pan_flag": 0, "pitch": 4.5, "tilt": 92.4, "tilt_flag": 1, "heading": 51.4, "pan": 171.1, "roll": -7.5}
+INMOTION: {"time": 1546560756, "pan_flag": 0, "pitch": 5.6, "tilt": 91.7, "tilt_flag": 1, "heading": 51.2, "pan": 171.1, "roll": -7.6}
+INMOTION: {"time": 1546560757, "pan_flag": 0, "pitch": 6.2, "tilt": 91.3, "tilt_flag": 1, "heading": 51.2, "pan": 171.1, "roll": -7.6}
+INMOTION: {"time": 1546560758, "pan_flag": 0, "pitch": 6.2, "tilt": 91.7, "tilt_flag": 1, "heading": 51.2, "pan": 171.1, "roll": -7.6}
+STOPPED: {"time": 1546560760, "pan_flag": 0, "pitch": 5.6, "tilt": 92.4, "tilt_flag": 0, "heading": 51.2, "pan": 171.1, "roll": -7.5}
+pan: 171.1
+tilt: 92.4
+heading: 51.2
+pitch: 5.6
+pan_flag: 0
+tilt_flag: 0
+>twait 12:28
+>lookat pan=190 tilt=108 speed=5
+INMOTION: {"time": 1546560764, "pan_flag": 1, "pitch": 5.4, "tilt": 92.4, "tilt_flag": 1, "heading": 51.1, "pan": 171.1, "roll": -7.6}
+INMOTION: {"time": 1546560765, "pan_flag": 1, "pitch": 4.8, "tilt": 94.3, "tilt_flag": 1, "heading": 51.9, "pan": 173.4, "roll": -7.5}
+INMOTION: {"time": 1546560767, "pan_flag": 1, "pitch": 2.0, "tilt": 99.6, "tilt_flag": 1, "heading": 55.7, "pan": 179.1, "roll": -7.0}
+INMOTION: {"time": 1546560768, "pan_flag": 1, "pitch": -3.0, "tilt": 104.8, "tilt_flag": 1, "heading": 62.1, "pan": 185.1, "roll": -6.0}
+INMOTION: {"time": 1546560769, "pan_flag": 1, "pitch": -6.3, "tilt": 107.5, "tilt_flag": 1, "heading": 66.9, "pan": 188.9, "roll": -5.0}
+INMOTION: {"time": 1546560770, "pan_flag": 1, "pitch": -7.4, "tilt": 108.6, "tilt_flag": 1, "heading": 69.2, "pan": 190.4, "roll": -4.6}
+INMOTION: {"time": 1546560772, "pan_flag": 1, "pitch": -7.9, "tilt": 108.6, "tilt_flag": 1, "heading": 69.8, "pan": 191.2, "roll": -4.4}
+INMOTION: {"time": 1546560773, "pan_flag": 1, "pitch": -8.4, "tilt": 109.4, "tilt_flag": 1, "heading": 70.4, "pan": 191.5, "roll": -4.3}
+INMOTION: {"time": 1546560774, "pan_flag": 1, "pitch": -7.9, "tilt": 108.6, "tilt_flag": 1, "heading": 70.2, "pan": 191.2, "roll": -4.3}
+STOPPED: {"time": 1546560775, "pan_flag": 0, "pitch": -7.5, "tilt": 108.2, "tilt_flag": 0, "heading": 69.7, "pan": 190.4, "roll": -4.5}
+pan: 190.4
+tilt: 108.2
+heading: 69.7
+pitch: -7.5
+pan_flag: 0
+tilt_flag: 0
+>sleep 5
+>camera zoom=4
+laser: off
+zoom: -22
+time: 1546560786
+>twait 13:23
+>camera zoom=-9
+laser: off
+zoom: -31
+time: 1546560830
+>sleep 5
+>lookat pan=171 tilt=92 speed=5
+INMOTION: {"time": 1546560836, "pan_flag": 1, "pitch": -7.5, "tilt": 108.2, "tilt_flag": 1, "heading": 69.5, "pan": 190.4, "roll": -4.5}
+INMOTION: {"time": 1546560837, "pan_flag": 1, "pitch": -6.9, "tilt": 106.3, "tilt_flag": 1, "heading": 69.1, "pan": 188.5, "roll": -4.5}
+INMOTION: {"time": 1546560838, "pan_flag": 1, "pitch": -3.8, "tilt": 100.7, "tilt_flag": 1, "heading": 65.3, "pan": 182.8, "roll": -5.2}
+INMOTION: {"time": 1546560839, "pan_flag": 1, "pitch": 1.1, "tilt": 95.8, "tilt_flag": 1, "heading": 59.1, "pan": 176.8, "roll": -6.3}
+INMOTION: {"time": 1546560841, "pan_flag": 1, "pitch": 4.1, "tilt": 92.8, "tilt_flag": 1, "heading": 54.3, "pan": 173.0, "roll": -7.0}
+INMOTION: {"time": 1546560842, "pan_flag": 1, "pitch": 5.4, "tilt": 92.1, "tilt_flag": 1, "heading": 51.5, "pan": 171.1, "roll": -7.5}
+INMOTION: {"time": 1546560843, "pan_flag": 1, "pitch": 5.9, "tilt": 91.3, "tilt_flag": 1, "heading": 50.9, "pan": 170.3, "roll": -7.6}
+INMOTION: {"time": 1546560845, "pan_flag": 1, "pitch": 6.2, "tilt": 91.7, "tilt_flag": 1, "heading": 50.3, "pan": 170.0, "roll": -7.7}
+STOPPED: {"time": 1546560846, "pan_flag": 0, "pitch": 5.6, "tilt": 92.8, "tilt_flag": 0, "heading": 51.0, "pan": 170.7, "roll": -7.6}
+pan: 170.7
+tilt: 92.8
+heading: 51.0
+pitch: 5.6
+pan_flag: 0
+tilt_flag: 0
+>twait 13:58
+>lookat pan=171 tilt=110 speed=5
+INMOTION: {"time": 1546560854, "pan_flag": 1, "pitch": 5.4, "tilt": 92.4, "tilt_flag": 1, "heading": 51.1, "pan": 171.1, "roll": -7.6}
+INMOTION: {"time": 1546560855, "pan_flag": 0, "pitch": 4.8, "tilt": 94.3, "tilt_flag": 1, "heading": 51.4, "pan": 171.1, "roll": -7.6}
+INMOTION: {"time": 1546560857, "pan_flag": 0, "pitch": 1.2, "tilt": 99.6, "tilt_flag": 1, "heading": 52.5, "pan": 171.1, "roll": -7.5}
+INMOTION: {"time": 1546560858, "pan_flag": 0, "pitch": -4.8, "tilt": 106.0, "tilt_flag": 1, "heading": 54.0, "pan": 171.1, "roll": -7.6}
+INMOTION: {"time": 1546560859, "pan_flag": 0, "pitch": -9.6, "tilt": 109.4, "tilt_flag": 1, "heading": 55.1, "pan": 171.1, "roll": -7.6}
+INMOTION: {"time": 1546560860, "pan_flag": 0, "pitch": -12.0, "tilt": 110.5, "tilt_flag": 1, "heading": 55.8, "pan": 171.1, "roll": -7.7}
+INMOTION: {"time": 1546560862, "pan_flag": 0, "pitch": -12.6, "tilt": 110.9, "tilt_flag": 1, "heading": 55.6, "pan": 171.1, "roll": -7.8}
+INMOTION: {"time": 1546560863, "pan_flag": 0, "pitch": -13.2, "tilt": 111.6, "tilt_flag": 1, "heading": 55.7, "pan": 171.1, "roll": -7.8}
+INMOTION: {"time": 1546560864, "pan_flag": 0, "pitch": -13.0, "tilt": 110.9, "tilt_flag": 1, "heading": 55.7, "pan": 171.1, "roll": -7.8}
+STOPPED: {"time": 1546560865, "pan_flag": 0, "pitch": -12.3, "tilt": 110.5, "tilt_flag": 0, "heading": 55.4, "pan": 171.1, "roll": -7.8}
+pan: 171.1
+tilt: 110.5
+heading: 55.4
+pitch: -12.3
+pan_flag: 0
+tilt_flag: 0
+>sleep 5
+>lights 0
+LIGHTS: {"intensity": [0, 0], "time": 1546560871}
+>stop
+STOPPED: {"status": 0, "time": 1546560871}
+Waiting for uv process to exit...
