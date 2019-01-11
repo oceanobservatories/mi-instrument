@@ -17,7 +17,7 @@ from mi.dataset.parser.camhd_a import CamhdAParser
 from mi.core.versioning import version
 
 
-@version("15.6.1")
+@version("0.1.0")
 def parse(unused, source_file_path, particle_data_handler):
     """
     This is the method called by Uframe
