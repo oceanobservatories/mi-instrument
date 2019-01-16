@@ -22,6 +22,7 @@ __author__ = 'Ronald Ronquillo'
 __license__ = 'Apache 2.0'
 
 
+import os
 import ntplib
 import re
 
@@ -49,7 +50,7 @@ TIMESTAMP_FORMAT = "%Y%m%d%H%M%S"
 #     r'.+/(?P<Path>.+?/\d{4}/\d{2}/\d{2}/.+-(?P<Date>\d{4}\d{2}\d{2})T(?P<Time>\d{2}\d{2}\d{2})Z\.log)'
 # )
 FILE_PATH_MATCHER = re.compile(
-    r'/.*/.+-(?P<Date>\d{4}\d{2}\d{2})T(?P<Time>\d{2}\d{2}\d{2})Z\.log'
+    r'/.*/(?P<Sensor>.+)-(?P<Date>\d{4}\d{2}\d{2})T(?P<Time>\d{2}\d{2}\d{2})Z\.log'
 )
 
 
@@ -96,18 +97,47 @@ class CamhdAParser(SimpleParser):
         log.warn(message)
         self._exception_callback(RecoverableSampleException(message))
 
+    @staticmethod
+    def find_matching_mp4(log_file_path, sensor, date):
+        """
+        Find associated MP4 file for the given camera log file.
+        :param log_file_path: fully qualified file path of log file in rsn archive
+        :param sensor: sensor name (does not include port number prefix - e.g. 'CAMHDA301')
+        :param date: gregorian date in 'YYYYMMDD' format
+        :param time: time of day in 'HHMMSS' format
+        :return: relative path in the raw data server for the associated MP4 file
+        TODO - have to determine reference designator if we add more HD cameras
+        """
+        # TODO - deterministically fill reference designator from ingest parameters
+        subsite = 'RS03ASHS'
+        node = 'PN03B'
+        sensor = '06-' + sensor
+
+        year = date[0:4]
+        month = date[4:6]
+        day = date[6:8]
+        filename = os.path.basename(log_file_path)
+        fileroot = os.path.splitext(filename)[0]
+        mp4_filename = '.'.join((fileroot, 'mp4'))
+        mp4_file_path = os.path.join(subsite, node, sensor, year, month, day, mp4_filename)
+        return mp4_file_path
+
     def parse_file(self):
         """
         Parse the *.mp4 file.
         """
         match = FILE_PATH_MATCHER.match(self._stream_handle.name)
         if match:
-            file_datetime = match.group('Date') + match.group('Time')
+            sensor = match.group('Sensor')
+            date = match.group('Date')
+            time = match.group('Time')
+            file_datetime = date + time
             time_stamp = ntplib.system_to_ntp_time(
                 utilities.formatted_timestamp_utc_time(file_datetime, TIMESTAMP_FORMAT))
 
             # Extract a particle and append it to the record buffer
-            particle = self._extract_sample(CamhdAInstrumentDataParticle, None, self._stream_handle.name,
+            mp4_file_path = self.find_matching_mp4(self._stream_handle.name, sensor, date)
+            particle = self._extract_sample(CamhdAInstrumentDataParticle, None, mp4_file_path,
                                             internal_timestamp=time_stamp)
             log.debug('Parsed particle: %s', particle.generate_dict())
             self._record_buffer.append(particle)
