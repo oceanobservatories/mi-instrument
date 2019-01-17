@@ -50,7 +50,7 @@ TIMESTAMP_FORMAT = "%Y%m%d%H%M%S"
 #     r'.+/(?P<Path>.+?/\d{4}/\d{2}/\d{2}/.+-(?P<Date>\d{4}\d{2}\d{2})T(?P<Time>\d{2}\d{2}\d{2})Z\.log)'
 # )
 FILE_PATH_MATCHER = re.compile(
-    r'/.*/(?P<Sensor>.+)-(?P<Date>\d{4}\d{2}\d{2})T(?P<Time>\d{2}\d{2}\d{2})Z\.log'
+    r'/.*/(?P<Sensor>.+)-(?P<Date>\d{4}\d{2}\d{2})T(?P<Time>\d{2}\d{2}\d{2})Z?\.log'
 )
 
 
