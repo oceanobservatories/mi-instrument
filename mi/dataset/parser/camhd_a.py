@@ -124,7 +124,7 @@ class CamhdAParser(SimpleParser):
 
     def parse_file(self):
         """
-        Parse the *.mp4 file.
+        Parse the *.log file.
         """
         match = FILE_PATH_MATCHER.match(self._stream_handle.name)
         if match:
@@ -145,4 +145,4 @@ class CamhdAParser(SimpleParser):
         else:
             # Files retrieved from the instrument should always match the timestamp naming convention
             self.recov_exception_callback("Unable to extract file time from input file name: %s."
-                "Expected format REFDES-YYYYmmddTHHMMSSZ.mp4" % self._stream_handle.name)
+                "Expected format REFDES-YYYYmmddTHHMMSSZ.log" % self._stream_handle.name)
