@@ -1,3 +1,8 @@
+# Version 0.7.1
+
+* Issue #13711 - update camhd_metadata particle parser to use camera log files
+   * Reworked existing parser (not in use) to work with the archive camera log files
+
 # Version 0.7.0
 
 * Issue #13713 - prevent cg_dcl_eng parser from hanging on ingest
