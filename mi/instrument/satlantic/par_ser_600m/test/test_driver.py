@@ -34,8 +34,9 @@ from mi.idk.unit_test import InstrumentDriverQualificationTestCase, AgentCapabil
 from mi.instrument.satlantic.par_ser_600m.driver import Commands, DataParticleType, SatlanticPARInstrumentProtocol
 from mi.instrument.satlantic.par_ser_600m.driver import PARProtocolState, PARProtocolEvent, PARCapability, Parameter
 from mi.instrument.satlantic.par_ser_600m.driver import ScheduledJob, EOLN, Prompt, SatlanticPARConfigParticle
-from mi.instrument.satlantic.par_ser_600m.driver import SatlanticPARDataParticle
-from mi.instrument.satlantic.par_ser_600m.driver import SatlanticPARDataParticleKey, SatlanticPARConfigParticleKey
+from mi.instrument.satlantic.par_ser_600m.driver import PARParticle, PARParticleNew
+from mi.instrument.satlantic.par_ser_600m.driver import PARDataKey, SatlanticPARConfigParticleKey
+from mi.instrument.satlantic.par_ser_600m.driver import PARDataKeyNew
 from mi.instrument.satlantic.par_ser_600m.driver import SatlanticPARInstrumentDriver, EngineeringParameter
 
 
@@ -55,6 +56,7 @@ InstrumentDriverTestCase.initialize(
 # SATPAR4278190306,49.02,2157023616,171
 VALID_SAMPLE = "SATPAR4278190306,49.02,2157023616,171\r\n"
 INVALID_SAMPLE = "SATPAR4278190306,49.02,2157023616,172\r\n"
+VALID_SAMPLE_NEW = "SATPAR4278190306,49.02,2157023616,123,234,345,92\r\n"
 
 
 # Make tests verbose and provide stdout
@@ -63,15 +65,24 @@ INVALID_SAMPLE = "SATPAR4278190306,49.02,2157023616,172\r\n"
 # Test device is at 10.180.80.173, port 2101
 
 # these values checkout against the sample above
-valid_particle = [{DataParticleKey.VALUE_ID: SatlanticPARDataParticleKey.SERIAL_NUM, DataParticleKey.VALUE: '4278190306'},
-                  {DataParticleKey.VALUE_ID: SatlanticPARDataParticleKey.TIMER, DataParticleKey.VALUE: 49.02},
-                  {DataParticleKey.VALUE_ID: SatlanticPARDataParticleKey.COUNTS, DataParticleKey.VALUE: 2157023616},
-                  {DataParticleKey.VALUE_ID: SatlanticPARDataParticleKey.CHECKSUM, DataParticleKey.VALUE: 171}]
+valid_particle = [{DataParticleKey.VALUE_ID: PARDataKey.SERIAL_NUM, DataParticleKey.VALUE: '4278190306'},
+                  {DataParticleKey.VALUE_ID: PARDataKey.TIMER, DataParticleKey.VALUE: 49.02},
+                  {DataParticleKey.VALUE_ID: PARDataKey.COUNTS, DataParticleKey.VALUE: 2157023616},
+                  {DataParticleKey.VALUE_ID: PARDataKey.CHECKSUM, DataParticleKey.VALUE: 171}]
 
-bad_checksum_particle = [{DataParticleKey.VALUE_ID: SatlanticPARDataParticleKey.SERIAL_NUM, DataParticleKey.VALUE: '4278190306'},
-                  {DataParticleKey.VALUE_ID: SatlanticPARDataParticleKey.TIMER, DataParticleKey.VALUE: 49.02},
-                  {DataParticleKey.VALUE_ID: SatlanticPARDataParticleKey.COUNTS, DataParticleKey.VALUE: 2157023616},
-                  {DataParticleKey.VALUE_ID: SatlanticPARDataParticleKey.CHECKSUM, DataParticleKey.VALUE: 172}]
+valid_particle_new = \
+    [{DataParticleKey.VALUE_ID: PARDataKeyNew.SERIAL_NUM, DataParticleKey.VALUE: '4278190306'},
+    {DataParticleKey.VALUE_ID: PARDataKeyNew.TIMER, DataParticleKey.VALUE: 49.02},
+    {DataParticleKey.VALUE_ID: PARDataKeyNew.COUNTS, DataParticleKey.VALUE: 2157023616},
+    {DataParticleKey.VALUE_ID: PARDataKeyNew.VALUE1, DataParticleKey.VALUE: 123},
+    {DataParticleKey.VALUE_ID: PARDataKeyNew.VALUE2, DataParticleKey.VALUE: 234},
+    {DataParticleKey.VALUE_ID: PARDataKeyNew.VALUE3, DataParticleKey.VALUE: 345},
+    {DataParticleKey.VALUE_ID: PARDataKeyNew.CHECKSUM, DataParticleKey.VALUE: 92}]
+
+bad_checksum_particle = [{DataParticleKey.VALUE_ID: PARDataKey.SERIAL_NUM, DataParticleKey.VALUE: '4278190306'},
+                         {DataParticleKey.VALUE_ID: PARDataKey.TIMER, DataParticleKey.VALUE: 49.02},
+                         {DataParticleKey.VALUE_ID: PARDataKey.COUNTS, DataParticleKey.VALUE: 2157023616},
+                         {DataParticleKey.VALUE_ID: PARDataKey.CHECKSUM, DataParticleKey.VALUE: 172}]
 
 VALID_CONFIG = "Maximum Frame Rate: 0.125 Hz\r\n" + \
                "Telemetry Baud Rate: 19200 bps"
@@ -134,10 +145,20 @@ class PARMixin(DriverTestMixin):
     }
 
     _sample_parameters = {
-        SatlanticPARDataParticleKey.SERIAL_NUM: {TYPE: unicode, VALUE: '4278190306', REQUIRED: True},
-        SatlanticPARDataParticleKey.COUNTS: {TYPE: int, VALUE: 2157023616, REQUIRED: True},
-        SatlanticPARDataParticleKey.TIMER: {TYPE: float, VALUE: 49.02, REQUIRED: True},
-        SatlanticPARDataParticleKey.CHECKSUM: {TYPE: int, VALUE: 171, REQUIRED: True},
+        PARDataKey.SERIAL_NUM: {TYPE: unicode, VALUE: '4278190306', REQUIRED: True},
+        PARDataKey.COUNTS: {TYPE: int, VALUE: 2157023616, REQUIRED: True},
+        PARDataKey.TIMER: {TYPE: float, VALUE: 49.02, REQUIRED: True},
+        PARDataKey.CHECKSUM: {TYPE: int, VALUE: 171, REQUIRED: True},
+    }
+
+    _sample_parameters_new = {
+        PARDataKeyNew.SERIAL_NUM: {TYPE: unicode, VALUE: '4278190306', REQUIRED: True},
+        PARDataKeyNew.COUNTS: {TYPE: int, VALUE: 2157023616, REQUIRED: True},
+        PARDataKeyNew.TIMER: {TYPE: float, VALUE: 49.02, REQUIRED: True},
+        PARDataKeyNew.CHECKSUM: {TYPE: int, VALUE: 171, REQUIRED: True},
+        PARDataKeyNew.VALUE1: {TYPE: int, VALUE: 123, REQUIRED: True},
+        PARDataKeyNew.VALUE2: {TYPE: int, VALUE: 234, REQUIRED: True},
+        PARDataKeyNew.VALUE3: {TYPE: int, VALUE: 345, REQUIRED: True},
     }
 
     _capabilities = {
@@ -186,9 +207,19 @@ class PARMixin(DriverTestMixin):
         @param data_particle:  SBE16DataParticle data particle
         @param verify_values:  bool, should we verify parameter values
         """
-        self.assert_data_particle_keys(SatlanticPARDataParticleKey, self._sample_parameters)
+        self.assert_data_particle_keys(PARDataKey, self._sample_parameters)
         self.assert_data_particle_header(data_particle, DataParticleType.PARSED)
         self.assert_data_particle_parameters(data_particle, self._sample_parameters, verify_values)
+
+    def assert_particle_sample_new(self, data_particle, verify_values=False):
+        """
+        Verify sample particle
+        @param data_particle:  SBE16DataParticle data particle
+        @param verify_values:  bool, should we verify parameter values
+        """
+        self.assert_data_particle_keys(PARDataKeyNew, self._sample_parameters_new)
+        self.assert_data_particle_header(data_particle, DataParticleType.SCIENCE)
+        self.assert_data_particle_parameters(data_particle, self._sample_parameters_new, verify_values)
 
 
 @attr('UNIT', group='mi')
@@ -241,15 +272,19 @@ class SatlanticParProtocolUnitTest(InstrumentDriverUnitTestCase, PARMixin):
         chunker = StringChunker(SatlanticPARInstrumentProtocol.sieve_function)
 
         self.assert_chunker_sample(chunker, VALID_SAMPLE)
+        self.assert_chunker_sample(chunker, VALID_SAMPLE_NEW)
         self.assert_chunker_sample(chunker, VALID_CONFIG)
 
         self.assert_chunker_fragmented_sample(chunker, VALID_SAMPLE)
+        self.assert_chunker_fragmented_sample(chunker, VALID_SAMPLE_NEW)
         self.assert_chunker_fragmented_sample(chunker, VALID_CONFIG)
 
         self.assert_chunker_combined_sample(chunker, VALID_SAMPLE)
+        self.assert_chunker_combined_sample(chunker, VALID_SAMPLE_NEW)
         self.assert_chunker_combined_sample(chunker, VALID_CONFIG)
 
         self.assert_chunker_sample_with_noise(chunker, VALID_SAMPLE)
+        self.assert_chunker_sample_with_noise(chunker, VALID_SAMPLE_NEW)
         self.assert_chunker_sample_with_noise(chunker, VALID_CONFIG)
 
     def test_corrupt_data_structures(self):
@@ -257,7 +292,7 @@ class SatlanticParProtocolUnitTest(InstrumentDriverUnitTestCase, PARMixin):
         Verify when generating the particle, if the particle is corrupt, an exception is raised
         """
         log.debug('test_corrupt_data_structures: %s', VALID_SAMPLE.replace('A', 'B'))
-        particle = SatlanticPARDataParticle(VALID_SAMPLE.replace('A', 'B'), port_timestamp=port_timestamp)
+        particle = PARParticle(VALID_SAMPLE.replace('A', 'B'), port_timestamp=port_timestamp)
         with self.assertRaises(SampleException):
             obj = particle.generate()
             self.assertNotEqual(obj[DataParticleKey.QUALITY_FLAG], DataParticleValue.OK)
@@ -268,18 +303,18 @@ class SatlanticParProtocolUnitTest(InstrumentDriverUnitTestCase, PARMixin):
         Parsed is all we care about...raw is tested in the base DataParticle tests
         """
         # construct the expected particle
-        expected_particle = {
-            DataParticleKey.PKT_FORMAT_ID: DataParticleValue.JSON_DATA,
-            DataParticleKey.PKT_VERSION: 1,
-            DataParticleKey.STREAM_NAME: DataParticleType.PARSED,
-            DataParticleKey.PORT_TIMESTAMP: port_timestamp,
-            DataParticleKey.DRIVER_TIMESTAMP: driver_timestamp,
-            DataParticleKey.PREFERRED_TIMESTAMP: DataParticleKey.PORT_TIMESTAMP,
-            DataParticleKey.QUALITY_FLAG: DataParticleValue.OK,
-            DataParticleKey.VALUES: valid_particle
-        }
+        expected_particle = {DataParticleKey.PKT_FORMAT_ID: DataParticleValue.JSON_DATA, DataParticleKey.PKT_VERSION: 1,
+                             DataParticleKey.STREAM_NAME: DataParticleType.PARSED,
+                             DataParticleKey.PORT_TIMESTAMP: port_timestamp,
+                             DataParticleKey.DRIVER_TIMESTAMP: driver_timestamp,
+                             DataParticleKey.PREFERRED_TIMESTAMP: DataParticleKey.PORT_TIMESTAMP,
+                             DataParticleKey.QUALITY_FLAG: DataParticleValue.OK,
+                             DataParticleKey.VALUES: valid_particle}
 
-        self.compare_parsed_data_particle(SatlanticPARDataParticle, VALID_SAMPLE, expected_particle)
+        self.compare_parsed_data_particle(PARParticle, VALID_SAMPLE, expected_particle)
+        expected_particle[DataParticleKey.VALUES] = valid_particle_new
+        expected_particle[DataParticleKey.STREAM_NAME] = DataParticleType.SCIENCE
+        self.compare_parsed_data_particle(PARParticleNew, VALID_SAMPLE_NEW, expected_particle)
 
     def test_bad_checksum_sample_format(self):
         """
@@ -298,7 +333,7 @@ class SatlanticParProtocolUnitTest(InstrumentDriverUnitTestCase, PARMixin):
             DataParticleKey.VALUES: bad_checksum_particle
         }
 
-        self.compare_parsed_data_particle(SatlanticPARDataParticle, INVALID_SAMPLE, expected_particle)
+        self.compare_parsed_data_particle(PARParticle, INVALID_SAMPLE, expected_particle)
 
     def compare_parsed_data_particle_override(self, particle_type, raw_input, happy_structure):
         """
@@ -364,6 +399,7 @@ class SatlanticParProtocolUnitTest(InstrumentDriverUnitTestCase, PARMixin):
 
         # Start validating data particles
         self.assert_particle_published(driver, VALID_SAMPLE, self.assert_particle_sample, True)
+        self.assert_particle_published(driver, VALID_SAMPLE_NEW, self.assert_particle_sample_new, True)
 
 
 @attr('INT', group='mi')
@@ -782,14 +818,13 @@ class SatlanticParProtocolQualificationTest(InstrumentDriverQualificationTestCas
         #  Command Mode
         ##################
 
-        capabilities = {}
-        capabilities[AgentCapabilityType.AGENT_COMMAND] = self._common_agent_commands(ResourceAgentState.COMMAND)
-        capabilities[AgentCapabilityType.AGENT_PARAMETER] = self._common_agent_parameters()
-        capabilities[AgentCapabilityType.RESOURCE_COMMAND] =  [PARProtocolEvent.ACQUIRE_SAMPLE,
+        capabilities = {AgentCapabilityType.AGENT_COMMAND: self._common_agent_commands(ResourceAgentState.COMMAND),
+                        AgentCapabilityType.AGENT_PARAMETER: self._common_agent_parameters(),
+                        AgentCapabilityType.RESOURCE_COMMAND: [PARProtocolEvent.ACQUIRE_SAMPLE,
                                                                PARProtocolEvent.ACQUIRE_STATUS,
-                                                               PARProtocolEvent.START_AUTOSAMPLE]
-        capabilities[AgentCapabilityType.RESOURCE_INTERFACE] = None
-        capabilities[AgentCapabilityType.RESOURCE_PARAMETER] = self._driver_parameters.keys()
+                                                               PARProtocolEvent.START_AUTOSAMPLE],
+                        AgentCapabilityType.RESOURCE_INTERFACE: None,
+                        AgentCapabilityType.RESOURCE_PARAMETER: self._driver_parameters.keys()}
 
         self.assert_enter_command_mode()
         self.assert_capabilities(capabilities)
@@ -797,11 +832,10 @@ class SatlanticParProtocolQualificationTest(InstrumentDriverQualificationTestCas
         ##################
         #  Streaming Mode
         ##################
-        capabilities = {}
-        capabilities[AgentCapabilityType.AGENT_COMMAND] = self._common_agent_commands(ResourceAgentState.STREAMING)
-        capabilities[AgentCapabilityType.RESOURCE_COMMAND] = [PARProtocolEvent.STOP_AUTOSAMPLE,
-                                                              PARProtocolEvent.ACQUIRE_STATUS,]
-        capabilities[AgentCapabilityType.RESOURCE_PARAMETER] = self._driver_parameters.keys()
+        capabilities = {AgentCapabilityType.AGENT_COMMAND: self._common_agent_commands(ResourceAgentState.STREAMING),
+                        AgentCapabilityType.RESOURCE_COMMAND: [PARProtocolEvent.STOP_AUTOSAMPLE,
+                                                               PARProtocolEvent.ACQUIRE_STATUS, ],
+                        AgentCapabilityType.RESOURCE_PARAMETER: self._driver_parameters.keys()}
 
         self.assert_start_autosample()
         self.assert_capabilities(capabilities)
