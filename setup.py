@@ -1,11 +1,11 @@
-#!/usr/bin/env python
+1#!/usr/bin/env python
 
 try:
     from setuptools import setup, find_packages
 except ImportError:
     from distutils.core import setup
 
-version = '0.7.0'
+version = '0.7.1'
 
 setup(name='mi-instrument',
       version=version,
