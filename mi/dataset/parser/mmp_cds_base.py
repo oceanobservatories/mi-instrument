@@ -28,6 +28,9 @@ __license__ = 'Apache 2.0'
 # data chunk
 NUM_MMP_CDS_UNPACKED_ITEMS = 3
 
+# The maximum map length value used to override the default of 32k
+MAX_MAP_LEN = 65536 # 64k
+
 # A message to be reported when the state provided to the parser is missing PARTICLES_RETURNED
 PARTICLES_RETURNED_MISSING_ERROR_MSG = "PARTICLES_RETURNED missing from state"
 
@@ -121,7 +124,7 @@ class MmpCdsParser(SimpleParser):
         # We need to put the following in a try block just in case the data provided is malformed
         try:
             # Let's iterate through each unpacked list item
-            for unpacked_data in msgpack.Unpacker(self._stream_handle):
+            for unpacked_data in msgpack.Unpacker(self._stream_handle, max_map_len=MAX_MAP_LEN):
 
                 # The expectation is that an unpacked list item associated with a McLane Moored Profiler cabled
                 # docking station data chunk consists of a list of three items
