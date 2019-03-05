@@ -154,7 +154,7 @@ class PARMixin(DriverTestMixin):
         PARDataKeyNew.SERIAL_NUM: {TYPE: unicode, VALUE: '4278190306', REQUIRED: True},
         PARDataKeyNew.COUNTS: {TYPE: int, VALUE: 2157023616, REQUIRED: True},
         PARDataKeyNew.TIMER: {TYPE: float, VALUE: 49.02, REQUIRED: True},
-        PARDataKeyNew.CHECKSUM: {TYPE: int, VALUE: 171, REQUIRED: True},
+        PARDataKeyNew.CHECKSUM: {TYPE: int, VALUE: 92, REQUIRED: True},
         PARDataKeyNew.VALUE1: {TYPE: int, VALUE: 123, REQUIRED: True},
         PARDataKeyNew.VALUE2: {TYPE: int, VALUE: 234, REQUIRED: True},
         PARDataKeyNew.VALUE3: {TYPE: int, VALUE: 345, REQUIRED: True},
