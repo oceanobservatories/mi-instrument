@@ -98,6 +98,127 @@ driver_timestamp = 3555423722.711772
 
 TIMEOUT = 30
 
+class PARMixin(DriverTestMixin):
+    """
+    Mixin class used for storing data particle constance and common data assertion methods.
+    """
+    SatlanticPARInstrumentDriver = SatlanticPARInstrumentDriver
+
+    # Create some short names for the parameter test config
+    TYPE      = ParameterTestConfigKey.TYPE
+    READONLY  = ParameterTestConfigKey.READONLY
+    STARTUP   = ParameterTestConfigKey.STARTUP
+    DA        = ParameterTestConfigKey.DIRECT_ACCESS
+    VALUE     = ParameterTestConfigKey.VALUE
+    REQUIRED  = ParameterTestConfigKey.REQUIRED
+    DEFAULT   = ParameterTestConfigKey.DEFAULT
+    STATES    = ParameterTestConfigKey.STATES
+
+    ###
+    #  Parameter and Type Definitions
+    ###
+
+    _driver_parameters = {
+        Parameter.MAXRATE: {TYPE: float, READONLY: False, DA: True, STARTUP: True, VALUE: 4, REQUIRED: True},
+        Parameter.FIRMWARE: {TYPE: str, READONLY: True, DA: False, STARTUP: False, VALUE: '1.0.0', REQUIRED: False},
+        Parameter.SERIAL: {TYPE: str, READONLY: True, DA: False, STARTUP: False, VALUE: '4278190306', REQUIRED: False},
+        Parameter.ACQUIRE_STATUS_INTERVAL: {TYPE: str, READONLY: False, DA: False, STARTUP: True, VALUE: '00:00:00', REQUIRED: True}
+    }
+
+    _driver_capabilities = {
+        # capabilities defined in the IOS
+        PARProtocolEvent.DISCOVER: {STATES: [PARProtocolState.UNKNOWN]},
+        PARProtocolEvent.ACQUIRE_SAMPLE: {STATES: [PARProtocolState.COMMAND]},
+        PARProtocolEvent.START_AUTOSAMPLE: {STATES: [PARProtocolState.COMMAND]},
+        PARProtocolEvent.STOP_AUTOSAMPLE: {STATES: [PARProtocolState.AUTOSAMPLE]},
+        PARProtocolEvent.ACQUIRE_STATUS: {STATES: [PARProtocolState.COMMAND, PARProtocolState.AUTOSAMPLE]}
+    }
+
+    _config_parameters = {
+        # Parameters defined in the IOS
+        SatlanticPARConfigParticleKey.BAUD_RATE: {TYPE: int, READONLY: True, DA: True, STARTUP: False, VALUE: 19200, REQUIRED: True},
+        SatlanticPARConfigParticleKey.MAX_RATE: {TYPE: float, READONLY: False, DA: True, STARTUP: True, VALUE: 0.5, REQUIRED: True},
+        SatlanticPARConfigParticleKey.SERIAL_NUM: {TYPE: unicode, READONLY: True, DA: False, STARTUP: False, VALUE: '4278190306', REQUIRED: True},
+        SatlanticPARConfigParticleKey.FIRMWARE: {TYPE: unicode, READONLY: True, DA: False, STARTUP: False, VALUE: '1.0.0', REQUIRED: True},
+        SatlanticPARConfigParticleKey.TYPE: {TYPE: unicode, READONLY: True, DA: False, STARTUP: False, VALUE: 'SATPAR', REQUIRED: True},
+    }
+
+    _sample_parameters = {
+        PARDataKey.SERIAL_NUM: {TYPE: unicode, VALUE: '4278190306', REQUIRED: True},
+        PARDataKey.COUNTS: {TYPE: int, VALUE: 2157023616, REQUIRED: True},
+        PARDataKey.TIMER: {TYPE: float, VALUE: 49.02, REQUIRED: True},
+        PARDataKey.CHECKSUM: {TYPE: int, VALUE: 171, REQUIRED: True},
+    }
+
+    _sample_parameters_new = {
+        PARDataKeyNew.SERIAL_NUM: {TYPE: unicode, VALUE: '4278190306', REQUIRED: True},
+        PARDataKeyNew.COUNTS: {TYPE: int, VALUE: 2157023616, REQUIRED: True},
+        PARDataKeyNew.TIMER: {TYPE: float, VALUE: 49.02, REQUIRED: True},
+        PARDataKeyNew.CHECKSUM: {TYPE: int, VALUE: 171, REQUIRED: True},
+        PARDataKeyNew.VALUE1: {TYPE: int, VALUE: 123, REQUIRED: True},
+        PARDataKeyNew.VALUE2: {TYPE: int, VALUE: 234, REQUIRED: True},
+        PARDataKeyNew.VALUE3: {TYPE: int, VALUE: 345, REQUIRED: True},
+    }
+
+    _capabilities = {
+        PARProtocolState.UNKNOWN:      [PARProtocolEvent.DISCOVER],
+
+        PARProtocolState.COMMAND:      [PARProtocolEvent.GET,
+                                        PARProtocolEvent.SET,
+                                        PARProtocolEvent.START_DIRECT,
+                                        PARProtocolEvent.START_AUTOSAMPLE,
+                                        PARProtocolEvent.ACQUIRE_SAMPLE,
+                                        PARProtocolEvent.SCHEDULED_ACQUIRE_STATUS,
+                                        PARProtocolEvent.ACQUIRE_STATUS],
+
+        PARProtocolState.AUTOSAMPLE:   [PARProtocolEvent.GET,
+                                        PARProtocolEvent.STOP_AUTOSAMPLE,
+                                        PARProtocolEvent.SCHEDULED_ACQUIRE_STATUS],
+
+        PARProtocolState.DIRECT_ACCESS: [PARProtocolEvent.STOP_DIRECT,
+                                         PARProtocolEvent.EXECUTE_DIRECT]
+    }
+
+    ###
+    #   Driver Parameter Methods
+    ###
+    def assert_driver_parameters(self, current_parameters, verify_values=False):
+        """
+        Verify that all driver parameters are correct and potentially verify values.
+        @param current_parameters: driver parameters read from the driver instance
+        @param verify_values: should we verify values against definition?
+        """
+        self.assert_parameters(current_parameters, self._driver_parameters, verify_values)
+
+    def assert_config_parameters(self, current_parameters, verify_values=False):
+        """
+        Verify that all driver parameters are correct and potentially verify values.
+        @param current_parameters: driver parameters read from the driver instance
+        @param verify_values: should we verify values against definition?
+        """
+        self.assert_data_particle_keys(SatlanticPARConfigParticleKey, self._config_parameters)
+        self.assert_data_particle_header(current_parameters, DataParticleType.CONFIG)
+        self.assert_data_particle_parameters(current_parameters, self._config_parameters, verify_values)
+
+    def assert_particle_sample(self, data_particle, verify_values=False):
+        """
+        Verify sample particle
+        @param data_particle:  SBE16DataParticle data particle
+        @param verify_values:  bool, should we verify parameter values
+        """
+        self.assert_data_particle_keys(PARDataKey, self._sample_parameters)
+        self.assert_data_particle_header(data_particle, DataParticleType.PARSED)
+        self.assert_data_particle_parameters(data_particle, self._sample_parameters, verify_values)
+
+    def assert_particle_sample_new(self, data_particle, verify_values=False):
+        """
+        Verify sample particle
+        @param data_particle:  SBE16DataParticle data particle
+        @param verify_values:  bool, should we verify parameter values
+        """
+        self.assert_data_particle_keys(PARDataKeyNew, self._sample_parameters_new)
+        self.assert_data_particle_header(data_particle, DataParticleType.SCIENCE)
+        self.assert_data_particle_parameters(data_particle, self._sample_parameters_new, verify_values)
 
 @attr('UNIT', group='mi')
 class SatlanticParProtocolUnitTest(InstrumentDriverUnitTestCase, PARMixin):
@@ -279,127 +400,7 @@ class SatlanticParProtocolUnitTest(InstrumentDriverUnitTestCase, PARMixin):
         self.assert_particle_published(driver, VALID_SAMPLE_NEW, self.assert_particle_sample_new, True)
 
 
-class PARMixin(DriverTestMixin):
-    """
-    Mixin class used for storing data particle constance and common data assertion methods.
-    """
-    SatlanticPARInstrumentDriver = SatlanticPARInstrumentDriver
 
-    # Create some short names for the parameter test config
-    TYPE      = ParameterTestConfigKey.TYPE
-    READONLY  = ParameterTestConfigKey.READONLY
-    STARTUP   = ParameterTestConfigKey.STARTUP
-    DA        = ParameterTestConfigKey.DIRECT_ACCESS
-    VALUE     = ParameterTestConfigKey.VALUE
-    REQUIRED  = ParameterTestConfigKey.REQUIRED
-    DEFAULT   = ParameterTestConfigKey.DEFAULT
-    STATES    = ParameterTestConfigKey.STATES
-
-    ###
-    #  Parameter and Type Definitions
-    ###
-
-    _driver_parameters = {
-        Parameter.MAXRATE: {TYPE: float, READONLY: False, DA: True, STARTUP: True, VALUE: 4, REQUIRED: True},
-        Parameter.FIRMWARE: {TYPE: str, READONLY: True, DA: False, STARTUP: False, VALUE: '1.0.0', REQUIRED: False},
-        Parameter.SERIAL: {TYPE: str, READONLY: True, DA: False, STARTUP: False, VALUE: '4278190306', REQUIRED: False},
-        Parameter.ACQUIRE_STATUS_INTERVAL: {TYPE: str, READONLY: False, DA: False, STARTUP: True, VALUE: '00:00:00', REQUIRED: True}
-    }
-
-    _driver_capabilities = {
-        # capabilities defined in the IOS
-        PARProtocolEvent.DISCOVER: {STATES: [PARProtocolState.UNKNOWN]},
-        PARProtocolEvent.ACQUIRE_SAMPLE: {STATES: [PARProtocolState.COMMAND]},
-        PARProtocolEvent.START_AUTOSAMPLE: {STATES: [PARProtocolState.COMMAND]},
-        PARProtocolEvent.STOP_AUTOSAMPLE: {STATES: [PARProtocolState.AUTOSAMPLE]},
-        PARProtocolEvent.ACQUIRE_STATUS: {STATES: [PARProtocolState.COMMAND, PARProtocolState.AUTOSAMPLE]}
-    }
-
-    _config_parameters = {
-        # Parameters defined in the IOS
-        SatlanticPARConfigParticleKey.BAUD_RATE: {TYPE: int, READONLY: True, DA: True, STARTUP: False, VALUE: 19200, REQUIRED: True},
-        SatlanticPARConfigParticleKey.MAX_RATE: {TYPE: float, READONLY: False, DA: True, STARTUP: True, VALUE: 0.5, REQUIRED: True},
-        SatlanticPARConfigParticleKey.SERIAL_NUM: {TYPE: unicode, READONLY: True, DA: False, STARTUP: False, VALUE: '4278190306', REQUIRED: True},
-        SatlanticPARConfigParticleKey.FIRMWARE: {TYPE: unicode, READONLY: True, DA: False, STARTUP: False, VALUE: '1.0.0', REQUIRED: True},
-        SatlanticPARConfigParticleKey.TYPE: {TYPE: unicode, READONLY: True, DA: False, STARTUP: False, VALUE: 'SATPAR', REQUIRED: True},
-    }
-
-    _sample_parameters = {
-        PARDataKey.SERIAL_NUM: {TYPE: unicode, VALUE: '4278190306', REQUIRED: True},
-        PARDataKey.COUNTS: {TYPE: int, VALUE: 2157023616, REQUIRED: True},
-        PARDataKey.TIMER: {TYPE: float, VALUE: 49.02, REQUIRED: True},
-        PARDataKey.CHECKSUM: {TYPE: int, VALUE: 171, REQUIRED: True},
-    }
-
-    _sample_parameters_new = {
-        PARDataKeyNew.SERIAL_NUM: {TYPE: unicode, VALUE: '4278190306', REQUIRED: True},
-        PARDataKeyNew.COUNTS: {TYPE: int, VALUE: 2157023616, REQUIRED: True},
-        PARDataKeyNew.TIMER: {TYPE: float, VALUE: 49.02, REQUIRED: True},
-        PARDataKeyNew.CHECKSUM: {TYPE: int, VALUE: 171, REQUIRED: True},
-        PARDataKeyNew.VALUE1: {TYPE: int, VALUE: 123, REQUIRED: True},
-        PARDataKeyNew.VALUE2: {TYPE: int, VALUE: 234, REQUIRED: True},
-        PARDataKeyNew.VALUE3: {TYPE: int, VALUE: 345, REQUIRED: True},
-    }
-
-    _capabilities = {
-        PARProtocolState.UNKNOWN:      [PARProtocolEvent.DISCOVER],
-
-        PARProtocolState.COMMAND:      [PARProtocolEvent.GET,
-                                        PARProtocolEvent.SET,
-                                        PARProtocolEvent.START_DIRECT,
-                                        PARProtocolEvent.START_AUTOSAMPLE,
-                                        PARProtocolEvent.ACQUIRE_SAMPLE,
-                                        PARProtocolEvent.SCHEDULED_ACQUIRE_STATUS,
-                                        PARProtocolEvent.ACQUIRE_STATUS],
-
-        PARProtocolState.AUTOSAMPLE:   [PARProtocolEvent.GET,
-                                        PARProtocolEvent.STOP_AUTOSAMPLE,
-                                        PARProtocolEvent.SCHEDULED_ACQUIRE_STATUS],
-
-        PARProtocolState.DIRECT_ACCESS: [PARProtocolEvent.STOP_DIRECT,
-                                         PARProtocolEvent.EXECUTE_DIRECT]
-    }
-
-    ###
-    #   Driver Parameter Methods
-    ###
-    def assert_driver_parameters(self, current_parameters, verify_values=False):
-        """
-        Verify that all driver parameters are correct and potentially verify values.
-        @param current_parameters: driver parameters read from the driver instance
-        @param verify_values: should we verify values against definition?
-        """
-        self.assert_parameters(current_parameters, self._driver_parameters, verify_values)
-
-    def assert_config_parameters(self, current_parameters, verify_values=False):
-        """
-        Verify that all driver parameters are correct and potentially verify values.
-        @param current_parameters: driver parameters read from the driver instance
-        @param verify_values: should we verify values against definition?
-        """
-        self.assert_data_particle_keys(SatlanticPARConfigParticleKey, self._config_parameters)
-        self.assert_data_particle_header(current_parameters, DataParticleType.CONFIG)
-        self.assert_data_particle_parameters(current_parameters, self._config_parameters, verify_values)
-
-    def assert_particle_sample(self, data_particle, verify_values=False):
-        """
-        Verify sample particle
-        @param data_particle:  SBE16DataParticle data particle
-        @param verify_values:  bool, should we verify parameter values
-        """
-        self.assert_data_particle_keys(PARDataKey, self._sample_parameters)
-        self.assert_data_particle_header(data_particle, DataParticleType.PARSED)
-        self.assert_data_particle_parameters(data_particle, self._sample_parameters, verify_values)
-
-    def assert_particle_sample_new(self, data_particle, verify_values=False):
-        """
-        Verify sample particle
-        @param data_particle:  SBE16DataParticle data particle
-        @param verify_values:  bool, should we verify parameter values
-        """
-        self.assert_data_particle_keys(PARDataKeyNew, self._sample_parameters_new)
-        self.assert_data_particle_header(data_particle, DataParticleType.SCIENCE)
-        self.assert_data_particle_parameters(data_particle, self._sample_parameters_new, verify_values)
 
 
 @attr('INT', group='mi')
