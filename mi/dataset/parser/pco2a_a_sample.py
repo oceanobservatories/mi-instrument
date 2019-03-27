@@ -2,12 +2,11 @@
 
 """
 
-This file contains code for the pco2a_a_dcl parser and code to produce data particles.
-For instrument telemetered data, there is one driver which produces two(air/water) types of data particle.
-For instrument recover data, there is one driver which produces two(air/water) types of data particle.
+This file contains code for the pco2a_a_sample parser and code to produce data particles.
+For instrument recovered and telemetered data, there is one driver which produces two(air/water) types of data particle.
 The input files and the content of the data particles are the same for both
 instrument telemetered and instrument recovered.
-Only the names of the output particle streams are different.
+The names of the output particle streams are the same as well.
 
 The input file is ASCII and contains 2 types of records.
 Records are separated by a newline.
@@ -159,11 +158,10 @@ INSTRUMENT_PARTICLE_WATER_MAP = [
 ]
 
 
+# Recovered data will go to these streams now vs "recovered" streams
 class DataParticleType(BaseEnum):
     PCO2A_INSTRUMENT_AIR_PARTICLE = 'pco2a_a_dcl_instrument_air'
     PCO2A_INSTRUMENT_WATER_PARTICLE = 'pco2a_a_dcl_instrument_water'
-#   PCO2A_INSTRUMENT_AIR_RECOVERED_PARTICLE = 'pco2a_a_dcl_instrument_air_recovered'
-#   PCO2A_INSTRUMENT_WATER_RECOVERED_PARTICLE = 'pco2a_a_dcl_instrument_water_recovered'
 
 
 class Pco2aADclParticleClassKey(BaseEnum):
@@ -178,6 +176,8 @@ class Pco2aADclInstrumentDataParticleAir(DclInstrumentDataParticle):
     """
     Class for generating the Pco2a_a_dcl instrument particles.
     """
+    _data_particle_type = DataParticleType.PCO2A_INSTRUMENT_AIR_PARTICLE
+
     data_matcher = SENSOR_DATA_MATCHER_AIR
 
     def __init__(self, raw_data, *args, **kwargs):
@@ -198,6 +198,8 @@ class Pco2aADclInstrumentDataParticleWater(DclInstrumentDataParticle):
     """
     Class for generating the Pco2a_a_dcl instrument particles.
     """
+    _data_particle_type = DataParticleType.PCO2A_INSTRUMENT_WATER_PARTICLE
+
     data_matcher = SENSOR_DATA_MATCHER_WATER
 
     def __init__(self, raw_data, *args, **kwargs):
@@ -212,44 +214,6 @@ class Pco2aADclInstrumentDataParticleWater(DclInstrumentDataParticle):
 
         # instrument clock is not accurate so, use port_timestamp as the preferred_ts
         self.contents[DataParticleKey.PREFERRED_TIMESTAMP] = DataParticleKey.PORT_TIMESTAMP
-
-
-class Pco2aADclTelemeteredInstrumentDataParticleAir(Pco2aADclInstrumentDataParticleAir):
-    """
-    Class for generating Offset Data Particles from Telemetered air data.
-    """
-    _data_particle_type = DataParticleType.PCO2A_INSTRUMENT_AIR_PARTICLE
-
-    data_matcher = SENSOR_DATA_MATCHER_AIR
-
-
-class Pco2aADclTelemeteredInstrumentDataParticleWater(Pco2aADclInstrumentDataParticleWater):
-    """
-    Class for generating Offset Data Particles from Telemetered water data.
-    """
-    _data_particle_type = DataParticleType.PCO2A_INSTRUMENT_WATER_PARTICLE
-
-    data_matcher = SENSOR_DATA_MATCHER_WATER
-
-
-class Pco2aADclRecoveredInstrumentDataParticleAir(Pco2aADclInstrumentDataParticleAir):
-    """
-    Class for generating Offset Data Particles from Recovered air data.
-    """
-#   _data_particle_type = DataParticleType.PCO2A_INSTRUMENT_AIR_RECOVERED_PARTICLE
-    _data_particle_type = DataParticleType.PCO2A_INSTRUMENT_AIR_PARTICLE
-
-    data_matcher = SENSOR_DATA_MATCHER_AIR
-
-
-class Pco2aADclRecoveredInstrumentDataParticleWater(Pco2aADclInstrumentDataParticleWater):
-    """
-    Class for generating Offset Data Particles from Recovered water data.
-    """
-#   _data_particle_type = DataParticleType.PCO2A_INSTRUMENT_WATER_RECOVERED_PARTICLE
-    _data_particle_type = DataParticleType.PCO2A_INSTRUMENT_WATER_PARTICLE
-
-    data_matcher = SENSOR_DATA_MATCHER_WATER
 
 
 class Pco2aADclParser(DclFileCommonParser):

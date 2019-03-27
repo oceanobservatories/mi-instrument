@@ -1,4 +1,4 @@
-# Version 0.7.2
+# Version 0.8.0
 
 * Issue 13369 - add pco2a_a_sample parser,drivers and test files for new pco2a instrument
 

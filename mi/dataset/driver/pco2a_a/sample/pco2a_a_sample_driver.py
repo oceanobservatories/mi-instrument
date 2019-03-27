@@ -3,35 +3,29 @@
 """
 @package mi.dataset.driver.pco2a_a.sample.pco2a_a_sample_driver
 @file mi/dataset/driver/pco2a_a/sample/pco2a_a_sample_driver.py
-@author Sung Ahn
+@author Tim Fisher
 @brief For creating a pco2a_a_sample driver.
 
 """
 
 
 from mi.core.log import get_logger
+from mi.core.versioning import version
 from mi.dataset.parser.pco2a_a_sample import Pco2aADclParser
 from mi.dataset.dataset_driver import DataSetDriver
 from mi.dataset.dataset_parser import DataSetDriverConfigKeys
 
 from mi.dataset.parser.pco2a_a_sample import Pco2aADclParticleClassKey, \
-    Pco2aADclTelemeteredInstrumentDataParticleAir, \
-    Pco2aADclTelemeteredInstrumentDataParticleWater, \
-    Pco2aADclRecoveredInstrumentDataParticleAir, \
-    Pco2aADclRecoveredInstrumentDataParticleWater
+    Pco2aADclInstrumentDataParticleAir, \
+    Pco2aADclInstrumentDataParticleWater
 
 log = get_logger()
 
 MODULE_NAME = 'mi.dataset.parser.pco2a_a_sample'
 
-TELEMETERED_PARTICLE_CLASSES = {
-    Pco2aADclParticleClassKey.AIR_PARTICLE_CLASS: Pco2aADclTelemeteredInstrumentDataParticleAir,
-    Pco2aADclParticleClassKey.WATER_PARTICLE_CLASS: Pco2aADclTelemeteredInstrumentDataParticleWater
-}
-
-RECOVERED_PARTICLE_CLASSES = {
-    Pco2aADclParticleClassKey.AIR_PARTICLE_CLASS: Pco2aADclRecoveredInstrumentDataParticleAir,
-    Pco2aADclParticleClassKey.WATER_PARTICLE_CLASS: Pco2aADclRecoveredInstrumentDataParticleWater
+PARTICLE_CLASSES = {
+    Pco2aADclParticleClassKey.AIR_PARTICLE_CLASS: Pco2aADclInstrumentDataParticleAir,
+    Pco2aADclParticleClassKey.WATER_PARTICLE_CLASS: Pco2aADclInstrumentDataParticleWater
 }
 
 
@@ -47,3 +41,9 @@ def process(source_file_path, particle_data_handler, particle_classes):
         )
         driver = DataSetDriver(parser, particle_data_handler)
         driver.processFileStream()
+
+@version("0.1.0")
+def parse(unused, source_file_path, particle_data_handler):
+    process(source_file_path, particle_data_handler, PARTICLE_CLASSES)
+
+    return particle_data_handler
