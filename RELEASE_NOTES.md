@@ -1,3 +1,7 @@
+# Version 0.7.2
+
+* Issue 13369 - add pco2a_a_sample parser,drivers and test files for new pco2a instrument
+
 # Version 0.7.1
 
 * Issue #13711 - update camhd_metadata particle parser to use camera log files
