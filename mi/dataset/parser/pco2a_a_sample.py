@@ -25,9 +25,7 @@ Initial Release based on mi.dataset.parser.pco2a_a_dcl
 
 import re
 
-from mi.core.log import get_logger
-
-log = get_logger()
+from mi.core.log import log
 
 from mi.core.common import BaseEnum
 
@@ -104,16 +102,6 @@ SENSOR_DATA_PATTERN_WATER = TIMESTAMP + SPACE_REGEX  # dcl controller timestamp
 SENSOR_DATA_PATTERN_WATER += CHAR_W + SPACE_REGEX
 SENSOR_DATA_PATTERN_WATER += SENSOR_DATA_PATTERN
 SENSOR_DATA_MATCHER_WATER = re.compile(SENSOR_DATA_PATTERN_WATER)
-
-print(SENSOR_DATA_PATTERN_WATER)
-
-# Manual test is below
-'''
-    from mi.dataset.parser.pco2a_a_dcl_new import SENSOR_DATA_MATCHER_WATER
-    data = "2019/02/27 00:00:09.290 W M,2019,02,27,00,00,11,44027,41190,446.74,40.60,11.37,28.52,1021,40.30,40.90,11.7\r\n"
-    m = SENSOR_DATA_MATCHER_WATER.match(data)
-    print(m.groups())
-'''
 
 # SENSOR_DATA_MATCHER produces the following groups.
 # The following are indices into groups() produced by SENSOR_DATA_MATCHER.

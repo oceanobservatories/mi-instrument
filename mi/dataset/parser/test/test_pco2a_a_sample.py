@@ -19,7 +19,7 @@ Files used for testing:
 import os
 from nose.plugins.attrib import attr
 
-from mi.core.log import get_logger
+from mi.core.log import log
 from mi.core.exceptions import UnexpectedDataException
 from mi.dataset.parser.utilities import particle_to_yml
 
@@ -27,11 +27,9 @@ from mi.dataset.test.test_parser import ParserUnitTestCase
 from mi.dataset.dataset_parser import DataSetDriverConfigKeys
 from mi.dataset.driver.pco2a_a.sample.resource import RESOURCE_PATH
 from mi.dataset.parser.pco2a_a_sample import Pco2aADclParser
+from mi.dataset.parser.pco2a_a_sample import SENSOR_DATA_MATCHER_WATER
 from mi.dataset.driver.pco2a_a.sample.pco2a_a_sample_driver import \
      MODULE_NAME, PARTICLE_CLASSES
-#    MODULE_NAME, RECOVERED_PARTICLE_CLASSES, TELEMETERED_PARTICLE_CLASSES
-
-log = get_logger()
 
 FILE = '20140217.pco2a.log'
 FILE_FAILURE = '20140217.pco2a_failure.log'
@@ -68,6 +66,13 @@ class Pco2aADclParserUnitTestCase(ParserUnitTestCase):
 
     def setUp(self):
         ParserUnitTestCase.setUp(self)
+
+    # There should be 20 groups where the last group is '11.7'
+    def test_sensor_water_pattern(self):
+        data = "2019/02/27 00:00:09.290 W M,2019,02,27,00,00,11,44027,41190,446.74,40.60,11.37,28.52,1021,40.30,40.90,11.7\r\n"
+        m = SENSOR_DATA_MATCHER_WATER.match(data)
+        self.assertEqual(20,m.re.groups)
+        self.assertEqual('11.7',m.group(m.re.groups))
 
     def test_verify_record(self):
         """

@@ -9,7 +9,7 @@
 """
 
 
-from mi.core.log import get_logger
+from mi.core.log import log
 from mi.core.versioning import version
 from mi.dataset.parser.pco2a_a_sample import Pco2aADclParser
 from mi.dataset.dataset_driver import DataSetDriver
@@ -18,8 +18,6 @@ from mi.dataset.dataset_parser import DataSetDriverConfigKeys
 from mi.dataset.parser.pco2a_a_sample import Pco2aADclParticleClassKey, \
     Pco2aADclInstrumentDataParticleAir, \
     Pco2aADclInstrumentDataParticleWater
-
-log = get_logger()
 
 MODULE_NAME = 'mi.dataset.parser.pco2a_a_sample'
 
