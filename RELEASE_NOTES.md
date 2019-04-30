@@ -1,3 +1,8 @@
+# Version 0.8.1
+
+* Issue 14184 - ensure data timestamps of pco2w_abc particles are treated as 1904-based
+   * Modified pco2w_abc_particles to adjust the data timestamps from 1904-based to NTP
+
 # Version 0.8.0
 
 * Issue 13369 - add pco2a_a_sample parser,drivers and test files for new pco2a instrument
