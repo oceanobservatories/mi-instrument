@@ -1,7 +1,7 @@
 # #
 # OOIPLACEHOLDER
 #
-# Copyright 2014 Raytheon Co.
+# Copyright 2019 Raytheon Co.
 ##
 
 __author__ = "mworden"
@@ -48,7 +48,7 @@ class Pco2wAbcDriver:
         return self._particle_data_handler
 
 
-@version("15.6.1")
+@version("15.6.2")
 def parse(unused, source_file_path, particle_data_handler):
     parser_config = {
         DataSetDriverConfigKeys.PARTICLE_MODULE: 'mi.dataset.parser.pco2w_abc_particles',
