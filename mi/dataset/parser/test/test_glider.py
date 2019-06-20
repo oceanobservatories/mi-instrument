@@ -807,9 +807,13 @@ class ENGGliderTest(GliderParserUnitTestCase):
                         EngineeringScienceTelemeteredParticleKey.SCI_M_DISK_USAGE: 1000.2}
 
         record_gps_1 = {GpsPositionParticleKey.M_GPS_LAT: 43.47113833333333,
-                        GpsPositionParticleKey.M_GPS_LON: -125.39660833333333}
+                        GpsPositionParticleKey.M_GPS_LON: -125.39660833333333,
+                        GpsPositionParticleKey.M_LAT: 43.47113833452416,
+                        GpsPositionParticleKey.M_LON: -125.39660833431499}
         record_gps_2 = {GpsPositionParticleKey.M_GPS_LAT: 43.47113833333333,
-                        GpsPositionParticleKey.M_GPS_LON: -125.39660833333333}
+                        GpsPositionParticleKey.M_GPS_LON: -125.39660833333333,
+                        GpsPositionParticleKey.M_LAT: 43.47113833452416,
+                        GpsPositionParticleKey.M_LON: -125.39660833431499}
 
         self.assert_generate_particle(EngineeringMetadataDataParticle, meta_record)
         # 1 sample line generates 3 particles
@@ -917,9 +921,13 @@ class ENGRecoveredGliderTest(GliderParserUnitTestCase):
                         EngineeringScienceRecoveredParticleKey.SCI_M_DISK_USAGE: 1000.2}
 
         record_gps_1 = {GpsPositionParticleKey.M_GPS_LAT: 43.47113833333333,
-                        GpsPositionParticleKey.M_GPS_LON: -125.39660833333333}
+                        GpsPositionParticleKey.M_GPS_LON: -125.39660833333333,
+                        GpsPositionParticleKey.M_LAT: 43.47113833452416,
+                        GpsPositionParticleKey.M_LON: -125.39660833431499}
         record_gps_2 = {GpsPositionParticleKey.M_GPS_LAT: 43.47113833333333,
-                        GpsPositionParticleKey.M_GPS_LON: -125.39660833333333}
+                        GpsPositionParticleKey.M_GPS_LON: -125.39660833333333,
+                        GpsPositionParticleKey.M_LAT: 43.47113833452416,
+                        GpsPositionParticleKey.M_LON: -125.39660833431499}
 
         self.assert_generate_particle(EngineeringMetadataRecoveredDataParticle, meta_record)
         # 1 sample line generates 2 particles
