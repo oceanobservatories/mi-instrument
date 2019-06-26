@@ -1049,8 +1049,8 @@ class GliderParser(SimpleParser):
         # Modified to make this check more efficient
         if len(particle_class.science_parameters) < len(data_dict):
             for key in particle_class.science_parameters:
-                value = data_dict.get(key)
-                if value and not(isnan(float(value))):
+                value = data_dict.get(key, None)
+                if value is not None and not(isnan(float(value))):
                     return_value = True
                     break
         else:
