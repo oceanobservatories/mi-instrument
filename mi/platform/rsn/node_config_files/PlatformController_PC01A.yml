@@ -5,7 +5,7 @@ node_meta_data:
   node_type: PlatformController
   oms_sample_rate: 5
   reference_designator: RS01SBPS-PC01A
-  serial_number: SN0101
+  serial_number: SN0104
   read_only_mode: True
 
 node_streams:
