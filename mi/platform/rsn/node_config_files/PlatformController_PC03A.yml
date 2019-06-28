@@ -5,7 +5,7 @@ node_meta_data:
   node_type: PlatformController
   oms_sample_rate: 5
   reference_designator: RS03AXPS-PC03A
-  serial_number: SN0106
+  serial_number: SN0103
   read_only_mode: True
 
 node_streams:
