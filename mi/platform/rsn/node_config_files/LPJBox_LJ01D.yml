@@ -1,7 +1,7 @@
 node_meta_data:
   description: Shelf BEP
   location: SHBP
-  node_id_name: SN0006-LJ01D
+  node_id_name: SN0009-LJ01D
   node_type: LPJBox
   oms_sample_rate: 5
   reference_designator: CE02SHBP-LJ01D
