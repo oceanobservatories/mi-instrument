@@ -5,7 +5,7 @@ node_meta_data:
   node_type: ProfilerFloat
   oms_sample_rate: 5
   reference_designator: RS01SBPS-SF01A
-  serial_number: SN0142
+  serial_number: SN0143
   read_only_mode: True
 
 node_streams:
