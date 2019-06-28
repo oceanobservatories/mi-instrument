@@ -5,7 +5,7 @@ node_meta_data:
   node_type: LPJBox
   oms_sample_rate: 5
   reference_designator: CE02SHBP-LJ01D
-  serial_number: SN0006
+  serial_number: SN0009
   read_only_mode: True
 
 node_streams:
