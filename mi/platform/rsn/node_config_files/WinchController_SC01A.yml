@@ -5,7 +5,7 @@ node_meta_data:
   node_type: WinchController
   oms_sample_rate: 5
   reference_designator: RS01SBPS-SC01A
-  serial_number: SN0122
+  serial_number: SN0123
   read_only_mode: True
 
 node_streams:
