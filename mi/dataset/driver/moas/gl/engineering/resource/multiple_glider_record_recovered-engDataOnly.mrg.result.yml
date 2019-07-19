@@ -287,6 +287,12 @@ data:
     m_gps_lon:
       value: -125.39661
       round: 5
+    m_lat:
+      value: 43.47114
+      round: 5
+    m_lon:
+      value: -125.39661
+      round: 5
   - _index: 4
     particle_object: EngineeringScienceRecoveredDataParticle
     particle_type: glider_eng_sci_recovered
@@ -587,6 +593,8 @@ data:
     internal_timestamp: '2012-02-21T18:40:18.799620Z'
     m_gps_lat: 43.471138333333336
     m_gps_lon: -125.39660833333333
+    m_lat: 43.47113833452416
+    m_lon: -125.396608334315
   - _index: 7
     particle_object: EngineeringScienceRecoveredDataParticle
     particle_type: glider_eng_sci_recovered
@@ -883,6 +891,8 @@ data:
     internal_timestamp: '2012-02-21T18:41:43.758150Z'
     m_gps_lat: 43.46955333333333
     m_gps_lon: -125.39484
+    m_lat: 43.46955333452417
+    m_lon: -125.39484000097667
   - _index: 10
     particle_object: EngineeringScienceRecoveredDataParticle
     particle_type: glider_eng_sci_recovered
@@ -1175,6 +1185,8 @@ data:
     internal_timestamp: '2012-02-21T18:42:02.245270Z'
     m_gps_lat: 43.469525
     m_gps_lon: -125.39477833333333
+    m_lat: 43.46952500119084
+    m_lon: -125.39477833431
   - _index: 13
     particle_object: EngineeringScienceRecoveredDataParticle
     particle_type: glider_eng_sci_recovered
