@@ -704,6 +704,8 @@ class EngineeringScienceTelemeteredParticleKey(GliderParticleKey):
 class GpsPositionParticleKey(GliderParticleKey):
     M_GPS_LAT = 'm_gps_lat'
     M_GPS_LON = 'm_gps_lon'
+    M_LAT = 'm_lat'
+    M_LON = 'm_lon'
 
 
 class GpsPositionDataParticle(GliderParticle):
@@ -1042,9 +1044,22 @@ class GliderParser(SimpleParser):
         """
         Examine the data_dict to see if it contains particle parameters
         """
-        for key, value in data_dict.iteritems():
-            if not(isnan(float(value))) and key in particle_class.science_parameters:
-                return True
+        return_value = False
+
+        # Modified to make this check more efficient
+        if len(particle_class.science_parameters) < len(data_dict):
+            for key in particle_class.science_parameters:
+                value = data_dict.get(key, None)
+                if value is not None and not(isnan(float(value))):
+                    return_value = True
+                    break
+        else:
+            for key, value in data_dict.iteritems():
+                if not (isnan(float(value))) and key in particle_class.science_parameters:
+                    return_value = True
+                    break
+
+        return return_value
 
 
 class EngineeringClassKey(BaseEnum):
