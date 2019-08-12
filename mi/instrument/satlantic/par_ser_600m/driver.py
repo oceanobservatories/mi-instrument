@@ -55,7 +55,8 @@ INSTRUMENT = 'SATPAR'
 SAMPLE_PATTERN = r'SATPAR(?P<sernum>\d+),(?P<timer>\d+\.\d+),(?P<counts>\d+),(?P<checksum>\d+)\r\n'
 SAMPLE_REGEX = re.compile(SAMPLE_PATTERN)
 
-SAMPLE_NEW_PATTERN = r'SATPAR(?P<sernum>\d+),(?P<timer>\d+\.\d+),(?P<counts>\d+),(?P<value1>\d+),(?P<value2>\d+),(?P<value3>\d+),(?P<checksum>\d+)\r\n'
+#SAMPLE_NEW_PATTERN = r'SATPAR(?P<sernum>\d+),(?P<timer>\d+\.\d+),(?P<counts>\d+),(?P<value1>\d+),(?P<value2>\d+),(?P<value3>\d+),(?P<checksum>\d+)\r\n'
+SAMPLE_NEW_PATTERN = R'SATPRL(?P<sernum>\d+),(?P<timer>\d+\.\d+),(?P<PAR>\d+\.\d+),(?P<pitch>\d+\.\d+),(?P<roll>\d+\.\d+),(?P<itemp>\d+\.\d+),(?P<amode>LOG|LIN),(?P<counts>\d+),(?P<adcv>\d+\.\d+),(?P<vout>\d+\.\d+),(?P<xaxis>-?\d+),(?P<yaxis>-?\d+),(?P<zaxis>-?\d+),(?P<tcounts>\d+),(?P<tvolts>\d+\.\d+),(?P<status>\d+),(?P<checksum>\d+)\r\n'
 SAMPLE_NEW_REGEX = re.compile(SAMPLE_NEW_PATTERN)
 
 HEADER_PATTERN = r'S/N: (?P<sernum>\d+)\r\nFirmware: (?P<firm>\S+)\r\n'
@@ -230,11 +231,21 @@ class PARDataKey(BaseEnum):
 
 class PARDataKeyNew(BaseEnum):
     SERIAL_NUM = "serial_number"
-    COUNTS = "par"
-    VALUE1 = "value1"
-    VALUE2 = "value2"
-    VALUE3 = "value3"
     TIMER = "elapsed_time"
+    PAR = 'par'
+    PITCH = 'instrument_pitch'
+    ROLL = 'instrument_roll'
+    TEMP = 'internal_temperature'
+    MODE = 'analog_mode'
+    COUNTS = "par_counts"
+    V_IN = 'ADC_volts'
+    V_OUT = 'voltage_out'
+    X_AXIS = 'x_accel_counts'
+    Y_AXIS = 'y_accel_counts'
+    Z_AXIS = 'z_accel_counts'
+    T_COUNTS = 'temperature_counts'
+    T_VOLTS = 'temperature_volts'
+    STATUS = 'sensor_status'
     CHECKSUM = "checksum"
 
 
@@ -341,10 +352,20 @@ class PARParticleNew(PARParticleBase):
         try:
             sernum = match.group('sernum')
             timer = float(match.group('timer'))
+            par = float(match.group('PAR'))
+            pitch = float(match.group('pitch'))
+            roll = float(match.group('roll'))
+            itemp = float(match.group('itemp'))
+            amode = str(match.group('amode'))
             counts = int(match.group('counts'))
-            value1 = int(match.group('value1'))
-            value2 = int(match.group('value2'))
-            value3 = int(match.group('value3'))
+            v_in = float(match.group('adcv'))
+            v_out = float(match.group('vout'))
+            xaxis = int(match.group('xaxis'))
+            yaxis = int(match.group('yaxis'))
+            zaxis = int(match.group('zaxis'))
+            tcount = int(match.group('tcounts'))
+            tvolts = float(match.group('tvolts'))
+            status = int(match.group('status'))
             checksum = int(match.group('checksum'))
         except ValueError:
             log.warn("_build_parsed_values")
@@ -358,11 +379,22 @@ class PARParticleNew(PARParticleBase):
 
         result = [{DataParticleKey.VALUE_ID: PARDataKeyNew.SERIAL_NUM, DataParticleKey.VALUE: sernum},
                   {DataParticleKey.VALUE_ID: PARDataKeyNew.TIMER, DataParticleKey.VALUE: timer},
+                  {DataParticleKey.VALUE_ID: PARDataKeyNew.PAR, DataParticleKey.VALUE: par},
+                  {DataParticleKey.VALUE_ID: PARDataKeyNew.PITCH, DataParticleKey.VALUE: pitch},
+                  {DataParticleKey.VALUE_ID: PARDataKeyNew.ROLL, DataParticleKey.VALUE: roll},
+                  {DataParticleKey.VALUE_ID: PARDataKeyNew.TEMP, DataParticleKey.VALUE: itemp},
+                  {DataParticleKey.VALUE_ID: PARDataKeyNew.MODE, DataParticleKey.VALUE: amode},
                   {DataParticleKey.VALUE_ID: PARDataKeyNew.COUNTS, DataParticleKey.VALUE: counts},
-                  {DataParticleKey.VALUE_ID: PARDataKeyNew.VALUE1, DataParticleKey.VALUE: value1},
-                  {DataParticleKey.VALUE_ID: PARDataKeyNew.VALUE2, DataParticleKey.VALUE: value2},
-                  {DataParticleKey.VALUE_ID: PARDataKeyNew.VALUE3, DataParticleKey.VALUE: value3},
+                  {DataParticleKey.VALUE_ID: PARDataKeyNew.V_IN, DataParticleKey.VALUE: v_in},
+                  {DataParticleKey.VALUE_ID: PARDataKeyNew.V_OUT, DataParticleKey.VALUE: v_out},
+                  {DataParticleKey.VALUE_ID: PARDataKeyNew.X_AXIS, DataParticleKey.VALUE: xaxis},
+                  {DataParticleKey.VALUE_ID: PARDataKeyNew.Y_AXIS, DataParticleKey.VALUE: yaxis},
+                  {DataParticleKey.VALUE_ID: PARDataKeyNew.Z_AXIS, DataParticleKey.VALUE: zaxis},
+                  {DataParticleKey.VALUE_ID: PARDataKeyNew.T_COUNTS, DataParticleKey.VALUE: tcount},
+                  {DataParticleKey.VALUE_ID: PARDataKeyNew.T_VOLTS, DataParticleKey.VALUE: tvolts},
+                  {DataParticleKey.VALUE_ID: PARDataKeyNew.STATUS, DataParticleKey.VALUE: status},
                   {DataParticleKey.VALUE_ID: PARDataKeyNew.CHECKSUM, DataParticleKey.VALUE: checksum}]
+
 
         return result
 
