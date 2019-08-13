@@ -57,7 +57,7 @@ InstrumentDriverTestCase.initialize(
 VALID_SAMPLE = "SATPAR4278190306,49.02,2157023616,171\r\n"
 INVALID_SAMPLE = "SATPAR4278190306,49.02,2157023616,172\r\n"
 #VALID_SAMPLE_NEW = "SATPAR4278190306,49.02,2157023616,123,234,345,92\r\n"
-VALID_SAMPLE_NEW = "SATPRL9999,1.468,22.784,2.2,0.7,27.3,LIN,34174366,0.092377499,0.1465022,-13,-1011,38,1759,0.773,0,231\r\n"
+VALID_SAMPLE_NEW = "SATPRL9999,1.468,22.784,2.2,0.7,27.3,LIN,34174366,0.092377499,0.1465022,-13,-1011,38,1759,0.773,0,230\r\n"
 
 
 # Make tests verbose and provide stdout
@@ -71,22 +71,13 @@ valid_particle = [{DataParticleKey.VALUE_ID: PARDataKey.SERIAL_NUM, DataParticle
                   {DataParticleKey.VALUE_ID: PARDataKey.COUNTS, DataParticleKey.VALUE: 2157023616},
                   {DataParticleKey.VALUE_ID: PARDataKey.CHECKSUM, DataParticleKey.VALUE: 171}]
 
-# valid_particle_new = \
-#     [{DataParticleKey.VALUE_ID: PARDataKeyNew.SERIAL_NUM, DataParticleKey.VALUE: '4278190306'},
-#     {DataParticleKey.VALUE_ID: PARDataKeyNew.TIMER, DataParticleKey.VALUE: 49.02},
-#     {DataParticleKey.VALUE_ID: PARDataKeyNew.COUNTS, DataParticleKey.VALUE: 2157023616},
-#     {DataParticleKey.VALUE_ID: PARDataKeyNew.VALUE1, DataParticleKey.VALUE: 123},
-#     {DataParticleKey.VALUE_ID: PARDataKeyNew.VALUE2, DataParticleKey.VALUE: 234},
-#     {DataParticleKey.VALUE_ID: PARDataKeyNew.VALUE3, DataParticleKey.VALUE: 345},
-#     {DataParticleKey.VALUE_ID: PARDataKeyNew.CHECKSUM, DataParticleKey.VALUE: 92}]
-
 valid_particle_new = \
     [{DataParticleKey.VALUE_ID: PARDataKeyNew.SERIAL_NUM, DataParticleKey.VALUE: '9999'},
     {DataParticleKey.VALUE_ID: PARDataKeyNew.TIMER, DataParticleKey.VALUE: 1.468},
     {DataParticleKey.VALUE_ID: PARDataKeyNew.PAR, DataParticleKey.VALUE: 22.784},
     {DataParticleKey.VALUE_ID: PARDataKeyNew.PITCH, DataParticleKey.VALUE: 2.2},
     {DataParticleKey.VALUE_ID: PARDataKeyNew.ROLL, DataParticleKey.VALUE: 0.7},
-    {DataParticleKey.VALUE_ID: PARDataKeyNew.TEMP, DataParticleKey.VALUE:  27.3},
+    {DataParticleKey.VALUE_ID: PARDataKeyNew.TEMP, DataParticleKey.VALUE: 27.3},
     {DataParticleKey.VALUE_ID: PARDataKeyNew.MODE, DataParticleKey.VALUE: 'LIN'},
     {DataParticleKey.VALUE_ID: PARDataKeyNew.COUNTS, DataParticleKey.VALUE: 34174366},
     {DataParticleKey.VALUE_ID: PARDataKeyNew.V_IN, DataParticleKey.VALUE: 0.092377499},
@@ -97,7 +88,7 @@ valid_particle_new = \
     {DataParticleKey.VALUE_ID: PARDataKeyNew.T_COUNTS, DataParticleKey.VALUE: 1759},
     {DataParticleKey.VALUE_ID: PARDataKeyNew.T_VOLTS, DataParticleKey.VALUE: 0.773},
     {DataParticleKey.VALUE_ID: PARDataKeyNew.STATUS, DataParticleKey.VALUE: 0},
-    {DataParticleKey.VALUE_ID: PARDataKeyNew.CHECKSUM, DataParticleKey.VALUE: 231}]
+    {DataParticleKey.VALUE_ID: PARDataKeyNew.CHECKSUM, DataParticleKey.VALUE: 230}]
 
 bad_checksum_particle = [{DataParticleKey.VALUE_ID: PARDataKey.SERIAL_NUM, DataParticleKey.VALUE: '4278190306'},
                          {DataParticleKey.VALUE_ID: PARDataKey.TIMER, DataParticleKey.VALUE: 49.02},
@@ -187,7 +178,7 @@ class PARMixin(DriverTestMixin):
         PARDataKeyNew.T_COUNTS: {TYPE: int, VALUE: 1759, REQUIRED: True},
         PARDataKeyNew.T_VOLTS: {TYPE: float, VALUE: 0.773, REQUIRED: True},
         PARDataKeyNew.STATUS: {TYPE: int, VALUE: 0, REQUIRED: True},
-        PARDataKeyNew.CHECKSUM: {TYPE: int, VALUE: 231, REQUIRED: True}
+        PARDataKeyNew.CHECKSUM: {TYPE: int, VALUE: 230, REQUIRED: True}
     }
 
     _capabilities = {

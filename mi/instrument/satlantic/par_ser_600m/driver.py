@@ -55,7 +55,6 @@ INSTRUMENT = 'SATPAR'
 SAMPLE_PATTERN = r'SATPAR(?P<sernum>\d+),(?P<timer>\d+\.\d+),(?P<counts>\d+),(?P<checksum>\d+)\r\n'
 SAMPLE_REGEX = re.compile(SAMPLE_PATTERN)
 
-#SAMPLE_NEW_PATTERN = r'SATPAR(?P<sernum>\d+),(?P<timer>\d+\.\d+),(?P<counts>\d+),(?P<value1>\d+),(?P<value2>\d+),(?P<value3>\d+),(?P<checksum>\d+)\r\n'
 SAMPLE_NEW_PATTERN = R'SATPRL(?P<sernum>\d+),(?P<timer>\d+\.\d+),(?P<PAR>\d+\.\d+),(?P<pitch>\d+\.\d+),(?P<roll>\d+\.\d+),(?P<itemp>\d+\.\d+),(?P<amode>LOG|LIN),(?P<counts>\d+),(?P<adcv>\d+\.\d+),(?P<vout>\d+\.\d+),(?P<xaxis>-?\d+),(?P<yaxis>-?\d+),(?P<zaxis>-?\d+),(?P<tcounts>\d+),(?P<tvolts>\d+\.\d+),(?P<status>\d+),(?P<checksum>\d+)\r\n'
 SAMPLE_NEW_REGEX = re.compile(SAMPLE_NEW_PATTERN)
 
@@ -232,12 +231,12 @@ class PARDataKey(BaseEnum):
 class PARDataKeyNew(BaseEnum):
     SERIAL_NUM = "serial_number"
     TIMER = "elapsed_time"
-    PAR = 'par'
+    PAR = 'calculated_par'
     PITCH = 'instrument_pitch'
     ROLL = 'instrument_roll'
     TEMP = 'internal_temperature'
     MODE = 'analog_mode'
-    COUNTS = "par_counts"
+    COUNTS = "par"
     V_IN = 'ADC_volts'
     V_OUT = 'voltage_out'
     X_AXIS = 'x_accel_counts'
@@ -246,7 +245,7 @@ class PARDataKeyNew(BaseEnum):
     T_COUNTS = 'temperature_counts'
     T_VOLTS = 'temperature_volts'
     STATUS = 'sensor_status'
-    CHECKSUM = "checksum"
+    CHECKSUM = 'checksum'
 
 
 class PARParticleBase(DataParticle):
@@ -394,7 +393,6 @@ class PARParticleNew(PARParticleBase):
                   {DataParticleKey.VALUE_ID: PARDataKeyNew.T_VOLTS, DataParticleKey.VALUE: tvolts},
                   {DataParticleKey.VALUE_ID: PARDataKeyNew.STATUS, DataParticleKey.VALUE: status},
                   {DataParticleKey.VALUE_ID: PARDataKeyNew.CHECKSUM, DataParticleKey.VALUE: checksum}]
-
 
         return result
 
