@@ -1,11 +1,11 @@
 node_meta_data:
   description: MPJBox Axial Base
   location: AXBS
-  node_id_name: SN0035-MJ03A
+  node_id_name: SN0026-MJ03A
   node_type: MPJBox
   oms_sample_rate: 5
   reference_designator: RS03AXBS-MJ03A
-  serial_number: SN0035
+  serial_number: SN0026
   read_only_mode: True
 
 node_streams:
