@@ -237,7 +237,7 @@ class PARMixin(DriverTestMixin):
         @param verify_values:  bool, should we verify parameter values
         """
         self.assert_data_particle_keys(PARDataKeyNew, self._sample_parameters_new)
-        self.assert_data_particle_header(data_particle, DataParticleType.SCIENCE)
+        self.assert_data_particle_header(data_particle, DataParticleType.PARSED)
         self.assert_data_particle_parameters(data_particle, self._sample_parameters_new, verify_values)
 
 @attr('UNIT', group='mi')
@@ -331,7 +331,6 @@ class SatlanticParProtocolUnitTest(InstrumentDriverUnitTestCase, PARMixin):
 
         self.compare_parsed_data_particle(PARParticle, VALID_SAMPLE, expected_particle)
         expected_particle[DataParticleKey.VALUES] = valid_particle_new
-        expected_particle[DataParticleKey.STREAM_NAME] = DataParticleType.SCIENCE
         self.compare_parsed_data_particle(PARParticleNew, VALID_SAMPLE_NEW, expected_particle)
 
     def test_bad_checksum_sample_format(self):
