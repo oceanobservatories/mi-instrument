@@ -336,7 +336,8 @@ class PARParticleNew(PARParticleBase):
     Routines for parsing raw data into a data particle structure for the Satlantic PAR sensor.
     Overrides the building of values, and the rest comes along for free.
     """
-    _data_particle_type = DataParticleType.SCIENCE
+    #_data_particle_type = DataParticleType.SCIENCE
+    _data_particle_type = DataParticleType.PARSED
 
     def _build_parsed_values(self):
         """
