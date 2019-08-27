@@ -86,6 +86,7 @@ EOLN = "\r\n"
 
 TIMEOUT = 15
 
+
 class ParameterUnits(BaseEnum):
     TIME_INTERVAL = 'HH:MM:SS'
 
@@ -231,21 +232,21 @@ class PARDataKey(BaseEnum):
 class PARDataKeyNew(BaseEnum):
     SERIAL_NUM = "serial_number"
     TIMER = "elapsed_time"
-    PAR = 'calculated_par'
-    PITCH = 'instrument_pitch'
-    ROLL = 'instrument_roll'
-    TEMP = 'internal_temperature'
-    MODE = 'analog_mode'
+    PAR = "calculated_par"
+    PITCH = "pitch"
+    ROLL = "roll"
+    TEMP = "temp_interior"
+    MODE = "analog_mode"
     COUNTS = "par"
-    V_IN = 'ADC_volts'
-    V_OUT = 'voltage_out'
-    X_AXIS = 'x_accel_counts'
-    Y_AXIS = 'y_accel_counts'
-    Z_AXIS = 'z_accel_counts'
-    T_COUNTS = 'temperature_counts'
-    T_VOLTS = 'temperature_volts'
-    STATUS = 'sensor_status'
-    CHECKSUM = 'checksum'
+    V_IN = "input_voltage"
+    V_OUT = "voltage_out"
+    X_AXIS = "x_accel_counts"
+    Y_AXIS = "y_accel_counts"
+    Z_AXIS = "z_accel_counts"
+    T_COUNTS = "raw_internal_temp"
+    T_VOLTS = "temperature_volts"
+    STATUS = "sensor_status"
+    CHECKSUM = "checksum"
 
 
 class PARParticleBase(DataParticle):
