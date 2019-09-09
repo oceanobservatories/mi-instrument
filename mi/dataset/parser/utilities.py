@@ -154,6 +154,18 @@ def timestamp_yyyy_mm_dd_hh_mm_ss_to_ntp(timestamp_str):
     return (timestamp - datetime(1900, 1, 1)).total_seconds()
 
 
+def timestamp_yyyy_mm_dd_hh_mm_ss_csv_to_ntp(timestamp_str):
+    """
+    Converts a timestamp string, in the YYYY,MM,DD,HH,MM,SS format, to NTP time.
+    :param timestamp_str: a timestamp string in the format YYYY,MM,DD,HH,MM,SS
+    :return: Time (float64) in seconds from epoch 01-01-1900.
+    """
+
+    timestamp = datetime.strptime(timestamp_str, "%Y,%m,%d,%H,%M,%S")
+
+    return (timestamp - datetime(1900, 1, 1)).total_seconds()
+
+
 def timestamp_ddmmyyyyhhmmss_to_ntp(timestamp_str):
     """
     Converts a timestamp string, in the DD Mon YYYY HH:MM:SS format, to NTP time.

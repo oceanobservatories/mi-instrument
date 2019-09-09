@@ -1,11 +1,11 @@
 node_meta_data:
   description: LPJBox at Hydrate Ridge
   location: Hydrate Ridge
-  node_id_name: SN0012-LJ01B
+  node_id_name: SN0004-LJ01B
   node_type: LPJBox
   oms_sample_rate: 5
   reference_designator: RS01SUM1-LJ01B
-  serial_number: SN0012
+  serial_number: SN0004
   read_only_mode: True
 
 node_streams:

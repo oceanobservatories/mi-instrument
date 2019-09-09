@@ -129,7 +129,22 @@ class Pco2wAbcDclBaseDataParticle(Pco2wAbcBaseDataParticle):
         return particle_parameters
 
 
-class Pco2wAbcInstrumentBaseDataParticle(Pco2wAbcBaseDataParticle):
+class Pco2wAbcCommonDataParticle(Pco2wAbcBaseDataParticle):
+    def _build_parsed_values(self):
+        """
+        Take something in the data format and turn it into
+        a particle with the appropriate tag.
+        """
+
+        particle_params = super(Pco2wAbcCommonDataParticle, self)._build_parsed_values()
+
+        instrument_timestamp = self.raw_data[Pco2wAbcDataParticleKey.RECORD_TIME]
+        self.set_internal_timestamp(time_1904_to_ntp(int(instrument_timestamp)))
+
+        return particle_params
+
+
+class Pco2wAbcInstrumentBaseDataParticle(Pco2wAbcCommonDataParticle):
     _data_particle_type = None
 
     def _build_parsed_values(self):
@@ -190,7 +205,7 @@ class Pco2wAbcInstrumentBlankDataParticle(Pco2wAbcInstrumentBaseDataParticle):
         return particle_params
 
 
-class Pco2wAbcMetadataDataParticle(Pco2wAbcBaseDataParticle):
+class Pco2wAbcMetadataDataParticle(Pco2wAbcCommonDataParticle):
     _data_particle_type = DataParticleType.PCO2W_ABC_METADATA
 
     def _build_parsed_values(self):
@@ -291,7 +306,7 @@ class Pco2wAbcMetadataDataParticle(Pco2wAbcBaseDataParticle):
         return particle_params
 
 
-class Pco2wAbcPowerDataParticle(Pco2wAbcBaseDataParticle):
+class Pco2wAbcPowerDataParticle(Pco2wAbcCommonDataParticle):
     _data_particle_type = DataParticleType.PCO2W_ABC_POWER
 
     def _build_parsed_values(self):

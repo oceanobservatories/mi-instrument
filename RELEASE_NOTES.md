@@ -1,3 +1,17 @@
+# Version 0.8.2
+
+* Issue 13182 - Async data download behaving differently on the Data Navigation tab than on the Plotting tab
+   * Added m_lat,m_lon to class GpsPositionParticleKey to capture them into glider_gps_position stream 
+
+# Version 0.8.1
+
+* Issue 14184 - ensure data timestamps of pco2w_abc particles are treated as 1904-based
+   * Modified pco2w_abc_particles to adjust the data timestamps from 1904-based to NTP
+
+# Version 0.8.0
+
+* Issue 13369 - add pco2a_a_sample parser,drivers and test files for new pco2a instrument
+
 # Version 0.7.1
 
 * Issue #13711 - update camhd_metadata particle parser to use camera log files
