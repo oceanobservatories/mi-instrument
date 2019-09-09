@@ -232,11 +232,11 @@ class PARDataKey(BaseEnum):
 class PARDataKeyNew(BaseEnum):
     SERIAL_NUM = "serial_number"
     TIMER = "elapsed_time"
-    PAR = "calculated_par"
+    PAR = "par_measured"
     PITCH = "pitch"
     ROLL = "roll"
     TEMP = "temp_interior"
-    MODE = "analog_mode"
+    # MODE = "analog_mode"
     COUNTS = "par"
     V_IN = "input_voltage"
     V_OUT = "voltage_out"
@@ -337,7 +337,7 @@ class PARParticleNew(PARParticleBase):
     Routines for parsing raw data into a data particle structure for the Satlantic PAR sensor.
     Overrides the building of values, and the rest comes along for free.
     """
-    #_data_particle_type = DataParticleType.SCIENCE
+
     _data_particle_type = DataParticleType.PARSED
 
     def _build_parsed_values(self):
@@ -357,7 +357,7 @@ class PARParticleNew(PARParticleBase):
             pitch = float(match.group('pitch'))
             roll = float(match.group('roll'))
             itemp = float(match.group('itemp'))
-            amode = str(match.group('amode'))
+            # amode = str(match.group('amode'))
             counts = int(match.group('counts'))
             v_in = float(match.group('adcv'))
             v_out = float(match.group('vout'))
@@ -384,7 +384,7 @@ class PARParticleNew(PARParticleBase):
                   {DataParticleKey.VALUE_ID: PARDataKeyNew.PITCH, DataParticleKey.VALUE: pitch},
                   {DataParticleKey.VALUE_ID: PARDataKeyNew.ROLL, DataParticleKey.VALUE: roll},
                   {DataParticleKey.VALUE_ID: PARDataKeyNew.TEMP, DataParticleKey.VALUE: itemp},
-                  {DataParticleKey.VALUE_ID: PARDataKeyNew.MODE, DataParticleKey.VALUE: amode},
+                  # {DataParticleKey.VALUE_ID: PARDataKeyNew.MODE, DataParticleKey.VALUE: amode},
                   {DataParticleKey.VALUE_ID: PARDataKeyNew.COUNTS, DataParticleKey.VALUE: counts},
                   {DataParticleKey.VALUE_ID: PARDataKeyNew.V_IN, DataParticleKey.VALUE: v_in},
                   {DataParticleKey.VALUE_ID: PARDataKeyNew.V_OUT, DataParticleKey.VALUE: v_out},
