@@ -26,7 +26,7 @@ from mi.core.instrument.instrument_protocol import CommandResponseInstrumentProt
 from mi.core.instrument.protocol_param_dict import ParameterDictVisibility
 from mi.core.instrument.instrument_driver import ConfigMetadataKey
 from mi.instrument.satlantic.par_ser_600m.driver import SAMPLE_REGEX
-from mi.instrument.satlantic.par_ser_600m.driver import SatlanticPARDataParticle
+from mi.instrument.satlantic.par_ser_600m.driver import PARParticle
 
 from mi.core.instrument.protocol_cmd_dict import Command, CommandArgument
 from mi.core.instrument.driver_dict import DriverDictKey
@@ -107,14 +107,14 @@ class TestUnitInstrumentProtocol(MiUnitTestCase):
     def test_extraction(self):
         sample_line = "SATPAR0229,10.01,2206748544,234\r\n"
         ntptime = ntplib.system_to_ntp_time(time.time())
-        result = self.protocol._extract_sample(SatlanticPARDataParticle,
+        result = self.protocol._extract_sample(PARParticle,
                                                SAMPLE_REGEX,
                                                sample_line,
                                                ntptime,
                                                publish=False)
 
         log.debug("R: %s" % result)
-        self.assertEqual(result['stream_name'], SatlanticPARDataParticle(None, None).data_particle_type())
+        self.assertEqual(result['stream_name'], PARParticle(None, None).data_particle_type())
 
         # Test the format of the result in the individual driver tests. Here,
         # just tests that the result is there.
