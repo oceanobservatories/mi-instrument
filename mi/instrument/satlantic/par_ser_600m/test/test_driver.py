@@ -67,8 +67,7 @@ VALID_SAMPLE_NEW = "SATPRL1017,276.415,15.456,77.1,11.3,43.9,LOG,372649,0.090978
 # these values checkout against the sample above
 valid_particle = [{DataParticleKey.VALUE_ID: PARDataKey.SERIAL_NUM, DataParticleKey.VALUE: '4278190306'},
                   {DataParticleKey.VALUE_ID: PARDataKey.TIMER, DataParticleKey.VALUE: 49.02},
-                  {DataParticleKey.VALUE_ID: PARDataKey.COUNTS, DataParticleKey.VALUE: 2157023616},
-                  {DataParticleKey.VALUE_ID: PARDataKey.CHECKSUM, DataParticleKey.VALUE: 171}]
+                  {DataParticleKey.VALUE_ID: PARDataKey.COUNTS, DataParticleKey.VALUE: 2157023616}]
 
 valid_particle_new = \
     [{DataParticleKey.VALUE_ID: PARDataKeyNew.SERIAL_NUM, DataParticleKey.VALUE: '1017'},
@@ -77,7 +76,6 @@ valid_particle_new = \
      {DataParticleKey.VALUE_ID: PARDataKeyNew.PITCH, DataParticleKey.VALUE: 77.1},
      {DataParticleKey.VALUE_ID: PARDataKeyNew.ROLL, DataParticleKey.VALUE: 11.3},
      {DataParticleKey.VALUE_ID: PARDataKeyNew.TEMP, DataParticleKey.VALUE: 43.9},
-     # {DataParticleKey.VALUE_ID: PARDataKeyNew.MODE, DataParticleKey.VALUE: 'LOG'},
      {DataParticleKey.VALUE_ID: PARDataKeyNew.COUNTS, DataParticleKey.VALUE: 372649},
      {DataParticleKey.VALUE_ID: PARDataKeyNew.V_IN, DataParticleKey.VALUE: 0.090978906},
      {DataParticleKey.VALUE_ID: PARDataKeyNew.V_OUT, DataParticleKey.VALUE: 1.8937789},
@@ -85,14 +83,11 @@ valid_particle_new = \
      {DataParticleKey.VALUE_ID: PARDataKeyNew.Y_AXIS, DataParticleKey.VALUE: -47},
      {DataParticleKey.VALUE_ID: PARDataKeyNew.Z_AXIS, DataParticleKey.VALUE: 1022},
      {DataParticleKey.VALUE_ID: PARDataKeyNew.T_COUNTS, DataParticleKey.VALUE: 2137},
-     {DataParticleKey.VALUE_ID: PARDataKeyNew.T_VOLTS, DataParticleKey.VALUE: 0.939},
-     {DataParticleKey.VALUE_ID: PARDataKeyNew.STATUS, DataParticleKey.VALUE: 0},
-     {DataParticleKey.VALUE_ID: PARDataKeyNew.CHECKSUM, DataParticleKey.VALUE: 114}]
+     {DataParticleKey.VALUE_ID: PARDataKeyNew.T_VOLTS, DataParticleKey.VALUE: 0.939}]
 
 bad_checksum_particle = [{DataParticleKey.VALUE_ID: PARDataKey.SERIAL_NUM, DataParticleKey.VALUE: '4278190306'},
                          {DataParticleKey.VALUE_ID: PARDataKey.TIMER, DataParticleKey.VALUE: 49.02},
-                         {DataParticleKey.VALUE_ID: PARDataKey.COUNTS, DataParticleKey.VALUE: 2157023616},
-                         {DataParticleKey.VALUE_ID: PARDataKey.CHECKSUM, DataParticleKey.VALUE: 172}]
+                         {DataParticleKey.VALUE_ID: PARDataKey.COUNTS, DataParticleKey.VALUE: 2157023616}]
 
 VALID_CONFIG = "Maximum Frame Rate: 0.125 Hz\r\n" + \
                "Telemetry Baud Rate: 19200 bps"
@@ -156,8 +151,7 @@ class PARMixin(DriverTestMixin):
     _sample_parameters = {
         PARDataKey.SERIAL_NUM: {TYPE: unicode, VALUE: '4278190306', REQUIRED: True},
         PARDataKey.COUNTS: {TYPE: int, VALUE: 2157023616, REQUIRED: True},
-        PARDataKey.TIMER: {TYPE: float, VALUE: 49.02, REQUIRED: True},
-        PARDataKey.CHECKSUM: {TYPE: int, VALUE: 171, REQUIRED: True},
+        PARDataKey.TIMER: {TYPE: float, VALUE: 49.02, REQUIRED: True}
     }
 
     _sample_parameters_new = {
@@ -167,7 +161,6 @@ class PARMixin(DriverTestMixin):
         PARDataKeyNew.PITCH: {TYPE: float, VALUE: 77.1, REQUIRED: True},
         PARDataKeyNew.ROLL: {TYPE: float, VALUE: 11.3, REQUIRED: True},
         PARDataKeyNew.TEMP: {TYPE: float, VALUE: 43.9, REQUIRED: True},
-        # PARDataKeyNew.MODE: {TYPE: unicode, VALUE: 'LOG', REQUIRED: True},
         PARDataKeyNew.COUNTS: {TYPE: int, VALUE: 372649, REQUIRED: True},
         PARDataKeyNew.V_IN: {TYPE: float, VALUE: 0.090978906, REQUIRED: True},
         PARDataKeyNew.V_OUT: {TYPE: float, VALUE: 1.8937789, REQUIRED: True},
@@ -175,9 +168,7 @@ class PARMixin(DriverTestMixin):
         PARDataKeyNew.Y_AXIS: {TYPE: int, VALUE: -47, REQUIRED: True},
         PARDataKeyNew.Z_AXIS: {TYPE: int, VALUE: 1022, REQUIRED: True},
         PARDataKeyNew.T_COUNTS: {TYPE: int, VALUE: 2137, REQUIRED: True},
-        PARDataKeyNew.T_VOLTS: {TYPE: float, VALUE: 0.939, REQUIRED: True},
-        PARDataKeyNew.STATUS: {TYPE: int, VALUE: 0, REQUIRED: True},
-        PARDataKeyNew.CHECKSUM: {TYPE: int, VALUE: 114, REQUIRED: True}
+        PARDataKeyNew.T_VOLTS: {TYPE: float, VALUE: 0.939, REQUIRED: True}
     }
 
     _capabilities = {

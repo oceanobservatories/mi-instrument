@@ -226,7 +226,6 @@ class PARDataKey(BaseEnum):
     SERIAL_NUM = "serial_number"
     COUNTS = "par"
     TIMER = "elapsed_time"
-    CHECKSUM = "checksum"
 
 
 class PARDataKeyNew(BaseEnum):
@@ -236,7 +235,6 @@ class PARDataKeyNew(BaseEnum):
     PITCH = "pitch"
     ROLL = "roll"
     TEMP = "temp_interior"
-    # MODE = "analog_mode"
     COUNTS = "par"
     V_IN = "input_voltage"
     V_OUT = "voltage_out"
@@ -245,8 +243,6 @@ class PARDataKeyNew(BaseEnum):
     Z_AXIS = "z_accel_counts"
     T_COUNTS = "raw_internal_temp"
     T_VOLTS = "temperature_volts"
-    STATUS = "sensor_status"
-    CHECKSUM = "checksum"
 
 
 class PARParticleBase(DataParticle):
@@ -299,7 +295,6 @@ class PARParticle(PARParticleBase):
             sernum = match.group('sernum')
             timer = float(match.group('timer'))
             counts = int(match.group('counts'))
-            checksum = int(match.group('checksum'))
         except ValueError:
             log.warn("_build_parsed_values")
             raise SampleException('malformed particle - missing required value(s)')
@@ -312,8 +307,7 @@ class PARParticle(PARParticleBase):
 
         result = [{DataParticleKey.VALUE_ID: PARDataKey.SERIAL_NUM, DataParticleKey.VALUE: sernum},
                   {DataParticleKey.VALUE_ID: PARDataKey.TIMER, DataParticleKey.VALUE: timer},
-                  {DataParticleKey.VALUE_ID: PARDataKey.COUNTS, DataParticleKey.VALUE: counts},
-                  {DataParticleKey.VALUE_ID: PARDataKey.CHECKSUM, DataParticleKey.VALUE: checksum}]
+                  {DataParticleKey.VALUE_ID: PARDataKey.COUNTS, DataParticleKey.VALUE: counts}]
 
         return result
 
@@ -357,7 +351,6 @@ class PARParticleNew(PARParticleBase):
             pitch = float(match.group('pitch'))
             roll = float(match.group('roll'))
             itemp = float(match.group('itemp'))
-            # amode = str(match.group('amode'))
             counts = int(match.group('counts'))
             v_in = float(match.group('adcv'))
             v_out = float(match.group('vout'))
@@ -366,8 +359,6 @@ class PARParticleNew(PARParticleBase):
             zaxis = int(match.group('zaxis'))
             tcount = int(match.group('tcounts'))
             tvolts = float(match.group('tvolts'))
-            status = int(match.group('status'))
-            checksum = int(match.group('checksum'))
         except ValueError:
             log.warn("_build_parsed_values")
             raise SampleException('malformed particle - missing required value(s)')
@@ -384,7 +375,6 @@ class PARParticleNew(PARParticleBase):
                   {DataParticleKey.VALUE_ID: PARDataKeyNew.PITCH, DataParticleKey.VALUE: pitch},
                   {DataParticleKey.VALUE_ID: PARDataKeyNew.ROLL, DataParticleKey.VALUE: roll},
                   {DataParticleKey.VALUE_ID: PARDataKeyNew.TEMP, DataParticleKey.VALUE: itemp},
-                  # {DataParticleKey.VALUE_ID: PARDataKeyNew.MODE, DataParticleKey.VALUE: amode},
                   {DataParticleKey.VALUE_ID: PARDataKeyNew.COUNTS, DataParticleKey.VALUE: counts},
                   {DataParticleKey.VALUE_ID: PARDataKeyNew.V_IN, DataParticleKey.VALUE: v_in},
                   {DataParticleKey.VALUE_ID: PARDataKeyNew.V_OUT, DataParticleKey.VALUE: v_out},
@@ -392,9 +382,7 @@ class PARParticleNew(PARParticleBase):
                   {DataParticleKey.VALUE_ID: PARDataKeyNew.Y_AXIS, DataParticleKey.VALUE: yaxis},
                   {DataParticleKey.VALUE_ID: PARDataKeyNew.Z_AXIS, DataParticleKey.VALUE: zaxis},
                   {DataParticleKey.VALUE_ID: PARDataKeyNew.T_COUNTS, DataParticleKey.VALUE: tcount},
-                  {DataParticleKey.VALUE_ID: PARDataKeyNew.T_VOLTS, DataParticleKey.VALUE: tvolts},
-                  {DataParticleKey.VALUE_ID: PARDataKeyNew.STATUS, DataParticleKey.VALUE: status},
-                  {DataParticleKey.VALUE_ID: PARDataKeyNew.CHECKSUM, DataParticleKey.VALUE: checksum}]
+                  {DataParticleKey.VALUE_ID: PARDataKeyNew.T_VOLTS, DataParticleKey.VALUE: tvolts}]
 
         return result
 
