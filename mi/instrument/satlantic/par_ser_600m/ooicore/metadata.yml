@@ -1,8 +1,8 @@
 driver_metadata:
-  author: Steve Foley
+  author: Steve Foley, Kellen Rosburg
   driver_make: satlantic
   driver_model: par_ser_600m
   driver_name: ooicore
   email: sfoley@ucsd.edu
-  release_notes: Satlantic PAR OOI Core driver
-  version: 0.0.16
+  release_notes: Satlantic/Seabird PAR OOI Core driver
+  version: 0.1.0

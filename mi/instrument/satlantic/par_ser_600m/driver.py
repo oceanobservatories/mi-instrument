@@ -55,6 +55,9 @@ INSTRUMENT = 'SATPAR'
 SAMPLE_PATTERN = r'SATPAR(?P<sernum>\d+),(?P<timer>\d+\.\d+),(?P<counts>\d+),(?P<checksum>\d+)\r\n'
 SAMPLE_REGEX = re.compile(SAMPLE_PATTERN)
 
+SAMPLE_NEW_PATTERN = R'SATPRL(?P<sernum>\d+),(?P<timer>\d+\.\d+),(?P<PAR>\d+\.\d+),(?P<pitch>\d+\.\d+),(?P<roll>\d+\.\d+),(?P<itemp>\d+\.\d+),(?P<amode>LOG|LIN),(?P<counts>\d+),(?P<adcv>\d+\.\d+),(?P<vout>\d+\.\d+),(?P<xaxis>-?\d+),(?P<yaxis>-?\d+),(?P<zaxis>-?\d+),(?P<tcounts>\d+),(?P<tvolts>\d+\.\d+),(?P<status>\d+),(?P<checksum>\d+)\r\n'
+SAMPLE_NEW_REGEX = re.compile(SAMPLE_NEW_PATTERN)
+
 HEADER_PATTERN = r'S/N: (?P<sernum>\d+)\r\nFirmware: (?P<firm>\S+)\r\n'
 HEADER_REGEX = re.compile(HEADER_PATTERN)
 
@@ -83,6 +86,7 @@ EOLN = "\r\n"
 
 TIMEOUT = 15
 
+
 class ParameterUnits(BaseEnum):
     TIME_INTERVAL = 'HH:MM:SS'
 
@@ -90,6 +94,7 @@ class ParameterUnits(BaseEnum):
 class DataParticleType(BaseEnum):
     RAW = CommonDataParticleType.RAW
     PARSED = 'parad_sa_sample'
+    SCIENCE = 'parad_sample'
     CONFIG = 'parad_sa_config'
 
 
@@ -217,14 +222,59 @@ class SatlanticPARInstrumentDriver(SingleConnectionInstrumentDriver):
         self._protocol = SatlanticPARInstrumentProtocol(self._driver_event)
 
 
-class SatlanticPARDataParticleKey(BaseEnum):
+class PARDataKey(BaseEnum):
     SERIAL_NUM = "serial_number"
     COUNTS = "par"
     TIMER = "elapsed_time"
-    CHECKSUM = "checksum"
 
 
-class SatlanticPARDataParticle(DataParticle):
+class PARDataKeyNew(BaseEnum):
+    SERIAL_NUM = "serial_number"
+    TIMER = "elapsed_time"
+    PAR = "par_measured"
+    PITCH = "pitch"
+    ROLL = "roll"
+    TEMP = "temp_interior"
+    COUNTS = "par"
+    V_IN = "input_voltage"
+    V_OUT = "voltage_out"
+    X_AXIS = "x_accel_counts"
+    Y_AXIS = "y_accel_counts"
+    Z_AXIS = "z_accel_counts"
+    T_COUNTS = "raw_internal_temp"
+    T_VOLTS = "temperature_volts"
+
+
+class PARParticleBase(DataParticle):
+    """
+    Virtual base class for the PARAD data particle types.
+    """
+
+    def _build_parsed_values(self):
+        raise NotImplemented
+
+    @staticmethod
+    def _checksum_check(data, checksum_value, line_end):
+        """
+        Confirm that the checksum is valid for the data line
+        @param data The entire line of data, including the checksum
+        @retval True if the checksum fits, False if the checksum is bad
+        """
+        line = data[:line_end + 1]
+        # Calculate checksum on line
+        checksum = 0
+        for char in line:
+            checksum += ord(char)
+
+        checksum = (~checksum + 0x01) & 0xFF
+
+        if checksum != checksum_value:
+            log.warn("Calculated checksum %s did not match packet checksum %s.", checksum, checksum_value)
+            return False
+        return True
+
+
+class PARParticle(PARParticleBase):
     """
     Routines for parsing raw data into a data particle structure for the Satlantic PAR sensor.
     Overrides the building of values, and the rest comes along for free.
@@ -245,7 +295,6 @@ class SatlanticPARDataParticle(DataParticle):
             sernum = match.group('sernum')
             timer = float(match.group('timer'))
             counts = int(match.group('counts'))
-            checksum = int(match.group('checksum'))
         except ValueError:
             log.warn("_build_parsed_values")
             raise SampleException('malformed particle - missing required value(s)')
@@ -256,42 +305,100 @@ class SatlanticPARDataParticle(DataParticle):
         if not self._checksum_check(self.raw_data):
             self.contents[DataParticleKey.QUALITY_FLAG] = DataParticleValue.CHECKSUM_FAILED
 
-        result = [{DataParticleKey.VALUE_ID: SatlanticPARDataParticleKey.SERIAL_NUM, DataParticleKey.VALUE: sernum},
-                  {DataParticleKey.VALUE_ID: SatlanticPARDataParticleKey.TIMER, DataParticleKey.VALUE: timer},
-                  {DataParticleKey.VALUE_ID: SatlanticPARDataParticleKey.COUNTS, DataParticleKey.VALUE: counts},
-                  {DataParticleKey.VALUE_ID: SatlanticPARDataParticleKey.CHECKSUM, DataParticleKey.VALUE: checksum}]
+        result = [{DataParticleKey.VALUE_ID: PARDataKey.SERIAL_NUM, DataParticleKey.VALUE: sernum},
+                  {DataParticleKey.VALUE_ID: PARDataKey.TIMER, DataParticleKey.VALUE: timer},
+                  {DataParticleKey.VALUE_ID: PARDataKey.COUNTS, DataParticleKey.VALUE: counts}]
 
         return result
 
     def _checksum_check(self, data):
-            """
-            Confirm that the checksum is valid for the data line
-            @param data The entire line of data, including the checksum
-            @retval True if the checksum fits, False if the checksum is bad
-            """
-            match = SAMPLE_REGEX.match(data)
-            if not match:
-                return False
-            try:
-                received_checksum = int(match.group('checksum'))
-                line_end = match.start('checksum') - 1
-            except IndexError:
-                # Didn't have a checksum!
-                return False
+        status = False
+        match = SAMPLE_REGEX.match(data)
+        if not match:
+            return status
+        try:
+            received_checksum = int(match.group('checksum'))
+            line_end = match.start('checksum') - 1
+            status = PARParticleBase._checksum_check(data, received_checksum, line_end)
+        except IndexError:
+            # Didn't have a checksum!
+            return status
+        return status
 
-            line = data[:line_end + 1]
-            # Calculate checksum on line
-            checksum = 0
-            for char in line:
-                checksum += ord(char)
 
-            checksum = (~checksum + 0x01) & 0xFF
+class PARParticleNew(PARParticleBase):
+    """
+    Routines for parsing raw data into a data particle structure for the Satlantic PAR sensor.
+    Overrides the building of values, and the rest comes along for free.
+    """
 
-            if checksum != received_checksum:
-                log.warn("Calculated checksum %s did not match packet checksum %s.", checksum, received_checksum)
-                return False
+    _data_particle_type = DataParticleType.PARSED
 
-            return True
+    def _build_parsed_values(self):
+        """
+        Take something in the sample format and split it into PAR values (with an appropriate tag)
+        @throws SampleException If there is a problem with sample creation
+        """
+        match = SAMPLE_NEW_REGEX.match(self.raw_data)
+
+        if not match:
+            raise SampleException("No regex match of parsed sample data: [%s]" % self.raw_data)
+
+        try:
+            sernum = match.group('sernum')
+            timer = float(match.group('timer'))
+            par = float(match.group('PAR'))
+            pitch = float(match.group('pitch'))
+            roll = float(match.group('roll'))
+            itemp = float(match.group('itemp'))
+            counts = int(match.group('counts'))
+            v_in = float(match.group('adcv'))
+            v_out = float(match.group('vout'))
+            xaxis = int(match.group('xaxis'))
+            yaxis = int(match.group('yaxis'))
+            zaxis = int(match.group('zaxis'))
+            tcount = int(match.group('tcounts'))
+            tvolts = float(match.group('tvolts'))
+        except ValueError:
+            log.warn("_build_parsed_values")
+            raise SampleException('malformed particle - missing required value(s)')
+        except TypeError:
+            log.warn("_build_parsed_values")
+            raise SampleException('malformed particle - missing required value(s)')
+
+        if not self._checksum_check(self.raw_data):
+            self.contents[DataParticleKey.QUALITY_FLAG] = DataParticleValue.CHECKSUM_FAILED
+
+        result = [{DataParticleKey.VALUE_ID: PARDataKeyNew.SERIAL_NUM, DataParticleKey.VALUE: sernum},
+                  {DataParticleKey.VALUE_ID: PARDataKeyNew.TIMER, DataParticleKey.VALUE: timer},
+                  {DataParticleKey.VALUE_ID: PARDataKeyNew.PAR, DataParticleKey.VALUE: par},
+                  {DataParticleKey.VALUE_ID: PARDataKeyNew.PITCH, DataParticleKey.VALUE: pitch},
+                  {DataParticleKey.VALUE_ID: PARDataKeyNew.ROLL, DataParticleKey.VALUE: roll},
+                  {DataParticleKey.VALUE_ID: PARDataKeyNew.TEMP, DataParticleKey.VALUE: itemp},
+                  {DataParticleKey.VALUE_ID: PARDataKeyNew.COUNTS, DataParticleKey.VALUE: counts},
+                  {DataParticleKey.VALUE_ID: PARDataKeyNew.V_IN, DataParticleKey.VALUE: v_in},
+                  {DataParticleKey.VALUE_ID: PARDataKeyNew.V_OUT, DataParticleKey.VALUE: v_out},
+                  {DataParticleKey.VALUE_ID: PARDataKeyNew.X_AXIS, DataParticleKey.VALUE: xaxis},
+                  {DataParticleKey.VALUE_ID: PARDataKeyNew.Y_AXIS, DataParticleKey.VALUE: yaxis},
+                  {DataParticleKey.VALUE_ID: PARDataKeyNew.Z_AXIS, DataParticleKey.VALUE: zaxis},
+                  {DataParticleKey.VALUE_ID: PARDataKeyNew.T_COUNTS, DataParticleKey.VALUE: tcount},
+                  {DataParticleKey.VALUE_ID: PARDataKeyNew.T_VOLTS, DataParticleKey.VALUE: tvolts}]
+
+        return result
+
+    def _checksum_check(self, data):
+        status = False
+        match = SAMPLE_NEW_REGEX.match(data)
+        if not match:
+            return status
+        try:
+            received_checksum = int(match.group('checksum'))
+            line_end = match.start('checksum') - 1
+            status = PARParticleBase._checksum_check(data, received_checksum, line_end)
+        except IndexError:
+            # Didn't have a checksum!
+            return status
+        return status
 
 
 class SatlanticPARConfigParticleKey(BaseEnum):
@@ -478,7 +585,7 @@ class SatlanticPARInstrumentProtocol(CommandResponseInstrumentProtocol):
         """
         The method that splits samples
         """
-        matchers = [SAMPLE_REGEX, MAXANDBAUDRATE_REGEX, HEADER_REGEX]
+        matchers = [SAMPLE_REGEX, SAMPLE_NEW_REGEX, MAXANDBAUDRATE_REGEX, HEADER_REGEX]
         return_list = []
 
         for matcher in matchers:
@@ -898,7 +1005,7 @@ class SatlanticPARInstrumentProtocol(CommandResponseInstrumentProtocol):
 
         self._get_poll()
 
-        particles = self.wait_for_particles([DataParticleType.PARSED], timeout)
+        particles = self.wait_for_particles([DataParticleType.PARSED, DataParticleType.SCIENCE], timeout)
 
         return next_state, (next_state, particles)
 
@@ -1063,7 +1170,7 @@ class SatlanticPARInstrumentProtocol(CommandResponseInstrumentProtocol):
             time.sleep(0.1)
 
             # Check for incoming samples. Reset timer & resend stop command if found.
-            if SAMPLE_REGEX.search(self._promptbuf):
+            if SAMPLE_REGEX.search(self._promptbuf) or SAMPLE_NEW_REGEX.search(self._promptbuf):
                 self._promptbuf = ''
                 starttime = time.time()
                 send_flag = True
@@ -1111,11 +1218,13 @@ class SatlanticPARInstrumentProtocol(CommandResponseInstrumentProtocol):
         Extract samples from a chunk of data
         @param chunk: bytes to parse into a sample.
         """
-        if self._extract_sample(SatlanticPARDataParticle, SAMPLE_REGEX, chunk, timestamp):
+        if self._extract_sample(PARParticleNew, SAMPLE_NEW_REGEX, chunk, timestamp):
+            return
+        if self._extract_sample(PARParticle, SAMPLE_REGEX, chunk, timestamp):
             return
         if self._extract_sample_param_dict(self._param_dict.get(Parameter.SERIAL),
-                                             self._param_dict.get(Parameter.FIRMWARE),
-                                             SatlanticPARConfigParticle, MAXANDBAUDRATE_REGEX, chunk, timestamp):
+                                           self._param_dict.get(Parameter.FIRMWARE),
+                                           SatlanticPARConfigParticle, MAXANDBAUDRATE_REGEX, chunk, timestamp):
             return
         if HEADER_REGEX.match(chunk):
             self._param_dict.update_many(chunk)
