@@ -55,7 +55,7 @@ INSTRUMENT = 'SATPAR'
 SAMPLE_PATTERN = r'SATPAR(?P<sernum>\d+),(?P<timer>\d+\.\d+),(?P<counts>\d+),(?P<checksum>\d+)\r\n'
 SAMPLE_REGEX = re.compile(SAMPLE_PATTERN)
 
-SAMPLE_NEW_PATTERN = R'SATPRL(?P<sernum>\d+),(?P<timer>\d+\.\d+),(?P<PAR>\d+\.\d+),(?P<pitch>[-+]?\d+\.\d+),(?P<roll>[-+]?\d+\.\d+),(?P<itemp>\d+\.\d+),(?P<amode>LOG|LIN),(?P<counts>\d+),(?P<adcv>\d+\.\d+),(?P<vout>\d+\.\d+),(?P<xaxis>[-+]?\d+),(?P<yaxis>[-+]?\d+),(?P<zaxis>[-+]?\d+),(?P<tcounts>\d+),(?P<tvolts>\d+\.\d+),(?P<status>\d+),(?P<checksum>\d+)\r\n'
+SAMPLE_NEW_PATTERN = R'SATPRL(?P<sernum>\d+),(?P<timer>[-+]?\d+\.\d+),(?P<PAR>[-+]?\d+\.\d+),(?P<pitch>[-+]?\d+\.\d+),(?P<roll>[-+]?\d+\.\d+),(?P<itemp>[-+]?\d+\.\d+),(?P<amode>LOG|LIN),(?P<counts>[-+]?\d+),(?P<adcv>[-+]?\d+\.\d+),(?P<vout>[-+]?\d+\.\d+),(?P<xaxis>[-+]?\d+),(?P<yaxis>[-+]?\d+),(?P<zaxis>[-+]?\d+),(?P<tcounts>[-+]?\d+),(?P<tvolts>[-+]?\d+\.\d+),(?P<status>[-+]?\d+),(?P<checksum>\d+)\r\n'
 SAMPLE_NEW_REGEX = re.compile(SAMPLE_NEW_PATTERN)
 
 HEADER_PATTERN = r'S/N: (?P<sernum>\d+)\r\nFirmware: (?P<firm>\S+)\r\n'
