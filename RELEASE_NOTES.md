@@ -1,7 +1,10 @@
+# Version 0.9.1
+
+* Issue 14170 - Fixed regex expression to include signed integers on pitch and roll. 
+
 # Version 0.9.0
 
 * Issue 14170 - PARAD_A driver modified to handle both LONG_ASCII output from the new Seabird sensor and the original SHORT_ASCII output from the older Satlantic sensor. 
-
 
 # Version 0.8.2
 
