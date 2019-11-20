@@ -1,0 +1,31 @@
+header:
+    particle_object: 'MULTIPLE'
+    particle_type: 'MULTIPLE'
+data:
+  - _index: 1
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747056401.0000000
+    conductivity: 1582154
+    ctd_time: 591382801
+    inductive_id: 77
+    serial_number: '3711000'
+    temperature: 342914
+  - _index: 2
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747056701.0000000
+    conductivity: 1582246
+    ctd_time: 591383101
+    inductive_id: 77
+    serial_number: '3711000'
+    temperature: 342818
+  - _index: 3
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747057001.0000000
+    conductivity: 1581972
+    ctd_time: 591383401
+    inductive_id: 77
+    serial_number: '3711000'
+    temperature: 343119

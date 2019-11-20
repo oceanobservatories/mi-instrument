@@ -1,0 +1,95 @@
+* Sea-Bird SBE37SM-RS485  Data File:
+* FileName = C:\Users\crisien\Desktop\data_download\ce04ossm\buoy\SBE37SM-RS485_03711000_2019_05_13.hex
+* Software version SeatermV2 2.3.0
+* Temperature SN = 11000
+* Conductivity SN = 11000
+* System UpLoad Time = May 13 2019 21:40:56
+* sample interval = 300 seconds
+* <ApplicationData>
+* <Seaterm485>
+* <SoftwareVersion>2.3.0</SoftwareVersion>
+* <BuildDate>11-Sep-2013</BuildDate>
+* </Seaterm485>
+* </ApplicationData>
+* <InstrumentState>
+* <HardwareData DeviceType='SBE37SM-RS485' SerialNumber='03711000'>
+*    <Manufacturer>Sea-Bird Electronics, Inc.</Manufacturer>
+*    <FirmwareVersion>3.1</FirmwareVersion>
+*    <FirmwareDate>Jan 20 2012 17:43:55</FirmwareDate>
+*    <PCBAssembly>41647.3</PCBAssembly>
+*    <PCBAssembly>41624A</PCBAssembly>
+*    <PCBAssembly>41611D</PCBAssembly>
+*    <MfgDate>24-Jul-2013</MfgDate>
+*    <FirmwareLoader>SBE 37-RS485 FirmwareLoader V 1.0</FirmwareLoader>
+*    <InternalSensors>
+*       <Sensor id='Temperature'>
+*          <type>temperature-1</type>
+*          <SerialNumber>03711000</SerialNumber>
+*       </Sensor>
+*       <Sensor id='Conductivity'>
+*          <type>conductivity-1</type>
+*          <SerialNumber>03711000</SerialNumber>
+*       </Sensor>
+*    </InternalSensors>
+* </HardwareData>
+* <StatusData DeviceType='SBE37SM-RS485' SerialNumber='03711000'>
+*    <DateTime>2019-05-13T21:39:16</DateTime>
+*    <EventSummary numEvents='4'/>
+*    <Power>
+*       <vMain> 7.04</vMain>
+*       <vLith> 3.11</vLith>
+*    </Power>
+*    <MemorySummary>
+*       <Bytes>657200</Bytes>
+*       <Samples>65720</Samples>
+*       <SamplesFree>773140</SamplesFree>
+*       <SampleLength>10</SampleLength>
+*    </MemorySummary>
+*    <AutonomousSampling>no, stop command</AutonomousSampling>
+* </StatusData>
+* <ConfigurationData DeviceType='SBE37SM-RS485' SerialNumber='03711000'>
+*    <PressureInstalled>no</PressureInstalled>
+*    <ReferencePressure>0.000000e+00</ReferencePressure>
+*    <PumpInstalled>no</PumpInstalled>
+*    <SampleDataFormat>converted engineering alternate</SampleDataFormat>
+*    <OutputSalinity>no</OutputSalinity>
+*    <OutputSV>no</OutputSV>
+*    <OutputDepth>no</OutputDepth>
+*    <Latitude>0.0</Latitude>
+*    <OutputDensity>no</OutputDensity>
+*    <SampleInterval>300</SampleInterval>
+*    <SyncMode>no</SyncMode>
+*    <TxSyncMode>no</TxSyncMode>
+*    <RS485RxDelay>25</RS485RxDelay>
+*    <RS485TxDelay>25</RS485TxDelay>
+* </ConfigurationData>
+* <CalibrationCoefficients DeviceType='SBE37SM-RS485' SerialNumber='03711000'>
+*    <Calibration format='TEMP1' id='Temperature'>
+*       <SerialNum>03711000</SerialNum>
+*       <CalDate>15-Nov-17</CalDate>
+*       <A0>-1.124776e-04</A0>
+*       <A1>3.095092e-04</A1>
+*       <A2>-4.727113e-06</A2>
+*       <A3>2.076045e-07</A3>
+*    </Calibration>
+*    <Calibration format='WBCOND0' id='Conductivity'>
+*       <SerialNum>03711000</SerialNum>
+*       <CalDate>15-Nov-17</CalDate>
+*       <G>-9.824235e-01</G>
+*       <H>1.266732e-01</H>
+*       <I>-4.065263e-04</I>
+*       <J>4.500044e-05</J>
+*       <PCOR>-9.570000e-08</PCOR>
+*       <TCOR>3.250000e-06</TCOR>
+*       <WBOTC>1.133594e-06</WBOTC>
+*    </Calibration>
+* </CalibrationCoefficients>
+* <EventCounters DeviceType='SBE37SM-RS485' SerialNumber='03711000'>
+*    <EventSummary numEvents='4'/>
+*    <Event type='PON reset' count='4'/>
+* </EventCounters>
+* </InstrumentState>
+*END*
+053B8218244A233FC911
+053B221824A6233FCA3D
+053C4F182394233FCB69

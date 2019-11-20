@@ -1,0 +1,191 @@
+* Sea-Bird SBE37SM-RS485  Data File:
+* FileName = C:\Users\crisien\Desktop\data_download\ce04ossm\buoy\SBE37SM-RS485_03711000_2019_05_13.hex
+* Software version SeatermV2 2.3.0
+* Temperature SN = 11000
+* Conductivity SN = 11000
+* System UpLoad Time = May 13 2019 21:40:56
+* sample interval = 300 seconds
+* <ApplicationData>
+* <Seaterm485>
+* <SoftwareVersion>2.3.0</SoftwareVersion>
+* <BuildDate>11-Sep-2013</BuildDate>
+* </Seaterm485>
+* </ApplicationData>
+* <InstrumentState>
+* <HardwareData DeviceType='SBE37SM-RS485' SerialNumber='03711000'>
+*    <Manufacturer>Sea-Bird Electronics, Inc.</Manufacturer>
+*    <FirmwareVersion>3.1</FirmwareVersion>
+*    <FirmwareDate>Jan 20 2012 17:43:55</FirmwareDate>
+*    <PCBAssembly>41647.3</PCBAssembly>
+*    <PCBAssembly>41624A</PCBAssembly>
+*    <PCBAssembly>41611D</PCBAssembly>
+*    <MfgDate>24-Jul-2013</MfgDate>
+*    <FirmwareLoader>SBE 37-RS485 FirmwareLoader V 1.0</FirmwareLoader>
+*    <InternalSensors>
+*       <Sensor id='Temperature'>
+*          <type>temperature-1</type>
+*          <SerialNumber>03711000</SerialNumber>
+*       </Sensor>
+*       <Sensor id='Conductivity'>
+*          <type>conductivity-1</type>
+*          <SerialNumber>03711000</SerialNumber>
+*       </Sensor>
+*    </InternalSensors>
+* </HardwareData>
+* <StatusData DeviceType='SBE37SM-RS485' SerialNumber='03711000'>
+*    <DateTime>2019-05-13T21:39:16</DateTime>
+*    <EventSummary numEvents='4'/>
+*    <Power>
+*       <vMain> 7.04</vMain>
+*       <vLith> 3.11</vLith>
+*    </Power>
+*    <MemorySummary>
+*       <Bytes>657200</Bytes>
+*       <Samples>65720</Samples>
+*       <SamplesFree>773140</SamplesFree>
+*       <SampleLength>10</SampleLength>
+*    </MemorySummary>
+*    <AutonomousSampling>no, stop command</AutonomousSampling>
+* </StatusData>
+* <ConfigurationData DeviceType='SBE37SM-RS485' SerialNumber='03711000'>
+*    <PressureInstalled>no</PressureInstalled>
+*    <ReferencePressure>0.000000e+00</ReferencePressure>
+*    <PumpInstalled>no</PumpInstalled>
+*    <SampleDataFormat>converted engineering alternate</SampleDataFormat>
+*    <OutputSalinity>no</OutputSalinity>
+*    <OutputSV>no</OutputSV>
+*    <OutputDepth>no</OutputDepth>
+*    <Latitude>0.0</Latitude>
+*    <OutputDensity>no</OutputDensity>
+*    <SampleInterval>300</SampleInterval>
+*    <SyncMode>no</SyncMode>
+*    <TxSyncMode>no</TxSyncMode>
+*    <RS485RxDelay>25</RS485RxDelay>
+*    <RS485TxDelay>25</RS485TxDelay>
+* </ConfigurationData>
+* <CalibrationCoefficients DeviceType='SBE37SM-RS485' SerialNumber='03711000'>
+*    <Calibration format='TEMP1' id='Temperature'>
+*       <SerialNum>03711000</SerialNum>
+*       <CalDate>15-Nov-17</CalDate>
+*       <A0>-1.124776e-04</A0>
+*       <A1>3.095092e-04</A1>
+*       <A2>-4.727113e-06</A2>
+*       <A3>2.076045e-07</A3>
+*    </Calibration>
+*    <Calibration format='WBCOND0' id='Conductivity'>
+*       <SerialNum>03711000</SerialNum>
+*       <CalDate>15-Nov-17</CalDate>
+*       <G>-9.824235e-01</G>
+*       <H>1.266732e-01</H>
+*       <I>-4.065263e-04</I>
+*       <J>4.500044e-05</J>
+*       <PCOR>-9.570000e-08</PCOR>
+*       <TCOR>3.250000e-06</TCOR>
+*       <WBOTC>1.133594e-06</WBOTC>
+*    </Calibration>
+* </CalibrationCoefficients>
+* <EventCounters DeviceType='SBE37SM-RS485' SerialNumber='03711000'>
+*    <EventSummary numEvents='4'/>
+*    <Event type='PON reset' count='4'/>
+* </EventCounters>
+* </InstrumentState>
+*END*
+053B8218244A233FC911
+053B221824A6233FCA3D
+053C4F182394233FCB69
+053C33182462233FCC95
+053E401822C7233FCDC1
+053D2018255D233FCEED
+053C9D182605233FD019
+053BEA1826B7233FD145
+053AAC182888233FD271
+0539FD18291B233FD39D
+053BBB18270F233FD4C9
+05387B182B15233FD5F5
+0538E1182A7C233FD721
+053817182C11233FD84D
+0539F3182919233FD979
+0539E018299C233FDAA5
+053BA61826D0233FDBD1
+0534F918306F233FDCFD
+05323518341A233FDE29
+052F61183743233FDF55
+052DC3183932233FE081
+052F3C18374E233FE1AD
+052EB8183875233FE2D9
+05304C18361F233FE405
+0532CB183360233FE531
+05302518369D233FE65D
+0531B11834CB233FE789
+0532C518331F233FE8B5
+05328918341D233FE9E1
+052C6A183BD7233FEB0D
+052ACE183FEC233FEC39
+05394A182BC0233FED65
+053AC9182A51233FEE91
+053A15182A39233FEFBD
+053836182C22233FF0E9
+053C701828A3233FF215
+053C791828CE233FF341
+053821182CC6233FF46D
+053A0C182AD1233FF599
+053858182C44233FF6C5
+0539C8182B29233FF7F1
+05394F182BB1233FF91D
+053773182D7B233FFA49
+05391C182BFF233FFB75
+05386C182CAE233FFCA1
+05381A182D54233FFDCD
+053804182DBF233FFEF9
+05371F182FA123400025
+0537ED182EF423400151
+05369118300A2340027D
+05352218319D234003A9
+0533791833DE234004D5
+0533A518347723400601
+0531E218361C2340072D
+05327F18350623400859
+05318918368323400985
+052F4E18394223400AB1
+0530AB18378E23400BDD
+0530E018375D23400D09
+0530DE18374023400E35
+0531B71835FB23400F61
+052FDA18384D2340108D
+052C80183C79234011B9
+052C91183C22234012E5
+05287E18414423401411
+05214C1849B22340153D
+051F3D184C0623401669
+051E95184C9A23401795
+051F64184B44234018C1
+052071184971234019ED
+051FCE1849E423401B19
+0521FD1846CD23401C45
+0522FE18453423401D71
+0524AB18433F23401E9D
+0524CE18433D23401FC9
+05229918457A234020F5
+05255A1841F823402221
+05232D1844792340234D
+05231A1844D423402479
+05248B1842D3234025A5
+0526F1183FF5234026D1
+052788183F54234027FD
+05259B18417823402929
+0525FA18415A23402A55
+0525D618415C23402B81
+0526E718403923402CAD
+05265C1840D823402DD9
+052775183FEB23402F05
+05279F183FC223403031
+0526AA1841232340315D
+05269618412E23403289
+0526E81840FE234033B5
+0526F8184133234034E1
+052891183F3E2340360D
+05299F183E3D23403739
+052BF1183BD823403865
+052ED818388823403991
+05327B1834FB23403ABD
+05323918363723403BE9
