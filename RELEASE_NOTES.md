@@ -1,3 +1,7 @@
+# Version 0.9.2
+
+* Issue 14304 - Added new METBK CT parser for Seabird SBE37SM-RS485 hex data file
+
 # Version 0.9.1
 
 * Issue 14170 - Fixed regex expression to include signed integers on pitch and roll. 

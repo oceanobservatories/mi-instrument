@@ -1053,11 +1053,15 @@ class GliderParser(SimpleParser):
                 if value is not None and not(isnan(float(value))):
                     return_value = True
                     break
+                if particle_class._data_particle_type=='glider_eng_telemetered':
+                    log.info("GliderParser._has_science_data failed: key=[%s] value=[%s]", key, value)
         else:
             for key, value in data_dict.iteritems():
                 if not (isnan(float(value))) and key in particle_class.science_parameters:
                     return_value = True
                     break
+                if particle_class._data_particle_type=='glider_eng_telemetered':
+                    log.info("GliderParser._has_science_data failed: key=[%s] value=[%s]", key, value)
 
         return return_value
 
@@ -1127,6 +1131,8 @@ class GliderEngineeringParser(GliderParser):
             # This is the glider_gps_position particle
             if GliderParser._has_science_data(data_dict, self._gps_class):
                 self._record_buffer.append(self._extract_sample(self._gps_class, None, data_dict, internal_timestamp=timestamp))
+            else:
+                log.info("GPS data no-find: ")
 
             # check for the presence of science particle data in the raw data row before continuing
             # This is the glider_eng_sci* particle

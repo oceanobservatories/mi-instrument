@@ -1,0 +1,895 @@
+header:
+    particle_object: 'MULTIPLE'
+    particle_type: 'MULTIPLE'
+data:
+  - _index: 1
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747056401.0000000
+    conductivity: 1582154
+    ctd_time: 591382801
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 342914
+  - _index: 2
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747056701.0000000
+    conductivity: 1582246
+    ctd_time: 591383101
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 342818
+  - _index: 3
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747057001.0000000
+    conductivity: 1581972
+    ctd_time: 591383401
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 343119
+  - _index: 4
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747057301.0000000
+    conductivity: 1582178
+    ctd_time: 591383701
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 343091
+  - _index: 5
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747057601.0000000
+    conductivity: 1581767
+    ctd_time: 591384001
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 343616
+  - _index: 6
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747057901.0000000
+    conductivity: 1582429
+    ctd_time: 591384301
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 343328
+  - _index: 7
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747058201.0000000
+    conductivity: 1582597
+    ctd_time: 591384601
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 343197
+  - _index: 8
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747058501.0000000
+    conductivity: 1582775
+    ctd_time: 591384901
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 343018
+  - _index: 9
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747058801.0000000
+    conductivity: 1583240
+    ctd_time: 591385201
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 342700
+  - _index: 10
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747059101.0000000
+    conductivity: 1583387
+    ctd_time: 591385501
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 342525
+  - _index: 11
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747059401.0000000
+    conductivity: 1582863
+    ctd_time: 591385801
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 342971
+  - _index: 12
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747059701.0000000
+    conductivity: 1583893
+    ctd_time: 591386101
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 342139
+  - _index: 13
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747060001.0000000
+    conductivity: 1583740
+    ctd_time: 591386401
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 342241
+  - _index: 14
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747060301.0000000
+    conductivity: 1584145
+    ctd_time: 591386701
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 342039
+  - _index: 15
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747060601.0000000
+    conductivity: 1583385
+    ctd_time: 591387001
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 342515
+  - _index: 16
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747060901.0000000
+    conductivity: 1583516
+    ctd_time: 591387301
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 342496
+  - _index: 17
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747061201.0000000
+    conductivity: 1582800
+    ctd_time: 591387601
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 342950
+  - _index: 18
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747061501.0000000
+    conductivity: 1585263
+    ctd_time: 591387901
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 341241
+  - _index: 19
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747061801.0000000
+    conductivity: 1586202
+    ctd_time: 591388201
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 340533
+  - _index: 20
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747062101.0000000
+    conductivity: 1587011
+    ctd_time: 591388501
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 339809
+  - _index: 21
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747062401.0000000
+    conductivity: 1587506
+    ctd_time: 591388801
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 339395
+  - _index: 22
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747062701.0000000
+    conductivity: 1587022
+    ctd_time: 591389101
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 339772
+  - _index: 23
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747063001.0000000
+    conductivity: 1587317
+    ctd_time: 591389401
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 339640
+  - _index: 24
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747063301.0000000
+    conductivity: 1586719
+    ctd_time: 591389701
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 340044
+  - _index: 25
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747063601.0000000
+    conductivity: 1586016
+    ctd_time: 591390001
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 340683
+  - _index: 26
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747063901.0000000
+    conductivity: 1586845
+    ctd_time: 591390301
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 340005
+  - _index: 27
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747064201.0000000
+    conductivity: 1586379
+    ctd_time: 591390601
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 340401
+  - _index: 28
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747064501.0000000
+    conductivity: 1585951
+    ctd_time: 591390901
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 340677
+  - _index: 29
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747064801.0000000
+    conductivity: 1586205
+    ctd_time: 591391201
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 340617
+  - _index: 30
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747065101.0000000
+    conductivity: 1588183
+    ctd_time: 591391501
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 339050
+  - _index: 31
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747065401.0000000
+    conductivity: 1589228
+    ctd_time: 591391801
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 338638
+  - _index: 32
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747065701.0000000
+    conductivity: 1584064
+    ctd_time: 591392101
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 342346
+  - _index: 33
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747066001.0000000
+    conductivity: 1583697
+    ctd_time: 591392401
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 342729
+  - _index: 34
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747066301.0000000
+    conductivity: 1583673
+    ctd_time: 591392701
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 342549
+  - _index: 35
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747066601.0000000
+    conductivity: 1584162
+    ctd_time: 591393001
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 342070
+  - _index: 36
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747066901.0000000
+    conductivity: 1583267
+    ctd_time: 591393301
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 343152
+  - _index: 37
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747067201.0000000
+    conductivity: 1583310
+    ctd_time: 591393601
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 343161
+  - _index: 38
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747067501.0000000
+    conductivity: 1584326
+    ctd_time: 591393901
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 342049
+  - _index: 39
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747067801.0000000
+    conductivity: 1583825
+    ctd_time: 591394201
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 342540
+  - _index: 40
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747068101.0000000
+    conductivity: 1584196
+    ctd_time: 591394501
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 342104
+  - _index: 41
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747068401.0000000
+    conductivity: 1583913
+    ctd_time: 591394801
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 342472
+  - _index: 42
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747068701.0000000
+    conductivity: 1584049
+    ctd_time: 591395101
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 342351
+  - _index: 43
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747069001.0000000
+    conductivity: 1584507
+    ctd_time: 591395401
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 341875
+  - _index: 44
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747069301.0000000
+    conductivity: 1584127
+    ctd_time: 591395701
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 342300
+  - _index: 45
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747069601.0000000
+    conductivity: 1584302
+    ctd_time: 591396001
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 342124
+  - _index: 46
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747069901.0000000
+    conductivity: 1584468
+    ctd_time: 591396301
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 342042
+  - _index: 47
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747070201.0000000
+    conductivity: 1584575
+    ctd_time: 591396601
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 342020
+  - _index: 48
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747070501.0000000
+    conductivity: 1585057
+    ctd_time: 591396901
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 341791
+  - _index: 49
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747070801.0000000
+    conductivity: 1584884
+    ctd_time: 591397201
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 341997
+  - _index: 50
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747071101.0000000
+    conductivity: 1585162
+    ctd_time: 591397501
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 341649
+  - _index: 51
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747071401.0000000
+    conductivity: 1585565
+    ctd_time: 591397801
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 341282
+  - _index: 52
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747071701.0000000
+    conductivity: 1586142
+    ctd_time: 591398101
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 340857
+  - _index: 53
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747072001.0000000
+    conductivity: 1586295
+    ctd_time: 591398401
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 340901
+  - _index: 54
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747072301.0000000
+    conductivity: 1586716
+    ctd_time: 591398701
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 340450
+  - _index: 55
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747072601.0000000
+    conductivity: 1586438
+    ctd_time: 591399001
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 340607
+  - _index: 56
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747072901.0000000
+    conductivity: 1586819
+    ctd_time: 591399301
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 340361
+  - _index: 57
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747073201.0000000
+    conductivity: 1587522
+    ctd_time: 591399601
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 339790
+  - _index: 58
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747073501.0000000
+    conductivity: 1587086
+    ctd_time: 591399901
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 340139
+  - _index: 59
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747073801.0000000
+    conductivity: 1587037
+    ctd_time: 591400201
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 340192
+  - _index: 60
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747074101.0000000
+    conductivity: 1587008
+    ctd_time: 591400501
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 340190
+  - _index: 61
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747074401.0000000
+    conductivity: 1586683
+    ctd_time: 591400801
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 340407
+  - _index: 62
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747074701.0000000
+    conductivity: 1587277
+    ctd_time: 591401101
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 339930
+  - _index: 63
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747075001.0000000
+    conductivity: 1588345
+    ctd_time: 591401401
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 339072
+  - _index: 64
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747075301.0000000
+    conductivity: 1588258
+    ctd_time: 591401701
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 339089
+  - _index: 65
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747075601.0000000
+    conductivity: 1589572
+    ctd_time: 591402001
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 338046
+  - _index: 66
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747075901.0000000
+    conductivity: 1591730
+    ctd_time: 591402301
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 336204
+  - _index: 67
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747076201.0000000
+    conductivity: 1592326
+    ctd_time: 591402601
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 335677
+  - _index: 68
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747076501.0000000
+    conductivity: 1592474
+    ctd_time: 591402901
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 335509
+  - _index: 69
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747076801.0000000
+    conductivity: 1592132
+    ctd_time: 591403201
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 335716
+  - _index: 70
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747077101.0000000
+    conductivity: 1591665
+    ctd_time: 591403501
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 335985
+  - _index: 71
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747077401.0000000
+    conductivity: 1591780
+    ctd_time: 591403801
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 335822
+  - _index: 72
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747077701.0000000
+    conductivity: 1590989
+    ctd_time: 591404101
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 336381
+  - _index: 73
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747078001.0000000
+    conductivity: 1590580
+    ctd_time: 591404401
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 336638
+  - _index: 74
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747078301.0000000
+    conductivity: 1590079
+    ctd_time: 591404701
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 337067
+  - _index: 75
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747078601.0000000
+    conductivity: 1590077
+    ctd_time: 591405001
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 337102
+  - _index: 76
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747078901.0000000
+    conductivity: 1590650
+    ctd_time: 591405301
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 336537
+  - _index: 77
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747079201.0000000
+    conductivity: 1589752
+    ctd_time: 591405601
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 337242
+  - _index: 78
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747079501.0000000
+    conductivity: 1590393
+    ctd_time: 591405901
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 336685
+  - _index: 79
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747079801.0000000
+    conductivity: 1590484
+    ctd_time: 591406201
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 336666
+  - _index: 80
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747080101.0000000
+    conductivity: 1589971
+    ctd_time: 591406501
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 337035
+  - _index: 81
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747080401.0000000
+    conductivity: 1589237
+    ctd_time: 591406801
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 337649
+  - _index: 82
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747080701.0000000
+    conductivity: 1589076
+    ctd_time: 591407101
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 337800
+  - _index: 83
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747081001.0000000
+    conductivity: 1589624
+    ctd_time: 591407401
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 337307
+  - _index: 84
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747081301.0000000
+    conductivity: 1589594
+    ctd_time: 591407701
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 337402
+  - _index: 85
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747081601.0000000
+    conductivity: 1589596
+    ctd_time: 591408001
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 337366
+  - _index: 86
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747081901.0000000
+    conductivity: 1589305
+    ctd_time: 591408301
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 337639
+  - _index: 87
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747082201.0000000
+    conductivity: 1589464
+    ctd_time: 591408601
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 337500
+  - _index: 88
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747082501.0000000
+    conductivity: 1589227
+    ctd_time: 591408901
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 337781
+  - _index: 89
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747082801.0000000
+    conductivity: 1589186
+    ctd_time: 591409201
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 337823
+  - _index: 90
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747083101.0000000
+    conductivity: 1589539
+    ctd_time: 591409501
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 337578
+  - _index: 91
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747083401.0000000
+    conductivity: 1589550
+    ctd_time: 591409801
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 337558
+  - _index: 92
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747083701.0000000
+    conductivity: 1589502
+    ctd_time: 591410101
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 337640
+  - _index: 93
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747084001.0000000
+    conductivity: 1589555
+    ctd_time: 591410401
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 337656
+  - _index: 94
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747084301.0000000
+    conductivity: 1589054
+    ctd_time: 591410701
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 338065
+  - _index: 95
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747084601.0000000
+    conductivity: 1588797
+    ctd_time: 591411001
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 338335
+  - _index: 96
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747084901.0000000
+    conductivity: 1588184
+    ctd_time: 591411301
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 338929
+  - _index: 97
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747085201.0000000
+    conductivity: 1587336
+    ctd_time: 591411601
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 339672
+  - _index: 98
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747085501.0000000
+    conductivity: 1586427
+    ctd_time: 591411901
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 340603
+  - _index: 99
+    particle_object: MetbkCtDclInstrumentDataParticle
+    particle_type: metbk_ct_dcl_instrument
+    internal_timestamp: 3747085801.0000000
+    conductivity: 1586743
+    ctd_time: 591412201
+    inductive_id: 20190930
+    serial_number: '3711000'
+    temperature: 340537
