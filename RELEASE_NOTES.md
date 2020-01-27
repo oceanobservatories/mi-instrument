@@ -1,3 +1,7 @@
+# Version 0.9.3
+
+* Issue 14609 - Fixed METBK CT driver/parser to ingest all files
+
 # Version 0.9.2
 
 * Issue 14304 - Added new METBK CT parser for Seabird SBE37SM-RS485 hex data file

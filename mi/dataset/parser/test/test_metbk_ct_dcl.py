@@ -15,12 +15,10 @@ Recovered CT files:
 import os
 from nose.plugins.attrib import attr
 
-from mi.core.exceptions import DatasetParserException
 from mi.core.log import get_logger
 
 from mi.dataset.dataset_parser import DataSetDriverConfigKeys
-from mi.dataset.driver.metbk_ct.dcl.metbk_ct_dcl_driver import MODULE_NAME, PARTICLE_CLASS, \
-    FILENAME_MATCHER, FILENAME_SERIAL_NUMBER_GROUP
+from mi.dataset.driver.metbk_ct.dcl.metbk_ct_dcl_driver import MODULE_NAME, PARTICLE_CLASS
 from mi.dataset.driver.metbk_ct.dcl.resource import RESOURCE_PATH
 from mi.dataset.parser.metbk_ct_dcl import MetbkCtDclParser, INDUCTIVE_ID_KEY
 from mi.dataset.parser.utilities import particle_to_yml
@@ -37,8 +35,6 @@ FILE_SIMPLE = 'SBE37SM-RS485_20190930_2019_09_30-simple.hex'
 YML_LONG = 'SBE37SM-RS485_20190930_2019_09_30-long.yml'
 YML_SIMPLE = 'SBE37SM-RS485_20190930_2019_09_30-simple.yml'
 
-SERIAL_NUMBER_EXPECTED = 20190930
-
 RECORDS_LONG = 99       # number of records expected
 RECORDS_SIMPLE = 3      # number of records expected
 
@@ -51,7 +47,7 @@ class MetbkCtDclParserUnitTestCase(ParserUnitTestCase):
         self.config = {
             DataSetDriverConfigKeys.PARTICLE_MODULE: MODULE_NAME,
             DataSetDriverConfigKeys.PARTICLE_CLASS: PARTICLE_CLASS,
-            INDUCTIVE_ID_KEY: 77
+            INDUCTIVE_ID_KEY: 0
         }
 
     def create_yml(self, particles, filename):
@@ -61,18 +57,6 @@ class MetbkCtDclParserUnitTestCase(ParserUnitTestCase):
         """
         Read test data with 99 detail records and pull out all particles from a file at once.
         """
-
-        # match the filename, serial number is the first group
-        filename_match = FILENAME_MATCHER.match(FILE_LONG)
-
-        # can't run parser without the serial number, raise an exception if it can't be found
-        if not filename_match:
-            raise DatasetParserException("Unable to parse serial number from file name %s", FILE_LONG)
-
-        # obtain serial number as an integer and treat it as the inductive id
-        serial_number = int(filename_match.group(FILENAME_SERIAL_NUMBER_GROUP))
-        self.config[INDUCTIVE_ID_KEY] = serial_number
-        self.assertEqual(self.config[INDUCTIVE_ID_KEY], SERIAL_NUMBER_EXPECTED)
 
         with open(os.path.join(RESOURCE_PATH, FILE_LONG), 'r') as in_file:
             parser = MetbkCtDclParser(self.config, in_file, self.exception_callback)
