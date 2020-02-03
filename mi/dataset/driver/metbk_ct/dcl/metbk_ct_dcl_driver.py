@@ -8,7 +8,7 @@
 from mi.core.log import get_logger
 from mi.core.versioning import version
 
-from mi.dataset.parser.metbk_ct_dcl import MetbkCtDclParser, INDUCTIVE_ID_KEY
+from mi.dataset.parser.metbk_ct_dcl import MetbkCtDclParser
 from mi.dataset.dataset_driver import DataSetDriver
 from mi.dataset.dataset_parser import DataSetDriverConfigKeys
 
@@ -19,7 +19,7 @@ MODULE_NAME = 'mi.dataset.parser.metbk_ct_dcl'
 PARTICLE_CLASS = 'MetbkCtDclInstrumentDataParticle'
 
 
-@version("1.0.1")
+@version("1.0.2")
 def parse(unused, source_file_path, particle_data_handler):
     """
     This is the method called by Uframe. Note since the instrument in use is not inductive
@@ -38,8 +38,7 @@ def parse(unused, source_file_path, particle_data_handler):
 
         parser_config = {
             DataSetDriverConfigKeys.PARTICLE_MODULE: MODULE_NAME,
-            DataSetDriverConfigKeys.PARTICLE_CLASS: [PARTICLE_CLASS],
-            INDUCTIVE_ID_KEY: 0
+            DataSetDriverConfigKeys.PARTICLE_CLASS: [PARTICLE_CLASS]
         }
 
         parser = MetbkCtDclParser(parser_config, stream_handle, exception_callback)

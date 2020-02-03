@@ -1,3 +1,7 @@
+# Version 0.9.4
+
+* Issue 14609 - Fixed METBK CT driver/parser to remove inductive_id from generated stream
+
 # Version 0.9.3
 
 * Issue 14609 - Fixed METBK CT driver/parser to ingest all files
