@@ -20,7 +20,7 @@ from mi.core.log import get_logger
 from mi.dataset.dataset_parser import DataSetDriverConfigKeys
 from mi.dataset.driver.metbk_ct.dcl.metbk_ct_dcl_driver import MODULE_NAME, PARTICLE_CLASS
 from mi.dataset.driver.metbk_ct.dcl.resource import RESOURCE_PATH
-from mi.dataset.parser.metbk_ct_dcl import MetbkCtDclParser, INDUCTIVE_ID_KEY
+from mi.dataset.parser.metbk_ct_dcl import MetbkCtDclParser
 from mi.dataset.parser.utilities import particle_to_yml
 from mi.dataset.test.test_parser import ParserUnitTestCase
 
@@ -46,8 +46,7 @@ class MetbkCtDclParserUnitTestCase(ParserUnitTestCase):
         ParserUnitTestCase.setUp(self)
         self.config = {
             DataSetDriverConfigKeys.PARTICLE_MODULE: MODULE_NAME,
-            DataSetDriverConfigKeys.PARTICLE_CLASS: PARTICLE_CLASS,
-            INDUCTIVE_ID_KEY: 0
+            DataSetDriverConfigKeys.PARTICLE_CLASS: PARTICLE_CLASS
         }
 
     def create_yml(self, particles, filename):

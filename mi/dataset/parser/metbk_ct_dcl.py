@@ -25,10 +25,7 @@ import re
 
 from mi.core.common import BaseEnum
 from mi.core.exceptions import \
-    DatasetParserException, \
-    RecoverableSampleException, \
-    SampleException, \
-    UnexpectedDataException
+    SampleException
 
 from mi.core.instrument.dataset_data_particle import DataParticle
 from mi.core.log import get_logger
@@ -37,7 +34,6 @@ log = get_logger()
 from mi.dataset.dataset_parser import SimpleParser
 from mi.dataset.parser.utilities import zulu_timestamp_to_ntp_time
 
-INDUCTIVE_ID_KEY = 'inductive_id'
 NEW_LINE = r'[\n\r]+'             # Handle any type of new line
 
 # For Recovered CT files, the serial number is in the Configuration XML section.
@@ -71,11 +67,10 @@ REC_CT_GROUP_CONDUCTIVITY = 2
 REC_CT_GROUP_TIME = 3
 
 # Indices into raw_data tuples for CT data
-RAW_INDEX_REC_CT_ID = 0
-RAW_INDEX_REC_CT_SERIAL = 1
-RAW_INDEX_REC_CT_TEMPERATURE = 2
-RAW_INDEX_REC_CT_CONDUCTIVITY = 3
-RAW_INDEX_REC_CT_TIME = 4
+RAW_INDEX_REC_CT_SERIAL = 0
+RAW_INDEX_REC_CT_TEMPERATURE = 1
+RAW_INDEX_REC_CT_CONDUCTIVITY = 2
+RAW_INDEX_REC_CT_TIME = 3
 
 
 def convert_hex_ascii_to_int(int_val):
@@ -102,7 +97,6 @@ class DataParticleType(BaseEnum):
 
 
 class DataParticleKey(BaseEnum):
-    INDUCTIVE_ID = "inductive_id"
     SERIAL_NUMBER = "serial_number"
     TEMPERATURE = "temperature"
     CONDUCTIVITY = "conductivity"
@@ -114,12 +108,6 @@ class MetbkCtDclParser(SimpleParser):
                  config,
                  stream_handle,
                  exception_callback):
-
-        #
-        # Verify that the required parameters are in the parser configuration.
-        #
-        if not INDUCTIVE_ID_KEY in config:
-            raise DatasetParserException("Parser config is missing %s" % INDUCTIVE_ID_KEY)
 
         #
         # File is ASCII with records separated by newlines.
@@ -212,8 +200,7 @@ class MetbkCtDclParser(SimpleParser):
             #   time of science data
             #
             sample = self._extract_sample(MetbkCtDclInstrumentDataParticle, None,
-                                         (self._config.get(INDUCTIVE_ID_KEY),
-                                          self._serial_number,
+                                         (self._serial_number,
                                           ct_match.group(REC_CT_GROUP_TEMPERATURE),
                                           ct_match.group(REC_CT_GROUP_CONDUCTIVITY),
                                           ct_match.group(REC_CT_GROUP_TIME)))
@@ -259,8 +246,6 @@ class MetbkCtDclInstrumentDataParticle(DataParticle):
         #   time of science data
         #
         particle = [
-            self._encode_value(DataParticleKey.INDUCTIVE_ID,
-                               self.raw_data[RAW_INDEX_REC_CT_ID], int),
             self._encode_value(DataParticleKey.SERIAL_NUMBER,
                                self.raw_data[RAW_INDEX_REC_CT_SERIAL], str),
             self._encode_value(DataParticleKey.TEMPERATURE,
