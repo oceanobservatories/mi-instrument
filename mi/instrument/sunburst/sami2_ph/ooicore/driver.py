@@ -1195,4 +1195,10 @@ class Protocol(SamiProtocol):
 
 
 def create_playback_protocol(callback):
+    # These data_particle_type assignments are already in global scope and are executed the first time
+    # this module loads, but assign them here as well in case they were reassigned by
+    # another driver (pco2a, pco2b) after this module was loaded.
+    SamiBatteryVoltageDataParticle._data_particle_type = DataParticleType.PHSEN_BATTERY_VOLTAGE
+    SamiThermistorVoltageDataParticle._data_particle_type = DataParticleType.PHSEN_THERMISTOR_VOLTAGE
+    SamiRegularStatusDataParticle._data_particle_type = DataParticleType.PHSEN_REGULAR_STATUS
     return Protocol(None, None, callback)

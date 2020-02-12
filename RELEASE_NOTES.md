@@ -1,3 +1,7 @@
+# Version 0.9.4
+
+* Issue #14625 - Fix pCO2 parsers to generate correct streams during playback ingestions
+
 # Version 0.9.3
 
 * Issue 14609 - Fixed METBK CT driver/parser to ingest all files
