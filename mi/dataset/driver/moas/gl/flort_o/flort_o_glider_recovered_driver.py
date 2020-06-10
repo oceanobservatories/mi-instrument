@@ -11,7 +11,7 @@ from mi.core.versioning import version
 __author__ = 'Rene Gelinas'
 
 
-@version("1.0.0")
+@version("1.1.0")
 def parse(unused, source_file_path, particle_data_handler):
     parser_config = {
         DataSetDriverConfigKeys.PARTICLE_MODULE: 'mi.dataset.parser.glider',

@@ -18,7 +18,7 @@ from mi.core.versioning import version
 __author__ = "ehahn"
 
 
-@version("15.7.1")
+@version("15.8.0")
 def parse(unused, source_file_path, particle_data_handler):
     """
     Initialize the parser configuration and build the driver

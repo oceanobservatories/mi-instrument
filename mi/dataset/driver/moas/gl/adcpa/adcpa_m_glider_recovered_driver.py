@@ -16,7 +16,7 @@ from mi.core.versioning import version
 __author__ = "Jeff Roy"
 
 
-@version("0.2.1")
+@version("0.3.0")
 def parse(unused, source_file_path, particle_data_handler):
     parser_config = {
         DataSetDriverConfigKeys.PARTICLE_CLASSES_DICT: {
