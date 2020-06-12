@@ -1237,31 +1237,39 @@ class GpsInterpolator(object):
 
         # Iterate the buffer to extract the values for interpolation
         for idx, glider_gps_position in enumerate(self._glider_gps_position_buffer):
+            # Capture all glider times for potential extrapolation
+            glider_time = self._get_time(glider_gps_position.contents)
+            self.particle_ts.append(glider_time)
+            # Only look within range of start,end gps positions for matching time and point
             if self._start_gps <= idx <= self._end_gps:
-                glider_time = self._get_time(glider_gps_position.contents)
-                self.particle_ts.append(glider_time)
-
                 # If the lat,lon can be used for interpolation, capture them
                 if self._has_gps_positioning(glider_gps_position):
                     self.gps_lat.append(self._get_value(glider_gps_position._values, GpsPositionParticleKey.M_GPS_LAT))
                     self.gps_lon.append(self._get_value(glider_gps_position._values, GpsPositionParticleKey.M_GPS_LON))
                     self.gps_time.append(glider_time)
 
-        # Set up the interpolation function for gps_lat
-        interp_function = interpolate.interp1d(self.gps_time, self.gps_lat, kind='linear', axis=0, copy=False)
+        # Set up the interpolation function for gps_lat to extrapolate beyond start,end gps positions
+        interp_function = interpolate.interp1d(self.gps_time, self.gps_lat, kind='linear', axis=0, copy=False,
+                                               fill_value='extrapolate')
         # Use the particle time array to get the interpolated gps lat array
         interpolated_gps_lat = interp_function(self.particle_ts)
 
-        # Set up the interpolation function for gps_lon
-        interp_function = interpolate.interp1d(self.gps_time, self.gps_lon, kind='linear', axis=0, copy=False)
+        # Set up the interpolation function for gps_lon to extrapolate beyond start,end gps positions
+        interp_function = interpolate.interp1d(self.gps_time, self.gps_lon, kind='linear', axis=0, copy=False,
+                                               fill_value='extrapolate')
         # Use the particle time array to get the interpolated gps lon array
         interpolated_gps_lon = interp_function(self.particle_ts)
 
         # Populate the interpolated gps_lat,gps_lon onto the buffer objects
-        for i in range(self._start_gps, self._end_gps + 1):
-            self._put_value(self._glider_gps_position_buffer[i]._values, interpolated_gps_lat[i - self._start_gps],
+#         for i in range(self._start_gps, self._end_gps + 1):
+#             self._put_value(self._glider_gps_position_buffer[i]._values, interpolated_gps_lat[i - self._start_gps],
+#                            GpsPositionParticleKey.INTERP_LAT)
+#             self._put_value(self._glider_gps_position_buffer[i]._values, interpolated_gps_lon[i - self._start_gps],
+#                            GpsPositionParticleKey.INTERP_LON)
+        for i in range(len(self._glider_gps_position_buffer)):
+            self._put_value(self._glider_gps_position_buffer[i]._values, interpolated_gps_lat[i],
                            GpsPositionParticleKey.INTERP_LAT)
-            self._put_value(self._glider_gps_position_buffer[i]._values, interpolated_gps_lon[i - self._start_gps],
+            self._put_value(self._glider_gps_position_buffer[i]._values, interpolated_gps_lon[i],
                            GpsPositionParticleKey.INTERP_LON)
 
         # Return the buffer objects

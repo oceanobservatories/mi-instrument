@@ -897,13 +897,13 @@ class ENGGliderTest(GliderParserUnitTestCase):
 
         record_gps_1 = {GpsPositionParticleKey.M_GPS_LAT: None,
                         GpsPositionParticleKey.M_GPS_LON: None,
-                        GpsPositionParticleKey.INTERP_LAT: None,
-                        GpsPositionParticleKey.INTERP_LON: None,
+                        GpsPositionParticleKey.INTERP_LAT: 43.453642880042295,
+                        GpsPositionParticleKey.INTERP_LON: -125.3791128800423,
                         GpsPositionParticleKey.M_LAT: 43.47113833452416,
                         GpsPositionParticleKey.M_LON: -125.39660833431499}
         record_gps_2 = {GpsPositionParticleKey.M_GPS_LAT: 43.47113833333333,
                         GpsPositionParticleKey.M_GPS_LON: -125.39660833333333,
-                        GpsPositionParticleKey.INTERP_LAT: 43.471138333333329,
+                        GpsPositionParticleKey.INTERP_LAT: 43.47113833333333,
                         GpsPositionParticleKey.INTERP_LON: -125.39660833333333,
                         GpsPositionParticleKey.M_LAT: 43.47113833452416,
                         GpsPositionParticleKey.M_LON: -125.39660833431499}
@@ -927,14 +927,14 @@ class ENGGliderTest(GliderParserUnitTestCase):
                         GpsPositionParticleKey.M_LON: None}
         record_gps_6 = {GpsPositionParticleKey.M_GPS_LAT: 43.537805,
                         GpsPositionParticleKey.M_GPS_LON: -125.46327500000001,
-                        GpsPositionParticleKey.INTERP_LAT: 43.537804999999999,
+                        GpsPositionParticleKey.INTERP_LAT: 43.537805,
                         GpsPositionParticleKey.INTERP_LON: -125.46327500000001,
                         GpsPositionParticleKey.M_LAT: 43.47113833452416,
                         GpsPositionParticleKey.M_LON: -125.39660833431499}
         record_gps_7 = {GpsPositionParticleKey.M_GPS_LAT: None,
                         GpsPositionParticleKey.M_GPS_LON: None,
-                        GpsPositionParticleKey.INTERP_LAT: None,
-                        GpsPositionParticleKey.INTERP_LON: None,
+                        GpsPositionParticleKey.INTERP_LAT: 43.55395464919172,
+                        GpsPositionParticleKey.INTERP_LON: -125.47942464919174,
                         GpsPositionParticleKey.M_LAT: 43.47113833452416,
                         GpsPositionParticleKey.M_LON: -125.39660833431499}
 
