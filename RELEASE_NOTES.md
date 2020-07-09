@@ -1,3 +1,7 @@
+# Version 0.9.5
+
+* Issue #13369 - Add recovered,telemetered drivers to split PCO2A ingestions
+
 # Version 0.9.4
 
 * Issue #14609 - Fixed METBK CT driver/parser to remove inductive_id from generated stream
