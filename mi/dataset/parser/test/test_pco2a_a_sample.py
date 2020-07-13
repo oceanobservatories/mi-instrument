@@ -29,12 +29,13 @@ from mi.dataset.driver.pco2a_a.sample.resource import RESOURCE_PATH
 from mi.dataset.parser.pco2a_a_sample import Pco2aADclParser
 from mi.dataset.parser.pco2a_a_sample import SENSOR_DATA_MATCHER_WATER
 from mi.dataset.driver.pco2a_a.sample.pco2a_a_sample_driver import \
-     MODULE_NAME, PARTICLE_CLASSES
+     MODULE_NAME, RECOVERED_PARTICLE_CLASSES, TELEMETERED_PARTICLE_CLASSES
 
 FILE = '20140217.pco2a.log'
 FILE_FAILURE = '20140217.pco2a_failure.log'
 
 YAML_FILE = 'rec_20140217_pco2a.yml'
+YAML_FILE_REC = 'rec_20140217_pco2a_rec.yml'
 
 RECORDS = 216  # number of records expected
 
@@ -71,8 +72,8 @@ class Pco2aADclParserUnitTestCase(ParserUnitTestCase):
     def test_sensor_water_pattern(self):
         data = "2019/02/27 00:00:09.290 W M,2019,02,27,00,00,11,44027,41190,446.74,40.60,11.37,28.52,1021,40.30,40.90,11.7\r\n"
         m = SENSOR_DATA_MATCHER_WATER.match(data)
-        self.assertEqual(20,m.re.groups)
-        self.assertEqual('11.7',m.group(m.re.groups))
+        self.assertEqual(20, m.re.groups)
+        self.assertEqual('11.7', m.group(m.re.groups))
 
     def test_verify_record(self):
         """
@@ -81,7 +82,7 @@ class Pco2aADclParserUnitTestCase(ParserUnitTestCase):
         """
         log.debug('===== START TEST verify record parser =====')
         in_file = self.open_file(FILE)
-        parser = self.create_parser(PARTICLE_CLASSES, in_file)
+        parser = self.create_parser(TELEMETERED_PARTICLE_CLASSES, in_file)
 
         parser.get_records(RECORDS)
         self.assertListEqual(self.exception_callback_value, [])
@@ -101,7 +102,7 @@ class Pco2aADclParserUnitTestCase(ParserUnitTestCase):
         """
         log.debug('===== START TEST verify parser =====')
         in_file = self.open_file(FILE)
-        parser = self.create_parser(PARTICLE_CLASSES, in_file)
+        parser = self.create_parser(TELEMETERED_PARTICLE_CLASSES, in_file)
         result = parser.get_records(RECORDS)
 
         self.assert_particles(result, YAML_FILE, RESOURCE_PATH)
@@ -117,7 +118,7 @@ class Pco2aADclParserUnitTestCase(ParserUnitTestCase):
         """
         log.debug('===== START TEST verify_parser RECOVERED =====')
         in_file = self.open_file(FILE)
-        parser = self.create_parser(PARTICLE_CLASSES, in_file)
+        parser = self.create_parser(RECOVERED_PARTICLE_CLASSES, in_file)
         parser.get_records(RECORDS)
 
         self.assertListEqual(self.exception_callback_value, [])
@@ -136,10 +137,10 @@ class Pco2aADclParserUnitTestCase(ParserUnitTestCase):
         """
         log.debug('===== START TEST verify_parser RECOVERED =====')
         in_file = self.open_file(FILE)
-        parser = self.create_parser(PARTICLE_CLASSES, in_file)
+        parser = self.create_parser(RECOVERED_PARTICLE_CLASSES, in_file)
         result = parser.get_records(RECORDS)
 
-        self.assert_particles(result, YAML_FILE, RESOURCE_PATH)
+        self.assert_particles(result, YAML_FILE_REC, RESOURCE_PATH)
         self.assertListEqual(self.exception_callback_value, [])
 
         in_file.close()
@@ -193,7 +194,7 @@ class Pco2aADclParserUnitTestCase(ParserUnitTestCase):
 
         log.debug('===== START TEST failure verify_parser =====')
         in_file = self.open_file(FILE_FAILURE)
-        parser = self.create_parser(PARTICLE_CLASSES, in_file)
+        parser = self.create_parser(TELEMETERED_PARTICLE_CLASSES, in_file)
         parser.get_records(RECORDS)
 
         self.assertTrue(self.exception_callback_value is not None)
@@ -218,7 +219,7 @@ class Pco2aADclParserUnitTestCase(ParserUnitTestCase):
 
         log.debug('===== START TEST failure verify_parser RECOVERED =====')
         in_file = self.open_file(FILE_FAILURE)
-        parser = self.create_parser(PARTICLE_CLASSES, in_file)
+        parser = self.create_parser(RECOVERED_PARTICLE_CLASSES, in_file)
         parser.get_records(RECORDS)
 
         self.assertTrue(self.exception_callback_value is not None)
@@ -238,7 +239,7 @@ class Pco2aADclParserUnitTestCase(ParserUnitTestCase):
         timestamps containing seconds >59
         """
         in_file = self.open_file('20140217.pco2aA.log')
-        parser = self.create_parser(PARTICLE_CLASSES, in_file)
+        parser = self.create_parser(TELEMETERED_PARTICLE_CLASSES, in_file)
         result = parser.get_records(10)
 
         self.assertEqual(len(result), 4)
@@ -252,7 +253,7 @@ class Pco2aADclParserUnitTestCase(ParserUnitTestCase):
         These were found in files on the OMC
         """
         in_file = self.open_file('20150302.pco2a.log')
-        parser = self.create_parser(PARTICLE_CLASSES, in_file)
+        parser = self.create_parser(TELEMETERED_PARTICLE_CLASSES, in_file)
         result = parser.get_records(500)
 
         self.assertEqual(len(result), 432)
