@@ -3,16 +3,28 @@ import os
 from mi.logging import config
 from mi.core.log import get_logger
 from mi.core.exceptions import NotImplementedException
+from mi.core.common import BaseEnum
 
 
 __author__ = 'wordenm'
 log = get_logger()
 
 
+class ProcessingInfoKey(BaseEnum):
+    """
+    Class that defines keys for ParticleDataHandler processing info
+    """
+    TIMESTAMPS_VALIDATED = "timestamps_validated"
+    PARSER = "parser"
+    PARSER_VERSION = "parser_version"
+    DATA_FILE = "data_file"
+
+
 class ParticleDataHandler(object):
     def __init__(self):
         self._samples = {}
         self._failure = False
+        self._processing_info = {}
 
     def addParticleSample(self, sample_type, sample):
         log.debug("Sample type: %s, Sample data: %s", sample_type, sample)
@@ -21,6 +33,12 @@ class ParticleDataHandler(object):
     def setParticleDataCaptureFailure(self):
         log.debug("Particle data capture failed")
         self._failure = True
+
+    def setProcessingInfo(self, processing_info_key, processing_info):
+        if ProcessingInfoKey.has(processing_info_key):
+            self._processing_info[processing_info_key] = processing_info
+        else:
+            log.error("Invalid ProcessingInfoKey: %s", str(processing_info_key))
 
 
 class DataSetDriver(object):
