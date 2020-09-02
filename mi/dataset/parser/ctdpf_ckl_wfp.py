@@ -34,7 +34,8 @@ class CtdpfCklWfpParser(WfpCFileCommonParser):
                  config,
                  stream_handle,
                  exception_callback,
-                 file_size):
+                 file_size,
+                 e_file_time_pressure_tuples=None):
 
         log.info(config)
         particle_classes_dict = config.get(DataSetDriverConfigKeys.PARTICLE_CLASSES_DICT)
@@ -47,7 +48,8 @@ class CtdpfCklWfpParser(WfpCFileCommonParser):
                                                 lambda state, ingested: None,
                                                 lambda data: None,
                                                 exception_callback,
-                                                file_size)
+                                                file_size,
+                                                e_file_time_pressure_tuples)
 
     def extract_metadata_particle(self, raw_data, timestamp):
         """

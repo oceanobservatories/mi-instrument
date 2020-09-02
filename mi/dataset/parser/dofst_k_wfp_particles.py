@@ -33,6 +33,7 @@ class DataParticleType(BaseEnum):
 
 
 class DofstKWfpDataParticleKey(BaseEnum):
+    PRESSURE = 'pressure'
     DOFST_K_OXYGEN = 'dofst_k_oxygen'
 
 
@@ -49,9 +50,11 @@ class DofstKWfpDataParticle(DataParticle):
         """
         if len(self.raw_data) != DATA_RECORD_BYTES:
             raise SampleException("DofstKWfpDataParticle: Received unexpected number of bytes %d" % len(self.raw_data[0]))
-        fields = struct.unpack('>H', self.raw_data[9:11])
+        fields = struct.unpack('>I', '\x00' + self.raw_data[6:9]) + \
+                 struct.unpack('>H', self.raw_data[9:11])
 
-        result = [self._encode_value(DofstKWfpDataParticleKey.DOFST_K_OXYGEN, fields[0], int)]
+        result = [self._encode_value(DofstKWfpDataParticleKey.PRESSURE, fields[0], int),
+                  self._encode_value(DofstKWfpDataParticleKey.DOFST_K_OXYGEN, fields[1], int)]
         return result
 
 

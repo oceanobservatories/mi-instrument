@@ -21,7 +21,7 @@ from mi.dataset.driver.flort_kn.stc_imodem.flort_kn__stc_imodem_driver import Fl
 __author__ = 'jroy'
 
 
-@version("0.0.3")
+@version("0.0.1")
 def parse(unused, source_file_path, particle_data_handler):
     """
     This is the method called by Uframe
@@ -45,14 +45,14 @@ def parse(unused, source_file_path, particle_data_handler):
     # Parse the ctd file and use the e_file_time_pressure_tuples to generate
     # the internal timestamps of the particles
     with open(source_file_path, 'rb') as stream_handle:
-        driver = DofstKWfpTelemeteredDriver(
+        driver = DofstKWfpDriver(
             unused, stream_handle, particle_data_handler, e_file_time_pressure_tuples)
         driver.processFileStream()
 
     return particle_data_handler
 
 
-class DofstKWfpTelemeteredDriver(SimpleDatasetDriver):
+class DofstKWfpDriver(SimpleDatasetDriver):
     """
     Derived dofst_k_wfp driver class
     All this needs to do is create a concrete _build_parser method
@@ -61,7 +61,7 @@ class DofstKWfpTelemeteredDriver(SimpleDatasetDriver):
     def __init__(self, unused, stream_handle, particle_data_handler, e_file_time_pressure_tuples):
         self._e_file_time_pressure_tuples = e_file_time_pressure_tuples
 
-        super(DofstKWfpTelemeteredDriver, self).__init__(unused, stream_handle, particle_data_handler)
+        super(DofstKWfpDriver, self).__init__(unused, stream_handle, particle_data_handler)
 
     def _build_parser(self, stream_handle):
 

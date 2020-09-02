@@ -27,7 +27,7 @@ from mi.dataset.parser.WFP_E_file_common import WfpEFileParser, SAMPLE_BYTES
 
 
 class DataParticleType(BaseEnum):
-    
+
     PARAD_K_INS = 'parad_k__stc_imodem_instrument'
     PARAD_K_INS_RECOVERED = 'parad_k__stc_imodem_instrument_recovered'
 
@@ -35,6 +35,7 @@ class DataParticleType(BaseEnum):
 class Parad_k_stc_DataParticleKey(BaseEnum):
 
     TIMESTAMP = 'wfp_timestamp'  # holds the most recent data sample timestamp
+    PRESSURE_DEPTH = 'pressure_depth'
     SENSOR_DATA = 'par_val_v'
 
 
@@ -67,6 +68,8 @@ class Parad_k_stc_DataParticle(DataParticle):
 
         result = [self._encode_value(Parad_k_stc_DataParticleKey.TIMESTAMP,
                                      time_stamp, int),
+                  self._encode_value(Parad_k_stc_DataParticleKey.PRESSURE_DEPTH,
+                                     fields_prof[3], float),
                   self._encode_value(Parad_k_stc_DataParticleKey.SENSOR_DATA,
                                      par_value, float)]
 
@@ -91,6 +94,25 @@ class Parad_k_stc_imodemRecoveredDataParticle(Parad_k_stc_DataParticle):
 
 class Parad_k_stc_Parser(WfpEFileParser):
 
+    def __init__(self,
+                 config,
+                 state,
+                 stream_handle,
+                 state_callback,
+                 publish_callback,
+                 *args, **kwargs):
+
+        # Do not accept samples until we find the first non-zero pressure in the file
+        self._accept_samples = False
+        self._pressure_precision = 0.001
+
+        super(Parad_k_stc_Parser, self).__init__(config,
+                                                 state,
+                                                 stream_handle,
+                                                 state_callback,
+                                                 publish_callback,
+                                                 *args, **kwargs)
+
     def parse_parad_k_record(self, record, particle_type):
         """
         This is a PARAD_K particle type, and below we pull the proper value from the
@@ -108,7 +130,18 @@ class Parad_k_stc_Parser(WfpEFileParser):
             if sample:
                 # create particle
                 self._increment_state(SAMPLE_BYTES)
-                result_particle = (sample, copy.copy(self._read_state))
+
+                if not self._accept_samples:
+                    # Get the pressure from the list of "values" in the sample
+                    pressure_name_value_pair = [i for i in sample._values
+                        if i[DataParticleKey.VALUE_ID] == Parad_k_stc_DataParticleKey.PRESSURE_DEPTH]
+                    # Accept this and subsequent samples when the first non-zero pressure is encountered in the file
+                    if pressure_name_value_pair and \
+                            pressure_name_value_pair[0][DataParticleKey.VALUE] > self._pressure_precision:
+                        self._accept_samples = True
+
+                if self._accept_samples:
+                    result_particle = (sample, copy.copy(self._read_state))
 
         return result_particle
 
