@@ -1,3 +1,7 @@
+# Version 0.9.6
+
+# Issue #14654 - Add interpolation of m_gps_lat,lon into interp_lat,lon
+
 # Version 0.9.5
 
 * Issue #13369 - Add recovered,telemetered drivers to split PCO2A ingestions
@@ -9,33 +13,33 @@
 
 # Version 0.9.3
 
-* Issue 14609 - Fixed METBK CT driver/parser to ingest all files
+* Issue #14609 - Fixed METBK CT driver/parser to ingest all files
 
 # Version 0.9.2
 
-* Issue 14304 - Added new METBK CT parser for Seabird SBE37SM-RS485 hex data file
+* Issue #14304 - Added new METBK CT parser for Seabird SBE37SM-RS485 hex data file
 
 # Version 0.9.1
 
-* Issue 14170 - Fixed regex expression to include signed integers on pitch and roll. 
+* Issue #14170 - Fixed regex expression to include signed integers on pitch and roll. 
 
 # Version 0.9.0
 
-* Issue 14170 - PARAD_A driver modified to handle both LONG_ASCII output from the new Seabird sensor and the original SHORT_ASCII output from the older Satlantic sensor. 
+* Issue #14170 - PARAD_A driver modified to handle both LONG_ASCII output from the new Seabird sensor and the original SHORT_ASCII output from the older Satlantic sensor. 
 
 # Version 0.8.2
 
-* Issue 13182 - Async data download behaving differently on the Data Navigation tab than on the Plotting tab
+* Issue #13182 - Async data download behaving differently on the Data Navigation tab than on the Plotting tab
    * Added m_lat,m_lon to class GpsPositionParticleKey to capture them into glider_gps_position stream 
 
 # Version 0.8.1
 
-* Issue 14184 - ensure data timestamps of pco2w_abc particles are treated as 1904-based
+* Issue #14184 - ensure data timestamps of pco2w_abc particles are treated as 1904-based
    * Modified pco2w_abc_particles to adjust the data timestamps from 1904-based to NTP
 
 # Version 0.8.0
 
-* Issue 13369 - add pco2a_a_sample parser,drivers and test files for new pco2a instrument
+* Issue #13369 - add pco2a_a_sample parser,drivers and test files for new pco2a instrument
 
 # Version 0.7.1
 

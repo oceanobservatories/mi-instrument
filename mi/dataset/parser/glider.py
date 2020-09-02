@@ -8,6 +8,7 @@
 import re
 import ntplib
 from math import copysign, isnan
+import scipy.interpolate as interpolate
 from mi.core.log import get_logger
 from mi.core.common import BaseEnum
 from mi.core.exceptions import SampleException, \
@@ -706,6 +707,8 @@ class GpsPositionParticleKey(GliderParticleKey):
     M_GPS_LON = 'm_gps_lon'
     M_LAT = 'm_lat'
     M_LON = 'm_lon'
+    INTERP_LAT = 'interp_lat'
+    INTERP_LON = 'interp_lon'
 
 
 class GpsPositionDataParticle(GliderParticle):
@@ -735,7 +738,7 @@ class GpsPositionDataParticle(GliderParticle):
 class EngineeringTelemeteredDataParticle(GliderParticle):
     _data_particle_type = DataParticleType.GLIDER_ENG_TELEMETERED
     science_parameters = EngineeringTelemeteredParticleKey.science_parameter_list()
-    
+
     keys_exclude_sci_times = EngineeringTelemeteredParticleKey.list()
     keys_exclude_sci_times.remove(GliderParticleKey.SCI_M_PRESENT_TIME)
     keys_exclude_sci_times.remove(GliderParticleKey.SCI_M_PRESENT_SECS_INTO_MISSION)
@@ -779,7 +782,7 @@ class EngineeringMetadataRecoveredDataParticle(EngineeringMetadataCommonDataPart
 class EngineeringScienceTelemeteredDataParticle(GliderParticle):
     _data_particle_type = DataParticleType.GLIDER_ENG_SCI_TELEMETERED
     science_parameters = EngineeringScienceTelemeteredParticleKey.science_parameter_list()
-    
+
     keys_exclude_times = EngineeringScienceTelemeteredParticleKey.list()
     keys_exclude_times.remove(GliderParticleKey.M_PRESENT_TIME)
     keys_exclude_times.remove(GliderParticleKey.M_PRESENT_SECS_INTO_MISSION)
@@ -799,7 +802,7 @@ class EngineeringScienceTelemeteredDataParticle(GliderParticle):
 class EngineeringRecoveredDataParticle(GliderParticle):
     _data_particle_type = DataParticleType.GLIDER_ENG_RECOVERED
     science_parameters = EngineeringRecoveredParticleKey.science_parameter_list()
-    
+
     keys_exclude_sci_times = EngineeringRecoveredParticleKey.list()
     keys_exclude_sci_times.remove(GliderParticleKey.SCI_M_PRESENT_TIME)
     keys_exclude_sci_times.remove(GliderParticleKey.SCI_M_PRESENT_SECS_INTO_MISSION)
@@ -819,7 +822,7 @@ class EngineeringRecoveredDataParticle(GliderParticle):
 class EngineeringScienceRecoveredDataParticle(GliderParticle):
     _data_particle_type = DataParticleType.GLIDER_ENG_SCI_RECOVERED
     science_parameters = EngineeringScienceRecoveredParticleKey.science_parameter_list()
-    
+
     keys_exclude_times = EngineeringScienceRecoveredParticleKey.list()
     keys_exclude_times.remove(GliderParticleKey.M_PRESENT_TIME)
     keys_exclude_times.remove(GliderParticleKey.M_PRESENT_SECS_INTO_MISSION)
@@ -988,8 +991,8 @@ class GliderParser(SimpleParser):
                                          "and number of bytes row: %d are not equal."
                                          % (self.num_columns, data_unit_list_length, num_of_bytes_list_length))
 
-        # if the number of columns from the header does not match that in the data, but the rest of the file
-        # has the same number of columns in each line this is not a fatal error, just parse the columns that are present
+        # if the number of columns from the header does not match that in the data, but the rest of the file has
+        # the same number of columns in each line this is not a fatal error, just parse the columns that are present
         if self._header_dict['sensors_per_cycle'] != self.num_columns:
             msg = 'sensors_per_cycle from header %d does not match the number of data label columns %d' % \
                   (self._header_dict['sensors_per_cycle'], self.num_columns)
@@ -1037,7 +1040,8 @@ class GliderParser(SimpleParser):
                 # create the timestamp
                 timestamp = ntplib.system_to_ntp_time(float(data_dict[GliderParticleKey.M_PRESENT_TIME]))
                 # create the particle
-                self._record_buffer.append(self._extract_sample(self._particle_class, None, data_dict, internal_timestamp=timestamp))
+                self._record_buffer.append(self._extract_sample(
+                    self._particle_class, None, data_dict, internal_timestamp=timestamp))
 
     @staticmethod
     def _has_science_data(data_dict, particle_class):
@@ -1053,14 +1057,14 @@ class GliderParser(SimpleParser):
                 if value is not None and not(isnan(float(value))):
                     return_value = True
                     break
-                if particle_class._data_particle_type=='glider_eng_telemetered':
+                if particle_class._data_particle_type == 'glider_eng_telemetered':
                     log.info("GliderParser._has_science_data failed: key=[%s] value=[%s]", key, value)
         else:
             for key, value in data_dict.iteritems():
                 if not (isnan(float(value))) and key in particle_class.science_parameters:
                     return_value = True
                     break
-                if particle_class._data_particle_type=='glider_eng_telemetered':
+                if particle_class._data_particle_type == 'glider_eng_telemetered':
                     log.info("GliderParser._has_science_data failed: key=[%s] value=[%s]", key, value)
 
         return return_value
@@ -1108,10 +1112,12 @@ class GliderEngineeringParser(GliderParser):
         """
         Create particles out of the data in the file
         """
+
+        # Create the gps position interpolator
+        gps_interpolator = GpsInterpolator()
+
         # the header was already read in the init, start at the samples
-
         for data_record in self._stream_handle:
-
             # create the dictionary of key/value pairs composed of the labels and the values from the
             # record being parsed
             data_dict = self._read_data(data_record)
@@ -1125,19 +1131,26 @@ class GliderEngineeringParser(GliderParser):
             # check for the presence of engineering data in the raw data row before continuing
             # This is the glider_eng* particle
             if GliderParser._has_science_data(data_dict, self._particle_class):
-                self._record_buffer.append(self._extract_sample(self._particle_class, None, data_dict, internal_timestamp=timestamp))
+                self._record_buffer.append(self._extract_sample(
+                    self._particle_class, None, data_dict, internal_timestamp=timestamp))
 
             # check for the presence of GPS data in the raw data row before continuing
             # This is the glider_gps_position particle
             if GliderParser._has_science_data(data_dict, self._gps_class):
-                self._record_buffer.append(self._extract_sample(self._gps_class, None, data_dict, internal_timestamp=timestamp))
+                gps_interpolator.append_to_buffer(
+                    self._extract_sample(self._gps_class, None, data_dict, internal_timestamp=timestamp))
             else:
                 log.info("GPS data no-find: ")
 
             # check for the presence of science particle data in the raw data row before continuing
             # This is the glider_eng_sci* particle
             if GliderParser._has_science_data(data_dict, self._science_class):
-                self._record_buffer.append(self._extract_sample(self._science_class, None, data_dict, internal_timestamp=timestamp))
+                self._record_buffer.append(self._extract_sample(
+                    self._science_class, None, data_dict, internal_timestamp=timestamp))
+
+        # If there are GPS entries, interpolate them if they contain gps lat/lon values
+        if gps_interpolator.get_size() > 0:
+            self._record_buffer.extend(gps_interpolator.process_and_get_objects())
 
     def handle_metadata_particle(self, timestamp):
         """
@@ -1152,3 +1165,112 @@ class GliderEngineeringParser(GliderParser):
 
         self._metadata_sent = True
         return self._extract_sample(self._metadata_class, None, header_data_dict, internal_timestamp=timestamp)
+
+
+class GpsInterpolator(object):
+    def __init__(self):
+        # the buffer containing the glider_gps_position entries
+        self._glider_gps_position_buffer = []
+
+        # the starting and ending entry positions containing gps lat/lon values
+        self._start_gps = self._end_gps = None
+
+        # list of gps lat,lon and time used for interpolation (those that are available)
+        self.gps_lat = []
+        self.gps_lon = []
+        self.gps_time = []
+
+        # List of times needing interpolated lat,lon
+        self.particle_ts = []
+
+    def _get_time(self, glider_contents):
+        return glider_contents.get(glider_contents.get('preferred_timestamp'))
+
+    def _get_value(self, glider_values, key):
+        return_value = None
+        for glider_value_entry in glider_values:
+            glider_value_id = glider_value_entry['value_id']
+            if glider_value_id == key:
+                return_value = glider_value_entry['value']
+                break
+
+        return return_value
+
+    def _has_gps_positioning(self, glider_gps_position):
+        return self._get_value(glider_gps_position._values, 'm_gps_lat') and \
+            self._get_value(glider_gps_position._values, 'm_gps_lon')
+
+    # two entries are required for the start and end gps positions to be populated
+    def _lacks_interpolate_entry_positions(self):
+        return self._start_gps is None or self._end_gps is None
+
+    def _put_value(self, glider_values, value, key):
+        for glider_value_entry in glider_values:
+            glider_value_id = glider_value_entry['value_id']
+            if glider_value_id == key:
+                glider_value_entry['value'] = value
+                break
+
+    def _set_start_and_end_gps_position_entries(self):
+        # Iterate the buffer to pinpoint entries with the first/last GPS points
+        for idx, glider_gps_position in enumerate(self._glider_gps_position_buffer):
+            if self._has_gps_positioning(glider_gps_position):
+                # only populate the end position if the start has previously populated
+                # as the interpolation only makes sense and works if they are different
+                if self._start_gps is None:
+                    self._start_gps = idx
+                else:
+                    self._end_gps = idx
+
+    def append_to_buffer(self, glider_gps_position):
+        self._glider_gps_position_buffer.append(glider_gps_position)
+
+    def get_size(self):
+        return len(self._glider_gps_position_buffer)
+
+    # Interpolate the buffered objects, then return them
+    def process_and_get_objects(self):
+        self._set_start_and_end_gps_position_entries()
+        # if the set of entries lacks gps lat/lon data, return it as-is
+        if self._lacks_interpolate_entry_positions():
+            return self._glider_gps_position_buffer
+
+        # Iterate the buffer to extract the values for interpolation
+        for idx, glider_gps_position in enumerate(self._glider_gps_position_buffer):
+            # Capture all glider times for potential extrapolation
+            glider_time = self._get_time(glider_gps_position.contents)
+            self.particle_ts.append(glider_time)
+            # Only look within range of start,end gps positions for matching time and point
+            if self._start_gps <= idx <= self._end_gps:
+                # If the lat,lon can be used for interpolation, capture them
+                if self._has_gps_positioning(glider_gps_position):
+                    self.gps_lat.append(self._get_value(glider_gps_position._values, GpsPositionParticleKey.M_GPS_LAT))
+                    self.gps_lon.append(self._get_value(glider_gps_position._values, GpsPositionParticleKey.M_GPS_LON))
+                    self.gps_time.append(glider_time)
+
+        # Set up the interpolation function for gps_lat to extrapolate beyond start,end gps positions
+        interp_function = interpolate.interp1d(self.gps_time, self.gps_lat, kind='linear', axis=0, copy=False,
+                                               fill_value='extrapolate')
+        # Use the particle time array to get the interpolated gps lat array
+        interpolated_gps_lat = interp_function(self.particle_ts)
+
+        # Set up the interpolation function for gps_lon to extrapolate beyond start,end gps positions
+        interp_function = interpolate.interp1d(self.gps_time, self.gps_lon, kind='linear', axis=0, copy=False,
+                                               fill_value='extrapolate')
+        # Use the particle time array to get the interpolated gps lon array
+        interpolated_gps_lon = interp_function(self.particle_ts)
+
+        # Populate the interpolated gps_lat,gps_lon onto the buffer objects
+#         for i in range(self._start_gps, self._end_gps + 1):
+#             self._put_value(self._glider_gps_position_buffer[i]._values, interpolated_gps_lat[i - self._start_gps],
+#                            GpsPositionParticleKey.INTERP_LAT)
+#             self._put_value(self._glider_gps_position_buffer[i]._values, interpolated_gps_lon[i - self._start_gps],
+#                            GpsPositionParticleKey.INTERP_LON)
+        for i in range(len(self._glider_gps_position_buffer)):
+            self._put_value(self._glider_gps_position_buffer[i]._values, interpolated_gps_lat[i],
+                           GpsPositionParticleKey.INTERP_LAT)
+            self._put_value(self._glider_gps_position_buffer[i]._values, interpolated_gps_lon[i],
+                           GpsPositionParticleKey.INTERP_LON)
+
+        # Return the buffer objects
+        return self._glider_gps_position_buffer

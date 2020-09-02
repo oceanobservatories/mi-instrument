@@ -13,7 +13,7 @@ from mi.dataset.driver.moas.gl.parad.parad_m_glider_driver import ParadMDriver
 from mi.core.versioning import version
 
 
-@version("15.6.1")
+@version("15.7.0")
 def parse(unused, source_file_path, particle_data_handler):
     parser_config = {
         DataSetDriverConfigKeys.PARTICLE_MODULE: 'mi.dataset.parser.glider',
