@@ -7,16 +7,20 @@
 import os
 
 from mi.core.versioning import version
-from mi.dataset.dataset_driver import SimpleDatasetDriver
+from mi.dataset.dataset_driver import SimpleDatasetDriver, ParticleDataHandler
 from mi.dataset.dataset_parser import DataSetDriverConfigKeys
 from mi.dataset.parser.dofst_k_wfp import DofstKWfpParser
-from mi.dataset.parser.dofst_k_wfp_particles import DofstKWfpRecoveredDataParticle, \
-    DofstKWfpRecoveredMetadataParticle
+from mi.dataset.parser.wfp_c_file_common import WfpCFileCommonConfigKeys
+from mi.dataset.parser.dofst_k_wfp_particles import \
+    DofstKWfpRecoveredDataParticle, \
+    DofstKWfpRecoveredMetadataParticle, \
+    DofstKWfpDataParticleKey
+from mi.dataset.driver.flort_kn.stc_imodem.flort_kn__stc_imodem_driver import FlortKnStcImodemDriver
 
 __author__ = 'jroy'
 
 
-@version("0.0.2")
+@version("0.0.3")
 def parse(unused, source_file_path, particle_data_handler):
     """
     This is the method called by Uframe
@@ -26,10 +30,22 @@ def parse(unused, source_file_path, particle_data_handler):
     :return particle_data_handler
     """
 
-    with open(source_file_path, 'rb') as stream_handle:
+    # Get the flort file name from the ctd file name
+    head, tail = os.path.split(source_file_path)
+    tail = tail.replace('C', 'E')
+    flort_source_file_path = os.path.join(head, tail)
 
-        # create and instance of the concrete driver class defined below
-        driver = DofstKWfpRecoveredDriver(unused, stream_handle, particle_data_handler)
+    # Parse the flort file to get a list of (time, pressure) tuples.
+    flort_particle_data_handler = ParticleDataHandler()
+    with open(flort_source_file_path, 'rb') as flort_stream_handle:
+        driver = FlortKnStcImodemDriver(unused, flort_stream_handle, flort_particle_data_handler)
+        e_file_time_pressure_tuples = driver.get_time_pressure_tuples()
+
+    # Parse the ctd file and use the e_file_time_pressure_tuples to generate
+    # the internal timestamps of the particles
+    with open(source_file_path, 'rb') as stream_handle:
+        driver = DofstKWfpRecoveredDriver(
+            unused, stream_handle, particle_data_handler, e_file_time_pressure_tuples)
         driver.processFileStream()
 
     return particle_data_handler
@@ -41,11 +57,17 @@ class DofstKWfpRecoveredDriver(SimpleDatasetDriver):
     All this needs to do is create a concrete _build_parser method
     """
 
+    def __init__(self, unused, stream_handle, particle_data_handler, e_file_time_pressure_tuples):
+        self._e_file_time_pressure_tuples = e_file_time_pressure_tuples
+
+        super(DofstKWfpRecoveredDriver, self).__init__(unused, stream_handle, particle_data_handler)
+
     def _build_parser(self, stream_handle):
 
         filesize = os.path.getsize(stream_handle.name)
 
         config = {
+            WfpCFileCommonConfigKeys.PRESSURE_FIELD_C_FILE: DofstKWfpDataParticleKey.PRESSURE,
             DataSetDriverConfigKeys.PARTICLE_MODULE: 'mi.dataset.parser.dofs_k_wfp_particles',
             DataSetDriverConfigKeys.PARTICLE_CLASS: None,
             DataSetDriverConfigKeys.PARTICLE_CLASSES_DICT: {
@@ -59,6 +81,7 @@ class DofstKWfpRecoveredDriver(SimpleDatasetDriver):
                                  lambda state, ingested: None,
                                  lambda data: None,
                                  self._exception_callback,
-                                 filesize)
+                                 filesize,
+                                 self._e_file_time_pressure_tuples)
 
         return parser

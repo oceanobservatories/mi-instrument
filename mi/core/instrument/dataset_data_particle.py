@@ -208,7 +208,7 @@ class DataParticle(object):
                                     (id, value))
 
     def get_value(self, id):
-        """ Return a stored value
+        """ Return a stored value from contents
 
         @param id The ID (from DataParticleKey) for the parameter to return
         @raises NotImplementedException If there is an invalid id
@@ -217,6 +217,19 @@ class DataParticle(object):
             return self.contents[id]
         else:
             raise NotImplementedException("Value %s not available in particle!", id)
+
+    def get_value_from_values(self, value_id):
+        """ Return a stored value from values list
+
+        @param value_id The ID of the parameter to return
+        """
+        if not self._values:
+            return None
+        values = [i for i in self._values if i[DataParticleKey.VALUE_ID] == value_id]
+        if not values:
+            return None
+        return values[0][DataParticleKey.VALUE]
+
 
     def data_particle_type(self):
         """
