@@ -34,7 +34,7 @@ class DofstKWfpParser(WfpCFileCommonParser):
                  publish_callback,
                  exception_callback,
                  filesize,
-                 *args, **kwargs):
+                 e_file_time_pressure_tuples=None):
 
         particle_classes_dict = config.get(DataSetDriverConfigKeys.PARTICLE_CLASSES_DICT)
         self._instrument_data_particle_class = particle_classes_dict.get('instrument_data_particle_class')
@@ -47,7 +47,7 @@ class DofstKWfpParser(WfpCFileCommonParser):
                                               publish_callback,
                                               exception_callback,
                                               filesize,
-                                              *args, **kwargs)
+                                              e_file_time_pressure_tuples)
 
     def extract_metadata_particle(self, raw_data, timestamp):
         """

@@ -1,5 +1,7 @@
 # Version 0.9.6
 
+# Issue #14261 - Fixed incorrect WFP CTD timestamps and pressures
+
 # Issue #14654 - Add interpolation of m_gps_lat,lon into interp_lat,lon
 
 # Version 0.9.5
