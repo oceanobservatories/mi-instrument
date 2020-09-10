@@ -18,7 +18,6 @@ from mi.dataset.parser.ctdpf_ckl_wfp_particles import \
     CtdpfCklWfpTelemeteredDataParticle, \
     CtdpfCklWfpTelemeteredMetadataParticle, \
     CtdpfCklWfpDataParticleKey
-from mi.dataset.driver.flort_kn.stc_imodem.flort_kn__stc_imodem_driver import FlortKnStcImodemDriver
 
 
 class CtdpfCklWfpTelemeteredDriver(SimpleDatasetDriver):
@@ -63,16 +62,8 @@ def parse(unused, source_file_path, particle_data_handler):
     :return particle_data_handler
     """
 
-    # Get the flort file name from the ctd file name
-    head, tail = os.path.split(source_file_path)
-    tail = tail.replace('C', 'E')
-    flort_source_file_path = os.path.join(head, tail)
-
-    # Parse the flort file to get a list of (time, pressure) tuples.
-    flort_particle_data_handler = ParticleDataHandler()
-    with open(flort_source_file_path, 'rb') as flort_stream_handle:
-        driver = FlortKnStcImodemDriver(unused, flort_stream_handle, flort_particle_data_handler)
-        e_file_time_pressure_tuples = driver.get_time_pressure_tuples()
+    # Let this be None until we modify the global E file driver to get these tuples
+    e_file_time_pressure_tuples = None
 
     # Parse the ctd file and use the e_file_time_pressure_tuples to generate
     # the internal timestamps of the particles

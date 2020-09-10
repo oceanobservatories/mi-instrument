@@ -18,13 +18,14 @@ from mi.dataset.parser.ctdpf_ckl_wfp_particles import \
     CtdpfCklWfpTelemeteredDataParticle, \
     CtdpfCklWfpTelemeteredMetadataParticle, \
     CtdpfCklWfpDataParticleKey
+from mi.dataset.driver.flort_kn.stc_imodem.flort_kn__stc_imodem_driver import FlortKnStcImodemDriver
 
 from mi.core.log import get_logger
 
 log = get_logger()
 
 
-class CtdpfCklWfpDriver(SimpleDatasetDriver):
+class CoastalCtdpfCklWfpDriver(SimpleDatasetDriver):
     """
     Derived wc_wm_cspp driver class
     All this needs to do is create a concrete _build_parser method
@@ -32,7 +33,7 @@ class CtdpfCklWfpDriver(SimpleDatasetDriver):
     def __init__(self, unused, stream_handle, particle_data_handler, e_file_time_pressure_tuples):
         self._e_file_time_pressure_tuples = e_file_time_pressure_tuples
 
-        super(CtdpfCklWfpDriver, self).__init__(unused, stream_handle, particle_data_handler)
+        super(CoastalCtdpfCklWfpDriver, self).__init__(unused, stream_handle, particle_data_handler)
 
     def _build_parser(self, stream_handle):
 
@@ -66,13 +67,29 @@ def parse(unused, source_file_path, particle_data_handler):
     :return particle_data_handler
     """
 
-    # Let this be None until we modify the global E file driver to get these tuples
-    e_file_time_pressure_tuples = None
+    # Get the flort file name from the ctd file name
+    head, tail = os.path.split(source_file_path)
+    tail = tail.replace('C', 'E')
+    flort_source_file_path = os.path.join(head, tail)
+
+    # Parse the flort file to get a list of (time, pressure) tuples.
+    try:
+        flort_particle_data_handler = ParticleDataHandler()
+        with open(flort_source_file_path, 'rb') as flort_stream_handle:
+            driver = FlortKnStcImodemDriver(unused, flort_stream_handle, flort_particle_data_handler)
+            e_file_time_pressure_tuples = driver.get_time_pressure_tuples()
+    except Exception as e:
+        log.error(e)
+        return particle_data_handler
+
+    if not e_file_time_pressure_tuples:
+        log.error('Time-Pressure tuples not extracted from %s', flort_source_file_path)
+        return particle_data_handler
 
     # Parse the ctd file and use the e_file_time_pressure_tuples to generate
     # the internal timestamps of the particles
     with open(source_file_path, 'rb') as stream_handle:
-        driver = CtdpfCklWfpDriver(
+        driver = CoastalCtdpfCklWfpDriver(
             unused, stream_handle, particle_data_handler, e_file_time_pressure_tuples)
         driver.processFileStream()
 
