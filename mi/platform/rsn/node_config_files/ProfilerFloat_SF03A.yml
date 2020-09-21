@@ -1,7 +1,7 @@
 node_meta_data:
   description: Profiler Float
   location: N/A
-  node_id_name: SN0145-SF03A
+  node_id_name: SN0142-SF03A
   node_type: ProfilerFloat
   oms_sample_rate: 5
   reference_designator: RS03AXPS-SF03A

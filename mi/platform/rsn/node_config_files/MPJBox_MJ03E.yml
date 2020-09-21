@@ -1,11 +1,11 @@
 node_meta_data:
   description: MPJbox Eastern Caldera
   location: ECAL
-  node_id_name: SN0030-MJ03E
+  node_id_name: SN0031-MJ03E
   node_type: MPJBox
   oms_sample_rate: 5
   reference_designator: RS03ECAL-MJ03E
-  serial_number: SN0030
+  serial_number: SN0031
   read_only_mode: True
 
 node_streams:
