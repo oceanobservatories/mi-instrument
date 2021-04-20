@@ -8,12 +8,13 @@
 import os
 
 from mi.core.versioning import version
-from mi.dataset.dataset_driver import SimpleDatasetDriver, ParticleDataHandler
+from mi.dataset.driver.wfp_common.wfp_c_file_driver import WfpCFileDriver
+from mi.dataset.dataset_driver import ParticleDataHandler
 from mi.dataset.dataset_parser import DataSetDriverConfigKeys
 from mi.dataset.parser.ctdpf_ckl_wfp import CtdpfCklWfpParser, \
     METADATA_PARTICLE_CLASS_KEY, \
     DATA_PARTICLE_CLASS_KEY
-from mi.dataset.parser.wfp_c_file_common import WfpCFileCommonConfigKeys
+from mi.dataset.parser.ctdpf_ckl_wfp_particles import DataParticleType as CtdpfCklWfpDataParticleType
 from mi.dataset.parser.ctdpf_ckl_wfp_particles import \
     CtdpfCklWfpRecoveredDataParticle, \
     CtdpfCklWfpRecoveredMetadataParticle, \
@@ -25,20 +26,14 @@ from mi.core.log import get_logger
 log = get_logger()
 
 
-class CoastalCtdpfCklWfpRecoveredDriver(SimpleDatasetDriver):
+class CoastalCtdpfCklWfpRecoveredDriver(WfpCFileDriver):
     """
     Derived wc_wm_cspp driver class
     All this needs to do is create a concrete _build_parser method
     """
-    def __init__(self, unused, stream_handle, particle_data_handler, e_file_time_pressure_tuples):
-        self._e_file_time_pressure_tuples = e_file_time_pressure_tuples
-
-        super(CoastalCtdpfCklWfpRecoveredDriver, self).__init__(unused, stream_handle, particle_data_handler)
-
     def _build_parser(self, stream_handle):
 
         parser_config = {
-            WfpCFileCommonConfigKeys.PRESSURE_FIELD_C_FILE: CtdpfCklWfpDataParticleKey.PRESSURE,
             DataSetDriverConfigKeys.PARTICLE_CLASS: None,
             DataSetDriverConfigKeys.PARTICLE_CLASSES_DICT: {
                 METADATA_PARTICLE_CLASS_KEY: CtdpfCklWfpRecoveredMetadataParticle,
@@ -51,13 +46,18 @@ class CoastalCtdpfCklWfpRecoveredDriver(SimpleDatasetDriver):
         parser = CtdpfCklWfpParser(parser_config,
                                    stream_handle,
                                    self._exception_callback,
-                                   file_size,
-                                   self._e_file_time_pressure_tuples)
+                                   file_size)
 
         return parser
 
+    def pressure_containing_data_particle_stream(self):
+        return CtdpfCklWfpDataParticleType.RECOVERED_DATA
 
-@version("0.0.1")
+    def pressure_containing_data_particle_field(self):
+        return CtdpfCklWfpDataParticleKey.PRESSURE
+
+
+@version("0.0.2")
 def parse(unused, source_file_path, particle_data_handler):
     """
     This is the method called by Uframe
@@ -69,14 +69,18 @@ def parse(unused, source_file_path, particle_data_handler):
 
     # Get the flort file name from the ctd file name
     head, tail = os.path.split(source_file_path)
-    tail = tail.replace('C', 'E')
-    flort_source_file_path = os.path.join(head, tail)
+    e_tail = tail.replace('C', 'E')
 
-    # Parse the flort file to get a list of (time, pressure) tuples.
+    if e_tail == tail:
+        log.error('Could not generate e file name')
+        return particle_data_handler
+
+    flort_source_file_path = os.path.join(head, e_tail)
+
+    #  Get a list of (time, pressure) tuples from the "E" file using the flort driver
     try:
-        flort_particle_data_handler = ParticleDataHandler()
         with open(flort_source_file_path, 'rb') as flort_stream_handle:
-            driver = FlortKnStcImodemDriver(unused, flort_stream_handle, flort_particle_data_handler)
+            driver = FlortKnStcImodemDriver(unused, flort_stream_handle, ParticleDataHandler())
             e_file_time_pressure_tuples = driver.get_time_pressure_tuples()
     except Exception as e:
         log.error(e)

@@ -40,8 +40,9 @@ class DataParticleType(BaseEnum):
 
 class FlordLWfpSioDataParticleKey(BaseEnum):
     # params collected for the flord_l_wfp_instrument stream
+    PRESSURE = 'pressure'                       # corresponds to 'pressure' from E file
     RAW_SIGNAL_CHL = 'raw_signal_chl'
-    RAW_SIGNAL_BETA = 'raw_signal_beta'  # corresponds to 'ntu' from E file
+    RAW_SIGNAL_BETA = 'raw_signal_beta'         # corresponds to 'ntu' from E file
     RAW_INTERNAL_TEMP = 'raw_internal_temp'
     WFP_TIMESTAMP = 'wfp_timestamp'
 
@@ -59,7 +60,9 @@ class FlordLWfpSioDataParticle(DataParticle):
         """
 
         fields_prof = struct.unpack('>I f f f f f h h h', self.raw_data)
-        result = [self._encode_value(FlordLWfpSioDataParticleKey.RAW_SIGNAL_CHL,
+        result = [self._encode_value(FlordLWfpSioDataParticleKey.PRESSURE,
+                                     fields_prof[3], float),
+                  self._encode_value(FlordLWfpSioDataParticleKey.RAW_SIGNAL_CHL,
                                      fields_prof[6], int),
                   self._encode_value(FlordLWfpSioDataParticleKey.RAW_SIGNAL_BETA,
                                      fields_prof[7], int),
