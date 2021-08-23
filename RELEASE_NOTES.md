@@ -1,3 +1,7 @@
+# Version 0.9.8
+
+* Issue #11919 - Handle parsing error for adcp_pd0 parser
+
 # Version 0.9.7
 
 * Issue #14261 - Separate coastal and global wfp ctd drivers
