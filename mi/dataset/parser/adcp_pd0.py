@@ -686,7 +686,7 @@ class AdcpPd0Parser(SimpleParser):
                             if self._changed(bt_config):
                                 self._record_buffer.append(bt_config)
 
-                    except (BadOffsetException, UnhandledBlockException, BadHeaderException):
+                    except (BadOffsetException, UnhandledBlockException, BadHeaderException, struct.error):
                         self._stream_handle.seek(position + 2)
 
                     except PD0ParsingException:

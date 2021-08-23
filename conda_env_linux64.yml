@@ -20,6 +20,7 @@ dependencies:
 - amqp
 - librabbitmq
 - ooi_port_agent
+- ion-functions
 - mock
 - requests
 - xarray
