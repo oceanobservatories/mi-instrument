@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/oceanobservatories/mi-instrument.svg?branch=master)](https://travis-ci.org/oceanobservatories/mi-instrument)
+[![Build Status](https://github.com/oceanobservatories/mi-instrument/workflows/build/badge.svg)](https://github.com/oceanobservatories/mi-instrument/actions)
 [![codecov](https://codecov.io/gh/oceanobservatories/mi-instrument/branch/master/graph/badge.svg)](https://codecov.io/gh/oceanobservatories/mi-instrument)
 
 ```
