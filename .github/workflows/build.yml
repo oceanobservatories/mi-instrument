@@ -31,7 +31,7 @@ jobs:
       - run: 'export PATH=/home/travis/miniconda2/bin:$PATH'
       - run: conda update --yes conda
       - run: conda env create -f conda_env_linux64.yml
-      - run: source activate mi
+      - run: conda activate mi
       - run: >-
           psql -c 'create role awips superuser createdb createrole inherit
           login;' -U postgres
