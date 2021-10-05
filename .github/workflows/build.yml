@@ -9,16 +9,16 @@ name: build
 jobs:
   Build:
     runs-on: '${{ matrix.os }}'
-    strategy:
-      matrix:
-        os:
-          - ubuntu-latest
-        python-version:
-          - '2.7'
-        include: 
-          CONSUL_VERSION: '0.7.4'
-          CONSUL_DIR: '$HOME/consul_$CONSUL_VERSION'
-          CONSUL_ZIPNAME: 'consul_${CONSUL_VERSION}_linux_amd64.zip'
+      env: 
+        CONSUL_VERSION: '0.7.4'
+        CONSUL_DIR: '$HOME/consul_$CONSUL_VERSION'
+        CONSUL_ZIPNAME: 'consul_${CONSUL_VERSION}_linux_amd64.zip'
+      strategy:
+        matrix:
+          os:
+            - ubuntu-latest
+          python-version:
+              - '2.7'
 
     steps:
       - name: 'Set up Python ${{ matrix.python-version }}'
