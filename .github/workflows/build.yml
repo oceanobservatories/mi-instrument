@@ -21,7 +21,7 @@ jobs:
           python-version: '2.7'
       - uses: actions/checkout@v2
       - run: >-
-  if [[ ! -f $HOME/consul_0.7.4/consul ]]; then (mkdir -p $HOME/consul_0.7.4 && cd $HOME/consul_0.7.4 && wget https://releases.hashicorp.com/consul/0.7.4/consul_0.7.4_linux_amd64.zip && unzip consul_0.7.4_linux_amd64.zip); fi
+          if [[ ! -f $HOME/consul_0.7.4/consul ]]; then (mkdir -p $HOME/consul_0.7.4 && cd $HOME/consul_0.7.4 && wget https://releases.hashicorp.com/consul/0.7.4/consul_0.7.4_linux_amd64.zip && unzip consul_0.7.4_linux_amd64.zip); fi
       - run: $HOME/consul_0.7.4/consul --version
       - run: $HOME/consul_0.7.4/consul agent -dev -log-level=warn &
       - run: >-
