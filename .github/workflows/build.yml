@@ -9,10 +9,10 @@ name: build
 jobs:
   Build:
     runs-on: ubuntu-latest
-      env: 
-        CONSUL_VERSION: '0.7.4'
-        CONSUL_DIR: '$HOME/consul_$CONSUL_VERSION'
-        CONSUL_ZIPNAME: 'consul_${CONSUL_VERSION}_linux_amd64.zip'
+    env: 
+      CONSUL_VERSION: '0.7.4'
+      CONSUL_DIR: '$HOME/consul_$CONSUL_VERSION'
+      CONSUL_ZIPNAME: 'consul_${CONSUL_VERSION}_linux_amd64.zip'
 
     steps:
       - name: 'Set up Python 2.7'
