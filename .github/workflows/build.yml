@@ -21,9 +21,9 @@ jobs:
           python-version: '2.7'
       - uses: actions/checkout@v2
       - run: >-
-          if [[ ! -f $CONSUL_DIR/consul ]]; then (mkdir -p $CONSUL_DIR && cd $CONSUL_DIR && wget https://releases.hashicorp.com/consul/${CONSUL_VERSION}/${CONSUL_ZIPNAME} && unzip ${CONSUL_ZIPNAME}); fi
-      - run: $CONSUL_DIR/consul --version
-      - run: $CONSUL_DIR/consul agent -dev -log-level=warn &
+  if [[ ! -f $HOME/consul_0.7.4/consul ]]; then (mkdir -p $HOME/consul_0.7.4 && cd $HOME/consul_0.7.4 && wget https://releases.hashicorp.com/consul/0.7.4/consul_0.7.4_linux_amd64.zip && unzip consul_0.7.4_linux_amd64.zip); fi
+      - run: $HOME/consul_0.7.4/consul --version
+      - run: $HOME/consul_0.7.4/consul agent -dev -log-level=warn &
       - run: >-
           wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
       - run: chmod +x miniconda.sh
