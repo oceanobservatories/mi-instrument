@@ -8,15 +8,13 @@ name: build
       - pdm_migration
 jobs:
   Build:
-    runs-on: '${{ matrix.os }}'
+    runs-on: ubuntu-latest
       env: 
         CONSUL_VERSION: '0.7.4'
         CONSUL_DIR: '$HOME/consul_$CONSUL_VERSION'
         CONSUL_ZIPNAME: 'consul_${CONSUL_VERSION}_linux_amd64.zip'
       strategy:
         matrix:
-          os:
-            - ubuntu-latest
           python-version:
               - '2.7'
 
