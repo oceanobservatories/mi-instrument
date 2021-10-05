@@ -2,10 +2,10 @@ name: build
 'on':
   push:
     branches:
-      - master
+      - pdm_migration
   pull_request:
     branches:
-      - master
+      - pdm_migration
 jobs:
   Build:
     runs-on: '${{ matrix.os }}'
@@ -15,6 +15,11 @@ jobs:
           - ubuntu-latest
         python-version:
           - '2.7'
+        include: 
+          - CONSUL_VERSION=0.7.4
+          - CONSUL_DIR=$HOME/consul_$CONSUL_VERSION
+          - CONSUL_ZIPNAME=consul_${CONSUL_VERSION}_linux_amd64.zip
+
     steps:
       - name: 'Set up Python ${{ matrix.python-version }}'
         uses: actions/setup-python@v2
@@ -22,16 +27,11 @@ jobs:
           python-version: '${{ matrix.python-version }}'
       - uses: actions/checkout@v2
       - run: >-
-          if [[ ! -f $CONSUL_DIR/consul ]]; then (mkdir -p $CONSUL_DIR && cd
-          $CONSUL_DIR && wget
-          https://releases.hashicorp.com/consul/${CONSUL_VERSION}/${CONSUL_ZIPNAME}
-          && unzip ${CONSUL_ZIPNAME}); fi
+          if [[ ! -f $CONSUL_DIR/consul ]]; then (mkdir -p $CONSUL_DIR && cd $CONSUL_DIR && wget https://releases.hashicorp.com/consul/${CONSUL_VERSION}/${CONSUL_ZIPNAME} && unzip ${CONSUL_ZIPNAME}); fi
       - run: $CONSUL_DIR/consul --version
       - run: $CONSUL_DIR/consul agent -dev -log-level=warn &
       - run: >-
-          wget
-          http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O
-          miniconda.sh
+          wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
       - run: chmod +x miniconda.sh
       - run: ./miniconda.sh -b
       - run: 'export PATH=/home/travis/miniconda2/bin:$PATH'
@@ -43,7 +43,6 @@ jobs:
           login;' -U postgres
       - run: psql -c 'create database metadata;' -U postgres
       - run: >-
-          psql -c 'grant all privileges on database metadata to awips;' -U
-          postgres
+          psql -c 'grant all privileges on database metadata to awips;' -U postgres
       - run: nosetests -a UNIT --with-coverage --cover-package=mi
 
