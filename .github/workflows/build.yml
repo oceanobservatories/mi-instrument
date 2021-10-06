@@ -57,12 +57,12 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install --yes postgresql-client
-      - run: POSTGRES_PASSWORD=postgres psql -c 'create role awips superuser createdb createrole inherit login;' -h localhost -U postgres postgres
+      - run: PGPASSWORD=postgres psql -c 'create role awips superuser createdb createrole inherit login;' -h localhost -U postgres postgres
       - run: psql -c 'create database metadata;' -h localhost -U postgres postgres
         env: 
-          POSTGRES_PASSWORD: postgres
+          PGPASSWORD: postgres
       - run: psql -c 'grant all privileges on database metadata to awips;' -h localhost -U postgres postgres
         env: 
-          POSTGRES_PASSWORD: postgres
+          PGPASSWORD: postgres
       - run: nosetests -a UNIT --with-coverage --cover-package=mi
 
