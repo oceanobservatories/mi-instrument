@@ -36,8 +36,7 @@ jobs:
       - run: conda env create -f conda_env_linux64.yml
       - run: conda init bash
       - run: source /usr/share/miniconda/etc/profile.d/conda.sh
-      - run: eval "$(conda shell.bash hook)"
-      - run: conda activate mi
+      - run: bash -i conda activate mi
       - run: >-
           psql -c 'create role awips superuser createdb createrole inherit
           login;' -U postgres
