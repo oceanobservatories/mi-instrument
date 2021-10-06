@@ -51,6 +51,10 @@ jobs:
       - run: conda init 
       - run: source /usr/share/miniconda/etc/profile.d/conda.sh
       - run: conda activate mi
+      - name: Install PostgreSQL client
+        run: |
+          apt-get update
+          apt-get install --yes postgresql-client
       - run: >-
           psql -c 'create role awips superuser createdb createrole inherit
           login;' -U postgres
