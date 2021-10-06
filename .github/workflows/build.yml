@@ -23,21 +23,18 @@ jobs:
         with:
           python-version: '2.7'
       - uses: actions/checkout@v2
+      - uses: conda-incubator/setup-miniconda@v2
+        with:
+          auto-update-conda: true
+          python-version: 2.7
       - run: >-
           if [[ ! -f $HOME/consul_0.7.4/consul ]]; then (mkdir -p $HOME/consul_0.7.4 && cd $HOME/consul_0.7.4 && wget https://releases.hashicorp.com/consul/0.7.4/consul_0.7.4_linux_amd64.zip && unzip consul_0.7.4_linux_amd64.zip); fi
       - run: $HOME/consul_0.7.4/consul --version
       - run: $HOME/consul_0.7.4/consul agent -dev -log-level=warn &
-      - run: >-
-          wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
-      - run: chmod +x miniconda.sh
-      - run: ./miniconda.sh -b
-      - run: 'export PATH=$HOME/miniconda2/bin:$PATH'
       - run: conda update --yes conda
       - run: conda env create -f conda_env_linux64.yml
       - run: conda init 
       - run: source /usr/share/miniconda/etc/profile.d/conda.sh
-      - run: tail -12 $HOME/.bashrc
-      - run: . $HOME/.bashrc
       - run: conda activate mi
       - run: >-
           psql -c 'create role awips superuser createdb createrole inherit
