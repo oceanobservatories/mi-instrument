@@ -12,8 +12,11 @@ jobs:
 
     services:
       postgres:
-        image: postgres
+              image: postgres:latest
         env:
+          POSTGRES_HOST: postgres
+          POSTGRES_PORT: 5432
+          POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
         ports:
           - 5432:5432
@@ -30,8 +33,6 @@ jobs:
       CONSUL_VERSION: '0.7.4'
       CONSUL_DIR: '$HOME/consul_$CONSUL_VERSION'
       CONSUL_ZIPNAME: 'consul_${CONSUL_VERSION}_linux_amd64.zip'
-      POSTGRES_HOST: postgres
-      POSTGRES_PORT: 5432
 
     steps:
       - name: 'Set up Python 2.7'
