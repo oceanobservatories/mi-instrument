@@ -64,5 +64,9 @@ jobs:
       - run: psql -c 'grant all privileges on database metadata to awips;' -h localhost -U postgres postgres
         env: 
           PGPASSWORD: postgres
+      - name: Install dependencies
+        run: |
+          conda install --yes nose
+      - name: Run tests
       - run: nosetests -a UNIT --with-coverage --cover-package=mi
 
