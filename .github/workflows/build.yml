@@ -35,7 +35,7 @@ jobs:
       - run: conda update --yes conda
       - run: conda env create -f conda_env_linux64.yml
       - run: conda init bash
-      - run: source /home/travis/miniconda2/etc/profile.d/conda.sh
+      - run: source $HOME/miniconda2/etc/profile.d/conda.sh
       - run: conda activate mi
       - run: >-
           psql -c 'create role awips superuser createdb createrole inherit
