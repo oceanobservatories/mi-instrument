@@ -35,6 +35,8 @@ jobs:
       - run: conda update --yes conda
       - run: conda env create -f conda_env_linux64.yml
       - run: conda init bash
+      - run: pwd
+      - run: find . -name conda.sh
       - run: source ./etc/profile.d/conda.sh
       - run: conda activate mi
       - run: >-
