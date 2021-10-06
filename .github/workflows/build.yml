@@ -35,9 +35,9 @@ jobs:
       - run: conda init 
       - run: source /usr/share/miniconda/etc/profile.d/conda.sh
       - run: conda activate mi
-      - uses: harmon758/postgresql-action@v1
+      - uses: akanieski/setup-postgres-cli@v1
         with:
-          postgresql version: '11'
+          password: ${{ secrets.PG_PASSWORD }}
       - run: >-
           psql -c 'create role awips superuser createdb createrole inherit
           login;' -U postgres
