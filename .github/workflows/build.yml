@@ -59,9 +59,9 @@ jobs:
           sudo apt-get install --yes postgresql-client
       - run: >-
           psql -c 'create role awips superuser createdb createrole inherit
-          login;' -U postgres 
-      - run: psql -c 'create database metadata;' -U postgres 
+          login;' -U postgres postgres
+      - run: psql -c 'create database metadata;' -U postgres postgres
       - run: >-
-          psql -c 'grant all privileges on database metadata to awips;' -U postgres 
+          psql -c 'grant all privileges on database metadata to awips;' -U postgres postgres
       - run: nosetests -a UNIT --with-coverage --cover-package=mi
 
