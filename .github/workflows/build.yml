@@ -67,9 +67,10 @@ jobs:
         env: 
           PGPASSWORD: postgres
       - name: Install dependencies
+        run: pip install scheduler
         run: conda install --yes nose yaml pyyaml ntplib mock gevent apscheduler coverage requests numpy psycopg2 consul python-consul deprecated bs4 msgpack-python ion-functions scipy obspy -c ooi -c defaults -c conda-forge
       - name: Run tests
         run: nosetests -a UNIT --with-coverage --cover-package=mi
         env: 
-          PGPASSWORD: postgres
+          PGPASSWORD: awips
 
