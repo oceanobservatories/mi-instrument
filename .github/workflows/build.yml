@@ -69,5 +69,5 @@ jobs:
       - name: Install dependencies
         run: conda install --yes nose yaml ntplib mock gevent apscheduler coverage -c ooi -c defaults -c conda-forge
       - name: Run tests
-        run: nosetests -a UNIT --with-coverage --cover-package=mi
+        run: nosetests -a UNIT test/unit
 
