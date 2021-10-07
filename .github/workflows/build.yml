@@ -67,7 +67,7 @@ jobs:
         env: 
           PGPASSWORD: postgres
       - name: Install dependencies
-        run: conda install --yes nose yaml ntplib mock gevent apscheduler.util -c ooi -c defaults -c conda-forge
+        run: conda install --yes nose yaml ntplib mock gevent apscheduler -c ooi -c defaults -c conda-forge
       - name: Run tests
         run: nosetests -a UNIT --with-coverage --cover-package=mi
 
