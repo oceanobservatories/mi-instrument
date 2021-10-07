@@ -67,10 +67,12 @@ jobs:
         env: 
           PGPASSWORD: postgres
       - name: Install dependencies
-        run: conda install --yes nose yaml pyyaml ntplib mock gevent apscheduler=3.0.5 coverage requests numpy psycopg2 consul python-consul deprecated bs4 msgpack-python ion-functions scipy obspy -c ooi -c defaults -c conda-forge
+        run: conda install --yes nose yaml pyyaml ntplib mock gevent coverage requests numpy psycopg2 consul python-consul deprecated bs4 msgpack-python ion-functions scipy obspy -c ooi -c defaults -c conda-forge
+      - run: conda install pip apscheduler=2.1.2
       - name: Run tests
         run: nosetests -a UNIT --with-coverage --cover-package=mi
         env: 
+          PGDATABASE: metadata
           PGUSER: awips
           PGPASSWORD: awips
 
