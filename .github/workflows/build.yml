@@ -71,5 +71,6 @@ jobs:
       - name: Run tests
         run: nosetests -a UNIT --with-coverage --cover-package=mi
         env: 
+          PGUSER: awips
           PGPASSWORD: awips
 
