@@ -72,9 +72,6 @@ jobs:
       - name: Run tests
         run: nosetests -a UNIT --with-coverage --cover-package=mi
         env: 
-          POSTGRES_HOST: postgres
+          POSTGRES_HOST: localhost
           POSTGRES_PORT: 5432
-          POSTGRES_DB: metadata
-          POSTGRES_USER: awips
-          POSTGRES_PASSWORD: awips
 
