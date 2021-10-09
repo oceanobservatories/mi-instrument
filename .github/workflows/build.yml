@@ -57,7 +57,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install --yes postgresql-client
-      - run: psql -c 'create role awips superuser createdb createrole inherit login password ''awips'';' -h localhost -U postgres postgres
+      - run: psql -c "create role awips superuser createdb createrole inherit login password 'awips';" -h localhost -U postgres postgres
         env: 
           PGPASSWORD: postgres
       - run: psql -c 'create database metadata;' -h localhost -U postgres postgres
