@@ -75,6 +75,6 @@ jobs:
           POSTGRES_DB: metadata
           POSTGRES_USER: awips
           POSTGRES_PASSWORD: awips
-          POSTGRES_HOST: postgresql
+          POSTGRES_HOST: localhost
           POSTGRES_PORT: 5432
 
