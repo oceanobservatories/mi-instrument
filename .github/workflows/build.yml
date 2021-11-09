@@ -2,10 +2,10 @@ name: build
 'on':
   push:
     branches:
-      - pdm_migration
+      - master
   pull_request:
     branches:
-      - pdm_migration
+      - master
 jobs:
   Build:
     runs-on: ubuntu-latest
