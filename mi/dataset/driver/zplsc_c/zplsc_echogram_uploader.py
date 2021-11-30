@@ -41,7 +41,7 @@ def parse(unused, echogram_file_path, particle_data_handler):
     This is the method called by uFrame
     :param unused
     :param echogram_file_path This is the full path and filename of the echogram to be uploaded
-    :param particle_data_handler Java Object to consume the output of the parser
+    :param particle_data_handler - Object to hold the output of the parser
     :return particle_data_handler
     """
 
