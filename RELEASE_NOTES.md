@@ -1,3 +1,7 @@
+# Version 0.9.9.1
+
+* Issue #15166 - Create ZPLSC echogram metadata uploader
+
 # Version 0.9.9
 
 * Issue #15032 - Adjust timestamps for vel3d relative to dcl file time
