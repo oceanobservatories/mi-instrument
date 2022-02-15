@@ -136,23 +136,24 @@ class SunaParser(SimpleParser):
 
         # loop over all found frame headers
         for match in self.start_frame_matcher.finditer(data):
+            try:
+                start_idx = match.start()
+                if start_idx > end_idx:
+                    # found unexpected data between frames
+                    msg = 'Non matching start index %d and end index %d. %s.'\
+                            % (start_idx, end_idx, self.unknown_data_exception_msg(data[end_idx:start_idx]))
+                    raise SampleException(msg)
 
-            start_idx = match.start()
-            if start_idx > end_idx:
-                # found unexpected data between frames
-                log.warn('non matching start %d and end %d', start_idx, end_idx)
-                self.unknown_data_exception(data[end_idx:start_idx])
+                frame = data[start_idx:start_idx + self.frame_size]
 
-            frame = data[start_idx:start_idx + self.frame_size]
+                # get the end index of this frame for comparison with the start of the following frame
+                end_idx = start_idx + len(frame)
 
-            # get the end index of this frame for comparison with the start of the following frame
-            end_idx = start_idx + len(frame)
+                # unpack binary fields so the timestamp can be calculated and get the checksum
+                fields = struct.unpack(self.unpack_string, frame)
 
-            # unpack binary fields so the timestamp can be calculated and get the checksum
-            fields = struct.unpack(self.unpack_string, frame)
-
-            # compare checksums, error is reported in compare_checksums method if they don't
-            if self.compare_checksums(frame[:-1], fields[-1]):
+                # compare checksums, error is reported in compare_checksums method if they don't
+                self.compare_checksums(frame[:-1], fields[-1])
 
                 # calculate the timestamp, error is reported in calculate timestamp if it cannot be calculated
                 timestamp = self.calculate_timestamp(fields[3], fields[4])
@@ -171,22 +172,33 @@ class SunaParser(SimpleParser):
                         particle = self._extract_sample(self.dark_particle_class, None, fields, internal_timestamp=timestamp)
                         self._record_buffer.append(particle)
                     else:  # unexpected frame type
-                        msg = 'got invalid frame type %sd' % frame_type
-                        log.warning(msg)
-                        self._exception_callback(RecoverableSampleException(msg))
+                        msg = 'Got invalid frame type %sd' % frame_type
+                        raise SampleException(msg)
+
+            except struct.error as e:
+                msg = "Error in data frame from index %d to index %d, length %d. %s"\
+                      % (start_idx, end_idx, len(frame), e.message)
+                log.warning(msg)
+                self._exception_callback(SampleException(msg))
+            except SampleException as e:
+                msg = "Error in data frame from index %d to index %d, length %d. %s"\
+                      % (start_idx, end_idx, len(frame), e.msg)
+                log.warning(msg)
+                self._exception_callback(SampleException(msg))
 
         if end_idx != len(data):
             # there is unknown data at the end of the file
-            self.unknown_data_exception(data[end_idx:])
+            msg = 'Unknown data at end of file. %s' % self.unknown_data_exception_msg(data[end_idx:])
+            log.warning(msg)
+            self._exception_callback(SampleException(msg))
 
-    def unknown_data_exception(self, unknown_data):
+    def unknown_data_exception_msg(self, unknown_data):
         """
-        Raise an exception for data with an unknown format
+        Create a formatted error message
         :param unknown_data: The unknown data
+        :return Formatted error message
         """
-        msg = 'Found %d bytes unknown format: 0x%s' % (len(unknown_data), binascii.hexlify(unknown_data))
-        log.warning(msg)
-        self._exception_callback(SampleException(msg))
+        return 'Found %d bytes unknown format: 0x%s' % (len(unknown_data), binascii.hexlify(unknown_data))
 
     def calculate_timestamp(self, year_and_day_of_year, sample_time):
         """
@@ -194,6 +206,7 @@ class SunaParser(SimpleParser):
         :param year_and_day_of_year: Integer year and day of year value
         :param sample_time: Sample time in floating point hours
         :return: The timestamp in ntp64
+        :raises: SampleException if timestamp can not be calculated
         """
         # turn year and day of year integer into a string to pull out specific digits
         [year, day_of_year] = get_year_and_day_of_year(year_and_day_of_year)
@@ -202,10 +215,8 @@ class SunaParser(SimpleParser):
             # need at least 5 digits to get year and day of year
             msg = 'Not enough digits for year and day of year: %s, unable to calculate timestamp' % \
                   str(year_and_day_of_year)
-            log.warning(msg)
-            self._exception_callback(SampleException(msg))
-            # return no timestamp so the particle is not calculated
-            return None
+            # Raise SampleException so the particle is not calculated
+            raise SampleException(msg)
 
         # convert sample time in floating point hours to hours, minutes, seconds, and microseconds
         hours = int(sample_time)
@@ -227,16 +238,13 @@ class SunaParser(SimpleParser):
     def compare_checksums(self, data, received_checksum):
         """
         Calculate the checksum for the input data and compare it to the received checksum
-        :returns: True if the calculated checksum matched the received checksum
+        :raises: SampleException if the calculated checksum does not match the received checksum
         """
         # subtract all bytes
         calculated_checksum = -sum(bytearray(data)) & 0xff
 
-        if calculated_checksum == received_checksum:
-            return True
-        else:
+        if not calculated_checksum == received_checksum:
             # checksums do not match
             msg = 'Checksum %d does not match received checksum %d' % (calculated_checksum, received_checksum)
-            log.warning(msg)
-            self._exception_callback(SampleException(msg))
-            return False
+            raise SampleException(msg)
+
