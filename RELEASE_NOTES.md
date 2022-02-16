@@ -1,3 +1,7 @@
+# Version 1.0.1
+
+*  Issue #15175 - Handle data data exceptions in the nutnr/suna parser (#92)
+
 # Version 0.9.9.1
 
 * Issue #15166 - Create ZPLSC echogram metadata uploader
