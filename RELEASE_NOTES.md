@@ -1,3 +1,7 @@
+# Version 1.0.2
+
+*  Issue #13743 - Global WFP offset between recovered and telemetered timestamps (#93)
+
 # Version 1.0.1
 
 *  Issue #15175 - Handle data data exceptions in the nutnr/suna parser (#92)
