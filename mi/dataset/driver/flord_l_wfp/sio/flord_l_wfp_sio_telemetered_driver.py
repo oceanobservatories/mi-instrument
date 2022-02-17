@@ -7,13 +7,15 @@
 __author__ = 'Mark Worden'
 
 from mi.dataset.dataset_parser import DataSetDriverConfigKeys
-from mi.dataset.dataset_driver import SimpleDatasetDriver
+from mi.dataset.driver.wfp_common.wfp_e_file_driver import WfpEFileDriver
 
 from mi.dataset.parser.flord_l_wfp_sio import FlordLWfpSioParser
+from mi.dataset.parser.flord_l_wfp_sio import DataParticleType as FlordLWfpSioDataParticleType
+from mi.dataset.parser.flord_l_wfp_sio import FlordLWfpSioDataParticleKey
 from mi.core.versioning import version
 
 
-@version("15.6.1")
+@version("15.6.2")
 def parse(unused, source_file_path, particle_data_handler):
 
     with open(source_file_path, 'rb') as stream_handle:
@@ -24,8 +26,7 @@ def parse(unused, source_file_path, particle_data_handler):
     return particle_data_handler
 
 
-class FlordLWfpSioTelemeteredDriver(SimpleDatasetDriver):
-
+class FlordLWfpSioTelemeteredDriver(WfpEFileDriver):
 
     def _build_parser(self, stream_handle):
 
@@ -39,3 +40,9 @@ class FlordLWfpSioTelemeteredDriver(SimpleDatasetDriver):
                                     self._exception_callback)
 
         return parser
+
+    def pressure_containing_data_particle_stream(self):
+        return FlordLWfpSioDataParticleType.SAMPLE
+
+    def pressure_containing_data_particle_field(self):
+        return FlordLWfpSioDataParticleKey.PRESSURE

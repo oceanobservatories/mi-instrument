@@ -15,7 +15,6 @@ __license__ = 'Apache 2.0'
 
 import copy
 import re
-import time
 import ntplib
 import struct
 import binascii
@@ -24,13 +23,8 @@ from mi.core.log import get_logger ; log = get_logger()
 from mi.core.common import BaseEnum
 from mi.core.instrument.dataset_data_particle import DataParticle, DataParticleKey
 from mi.core.exceptions import SampleException, DatasetParserException
-from mi.core.log import get_logger
 
-from mi.dataset.dataset_parser import BufferLoadingParser, DataSetDriverConfigKeys
-
-from ion_functions.data.ctd_functions import ctd_sbe52mp_preswat
-
-log = get_logger()
+from mi.dataset.dataset_parser import BufferLoadingParser
 
 EOP_ONLY_MATCHER = re.compile(r'\xFF{11}')
 EOP_REGEX = r'.*(\xFF{11})(.{8})'
@@ -39,12 +33,6 @@ EOP_MATCHER = re.compile(EOP_REGEX, re.DOTALL)
 DATA_RECORD_BYTES = 11
 TIME_RECORD_BYTES = 8
 FOOTER_BYTES = DATA_RECORD_BYTES + TIME_RECORD_BYTES
-
-DATA_PARTICLE_CLASS_KEY = 'instrument_data_particle_class'
-
-class WfpCFileCommonConfigKeys(BaseEnum):
-    PRESSURE_FIELD_C_FILE = "pressure_field_c_file"
-    PRESSURE_FIELD_E_FILE = "pressure_field_e_file"
 
 class StateKey(BaseEnum):
     POSITION = 'position' # holds the file position
@@ -66,7 +54,6 @@ class WfpCFileCommonParser(BufferLoadingParser):
                  publish_callback,
                  exception_callback,
                  filesize,
-                 e_file_time_pressure_tuples=None,
                  *args, **kwargs):
         self._start_time = 0.0
         self._time_increment = 0.0
@@ -76,7 +63,6 @@ class WfpCFileCommonParser(BufferLoadingParser):
         self._read_state = {StateKey.POSITION: 0,
                             StateKey.RECORDS_READ: 0,
                             StateKey.METADATA_SENT: False}
-        self._e_file_time_pressure_tuples = e_file_time_pressure_tuples
         super(WfpCFileCommonParser, self).__init__(config,
                                                    stream_handle,
                                                    state,
@@ -251,142 +237,3 @@ class WfpCFileCommonParser(BufferLoadingParser):
             (timestamp, chunk) = self._chunker.get_next_data()
 
         return result_particles
-
-    def get_records(self, num_records):
-        """
-        Parse the entire file and load the particle buffer. Then adjust the
-        c file sample times if given e file time pressure tuples.
-        @param num_records The number of records to gather
-        @retval Return the list of particles requested, [] if none available
-        """
-        if num_records <= 0:
-            return []
-        if not self.file_complete:
-            try:
-                while len(self._record_buffer) < num_records:
-                    self._load_particle_buffer()
-            except EOFError:
-                self._process_end_of_file()
-
-            self.file_complete = True
-
-            if self._e_file_time_pressure_tuples:
-                self.adjust_c_file_sample_times()
-
-        return self._yank_particles(num_records)
-
-    def adjust_c_file_sample_times(self):
-        """
-        Set the time in the "c" samples (CTD, DOSTA) generated from the "C" data file
-        from the time in the "e" samples (FLORT, PARAD) generated from the "E" data file
-        when the pressures in both samples match
-        @throws Exception if there are not any e_samples or if we could not find
-        matching pressures in the c and e samples
-        """
-        # precision for comparing the pressures in c and e samples
-        precision = 0.02
-
-        e_samples_size = len(self._e_file_time_pressure_tuples)
-        curr_e_sample_index = 0
-        curr_e_sample = self._e_file_time_pressure_tuples[curr_e_sample_index]
-        curr_e_sample_time = curr_e_sample[0]
-        curr_e_sample_pressure = curr_e_sample[1]
-        prev_e_sample_time = None
-
-        # These will get set below as we iterate the c and e samples
-        c_sample_time_interval = None
-        prev_c_sample_time = None
-
-        final_e_sample_matched = False
-
-        # Create a buffer to temporarily hold the ctd samples until we find one
-        # having the same pressure as the current flort sample
-        c_samples_before_curr_e_sample = []
-
-        # Counter for the number of c_samples since the last e_sample pressure match
-        # This will equal len(c_samples_before_curr_e_sample) after the second pressure match
-        # when c_sample_time_interval will have been determined and the buffer can be cleared.
-        num_c_samples_between_e_samples = 0
-
-        for particle_status_tuple in self._record_buffer:
-
-            # Only adjust the times in the data particles, not metadata particles
-            if not isinstance(particle_status_tuple[0],
-                              self._config[DataSetDriverConfigKeys.PARTICLE_CLASSES_DICT][DATA_PARTICLE_CLASS_KEY]):
-                continue
-
-            # Place the c_sample in the temp buffer. We will Adjust the times of the samples in buffer later when
-            # we find a pressure match between the c_sample and the e_sample
-            c_sample = particle_status_tuple[0]
-            c_samples_before_curr_e_sample.append(c_sample)
-            num_c_samples_between_e_samples += 1
-
-            # Get the pressure from the list of values (name-value pairs) in the sample
-            c_sample_pressure = c_sample.get_value_from_values(
-                self._config[WfpCFileCommonConfigKeys.PRESSURE_FIELD_C_FILE])
-
-            # e_sample pressures are in dbar so convert the c_sample pressure from counts to dbar
-            c_sample_pressure_dbar = ctd_sbe52mp_preswat(c_sample_pressure)
-
-            # If we have not already matched the final e_sample and the pressures are the same in
-            # the curr_e_sample and curr_c_sample, calculate and back fill the timestamps of the
-            # c_samples in the temp buffer
-            if not final_e_sample_matched and abs(curr_e_sample_pressure - c_sample_pressure_dbar) < precision:
-                log.debug("Pressures of flort(%s) and ctd(%s) match at %s" %
-                          (str(curr_e_sample_pressure), str(c_sample_pressure_dbar), str(curr_e_sample_time)))
-
-                # If we have 2 e_sample times, we can calculate the time interval between c_samples
-                # over that time range
-                if prev_e_sample_time:
-                    # Calculate the time interval between c_samples in the temporary c_sample buffer
-                    c_sample_time_interval = (curr_e_sample_time - prev_e_sample_time) / num_c_samples_between_e_samples
-
-                    # Initialize the prev_c_sample_time if it has not yet been found up to this point.
-                    # This will be the first corrected c_sample time.
-                    if not prev_c_sample_time:
-                        prev_c_sample_time = curr_e_sample_time - (
-                                c_sample_time_interval * len(c_samples_before_curr_e_sample))
-
-                    # Back fill the times of the c_samples in the temp buffer and then clear the buffer
-                    temp_counter = 0
-                    for c_data_particle in c_samples_before_curr_e_sample:
-                        temp_counter += 1
-                        prev_c_sample_time += c_sample_time_interval
-                        # Explicitly set the time of the last c_sample in the buffer to prevent rounding errors
-                        # from the increment above from carrying forward beyond this e_sample time
-                        if temp_counter == len(c_samples_before_curr_e_sample):
-                            prev_c_sample_time = curr_e_sample_time
-                        c_data_particle.set_value(DataParticleKey.INTERNAL_TIMESTAMP, prev_c_sample_time)
-                    # Clear the temp c_sample buffer
-                    c_samples_before_curr_e_sample[:] = []
-
-                num_c_samples_between_e_samples = 0
-
-                # Get the next e_sample if there are more
-                if curr_e_sample_index < e_samples_size - 1:
-                    prev_e_sample_time = curr_e_sample_time
-                    curr_e_sample_index += 1
-                    curr_e_sample = self._e_file_time_pressure_tuples[curr_e_sample_index]
-                    curr_e_sample_time = curr_e_sample[0]
-                    curr_e_sample_pressure = curr_e_sample[1]
-                else:
-                    final_e_sample_matched = True
-
-        # If we did not find a pressure match between a c and e sample, the last c_sample time
-        # will not have been set, indicating that the c_sample times have not been adjusted.
-        if not prev_c_sample_time:
-            error_message = "Could not find a match between the e_sample and c_sample to adjust c_sample time"
-            log.error(error_message)
-            raise Exception(error_message)
-
-        # Roll the last c_sample time by the c_sample_time_interval and set the time on the remaining c_samples
-        for c_data_particle in c_samples_before_curr_e_sample:
-            prev_c_sample_time += c_sample_time_interval
-            c_data_particle.set_value(DataParticleKey.INTERNAL_TIMESTAMP, prev_c_sample_time)
-
-
-def get_value_from_sample(value_id, sample):
-    values = [i for i in sample.get("values") if i["value_id"] == value_id]
-    if not len(values):
-        raise Exception("Sample did not contain value for %s" % value_id)
-    return values[0]["value"]

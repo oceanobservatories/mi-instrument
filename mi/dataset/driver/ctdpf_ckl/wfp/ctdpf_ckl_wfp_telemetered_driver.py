@@ -5,52 +5,9 @@
 # Copyright 2014 Raytheon Co.
 ##
 
-import os
-
 from mi.core.versioning import version
-from mi.dataset.dataset_driver import SimpleDatasetDriver, ParticleDataHandler
-from mi.dataset.dataset_parser import DataSetDriverConfigKeys
-from mi.dataset.parser.ctdpf_ckl_wfp import CtdpfCklWfpParser, \
-    METADATA_PARTICLE_CLASS_KEY, \
-    DATA_PARTICLE_CLASS_KEY
-from mi.dataset.parser.wfp_c_file_common import WfpCFileCommonConfigKeys
-from mi.dataset.parser.ctdpf_ckl_wfp_particles import \
-    CtdpfCklWfpTelemeteredDataParticle, \
-    CtdpfCklWfpTelemeteredMetadataParticle, \
-    CtdpfCklWfpDataParticleKey
 
-
-class CtdpfCklWfpTelemeteredDriver(SimpleDatasetDriver):
-    """
-    Derived wc_wm_cspp driver class
-    All this needs to do is create a concrete _build_parser method
-    """
-    def __init__(self, unused, stream_handle, particle_data_handler, e_file_time_pressure_tuples):
-        self._e_file_time_pressure_tuples = e_file_time_pressure_tuples
-
-        super(CtdpfCklWfpTelemeteredDriver, self).__init__(unused, stream_handle, particle_data_handler)
-
-    def _build_parser(self, stream_handle):
-
-        parser_config = {
-            WfpCFileCommonConfigKeys.PRESSURE_FIELD_C_FILE: CtdpfCklWfpDataParticleKey.PRESSURE,
-            DataSetDriverConfigKeys.PARTICLE_CLASS: None,
-            DataSetDriverConfigKeys.PARTICLE_CLASSES_DICT: {
-                METADATA_PARTICLE_CLASS_KEY: CtdpfCklWfpTelemeteredMetadataParticle,
-                DATA_PARTICLE_CLASS_KEY: CtdpfCklWfpTelemeteredDataParticle
-            }
-        }
-
-        file_size = os.path.getsize(stream_handle.name)
-
-        parser = CtdpfCklWfpParser(parser_config,
-                                   stream_handle,
-                                   self._exception_callback,
-                                   file_size,
-                                   self._e_file_time_pressure_tuples)
-
-        return parser
-
+from mi.dataset.driver.ctdpf_ckl.wfp.coastal_ctdpf_ckl_wfp_telemetered_driver import parse as parse_impl
 
 @version("0.0.3")
 def parse(unused, source_file_path, particle_data_handler):
@@ -62,14 +19,6 @@ def parse(unused, source_file_path, particle_data_handler):
     :return particle_data_handler
     """
 
-    # Let this be None until we modify the global E file driver to get these tuples
-    e_file_time_pressure_tuples = None
-
-    # Parse the ctd file and use the e_file_time_pressure_tuples to generate
-    # the internal timestamps of the particles
-    with open(source_file_path, 'rb') as stream_handle:
-        driver = CtdpfCklWfpTelemeteredDriver(
-            unused, stream_handle, particle_data_handler, e_file_time_pressure_tuples)
-        driver.processFileStream()
-
-    return particle_data_handler
+    # This driver should only be called for coastals so just use the implementation
+    # of the parse function from the coastal driver file
+    return parse_impl(unused, source_file_path, particle_data_handler)

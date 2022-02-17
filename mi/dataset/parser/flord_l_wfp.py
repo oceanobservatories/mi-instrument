@@ -41,6 +41,7 @@ class FlordLWfpInstrumentParserDataParticleKey(BaseEnum):
     """
     The names of the instrument particle parameters in the DataParticleType.INSTRUMENT stream.
     """
+    PRESSURE = 'pressure'                       # corresponds to 'pressure' from E file
     RAW_SIGNAL_CHL = 'raw_signal_chl'           # corresponds to 'chl' from E file
     RAW_SIGNAL_BETA = 'raw_signal_beta'         # corresponds to 'ntu' from E file
     RAW_INTERNAL_TEMP = 'raw_internal_temp'     # corresponds to 'temperature' from E file
@@ -64,7 +65,8 @@ class FlordLWfpInstrumentParserDataParticle(DataParticle):
         """
 
         fields_prof = struct.unpack('>I f f f f f h h h', self.raw_data)
-        result = [self._encode_value(FlordLWfpInstrumentParserDataParticleKey.RAW_SIGNAL_CHL, fields_prof[6], int),
+        result = [self._encode_value(FlordLWfpInstrumentParserDataParticleKey.PRESSURE, fields_prof[3], float),
+                  self._encode_value(FlordLWfpInstrumentParserDataParticleKey.RAW_SIGNAL_CHL, fields_prof[6], int),
                   self._encode_value(FlordLWfpInstrumentParserDataParticleKey.RAW_SIGNAL_BETA, fields_prof[7], int),
                   self._encode_value(FlordLWfpInstrumentParserDataParticleKey.RAW_INTERNAL_TEMP, fields_prof[8], int),
                   self._encode_value(FlordLWfpInstrumentParserDataParticleKey.WFP_TIMESTAMP, fields_prof[0], int)]

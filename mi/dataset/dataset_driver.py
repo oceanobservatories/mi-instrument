@@ -18,6 +18,7 @@ class ProcessingInfoKey(BaseEnum):
     PARSER = "parser"
     PARSER_VERSION = "parser_version"
     DATA_FILE = "data_file"
+    WARNING_MESSAGE = "warning_message"
 
 
 class ParticleDataHandler(object):
