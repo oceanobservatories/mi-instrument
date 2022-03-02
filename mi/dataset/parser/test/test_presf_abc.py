@@ -42,7 +42,7 @@ class PresfAbcParserUnitTestCase(ParserUnitTestCase):
         with open(os.path.join(RESOURCE_PATH, 'presf_abc_test_1.hex'), 'rU') \
                 as file_handle:
 
-            parser = PresfAbcParser(file_handle, self.exception_callback)
+            parser = PresfAbcParser(file_handle, self.exception_callback, True)
 
             # file has one tide particle and one wave particle
             particles = parser.get_records(2)
@@ -66,7 +66,7 @@ class PresfAbcParserUnitTestCase(ParserUnitTestCase):
         with open(os.path.join(RESOURCE_PATH, 'presf_abc_test_2.hex'), 'rU') \
                 as file_handle:
 
-            parser = PresfAbcParser(file_handle, self.exception_callback)
+            parser = PresfAbcParser(file_handle, self.exception_callback, True)
 
             particles = parser.get_records(6)
 
@@ -89,7 +89,7 @@ class PresfAbcParserUnitTestCase(ParserUnitTestCase):
         with open(os.path.join(RESOURCE_PATH, 'presf_abc_test_3.hex'), 'rU') \
                 as file_handle:
 
-            parser = PresfAbcParser(file_handle, self.exception_callback)
+            parser = PresfAbcParser(file_handle, self.exception_callback, True)
 
             particles = parser.get_records(20)
 
@@ -112,7 +112,7 @@ class PresfAbcParserUnitTestCase(ParserUnitTestCase):
         with open(os.path.join(RESOURCE_PATH, 'presf_abc_test_4a.hex'), 'rU') \
                 as file_handle:
 
-            parser = PresfAbcParser(file_handle, self.exception_callback)
+            parser = PresfAbcParser(file_handle, self.exception_callback, True)
 
             particles = parser.get_records(40)
 
@@ -129,7 +129,7 @@ class PresfAbcParserUnitTestCase(ParserUnitTestCase):
         with open(os.path.join(RESOURCE_PATH, 'presf_abc_test_4b.hex'), 'rU') \
                 as file_handle:
 
-            parser = PresfAbcParser(file_handle, self.exception_callback)
+            parser = PresfAbcParser(file_handle, self.exception_callback, True)
 
             particles = parser.get_records(8)
 
@@ -154,7 +154,7 @@ class PresfAbcParserUnitTestCase(ParserUnitTestCase):
             num_particles_to_request = 2
             num_expected_particles = 1
 
-            parser = PresfAbcParser(file_handle, self.exception_callback)
+            parser = PresfAbcParser(file_handle, self.exception_callback, True)
 
             particles = parser.get_records(num_particles_to_request)
 
@@ -183,7 +183,7 @@ class PresfAbcParserUnitTestCase(ParserUnitTestCase):
             num_particles_to_request = 2
             num_expected_particles = 1
 
-            parser = PresfAbcParser(file_handle, self.exception_callback)
+            parser = PresfAbcParser(file_handle, self.exception_callback, True)
 
             particles = parser.get_records(num_particles_to_request)
 
@@ -200,7 +200,7 @@ class PresfAbcParserUnitTestCase(ParserUnitTestCase):
             num_particles_to_request = 2
             num_expected_particles = 1
 
-            parser = PresfAbcParser(file_handle, self.exception_callback)
+            parser = PresfAbcParser(file_handle, self.exception_callback, True)
 
             particles = parser.get_records(num_particles_to_request)
 
@@ -228,7 +228,7 @@ class PresfAbcParserUnitTestCase(ParserUnitTestCase):
             num_particles_to_request = 10
             num_expected_particles = 0
 
-            parser = PresfAbcParser(file_handle, self.exception_callback)
+            parser = PresfAbcParser(file_handle, self.exception_callback, True)
 
             particles = parser.get_records(num_particles_to_request)
 
@@ -245,7 +245,7 @@ class PresfAbcParserUnitTestCase(ParserUnitTestCase):
         with open(os.path.join(RESOURCE_PATH, 'presf_abc_test_8.hex'), 'rU') \
                 as file_handle:
 
-            parser = PresfAbcParser(file_handle, self.exception_callback)
+            parser = PresfAbcParser(file_handle, self.exception_callback, True)
 
             # file has one tide particle and one wave particle
             particles = parser.get_records(2)

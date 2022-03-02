@@ -3,50 +3,56 @@ header:
     particle_type: 'MULTIPLE'
 data:
   - _index: 1
+    internal_timestamp: 3583638124.0
     particle_object: FlordLWfpInstrumentParserDataParticle
     particle_type: flord_l_wfp_instrument_recovered
-    internal_timestamp: 3583638124.000000
-    raw_signal_chl: 55
-    raw_signal_beta: 112
+    pressure: 0.0
     raw_internal_temp: 571
+    raw_signal_beta: 112
+    raw_signal_chl: 55
     wfp_timestamp: 1374649324
   - _index: 2
+    internal_timestamp: 3583638134.0
     particle_object: FlordLWfpInstrumentParserDataParticle
     particle_type: flord_l_wfp_instrument_recovered
-    internal_timestamp: 3583638134.000000
-    raw_signal_chl: 55
-    raw_signal_beta: 256
+    pressure: 0.0
     raw_internal_temp: 571
+    raw_signal_beta: 256
+    raw_signal_chl: 55
     wfp_timestamp: 1374649334
   - _index: 3
+    internal_timestamp: 3583638144.0
     particle_object: FlordLWfpInstrumentParserDataParticle
     particle_type: flord_l_wfp_instrument_recovered
-    internal_timestamp: 3583638144.000000
-    raw_signal_chl: 54
-    raw_signal_beta: 113
+    pressure: 0.0
     raw_internal_temp: 571
+    raw_signal_beta: 113
+    raw_signal_chl: 54
     wfp_timestamp: 1374649344
   - _index: 4
+    internal_timestamp: 3583638157.0
     particle_object: FlordLWfpInstrumentParserDataParticle
     particle_type: flord_l_wfp_instrument_recovered
-    internal_timestamp: 3583638157.000000
-    raw_signal_chl: 55
-    raw_signal_beta: 111
+    pressure: 4049.56005859375
     raw_internal_temp: 571
+    raw_signal_beta: 111
+    raw_signal_chl: 55
     wfp_timestamp: 1374649357
   - _index: 5
+    internal_timestamp: 3583638167.0
     particle_object: FlordLWfpInstrumentParserDataParticle
     particle_type: flord_l_wfp_instrument_recovered
-    internal_timestamp: 3583638167.000000
-    raw_signal_chl: 56
-    raw_signal_beta: 112
+    pressure: 4046.1201171875
     raw_internal_temp: 571
+    raw_signal_beta: 112
+    raw_signal_chl: 56
     wfp_timestamp: 1374649367
   - _index: 6
+    internal_timestamp: 3583638177.0
     particle_object: FlordLWfpInstrumentParserDataParticle
     particle_type: flord_l_wfp_instrument_recovered
-    internal_timestamp: 3583638177.000000
-    raw_signal_chl: 54
-    raw_signal_beta: 112
+    pressure: 4043.18994140625
     raw_internal_temp: 571
+    raw_signal_beta: 112
+    raw_signal_chl: 54
     wfp_timestamp: 1374649377
