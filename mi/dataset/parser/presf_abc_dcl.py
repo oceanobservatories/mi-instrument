@@ -311,7 +311,8 @@ class PresfAbcDclParser(SimpleParser):
     def __init__(self,
                  stream_handle,
                  exception_callback,
-                 is_telemetered):
+                 is_telemetered,
+                 produce_wave_data):
 
         if is_telemetered:
             # this is a telemetered parser
@@ -321,6 +322,8 @@ class PresfAbcDclParser(SimpleParser):
         else:
             self._wave_particle_class = PresfAbcDclRecoveredWaveDataParticle
             self._tide_particle_class = PresfAbcDclRecoveredTideDataParticle
+
+        self._produce_wave_data = produce_wave_data
 
         super(PresfAbcDclParser, self).__init__({},
                                                 stream_handle,
@@ -362,6 +365,10 @@ class PresfAbcDclParser(SimpleParser):
                                                 preferred_ts=DataParticleKey.PORT_TIMESTAMP)
                 self._record_buffer.append(particle)
                 continue  # read next line
+
+            # All the code below is for parsing wave data. Just continue if it is not wanted.
+            if not self._produce_wave_data:
+                continue
 
             # check for a wave burst start
             test_wstart = WAVE_START_MATCHER.match(line)

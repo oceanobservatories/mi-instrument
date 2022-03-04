@@ -33,12 +33,14 @@ def parse(unused, source_file_path, particle_data_handler):
 class PresfAbcDclTelemeteredDriver(SimpleDatasetDriver):
     """
     Derived presf_abc_dcl driver class
+    The method below passes "False" as the last arg to the parser constructor to instruct the parser to
+    only generate the tide data, not the wave data.
     All this needs to do is create a concrete _build_parser method
     """
 
     def _build_parser(self, stream_handle):
 
-        parser = PresfAbcDclParser(stream_handle, self._exception_callback, True)
+        parser = PresfAbcDclParser(stream_handle, self._exception_callback, True, False)
 
         return parser
 

@@ -274,7 +274,9 @@ class PresfAbcParser(SimpleParser):
     """
     def __init__(self,
                  stream_handle,
-                 exception_callback):
+                 exception_callback,
+                 produce_wave_data):
+        self._produce_wave_data = produce_wave_data
 
         self._wave_particle_class = PresfAbcWaveDataParticle
         self._tide_particle_class = PresfAbcTideDataParticle
@@ -551,7 +553,8 @@ class PresfAbcParser(SimpleParser):
                 continue  # read next line
 
             if self._current_data_section == DataSection.WAVE:
-                self.parse_wave_data(line, wave_data)
+                if self._produce_wave_data:
+                    self.parse_wave_data(line, wave_data)
 
                 # If this is the end of the wave data, clear the tide and wave
                 # data and set the current section to the tide data section.
