@@ -29,6 +29,7 @@ dependencies:
 - kombu
 - tqdm
 - vine
+- pysoundfile
 - pip:
   - modestimage==0.1
   - apscheduler==2.1.0
