@@ -19,11 +19,13 @@ __license__ = 'Apache 2.0'
 
 log = get_logger()
 
-# This regex will be used to match the flags for one of the two bit patterns:
-#  0001 0000 0000 0000 0001 0001 0000 0000  (regex: \x00\x01\x00{7}\x01\x00\x01\x00{4})
+# This regex will be used to match the flags for one of three bit patterns.
+# The first 2 patterns are original and the third was added later (20220304):
+#  0001 0000 0000 0000 0001 0001 0000 0000 (regex: \x00\x01\x00{7}\x01\x00\x01\x00{4})
 #  0001 0000 0000 0001 0000 0000 0000 0001 (regex: \x00\x01\x00{5}\x01\x00{7}\x01)
+#  0001 0000 0000 0001 0000 0000 0000 0004 (regex: \x00\x01\x00{5}\x04\x00{7}\x01)
 #  followed by 8 bytes of variable timestamp data (regex: [\x00-\xff]{8})
-HEADER_REGEX = b'(\x00\x01\x00{5}[\x01|\x04|\x0c]\x00[\x00-\x01]\x00[\x00-\x01]\x00{3}[\x00-\x01])([\x00-\xff]{8})'
+HEADER_REGEX = b'(\x00\x01\x00{5}[\x00|\x01|\x04]\x00[\x00-\x01]\x00[\x00-\x01]\x00{3}[\x00-\x01])([\x00-\xff]{8})'
 HEADER_MATCHER = re.compile(HEADER_REGEX)
 
 STATUS_START_REGEX = b'\xff\xff\xff[\xfa-\xff]'
