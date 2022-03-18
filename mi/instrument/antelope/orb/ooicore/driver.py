@@ -366,7 +366,7 @@ class Protocol(InstrumentProtocol):
             self._pktid = packet['pktid']
 
             if key not in self._logs:
-                self._logs[key] = PacketLog.from_packet(packet, end, self._param_dict.get(Parameter.REFDES))
+                self._logs[key] = PacketLog.from_packet(packet, start, end, self._param_dict.get(Parameter.REFDES))
 
             try:
                 while True:
@@ -379,14 +379,15 @@ class Protocol(InstrumentProtocol):
                     del self._logs[key]
                     # create the new log...
                     start, end = self._get_bin(packet)
-                    self._logs[key] = PacketLog.from_packet(packet, end, self._param_dict.get(Parameter.REFDES))
+                    self._logs[key] = PacketLog.from_packet(packet, start, end, self._param_dict.get(Parameter.REFDES))
 
             except GapException:
+                log.info('************ Triggered GapException')
                 # non-contiguous data detected, close this log and open a new one
                 self._filled_logs.append(self._logs[key])
                 del self._logs[key]
                 # create the new log
-                self._logs[key] = PacketLog.from_packet(packet, end, self._param_dict.get(Parameter.REFDES))
+                self._logs[key] = PacketLog.from_packet(packet, start, end, self._param_dict.get(Parameter.REFDES))
                 self._logs[key].add_packet(packet)
 
     ########################################################################

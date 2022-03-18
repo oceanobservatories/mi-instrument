@@ -1,3 +1,10 @@
+# Version 1.0.3
+
+**Antelope**
+
+* Modifies file writes to 5 minute binary zero padded FLAC format files for Antelope data
+* Removes Orb packet time gap logic related to creating very small files
+
 # Version 1.0.2
 
 *  Issue #13743 - Global WFP offset between recovered and telemetered timestamps (#93)
