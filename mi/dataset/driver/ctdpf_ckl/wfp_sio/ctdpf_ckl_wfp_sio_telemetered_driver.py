@@ -48,14 +48,6 @@ def parse(unused, source_file_path, particle_data_handler):
     # having the same time ranges as those in the c file
     e_file_paths = get_e_file_paths(source_file_path)
 
-    # A calculation (ctd_sbe52mp_preswat) is needed later when printing the c-profiles for debugging.
-    # Set a logging flag here instead of just using log.debug to prevent the running of that calc
-    # when it is not needed.
-    print_profiles = False
-    if print_profiles:
-        for e_file_path in e_file_paths:
-            log.info("e_file_path: %s" % e_file_path)
-
     for e_file_path in e_file_paths:
         if not os.path.exists(e_file_path):
             log.warning("e_file_path does not exist: %s" % e_file_path)
@@ -85,19 +77,8 @@ def parse(unused, source_file_path, particle_data_handler):
         log.warning(warning_msg + " for c file " + source_file_path)
         particle_data_handler.setProcessingInfo(ProcessingInfoKey.WARNING_MESSAGE, warning_msg)
 
-    if print_profiles:
-        log.info('E file time-pressure profiles:')
-        c_file_driver.print_e_profiles()
-
-        log.info('Original C file time-pressure profiles:')
-        c_file_driver.print_c_profiles()
-
     # adjust the times in the c profiles using the times (and pressures) in the e profiles
     c_file_driver.adjust_c_file_sample_times()
-
-    if print_profiles:
-        log.info('Adjusted C file time-pressure profiles:')
-        c_file_driver.print_c_profiles()
 
     # populate the ParticleDataHandler with the particles containing the adjusted data
     c_file_driver.populate_particle_data_handler()

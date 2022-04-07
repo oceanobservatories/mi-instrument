@@ -3,6 +3,7 @@ __author__ = "msteiner"
 
 from mi.core.instrument.dataset_data_particle import DataParticleKey
 from mi.dataset.dataset_driver import SimpleDatasetDriver
+from mi.dataset.dataset_driver import ProcessingInfoKey
 from mi.core.exceptions import NotImplementedException
 
 from ion_functions.data.ctd_functions import ctd_sbe52mp_preswat
@@ -22,10 +23,13 @@ class WfpCFileDriver(SimpleDatasetDriver):
     in the c and e profiles.
     """
     def __init__(self, unused, stream_handle, particle_data_handler, e_file_time_pressure_tuples):
+        super(WfpCFileDriver, self).__init__(unused, stream_handle, particle_data_handler)
+
         self._e_file_time_pressure_tuples = e_file_time_pressure_tuples
         self._data_particle_record_buffer = []
 
-        super(WfpCFileDriver, self).__init__(unused, stream_handle, particle_data_handler)
+        self.pressure_tolerance = 0.02
+        self.pressure_conversion_function = ctd_sbe52mp_preswat
 
     def processFileStream(self):
         """
@@ -48,22 +52,8 @@ class WfpCFileDriver(SimpleDatasetDriver):
                     else:
                         self._particle_data_handler.addParticleSample(record.data_particle_type(), record.generate())
 
-            # A calculation (ctd_sbe52mp_preswat) is needed later when printing the c-profiles for debugging.
-            # Set a logging flag here instead of just using log.debug to prevent the running of that calc
-            # when it is not needed.
-            print_profiles = False
-            if print_profiles:
-                self.print_e_file_time_pressure_tuples()
-
-                log.info('Original C file time-pressure tuples:')
-                self.print_c_file_time_pressure_tuples()
-
             # Adjust the timestamps of the records in the _data_particle_record_buffer
             self.adjust_c_file_sample_times()
-
-            if print_profiles:
-                log.info('Adjusted C file time-pressure tuples:')
-                self.print_c_file_time_pressure_tuples()
 
             for record in self._data_particle_record_buffer:
                 self._particle_data_handler.addParticleSample(record.data_particle_type(), record.generate())
@@ -73,48 +63,39 @@ class WfpCFileDriver(SimpleDatasetDriver):
             self._particle_data_handler.setParticleDataCaptureFailure()
             self._particle_data_handler._samples = {}
 
-    def print_e_file_time_pressure_tuples(self):
-        log.info('E file time-pressure tuples:')
-        for e_file_tuple in self._e_file_time_pressure_tuples:
-            log.info('Time: %s, Pressure: %s' % (ntp_to_string(e_file_tuple[0]), str(e_file_tuple[1])))
-
-    def print_c_file_time_pressure_tuples(self):
-        log.info('C file time-pressure tuples:')
-        for c_sample in self._data_particle_record_buffer:
-            # Get the pressure from the list of values (name-value pairs) in the sample
-            c_sample_pressure = c_sample.get_value_from_values(
-                self.pressure_containing_data_particle_field())
-            # e_sample pressures are in dbar so convert the c_sample pressure from counts to dbar
-            c_sample_pressure_dbar = ctd_sbe52mp_preswat(c_sample_pressure)
-            c_sample_timestamp = c_sample.get_value(DataParticleKey.INTERNAL_TIMESTAMP)
-            log.info('Time: %s, Pressure: %s' % (ntp_to_string(c_sample_timestamp), str(c_sample_pressure_dbar)))
-
     def adjust_c_file_sample_times(self):
         """
         Set the time in the "c" samples (CTD, DOSTA) generated from the "C" data file
         from the time in the "e" samples (FLORT, PARAD) generated from the "E" data file
-        when the pressures in both samples match to a precision of 0.02 dbar.
+        when the pressures in both samples match to a tolerance of 0.02 dbar.
         @throws Exception if there are not any e_samples or if we could not find
         matching pressures in the c and e samples
         """
         if not self._e_file_time_pressure_tuples:
-            raise Exception("e_file time-pressure tuples list is empty, can not adjust c_sample times")
+            warning_msg = "e_file time-pressure tuples list is empty, can not adjust timestamps"
+            log.error(warning_msg)
+            self._particle_data_handler.setProcessingInfo(ProcessingInfoKey.WARNING_MESSAGE, warning_msg)
+            return
 
-        # precision for comparing the pressures in c and e samples
-        precision = 0.02
+        # Trim the e profile by 10 percent so we can compare only pressures while the profiler is moving
+        trim_number = int(len(self._e_file_time_pressure_tuples) * 0.10)
+        if trim_number:
+            e_profile = self._e_file_time_pressure_tuples[trim_number:-trim_number]
+        else:
+            e_profile = self._e_file_time_pressure_tuples
 
-        e_samples_size = len(self._e_file_time_pressure_tuples)
-        curr_e_sample_index = 0
-        curr_e_sample = self._e_file_time_pressure_tuples[curr_e_sample_index]
-        curr_e_sample_time = curr_e_sample[0]
-        curr_e_sample_pressure = curr_e_sample[1]
+        pressure_increasing = e_profile[0][1] < e_profile[-1][1]
+
+        e_samples_size = len(e_profile)
+        curr_e_sample_index = -1
+        curr_e_sample_time = None
+        curr_e_sample_pressure = None
         prev_e_sample_time = None
+        curr_e_sample_matched = False
 
         # These will get set below as we iterate the c and e samples
         c_sample_time_interval = None
         prev_c_sample_time = None
-
-        final_e_sample_matched = False
 
         # Create a buffer to temporarily hold the ctd samples until we find one
         # having the same pressure as the current flort sample
@@ -137,14 +118,33 @@ class WfpCFileDriver(SimpleDatasetDriver):
                 self.pressure_containing_data_particle_field())
 
             # e_sample pressures are in dbar so convert the c_sample pressure from counts to dbar
-            c_sample_pressure_dbar = ctd_sbe52mp_preswat(c_sample_pressure)
+            c_sample_pressure_dbar = self.pressure_conversion_function(c_sample_pressure)
 
-            # If we have not already matched the final e_sample and the pressures are the same in
-            # the curr_e_sample and curr_c_sample, calculate and back fill the timestamps of the
-            # c_samples in the temp buffer
-            if not final_e_sample_matched and abs(curr_e_sample_pressure - c_sample_pressure_dbar) < precision:
-                # log.info("Pressures of flort(%s) and ctd(%s) match at %s" %
-                #          (str(curr_e_sample_pressure), str(c_sample_pressure_dbar), str(curr_e_sample_time)))
+            # For a descending profile (pressure increasing), get the next e sample
+            # having pressure greater than or within tolerance of the c pressure.
+            # For an ascending profile (pressure decreasing), get the next e sample
+            # having pressure less than or within tolerance of the c pressure.
+            while curr_e_sample_index < e_samples_size - 1 and\
+                    (curr_e_sample_index == -1 or curr_e_sample_matched or
+                     ((pressure_increasing
+                       and (curr_e_sample_pressure < c_sample_pressure_dbar - self.pressure_tolerance))
+                      or
+                      (not pressure_increasing
+                       and (curr_e_sample_pressure > c_sample_pressure_dbar + self.pressure_tolerance)))):
+                # Get the next e_sample
+                curr_e_sample_index += 1
+                curr_e_sample_time = e_profile[curr_e_sample_index][0]
+                curr_e_sample_pressure = e_profile[curr_e_sample_index][1]
+                curr_e_sample_matched = False
+
+            # If the pressures are the same in the curr_e_sample and curr_c_sample, calculate and back fill
+            # the timestamps of the c_samples in the temp buffer
+            if abs(curr_e_sample_pressure - c_sample_pressure_dbar) < self.pressure_tolerance:
+                log.debug("Pressures of e_sample(%s) and [a|c]_sample(%s) match at %s" %
+                         (str(curr_e_sample_pressure), str(c_sample_pressure_dbar), str(curr_e_sample_time)))
+                # Record the match to ensure that we roll to the next e-sample in case the profiler got stuck
+                # and pressure did not change. This ensures that a single c-sample will match a single e-sample.
+                curr_e_sample_matched = True
 
                 # If we have 2 e_sample times, we can calculate the time interval between c_samples
                 # over that time range
@@ -171,24 +171,33 @@ class WfpCFileDriver(SimpleDatasetDriver):
                     # Clear the temp c_sample buffer
                     c_samples_before_curr_e_sample[:] = []
 
+                prev_e_sample_time = curr_e_sample_time
                 num_c_samples_between_e_samples = 0
 
-                # Get the next e_sample if there are more
-                if curr_e_sample_index < e_samples_size - 1:
-                    prev_e_sample_time = curr_e_sample_time
-                    curr_e_sample_index += 1
-                    curr_e_sample = self._e_file_time_pressure_tuples[curr_e_sample_index]
-                    curr_e_sample_time = curr_e_sample[0]
-                    curr_e_sample_pressure = curr_e_sample[1]
-                else:
-                    final_e_sample_matched = True
-
-        # If we did not find a pressure match between a c and e sample, the last c_sample time
+        # If we did not find a pressure match between a c and e sample, the last e_sample time
         # will not have been set, indicating that the c_sample times have not been adjusted.
-        if not prev_c_sample_time:
-            error_message = "Could not find a match between the e_sample and c_sample to adjust c_sample time"
+        if not prev_e_sample_time:
+            error_message = "Could not find a pressure match between an e_sample and [a|c]_sample to adjust timestamps"
             log.error(error_message)
-            raise Exception(error_message)
+            self._particle_data_handler.setProcessingInfo(ProcessingInfoKey.WARNING_MESSAGE, error_message)
+            return
+
+        # If the number of c_samples that have not yet been adjusted equals the total number of c_samples,
+        # it is implied that only 1 match was found and we could not calculate the c_sample_time_interval
+        # based on the time difference between 2 e sample matches. So calculate the interval from the first 2 c samples.
+        # Use the time of the only match (prev_e_sample_time) to back-calculate the time before the first record
+        # in the buffer to get ready for the roll in the next block below.
+        if len(c_samples_before_curr_e_sample) == len(self._data_particle_record_buffer):
+            if len(c_samples_before_curr_e_sample) > 1:
+                c_sample_time_interval = \
+                    c_samples_before_curr_e_sample[1].get_value(DataParticleKey.INTERNAL_TIMESTAMP) -\
+                    c_samples_before_curr_e_sample[0].get_value(DataParticleKey.INTERNAL_TIMESTAMP)
+            else:
+                # There is only 1 c sample in the profile (should never happen but we handle it just in case)
+                c_sample_time_interval = 0
+
+            prev_c_sample_time = prev_e_sample_time - (
+                    c_sample_time_interval * (len(c_samples_before_curr_e_sample) - num_c_samples_between_e_samples))
 
         # Roll the last c_sample time by the c_sample_time_interval and set the time on the remaining c_samples
         for c_sample in c_samples_before_curr_e_sample:
@@ -208,6 +217,29 @@ class WfpCFileDriver(SimpleDatasetDriver):
         get the pressure for the time-pressure tuples.
         """
         raise NotImplementedException("pressure_containing_data_particle_field() not overridden!")
+
+
+class WfpAFileDriver(WfpCFileDriver):
+    """
+    A non-sio a-file contains only 1 profile and there is exactly one corresponding e-file, also having only 1 profile.
+    Use the time-pressure tuples from this e-file to correct the a-sample times by finding matching pressures
+    in the a and e profiles. Inherit from WfpCFileDriver since the logic to correct the a samples and c samples is the
+    same. The only differences are the pressure_conversion_function and pressure_tolerance which are overridden below.
+    """
+    def __init__(self, unused, stream_handle, particle_data_handler, e_file_time_pressure_tuples):
+        super(WfpAFileDriver, self).__init__(unused, stream_handle, particle_data_handler, e_file_time_pressure_tuples)
+
+        self.pressure_tolerance = 0.02
+        self.pressure_conversion_function = self.convert_to_dbar
+
+    @staticmethod
+    def convert_to_dbar(pressure):
+        """
+        Convert from pressure in 0.001dbar to dbar
+        :param pressure: pressure in 0.001dbar
+        :return: pressure in dbar
+        """
+        return float(pressure)/1000
 
 
 class WfpSioCFileDriver(SimpleDatasetDriver):
@@ -287,25 +319,6 @@ class WfpSioCFileDriver(SimpleDatasetDriver):
                 continue
 
             self.adjust_times_in_c_profile(c_profile, e_profile)
-
-    def print_e_profiles(self):
-        for i in range(len(self._e_file_profiles)):
-            log.info('E file time-pressure profile[%d]:' % i)
-            for e_file_tuple in self._e_file_profiles[i]:
-                log.debug('Time: %.4f (%s), Pressure: %s' %
-                         (e_file_tuple[0], ntp_to_string(e_file_tuple[0]), str(e_file_tuple[1])))
-
-    def print_c_profiles(self):
-        for i in range(len(self._c_file_profiles)):
-            log.info('C file time-pressure profile[%d]:' % i)
-            for c_sample in self._c_file_profiles[i]:
-                c_sample_pressure = c_sample.get_value_from_values(
-                    self.pressure_containing_data_particle_field())
-                # e_sample pressures are in dbar so convert the c_sample pressure from counts to dbar
-                c_sample_pressure_dbar = ctd_sbe52mp_preswat(c_sample_pressure)
-                c_sample_timestamp = c_sample.get_value(DataParticleKey.INTERNAL_TIMESTAMP)
-                log.debug('Time: %.4f (%s), Pressure: %s' % (
-                    c_sample_timestamp, ntp_to_string(c_sample_timestamp), str(c_sample_pressure_dbar)))
 
     def adjust_times_in_c_profile(self, c_profile, e_profile):
         """
