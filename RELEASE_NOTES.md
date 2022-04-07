@@ -1,3 +1,9 @@
+# Version 1.0.3
+
+* Issue #14261 - Correct timestamps for A-file (VEL3D) (#98) 
+* Issue #15268 - PRESF pressure values issues
+* Issue #15058 - Fix parser error in Global HYPM WFPENG E*.DAT recovered data
+
 # Version 1.0.2
 
 *  Issue #13743 - Global WFP offset between recovered and telemetered timestamps (#93)
