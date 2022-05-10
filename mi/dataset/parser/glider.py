@@ -850,15 +850,45 @@ class NutnrMDataParticle(GliderParticle):
     _data_particle_type = DataParticleType.NUTNR_M_GLIDER_INSTRUMENT
     science_parameters = NutnrMParticleKey.science_parameter_list()
 
+    # In 2019 the glider vendor changed the way NUTNR-M (SUNA) parameters were logged in raw data files.
+    # The names (referred to as "column labels" in the GliderParser) of these parameters were changed from:
+    # sensor: sci_suna_nitrate_um(uMol/L) 0 # Nitrate concentration in uMol/L
+    # sensor: sci_suna_nitrate_mg(mg/L) 0 # Nitrate concentration in mg/L
+    # to:
+    # sensor: sci_suna_nitrate_concentration(uM) 0 # Nitrate concentration in uM, micromole
+    # sensor: sci_suna_nitrogen_in_nitrate(mgN/L) 0 # Nitrogen in nitrate in mgN/L.
+    #
+    # The map below is used to convert the data field name from the new value back to the original
+    # since that is the name of the parameter used in the stream.
+    _particle_key_to_renamed_label_map = {NutnrMParticleKey.SCI_SUNA_NITRATE_UM: 'sci_suna_nitrate_concentration',
+                                          NutnrMParticleKey.SCI_SUNA_NITRATE_MG: 'sci_suna_nitrogen_in_nitrate'}
+
     def _build_parsed_values(self):
         """
-        Takes a GliderParser object and extracts FLORT data from the
-        data dictionary and puts the data into a FLORT Data Particle.
+        Takes a GliderParser object and extracts NUTNR data from the
+        data dictionary and puts the data into a NUTNR Data Particle.
 
         @returns A list of dictionaries of particle data
         @throws SampleException if the data is not a glider data dictionary
         """
-        return self._parsed_values(NutnrMParticleKey.list())
+        field_value_list = self._parsed_values(NutnrMParticleKey.list())
+
+        # Get a list of particles keys that correspond to any renamed labels found in the data file
+        particle_keys_with_renamed_labels = [k for k, v in self._particle_key_to_renamed_label_map.items()
+                                             if v in self.raw_data.keys()]
+
+        # If the file contains the renamed labels, the data values pulled using the original labels will be missing.
+        # Get a list of these labels for which we need to pull the data from the raw_data dict using the renamed labels.
+        field_value_reevaluate_list = [field_value for field_value in field_value_list
+                                       if field_value[DataParticleKey.VALUE_ID] in particle_keys_with_renamed_labels]
+
+        # Get the data using the new (renamed) label and assign it to the field using the particle key.
+        for field_value in field_value_reevaluate_list:
+            renamed_field_id = self._particle_key_to_renamed_label_map[field_value[DataParticleKey.VALUE_ID]]
+            renamed_field_value = self._parsed_values([renamed_field_id])[0]
+            field_value[DataParticleKey.VALUE] = renamed_field_value[DataParticleKey.VALUE]
+
+        return field_value_list
 
 
 # noinspection PyPackageRequirements
