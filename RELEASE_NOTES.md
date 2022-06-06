@@ -1,3 +1,7 @@
+# Version 1.0.4
+
+* Issue #15327 - Updating NUTNR-M Parser to accommodate logging changes in glider software
+
 # Version 1.0.3
 
 * Issue #14261 - Correct timestamps for A-file (VEL3D) (#98) 
