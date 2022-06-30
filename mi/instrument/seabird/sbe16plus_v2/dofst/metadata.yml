@@ -1,0 +1,8 @@
+driver_metadata:
+  author: Mark Steiner
+  driver_make: seabird
+  driver_model: sbe16plus_v2
+  driver_name: dofst
+  email: msteiner@whoi.edu
+  release_notes: SBE Driver
+  version: 0.0.1
