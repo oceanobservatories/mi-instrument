@@ -1,3 +1,7 @@
+# Version 1.0.5
+
+* Issue #15354 - Create dofst driver for do_fast_sample stream
+
 # Version 1.0.4
 
 * Issue #15327 - Updating NUTNR-M Parser to accommodate logging changes in glider software
