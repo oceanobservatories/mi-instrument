@@ -491,7 +491,7 @@ def parse_ct_data(particle_class, chunk, sio_header_timestamp, extract_sample, i
             binascii.a2b_hex(item)
             sample = extract_sample(particle_class, None, (sio_header_timestamp, inductive_id, item), None)
             particles.append(sample)
-        except ValueError:
+        except (ValueError, TypeError):
             had_error = (True, 0)
 
     return particles, had_error
