@@ -144,10 +144,28 @@ class SunaParser(Parser):
     def parse_file(self):
         for line in self._stream_handle:
 
-            # The line will start with the date, and will have SATSLF or SATSDF in the line
-            if (not line.startswith('SATSLF') and 'SATSLF' in line) or \
-                    (not line.startswith('SATSDF') and 'SATSDF' in line):
+            # Recovered instrument:
+            # Light samples will start with 'SATSLF'. Dark samples will start with 'SATSDF'
+            # We only want the light samples ('SATSLF'), not the dark ('SATSDF')
+            if line.startswith('SATSLF'):
+                raw_data = line.split(',')
+                if len(raw_data) != self._raw_data_length:
+                    continue
 
+                particle_class = SunaInstrumentRecoveredDataParticle
+
+                raw_data.insert(1, raw_data[0][6:])
+                raw_data[0] = raw_data[0][3:6]
+
+                internal_timestamp = julian_time_to_ntp(raw_data[2])
+
+                particle = self._extract_sample(particle_class, None, raw_data, internal_timestamp=internal_timestamp)
+                self._record_buffer.append(particle)
+
+            # Recovered host and telemetered:
+            # The line will start with the date, and will have SATSLF or SATSDF in the line
+            # We only want the light samples ('SATSLF'), not the dark ('SATSDF')
+            elif 'SATSLF' in line:
                 raw_data = line.split(',')
                 if len(raw_data) != self._raw_data_length:
                     continue
@@ -167,20 +185,6 @@ class SunaParser(Parser):
                                                 port_timestamp=port_timestamp,
                                                 preferred_ts=DataParticleKey.PORT_TIMESTAMP)
 
-                self._record_buffer.append(particle)
-
-            elif line.startswith('SATSLF') or line.startswith('SATSDF'):
-                raw_data = line.split(',')
-                if len(raw_data) != self._raw_data_length:
-                    continue
-
-                particle_class = SunaInstrumentRecoveredDataParticle
-                raw_data.insert(1, raw_data[0][6:])
-                raw_data[0] = raw_data[0][3:6]
-
-                internal_timestamp = julian_time_to_ntp(raw_data[2])
-
-                particle = self._extract_sample(particle_class, None, raw_data, internal_timestamp=internal_timestamp)
                 self._record_buffer.append(particle)
 
     def get_records(self, num_records_requested=1):
