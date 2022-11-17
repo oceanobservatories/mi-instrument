@@ -1,3 +1,12 @@
+# Version 1.0.7
+
+* Issue #15073 - Change SUNA parser to ignore dark samples
+* Issue #14891 - Adjust vel3d timestamps so they are unique
+
+# Version 1.0.6
+
+* Issue #15120 - Updating inductive CTDMO parser to accommodate cases of incomplete raw data
+
 # Version 1.0.5
 
 * Issue #15354 - Create dofst driver for do_fast_sample stream
