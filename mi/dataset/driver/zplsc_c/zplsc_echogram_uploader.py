@@ -32,10 +32,10 @@ from mi.dataset.dataset_parser import DataSetDriverConfigKeys
 
 log = get_logger()
 
-HOURLY_FILENAME_DATE_FORMAT = 'OOI-D%Y%m%d-T%H%M%S.nc'
+HOURLY_FILENAME_DATE_FORMAT = '%y%m%d%H.nc'
 
 
-@version("0.1.0")
+@version("0.2.0")
 def parse(unused, echogram_file_path, particle_data_handler):
     """
     This is the method called by uFrame
@@ -179,15 +179,22 @@ class ZplscEchogramUploadParser(SimpleParser):
 
         echogram_dirname, echogram_filename = os.path.split(self._echogram_filepath)
 
-        # The name of the echogram_filename can be of the "Averaged", "Full"
-        # or simple "Hourly" formats
+        # The name of the echogram_filename can be of the "Averaged", "Full" or simple "Hourly" formats
         # Examples:
-        #     CE07SHSM_Bioacoustic_Echogram_20191020-20191027_Calibrated_Sv_Averaged.nc
-        #     CE07SHSM_Bioacoustic_Echogram_20191020-20191027_Calibrated_Sv_Full_20191020.nc
-        #     OOI-20191020-T013835.nc
+        #     GI02HYPM_Bioacoustic_Echogram_20200823-20200830_Calibrated_Sv_Averaged.nc
+        #     GI02HYPM_Bioacoustic_Echogram_20200823-20200830_Calibrated_Sv_Full_20200829.nc
+        # or
+        #     GI02HYPM_LOWER_Bioacoustic_Echogram_20200823-20200830_Calibrated_Sv_Averaged.nc
+        #     GI02HYPM_LOWER_Bioacoustic_Echogram_20200823-20200830_Calibrated_Sv_Full_20200829.nc
+        # or
+        #     GI02HYPM_UPPER_Bioacoustic_Echogram_20200823-20200830_Calibrated_Sv_Averaged.nc
+        #     GI02HYPM_UPPER_Bioacoustic_Echogram_20200823-20200830_Calibrated_Sv_Full_20200823.nc
+        # or (hourly)
+        #     20082923.nc
         averaged_or_full_filename_regex_str = \
             r'Bioacoustic_Echogram_(?P<start_date>[0-9]{8})-(?P<stop_date>[0-9]{8})_Calibrated_Sv_(?P<type>Averaged|Full)_?(?P<date>[0-9]{8})?\.nc'
-        hourly_filename_regex_str = r'OOI-D[0-9]{8}-T[0-9]{6}\.nc'
+
+        hourly_filename_regex_str = r'^[0-9]{8}\.nc'
 
         m = re.compile(averaged_or_full_filename_regex_str).search(echogram_filename)
         if m:
@@ -205,12 +212,14 @@ class ZplscEchogramUploadParser(SimpleParser):
         # Use the regex match captures from the echogram_filename to generate another regex as well as
         # start date and end date criteria to find the hourly .nc files that correspond to the echogram.
         if echogram_type == ZplscEchogramType.FULL:
-            hourly_file_regex = 'OOI-D' + m.group('date') + r'-T[0-9]{6}\.nc'
+            # RegEx to find the hourly files for 1 day
+            hourly_file_regex = r'^' + m.group('date')[2:] + r'[0-9]{2}\.nc'
             start_day_datetime = datetime.strptime(m.group('date'), "%Y%m%d")
             # Assume the stop time to be the beginning of the next day
             stop_day_datetime = start_day_datetime + timedelta(days=1)
         elif echogram_type == ZplscEchogramType.AVERAGED:
-            hourly_file_regex = r'OOI-D[0-9]{8}-T[0-9]{6}\.nc'
+            # RegEx to find all of the hourly files for the month (all hourly files in the dir)
+            hourly_file_regex = r'^[0-9]{8}\.nc'
             start_day_datetime = datetime.strptime(m.group('start_date'), "%Y%m%d")
             # The stop time in the filename is already the beginning of the next day
             stop_day_datetime = datetime.strptime(m.group('stop_date'), "%Y%m%d")
@@ -234,13 +243,14 @@ class ZplscEchogramUploadParser(SimpleParser):
             log.error(error_msg)
             raise SampleException(error_msg)
 
+        hourly_files.sort()
         particle_data_dict = {}
 
-        # Use only the first hourly file in the sorted list to get the provenance information.
+        # Use the first and last hourly files in the sorted list to get the provenance information.
         # Get the provenance before we generate the particle since we use the
         # Provenance.conversion_time to set the DataParticle.driver_timestamp
-        self.set_provenance_from_hourly_file(os.path.join(echogram_dirname, sorted(hourly_files)[0]))
-        self.modify_provenance_for_echogram_type(echogram_type, start_day_datetime, stop_day_datetime)
+        self.set_provenance_from_hourly_files(os.path.join(echogram_dirname, hourly_files[0]),
+                                              os.path.join(echogram_dirname, hourly_files[-1]))
 
         # The HOURLY file and the FULL file will have the same first ping_time which we use as the
         # 'time' value in the cassandra record. Stream engine would filter out one of the records thinking
@@ -265,56 +275,24 @@ class ZplscEchogramUploadParser(SimpleParser):
         if particle is not None and not particle.get_encoding_errors():
             self._record_buffer.append(particle)
 
-    def set_provenance_from_hourly_file(self, hourly_file):
-        nc4_dataset = netCDF4.Dataset(hourly_file)
-        self.provenance[ZplscProvenanceKey.DATA_FILE_NAME] = nc4_dataset.groups['Provenance'].src_filenames
+    def set_provenance_from_hourly_files(self, first_hourly_file, last_hourly_file):
+        nc4_dataset = netCDF4.Dataset(first_hourly_file)
+        self.provenance[ZplscProvenanceKey.DATA_FILE_NAME] = nc4_dataset.groups['Provenance'].variables['source_filenames'][0]
         self.provenance[ZplscProvenanceKey.CONVERSION_SOFTWARE_NAME] = nc4_dataset.groups['Provenance'].conversion_software_name
         self.provenance[ZplscProvenanceKey.CONVERSION_SOFTWARE_VERSION] = nc4_dataset.groups['Provenance'].conversion_software_version
         self.provenance[ZplscProvenanceKey.CONVERSION_TIME] = nc4_dataset.groups['Provenance'].conversion_time
         nc4_dataset.close()
 
-    def modify_provenance_for_echogram_type(self, echogram_type, first_datetime, last_datetime):
-        data_file_name = self.provenance.get(ZplscProvenanceKey.DATA_FILE_NAME, None)
-
-        # Hourly files are generated from one raw data file so a range of files
-        # does not need to be set in the provenance.
-        if echogram_type == ZplscEchogramType.HOURLY or not data_file_name:
-            return
-
-        # Example of data file name: /data/testing/zplsc/ce04osps/2017/09/10/OOI-D20170910-T013835.raw
-        daily_dirname, data_filename = os.path.split(data_file_name)
-        data_filename_wo_ext, data_filename_ext = os.path.splitext(data_filename)
-
-        if echogram_type == ZplscEchogramType.FULL:
-            # Echogram is for a full day so use all times (wildcard) for that specific day
-            self.provenance[ZplscProvenanceKey.DATA_FILE_NAME] = \
-                data_file_name[:data_file_name.rfind('T')] + 'T*' + data_filename_ext
-        else:
-            # Echogram is the Average across all days and times in the specific date range
-            # Don't include the stop day (ie. the next day)
-            last_datetime = last_datetime - timedelta(days=1)
-            base_time_range_str = data_filename_wo_ext[:data_filename_wo_ext.rfind('D')] + 'D*-T*' + data_filename_ext
-            monthly_dirname = os.path.split(daily_dirname)[0]
-            yearly_dirname = os.path.split(monthly_dirname)[0]
-
-            self.provenance[ZplscProvenanceKey.DATA_FILE_NAME] = \
-                os.path.join(yearly_dirname,
-                             first_datetime.strftime('%m'),
-                             first_datetime.strftime('%d'),
-                             base_time_range_str)
-
-            if last_datetime > first_datetime:
-                self.provenance[ZplscProvenanceKey.DATA_FILE_NAME] = \
-                    self.provenance[ZplscProvenanceKey.DATA_FILE_NAME] + ' ... ' + \
-                    os.path.join(yearly_dirname,
-                                 last_datetime.strftime('%m'),
-                                 last_datetime.strftime('%d'),
-                                 base_time_range_str)
+        if not first_hourly_file == last_hourly_file:
+            nc4_dataset = netCDF4.Dataset(last_hourly_file)
+            self.provenance[ZplscProvenanceKey.DATA_FILE_NAME] = self.provenance[ZplscProvenanceKey.DATA_FILE_NAME] \
+                + ' ... ' + nc4_dataset.groups['Provenance'].variables['source_filenames'][0]
+            nc4_dataset.close()
 
     def get_first_ping_time_from_echogram(self, echogram_type):
         nc4_dataset = netCDF4.Dataset(self._echogram_filepath)
         if echogram_type == ZplscEchogramType.HOURLY:
-            first_ping_time = nc4_dataset.groups['Beam'].variables['ping_time'][0]
+            first_ping_time = nc4_dataset.groups['Vendor_specific'].variables['ping_time'][0]
         else: # AVERAGED and FULL echograms are not of nc4 format and don't have groups
             first_ping_time = time_to_ntp_date_time(nc4_dataset.variables['ping_time'][0])
         nc4_dataset.close()
