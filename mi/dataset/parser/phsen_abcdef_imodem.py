@@ -114,7 +114,7 @@ UNUSED_DATA = ASCII_HEX_CHAR_REGEX + '{4}'
 # Common regex for beginning of each science data record
 # Note: there may be "Record[nnn]:" before the record start
 RECORD_PREFIX_REGEX = '(?:Record.*)?'
-RECORD_START_REGEX = '\*'
+RECORD_START_REGEX = r'(?:\*|:1)'
 SCIENCE_DATA_RECORD_BEGIN_PART_REGEX = RECORD_PREFIX_REGEX + RECORD_START_REGEX + \
     ID_REGEX + LEN_REGEX
 

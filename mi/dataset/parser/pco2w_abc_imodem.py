@@ -54,8 +54,12 @@ NUM_SAMPLES_REGEX = \
 RECORD_DATA_PARAM = 'record_data_param'
 
 # Example:
+# Hardware E-Board format (older format)
 # Record[305]:*C22704CF8F37A30044004C0D0F024307B001FB09C80E7D0044004B0D0E024207B201FB0C5B07E357
-RECORD_REGEX = r'(?:Record\[\d+\]:)?\*(?P<' + RECORD_DATA_PARAM + '>' + \
+# or
+# Hardware K-Board format (newer format)
+# Record[305]::1C22704CF8F37A30044004C0D0F024307B001FB09C80E7D0044004B0D0E024207B201FB0C5B07E357
+RECORD_REGEX = r'(?:Record\[\d+\]:)?(?:\*|:1)(?P<' + RECORD_DATA_PARAM + '>' + \
                ASCII_HEX_CHAR_REGEX + '{16,80})'
 
 CO2_TYPE_NORMAL = 4
