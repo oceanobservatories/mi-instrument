@@ -5,7 +5,7 @@ from datetime import datetime
 
 from obspy.core import Stats
 import numpy as np
-from obspy import Trace
+from obspy import Trace, Stream
 from obspy.core.utcdatetime import UTCDateTime
 
 import soundfile as sf
@@ -25,6 +25,7 @@ class Vector(object):
         self.backing_store = np.zeros(size, dtype=dtype)
         self.length = size
         self.index = 0
+        self.indices = []
 
     def append(self, value):
         self._realloc(self.index+1)
@@ -33,6 +34,7 @@ class Vector(object):
 
     def extend(self, value):
         new_index = self.index + len(value)
+        self.indices.append(new_index)
         self._realloc(new_index)
         self.backing_store[self.index:new_index] = value
         self.index = new_index
@@ -125,7 +127,7 @@ class PacketLog(object):
         self.header = None
         self.needs_flush = False
         self.closed = False
-        self.data = Vector(1000, 'i')
+        self.data = Stream([])
         self._relpath = None
 
         # Generate a UUID for this PacketLog
@@ -202,74 +204,82 @@ class PacketLog(object):
         return packet
 
     def _write_data(self, data):
+        log.info('_write_data - append Trace to Stream')
+        # log.info(np.asarray(data))
+        # log.info(data)
         count = len(data)
-        self.data.extend(data)
-        self.header.num_samples += count
+        self.header.num_samples = count
+        self.data.append(Trace(np.asarray(data, dtype='i'), self.header.stats))
         self.needs_flush = True
 
     def _write_trace(self):
+        log.info('_write_trace')
         log.info('Hydrophone data rate: %s' % str(self.header.rate))
 
-        # Store the Orb data to an ObsPy Trace, trim to 5 minutes and pad with zeros
-        trace = Trace(self.data.get(), self.header.stats)
-        trace_trimmed_padded = trace.copy()
-        trace_trimmed_padded.trim(starttime=UTCDateTime(self.header.mintime),
-                                  endtime=UTCDateTime(self.header.maxtime),
-                                  pad=True,
-                                  nearest_sample=True,
-                                  fill_value=0)
+        log.info(type(self.data))
+        stream = self.data
+        stream.write(self.absname.replace('.flac', '_multitrace.mseed'), format='MSEED')
 
-        # Write the trimmed and padded FLAC file and JSON metadata to disk
-        flac_trimmed_padded_filename = self.absname
-        with sf.SoundFile(flac_trimmed_padded_filename, 'w', int(self.header.rate), 1, 'PCM_24') as f:
-            # trace.data is in int32, Soundfile native is float64, so convert it
-            trace_float = trace_trimmed_padded.data / ((2.0 ** 23) - 1)
-            f.write(trace_float)
-        flac_trimmed_padded_filename_json = flac_trimmed_padded_filename + '.json'
-        with io.open(flac_trimmed_padded_filename_json, 'w', encoding='utf-8') as f:
-            file_stats = sf.info(flac_trimmed_padded_filename, verbose=True)
-            file_stats_dict = file_stats.__dict__
-            file_stats_clean = json.dumps({key: value for key, value in file_stats_dict.items()}, indent=4, sort_keys=True, default=str)
-            f.write(unicode(file_stats_clean))
-        log.info('Wrote 5 minute, zero-padded FLAC file to disk: %s' % flac_trimmed_padded_filename)
-
-        # TODO: Remove this block after testing
-        # Write the MSEED file to disk
-        trace.write(self.absname.replace('.flac', '_orig.mseed'), format='MSEED')
-        mseed_filename_json = self.absname.replace('.flac', '_orig.mseed') + '.json'
-        with io.open(mseed_filename_json, 'w', encoding='utf-8') as f:
-            file_stats = trace.stats
-            file_stats_dict = file_stats.__dict__
-            file_stats_clean = json.dumps({key: value for key, value in file_stats_dict.items()}, indent=4, sort_keys=True, default=str)
-            f.write(unicode(file_stats_clean))
-        log.info('Wrote original Trace MSEED file to disk: %s' % self.absname.replace('.flac', '_orig.mseed'))
-
-        # TODO: Remove this block after testing
-        # Write the trimmed and padded MSEED file to disk
-        trace_trimmed_padded_filename = self.absname.replace('.flac', '.mseed')
-        trace_trimmed_padded.write(trace_trimmed_padded_filename, format='MSEED')
-        mseed_trimmed_padded_filename_json = trace_trimmed_padded_filename + '.json'
-        with io.open(mseed_trimmed_padded_filename_json, 'w', encoding='utf-8') as f:
-            file_stats = trace_trimmed_padded.stats
-            file_stats_dict = file_stats.__dict__
-            file_stats_clean = json.dumps({key: value for key, value in file_stats_dict.items()}, indent=4, sort_keys=True, default=str)
-            f.write(unicode(file_stats_clean))
-        log.info('Wrote trimmed and zero padded MSEED file to disk: %s' % trace_trimmed_padded_filename)
-
-        # TODO: Remove this block after testing
-        # Write the FLAC file to disk
-        flac_filename = self.absname.replace('.flac', '_orig.flac')
-        with sf.SoundFile(flac_filename, 'w', int(self.header.rate), 1, 'PCM_24') as f:
-            # trace.data is in int32, Soundfile native is float64, so convert it
-            trace_float = trace.data / ((2.0 ** 23) - 1)
-            f.write(trace_float)
-        flac_filename_json = flac_filename + '.json'
-        with io.open(flac_filename_json, 'w', encoding='utf-8') as f:
-            file_stats = sf.info(flac_filename, verbose=True)
-            file_stats_dict = file_stats.__dict__
-            file_stats_clean = json.dumps({key: value for key, value in file_stats_dict.items()}, indent=4, sort_keys=True, default=str)
-            f.write(unicode(file_stats_clean))
-        log.info('Wrote original Trace FLAC file to disk: %s' % flac_filename)
+        # # Store the Orb data to an ObsPy Trace, trim to 5 minutes and pad with zeros
+        # trace = Trace(self.data.get(), self.header.stats)
+        # trace_trimmed_padded = trace.copy()
+        # trace_trimmed_padded.trim(starttime=UTCDateTime(self.header.mintime),
+        #                           endtime=UTCDateTime(self.header.maxtime)-0.000001,
+        #                           pad=True,
+        #                           nearest_sample=True,
+        #                           fill_value=0)
+        #
+        # # Write the trimmed and padded FLAC file and JSON metadata to disk
+        # flac_trimmed_padded_filename = self.absname
+        # with sf.SoundFile(flac_trimmed_padded_filename, 'w', int(self.header.rate), 1, 'PCM_24') as f:
+        #     # trace.data is in int32, Soundfile native is float64, so convert it
+        #     trace_float = trace_trimmed_padded.data / ((2.0 ** 23) - 1)
+        #     f.write(trace_float)
+        # flac_trimmed_padded_filename_json = flac_trimmed_padded_filename + '.json'
+        # with io.open(flac_trimmed_padded_filename_json, 'w', encoding='utf-8') as f:
+        #     file_stats = sf.info(flac_trimmed_padded_filename, verbose=True)
+        #     file_stats_dict = file_stats.__dict__
+        #     file_stats_clean = json.dumps({key: value for key, value in file_stats_dict.items()}, indent=4, sort_keys=True, default=str)
+        #     f.write(unicode(file_stats_clean))
+        # log.info('Wrote 5 minute, zero-padded FLAC file to disk: %s' % flac_trimmed_padded_filename)
+        #
+        # # TODO: Remove this block after testing
+        # # Write the MSEED file to disk
+        # trace.write(self.absname.replace('.flac', '_orig.mseed'), format='MSEED')
+        # mseed_filename_json = self.absname.replace('.flac', '_orig.mseed') + '.json'
+        # with io.open(mseed_filename_json, 'w', encoding='utf-8') as f:
+        #     file_stats = trace.stats
+        #     file_stats_dict = file_stats.__dict__
+        #     file_stats_clean = json.dumps({key: value for key, value in file_stats_dict.items()}, indent=4, sort_keys=True, default=str)
+        #     f.write(unicode(file_stats_clean))
+        # log.info('Wrote original Trace MSEED file to disk: %s' % self.absname.replace('.flac', '_orig.mseed'))
+        #
+        # # TODO: Remove this block after testing
+        # # Write the trimmed and padded MSEED file to disk
+        # trace_trimmed_padded_filename = self.absname.replace('.flac', '.mseed')
+        # trace_trimmed_padded.write(trace_trimmed_padded_filename, format='MSEED')
+        # mseed_trimmed_padded_filename_json = trace_trimmed_padded_filename + '.json'
+        # with io.open(mseed_trimmed_padded_filename_json, 'w', encoding='utf-8') as f:
+        #     file_stats = trace_trimmed_padded.stats
+        #     file_stats_dict = file_stats.__dict__
+        #     file_stats_clean = json.dumps({key: value for key, value in file_stats_dict.items()}, indent=4, sort_keys=True, default=str)
+        #     f.write(unicode(file_stats_clean))
+        # log.info('Wrote trimmed and zero padded MSEED file to disk: %s' % trace_trimmed_padded_filename)
+        #
+        # # TODO: Remove this block after testing
+        # # Write the FLAC file to disk
+        # flac_filename = self.absname.replace('.flac', '_orig.flac')
+        # with sf.SoundFile(flac_filename, 'w', int(self.header.rate), 1, 'PCM_24') as f:
+        #     # trace.data is in int32, Soundfile native is float64, so convert it
+        #     trace_float = trace.data / ((2.0 ** 23) - 1)
+        #     f.write(trace_float)
+        # flac_filename_json = flac_filename + '.json'
+        # with io.open(flac_filename_json, 'w', encoding='utf-8') as f:
+        #     file_stats = sf.info(flac_filename, verbose=True)
+        #     file_stats_dict = file_stats.__dict__
+        #     file_stats_clean = json.dumps({key: value for key, value in file_stats_dict.items()}, indent=4, sort_keys=True, default=str)
+        #     f.write(unicode(file_stats_clean))
+        # log.info('Wrote original Trace FLAC file to disk: %s' % flac_filename)
 
     def flush(self):
         if self.needs_flush:
