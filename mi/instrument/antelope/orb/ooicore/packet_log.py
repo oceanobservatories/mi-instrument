@@ -6,11 +6,10 @@ from datetime import datetime
 from obspy.core import Stats
 import numpy as np
 from obspy import Trace, Stream
-from obspy.core.utcdatetime import UTCDateTime
-
-import soundfile as sf
-import json
-import io
+# from obspy.core.utcdatetime import UTCDateTime
+# import soundfile as sf
+# import json
+# import io
 
 from mi.core.log import get_logger
 from mi.core.exceptions import InstrumentProtocolException
