@@ -335,7 +335,11 @@ class D1000TemperatureDataParticle(DataParticle):
         return re.compile(D1000TemperatureDataParticle.regex(), re.DOTALL)
 
     def _build_parsed_values(self):
-        match = self.regex_compiled().match(self.raw_data)
+        match = (
+            self.regex_compiled().match(self.raw_data)
+            or _NEW_DATFILE_PARTICLE_BODY_MATCHER.match(self.raw_data)
+            or _OLD_DATFILE_PARTICLE_BODY_MATCHER.match(self.raw_data)
+        )
 
         if not match:
             raise SampleException("D1000TemperatureDataParticle: No regex match of parsed sample data: [%s]",
@@ -1050,10 +1054,138 @@ class Protocol(CommandResponseInstrumentProtocol):
 
         return next_state, (next_state, result)
 
+# This regex extracts the timestamp of a particle from the new ".dat" format shown below. The
+# "$1RD" is used to ensure we're extracting the first timestamp of the particle. Each particle in
+# the file actually contains 3 response timestamps, but we only want the first.
+_NEW_DATFILE_PARTICLE_TIMESTAMP_MATCHER = re.compile(
+    r'\$1RD[\r\n]+?'
+    r'</OOI\-CMD>[\r\n]+?'
+    r'<OOI\-ts:(\d{4}\-\d{2}\-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3})>',
+    re.DOTALL
+)
+
+# This regex extracts the 3 float values of a particle from the new ".dat" format shown below.
+_NEW_DATFILE_PARTICLE_BODY_MATCHER = re.compile(
+    r'[*$]1RD[\r\n]+\*([+-]\d*\.?\d+).*?'
+    r'[*$]2RD[\r\n]+\*([+-]\d*\.?\d+).*?'
+    r'[*$]3RD[\r\n]+\*([+-]\d*\.?\d+)',
+    re.DOTALL
+)
+
+# # Here's an example of a full particle in the new ".dat" file format:
+# _NEW_DATFILE_PARTICLE_TEXT_EXAMPLE = """\
+# <OOI-CMD 2023-02-16T02:09:22.094Z 006>
+# $1RD
+
+# </OOI-CMD>
+# <OOI-ts:2023-02-16T02:09:22.144>
+# $1RD
+# *+00027.50
+#  </OOI-ts>
+
+# <OOI-CMD 2023-02-16T02:09:22.421Z 006>
+# $2RD
+
+# </OOI-CMD>
+# <OOI-ts:2023-02-16T02:09:22.470>
+# $2RD
+# *+00017.40
+#  </OOI-ts>
+
+# <OOI-CMD 2023-02-16T02:09:22.699Z 006>
+# $3RD
+
+# </OOI-CMD>
+# <OOI-ts:2023-02-16T02:09:22.749>
+# $3RD
+# *+00002.40
+#  </OOI-ts>
+# """
+
+# assert (
+#     _NEW_DATFILE_PARTICLE_TIMESTAMP_MATCHER
+#         .search(_NEW_DATFILE_PARTICLE_TEXT_EXAMPLE)
+#         .groups() == ("2023-02-16T02:09:22.144",)
+# )
+# assert (
+#     _NEW_DATFILE_PARTICLE_BODY_MATCHER
+#         .search(_NEW_DATFILE_PARTICLE_TEXT_EXAMPLE)
+#         .groups() == ('+00027.50', '+00017.40', '+00002.40')
+# )
+
+
+def _is_probably_new_datfile_format(raw_data):
+    """
+    Return true if the input data string is probably taken from a new ".dat" file.
+    """
+    return "<OOI-ts:" in raw_data
+
+
+# This regex extracts the timestamp of a particle from the old ".dat" / ".txt" format shown below.
+_OLD_DATFILE_PARTICLE_TIMESTAMP_MATCHER = re.compile(
+    r"(\d{4}\-\d{2}\-\d{2} \d{2}\:\d{2}\:\d{2}) UTC"
+)
+
+# This regex extracts the 3 float values of a particle from the old ".dat" / ".txt" format shown
+# below.
+_OLD_DATFILE_PARTICLE_BODY_MATCHER = re.compile(
+    r"(?:[*$]1RD[\r\n]+)?"
+    r"\*([+-]\d*\.?\d+)[\r\n]+"
+    r"(?:[*$]2RD[\r\n]+)?"
+    r"\*([+-]\d*\.?\d+)[\r\n]+"
+    r"(?:[*$]3RD[\r\n]+)?"
+    r"\*([+-]\d*\.?\d+)",
+    re.DOTALL
+)
+
+# # Here's an example of a full particle in the old ".dat" / ".txt" file format:
+# _OLD_DATFILE_PARTICLE_EXAMPLE_1 = """\
+# 2015-12-31 23:54:21 UTC
+# *+00167.00
+# *+00128.10
+# *+99999.99
+# """
+
+# # Here's an example of a full particle in the old ".dat" / ".txt" file format that includes $RD
+# # values. The $RD values show up in some data files, not in most, but some of them.
+# _OLD_DATFILE_PARTICLE_EXAMPLE_2 = """\
+# 2015-12-31 23:54:21 UTC
+# $1RD
+# *+00167.00
+# $2RD
+# *+00128.10
+# $3RD
+# *+99999.99
+# """
+
+# assert (
+#     _OLD_DATFILE_PARTICLE_TIMESTAMP_MATCHER
+#         .search(_OLD_DATFILE_PARTICLE_EXAMPLE_1)
+#         .groups() == ("2015-12-31 23:54:21",)
+# )
+# assert (
+#     _OLD_DATFILE_PARTICLE_TIMESTAMP_MATCHER
+#         .search(_OLD_DATFILE_PARTICLE_EXAMPLE_2)
+#         .groups() == ("2015-12-31 23:54:21",)
+# )
+# assert (
+#     _OLD_DATFILE_PARTICLE_BODY_MATCHER.search(_OLD_DATFILE_PARTICLE_EXAMPLE_1)
+#         .groups() == ('+00167.00', '+00128.10', '+99999.99')
+# )
+# assert (
+#     _OLD_DATFILE_PARTICLE_BODY_MATCHER.search(_OLD_DATFILE_PARTICLE_EXAMPLE_2)
+#         .groups() == ('+00167.00', '+00128.10', '+99999.99')
+# )
+
+
+def _is_probably_old_datfile_format(raw_data):
+    """
+    Return true if the input data string is probably taken from a an old ".dat" / ".txt" file.
+    """
+    return not _is_probably_new_datfile_format(raw_data) and "UTC" in raw_data
+
 
 class PlaybackProtocol(Protocol):
-    timestamp_regex = re.compile(r'(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} UTC)')
-
     def __init__(self, driver_event):
         super(PlaybackProtocol, self). __init__(None, None, driver_event)
         self.log_timestamp = None
@@ -1067,8 +1199,13 @@ class PlaybackProtocol(Protocol):
         matchers = []
         return_list = []
 
-        matchers.append(D1000TemperatureDataParticle.regex_compiled())
-        matchers.append(PlaybackProtocol.timestamp_regex)
+        # Infer the file format at runtime and use different regexes accordingly.
+        if _is_probably_new_datfile_format(raw_data):
+            matchers.append(_NEW_DATFILE_PARTICLE_BODY_MATCHER)
+            matchers.append(_NEW_DATFILE_PARTICLE_TIMESTAMP_MATCHER)
+        elif _is_probably_old_datfile_format(raw_data):
+            matchers.append(_OLD_DATFILE_PARTICLE_BODY_MATCHER)
+            matchers.append(_OLD_DATFILE_PARTICLE_TIMESTAMP_MATCHER)
 
         for matcher in matchers:
             for match in matcher.finditer(raw_data):
@@ -1083,16 +1220,41 @@ class PlaybackProtocol(Protocol):
         The base class got_data has gotten a chunk from the chunker.  Pass it to extract_sample
         with the appropriate particle objects and REGEXes.
         """
-        match = PlaybackProtocol.timestamp_regex.match(chunk)
-        if match:
-            dt = datetime.strptime(match.group(1), '%Y-%m-%d %H:%M:%S %Z')
-            self.log_timestamp = (dt - datetime(1900, 1, 1)).total_seconds()
+        new_timestamp_match = _NEW_DATFILE_PARTICLE_TIMESTAMP_MATCHER.match(chunk)
+        if new_timestamp_match:
+            date = datetime.strptime(new_timestamp_match.group(1), '%Y-%m-%dT%H:%M:%S.%f')
+            self.log_timestamp = (date - datetime(1900, 1, 1)).total_seconds()
             return
 
-        # only publish D1000 playback if we have a timestamp
-        if self.log_timestamp is not None:
-            self._extract_sample(D1000TemperatureDataParticle, D1000TemperatureDataParticle.regex_compiled(), chunk,
-                                 self.log_timestamp)
+        new_body_match = _NEW_DATFILE_PARTICLE_BODY_MATCHER.match(chunk)
+        if new_body_match:
+            # Only publish D1000 playback if we have a timestamp.
+            if self.log_timestamp is not None:
+                self._extract_sample(
+                    D1000TemperatureDataParticle,
+                    _NEW_DATFILE_PARTICLE_BODY_MATCHER,
+                    chunk,
+                    self.log_timestamp
+                )
+
+            return
+
+        old_timestamp_match = _OLD_DATFILE_PARTICLE_TIMESTAMP_MATCHER.match(chunk)
+        if old_timestamp_match:
+            date = datetime.strptime(old_timestamp_match.group(1), '%Y-%m-%d %H:%M:%S')
+            self.log_timestamp = (date - datetime(1900, 1, 1)).total_seconds()
+            return
+
+        old_body_match = _OLD_DATFILE_PARTICLE_BODY_MATCHER.match(chunk)
+        if old_body_match:
+            # Only publish D1000 playback if we have a timestamp.
+            if self.log_timestamp is not None:
+                self._extract_sample(
+                    D1000TemperatureDataParticle,
+                    _OLD_DATFILE_PARTICLE_BODY_MATCHER,
+                    chunk,
+                    self.log_timestamp
+                )
 
 
 def create_playback_protocol(callback):
