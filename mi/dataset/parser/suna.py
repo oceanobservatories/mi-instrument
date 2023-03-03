@@ -157,7 +157,7 @@ class SunaParser(Parser):
                 raw_data.insert(1, raw_data[0][6:])
                 raw_data[0] = raw_data[0][3:6]
 
-                internal_timestamp = julian_time_to_ntp(raw_data[2])
+                internal_timestamp = julian_time_to_ntp(raw_data[2]) + (float(raw_data[3]) * 60 * 60)
 
                 particle = self._extract_sample(particle_class, None, raw_data, internal_timestamp=internal_timestamp)
                 self._record_buffer.append(particle)
