@@ -1,7 +1,7 @@
 # Version 1.0.9
 
 * Issue #15539 - Fix NUTNR SUNA recovered instrument parser bug
-* 
+
 # Version 1.0.8
 
 * Issue #15166 - Modify ZPLSC metadata uploader for latest Echopype files
