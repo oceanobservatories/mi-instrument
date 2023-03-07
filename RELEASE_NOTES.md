@@ -1,3 +1,12 @@
+# Version 1.0.9
+
+* Issue #15539 - Fix NUTNR SUNA recovered instrument parser bug
+* 
+# Version 1.0.8
+
+* Issue #15166 - Modify ZPLSC metadata uploader for latest Echopype files
+* Issue #15346 - Change in PCO2W/PHSEN (SAMI) data output due to new Rev K board
+
 # Version 1.0.7
 
 * Issue #15073 - Change SUNA parser to ignore dark samples
