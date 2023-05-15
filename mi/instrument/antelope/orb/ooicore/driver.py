@@ -54,6 +54,7 @@ class Parameter(BaseEnum):
     SOURCE_REGEX = 'source_regex'
     START_PKTID = 'start_pktid'
     FILE_LOCATION = 'file_location'
+    IS_DIVERTED = 'is_diverted'
 
 
 class ScheduledJob(BaseEnum):
@@ -259,6 +260,7 @@ class Protocol(InstrumentProtocol):
 
         # Set the base directory for the packet data file location.
         PacketLog.base_dir = self._param_dict.get(Parameter.FILE_LOCATION)
+        PacketLog.is_diverted = self._param_dict.get(Parameter.IS_DIVERTED)
 
     def _flush(self):
         particles = []
