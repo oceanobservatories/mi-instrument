@@ -215,6 +215,17 @@ class Protocol(InstrumentProtocol):
                              description='Root file path of the packet data files',
                              type=ParameterDictType.STRING,
                              value_description='String representing the packet data root file path')
+        self._param_dict.add(Parameter.IS_DIVERTED,
+                             'NA',
+                             bool,
+                             bool,
+                             visibility=ParameterDictVisibility.IMMUTABLE,
+                             startup_param=True,
+                             default_value=True,
+                             display_name='Is Diverted',
+                             description='Whether the driver expected diverted data',
+                             type=ParameterDictType.BOOL,
+                             value_description='Bool representing whether data is diverted for the driver')
 
     def _build_driver_dict(self):
         """
