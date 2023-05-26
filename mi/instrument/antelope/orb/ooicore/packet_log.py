@@ -203,15 +203,15 @@ class PacketLog(object):
         return packet
 
     def _write_data(self, data):
-        log.info('_write_data - append Trace to Stream')
+        # Append Trace to Stream
         count = len(data)
         self.header.num_samples = count
         self.data.append(Trace(np.asarray(data, dtype='i'), self.header.stats))
         self.needs_flush = True
 
     def _write_trace(self):
-        log.info('_write_trace')
-        log.info('Hydrophone data rate: %s' % str(self.header.rate))
+        # Write multi-trace Stream to MSEED
+        log.info('_write_trace: Hydrophone data rate: %s' % str(self.header.rate))
         stream = self.data
         stream.write(self.absname, format='MSEED')
 
