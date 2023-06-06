@@ -18,7 +18,7 @@ obspy==1.2.2
 pandas==0.24.2
 psycopg2==2.8.4
 python-consul==0.6.0
-pyyaml==5.2
+pyyaml==5.4
 pyzmq==18.1.0
 qpid-python==0.32
 requests==2.25.1
