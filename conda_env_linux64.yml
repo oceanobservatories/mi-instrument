@@ -33,6 +33,7 @@ dependencies:
 - qpid-python
 - tqdm
 - vine
+- pysoundfile
 - pip:
   - modestimage==0.1
   - Deprecated==1.2.0

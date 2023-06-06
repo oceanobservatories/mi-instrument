@@ -1,3 +1,9 @@
+# Version 1.0.10
+
+* Antelope
+   * Modifies MSEED creation to multi-trace 5 minute files
+   * Removes Orb packet time gap logic related to creating very small files
+
 # Version 1.0.9
 
 * Issue #15539 - Fix NUTNR SUNA recovered instrument parser bug

@@ -54,6 +54,7 @@ class Parameter(BaseEnum):
     SOURCE_REGEX = 'source_regex'
     START_PKTID = 'start_pktid'
     FILE_LOCATION = 'file_location'
+    IS_DIVERTED = 'is_diverted'
 
 
 class ScheduledJob(BaseEnum):
@@ -214,6 +215,17 @@ class Protocol(InstrumentProtocol):
                              description='Root file path of the packet data files',
                              type=ParameterDictType.STRING,
                              value_description='String representing the packet data root file path')
+        self._param_dict.add(Parameter.IS_DIVERTED,
+                             'NA',
+                             bool,
+                             bool,
+                             visibility=ParameterDictVisibility.IMMUTABLE,
+                             startup_param=True,
+                             default_value=True,
+                             display_name='Is Diverted',
+                             description='Whether the driver expected diverted data',
+                             type=ParameterDictType.BOOL,
+                             value_description='Bool representing whether data is diverted for the driver')
 
     def _build_driver_dict(self):
         """
@@ -259,6 +271,7 @@ class Protocol(InstrumentProtocol):
 
         # Set the base directory for the packet data file location.
         PacketLog.base_dir = self._param_dict.get(Parameter.FILE_LOCATION)
+        PacketLog.is_diverted = self._param_dict.get(Parameter.IS_DIVERTED)
 
     def _flush(self):
         particles = []
@@ -366,7 +379,7 @@ class Protocol(InstrumentProtocol):
             self._pktid = packet['pktid']
 
             if key not in self._logs:
-                self._logs[key] = PacketLog.from_packet(packet, end, self._param_dict.get(Parameter.REFDES))
+                self._logs[key] = PacketLog.from_packet(packet, start, end, self._param_dict.get(Parameter.REFDES))
 
             try:
                 while True:
@@ -379,14 +392,15 @@ class Protocol(InstrumentProtocol):
                     del self._logs[key]
                     # create the new log...
                     start, end = self._get_bin(packet)
-                    self._logs[key] = PacketLog.from_packet(packet, end, self._param_dict.get(Parameter.REFDES))
+                    self._logs[key] = PacketLog.from_packet(packet, start, end, self._param_dict.get(Parameter.REFDES))
 
             except GapException:
+                log.info('************ Triggered GapException')
                 # non-contiguous data detected, close this log and open a new one
                 self._filled_logs.append(self._logs[key])
                 del self._logs[key]
                 # create the new log
-                self._logs[key] = PacketLog.from_packet(packet, end, self._param_dict.get(Parameter.REFDES))
+                self._logs[key] = PacketLog.from_packet(packet, start, end, self._param_dict.get(Parameter.REFDES))
                 self._logs[key].add_packet(packet)
 
     ########################################################################

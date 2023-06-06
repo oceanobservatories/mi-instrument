@@ -5,7 +5,7 @@ from datetime import datetime
 
 from obspy.core import Stats
 import numpy as np
-from obspy import Trace
+from obspy import Trace, Stream
 
 from mi.core.log import get_logger
 from mi.core.exceptions import InstrumentProtocolException
@@ -20,6 +20,7 @@ class Vector(object):
         self.backing_store = np.zeros(size, dtype=dtype)
         self.length = size
         self.index = 0
+        self.indices = []
 
     def append(self, value):
         self._realloc(self.index+1)
@@ -28,6 +29,7 @@ class Vector(object):
 
     def extend(self, value):
         new_index = self.index + len(value)
+        self.indices.append(new_index)
         self._realloc(new_index)
         self.backing_store[self.index:new_index] = value
         self.index = new_index
@@ -46,12 +48,13 @@ class GapException(Exception):
 
 
 class PacketLogHeader(object):
-    def __init__(self, net, location, station, channel, starttime, maxtime, rate, calib, calper, refdes):
+    def __init__(self, net, location, station, channel, starttime, mintime, maxtime, rate, calib, calper, refdes):
         self.net = net
         self.location = location
         self.station = station
         self.channel = channel
         self.starttime = starttime
+        self.mintime = mintime
         self.maxtime = maxtime
         self.rate = rate
         self.calib = calib
@@ -61,7 +64,7 @@ class PacketLogHeader(object):
 
     @property
     def time(self):
-        return self._format_time(self.starttime)
+        return self._format_time(self.mintime)
 
     @staticmethod
     def _format_time(timestamp):
@@ -70,6 +73,7 @@ class PacketLogHeader(object):
         # add them back in if they are missing for consistency in file naming
         if t[-3] == ':':
             t += '.000000'
+        t += 'Z'
         return t
 
     @property
@@ -77,8 +81,12 @@ class PacketLogHeader(object):
         return '-'.join((self.net, self.station, self.location, self.channel))
 
     @property
+    def file_format(self):
+        return 'mseed'
+
+    @property
     def fname(self):
-        return '%s-%s.mseed' % (self.name, self.time)
+        return '%s-%s.%s' % (self.name, self.time, self.file_format)
 
     @property
     def stats(self):
@@ -109,19 +117,20 @@ class PacketLogHeader(object):
 class PacketLog(object):
     TIME_FUDGE_PCNT = 10
     base_dir = './antelope_data'
+    is_diverted = False
 
     def __init__(self):
         self.header = None
         self.needs_flush = False
         self.closed = False
-        self.data = Vector(1000, 'i')
+        self.data = Stream([])
         self._relpath = None
 
         # Generate a UUID for this PacketLog
         self.bin_uuid = str(uuid.uuid4())
 
-    def create(self, net, location, station, channel, start, end, rate, calib, calper, refdes):
-        self.header = PacketLogHeader(net, location, station, channel, start, end, rate, calib, calper, refdes)
+    def create(self, net, location, station, channel, start, mintime, maxtime, rate, calib, calper, refdes):
+        self.header = PacketLogHeader(net, location, station, channel, start, mintime, maxtime, rate, calib, calper, refdes)
         if not os.path.exists(self.abspath):
             try:
                 os.makedirs(self.abspath)
@@ -131,7 +140,7 @@ class PacketLog(object):
             raise InstrumentProtocolException('Error creating file path: File exists with same name: ' + self.abspath)
 
     @staticmethod
-    def from_packet(packet, end, refdes):
+    def from_packet(packet, bin_start, bin_end, refdes):
         packet_log = PacketLog()
         packet_log.create(
             packet.get('net', ''),
@@ -139,7 +148,8 @@ class PacketLog(object):
             packet.get('sta', ''),
             packet.get('chan', ''),
             packet['time'],
-            end,
+            bin_start,
+            bin_end,
             packet['samprate'],
             packet['calib'],
             packet['calper'],
@@ -151,11 +161,14 @@ class PacketLog(object):
     def relpath(self):
         if self._relpath is None:
             # Get the year, month and day for the directory structure of the data file from the packet start time
-            packet_start_time = datetime.utcfromtimestamp(self.header.starttime)
+            packet_start_time = datetime.utcfromtimestamp(self.header.mintime)
             year = str(packet_start_time.year)
             month = '%02d' % packet_start_time.month
             day = '%02d' % packet_start_time.day
-            self._relpath = os.path.join(year, month, day)
+            if self.is_diverted:
+                self._relpath = os.path.join(year, month, day, 'addendum')
+            else:
+                self._relpath = os.path.join(year, month, day)
         return self._relpath
 
     @property
@@ -171,13 +184,8 @@ class PacketLog(object):
         return os.path.join(self.base_dir, self.header.refdes, self.relname)
 
     def add_packet(self, packet):
-        if self.header.starttime > packet['time'] or packet['time'] >= self.header.maxtime:
-            raise GapException()
-
-        # check if there is a gap, if so reject this packet
-        diff = abs(self.header.endtime - packet['time'])
-        maxdiff = packet['nsamp'] * self.header.delta * self.TIME_FUDGE_PCNT / 100
-        if diff > maxdiff:
+        # If the current packet is not within the 5 min file, then move to the next 5 minute file
+        if self.header.mintime > packet['time'] or packet['time'] >= self.header.maxtime:
             raise GapException()
 
         # split this packet if necessary
@@ -195,14 +203,17 @@ class PacketLog(object):
         return packet
 
     def _write_data(self, data):
+        # Append Trace to Stream
         count = len(data)
-        self.data.extend(data)
-        self.header.num_samples += count
+        self.header.num_samples = count
+        self.data.append(Trace(np.asarray(data, dtype='i'), self.header.stats))
         self.needs_flush = True
 
     def _write_trace(self):
-        trace = Trace(self.data.get(), self.header.stats)
-        trace.write(self.absname, format='MSEED')
+        # Write multi-trace Stream to MSEED
+        log.info('_write_trace: Hydrophone data rate: %s' % str(self.header.rate))
+        stream = self.data
+        stream.write(self.absname, format='MSEED')
 
     def flush(self):
         if self.needs_flush:
