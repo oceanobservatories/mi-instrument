@@ -1058,22 +1058,64 @@ class Protocol(CommandResponseInstrumentProtocol):
 # "$1RD" is used to ensure we're extracting the first timestamp of the particle. Each particle in
 # the file actually contains 3 response timestamps, but we only want the first.
 _NEW_DATFILE_PARTICLE_TIMESTAMP_MATCHER = re.compile(
-    r'\$1RD[\r\n]+?'
-    r'</OOI\-CMD>[\r\n]+?'
-    r'<OOI\-ts:(\d{4}\-\d{2}\-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3})>',
+    r'<OOI-CMD (\d{4}\-\d{2}\-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}).*?>[\r\n]+?'
+    r'[*$]1RD',
     re.DOTALL
 )
 
 # This regex extracts the 3 float values of a particle from the new ".dat" format shown below.
 _NEW_DATFILE_PARTICLE_BODY_MATCHER = re.compile(
-    r'[*$]1RD[\r\n]+\*([+-]\d*\.?\d+).*?'
-    r'[*$]2RD[\r\n]+\*([+-]\d*\.?\d+).*?'
-    r'[*$]3RD[\r\n]+\*([+-]\d*\.?\d+)',
+    r'<OOI\-ts:\d{4}\-\d{2}\-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}>\s+'
+    r'(?:[*$]1RD\s+)?'
+    r'\*([+-]\d*\.?\d+)\s+'
+    r'</OOI-ts>\s+'
+    r'<OOI-CMD \d{4}\-\d{2}\-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}.*?>\s+'
+    r'[*$]2RD\s+'
+    r'</OOI-CMD>\s+'
+    r'<OOI\-ts:\d{4}\-\d{2}\-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}>\s+'
+    r'(?:[*$]2RD\s+)?'
+    r'\*([+-]\d*\.?\d+)\s+'
+    r'</OOI-ts>\s+'
+    r'<OOI-CMD \d{4}\-\d{2}\-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}.*?>\s+'
+    r'[*$]3RD\s+'
+    r'</OOI-CMD>\s+'
+    r'<OOI\-ts:\d{4}\-\d{2}\-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}>\s+'
+    r'(?:[*$]3RD\s+)?'
+    r'\*([+-]\d*\.?\d+)\s+'
+    r'</OOI-ts>',
     re.DOTALL
 )
 
-# # Here's an example of a full particle in the new ".dat" file format:
-# _NEW_DATFILE_PARTICLE_TEXT_EXAMPLE = """\
+# # # Here's an example of a full particle in the new ".dat" file format:
+# _NEW_DATFILE_PARTICLE_TEXT_EXAMPLE_1 = """\
+# <OOI-CMD 2023-02-16T02:09:22.094Z 006>
+# $1RD
+
+# </OOI-CMD>
+# <OOI-ts:2023-02-16T02:09:22.144>
+# *+00027.50
+#  </OOI-ts>
+
+# <OOI-CMD 2023-02-16T02:09:22.421Z 006>
+# $2RD
+
+# </OOI-CMD>
+# <OOI-ts:2023-02-16T02:09:22.470>
+# *+00017.40
+#  </OOI-ts>
+
+# <OOI-CMD 2023-02-16T02:09:22.699Z 006>
+# $3RD
+
+# </OOI-CMD>
+# <OOI-ts:2023-02-16T02:09:22.749>
+# *+00002.40
+#  </OOI-ts>
+# """
+
+# # Here's an example of a full particle in the new ".dat" file format that includes $RD values in
+# # the responses:
+# _NEW_DATFILE_PARTICLE_TEXT_EXAMPLE_2 = """\
 # <OOI-CMD 2023-02-16T02:09:22.094Z 006>
 # $1RD
 
@@ -1104,13 +1146,23 @@ _NEW_DATFILE_PARTICLE_BODY_MATCHER = re.compile(
 
 # assert (
 #     _NEW_DATFILE_PARTICLE_TIMESTAMP_MATCHER
-#         .search(_NEW_DATFILE_PARTICLE_TEXT_EXAMPLE)
-#         .groups() == ("2023-02-16T02:09:22.144",)
+#         .search(_NEW_DATFILE_PARTICLE_TEXT_EXAMPLE_1)
+#         .groups() == ("2023-02-16T02:09:22.094",)
+# )
+# assert (
+#     _NEW_DATFILE_PARTICLE_TIMESTAMP_MATCHER
+#         .search(_NEW_DATFILE_PARTICLE_TEXT_EXAMPLE_2)
+#         .groups() == ("2023-02-16T02:09:22.094",)
 # )
 # assert (
 #     _NEW_DATFILE_PARTICLE_BODY_MATCHER
-#         .search(_NEW_DATFILE_PARTICLE_TEXT_EXAMPLE)
-#         .groups() == ('+00027.50', '+00017.40', '+00002.40')
+#         .search(_NEW_DATFILE_PARTICLE_TEXT_EXAMPLE_1)
+#         .groups() == ("+00027.50", "+00017.40", "+00002.40")
+# )
+# assert (
+#     _NEW_DATFILE_PARTICLE_BODY_MATCHER
+#         .search(_NEW_DATFILE_PARTICLE_TEXT_EXAMPLE_2)
+#         .groups() == ("+00027.50", "+00017.40", "+00002.40")
 # )
 
 
@@ -1170,11 +1222,11 @@ _OLD_DATFILE_PARTICLE_BODY_MATCHER = re.compile(
 # )
 # assert (
 #     _OLD_DATFILE_PARTICLE_BODY_MATCHER.search(_OLD_DATFILE_PARTICLE_EXAMPLE_1)
-#         .groups() == ('+00167.00', '+00128.10', '+99999.99')
+#         .groups() == ("+00167.00", "+00128.10", "+99999.99")
 # )
 # assert (
 #     _OLD_DATFILE_PARTICLE_BODY_MATCHER.search(_OLD_DATFILE_PARTICLE_EXAMPLE_2)
-#         .groups() == ('+00167.00', '+00128.10', '+99999.99')
+#         .groups() == ("+00167.00", "+00128.10", "+99999.99")
 # )
 
 
