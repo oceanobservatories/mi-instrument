@@ -10,7 +10,7 @@ This file contains code for the metbk_a_dcl parsers and code to produce data par
 For telemetered data, there is one parser which produces one type of data particle.
 For recovered data, there is one parser which produces one type of data particle.
 The input files and the content of the data particles are the same for both
-recovered and telemetered.
+recovered_host and telemetered.
 Only the names of the output particle streams are different.
 
 The input file is ASCII and contains 2 types of records.
@@ -80,6 +80,7 @@ INSTRUMENT_PARTICLE_MAP = [
 class DataParticleType(BaseEnum):
     REC_INSTRUMENT_PARTICLE = 'metbk_a_dcl_instrument_recovered'
     TEL_INSTRUMENT_PARTICLE = 'metbk_a_dcl_instrument'
+    CT_INSTRUMENT_PARTICLE = 'metbk_ct_dcl_instrument'
 
 
 class MetbkADclInstrumentDataParticle(DclInstrumentDataParticle):
@@ -118,6 +119,31 @@ class MetbkADclTelemeteredInstrumentDataParticle(MetbkADclInstrumentDataParticle
     """
     _data_particle_type = DataParticleType.TEL_INSTRUMENT_PARTICLE
 
+
+class MetbkCtDclInstrumentDataParticle(DclInstrumentDataParticle):
+    """
+    Class for generating the metbk_ct dcl instrument particle.
+    """
+    _data_particle_type = DataParticleType.CT_INSTRUMENT_PARTICLE
+
+    _ct_fields = ['sea_surface_temperature', 'sea_surface_conductivity']
+    def __init__(self, raw_data, *args, **kwargs):
+        super(MetbkCtDclInstrumentDataParticle, self).__init__(
+            raw_data,
+            INSTRUMENT_PARTICLE_MAP,
+            *args, **kwargs)
+
+    def _build_parsed_values(self):
+        """
+        Build parsed values for Recovered and Telemetered Instrument Data Particle.
+        Only select the ct fields.
+        Returns the list.
+        """
+        data_list = []
+        for name, group, func in INSTRUMENT_PARTICLE_MAP:
+            if name in self._ct_fields and isinstance(self.raw_data[group], func):
+                data_list.append(self._encode_value(name, self.raw_data[group], func))
+        return data_list
 
 class MetbkADclParser(DclFileCommonParser):
     """
