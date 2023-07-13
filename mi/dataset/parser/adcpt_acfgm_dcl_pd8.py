@@ -230,9 +230,12 @@ class AdcptAcfgmPd8Parser(SimpleParser):
         this method self._record_buffer will be filled with all the particles in the file.
         """
 
+        nextline = None
         while True:  # loop through file looking for beginning of an adcp data burst
 
-            line = self._stream_handle.readline()  # READ NEXT LINE
+            # READ NEXT LINE, unless we had one buffered
+            line = nextline if nextline else self._stream_handle.readline()
+            nextline = None
 
             if line == "":
                 break
@@ -310,6 +313,7 @@ class AdcptAcfgmPd8Parser(SimpleParser):
                     # Collect velocity data sextets and echo power quartets
                     sensor_data_list.append(line_match.groups()[SENSOR_DATA_BIN:])
                 else:
+                    nextline = line  # pass this line back to the outer loop
                     try:
                         # Transpose velocity data sextets and echo power quartets
                         np_array = numpy.array(sensor_data_list)
