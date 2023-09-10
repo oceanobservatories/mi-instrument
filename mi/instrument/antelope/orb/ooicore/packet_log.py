@@ -191,21 +191,23 @@ class PacketLog(object):
         # split this packet if necessary
         packet_endtime = packet['time'] + self.header.delta * packet['nsamp']
         if self.header.maxtime >= packet_endtime:
-            self._write_data(packet['data'])
+            self._write_data(packet['data'], packet['time'])
             return None
 
         diff = self.header.maxtime - packet['time']
         nsamps = int(math.ceil(diff * self.header.rate))
-        self._write_data(packet['data'][:nsamps])
+        self._write_data(packet['data'][:nsamps], packet['time'])
         packet['data'] = packet['data'][nsamps:]
         packet['nsamp'] = len(packet['data'])
         packet['time'] += nsamps * self.header.delta
         return packet
 
-    def _write_data(self, data):
+    def _write_data(self, data, mintime):
         # Append Trace to Stream
         count = len(data)
         self.header.num_samples = count
+        self.header.starttime = mintime
+        # TODO: Should I be appending to a Trace instead of adding a new trace?
         self.data.append(Trace(np.asarray(data, dtype='i'), self.header.stats))
         self.needs_flush = True
 
@@ -213,6 +215,7 @@ class PacketLog(object):
         # Write multi-trace Stream to MSEED
         log.info('_write_trace: Hydrophone data rate: %s' % str(self.header.rate))
         stream = self.data
+        # TODO: Should I merge the traces?
         stream.write(self.absname, format='MSEED')
 
     def flush(self):
