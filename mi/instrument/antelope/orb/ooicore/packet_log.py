@@ -206,7 +206,8 @@ class PacketLog(object):
         # Append Trace to Stream
         count = len(data)
         self.header.num_samples = count
-        self.header.starttime = mintime
+        # TODO: Fix the mintime
+        # self.header.starttime = mintime
         # TODO: Should I be appending to a Trace instead of adding a new trace?
         self.data.append(Trace(np.asarray(data, dtype='i'), self.header.stats))
         self.needs_flush = True
@@ -216,6 +217,7 @@ class PacketLog(object):
         log.info('_write_trace: Hydrophone data rate: %s' % str(self.header.rate))
         stream = self.data
         # TODO: Should I merge the traces?
+        # stream.merge(method=-1)
         stream.write(self.absname, format='MSEED')
 
     def flush(self):
