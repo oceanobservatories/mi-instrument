@@ -207,7 +207,7 @@ class PacketLog(object):
         count = len(data)
         self.header.num_samples = count
         # TODO: Fix the mintime
-        # self.header.starttime = mintime
+        self.header.starttime = mintime
         # TODO: Should I be appending to a Trace instead of adding a new trace?
         self.data.append(Trace(np.asarray(data, dtype='i'), self.header.stats))
         self.needs_flush = True

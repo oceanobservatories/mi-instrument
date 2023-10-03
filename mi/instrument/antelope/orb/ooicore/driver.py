@@ -357,7 +357,11 @@ class Protocol(InstrumentProtocol):
             if data_length != 65519:
                 data = pickle.loads(''.join(self._pickle_cache))
                 self._pickle_cache = []
-                self._bin_data(data)
+                # Check that the data contains a sampling rate > 0, otherwise downstream calculations will fail.
+                if data['samprate'] > 0:
+                    self._bin_data(data)
+                else:
+                    raise InstrumentProtocolException('Received Antelope data packets with samprate <= 0')
         else:
             raise InstrumentProtocolException('Received unpickled data from port agent')
 
