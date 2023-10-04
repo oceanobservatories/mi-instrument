@@ -205,8 +205,9 @@ class PacketLog(object):
     def _write_data(self, data, mintime):
         # Append Trace to Stream
         count = len(data)
+        # Set the number of data points in the Trace metadata
         self.header.num_samples = count
-        # TODO: Fix the mintime
+        # Set the Trace metadata starttime to the packet's first data point time
         self.header.starttime = mintime
         # TODO: Should I be appending to a Trace instead of adding a new trace?
         self.data.append(Trace(np.asarray(data, dtype='i'), self.header.stats))
@@ -216,8 +217,6 @@ class PacketLog(object):
         # Write multi-trace Stream to MSEED
         log.info('_write_trace: Hydrophone data rate: %s' % str(self.header.rate))
         stream = self.data
-        # TODO: Should I merge the traces?
-        # stream.merge(method=-1)
         stream.write(self.absname, format='MSEED')
 
     def flush(self):
