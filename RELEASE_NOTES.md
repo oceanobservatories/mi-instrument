@@ -1,3 +1,9 @@
+# Version 1.0.11
+
+* Antelope
+   * Fixes Trace starttime metadata
+   * Adds orbreject command to support complex Orb channel selection
+
 # Version 1.0.10
 
 * Antelope

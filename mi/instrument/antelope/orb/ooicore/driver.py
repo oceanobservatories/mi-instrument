@@ -52,6 +52,7 @@ class Capability(BaseEnum):
 class Parameter(BaseEnum):
     REFDES = 'refdes'
     SOURCE_REGEX = 'source_regex'
+    REJECT_REGEX = 'reject_regex'
     START_PKTID = 'start_pktid'
     FILE_LOCATION = 'file_location'
     IS_DIVERTED = 'is_diverted'
@@ -204,6 +205,16 @@ class Protocol(InstrumentProtocol):
                              description='Filter sources to be processed from the ORB',
                              type=ParameterDictType.STRING,
                              value_description='Regular expression')
+        self._param_dict.add(Parameter.REJECT_REGEX,
+                             'NA',
+                             str,
+                             str,
+                             visibility=ParameterDictVisibility.IMMUTABLE,
+                             startup_param=True,
+                             display_name='Reject Filter Regex',
+                             description='Filter sources to be rejected from the ORB',
+                             type=ParameterDictType.STRING,
+                             value_description='Regular expression')
         self._param_dict.add(Parameter.FILE_LOCATION,
                              'NA',
                              str,
@@ -314,6 +325,7 @@ class Protocol(InstrumentProtocol):
     # noinspection PyProtectedMember
     def _orbstart(self):
         self._connection._command_port_agent('orbselect %s' % self._param_dict.get(Parameter.SOURCE_REGEX))
+        self._connection._command_port_agent('orbreject %s' % self._param_dict.get(Parameter.REJECT_REGEX))
         self._connection._command_port_agent('orbseek %s' % self._persistent_store['pktid'])
         self._connection._command_port_agent('orbstart')
 
@@ -345,7 +357,11 @@ class Protocol(InstrumentProtocol):
             if data_length != 65519:
                 data = pickle.loads(''.join(self._pickle_cache))
                 self._pickle_cache = []
-                self._bin_data(data)
+                # Check that the data contains a sampling rate > 0, otherwise downstream calculations will fail.
+                if data['samprate'] > 0:
+                    self._bin_data(data)
+                else:
+                    raise InstrumentProtocolException('Received Antelope data packets with samprate <= 0')
         else:
             raise InstrumentProtocolException('Received unpickled data from port agent')
 

@@ -191,21 +191,25 @@ class PacketLog(object):
         # split this packet if necessary
         packet_endtime = packet['time'] + self.header.delta * packet['nsamp']
         if self.header.maxtime >= packet_endtime:
-            self._write_data(packet['data'])
+            self._write_data(packet['data'], packet['time'])
             return None
 
         diff = self.header.maxtime - packet['time']
         nsamps = int(math.ceil(diff * self.header.rate))
-        self._write_data(packet['data'][:nsamps])
+        self._write_data(packet['data'][:nsamps], packet['time'])
         packet['data'] = packet['data'][nsamps:]
         packet['nsamp'] = len(packet['data'])
         packet['time'] += nsamps * self.header.delta
         return packet
 
-    def _write_data(self, data):
+    def _write_data(self, data, mintime):
         # Append Trace to Stream
         count = len(data)
+        # Set the number of data points in the Trace metadata
         self.header.num_samples = count
+        # Set the Trace metadata starttime to the packet's first data point time
+        self.header.starttime = mintime
+        # TODO: Should I be appending to a Trace instead of adding a new trace?
         self.data.append(Trace(np.asarray(data, dtype='i'), self.header.stats))
         self.needs_flush = True
 
