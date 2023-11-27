@@ -292,6 +292,8 @@ class AdcptMFCoeffParser(SimpleParser):
 
             # read the next line in the file
             line = self._stream_handle.readline()
+            # replace the 1.#INF00 string with a -999999999 (system default fill-value)
+            line = re.sub(r'1.#INF00', '-999999999.0', line)
 
         # Construct parsed data list to hand over to the Data Particle class for particle creation
         # Make all the collected data effectively into one long dictionary
