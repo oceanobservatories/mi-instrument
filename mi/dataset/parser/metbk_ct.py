@@ -1,13 +1,13 @@
 #!/usr/bin/env python
 
 """
-@package mi.dataset.parser.metbk_ct_dcl
-@file marine-integrations/mi/dataset/parser/metbk_ct_dcl.py
+@package mi.dataset.parser.metbk_ct
+@file marine-integrations/mi/dataset/parser/metbk_ct.py
 @author Tim Fisher
-@brief Parser for the metbk_ct_dcl dataset driver
+@brief Parser for the metbk_ct dataset driver
 
-This file contains code for the metbk_ct_dcl parser and code to produce data particles.
-For recovered data, there is one parser which produces one type of data particle.
+This file contains code for the metbk_ct parser and code to produce data particles.
+For recovered instrument data, there is one parser which produces one type of data particle.
 
 The input file is hex and contains 1 type of record.
 All detail records are 20 bytes separated by a newline.
@@ -93,17 +93,17 @@ def generate_particle_timestamp(time_2000):
 
 
 class DataParticleType(BaseEnum):
-    INSTRUMENT_PARTICLE = 'metbk_ct_dcl_instrument'
+    INSTRUMENT_PARTICLE = 'metbk_ct_instrument'
 
 
 class DataParticleKey(BaseEnum):
     SERIAL_NUMBER = "serial_number"
-    TEMPERATURE = "temperature"
-    CONDUCTIVITY = "conductivity"
+    RAW_TEMPERATURE = "raw_temperature"
+    RAW_CONDUCTIVITY = "raw_conductivity"
     CTD_TIME = "ctd_time"
 
 
-class MetbkCtDclParser(SimpleParser):
+class MetbkCtParser(SimpleParser):
     def __init__(self,
                  config,
                  stream_handle,
@@ -112,7 +112,7 @@ class MetbkCtDclParser(SimpleParser):
         #
         # File is ASCII with records separated by newlines.
         #
-        super(MetbkCtDclParser, self).__init__(config, stream_handle, exception_callback)
+        super(MetbkCtParser, self).__init__(config, stream_handle, exception_callback)
 
         #
         # set flags to indicate the end of Configuration has not been reached
@@ -199,7 +199,7 @@ class MetbkCtDclParser(SimpleParser):
             #   conductivity
             #   time of science data
             #
-            sample = self._extract_sample(MetbkCtDclInstrumentDataParticle, None,
+            sample = self._extract_sample(MetbkCtInstrumentDataParticle, None,
                                          (self._serial_number,
                                           ct_match.group(REC_CT_GROUP_TEMPERATURE),
                                           ct_match.group(REC_CT_GROUP_CONDUCTIVITY),
@@ -218,7 +218,7 @@ class MetbkCtDclParser(SimpleParser):
         return sample
 
 
-class MetbkCtDclInstrumentDataParticle(DataParticle):
+class MetbkCtInstrumentDataParticle(DataParticle):
     _data_particle_type = DataParticleType.INSTRUMENT_PARTICLE
 
     def _build_parsed_values(self):
@@ -248,10 +248,10 @@ class MetbkCtDclInstrumentDataParticle(DataParticle):
         particle = [
             self._encode_value(DataParticleKey.SERIAL_NUMBER,
                                self.raw_data[RAW_INDEX_REC_CT_SERIAL], str),
-            self._encode_value(DataParticleKey.TEMPERATURE,
+            self._encode_value(DataParticleKey.RAW_TEMPERATURE,
                                self.raw_data[RAW_INDEX_REC_CT_TEMPERATURE],
                                convert_hex_ascii_to_int),
-            self._encode_value(DataParticleKey.CONDUCTIVITY,
+            self._encode_value(DataParticleKey.RAW_CONDUCTIVITY,
                                self.raw_data[RAW_INDEX_REC_CT_CONDUCTIVITY],
                                convert_hex_ascii_to_int),
             self._encode_value(DataParticleKey.CTD_TIME,

@@ -16,6 +16,7 @@ log = get_logger()
 MODULE_NAME = 'mi.dataset.parser.metbk_a_dcl'
 RECOVERED_PARTICLE_CLASS = 'MetbkADclRecoveredInstrumentDataParticle'
 TELEMETERED_PARTICLE_CLASS = 'MetbkADclTelemeteredInstrumentDataParticle'
+RECOVERED_HOST_CT_PARTICLE_CLASS = 'MetbkCtDclInstrumentDataParticle'
 
 
 def process(source_file_path, particle_data_handler, particle_class):
