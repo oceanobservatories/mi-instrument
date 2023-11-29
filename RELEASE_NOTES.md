@@ -1,3 +1,8 @@
+# Version 1.0.12
+
+* Issue #15493 - Implementation of Asset Management updates to enable METBK-CT recovered-instr ingestion and data products
+* Issue #15543 - Fill Value in ADCPT-M Processed Waves Fourier Coefficients Data
+
 # Version 1.0.11
 
 * Antelope
