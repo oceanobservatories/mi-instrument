@@ -2,6 +2,7 @@ import os
 import math
 import uuid
 from datetime import datetime
+from decimal import Decimal, getcontext
 
 from obspy.core import Stats
 import numpy as np
@@ -11,6 +12,7 @@ from mi.core.log import get_logger
 from mi.core.exceptions import InstrumentProtocolException
 
 log = get_logger()
+getcontext().prec = 7
 
 
 class Vector(object):
@@ -186,21 +188,48 @@ class PacketLog(object):
     def add_packet(self, packet):
         # If the current packet is not within the 5 min file, then move to the next 5 minute file
         if self.header.mintime > packet['time'] or packet['time'] >= self.header.maxtime:
+            log.info('******** GAP EXCEPTION ABOUT TO BE RAISED ********')
+            log.info('packet[\'time\']: %s' % str(packet['time']))
+            log.info('starttime: %s' % str(self.header.starttime))
+            log.info('mintime: %s' % str(self.header.mintime))
+            log.info('maxtime: %s' % str(self.header.maxtime))
+            log.info('num_samples: %s' % str(self.header.num_samples))
             raise GapException()
 
-        # split this packet if necessary
-        packet_endtime = packet['time'] + self.header.delta * packet['nsamp']
+        # Check that the packet is fully contained in the 5m file
+        packet_endtime = float(Decimal(str(packet['time'])) + (Decimal(self.header.delta) * Decimal(str(packet['nsamp']))))
         if self.header.maxtime >= packet_endtime:
-            self._write_data(packet['data'], packet['time'])
+            self._write_data(packet['data'], float(Decimal(str(packet['time']))))
             return None
 
-        diff = self.header.maxtime - packet['time']
-        nsamps = int(math.ceil(diff * self.header.rate))
-        self._write_data(packet['data'][:nsamps], packet['time'])
-        packet['data'] = packet['data'][nsamps:]
-        packet['nsamp'] = len(packet['data'])
-        packet['time'] += nsamps * self.header.delta
-        return packet
+        # Check the time delta between the current 5m max time and packet start time
+        # Used to tell whether we are on a boundary
+        diff = Decimal(str(self.header.maxtime)) - Decimal(str(packet['time']))
+        # Check if diff is > 0
+        if float(diff) > 0:
+            log.info('maxtime: %s' % str(self.header.maxtime))
+            log.info('packet[\'time\']: %s' % str(packet['time']))
+            log.info('diff: %s' % str(diff))
+
+            # Number of samples between the packet start time and 5 min mark
+            # The maximum number of samples can be 19,200,000 for a 5 minute file, need to check this condition
+            nsamps = int(math.ceil(diff * Decimal(str(self.header.rate))))
+            log.info('nsamps before: %s' % str(nsamps))
+
+            # Write the data up to the current 5m mark
+            data_before = packet['data'][:nsamps]
+            self._write_data(data_before, float(Decimal(str(packet['time']))))
+
+            # Prepare the remaining data in the packet and send back for the next 5m file
+            packet['data'] = packet['data'][nsamps:]
+            packet['nsamp'] = len(packet['data'])
+
+            packet['time'] = float(Decimal(str(packet['time'])) + (Decimal(self.header.delta) * Decimal(str(len(data_before)))))
+            log.info('nsamps after: %s' % str(packet['nsamp']))
+            log.info('packet[\'time\'] after: %s' % str(packet['time']))
+            return packet
+        else:
+            return None
 
     def _write_data(self, data, mintime):
         # Append Trace to Stream
@@ -208,8 +237,7 @@ class PacketLog(object):
         # Set the number of data points in the Trace metadata
         self.header.num_samples = count
         # Set the Trace metadata starttime to the packet's first data point time
-        self.header.starttime = mintime
-        # TODO: Should I be appending to a Trace instead of adding a new trace?
+        self.header.starttime = float(Decimal(str(mintime)))
         self.data.append(Trace(np.asarray(data, dtype='i'), self.header.stats))
         self.needs_flush = True
 
