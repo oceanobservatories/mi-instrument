@@ -1,3 +1,8 @@
+# Version 1.0.13
+
+* Antelope
+   * Fixes Trace time precision and calculations
+
 # Version 1.0.12
 
 * Issue #15493 - Implementation of Asset Management updates to enable METBK-CT recovered-instr ingestion and data products
