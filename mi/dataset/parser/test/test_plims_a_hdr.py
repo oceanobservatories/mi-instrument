@@ -1,34 +1,34 @@
 #!/usr/bin/env python
 
 """
-@package mi.dataset.parser.test.test_prtsz_a_dcl
-@file mi-dataset/mi/dataset/parser/test/test_prtsz_a_dcl.py
+@package mi.dataset.parser.test.test_plims_a_hdr
+@file mi-dataset/mi/dataset/parser/test/test_plims_a_hdr.py
 @author Samuel Dahlberg
-@brief Test code for a prtsz_a_dcl data parser
+@brief Test code for a plims_a_hdr data parser
 """
 
 import os
 
 from mi.core.log import get_logger
 from mi.dataset.dataset_parser import DataSetDriverConfigKeys
-from mi.dataset.parser.prtsz_a_dcl import PrtszADclParser
+from mi.dataset.parser.plims_a_hdr import PlimsAHdrParser
 from mi.dataset.test.test_parser import ParserUnitTestCase
-from mi.dataset.driver.prtsz_a.dcl.resource import RESOURCE_PATH
+from mi.dataset.driver.plims_a.resource import RESOURCE_PATH
 
 log = get_logger()
 
-MODULE_NAME = 'mi.dataset.parser.prtsz_a_dcl'
-CLASS_NAME = 'PrtszADataParticle'
-PARTICLE_TYPE = 'prtsz_a_instrument'
+MODULE_NAME = 'mi.dataset.parser.plims_a_hdr'
+CLASS_NAME = 'PlimsADataParticle'
+PARTICLE_TYPE = 'plims_a_instrument'
 
 
-class PrtszADclUnitTestCase(ParserUnitTestCase):
+class PlimsAHdrlUnitTestCase(ParserUnitTestCase):
     """
-    Prtsz_a_dcl Parser unit test suite
+    plims_a_hdr Parser unit test suite
     """
 
-    def create_prtsz_a_parser(self, file_handle):
-        return PrtszADclParser(self.config, file_handle, self.rec_exception_callback)
+    def create_plims_a_parser(self, file_handle):
+        return PlimsAHdrParser(self.config, file_handle, self.rec_exception_callback)
 
     def file_path(self, filename):
         log.debug('resource path = %s, file name = %s', RESOURCE_PATH, filename)
@@ -52,24 +52,24 @@ class PrtszADclUnitTestCase(ParserUnitTestCase):
         self.exception_callback_value = []
         self.exceptions_detected = 0
 
-    def test_prtsz_a_dcl_parser(self):
+    def test_plims_a_hdr_parser(self):
         """
         Read a file and pull out a data particle.
         Verify that the results are those we expected.
         """
 
-        log.debug('===== START TEST PRTSZ_A_DCL Parser =====')
+        log.debug('===== START TEST PLIMS_A_HDR Parser =====')
 
-        with open(self.file_path('20231107.prtsz.log')) as in_file:
-            parser = self.create_prtsz_a_parser(in_file)
+        with open(self.file_path('D20230222T174812_IFCB195.hdr')) as in_file:
+            parser = self.create_plims_a_parser(in_file)
 
             # In a single read, get all particles in this file.
             result = parser.get_records(30)
 
-            self.assertEqual(len(result), 30)
+            self.assertEqual(len(result), 1)
             self.assertListEqual(self.exception_callback_value, [])
 
-        log.debug('===== END TEST PRTSZ_A_DCL Parser  =====')
+        log.debug('===== END TEST PLIMS_A_HDR Parser  =====')
 
     def test_bad_data(self):
         """
@@ -79,14 +79,14 @@ class PrtszADclUnitTestCase(ParserUnitTestCase):
 
         log.debug('===== START TEST BAD DATA  =====')
 
-        with open(self.file_path('20231107_corrupt.prtsz.log')) as in_file:
-            parser = self.create_prtsz_a_parser(in_file)
+        with open(self.file_path('D20230222T174812_IFCB195_corrupt.hdr')) as in_file:
+            parser = self.create_plims_a_parser(in_file)
 
             # In a single read, get all particles for this file.
             result = parser.get_records(30)
 
-            self.assertEqual(len(result), 1)
-            self.assertEqual(len(self.exception_callback_value), 29)
+            self.assertEqual(len(result), 0)
+            self.assertEqual(len(self.exception_callback_value), 1)
 
             for i in range(len(self.exception_callback_value)):
                 log.debug('Exception: %s', self.exception_callback_value[i])
