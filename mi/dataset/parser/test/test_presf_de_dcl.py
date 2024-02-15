@@ -59,8 +59,6 @@ class PresfDeDclUnitTestCase(ParserUnitTestCase):
         Read a file and pull out a data particle.
         Verify that the results are those we expected.
         """
-        # Needed for now to run specific tests
-        self.setup()
 
         log.debug('===== START TEST PRESF_DE_DCL Parser =====')
 
@@ -79,8 +77,6 @@ class PresfDeDclUnitTestCase(ParserUnitTestCase):
         """
         Ensure that bad data is skipped when it exists.
         """
-        # Needed for now to run specific tests
-        self.setup()
 
         log.debug('===== START TEST BAD DATA  =====')
 

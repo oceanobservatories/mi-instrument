@@ -75,7 +75,6 @@ class PlimsAHdrlUnitTestCase(ParserUnitTestCase):
         """
         Ensure that bad data is skipped when it exists.
         """
-        self.setup()
 
         log.debug('===== START TEST BAD DATA  =====')
 
