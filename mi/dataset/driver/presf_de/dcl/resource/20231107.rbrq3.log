@@ -1,0 +1,21 @@
+[rbrpresf:DLOGP6]:# channels count = 2
+[rbrpresf:DLOGP6]:# channel 1 type = temp09, module = 6, status = on, settlingtime = 50 readtime = 260, equation = tmp, userunits = C, derived = off, label = temperature_00
+[rbrpresf:DLOGP6]:# channel 2 type = press01, module = 3, status = on, settlingtime = 50 readtime = 260, equation = prs, userunits = dB, derived = off, label = pressure_00
+[rbrpresf:DLOGP6]:# calibration 1 label = voltage_01, datetime = 20171218175005, c0 = 9.9876543e+000, c1 = 7.5642301e+000
+[rbrpresf:DLOGP6]:# calibration 2 label = voltage_02, datetime = 20171203134201, c0 = 9.9873456e+000, c1 = 7.5640000e+000
+[rbrpresf:DLOGP6]:# Active channels: temperature_00|pressure_00
+[rbrpresf:DLOGP6]:Logger started: Data acquisition state, without initialize
+[rbrpresf:DLOGP6]:# Active channels: temperature_00|pressure_00
+[rbrpresf:DLOGP6]:2023/07/22 06:47:48.250,1388236282872468.250000,0.000000,483482.125000
+[rbrpresf:DLOGP6]:2023/08/09 01:56:54.797,111262794573414.796875,483482.125000,0.000000
+[rbrpresf:DLOGP6]:2023/02/15 08:12:15.000,5254596048039135.000000,0.000000,0.000000
+[rbrpresf:DLOGP6]:2023/07/22 06:47:48.250,1388236282872468.250000,0.000000,483482.125000
+[rbrpresf:DLOGP6]:2023/08/09 01:56:54.797,111262794573414.796875,483482.125000,0.000000
+[rbrpresf:DLOGP6]:2023/02/15 08:12:15.000,5254596048039135.000000,0.000000,0.000000
+[rbrpresf:DLOGP6]:2023/07/22 06:47:48.250,1388236282872468.250000,0.000000,483482.125000
+[rbrpresf:DLOGP6]:2023/08/09 01:56:54.797,111262794573414.796875,483482.125000,0.000000
+[rbrpresf:DLOGP6]:2023/02/15 08:12:15.000,5254596048039135.000000,0.000000,0.000000
+[rbrpresf:DLOGP6]:2023/07/22 06:47:48.250,1388236282872468.250000,0.000000,483482.125000
+[rbrpresf:DLOGP6]:2023/08/09 01:56:54.797,111262794573414.796875,483482.125000,0.000000
+[rbrpresf:DLOGP6]:2023/02/15 08:12:15.000,5254596048039135.000000,0.000000,0.000000
+[rbrpresf:DLOGP6]:2023/07/22 06:47:48.250,1388236282872468.250000,0.000000,483482.125000
