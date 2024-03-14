@@ -96,7 +96,7 @@ class PrtszAParticleKey(BaseEnum):
     RELATIVE_HUMIDITY = 'relative_humidity'
     AMBIENT_LIGHT = 'ambient_light'
     COMPUTED_OPTICAL_TRANSMISSION = 'computed_optical_transmission'
-    BEAM_ATTENUATION = 'volume_beam_attenuation_coefficient_of_radiative_flux_in_sea_water'
+    BEAM_ATTENUATION = 'beam_attenuation'
     NUM_BINS = 'num_bins'
     MAX_PARTICLE_SIZE = 'max_particle_size'
     PARTICLE_LOWER_SIZE_BINS = 'particle_lower_size_bins'
