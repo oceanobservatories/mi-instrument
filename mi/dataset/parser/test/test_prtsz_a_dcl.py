@@ -57,7 +57,6 @@ class PrtszADclUnitTestCase(ParserUnitTestCase):
         Read a file and pull out a data particle.
         Verify that the results are those we expected.
         """
-        self.setup()
 
         log.debug('===== START TEST PRTSZ_A_DCL Parser =====')
 
