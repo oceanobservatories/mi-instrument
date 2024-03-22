@@ -115,7 +115,7 @@ class PlimsAParticleKey(BaseEnum):
 
 
 class DataParticleType(BaseEnum):
-    PLIMS_A_PARTICLE_TYPE = 'plims_a_instrument'
+    PLIMS_A_PARTICLE_TYPE = 'plims_a_hdr_instrument'
     __metaclass__ = get_logging_metaclass(log_level='trace')
 
 
