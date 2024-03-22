@@ -86,32 +86,32 @@ class PlimsAParticleKey(BaseEnum):
     Class that defines fields that need to be extracted for the data particle.
     """
 
-    SAMPLE_NUMBER = 'sampleNumber'
-    SAMPLE_TYPE = 'sampleType'
-    TRIGGER_COUNT = 'triggerCount'
-    ROI_COUNT = 'roiCount'
+    SAMPLE_NUMBER = 'sample_number'
+    SAMPLE_TYPE = 'sample_type'
+    TRIGGER_COUNT = 'trigger_count'
+    ROI_COUNT = 'roi_count'
     HUMIDITY = 'humidity'
     TEMPERATURE = 'temperature'
-    RUNTIME = 'runTime'
-    INHIBIT_TIME = 'inhibitTime'
-    PUMP1_STATE = 'pump1State'
-    PUMP2_STATE = 'pump2State'
-    PMTA_HIGH_VOLTAGE = 'PMTAhighVoltage'
-    PMTB_HIGH_VOLTAGE = 'PMTBhighVoltage'
-    ALT_FLASHLIGHT_CONTROL_VOLTAGE = 'Alt_FlashlampControlVoltage'
-    PUMP_DRIVE_VOLTAGE = 'pumpDriveVoltage'
-    ALT_PMTA_HIGH_VOLTAGE = 'altPMTAHighVoltage'
-    ALT_PMTB_HIGH_VOLTAGE = 'altPMTBHighVoltage'
-    SYRINGE_SAMPLING_SPEED = 'syringeSamplingSpeed'
-    SYRINGE_OFFSET = 'syringeOffset'
-    NUMBER_SYRINGES_TO_AUTORUN = 'NumberSyringesToAutoRun'
-    SYRINGE_SAMPLE_VOLUME = 'SyringeSampleVolume'
-    ALT_SYRINGE_SAMPLE_VOLUME = 'altSyringeSampleVolume'
-    SAMPLE_VOLUME_2_SKIP = 'sampleVolume2skip'
-    FOCUS_MOTOR_SMALL_STEP_MS = 'focusMotorSmallStep_ms'
-    FOCUS_MOTOR_LARGE_STEP_MS = 'focusMotorLargeStep_ms'
-    LASER_MOTOR_SMALL_STEP_MS = 'laserMotorSmallStep_ms'
-    LASER_MOTOR_LARGE_STEP_MS = 'laserMotorLargeStep_ms'
+    RUNTIME = 'run_time'
+    INHIBIT_TIME = 'inhibit_time'
+    PUMP1_STATE = 'pump1_state'
+    PUMP2_STATE = 'pump2_state'
+    PMTA_HIGH_VOLTAGE = 'pmta_high_voltage'
+    PMTB_HIGH_VOLTAGE = 'pmtb_high_voltage'
+    ALT_FLASHLIGHT_CONTROL_VOLTAGE = 'alt_flashlamp_control_voltage'
+    PUMP_DRIVE_VOLTAGE = 'pump_drive_voltage'
+    ALT_PMTA_HIGH_VOLTAGE = 'alt_pmta_high_voltage'
+    ALT_PMTB_HIGH_VOLTAGE = 'alt_pmtb_high_voltage'
+    SYRINGE_SAMPLING_SPEED = 'syringe_sampling_speed'
+    SYRINGE_OFFSET = 'syringe_offset'
+    NUMBER_SYRINGES_TO_AUTORUN = 'number_syringes_to_autorun'
+    SYRINGE_SAMPLE_VOLUME = 'syringe_sample_volume'
+    ALT_SYRINGE_SAMPLE_VOLUME = 'alt_syringe_sample_volume'
+    SAMPLE_VOLUME_2_SKIP = 'sample_volume_2_skip'
+    FOCUS_MOTOR_SMALL_STEP_MS = 'focus_motor_small_step_ms'
+    FOCUS_MOTOR_LARGE_STEP_MS = 'focus_motor_large_step_ms'
+    LASER_MOTOR_SMALL_STEP_MS = 'laser_motor_small_step_ms'
+    LASER_MOTOR_LARGE_STEP_MS = 'laser_motor_large_step_ms'
 
 
 class DataParticleType(BaseEnum):
@@ -139,32 +139,32 @@ class PlimsAHdrParser(SimpleParser):
     def parse_record(self, record):
 
         plims_particle_data = {
-            PlimsAParticleKey.SAMPLE_NUMBER: record.group('sampleNumber'),
-            PlimsAParticleKey.SAMPLE_TYPE: record.group('sampleType'),
-            PlimsAParticleKey.TRIGGER_COUNT: record.group('triggerCount'),
-            PlimsAParticleKey.ROI_COUNT: record.group('roiCount'),
-            PlimsAParticleKey.HUMIDITY: record.group('humidity'),
-            PlimsAParticleKey.TEMPERATURE: record.group('temperature'),
-            PlimsAParticleKey.RUNTIME: record.group('runTime'),
-            PlimsAParticleKey.INHIBIT_TIME: record.group('inhibitTime'),
-            PlimsAParticleKey.PUMP1_STATE: record.group('pump1State'),
-            PlimsAParticleKey.PUMP2_STATE: record.group('pump2State'),
-            PlimsAParticleKey.PMTA_HIGH_VOLTAGE: record.group('PMTAhighVoltage'),
-            PlimsAParticleKey.PMTB_HIGH_VOLTAGE: record.group('PMTBhighVoltage'),
-            PlimsAParticleKey.ALT_FLASHLIGHT_CONTROL_VOLTAGE: record.group('Alt_FlashlampControlVoltage'),
-            PlimsAParticleKey.PUMP_DRIVE_VOLTAGE: record.group('pumpDriveVoltage'),
-            PlimsAParticleKey.ALT_PMTA_HIGH_VOLTAGE: record.group('altPMTAHighVoltage'),
-            PlimsAParticleKey.ALT_PMTB_HIGH_VOLTAGE: record.group('altPMTBHighVoltage'),
-            PlimsAParticleKey.SYRINGE_SAMPLING_SPEED: record.group('syringeSamplingSpeed'),
-            PlimsAParticleKey.SYRINGE_OFFSET: record.group('syringeOffset'),
-            PlimsAParticleKey.NUMBER_SYRINGES_TO_AUTORUN: record.group('NumberSyringesToAutoRun'),
-            PlimsAParticleKey.SYRINGE_SAMPLE_VOLUME: record.group('SyringeSampleVolume'),
-            PlimsAParticleKey.ALT_SYRINGE_SAMPLE_VOLUME: record.group('altSyringeSampleVolume'),
-            PlimsAParticleKey.SAMPLE_VOLUME_2_SKIP: record.group('sampleVolume2skip'),
-            PlimsAParticleKey.FOCUS_MOTOR_SMALL_STEP_MS: record.group('focusMotorSmallStep_ms'),
-            PlimsAParticleKey.FOCUS_MOTOR_LARGE_STEP_MS: record.group('focusMotorLargeStep_ms'),
-            PlimsAParticleKey.LASER_MOTOR_SMALL_STEP_MS: record.group('laserMotorSmallStep_ms'),
-            PlimsAParticleKey.LASER_MOTOR_LARGE_STEP_MS: record.group('laserMotorLargeStep_ms')
+            PlimsAParticleKey.SAMPLE_NUMBER: int(record.group('sampleNumber')),
+            PlimsAParticleKey.SAMPLE_TYPE: str(record.group('sampleType')),
+            PlimsAParticleKey.TRIGGER_COUNT: int(record.group('triggerCount')),
+            PlimsAParticleKey.ROI_COUNT: int(record.group('roiCount')),
+            PlimsAParticleKey.HUMIDITY: float(record.group('humidity')),
+            PlimsAParticleKey.TEMPERATURE: float(record.group('temperature')),
+            PlimsAParticleKey.RUNTIME: float(record.group('runTime')),
+            PlimsAParticleKey.INHIBIT_TIME: float(record.group('inhibitTime')),
+            PlimsAParticleKey.PUMP1_STATE: bool(record.group('pump1State')),
+            PlimsAParticleKey.PUMP2_STATE: bool(record.group('pump2State')),
+            PlimsAParticleKey.PMTA_HIGH_VOLTAGE: float(record.group('PMTAhighVoltage')),
+            PlimsAParticleKey.PMTB_HIGH_VOLTAGE: float(record.group('PMTBhighVoltage')),
+            PlimsAParticleKey.ALT_FLASHLIGHT_CONTROL_VOLTAGE: float(record.group('Alt_FlashlampControlVoltage')),
+            PlimsAParticleKey.PUMP_DRIVE_VOLTAGE: float(record.group('pumpDriveVoltage')),
+            PlimsAParticleKey.ALT_PMTA_HIGH_VOLTAGE: float(record.group('altPMTAHighVoltage')),
+            PlimsAParticleKey.ALT_PMTB_HIGH_VOLTAGE: float(record.group('altPMTBHighVoltage')),
+            PlimsAParticleKey.SYRINGE_SAMPLING_SPEED: float(record.group('syringeSamplingSpeed')),
+            PlimsAParticleKey.SYRINGE_OFFSET: float(record.group('syringeOffset')),
+            PlimsAParticleKey.NUMBER_SYRINGES_TO_AUTORUN: int(record.group('NumberSyringesToAutoRun')),
+            PlimsAParticleKey.SYRINGE_SAMPLE_VOLUME: float(record.group('SyringeSampleVolume')),
+            PlimsAParticleKey.ALT_SYRINGE_SAMPLE_VOLUME: float(record.group('altSyringeSampleVolume')),
+            PlimsAParticleKey.SAMPLE_VOLUME_2_SKIP: int(record.group('sampleVolume2skip')),
+            PlimsAParticleKey.FOCUS_MOTOR_SMALL_STEP_MS: int(record.group('focusMotorSmallStep_ms')),
+            PlimsAParticleKey.FOCUS_MOTOR_LARGE_STEP_MS: int(record.group('focusMotorLargeStep_ms')),
+            PlimsAParticleKey.LASER_MOTOR_SMALL_STEP_MS: int(record.group('laserMotorSmallStep_ms')),
+            PlimsAParticleKey.LASER_MOTOR_LARGE_STEP_MS: int(record.group('laserMotorLargeStep_ms'))
         }
 
         return plims_particle_data
