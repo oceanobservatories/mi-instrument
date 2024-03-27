@@ -88,6 +88,8 @@ SENSOR_DATA_PATTERN += FLOAT + COMMA  # average IRGA temperature [deg C]
 SENSOR_DATA_PATTERN += FLOAT + COMMA  # humidity [mbar]
 SENSOR_DATA_PATTERN += FLOAT + COMMA  # humidity sensor temperature [deg C]
 SENSOR_DATA_PATTERN += UINT + COMMA  # gas stream pressure [mbar]
+SENSOR_DATA_PATTERN_NEWSBA5 = SENSOR_DATA_PATTERN + FLOAT  # supply voltage
+SENSOR_DATA_PATTERN_NEWSBA5 += END_OF_LINE_REGEX
 SENSOR_DATA_PATTERN += FLOAT + COMMA  # IRGA detector temperature [deg C]
 SENSOR_DATA_PATTERN += FLOAT + COMMA  # IRGA source temperature [deg C]
 SENSOR_DATA_PATTERN += FLOAT  # supply voltage
@@ -103,6 +105,16 @@ SENSOR_DATA_PATTERN_WATER += CHAR_W + SPACE_REGEX
 SENSOR_DATA_PATTERN_WATER += SENSOR_DATA_PATTERN
 SENSOR_DATA_MATCHER_WATER = re.compile(SENSOR_DATA_PATTERN_WATER)
 
+SENSOR_DATA_PATTERN_AIR_NEWSBA5 = TIMESTAMP + SPACE_REGEX  # dcl controller timestamp
+SENSOR_DATA_PATTERN_AIR_NEWSBA5 += CHAR_A + SPACE_REGEX
+SENSOR_DATA_PATTERN_AIR_NEWSBA5 += SENSOR_DATA_PATTERN_NEWSBA5
+SENSOR_DATA_MATCHER_AIR_NEWSBA5 = re.compile(SENSOR_DATA_PATTERN_AIR_NEWSBA5)
+
+SENSOR_DATA_PATTERN_WATER_NEWSBA5 = TIMESTAMP + SPACE_REGEX  # dcl controller timestamp
+SENSOR_DATA_PATTERN_WATER_NEWSBA5 += CHAR_W + SPACE_REGEX
+SENSOR_DATA_PATTERN_WATER_NEWSBA5 += SENSOR_DATA_PATTERN_NEWSBA5
+SENSOR_DATA_MATCHER_WATER_NEWSBA5 = re.compile(SENSOR_DATA_PATTERN_WATER_NEWSBA5)
+
 # SENSOR_DATA_MATCHER produces the following groups.
 # The following are indices into groups() produced by SENSOR_DATA_MATCHER.
 # i.e, match.groups()[INDEX]
@@ -117,6 +129,7 @@ SENSOR_GROUP_STREAM_PRESSURE = 16
 SENSOR_GROUP_DETECTOR_TEMP = 17
 SENSOR_GROUP_SOURCE_TEMP = 18
 SENSOR_GROUP_SUPPLY_VOLTAGE = 19
+SENSOR_GROUP_SUPPLY_VOLTAGE_NEWSBA5 = 17
 SENSOR_GROUP_SAMPLE_TYPE = 8
 
 INSTRUMENT_PARTICLE_AIR_MAP = [
@@ -143,6 +156,28 @@ INSTRUMENT_PARTICLE_WATER_MAP = [
     ('irga_detector_temperature', SENSOR_GROUP_DETECTOR_TEMP, float),
     ('irga_source_temperature', SENSOR_GROUP_SOURCE_TEMP, float),
     ('supply_voltage', SENSOR_GROUP_SUPPLY_VOLTAGE, float)
+]
+
+INSTRUMENT_PARTICLE_AIR_MAP_NEWSBA5 = [
+    ('zero_a2d', SENSOR_GROUP_ZERO_A2D, int),
+    ('current_a2d', SENSOR_GROUP_CURRENT_A2D, int),
+    ('measured_air_co2', SENSOR_GROUP_CO2, float),
+    ('avg_irga_temperature', SENSOR_GROUP_AVG_IRGA_TEMP, float),
+    ('humidity', SENSOR_GROUP_HUMIDITY, float),
+    ('humidity_temperature', SENSOR_GROUP_HUMIDITY_TEMP, float),
+    ('gas_stream_pressure', SENSOR_GROUP_STREAM_PRESSURE, int),
+    ('supply_voltage', SENSOR_GROUP_SUPPLY_VOLTAGE_NEWSBA5, float)
+]
+
+INSTRUMENT_PARTICLE_WATER_MAP_NEWSBA5 = [
+    ('zero_a2d', SENSOR_GROUP_ZERO_A2D, int),
+    ('current_a2d', SENSOR_GROUP_CURRENT_A2D, int),
+    ('measured_water_co2', SENSOR_GROUP_CO2, float),
+    ('avg_irga_temperature', SENSOR_GROUP_AVG_IRGA_TEMP, float),
+    ('humidity', SENSOR_GROUP_HUMIDITY, float),
+    ('humidity_temperature', SENSOR_GROUP_HUMIDITY_TEMP, float),
+    ('gas_stream_pressure', SENSOR_GROUP_STREAM_PRESSURE, int),
+    ('supply_voltage', SENSOR_GROUP_SUPPLY_VOLTAGE_NEWSBA5, float)
 ]
 
 
@@ -228,6 +263,82 @@ class Pco2aADclRecoveredInstrumentDataParticleWater(Pco2aADclInstrumentDataParti
     Class for generating Offset Data Particles from Recovered water data.
     """
     _data_particle_type = DataParticleType.PCO2A_INSTRUMENT_WATER_RECOVERED_PARTICLE
+
+
+"""
+    Adjusted particle classes to work with the new pco2a SBA5 format, being used in pioneer MAB deployment.
+"""
+
+
+
+class Pco2aADclInstrumentDataParticleAirNewSBA5(DclInstrumentDataParticle):
+    """
+    Class for generating the Pco2a_a_dcl instrument particles.
+    """
+    data_matcher = SENSOR_DATA_MATCHER_AIR_NEWSBA5
+
+    def __init__(self, raw_data, *args, **kwargs):
+        super(Pco2aADclInstrumentDataParticleAirNewSBA5, self).__init__(
+            raw_data, INSTRUMENT_PARTICLE_AIR_MAP_NEWSBA5, *args, **kwargs)
+
+        # instrument_timestamp is the internal_timestamp
+        instrument_timestamp = self.raw_data[SENSOR_GROUP_SENSOR_DATE_TIME]
+        elapsed_seconds_useconds = \
+            timestamp_yyyy_mm_dd_hh_mm_ss_csv_to_ntp(instrument_timestamp)
+        self.set_internal_timestamp(elapsed_seconds_useconds)
+
+        # instrument clock is not accurate so, use port_timestamp as the preferred_ts
+        self.contents[DataParticleKey.PREFERRED_TIMESTAMP] = DataParticleKey.PORT_TIMESTAMP
+
+
+class Pco2aADclInstrumentDataParticleWaterNewSBA5(DclInstrumentDataParticle):
+    """
+    Class for generating the Pco2a_a_dcl instrument particles.
+    """
+    data_matcher = SENSOR_DATA_MATCHER_WATER_NEWSBA5
+
+    def __init__(self, raw_data, *args, **kwargs):
+        super(Pco2aADclInstrumentDataParticleWaterNewSBA5, self).__init__(
+            raw_data, INSTRUMENT_PARTICLE_WATER_MAP_NEWSBA5, *args, **kwargs)
+
+        # Instrument timestamp is the internal timestamp
+        instrument_timestamp = self.raw_data[SENSOR_GROUP_SENSOR_DATE_TIME]
+        elapsed_seconds_useconds = \
+            timestamp_yyyy_mm_dd_hh_mm_ss_csv_to_ntp(instrument_timestamp)
+        self.set_internal_timestamp(elapsed_seconds_useconds)
+
+        # instrument clock is not accurate so, use port_timestamp as the preferred_ts
+        self.contents[DataParticleKey.PREFERRED_TIMESTAMP] = DataParticleKey.PORT_TIMESTAMP
+
+
+class Pco2aADclTelemeteredInstrumentDataParticleAirNewSBA5(Pco2aADclInstrumentDataParticleAirNewSBA5):
+    """
+    Class for generating Offset Data Particles from Telemetered air data.
+    """
+    _data_particle_type = DataParticleType.PCO2A_INSTRUMENT_AIR_PARTICLE
+
+
+class Pco2aADclTelemeteredInstrumentDataParticleWaterNewSBA5(Pco2aADclInstrumentDataParticleWaterNewSBA5):
+    """
+    Class for generating Offset Data Particles from Telemetered water data.
+    """
+    _data_particle_type = DataParticleType.PCO2A_INSTRUMENT_WATER_PARTICLE
+
+
+class Pco2aADclRecoveredInstrumentDataParticleAirNewSBA5(Pco2aADclInstrumentDataParticleAirNewSBA5):
+    """
+    Class for generating Offset Data Particles from Recovered air data.
+    """
+    _data_particle_type = DataParticleType.PCO2A_INSTRUMENT_AIR_RECOVERED_PARTICLE
+
+
+class Pco2aADclRecoveredInstrumentDataParticleWaterNewSBA5(Pco2aADclInstrumentDataParticleWaterNewSBA5):
+    """
+    Class for generating Offset Data Particles from Recovered water data.
+    """
+    _data_particle_type = DataParticleType.PCO2A_INSTRUMENT_WATER_RECOVERED_PARTICLE
+
+
 
 
 class Pco2aADclParser(DclFileCommonParser):
