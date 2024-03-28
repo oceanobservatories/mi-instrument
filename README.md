@@ -73,7 +73,7 @@ https://conda.io/miniconda.html
 
     cd into mi-instrument and then type the command below:
     conda env create -f conda_env_other.yml
-    source activate mi
+    conda activate mi
 
 # Linux/Anaconda Instructions
 ## Install Anaconda/Miniconda 2
@@ -83,7 +83,7 @@ https://conda.io/miniconda.html
 ## Create conda env
 
     conda env create -f conda_env_linux64.yml
-    source activate mi
+    conda activate mi
 
 # Run the tests
 
