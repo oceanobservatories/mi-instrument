@@ -11,14 +11,16 @@ Marine Integration source code repository.
 See LICENSE.txt for license.
 
 This is the repository that contains the implemention for all marine integrations
-including drivers and transforms. 
+including drivers and transforms.
 ```
 
 # Get the code!
 ## Clone this repository
 ### Read only checkout
-    $ git clone git://github.com/oceanobservatories/mi-instrument
+    $ git clone https://github.com/oceanobservatories/mi-instrument
 ### Read / write checkout
+First fork the mi-instrument repository on Github, then clone using
+
     $ git clone git@github.com:<your_github_uname>/mi-instrument
 
 # OSX/Homebrew Instructions
@@ -50,9 +52,9 @@ including drivers and transforms.
     add this to the end:
        export WORKON_HOME=$HOME/virtenvs
        . /usr/local/bin/virtualenvwrapper.sh
-       
+
     source ~/.bash_profile
-       
+
 ### Create a virtualenv
 
     mkvirtualenv --no-site-packages --python=python2.7 ooi
@@ -141,7 +143,7 @@ Deploying a release of the mi-instrument package involves the following steppes:
 
 ## Update Version
 
-Release notes (RELEASE_NOTES) should include the Version and number on a line by itself, followed by a list of issues 
+Release notes (RELEASE_NOTES) should include the Version and number on a line by itself, followed by a list of issues
 with a brief description. Prepend updates to the beginning of the file. E.g.:
 
 ```
@@ -173,7 +175,7 @@ git fetch upstream --tags
 
 ## Build Anaconda Package
 
-See the [ooi-config](https://github.com/oceanobservatories/ooi-config) repository for instructions. 
+See the [ooi-config](https://github.com/oceanobservatories/ooi-config) repository for instructions.
 
 # Tools
 
