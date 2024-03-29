@@ -1,3 +1,10 @@
+# Version 1.0.14
+
+* Issue #15717 - Makes following changes to work with new Pioneer MAB instruments:
+  * Creates PRTSZ, PLIMS parsers and drivers. 
+  * Updates PCO2A sample parser and driver to work with new sba5 format. 
+  * Updates FLORT parser to output turbd data, and creates TURBD driver. 
+
 # Version 1.0.13
 
 * Antelope
