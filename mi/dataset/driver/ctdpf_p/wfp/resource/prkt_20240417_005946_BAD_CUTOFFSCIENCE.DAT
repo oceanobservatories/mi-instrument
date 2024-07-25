@@ -1,0 +1,239 @@
+#UIMM Status
+#7370_DateTime: 20240417 005946
+#ID=01
+#SN=70012695
+#Volts=8.80
+#Records=15
+#Length=16384
+#Events=1049
+#Begin UIMM Data
+Record[523]:meter=0002
+dir=9
+NP=24
+sam_rate=4
+IP_rate=4
+ul=003
+ll=021
+INF=250
+err=300
+rt=0325
+aborts=0017
+vacuum=0993
+pkt=0000
+water=0
+mode=0
+climb=0
+cal#=1meter=0002
+dir=9
+NP=24
+sam_rate=4
+IP_rate=4
+ul=003
+ll=021
+INF=250
+err=300
+rt=0325
+aborts=0018
+vacuum=0993
+pkt=0000
+water=0
+mode=0
+climb=0
+cal#=1meter=0021
+dir=1
+NP=24
+sam_rate=4
+IP_rate=4
+ul=003
+ll=021
+INF=250
+err=300
+rt=0326
+aborts=0018
+vacuum=0992
+pkt=0000
+water=0
+mode=0
+climb=0
+cal#=1meter=0002
+dir=2
+NP=24
+sam_rate=4
+IP_rate=4
+ul=003
+ll=021
+INF=250
+err=300
+rt=0327
+aborts=0018
+vacuum=0994
+pkt=0000
+water=0
+mode=0
+climb=0
+cal#=1
+Record[524]:ReceiveFailure
+Record[525]:ReceiveFailure
+Record[526]:ReceiveFailure
+Record[527]:ReceiveFailure
+Record[528]:ReceiveFailure
+Record[529]:meter=0002
+dir=2
+NP=24
+sam_rate=4
+IP_rate=4
+ul=003
+ll=021
+INF=250
+err=300
+rt=0333
+aborts=0018
+vacuum=0994
+pkt=0000
+water=0
+mode=0
+climb=0
+cal#=1meter=0021
+dir=1
+NP=24
+sam_rate=4
+IP_rate=4
+ul=003
+ll=021
+INF=250
+err=300
+rt=0334
+aborts=0018
+vacuum=0991
+pkt=0000
+water=0
+mode=0
+climb=0
+cal#=1meter=0002
+dir=2
+NP=24
+sam_rate=4
+IP_rate=4
+ul=003
+ll=021
+INF=250
+err=300
+rt=0335
+aborts=0018
+vacuum=0988
+pkt=0000
+water=0
+mode=0
+climb=0
+cal#=1
+Record[530]:@@@E@@@\SEEP,CD,CT,CC,OT,O2,CH,TB
+fµ,0114,32fa,8c0e,86a3,332b
+fª,011b,3320,8bdc,86b5,3330
+f¡,0125,331d,8be1,86b9,332a
+f«,0134,332c,8bf3,86ba,332b
+fÕ,0175,330c,8bf5,86cf,330c
+f”,0191,32fd,8bfd,86e0,32fa
+fŸ,01cd,32da,8c08,86fd,32d6
+fﬂ,0219,32c8,8c36,86fb,32d0
+fÂ,0247,32cc,8c63,86d6,32d6
+fÎ,026c,32d3,8c86,86c4,32da
+fÒ,02ca,3305,8d16,8681,32fd
+f˜,031b,3375,8e54,85d7,337f
+f˝,0336,3393,8ea0,851b,33ab
+f,0364,33ac,8ef1,8506,33b2
+f	,03b6,3477,9136,84ac,3452
+f,03fa,3506,9240,8371,34fd
+f,03e7,34d7,9264,84ae,339b
+f,0411,3377,913e,8434,3335
+f!,0412,3327,9129,8466,32f9
+f',0430,30db,8e5d,847b,31c1
+f-,0450,2d33,8c20,8922,2d38
+f3,0445,2cfb,8bfb,88f2,2c6a
+f9,045c,2c87,8b90,8952,2c2a
+f?,044e,2cfe,8c11,88bd,2be5
+fE,0470,2ce6,8bb2,883a,2c79
+fK,0470,2c9d,8b80,8880,2bdd
+fQ,048e,2bc2,8b38,888b,2b69
+fW,0497,2b9f,8b2b,8863,2b55
+f],04b3,2b8e,8b41,87f7,2b31
+fc,04b3,2b32,8b1c,887f,2ab9
+fi,04a2,2b4c,8b29,87e0,2b16
+fo,048f,2b89,8b38,887a,2aed
+fu,04a1,2b26,8b1b,8827,2ae4
+f{,0499,2b11,8b09,8852,2a92
+fÅ,04a2,2b31,8b21,8882,2a6b
+fá,04a6,2b1c,8b03,88ab,2a4b
+fç,0491,2b8f,8b21,87d9,2b58
+fì,049d,2bf2,8b33,87e7,2b8c
+fô,0493,2c5c,8b5c,87e6,2bb2
+fü,04a5,2bff,8b3a,87ee,2b95
+f•,049a,2b98,8b3b,87e1,2b88
+f´,04a4,2b5c,8b36,8846,2ac6
+f±,04af,2b18,8b0f,8876,2aaf
+f∑,04bb,2aa7,8acf,8876,2aa3
+fΩ,04b4,2aef,8afc,885b,2a77
+f√,04b1,2b02,8b0c,885e,2a6d
+f…,04b6,2b34,8b1e,8862,2a74
+fœ,04d4,2ad5,8ae3,8820,2a91
+f’,04bf,2ab1,8ad3,886f,2a4c
+f€,04cb,2aa6,8acb,8852,2a74
+f·,04d7,2a2e,8abe,8876,2a2d
+fÁ,04f0,2a01,8abd,886f,2a06
+fÌ,04ea,29f5,8ac6,8863,29fc
+fÛ,04ff,29ea,8ae2,8859,29eb
+f˘,04fa,29e7,8ad2,885c,29ed
+fˇ,0513,29ea,8b01,884e,29ed
+f,0529,29df,8b52,8815,29c5
+f,052a,29df,8b4d,87ff,29c9
+f,04f8,29e6,8af9,87f4,29d1
+f,04fd,29e5,8ada,8829,29e8
+f,04ec,29e9,8ac6,883f,29e5
+f#,04d0,2a24,8ab4,8856,29e4
+f),04c8,2a8e,8ac7,885e,2a22
+f/,04d5,2a96,8ac6,87af,2ab9
+f5,04c8,2aca,8adc,8829,2a76
+f;,04b2,2b2b,8b04,883c,2ac2
+fA,049d,2b93,8b18,8793,2b60
+fG,049e,2b7f,8b12,880d,2b43
+fM,04a7,2b9a,8b1a,8804,2b30
+fS,04ba,2b8b,8b31,87eb,2b21
+fY,04d5,2ac0,8ad7,883a,2ab3
+f_,04b3,2b44,8b0b,889a,2a5e
+fe,04b5,2b47,8b27,8848,2aaf
+fk,04b1,2b3e,8b21,8843,2ab6
+fq,04af,2b57,8b27,8832,2af6
+fw,04bb,2af7,8aff,8824,2ab4
+f},04a8,2af5,8b00,883d,2a90
+fÉ,04c9,2af1,8af0,8857,2a8a
+fâ,04c0,2b12,8b05,882d,2a91
+fè,04ae,2b61,8b20,87fc,2b2f
+fï,04a6,2b72,8b2c,87c4,2b5f
+fõ,0496,2b95,8b1c,87dc,2b72
+f°,04a7,2b9f,8b34,87d4,2b8c
+fß,04b3,2b73,8b30,8814,2b26
+f≠,04e7,2a25,8aea,889a,2a02
+f≥,04fe,29e8,8b2d,8885,2a01
+fπ,050e,29dc,8b4d,883a,29c3
+fø,0524,29bc,8b75,8816,29b4
+f≈,0526,2985,8b6d,8829,294e
+fÀ,0513,29d3,8b49,87da,29b0
+f—,051c,29c8,8b51,8815,2985
+f◊,0511,29d8,8b27,8810,29ae
+f›,0534,29c3,8b5c,887a,2930
+f„,053a,29c3,8b5c,87ed,29a1
+fÈ,0527,29d9,8b13,87e7,29d4
+fÔ,0525,29dc,8b07,880e,29dc
+fı,053e,29da,8b26,8803,29d2
+f˚,053d,29dc,8b05,8805,29d5
+f,0538,29dd,8b28,8805,29cf
+f,053c,29d1,8b4c,8800,29b8
+f,0512,29d6,8b23,87f1
+Record[531]:
+Record[532]:
+Record[533]:
+Record[534]:
+Record[535]:
+Record[536]:
+Record[537]:
+Record[537]:
+#End UIMM Data, 11 samples written
