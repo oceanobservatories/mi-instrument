@@ -1,0 +1,209 @@
+#!/usr/bin/env python
+
+"""
+@package mi.dataset.parser.dofst_p_wfp
+@file mi-dataset/mi/dataset/parser/dofst_p_wfp.py
+@author Samuel Dahlberg
+@brief Parser for the dofst_p_wfp dataset driver.
+
+This file contains code for the dofst_p_wfp parser and code to produce data particles
+for the instrument  data from the Prawler WFP instrument. Files are mixed binary and ascii.
+"""
+import re
+from struct import unpack_from
+from mi.core.common import BaseEnum
+from mi.core.exceptions import SampleException
+from mi.dataset.dataset_parser import SimpleParser
+from mi.core.instrument.dataset_data_particle import DataParticle, DataParticleKey
+from mi.core.log import get_logger, get_logging_metaclass
+
+log = get_logger()
+
+# constants
+SCI_DATA_SIZE = 31
+
+# byte representations of constants
+STRING = b'(.+)'
+INTEGER = b'([+-]?[0-9]+)'
+NEWLINE = b'(?:\r\n|\n)?'
+FLOAT = b'([+-]?\d+.\d+[Ee]?[+-]?\d*)'  # includes scientific notation
+
+# Regex pattern for the start of a binary prawler data packet
+REC_PATTERN = (
+    b'Record\[(\d+)\]:@@@'
+)
+REC_REGEX = re.compile(REC_PATTERN, re.DOTALL)
+
+
+class DataParticleType(BaseEnum):
+    DOFST_P_TELEMETERED = 'dofst_p_wfp_instrument'
+    DOFST_P_RECOVERED = 'dofst_p_wfp_instrument_recovered'
+    __metaclass__ = get_logging_metaclass(log_level='trace')
+
+
+class DofstPTelemeteredDataParticle(DataParticle):
+    """
+    Class for generating the dofst prawler telemetered instrument particle.
+    """
+
+    _data_particle_type = DataParticleType.DOFST_P_TELEMETERED
+
+    def _build_parsed_values(self):
+        """
+        Build parsed values for Instrument Data Particle.
+        @return: list containing type encoded "particle value id:value" dictionary pairs
+        """
+
+        return [{DataParticleKey.VALUE_ID: name, DataParticleKey.VALUE: None}
+                if self.raw_data[name] is None else
+                {DataParticleKey.VALUE_ID: name, DataParticleKey.VALUE: value}
+                for name, value in self.raw_data.iteritems()]
+
+
+class DofstPRecoveredDataParticle(DataParticle):
+    """
+    Class for generating the dofst prawler recovered instrument particle.
+    """
+
+    _data_particle_type = DataParticleType.DOFST_P_RECOVERED
+
+    def _build_parsed_values(self):
+        """
+        Build parsed values for Instrument Data Particle.
+        @return: list containing type encoded "particle value id:value" dictionary pairs
+        """
+
+        return [{DataParticleKey.VALUE_ID: name, DataParticleKey.VALUE: None}
+                if self.raw_data[name] is None else
+                {DataParticleKey.VALUE_ID: name, DataParticleKey.VALUE: value}
+                for name, value in self.raw_data.iteritems()]
+
+
+class DofstPParticleKey(BaseEnum):
+    """
+    Class that defines fields that need to be extracted for the data particle.
+    """
+
+    TEMPERATURE = 'optode_temperature'
+    DIS_OXG = 'estimated_oxygen_concentration'
+
+
+class DofstPWfpParser(SimpleParser):
+    """
+    dofst_p_wfp parser.
+    Will parse the dofst specific data from the generic prawler file.
+    """
+
+    def ascii_hex_long_to_long(self, start, data):
+        """
+        Converts a 4 char sequence of ascii hex characters into a long value in big endian order
+        """
+        # int conversion requires no comma trailing hex long
+        long_str = unpack_from('4s', data, start)[0]
+
+        try:
+            return int(long_str, 16)
+        except:
+            return -9999
+
+    def parse_record(self, data):
+        """
+        Parse a data record from the prawler data file, storing only the dofst_p instrument data
+        """
+
+        # Note: have seen science data packets terminate prematurely in files. When this
+        # happens, ascii_hex_long_to_long logs an exception. Check to make sure all values are positive
+
+        epoch_time = unpack_from('>L', data)[0]
+        # pressure = float(self.ascii_hex_long_to_long(5, data))
+        # temperature = float(self.ascii_hex_long_to_long(10, data))
+        # conductivity = float(self.ascii_hex_long_to_long(15, data))
+        opt_temp = float(self.ascii_hex_long_to_long(20, data))
+        opt_o2 = float(self.ascii_hex_long_to_long(25, data))
+
+        if opt_temp == -9999 or opt_o2 == -9999:
+            return None, None
+
+        # Decimal precision provided by McClane
+
+        opt_temp = opt_temp / 1000.0
+        opt_o2 = opt_o2 / 1000.0
+
+        dofst_particle_data = {
+            DofstPParticleKey.TEMPERATURE: opt_temp,
+            DofstPParticleKey.DIS_OXG: opt_o2,
+        }
+
+        return dofst_particle_data, epoch_time
+
+    def parse_file(self):
+        """
+        Parse the prawler file.
+        Read file line by line.
+        @return: dictionary of data values with the particle names as keys
+        """
+
+        data = self._stream_handle.read()
+
+        matches = REC_REGEX.finditer(data)
+
+        for record_match in matches:
+            start = record_match.start()
+
+            # Scan past "Record[nnn]:" to type of records
+            rec_type_start = data.find(b':', start)
+            if rec_type_start >= 0:
+                start = rec_type_start + 1
+
+            rectype = data[start + 7]
+
+            # Science profile data
+            if rectype == 'E':
+                rec_start = unpack_from('<3s', data, start)[0]
+
+                if rec_start != b'@@@':
+                    continue
+
+                # skip column list (ends in \r\n)
+                here = start + 8
+                eol = unpack_from('2s', data, here)[0]
+                while eol != b'\x0d\x0a':
+                    here = here + 1
+                    eol = unpack_from('2s', data, here)[0]
+                here = here + 2
+
+                # The actual science data
+                eol = unpack_from('2s', data, here)[0]
+                while eol != b'\x0d\x0a':
+                    data_chunk = data[here:here + SCI_DATA_SIZE]
+
+                    dofst_particle_data, epoch_timestamp = self.parse_record(data_chunk)
+
+                    # If there is no data returned, there is most likely no more science data, or it is not recoverable.
+                    # We will exit this section of science data if no data is returned
+                    if dofst_particle_data is None:
+                        log.error('Erroneous data found')
+                        self._exception_callback(
+                            SampleException('Erroneous data found')
+                        )
+                        break
+
+                    # Convert timestamp to ntp timestamp
+                    timestamp = epoch_timestamp + 2208988800
+
+                    particle = self._extract_sample(self._particle_class, None, dofst_particle_data,
+                                                    internal_timestamp=timestamp)
+
+                    if particle is not None:
+                        self._record_buffer.append(particle)
+                        log.trace('Parsed particle: %s' % particle.generate_dict())
+
+                    here = here + SCI_DATA_SIZE
+                    eol = unpack_from('2s', data, here)[0]
+
+            # Engineering Data (unparsed)
+            elif rectype == 'G':
+                continue
+            # Station list data (unparsed)
+            elif rectype == 'S':
+                continue
