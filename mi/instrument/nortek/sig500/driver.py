@@ -17,14 +17,9 @@ __license__ = "Apache 2.0"
 import re
 
 from mi.core.common import BaseEnum
-from mi.core.exceptions import (
-    InstrumentProtocolException,
-)
+from mi.core.exceptions import  InstrumentProtocolException
 from mi.core.instrument.chunker import StringChunker
-from mi.core.instrument.data_particle import (
-    CommonDataParticleType,
-    DataParticle,
-)
+from mi.core.instrument.data_particle import DataParticle
 from mi.core.instrument.instrument_driver import (
     DriverAsyncEvent,
     DriverEvent,
@@ -32,7 +27,7 @@ from mi.core.instrument.instrument_driver import (
     SingleConnectionInstrumentDriver,
 )
 from mi.core.instrument.instrument_fsm import ThreadSafeFSM
-from mi.core.instrument.instrument_protocol import CommandResponseInstrumentProtocol, InstrumentProtocol
+from mi.core.instrument.instrument_protocol import CommandResponseInstrumentProtocol
 from mi.core.log import get_logger
 from mi.core.util import dict_equal
 
