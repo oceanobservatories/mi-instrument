@@ -148,26 +148,32 @@ CONFIG_PARTICLE_PATTERN = re.compile(
 
 # Regex for engineering data string (5th or main).
 ENGINEERING_PARTICLE_PATTERN = re.compile(
-    r"\$PNORS1,(?P<date>\d{6}),(?P<time>\d{6}),(?P<error_code>\d+),(?P<status_code>\d{8}),(?P<voltage>-?\d+[.]\d),(?P<speed_of_sound>\d+[.]\d),(?P<heading_stdev>\d+[.]\d{2}),(?P<heading>\d+[.]\d{1}),(?P<pitch>-?\d+[.]\d{1}),(?P<pitch_stdev>-?\d+[.]\d{2}),(?P<roll>-?\d+[.]\d{1}),(?P<roll_stdev>-?\d+[.]\d{2}),(?P<pressure>\d+[.]\d{3}),(?P<pressure_stdev>-?\d+[.]\d{2}),(?P<temperature>\d+[.]\d{2})\*.{2}"
-)
-
-# Regex for all of  or 5th beam science data string.
-FULL_BEAM_PATTERN = re.compile(
-    ENGINEERING_PARTICLE_PATTERN.pattern + r"\r?\n"
-    r"(?:\$PNORC1[^\r\n]*?\r?\n)+"
+    r"\$PNORS1,(?P<date>\d{6}),(?P<time>\d{6}),(?P<error_code>\d+),(?P<status_code>\d{8}),(?P<voltage>-?\d+[.]\d+),(?P<speed_of_sound>\d+[.]\d+),(?P<heading_stdev>\d+[.]\d+),(?P<heading>\d+[.]\d+),(?P<pitch>-?\d+[.]\d+),(?P<pitch_stdev>-?\d+[.]\d+),(?P<roll>-?\d+[.]\d+),(?P<roll_stdev>-?\d+[.]\d+),(?P<pressure>\d+[.]\d+),(?P<pressure_stdev>-?\d+[.]\d+),(?P<temperature>\d+[.]\d+)\*.{2}"
 )
 
 #  Regex for 5th beam science data string.
 FIFTH_BEAM_VALUE_PATTERN = re.compile(
-    r"\$PNORC1,(?P<date>\d{6}),(?P<time>\d{6}),(?P<cell_number>\d+),(?P<cell_position>\d+[.]\d),(?P<velocity_beam5>-?\d+[.]\d{3}),(?P<amplitude_beam5>-?\d+[.]\d),(?P<correlation_beam5>\d+)"
+    r"\$PNORC1,(?P<date>\d{6}),(?P<time>\d{6}),(?P<cell_number>\d+),(?P<cell_position>\d+[.]\d+),(?P<velocity_beam5>-?\d+[.]\d+),(?P<amplitude_beam5>-?\d+[.]\d+),(?P<correlation_beam5>\d+)\*.{2}"
 )
 
-# Regex for 4 beam science data string.
+# Regex for main beam(s) science data string.
 MAIN_BEAM_VALUE_PATTERN = re.compile(
-    r"\$PNORC1,(?P<date>\d{6}),(?P<time>\d{6}),(?P<cell_number>\d+),(?P<cell_position>\d+[.]\d),(?P<velocity_beam1>-?\d+[.]\d{3}),(?P<velocity_beam2>-?\d+[.]\d{3}),(?P<velocity_beam3>-?\d+[.]\d{3}),(?P<velocity_beam4>-?\d+[.]\d{3}),(?P<amplitude_beam1>-?\d+[.]\d),(?P<amplitude_beam2>-?\d+[.]\d),(?P<amplitude_beam3>-?\d+[.]\d),(?P<amplitude_beam4>-?\d+[.]\d),(?P<correlation_beam1>\d+),(?P<correlation_beam2>\d+),(?P<correlation_beam3>\d+),(?P<correlation_beam4>\d+)"
+    r"\$PNORC1,(?P<date>\d{6}),(?P<time>\d{6}),(?P<cell_number>\d+),(?P<cell_position>\d+[.]\d+),(?P<velocity_beam1>-?\d+[.]\d+),(?P<velocity_beam2>-?\d+[.]\d+),(?P<velocity_beam3>-?\d+[.]\d+),(?P<velocity_beam4>-?\d+[.]\d+),(?P<amplitude_beam1>-?\d+[.]\d+),(?P<amplitude_beam2>-?\d+[.]\d+),(?P<amplitude_beam3>-?\d+[.]\d+),(?P<amplitude_beam4>-?\d+[.]\d+),(?P<correlation_beam1>\d+),(?P<correlation_beam2>\d+),(?P<correlation_beam3>\d+),(?P<correlation_beam4>\d+)\*.{2}"
 )
 
-# Regex to Grab the entire Data Block
+# Regex for the entire 5th beam data block, including the engineering line at the start.
+FULL_FIFTH_BEAM_PATTERN = re.compile(
+    ENGINEERING_PARTICLE_PATTERN.pattern + r"\r?\n"
+    + "(?:" + re.sub(r"\?P<.*?>", "?:", FIFTH_BEAM_VALUE_PATTERN.pattern + r"\r?\n") + ")+"
+)
+
+# Regex for the entire main beam data block, including the engineering line at the start.
+FULL_MAIN_BEAM_PATTERN = re.compile(
+    ENGINEERING_PARTICLE_PATTERN.pattern + r"\r?\n"
+    + "(?:" + re.sub(r"\?P<.*?>", "?:", MAIN_BEAM_VALUE_PATTERN.pattern + r"\r?\n") + ")+"
+)
+
+# Regex to grab the entire data block.
 FULL_CAPTURE_PATTERN = re.compile(
     r"(?P<header_5th>\$PNORI1,\d,\d{6},1,.*?,BEAM\*.{2})\r?\n"
     r"(?P<eng_5th>\$PNORS1,.*?)\r?\n"
@@ -250,7 +256,7 @@ class VelocityMainBeamParticle(EngineeringDataParticle):
 
     @staticmethod
     def regex_compiled():
-        return FULL_BEAM_PATTERN
+        return FULL_MAIN_BEAM_PATTERN
 
     def _build_parsed_values(self):
         keys = VelocityMainBeamDataParticleKey
@@ -284,7 +290,7 @@ class VelocityFifthBeamParticle(EngineeringDataParticle):
 
     @staticmethod
     def regex_compiled():
-        return FULL_BEAM_PATTERN
+        return FULL_FIFTH_BEAM_PATTERN
 
     def _build_parsed_values(self):
         keys = VelocityFifthBeamDataParticleKey
