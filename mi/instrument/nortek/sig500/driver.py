@@ -490,30 +490,25 @@ class Protocol(CommandResponseInstrumentProtocol):
             log.warning("No VelocityMainBeamPaticle match for chunk: %r", chunk)
             return
 
-        parsed_timestamp = (datetime.strptime(
-            fifth_beam_match.group("date") + fifth_beam_match.group("time"),
-            TIME_IN,
-        ) - datetime(1900, 1, 1)).total_seconds()
-
         self._extract_sample(
             ConfigDataParticle,
             ConfigDataParticle.regex_compiled(),
             config_match.group(),
-            parsed_timestamp,
+            timestamp,
         )
 
         self._extract_sample(
             VelocityFifthBeamParticle,
             VelocityFifthBeamParticle.regex_compiled(),
             fifth_beam_match.group(),
-            parsed_timestamp,
+            timestamp,
         )
 
         self._extract_sample(
             VelocityMainBeamParticle,
             VelocityMainBeamParticle.regex_compiled(),
             main_beam_match.group(),
-            parsed_timestamp,
+            timestamp,
         )
 
     def _filter_capabilities(self, events):
