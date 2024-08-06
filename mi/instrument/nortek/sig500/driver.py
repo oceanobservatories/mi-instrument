@@ -10,6 +10,7 @@ initial version
 
 from collections import defaultdict
 from datetime import datetime
+from time import strftime
 
 __author__ = "Jake Ploskey"
 __license__ = "Apache 2.0"
@@ -266,11 +267,13 @@ class EngineeringDataParticle(DataParticle):
         time = datetime.strptime(
             match.group("date") + match.group("time"),
             TIME_IN,
-        ).strftime(TIME_OUT)
+        )
+
+        self.set_internal_timestamp((time - datetime(1900, 1, 1)).total_seconds())
 
         keys = EngineeringDataParticleKey
         result = [
-            self._encode_value(keys.TIME, time, str),
+            self._encode_value(keys.TIME, time.strftime(TIME_OUT), str),
             self._encode_value(keys.ERROR_CODE, match.group("error_code"), int),
             self._encode_value(keys.STATUS_CODE, match.group("status_code"), int),
             self._encode_value(keys.SPEED_OF_SOUND, match.group("speed_of_sound"), float),
