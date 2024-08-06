@@ -36,45 +36,6 @@ log = get_logger()
 
 NEWLINE = "\r"
 
-# default timeout.
-INTER_CHARACTER_DELAY = 0.2
-
-####
-#    Driver Constant Definitions
-####
-
-DEFAULT_SAMPLE_RATE = 15  # sample periodicity in seconds
-MIN_SAMPLE_RATE = 1  # in seconds
-MAX_SAMPLE_RATE = 3600  # in seconds (1 hour)
-
-SAMPLE_TIMEOUT = 10
-
-
-def checksum(data):
-    """
-    Calculate checksum on value string.
-    @retval checksum - base 10 integer representing last two hexadecimal digits of the checksum
-    """
-    total = sum([ord(x) for x in data])
-    return total & 0xFF
-
-
-def valid_response(line):
-    """
-    Perform a checksum calculation on provided data. The checksum used for comparison is the last two characters of
-    the line.
-    @param line - response line from the instrument, must start with '*'
-    @retval checksum validity - whether or not the checksum provided in the line matches calculated checksum
-    """
-    cksum = int(line[-2:], 16)  # checksum is last two characters in ASCII hex
-    data = line[:-2]  # remove checksum from data
-
-    calc_cksum = checksum(data)
-    if cksum != calc_cksum:
-        log.debug("checksum failed (%r): should be %s", line, hex(calc_cksum))
-        return False
-    return True
-
 
 class Prompt(BaseEnum):
     """
@@ -378,7 +339,7 @@ class InstrumentDriver(SingleConnectionInstrumentDriver):
         """
         Construct the driver protocol state machine.
         """
-        self._protocol = Protocol(Prompt, NEWLINE, self._driver_event)
+        self._protocol = Protocol(self._driver_event)
 
 
 ###########################################################################
