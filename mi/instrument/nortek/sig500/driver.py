@@ -71,8 +71,6 @@ class ConfigDataParticleKey(BaseEnum):
 
 
 class EngineeringDataParticleKey(BaseEnum):
-    TIME = "time"
-    # INGESTION_TIMESTAMP = "ingestion_timestamp"
     ERROR_CODE = "error_code"
     STATUS_CODE = "status_code"
     SPEED_OF_SOUND = "speed_of_sound"
@@ -88,8 +86,6 @@ class EngineeringDataParticleKey(BaseEnum):
 
 
 class VelocityFifthBeamDataParticleKey(BaseEnum):
-    TIME = EngineeringDataParticleKey.TIME
-    # INGESTION_TIMESTAMP = BaseVelocityDataParticleKey.INGESTION_TIMESTAMP
     ERROR_CODE = EngineeringDataParticleKey.ERROR_CODE
     STATUS_CODE = EngineeringDataParticleKey.STATUS_CODE
     SPEED_OF_SOUND = EngineeringDataParticleKey.SPEED_OF_SOUND
@@ -112,8 +108,6 @@ class VelocityFifthBeamDataParticleKey(BaseEnum):
 
 
 class VelocityMainBeamDataParticleKey(BaseEnum):
-    TIME = EngineeringDataParticleKey.TIME
-    # INGESTION_TIMESTAMP = BaseVelocityDataParticleKey.INGESTION_TIMESTAMP
     ERROR_CODE = EngineeringDataParticleKey.ERROR_CODE
     STATUS_CODE = EngineeringDataParticleKey.STATUS_CODE
     SPEED_OF_SOUND = EngineeringDataParticleKey.SPEED_OF_SOUND
@@ -234,7 +228,6 @@ class EngineeringDataParticle(DataParticle):
 
         keys = EngineeringDataParticleKey
         result = [
-            self._encode_value(keys.TIME, time.strftime(TIME_OUT), str),
             self._encode_value(keys.ERROR_CODE, match.group("error_code"), int),
             self._encode_value(keys.STATUS_CODE, match.group("status_code"), int),
             self._encode_value(keys.SPEED_OF_SOUND, match.group("speed_of_sound"), float),
