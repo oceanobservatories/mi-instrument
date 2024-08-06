@@ -80,12 +80,6 @@ def valid_response(line):
     return True
 
 
-
-
-
-
-
-
 class Prompt(BaseEnum):
     """
     Device i/o prompts.
@@ -399,6 +393,7 @@ class ProtocolState(BaseEnum):
     """
     UNKNOWN = DriverProtocolState.UNKNOWN
 
+
 class ProtocolEvent(BaseEnum):
     """
     Instrument protocol events.
@@ -407,10 +402,12 @@ class ProtocolEvent(BaseEnum):
     EXIT = DriverEvent.EXIT
     DISCOVER = DriverEvent.DISCOVER
 
+
 class Capability(BaseEnum):
     """
     Protocol events that should be exposed to users (subset of above).
     """
+
 
 class Protocol(CommandResponseInstrumentProtocol):
     def __init__(self, driver_event):
