@@ -10,7 +10,6 @@ initial version
 
 from collections import defaultdict
 from datetime import datetime
-from time import strftime
 
 __author__ = "Jake Ploskey"
 __license__ = "Apache 2.0"
