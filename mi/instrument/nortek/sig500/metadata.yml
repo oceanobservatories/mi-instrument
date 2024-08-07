@@ -1,0 +1,8 @@
+driver_metadata:
+  author: Jake Ploskey
+  driver_make: nortek
+  driver_model: Signature500
+  driver_name: vadcp
+  email: jploskey@uw.edu
+  release_notes: Nortek VADCP driver
+  version: 0.0.1
