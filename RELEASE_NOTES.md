@@ -1,3 +1,7 @@
+# Version 1.0.15
+
+* Issue #15831 - Modify ZPLS echogram metadata parser to handle legacy EK60 data file names
+
 # Version 1.0.14
 
 * Issue #15717 - Makes following changes to work with new Pioneer MAB instruments:
