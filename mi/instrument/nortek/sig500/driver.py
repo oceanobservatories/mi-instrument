@@ -174,12 +174,7 @@ FULL_MAIN_BEAM_PATTERN = re.compile(
 
 # Regex to grab the entire data block.
 FULL_CAPTURE_PATTERN = re.compile(
-    r"(?P<header_5th>\$PNORI1,\d,\d{6},1,.*?,BEAM\*.{2})\r?\n"
-    r"(?P<eng_5th>\$PNORS1,.*?)\r?\n"
-    r"(?P<science_5th>(\$PNORC1[^\r\n]*\r?\n)+)"
-    r"(?P<header_main>\$PNORI1,\d,\d{6},[3-4],.*?,BEAM\*.{2})\r?\n"
-    r"(?P<eng_main>\$PNORS1,[^\r\n]*)\r?\n"
-    r"(?P<science_main>(\$PNORC1,[^\r\n]*\r?\n)+)"
+    r"(\$PNORI1,\d,\d{6},1,.*?,BEAM\*.{2})\r?\n(\$PNORS1,.*?)\r?\n((\$PNORC1[^\r\n]*\r?\n)+)(\$PNORI1,\d,\d{6},[3-4],.*?,BEAM\*.{2})\r?\n(\$PNORS1,[^\r\n]*)\r?\n((\$PNORC1,[^\r\n]*\r?\n)+)"
 )
 
 
