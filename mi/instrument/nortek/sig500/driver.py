@@ -173,8 +173,14 @@ FULL_MAIN_BEAM_PATTERN = re.compile(
 )
 
 # Regex to grab the entire data block.
+#
+# In an ideal world, this would start with a $PNORI1 line, but because captures cannot 
+# overlap and the data is being streamed in line by line rather than in full particle chunks, we 
+# need to use the $PNORI1 line of the next (real) particle as a terminator rather than a prefix. 
+# If we didn't do this, the regex would capture the first streamed $PNORC1 line of the main beam and 
+# then exit before the rest of the $PNORC1 lines were read from the socket. 
 FULL_CAPTURE_PATTERN = re.compile(
-    r"(\$PNORI1,\d,\d{6},1,.*?,BEAM\*.{2})\r?\n(\$PNORS1,.*?)\r?\n((\$PNORC1[^\r\n]*\r?\n)+)(\$PNORI1,\d,\d{6},[3-4],.*?,BEAM\*.{2})\r?\n(\$PNORS1,[^\r\n]*)\r?\n((\$PNORC1,[^\r\n]*\r?\n)+)"
+    r"(\$PNORS1,.*?)\r?\n((\$PNORC1[^\r\n]*\r?\n)+)(\$PNORI1,\d,\d{6},[3-4],.*?,BEAM\*.{2})\r?\n(\$PNORS1,[^\r\n]*)\r?\n((\$PNORC1,[^\r\n]*\r?\n)+)(\$PNORI1,\d,\d{6},1,.*?,BEAM\*.{2})\r?\n"
 )
 
 
@@ -413,6 +419,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         for match in FULL_CAPTURE_PATTERN.finditer(raw_data):
             spans.append((match.start(), match.end()))
 
+        # Shows all raw data.
         if not spans:
             log.debug(
                 "sieve_function: raw_data=%r, return_list=%s", raw_data, spans
