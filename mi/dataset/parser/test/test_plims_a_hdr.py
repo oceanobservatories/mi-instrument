@@ -11,18 +11,18 @@ import os
 
 from mi.core.log import get_logger
 from mi.dataset.dataset_parser import DataSetDriverConfigKeys
+from mi.dataset.driver.plims_a.resource import RESOURCE_PATH
 from mi.dataset.parser.plims_a_hdr import PlimsAHdrParser
 from mi.dataset.test.test_parser import ParserUnitTestCase
-from mi.dataset.driver.plims_a.resource import RESOURCE_PATH
 
 log = get_logger()
 
 MODULE_NAME = 'mi.dataset.parser.plims_a_hdr'
-CLASS_NAME = 'PlimsADataParticle'
+CLASS_NAME = 'PlimsAHdrDataParticle'
 PARTICLE_TYPE = 'plims_a_instrument'
 
 
-class PlimsAHdrlUnitTestCase(ParserUnitTestCase):
+class PlimsAHdrUnitTestCase(ParserUnitTestCase):
     """
     plims_a_hdr Parser unit test suite
     """
@@ -40,7 +40,7 @@ class PlimsAHdrlUnitTestCase(ParserUnitTestCase):
         """
         self.exception_callback_value.append(exception)
         self.exceptions_detected += 1
-
+    
     def setup(self):
         ParserUnitTestCase.setUp(self)
 
@@ -57,8 +57,8 @@ class PlimsAHdrlUnitTestCase(ParserUnitTestCase):
         Read a file and pull out a data particle.
         Verify that the results are those we expected.
         """
-
         log.debug('===== START TEST PLIMS_A_HDR Parser =====')
+        self.setup()
 
         with open(self.file_path('D20230222T174812_IFCB195.hdr')) as in_file:
             parser = self.create_plims_a_parser(in_file)
@@ -75,8 +75,8 @@ class PlimsAHdrlUnitTestCase(ParserUnitTestCase):
         """
         Ensure that bad data is skipped when it exists.
         """
-
         log.debug('===== START TEST BAD DATA  =====')
+        self.setup()
 
         with open(self.file_path('D20230222T174812_IFCB195_corrupt.hdr')) as in_file:
             parser = self.create_plims_a_parser(in_file)

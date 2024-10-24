@@ -17,17 +17,18 @@ Mal-formed sensor data records and all metadata records produce no particles.
 """
 
 import re
-from calendar import timegm
 
 import pandas as pd
-
 from mi.core.exceptions import RecoverableSampleException
-from mi.core.log import get_logger, get_logging_metaclass
+from mi.core.log import get_logger
 
 log = get_logger()
 from mi.core.common import BaseEnum
+from mi.core.instrument.dataset_data_particle import DataParticleKey
+from mi.core.time_tools import datetime_utc_to_ntp
 from mi.dataset.dataset_parser import SimpleParser
-from mi.core.instrument.dataset_data_particle import DataParticle, DataParticleKey
+from mi.dataset.parser.plims_a_particles import (PlimsAHdrDataParticle,
+                                                 PlimsAHdrParticleKey)
 
 # Regex pattern for extracting datetime from filename
 FNAME_DTIME_PATTERN = (
@@ -80,91 +81,42 @@ PATTERN = (
 
 DATA_REGEX = re.compile(PATTERN)
 
-
-class PlimsAParticleKey(BaseEnum):
-    """
-    Class that defines fields that need to be extracted for the data particle.
-    """
-
-    SAMPLE_NUMBER = 'sample_number'
-    SAMPLE_TYPE = 'sample_type'
-    TRIGGER_COUNT = 'trigger_count'
-    ROI_COUNT = 'roi_count'
-    HUMIDITY = 'humidity'
-    TEMPERATURE = 'temperature'
-    RUNTIME = 'run_time'
-    INHIBIT_TIME = 'inhibit_time'
-    PUMP1_STATE = 'pump1_state'
-    PUMP2_STATE = 'pump2_state'
-    PMTA_HIGH_VOLTAGE = 'pmta_high_voltage'
-    PMTB_HIGH_VOLTAGE = 'pmtb_high_voltage'
-    ALT_FLASHLIGHT_CONTROL_VOLTAGE = 'alt_flashlamp_control_voltage'
-    PUMP_DRIVE_VOLTAGE = 'pump_drive_voltage'
-    ALT_PMTA_HIGH_VOLTAGE = 'alt_pmta_high_voltage'
-    ALT_PMTB_HIGH_VOLTAGE = 'alt_pmtb_high_voltage'
-    SYRINGE_SAMPLING_SPEED = 'syringe_sampling_speed'
-    SYRINGE_OFFSET = 'syringe_offset'
-    NUMBER_SYRINGES_TO_AUTORUN = 'number_syringes_to_autorun'
-    SYRINGE_SAMPLE_VOLUME = 'syringe_sample_volume'
-    ALT_SYRINGE_SAMPLE_VOLUME = 'alt_syringe_sample_volume'
-    SAMPLE_VOLUME_2_SKIP = 'sample_volume_2_skip'
-    FOCUS_MOTOR_SMALL_STEP_MS = 'focus_motor_small_step_ms'
-    FOCUS_MOTOR_LARGE_STEP_MS = 'focus_motor_large_step_ms'
-    LASER_MOTOR_SMALL_STEP_MS = 'laser_motor_small_step_ms'
-    LASER_MOTOR_LARGE_STEP_MS = 'laser_motor_large_step_ms'
-
-
-class DataParticleType(BaseEnum):
-    PLIMS_A_PARTICLE_TYPE = 'plims_a_hdr_instrument'
-    __metaclass__ = get_logging_metaclass(log_level='trace')
-
-
-class PlimsADataParticle(DataParticle):
-    _data_particle_type = DataParticleType.PLIMS_A_PARTICLE_TYPE
-
-    def _build_parsed_values(self):
-        """
-        Build parsed values for Instrument Data Particle.
-        @return: list containing type encoded "particle value id:value" dictionary pairs
-        """
-
-        return [{DataParticleKey.VALUE_ID: name, DataParticleKey.VALUE: None}
-                if self.raw_data[name] is None else
-                {DataParticleKey.VALUE_ID: name, DataParticleKey.VALUE: value}
-                for name, value in self.raw_data.iteritems()]
-
-
 class PlimsAHdrParser(SimpleParser):
+    """
+    Plims A (IFCB) HDR (header) file parser. 
+    The telemetered and recovered files have the same fields and contents, 
+    and can use the same parser.
+    """
 
     def parse_record(self, record):
 
         plims_particle_data = {
-            PlimsAParticleKey.SAMPLE_NUMBER: int(record.group('sampleNumber')),
-            PlimsAParticleKey.SAMPLE_TYPE: str(record.group('sampleType')),
-            PlimsAParticleKey.TRIGGER_COUNT: int(record.group('triggerCount')),
-            PlimsAParticleKey.ROI_COUNT: int(record.group('roiCount')),
-            PlimsAParticleKey.HUMIDITY: float(record.group('humidity')),
-            PlimsAParticleKey.TEMPERATURE: float(record.group('temperature')),
-            PlimsAParticleKey.RUNTIME: float(record.group('runTime')),
-            PlimsAParticleKey.INHIBIT_TIME: float(record.group('inhibitTime')),
-            PlimsAParticleKey.PUMP1_STATE: bool(record.group('pump1State')),
-            PlimsAParticleKey.PUMP2_STATE: bool(record.group('pump2State')),
-            PlimsAParticleKey.PMTA_HIGH_VOLTAGE: float(record.group('PMTAhighVoltage')),
-            PlimsAParticleKey.PMTB_HIGH_VOLTAGE: float(record.group('PMTBhighVoltage')),
-            PlimsAParticleKey.ALT_FLASHLIGHT_CONTROL_VOLTAGE: float(record.group('Alt_FlashlampControlVoltage')),
-            PlimsAParticleKey.PUMP_DRIVE_VOLTAGE: float(record.group('pumpDriveVoltage')),
-            PlimsAParticleKey.ALT_PMTA_HIGH_VOLTAGE: float(record.group('altPMTAHighVoltage')),
-            PlimsAParticleKey.ALT_PMTB_HIGH_VOLTAGE: float(record.group('altPMTBHighVoltage')),
-            PlimsAParticleKey.SYRINGE_SAMPLING_SPEED: float(record.group('syringeSamplingSpeed')),
-            PlimsAParticleKey.SYRINGE_OFFSET: float(record.group('syringeOffset')),
-            PlimsAParticleKey.NUMBER_SYRINGES_TO_AUTORUN: int(record.group('NumberSyringesToAutoRun')),
-            PlimsAParticleKey.SYRINGE_SAMPLE_VOLUME: float(record.group('SyringeSampleVolume')),
-            PlimsAParticleKey.ALT_SYRINGE_SAMPLE_VOLUME: float(record.group('altSyringeSampleVolume')),
-            PlimsAParticleKey.SAMPLE_VOLUME_2_SKIP: int(record.group('sampleVolume2skip')),
-            PlimsAParticleKey.FOCUS_MOTOR_SMALL_STEP_MS: int(record.group('focusMotorSmallStep_ms')),
-            PlimsAParticleKey.FOCUS_MOTOR_LARGE_STEP_MS: int(record.group('focusMotorLargeStep_ms')),
-            PlimsAParticleKey.LASER_MOTOR_SMALL_STEP_MS: int(record.group('laserMotorSmallStep_ms')),
-            PlimsAParticleKey.LASER_MOTOR_LARGE_STEP_MS: int(record.group('laserMotorLargeStep_ms'))
+            PlimsAHdrParticleKey.SAMPLE_NUMBER: int(record.group('sampleNumber')),
+            PlimsAHdrParticleKey.SAMPLE_TYPE: str(record.group('sampleType')),
+            PlimsAHdrParticleKey.TRIGGER_COUNT: int(record.group('triggerCount')),
+            PlimsAHdrParticleKey.ROI_COUNT: int(record.group('roiCount')),
+            PlimsAHdrParticleKey.HUMIDITY: float(record.group('humidity')),
+            PlimsAHdrParticleKey.TEMPERATURE: float(record.group('temperature')),
+            PlimsAHdrParticleKey.RUNTIME: float(record.group('runTime')),
+            PlimsAHdrParticleKey.INHIBIT_TIME: float(record.group('inhibitTime')),
+            PlimsAHdrParticleKey.PUMP1_STATE: bool(record.group('pump1State')),
+            PlimsAHdrParticleKey.PUMP2_STATE: bool(record.group('pump2State')),
+            PlimsAHdrParticleKey.PMTA_HIGH_VOLTAGE: float(record.group('PMTAhighVoltage')),
+            PlimsAHdrParticleKey.PMTB_HIGH_VOLTAGE: float(record.group('PMTBhighVoltage')),
+            PlimsAHdrParticleKey.ALT_FLASHLIGHT_CONTROL_VOLTAGE: float(record.group('Alt_FlashlampControlVoltage')),
+            PlimsAHdrParticleKey.PUMP_DRIVE_VOLTAGE: float(record.group('pumpDriveVoltage')),
+            PlimsAHdrParticleKey.ALT_PMTA_HIGH_VOLTAGE: float(record.group('altPMTAHighVoltage')),
+            PlimsAHdrParticleKey.ALT_PMTB_HIGH_VOLTAGE: float(record.group('altPMTBHighVoltage')),
+            PlimsAHdrParticleKey.SYRINGE_SAMPLING_SPEED: float(record.group('syringeSamplingSpeed')),
+            PlimsAHdrParticleKey.SYRINGE_OFFSET: float(record.group('syringeOffset')),
+            PlimsAHdrParticleKey.NUMBER_SYRINGES_TO_AUTORUN: int(record.group('NumberSyringesToAutoRun')),
+            PlimsAHdrParticleKey.SYRINGE_SAMPLE_VOLUME: float(record.group('SyringeSampleVolume')),
+            PlimsAHdrParticleKey.ALT_SYRINGE_SAMPLE_VOLUME: float(record.group('altSyringeSampleVolume')),
+            PlimsAHdrParticleKey.SAMPLE_VOLUME_2_SKIP: int(record.group('sampleVolume2skip')),
+            PlimsAHdrParticleKey.FOCUS_MOTOR_SMALL_STEP_MS: int(record.group('focusMotorSmallStep_ms')),
+            PlimsAHdrParticleKey.FOCUS_MOTOR_LARGE_STEP_MS: int(record.group('focusMotorLargeStep_ms')),
+            PlimsAHdrParticleKey.LASER_MOTOR_SMALL_STEP_MS: int(record.group('laserMotorSmallStep_ms')),
+            PlimsAHdrParticleKey.LASER_MOTOR_LARGE_STEP_MS: int(record.group('laserMotorLargeStep_ms'))
         }
 
         return plims_particle_data
@@ -180,8 +132,8 @@ class PlimsAHdrParser(SimpleParser):
         match = FNAME_DATE_REGEX.match(file.name)
         if match is not None:
             # convert file name date/time string to seconds since 1970-01-01 in UTC
-            utc = pd.to_datetime(match.group(1), format='%Y%m%dT%H%M%S', utc=True)
-            internal_timestamp = timegm(utc.timetuple()) + 2208988800
+            file_timestamp = pd.to_datetime(match.group(1), format='%Y%m%dT%H%M%S')
+            internal_timestamp = datetime_utc_to_ntp(file_timestamp)
         else:
             self._exception_callback(RecoverableSampleException('Could not extract date from file'))
 
@@ -191,7 +143,7 @@ class PlimsAHdrParser(SimpleParser):
             if plims_particle_data is None:
                 log.error('Erroneous data found in file')
             else:
-                particle = self._extract_sample(PlimsADataParticle, None, plims_particle_data,
+                particle = self._extract_sample(PlimsAHdrDataParticle, None, plims_particle_data,
                                                 internal_timestamp=internal_timestamp,
                                                 preferred_ts=DataParticleKey.INTERNAL_TIMESTAMP)
                 if particle is not None:

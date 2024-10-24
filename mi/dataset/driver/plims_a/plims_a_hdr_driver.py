@@ -38,7 +38,7 @@ class PlimsAHdrDriver(SimpleDatasetDriver):
     def _build_parser(self, stream_handle):
         parser_config = {
             DataSetDriverConfigKeys.PARTICLE_MODULE: 'mi.dataset.parser.plims_a_hdr',
-            DataSetDriverConfigKeys.PARTICLE_CLASS: 'PlimsADataParticle'}
+            DataSetDriverConfigKeys.PARTICLE_CLASS: 'PlimsAHdrDataParticle'}
 
         parser = PlimsAHdrParser(parser_config, stream_handle, self._exception_callback)
 
