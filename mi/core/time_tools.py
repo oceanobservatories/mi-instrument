@@ -14,6 +14,7 @@ import re
 import time
 
 import ntplib
+import pytz
 
 DATE_PATTERN = r'^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?Z?$'
 DATE_MATCHER = re.compile(DATE_PATTERN)
@@ -129,8 +130,12 @@ def datetime_utc_to_ntp(utc_datetime):
     """
     Return an NTP timestamp from a UTC datetime object.
     """
+    if utc_datetime.tzinfo:
+        dawn_of_time = datetime.datetime(1970,1,1, tzinfo=pytz.utc)
+    else:
+        dawn_of_time = datetime.datetime(1970,1,1) #timezone unaware
 
-    return ntplib.system_to_ntp_time((utc_datetime-datetime.datetime(1970,1,1)).total_seconds())
+    return ntplib.system_to_ntp_time((utc_datetime-dawn_of_time).total_seconds())
 
 
 def timegm_to_float(timestamp):
