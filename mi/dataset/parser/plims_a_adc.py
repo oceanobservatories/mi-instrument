@@ -22,9 +22,8 @@ log = get_logger()
 from mi.core.instrument.dataset_data_particle import DataParticleKey
 from mi.core.time_tools import datetime_utc_to_ntp
 from mi.dataset.dataset_parser import DataSetDriverConfigKeys, SimpleParser
-from mi.dataset.parser.plims_a_particles import (
-    PLIMS_A_ADC_COLUMNS, PlimsAAdcDataParticle, PlimsAAdcParticleKey,
-    PlimsAAdcRecoveredDataParticle)
+from mi.dataset.parser.plims_a_particles import (PLIMS_A_ADC_COLUMNS,
+                                                 PlimsAAdcParticleKey)
 
 # Regex pattern for extracting datetime from filename
 FNAME_DTIME_PATTERN = (
