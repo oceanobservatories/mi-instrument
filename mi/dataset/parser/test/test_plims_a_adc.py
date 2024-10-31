@@ -12,7 +12,8 @@ from mi.dataset.dataset_parser import DataSetDriverConfigKeys
 from mi.dataset.driver.plims_a.resource import RESOURCE_PATH
 from mi.dataset.parser.plims_a_adc import PlimsAAdcParser
 from mi.dataset.parser.plims_a_particles import (DataParticleType,
-                                                 PlimsAAdcDataParticle)
+                                                 PlimsAAdcDataParticle,
+                                                 PlimsAAdcParticleKey)
 from mi.dataset.test.test_parser import ParserUnitTestCase
 
 log = get_logger()
@@ -67,13 +68,51 @@ class PlimsAAdclUnitTestCase(ParserUnitTestCase):
 
             # In a single read, get all particles in this file.
             results = parser.get_records(2)
+            rest_of_results = parser.get_records(442)
 
         self.assertEqual(len(results), 2)
+        self.assertEqual(len(rest_of_results), 442)
         self.assert_particles(results, "D20231021T175900_IFCB199_adc_check.yml", RESOURCE_PATH)
 
         self.assertListEqual(self.exception_callback_value, [])
 
         log.debug('===== END TEST PLIMS_A_ADC Parser  =====')
+
+    def test_plims_a_adc_parser_types(self):
+        """
+        Read a file and pull out a data particle.
+        Verify that the results have the expected types.
+        """
+        log.debug('===== START TEST PLIMS_A_ADC Parser Types =====')
+        self.setup()
+
+        with open(self.file_path('D20231021T175900_IFCB199.adc')) as in_file:
+            parser = self.create_plims_a_parser(in_file)
+
+            # In a single read, get all particles in this file.
+            results = parser.get_records(444)
+
+        self.assertEqual(len(results), 444)
+
+        self.assertListEqual(self.exception_callback_value, [])
+
+        # Check for appropriate type conversion
+        for result in results:
+            self.assertEqual(type(result.get_value_from_values(PlimsAAdcParticleKey.TRIGGER_NUMBER)), int)
+            self.assertEqual(type(result.get_value_from_values(PlimsAAdcParticleKey.ADC_TIME)), float)
+            self.assertEqual(type(result.get_value_from_values(PlimsAAdcParticleKey.PMTA)), float)
+            self.assertEqual(type(result.get_value_from_values(PlimsAAdcParticleKey.PMTB)), float)
+            self.assertEqual(type(result.get_value_from_values(PlimsAAdcParticleKey.PMTC)), float)
+            self.assertEqual(type(result.get_value_from_values(PlimsAAdcParticleKey.PMTD)), float)
+            self.assertEqual(type(result.get_value_from_values(PlimsAAdcParticleKey.INHIBIT_TIME)), float)
+            self.assertEqual(type(result.get_value_from_values(PlimsAAdcParticleKey.PEAK_A)), float)
+            self.assertEqual(type(result.get_value_from_values(PlimsAAdcParticleKey.ROI_X)), int)
+            self.assertEqual(type(result.get_value_from_values(PlimsAAdcParticleKey.ROI_WIDTH)), int)
+            self.assertEqual(type(result.get_value_from_values(PlimsAAdcParticleKey.STATUS)), int)
+            self.assertEqual(type(result.get_value_from_values(PlimsAAdcParticleKey.START_BYTE)), int)
+
+        log.debug('===== END TEST PLIMS_A_ADC Parser Types  =====')
+
 
     def test_bad_data(self):
         """
