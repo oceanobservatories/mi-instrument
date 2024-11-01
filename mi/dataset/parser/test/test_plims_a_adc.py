@@ -7,6 +7,7 @@
 
 import os
 
+import numpy as np
 from mi.core.log import get_logger
 from mi.dataset.dataset_parser import DataSetDriverConfigKeys
 from mi.dataset.driver.plims_a.resource import RESOURCE_PATH
@@ -98,18 +99,18 @@ class PlimsAAdclUnitTestCase(ParserUnitTestCase):
 
         # Check for appropriate type conversion
         for result in results:
-            self.assertEqual(type(result.get_value_from_values(PlimsAAdcParticleKey.TRIGGER_NUMBER)), int)
-            self.assertEqual(type(result.get_value_from_values(PlimsAAdcParticleKey.ADC_TIME)), float)
-            self.assertEqual(type(result.get_value_from_values(PlimsAAdcParticleKey.PMTA)), float)
-            self.assertEqual(type(result.get_value_from_values(PlimsAAdcParticleKey.PMTB)), float)
-            self.assertEqual(type(result.get_value_from_values(PlimsAAdcParticleKey.PMTC)), float)
-            self.assertEqual(type(result.get_value_from_values(PlimsAAdcParticleKey.PMTD)), float)
-            self.assertEqual(type(result.get_value_from_values(PlimsAAdcParticleKey.INHIBIT_TIME)), float)
-            self.assertEqual(type(result.get_value_from_values(PlimsAAdcParticleKey.PEAK_A)), float)
-            self.assertEqual(type(result.get_value_from_values(PlimsAAdcParticleKey.ROI_X)), int)
-            self.assertEqual(type(result.get_value_from_values(PlimsAAdcParticleKey.ROI_WIDTH)), int)
-            self.assertEqual(type(result.get_value_from_values(PlimsAAdcParticleKey.STATUS)), int)
-            self.assertEqual(type(result.get_value_from_values(PlimsAAdcParticleKey.START_BYTE)), int)
+            self.assertTrue(np.issubdtype(type(result.get_value_from_values(PlimsAAdcParticleKey.TRIGGER_NUMBER)), np.integer))
+            self.assertTrue(np.issubdtype(type(result.get_value_from_values(PlimsAAdcParticleKey.ADC_TIME)), np.float))
+            self.assertTrue(np.issubdtype(type(result.get_value_from_values(PlimsAAdcParticleKey.PMTA)), np.float))
+            self.assertTrue(np.issubdtype(type(result.get_value_from_values(PlimsAAdcParticleKey.PMTB)), np.float))
+            self.assertTrue(np.issubdtype(type(result.get_value_from_values(PlimsAAdcParticleKey.PMTC)), np.float))
+            self.assertTrue(np.issubdtype(type(result.get_value_from_values(PlimsAAdcParticleKey.PMTD)), np.float))
+            self.assertTrue(np.issubdtype(type(result.get_value_from_values(PlimsAAdcParticleKey.INHIBIT_TIME)), np.float))
+            self.assertTrue(np.issubdtype(type(result.get_value_from_values(PlimsAAdcParticleKey.PEAK_A)), np.float))
+            self.assertTrue(np.issubdtype(type(result.get_value_from_values(PlimsAAdcParticleKey.ROI_X)), np.integer))
+            self.assertTrue(np.issubdtype(type(result.get_value_from_values(PlimsAAdcParticleKey.ROI_WIDTH)), np.integer))
+            self.assertTrue(np.issubdtype(type(result.get_value_from_values(PlimsAAdcParticleKey.STATUS)), np.integer))
+            self.assertTrue(np.issubdtype(type(result.get_value_from_values(PlimsAAdcParticleKey.START_BYTE)), np.integer))
 
         log.debug('===== END TEST PLIMS_A_ADC Parser Types  =====')
 

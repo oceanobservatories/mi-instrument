@@ -66,13 +66,19 @@ class PlimsAAdcParser(SimpleParser):
             self._exception_callback(RecoverableSampleException('Could not extract date from file name: {}'.format(file.name)))
 
         df = pd.read_csv(file, names=PLIMS_A_ADC_COLUMNS, error_bad_lines=True)
+
         if df.isna().values.any():
             plims_adc_data = None
         else:
-            plims_adc_data = df.to_dict('records')
+            # plims_adc_data = df.to_dict('records') # This works in Pandas >= 0.24.2
+            # Have to work around an issue where all values are interpreted as floats if 
+            # dataframe contains any floats when using the to_dict() method.
+            plims_adc_data = [x._asdict() for x in df.itertuples()]
         
         if plims_adc_data is not None:
             for record in plims_adc_data:
+                # Drop "Index" keys which are created in working around the faulty to_dict() method
+                record.pop('Index', None)
                 particle = self._extract_sample(self._particle_class, None, record,
                                                 internal_timestamp = internal_timestamp + record[PlimsAAdcParticleKey.ADC_TIME],
                                                 preferred_ts=DataParticleKey.INTERNAL_TIMESTAMP)
