@@ -14,10 +14,11 @@ from mi.core.instrument.dataset_data_particle import (DataParticle,
 
 
 class DataParticleType(BaseEnum):
+    """ Use same streams for telemetered and recovered data. """
     PLIMS_A_HDR_TELEMETERED_PARTICLE_TYPE = 'plims_a_hdr_instrument'
-    PLIMS_A_HDR_RECOVERED_PARTICLE_TYPE = 'plims_a_hdr_instrument_recovered'
+    PLIMS_A_HDR_RECOVERED_PARTICLE_TYPE = 'plims_a_hdr_instrument'
     PLIMS_A_ADC_TELEMETERED_PARTICLE_TYPE = 'plims_a_adc_instrument'
-    PLIMS_A_ADC_RECOVERED_PARTICLE_TYPE = 'plims_a_adc_instrument_recovered'
+    PLIMS_A_ADC_RECOVERED_PARTICLE_TYPE = 'plims_a_adc_instrument'
 
     __metaclass__ = get_logging_metaclass(log_level='trace')
 

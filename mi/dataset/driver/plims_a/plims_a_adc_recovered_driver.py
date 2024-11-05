@@ -26,7 +26,7 @@ def parse(unused, source_file_path, particle_data_handler):
 
 class PlimsAAdcRecoveredDriver(SimpleDatasetDriver):
     """
-    Driver for the recovered plims_a ADC files.
+    Driver for the recovered plims_a ADC files. Uses same data particles as telemetered data.
     """
 
     def __init__(self, unused, stream_handle, particle_data_handler):
