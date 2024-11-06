@@ -62,7 +62,6 @@ class PlimsAAdcParticleKey(BaseEnum):
     """
 
     TRIGGER_NUMBER = "trigger_number" #int
-    ADC_TIME = "adc_time" #Elapsed time (in seconds) from the start of the sample run to the current trigger.
     PMTA = "pmta" # Integrated output (in volts)
     PMTB = "pmtb" # Integrated output (in volts)
     PMTC = "pmtc" # Integrated output (in volts)

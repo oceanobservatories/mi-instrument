@@ -66,7 +66,8 @@ class PlimsAAdcParser(SimpleParser):
             self._exception_callback(RecoverableSampleException('Could not extract date from file name: {}'.format(file.name)))
 
         df = pd.read_csv(file, names=PLIMS_A_ADC_COLUMNS, error_bad_lines=True)
-
+        if df:
+            df.drop('ADCTime', inplace=True)
         if df.isna().values.any():
             plims_adc_data = None
         else:
