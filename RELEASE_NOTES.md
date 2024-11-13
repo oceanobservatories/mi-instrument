@@ -1,3 +1,9 @@
+# Version 1.0.16
+
+* Issue #15798 - Adds Prawler platform instruments support
+  * Creates CTDPF_P WFP parser, driver, and tests
+  * Creates DOFST_P WFP parser, driver, and tests
+
 # Version 1.0.15
 
 * Issue #15831 - Modify ZPLS echogram metadata parser to handle legacy EK60 data file names
