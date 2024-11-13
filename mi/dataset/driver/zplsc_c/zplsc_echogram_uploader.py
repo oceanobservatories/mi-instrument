@@ -32,8 +32,6 @@ from mi.dataset.dataset_parser import DataSetDriverConfigKeys
 
 log = get_logger()
 
-HOURLY_FILENAME_DATE_FORMAT = '%y%m%d%H.nc'
-
 
 @version("0.2.0")
 def parse(unused, echogram_file_path, particle_data_handler):
@@ -191,55 +189,66 @@ class ZplscEchogramUploadParser(SimpleParser):
         #     GI02HYPM_UPPER_Bioacoustic_Echogram_20200823-20200830_Calibrated_Sv_Full_20200823.nc
         # or (hourly)
         #     20082923.nc
+        #     OOI-D20140928-T000000.nc
         averaged_or_full_filename_regex_str = \
             r'Bioacoustic_Echogram_(?P<start_date>[0-9]{8})-(?P<stop_date>[0-9]{8})_Calibrated_Sv_(?P<type>Averaged|Full)_?(?P<date>[0-9]{8})?\.nc'
 
-        hourly_filename_regex_str = r'^[0-9]{8}\.nc'
+        # Should match strings like 20081600.nc or OOI-D20140928-T000000.nc (legacy EK60)
+        hourly_file_regex = r'^(?P<prefix>OOI-D)?(?P<hourly_file_date>[0-9]{8})(?P<time_suffix>-T[0-9]{6})?\.nc'
 
         m = re.compile(averaged_or_full_filename_regex_str).search(echogram_filename)
         if m:
             echogram_type = m.group('type')
         else:
-            m = re.compile(hourly_filename_regex_str).match(echogram_filename)
+            m = re.compile(hourly_file_regex).match(echogram_filename)
             if m:
                 echogram_type = ZplscEchogramType.HOURLY
             else:
                 error_msg = "Filename \"%s\" not in either of the expected formats: \"%s\" or \"%s\"" % \
-                        (echogram_filename, averaged_or_full_filename_regex_str, hourly_filename_regex_str)
+                        (echogram_filename, averaged_or_full_filename_regex_str, hourly_file_regex)
                 log.error(error_msg)
                 raise SampleException(error_msg)
 
         # Use the regex match captures from the echogram_filename to generate another regex as well as
         # start date and end date criteria to find the hourly .nc files that correspond to the echogram.
         if echogram_type == ZplscEchogramType.FULL:
-            # RegEx to find the hourly files for 1 day
-            hourly_file_regex = r'^' + m.group('date')[2:] + r'[0-9]{2}\.nc'
+            # Get time boundaries that will be used to find the hourly files for 1 day
             start_day_datetime = datetime.strptime(m.group('date'), "%Y%m%d")
             # Assume the stop time to be the beginning of the next day
             stop_day_datetime = start_day_datetime + timedelta(days=1)
         elif echogram_type == ZplscEchogramType.AVERAGED:
-            # RegEx to find all of the hourly files for the month (all hourly files in the dir)
-            hourly_file_regex = r'^[0-9]{8}\.nc'
+            # Get time boundaries that will be used to find all of the hourly files for the month (all hourly files in the dir)
             start_day_datetime = datetime.strptime(m.group('start_date'), "%Y%m%d")
             # The stop time in the filename is already the beginning of the next day
             stop_day_datetime = datetime.strptime(m.group('stop_date'), "%Y%m%d")
         else: # ZplscEchogramType.HOURLY
+            # No need to set start_day_datetime and stop_day_datetime since this is the hourly file
             hourly_file_regex = echogram_filename
-            start_day_datetime = datetime.strptime(echogram_filename, HOURLY_FILENAME_DATE_FORMAT)
-            stop_day_datetime = start_day_datetime
 
         # Get a list of the hourly files that correspond to the echogram time range.
         # These hourly files contain the provenance for the echogram.
-        hourly_files = [f for f in os.listdir(echogram_dirname)
-                        if re.match(hourly_file_regex, f)
-                            and (echogram_type == ZplscEchogramType.HOURLY
-                                 or
-                                 (start_day_datetime <= datetime.strptime(f, HOURLY_FILENAME_DATE_FORMAT) < stop_day_datetime))]
+        hourly_files = []
+        for f in os.listdir(echogram_dirname):
+            m = re.match(hourly_file_regex, f)
+            if not m:
+                continue
+            if echogram_type == ZplscEchogramType.HOURLY:
+                # hourly_file_regex was set to file name so it matches the file exactly, no need to filter by dates
+                hourly_files.append(f)
+                break
+            else:
+                if m.group('prefix') == 'OOI-D':
+                    # Legacy EK60 hourly file format
+                    hourly_file_datetime = datetime.strptime(m.group('hourly_file_date') + m.group('time_suffix'), '%Y%m%d-T%H%M%S')
+                else:
+                    hourly_file_datetime = datetime.strptime(m.group('hourly_file_date'), '%y%m%d%H')
+
+                if start_day_datetime <= hourly_file_datetime < stop_day_datetime:
+                    hourly_files.append(f)
 
         if len(hourly_files) == 0:
-            error_msg = "Hourly files from %s to %s corresponding to \"%s\" echogram \"%s\" could not be found that match regex \"%s\"" %\
-                 (start_day_datetime.strftime(HOURLY_FILENAME_DATE_FORMAT), stop_day_datetime.strftime(HOURLY_FILENAME_DATE_FORMAT),
-                  echogram_type, echogram_filename, hourly_file_regex)
+            error_msg = "Hourly files corresponding to \"%s\" echogram \"%s\" could not be found that match regex \"%s\"" %\
+                 (echogram_type, echogram_filename, hourly_file_regex)
             log.error(error_msg)
             raise SampleException(error_msg)
 
