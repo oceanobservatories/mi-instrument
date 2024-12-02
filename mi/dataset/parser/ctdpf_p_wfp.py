@@ -128,7 +128,7 @@ class CtdpfPWfpParser(SimpleParser):
 
         pressure = pressure / 100.0
         temperature = temperature / 1000.0
-        conductivity = conductivity / 1000.0
+        conductivity = conductivity / 10000.0
 
         ctdpf_particle_data = {
             CtdpfPParticleKey.PRESSURE: pressure,
