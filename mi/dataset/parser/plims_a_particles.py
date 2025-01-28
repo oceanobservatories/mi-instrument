@@ -57,19 +57,16 @@ class PlimsAHdrParticleKey(BaseEnum):
 
 class PlimsAAdcParticleKey(BaseEnum):
     """
-    Class that defines fields that need to be extracted for the data particle.
-    Data types the same in telemetered and recovered data streams.
+    Class defining fields to be extracted for the data particle.
+    Data types the same in telemetered and recovered particles.
     """
 
+    FILE_TIME = 'file_time'
     TRIGGER_NUMBER = "trigger_number" #int
     PMTA = "pmta" # Integrated output (in volts)
     PMTB = "pmtb" # Integrated output (in volts)
-    PMTC = "pmtc" # Integrated output (in volts)
-    PMTD = "pmtd" # Integrated output (in volts)
     PEAK_A = "peak_a" # Peak output (in volts)
     PEAK_B = "peak_b" # Peak output (in volts)
-    PEAK_C = "peak_c" # Peak output (in volts)
-    PEAK_D = "peak_d" # Peak output (in volts)
     TIME_OF_FLIGHT = "time_of_flight" #Duration (in us) of the entire pulse for which a trigger signal is generated
     GRAB_TIME_START = "grab_time_start" # duplicate of adc_time
     GRAB_TIME_END = "grab_time_end"
@@ -78,39 +75,47 @@ class PlimsAAdcParticleKey(BaseEnum):
     ROI_WIDTH = "roi_width"#int
     ROI_HEIGHT = "roi_height"#int
     START_BYTE= "start_byte"#int
-    COMPARATOR_OUT = "comparator_out" #int
-    START_POINT = "start_point" #int
-    SIGNAL_LENGTH = "signal_length" #int
     STATUS = "status" #int
     RUN_TIME = "run_time"
     INHIBIT_TIME = "inhibit_time"
 
-PLIMS_A_ADC_COLUMNS = [
-    "trigger_number",
-    "adc_time",
-    "pmta",
-    "pmtb",
-    "pmtc",
-    "pmtd",
-    "peak_a",
-    "peak_b",
-    "peak_c",
-    "peak_d",
-    "time_of_flight",
-    "grab_time_start",
-    "grab_time_end",
-    "roi_x",
-    "roi_y",
-    "roi_width",
-    "roi_height",
-    "start_byte",
-    "comparator_out",
-    "start_point",
-    "signal_length",
-    "status",
-    "run_time",
-    "inhibit_time",
-]
+    PLIMS_A_ADC_COLUMNS = [
+        "trigger_number",
+        "adc_time",
+        "pmta",
+        "pmtb",
+        "pmtc",
+        "pmtd",
+        "peak_a",
+        "peak_b",
+        "peak_c",
+        "peak_d",
+        "time_of_flight",
+        "grab_time_start",
+        "grab_time_end",
+        "roi_x",
+        "roi_y",
+        "roi_width",
+        "roi_height",
+        "start_byte",
+        "comparator_out",
+        "start_point",
+        "signal_length",
+        "status",
+        "run_time",
+        "inhibit_time",
+    ]
+
+    PLIMS_A_ADC_DROP_COLUMNS = [
+        "adc_time",
+        "pmtc",
+        "pmtd",
+        "peak_c",
+        "peak_d",
+        "comparator_out",
+        "start_point",
+        "signal_length",
+    ]
 
 
 class PlimsADataParticle(DataParticle):

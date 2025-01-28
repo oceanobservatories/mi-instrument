@@ -8,13 +8,16 @@
 import os
 
 import numpy as np
+
 from mi.core.log import get_logger
 from mi.dataset.dataset_parser import DataSetDriverConfigKeys
 from mi.dataset.driver.plims_a.resource import RESOURCE_PATH
 from mi.dataset.parser.plims_a_adc import PlimsAAdcParser
-from mi.dataset.parser.plims_a_particles import (DataParticleType,
-                                                 PlimsAAdcDataParticle,
-                                                 PlimsAAdcParticleKey)
+from mi.dataset.parser.plims_a_particles import (
+    DataParticleType,
+    PlimsAAdcDataParticle,
+    PlimsAAdcParticleKey,
+)
 from mi.dataset.test.test_parser import ParserUnitTestCase
 
 log = get_logger()
@@ -84,7 +87,7 @@ class PlimsAAdclUnitTestCase(ParserUnitTestCase):
         Read a file and pull out a data particle.
         Verify that the results have the expected types.
         """
-        log.debug('===== START TEST PLIMS_A_ADC Parser Types =====')
+        # log.debug('===== START TEST PLIMS_A_ADC Parser Types =====')
         self.setup()
 
         with open(self.file_path('D20231021T175900_IFCB199.adc')) as in_file:
@@ -100,19 +103,23 @@ class PlimsAAdclUnitTestCase(ParserUnitTestCase):
         # Check for appropriate type conversion
         for result in results:
             self.assertTrue(np.issubdtype(type(result.get_value_from_values(PlimsAAdcParticleKey.TRIGGER_NUMBER)), np.integer))
-            self.assertTrue(np.issubdtype(type(result.get_value_from_values(PlimsAAdcParticleKey.ADC_TIME)), np.float))
+            self.assertTrue(np.issubdtype(type(result.get_value_from_values(PlimsAAdcParticleKey.GRAB_TIME_END)), np.float))
+            self.assertTrue(np.issubdtype(type(result.get_value_from_values(PlimsAAdcParticleKey.TIME_OF_FLIGHT)), np.float))
             self.assertTrue(np.issubdtype(type(result.get_value_from_values(PlimsAAdcParticleKey.PMTA)), np.float))
             self.assertTrue(np.issubdtype(type(result.get_value_from_values(PlimsAAdcParticleKey.PMTB)), np.float))
-            self.assertTrue(np.issubdtype(type(result.get_value_from_values(PlimsAAdcParticleKey.PMTC)), np.float))
-            self.assertTrue(np.issubdtype(type(result.get_value_from_values(PlimsAAdcParticleKey.PMTD)), np.float))
             self.assertTrue(np.issubdtype(type(result.get_value_from_values(PlimsAAdcParticleKey.INHIBIT_TIME)), np.float))
             self.assertTrue(np.issubdtype(type(result.get_value_from_values(PlimsAAdcParticleKey.PEAK_A)), np.float))
+            self.assertTrue(np.issubdtype(type(result.get_value_from_values(PlimsAAdcParticleKey.PEAK_B)), np.float))
             self.assertTrue(np.issubdtype(type(result.get_value_from_values(PlimsAAdcParticleKey.ROI_X)), np.integer))
+            self.assertTrue(np.issubdtype(type(result.get_value_from_values(PlimsAAdcParticleKey.ROI_Y)), np.integer))
             self.assertTrue(np.issubdtype(type(result.get_value_from_values(PlimsAAdcParticleKey.ROI_WIDTH)), np.integer))
+            self.assertTrue(np.issubdtype(type(result.get_value_from_values(PlimsAAdcParticleKey.ROI_HEIGHT)), np.integer))
             self.assertTrue(np.issubdtype(type(result.get_value_from_values(PlimsAAdcParticleKey.STATUS)), np.integer))
             self.assertTrue(np.issubdtype(type(result.get_value_from_values(PlimsAAdcParticleKey.START_BYTE)), np.integer))
-
-        log.debug('===== END TEST PLIMS_A_ADC Parser Types  =====')
+            self.assertTrue(np.issubdtype(type(result.get_value_from_values(PlimsAAdcParticleKey.RUN_TIME)), np.float))
+            self.assertTrue(np.issubdtype(type(result.get_value_from_values(PlimsAAdcParticleKey.INHIBIT_TIME)), np.float))
+            
+            # log.debug('===== END TEST PLIMS_A_ADC Parser Types  =====')
 
 
     def test_bad_data(self):

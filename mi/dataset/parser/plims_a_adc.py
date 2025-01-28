@@ -15,6 +15,7 @@ Mal-formed sensor data records and all metadata records produce no particles.
 import re
 
 import pandas as pd
+
 from mi.core.exceptions import RecoverableSampleException
 from mi.core.log import get_logger
 
@@ -22,8 +23,7 @@ log = get_logger()
 from mi.core.instrument.dataset_data_particle import DataParticleKey
 from mi.core.time_tools import datetime_utc_to_ntp
 from mi.dataset.dataset_parser import DataSetDriverConfigKeys, SimpleParser
-from mi.dataset.parser.plims_a_particles import (PLIMS_A_ADC_COLUMNS,
-                                                 PlimsAAdcParticleKey)
+from mi.dataset.parser.plims_a_particles import PlimsAAdcParticleKey
 
 # Regex pattern for extracting datetime from filename
 FNAME_DTIME_PATTERN = (
@@ -65,9 +65,10 @@ class PlimsAAdcParser(SimpleParser):
         else:
             self._exception_callback(RecoverableSampleException('Could not extract date from file name: {}'.format(file.name)))
 
-        df = pd.read_csv(file, names=PLIMS_A_ADC_COLUMNS, error_bad_lines=True)
-        if df:
-            df.drop('ADCTime', inplace=True)
+        df = pd.read_csv(file, names=PlimsAAdcParticleKey.PLIMS_A_ADC_COLUMNS, error_bad_lines=True)
+        if df is not None and not df.empty:
+            df.drop(PlimsAAdcParticleKey.PLIMS_A_ADC_DROP_COLUMNS, axis=1, inplace=True)
+            df[PlimsAAdcParticleKey.FILE_TIME] = internal_timestamp
         if df.isna().values.any():
             plims_adc_data = None
         else:
@@ -81,7 +82,7 @@ class PlimsAAdcParser(SimpleParser):
                 # Drop "Index" keys which are created in working around the faulty to_dict() method
                 record.pop('Index', None)
                 particle = self._extract_sample(self._particle_class, None, record,
-                                                internal_timestamp = internal_timestamp + record[PlimsAAdcParticleKey.ADC_TIME],
+                                                internal_timestamp = internal_timestamp + record[PlimsAAdcParticleKey.GRAB_TIME_START],
                                                 preferred_ts=DataParticleKey.INTERNAL_TIMESTAMP)
                 if particle is not None:
                     self._record_buffer.append(particle)
