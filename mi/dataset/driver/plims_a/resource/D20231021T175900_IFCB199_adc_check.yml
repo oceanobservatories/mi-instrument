@@ -3,16 +3,12 @@ header:
     particle_type: 'MULTIPLE'
 data:
   - _index: 1
+    file_time: 3906899940.0
     trigger_number: 1
-    adc_time: 3.8192923
     pmta: -0.41140914
     pmtb: -0.3998083
-    pmtc: -0.3976035
-    pmtd: -0.39057553
     peak_a: 0.41818142
     peak_b: 1.2852526
-    peak_c: -0.038802624
-    peak_d: -0.03949642
     time_of_flight: 63.043476
     grab_time_start: 3.8192923
     grab_time_end: 3.8635903
@@ -21,9 +17,6 @@ data:
     roi_width: 72
     roi_height: 52
     start_byte: 0
-    comparator_out: 0
-    start_point: 0
-    signal_length: 0
     status: 0
     run_time: 3.842426215277778
     inhibit_time: 0.08017361111111111
@@ -31,16 +24,12 @@ data:
     particle_type: plims_a_adc_instrument
     particle_object: PlimsAAdcDataParticle
   - _index: 2
+    file_time: 3906899940.0
     trigger_number: 2
-    adc_time: 3.9061524
     pmta: 0.047302842
     pmtb: 0.073604584
-    pmtc: 0.009562373
-    pmtd: 0.010502934
     peak_a: 0.692513
     peak_b: 1.0691309
-    peak_c: 0.05888462
-    peak_d: 0.057194233
     time_of_flight: 60.869564
     grab_time_start: 3.9061524
     grab_time_end: 3.9498922
@@ -49,9 +38,6 @@ data:
     roi_width: 80
     roi_height: 60
     start_byte: 3744
-    comparator_out: 0
-    start_point: 0
-    signal_length: 0
     status: 0
     run_time: 3.928938802083333
     inhibit_time: 0.16619791666666667

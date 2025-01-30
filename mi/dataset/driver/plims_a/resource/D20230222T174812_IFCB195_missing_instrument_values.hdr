@@ -1,14 +1,12 @@
 SoftwareVersion: 2.3.0.0
 AnalogFirmware: 45
 HousekeepingFirmware: 33
-sampleXXXXNumber: 10
+sampleNumber: 10
 sampleType: Normal
 triggerCount: 8816
-roiCount: 8825
 humidity: 24.7187899595636
 temperature: 23.454786755169003
 runTime: 1200.9286111111112
-inhibitTime: 819.47625
 ADCFileFormat: trigger#, ADCtime, PMTA, PMTB, PMTC, PMTD, PeakA, PeakB, PeakC, PeakD, TimeOfFlight, GrabTimeStart, GrabTimeEnd, RoiX, RoiY, RoiWidth, RoiHeight, StartByte, ComparatorOut, StartPoint, SignalLength, Status, RunTime, InhibitTime
 DAQ_MCCserialPort_DAC_MCConly: /dev/ttyS2
 auxPower1: False

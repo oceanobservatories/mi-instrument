@@ -3,7 +3,7 @@
 """
 @package mi.dataset.parser.plims_a_hdr
 @file mi-dataset/mi/dataset/parser/plims_a_hdr.py
-@author Samuel Dahlberg
+@author Samuel Dahlberg, Joffrey Peters
 @brief Parser for the plims_a_hdr dataset driver.
 
 This file contains code for the PLIMS parser and code to produce data particles
@@ -19,16 +19,20 @@ Mal-formed sensor data records and all metadata records produce no particles.
 import re
 
 import pandas as pd
-from mi.core.exceptions import RecoverableSampleException
+
+from mi.core.exceptions import ConfigurationException, RecoverableSampleException
 from mi.core.log import get_logger
 
 log = get_logger()
-from mi.core.common import BaseEnum
 from mi.core.instrument.dataset_data_particle import DataParticleKey
 from mi.core.time_tools import datetime_utc_to_ntp
-from mi.dataset.dataset_parser import SimpleParser
-from mi.dataset.parser.plims_a_particles import (PlimsAHdrDataParticle,
-                                                 PlimsAHdrParticleKey)
+from mi.dataset.dataset_parser import DataSetDriverConfigKeys, SimpleParser
+from mi.dataset.parser.plims_a_particles import (
+    PlimsAHdrClassKey,
+    PlimsAHdrEngineeringParticleKey,
+    PlimsAHdrInstrumentParticleKey,
+    PlimsAHdrParticleKey,
+)
 
 # Regex pattern for extracting datetime from filename
 FNAME_DTIME_PATTERN = (
@@ -39,93 +43,45 @@ FNAME_DTIME_PATTERN = (
 )
 FNAME_DATE_REGEX = re.compile(FNAME_DTIME_PATTERN)
 
-UNNEEDED_DATA = (
-    r'(?:.+:\s.+(?:\r\n|\n)?)+?'
-)
-
-PATTERN = (
-        UNNEEDED_DATA +
-        r'(?:sampleNumber:\s(?P<sampleNumber>.+?))(?:\r\n|\n)' +
-        r'(?:sampleType:\s(?P<sampleType>.+?))(?:\r\n|\n)' +
-        r'(?:triggerCount:\s(?P<triggerCount>.+?))(?:\r\n|\n)' +
-        r'(?:roiCount:\s(?P<roiCount>.+?))(?:\r\n|\n)' +
-        r'(?:humidity:\s(?P<humidity>.+?))(?:\r\n|\n)' +
-        r'(?:temperature:\s(?P<temperature>.+?))(?:\r\n|\n)' +
-        r'(?:runTime:\s(?P<runTime>.+?))(?:\r\n|\n)' +
-        r'(?:inhibitTime:\s(?P<inhibitTime>.+?))(?:\r\n|\n)' +
-        UNNEEDED_DATA +
-        r'(?:pump1State:\s(?P<pump1State>.+?))(?:\r\n|\n)' +
-        r'(?:pump2State:\s(?P<pump2State>.+?))(?:\r\n|\n)' +
-        UNNEEDED_DATA +
-        r'(?:PMTAhighVoltage:\s(?P<PMTAhighVoltage>.+?))(?:\r\n|\n)' +
-        r'(?:PMTBhighVoltage:\s(?P<PMTBhighVoltage>.+?))(?:\r\n|\n)' +
-        UNNEEDED_DATA +
-        r'(?:Alt_FlashlampControlVoltage:\s(?P<Alt_FlashlampControlVoltage>.+?))(?:\r\n|\n)' +
-        r'(?:pumpDriveVoltage:\s(?P<pumpDriveVoltage>.+?))(?:\r\n|\n)' +
-        r'(?:altPMTAHighVoltage:\s(?P<altPMTAHighVoltage>.+?))(?:\r\n|\n)' +
-        r'(?:altPMTBHighVoltage:\s(?P<altPMTBHighVoltage>.+?))(?:\r\n|\n)' +
-        UNNEEDED_DATA +
-        r'(?:syringeSamplingSpeed:\s(?P<syringeSamplingSpeed>.+?))(?:\r\n|\n)' +
-        r'(?:syringeOffset:\s(?P<syringeOffset>.+?))(?:\r\n|\n)' +
-        r'(?:NumberSyringesToAutoRun:\s(?P<NumberSyringesToAutoRun>.+?))(?:\r\n|\n)' +
-        r'(?:SyringeSampleVolume:\s(?P<SyringeSampleVolume>.+?))(?:\r\n|\n)' +
-        r'(?:altSyringeSampleVolume:\s(?P<altSyringeSampleVolume>.+?))(?:\r\n|\n)' +
-        r'(?:sampleVolume2skip:\s(?P<sampleVolume2skip>.+?))(?:\r\n|\n)' +
-        UNNEEDED_DATA +
-        r'(?:focusMotorSmallStep_ms:\s(?P<focusMotorSmallStep_ms>.+?))(?:\r\n|\n)' +
-        r'(?:focusMotorLargeStep_ms:\s(?P<focusMotorLargeStep_ms>.+?))(?:\r\n|\n)' +
-        r'(?:laserMotorSmallStep_ms:\s(?P<laserMotorSmallStep_ms>.+?))(?:\r\n|\n)' +
-        r'(?:laserMotorLargeStep_ms:\s(?P<laserMotorLargeStep_ms>.+?))(?:\r\n|\n)' +
-        UNNEEDED_DATA
-)
-
-DATA_REGEX = re.compile(PATTERN)
-
 class PlimsAHdrParser(SimpleParser):
     """
-    Plims A (IFCB) HDR (header) file parser. 
+    Plims A (IFCB) HDR (header) base file parser. 
     The telemetered and recovered files have the same fields and contents, 
     and can use the same parser.
     """
+    SEGMENTATION_STRING = ": "
+    BOOLEAN_COMPARATORS = ['true', '1', 't', 'y', 'yes', 1]
 
-    def parse_record(self, record):
+    def __init__(self, config, stream_handle, exception_callback):
 
-        plims_particle_data = {
-            PlimsAHdrParticleKey.SAMPLE_NUMBER: int(record.group('sampleNumber')),
-            PlimsAHdrParticleKey.SAMPLE_TYPE: str(record.group('sampleType')),
-            PlimsAHdrParticleKey.TRIGGER_COUNT: int(record.group('triggerCount')),
-            PlimsAHdrParticleKey.ROI_COUNT: int(record.group('roiCount')),
-            PlimsAHdrParticleKey.HUMIDITY: float(record.group('humidity')),
-            PlimsAHdrParticleKey.TEMPERATURE: float(record.group('temperature')),
-            PlimsAHdrParticleKey.RUNTIME: float(record.group('runTime')),
-            PlimsAHdrParticleKey.INHIBIT_TIME: float(record.group('inhibitTime')),
-            PlimsAHdrParticleKey.PUMP1_STATE: bool(record.group('pump1State')),
-            PlimsAHdrParticleKey.PUMP2_STATE: bool(record.group('pump2State')),
-            PlimsAHdrParticleKey.PMTA_HIGH_VOLTAGE: float(record.group('PMTAhighVoltage')),
-            PlimsAHdrParticleKey.PMTB_HIGH_VOLTAGE: float(record.group('PMTBhighVoltage')),
-            PlimsAHdrParticleKey.ALT_FLASHLIGHT_CONTROL_VOLTAGE: float(record.group('Alt_FlashlampControlVoltage')),
-            PlimsAHdrParticleKey.PUMP_DRIVE_VOLTAGE: float(record.group('pumpDriveVoltage')),
-            PlimsAHdrParticleKey.ALT_PMTA_HIGH_VOLTAGE: float(record.group('altPMTAHighVoltage')),
-            PlimsAHdrParticleKey.ALT_PMTB_HIGH_VOLTAGE: float(record.group('altPMTBHighVoltage')),
-            PlimsAHdrParticleKey.SYRINGE_SAMPLING_SPEED: float(record.group('syringeSamplingSpeed')),
-            PlimsAHdrParticleKey.SYRINGE_OFFSET: float(record.group('syringeOffset')),
-            PlimsAHdrParticleKey.NUMBER_SYRINGES_TO_AUTORUN: int(record.group('NumberSyringesToAutoRun')),
-            PlimsAHdrParticleKey.SYRINGE_SAMPLE_VOLUME: float(record.group('SyringeSampleVolume')),
-            PlimsAHdrParticleKey.ALT_SYRINGE_SAMPLE_VOLUME: float(record.group('altSyringeSampleVolume')),
-            PlimsAHdrParticleKey.SAMPLE_VOLUME_2_SKIP: int(record.group('sampleVolume2skip')),
-            PlimsAHdrParticleKey.FOCUS_MOTOR_SMALL_STEP_MS: int(record.group('focusMotorSmallStep_ms')),
-            PlimsAHdrParticleKey.FOCUS_MOTOR_LARGE_STEP_MS: int(record.group('focusMotorLargeStep_ms')),
-            PlimsAHdrParticleKey.LASER_MOTOR_SMALL_STEP_MS: int(record.group('laserMotorSmallStep_ms')),
-            PlimsAHdrParticleKey.LASER_MOTOR_LARGE_STEP_MS: int(record.group('laserMotorLargeStep_ms'))
-        }
+        # set the class types from the config
+        particle_class_dict = config.get(DataSetDriverConfigKeys.PARTICLE_CLASSES_DICT)
+        particle_module = config.get(DataSetDriverConfigKeys.PARTICLE_MODULE)
+        if particle_class_dict is not None and particle_module is not None:
+            try:
+                # get the particle module
+                module = __import__(particle_module,
+                                    fromlist=[particle_class_dict[PlimsAHdrClassKey.ENGINEERING],
+                                              particle_class_dict[PlimsAHdrClassKey.INSTRUMENT]])
+                # get the class from the string name of the class
+                self._engineering_class = getattr(module, particle_class_dict[PlimsAHdrClassKey.ENGINEERING])
+                self._instrument_class = getattr(module, particle_class_dict[PlimsAHdrClassKey.INSTRUMENT])
+            except AttributeError:
+                raise ConfigurationException('Config provided a class which does not exist %s' % config)
+        else:
+            raise ConfigurationException('Missing particle_classes_dict in config')
 
-        return plims_particle_data
+        super(PlimsAHdrParser, self).__init__(config, stream_handle, exception_callback)
+                                                      
+        # self._particle_class = config[
+        #         DataSetDriverConfigKeys.PARTICLE_CLASS]
 
     def parse_file(self):
         """
-        Parse through the file, pulling single lines and comparing to the established patterns,
-        generating particles for data lines
+        Parse through the file, pulling single lines and comparing to the expected variables,
+        to generate science and engineering particles for the HDR file.
         """
+        print("Running PlimsAHdrParser parse_file")
 
         file = self._stream_handle
 
@@ -137,17 +93,156 @@ class PlimsAHdrParser(SimpleParser):
         else:
             self._exception_callback(RecoverableSampleException('Could not extract date from file'))
 
-        match = DATA_REGEX.match(file.read())
-        if match is not None:
-            plims_particle_data = self.parse_record(match)
-            if plims_particle_data is None:
-                log.error('Erroneous data found in file')
+        instrument_record = {PlimsAHdrParticleKey.FILE_TIME: internal_timestamp}
+        engineering_record = {PlimsAHdrParticleKey.FILE_TIME: internal_timestamp}
+
+
+        for line in file:
+            line_split = line.split(self.SEGMENTATION_STRING)
+            key = line_split[0]
+            value = self.SEGMENTATION_STRING.join(line_split[1:])
+
+            if key in self._instrument_class.PARAMETER_NAME_MAP:
+                instrument_record[self._instrument_class.PARAMETER_NAME_MAP[key]] = value
+            elif key in self._engineering_class.PARAMETER_NAME_MAP:
+                engineering_record[self._engineering_class.PARAMETER_NAME_MAP[key]] = value
             else:
-                particle = self._extract_sample(PlimsAHdrDataParticle, None, plims_particle_data,
-                                                internal_timestamp=internal_timestamp,
-                                                preferred_ts=DataParticleKey.INTERNAL_TIMESTAMP)
-                if particle is not None:
-                    self._record_buffer.append(particle)
-                    log.trace('Parsed particle: %s' % particle.generate_dict())
+                error_message = 'PlimsAHdr Parser: Unknown key: {}'.format(key)
+                log.error(error_message)
+
+        try:
+            if instrument_record:
+                plims_instrument_data = self.parse_instrument_record(instrument_record)
+        except KeyError as ke:
+            error_message = 'PlimsAHdr Instrument Parser KeyError: {}'.format(ke)
+            log.error(error_message)
+            self._exception_callback(RecoverableSampleException(error_message))
+            plims_instrument_data = None
+        except ValueError as ve:
+            error_message = 'PlimsAHdr Instrument Parser ValueError: {}'.format(ve)
+            log.error(error_message)
+            self._exception_callback(RecoverableSampleException(error_message))
+            plims_instrument_data = None
+
+        try:
+            if engineering_record:
+                plims_engineering_data = self.parse_engineering_record(engineering_record)
+        except KeyError as ke:
+            error_message = 'PlimsAHdr Engineering Parser KeyError: {}'.format(ke)
+            log.error(error_message)
+            self._exception_callback(RecoverableSampleException(error_message))
+            plims_engineering_data = None
+        except ValueError as ve:
+            error_message = 'PlimsAHdr Engineering Parser ValueError: {}'.format(ve)
+            log.error(error_message)
+            self._exception_callback(RecoverableSampleException(error_message))
+            plims_engineering_data = None
+
+        if plims_instrument_data is None:
+            error_message = 'Erroneous instrument data found in file'
+            log.error(error_message)
+            self._exception_callback(RecoverableSampleException(error_message))
         else:
-            self._exception_callback(RecoverableSampleException('Unknown data found in file'))
+            particle = self._extract_sample(self._instrument_class, None, plims_instrument_data,
+                                            internal_timestamp=internal_timestamp,
+                                            preferred_ts=DataParticleKey.INTERNAL_TIMESTAMP)
+            if particle is not None:
+                self._record_buffer.append(particle)
+                # log.trace('Parsed instrument particle: %s' % particle.generate_dict())
+            else:
+                self._exception_callback(RecoverableSampleException('Unknown instrument data found in file'))
+        
+        if plims_engineering_data is None:
+            error_message = 'Erroneous engineering data found in file'
+            log.error(error_message)
+            self._exception_callback(RecoverableSampleException(error_message))
+        else:
+            particle = self._extract_sample(self._engineering_class, None, plims_engineering_data,
+                                            internal_timestamp=internal_timestamp,
+                                            preferred_ts=DataParticleKey.INTERNAL_TIMESTAMP)
+            if particle is not None:
+                self._record_buffer.append(particle)
+                # log.trace('Parsed engineering particle: %s' % particle.generate_dict())
+            else:
+                self._exception_callback(RecoverableSampleException('Unknown engineering data found in file'))
+
+    def parse_instrument_record(self, record):
+
+        plims_particle_data = { 
+            PlimsAHdrInstrumentParticleKey.FILE_TIME: record[PlimsAHdrInstrumentParticleKey.FILE_TIME],
+            PlimsAHdrInstrumentParticleKey.SAMPLE_NUMBER: int(record[PlimsAHdrInstrumentParticleKey.SAMPLE_NUMBER]),
+            PlimsAHdrInstrumentParticleKey.SAMPLE_TYPE: str(record[PlimsAHdrInstrumentParticleKey.SAMPLE_TYPE]),
+            PlimsAHdrInstrumentParticleKey.TRIGGER_COUNT: int(record[PlimsAHdrInstrumentParticleKey.TRIGGER_COUNT]),
+            PlimsAHdrInstrumentParticleKey.ROI_COUNT: int(record[PlimsAHdrInstrumentParticleKey.ROI_COUNT]),
+            PlimsAHdrInstrumentParticleKey.HUMIDITY: float(record[PlimsAHdrInstrumentParticleKey.HUMIDITY]),
+            PlimsAHdrInstrumentParticleKey.RUNTIME: float(record[PlimsAHdrInstrumentParticleKey.RUNTIME]),
+            PlimsAHdrInstrumentParticleKey.INHIBIT_TIME: float(record[PlimsAHdrInstrumentParticleKey.INHIBIT_TIME]),
+            PlimsAHdrInstrumentParticleKey.BINARIZE_THRESHOLD: int(record[PlimsAHdrInstrumentParticleKey.BINARIZE_THRESHOLD]),
+            PlimsAHdrInstrumentParticleKey.MINIMUM_BLOB_AREA: int(record[PlimsAHdrInstrumentParticleKey.MINIMUM_BLOB_AREA]),
+            PlimsAHdrInstrumentParticleKey.BLOB_XGROW_AMOUNT: int(record[PlimsAHdrInstrumentParticleKey.BLOB_XGROW_AMOUNT]),
+            PlimsAHdrInstrumentParticleKey.BLOB_YGROW_AMOUNT: int(record[PlimsAHdrInstrumentParticleKey.BLOB_YGROW_AMOUNT]),
+            PlimsAHdrInstrumentParticleKey.MINIMUM_GAP_BETWEEN_ADJACENT_BLOBS: int(record[PlimsAHdrInstrumentParticleKey.MINIMUM_GAP_BETWEEN_ADJACENT_BLOBS]),
+            PlimsAHdrInstrumentParticleKey.PMTA_TRIGGER_THRESHOLD_DAQ_MCCONLY: float(record[PlimsAHdrInstrumentParticleKey.PMTA_TRIGGER_THRESHOLD_DAQ_MCCONLY]),
+            PlimsAHdrInstrumentParticleKey.PMTB_TRIGGER_THRESHOLD_DAQ_MCCONLY: float(record[PlimsAHdrInstrumentParticleKey.PMTB_TRIGGER_THRESHOLD_DAQ_MCCONLY]),
+            PlimsAHdrInstrumentParticleKey.PMT_TRIGGER_SELECTION_DAQ_MCCONLY: int(record[PlimsAHdrInstrumentParticleKey.PMT_TRIGGER_SELECTION_DAQ_MCCONLY]),
+            PlimsAHdrInstrumentParticleKey.PMTA_HIGH_VOLTAGE: float(record[PlimsAHdrInstrumentParticleKey.PMTA_HIGH_VOLTAGE]),
+            PlimsAHdrInstrumentParticleKey.PMTB_HIGH_VOLTAGE: float(record[PlimsAHdrInstrumentParticleKey.PMTB_HIGH_VOLTAGE]),
+            PlimsAHdrInstrumentParticleKey.SYRINGE_SAMPLING_SPEED: int(record[PlimsAHdrInstrumentParticleKey.SYRINGE_SAMPLING_SPEED]),
+            PlimsAHdrInstrumentParticleKey.SYRINGE_SAMPLE_VOLUME: int(record[PlimsAHdrInstrumentParticleKey.SYRINGE_SAMPLE_VOLUME]),
+            PlimsAHdrInstrumentParticleKey.RUN_SAMPLE_FAST: record[PlimsAHdrInstrumentParticleKey.RUN_SAMPLE_FAST].lower() in self.BOOLEAN_COMPARATORS,
+            PlimsAHdrInstrumentParticleKey.COUNTER_CLEANING: int(record[PlimsAHdrInstrumentParticleKey.COUNTER_CLEANING]),
+            PlimsAHdrInstrumentParticleKey.COUNTER_BEADS: int(record[PlimsAHdrInstrumentParticleKey.COUNTER_BEADS]),
+        }
+
+        return plims_particle_data
+
+    def parse_engineering_record(self, record):
+
+        plims_particle_data = { 
+            PlimsAHdrEngineeringParticleKey.TEMPERATURE: float(record[PlimsAHdrEngineeringParticleKey.TEMPERATURE]),
+            PlimsAHdrEngineeringParticleKey.ADC_FILE_FORMAT: str(record[PlimsAHdrEngineeringParticleKey.ADC_FILE_FORMAT]),
+            PlimsAHdrEngineeringParticleKey.AUTO_START: record[PlimsAHdrEngineeringParticleKey.AUTO_START].lower() in self.BOOLEAN_COMPARATORS,
+            PlimsAHdrEngineeringParticleKey.AUTO_SHUTDOWN: record[PlimsAHdrEngineeringParticleKey.AUTO_SHUTDOWN].lower() in self.BOOLEAN_COMPARATORS,
+            PlimsAHdrEngineeringParticleKey.HUMIDITY_ALARM_THRESHOLD: float(record[PlimsAHdrEngineeringParticleKey.HUMIDITY_ALARM_THRESHOLD]),
+            PlimsAHdrEngineeringParticleKey.FLASHLAMP_CONTROL_VOLTAGE: float(record[PlimsAHdrEngineeringParticleKey.FLASHLAMP_CONTROL_VOLTAGE]),
+            PlimsAHdrEngineeringParticleKey.HK_TRIGGER_TO_FLASHLAMP_DELAY_TIME_X434NS_DAC_MCCONLY: int(record[PlimsAHdrEngineeringParticleKey.HK_TRIGGER_TO_FLASHLAMP_DELAY_TIME_X434NS_DAC_MCCONLY]),
+            PlimsAHdrEngineeringParticleKey.LASER_STATE: record[PlimsAHdrEngineeringParticleKey.LASER_STATE].lower() in self.BOOLEAN_COMPARATORS,
+            PlimsAHdrEngineeringParticleKey.RUNNING_CAMERA: record[PlimsAHdrEngineeringParticleKey.RUNNING_CAMERA].lower() in self.BOOLEAN_COMPARATORS,
+            PlimsAHdrEngineeringParticleKey.PUMP1_STATE: record[PlimsAHdrEngineeringParticleKey.PUMP1_STATE].lower() in self.BOOLEAN_COMPARATORS,
+            PlimsAHdrEngineeringParticleKey.PUMP2_STATE: record[PlimsAHdrEngineeringParticleKey.PUMP2_STATE].lower() in self.BOOLEAN_COMPARATORS,
+            PlimsAHdrEngineeringParticleKey.STIRRER: record[PlimsAHdrEngineeringParticleKey.STIRRER].lower() in self.BOOLEAN_COMPARATORS,
+            PlimsAHdrEngineeringParticleKey.TRIGGER_CONTINUOUS: record[PlimsAHdrEngineeringParticleKey.TRIGGER_CONTINUOUS].lower() in self.BOOLEAN_COMPARATORS,
+            PlimsAHdrEngineeringParticleKey.ALT_PMT_TRIGGER_SELECTION_DAQ_MCCONLY: int(record[PlimsAHdrEngineeringParticleKey.ALT_PMT_TRIGGER_SELECTION_DAQ_MCCONLY]),
+            PlimsAHdrEngineeringParticleKey.INTERVAL_BETWEEN_ALTERNATE_HARDWARE_SETTINGS: int(record[PlimsAHdrEngineeringParticleKey.INTERVAL_BETWEEN_ALTERNATE_HARDWARE_SETTINGS]),
+            PlimsAHdrEngineeringParticleKey.ALT_FLASHLAMP_CONTROL_VOLTAGE: float(record[PlimsAHdrEngineeringParticleKey.ALT_FLASHLAMP_CONTROL_VOLTAGE]),
+            PlimsAHdrEngineeringParticleKey.PUMP_DRIVE_VOLTAGE: float(record[PlimsAHdrEngineeringParticleKey.PUMP_DRIVE_VOLTAGE]),
+            PlimsAHdrEngineeringParticleKey.ALT_PMTA_HIGH_VOLTAGE: float(record[PlimsAHdrEngineeringParticleKey.ALT_PMTA_HIGH_VOLTAGE]),
+            PlimsAHdrEngineeringParticleKey.ALT_PMTB_HIGH_VOLTAGE: float(record[PlimsAHdrEngineeringParticleKey.ALT_PMTB_HIGH_VOLTAGE]),
+            PlimsAHdrEngineeringParticleKey.ALT_PMTA_TRIGGER_THRESHOLD_DAQ_MCCONLY: float(record[PlimsAHdrEngineeringParticleKey.ALT_PMTA_TRIGGER_THRESHOLD_DAQ_MCCONLY]),
+            PlimsAHdrEngineeringParticleKey.ALT_PMTB_TRIGGER_THRESHOLD_DAQ_MCCONLY: float(record[PlimsAHdrEngineeringParticleKey.ALT_PMTB_TRIGGER_THRESHOLD_DAQ_MCCONLY]),
+            PlimsAHdrEngineeringParticleKey.NUMBER_SYRINGES_TO_AUTORUN: int(record[PlimsAHdrEngineeringParticleKey.NUMBER_SYRINGES_TO_AUTORUN]),
+            PlimsAHdrEngineeringParticleKey.ALT_SYRINGE_SAMPLE_VOLUME: float(record[PlimsAHdrEngineeringParticleKey.ALT_SYRINGE_SAMPLE_VOLUME]),
+            PlimsAHdrEngineeringParticleKey.SAMPLE_VOLUME_2_SKIP: int(record[PlimsAHdrEngineeringParticleKey.SAMPLE_VOLUME_2_SKIP]),
+            PlimsAHdrEngineeringParticleKey.BLEACH_VOLUME: int(record[PlimsAHdrEngineeringParticleKey.BLEACH_VOLUME]),
+            PlimsAHdrEngineeringParticleKey.BIOCIDE_VOLUME: int(record[PlimsAHdrEngineeringParticleKey.BIOCIDE_VOLUME]),
+            PlimsAHdrEngineeringParticleKey.DEBUBBLE_WITH_SAMPLE: record[PlimsAHdrEngineeringParticleKey.DEBUBBLE_WITH_SAMPLE].lower() in self.BOOLEAN_COMPARATORS,
+            PlimsAHdrEngineeringParticleKey.REFILL_AFTER_DEBUBBLE: record[PlimsAHdrEngineeringParticleKey.REFILL_AFTER_DEBUBBLE].lower() in self.BOOLEAN_COMPARATORS,
+            PlimsAHdrEngineeringParticleKey.PRIME_SAMPLE_TUBE: record[PlimsAHdrEngineeringParticleKey.PRIME_SAMPLE_TUBE].lower() in self.BOOLEAN_COMPARATORS,
+            PlimsAHdrEngineeringParticleKey.BACKFLUSH_WITH_SAMPLE: record[PlimsAHdrEngineeringParticleKey.BACKFLUSH_WITH_SAMPLE].lower() in self.BOOLEAN_COMPARATORS,
+            PlimsAHdrEngineeringParticleKey.RUN_BEADS: record[PlimsAHdrEngineeringParticleKey.RUN_BEADS].lower() in self.BOOLEAN_COMPARATORS,
+            PlimsAHdrEngineeringParticleKey.BEADS_SAMPLE_VOLUME: float(record[PlimsAHdrEngineeringParticleKey.BEADS_SAMPLE_VOLUME]),
+            PlimsAHdrEngineeringParticleKey.NUMBER_SYRINGES_BETWEEN_BEADS_RUN: int(record[PlimsAHdrEngineeringParticleKey.NUMBER_SYRINGES_BETWEEN_BEADS_RUN]),
+            PlimsAHdrEngineeringParticleKey.NUMBER_SYRINGES_BETWEEN_CLEANING_RUN: int(record[PlimsAHdrEngineeringParticleKey.NUMBER_SYRINGES_BETWEEN_CLEANING_RUN]),
+            PlimsAHdrEngineeringParticleKey.RUN_FAST_FACTOR: int(record[PlimsAHdrEngineeringParticleKey.RUN_FAST_FACTOR]),
+            PlimsAHdrEngineeringParticleKey.FOCUS_MOTOR_SMALL_STEP_MS: int(record[PlimsAHdrEngineeringParticleKey.FOCUS_MOTOR_SMALL_STEP_MS]),
+            PlimsAHdrEngineeringParticleKey.FOCUS_MOTOR_LARGE_STEP_MS: int(record[PlimsAHdrEngineeringParticleKey.FOCUS_MOTOR_LARGE_STEP_MS]),
+            PlimsAHdrEngineeringParticleKey.LASER_MOTOR_SMALL_STEP_MS: int(record[PlimsAHdrEngineeringParticleKey.LASER_MOTOR_SMALL_STEP_MS]),
+            PlimsAHdrEngineeringParticleKey.LASER_MOTOR_LARGE_STEP_MS: int(record[PlimsAHdrEngineeringParticleKey.LASER_MOTOR_LARGE_STEP_MS]),
+            PlimsAHdrEngineeringParticleKey.BLEACH_RINSE_COUNT: int(record[PlimsAHdrEngineeringParticleKey.BLEACH_RINSE_COUNT]),
+            PlimsAHdrEngineeringParticleKey.BLEACH_RINSE_VOLUME: int(record[PlimsAHdrEngineeringParticleKey.BLEACH_RINSE_VOLUME]),
+            PlimsAHdrEngineeringParticleKey.BLEACH_TO_EXHAUST: record[PlimsAHdrEngineeringParticleKey.BLEACH_TO_EXHAUST].lower() in self.BOOLEAN_COMPARATORS,
+            PlimsAHdrEngineeringParticleKey.COUNTER_ALT: int(record[PlimsAHdrEngineeringParticleKey.COUNTER_ALT]),
+        }
+
+        return plims_particle_data
+
