@@ -190,6 +190,7 @@ class PlimsAHdrParser(SimpleParser):
             PlimsAHdrInstrumentParticleKey.SYRINGE_SAMPLING_SPEED: int(record[PlimsAHdrInstrumentParticleKey.SYRINGE_SAMPLING_SPEED]),
             PlimsAHdrInstrumentParticleKey.SYRINGE_SAMPLE_VOLUME: int(record[PlimsAHdrInstrumentParticleKey.SYRINGE_SAMPLE_VOLUME]),
             PlimsAHdrInstrumentParticleKey.RUN_SAMPLE_FAST: record[PlimsAHdrInstrumentParticleKey.RUN_SAMPLE_FAST].lower() in self.BOOLEAN_COMPARATORS,
+            PlimsAHdrInstrumentParticleKey.RUN_FAST_FACTOR: int(record[PlimsAHdrEngineeringParticleKey.RUN_FAST_FACTOR]),
             PlimsAHdrInstrumentParticleKey.COUNTER_CLEANING: int(record[PlimsAHdrInstrumentParticleKey.COUNTER_CLEANING]),
             PlimsAHdrInstrumentParticleKey.COUNTER_BEADS: int(record[PlimsAHdrInstrumentParticleKey.COUNTER_BEADS]),
         }
@@ -233,7 +234,6 @@ class PlimsAHdrParser(SimpleParser):
             PlimsAHdrEngineeringParticleKey.BEADS_SAMPLE_VOLUME: float(record[PlimsAHdrEngineeringParticleKey.BEADS_SAMPLE_VOLUME]),
             PlimsAHdrEngineeringParticleKey.NUMBER_SYRINGES_BETWEEN_BEADS_RUN: int(record[PlimsAHdrEngineeringParticleKey.NUMBER_SYRINGES_BETWEEN_BEADS_RUN]),
             PlimsAHdrEngineeringParticleKey.NUMBER_SYRINGES_BETWEEN_CLEANING_RUN: int(record[PlimsAHdrEngineeringParticleKey.NUMBER_SYRINGES_BETWEEN_CLEANING_RUN]),
-            PlimsAHdrEngineeringParticleKey.RUN_FAST_FACTOR: int(record[PlimsAHdrEngineeringParticleKey.RUN_FAST_FACTOR]),
             PlimsAHdrEngineeringParticleKey.FOCUS_MOTOR_SMALL_STEP_MS: int(record[PlimsAHdrEngineeringParticleKey.FOCUS_MOTOR_SMALL_STEP_MS]),
             PlimsAHdrEngineeringParticleKey.FOCUS_MOTOR_LARGE_STEP_MS: int(record[PlimsAHdrEngineeringParticleKey.FOCUS_MOTOR_LARGE_STEP_MS]),
             PlimsAHdrEngineeringParticleKey.LASER_MOTOR_SMALL_STEP_MS: int(record[PlimsAHdrEngineeringParticleKey.LASER_MOTOR_SMALL_STEP_MS]),

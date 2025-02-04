@@ -58,6 +58,7 @@ class PlimsAHdrInstrumentParticleKey(PlimsAHdrParticleKey):
     SYRINGE_SAMPLING_SPEED = 'syringe_sampling_speed'
     SYRINGE_SAMPLE_VOLUME = 'syringe_sample_volume'
     RUN_SAMPLE_FAST = 'run_sample_fast'
+    RUN_FAST_FACTOR = 'run_fast_factor'
     COUNTER_CLEANING = 'counter_cleaning'
     COUNTER_BEADS = 'counter_beads'
 
@@ -83,6 +84,7 @@ class PlimsAHdrInstrumentParticleKey(PlimsAHdrParticleKey):
         "syringeSamplingSpeed": SYRINGE_SAMPLING_SPEED,
         "SyringeSampleVolume": SYRINGE_SAMPLE_VOLUME,
         "runSampleFast": RUN_SAMPLE_FAST,
+        "RunFastFactor": RUN_FAST_FACTOR,
         "CounterCleaning": COUNTER_CLEANING,
         "CounterBeads": COUNTER_BEADS,
     }
@@ -127,7 +129,6 @@ class PlimsAHdrEngineeringParticleKey(PlimsAHdrParticleKey):
     BEADS_SAMPLE_VOLUME = 'beads_sample_volume'
     NUMBER_SYRINGES_BETWEEN_BEADS_RUN = 'number_syringes_between_beads_run'
     NUMBER_SYRINGES_BETWEEN_CLEANING_RUN = 'number_syringes_between_cleaning_run'
-    RUN_FAST_FACTOR = 'run_fast_factor'
     FOCUS_MOTOR_SMALL_STEP_MS = 'focus_motor_small_step_ms'
     FOCUS_MOTOR_LARGE_STEP_MS = 'focus_motor_large_step_ms'
     LASER_MOTOR_SMALL_STEP_MS = 'laser_motor_small_step_ms'
@@ -173,7 +174,6 @@ class PlimsAHdrEngineeringParticleKey(PlimsAHdrParticleKey):
         "BeadsSampleVolume": BEADS_SAMPLE_VOLUME,
         "NumberSyringesBetweenBeadsRun": NUMBER_SYRINGES_BETWEEN_BEADS_RUN,
         "NumberSyringesBetweenCleaningRun": NUMBER_SYRINGES_BETWEEN_CLEANING_RUN,
-        "RunFastFactor": RUN_FAST_FACTOR,
         "focusMotorSmallStep_ms": FOCUS_MOTOR_SMALL_STEP_MS,
         "focusMotorLargeStep_ms": FOCUS_MOTOR_LARGE_STEP_MS,
         "laserMotorSmallStep_ms": LASER_MOTOR_SMALL_STEP_MS,
