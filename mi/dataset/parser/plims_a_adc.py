@@ -68,7 +68,7 @@ class PlimsAAdcParser(SimpleParser):
         df = pd.read_csv(file, names=PlimsAAdcParticleKey.PLIMS_A_ADC_COLUMNS, error_bad_lines=True)
         if df is not None and not df.empty:
             df.drop(PlimsAAdcParticleKey.PLIMS_A_ADC_DROP_COLUMNS, axis=1, inplace=True)
-            df[PlimsAAdcParticleKey.FILE_TIME] = internal_timestamp
+            df[PlimsAAdcParticleKey.SAMPLE_TIMESTAMP] = internal_timestamp
         if df.isna().values.any():
             plims_adc_data = None
         else:

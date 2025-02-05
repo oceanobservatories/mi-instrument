@@ -31,7 +31,7 @@ from mi.dataset.parser.plims_a_particles import (
     PlimsAHdrClassKey,
     PlimsAHdrEngineeringParticleKey,
     PlimsAHdrInstrumentParticleKey,
-    PlimsAHdrParticleKey,
+    PlimsAParticleKey,
 )
 
 # Regex pattern for extracting datetime from filename
@@ -93,8 +93,8 @@ class PlimsAHdrParser(SimpleParser):
         else:
             self._exception_callback(RecoverableSampleException('Could not extract date from file'))
 
-        instrument_record = {PlimsAHdrParticleKey.FILE_TIME: internal_timestamp}
-        engineering_record = {PlimsAHdrParticleKey.FILE_TIME: internal_timestamp}
+        instrument_record = {PlimsAParticleKey.SAMPLE_TIMESTAMP: internal_timestamp}
+        engineering_record = {PlimsAParticleKey.SAMPLE_TIMESTAMP: internal_timestamp}
 
 
         for line in file:
@@ -169,7 +169,7 @@ class PlimsAHdrParser(SimpleParser):
     def parse_instrument_record(self, record):
 
         plims_particle_data = { 
-            PlimsAHdrInstrumentParticleKey.FILE_TIME: record[PlimsAHdrInstrumentParticleKey.FILE_TIME],
+            PlimsAHdrInstrumentParticleKey.SAMPLE_TIMESTAMP: record[PlimsAHdrInstrumentParticleKey.SAMPLE_TIMESTAMP],
             PlimsAHdrInstrumentParticleKey.SAMPLE_NUMBER: int(record[PlimsAHdrInstrumentParticleKey.SAMPLE_NUMBER]),
             PlimsAHdrInstrumentParticleKey.SAMPLE_TYPE: str(record[PlimsAHdrInstrumentParticleKey.SAMPLE_TYPE]),
             PlimsAHdrInstrumentParticleKey.TRIGGER_COUNT: int(record[PlimsAHdrInstrumentParticleKey.TRIGGER_COUNT]),
@@ -200,6 +200,7 @@ class PlimsAHdrParser(SimpleParser):
     def parse_engineering_record(self, record):
 
         plims_particle_data = { 
+            PlimsAHdrEngineeringParticleKey.SAMPLE_TIMESTAMP: record[PlimsAHdrEngineeringParticleKey.SAMPLE_TIMESTAMP],
             PlimsAHdrEngineeringParticleKey.TEMPERATURE: float(record[PlimsAHdrEngineeringParticleKey.TEMPERATURE]),
             PlimsAHdrEngineeringParticleKey.ADC_FILE_FORMAT: str(record[PlimsAHdrEngineeringParticleKey.ADC_FILE_FORMAT]),
             PlimsAHdrEngineeringParticleKey.AUTO_START: record[PlimsAHdrEngineeringParticleKey.AUTO_START].lower() in self.BOOLEAN_COMPARATORS,

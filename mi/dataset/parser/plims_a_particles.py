@@ -24,15 +24,15 @@ class DataParticleType(BaseEnum):
     __metaclass__ = get_logging_metaclass(log_level='trace')
 
 
-class PlimsAHdrParticleKey(BaseEnum):
+class PlimsAParticleKey(BaseEnum):
     """
     Base class for PLIMS A HDR particles.
     Instrument and Engineering particles extend this class.
     """
-    FILE_TIME = 'file_time'
+    SAMPLE_TIMESTAMP = 'sample_timestamp'
     PARAMETER_NAME_MAP = {}
 
-class PlimsAHdrInstrumentParticleKey(PlimsAHdrParticleKey):
+class PlimsAHdrInstrumentParticleKey(PlimsAParticleKey):
     """
     Class defining fields to be extracted for the instrument data particle.
     Data types the same in telemetered and recovered particles.
@@ -89,7 +89,7 @@ class PlimsAHdrInstrumentParticleKey(PlimsAHdrParticleKey):
         "CounterBeads": COUNTER_BEADS,
     }
 
-class PlimsAHdrEngineeringParticleKey(PlimsAHdrParticleKey):
+class PlimsAHdrEngineeringParticleKey(PlimsAParticleKey):
     """
     Class that defining data fields to be extracted for the engineering data particle.
     Data types the same for telemetered and recovered particles.
@@ -184,13 +184,12 @@ class PlimsAHdrEngineeringParticleKey(PlimsAHdrParticleKey):
         "CounterAlt": COUNTER_ALT,
     }
 
-class PlimsAAdcParticleKey(BaseEnum):
+class PlimsAAdcParticleKey(PlimsAParticleKey):
     """
     Class defining fields to be extracted for the data particle.
     Data types the same in telemetered and recovered particles.
     """
 
-    FILE_TIME = 'file_time'
     TRIGGER_NUMBER = "trigger_number" #int
     PMTA = "pmta" # Integrated output (in volts)
     PMTB = "pmtb" # Integrated output (in volts)
