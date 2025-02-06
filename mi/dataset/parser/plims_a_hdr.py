@@ -107,8 +107,9 @@ class PlimsAHdrParser(SimpleParser):
             elif key in self._engineering_class.PARAMETER_NAME_MAP:
                 engineering_record[self._engineering_class.PARAMETER_NAME_MAP[key]] = value
             else:
+                # Mostly keys that are not ingested
                 error_message = 'PlimsAHdr Parser: Unknown key: {}'.format(key)
-                log.error(error_message)
+                log.trace(error_message)
 
         try:
             if instrument_record:
@@ -190,7 +191,7 @@ class PlimsAHdrParser(SimpleParser):
             PlimsAHdrInstrumentParticleKey.SYRINGE_SAMPLING_SPEED: int(record[PlimsAHdrInstrumentParticleKey.SYRINGE_SAMPLING_SPEED]),
             PlimsAHdrInstrumentParticleKey.SYRINGE_SAMPLE_VOLUME: int(record[PlimsAHdrInstrumentParticleKey.SYRINGE_SAMPLE_VOLUME]),
             PlimsAHdrInstrumentParticleKey.RUN_SAMPLE_FAST: record[PlimsAHdrInstrumentParticleKey.RUN_SAMPLE_FAST].lower() in self.BOOLEAN_COMPARATORS,
-            PlimsAHdrInstrumentParticleKey.RUN_FAST_FACTOR: int(record[PlimsAHdrEngineeringParticleKey.RUN_FAST_FACTOR]),
+            PlimsAHdrInstrumentParticleKey.RUN_FAST_FACTOR: int(record[PlimsAHdrInstrumentParticleKey.RUN_FAST_FACTOR]),
             PlimsAHdrInstrumentParticleKey.COUNTER_CLEANING: int(record[PlimsAHdrInstrumentParticleKey.COUNTER_CLEANING]),
             PlimsAHdrInstrumentParticleKey.COUNTER_BEADS: int(record[PlimsAHdrInstrumentParticleKey.COUNTER_BEADS]),
         }
