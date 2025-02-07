@@ -3,7 +3,7 @@ header:
     particle_type: 'MULTIPLE'
 data:
   - _index: 1
-    file_time: 3906899940.0
+    sample_timestamp: 3906899940.0
     trigger_number: 1
     pmta: -0.41140914
     pmtb: -0.3998083
@@ -24,7 +24,7 @@ data:
     particle_type: plims_a_adc_instrument
     particle_object: PlimsAAdcDataParticle
   - _index: 2
-    file_time: 3906899940.0
+    sample_timestamp: 3906899940.0
     trigger_number: 2
     pmta: 0.047302842
     pmtb: 0.073604584

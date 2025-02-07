@@ -86,6 +86,6 @@ class PlimsAAdcParser(SimpleParser):
                                                 preferred_ts=DataParticleKey.INTERNAL_TIMESTAMP)
                 if particle is not None:
                     self._record_buffer.append(particle)
-                    log.trace('Parsed particle: {}'.format(particle.generate_dict()))
+                    # log.trace('Parsed particle: {}'.format(particle.generate_dict()))
         else:
             self._exception_callback(RecoverableSampleException('Incomplete data file: {}'.format(file.name)))

@@ -39,7 +39,6 @@ class PlimsAHdrInstrumentParticleKey(PlimsAParticleKey):
     """
 
     SAMPLE_NUMBER = 'sample_number'
-    SAMPLE_TYPE = 'sample_type'
     TRIGGER_COUNT = 'trigger_count'
     ROI_COUNT = 'roi_count'
     HUMIDITY = 'humidity'
@@ -65,7 +64,6 @@ class PlimsAHdrInstrumentParticleKey(PlimsAParticleKey):
 
     PARAMETER_NAME_MAP = {
         "sampleNumber": SAMPLE_NUMBER,
-        "sampleType": SAMPLE_TYPE,
         "triggerCount": TRIGGER_COUNT,
         "roiCount": ROI_COUNT,
         "humidity": HUMIDITY,
@@ -96,6 +94,7 @@ class PlimsAHdrEngineeringParticleKey(PlimsAParticleKey):
     """
 
     TEMPERATURE = 'temperature'
+    SAMPLE_TYPE = 'sample_type'
     ADC_FILE_FORMAT = 'adc_file_format'
     AUTO_START = 'auto_start'
     AUTO_SHUTDOWN = 'auto_shutdown'
@@ -141,6 +140,7 @@ class PlimsAHdrEngineeringParticleKey(PlimsAParticleKey):
 
     PARAMETER_NAME_MAP = {
         "temperature": TEMPERATURE,
+        "sampleType": SAMPLE_TYPE,
         "ADCFileFormat": ADC_FILE_FORMAT,
         "autoStart": AUTO_START,
         "autoShutdown": AUTO_SHUTDOWN,
