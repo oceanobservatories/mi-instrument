@@ -107,7 +107,7 @@ class PlimsAAdclUnitTestCase(ParserUnitTestCase):
             self.assertTrue(np.issubdtype(type(result.get_value_from_values(PlimsAAdcParticleKey.TIME_OF_FLIGHT)), np.floating))
             self.assertTrue(np.issubdtype(type(result.get_value_from_values(PlimsAAdcParticleKey.PMTA)), np.floating))
             self.assertTrue(np.issubdtype(type(result.get_value_from_values(PlimsAAdcParticleKey.PMTB)), np.floating))
-            self.assertTrue(np.issubdtype(type(result.get_value_from_values(PlimsAAdcParticleKey.INHIBIT_TIME)), np.floating))
+            self.assertTrue(np.issubdtype(type(result.get_value_from_values(PlimsAAdcParticleKey.INHIBIT_TIME_TR)), np.floating))
             self.assertTrue(np.issubdtype(type(result.get_value_from_values(PlimsAAdcParticleKey.PEAK_A)), np.floating))
             self.assertTrue(np.issubdtype(type(result.get_value_from_values(PlimsAAdcParticleKey.PEAK_B)), np.floating))
             self.assertTrue(np.issubdtype(type(result.get_value_from_values(PlimsAAdcParticleKey.ROI_X)), np.integer))
@@ -116,8 +116,8 @@ class PlimsAAdclUnitTestCase(ParserUnitTestCase):
             self.assertTrue(np.issubdtype(type(result.get_value_from_values(PlimsAAdcParticleKey.ROI_HEIGHT)), np.integer))
             self.assertTrue(np.issubdtype(type(result.get_value_from_values(PlimsAAdcParticleKey.STATUS)), np.integer))
             self.assertTrue(np.issubdtype(type(result.get_value_from_values(PlimsAAdcParticleKey.START_BYTE)), np.integer))
-            self.assertTrue(np.issubdtype(type(result.get_value_from_values(PlimsAAdcParticleKey.RUN_TIME)), np.floating))
-            self.assertTrue(np.issubdtype(type(result.get_value_from_values(PlimsAAdcParticleKey.INHIBIT_TIME)), np.floating))
+            self.assertTrue(np.issubdtype(type(result.get_value_from_values(PlimsAAdcParticleKey.RUN_TIME_TR)), np.floating))
+            self.assertTrue(np.issubdtype(type(result.get_value_from_values(PlimsAAdcParticleKey.INHIBIT_TIME_TR)), np.floating))
             
             # log.debug('===== END TEST PLIMS_A_ADC Parser Types  =====')
 

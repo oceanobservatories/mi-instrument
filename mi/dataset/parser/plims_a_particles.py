@@ -204,8 +204,8 @@ class PlimsAAdcParticleKey(PlimsAParticleKey):
     ROI_HEIGHT = "roi_height"#int
     START_BYTE= "start_byte"#int
     STATUS = "status" #int
-    RUN_TIME = "run_time"
-    INHIBIT_TIME = "inhibit_time"
+    RUN_TIME_TR = "run_time_tr"
+    INHIBIT_TIME_TR = "inhibit_time_tr"
 
     PLIMS_A_ADC_COLUMNS = [
         "trigger_number",
@@ -230,8 +230,8 @@ class PlimsAAdcParticleKey(PlimsAParticleKey):
         "start_point",
         "signal_length",
         "status",
-        "run_time",
-        "inhibit_time",
+        "run_time_tr",
+        "inhibit_time_tr",
     ]
 
     PLIMS_A_ADC_DROP_COLUMNS = [
