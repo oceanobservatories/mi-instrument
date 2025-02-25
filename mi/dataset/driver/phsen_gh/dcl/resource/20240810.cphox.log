@@ -1,0 +1,60 @@
+2024/08/10 00:28:03.614 [phtest:DLOGP6]:Logger started: Idle state, without initialize
+2024/08/10 00:30:02.924 [phtest:DLOGP6]:Instrument Started Successfully [Power On]
+2024/08/10 00:30:03.744 <Executed/>
+2024/08/10 00:33:58.804 DSPHOX02056,2024-08-10T00:33:50,  11937, 0000,  9.4181,7.8097,-0.993480,    7.100,  33.1319,  3.57378,  4.215,  0.0, 9.7
+2024/08/10 00:35:00.833 [phtest:DLOGP6]:Instrument Stopped [Power Off]
+2024/08/10 02:28:04.448 [phtest:DLOGP6]:Logger started: Idle state, without initialize
+2024/08/10 02:30:03.764 [phtest:DLOGP6]:Instrument Started Successfully [Power On]
+2024/08/10 02:30:04.297 <Executed/>
+2024/08/10 02:33:58.802 DSPHOX02056,2024-08-10T02:33:50,  11945, 0000,  9.8234,7.8524,-0.990788,    7.421,  33.1955,  3.61651,  4.700,  0.0, 9.7
+2024/08/10 02:35:02.800 [phtest:DLOGP6]:Instrument Stopped [Power Off]
+2024/08/10 04:28:04.304 [phtest:DLOGP6]:Logger started: Idle state, without initialize
+2024/08/10 04:30:02.075 [phtest:DLOGP6]:Instrument Started Successfully [Power On]
+2024/08/10 04:30:02.325 <Executed/>
+2024/08/10 04:33:58.818 DSPHOX02056,2024-08-10T04:33:50,  11953, 0000, 10.0437,7.9092,-0.987434,    6.862,  33.2203,  3.63884,  5.265,  0.0,10.0
+2024/08/10 04:35:02.850 [phtest:DLOGP6]:Instrument Stopped [Power Off]
+2024/08/10 06:28:03.550 [phtest:DLOGP6]:Logger started: Idle state, without initialize
+2024/08/10 06:30:03.019 [phtest:DLOGP6]:Instrument Started Successfully [Power On]
+2024/08/10 06:30:03.521 <Executed/>
+2024/08/10 06:33:58.820 DSPHOX02056,2024-08-10T06:33:50,  11961, 0000, 10.8670,8.0533,-0.978541,    6.936,  33.1521,  3.70677,  6.754,  0.1,11.2
+2024/08/10 06:35:00.815 [phtest:DLOGP6]:Instrument Stopped [Power Off]
+2024/08/10 08:28:04.472 [phtest:DLOGP6]:Logger started: Idle state, without initialize
+2024/08/10 08:30:03.749 [phtest:DLOGP6]:Instrument Started Successfully [Power On]
+2024/08/10 08:30:04.443 <Executed/>
+2024/08/10 08:33:58.816 DSPHOX02056,2024-08-10T08:33:50,  11969, 0000, 10.5995,7.9649,-0.983680,    7.181,  33.0592,  3.67319,  5.831,  0.1,10.8
+2024/08/10 08:35:02.844 [phtest:DLOGP6]:Instrument Stopped [Power Off]
+2024/08/10 10:28:04.389 [phtest:DLOGP6]:Logger started: Idle state, without initialize
+2024/08/10 10:30:01.640 [phtest:DLOGP6]:Instrument Started Successfully [Power On]
+2024/08/10 10:30:01.807 <Executed/>
+2024/08/10 10:33:58.810 DSPHOX02056,2024-08-10T10:33:50,  11977, 0000, 10.9032,8.0020,-0.981413,    7.072,  33.1704,  3.71191,  6.210,  0.1,11.1
+2024/08/10 10:35:02.841 [phtest:DLOGP6]:Instrument Stopped [Power Off]
+2024/08/10 12:28:04.264 [phtest:DLOGP6]:Logger started: Idle state, without initialize
+2024/08/10 12:30:01.806 [phtest:DLOGP6]:Instrument Started Successfully [Power On]
+2024/08/10 12:30:02.414 <Executed/>
+2024/08/10 12:33:58.822 DSPHOX02056,2024-08-10T12:33:50,  11985, 0000, 10.4348,7.9350,-0.985554,    7.182,  33.1168,  3.66403,  5.512,  0.1,10.7
+2024/08/10 12:35:02.801 [phtest:DLOGP6]:Instrument Stopped [Power Off]
+2024/08/10 14:28:03.178 [phtest:DLOGP6]:Logger started: Idle state, without initialize
+2024/08/10 14:30:01.874 <Executed/>
+2024/08/10 14:30:01.876 [phtest:DLOGP6]:Instrument Started Successfully [Power On]
+2024/08/10 14:33:58.818 DSPHOX02056,2024-08-10T14:33:50,  11993, 0000, 10.4440,7.8808,-0.988597,    7.060,  33.1116,  3.66433,  4.978,  0.0,10.5
+2024/08/10 14:35:02.883 [phtest:DLOGP6]:Instrument Stopped [Power Off]
+2024/08/10 16:28:03.385 [phtest:DLOGP6]:Logger started: Idle state, without initialize
+2024/08/10 16:30:02.589 [phtest:DLOGP6]:Instrument Started Successfully [Power On]
+2024/08/10 16:30:03.508 <Executed/>
+2024/08/10 16:33:58.819 DSPHOX02056,2024-08-10T16:33:50,  12001, 0000, 10.0179,7.8618,-0.989986,    7.279,  33.0582,  3.62057,  4.674,  0.0,10.3
+2024/08/10 16:35:02.814 [phtest:DLOGP6]:Instrument Stopped [Power Off]
+2024/08/10 18:28:04.469 [phtest:DLOGP6]:Logger started: Idle state, without initialize
+2024/08/10 18:30:03.711 <Executed/>
+2024/08/10 18:30:03.713 [phtest:DLOGP6]:Instrument Started Successfully [Power On]
+2024/08/10 18:33:58.822 DSPHOX02056,2024-08-10T18:33:50,  12009, 0000, 10.7256,7.9690,-0.983403,    7.162,  33.1391,  3.69262,  5.715,  0.2,11.2
+2024/08/10 18:35:00.844 [phtest:DLOGP6]:Instrument Stopped [Power Off]
+2024/08/10 20:28:04.776 [phtest:DLOGP6]:Logger started: Idle state, without initialize
+2024/08/10 20:30:01.905 [phtest:DLOGP6]:Instrument Started Successfully [Power On]
+2024/08/10 20:30:03.194 <Executed/>
+2024/08/10 20:33:58.813 DSPHOX02056,2024-08-10T20:33:50,  12017, 0000,  9.7040,7.8576,-0.990249,    7.069,  32.7665,  3.56378,  4.603,  0.0,10.3
+2024/08/10 20:35:00.830 [phtest:DLOGP6]:Instrument Stopped [Power Off]
+2024/08/10 22:28:05.226 [phtest:DLOGP6]:Logger started: Idle state, without initialize
+2024/08/10 22:30:02.344 [phtest:DLOGP6]:Instrument Started Successfully [Power On]
+2024/08/10 22:30:02.895 <Executed/>
+2024/08/10 22:33:58.812 DSPHOX02056,2024-08-10T22:33:50,  12025, 0000,  9.7243,7.7569,-0.995787,    7.386,  32.6505,  3.55424,  3.860,  0.0, 9.3
+2024/08/10 22:35:02.829 [phtest:DLOGP6]:Instrument Stopped [Power Off]
