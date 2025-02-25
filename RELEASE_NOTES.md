@@ -1,8 +1,6 @@
 # Version 1.0.16
 
-* Issue #15798 - Adds Prawler platform instruments support
-  * Creates CTDPF_P WFP parser, driver, and tests
-  * Creates DOFST_P WFP parser, driver, and tests
+* Issue #15165 - Create new stream for botpt predicted tide
 
 # Version 1.0.15
 
