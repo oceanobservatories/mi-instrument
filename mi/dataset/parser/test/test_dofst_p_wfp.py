@@ -59,7 +59,7 @@ class DofstPWfpUnitTestCase(ParserUnitTestCase):
         Verify that the results are those we expected.
         """
 
-        self.setup()
+        # self.setup()  # Needed for single case testing
 
         log.debug('===== START TEST DOFST_P_WFP Parser =====')
 
@@ -79,7 +79,7 @@ class DofstPWfpUnitTestCase(ParserUnitTestCase):
         Ensure that bad data is skipped when it exists.
         """
 
-        self.setup()
+        # self.setup()  # Needed for single case testing
 
         log.debug('===== START TEST BAD DATA =====')
 
