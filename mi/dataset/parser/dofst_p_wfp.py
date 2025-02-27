@@ -36,36 +36,16 @@ REC_REGEX = re.compile(REC_PATTERN, re.DOTALL)
 
 
 class DataParticleType(BaseEnum):
-    DOFST_P_TELEMETERED = 'dofst_p_wfp_instrument'
-    DOFST_P_RECOVERED = 'dofst_p_wfp_instrument_recovered'
+    DOFST_P = 'dofst_p_wfp_instrument'
     __metaclass__ = get_logging_metaclass(log_level='trace')
 
 
-class DofstPTelemeteredDataParticle(DataParticle):
+class DofstPDataParticle(DataParticle):
     """
-    Class for generating the dofst prawler telemetered instrument particle.
-    """
-
-    _data_particle_type = DataParticleType.DOFST_P_TELEMETERED
-
-    def _build_parsed_values(self):
-        """
-        Build parsed values for Instrument Data Particle.
-        @return: list containing type encoded "particle value id:value" dictionary pairs
-        """
-
-        return [{DataParticleKey.VALUE_ID: name, DataParticleKey.VALUE: None}
-                if self.raw_data[name] is None else
-                {DataParticleKey.VALUE_ID: name, DataParticleKey.VALUE: value}
-                for name, value in self.raw_data.iteritems()]
-
-
-class DofstPRecoveredDataParticle(DataParticle):
-    """
-    Class for generating the dofst prawler recovered instrument particle.
+    Class for generating the dofst prawler instrument particle.
     """
 
-    _data_particle_type = DataParticleType.DOFST_P_RECOVERED
+    _data_particle_type = DataParticleType.DOFST_P
 
     def _build_parsed_values(self):
         """
