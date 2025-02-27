@@ -19,7 +19,7 @@ from mi.dataset.driver.dofst_p.wfp.resource import RESOURCE_PATH
 log = get_logger()
 
 MODULE_NAME = 'mi.dataset.parser.dofst_p_wfp'
-CLASS_NAME = 'DofstPTelemeteredDataParticle'
+CLASS_NAME = 'DofstPDataParticle'
 PARTICLE_TYPE = 'dofst_p_wfp_instrument'
 
 

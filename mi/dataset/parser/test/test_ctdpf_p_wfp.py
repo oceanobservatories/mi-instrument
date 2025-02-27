@@ -18,7 +18,7 @@ from mi.dataset.driver.ctdpf_p.wfp.resource import RESOURCE_PATH
 log = get_logger()
 
 MODULE_NAME = 'mi.dataset.parser.ctdpf_p_wfp'
-CLASS_NAME = 'CtdpfPTelemeteredDataParticle'
+CLASS_NAME = 'CtdpfPDataParticle'
 PARTICLE_TYPE = 'ctdpf_p_wfp_instrument'
 
 

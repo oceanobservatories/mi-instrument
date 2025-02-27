@@ -6,16 +6,15 @@
 @package mi.dataset.parser.phsen_gh
 @file mi-dataset/mi/dataset/parser/phsen_gh.py
 @author Samuel Dahlberg
-@brief Parser for the phsen_gh telemetered, recovered, dcl telemetered, and dcl recovered dataset driver.
+@brief Parser for the phsen_gh dataset driver.
 
 This file contains code for the phsen_gh parser and code to produce data particles
-for the instrument data from the phsen_gh, with both dcl and non dcl data configurations. Data files are ascii.
+for the instrument data from the phsen_gh, handling both dcl and non dcl data configurations. Data files are ascii.
 """
 
 import re
 from datetime import datetime
 from mi.core.common import BaseEnum
-from mi.core.exceptions import RecoverableSampleException
 from mi.dataset.dataset_parser import SimpleParser
 from mi.core.instrument.dataset_data_particle import DataParticle, DataParticleKey
 from mi.core.log import get_logger, get_logging_metaclass
@@ -51,35 +50,15 @@ DATA_REGEX = re.compile(DATA_PATTERN, re.DOTALL)
 
 class DataParticleType(BaseEnum):
     PHSEN_GH = 'phsen_gh_instrument'
-    PHSEN_GH_DCL = 'phsen_gh_dcl_instrument'
     __metaclass__ = get_logging_metaclass(log_level='trace')
 
 
 class PhsenGhDataParticle(DataParticle):
     """
-    Class for generating the phsen gh telemetered instrument particle.
+    Class for generating the phsen gh instrument particle.
     """
 
     _data_particle_type = DataParticleType.PHSEN_GH
-
-    def _build_parsed_values(self):
-        """
-        Build parsed values for Instrument Data Particle.
-        @return: list containing type encoded "particle value id:value" dictionary pairs
-        """
-
-        return [{DataParticleKey.VALUE_ID: name, DataParticleKey.VALUE: None}
-                if self.raw_data[name] is None else
-                {DataParticleKey.VALUE_ID: name, DataParticleKey.VALUE: value}
-                for name, value in self.raw_data.iteritems()]
-
-
-class PhsenGhDclDataParticle(DataParticle):
-    """
-    Class for generating the phsen gh dcl telemetered instrument particle.
-    """
-
-    _data_particle_type = DataParticleType.PHSEN_GH_DCL
 
     def _build_parsed_values(self):
         """
@@ -107,7 +86,7 @@ class PhsenGHParticleKey(BaseEnum):
     PRESSURE = 'pressure'
     SALINITY = 'salinity'
     CONDUCTIVITY = 'conductivity'
-    OXY_CONC = 'oxygen_concentration'
+    OXY_CONC = 'dissolved_oxygen'
     INTERNAL_HUMIDITY = 'internal_humidity'
     INTERNAL_TEMP = 'internal_temperature'
 
