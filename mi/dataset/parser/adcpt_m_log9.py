@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-
 """
 @package mi.dataset.parser.adcpt_m_log9
 @file marine-integrations/mi/dataset/parser/adcpt_m_log9.py
@@ -22,45 +21,32 @@ Release notes:
 
 Initial Release
 """
-
 __author__ = 'Richard Han'
 __license__ = 'Apache 2.0'
-
 
 import calendar
 import re
 
-from mi.core.exceptions import RecoverableSampleException
-
 from mi.dataset.dataset_parser import SimpleParser
+from mi.dataset.parser.common_regexes import INT_REGEX, END_OF_LINE_REGEX, ONE_OR_MORE_WHITESPACE_REGEX
 
+from mi.core.common import BaseEnum
+from mi.core.exceptions import RecoverableSampleException
 from mi.core.instrument.dataset_data_particle import DataParticle
-
 from mi.core.log import get_logger
 log = get_logger()
 
-from mi.core.common import BaseEnum
-
-from mi.dataset.parser.common_regexes import \
-    INT_REGEX, \
-    END_OF_LINE_REGEX, \
-    ONE_OR_MORE_WHITESPACE_REGEX
-
-
 # Basic patterns
-
-FLOAT_REGEX =  r'[+-]?[0-9]+\.[0-9]+'
+FLOAT_REGEX = r'[+-]?[0-9]+\.[0-9]+'
 FLOAT_OR_INT_GROUP_REGEX = r'(' + FLOAT_REGEX + '|' + INT_REGEX + ')'
+ZERO_OR_MORE_WHITESPACE_REGEX = r'\s*'
 
 # regex for identifying an empty line
 EMPTY_LINE_REGEX = ONE_OR_MORE_WHITESPACE_REGEX + END_OF_LINE_REGEX
 EMPTY_LINE_MATCHER = re.compile(EMPTY_LINE_REGEX, re.DOTALL)
 
-ZERO_OR_MORE_WHITESPACE_REGEX = r'\s*'
-
-
 # Regex for identifying a single record of Log9 data
-LOG9_DATA_PATTERN = r'(' + ONE_OR_MORE_WHITESPACE_REGEX + '(' + FLOAT_OR_INT_GROUP_REGEX + ',?' \
+LOG9_DATA_PATTERN = r'(' + ZERO_OR_MORE_WHITESPACE_REGEX + '(' + FLOAT_OR_INT_GROUP_REGEX + ',?' \
                     + ZERO_OR_MORE_WHITESPACE_REGEX + ')+' + END_OF_LINE_REGEX + ')'
 LOG9_DATA_MATCHER = re.compile(LOG9_DATA_PATTERN, re.DOTALL)
 
@@ -89,9 +75,10 @@ LOG9_DATA_MAP = [
     ('d_mean', 20, float),
     ('num_bins', 21, int),
     ('depth_level_magnitude', 22, list),
-    ('depth_level_direction', 23, list),]
+    ('depth_level_direction', 23, list)]
 
 BURST_START_TIME_IDX = 1
+
 
 class DataParticleType(BaseEnum):
     """
@@ -135,7 +122,6 @@ class AdcptMLog9InstrumentDataParticle(DataParticle):
         self.set_internal_timestamp(unix_time=elapsed_seconds)
 
         self.instrument_particle_map = LOG9_DATA_MAP
-
 
     def _build_parsed_values(self):
         """
@@ -188,7 +174,6 @@ class AdcptMLog9Parser(SimpleParser):
     DEPTH_LEVEL_MAGNITUDE_IDX = 28
     DEPTH_LEVEL_DIRECTION_IDX = 29
 
-
     def parse_file(self):
         """
         Parse a Log9 input file. Build a data particle from the parsed data.
@@ -226,7 +211,7 @@ class AdcptMLog9Parser(SimpleParser):
 
                     burst_start_time = [year, month, day, hour, minute, second, centi_seconds]
 
-                    significant_wave_height  = float(values[self.SIGNIFICANT_WAVE_IDX])
+                    significant_wave_height = float(values[self.SIGNIFICANT_WAVE_IDX])
                     peak_wave_period = float(values[self.PEAK_WAVE_PERIOD_IDX])
                     peak_wave_direction = float(values[self.PEAK_WAVE_DIRECTION_IDX])
                     tp_sea = float(values[self.TP_SEA_IDX])
