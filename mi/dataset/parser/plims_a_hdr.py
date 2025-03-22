@@ -100,7 +100,7 @@ class PlimsAHdrParser(SimpleParser):
         for line in file:
             line_split = line.split(self.SEGMENTATION_STRING)
             key = line_split[0]
-            value = self.SEGMENTATION_STRING.join(line_split[1:])
+            value = self.SEGMENTATION_STRING.join(line_split[1:]).strip()
 
             if key in self._instrument_class.PARAMETER_NAME_MAP:
                 instrument_record[self._instrument_class.PARAMETER_NAME_MAP[key]] = value
@@ -189,7 +189,7 @@ class PlimsAHdrParser(SimpleParser):
             PlimsAHdrInstrumentParticleKey.PMTB_HIGH_VOLTAGE: float(record[PlimsAHdrInstrumentParticleKey.PMTB_HIGH_VOLTAGE]),
             PlimsAHdrInstrumentParticleKey.SYRINGE_SAMPLING_SPEED: int(record[PlimsAHdrInstrumentParticleKey.SYRINGE_SAMPLING_SPEED]),
             PlimsAHdrInstrumentParticleKey.SYRINGE_SAMPLE_VOLUME: int(record[PlimsAHdrInstrumentParticleKey.SYRINGE_SAMPLE_VOLUME]),
-            PlimsAHdrInstrumentParticleKey.RUN_SAMPLE_FAST: int(record[PlimsAHdrInstrumentParticleKey.RUN_SAMPLE_FAST].lower() in self.BOOLEAN_COMPARATORS),
+            PlimsAHdrInstrumentParticleKey.RUN_SAMPLE_FAST: self._get_boolean(record[PlimsAHdrInstrumentParticleKey.RUN_SAMPLE_FAST]),
             PlimsAHdrInstrumentParticleKey.RUN_FAST_FACTOR: int(record[PlimsAHdrInstrumentParticleKey.RUN_FAST_FACTOR]),
             PlimsAHdrInstrumentParticleKey.COUNTER_CLEANING: int(record[PlimsAHdrInstrumentParticleKey.COUNTER_CLEANING]),
             PlimsAHdrInstrumentParticleKey.COUNTER_BEADS: int(record[PlimsAHdrInstrumentParticleKey.COUNTER_BEADS]),
@@ -204,17 +204,17 @@ class PlimsAHdrParser(SimpleParser):
             PlimsAHdrEngineeringParticleKey.SAMPLE_TYPE: str(record[PlimsAHdrEngineeringParticleKey.SAMPLE_TYPE]),
             PlimsAHdrEngineeringParticleKey.TEMPERATURE: float(record[PlimsAHdrEngineeringParticleKey.TEMPERATURE]),
             PlimsAHdrEngineeringParticleKey.ADC_FILE_FORMAT: str(record[PlimsAHdrEngineeringParticleKey.ADC_FILE_FORMAT]),
-            PlimsAHdrEngineeringParticleKey.AUTO_START: int(record[PlimsAHdrEngineeringParticleKey.AUTO_START].lower() in self.BOOLEAN_COMPARATORS),
-            PlimsAHdrEngineeringParticleKey.AUTO_SHUTDOWN: int(record[PlimsAHdrEngineeringParticleKey.AUTO_SHUTDOWN].lower() in self.BOOLEAN_COMPARATORS),
+            PlimsAHdrEngineeringParticleKey.AUTO_START: self._get_boolean(record[PlimsAHdrEngineeringParticleKey.AUTO_START]),
+            PlimsAHdrEngineeringParticleKey.AUTO_SHUTDOWN: self._get_boolean(record[PlimsAHdrEngineeringParticleKey.AUTO_SHUTDOWN]),
             PlimsAHdrEngineeringParticleKey.HUMIDITY_ALARM_THRESHOLD: float(record[PlimsAHdrEngineeringParticleKey.HUMIDITY_ALARM_THRESHOLD]),
             PlimsAHdrEngineeringParticleKey.FLASHLAMP_CONTROL_VOLTAGE: float(record[PlimsAHdrEngineeringParticleKey.FLASHLAMP_CONTROL_VOLTAGE]),
             PlimsAHdrEngineeringParticleKey.HK_TRIGGER_TO_FLASHLAMP_DELAY_TIME_X434NS_DAC_MCCONLY: int(record[PlimsAHdrEngineeringParticleKey.HK_TRIGGER_TO_FLASHLAMP_DELAY_TIME_X434NS_DAC_MCCONLY]),
-            PlimsAHdrEngineeringParticleKey.LASER_STATE: int(record[PlimsAHdrEngineeringParticleKey.LASER_STATE].lower() in self.BOOLEAN_COMPARATORS),
-            PlimsAHdrEngineeringParticleKey.RUNNING_CAMERA: int(record[PlimsAHdrEngineeringParticleKey.RUNNING_CAMERA].lower() in self.BOOLEAN_COMPARATORS),
-            PlimsAHdrEngineeringParticleKey.PUMP1_STATE: int(record[PlimsAHdrEngineeringParticleKey.PUMP1_STATE].lower() in self.BOOLEAN_COMPARATORS),
-            PlimsAHdrEngineeringParticleKey.PUMP2_STATE: int(record[PlimsAHdrEngineeringParticleKey.PUMP2_STATE].lower() in self.BOOLEAN_COMPARATORS),
-            PlimsAHdrEngineeringParticleKey.STIRRER: int(record[PlimsAHdrEngineeringParticleKey.STIRRER].lower() in self.BOOLEAN_COMPARATORS),
-            PlimsAHdrEngineeringParticleKey.TRIGGER_CONTINUOUS: int(record[PlimsAHdrEngineeringParticleKey.TRIGGER_CONTINUOUS].lower() in self.BOOLEAN_COMPARATORS),
+            PlimsAHdrEngineeringParticleKey.LASER_STATE: self._get_boolean(record[PlimsAHdrEngineeringParticleKey.LASER_STATE]),
+            PlimsAHdrEngineeringParticleKey.RUNNING_CAMERA: self._get_boolean(record[PlimsAHdrEngineeringParticleKey.RUNNING_CAMERA]),
+            PlimsAHdrEngineeringParticleKey.PUMP1_STATE: self._get_boolean(record[PlimsAHdrEngineeringParticleKey.PUMP1_STATE]),
+            PlimsAHdrEngineeringParticleKey.PUMP2_STATE: self._get_boolean(record[PlimsAHdrEngineeringParticleKey.PUMP2_STATE]),
+            PlimsAHdrEngineeringParticleKey.STIRRER: self._get_boolean(record[PlimsAHdrEngineeringParticleKey.STIRRER]),
+            PlimsAHdrEngineeringParticleKey.TRIGGER_CONTINUOUS: self._get_boolean(record[PlimsAHdrEngineeringParticleKey.TRIGGER_CONTINUOUS]),
             PlimsAHdrEngineeringParticleKey.ALT_PMT_TRIGGER_SELECTION_DAQ_MCCONLY: int(record[PlimsAHdrEngineeringParticleKey.ALT_PMT_TRIGGER_SELECTION_DAQ_MCCONLY]),
             PlimsAHdrEngineeringParticleKey.INTERVAL_BETWEEN_ALTERNATE_HARDWARE_SETTINGS: int(record[PlimsAHdrEngineeringParticleKey.INTERVAL_BETWEEN_ALTERNATE_HARDWARE_SETTINGS]),
             PlimsAHdrEngineeringParticleKey.ALT_FLASHLAMP_CONTROL_VOLTAGE: float(record[PlimsAHdrEngineeringParticleKey.ALT_FLASHLAMP_CONTROL_VOLTAGE]),
@@ -228,11 +228,11 @@ class PlimsAHdrParser(SimpleParser):
             PlimsAHdrEngineeringParticleKey.SAMPLE_VOLUME_2_SKIP: int(record[PlimsAHdrEngineeringParticleKey.SAMPLE_VOLUME_2_SKIP]),
             PlimsAHdrEngineeringParticleKey.BLEACH_VOLUME: int(record[PlimsAHdrEngineeringParticleKey.BLEACH_VOLUME]),
             PlimsAHdrEngineeringParticleKey.BIOCIDE_VOLUME: int(record[PlimsAHdrEngineeringParticleKey.BIOCIDE_VOLUME]),
-            PlimsAHdrEngineeringParticleKey.DEBUBBLE_WITH_SAMPLE: int(record[PlimsAHdrEngineeringParticleKey.DEBUBBLE_WITH_SAMPLE].lower() in self.BOOLEAN_COMPARATORS),
-            PlimsAHdrEngineeringParticleKey.REFILL_AFTER_DEBUBBLE: int(record[PlimsAHdrEngineeringParticleKey.REFILL_AFTER_DEBUBBLE].lower() in self.BOOLEAN_COMPARATORS),
-            PlimsAHdrEngineeringParticleKey.PRIME_SAMPLE_TUBE: int(record[PlimsAHdrEngineeringParticleKey.PRIME_SAMPLE_TUBE].lower() in self.BOOLEAN_COMPARATORS),
-            PlimsAHdrEngineeringParticleKey.BACKFLUSH_WITH_SAMPLE: int(record[PlimsAHdrEngineeringParticleKey.BACKFLUSH_WITH_SAMPLE].lower() in self.BOOLEAN_COMPARATORS),
-            PlimsAHdrEngineeringParticleKey.RUN_BEADS: int(record[PlimsAHdrEngineeringParticleKey.RUN_BEADS].lower() in self.BOOLEAN_COMPARATORS),
+            PlimsAHdrEngineeringParticleKey.DEBUBBLE_WITH_SAMPLE: self._get_boolean(record[PlimsAHdrEngineeringParticleKey.DEBUBBLE_WITH_SAMPLE]),
+            PlimsAHdrEngineeringParticleKey.REFILL_AFTER_DEBUBBLE: self._get_boolean(record[PlimsAHdrEngineeringParticleKey.REFILL_AFTER_DEBUBBLE]),
+            PlimsAHdrEngineeringParticleKey.PRIME_SAMPLE_TUBE: self._get_boolean(record[PlimsAHdrEngineeringParticleKey.PRIME_SAMPLE_TUBE]),
+            PlimsAHdrEngineeringParticleKey.BACKFLUSH_WITH_SAMPLE: self._get_boolean(record[PlimsAHdrEngineeringParticleKey.BACKFLUSH_WITH_SAMPLE]),
+            PlimsAHdrEngineeringParticleKey.RUN_BEADS: self._get_boolean(record[PlimsAHdrEngineeringParticleKey.RUN_BEADS]),
             PlimsAHdrEngineeringParticleKey.BEADS_SAMPLE_VOLUME: float(record[PlimsAHdrEngineeringParticleKey.BEADS_SAMPLE_VOLUME]),
             PlimsAHdrEngineeringParticleKey.NUMBER_SYRINGES_BETWEEN_BEADS_RUN: int(record[PlimsAHdrEngineeringParticleKey.NUMBER_SYRINGES_BETWEEN_BEADS_RUN]),
             PlimsAHdrEngineeringParticleKey.NUMBER_SYRINGES_BETWEEN_CLEANING_RUN: int(record[PlimsAHdrEngineeringParticleKey.NUMBER_SYRINGES_BETWEEN_CLEANING_RUN]),
@@ -242,9 +242,14 @@ class PlimsAHdrParser(SimpleParser):
             PlimsAHdrEngineeringParticleKey.LASER_MOTOR_LARGE_STEP_MS: int(record[PlimsAHdrEngineeringParticleKey.LASER_MOTOR_LARGE_STEP_MS]),
             PlimsAHdrEngineeringParticleKey.BLEACH_RINSE_COUNT: int(record[PlimsAHdrEngineeringParticleKey.BLEACH_RINSE_COUNT]),
             PlimsAHdrEngineeringParticleKey.BLEACH_RINSE_VOLUME: int(record[PlimsAHdrEngineeringParticleKey.BLEACH_RINSE_VOLUME]),
-            PlimsAHdrEngineeringParticleKey.BLEACH_TO_EXHAUST: int(record[PlimsAHdrEngineeringParticleKey.BLEACH_TO_EXHAUST].lower() in self.BOOLEAN_COMPARATORS),
+            PlimsAHdrEngineeringParticleKey.BLEACH_TO_EXHAUST: self._get_boolean(record[PlimsAHdrEngineeringParticleKey.BLEACH_TO_EXHAUST]),
             PlimsAHdrEngineeringParticleKey.COUNTER_ALT: int(record[PlimsAHdrEngineeringParticleKey.COUNTER_ALT]),
         }
 
         return plims_particle_data
 
+    def _get_boolean(self, value):
+        """
+        Convert a string value to a boolean value, comparing with various possible.
+        """
+        return int(value.lower() in self.BOOLEAN_COMPARATORS)
