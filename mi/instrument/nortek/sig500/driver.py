@@ -147,7 +147,7 @@ CONFIG_PARTICLE_PATTERN = re.compile(
 
 # Regex for engineering data string (5th or main).
 ENGINEERING_PARTICLE_PATTERN = re.compile(
-    r"\$PNORS1,(?P<date>\d{6}),(?P<time>\d{6}),(?P<error_code>\d+),(?P<status_code>\d{8}),(?P<voltage>-?\d+[.]\d+),(?P<speed_of_sound>\d+[.]\d+),(?P<heading_stdev>\d+[.]\d+),(?P<heading>\d+[.]\d+),(?P<pitch>-?\d+[.]\d+),(?P<pitch_stdev>-?\d+[.]\d+),(?P<roll>-?\d+[.]\d+),(?P<roll_stdev>-?\d+[.]\d+),(?P<pressure>\d+[.]\d+),(?P<pressure_stdev>-?\d+[.]\d+),(?P<temperature>\d+[.]\d+)\*.{2}"
+    r"\$PNORS1,(?P<date>\d{6}),(?P<time>\d{6}),(?P<error_code>\d+),(?P<status_code>[a-zA-Z0-9]+),(?P<voltage>-?\d+[.]\d+),(?P<speed_of_sound>\d+[.]\d+),(?P<heading_stdev>\d+[.]\d+),(?P<heading>\d+[.]\d+),(?P<pitch>-?\d+[.]\d+),(?P<pitch_stdev>-?\d+[.]\d+),(?P<roll>-?\d+[.]\d+),(?P<roll_stdev>-?\d+[.]\d+),(?P<pressure>\d+[.]\d+),(?P<pressure_stdev>-?\d+[.]\d+),(?P<temperature>\d+[.]\d+)\*.{2}"
 )
 
 #  Regex for 5th beam science data string.
@@ -174,11 +174,11 @@ FULL_MAIN_BEAM_PATTERN = re.compile(
 
 # Regex to grab the entire data block.
 #
-# In an ideal world, this would start with a $PNORI1 line, but because captures cannot 
-# overlap and the data is being streamed in line by line rather than in full particle chunks, we 
-# need to use the $PNORI1 line of the next (real) particle as a terminator rather than a prefix. 
-# If we didn't do this, the regex would capture the first streamed $PNORC1 line of the main beam and 
-# then exit before the rest of the $PNORC1 lines were read from the socket. 
+# In an ideal world, this would start with a $PNORI1 line, but because captures cannot
+# overlap and the data is being streamed in line by line rather than in full particle chunks, we
+# need to use the $PNORI1 line of the next (real) particle as a terminator rather than a prefix.
+# If we didn't do this, the regex would capture the first streamed $PNORC1 line of the main beam and
+# then exit before the rest of the $PNORC1 lines were read from the socket.
 FULL_CAPTURE_PATTERN = re.compile(
     r"(\$PNORS1,.*?)\r?\n((\$PNORC1[^\r\n]*\r?\n)+)(\$PNORI1,\d,\d{6},[3-4],.*?,BEAM\*.{2})\r?\n(\$PNORS1,[^\r\n]*)\r?\n((\$PNORC1,[^\r\n]*\r?\n)+)(\$PNORI1,\d,\d{6},1,.*?,BEAM\*.{2})\r?\n"
 )
@@ -235,7 +235,7 @@ class EngineeringDataParticle(DataParticle):
         keys = EngineeringDataParticleKey
         result = [
             self._encode_value(keys.ERROR_CODE, match.group("error_code"), int),
-            self._encode_value(keys.STATUS_CODE, match.group("status_code"), int),
+            self._encode_value(keys.STATUS_CODE, match.group("status_code"), str),
             self._encode_value(keys.SPEED_OF_SOUND, match.group("speed_of_sound"), float),
             self._encode_value(keys.HEADING_STDEV, match.group("heading_stdev"), float),
             self._encode_value(keys.HEADING, match.group("heading"), float),
