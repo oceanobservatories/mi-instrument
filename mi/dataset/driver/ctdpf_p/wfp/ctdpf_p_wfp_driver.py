@@ -2,9 +2,9 @@
 
 """
 @package mi.dataset.driver.ctdpf_p.wfp
-@file mi-dataset/mi/dataset/driver/ctdpf_p/wfp/ctdpf_p_wfp_recovered_driver.py
+@file mi-dataset/mi/dataset/driver/ctdpf_p/wfp/ctdpf_p_wfp_driver.py
 @author Samuel Dahlberg
-@brief recovered driver for the ctdpf_p instrument, on the Prawler WFP
+@brief driver for the ctdpf_p instrument, on the Prawler WFP
 """
 
 from mi.dataset.dataset_driver import SimpleDatasetDriver
@@ -22,23 +22,23 @@ def parse(unused, source_file_path, particle_data_handler):
     """
 
     with open(source_file_path, 'rb') as stream_handle:
-        CtdpfPWfpRecoveredDriver(unused, stream_handle, particle_data_handler).processFileStream()
+        CtdpfPWfpDriver(unused, stream_handle, particle_data_handler).processFileStream()
 
     return particle_data_handler
 
 
-class CtdpfPWfpRecoveredDriver(SimpleDatasetDriver):
+class CtdpfPWfpDriver(SimpleDatasetDriver):
     """
-        The ctdpf_p recovered driver class extends the SimpleDatasetDriver.
+        The ctdpf_p driver class extends the SimpleDatasetDriver.
     """
 
     def __init__(self, unused, stream_handle, particle_data_handler):
-        super(CtdpfPWfpRecoveredDriver, self).__init__(unused, stream_handle, particle_data_handler)
+        super(CtdpfPWfpDriver, self).__init__(unused, stream_handle, particle_data_handler)
 
     def _build_parser(self, stream_handle):
         parser_config = {
             DataSetDriverConfigKeys.PARTICLE_MODULE: 'mi.dataset.parser.ctdpf_p_wfp',
-            DataSetDriverConfigKeys.PARTICLE_CLASS: 'CtdpfPRecoveredDataParticle'}
+            DataSetDriverConfigKeys.PARTICLE_CLASS: 'CtdpfPDataParticle'}
 
         parser = CtdpfPWfpParser(parser_config, stream_handle, self._exception_callback)
 

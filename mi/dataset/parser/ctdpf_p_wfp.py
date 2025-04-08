@@ -36,36 +36,16 @@ REC_REGEX = re.compile(REC_PATTERN, re.DOTALL)
 
 
 class DataParticleType(BaseEnum):
-    CTDPF_P_TELEMETERED = 'ctdpf_p_wfp_instrument'
-    CTDPF_P_RECOVERED = 'ctdpf_p_wfp_instrument_recovered'
+    CTDPF_P = 'ctdpf_p_wfp_instrument'
     __metaclass__ = get_logging_metaclass(log_level='trace')
 
 
-class CtdpfPTelemeteredDataParticle(DataParticle):
+class CtdpfPDataParticle(DataParticle):
     """
-    Class for generating the ctdpf prawler telemetered instrument particle.
-    """
-
-    _data_particle_type = DataParticleType.CTDPF_P_TELEMETERED
-
-    def _build_parsed_values(self):
-        """
-        Build parsed values for Instrument Data Particle.
-        @return: list containing type encoded "particle value id:value" dictionary pairs
-        """
-
-        return [{DataParticleKey.VALUE_ID: name, DataParticleKey.VALUE: None}
-                if self.raw_data[name] is None else
-                {DataParticleKey.VALUE_ID: name, DataParticleKey.VALUE: value}
-                for name, value in self.raw_data.iteritems()]
-
-
-class CtdpfPRecoveredDataParticle(DataParticle):
-    """
-    Class for generating the ctdpf prawler recovered instrument particle.
+    Class for generating the ctdpf prawler instrument particle.
     """
 
-    _data_particle_type = DataParticleType.CTDPF_P_RECOVERED
+    _data_particle_type = DataParticleType.CTDPF_P
 
     def _build_parsed_values(self):
         """
@@ -128,7 +108,7 @@ class CtdpfPWfpParser(SimpleParser):
 
         pressure = pressure / 100.0
         temperature = temperature / 1000.0
-        conductivity = conductivity / 1000.0
+        conductivity = conductivity / 10000.0
 
         ctdpf_particle_data = {
             CtdpfPParticleKey.PRESSURE: pressure,

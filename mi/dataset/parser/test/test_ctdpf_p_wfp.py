@@ -18,7 +18,7 @@ from mi.dataset.driver.ctdpf_p.wfp.resource import RESOURCE_PATH
 log = get_logger()
 
 MODULE_NAME = 'mi.dataset.parser.ctdpf_p_wfp'
-CLASS_NAME = 'CtdpfPTelemeteredDataParticle'
+CLASS_NAME = 'CtdpfPDataParticle'
 PARTICLE_TYPE = 'ctdpf_p_wfp_instrument'
 
 
@@ -58,7 +58,7 @@ class CtdpfPWfpUnitTestCase(ParserUnitTestCase):
         Verify that the results are those we expected.
         """
 
-        self.setup()
+        # self.setup()  # Needed for single case testing
 
         log.debug('===== START TEST CTDPF_P_WFP Parser =====')
 
@@ -78,7 +78,7 @@ class CtdpfPWfpUnitTestCase(ParserUnitTestCase):
         Ensure that bad data is skipped when it exists.
         """
 
-        self.setup()
+        # self.setup()  # Needed for single case testing
 
         log.debug('===== START TEST BAD DATA =====')
 
