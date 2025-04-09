@@ -1,0 +1,47 @@
+header:
+    particle_object: 'MULTIPLE'
+    particle_type: 'MULTIPLE'
+data:
+  - _index: 1
+    sample_timestamp: 3906899940.0
+    trigger_number: 1
+    pmta: -0.41140914
+    pmtb: -0.3998083
+    peak_a: 0.41818142
+    peak_b: 1.2852526
+    time_of_flight: 63.043476
+    grab_time_start: 3.8192923
+    grab_time_end: 3.8635903
+    roi_x: 1076
+    roi_y: 574
+    roi_width: 72
+    roi_height: 52
+    start_byte: 0
+    status: 0
+    run_time: 3.842426215277778
+    inhibit_time: 0.08017361111111111
+    internal_timestamp: 3906899943.819292
+    particle_type: plims_a_adc_instrument
+    particle_object: PlimsAAdcDataParticle
+  - _index: 2
+    sample_timestamp: 3906899940.0
+    trigger_number: 2
+    pmta: 0.047302842
+    pmtb: 0.073604584
+    peak_a: 0.692513
+    peak_b: 1.0691309
+    time_of_flight: 60.869564
+    grab_time_start: 3.9061524
+    grab_time_end: 3.9498922
+    roi_x: 1076
+    roi_y: 502
+    roi_width: 80
+    roi_height: 60
+    start_byte: 3744
+    status: 0
+    run_time: 3.928938802083333
+    inhibit_time: 0.16619791666666667
+    internal_timestamp: 3906899943.9061522
+    particle_type: plims_a_adc_instrument
+    particle_object: PlimsAAdcDataParticle
+

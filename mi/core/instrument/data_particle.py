@@ -7,15 +7,16 @@
 @brief Contains logic to generate data particles to be exchanged between
 the driver and agent. This involves a JSON interchange format
 """
+import base64
 import json
 import time
+
 import ntplib
-import base64
-
 from mi.core.common import BaseEnum
-from mi.core.exceptions import SampleException, ReadOnlyException, NotImplementedException, InstrumentParameterException
+from mi.core.exceptions import (InstrumentParameterException,
+                                NotImplementedException, ReadOnlyException,
+                                SampleException)
 from mi.core.log import get_logger
-
 
 __author__ = 'Steve Foley'
 __license__ = 'Apache 2.0'
@@ -69,8 +70,11 @@ class DataParticle(object):
     code be called by the child class with just values overridden as needed.
     """
 
-    # data particle type is intended to be defined in each derived data particle class.  This value should be unique
-    # for all data particles.  Best practice is to access this variable using the accessor method:
+    # data particle type is intended to be defined in each derived data particle class.
+    # Note: This string should match the value in the corresponding EDEX CassandraParticle
+    # stream_name, and also the stream name values in Preload.
+    # This value should be unique for each data particle type.  
+    # Best practice is to access this variable using the accessor method:
     # data_particle_type()
     _data_particle_type = None
 
