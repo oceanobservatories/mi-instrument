@@ -33,9 +33,10 @@ from mi.dataset.parser.utilities import dcl_time_to_ntp, timestamp_yyyymmddhhmms
 DCL_TIMESTAMP_REGEX = r'(\d{4}/\d{2}/\d{2}\s\d{2}:\d{2}:\d{2}.\d{3})'
 FLOAT = r'([+-]?\d+.\d+[Ee]?[+-]?\d*)'
 INTEGER = r'([+-]?[0-9]+)'
+NEWLINE = r'(?:\r\n|\n)?'
 
-# REGEX for the 31 columns of data representing the different volume concentration size classes
-size_classes = r'(([+-]?\d+.\d+[Ee]?[+-]?\d*)(,([+-]?\d+.\d+[Ee]?[+-]?\d*)){35})'
+# REGEX for the 36 columns of data representing the different volume concentration size classes
+size_classes = r'(([+-]?\d+.\d{4})(,([+-]?\d+.\d{4})){35})'
 
 # Full REGEX pattern for data
 DATA_PATTERN = (
@@ -65,7 +66,7 @@ DATA_PATTERN = (
         INTEGER + r',' +  # Ambient Light [counts]
         FLOAT + r',' +  # External analog input 3 [V]
         FLOAT + r',' +  # Computed optical transmission over path [dimensionless]
-        FLOAT  # Beam-attenuation (c) [m-1]
+        FLOAT + NEWLINE  # Beam-attenuation (c) [m-1]
 )
 
 DATA_REGEX = re.compile(DATA_PATTERN)
@@ -91,15 +92,15 @@ class PrtszAParticleKey(BaseEnum):
     LASER_REFERENCE_SENSOR = 'laser_reference_sensor'
     DEPTH = 'depth'
     TEMPERATURE = 'temperature'
-    MEAN_DIAMETER = 'mean_diameter'
+    MEAN_DIAMETER = 'mean_particle_diameter'
     TOTAL_VOLUME_CONCENTRATION = 'total_volume_concentration'
     RELATIVE_HUMIDITY = 'relative_humidity'
     AMBIENT_LIGHT = 'ambient_light'
     COMPUTED_OPTICAL_TRANSMISSION = 'computed_optical_transmission'
     BEAM_ATTENUATION = 'beam_attenuation'
     NUM_BINS = 'num_bins'
-    MAX_PARTICLE_SIZE = 'max_particle_size'
-    PARTICLE_LOWER_SIZE_BINS = 'particle_lower_size_bins'
+    # MAX_PARTICLE_SIZE = 'max_particle_size'
+    # PARTICLE_LOWER_SIZE_BINS = 'particle_lower_size_bins'
 
 
 class DataParticleType(BaseEnum):
@@ -168,10 +169,10 @@ class PrtszADclParser(SimpleParser):
 
         # Volume concentration bin information
         bin_count = 36
-        max_particle_size = 500
-        particle_lower_size_bins = [1.00, 1.48, 1.74, 2.05, 2.42, 2.86, 3.38, 3.98, 4.70, 5.55, 6.55, 7.72, 9.12, 10.8,
-                                    12.7, 15.0, 17.7, 20.9, 24.6, 29.1, 34.3, 40.5, 47.7, 56.3, 66.5, 78.4, 92.6, 109,
-                                    129, 152, 180, 212, 250, 297, 354, 420]
+        # max_particle_size = 500
+        # particle_lower_size_bins = [1.00, 1.48, 1.74, 2.05, 2.42, 2.86, 3.38, 3.98, 4.70, 5.55, 6.55, 7.72, 9.12, 10.8,
+        #                             12.7, 15.0, 17.7, 20.9, 24.6, 29.1, 34.3, 40.5, 47.7, 56.3, 66.5, 78.4, 92.6, 109,
+        #                             129, 152, 180, 212, 250, 297, 354, 420]
 
         prtsz_particle_data = {
             PrtszAParticleKey.VOLUME_CONCENTRATION: vol_conc,
@@ -187,8 +188,8 @@ class PrtszADclParser(SimpleParser):
             PrtszAParticleKey.COMPUTED_OPTICAL_TRANSMISSION: computed_optical_transmission,
             PrtszAParticleKey.BEAM_ATTENUATION: beam_attenuation,
             PrtszAParticleKey.NUM_BINS: bin_count,
-            PrtszAParticleKey.MAX_PARTICLE_SIZE: max_particle_size,
-            PrtszAParticleKey.PARTICLE_LOWER_SIZE_BINS: particle_lower_size_bins
+            # PrtszAParticleKey.MAX_PARTICLE_SIZE: max_particle_size,
+            # PrtszAParticleKey.PARTICLE_LOWER_SIZE_BINS: particle_lower_size_bins
         }
 
         return prtsz_particle_data, dcl_time, instrument_time
@@ -219,7 +220,7 @@ class PrtszADclParser(SimpleParser):
                 port_timestamp = dcl_time_to_ntp(dcl_timestamp)
                 internal_timestamp = timestamp_yyyymmddhhmmss_to_ntp(instrument_timestamp)
 
-                particle = self._extract_sample(PrtszADataParticle, None, prtsz_particle_data, port_timestamp,
+                particle = self._extract_sample(self._particle_class, None, prtsz_particle_data, port_timestamp,
                                                 internal_timestamp, DataParticleKey.PORT_TIMESTAMP)
                 if particle is not None:
                     self._record_buffer.append(particle)

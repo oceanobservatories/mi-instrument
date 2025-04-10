@@ -1,3 +1,13 @@
+# Version 1.0.17
+
+* Issue #15798 - Adds support for cgsn Prawler platforms (CTDPF_P & DOFST_P)
+* Issue #15948 - Add telemetered support for Seabird SeapHOx instrument (PHSEN-GH)
+* Issue #15920 - Updates PRTSZ stream
+
+# Version 1.0.16
+
+* Issue #15165 - Create new stream for botpt predicted tide
+
 # Version 1.0.15
 
 * Issue #15831 - Modify ZPLS echogram metadata parser to handle legacy EK60 data file names

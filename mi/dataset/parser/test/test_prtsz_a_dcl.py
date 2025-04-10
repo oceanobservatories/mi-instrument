@@ -58,15 +58,17 @@ class PrtszADclUnitTestCase(ParserUnitTestCase):
         Verify that the results are those we expected.
         """
 
+        # self.setup()  # Needed for single case testing
+
         log.debug('===== START TEST PRTSZ_A_DCL Parser =====')
 
         with open(self.file_path('20231107.prtsz.log')) as in_file:
             parser = self.create_prtsz_a_parser(in_file)
 
             # In a single read, get all particles in this file.
-            result = parser.get_records(30)
+            result = parser.get_records(50)
 
-            self.assertEqual(len(result), 30)
+            self.assertEqual(len(result), 31)
             self.assertListEqual(self.exception_callback_value, [])
 
         log.debug('===== END TEST PRTSZ_A_DCL Parser  =====')
@@ -76,16 +78,18 @@ class PrtszADclUnitTestCase(ParserUnitTestCase):
         Ensure that bad data is skipped when it exists.
         """
 
+        # self.setup()  # Needed for single case testing
+
         log.debug('===== START TEST BAD DATA  =====')
 
         with open(self.file_path('20231107_corrupt.prtsz.log')) as in_file:
             parser = self.create_prtsz_a_parser(in_file)
 
             # In a single read, get all particles for this file.
-            result = parser.get_records(30)
+            result = parser.get_records(50)
 
             self.assertEqual(len(result), 1)
-            self.assertEqual(len(self.exception_callback_value), 29)
+            self.assertEqual(len(self.exception_callback_value), 30)
 
             for i in range(len(self.exception_callback_value)):
                 log.debug('Exception: %s', self.exception_callback_value[i])
