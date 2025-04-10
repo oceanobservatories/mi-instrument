@@ -16,7 +16,7 @@ import re
 
 import pandas as pd
 
-from mi.core.exceptions import RecoverableSampleException
+from mi.core.exceptions import RecoverableSampleException, SampleException
 from mi.core.log import get_logger
 
 log = get_logger()
@@ -63,7 +63,9 @@ class PlimsAAdcParser(SimpleParser):
             file_timestamp = pd.to_datetime(file_name_date_match.group(1), format='%Y%m%dT%H%M%S')
             internal_timestamp = datetime_utc_to_ntp(file_timestamp)
         else:
-            self._exception_callback(RecoverableSampleException('Could not extract date from file name: {}'.format(file.name)))
+            se = SampleException('Could not extract date from file name: {}'.format(file.name))
+            self._exception_callback(se)
+            raise se
 
         df = pd.read_csv(file, names=PlimsAAdcParticleKey.PLIMS_A_ADC_COLUMNS, error_bad_lines=True)
         if df is not None and not df.empty:

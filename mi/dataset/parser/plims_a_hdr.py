@@ -20,7 +20,12 @@ import re
 
 import pandas as pd
 
-from mi.core.exceptions import ConfigurationException, RecoverableSampleException
+from mi.core.exceptions import (
+    ConfigurationException,
+    DatasetParserException,
+    SampleException,
+    UnexpectedDataException,
+)
 from mi.core.log import get_logger
 
 log = get_logger()
@@ -91,7 +96,10 @@ class PlimsAHdrParser(SimpleParser):
             file_timestamp = pd.to_datetime(match.group(1), format='%Y%m%dT%H%M%S')
             internal_timestamp = datetime_utc_to_ntp(file_timestamp)
         else:
-            self._exception_callback(RecoverableSampleException('Could not extract date from file'))
+            rse = SampleException('Could not extract date from file')
+            self._exception_callback(rse)
+            particle = None
+            raise rse
 
         instrument_record = {PlimsAParticleKey.SAMPLE_TIMESTAMP: internal_timestamp}
         engineering_record = {PlimsAParticleKey.SAMPLE_TIMESTAMP: internal_timestamp}
@@ -117,13 +125,15 @@ class PlimsAHdrParser(SimpleParser):
         except KeyError as ke:
             error_message = 'PlimsAHdr Instrument Parser KeyError: {}'.format(ke)
             log.error(error_message)
-            self._exception_callback(RecoverableSampleException(error_message))
+            self._exception_callback(UnexpectedDataException(error_message))
             plims_instrument_data = None
+            raise ke
         except ValueError as ve:
             error_message = 'PlimsAHdr Instrument Parser ValueError: {}'.format(ve)
             log.error(error_message)
-            self._exception_callback(RecoverableSampleException(error_message))
+            self._exception_callback(UnexpectedDataException(error_message))
             plims_instrument_data = None
+            raise ve
 
         try:
             if engineering_record:
@@ -131,18 +141,22 @@ class PlimsAHdrParser(SimpleParser):
         except KeyError as ke:
             error_message = 'PlimsAHdr Engineering Parser KeyError: {}'.format(ke)
             log.error(error_message)
-            self._exception_callback(RecoverableSampleException(error_message))
+            self._exception_callback(UnexpectedDataException(error_message))
             plims_engineering_data = None
+            raise ke
         except ValueError as ve:
             error_message = 'PlimsAHdr Engineering Parser ValueError: {}'.format(ve)
             log.error(error_message)
-            self._exception_callback(RecoverableSampleException(error_message))
+            self._exception_callback(UnexpectedDataException(error_message))
             plims_engineering_data = None
+            raise ve
 
         if plims_instrument_data is None:
             error_message = 'Erroneous instrument data found in file'
             log.error(error_message)
-            self._exception_callback(RecoverableSampleException(error_message))
+            dpe = DatasetParserException(error_message)
+            self._exception_callback(dpe)
+            raise dpe
         else:
             particle = self._extract_sample(self._instrument_class, None, plims_instrument_data,
                                             internal_timestamp=internal_timestamp,
@@ -151,12 +165,16 @@ class PlimsAHdrParser(SimpleParser):
                 self._record_buffer.append(particle)
                 # log.trace('Parsed instrument particle: %s' % particle.generate_dict())
             else:
-                self._exception_callback(RecoverableSampleException('Unknown instrument data found in file'))
+                se = SampleException('Unknown instrument data found in file')
+                self._exception_callback(se)
+                raise se
         
         if plims_engineering_data is None:
             error_message = 'Erroneous engineering data found in file'
             log.error(error_message)
-            self._exception_callback(RecoverableSampleException(error_message))
+            dpe = DatasetParserException(error_message)
+            self._exception_callback(dpe)
+            raise dpe
         else:
             particle = self._extract_sample(self._engineering_class, None, plims_engineering_data,
                                             internal_timestamp=internal_timestamp,
@@ -165,7 +183,9 @@ class PlimsAHdrParser(SimpleParser):
                 self._record_buffer.append(particle)
                 # log.trace('Parsed engineering particle: %s' % particle.generate_dict())
             else:
-                self._exception_callback(RecoverableSampleException('Unknown engineering data found in file'))
+                se = SampleException('Unknown engineering data found in file')
+                self._exception_callback(se)
+                raise(se)
 
     def parse_instrument_record(self, record):
 
