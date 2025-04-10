@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-
 """
 @package mi.dataset.parser.adcpt_m_wvs
 @file marine-integrations/mi/dataset/parser/adcpt_m_wvs.py
@@ -24,48 +23,43 @@ Release notes:
 
 Initial Release
 """
-
 __author__ = 'Ronald Ronquillo'
 __license__ = 'Apache 2.0'
-
 
 import calendar
 import numpy
 import re
 import os
 import struct
-from mi.core.exceptions import RecoverableSampleException, SampleEncodingException
+
 from mi.dataset.dataset_parser import BufferLoadingParser
+from mi.dataset.parser.common_regexes import UNSIGNED_INT_REGEX
 
 from mi.core.common import BaseEnum
-
+from mi.core.exceptions import RecoverableSampleException, SampleEncodingException
 from mi.core.instrument.dataset_data_particle import DataParticle, DataParticleKey
-
 from mi.core.log import get_logger
 log = get_logger()
 
-from mi.dataset.parser.common_regexes import UNSIGNED_INT_REGEX
-
-
-#Data Type IDs
-HEADER =                    '\x7f\x7a'   # Dec: 31359
-FIXED_LEADER =              1
-VARIABLE_LEADER =           2
-VELOCITY_TIME_SERIES =      3
-AMPLITUDE_TIME_SERIES =     4
-SURFACE_TIME_SERIES =       5
-PRESSURE_TIME_SERIES =      6
-VELOCITY_SPECTRUM =         7
-SURFACE_TRACK_SPECTRUM =    8
-PRESSURE_SPECTRUM =         9
-DIRECTIONAL_SPECTRUM =      10
-WAVE_PARAMETERS =           11
-WAVE_PARAMETERS2 =          12
-SURFACE_DIR_SPECTRUM =              13
-HEADING_PITCH_ROLL_TIME_SERIES =    14
-BOTTOM_VELOCITY_TIME_SERIES =       15
-ALTITUDE_TIME_SERIES =              16
-UNKNOWN =                           17
+# Data Type IDs
+HEADER = '\x7f\x7a'   # Dec: 31359
+FIXED_LEADER = 1
+VARIABLE_LEADER = 2
+VELOCITY_TIME_SERIES = 3
+AMPLITUDE_TIME_SERIES = 4
+SURFACE_TIME_SERIES = 5
+PRESSURE_TIME_SERIES = 6
+VELOCITY_SPECTRUM = 7
+SURFACE_TRACK_SPECTRUM = 8
+PRESSURE_SPECTRUM = 9
+DIRECTIONAL_SPECTRUM = 10
+WAVE_PARAMETERS = 11
+WAVE_PARAMETERS2 = 12
+SURFACE_DIR_SPECTRUM = 13
+HEADING_PITCH_ROLL_TIME_SERIES = 14
+BOTTOM_VELOCITY_TIME_SERIES = 15
+ALTITUDE_TIME_SERIES = 16
+UNKNOWN = 17
 
 # The particle Data Type ID's that must be filled in a particle
 EXPECTED_PARTICLE_IDS_SET = frozenset(
@@ -83,8 +77,6 @@ class AdcptMWVSParticleKey(BaseEnum):
     """
     Class that defines fields that need to be extracted from the data
     """
-    FILE_TIME = "file_time"
-    SEQUENCE_NUMBER = "sequence_number"
     FILE_MODE = "file_mode"
     REC_TIME_SERIES = "rec_time_series"
     REC_SPECTRA = "rec_spectra"
@@ -196,25 +188,16 @@ class AdcptMWVSParticleKey(BaseEnum):
     ROLL_TIME_SERIES = "roll_time_series"
     SPARE = "spare"
 
+
 # Basic patterns
 common_matches = {
     'UINT': UNSIGNED_INT_REGEX,
     'HEADER': HEADER
 }
-
 common_matches.update(AdcptMWVSParticleKey.__dict__)
 
-
-# Regex to extract just the timestamp from the WVS log file name
-# (path/to/CE01ISSM-ADCPT_YYYYMMDD_###_TS.WVS)
-# 'CE01ISSM-ADCPT_20140418_000_TS1404180021.WVS'
-# 'CE01ISSM-ADCPT_20140418_000_TS1404180021 - excerpt.WVS'
-FILE_NAME_MATCHER = re.compile(r"""(?x)
-    %(UINT)s_(?P<%(SEQUENCE_NUMBER)s> %(UINT)s)_TS(?P<%(FILE_TIME)s> %(UINT)s).*?\.WVS
-    """ % common_matches, re.VERBOSE | re.DOTALL)
-
 # Regex used by the sieve_function
-# Header data: ie. \x7f\x7a followed by 10 bytes of binary data
+# Header data: i.e. \x7f\x7a followed by 10 bytes of binary data
 HEADER_MATCHER = re.compile(r"""(?x)
     %(HEADER)s(?P<Spare1> (.){2}) (?P<Record_Size> (.{4})) (?P<Spare2_4> (.){3}) (?P<NumDataTypes> (.))
     """ % common_matches, re.VERBOSE | re.DOTALL)
@@ -262,7 +245,7 @@ FIXED_LEADER_UNPACKING_RULES = [
     (AdcptMWVSParticleKey.USE_STRACK_4_DEPTH, 'B'),
     (AdcptMWVSParticleKey.STRACK_SPEC, 'B'),
     (AdcptMWVSParticleKey.PRESS_SPEC, 'B'),
-#SCREENING_TYPE_UNPACKING_RULES
+    # SCREENING_TYPE_UNPACKING_RULES
     (AdcptMWVSParticleKey.VEL_MIN, 'h'),
     (AdcptMWVSParticleKey.VEL_MAX, 'h'),
     (AdcptMWVSParticleKey.VEL_STD, 'B'),
@@ -289,7 +272,7 @@ FIXED_LEADER_UNPACKING_RULES = [
     (AdcptMWVSParticleKey.BOTTOM_SLOPE_Y, 'h'),
     (AdcptMWVSParticleKey.DOWN, 'B'),
     (AdcptMWVSParticleKey.SPARE, '17x'),
-#END_SCREENING_TYPE_UNPACKING_RULES
+    # END_SCREENING_TYPE_UNPACKING_RULES
     (AdcptMWVSParticleKey.TRANS_V2_SURF, 'B'),
     (AdcptMWVSParticleKey.SCALE_SPEC, 'B'),
     (AdcptMWVSParticleKey.SAMPLE_RATE, 'f'),
@@ -387,8 +370,7 @@ HPR_TIME_SERIES_UNPACKING_RULES = [
     (AdcptMWVSParticleKey.SPARE, 'H'),
     ([AdcptMWVSParticleKey.HEADING_TIME_SERIES,
       AdcptMWVSParticleKey.PITCH_TIME_SERIES,
-      AdcptMWVSParticleKey.ROLL_TIME_SERIES]
-     , 'h')
+      AdcptMWVSParticleKey.ROLL_TIME_SERIES], 'h')
 ]
 
 NULL_HPR_TIME_SERIES = make_null_parameters(HPR_TIME_SERIES_UNPACKING_RULES)
@@ -459,22 +441,6 @@ class AdcptMWVSInstrumentDataParticle(DataParticle):
         self.final_result = []
         retrieved_data_types = set()    # keep track of data type ID's unpacked from record
 
-        # Get the file time from the file name
-        if self._file_time:
-            self.final_result.append(self._encode_value(
-                AdcptMWVSParticleKey.FILE_TIME, self._file_time, str))
-        else:
-            self.final_result.append({DataParticleKey.VALUE_ID: AdcptMWVSParticleKey.FILE_TIME,
-                                      DataParticleKey.VALUE: None})
-
-        # Get the sequence number from the file name
-        if self._sequence_number:
-            self.final_result.append(self._encode_value(
-                AdcptMWVSParticleKey.SEQUENCE_NUMBER, self._sequence_number, int))
-        else:
-            self.final_result.append({DataParticleKey.VALUE_ID: AdcptMWVSParticleKey.SEQUENCE_NUMBER,
-                                      DataParticleKey.VALUE: None})
-
         # Get the number of data types from the Header
         num_data_types = struct.unpack_from('<B', self.raw_data, HEADER_NUM_DATA_TYPES_OFFSET)
         # Get the list of offsets from the Header
@@ -516,7 +482,7 @@ class AdcptMWVSInstrumentDataParticle(DataParticle):
         """
         # Unpack the unpacking rules
         (num_freq_name, num_dir_name, good_name, dat_name),\
-        (num_freq_fmt, num_dir_fmt, good_fmt, dat_fmt) = zip(*rules)
+            (num_freq_fmt, num_dir_fmt, good_fmt, dat_fmt) = zip(*rules)
 
         # First unpack the array lengths and single length values
         (num_freq_data, num_dir_data, dspec_good_data) = struct.unpack_from(
@@ -524,7 +490,7 @@ class AdcptMWVSInstrumentDataParticle(DataParticle):
 
         # Then unpack the array using the retrieved lengths values
         next_offset = offset + struct.calcsize(num_freq_fmt) + struct.calcsize(num_dir_fmt) + \
-                      struct.calcsize(good_fmt)
+            struct.calcsize(good_fmt)
         dspec_dat_list_data = struct.unpack_from(
             '<%s%s' % (num_freq_data * num_dir_data, dat_fmt), self.raw_data, next_offset)
 
@@ -545,7 +511,7 @@ class AdcptMWVSInstrumentDataParticle(DataParticle):
         """
         # Unpack the unpacking rules
         (hpr_num_name, beam_angle_name, spare_name, hpr_time_names),\
-        (hpr_num_fmt, beam_angle_fmt, spare_fmt, hpr_time_fmt) = zip(*rules)
+            (hpr_num_fmt, beam_angle_fmt, spare_fmt, hpr_time_fmt) = zip(*rules)
 
         # First unpack the array length and single length value, no need to unpack spare
         (hpr_num_data, beam_angle_data) = struct.unpack_from(
@@ -553,7 +519,7 @@ class AdcptMWVSInstrumentDataParticle(DataParticle):
 
         # Then unpack the array using the retrieved lengths value
         next_offset = offset + struct.calcsize(hpr_num_fmt) + struct.calcsize(beam_angle_fmt) + \
-                      struct.calcsize(spare_fmt)
+            struct.calcsize(spare_fmt)
         hpr_time_list_data = struct.unpack_from(
             '<%s%s' % (hpr_num_data * HPR_TIME_SERIES_ARRAY_SIZE, hpr_time_fmt), self.raw_data, next_offset)
 
@@ -658,7 +624,7 @@ class AdcptMWVSParser(BufferLoadingParser):
         # File is being read 1024 bytes at a time
         # Match a Header up to the "number of data types" value
 
-        #find all occurrences of the record header sentinel
+        # find all occurrences of the record header sentinel
         header_iter = HEADER_MATCHER.finditer(input_buffer)
         for match in header_iter:
 
@@ -719,34 +685,17 @@ class AdcptMWVSParser(BufferLoadingParser):
         Go until the chunker has no more valid data.
         @retval a list of tuples with sample particles encountered in this parsing, plus the state.
         """
-
-        file_name = self._stream_handle.name
         sequence_number = None
         file_time = None
-
-        # Extract the sequence number & file time from the file name
-        match = FILE_NAME_MATCHER.search(file_name)
-
-        if match:
-            # store the sequence number & file time to put into the particle
-            sequence_number = match.group(AdcptMWVSParticleKey.SEQUENCE_NUMBER)
-            file_time = match.group(AdcptMWVSParticleKey.FILE_TIME)
-        else:
-            message = 'Unable to extract file time or sequence number from WVS input file: %s '\
-                      % file_name
-            log.warn(message)
-            self._exception_callback(RecoverableSampleException(message))
-
         result_particles = []
+
         nd_timestamp, non_data, non_start, non_end = self._chunker.get_next_non_data_with_index(clean=False)
         timestamp, chunk, start, end = self._chunker.get_next_data_with_index(clean=True)
         self.handle_non_data(non_data, non_end, start)
 
         while chunk:
-
             particle = self._extract_sample(self._particle_class, sequence_number, file_time,
                                             None, chunk, None)
-
             if particle is not None:
                 result_particles.append((particle, None))
 
@@ -756,8 +705,7 @@ class AdcptMWVSParser(BufferLoadingParser):
 
         return result_particles
 
-    def _extract_sample(self, particle_class, sequence_number, file_time, regex,
-                        raw_data, timestamp):
+    def _extract_sample(self, particle_class, sequence_number, file_time, regex, raw_data, timestamp):
         """
         Override method to pass sequence number and file time to particle. Also need to
         handle a particle without timestamp detected in _build_parsed_values() which
