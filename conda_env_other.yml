@@ -33,7 +33,7 @@ dependencies:
 - pip:
   - modestimage==0.1
   - apscheduler==2.1.0
-  - ntplib==0.3.3
+  - ntplib==0.3.4
   - python-consul==0.7.0
   - qpid-python==0.32.1
   - git+https://github.com/oceanobservatories/ooi_port_agent@v0.0.42
