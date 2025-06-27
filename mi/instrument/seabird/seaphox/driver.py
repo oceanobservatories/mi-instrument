@@ -46,7 +46,7 @@ class DataParticleType(BaseEnum):
     """
     Data particle types produced by this driver.
     """
-    PLACEHOLDER_STREAM_NAME = "PLACEHOLDER_STREAM_NAME" # @TODO: Replace with actual stream name.
+    PHSEN_H_FORMAT0 = "phsen_h_format0"
 
 
 ###############################################################################
@@ -96,7 +96,7 @@ class SeapHOxParticle(DataParticle):
     Particle class for SeapHOx instrument.
     """
 
-    _data_particle_type = DataParticleType.PLACEHOLDER_STREAM_NAME
+    _data_particle_type = DataParticleType.PHSEN_H_FORMAT0
 
     @staticmethod
     def regex():
