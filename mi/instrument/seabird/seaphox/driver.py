@@ -12,7 +12,6 @@ from mi.core.log import get_logger
 
 from mi.core.instrument.chunker import StringChunker
 from mi.core.instrument.data_particle import DataParticle
-from mi.core.instrument.driver_dict import DriverDictKey
 from mi.core.instrument.instrument_driver import (
     DriverAsyncEvent,
     DriverEvent,
@@ -46,6 +45,7 @@ class DataParticleType(BaseEnum):
     """
     Data particle types produced by this driver.
     """
+
     PHSEN_H_FORMAT0 = "phsen_h_format0"
 
 
@@ -69,7 +69,7 @@ PARTICLE_REGEX = r"""
 (?P<oxygen_phase_delay>-*\d+\.\d{3}),\s*
 (?P<oxygen_thermistor_voltage>-*\d+\.\d{6}),\s*
 (?P<internal_temperature_counts>\d+),\s*
-(?P<internal_humidity_counts>\d+)\n
+(?P<internal_humidity_counts>\d+)\s*[\n\r]+
 """.strip().replace("\n", "")
 
 
@@ -170,6 +170,7 @@ class ProtocolState(BaseEnum):
     """
     Instrument protocol states.
     """
+
     UNKNOWN = DriverProtocolState.UNKNOWN
 
 
@@ -177,6 +178,7 @@ class ProtocolEvent(BaseEnum):
     """
     Instrument protocol events.
     """
+
     ENTER = DriverEvent.ENTER
     EXIT = DriverEvent.EXIT
     DISCOVER = DriverEvent.DISCOVER
@@ -206,7 +208,7 @@ class Protocol(CommandResponseInstrumentProtocol):
             ProtocolState,
             ProtocolEvent,
             ProtocolEvent.ENTER,
-            ProtocolEvent.EXIT
+            ProtocolEvent.EXIT,
         )
 
         handlers = {
@@ -227,7 +229,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         self._build_command_dict()
         self._build_driver_dict()
 
-        self._chunker = StringChunker(self.sieve_function)
+        self._chunker = StringChunker(self.sieve_function, self._max_buffer_size())
 
         # Start state machine in UNKNOWN state.
         self._protocol_fsm.start(ProtocolState.UNKNOWN)
@@ -237,18 +239,13 @@ class Protocol(CommandResponseInstrumentProtocol):
         """
         The method that splits samples and status.
         """
-        matchers = []
-        return_list = []
+        spans = []
 
-        matchers.append(SeapHOxParticle.regex_compiled())
-        for matcher in matchers:
-            for match in matcher.finditer(raw_data):
-                return_list.append((match.start(), match.end()))
+        matcher = SeapHOxParticle.regex_compiled()
+        for match in matcher.finditer(raw_data):
+            spans.append((match.start(), match.end()))
 
-        return return_list
-
-    def _max_buffer_size(self):
-        return CommandResponseInstrumentProtocol._max_buffer_size(self) * 10
+        return spans
 
     def _got_chunk(self, chunk, timestamp):
         self._extract_sample(
@@ -257,6 +254,43 @@ class Protocol(CommandResponseInstrumentProtocol):
             chunk,
             timestamp,
         )
+
+    def _set_params(self, *args, **kwargs):
+        """
+        Issue commands to the instrument to set various parameters.  If
+        startup is set to true that means we are setting startup values
+        and immutable parameters can be set.  Otherwise only READ_WRITE
+        parameters can be set.
+
+        must be overloaded in derived classes
+
+        @param params dictionary containing parameter name and value pairs
+        @param startup - a flag, true indicates initializing, false otherwise
+        """
+
+        params = args[0]
+
+        # check for attempt to set readonly parameters (read-only or immutable set outside startup)
+        self._verify_not_readonly(*args, **kwargs)
+        old_config = self._param_dict.get_config()
+
+        for key, val in params.iteritems():
+            self._param_dict.set_value(key, val)
+
+        new_config = self._param_dict.get_config()
+        # check for parameter change
+        if not dict_equal(old_config, new_config):
+            self._driver_event(DriverAsyncEvent.CONFIG_CHANGE)
+
+    def apply_startup_params(self):
+        """
+        Apply startup parameters
+        """
+        config = self.get_startup_config()
+
+        for param in Parameter.list():
+            if param in config:
+                self._param_dict.set_value(param, config[param])
 
     def _build_param_dict(self):
         """
