@@ -1,8 +1,8 @@
 """
-@package mi.instrument.seabird.seaphox.driver
-@file mi/instrument/seabird/seaphox/driver.py
+@package mi.instrument.seabird.seaphox2.driver
+@file mi/instrument/seabird/seaphox2/driver.py
 @author Jake Ploskey
-@brief Driver for the SeapHOx instrument.
+@brief Driver for the SeapHOx V2 instrument.
 """
 
 import re
@@ -73,7 +73,7 @@ PARTICLE_REGEX = r"""
 """.strip().replace("\n", "")
 
 
-class SeapHOxParticleKey(BaseEnum):
+class SeapHOx2ParticleKey(BaseEnum):
     FRAMESYNC = "framesync"
     TIMESTAMP = "timestamp"
     EVENT_FLAGS = "event_flags"
@@ -91,9 +91,9 @@ class SeapHOxParticleKey(BaseEnum):
     INTERNAL_HUMIDITY_COUNTS = "internal_humidity_counts"
 
 
-class SeapHOxParticle(DataParticle):
+class SeapHOx2Particle(DataParticle):
     """
-    Particle class for SeapHOx instrument.
+    Particle class for SeapHOx V2 instrument.
     """
 
     _data_particle_type = DataParticleType.PHSEN_H_FORMAT0
@@ -104,14 +104,14 @@ class SeapHOxParticle(DataParticle):
 
     @staticmethod
     def regex_compiled():
-        return re.compile(SeapHOxParticle.regex())
+        return re.compile(SeapHOx2Particle.regex())
 
     def _build_parsed_values(self):
         """
         Convert the instrument sample into a data particle.
         :return: data particle as a dictionary
         """
-        match = SeapHOxParticle.regex_compiled().match(self.raw_data)
+        match = SeapHOx2Particle.regex_compiled().match(self.raw_data)
 
         if not match:
             raise SampleException(
@@ -122,21 +122,21 @@ class SeapHOxParticle(DataParticle):
             return self._encode_value(key, match.group(str(key)), parser)
 
         result = [
-            encode(SeapHOxParticleKey.FRAMESYNC, str),
-            encode(SeapHOxParticleKey.TIMESTAMP, str),
-            encode(SeapHOxParticleKey.EVENT_FLAGS, str),
-            encode(SeapHOxParticleKey.TEMPERATURE_COUNTS, int),
-            encode(SeapHOxParticleKey.PH_EXTERNAL_REFERENCE_VOLTAGE_COUNTS, int),
-            encode(SeapHOxParticleKey.PH_VOLTAGE_COUNTS, int),
-            encode(SeapHOxParticleKey.PH_CURRENT_COUNTS, int),
-            encode(SeapHOxParticleKey.PH_COUNTER_CURRENT_COUNTS, int),
-            encode(SeapHOxParticleKey.PRESSURE_COUNTS, int),
-            encode(SeapHOxParticleKey.PRESSURE_TEMPERATURE_COUNTS, int),
-            encode(SeapHOxParticleKey.CONDUCTIVITY_FREQUENCY, float),
-            encode(SeapHOxParticleKey.OXYGEN_PHASE_DELAY, float),
-            encode(SeapHOxParticleKey.OXYGEN_THERMISTOR_VOLTAGE, float),
-            encode(SeapHOxParticleKey.INTERNAL_TEMPERATURE_COUNTS, int),
-            encode(SeapHOxParticleKey.INTERNAL_HUMIDITY_COUNTS, int),
+            encode(SeapHOx2ParticleKey.FRAMESYNC, str),
+            encode(SeapHOx2ParticleKey.TIMESTAMP, str),
+            encode(SeapHOx2ParticleKey.EVENT_FLAGS, str),
+            encode(SeapHOx2ParticleKey.TEMPERATURE_COUNTS, int),
+            encode(SeapHOx2ParticleKey.PH_EXTERNAL_REFERENCE_VOLTAGE_COUNTS, int),
+            encode(SeapHOx2ParticleKey.PH_VOLTAGE_COUNTS, int),
+            encode(SeapHOx2ParticleKey.PH_CURRENT_COUNTS, int),
+            encode(SeapHOx2ParticleKey.PH_COUNTER_CURRENT_COUNTS, int),
+            encode(SeapHOx2ParticleKey.PRESSURE_COUNTS, int),
+            encode(SeapHOx2ParticleKey.PRESSURE_TEMPERATURE_COUNTS, int),
+            encode(SeapHOx2ParticleKey.CONDUCTIVITY_FREQUENCY, float),
+            encode(SeapHOx2ParticleKey.OXYGEN_PHASE_DELAY, float),
+            encode(SeapHOx2ParticleKey.OXYGEN_THERMISTOR_VOLTAGE, float),
+            encode(SeapHOx2ParticleKey.INTERNAL_TEMPERATURE_COUNTS, int),
+            encode(SeapHOx2ParticleKey.INTERNAL_HUMIDITY_COUNTS, int),
         ]
 
         return result
@@ -192,7 +192,7 @@ class Capability(BaseEnum):
 
 class Protocol(CommandResponseInstrumentProtocol):
     """
-    Instrument protocol class for SeapHOx driver.
+    Instrument protocol class for SeapHOx V2 driver.
     """
 
     def __init__(self, driver_event):
@@ -241,7 +241,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         """
         spans = []
 
-        matcher = SeapHOxParticle.regex_compiled()
+        matcher = SeapHOx2Particle.regex_compiled()
         for match in matcher.finditer(raw_data):
             spans.append((match.start(), match.end()))
 
@@ -249,8 +249,8 @@ class Protocol(CommandResponseInstrumentProtocol):
 
     def _got_chunk(self, chunk, timestamp):
         self._extract_sample(
-            SeapHOxParticle,
-            SeapHOxParticle.regex_compiled(),
+            SeapHOx2Particle,
+            SeapHOx2Particle.regex_compiled(),
             chunk,
             timestamp,
         )
