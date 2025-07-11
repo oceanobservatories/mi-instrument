@@ -370,16 +370,18 @@ class Protocol(InstrumentProtocol):
 
     def _get_bin(self, packet):
         rate_map = {
-            1: 86400,       # 1 day
-            8: 86400,       # 1 day
-            40: 86400,      # 1 day
-            200: 86400,     # 1 day
-            64000: 60 * 5,  # 5 minutes
-            256000: 60,     # 1 minute
+            1: 86400,           # 1 day
+            8: 86400,           # 1 day
+            40: 86400,          # 1 day
+            200: 86400,         # 1 day
+            64000: 60 * 5,      # 5 minutes
+            128000: 60 * 5,     # 5 minutes
+            256000: 60 * 5,     # 5 minutes
         }
         start_time = packet['time']
         rate = packet['samprate']
-        bin_size = rate_map.get(rate, 60)
+        # Unspecified sampling rate default file size set to 5 minutes
+        bin_size = rate_map.get(rate, 60 * 5)
         bin_value = int(start_time/bin_size)
         bin_start = bin_value * bin_size
         bin_end = (bin_value + 1) * bin_size
