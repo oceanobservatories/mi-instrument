@@ -229,7 +229,7 @@ class Protocol(CommandResponseInstrumentProtocol):
         self._build_command_dict()
         self._build_driver_dict()
 
-        self._chunker = StringChunker(self.sieve_function, self._max_buffer_size())
+        self._chunker = StringChunker(Protocol.sieve_function, self._max_buffer_size())
 
         # Start state machine in UNKNOWN state.
         self._protocol_fsm.start(ProtocolState.UNKNOWN)
