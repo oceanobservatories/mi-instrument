@@ -12,6 +12,7 @@ Data records only produce particles if properly formed.
 Mal-formed sensor data records and all metadata records produce no particles.
 """
 
+import os
 import re
 
 import pandas as pd
@@ -56,7 +57,8 @@ class PlimsAAdcParser(SimpleParser):
         """
 
         file = self._stream_handle
-
+        
+        file_name = os.path.basename(file.name).strip('.adc')
         file_name_date_match = FNAME_DATE_REGEX.match(file.name)
         if file_name_date_match is not None:
             # convert file name date/time string to seconds since 1970-01-01 in UTC
@@ -67,10 +69,14 @@ class PlimsAAdcParser(SimpleParser):
             self._exception_callback(se)
             raise se
 
-        df = pd.read_csv(file, names=PlimsAAdcParticleKey.PLIMS_A_ADC_COLUMNS, error_bad_lines=True)
+        df = pd.read_csv(file, names=PlimsAAdcParticleKey.PLIMS_A_ADC_COLUMNS, 
+                            skip_blank_lines=False, 
+                            error_bad_lines=True,
+                            dtype=PlimsAAdcParticleKey.PLIMS_A_ADC_DTYPES)
         if df is not None and not df.empty:
             df.drop(PlimsAAdcParticleKey.PLIMS_A_ADC_DROP_COLUMNS, axis=1, inplace=True)
             df[PlimsAAdcParticleKey.SAMPLE_TIMESTAMP] = internal_timestamp
+            df[PlimsAAdcParticleKey.SAMPLE_FILENAME] = file_name
         if df.isna().values.any():
             plims_adc_data = None
         else:
@@ -81,10 +87,17 @@ class PlimsAAdcParser(SimpleParser):
         
         if plims_adc_data is not None:
             for record in plims_adc_data:
-                # Drop "Index" keys which are created in working around the faulty to_dict() method
-                record.pop('Index', None)
+                # Drop "Index" keys, and replace with row number key
+                row_number = record.pop('Index', None)
+                if row_number is not None:
+                    row_number = int(row_number) + 1  # Convert to 1-based index
+                else:
+                    log.warning("Row number not found in record: {}".format(record))
+
+                record[PlimsAAdcParticleKey.SAMPLE_ADC_FILE_ROW_NUMBER] = row_number
+                int_timestamp = internal_timestamp + record[PlimsAAdcParticleKey.GRAB_TIME_START]
                 particle = self._extract_sample(self._particle_class, None, record,
-                                                internal_timestamp = internal_timestamp + record[PlimsAAdcParticleKey.GRAB_TIME_START],
+                                                internal_timestamp = int_timestamp,
                                                 preferred_ts=DataParticleKey.INTERNAL_TIMESTAMP)
                 if particle is not None:
                     self._record_buffer.append(particle)

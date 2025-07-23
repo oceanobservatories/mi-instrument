@@ -78,59 +78,44 @@ class PlimsAHdrUnitTestCase(ParserUnitTestCase):
 
     def test_missing_instrument_data(self):
         """
-        Ensure that missing instrument data is skipped when it exists.
+        Ensure that missing instrument data raises exception when missing.
         """
         self.setup()
 
         with open(self.file_path('D20230222T174812_IFCB195_missing_instrument_values.hdr')) as in_file:
             parser = self.create_plims_a_hdr_parser(in_file)
 
-            # In a single read, get all particles for this file.
-            result = parser.get_records(1)
+            with self.assertRaises(KeyError):
+                # In a single read, attempt to read all particles for this file.
+                result = parser.get_records(1)
 
-            self.assertEqual(len(result), 1) # still have engineering data particle
-            for ex in self.exception_callback_value:
-                print("Exception: ", ex.get_triple())
-            self.assertEqual(len(self.exception_callback_value), 2)
-
-            for i in range(len(self.exception_callback_value)):
-                log.debug('Exception: %s', self.exception_callback_value[i])
 
     def test_missing_engineering_data(self):
         """
-        Ensure that missing engineering data is skipped when it exists.
+        Ensure that missing engineering data raises exception when missing.
         """
         self.setup()
 
         with open(self.file_path('D20230222T174812_IFCB195_missing_engineering_values.hdr')) as in_file:
             parser = self.create_plims_a_hdr_parser(in_file)
-
-            # In a single read, get all particles for this file.
-            result = parser.get_records(30)
-
-            self.assertEqual(len(result), 1) # still have instrument data particle
-            self.assertEqual(len(self.exception_callback_value), 2)
-
-            for i in range(len(self.exception_callback_value)):
-                log.debug('Exception: %s', self.exception_callback_value[i])
+            
+            with self.assertRaises(KeyError):
+                # In a single read, get all particles for this file.
+                result = parser.get_records(30)
+                
 
     def test_corrupt_values_instrument_data(self):
         """
-        Ensure that bad data is skipped when it exists.
+        Ensure that bad data raises ValueError when it exists.
         """
         self.setup()
 
         with open(self.file_path('D20230222T174812_IFCB195_corrupt_instrument_values.hdr')) as in_file:
             parser = self.create_plims_a_hdr_parser(in_file)
 
-            # In a single read, get all particles for this file.
-            result = parser.get_records(30)
-
-            self.assertEqual(len(result), 1) # still have engineering data particle
-            self.assertEqual(len(self.exception_callback_value), 2)
-
-            for i in range(len(self.exception_callback_value)):
-                log.debug('Exception: %s', self.exception_callback_value[i])
+            with self.assertRaises(ValueError):
+                # In a single read, get all particles for this file.
+                result = parser.get_records(30)
 
     def test_corrupt_values_engineering_data(self):
         """
@@ -140,34 +125,21 @@ class PlimsAHdrUnitTestCase(ParserUnitTestCase):
 
         with open(self.file_path('D20230222T174812_IFCB195_corrupt_engineering_values.hdr')) as in_file:
             parser = self.create_plims_a_hdr_parser(in_file)
-
-            # In a single read, get all particles for this file.
-            result = parser.get_records(30)
-
-            self.assertEqual(len(result), 1) # still have instrument data particle
-            self.assertEqual(len(self.exception_callback_value), 2)
-            for i in range(len(self.exception_callback_value)):
-                log.debug('Exception: %s', self.exception_callback_value[i])
-
-        log.debug('===== END TEST BAD DATA  =====')
+            
+            with self.assertRaises(ValueError):
+                # In a single read, get all particles for this file.
+                result = parser.get_records(30)
 
 
     def test_corrupt_values_both_data_types(self):
         """
-        Ensure that bad data is skipped when it exists.
+        Ensure that bad data raises ValueErrors when it exists.
         """
         self.setup()
 
         with open(self.file_path('D20230222T174812_IFCB195_corrupt_values.hdr')) as in_file:
             parser = self.create_plims_a_hdr_parser(in_file)
-
-            # In a single read, get all particles for this file.
-            result = parser.get_records(30)
-
-            self.assertEqual(len(result), 0) # corruption in both data types
-            self.assertEqual(len(self.exception_callback_value), 4) # 2 for each particle type
-
-            for i in range(len(self.exception_callback_value)):
-                log.debug('Exception: %s', self.exception_callback_value[i])
-
-        log.debug('===== END TEST BAD DATA  =====')
+            
+            with self.assertRaises(ValueError):
+                # In a single read, get all particles for this file.
+                result = parser.get_records(30)

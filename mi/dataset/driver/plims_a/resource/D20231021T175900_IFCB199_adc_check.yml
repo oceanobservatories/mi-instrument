@@ -5,6 +5,7 @@ data:
   - _index: 1
     sample_timestamp: 3906899940.0
     trigger_number: 1
+    sample_adc_file_row_number: 1
     pmta: -0.41140914
     pmtb: -0.3998083
     peak_a: 0.41818142
@@ -18,14 +19,16 @@ data:
     roi_height: 52
     start_byte: 0
     status: 0
-    run_time: 3.842426215277778
-    inhibit_time: 0.08017361111111111
+    run_time_tr: 3.842426215277778
+    inhibit_time_tr: 0.08017361111111111
+    sample_filename: D20231021T175900_IFCB199
     internal_timestamp: 3906899943.819292
     particle_type: plims_a_adc_instrument
     particle_object: PlimsAAdcDataParticle
   - _index: 2
     sample_timestamp: 3906899940.0
     trigger_number: 2
+    sample_adc_file_row_number: 2
     pmta: 0.047302842
     pmtb: 0.073604584
     peak_a: 0.692513
@@ -39,8 +42,9 @@ data:
     roi_height: 60
     start_byte: 3744
     status: 0
-    run_time: 3.928938802083333
-    inhibit_time: 0.16619791666666667
+    run_time_tr: 3.928938802083333
+    inhibit_time_tr: 0.16619791666666667
+    sample_filename: D20231021T175900_IFCB199
     internal_timestamp: 3906899943.9061522
     particle_type: plims_a_adc_instrument
     particle_object: PlimsAAdcDataParticle
