@@ -1,0 +1,8 @@
+driver_metadata:
+  author: Jake Ploskey
+  driver_make: seabird
+  driver_model: seaphox2
+  driver_name: ooicore
+  email: jploskey@uw.edu
+  release_notes: SeapHOx V2 driver
+  version: 1.0.0
