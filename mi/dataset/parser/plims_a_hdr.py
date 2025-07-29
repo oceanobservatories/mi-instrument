@@ -91,7 +91,7 @@ class PlimsAHdrParser(SimpleParser):
 
         file = self._stream_handle
 
-        file_name = os.path.basename(file.name).strip('.adc')
+        file_name = os.path.basename(file.name).strip('.hdr')
         match = FNAME_DATE_REGEX.match(file.name)
         if match is not None:
             # convert file name date/time string to seconds since 1970-01-01 in UTC

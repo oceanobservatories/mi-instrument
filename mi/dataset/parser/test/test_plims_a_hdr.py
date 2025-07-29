@@ -73,6 +73,20 @@ class PlimsAHdrUnitTestCase(ParserUnitTestCase):
 
             self.assertEqual(len(result), 2) # one instrument and one engineering particle
             self.assertListEqual(self.exception_callback_value, [])
+            hdr_instrument = result[0].generate_dict()
+            hdr_engineering = result[1].generate_dict()
+
+            log.debug("Instrument particle: %s", hdr_instrument)
+            log.debug("Engineering particle: %s", hdr_engineering)
+        
+            # self.assertEqual(hdr_instrument['particle_type'], INSTRUMENT_DATA_PARTICLE)
+            # self.assertEqual(hdr_engineering['particle_type'], ENGGINEERING_DATA_PARTICLE)
+            for value in hdr_instrument['values']:
+                if value['value_id'] == 'sample_filename':
+                    self.assertEqual(value['value'], 'D20230222T174812_IFCB195')
+            for value in hdr_engineering['values']:
+                if value['value_id'] == 'sample_filename':
+                    self.assertEqual(value['value'], 'D20230222T174812_IFCB195')
 
         log.debug('===== END TEST PLIMS_A_HDR Instrument Parser  =====')
 
