@@ -27,8 +27,31 @@ data:
     particle_object: PlimsAAdcDataParticle
   - _index: 2
     sample_timestamp: 3906899940.0
-    trigger_number: 2
+    trigger_number: 1
     sample_adc_file_row_number: 2
+    pmta: 0.031078458
+    pmtb: 0.056587458
+    peak_a: 0.4799366
+    peak_b: 0.8060217
+    time_of_flight: 60.869564
+    grab_time_start: 3.8192923
+    grab_time_end: 3.8635903
+    roi_x: 1108
+    roi_y: 566
+    roi_width: 80
+    roi_height: 60
+    start_byte: 1668656
+    status: 0
+    run_time_tr: 43.79258680555556
+    inhibit_time_tr: 37.83233940972222
+    sample_filename: D20231021T175900_IFCB199
+    internal_timestamp: 3906899943.819292
+    particle_type: plims_a_adc_instrument
+    particle_object: PlimsAAdcDataParticle
+  - _index: 3
+    sample_timestamp: 3906899940.0
+    trigger_number: 2
+    sample_adc_file_row_number: 3
     pmta: 0.047302842
     pmtb: 0.073604584
     peak_a: 0.692513

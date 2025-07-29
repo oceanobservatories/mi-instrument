@@ -71,11 +71,11 @@ class PlimsAAdclUnitTestCase(ParserUnitTestCase):
             parser = self.create_plims_a_parser(in_file)
 
             # In a single read, get all particles in this file.
-            results = parser.get_records(2)
-            rest_of_results = parser.get_records(442)
+            results = parser.get_records(3)
+            rest_of_results = parser.get_records(441)
 
-        self.assertEqual(len(results), 2)
-        self.assertEqual(len(rest_of_results), 442)
+        self.assertEqual(len(results), 3)
+        self.assertEqual(len(rest_of_results), 441)
 
         self.assert_particles(results, "D20231021T175900_IFCB199_adc_check.yml", RESOURCE_PATH)
 
