@@ -8,9 +8,8 @@
 """
 
 import os
-from pickle import INST
 
-from mi.core.instrument.dataset_data_particle import DataParticle, DataParticleKey
+from mi.core.instrument.dataset_data_particle import DataParticleKey
 from mi.core.log import get_logger
 from mi.dataset.dataset_parser import DataSetDriverConfigKeys
 from mi.dataset.driver.plims_a.resource import RESOURCE_PATH
@@ -19,7 +18,6 @@ from mi.dataset.parser.plims_a_particles import (
     DataParticleType,
     PlimsAHdrClassKey,
     PlimsAHdrInstrumentParticleKey,
-    PlimsAParticleKey,
 )
 from mi.dataset.test.test_parser import ParserUnitTestCase
 
@@ -88,8 +86,6 @@ class PlimsAHdrUnitTestCase(ParserUnitTestCase):
             self.assertEqual(hdr_instrument[DataParticleKey.STREAM_NAME] , DataParticleType.PLIMS_A_HDR_INSTRUMENT_RECOVERED_PARTICLE_TYPE)
             self.assertEqual(hdr_engineering[DataParticleKey.STREAM_NAME], DataParticleType.PLIMS_A_HDR_ENGINEERING_RECOVERED_PARTICLE_TYPE)
 
-            # self.assertEqual(hdr_instrument['particle_type'], INSTRUMENT_DATA_PARTICLE)
-            # self.assertEqual(hdr_engineering['particle_type'], ENGGINEERING_DATA_PARTICLE)
             hdr_inst_value_map  = {value['value_id']: value['value'] for value in hdr_instrument['values']}
             
             self.assertTrue(PlimsAHdrInstrumentParticleKey.SAMPLE_FILENAME in hdr_inst_value_map)
