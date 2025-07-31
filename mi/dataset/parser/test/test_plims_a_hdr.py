@@ -10,11 +10,17 @@
 import os
 from pickle import INST
 
+from mi.core.instrument.dataset_data_particle import DataParticle, DataParticleKey
 from mi.core.log import get_logger
 from mi.dataset.dataset_parser import DataSetDriverConfigKeys
 from mi.dataset.driver.plims_a.resource import RESOURCE_PATH
 from mi.dataset.parser.plims_a_hdr import PlimsAHdrParser
-from mi.dataset.parser.plims_a_particles import PlimsAHdrClassKey
+from mi.dataset.parser.plims_a_particles import (
+    DataParticleType,
+    PlimsAHdrClassKey,
+    PlimsAHdrInstrumentParticleKey,
+    PlimsAParticleKey,
+)
 from mi.dataset.test.test_parser import ParserUnitTestCase
 
 log = get_logger()
@@ -79,15 +85,18 @@ class PlimsAHdrUnitTestCase(ParserUnitTestCase):
             log.debug("Instrument particle: %s", hdr_instrument)
             log.debug("Engineering particle: %s", hdr_engineering)
         
+            self.assertEqual(hdr_instrument[DataParticleKey.STREAM_NAME] , DataParticleType.PLIMS_A_HDR_INSTRUMENT_RECOVERED_PARTICLE_TYPE)
+            self.assertEqual(hdr_engineering[DataParticleKey.STREAM_NAME], DataParticleType.PLIMS_A_HDR_ENGINEERING_RECOVERED_PARTICLE_TYPE)
+
             # self.assertEqual(hdr_instrument['particle_type'], INSTRUMENT_DATA_PARTICLE)
             # self.assertEqual(hdr_engineering['particle_type'], ENGGINEERING_DATA_PARTICLE)
-            for value in hdr_instrument['values']:
-                if value['value_id'] == 'sample_filename':
-                    self.assertEqual(value['value'], 'D20230222T174812_IFCB195')
-            for value in hdr_engineering['values']:
-                if value['value_id'] == 'sample_filename':
-                    self.assertEqual(value['value'], 'D20230222T174812_IFCB195')
-
+            hdr_inst_value_map  = {value['value_id']: value['value'] for value in hdr_instrument['values']}
+            
+            self.assertTrue(PlimsAHdrInstrumentParticleKey.SAMPLE_FILENAME in hdr_inst_value_map)
+            self.assertEqual(hdr_inst_value_map[PlimsAHdrInstrumentParticleKey.SAMPLE_FILENAME], 'D20230222T174812_IFCB195')
+            # The two particles should have the same internal timestamp
+            self.assertEqual(hdr_instrument[DataParticleKey.INTERNAL_TIMESTAMP], hdr_engineering[DataParticleKey.INTERNAL_TIMESTAMP])
+            
         log.debug('===== END TEST PLIMS_A_HDR Instrument Parser  =====')
 
     def test_missing_instrument_data(self):

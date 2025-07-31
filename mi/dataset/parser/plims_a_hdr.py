@@ -103,11 +103,8 @@ class PlimsAHdrParser(SimpleParser):
             particle = None
             raise rse
 
-        instrument_record = {PlimsAParticleKey.SAMPLE_TIMESTAMP: internal_timestamp,
-                             PlimsAHdrInstrumentParticleKey.SAMPLE_FILENAME: file_name}
-        engineering_record = {PlimsAParticleKey.SAMPLE_TIMESTAMP: internal_timestamp,
-                             PlimsAHdrInstrumentParticleKey.SAMPLE_FILENAME: file_name}
-
+        instrument_record = {PlimsAParticleKey.SAMPLE_TIMESTAMP: internal_timestamp}
+        engineering_record = {PlimsAParticleKey.SAMPLE_TIMESTAMP: internal_timestamp}
 
         for line in file:
             line_split = line.split(self.SEGMENTATION_STRING)
@@ -126,6 +123,7 @@ class PlimsAHdrParser(SimpleParser):
         try:
             if instrument_record:
                 plims_instrument_data = self.parse_instrument_record(instrument_record)
+                plims_instrument_data[PlimsAHdrInstrumentParticleKey.SAMPLE_FILENAME] = file_name
         except KeyError as ke:
             error_message = 'PlimsAHdr Instrument Parser KeyError: {}'.format(ke)
             log.error(error_message)
