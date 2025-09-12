@@ -5,6 +5,8 @@
 This file contains particle data type definitions for the PLIMS A instrument.
 """
 
+from collections import OrderedDict
+
 from mi.core.log import get_logger, get_logging_metaclass
 
 log = get_logger()
@@ -30,6 +32,7 @@ class PlimsAParticleKey(BaseEnum):
     Instrument and Engineering particles extend this class.
     """
     SAMPLE_TIMESTAMP = 'sample_timestamp'
+    
     PARAMETER_NAME_MAP = {}
 
 class PlimsAHdrInstrumentParticleKey(PlimsAParticleKey):
@@ -60,7 +63,7 @@ class PlimsAHdrInstrumentParticleKey(PlimsAParticleKey):
     RUN_FAST_FACTOR = 'run_fast_factor'
     COUNTER_CLEANING = 'counter_cleaning'
     COUNTER_BEADS = 'counter_beads'
-
+    SAMPLE_FILENAME = 'sample_filename'
 
     PARAMETER_NAME_MAP = {
         "sampleNumber": SAMPLE_NUMBER,
@@ -206,33 +209,37 @@ class PlimsAAdcParticleKey(PlimsAParticleKey):
     STATUS = "status" #int
     RUN_TIME_TR = "run_time_tr"
     INHIBIT_TIME_TR = "inhibit_time_tr"
+    SAMPLE_FILENAME = 'sample_filename'
+    SAMPLE_ADC_FILE_ROW_NUMBER = 'sample_adc_file_row_number'
 
-    PLIMS_A_ADC_COLUMNS = [
-        "trigger_number",
-        "adc_time",
-        "pmta",
-        "pmtb",
-        "pmtc",
-        "pmtd",
-        "peak_a",
-        "peak_b",
-        "peak_c",
-        "peak_d",
-        "time_of_flight",
-        "grab_time_start",
-        "grab_time_end",
-        "roi_x",
-        "roi_y",
-        "roi_width",
-        "roi_height",
-        "start_byte",
-        "comparator_out",
-        "start_point",
-        "signal_length",
-        "status",
-        "run_time_tr",
-        "inhibit_time_tr",
-    ]
+    PLIMS_A_ADC_DTYPES = OrderedDict([
+        ("trigger_number", 'int64'),
+        ("adc_time", 'float64'),
+        ("pmta", 'float64'),
+        ("pmtb", 'float64'),
+        ("pmtc", 'float64'),
+        ("pmtd", 'float64'),
+        ("peak_a", 'float64'),
+        ("peak_b", 'float64'),
+        ("peak_c", 'float64'),
+        ("peak_d", 'float64'),
+        ("time_of_flight", 'float64'),
+        ("grab_time_start", 'float64'),
+        ("grab_time_end", 'float64'),
+        ("roi_x", 'int64'),
+        ("roi_y", 'int64'),
+        ("roi_width", 'int64'),
+        ("roi_height", 'int64'),
+        ("start_byte", 'int64'),
+        ("comparator_out", 'int64'),  # This is not used in the data particle, but is in the dataframe
+        ("start_point", 'int64'),  # This is not used in the data particle, but is in the dataframe
+        ("signal_length", 'int64'),  # This is not used in the data particle
+        ("status", 'int64'),
+        ("run_time_tr", 'float64'),
+        ("inhibit_time_tr", 'float64'),
+    ])
+
+    PLIMS_A_ADC_COLUMNS = PLIMS_A_ADC_DTYPES.keys()
 
     PLIMS_A_ADC_DROP_COLUMNS = [
         "adc_time",

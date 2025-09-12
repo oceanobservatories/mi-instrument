@@ -71,11 +71,12 @@ class PlimsAAdclUnitTestCase(ParserUnitTestCase):
             parser = self.create_plims_a_parser(in_file)
 
             # In a single read, get all particles in this file.
-            results = parser.get_records(2)
-            rest_of_results = parser.get_records(442)
+            results = parser.get_records(3)
+            rest_of_results = parser.get_records(441)
 
-        self.assertEqual(len(results), 2)
-        self.assertEqual(len(rest_of_results), 442)
+        self.assertEqual(len(results), 3)
+        self.assertEqual(len(rest_of_results), 441)
+
         self.assert_particles(results, "D20231021T175900_IFCB199_adc_check.yml", RESOURCE_PATH)
 
         self.assertListEqual(self.exception_callback_value, [])
@@ -118,6 +119,8 @@ class PlimsAAdclUnitTestCase(ParserUnitTestCase):
             self.assertTrue(np.issubdtype(type(result.get_value_from_values(PlimsAAdcParticleKey.START_BYTE)), np.integer))
             self.assertTrue(np.issubdtype(type(result.get_value_from_values(PlimsAAdcParticleKey.RUN_TIME_TR)), np.floating))
             self.assertTrue(np.issubdtype(type(result.get_value_from_values(PlimsAAdcParticleKey.INHIBIT_TIME_TR)), np.floating))
+            self.assertTrue(np.issubdtype(type(result.get_value_from_values(PlimsAAdcParticleKey.SAMPLE_ADC_FILE_ROW_NUMBER)), np.integer))
+            self.assertTrue(np.issubdtype(type(result.get_value_from_values(PlimsAAdcParticleKey.SAMPLE_FILENAME)), np.str))
             
             # log.debug('===== END TEST PLIMS_A_ADC Parser Types  =====')
 
@@ -133,10 +136,11 @@ class PlimsAAdclUnitTestCase(ParserUnitTestCase):
             parser = self.create_plims_a_parser(in_file)
 
             # In a single read, get all particles for this file.
-            result = parser.get_records()
+            with self.assertRaises(ValueError):
+                result = parser.get_records()
 
-            self.assertEqual(len(result), 0)
-            self.assertEqual(len(self.exception_callback_value), 1)
+                self.assertEqual(len(result), 0)
+                self.assertEqual(len(self.exception_callback_value), 1)
 
             for i in range(len(self.exception_callback_value)):
                 log.debug('Exception: %s', self.exception_callback_value[i])

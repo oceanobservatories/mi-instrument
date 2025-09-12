@@ -16,6 +16,7 @@ Data records only produce particles if properly formed.
 Mal-formed sensor data records and all metadata records produce no particles.
 """
 
+import os
 import re
 
 import pandas as pd
@@ -90,6 +91,7 @@ class PlimsAHdrParser(SimpleParser):
 
         file = self._stream_handle
 
+        file_name = os.path.basename(file.name).strip('.hdr')
         match = FNAME_DATE_REGEX.match(file.name)
         if match is not None:
             # convert file name date/time string to seconds since 1970-01-01 in UTC
@@ -103,7 +105,6 @@ class PlimsAHdrParser(SimpleParser):
 
         instrument_record = {PlimsAParticleKey.SAMPLE_TIMESTAMP: internal_timestamp}
         engineering_record = {PlimsAParticleKey.SAMPLE_TIMESTAMP: internal_timestamp}
-
 
         for line in file:
             line_split = line.split(self.SEGMENTATION_STRING)
@@ -122,6 +123,7 @@ class PlimsAHdrParser(SimpleParser):
         try:
             if instrument_record:
                 plims_instrument_data = self.parse_instrument_record(instrument_record)
+                plims_instrument_data[PlimsAHdrInstrumentParticleKey.SAMPLE_FILENAME] = file_name
         except KeyError as ke:
             error_message = 'PlimsAHdr Instrument Parser KeyError: {}'.format(ke)
             log.error(error_message)
