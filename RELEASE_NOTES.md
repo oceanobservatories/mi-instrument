@@ -1,3 +1,19 @@
+# Version 1.0.21
+
+* Issue #16068 - Adds new parameters to IFCB streams
+
+# Version 1.0.20
+
+* Issue #15983 - Driver to Support Cabled seapHOX (Uses `phsen_h_format0` stream name)
+
+# Version 1.0.19
+
+* Updates Antelope driver sampling rate lookup table for new frequencies and default to 5 minute files.
+
+# Version 1.0.18
+
+* Issue #15879 - Adds support for new IFCB file types and updates data ingestion and processing
+
 # Version 1.0.17
 
 * Issue #15798 - Adds support for cgsn Prawler platforms (CTDPF_P & DOFST_P)
