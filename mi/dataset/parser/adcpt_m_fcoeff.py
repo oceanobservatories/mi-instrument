@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-
 """
 @package mi.dataset.parser.adcpt_m_fcoeff
 @file marine-integrations/mi/dataset/parser/adcpt_m_fcoeff.py
@@ -25,39 +24,27 @@ The sensor data record has the following format:
 ...
 <frequency_band[NumFreq]> <bandwidth_band[NumFreq]> <energy_density_band[NumFreq]> <direction_band[NumFreq]> <a1_band[NumFreq]> <b1_band[NumFreq]> <a2_band[NumFreq]> <b2_band[NumFreq]> <check_factor_band[NumFreq]>
 
-
 Release notes:
 
 Initial Release
 """
-
 __author__ = 'Ronald Ronquillo'
 __license__ = 'Apache 2.0'
-
 
 import ntplib
 import re
 from itertools import chain
 
-from mi.dataset.parser import utilities
-
-from mi.core.exceptions import RecoverableSampleException
-
 from mi.dataset.dataset_parser import SimpleParser
+from mi.dataset.parser import utilities
+from mi.dataset.parser.common_regexes import UNSIGNED_INT_REGEX, FLOAT_REGEX, END_OF_LINE_REGEX, \
+    ONE_OR_MORE_WHITESPACE_REGEX, ANY_CHARS_REGEX
 
 from mi.core.common import BaseEnum
-
+from mi.core.exceptions import RecoverableSampleException
 from mi.core.instrument.dataset_data_particle import DataParticle
-
 from mi.core.log import get_logger
 log = get_logger()
-
-from mi.dataset.parser.common_regexes import \
-    UNSIGNED_INT_REGEX, \
-    FLOAT_REGEX, \
-    END_OF_LINE_REGEX, \
-    ONE_OR_MORE_WHITESPACE_REGEX, \
-    ANY_CHARS_REGEX
 
 
 class AdcptMFCoeffParticleKey(BaseEnum):
@@ -79,13 +66,14 @@ class AdcptMFCoeffParticleKey(BaseEnum):
     B2_BAND = "b2_band"
     CHECK_BAND = "check_factor_band"
 
+
 # Basic patterns
 common_matches = {
     'FLOAT': FLOAT_REGEX,
     'UINT': UNSIGNED_INT_REGEX,
     'ANY_CHARS_REGEX': ANY_CHARS_REGEX,
     'ONE_OR_MORE_WHITESPACE': ONE_OR_MORE_WHITESPACE_REGEX,
-    'START_METADATA': '\s*\%\s',            # regex for identifying start of a header line
+    'START_METADATA': r'\s*\%\s',  # regex for identifying start of a header line
     'END_OF_LINE_REGEX': END_OF_LINE_REGEX
 }
 
@@ -150,20 +138,20 @@ FCOEFF_DATA_MATCHER = re.compile(r"""(?x)
 # The following is used for _build_parsed_values() and defined as below:
 # (parameter name (and also index into parsed_dict), encoding function)
 FCOEFF_ENCODING_RULES = [
-    (AdcptMFCoeffParticleKey.FILE_TIME,         str),
-    (AdcptMFCoeffParticleKey.NUM_FIELDS,        int),
-    (AdcptMFCoeffParticleKey.NUM_FREQ,          int),
-    (AdcptMFCoeffParticleKey.FREQ_W_BAND,       float),
-    (AdcptMFCoeffParticleKey.FREQ_0,            float),
-    (AdcptMFCoeffParticleKey.FREQ_BAND,         lambda x: [float(y) for y in x]),
-    (AdcptMFCoeffParticleKey.BANDWIDTH_BAND,    lambda x: [float(y) for y in x]),
-    (AdcptMFCoeffParticleKey.ENERGY_BAND,       lambda x: [float(y) for y in x]),
-    (AdcptMFCoeffParticleKey.DIR_BAND,          lambda x: [float(y) for y in x]),
-    (AdcptMFCoeffParticleKey.A1_BAND,           lambda x: [float(y) for y in x]),
-    (AdcptMFCoeffParticleKey.B1_BAND,           lambda x: [float(y) for y in x]),
-    (AdcptMFCoeffParticleKey.A2_BAND,           lambda x: [float(y) for y in x]),
-    (AdcptMFCoeffParticleKey.B2_BAND,           lambda x: [float(y) for y in x]),
-    (AdcptMFCoeffParticleKey.CHECK_BAND,        lambda x: [float(y) for y in x])
+    (AdcptMFCoeffParticleKey.FILE_TIME, str),
+    (AdcptMFCoeffParticleKey.NUM_FIELDS, int),
+    (AdcptMFCoeffParticleKey.NUM_FREQ, int),
+    (AdcptMFCoeffParticleKey.FREQ_W_BAND, float),
+    (AdcptMFCoeffParticleKey.FREQ_0, float),
+    (AdcptMFCoeffParticleKey.FREQ_BAND, lambda x: [float(y) for y in x]),
+    (AdcptMFCoeffParticleKey.BANDWIDTH_BAND, lambda x: [float(y) for y in x]),
+    (AdcptMFCoeffParticleKey.ENERGY_BAND, lambda x: [float(y) for y in x]),
+    (AdcptMFCoeffParticleKey.DIR_BAND, lambda x: [float(y) for y in x]),
+    (AdcptMFCoeffParticleKey.A1_BAND, lambda x: [float(y) for y in x]),
+    (AdcptMFCoeffParticleKey.B1_BAND, lambda x: [float(y) for y in x]),
+    (AdcptMFCoeffParticleKey.A2_BAND, lambda x: [float(y) for y in x]),
+    (AdcptMFCoeffParticleKey.B2_BAND, lambda x: [float(y) for y in x]),
+    (AdcptMFCoeffParticleKey.CHECK_BAND, lambda x: [float(y) for y in x])
 ]
 
 
@@ -178,20 +166,17 @@ class AdcptMFCoeffInstrumentDataParticle(DataParticle):
     """
     Class for generating the adcpt_m_instrument_fcoeff_recovered data particle.
     """
-
     _data_particle_type = DataParticleType.SAMPLE
 
     def _build_parsed_values(self):
         """
         Build parsed values for Recovered Instrument Data Particle.
         """
-
         # Generate a particle by calling encode_value for each entry
         # in the Instrument Particle Mapping table,
         # where each entry is a tuple containing the particle field name, which is also
         # an index into the match groups (which is what has been stored in raw_data),
         # and a function to use for data conversion.
-
         return [self._encode_value(name, self.raw_data[name], function)
                 for name, function in FCOEFF_ENCODING_RULES]
 
@@ -200,7 +185,6 @@ class AdcptMFCoeffParser(SimpleParser):
     """
     Parser for adcpt_m FCoeff*.txt files.
     """
-
     def recov_exception_callback(self, message):
         log.warn(message)
         self._exception_callback(RecoverableSampleException(message))
@@ -210,7 +194,6 @@ class AdcptMFCoeffParser(SimpleParser):
         Parse the FCoeff*.txt file. Create a chunk from valid data in the file.
         Build a data particle from the chunk.
         """
-
         file_time_dict = {}
         dir_freq_dict = {}
         freq_band_dict = {}
@@ -230,7 +213,6 @@ class AdcptMFCoeffParser(SimpleParser):
         input_file_name = self._stream_handle.name
 
         match = FILE_NAME_MATCHER.match(input_file_name)
-
         if match:
             file_time_dict = match.groupdict()
         else:
@@ -241,7 +223,6 @@ class AdcptMFCoeffParser(SimpleParser):
         line = self._stream_handle.readline()
 
         while line:
-
             if EMPTY_LINE_MATCHER.match(line):
                 # ignore blank lines, do nothing
                 pass
@@ -252,7 +233,6 @@ class AdcptMFCoeffParser(SimpleParser):
                     header_match = matcher.match(line)
 
                     if header_match is not None:
-
                         if matcher is DIR_FREQ_MATCHER:
                             dir_freq_dict = header_match.groupdict()
 
@@ -260,13 +240,12 @@ class AdcptMFCoeffParser(SimpleParser):
                             freq_band_dict = header_match.groupdict()
 
                         else:
-                            #ignore
+                            # ignore
                             pass
 
             elif FCOEFF_DATA_MATCHER.match(line):
                 # Extract a row of data
                 sensor_match = FCOEFF_DATA_MATCHER.match(line)
-
                 sensor_data_dict[AdcptMFCoeffParticleKey.FREQ_BAND].append(
                     sensor_match.group(AdcptMFCoeffParticleKey.FREQ_BAND))
                 sensor_data_dict[AdcptMFCoeffParticleKey.BANDWIDTH_BAND].append(
@@ -292,6 +271,7 @@ class AdcptMFCoeffParser(SimpleParser):
 
             # read the next line in the file
             line = self._stream_handle.readline()
+
             # replace the 1.#INF00 string with a -999999999 (system default fill-value)
             line = re.sub(r'1.#INF00', '-999999999.0', line)
 
@@ -319,17 +299,15 @@ class AdcptMFCoeffParser(SimpleParser):
         # Check if the specified number of frequencies were retrieved from the data
         fcoeff_data_length = len(sensor_data_dict[AdcptMFCoeffParticleKey.FREQ_BAND])
         if fcoeff_data_length != int(dir_freq_dict[AdcptMFCoeffParticleKey.NUM_FREQ]):
-            self.recov_exception_callback(
-                'Unexpected number of frequencies in FCoeff Matrix: expected %s, got %s'
-                % (dir_freq_dict[AdcptMFCoeffParticleKey.NUM_FREQ], fcoeff_data_length))
+            self.recov_exception_callback('Unexpected number of frequencies in FCoeff Matrix: expected %s, got %s'
+                                          % (dir_freq_dict[AdcptMFCoeffParticleKey.NUM_FREQ], fcoeff_data_length))
 
             # Don't create a particle if data is missing
             return
 
         # Convert the filename timestamp into the particle timestamp
         time_stamp = ntplib.system_to_ntp_time(
-            utilities.formatted_timestamp_utc_time(file_time_dict[AdcptMFCoeffParticleKey.FILE_TIME]
-                                                   , TIMESTAMP_FORMAT))
+            utilities.formatted_timestamp_utc_time(file_time_dict[AdcptMFCoeffParticleKey.FILE_TIME], TIMESTAMP_FORMAT))
 
         # Extract a particle and append it to the record buffer
         particle = self._extract_sample(AdcptMFCoeffInstrumentDataParticle,

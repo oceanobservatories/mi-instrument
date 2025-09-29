@@ -1,6 +1,6 @@
 
  % Directional Spectrum 
-% 90 Directions and 64 Frequencies
+% 90 Directions and 64 Frequencies, Upper CutOff Frequency = 0.262
 % Units are mm^2/(Hz) per cycle
 % Frequency Bands are 0.01562500 Hz wide(first frequency band is centered at 0.00830078)
 % The first direction slice begins at 0 degrees
