@@ -22,7 +22,7 @@ pyyaml==5.2
 pyzmq==18.1.0
 qpid-python==0.32
 requests==2.25.1
-scipy==1.2.1
+scipy==1.10.0
 sqlalchemy==1.3.12
 tqdm==2.0.0
 twisted==19.10.0
