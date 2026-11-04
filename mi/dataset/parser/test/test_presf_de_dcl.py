@@ -12,8 +12,10 @@ import os
 from mi.core.log import get_logger
 from mi.dataset.dataset_parser import DataSetDriverConfigKeys
 from mi.dataset.parser.presf_de_dcl import PresfDeDclParser
+from mi.dataset.parser.presf_de_averaged_dcl import PresfDeAveragedDclParser
 from mi.dataset.test.test_parser import ParserUnitTestCase
 from mi.dataset.driver.presf_de.dcl.resource import RESOURCE_PATH
+from mi.dataset.driver.presf_de.averaged.resource import RESOURCE_PATH as AVERAGED_RESOURCE_PATH
 
 log = get_logger()
 
@@ -54,11 +56,13 @@ class PresfDeDclUnitTestCase(ParserUnitTestCase):
         self.exception_callback_value = []
         self.exceptions_detected = 0
 
-    def test_prtsz_a_dcl_parser(self):
+    def test_presf_de_dcl_parser(self):
         """
         Read a file and pull out a data particle.
         Verify that the results are those we expected.
         """
+
+        # self.setup()  # Needed for single case testing
 
         log.debug('===== START TEST PRESF_DE_DCL Parser =====')
 
@@ -77,6 +81,85 @@ class PresfDeDclUnitTestCase(ParserUnitTestCase):
         """
         Ensure that bad data is skipped when it exists.
         """
+
+        # self.setup()  # Needed for single case testing
+
+        log.debug('===== START TEST BAD DATA  =====')
+
+        with open(self.file_path('20231107_corrupt.rbrq3.log')) as in_file:
+            parser = self.create_presf_de_parser(in_file)
+
+            # In a single read, get all particles for this file.
+            result = parser.get_records(30)
+
+            self.assertEqual(len(result), 10)
+
+            for i in range(len(self.exception_callback_value)):
+               log.debug('Exception: %s', self.exception_callback_value[i])
+
+        log.debug('===== END TEST BAD DATA  =====')
+
+
+
+class PresfDeAveragedDclUnitTestCase(ParserUnitTestCase):
+
+    def create_presf_de_average_parser(self, file_handle):
+        """
+        This function creates a Presf DE parser for telemetered data.
+        """
+
+        return PresfDeAveragedDclParser(self.config, file_handle, self.rec_exception_callback)
+
+    def file_path(self, filename):
+        log.debug('resource path = %s, file name = %s', AVERAGED_RESOURCE_PATH, filename)
+        return os.path.join(AVERAGED_RESOURCE_PATH, filename)
+
+    def rec_exception_callback(self, exception):
+        """
+        Call back method to watch what comes in via the exception callback
+        """
+
+        self.exception_callback_value.append(exception)
+        self.exceptions_detected += 1
+
+    def setup(self):
+        ParserUnitTestCase.setUp(self)
+
+        self.config = {
+            DataSetDriverConfigKeys.PARTICLE_MODULE: MODULE_NAME,
+            DataSetDriverConfigKeys.PARTICLE_CLASS: CLASS_NAME
+        }
+
+        self.exception_callback_value = []
+        self.exceptions_detected = 0
+
+    def test_presf_de_average_dcl_parser(self):
+        """
+        Read a file and pull out a data particle.
+        Verify that the results are those we expected.
+        """
+
+        self.setup()  # Needed for single case testing
+
+        log.debug('===== START TEST PRESF_DE_DCL Parser =====')
+
+        with open(self.file_path('20250228_15_avg.presf.log')) as in_file:
+            parser = self.create_presf_de_average_parser(in_file)
+
+            # In a single read, get all particles in this file.
+            result = parser.get_records(30)
+
+            self.assertEqual(len(result), 1)
+            self.assertListEqual(self.exception_callback_value, [])
+
+        log.debug('===== END TEST PRESF_DE_DCL Parser  =====')
+
+    def test_bad_data(self):
+        """
+        Ensure that bad data is skipped when it exists.
+        """
+
+        # self.setup()  # Needed for single case testing
 
         log.debug('===== START TEST BAD DATA  =====')
 
