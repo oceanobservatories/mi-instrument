@@ -1,3 +1,7 @@
+# Version 1.0.22
+
+* Issue #16005 - Create parser and ingestion code for RBR Quartz 3 (PRESF-DE)
+
 # Version 1.0.21
 
 * Issue #16068 - Adds new parameters to IFCB streams
