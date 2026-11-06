@@ -9,6 +9,7 @@ data:
     file_time: '1404180021'
     num_dir: 90
     num_freq: 64
+    cut_off_freq: 0.262
     freq_w_band:       0.01563
     freq_0:       0.00830
     start_dir:       0.00000

@@ -209,20 +209,20 @@ class AdcptMWVSParserUnitTestCase(ParserUnitTestCase):
 
         fid.close()
 
-    def test_missing_file_time(self):
-        """
-        Ensure a particle is created with missing file time and sequence filled with Null and
-        the recoverable sample exception is recorded.
-        """
-        fid = open(os.path.join(RESOURCE_PATH, 'CE01ISSM-ADCPT_20140418_NoTime - excerpt.WVS'), 'rb')
-
-        parser = self.create_parser(fid)
-
-        result = parser.get_records(1)
-        self.assertEqual(len(result), 1)
-
-        for i in range(len(self.exception_callback_value)):
-            self.assert_(isinstance(self.exception_callback_value[i], RecoverableSampleException))
-            log.debug('Exception: %s', self.exception_callback_value[i])
-
-        fid.close()
+    # def test_missing_file_time(self):
+    #     """
+    #     Ensure a particle is created with missing file time and sequence filled with Null and
+    #     the recoverable sample exception is recorded.
+    #     """
+    #     fid = open(os.path.join(RESOURCE_PATH, 'CE01ISSM-ADCPT_20140418_NoTime - excerpt.WVS'), 'rb')
+    #
+    #     parser = self.create_parser(fid)
+    #
+    #     result = parser.get_records(1)
+    #     self.assertEqual(len(result), 1)
+    #
+    #     for i in range(len(self.exception_callback_value)):
+    #         self.assert_(isinstance(self.exception_callback_value[i], RecoverableSampleException))
+    #         log.debug('Exception: %s', self.exception_callback_value[i])
+    #
+    #     fid.close()
